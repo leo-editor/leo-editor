@@ -224,14 +224,16 @@ class LeoApp(object):
         #@+<< LeoApp: global controller/manager objects >>
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Most of these are defined in initApp.
-        self.idleTimeManager = None
-            # The singleton IdleTimeManager instance.
+        self.backgroundProcessManager = None
+            # The singleton BackgroundProcessManager instance.
         self.config = None
             # The singleton leoConfig instance.
         self.db = None
             # The singleton leoCacher instance.
         self.externalFilesController = None
             # The singleton ExternalFilesController instance.
+        self.idleTimeManager = None
+            # The singleton IdleTimeManager instance.
         self.ipk = None
             # python kernel instance
         self.loadManager = None
@@ -2094,11 +2096,11 @@ class LoadManager(object):
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug()
         assert g.app.loadManager
+        import leo.core.leoBackground as leoBackground
         import leo.core.leoConfig as leoConfig
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         import leo.core.leoSessions as leoSessions
-        import leo.commands.checkerCommands as checkerCommands
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
@@ -2111,7 +2113,7 @@ class LoadManager(object):
         g.app.setLeoID(verbose=verbose)
         # Create early classes *after* doing plugins.init()
         g.app.idleTimeManager = IdleTimeManager()
-        g.app.pylintBackgroundManager = checkerCommands.PylintBackgroundManager()
+        g.app.backgroundProcessManager = leoBackground.BackgroundProcessManager()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()

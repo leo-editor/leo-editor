@@ -6,7 +6,6 @@
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
 import leo.core.leoGlobals as g
-import leo.core.leoBackground as leoBackground
 try:
     import flake8
 except ImportError:
@@ -28,7 +27,7 @@ import time
 @g.command('pylint-kill')
 def kill_pylint(event):
     '''Kill any running pylint processes and clear the queue.'''
-    g.app.pylintBackgroundManager.kill()
+    g.app.backgroundProcessManager.kill('pylint')
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -71,17 +70,6 @@ def pyflakes_command(event):
             PyflakesCommand(c).run(force=True)
         else:
             g.es_print('can not import pyflakes')
-#@+node:ekr.20161026142607.1: ** class PylintBackgroundManager
-class PylintBackgroundManager(leoBackground.BackgroundManager):
-    '''A class to run Python processes sequentially in the background.'''
-    
-    def __init__(self):
-        '''Ctor for the PylintBackgroundManager class.'''
-        # Init the base class.
-        leoBackground.BackgroundManager.__init__(
-            self,
-            kind = 'pylint',
-            tag = 'PylintBackgroundManager')
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command(object):
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
@@ -371,6 +359,7 @@ class PylintCommand(object):
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
     def run_pylint(self, fn, rc_fn):
         '''Run pylint on fn with the given pylint configuration file.'''
+        c = self.c
         if not os.path.exists(fn):
             print('file not found:', fn)
             return
@@ -403,8 +392,8 @@ class PylintCommand(object):
                 if s.strip():
                     g.es_print(s.rstrip())
         else:
-            pm = g.app.pylintBackgroundManager
-            pm.start_process(command, fn)
+            bpm = g.app.backgroundProcessManager
+            bpm.start_process(c, command, kind='pylint', fn=fn)
     #@-others
 #@-others
 #@@language python

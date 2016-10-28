@@ -6312,6 +6312,1473 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+.. @+node:ekr.20161022035203.1: ** Test code: do not delete
+.. @+node:ekr.20150530203147.1: *3* @@button TEST PTB
+r'''The script to test AddTokensToTree class.'''
+g.cls()
+if c.isChanged():
+    c.save()
+project = None # 'leo'
+<< imports >>
+if project:
+    # 17.1 sec. --> 17.4 --> 17.3
+    # The format time is about twice the tokenize time.
+    aList = leoBeautify.ProjectUtils().project_files(project)
+    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
+    settings_d = {
+        # 'output_string': True,
+        # 'stats': True,
+    }
+else:
+    aList = [
+        'unit test: leoBeautify.py',
+        # '@file leoColorizer.py',
+        # '@file leoBeautify.py',
+        # '@file leoCommands.py',
+    ]
+    small = aList[0].startswith('unit test:')
+    settings_d = {
+        'tidy-keep-blank-lines': True,
+        'input_string': small,
+        # 'input_lines':  True,
+        # 'input_tokens': small,
+        'output_tokens': small,
+        'output_string': small,
+        'stats': not small # and len(aList) == 1,
+    }
+assert aList,'no input in %s' % (p.h)
+<< init total stats >>
+t1 = time.clock()
+for h in aList:
+    p2 = g.findNodeAnywhere(c,h)
+    if p2:
+        try:
+            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
+            << update total stats >>
+        except Exception:
+            g.es_exception()
+if len(aList) > 1:
+    << print total stats >>
+tot_time = time.clock()-t1
+if len(aList) > 1:
+    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
+else:
+    print('done: %4.2f sec.' % (tot_time))
+.. @+node:ekr.20150530203147.2: *4* << imports >>
+import leo.core.leoBeautify as leoBeautify
+import imp
+import time
+imp.reload(leoBeautify)
+.. @+node:ekr.20150530203147.3: *4* << init total stats >>
+tot_beautify_time = 0.0
+tot_changed_nodes = 0
+tot_check_time = 0.0
+tot_files = 0
+tot_input_tokens = 0
+tot_output_tokens = 0
+tot_parse_time = 0.0
+tot_strings = 0
+tot_tokenize_time = 0.0
+tot_total_time = 0.0
+.. @+node:ekr.20150530203147.4: *4* << update total stats >>
+tot_beautify_time += b.beautify_time
+tot_changed_nodes += b.n_changed_nodes
+tot_check_time += b.check_time
+tot_files += 1
+tot_input_tokens += b.n_input_tokens
+tot_output_tokens += b.n_output_tokens
+tot_parse_time += b.parse_time
+tot_strings += b.n_strings
+tot_tokenize_time += b.tokenize_time
+tot_total_time += b.total_time
+.. @+node:ekr.20150530203147.5: *4* << print total stats >>
+print('========== totals ==========')
+print('files          %s' % tot_files)
+print('changed nodes  %s' % tot_changed_nodes)
+print('tokens         %s' % tot_input_tokens)
+print('len(code_list) %s' % tot_output_tokens)
+print('len(s)         %s' % tot_strings)
+print('parse          %4.2f sec.' % tot_parse_time)
+print('tokenize       %4.2f sec.' % tot_tokenize_time)
+print('format         %4.2f sec.' % tot_beautify_time)
+print('check          %4.2f sec.' % tot_check_time)
+print('total          %4.2f sec.' % tot_total_time)
+.. @+node:ekr.20160923163813.1: *3* @buttons for pyflakes & flake8
+.. @+node:ekr.20160923163813.2: *4* @@button test-pyflakes @key=Ctrl-6
+# g.cls()
+import os
+import pyflakes
+import sys
+import time
+if 1:
+    p = c.p
+else:
+    h = '@file leoApp.py'
+    p = g.findNodeAnywhere(c, h)
+assert p
+@others
+if c.isChanged():
+    c.save()
+PyflakesCommand(c).run(p=p)
+
+.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
+class PyflakesCommand(object):
+    '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
+
+    def __init__(self, c):
+        '''ctor for PyflakesCommand class.'''
+        self.c = c
+        self.seen = [] # List of checked paths.
+
+    @others
+.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
+def check_all(self, paths):
+    '''Run pyflakes on fn.'''
+    from pyflakes import api, reporter
+    for fn in sorted(paths):
+        # Report the file name.
+        sfn = g.shortFileName(fn)
+        s = g.readFileIntoEncodedString(fn, silent=False)
+        if not s.strip():
+            return
+        r = reporter.Reporter(
+            errorStream=sys.stderr,
+            warningStream=sys.stderr,
+            )
+        errors = api.check(s, sfn, r)
+        if False and errors:
+            # Annoying.
+            print('%s error%s in %s' % (errors, g.plural(errors), fn))
+.. @+node:ekr.20160923163813.16: *6* pyflakes.find
+def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+.. @+node:ekr.20160923163813.17: *6* pyflakes.run
+def run(self, p=None):
+    '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run pyflakes on all Python @<file> nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @<file> nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('pyflakes: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+.. @+node:ekr.20160923163813.7: *4* @@button test-flake8 @key=Ctrl-7
+# g.cls()
+import flake8
+import os
+import sys
+import time
+if 1:
+    p = c.p
+else:
+    h = '@file leoApp.py'
+    p = g.findNodeAnywhere(c, h)
+assert p
+@others
+if c.isChanged():
+    c.save()
+Flake8Command(c).run(p=p)
+
+.. @+node:ekr.20160923163813.19: *5* class Flake8Command
+class Flake8Command(object):
+    '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
+
+    def __init__(self, c, quiet=False):
+        '''ctor for Flake8Command class.'''
+        self.c = c
+        self.quiet = quiet
+        self.seen = [] # List of checked paths.
+
+    @others
+.. @+node:ekr.20160923163813.20: *6* flake8.check_all
+def check_all(self, paths):
+    '''Run flake8 on all paths.'''
+    from flake8 import engine, main
+    config_file = self.get_flake8_config()
+    if config_file:
+        style = engine.get_style_guide(
+            parse_argv=False,
+            config_file=config_file,
+        )
+        report = style.check_files(paths=paths)
+        # Set statistics here, instead of from the command line.
+        options = style.options
+        options.statistics = True
+        options.total_errors = True
+        # options.benchmark = True
+        main.print_report(report, style)
+.. @+node:ekr.20160923163813.21: *6* flake8.find
+def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
+def get_flake8_config(self):
+    '''Return the path to the pylint configuration file.'''
+    trace = False and not g.unitTesting
+    join = g.os_path_finalize_join
+    dir_table = (
+        g.app.homeDir,
+        join(g.app.homeDir, '.leo'),
+        join(g.app.loadDir, '..', '..', 'leo', 'test'),
+    )
+    if g.isPython3:
+        base_table = ('flake8', 'flake8.txt')
+    else:
+        base_table = ('flake8',)
+    for base in base_table:
+        for path in dir_table:
+            fn = g.os_path_abspath(join(path, base))
+            if g.os_path_exists(fn):
+                if trace: g.trace('found:', fn)
+                return fn
+    if not g.unitTesting:
+        g.es_print('no flake8 configuration file found in\n%s' % (
+            '\n'.join(dir_table)))
+    return None
+.. @+node:ekr.20160923163813.23: *6* flake8.run
+def run(self, p=None):
+    '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run flake8 on all Python @<file> nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @<file> nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        # g.trace(isCloned,root.h)
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    # g.trace(isAncestor,p.h)
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('flake8: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+.. @+node:ekr.20160923163813.13: *4* pyflakes command
+@g.command('pyflakes')
+def pyflakes_command(event):
+    '''
+    Run pyflakes on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    @others
+        # define class PyFlakesCommand.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        if pyflakes:
+            PyflakesCommand(c).run()
+        else:
+            g.es_print('can not import pyflakes')
+.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
+class PyflakesCommand(object):
+    '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
+
+    def __init__(self, c):
+        '''ctor for PyflakesCommand class.'''
+        self.c = c
+        self.seen = [] # List of checked paths.
+
+    @others
+.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
+def check_all(self, paths):
+    '''Run pyflakes on fn.'''
+    from pyflakes import api, reporter
+    for fn in sorted(paths):
+        # Report the file name.
+        sfn = g.shortFileName(fn)
+        s = g.readFileIntoEncodedString(fn, silent=False)
+        if not s.strip():
+            return
+        r = reporter.Reporter(
+            errorStream=sys.stderr,
+            warningStream=sys.stderr,
+            )
+        errors = api.check(s, sfn, r)
+        if False and errors:
+            # Annoying.
+            print('%s error%s in %s' % (errors, g.plural(errors), fn))
+.. @+node:ekr.20160923163813.16: *6* pyflakes.find
+def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+.. @+node:ekr.20160923163813.17: *6* pyflakes.run
+def run(self, p=None):
+    '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run pyflakes on all Python @<file> nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @<file> nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('pyflakes: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+.. @+node:ekr.20160923163813.18: *4* flake8 command
+@g.command('flake8')
+def flake8_command(event):
+    '''
+    Run flake8 on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
+    @others
+        # define class Flake8Command.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        if flake8:
+            Flake8Command(c).run()
+        else:
+            g.es_print('can not import flake8')
+.. @+node:ekr.20160923163813.19: *5* class Flake8Command
+class Flake8Command(object):
+    '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
+
+    def __init__(self, c, quiet=False):
+        '''ctor for Flake8Command class.'''
+        self.c = c
+        self.quiet = quiet
+        self.seen = [] # List of checked paths.
+
+    @others
+.. @+node:ekr.20160923163813.20: *6* flake8.check_all
+def check_all(self, paths):
+    '''Run flake8 on all paths.'''
+    from flake8 import engine, main
+    config_file = self.get_flake8_config()
+    if config_file:
+        style = engine.get_style_guide(
+            parse_argv=False,
+            config_file=config_file,
+        )
+        report = style.check_files(paths=paths)
+        # Set statistics here, instead of from the command line.
+        options = style.options
+        options.statistics = True
+        options.total_errors = True
+        # options.benchmark = True
+        main.print_report(report, style)
+.. @+node:ekr.20160923163813.21: *6* flake8.find
+def find(self, p):
+    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
+    found = False
+    if p.isAnyAtFileNode():
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        if fn.endswith('.py'):
+            fn = g.os_path_finalize_join(path, fn)
+            if fn not in self.seen:
+                self.seen.append(fn)
+                found = True
+    return found
+.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
+def get_flake8_config(self):
+    '''Return the path to the pylint configuration file.'''
+    trace = False and not g.unitTesting
+    join = g.os_path_finalize_join
+    dir_table = (
+        g.app.homeDir,
+        join(g.app.homeDir, '.leo'),
+        join(g.app.loadDir, '..', '..', 'leo', 'test'),
+    )
+    if g.isPython3:
+        base_table = ('flake8', 'flake8.txt')
+    else:
+        base_table = ('flake8',)
+    for base in base_table:
+        for path in dir_table:
+            fn = g.os_path_abspath(join(path, base))
+            if g.os_path_exists(fn):
+                if trace: g.trace('found:', fn)
+                return fn
+    if not g.unitTesting:
+        g.es_print('no flake8 configuration file found in\n%s' % (
+            '\n'.join(dir_table)))
+    return None
+.. @+node:ekr.20160923163813.23: *6* flake8.run
+def run(self, p=None):
+    '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
+    c = self.c
+    root = p or c.p
+    # Make sure Leo is on sys.path.
+    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+    if leo_path not in sys.path:
+        sys.path.append(leo_path)
+    # Run flake8 on all Python @<file> nodes in root's tree.
+    t1 = time.time()
+    found = False
+    for p in root.self_and_subtree():
+        found |= self.find(p)
+    # Look up the tree if no @<file> nodes were found.
+    if not found:
+        for p in root.parents():
+            if self.find(p):
+                found = True
+                break
+    # If still not found, expand the search if root is a clone.
+    if not found:
+        isCloned = any([p.isCloned() for p in root.self_and_parents()])
+        # g.trace(isCloned,root.h)
+        if isCloned:
+            for p in c.all_positions():
+                if p.isAnyAtFileNode():
+                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
+                    # g.trace(isAncestor,p.h)
+                    if isAncestor and self.find(p):
+                        break
+    paths = list(set(self.seen))
+    if paths:
+        self.check_all(paths)
+    g.es_print('flake8: %s file%s in %s' % (
+        len(paths), g.plural(paths), g.timeSince(t1)))
+.. @+node:ekr.20161006162035.1: *3* cff regex pattern to find section references
+# This works
+<<(\s*)(\w+)(\s+)(\w+)(.*)>>
+
+# These don't work
+<<(\s*)(?!(import|docstring|includes))(\w+)(\s*)>>
+<< xyz >>
+<< import >>
+.. @+node:ekr.20160504053037.1: *3* test class-based decorators
+# test __call__ method
+
+class Test(object):
+    def __init__(self):
+        g.trace('-----')
+    def __call__(self):
+        g.trace('=====')
+
+Test()()
+.. @+node:ekr.20161017043402.1: *3* test create_json
+g.cls()
+import imp
+import leo.core.leoVersion as v
+imp.reload(v)
+v.create_commit_timestamp_json()
+commit, date = v.get_version_from_git(short=False)
+print(commit + ' ' + date)
+commit, date = v.get_version_from_json(short=False)
+print(commit + ' ' + date)
+.. @+node:ekr.20150704140210.1: *3* test leoCheck.py
+g.cls()
+import imp
+import leo.core.leoCheck as leoCheck
+imp.reload(leoCheck)
+files = (
+    [
+        r'c:\leo.repo\leo-editor\leo\core\leoNodes.py',
+        # r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
+        # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
+    ] or
+    leoCheck.ProjectUtils().project_files('leo')
+)
+leoCheck.test(files)
+.. @+node:ekr.20150524200357.1: *3* testing beautifier code
+.. @+node:ekr.20150521113831.1: *4* @button TEST PTB
+r'''The script to test AddTokensToTree class.'''
+g.cls()
+if c.isChanged():
+    c.save()
+project = None # 'leo'
+<< imports >>
+if project:
+    # 17.1 sec. --> 17.4 --> 17.3
+    # The format time is about twice the tokenize time.
+    aList = leoBeautify.ProjectUtils().project_files(project)
+    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
+    settings_d = {
+        # 'output_string': True,
+        # 'stats': True,
+    }
+else:
+    aList = [
+        'unit test: leoBeautify.py',
+        # '@file leoColorizer.py',
+        # '@file leoBeautify.py',
+        # '@file leoCommands.py',
+    ]
+    small = aList[0].startswith('unit test:')
+    settings_d = {
+        'tidy-keep-blank-lines': True,
+        'input_string': small,
+        # 'input_lines':  True,
+        # 'input_tokens': small,
+        # 'output_tokens': small,
+        'output_string': small,
+        'stats': not small # and len(aList) == 1,
+    }
+assert aList,'no input in %s' % (p.h)
+<< init total stats >>
+t1 = time.clock()
+for h in aList:
+    p2 = g.findNodeAnywhere(c,h)
+    if p2:
+        try:
+            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
+            << update total stats >>
+        except Exception:
+            g.es_exception()
+if len(aList) > 1:
+    << print total stats >>
+tot_time = time.clock()-t1
+if len(aList) > 1:
+    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
+else:
+    print('done: %4.2f sec.' % (tot_time))
+.. @+node:ekr.20150525073117.1: *5* << imports >>
+import leo.core.leoBeautify as leoBeautify
+import imp
+import time
+imp.reload(leoBeautify)
+.. @+node:ekr.20150530073856.1: *5* << init total stats >>
+tot_beautify_time = 0.0
+tot_changed_nodes = 0
+tot_check_time = 0.0
+tot_files = 0
+tot_input_tokens = 0
+tot_output_tokens = 0
+tot_parse_time = 0.0
+tot_strings = 0
+tot_tokenize_time = 0.0
+tot_total_time = 0.0
+.. @+node:ekr.20150530073906.1: *5* << update total stats >>
+tot_beautify_time += b.beautify_time
+tot_changed_nodes += b.n_changed_nodes
+tot_check_time += b.check_time
+tot_files += 1
+tot_input_tokens += b.n_input_tokens
+tot_output_tokens += b.n_output_tokens
+tot_parse_time += b.parse_time
+tot_strings += b.n_strings
+tot_tokenize_time += b.tokenize_time
+tot_total_time += b.total_time
+.. @+node:ekr.20150530074429.1: *5* << print total stats >>
+print('========== totals ==========')
+print('files          %s' % tot_files)
+print('changed nodes  %s' % tot_changed_nodes)
+print('tokens         %s' % tot_input_tokens)
+print('len(code_list) %s' % tot_output_tokens)
+print('len(s)         %s' % tot_strings)
+print('parse          %4.2f sec.' % tot_parse_time)
+print('tokenize       %4.2f sec.' % tot_tokenize_time)
+print('format         %4.2f sec.' % tot_beautify_time)
+print('check          %4.2f sec.' % tot_check_time)
+print('total          %4.2f sec.' % tot_total_time)
+.. @+node:ekr.20150524071341.1: *4* unit test: leoBeautify.py
+# Extraneous backslash causes problems.
+function1("NOTE: embedded layout in @settings/@data free-layout-layout" \
+          "overrides saved layout " + name)
+function2(a,
+          b)
+function3(a, \
+          b)
+# Weird case: comments ends in backslash\\
+# Next comment
+
+def test():
+    legend = '''\
+legend:
+'''
+    c = self.c
+.. @+node:ekr.20150601042305.1: *5* new op problems
+def spam():
+    pass
+
+a = b[25]
+return {}
+.. @+node:ekr.20150601015905.1: *5* return test
+def return_test():
+    if 1: return
+    while True:
+        if 2: return
+    if 3:
+        return
+.. @+node:ekr.20150531104223.1: *5* class Command
+class Command:
+    '''
+    A global decorator for functions outside of any class.
+    
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        global_commands_dict[self.name] = func
+        if app:
+            for c in app.commanders():
+                c.k.registerCommand(self.name, shortcut=None, func=func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+command = Command
+.. @+node:ekr.20150531060949.1: *5* comments
+# Comments before class
+
+class aClass:
+    pass
+
+pass # trailing comment.
+    # indented comment.
+# Comments before def.
+
+def spam():
+    pass
+.. @+node:ekr.20150531054341.1: *5* * and ** args
+def spam(a, *args, **keys):
+    pass
+
+a = (2 ** 3)
+b = (4 * 5)
+.. @+node:ekr.20150531052201.1: *5* indented arg lists
+foo(a,
+     b=2)
+foo(a,
+    b=2)
+
+def spam(
+    c=2,
+    d=3,
+):
+    pass
+.. @+node:ekr.20150529183213.1: *5* continued args
+foo(a,
+     b=2 # foo 1
+     # foo 2
+  )
+
+def spam(a=2,
+    b=3, # spam 1
+):
+    pass
+.. @+node:ekr.20150530182531.1: *5* comments after inner def
+def spam(a=2,
+    b=3, # spam 1
+):
+
+    def inner():
+        pass
+    # spam 2:
+
+    pass # spam 3.
+    # The dedent happens after spam3, so spam2 is over-indented.
+.. @+node:ekr.20150530084744.1: *5* doc parts
+def f():
+    pass
+@ The following could be added to the 'else' clause::
+    # Accumulate everything else.
+.. @+node:ekr.20150528113231.1: *5* indent after inner class
+# Indent after inner class.
+if QtGui:
+
+    class aClass:
+        pass
+
+if Qsci:
+    pass
+.. @+node:ekr.20150528095649.1: *5* multiple dedent tokens
+def get_rc_file(self):
+    while True:
+        if False:
+            return
+    foo('oops')
+    return
+.. @+node:ekr.20150528092108.1: *5* blank lines between classes and defs
+class aClass:
+
+    def outer(a=2, b=3):
+        a = 2
+
+        def inner():
+            b = 2
+
+        c = 3
+
+    class innerClass:
+        pass
+.. @+node:ekr.20150528093928.1: *5* decorators
+class aClass:
+
+    @decr('a')
+    def outer():
+
+        @decr('b')
+        def inner():
+            pass
+
+        pass
+
+    @decr('c')
+    class innerClass:
+        pass
+.. @+node:ekr.20150528060217.1: *5* Inner defs
+def outer():
+    a = 2
+
+    def inner():
+        b = 2
+
+    c = 3
+.. @+node:ekr.20150527184101.1: *5* comments
+def f1():
+    # Comment1, flush.
+    line1 = 1
+        # Comment2, hanging.
+    line2 = 2
+    line3 = 3 # Trailing comment.
+        # Final hanging comment.
+.. @+node:ekr.20150526122041.1: *5* operators
+a = -b
+c = -(d + e)
+b = not (a and b)
+c = e or f
+.. @+node:ekr.20150527201950.1: *5* strings
+s = 'abc \
+xyz'
+s2 = 'part1' 'part2'
+s3 = 'a' + 'b'
+.. @+node:ekr.20150527182228.1: *5* Removing blank lines
+def f1():
+    line1 = 1
+    line2 = 2
+    line3 = 3
+
+class aClass():
+    line4 = 4
+    line5 = 5
+.. @+node:ekr.20161022040621.1: *3* re: #325: Simplify the organization of commands
+@language python
+.. @+node:ekr.20161022034842.1: *4* Script: make list of commander attributes that must be preserved
+g.cls()
+attrs = dir(c)
+print('attrs = [')
+for attr in attrs:
+    print("    '%s'," % attr)
+print(']')
+
+.. @+node:ekr.20161022041103.1: *4* @test #325 preserves commander attributes
+<< define old_attrs >>
+for attr in old_attrs:
+    assert hasattr(c, attr), attr
+
+.. @+node:ekr.20161022041138.1: *5* << define old_attrs >>
+old_attrs = [
+    'BeginUpdate',
+    'BringToFront',
+    'EndUpdate',
+    '_Commands__get_p',
+    # '__class__',
+    # '__delattr__',
+    # '__dict__',
+    # '__dir__',
+    # '__doc__',
+    # '__eq__',
+    # '__format__',
+    # '__ge__',
+    # '__getattribute__',
+    # '__gt__',
+    # '__hash__',
+    # '__init__',
+    # '__le__',
+    # '__lt__',
+    # '__module__',
+    # '__ne__',
+    # '__new__',
+    # '__reduce__',
+    # '__reduce_ex__',
+    # '__repr__',
+    # '__setattr__',
+    # '__sizeof__',
+    # '__str__',
+    # '__subclasshook__',
+    # '__weakref__',
+    # '_currentCount',
+    # '_currentPosition',
+    # '_prev_next',
+    # '_rootCount',
+    # '_style_deltas',
+    # '_topPosition',
+    'abbrevCommands',
+    'abbrev_place_end',
+    'abbrev_place_start',
+    'abbrev_subst_end',
+    'abbrev_subst_env',
+    'abbrev_subst_start',
+    'about',
+    'active_stylesheet',
+    'addComments',
+    'add_command',
+    'alert',
+    'allNodes_iter',
+    'all_nodes',
+    'all_positions',
+    'all_positions_iter',
+    'all_positions_with_unique_tnodes_iter',
+    'all_positions_with_unique_vnodes_iter',
+    'all_tnodes_iter',
+    'all_unique_nodes',
+    'all_unique_positions',
+    'all_unique_tnodes_iter',
+    'all_unique_vnodes_iter',
+    'all_vnodes_iter',
+    'allow_at_in_paragraphs',
+    'appendStringToBody',
+    'atFileCommands',
+    'at_root_bodies_start_in_doc_mode',
+    'autoindent_in_nocolor',
+    'backlinkController',
+    'backup',
+    'beginUpdate',
+    'bigTextController',
+    'bodyInitedDict',
+    'bodyWantsFocus',
+    'bodyWantsFocusNow',
+    'bringToFront',
+    'cacheListFileName',
+    'cacher',
+    'canClone',
+    'canContractAllHeadlines',
+    'canContractAllSubheads',
+    'canContractParent',
+    'canContractSubheads',
+    'canCutOutline',
+    'canDehoist',
+    'canDeleteHeadline',
+    'canDemote',
+    'canExpandAllHeadlines',
+    'canExpandAllSubheads',
+    'canExpandSubheads',
+    'canExtract',
+    'canExtractSection',
+    'canExtractSectionNames',
+    'canFindMatchingBracket',
+    'canGoToNextDirtyHeadline',
+    'canGoToNextMarkedHeadline',
+    'canHoist',
+    'canMarkChangedHeadlines',
+    'canMarkChangedRoots',
+    'canMoveOutlineDown',
+    'canMoveOutlineLeft',
+    'canMoveOutlineRight',
+    'canMoveOutlineUp',
+    'canPasteOutline',
+    'canPromote',
+    'canRedo',
+    'canSelectThreadBack',
+    'canSelectThreadNext',
+    'canSelectVisBack',
+    'canSelectVisNext',
+    'canShiftBodyLeft',
+    'canShiftBodyRight',
+    'canSortChildren',
+    'canSortSiblings',
+    'canUndo',
+    'canUnmarkAll',
+    'cantMoveMessage',
+    'changed',
+    'chapterCommands',
+    'chapterController',
+    'checkAllPythonCode',
+    'checkBatchOperationsList',
+    'checkDrag',
+    'checkFileTimeStamp',
+    'checkGnxs',
+    'checkLinks',
+    'checkMoveWithParentWithWarning',
+    'checkOutline',
+    'checkParentAndChildren',
+    'checkPythonCode',
+    'checkPythonNode',
+    'checkSiblings',
+    'checkThreadLinks',
+    'check_event',
+    'cleanRecentFiles',
+    'clearAllHoists',
+    'clearAllMarked',
+    'clearAllVisited',
+    'clearMarked',
+    'clearRecentFiles',
+    'cleo',
+    'clone',
+    'cloneFindAllFlattenedMarked',
+    'cloneFindAllMarked',
+    'cloneFindByPredicate',
+    'cloneFindMarkedHelper',
+    'cloneFindParents',
+    'cloneMarked',
+    'cloneToAtSpot',
+    'cloneToLastNode',
+    'close',
+    'collapse_nodes_after_move',
+    'collapse_on_lt_arrow',
+    'colorPanel',
+    'command_count',
+    'commandsDict',
+    'computeCopiedBunchList',
+    'computeVnodeInfoDict',
+    'computeWindowTitle',
+    'config',
+    'configInited',
+    'contractAllHeadlines',
+    'contractAllOtherNodes',
+    'contractIfNotCurrent',
+    'contractNode',
+    'contractNodeOrGoToParent',
+    'contractParent',
+    'contractSubtree',
+    'contractVisitedNodes',
+    'controlCommands',
+    'convertAllBlanks',
+    'convertAllTabs',
+    'convertBlanks',
+    'convertCommands',
+    'convertTabs',
+    'copyMarked',
+    'copyOutline',
+    'createCloneFindPredicateRoot',
+    'createCommandNames',
+    'createLastChildNode',
+    'createMoveMarkedNode',
+    'createMyLeoSettings',
+    'createNodeFromExternalFile',
+    'createNodeHierarchy',
+    'create_nonexistent_directories',
+    'currentPosition',
+    'currentPositionHasNext',
+    'currentPositionIsRootPosition',
+    'currentVnode',
+    'cutOutline',
+    'db',
+    'debugCommands',
+    'dedentBody',
+    'dehoist',
+    'deleteComments',
+    'deleteMarked',
+    'deleteOutline',
+    'deletePositionsInList',
+    'demote',
+    'disableCommandsMessage',
+    'doBatchOperations',
+    'doCommand',
+    'doubleClickFlag',
+    'dragAfter',
+    'dragCloneAfter',
+    'dragCloneToNthChildOf',
+    'dragToNthChildOf',
+    'dumpOutline',
+    'dumpPosition',
+    'editCommands',
+    'editFileCommands',
+    'editHeadline',
+    'edit_widget',
+    'enableMenuBar',
+    'endEditing',
+    'endUpdate',
+    'endsParagraph',
+    'executeMinibufferCommand',
+    'executeScript',
+    'executeScriptHelper',
+    'exists',
+    'expandAllAncestors',
+    'expandAllHeadlines',
+    'expandAllSubheads',
+    'expandLevel1',
+    'expandLevel2',
+    'expandLevel3',
+    'expandLevel4',
+    'expandLevel5',
+    'expandLevel6',
+    'expandLevel7',
+    'expandLevel8',
+    'expandLevel9',
+    'expandNextLevel',
+    'expandNode',
+    'expandNodeAndGoToFirstChild',
+    'expandNodeOrGoToFirstChild',
+    'expandOnlyAncestorsOfNode',
+    'expandPrevLevel',
+    'expandSubtree',
+    'expandToLevel',
+    'expansionLevel',
+    'expansionNode',
+    'exportHeadlines',
+    'extract',
+    'extractDef',
+    'extractPythonMethod',
+    'extractRef',
+    'extractSection',
+    'extractSectionNames',
+    'fileCommands',
+    'fileName',
+    'findBoundParagraph',
+    'findCommands',
+    'findMatchingBracket',
+    'findNextClone',
+    'findNodeOutsideAnyAtFileTree',
+    'findRootPosition',
+    'findSectionName',
+    'find_b',
+    'find_h',
+    'finishCreate',
+    'firstVisible',
+    'fixed',
+    'fixedWindowPosition',
+    'fixedWindowPositionData',
+    'flattenOutline',
+    'flattenOutlineToNode',
+    'focus_border_color',
+    'focus_border_command_state_color',
+    'focus_border_overwrite_state_color',
+    'focus_border_width',
+    'fontPanel',
+    'forceExecuteEntireBody',
+    'force_redraw',
+    'frame',
+    'free_layout',
+    'fullCheckOutline',
+    'getBodyLines',
+    'getLanguageAtCursor',
+    'getNodeFileName',
+    'getNodePath',
+    'getSelectedPositions',
+    'getTabWidth',
+    'getTime',
+    'get_focus',
+    'get_requested_focus',
+    'goNextVisitedNode',
+    'goPrevVisitedNode',
+    'goToFirstNode',
+    'goToFirstSibling',
+    'goToFirstVisibleNode',
+    'goToLastNode',
+    'goToLastSibling',
+    'goToLastVisibleNode',
+    'goToLineNumber',
+    'goToNextClone',
+    'goToNextDirtyHeadline',
+    'goToNextHistory',
+    'goToNextMarkedHeadline',
+    'goToNextSibling',
+    'goToParent',
+    'goToPrevHistory',
+    'goToPrevSibling',
+    'goToScriptLineNumber',
+    'gotoCommands',
+    'gui',
+    'hasAmbiguousLanguage',
+    'hash',
+    'helpCommands',
+    'hiddenRootNode',
+    'hideInvisibles',
+    'hoist',
+    'hoistStack',
+    'hookFunction',
+    'idle_focus_count',
+    'idle_focus_helper',
+    'ignoreChangedPaths',
+    'ignored_at_file_nodes',
+    'importAnyFile',
+    'importAtFile',
+    'importAtRoot',
+    'importCWEBFiles',
+    'importCommands',
+    'importDerivedFile',
+    'importFlattenedOutline',
+    'importMOREFiles',
+    'importNowebFiles',
+    'importTabFiles',
+    'import_error_nodes',
+    'inCommand',
+    'in_qt_dialog',
+    'incrementalRecolorFlag',
+    'indentBody',
+    'initAfterLoad',
+    'initCommandIvars',
+    'initConfigSettings',
+    'initDebugIvars',
+    'initDocumentIvars',
+    'initEventIvars',
+    'initFileIvars',
+    'initObjectIvars',
+    'initObjects',
+    'initOptionsIvars',
+    'initSettings',
+    'init_error_dialogs',
+    'initialFocusHelper',
+    'insertBodyTime',
+    'insertChild',
+    'insertHeadline',
+    'insertHeadlineBefore',
+    'invalidateFocus',
+    'ipythonController',
+    'isChanged',
+    'isCurrentPosition',
+    'isRootPosition',
+    'isZipped',
+    'is_unusual_focus',
+    'k',
+    'keyHandler',
+    'keyHandlerCommands',
+    'killBufferCommands',
+    'lastTopLevel',
+    'lastVisible',
+    'last_dir',
+    'last_no_focus',
+    'last_unusual_focus',
+    'leoCommands',
+    'leoDocumentation',
+    'leoHome',
+    'leoQuickStart',
+    'leoTestManager',
+    'loading',
+    'logWantsFocus',
+    'logWantsFocusNow',
+    'looksLikeDerivedFile',
+    'mFileName',
+    'mRelativeFileName',
+    'macroCommands',
+    'make_node_conflicts_node',
+    'markAllAtFileNodesDirty',
+    'markAtFileNodesDirty',
+    'markChangedHeadlines',
+    'markChangedRoots',
+    'markHeadline',
+    'markSubheads',
+    'max_pre_loaded_body_chars',
+    'menuAccels',
+    'miniBufferWidget',
+    'minibufferWantsFocus',
+    'minibufferWantsFocusNow',
+    'moveMarked',
+    'moveOutlineDown',
+    'moveOutlineLeft',
+    'moveOutlineRight',
+    'moveOutlineUp',
+    'navHelper',
+    'navPrefix',
+    'navQuickKey',
+    'navTime',
+    'new',
+    'nodeConflictFileName',
+    'nodeConflictList',
+    'nodeHistory',
+    'notValidInBatchMode',
+    'nullPosition',
+    'onCanvasKey',
+    'open',
+    'openCheatSheet',
+    'openCompareWindow',
+    'openDirectory',
+    'openLeoPlugins',
+    'openLeoPy',
+    'openLeoScripts',
+    'openLeoSettings',
+    'openLeoTOC',
+    'openLeoTutorials',
+    'openLeoUsersGuide',
+    'openLeoVideos',
+    'openMyLeoSettings',
+    'openPythonWindow',
+    'openRecentFile',
+    'openUnittest',
+    'openWith',
+    'os_path_finalize',
+    'os_path_finalize_join',
+    'outerUpdate',
+    'outlineHasInitialFocus',
+    'outlineToCWEB',
+    'outlineToNoweb',
+    'outlineToNowebDefaultFileName',
+    'output_doc_flag',
+    'output_initial_comment',
+    'output_newline',
+    'p',
+    'page_width',
+    'pasteOutline',
+    'pasteOutlineRetainingClones',
+    'persistenceController',
+    'pluginsMenu',
+    'positionExists',
+    'preferences',
+    'printCommandsDict',
+    'printingController',
+    'promote',
+    'promptingForClose',
+    'putBitsFlag',
+    'putHelpFor',
+    'queryReplaceCommands',
+    'raise_error_dialogs',
+    'readAtAutoNodes',
+    'readAtFileNodes',
+    'readAtShadowNodes',
+    'readFileIntoNode',
+    'readOutlineOnly',
+    'read_only',
+    'recolor',
+    'recolor_now',
+    'recreateGnxDict',
+    'rectangleCommands',
+    'recursiveImport',
+    'redirectScriptOutput',
+    'redirect_execute_script_output_to_log_pane',
+    'redraw',
+    'redrawAndEdit',
+    'redraw_after_contract',
+    'redraw_after_expand',
+    'redraw_after_head_changed',
+    'redraw_after_icons_changed',
+    'redraw_after_select',
+    'redraw_now',
+    'reformatBody',
+    'reformatParagraph',
+    'refreshFromDisk',
+    'relativeFileName',
+    'relative_path_base_directory',
+    'removeSentinels',
+    'remove_sentinels_extension',
+    'requestBringToFront',
+    'requestCloseWindow',
+    'requestRecolor',
+    'requestRecolorFlag',
+    'requestRedrawFlag',
+    'request_focus',
+    'requestedFocusWidget',
+    'requestedIconify',
+    'revert',
+    'rootPosition',
+    'rootVnode',
+    'rp_get_args',
+    'rp_get_leading_ws',
+    'rp_reformat',
+    'rp_wrap_all_lines',
+    'rstCommands',
+    'safe_all_positions',
+    'save',
+    'saveAll',
+    'saveAs',
+    'saveAsUnzipped',
+    'saveAsZipped',
+    'saveAsZippedHelper',
+    'saveTo',
+    'save_clears_undo_buffer',
+    'scanAllDirectives',
+    'scanAtPathDirectives',
+    'scanAtPathDirectivesCount',
+    'scanAtRootDirectives',
+    'searchCommands',
+    'selectAtSettingsNode',
+    'selectPosition',
+    'selectThreadBack',
+    'selectThreadNext',
+    'selectVisBack',
+    'selectVisNext',
+    'selectVnode',
+    'setBodyString',
+    'setChanged',
+    'setCloneFindByPredicateIcon',
+    'setComplexCommand',
+    'setCurrentDirectoryFromContext',
+    'setCurrentPosition',
+    'setCurrentVnode',
+    'setFileTimeStamp',
+    'setHeadString',
+    'setLog',
+    'setMarked',
+    'setPositionAfterSort',
+    'setRootPosition',
+    'setRootVnode',
+    'setTopPosition',
+    'setTopVnode',
+    'setWindowPosition',
+    'set_focus',
+    'shadowController',
+    'shortFileName',
+    'shortFilename',
+    'shouldBeExpanded',
+    'showInvisibles',
+    'showInvisiblesHelper',
+    'singleLineParagraph',
+    'smart_tab',
+    'sortChildren',
+    'sortRecentFiles',
+    'sortSiblings',
+    'sparce_spell',
+    'sparse_find',
+    'sparse_move',
+    'sparse_spell',
+    'spellCommands',
+    'startRedrawCount',
+    'startsParagraph',
+    'status_line_unl_mode',
+    'stayInTreeAfterSelect',
+    'styleSheetManager',
+    'stylesheet',
+    'suppressHeadChanged',
+    'syntaxErrorDialog',
+    'tabNannyNode',
+    'tab_width',
+    'tangle',
+    'tangleAll',
+    'tangleCommands',
+    'tangleMarked',
+    'tangle_batch_flag',
+    'tangle_errors',
+    'target_language',
+    'testManager',
+    'theScriptingController',
+    'theTagController',
+    'toggleAngleBrackets',
+    'toggleShowInvisibles',
+    'toggleSparseMove',
+    'topPosition',
+    'topVnode',
+    'traceFocus',
+    'trace_focus_count',
+    'trace_idle_focus',
+    'trailing_body_newlines',
+    'treeFocusHelper',
+    'treeSelectHelper',
+    'treeWantsFocus',
+    'treeWantsFocusNow',
+    'trimTrailingLines',
+    'undo_granularity',
+    'undoer',
+    'unformatParagraph',
+    'universalCallback',
+    'universallCallback',
+    'unmarkAll',
+    'unredirectScriptOutput',
+    'unreformat',
+    'untangle',
+    'untangleAll',
+    'untangleMarked',
+    'untangle_batch_flag',
+    'updateBodyPane',
+    'updateSyntaxColorer',
+    'use_body_focus_border',
+    'use_focus_border',
+    'use_header_flag',
+    'use_plugins',
+    'user_dict',
+    'validateOutline',
+    'verbose_check_outline',
+    'vimCommands',
+    'vim_mode',
+    'visLimit',
+    'vnode2allPositions',
+    'vnode2position',
+    'weave',
+    'widgetWantsFocus',
+    'widgetWantsFocusNow',
+    'widget_name',
+    'wrappedFileName',
+    'writeFileFromNode',
+    'writeScriptFile',
+    'write_script_file',
+    'write_strips_blank_lines',
+]
 .. @+node:ekr.20150527092615.1: ** Unused code: do not delete
 @language python
 @ignore
@@ -17321,1598 +18788,6 @@ def skip_matching_python_parens(s, i):
     '''
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
-.. @+node:ekr.20161026123100.1: *3* class BackgroundData NOT USED
-class BackgroundData:
-    '''A class to hold queued process data.'''
-    
-    def __init__(self, command, fn, kind):
-        '''Ctor for the BackgroundData class.'''
-        self.command = command
-        self.fn = fn
-        self.kind = kind
-        self.manager = manager = g.app.backgroundManager
-        self.trace = manager.trace
-        
- 
-.. @+node:ekr.20161026194321.1: *3* class OLD PylintBackgroundManager
-class PylintBackgroundManager (leoBackground.BackgroundManager)
-    '''A class to run Python processes sequentially in the background.'''
-    
-    def __init__(self):
-        '''Ctor for the PylintBackgroundManager class.'''
-        self.fn = None
-            # The name of the file being checked.
-        self.callback_list = []
-            # List of callbacks to check files.
-        self.pid = None
-            # The id of the of the running pylint checker p
-        g.app.idleTimeManager.add_callback(
-            self.on_idle,
-            tag='PylintBackgroundManager',
-        )
-
-    @others
-.. @+node:ekr.20161026194321.2: *4* pbm.check_process
-def check_process(self):
-    '''Check the running process, and switch if necessary.'''
-    trace = False and not g.unitTesting
-    trace_inactive = False
-    trace_running = False
-    if trace and (trace_inactive or self.pid is not None):
-        g.trace(len(self.callback_list), self.pid)
-    if self.pid or self.callback_list:
-        if self.pid.poll() is not None:
-            # The previous process has finished.
-            if self.callback_list:
-                pylint_callback = self.callback_list.pop(0)
-                pylint_callback()
-            else:
-                self.pid = None
-                g.es_print('pylint finished')
-        elif trace and trace_running:
-            g.trace('Running: ', self.pid)
-    elif trace and trace_inactive:
-        g.trace('Pylint inactive')
-.. @+node:ekr.20161026194321.3: *4* pbm.kill
-def kill(self):
-    '''Kill the presently running pylint process, if any.'''
-    pm = self
-    pm.callback_list = []
-    if pm.pid:
-        g.es_print('killing checker for', pm.fn)
-        pm.pid.kill()
-        pm.pid = None
-    g.es_print('pylint finished')
-.. @+node:ekr.20161026194321.4: *4* pbm.on_idle
-def on_idle(self):
-    '''The idle-time callback for leo.commands.checkerCommands.'''
-    trace = False and not g.unitTesting
-    if self.callback_list or self.pid:
-        if trace: g.trace('(PylintBackgroundManager)')
-        self.check_process()
-.. @+node:ekr.20161026194321.5: *4* pbm.start_process
-def start_process(self, command, fn):
-    '''Start or queue a pylint process described by command and fn.'''
-    trace = False and not g.unitTesting
-    pm = self
-    if pm.pid:
-        # A pylint checker is already active.  Add a new callback.
-        if trace: g.trace('===== Adding callback', g.shortFileName(fn))
-
-        def pylint_callback(fn=fn):
-            pm.fn = fn
-            g.es_print(g.shortFileName(fn))
-            if pm.pid:
-                if trace: g.es_print('===== Killing:', pm.pid)
-                pm.pid.kill()
-            pm.pid = pid = subprocess.Popen(
-                command,
-                shell=False,
-                universal_newlines=True,
-            )
-            if trace: g.es_print('===== Starting:', g.shortFileName(fn), pid)
-
-        pm.callback_list.append(pylint_callback)
-    else:
-        # Start the process immediately.
-        g.es_print(g.shortFileName(fn))
-        pm.pid = pid = subprocess.Popen(
-            command,
-            shell=False,
-            universal_newlines=True,
-        )
-        if trace: g.es_print('===== Starting:',
-            g.shortFileName(fn), pid)
-.. @+node:EKR.20040602125018.2: *3* g.idleTimeHookHandler (now in IdleTimeManager)
-trace_count = 0
-
-def idleTimeHookHandler(timer):
-    '''
-    The one and only idle-time event handler.
-
-    Calls c.doHook('idle') for each commander.
-    '''
-    global trace_count
-    trace_count += 1
-    trace = False and not g.unitTesting
-    if g.app.killed:
-        return
-    if not g.app.idle_time_hooks_enabled:
-        return
-    for frame in g.app.windowList:
-        c = frame.c
-        # Do NOT compute c.currentPosition.
-        # This would be a MAJOR leak of positions.
-        if trace: g.pr('%3s calling g.doHook(c=%s)' % (
-            trace_count, c.shortFileName()))
-        g.doHook("idle", c=c)
-.. @+node:ekr.20161022035203.1: ** Test code: do not delete
-.. @+node:ekr.20150530203147.1: *3* @@button TEST PTB
-r'''The script to test AddTokensToTree class.'''
-g.cls()
-if c.isChanged():
-    c.save()
-project = None # 'leo'
-<< imports >>
-if project:
-    # 17.1 sec. --> 17.4 --> 17.3
-    # The format time is about twice the tokenize time.
-    aList = leoBeautify.ProjectUtils().project_files(project)
-    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
-    settings_d = {
-        # 'output_string': True,
-        # 'stats': True,
-    }
-else:
-    aList = [
-        'unit test: leoBeautify.py',
-        # '@file leoColorizer.py',
-        # '@file leoBeautify.py',
-        # '@file leoCommands.py',
-    ]
-    small = aList[0].startswith('unit test:')
-    settings_d = {
-        'tidy-keep-blank-lines': True,
-        'input_string': small,
-        # 'input_lines':  True,
-        # 'input_tokens': small,
-        'output_tokens': small,
-        'output_string': small,
-        'stats': not small # and len(aList) == 1,
-    }
-assert aList,'no input in %s' % (p.h)
-<< init total stats >>
-t1 = time.clock()
-for h in aList:
-    p2 = g.findNodeAnywhere(c,h)
-    if p2:
-        try:
-            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
-            << update total stats >>
-        except Exception:
-            g.es_exception()
-if len(aList) > 1:
-    << print total stats >>
-tot_time = time.clock()-t1
-if len(aList) > 1:
-    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
-else:
-    print('done: %4.2f sec.' % (tot_time))
-.. @+node:ekr.20150530203147.2: *4* << imports >>
-import leo.core.leoBeautify as leoBeautify
-import imp
-import time
-imp.reload(leoBeautify)
-.. @+node:ekr.20150530203147.3: *4* << init total stats >>
-tot_beautify_time = 0.0
-tot_changed_nodes = 0
-tot_check_time = 0.0
-tot_files = 0
-tot_input_tokens = 0
-tot_output_tokens = 0
-tot_parse_time = 0.0
-tot_strings = 0
-tot_tokenize_time = 0.0
-tot_total_time = 0.0
-.. @+node:ekr.20150530203147.4: *4* << update total stats >>
-tot_beautify_time += b.beautify_time
-tot_changed_nodes += b.n_changed_nodes
-tot_check_time += b.check_time
-tot_files += 1
-tot_input_tokens += b.n_input_tokens
-tot_output_tokens += b.n_output_tokens
-tot_parse_time += b.parse_time
-tot_strings += b.n_strings
-tot_tokenize_time += b.tokenize_time
-tot_total_time += b.total_time
-.. @+node:ekr.20150530203147.5: *4* << print total stats >>
-print('========== totals ==========')
-print('files          %s' % tot_files)
-print('changed nodes  %s' % tot_changed_nodes)
-print('tokens         %s' % tot_input_tokens)
-print('len(code_list) %s' % tot_output_tokens)
-print('len(s)         %s' % tot_strings)
-print('parse          %4.2f sec.' % tot_parse_time)
-print('tokenize       %4.2f sec.' % tot_tokenize_time)
-print('format         %4.2f sec.' % tot_beautify_time)
-print('check          %4.2f sec.' % tot_check_time)
-print('total          %4.2f sec.' % tot_total_time)
-.. @+node:ekr.20160923163813.1: *3* @buttons for pyflakes & flake8
-.. @+node:ekr.20160923163813.2: *4* @@button test-pyflakes @key=Ctrl-6
-# g.cls()
-import os
-import pyflakes
-import sys
-import time
-if 1:
-    p = c.p
-else:
-    h = '@file leoApp.py'
-    p = g.findNodeAnywhere(c, h)
-assert p
-@others
-if c.isChanged():
-    c.save()
-PyflakesCommand(c).run(p=p)
-
-.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
-class PyflakesCommand(object):
-    '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c):
-        '''ctor for PyflakesCommand class.'''
-        self.c = c
-        self.seen = [] # List of checked paths.
-
-    @others
-.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
-def check_all(self, paths):
-    '''Run pyflakes on fn.'''
-    from pyflakes import api, reporter
-    for fn in sorted(paths):
-        # Report the file name.
-        sfn = g.shortFileName(fn)
-        s = g.readFileIntoEncodedString(fn, silent=False)
-        if not s.strip():
-            return
-        r = reporter.Reporter(
-            errorStream=sys.stderr,
-            warningStream=sys.stderr,
-            )
-        errors = api.check(s, sfn, r)
-        if False and errors:
-            # Annoying.
-            print('%s error%s in %s' % (errors, g.plural(errors), fn))
-.. @+node:ekr.20160923163813.16: *6* pyflakes.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.17: *6* pyflakes.run
-def run(self, p=None):
-    '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run pyflakes on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        self.check_all(paths)
-    g.es_print('pyflakes: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
-.. @+node:ekr.20160923163813.7: *4* @@button test-flake8 @key=Ctrl-7
-# g.cls()
-import flake8
-import os
-import sys
-import time
-if 1:
-    p = c.p
-else:
-    h = '@file leoApp.py'
-    p = g.findNodeAnywhere(c, h)
-assert p
-@others
-if c.isChanged():
-    c.save()
-Flake8Command(c).run(p=p)
-
-.. @+node:ekr.20160923163813.19: *5* class Flake8Command
-class Flake8Command(object):
-    '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c, quiet=False):
-        '''ctor for Flake8Command class.'''
-        self.c = c
-        self.quiet = quiet
-        self.seen = [] # List of checked paths.
-
-    @others
-.. @+node:ekr.20160923163813.20: *6* flake8.check_all
-def check_all(self, paths):
-    '''Run flake8 on all paths.'''
-    from flake8 import engine, main
-    config_file = self.get_flake8_config()
-    if config_file:
-        style = engine.get_style_guide(
-            parse_argv=False,
-            config_file=config_file,
-        )
-        report = style.check_files(paths=paths)
-        # Set statistics here, instead of from the command line.
-        options = style.options
-        options.statistics = True
-        options.total_errors = True
-        # options.benchmark = True
-        main.print_report(report, style)
-.. @+node:ekr.20160923163813.21: *6* flake8.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
-def get_flake8_config(self):
-    '''Return the path to the pylint configuration file.'''
-    trace = False and not g.unitTesting
-    join = g.os_path_finalize_join
-    dir_table = (
-        g.app.homeDir,
-        join(g.app.homeDir, '.leo'),
-        join(g.app.loadDir, '..', '..', 'leo', 'test'),
-    )
-    if g.isPython3:
-        base_table = ('flake8', 'flake8.txt')
-    else:
-        base_table = ('flake8',)
-    for base in base_table:
-        for path in dir_table:
-            fn = g.os_path_abspath(join(path, base))
-            if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
-                return fn
-    if not g.unitTesting:
-        g.es_print('no flake8 configuration file found in\n%s' % (
-            '\n'.join(dir_table)))
-    return None
-.. @+node:ekr.20160923163813.23: *6* flake8.run
-def run(self, p=None):
-    '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run flake8 on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        # g.trace(isCloned,root.h)
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    # g.trace(isAncestor,p.h)
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        self.check_all(paths)
-    g.es_print('flake8: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
-.. @+node:ekr.20160923163813.13: *4* pyflakes command
-@g.command('pyflakes')
-def pyflakes_command(event):
-    '''
-    Run pyflakes on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    @others
-        # define class PyFlakesCommand.
-    c = event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if pyflakes:
-            PyflakesCommand(c).run()
-        else:
-            g.es_print('can not import pyflakes')
-.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
-class PyflakesCommand(object):
-    '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c):
-        '''ctor for PyflakesCommand class.'''
-        self.c = c
-        self.seen = [] # List of checked paths.
-
-    @others
-.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
-def check_all(self, paths):
-    '''Run pyflakes on fn.'''
-    from pyflakes import api, reporter
-    for fn in sorted(paths):
-        # Report the file name.
-        sfn = g.shortFileName(fn)
-        s = g.readFileIntoEncodedString(fn, silent=False)
-        if not s.strip():
-            return
-        r = reporter.Reporter(
-            errorStream=sys.stderr,
-            warningStream=sys.stderr,
-            )
-        errors = api.check(s, sfn, r)
-        if False and errors:
-            # Annoying.
-            print('%s error%s in %s' % (errors, g.plural(errors), fn))
-.. @+node:ekr.20160923163813.16: *6* pyflakes.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.17: *6* pyflakes.run
-def run(self, p=None):
-    '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run pyflakes on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        self.check_all(paths)
-    g.es_print('pyflakes: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
-.. @+node:ekr.20160923163813.18: *4* flake8 command
-@g.command('flake8')
-def flake8_command(event):
-    '''
-    Run flake8 on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    @others
-        # define class Flake8Command.
-    c = event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if flake8:
-            Flake8Command(c).run()
-        else:
-            g.es_print('can not import flake8')
-.. @+node:ekr.20160923163813.19: *5* class Flake8Command
-class Flake8Command(object):
-    '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c, quiet=False):
-        '''ctor for Flake8Command class.'''
-        self.c = c
-        self.quiet = quiet
-        self.seen = [] # List of checked paths.
-
-    @others
-.. @+node:ekr.20160923163813.20: *6* flake8.check_all
-def check_all(self, paths):
-    '''Run flake8 on all paths.'''
-    from flake8 import engine, main
-    config_file = self.get_flake8_config()
-    if config_file:
-        style = engine.get_style_guide(
-            parse_argv=False,
-            config_file=config_file,
-        )
-        report = style.check_files(paths=paths)
-        # Set statistics here, instead of from the command line.
-        options = style.options
-        options.statistics = True
-        options.total_errors = True
-        # options.benchmark = True
-        main.print_report(report, style)
-.. @+node:ekr.20160923163813.21: *6* flake8.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
-def get_flake8_config(self):
-    '''Return the path to the pylint configuration file.'''
-    trace = False and not g.unitTesting
-    join = g.os_path_finalize_join
-    dir_table = (
-        g.app.homeDir,
-        join(g.app.homeDir, '.leo'),
-        join(g.app.loadDir, '..', '..', 'leo', 'test'),
-    )
-    if g.isPython3:
-        base_table = ('flake8', 'flake8.txt')
-    else:
-        base_table = ('flake8',)
-    for base in base_table:
-        for path in dir_table:
-            fn = g.os_path_abspath(join(path, base))
-            if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
-                return fn
-    if not g.unitTesting:
-        g.es_print('no flake8 configuration file found in\n%s' % (
-            '\n'.join(dir_table)))
-    return None
-.. @+node:ekr.20160923163813.23: *6* flake8.run
-def run(self, p=None):
-    '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run flake8 on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        # g.trace(isCloned,root.h)
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    # g.trace(isAncestor,p.h)
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        self.check_all(paths)
-    g.es_print('flake8: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
-.. @+node:ekr.20161006162035.1: *3* cff regex pattern to find section references
-# This works
-<<(\s*)(\w+)(\s+)(\w+)(.*)>>
-
-# These don't work
-<<(\s*)(?!(import|docstring|includes))(\w+)(\s*)>>
-<< xyz >>
-<< import >>
-.. @+node:ekr.20160504053037.1: *3* test class-based decorators
-# test __call__ method
-
-class Test(object):
-    def __init__(self):
-        g.trace('-----')
-    def __call__(self):
-        g.trace('=====')
-
-Test()()
-.. @+node:ekr.20161017043402.1: *3* test create_json
-g.cls()
-import imp
-import leo.core.leoVersion as v
-imp.reload(v)
-v.create_commit_timestamp_json()
-commit, date = v.get_version_from_git(short=False)
-print(commit + ' ' + date)
-commit, date = v.get_version_from_json(short=False)
-print(commit + ' ' + date)
-.. @+node:ekr.20150704140210.1: *3* test leoCheck.py
-g.cls()
-import imp
-import leo.core.leoCheck as leoCheck
-imp.reload(leoCheck)
-files = (
-    [
-        r'c:\leo.repo\leo-editor\leo\core\leoNodes.py',
-        # r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
-        # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
-    ] or
-    leoCheck.ProjectUtils().project_files('leo')
-)
-leoCheck.test(files)
-.. @+node:ekr.20150524200357.1: *3* testing beautifier code
-.. @+node:ekr.20150521113831.1: *4* @button TEST PTB
-r'''The script to test AddTokensToTree class.'''
-g.cls()
-if c.isChanged():
-    c.save()
-project = None # 'leo'
-<< imports >>
-if project:
-    # 17.1 sec. --> 17.4 --> 17.3
-    # The format time is about twice the tokenize time.
-    aList = leoBeautify.ProjectUtils().project_files(project)
-    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
-    settings_d = {
-        # 'output_string': True,
-        # 'stats': True,
-    }
-else:
-    aList = [
-        'unit test: leoBeautify.py',
-        # '@file leoColorizer.py',
-        # '@file leoBeautify.py',
-        # '@file leoCommands.py',
-    ]
-    small = aList[0].startswith('unit test:')
-    settings_d = {
-        'tidy-keep-blank-lines': True,
-        'input_string': small,
-        # 'input_lines':  True,
-        # 'input_tokens': small,
-        # 'output_tokens': small,
-        'output_string': small,
-        'stats': not small # and len(aList) == 1,
-    }
-assert aList,'no input in %s' % (p.h)
-<< init total stats >>
-t1 = time.clock()
-for h in aList:
-    p2 = g.findNodeAnywhere(c,h)
-    if p2:
-        try:
-            b = leoBeautify.test_beautifier(c,h,p2,settings_d)
-            << update total stats >>
-        except Exception:
-            g.es_exception()
-if len(aList) > 1:
-    << print total stats >>
-tot_time = time.clock()-t1
-if len(aList) > 1:
-    print('done: %4.2f sec. = %4.2f sec./file' % (tot_time,tot_time/float(tot_files)))
-else:
-    print('done: %4.2f sec.' % (tot_time))
-.. @+node:ekr.20150525073117.1: *5* << imports >>
-import leo.core.leoBeautify as leoBeautify
-import imp
-import time
-imp.reload(leoBeautify)
-.. @+node:ekr.20150530073856.1: *5* << init total stats >>
-tot_beautify_time = 0.0
-tot_changed_nodes = 0
-tot_check_time = 0.0
-tot_files = 0
-tot_input_tokens = 0
-tot_output_tokens = 0
-tot_parse_time = 0.0
-tot_strings = 0
-tot_tokenize_time = 0.0
-tot_total_time = 0.0
-.. @+node:ekr.20150530073906.1: *5* << update total stats >>
-tot_beautify_time += b.beautify_time
-tot_changed_nodes += b.n_changed_nodes
-tot_check_time += b.check_time
-tot_files += 1
-tot_input_tokens += b.n_input_tokens
-tot_output_tokens += b.n_output_tokens
-tot_parse_time += b.parse_time
-tot_strings += b.n_strings
-tot_tokenize_time += b.tokenize_time
-tot_total_time += b.total_time
-.. @+node:ekr.20150530074429.1: *5* << print total stats >>
-print('========== totals ==========')
-print('files          %s' % tot_files)
-print('changed nodes  %s' % tot_changed_nodes)
-print('tokens         %s' % tot_input_tokens)
-print('len(code_list) %s' % tot_output_tokens)
-print('len(s)         %s' % tot_strings)
-print('parse          %4.2f sec.' % tot_parse_time)
-print('tokenize       %4.2f sec.' % tot_tokenize_time)
-print('format         %4.2f sec.' % tot_beautify_time)
-print('check          %4.2f sec.' % tot_check_time)
-print('total          %4.2f sec.' % tot_total_time)
-.. @+node:ekr.20150524071341.1: *4* unit test: leoBeautify.py
-# Extraneous backslash causes problems.
-function1("NOTE: embedded layout in @settings/@data free-layout-layout" \
-          "overrides saved layout " + name)
-function2(a,
-          b)
-function3(a, \
-          b)
-# Weird case: comments ends in backslash\\
-# Next comment
-
-def test():
-    legend = '''\
-legend:
-'''
-    c = self.c
-.. @+node:ekr.20150601042305.1: *5* new op problems
-def spam():
-    pass
-
-a = b[25]
-return {}
-.. @+node:ekr.20150601015905.1: *5* return test
-def return_test():
-    if 1: return
-    while True:
-        if 2: return
-    if 3:
-        return
-.. @+node:ekr.20150531104223.1: *5* class Command
-class Command:
-    '''
-    A global decorator for functions outside of any class.
-    
-    g can *not* be used anywhere in this class!
-    '''
-
-    def __init__(self, name, **kwargs):
-        '''Ctor for command decorator class.'''
-        self.name = name
-
-    def __call__(self, func):
-        '''Register command for all future commanders.'''
-        global_commands_dict[self.name] = func
-        if app:
-            for c in app.commanders():
-                c.k.registerCommand(self.name, shortcut=None, func=func)
-        # Inject ivars for plugins_menu.py.
-        func.is_command = True
-        func.command_name = self.name
-        return func
-
-command = Command
-.. @+node:ekr.20150531060949.1: *5* comments
-# Comments before class
-
-class aClass:
-    pass
-
-pass # trailing comment.
-    # indented comment.
-# Comments before def.
-
-def spam():
-    pass
-.. @+node:ekr.20150531054341.1: *5* * and ** args
-def spam(a, *args, **keys):
-    pass
-
-a = (2 ** 3)
-b = (4 * 5)
-.. @+node:ekr.20150531052201.1: *5* indented arg lists
-foo(a,
-     b=2)
-foo(a,
-    b=2)
-
-def spam(
-    c=2,
-    d=3,
-):
-    pass
-.. @+node:ekr.20150529183213.1: *5* continued args
-foo(a,
-     b=2 # foo 1
-     # foo 2
-  )
-
-def spam(a=2,
-    b=3, # spam 1
-):
-    pass
-.. @+node:ekr.20150530182531.1: *5* comments after inner def
-def spam(a=2,
-    b=3, # spam 1
-):
-
-    def inner():
-        pass
-    # spam 2:
-
-    pass # spam 3.
-    # The dedent happens after spam3, so spam2 is over-indented.
-.. @+node:ekr.20150530084744.1: *5* doc parts
-def f():
-    pass
-@ The following could be added to the 'else' clause::
-    # Accumulate everything else.
-.. @+node:ekr.20150528113231.1: *5* indent after inner class
-# Indent after inner class.
-if QtGui:
-
-    class aClass:
-        pass
-
-if Qsci:
-    pass
-.. @+node:ekr.20150528095649.1: *5* multiple dedent tokens
-def get_rc_file(self):
-    while True:
-        if False:
-            return
-    foo('oops')
-    return
-.. @+node:ekr.20150528092108.1: *5* blank lines between classes and defs
-class aClass:
-
-    def outer(a=2, b=3):
-        a = 2
-
-        def inner():
-            b = 2
-
-        c = 3
-
-    class innerClass:
-        pass
-.. @+node:ekr.20150528093928.1: *5* decorators
-class aClass:
-
-    @decr('a')
-    def outer():
-
-        @decr('b')
-        def inner():
-            pass
-
-        pass
-
-    @decr('c')
-    class innerClass:
-        pass
-.. @+node:ekr.20150528060217.1: *5* Inner defs
-def outer():
-    a = 2
-
-    def inner():
-        b = 2
-
-    c = 3
-.. @+node:ekr.20150527184101.1: *5* comments
-def f1():
-    # Comment1, flush.
-    line1 = 1
-        # Comment2, hanging.
-    line2 = 2
-    line3 = 3 # Trailing comment.
-        # Final hanging comment.
-.. @+node:ekr.20150526122041.1: *5* operators
-a = -b
-c = -(d + e)
-b = not (a and b)
-c = e or f
-.. @+node:ekr.20150527201950.1: *5* strings
-s = 'abc \
-xyz'
-s2 = 'part1' 'part2'
-s3 = 'a' + 'b'
-.. @+node:ekr.20150527182228.1: *5* Removing blank lines
-def f1():
-    line1 = 1
-    line2 = 2
-    line3 = 3
-
-class aClass():
-    line4 = 4
-    line5 = 5
-.. @+node:ekr.20161022040621.1: *3* re: #325: Simplify the organization of commands
-@language python
-.. @+node:ekr.20161022034842.1: *4* Script: make list of commander attributes that must be preserved
-g.cls()
-attrs = dir(c)
-print('attrs = [')
-for attr in attrs:
-    print("    '%s'," % attr)
-print(']')
-
-.. @+node:ekr.20161022041103.1: *4* @test #325 preserves commander attributes
-<< define old_attrs >>
-for attr in old_attrs:
-    assert hasattr(c, attr), attr
-
-.. @+node:ekr.20161022041138.1: *5* << define old_attrs >>
-old_attrs = [
-    'BeginUpdate',
-    'BringToFront',
-    'EndUpdate',
-    '_Commands__get_p',
-    # '__class__',
-    # '__delattr__',
-    # '__dict__',
-    # '__dir__',
-    # '__doc__',
-    # '__eq__',
-    # '__format__',
-    # '__ge__',
-    # '__getattribute__',
-    # '__gt__',
-    # '__hash__',
-    # '__init__',
-    # '__le__',
-    # '__lt__',
-    # '__module__',
-    # '__ne__',
-    # '__new__',
-    # '__reduce__',
-    # '__reduce_ex__',
-    # '__repr__',
-    # '__setattr__',
-    # '__sizeof__',
-    # '__str__',
-    # '__subclasshook__',
-    # '__weakref__',
-    # '_currentCount',
-    # '_currentPosition',
-    # '_prev_next',
-    # '_rootCount',
-    # '_style_deltas',
-    # '_topPosition',
-    'abbrevCommands',
-    'abbrev_place_end',
-    'abbrev_place_start',
-    'abbrev_subst_end',
-    'abbrev_subst_env',
-    'abbrev_subst_start',
-    'about',
-    'active_stylesheet',
-    'addComments',
-    'add_command',
-    'alert',
-    'allNodes_iter',
-    'all_nodes',
-    'all_positions',
-    'all_positions_iter',
-    'all_positions_with_unique_tnodes_iter',
-    'all_positions_with_unique_vnodes_iter',
-    'all_tnodes_iter',
-    'all_unique_nodes',
-    'all_unique_positions',
-    'all_unique_tnodes_iter',
-    'all_unique_vnodes_iter',
-    'all_vnodes_iter',
-    'allow_at_in_paragraphs',
-    'appendStringToBody',
-    'atFileCommands',
-    'at_root_bodies_start_in_doc_mode',
-    'autoindent_in_nocolor',
-    'backlinkController',
-    'backup',
-    'beginUpdate',
-    'bigTextController',
-    'bodyInitedDict',
-    'bodyWantsFocus',
-    'bodyWantsFocusNow',
-    'bringToFront',
-    'cacheListFileName',
-    'cacher',
-    'canClone',
-    'canContractAllHeadlines',
-    'canContractAllSubheads',
-    'canContractParent',
-    'canContractSubheads',
-    'canCutOutline',
-    'canDehoist',
-    'canDeleteHeadline',
-    'canDemote',
-    'canExpandAllHeadlines',
-    'canExpandAllSubheads',
-    'canExpandSubheads',
-    'canExtract',
-    'canExtractSection',
-    'canExtractSectionNames',
-    'canFindMatchingBracket',
-    'canGoToNextDirtyHeadline',
-    'canGoToNextMarkedHeadline',
-    'canHoist',
-    'canMarkChangedHeadlines',
-    'canMarkChangedRoots',
-    'canMoveOutlineDown',
-    'canMoveOutlineLeft',
-    'canMoveOutlineRight',
-    'canMoveOutlineUp',
-    'canPasteOutline',
-    'canPromote',
-    'canRedo',
-    'canSelectThreadBack',
-    'canSelectThreadNext',
-    'canSelectVisBack',
-    'canSelectVisNext',
-    'canShiftBodyLeft',
-    'canShiftBodyRight',
-    'canSortChildren',
-    'canSortSiblings',
-    'canUndo',
-    'canUnmarkAll',
-    'cantMoveMessage',
-    'changed',
-    'chapterCommands',
-    'chapterController',
-    'checkAllPythonCode',
-    'checkBatchOperationsList',
-    'checkDrag',
-    'checkFileTimeStamp',
-    'checkGnxs',
-    'checkLinks',
-    'checkMoveWithParentWithWarning',
-    'checkOutline',
-    'checkParentAndChildren',
-    'checkPythonCode',
-    'checkPythonNode',
-    'checkSiblings',
-    'checkThreadLinks',
-    'check_event',
-    'cleanRecentFiles',
-    'clearAllHoists',
-    'clearAllMarked',
-    'clearAllVisited',
-    'clearMarked',
-    'clearRecentFiles',
-    'cleo',
-    'clone',
-    'cloneFindAllFlattenedMarked',
-    'cloneFindAllMarked',
-    'cloneFindByPredicate',
-    'cloneFindMarkedHelper',
-    'cloneFindParents',
-    'cloneMarked',
-    'cloneToAtSpot',
-    'cloneToLastNode',
-    'close',
-    'collapse_nodes_after_move',
-    'collapse_on_lt_arrow',
-    'colorPanel',
-    'command_count',
-    'commandsDict',
-    'computeCopiedBunchList',
-    'computeVnodeInfoDict',
-    'computeWindowTitle',
-    'config',
-    'configInited',
-    'contractAllHeadlines',
-    'contractAllOtherNodes',
-    'contractIfNotCurrent',
-    'contractNode',
-    'contractNodeOrGoToParent',
-    'contractParent',
-    'contractSubtree',
-    'contractVisitedNodes',
-    'controlCommands',
-    'convertAllBlanks',
-    'convertAllTabs',
-    'convertBlanks',
-    'convertCommands',
-    'convertTabs',
-    'copyMarked',
-    'copyOutline',
-    'createCloneFindPredicateRoot',
-    'createCommandNames',
-    'createLastChildNode',
-    'createMoveMarkedNode',
-    'createMyLeoSettings',
-    'createNodeFromExternalFile',
-    'createNodeHierarchy',
-    'create_nonexistent_directories',
-    'currentPosition',
-    'currentPositionHasNext',
-    'currentPositionIsRootPosition',
-    'currentVnode',
-    'cutOutline',
-    'db',
-    'debugCommands',
-    'dedentBody',
-    'dehoist',
-    'deleteComments',
-    'deleteMarked',
-    'deleteOutline',
-    'deletePositionsInList',
-    'demote',
-    'disableCommandsMessage',
-    'doBatchOperations',
-    'doCommand',
-    'doubleClickFlag',
-    'dragAfter',
-    'dragCloneAfter',
-    'dragCloneToNthChildOf',
-    'dragToNthChildOf',
-    'dumpOutline',
-    'dumpPosition',
-    'editCommands',
-    'editFileCommands',
-    'editHeadline',
-    'edit_widget',
-    'enableMenuBar',
-    'endEditing',
-    'endUpdate',
-    'endsParagraph',
-    'executeMinibufferCommand',
-    'executeScript',
-    'executeScriptHelper',
-    'exists',
-    'expandAllAncestors',
-    'expandAllHeadlines',
-    'expandAllSubheads',
-    'expandLevel1',
-    'expandLevel2',
-    'expandLevel3',
-    'expandLevel4',
-    'expandLevel5',
-    'expandLevel6',
-    'expandLevel7',
-    'expandLevel8',
-    'expandLevel9',
-    'expandNextLevel',
-    'expandNode',
-    'expandNodeAndGoToFirstChild',
-    'expandNodeOrGoToFirstChild',
-    'expandOnlyAncestorsOfNode',
-    'expandPrevLevel',
-    'expandSubtree',
-    'expandToLevel',
-    'expansionLevel',
-    'expansionNode',
-    'exportHeadlines',
-    'extract',
-    'extractDef',
-    'extractPythonMethod',
-    'extractRef',
-    'extractSection',
-    'extractSectionNames',
-    'fileCommands',
-    'fileName',
-    'findBoundParagraph',
-    'findCommands',
-    'findMatchingBracket',
-    'findNextClone',
-    'findNodeOutsideAnyAtFileTree',
-    'findRootPosition',
-    'findSectionName',
-    'find_b',
-    'find_h',
-    'finishCreate',
-    'firstVisible',
-    'fixed',
-    'fixedWindowPosition',
-    'fixedWindowPositionData',
-    'flattenOutline',
-    'flattenOutlineToNode',
-    'focus_border_color',
-    'focus_border_command_state_color',
-    'focus_border_overwrite_state_color',
-    'focus_border_width',
-    'fontPanel',
-    'forceExecuteEntireBody',
-    'force_redraw',
-    'frame',
-    'free_layout',
-    'fullCheckOutline',
-    'getBodyLines',
-    'getLanguageAtCursor',
-    'getNodeFileName',
-    'getNodePath',
-    'getSelectedPositions',
-    'getTabWidth',
-    'getTime',
-    'get_focus',
-    'get_requested_focus',
-    'goNextVisitedNode',
-    'goPrevVisitedNode',
-    'goToFirstNode',
-    'goToFirstSibling',
-    'goToFirstVisibleNode',
-    'goToLastNode',
-    'goToLastSibling',
-    'goToLastVisibleNode',
-    'goToLineNumber',
-    'goToNextClone',
-    'goToNextDirtyHeadline',
-    'goToNextHistory',
-    'goToNextMarkedHeadline',
-    'goToNextSibling',
-    'goToParent',
-    'goToPrevHistory',
-    'goToPrevSibling',
-    'goToScriptLineNumber',
-    'gotoCommands',
-    'gui',
-    'hasAmbiguousLanguage',
-    'hash',
-    'helpCommands',
-    'hiddenRootNode',
-    'hideInvisibles',
-    'hoist',
-    'hoistStack',
-    'hookFunction',
-    'idle_focus_count',
-    'idle_focus_helper',
-    'ignoreChangedPaths',
-    'ignored_at_file_nodes',
-    'importAnyFile',
-    'importAtFile',
-    'importAtRoot',
-    'importCWEBFiles',
-    'importCommands',
-    'importDerivedFile',
-    'importFlattenedOutline',
-    'importMOREFiles',
-    'importNowebFiles',
-    'importTabFiles',
-    'import_error_nodes',
-    'inCommand',
-    'in_qt_dialog',
-    'incrementalRecolorFlag',
-    'indentBody',
-    'initAfterLoad',
-    'initCommandIvars',
-    'initConfigSettings',
-    'initDebugIvars',
-    'initDocumentIvars',
-    'initEventIvars',
-    'initFileIvars',
-    'initObjectIvars',
-    'initObjects',
-    'initOptionsIvars',
-    'initSettings',
-    'init_error_dialogs',
-    'initialFocusHelper',
-    'insertBodyTime',
-    'insertChild',
-    'insertHeadline',
-    'insertHeadlineBefore',
-    'invalidateFocus',
-    'ipythonController',
-    'isChanged',
-    'isCurrentPosition',
-    'isRootPosition',
-    'isZipped',
-    'is_unusual_focus',
-    'k',
-    'keyHandler',
-    'keyHandlerCommands',
-    'killBufferCommands',
-    'lastTopLevel',
-    'lastVisible',
-    'last_dir',
-    'last_no_focus',
-    'last_unusual_focus',
-    'leoCommands',
-    'leoDocumentation',
-    'leoHome',
-    'leoQuickStart',
-    'leoTestManager',
-    'loading',
-    'logWantsFocus',
-    'logWantsFocusNow',
-    'looksLikeDerivedFile',
-    'mFileName',
-    'mRelativeFileName',
-    'macroCommands',
-    'make_node_conflicts_node',
-    'markAllAtFileNodesDirty',
-    'markAtFileNodesDirty',
-    'markChangedHeadlines',
-    'markChangedRoots',
-    'markHeadline',
-    'markSubheads',
-    'max_pre_loaded_body_chars',
-    'menuAccels',
-    'miniBufferWidget',
-    'minibufferWantsFocus',
-    'minibufferWantsFocusNow',
-    'moveMarked',
-    'moveOutlineDown',
-    'moveOutlineLeft',
-    'moveOutlineRight',
-    'moveOutlineUp',
-    'navHelper',
-    'navPrefix',
-    'navQuickKey',
-    'navTime',
-    'new',
-    'nodeConflictFileName',
-    'nodeConflictList',
-    'nodeHistory',
-    'notValidInBatchMode',
-    'nullPosition',
-    'onCanvasKey',
-    'open',
-    'openCheatSheet',
-    'openCompareWindow',
-    'openDirectory',
-    'openLeoPlugins',
-    'openLeoPy',
-    'openLeoScripts',
-    'openLeoSettings',
-    'openLeoTOC',
-    'openLeoTutorials',
-    'openLeoUsersGuide',
-    'openLeoVideos',
-    'openMyLeoSettings',
-    'openPythonWindow',
-    'openRecentFile',
-    'openUnittest',
-    'openWith',
-    'os_path_finalize',
-    'os_path_finalize_join',
-    'outerUpdate',
-    'outlineHasInitialFocus',
-    'outlineToCWEB',
-    'outlineToNoweb',
-    'outlineToNowebDefaultFileName',
-    'output_doc_flag',
-    'output_initial_comment',
-    'output_newline',
-    'p',
-    'page_width',
-    'pasteOutline',
-    'pasteOutlineRetainingClones',
-    'persistenceController',
-    'pluginsMenu',
-    'positionExists',
-    'preferences',
-    'printCommandsDict',
-    'printingController',
-    'promote',
-    'promptingForClose',
-    'putBitsFlag',
-    'putHelpFor',
-    'queryReplaceCommands',
-    'raise_error_dialogs',
-    'readAtAutoNodes',
-    'readAtFileNodes',
-    'readAtShadowNodes',
-    'readFileIntoNode',
-    'readOutlineOnly',
-    'read_only',
-    'recolor',
-    'recolor_now',
-    'recreateGnxDict',
-    'rectangleCommands',
-    'recursiveImport',
-    'redirectScriptOutput',
-    'redirect_execute_script_output_to_log_pane',
-    'redraw',
-    'redrawAndEdit',
-    'redraw_after_contract',
-    'redraw_after_expand',
-    'redraw_after_head_changed',
-    'redraw_after_icons_changed',
-    'redraw_after_select',
-    'redraw_now',
-    'reformatBody',
-    'reformatParagraph',
-    'refreshFromDisk',
-    'relativeFileName',
-    'relative_path_base_directory',
-    'removeSentinels',
-    'remove_sentinels_extension',
-    'requestBringToFront',
-    'requestCloseWindow',
-    'requestRecolor',
-    'requestRecolorFlag',
-    'requestRedrawFlag',
-    'request_focus',
-    'requestedFocusWidget',
-    'requestedIconify',
-    'revert',
-    'rootPosition',
-    'rootVnode',
-    'rp_get_args',
-    'rp_get_leading_ws',
-    'rp_reformat',
-    'rp_wrap_all_lines',
-    'rstCommands',
-    'safe_all_positions',
-    'save',
-    'saveAll',
-    'saveAs',
-    'saveAsUnzipped',
-    'saveAsZipped',
-    'saveAsZippedHelper',
-    'saveTo',
-    'save_clears_undo_buffer',
-    'scanAllDirectives',
-    'scanAtPathDirectives',
-    'scanAtPathDirectivesCount',
-    'scanAtRootDirectives',
-    'searchCommands',
-    'selectAtSettingsNode',
-    'selectPosition',
-    'selectThreadBack',
-    'selectThreadNext',
-    'selectVisBack',
-    'selectVisNext',
-    'selectVnode',
-    'setBodyString',
-    'setChanged',
-    'setCloneFindByPredicateIcon',
-    'setComplexCommand',
-    'setCurrentDirectoryFromContext',
-    'setCurrentPosition',
-    'setCurrentVnode',
-    'setFileTimeStamp',
-    'setHeadString',
-    'setLog',
-    'setMarked',
-    'setPositionAfterSort',
-    'setRootPosition',
-    'setRootVnode',
-    'setTopPosition',
-    'setTopVnode',
-    'setWindowPosition',
-    'set_focus',
-    'shadowController',
-    'shortFileName',
-    'shortFilename',
-    'shouldBeExpanded',
-    'showInvisibles',
-    'showInvisiblesHelper',
-    'singleLineParagraph',
-    'smart_tab',
-    'sortChildren',
-    'sortRecentFiles',
-    'sortSiblings',
-    'sparce_spell',
-    'sparse_find',
-    'sparse_move',
-    'sparse_spell',
-    'spellCommands',
-    'startRedrawCount',
-    'startsParagraph',
-    'status_line_unl_mode',
-    'stayInTreeAfterSelect',
-    'styleSheetManager',
-    'stylesheet',
-    'suppressHeadChanged',
-    'syntaxErrorDialog',
-    'tabNannyNode',
-    'tab_width',
-    'tangle',
-    'tangleAll',
-    'tangleCommands',
-    'tangleMarked',
-    'tangle_batch_flag',
-    'tangle_errors',
-    'target_language',
-    'testManager',
-    'theScriptingController',
-    'theTagController',
-    'toggleAngleBrackets',
-    'toggleShowInvisibles',
-    'toggleSparseMove',
-    'topPosition',
-    'topVnode',
-    'traceFocus',
-    'trace_focus_count',
-    'trace_idle_focus',
-    'trailing_body_newlines',
-    'treeFocusHelper',
-    'treeSelectHelper',
-    'treeWantsFocus',
-    'treeWantsFocusNow',
-    'trimTrailingLines',
-    'undo_granularity',
-    'undoer',
-    'unformatParagraph',
-    'universalCallback',
-    'universallCallback',
-    'unmarkAll',
-    'unredirectScriptOutput',
-    'unreformat',
-    'untangle',
-    'untangleAll',
-    'untangleMarked',
-    'untangle_batch_flag',
-    'updateBodyPane',
-    'updateSyntaxColorer',
-    'use_body_focus_border',
-    'use_focus_border',
-    'use_header_flag',
-    'use_plugins',
-    'user_dict',
-    'validateOutline',
-    'verbose_check_outline',
-    'vimCommands',
-    'vim_mode',
-    'visLimit',
-    'vnode2allPositions',
-    'vnode2position',
-    'weave',
-    'widgetWantsFocus',
-    'widgetWantsFocusNow',
-    'widget_name',
-    'wrappedFileName',
-    'writeFileFromNode',
-    'writeScriptFile',
-    'write_script_file',
-    'write_strips_blank_lines',
-]
 .. @-all
 .. @@nosearch
 .. @-leo
