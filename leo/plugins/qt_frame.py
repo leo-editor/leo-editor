@@ -3119,6 +3119,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
         trace = False and not g.unitTesting
+        trace_s = False
         c = self.c
         if g.app.quitting or not c or not c.exists:
             print('LeoQtLog.log.put fails', repr(s))
@@ -3130,12 +3131,10 @@ class LeoQtLog(leoFrame.LeoLog):
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
-        if trace:
-            print('LeoQtLog.put: %r' % (s))
         if w:
+            if trace:
+                g.trace(id(self.logCtrl), c.shortFileName())
             sb = w.horizontalScrollBar()
-            # pos = sb.sliderPosition()
-            # g.trace(pos,sb,g.callers())
             s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
                 s = s.replace(' ', '&nbsp;')
@@ -3144,7 +3143,7 @@ class LeoQtLog(leoFrame.LeoLog):
             else:
                 s = s.rstrip().replace('\n', '<br>')
             s = '<font color="%s">%s</font>' % (color, s)
-            if trace:
+            if trace and trace_s:
                 # print('LeoQtLog.put: %4s redirect: %5s\n  %s' % (
                     # len(s), from_redirect, s))
                 print('LeoQtLog.put: %r' % (s))
