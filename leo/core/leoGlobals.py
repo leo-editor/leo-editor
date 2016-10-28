@@ -4057,7 +4057,7 @@ def doHook(tag, *args, **keywords):
     Scripts may reset app.hookError to try again.
     '''
     trace = False; verbose = False
-    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+    if g.app.killed or g.app.hookError:
         return None
     if args:
         # A minor error in Leo's core.

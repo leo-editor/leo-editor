@@ -39,13 +39,14 @@ class IdleTimeManager(object):
     def __init__(self):
         '''Ctor for IdleTimeManager class.'''
         self.callback_list = []
+        self.timer = None
         
     #@+others
-    #@+node:ekr.20161026125611.1: *3* bm.add_callback
+    #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback, tag):
         '''Add a callback to be called at every idle time.'''
         self.callback_list.append(callback)
-    #@+node:ekr.20161026124810.1: *3* bm.on_idle
+    #@+node:ekr.20161026124810.1: *3* itm.on_idle
     on_idle_count = 0
 
     def on_idle(self, timer):
@@ -73,6 +74,15 @@ class IdleTimeManager(object):
                     g.trace('(IdleTimeManager) %3s calling g.doHook(c=%s)' % (
                         self.on_idle_count, c.shortFileName()))
                 g.doHook("idle", c=c)
+    #@+node:ekr.20161028034808.1: *3* itm.start
+    def start (self):
+        '''Start the idle-time timer.'''
+        self.timer = g.IdleTime(
+            self.on_idle,
+            delay=500,
+            tag='IdleTimeManager.on_idle')
+        if self.timer:
+            self.timer.start()
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp(object):
@@ -82,16 +92,14 @@ class LeoApp(object):
     #@+others
     #@+node:ekr.20150509193643.1: *3* app.Birth
     #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain langauge dicts)
-    #@@nobeautify # Don't suppress blank lines.
-
     def __init__(self):
-        '''Ctor for LeoApp class.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(leoApp)')
-        # These ivars are Leo's global vars.
-        # leoGlobals.py contains global switches to be set by hand.
+        '''
+        Ctor for LeoApp class. These ivars are Leo's global vars.
 
-        # Command-line arguments...
+        leoGlobals.py contains global switches to be set by hand.
+        '''
+        #@+<< LeoApp: command-line arguments >>
+        #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False
             # True: run in batch mode.
         self.debug = False
@@ -112,7 +120,8 @@ class LeoApp(object):
             # True: restore session on startup.
         self.save_session = False
             # True: save session on close.
-        self.silentMode = False # True: no signon.
+        self.silentMode = False
+            # True: no signon.
         self.start_fullscreen = False
             # For qt_frame plugin.
         self.start_maximized = False
@@ -129,8 +138,9 @@ class LeoApp(object):
             # True: use psyco optimization.
         self.use_splash_screen = True
             # True: put up a splash screen.
-
-        # Debugging & statistics...
+        #@-<< LeoApp: command-line arguments >>
+        #@+<< LeoApp: Debugging & statistics >>
+        #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
         self.count = 0
             # General purpose debugging count.
         self.debug_app = False
@@ -159,16 +169,18 @@ class LeoApp(object):
             # True: trace shutdown logic.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
-
-        # Error messages...
+        #@-<< LeoApp: Debugging & statistics >>
+        #@+<< LeoApp: error messages >>
+        #@+node:ekr.20161028035902.1: *5* << LeoApp: error messages >>
         self.atPathInBodyWarning = None
             # Set by get_directives_dict.
         self.menuWarningsGiven = False
             # True: supress warnings in menu code.
         self.unicodeErrorGiven = True
             # True: suppres unicode tracebacks.
-
-        # Global directories...
+        #@-<< LeoApp: error messages >>
+        #@+<< LeoApp: global directories >>
+        #@+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
         self.extensionsDir = None
             # The leo/extensions directory
         self.globalConfigDir = None
@@ -183,8 +195,9 @@ class LeoApp(object):
             # The leo/core directory.
         self.machineDir = None
             # The machine-specific directory.
-
-        # Global data...
+        #@-<< LeoApp: global directories >>
+        #@+<< LeoApp: global data >>
+        #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
         self.atAutoNames = set()
             # The set of all @auto spellings.
         self.atFileNames = set()
@@ -207,8 +220,9 @@ class LeoApp(object):
             # Global list of all frames.
         self.realMenuNameDict = {}
             # Translations of menu names.
-
-        # Global controller/manager objects...
+        #@-<< LeoApp: global data >>
+        #@+<< LeoApp: global controller/manager objects >>
+        #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Most of these are defined in initApp.
         self.idleTimeManager = None
             # The singleton IdleTimeManager instance.
@@ -237,8 +251,9 @@ class LeoApp(object):
             # The name of the command being executed.
         self.commandInterruptFlag = False
             # True: command within a command.
-
-        # Global status vars...
+        #@-<< LeoApp: global controller/manager objects >>
+        #@+<< LeoApp: global status vars >>
+        #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
         self.already_open_files = []
             # A list of file names that *might* be open in another
             # copy of Leo.
@@ -263,8 +278,10 @@ class LeoApp(object):
         self.reverting = False
             # True: executing the revert command.
         self.syntax_error_files = []
-
-        # The global log... (To be moved to the LogManager)
+        #@-<< LeoApp: global status vars >>
+        #@+<< LeoApp: the global log >>
+        #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
+        # To be moved to the LogManager.
         self.log = None
             # The LeoFrame containing the present log.
         self.logInited = False
@@ -278,14 +295,16 @@ class LeoApp(object):
         self.signon = ''
         self.signon2 = ''
         self.signon_printed = False
-
-        # Global types.
+        #@-<< LeoApp: the global log >>
+        #@+<< LeoApp: global types >>
+        #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
         import leo.core.leoFrame as leoFrame
         import leo.core.leoGui as leoGui
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
-        # To be moved to to the pluginsController.
-        # Plugins and event handlers...
+        #@-<< LeoApp: global types >>
+        #@+<< LeoApp: plugins and event handlers >>
+        #@+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
         self.hookError = False
             # True: suppress further calls to hooks.
         self.hookFunction = None
@@ -294,12 +313,9 @@ class LeoApp(object):
             # True: we have done an import idle
         self.idle_time_hooks_enabled = True
             # True: idle-time hooks are enabled.
-        self.idle_time_mananager_timer = None
-            # Aother g.IdleTime instance.
-        self.idleTimeDelay = 500
-            # Delay in msec between calls to "idle time" hook.
-
-        # Support for scripting...
+        #@-<< LeoApp: plugins and event handlers >>
+        #@+<< LeoApp: scripting ivars >>
+        #@+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
         self.searchDict = {}
             # For communication between find/change scripts.
         self.scriptDict = {}
@@ -308,7 +324,9 @@ class LeoApp(object):
             # For use by leoPymacs.
         self.permanentScriptDict = {}
             # For use by scrips. Never cleared automatically.
-        # Unit testing...
+        #@-<< LeoApp: scripting ivars >>
+        #@+<< LeoApp: unit testing ivars >>
+        #@+node:ekr.20161028040330.1: *5* << LeoApp: unit testing ivars >>
         self.isExternalUnitTest = False
             # True: we are running a unit test externally.
         self.runningAllUnitTests = False
@@ -324,7 +342,7 @@ class LeoApp(object):
         self.unitTestMenusDict = {}
             # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
-
+        #@-<< LeoApp: unit testing ivars >>
         # Define all global data.
         self.init_at_auto_names()
         self.init_at_file_names()
@@ -1948,12 +1966,7 @@ class LoadManager(object):
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-        handler = g.app.idleTimeManager.on_idle
-        timer = g.IdleTime(handler,
-            delay=g.app.idleTimeDelay,
-            tag='IdleTimeManager.on_idle')
-        g.app.idle_time_mananager_timer = timer
-        if timer: timer.start()
+        g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
         if ok and g.app.diff:
