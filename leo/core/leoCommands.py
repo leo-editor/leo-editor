@@ -91,7 +91,7 @@ class Commands(object):
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
         self.hookFunction = None
-            #
+            # One of three places that g.doHook looks for hook functions.
         self.ignoreChangedPaths = False
             # True: disable path changed message in at.WriteAllHelper.
         self.inCommand = False
