@@ -23,7 +23,9 @@ class BackgroundProcessManager(object):
             # List of g.Bunches.
         self.pid = None
             # The process id of the running process.
-        g.app.idleTimeManager.add_callback(self.on_idle, tag='BackgroundProcessManager')
+        g.app.idleTimeManager.add_callback(
+            self.on_idle,
+            tag='BackgroundProcessManager')
 
     #@+others
     #@+node:ekr.20161028090624.1: *3* class ProcessData
@@ -34,8 +36,8 @@ class BackgroundProcessManager(object):
             '''Ctor for the ProcessData class.'''
             self.c = c
             self.callback = None
-            self.kind = kind
             self.fn = fn
+            self.kind = kind
             self.silent = silent
             
         def __repr__(self):
@@ -44,7 +46,8 @@ class BackgroundProcessManager(object):
                 self.kind,
                 id(self.callback) if self.callback else None,
                 self.fn,
-                self.silent)
+                self.silent,
+            )
                 
         __str__ = __repr__
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
@@ -65,9 +68,6 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161028063557.1: *4* bm.end
     def end(self):
         '''End the present process.'''
-        trace = False and not g.unitTesting
-        data = self.data
-        if trace: g.trace(id(data.c.frame.log), data)
         # Send the output to the log.
         if not self.data.silent:
             for s in self.pid.stdout:
@@ -108,9 +108,7 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         '''The idle-time callback for leo.commands.checkerCommands.'''
-        trace = False and not g.unitTesting
         if self.process_queue or self.pid:
-            if trace: g.trace('(BackgroundProcessManager)')
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     def put_log(self, s):
@@ -125,7 +123,7 @@ class BackgroundProcessManager(object):
                 c.frame.log.put(s)
                 print(s.rstrip())
             else:
-                g.es(s.rstrip())
+                g.es_print(s.rstrip())
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind, fn=None, silent=False):
         '''Start or queue a process described by command and fn.'''
@@ -133,7 +131,7 @@ class BackgroundProcessManager(object):
         self.data = data = self.ProcessData(c, kind, fn, silent)
         if self.pid:
             # A process is already active.  Add a new callback.
-            if trace: g.trace('===== Adding callback', g.shortFileName(fn))
+            if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
 
             def callback(data=data):
                 fn = data.fn
