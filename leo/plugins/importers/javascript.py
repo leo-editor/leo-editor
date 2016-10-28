@@ -3,8 +3,6 @@
 '''The @auto importer for JavaScript.'''
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
-import re
-new_scanner = True
 #@+others
 #@+node:ekr.20161004092007.1: ** class JavaScriptScanState
 class JavaScriptScanState(basescanner.ScanState):
