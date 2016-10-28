@@ -197,11 +197,13 @@ class BaseLineScanner(object):
         '''Clean up parent's children.'''
         # Clean the headlines.
         if hasattr(self, 'clean_headline'):
+            # pylint: disable=no-member
             for p in parent.subtree():
                 h = self.clean_headline(p)
                 if h: p.h = h
         # Clean the nodes, in a language-dependent way.
         if hasattr(self, 'clean_nodes'):
+            # pylint: disable=no-member
             self.clean_nodes(parent)
         # Delete empty nodes.
         aList = []
