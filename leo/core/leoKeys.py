@@ -1493,7 +1493,7 @@ class GetArg(object):
         trace = False and not g.unitTesting
         c, k = ga.c, ga.k
         # Set the ga globals...
-        k.getArgEscapeFlag = False ###
+        k.getArgEscapeFlag = False
         ga.after_get_arg_state = returnKind, returnState, handler
         ga.arg_completion = completion
         ga.cycling_prefix = None

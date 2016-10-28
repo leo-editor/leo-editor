@@ -1068,7 +1068,7 @@ class LeoFind(object):
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
-        self.stateZeroHelper(event, ### tag,
+        self.stateZeroHelper(event,
             'Search: ', self.searchWithPresentOptions1,
             escapes=escapes) # The Tab Easter Egg.
                 
@@ -1090,7 +1090,7 @@ class LeoFind(object):
             else:
                 # Switch to the replace command.
                 if self.findAllFlag: self.changeAllFlag = True
-                k.getArgEscapeFlag = False ###
+                k.getArgEscapeFlag = False
                 self.setupSearchPattern(k.arg)
                 self.setReplaceString1(event=None)
         else:
