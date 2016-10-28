@@ -192,16 +192,26 @@ class BaseLineScanner(object):
             if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
                 g.warning('inserting @ignore')
                 c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161027183458.1: *4* BaseLineScanner.post_pass
+    #@+node:ekr.20161027183458.1: *4* BaseLineScanner.post_pass & helper
     def post_pass(self, parent):
-        
-        if hasattr(self, 'munge_headline'):
+        '''Clean up parent's children.'''
+        # Clean the headlines.
+        if hasattr(self, 'clean_headline'):
             for p in parent.subtree():
-                h = self.munge_headline(p)
-                if h:
-                    p.h = h
-
-            
+                h = self.clean_headline(p)
+                if h: p.h = h
+        # Clean the nodes, in a language-dependent way.
+        if hasattr(self, 'clean_nodes'):
+            self.clean_nodes(parent)
+        # Delete empty nodes.
+        aList = []
+        for p in parent.subtree():
+            s = p.b
+            back = p.threadBack()
+            if not s.strip() and not p.isCloned() and back != parent:
+                back.b = back.b + s
+                aList.append(p.copy())
+        self.c.deletePositionsInList(aList)
     #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularize_whitespace
     def regularize_whitespace(self, s):
         '''Regularize leading whitespace in s:
