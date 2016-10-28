@@ -309,8 +309,6 @@ class LeoApp(object):
             # True: suppress further calls to hooks.
         self.hookFunction = None
             # Application wide hook function.
-        self.idle_imported = False
-            # True: we have done an import idle
         self.idle_time_hooks_enabled = True
             # True: idle-time hooks are enabled.
         #@-<< LeoApp: plugins and event handlers >>

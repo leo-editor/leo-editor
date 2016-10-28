@@ -829,7 +829,6 @@ ivars = (
     'batchMode',
     'debugSwitch','disableSave',
     'hookError','hookFunction',
-    'idle_imported','idleTimeDelay',
     'numberOfUntitledWindows',
     'realMenuNameDict',
     'searchDict','scriptDict',
