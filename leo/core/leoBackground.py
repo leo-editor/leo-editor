@@ -27,6 +27,18 @@ class BackgroundManager(object):
         g.app.idleTimeManager.add_callback(self.on_idle, tag)
 
     #@+others
+    #@+node:ekr.20161026193609.3: *3* bm.kill
+    def kill(self):
+        '''Kill the presently running process, if any.'''
+        self.callback_list = []
+        if self.pid:
+            g.es_print('killing %s process' % (self.kind))
+            try:
+                self.pid.kill()
+            except OSError:
+                pass
+            self.pid = None
+        g.es_print('%s finished' % self.kind)
     #@+node:ekr.20161026193609.2: *3* bm.check_process
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
@@ -36,6 +48,10 @@ class BackgroundManager(object):
         if self.pid or self.callback_list:
             if self.pid.poll() is not None:
                 if trace: g.es_print('ending:', self.pid)
+                # Send the output to the log.
+                for s in self.pid.stdout:
+                    if s.strip():
+                        g.es(s.rstrip())
                 try:
                     self.pid.kill()
                 except OSError:
@@ -51,18 +67,6 @@ class BackgroundManager(object):
                 g.trace('running: ', self.pid)
         elif trace and trace_inactive:
             g.trace('%s inactive' % self.kind)
-    #@+node:ekr.20161026193609.3: *3* bm.kill
-    def kill(self):
-        '''Kill the presently running process, if any.'''
-        self.callback_list = []
-        if self.pid:
-            g.es_print('killing %s process' % (self.kind))
-            try:
-                self.pid.kill()
-            except OSError:
-                pass
-            self.pid = None
-        g.es_print('%s finished' % self.kind)
     #@+node:ekr.20161026193609.4: *3* bm.on_idle
     def on_idle(self):
         '''The idle-time callback for leo.commands.checkerCommands.'''
@@ -84,6 +88,8 @@ class BackgroundManager(object):
                 self.pid = subprocess.Popen(
                     command,
                     shell=False,
+                    stderr=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
                 if trace: g.es_print('===== Starting:', g.shortFileName(fn), self.pid)
@@ -95,6 +101,8 @@ class BackgroundManager(object):
             self.pid = subprocess.Popen(
                 command,
                 shell=False,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
             if trace: g.es_print('===== Starting:',
