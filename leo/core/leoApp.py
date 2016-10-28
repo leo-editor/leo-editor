@@ -44,19 +44,35 @@ class IdleTimeManager(object):
     #@+node:ekr.20161026125611.1: *3* bm.add_callback
     def add_callback(self, callback, tag):
         '''Add a callback to be called at every idle time.'''
-        # g.trace(callback, tag)
         self.callback_list.append(callback)
     #@+node:ekr.20161026124810.1: *3* bm.on_idle
+    on_idle_count = 0
+
     def on_idle(self, timer):
         '''IdleTimeManager: Run all idle-time callbacks.'''
-        if g.app and not g.app.killed:
-            for callback in self.callback_list:
-                try:
-                    callback()
-                except Exception:
-                    g.es_exception()
-                    g.es_print('removing callback: %s' % callback)
-                    self.callback_list.remove(callback)
+        trace = False and not g.unitTesting
+        trace_hooks = True
+        if not g.app: return
+        if g.app.killed: return
+        self.on_idle_count += 1
+        # Handle the registered callbacks.
+        for callback in self.callback_list:
+            try:
+                callback()
+            except Exception:
+                g.es_exception()
+                g.es_print('removing callback: %s' % callback)
+                self.callback_list.remove(callback)
+        # Handle idle-time hooks. (was g.idleTimeHookHandler).
+        if g.app.idle_time_hooks_enabled:
+            for frame in g.app.windowList:
+                c = frame.c
+                # Do NOT compute c.currentPosition.
+                # This would be a MAJOR leak of positions.
+                if trace and trace_hooks:
+                    g.trace('(IdleTimeManager) %3s calling g.doHook(c=%s)' % (
+                        self.on_idle_count, c.shortFileName()))
+                g.doHook("idle", c=c)
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp(object):
@@ -276,10 +292,8 @@ class LeoApp(object):
             # Application wide hook function.
         self.idle_imported = False
             # True: we have done an import idle
-        self.idle_timer_enabled = False
-            # True: idle-time handling is enabled.
-        self.idle_timer = None
-            # A g.IdleTime instance.
+        self.idle_time_hooks_enabled = True
+            # True: idle-time hooks are enabled.
         self.idle_time_mananager_timer = None
             # Aother g.IdleTime instance.
         self.idleTimeDelay = 500
@@ -1935,7 +1949,9 @@ class LoadManager(object):
         g.doHook("start1")
         if g.app.killed: return
         handler = g.app.idleTimeManager.on_idle
-        timer = g.IdleTime(handler, delay=2000, tag='IdleTimeManager.on_idle')
+        timer = g.IdleTime(handler,
+            delay=g.app.idleTimeDelay,
+            tag='IdleTimeManager.on_idle')
         g.app.idle_time_mananager_timer = timer
         if timer: timer.start()
         # Phase 3: after loading plugins. Create one or more frames.
@@ -2394,7 +2410,6 @@ class LoadManager(object):
         # print('doPostPluginsInit: ***** set log')
         p = c and c.p or None
         g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
-        g.enableIdleTimeHook(idleTimeDelay=500)
         if c: lm.initFocusAndDraw(c, fileName)
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
@@ -3194,20 +3209,17 @@ def ctrlClickAtCursor(event):
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):
     '''Disable default idle-time event handling.'''
-    g.disableIdleTimeHook()
+    g.app.idle_time_hooks_enabled = False
 
 @g.command('enable-idle-time-events')
 def enable_idle_time_events(event):
     '''Enable default idle-time event handling.'''
-    g.enableIdleTimeHook()
+    g.app.idle_time_hooks_enabled = True
 
 @g.command('toggle-idle-time-events')
 def toggle_idle_time_events(event):
     '''Toggle default idle-time event handling.'''
-    if g.app.idle_timer_enabled:
-        g.disableIdleTimeHook()
-    else:
-        g.enableIdleTimeHook()
+    g.app.idle_time_hooks_enabled = not g.app.idle_time_hooks_enabled
 #@+node:ekr.20150514125218.4: *3* join-leo-irc
 @g.command('join-leo-irc')
 def join_leo_irc(event=None):

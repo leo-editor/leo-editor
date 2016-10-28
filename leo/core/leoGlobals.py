@@ -4029,31 +4029,68 @@ def skip_ws_and_nl(s, i):
         i += 1
     return i
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
+#@+node:ekr.20101028131948.5860: *3* g.act_on_node
+def dummy_act_on_node(c, p, event):
+    pass
+# This dummy definition keeps pylint happy.
+# Plugins can change this.
+
+act_on_node = dummy_act_on_node
+#@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
+childrenModifiedSet = set()
+contentModifiedSet = set()
+#@+node:ekr.20031218072017.1596: *3* g.doHook
+def doHook(tag, *args, **keywords):
+    '''
+    This global function calls a hook routine. Hooks are identified by the
+    tag param.
+
+    Returns the value returned by the hook routine, or None if the there is
+    an exception.
+
+    We look for a hook routine in three places:
+    1. c.hookFunction
+    2. app.hookFunction
+    3. leoPlugins.doPlugins()
+
+    Set app.hookError on all exceptions.
+    Scripts may reset app.hookError to try again.
+    '''
+    trace = False; verbose = False
+    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
+        return None
+    if args:
+        # A minor error in Leo's core.
+        g.pr("***ignoring args param.  tag = %s" % tag)
+    if not g.app.config.use_plugins:
+        if tag in ('open0', 'start1'):
+            g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
+        return None
+    # Get the hook handler function.  Usually this is doPlugins.
+    c = keywords.get("c")
+    f = (c and c.hookFunction) or g.app.hookFunction
+    if trace and (verbose or tag != 'idle'):
+        g.trace('tag', tag, 'f', f and f.__name__)
+    if not f:
+        g.app.hookFunction = f = g.app.pluginsController.doPlugins
+    try:
+        # Pass the hook to the hook handler.
+        # g.pr('doHook',f.__name__,keywords.get('c'))
+        return f(tag, keywords)
+    except Exception:
+        g.es_exception()
+        g.app.hookError = True # Supress this function.
+        g.app.idle_time_hooks_enabled = False
+        return None
 #@+node:ekr.20031218072017.1315: *3* g.idle time functions
 #@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 def disableIdleTimeHook():
     '''Disable the global idle-time hook.'''
-    g.app.idle_timer_enabled = False
-    if g.app.idle_timer:
-        g.app.idle_timer.stop()
+    g.app.idle_time_hooks_enabled = False
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
-def enableIdleTimeHook(*args, **keys): # All args ignored.
-    '''
-    Enable idle-time processing.
-
-    Leo calls g.idleTimeHookHandler every g.app.idleTimeDelay msec.
-    '''
-    if g.app.idle_timer:
-        g.app.idle_timer.start()
-    else:
-        timer = g.IdleTime(
-            g.idleTimeHookHandler,
-            g.app.idleTimeDelay,
-            tag='g.enableIdleTimeHook')
-        if timer:
-            g.app.idle_timer = timer
-            timer.start()
-    g.app.idle_timer_enabled = True
+def enableIdleTimeHook(*args, **keys):
+    '''Enable idle-time processing.'''
+    g.app.idle_time_hooks_enabled = True
 #@+node:ekr.20140825042850.18410: *4* g.IdleTime
 def IdleTime(handler, delay=500, tag=None):
     '''
@@ -4100,82 +4137,11 @@ def IdleTime(handler, delay=500, tag=None):
         return g.app.gui.idleTimeClass(handler, delay, tag)
     except Exception:
         return None
-#@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
-trace_count = 0
-
+#@+node:ekr.20161027205025.1: *4* g.idleTimeHookHandler (stub)
 def idleTimeHookHandler(timer):
-    '''
-    The one and only idle-time event handler.
-
-    Calls c.doHook('idle') for each commander.
-    '''
-    global trace_count
-    trace_count += 1
-    trace = False and not g.unitTesting
-    if g.app.killed:
-        return
-    if not g.app.idle_timer_enabled:
-        return
-    for frame in g.app.windowList:
-        c = frame.c
-        # Do NOT compute c.currentPosition.
-        # This would be a MAJOR leak of positions.
-        if trace: g.pr('%3s calling g.doHook(c=%s)' % (
-            trace_count, c.shortFileName()))
-        g.doHook("idle", c=c)
-#@+node:ekr.20101028131948.5860: *3* g.act_on_node
-def dummy_act_on_node(c, p, event):
-    pass
-# This dummy definition keeps pylint happy.
-# Plugins can change this.
-
-act_on_node = dummy_act_on_node
-#@+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag, *args, **keywords):
-    '''
-    This global function calls a hook routine. Hooks are identified by the
-    tag param.
-
-    Returns the value returned by the hook routine, or None if the there is
-    an exception.
-
-    We look for a hook routine in three places:
-    1. c.hookFunction
-    2. app.hookFunction
-    3. leoPlugins.doPlugins()
-
-    Set app.hookError on all exceptions.
-    Scripts may reset app.hookError to try again.
-    '''
-    trace = False; verbose = False
-    if g.app.killed or g.app.hookError: # or (g.app.gui and g.app.gui.isNullGui):
-        return None
-    if args:
-        # A minor error in Leo's core.
-        g.pr("***ignoring args param.  tag = %s" % tag)
-    if not g.app.config.use_plugins:
-        if tag in ('open0', 'start1'):
-            g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
-        return None
-    # Get the hook handler function.  Usually this is doPlugins.
-    c = keywords.get("c")
-    f = (c and c.hookFunction) or g.app.hookFunction
-    if trace and (verbose or tag != 'idle'):
-        g.trace('tag', tag, 'f', f and f.__name__)
-    if not f:
-        g.app.hookFunction = f = g.app.pluginsController.doPlugins
-    try:
-        # Pass the hook to the hook handler.
-        # g.pr('doHook',f.__name__,keywords.get('c'))
-        return f(tag, keywords)
-    except Exception:
-        g.es_exception()
-        g.app.hookError = True # Supress this function.
-        g.app.idle_timer_enabled = False
-        return None
-#@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet = set()
-contentModifiedSet = set()
+    '''This function exists for compatibility.'''
+    g.es_print('Replaced by IdleTimeManager.on_idle')
+    g.trace(g.callers())
 #@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 #@+node:ekr.20100910075900.5951: *4* g.Loading & registration
