@@ -1070,7 +1070,6 @@ class Commands(object):
             else:
                 changed = False; result = []
                 text = p.v.b
-                # assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
                     i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
@@ -1113,7 +1112,6 @@ class Commands(object):
             else:
                 result = []; changed = False
                 text = p.v.b
-                # assert(g.isUnicode(text))
                 lines = text.split('\n')
                 for line in lines:
                     i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)

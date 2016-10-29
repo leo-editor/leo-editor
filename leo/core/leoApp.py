@@ -1112,7 +1112,6 @@ class LeoApp(object):
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
         trace = False and not g.unitTesting
-        assert c
         if trace: g.trace(c.frame.title)
         frame = c.frame
         frame.deiconify()
