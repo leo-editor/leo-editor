@@ -15,6 +15,74 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
+#@+<< How the new (line-by-line) importers work >>
+#@+node:ekr.20161029051724.1: ** << How the new (line-by-line) importers work >>
+'''
+#@@language rest
+#@@wrap
+
+**Executive overview**
+
+New importers, for example, the javascript and perl importers, copy entire
+lines from the input file to Leo nodes. This makes the new importers much
+less error prone than the legacy (character-by-character) importers.
+
+New importers *nothing* about parsing. They know only about how to scan
+tokens *accurately*. Again, this makes the new importers more simple and
+robust than the legacy importers.
+
+New importers are simple to write because two base classes handle all
+complex details. Importers override just three methods. The `scan_line`
+method is the most important of these. It is straightforward token-scanning
+code.
+
+**Overview of the code**
+
+`leo/plugins/basescanner.py` contains two new classes: `BaseLineScanner`
+(BLS) and `ScanState` classes. The BLS class replaces the horribly complex
+BaseScanner class.
+
+The ScanState class encapsulates *all* language-dependent knowledge.
+
+Using ScanState methods, `BLS.scan` breaks input files Leo nodes. This is
+necessarily a complex algorithm.
+
+Leo's import infrastructure, in `leoImport.py`, instantiates the scanner
+and calls `BLS.run`, which calls `BLS.scan`.
+
+**Writing a new importer**
+
+New style importers consist of the following:
+
+1. A subclass of BaseLineScanner class that overrides two methods, the ctor
+   and an optional `clean_headline method`. This method tells how to
+   simplify headlines.
+
+2. A subclass of the ScanState class that overrides `ScanState.scan_line`.
+
+`ScanState.scan_line` updates the net number of curly brackets and parens
+at the end of each line. `scan_line` must compute these numbers
+*accurately*, taking into account constructs such as multi-line comments,
+strings and regular expressions.
+
+**Importing Python**
+
+The `ScanState` class would have to be completely rewritten for Python
+because Python uses indentation levels to indicate structure, not curly
+brackets.
+
+**Summary**
+
+Writing a new-style (line-by-line) importer is easy because the `ScanState`
+and `BaseLineScanner` classes hide all complex details.
+
+The `ScanState` class encapsulate *all* language-specific information.
+
+Most importers simply override `ScanState.scan_line`, which simply scans
+tokens. The entire `ScanState` would have to be rewritten for languages
+such as Python.
+'''
+#@-<< How the new (line-by-line) importers work >>
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
@@ -2344,4 +2412,7 @@ class ScanState(object):
             g.trace(self, s.rstrip())
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 60
 #@-leo
