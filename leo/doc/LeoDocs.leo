@@ -168,7 +168,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -918,6 +918,7 @@
 <v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
 <v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
+<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
@@ -1256,6 +1257,26 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
+<v t="ekr.20161029072225.1"><vh>class IdleTimeManager</vh>
+<v t="ekr.20161029072225.2"><vh>itm.add_callback</vh></v>
+<v t="ekr.20161029072225.3"><vh>itm.on_idle</vh></v>
+<v t="ekr.20161029072225.4"><vh>itm.start</vh></v>
+</v>
+<v t="ekr.20161029072234.1"><vh>class BackgroundProcessManager</vh>
+<v t="ekr.20161029072234.2"><vh>&lt;&lt; BPL docstring&gt;&gt;</vh></v>
+<v t="ekr.20161029072234.3"><vh>class ProcessData</vh></v>
+<v t="ekr.20161029072234.4"><vh>bpm.check_process &amp; helpers</vh>
+<v t="ekr.20161029072234.5"><vh>bm.end</vh></v>
+<v t="ekr.20161029072234.6"><vh>bm.start_next</vh></v>
+</v>
+<v t="ekr.20161029072234.7"><vh>bpm.kill</vh></v>
+<v t="ekr.20161029072234.8"><vh>bpm.on_idle</vh></v>
+<v t="ekr.20161029072234.9"><vh>bpm.put_log</vh></v>
+<v t="ekr.20161029072234.10"><vh>bpm.start_process</vh></v>
+</v>
+<v t="ekr.20131015104133.16763"></v>
+<v t="ekr.20161029072351.1"></v>
+<v t="ekr.20150323102036.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -17362,7 +17383,19 @@ The following commands work much like the `Emacs cursor commands`_::
 <t tx="ekr.20150320085538.4"># True: suppress all output from rst.report()</t>
 <t tx="ekr.20150323102036.1">@language rest
 
-g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
+Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
+the callback to be called at idle time forever. This should suffice for most purposes::
+
+@language python
+
+    def print_hi():
+        print('hi')
+    
+    g.app.idleTimeManager.add_callback(print_hi)
+
+@language rest
+
+For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
 
 @language python
     
@@ -19032,7 +19065,286 @@ Idle time::
 
 5. Better git hooks, written in Python.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161029072225.1">class IdleTimeManager(object):
+    '''
+    A singleton class to manage idle-time handling. This class handles all
+    details of running code at idle time, including running 'idle' hooks.
+    
+    Any code can call g.app.idleTimeManager.add_callback(callback) to cause
+    the callback to be called at idle time forever.
+    '''
+    
+    def __init__(self):
+        '''Ctor for IdleTimeManager class.'''
+        self.callback_list = []
+        self.timer = None
+        
+    @others
+</t>
+<t tx="ekr.20161029072225.2">def add_callback(self, callback, tag):
+    '''Add a callback to be called at every idle time.'''
+    self.callback_list.append(callback)
+</t>
+<t tx="ekr.20161029072225.3">on_idle_count = 0
+
+def on_idle(self, timer):
+    '''IdleTimeManager: Run all idle-time callbacks.'''
+    trace = False and not g.unitTesting
+    trace_hooks = True
+    if not g.app: return
+    if g.app.killed: return
+    self.on_idle_count += 1
+    # Handle the registered callbacks.
+    for callback in self.callback_list:
+        try:
+            callback()
+        except Exception:
+            g.es_exception()
+            g.es_print('removing callback: %s' % callback)
+            self.callback_list.remove(callback)
+    # Handle idle-time hooks.
+    g.app.pluginsController.on_idle()
+</t>
+<t tx="ekr.20161029072225.4">def start (self):
+    '''Start the idle-time timer.'''
+    self.timer = g.IdleTime(
+        self.on_idle,
+        delay=500,
+        tag='IdleTimeManager.on_idle')
+    if self.timer:
+        self.timer.start()
+</t>
+<t tx="ekr.20161029072234.1">class BackgroundProcessManager(object):
+    &lt;&lt; BPL docstring&gt;&gt;
+    
+    # Use self.put_log, not g.es or g.es_print!
+    
+    def __init__(self):
+        '''Ctor for the base BackgroundProcessManager class.'''
+        self.data = None
+            # a ProcessData instance.
+        self.process_queue = []
+            # List of g.Bunches.
+        self.pid = None
+            # The process id of the running process.
+        g.app.idleTimeManager.add_callback(
+            self.on_idle,
+            tag='BackgroundProcessManager')
+
+    @others
+</t>
+<t tx="ekr.20161029072234.10">def start_process(self, c, command, kind, fn=None):
+    '''Start or queue a process described by command and fn.'''
+    trace = False and not g.unitTesting
+    self.data = data = self.ProcessData(c, kind, fn)
+    if self.pid:
+        # A process is already active.  Add a new callback.
+        if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
+
+        def callback(data=data):
+            fn = data.fn
+            self.put_log(g.shortFileName(fn))
+            self.pid = subprocess.Popen(
+                command,
+                shell=False,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                universal_newlines=True,
+            )
+            if trace: self.put_log('===== Starting: %s for %s' % (
+                id(self.pid), g.shortFileName(fn)))
+
+        data.callback = callback
+        self.process_queue.append(data)
+    else:
+        # Start the process immediately.
+        self.put_log(g.shortFileName(fn))
+        self.pid = subprocess.Popen(
+            command,
+            shell=False,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        )
+        if trace: self.put_log('===== Starting: %s for %s' % (
+            id(self.pid), g.shortFileName(fn)))
+</t>
+<t tx="ekr.20161029072234.2">'''
+@language rest
+@wrap
+
+The BackgroundProcessManager (BPM) class runs background processes,
+*without blocking Leo*. The BPM manages a queue of processes, and runs them
+*one at a time* so that their output remains separate.
+
+g.app.backgroundProcessManager is the singleton BPM.
+
+The BPM registers a handler with the IdleTimeManager that checks whether
+the presently running background process has completed. If so, the handler
+writes the process's output to the log and starts another background
+process in the queue.
+
+BPM.start_process(c, command, kind, fn=None) adds a process to the queue
+that will run the given command.
+
+BM.kill(kind=None) kills all process with the given kind. If kind is None
+or 'all', all processes are killed.
+
+You can add processes to the queue at any time. For example, you can rerun
+the 'pylint' command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs in
+the main process.
+
+**Running multiple processes simultaneously**
+
+Only one process at a time should be producing output. All processes that
+*do* produce output should be managed by the singleton BPM instance.
+
+To run processes that *don't* produce output, just call subprocess.Popen.
+You can run as many of these process as you like, without involving the BPM
+in any way.
+'''
+</t>
+<t tx="ekr.20161029072234.3">class ProcessData(object):
+    '''A class to hold data about running or queued processes.'''
+    
+    def __init__(self, c, kind, fn):
+        '''Ctor for the ProcessData class.'''
+        self.c = c
+        self.callback = None
+        self.fn = fn
+        self.kind = kind
+        
+    def __repr__(self):
+        return 'c: %s kind: %s callback: %s fn: %s' % (
+            self.c.shortFileName(),
+            self.kind,
+            id(self.callback) if self.callback else None,
+            self.fn,
+        )
+            
+    __str__ = __repr__
+</t>
+<t tx="ekr.20161029072234.4">def check_process(self):
+    '''Check the running process, and switch if necessary.'''
+    trace = False and not g.unitTesting
+    trace_inactive = False
+    trace_running = False
+    if self.pid or self.process_queue:
+        if self.pid.poll() is not None:
+            if trace: self.put_log('ending: %s' % id(self.pid))
+            self.end() # End this process.
+            self.start_next() # Start the next process.
+        elif trace and trace_running:
+            self.put_log('running: %s' % id(self.pid))
+    elif trace and trace_inactive:
+        self.put_log('%s inactive' % self.data.kind)
+</t>
+<t tx="ekr.20161029072234.5">def end(self):
+    '''End the present process.'''
+    # Send the output to the log.
+    for s in self.pid.stdout:
+        self.put_log(s)
+    # Terminate the process properly.
+    try:
+        self.pid.kill()
+    except OSError:
+        pass
+    self.pid = None
+</t>
+<t tx="ekr.20161029072234.6">def start_next(self):
+    '''The previous process has finished. Start the next one.'''
+    if self.process_queue:
+        self.data = self.process_queue.pop(0)
+        self.data.callback()
+    else:
+        self.put_log('%s finished' % self.data.kind)
+        self.data = None
+        self.pid = None
+</t>
+<t tx="ekr.20161029072234.7">def kill(self, kind=None):
+    '''Kill the presently running process, if any.'''
+    if kind is None:
+        kind = 'all'
+    if kind == 'all':
+        self.process_queue = []
+    else:
+        self.process_queue = [z for z in self.process_queue if z.kind != kind]
+    if self.pid and kind in ('all', self.data.kind):
+        self.put_log('killing %s process' % kind)
+        try:
+            self.pid.kill()
+        except OSError:
+            pass
+        self.pid = None
+    self.put_log('%s finished' % kind)
+</t>
+<t tx="ekr.20161029072234.8">def on_idle(self):
+    '''The idle-time callback for leo.commands.checkerCommands.'''
+    if self.process_queue or self.pid:
+        self.check_process()
+</t>
+<t tx="ekr.20161029072234.9">def put_log(self, s):
+    '''
+    Put a string to the originating log.
+    This is not what g.es_print does!
+    '''
+    if s.strip():
+        # Put the message to the originating log pane, if it still exists.
+        c = self.data.c
+        if c.exists:
+            c.frame.log.put(s)
+            print(s.rstrip())
+        else:
+            g.es_print(s.rstrip())
+</t>
+<t tx="ekr.20161029072351.1">@language rest
+
+g.app.backgroundProcessManager is the singleton instance of the
+BackgroundProcessManager class. This class runs background processes,
+*without blocking Leo*. The BPM manages a queue of processes, and runs
+them *one at a time* so that their output remains separate.
+
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a
+process to the queue that will run the given command::
+
+@language python
+
+    bpm = g.app.backgroundProcessManager
+    bpm.start_process(c, command='ls', kind='ls', shell=True)
+
+@language rest
+
+BM.kill(kind=None) kills all process with the given kind. If kind is
+None or 'all', all processes are killed.
+
+You can add processes to the queue at any time. For example, you can
+rerun the 'pylint' command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs
+in the main process.
+
+**Running multiple processes simultaneously**
+
+Only one process at a time should be producing output. All processes
+that *do* produce output should be managed by the singleton BPM
+instance.
+
+To run processes that *don't* produce output, just call
+subprocess.Popen::
+
+@language python
+
+    import subprocess
+    subprocess.Popen('ls', shell=True)
+
+@language rest
+
+You can run as many of these process as you like, without involving
+the BPM in any way
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

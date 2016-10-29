@@ -60,28 +60,28 @@ class BackgroundProcessManager(object):
             # List of g.Bunches.
         self.pid = None
             # The process id of the running process.
-        g.app.idleTimeManager.add_callback(
-            self.on_idle,
-            tag='BackgroundProcessManager')
+        g.app.idleTimeManager.add_callback(self.on_idle)
 
     #@+others
     #@+node:ekr.20161028090624.1: *3* class ProcessData
     class ProcessData(object):
         '''A class to hold data about running or queued processes.'''
         
-        def __init__(self, c, kind, fn):
+        def __init__(self, c, kind, fn, shell):
             '''Ctor for the ProcessData class.'''
             self.c = c
             self.callback = None
             self.fn = fn
             self.kind = kind
+            self.shell = shell
             
         def __repr__(self):
-            return 'c: %s kind: %s callback: %s fn: %s' % (
+            return 'c: %s kind: %s callback: %s fn: %s shell: %s' % (
                 self.c.shortFileName(),
                 self.kind,
                 id(self.callback) if self.callback else None,
                 self.fn,
+                self.shell,
             )
                 
         __str__ = __repr__
@@ -152,17 +152,17 @@ class BackgroundProcessManager(object):
         '''
         if s.strip():
             # Put the message to the originating log pane, if it still exists.
-            c = self.data.c
-            if c.exists:
+            c = self.data and self.data.c
+            if c and c.exists:
                 c.frame.log.put(s)
                 print(s.rstrip())
             else:
                 g.es_print(s.rstrip())
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
-    def start_process(self, c, command, kind, fn=None):
+    def start_process(self, c, command, kind, fn=None, shell=False):
         '''Start or queue a process described by command and fn.'''
         trace = False and not g.unitTesting
-        self.data = data = self.ProcessData(c, kind, fn)
+        self.data = data = self.ProcessData(c, kind, fn, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
             if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
@@ -172,7 +172,7 @@ class BackgroundProcessManager(object):
                 self.put_log(g.shortFileName(fn))
                 self.pid = subprocess.Popen(
                     command,
-                    shell=False,
+                    shell=shell,
                     stderr=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
@@ -187,7 +187,7 @@ class BackgroundProcessManager(object):
             self.put_log(g.shortFileName(fn))
             self.pid = subprocess.Popen(
                 command,
-                shell=False,
+                shell=shell,
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
