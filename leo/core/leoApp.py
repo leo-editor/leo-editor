@@ -30,10 +30,11 @@ else:
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
 class IdleTimeManager(object):
     '''
-    A singleton class to manage idle-time handling.
+    A singleton class to manage idle-time handling. This class handles all
+    details of running code at idle time, including running 'idle' hooks.
     
-    Any code can call g.app.idleTimeManager.add_callback(callback) to
-    cause the callback to be called at idle time forever.
+    Any code can call g.app.idleTimeManager.add_callback(callback) to cause
+    the callback to be called at idle time forever.
     '''
     
     def __init__(self):
@@ -64,16 +65,8 @@ class IdleTimeManager(object):
                 g.es_exception()
                 g.es_print('removing callback: %s' % callback)
                 self.callback_list.remove(callback)
-        # Handle idle-time hooks. (was g.idleTimeHookHandler).
-        if g.app.idle_time_hooks_enabled:
-            for frame in g.app.windowList:
-                c = frame.c
-                # Do NOT compute c.currentPosition.
-                # This would be a MAJOR leak of positions.
-                if trace and trace_hooks:
-                    g.trace('(IdleTimeManager) %3s calling g.doHook(c=%s)' % (
-                        self.on_idle_count, c.shortFileName()))
-                g.doHook("idle", c=c)
+        # Handle idle-time hooks.
+        g.app.pluginsController.on_idle()
     #@+node:ekr.20161028034808.1: *3* itm.start
     def start (self):
         '''Start the idle-time timer.'''

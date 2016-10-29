@@ -9,7 +9,7 @@ optional_modules = [
     'leo.plugins.livecode',
 ]
 #@+others
-#@+node:ekr.20100908125007.6041: ** Top-level functions
+#@+node:ekr.20100908125007.6041: ** Top-level functions (leoPlugins.py)
 def init():
     '''Init g.app.pluginsController.'''
     g.app.pluginsController = LeoPluginsController()
@@ -275,6 +275,19 @@ class LeoPluginsController(object):
             setting='warn_when_plugins_fail_to_load',
             default=True)
     #@+node:ekr.20100909065501.5952: *3* plugins.Event handlers
+    #@+node:ekr.20161029060545.1: *4* plugins.on_idle
+    def on_idle(self):
+        '''Call all idle-time hooks.'''
+        trace = False and not g.unitTesting
+        if g.app.idle_time_hooks_enabled:
+            for frame in g.app.windowList:
+                c = frame.c
+                # Do NOT compute c.currentPosition.
+                # This would be a MAJOR leak of positions.
+                if trace:
+                    g.trace('(leoPlugins.py) %3s calling g.doHook(c=%s)' % (
+                        self.on_idle_count, c.shortFileName()))
+                g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
     def doHandlersForTag(self, tag, keywords):
         """
