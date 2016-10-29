@@ -285,8 +285,8 @@ class LeoPluginsController(object):
                 # Do NOT compute c.currentPosition.
                 # This would be a MAJOR leak of positions.
                 if trace:
-                    g.trace('(leoPlugins.py) %3s calling g.doHook(c=%s)' % (
-                        self.on_idle_count, c.shortFileName()))
+                    g.trace('(leoPlugins.py) calling g.doHook(c=%s)' % (
+                        c.shortFileName()))
                 g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
     def doHandlersForTag(self, tag, keywords):
