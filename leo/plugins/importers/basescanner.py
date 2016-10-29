@@ -140,7 +140,7 @@ class BaseLineScanner(object):
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
-            g.trace('===== PERFECT IMPORT FAILED =====')
+            g.trace('===== PERFECT IMPORT FAILED =====', parent.h)
             g.trace('len(s1): %s len(s2): %s' % (n1, n2))
             for i in range(min(n1, n2)):
                 line1, line2 = lines1[i], lines2[i]
@@ -253,7 +253,7 @@ class BaseLineScanner(object):
     #@+node:ekr.20161027182014.1: *4* BaseLineScanner.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
-        parent.b = parent.b.rstrip() + '@ignore\n'
+        parent.b = parent.b.rstrip() + '\n@ignore\n'
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
         else:
@@ -2368,40 +2368,52 @@ class ScanState(object):
                 i += 1
         return i, lines[i1:i]
     #@+node:ekr.20161027115813.7: *3* state.scan_line
-    def scan_line(self, s):
+    def scan_line(self, s, block_comment=None, line_comment='#'):
         '''
-        **Example only**: Update the scan state by scanning s.
-        This method should be overridden by all subclasses.
+        A generalized line scanner.  This will suffice for many languages,
+        but it should be overridden for languages that have regex syntax
+        or for languages like Python that do not delimit structure with brackets.
+
+        Sets three ivars for ScanState.starts_block and ScanState.continues_block:
         
-        This sets data for ScanState.starts_block and ScanState.continues_block.
+        - .context is non-empty if we are scanning a multi-line string, comment
+          or regex.
         
-        - The .context ivar is non-empty if we are scanning a multi-line
-          string, comment or regex.
-        
-        - The .curlies and .parens are the present counts of open
-          curly-brackets and parentheses.
-          
-        This is enough to determine program structure for most languages. For
-        Python however, this class would have to be rewritten to use
-        indentation level instead of curly-bracket and parenthesis counts.
+        - .curlies and .parens are the present counts of open curly-brackets
+          and parentheses.
         '''
         trace = False and not g.unitTesting
+        
+        def match(i, pattern):
+            return pattern and pattern == s[i:i+len(pattern)]
+
+        contexts = strings = ['"', "'"]
+        block1, block2 = None, None
+        if block_comment:
+            block1, block2 = block_comment
+            contexts.append(block1)
         i = 0
         while i < len(s):
             progress = i
             ch = s[i]
             if self.context:
-                assert self.context in ('"', "'"), repr(self.context)
+                assert self.context in contexts, repr(self.context)
                 if ch == '\\':
                     i += 1 # Eat the next character later.
-                elif self.context == ch:
+                elif self.context in strings and self.context == ch:
                     self.context = '' # End the string.
+                elif self.context == block1 and match(i, block2):
+                    self.context = '' # End the block comment.
+                    i += (len(block2) - 1)
                 else:
                     pass # Eat the string character later.
-            elif ch == '#':
-                break # The single-line comment ends the line.
-            elif ch in ('"', "'"):
+            elif ch in strings:
                 self.context = ch
+            elif match(i, block1):
+                self.context = block1
+                i += (len(block1) - 1)
+            elif match(i, line_comment):
+                break # The single-line comment ends the line.
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
             elif ch == '(': self.parens += 1
