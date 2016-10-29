@@ -3,6 +3,15 @@
 """
 Provides a widget for displaying graphs (networks) in Leo.
 
+graphcanvas has one command:
+
+`graph-toggle-autoload`
+
+    This command remembers the current node, and auto loads the associated
+    graph when the outline is loaded in the future.  Using the command again
+    cancels this behavior.
+
+
 Requires Qt and the backlink.py plugin.
 
 There are various bindings for graphviz:
@@ -96,7 +105,11 @@ def onCreate (tag, keys):
 #@+node:tbrown.20110716130512.21969: ** command graph-toggle-autoload
 @g.command('graph-toggle-autoload')
 def toggle_autoload(event):
-
+    """
+    This command remembers the current node, and auto loads the associated
+    graph when the outline is loaded in the future.  Using the command again
+    cancels this behavior.
+    """
     c = event.get('c')
     if not c:
         return
