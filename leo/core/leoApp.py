@@ -52,8 +52,6 @@ class IdleTimeManager(object):
 
     def on_idle(self, timer):
         '''IdleTimeManager: Run all idle-time callbacks.'''
-        trace = False and not g.unitTesting
-        trace_hooks = True
         if not g.app: return
         if g.app.killed: return
         self.on_idle_count += 1
