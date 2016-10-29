@@ -1,25 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
-'''
-Legacy (character-oriented) importers use BaseScanner class.
-New (line-oriented) importers use BaseLineScanner class.
-'''
-#@+<< imports >>
-#@+node:ekr.20161027163734.1: ** << imports >>
-import leo.core.leoGlobals as g
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
-    StringIO = StringIO.StringIO
-import time
-#@-<< imports >>
-#@+<< How the new (line-by-line) importers work >>
-#@+node:ekr.20161029051724.1: ** << How the new (line-by-line) importers work >>
+#@+<< basescanner docstring >>
+#@+node:ekr.20161029051724.1: ** << basescanner docstring >>
 '''
 #@@language rest
 #@@wrap
+
+Legacy (character-oriented) importers use BaseScanner class.
+
+New (line-oriented) importers use BaseLineScanner class. Here's how:
 
 **Executive overview**
 
@@ -82,7 +71,19 @@ Most importers simply override `ScanState.scan_line`, which simply scans
 tokens. The entire `ScanState` would have to be rewritten for languages
 such as Python.
 '''
-#@-<< How the new (line-by-line) importers work >>
+#@-<< basescanner docstring >>
+#@+<< imports >>
+#@+node:ekr.20161027163734.1: ** << imports >>
+import leo.core.leoGlobals as g
+if g.isPython3:
+    import io
+    StringIO = io.StringIO
+else:
+    import StringIO
+    StringIO = StringIO.StringIO
+import time
+#@-<< imports >>
+
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
