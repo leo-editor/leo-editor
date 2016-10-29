@@ -53,7 +53,7 @@ class BackgroundProcessManager(object):
     # Use self.put_log, not g.es or g.es_print!
     
     def __init__(self):
-        '''Ctor for the base BackgroundManager class.'''
+        '''Ctor for the base BackgroundProcessManager class.'''
         self.data = None
             # a ProcessData instance.
         self.process_queue = []
