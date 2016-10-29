@@ -41,10 +41,12 @@ class BackgroundProcessManager(object):
 
     **Running multiple processes simultaneously**
 
-    It is possible to run multiple processes simulateously, *provided* that
-    only one process at a time writes output. The best way to run *silent*
-    processes is to use subprocess.Popen. There is never any need to
-    instantiate multiple instances of the BPM
+    Only one process at a time should be producing output. All processes that
+    *do* produce output should be managed by the singleton BPM instance.
+
+    To run processes that *don't* produce output, just call subprocess.Popen.
+    You can run as many of these process as you like, without involing the BPM
+    in any way.
     '''
     #@-<< BPL docstring>>
     
@@ -67,21 +69,19 @@ class BackgroundProcessManager(object):
     class ProcessData(object):
         '''A class to hold data about running or queued processes.'''
         
-        def __init__(self, c, kind, fn, silent):
+        def __init__(self, c, kind, fn):
             '''Ctor for the ProcessData class.'''
             self.c = c
             self.callback = None
             self.fn = fn
             self.kind = kind
-            self.silent = silent
             
         def __repr__(self):
-            return 'c: %s kind: %s callback: %s fn: %s silent: %s' % (
+            return 'c: %s kind: %s callback: %s fn: %s' % (
                 self.c.shortFileName(),
                 self.kind,
                 id(self.callback) if self.callback else None,
                 self.fn,
-                self.silent,
             )
                 
         __str__ = __repr__
@@ -104,9 +104,8 @@ class BackgroundProcessManager(object):
     def end(self):
         '''End the present process.'''
         # Send the output to the log.
-        if not self.data.silent:
-            for s in self.pid.stdout:
-                self.put_log(s)
+        for s in self.pid.stdout:
+            self.put_log(s)
         # Terminate the process properly.
         try:
             self.pid.kill()
@@ -160,10 +159,10 @@ class BackgroundProcessManager(object):
             else:
                 g.es_print(s.rstrip())
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
-    def start_process(self, c, command, kind, fn=None, silent=False):
+    def start_process(self, c, command, kind, fn=None):
         '''Start or queue a process described by command and fn.'''
         trace = False and not g.unitTesting
-        self.data = data = self.ProcessData(c, kind, fn, silent)
+        self.data = data = self.ProcessData(c, kind, fn)
         if self.pid:
             # A process is already active.  Add a new callback.
             if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
