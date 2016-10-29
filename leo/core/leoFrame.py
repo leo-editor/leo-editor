@@ -998,7 +998,6 @@ class LeoFrame(object):
         f = self; c = f.c
         w = event and event.widget
         wname = (w and c.widget_name(w)) or '<no widget>'
-        # if trace: g.trace(g.isTextWrapper(w),w)
         if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget', w)
             return

@@ -856,7 +856,10 @@ class AutoCompleterClass(object):
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
         '''Insert s at the insertion point.'''
-        c = self.c; w = self.w
+        c = self.c
+        w = self.w
+        if not g.isTextWrapper(w): # Bug fix: 2016/10/29.
+            return
         c.widgetWantsFocusNow(w)
         i = w.getInsertPoint()
         w.insert(i, s)

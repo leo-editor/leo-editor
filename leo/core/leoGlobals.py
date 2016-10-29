@@ -1622,10 +1622,10 @@ def assertUi(uitype):
         raise UiTypeException
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
 def isTextWidget(w):
-    return g.app.gui.isTextWidget(w)
+    return w and g.app.gui.isTextWidget(w)
 
 def isTextWrapper(w):
-    return g.app.gui.isTextWrapper(w)
+    return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20150508165324.1: ** g.Decorators
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
 def check_cmd_instance_dict(c, g):

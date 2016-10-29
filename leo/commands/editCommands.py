@@ -1347,7 +1347,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        assert g.isTextWrapper(w)
+        if not g.isTextWrapper(w):
+            return
         name = c.widget_name(w)
         if name.startswith('head'):
             return
@@ -1365,7 +1366,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        assert g.isTextWrapper(w)
+        if not g.isTextWrapper(w):
+            return
         name = c.widget_name(w)
         if name.startswith('head'):
             return
@@ -1386,7 +1388,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        assert g.isTextWrapper(w), w
+        if not g.isTextWrapper(w):
+            return
         name = c.widget_name(w)
         if name.startswith('head'):
             return
@@ -1416,7 +1419,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        assert g.isTextWrapper(w)
+        if not g.isTextWrapper(w):
+            return
         name = c.widget_name(w)
         if name.startswith('head'): return
         tab_width = abs(c.getTabWidth(c.p))
@@ -2493,10 +2497,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Bug fix 2013/12/13: Special case the minibuffer.
         if w == k.w:
             k.selectAll()
-        else:
-            isTextWrapper = g.isTextWrapper(w)
-            if w and isTextWrapper:
-                return w.selectAllText()
+        elif w and g.isTextWrapper(w):
+            w.selectAllText()
     #@+node:ekr.20150514063305.312: *4* sentences & helpers
     @cmd('back-sentence')
     def backSentence(self, event):
