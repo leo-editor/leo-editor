@@ -18,26 +18,26 @@ class BackgroundProcessManager(object):
 
     The BackgroundProcessManager (BPM) class runs background processes,
     *without blocking Leo*. The BPM manages a queue of processes, and runs them
-    *one at a time* so that their output is not intermixed.
+    *one at a time* so that their output remains separate.
 
-    g.app.backgroundProcessManager is the singletone BPM.
+    g.app.backgroundProcessManager is the singleton BPM.
 
     The BPM registers a handler with the IdleTimeManager that checks whether
     the presently running background process has completed. If so, the handler
     writes the process's output to the log and starts another background
     process in the queue.
 
-    BPM.start_process(c, command, kind) adds a process to the queue that will
-    run the given command.
+    BPM.start_process(c, command, kind, fn=None) adds a process to the queue
+    that will run the given command.
 
-    BM.kill(kind) kills all process with the given kind. If kind is None or
-    'all', all processes are killed.
+    BM.kill(kind=None) kills all process with the given kind. If kind is None
+    or 'all', all processes are killed.
 
     You can add processes to the queue at any time. For example, you can rerun
     the 'pylint' command while a background process is running.
 
-    The BackgroundManager is completely safe: all of its code runs in the main
-    process.
+    The BackgroundProcessManager is completely safe: all of its code runs in
+    the main process.
 
     **Running multiple processes simultaneously**
 
@@ -45,7 +45,7 @@ class BackgroundProcessManager(object):
     *do* produce output should be managed by the singleton BPM instance.
 
     To run processes that *don't* produce output, just call subprocess.Popen.
-    You can run as many of these process as you like, without involing the BPM
+    You can run as many of these process as you like, without involving the BPM
     in any way.
     '''
     #@-<< BPL docstring>>
@@ -151,7 +151,7 @@ class BackgroundProcessManager(object):
         This is not what g.es_print does!
         '''
         if s.strip():
-            # Put the message to the origiting log pane, if it still exists.
+            # Put the message to the originating log pane, if it still exists.
             c = self.data.c
             if c.exists:
                 c.frame.log.put(s)
