@@ -10,10 +10,45 @@ import subprocess
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager(object):
+    #@+<< BPL docstring>>
+    #@+node:ekr.20161029063227.1: *3* << BPL docstring>>
     '''
-    A class to run Python processes sequentially in the background.
-    Use self.put_log, not g.es or g.es_print!
+    #@@language rest
+    #@@wrap
+
+    The BackgroundProcessManager (BPM) class runs background processes,
+    *without blocking Leo*. The BPM manages a queue of processes, and runs them
+    *one at a time* so that their output is not intermixed.
+
+    g.app.backgroundProcessManager is the singletone BPM.
+
+    The BPM registers a handler with the IdleTimeManager that checks whether
+    the presently running background process has completed. If so, the handler
+    writes the process's output to the log and starts another background
+    process in the queue.
+
+    BPM.start_process(c, command, kind) adds a process to the queue that will
+    run the given command.
+
+    BM.kill(kind) kills all process with the given kind. If kind is None or
+    'all', all processes are killed.
+
+    You can add processes to the queue at any time. For example, you can rerun
+    the 'pylint' command while a background process is running.
+
+    The BackgroundManager is completely safe: all of its code runs in the main
+    process.
+
+    **Running multiple processes simultaneously**
+
+    It is possible to run multiple processes simulateously, *provided* that
+    only one process at a time writes output. The best way to run *silent*
+    processes is to use subprocess.Popen. There is never any need to
+    instantiate multiple instances of the BPM
     '''
+    #@-<< BPL docstring>>
+    
+    # Use self.put_log, not g.es or g.es_print!
     
     def __init__(self):
         '''Ctor for the base BackgroundManager class.'''
@@ -162,4 +197,8 @@ class BackgroundProcessManager(object):
                 id(self.pid), g.shortFileName(fn)))
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 60
+
 #@-leo
