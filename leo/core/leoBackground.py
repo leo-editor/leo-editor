@@ -27,8 +27,8 @@ class BackgroundProcessManager(object):
     writes the process's output to the log and starts another background
     process in the queue.
 
-    BPM.start_process(c, command, kind, fn=None) adds a process to the queue
-    that will run the given command.
+    BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to
+    the queue that will run the given command.
 
     BM.kill(kind=None) kills all process with the given kind. If kind is None
     or 'all', all processes are killed.
