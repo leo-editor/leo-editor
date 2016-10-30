@@ -13862,7 +13862,7 @@ section 3.1.1, line 1
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20141111095646.11: *5* @auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
+#@+node:ekr.20141111095646.11: *5* @@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
