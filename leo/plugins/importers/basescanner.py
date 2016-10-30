@@ -83,7 +83,6 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
-
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
@@ -129,9 +128,9 @@ class BaseLineScanner(object):
         self.tab_width = None
     #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check & helpers
     def check(self, unused_s, parent):
-        '''Perl override of base checker.'''
-        trace = False and not g.unitTesting
-        trace_all_lines = False
+        '''BaseLineScanner.check'''
+        trace = True and not g.unitTesting
+        trace_all_lines = True
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         if self.gen_clean:
@@ -315,7 +314,7 @@ class BaseLineScanner(object):
         lines = g.splitLines(s1)
         if self.gen_refs:
             block = Block(lines, simple=False)
-            self.rescan_block(block, strip_lines=False)
+            self.rescan_block(block, top_level=True)
             parent.b = '@language %s\n' % (self.language)
             self.put_block(block, parent, create_child=False)
         else:
@@ -328,7 +327,7 @@ class BaseLineScanner(object):
                 state.scan_line(line)
                 if state.starts_block():
                     if block_lines: blocks.append(Block(block_lines, simple=True))
-                    i, block_lines = state.scan_block(i, lines)
+                    i, block_lines = self.scan_block(i, lines)
                     blocks.append(Block(block_lines, simple=False))
                     block_lines = []
                 else:
@@ -368,22 +367,30 @@ class BaseLineScanner(object):
         for child in block.children:
             self.put_block(child, p)
     #@+node:ekr.20161027094537.21: *4* BaseLineScanner.rescan_block & helpers
-    def rescan_block(self, parent_block, strip_lines=True):
+    def rescan_block(self, parent_block, top_level=False):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         state = self.state
         trace = False and not g.unitTesting
-        if trace: g.trace('len: %3s' % (
-            len(parent_block.lines)), parent_block.get_headline())
-        if strip_lines:
-            # The first and last lines begin and end the block.
-            # Only scan the interior lines.
-            first_line = parent_block.lines[0]
-            last_line = parent_block.lines[-1]
-            lines = parent_block.lines[1:-1]
-        else:
-            # This is the top-level block, when self.gen_refs is True.
+        if top_level:
+            # Scan everything.
             first_line, last_line = None, None
             lines = parent_block.lines
+        else:
+            first_line = parent_block.lines[0]
+            if self.language == 'python':
+                # Scan everything except the first line.
+                last_line = None
+                lines = parent_block.lines[1:]
+            else:
+                # The first and last lines begin and end the block.
+                # Only scan the interior lines.
+                last_line = parent_block.lines[-1]
+                lines = parent_block.lines[1:-1]
+        if trace:
+            g.trace('ENTRY: parent: %s\n%s' % (
+                parent_block.description(),
+                ''.join(lines),
+            ))
         state.push() # Set the bases to the present counts.
         blocks, block_lines = [], []
         i = 0
@@ -395,8 +402,10 @@ class BaseLineScanner(object):
                 if block_lines:
                     # Finish any previous block.
                     blocks.append(Block(block_lines, simple=True))
-                # This is the *only* reparsing that is done.
-                i, block_lines = state.scan_block(i, lines)
+                # This is the *only* rescanning that is done.
+                ### state.push() ###
+                i, block_lines = self.scan_block(i, lines)
+                ### state.pop() ###
                 blocks.append(Block(block_lines, simple=False))
                 block_lines = []
             else:
@@ -407,56 +416,44 @@ class BaseLineScanner(object):
         # End the lines.
         if block_lines:
             blocks.append(Block(block_lines, simple=True))
-        if self.gen_refs: 
-            # Generate section references.
+        if trace:
+            g.trace('BLOCKS...')
+            for block in blocks:
+                print(block)
+        self.make_children(blocks, first_line, last_line, parent_block)
+    #@+node:ekr.20161030032639.1: *5* BaseLineScanner.make_children
+    def make_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks'''
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        c = self.c
+        if trace:
+            g.trace('parent', parent_block.description(), 'BLOCKS...\n')
+            for block in blocks:
+                print(block)
+        if self.gen_refs:
             self.make_ref_children(blocks, first_line, last_line, parent_block)
         else:
-            # Generate only @others.
             self.make_at_others_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161027094537.22: *5* BaseLineScanner.make_at_others_children
-    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
-        '''Generate child blocks for all blocks using @others.'''
-        trace = False and not g.unitTesting
-        c = self.c
-        if not blocks:
-            return
-        if trace:
-            g.trace(self.root.h)
-            g.trace(parent_block)
-            for z in blocks:
-                print('%s %s' % (self.max_blocks_indent([z]), z))
-        # Create child nodes only if there are enough lines.
-        # This is arbitrary, and so a bit confusing.
-        # However, it is about right in practice.
-        n_lines = sum([len(z.lines) for z in blocks])
-        if n_lines < 10: # We want this to be a small number.
-            return
-        max_indent = 4 if self.gen_clean else 0
-            # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
-        parent_block.lines = [
-            first_line,
-            '%s@others\n' % (' ' * max_indent),
-            last_line]
-        children = []
-        for block in blocks:
-            child_block = Block(block.lines, simple=block.simple)
-            if self.gen_clean:
-                child_undent = self.max_blocks_indent([child_block])
-            else:
-                child_undent = max_indent
-            child_block.undent(c, child_undent, clean=self.gen_clean)
-            children.append(child_block)
-        parent_block.children = children
-        self.rescan_blocks(children)
+     
+    #@+node:ekr.20161027094537.20: *5* BaseLineScanner.ref_line
+    def ref_line(self, block):
+        '''Return a reference to the block.'''
+        
+        def munge(h):
+            '''Munge a headline for use in a section reference.'''
+            for z in '<>': # {}()[]
+                h = h.replace(z,'')
+            return h.strip()
+
+        # Always return a reference
+        h = munge(block.get_headline())
+        return g.angleBrackets(' ' + h + ' ')
+
+       
     #@+node:ekr.20161027094537.23: *5* BaseLineScanner.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
-        '''Generate child blocks for all blocks using section references'''
-        trace = False and not g.unitTesting and self.root.h.endswith('alt.js')
+        '''Generate child blocks for all blocks'''
         c = self.c
-        if trace:
-            g.trace('len: %3s %s' % (
-                len(parent_block.lines),
-                parent_block.get_headline()))
         body, children = [], []
         for block in blocks:
             if block.simple:
@@ -486,21 +483,31 @@ class BaseLineScanner(object):
         parent_block.children = children
         # Continue the rescan.
         self.rescan_blocks(children)
-    #@+node:ekr.20161027094537.20: *5* BaseLineScanner.ref_line
-    def ref_line(self, block):
-        '''Return a reference to the block.'''
-        
-        def munge(h):
-            '''Munge a headline for use in a section reference.'''
-            for z in '<>': # {}()[]
-                h = h.replace(z,'')
-            return h.strip()
-
-        # Always return a reference
-        h = munge(block.get_headline())
-        return g.angleBrackets(' ' + h + ' ')
-
-       
+    #@+node:ekr.20161027094537.22: *5* BaseLineScanner.make_at_others_children
+    def make_at_others_children(self, blocks, first_line, last_line, parent_block):
+        '''Generate child blocks for all blocks using @others.'''
+        trace = True and not g.unitTesting
+        c = self.c
+        if not blocks:
+            return
+        max_indent = 4 if self.gen_clean else 0
+            # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
+        parent_block.lines = [
+            first_line,
+            '%s@others\n' % (' ' * max_indent)
+        ]
+        if last_line: parent_block.lines.append(last_line)
+        children = []
+        for block in blocks:
+            child_block = Block(block.lines, simple=block.simple)
+            if self.gen_clean:
+                child_undent = self.max_blocks_indent([child_block])
+            else:
+                child_undent = max_indent
+            child_block.undent(c, child_undent, clean=self.gen_clean)
+            children.append(child_block)
+        parent_block.children = children
+        self.rescan_blocks(children)
     #@+node:ekr.20161027094537.24: *4* BaseLineScanner.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
@@ -510,6 +517,33 @@ class BaseLineScanner(object):
                 block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
+    #@+node:ekr.20161027115813.6: *4* BaseLineScanner.scan_block
+    def scan_block(self, i, lines):
+        '''Scan lines[i:]. Return (i, lines).'''
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
+        state = self.state
+        i1 = i
+        i += 1
+        while i < len(lines):
+            progress = i
+            state.scan_line(lines[i])
+            if state.continues_block():
+                i += 1
+            elif self.language == 'python':
+                break
+            else:
+                i += 1 # Add the line that ends the block
+                break
+            assert progress < i
+        # DON'T add extra trailing lines.
+        # The last line *must* be the line that ends the block.
+        # The post pass can adjust blocks...
+        result = lines[i1:i]
+        if trace:
+            g.trace(g.callers(1), i1, '==== returns')
+            for line in result:
+                print(line.rstrip())
+        return i, result
     #@+node:ekr.20161027181809.1: *3* BaseLineScanner.utils
     #@+node:ekr.20161027094537.17: *4* BaseLineScanner.dump_block & dump_blocks
     def dump_block(self, block):
@@ -2246,10 +2280,16 @@ class Block:
         self.headline = ''
         self.simple = simple
         
-    def __repr__(self):
+    def description(self):
         return 'Block: simple: %s lines: %s children: %s %s' % (
             int(self.simple), len(self.lines),
             len(self.children), self.get_headline())
+        
+    def __repr__(self):
+        return '%s Block...\n%s' % (
+            'Simple' if self.simple else 'Complex',
+            ''.join(self.lines),
+        )
             
     __str__ = __repr__
     
@@ -2343,31 +2383,6 @@ class ScanState(object):
         self.base_curlies = self.curlies
         self.base_parens = self.parens
 
-    #@+node:ekr.20161027115813.6: *3* state.scan_block
-    def scan_block(self, i, lines):
-        '''Scan lines[i:]. Return (i, lines).'''
-        trace = False and not g.unitTesting
-        state = self
-        assert state.starts_block(), i
-        if trace: g.trace('START:', state)
-        i1 = i
-        i += 1
-        while i < len(lines):
-            progress = i
-            state.scan_line(lines[i])
-            if state.continues_block():
-                i += 1
-            else:
-                if trace: g.trace('DONE: ', i-i1)
-                i += 1 # Add the line that ends the block
-                break
-            assert progress < i
-        # DON'T DO THIS. The last line *must* have the closing parens.
-        if 0:
-            # Lookahead: add trailing blank lines.
-            while i+1 < len(lines) and not lines[i+1].strip():
-                i += 1
-        return i, lines[i1:i]
     #@+node:ekr.20161027115813.7: *3* state.scan_line
     def scan_line(self, s, block_comment=None, line_comment='#'):
         '''

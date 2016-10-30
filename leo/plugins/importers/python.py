@@ -13,23 +13,33 @@ class PythonLineScanner(basescanner.BaseLineScanner):
     def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
         '''The ctor for the PythonScanner class.'''
         c = importCommands.c
-        clean = c.config.getBool('python_importer_clean_lws', default=False)
+        ###clean = c.config.getBool('python_importer_clean_lws', default=False)
         # Init the base class.
         basescanner.BaseLineScanner.__init__(self, importCommands,
             atAuto = atAuto,
-            gen_clean = clean, # True: clean blank lines.
+            gen_clean = False, # True: clean blank lines & unindent blocks.
             gen_refs = False, # Don't generate section references.
             language = 'python', # For @language.
             state = PythonScanState(c),
             strict = True, # True: leave leading whitespace alone.
+            ############ Customize rescan blocks ###########
         )
         
     #@+others
     #@+node:ekr.20161029103640.2: *3* python.clean_headline
     def clean_headline(self, p):
         '''Return a cleaned up headline for p, or None for no change.'''
-        m = re.match(r'(def|class)\s+(\w+)', p.h)
-        return 'def ' + m.group(2) if m else None
+        m = re.match(r'def\s+(\w+)', p.h)
+        if m:
+            return m.group(1)
+        m = re.match(r'class\s+(\w+)', p.h)
+        if m:
+            return 'class %s' % m.group(1)
+        else:
+            return None
+
+        # m = re.match(r'(def|class)\s+(\w+)', p.h)
+        # return m.group(1) + ' ' + m.group(2) if m else None
     #@+node:ekr.20161029103640.3: *3* python.clean_nodes
     def clean_nodes(self, parent):
         '''Clean nodes as part of the post pass.'''
@@ -43,12 +53,12 @@ class PythonLineScanner(basescanner.BaseLineScanner):
                 p.b = ''.join(lines)
     #@-others
 #@+node:ekr.20161029103615.1: ** class PythonScanState
-class PythonScanState(basescanner.ScanState):
+class PythonScanState: ###(basescanner.ScanState):
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
         '''Ctor for the PythonScanState class.'''
-        basescanner.ScanState.__init__(self)
+        ### basescanner.ScanState.__init__(self)
         self.tab_width = c.tab_width
         self.base_indent, self.indent = 0, 0
         self.context = '' # Represents cross-line constructs.
@@ -64,17 +74,24 @@ class PythonScanState(basescanner.ScanState):
     __str__ = __repr__
     #@+node:ekr.20161029103952.3: *3* python_state.continues_block and starts_block
     def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.context or self.indent >= self.base_indent
+        '''Return True if the just-scanned lines should be placed in the block.'''
+        if self.context: ###  or not self.is_class_or_def:
+            return True
+        else:
+            return self.indent > self.base_indent
 
     def starts_block(self):
         '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and (self.indent < self.base_indent or self.is_class_or_def)
+        if self.context: ### or not self.is_class_or_def:
+            return False
+        else:
+            ### return self.indent >= self.base_indent
+            return self.is_class_or_def and self.indent >= self.base_indent
     #@+node:ekr.20161029103952.4: *3* python_state.get_base
     def get_base (self):
         '''Return the present counts.'''
         assert not self.context, repr(self.context)
-        return self.curlies, self.parens
+        return self.indent
     #@+node:ekr.20161029103952.5: *3* python_state.push & pop
     def pop(self):
         '''Restore the base state from the stack.'''
@@ -82,55 +99,24 @@ class PythonScanState(basescanner.ScanState):
         
     def push(self):
         '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append(self.indent)
+        self.stack.append(self.base_indent)
         self.base_indent = self.indent
-    #@+node:ekr.20161029103952.6: *3* python_state.scan_block
-    def scan_block(self, i, lines):
-        '''Scan lines[i:]. Return (i, lines).'''
-        trace = False and not g.unitTesting
-        state = self
-        assert state.starts_block(), i
-        if trace: g.trace('START:', state)
-        i1 = i
-        i += 1
-        while i < len(lines):
-            progress = i
-            state.scan_line(lines[i])
-            if state.continues_block():
-                i += 1
-            else:
-                if trace: g.trace('DONE: ', i-i1)
-                i += 1 # Add the line that ends the block
-                break
-            assert progress < i
-        # DON'T DO THIS. The last line *must* have the closing parens.
-        if 0:
-            # Lookahead: add trailing blank lines.
-            while i+1 < len(lines) and not lines[i+1].strip():
-                i += 1
-        return i, lines[i1:i]
     #@+node:ekr.20161029103615.2: *3* python_state.scan_line
-    # scan_line_pattern = re.compile(r'^(\w*)')
-
     def scan_line(self, s):
-        '''
-        Update the scan state by scanning s.
-        
-        The postpass may move underindented comments and backslash-newlines.
-        '''
+        '''Update the scan state by scanning s.'''
         #pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         
         def match(i, pattern):
             return pattern and g.match_word(s, i, pattern)
 
-        lws = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-        lws_i = g.skip_ws(s, 0)
-        self.is_class_or_def = (
-            self.context  != 'bs-nl' and (
-                match(lws_i, 'class') or match(lws_i, 'def')))
-        if self.context in ('bs-nl', '#'):
+        if self.context == 'bs-nl':
+            self.is_class_or_def = False
             self.context = ''
+        else:
+            lws_i = g.skip_ws(s, 0)
+            self.is_class_or_def = match(lws_i, 'class') or match(lws_i, 'def')
+            self.indent = g.computeLeadingWhitespaceWidth(s, self.tab_width)
         contexts = ['', '"""', "'''", '"', "'"]
         assert self.context in contexts, repr(self.context)
         i = 0
@@ -145,23 +131,28 @@ class PythonScanState(basescanner.ScanState):
                 else:
                     pass # Eat the string character later.
             elif ch == '#':
-                self.context = '#' # Ignore indentation in comments.
-                break # The single-line comment ends the line.
+                # The single-line comment ends the line.
+                break 
             elif s[i:i+3] in ('"""', "'''"):
                 self.context = s[i:i+3]
             elif ch in ('"', "'"):
                 self.context = ch
             elif s[i:] == r'\\\n':
-                self.context = 'bs-nl'
+                self.context = 'bs-nl' # The *next* line can't be a def or class.
                 break
             elif ch == r'\\':
-                i += 1
+                i += 1 # Eat the *next* character.
             i += 1
             assert progress < i
         if trace:
-            g.trace(repr(self.context), s.rstrip())
+            g.trace(
+                'indents:', self.base_indent, self.indent,
+                'class/def? %5s' % (self.is_class_or_def),
+                'continue? %5s' % (self.continues_block()),
+                'context: %3s' % repr(self.context),
+                s.rstrip())
     #@-others
-#@+node:ekr.20161029120457.1: ** class PythonScanner
+#@+node:ekr.20161029120457.1: ** class PythonScanner (legacy: to be replaced)
 class PythonScanner(basescanner.BaseScanner):
     #@+others
     #@+node:ekr.20161029120457.2: *3*  __init__ (PythonScanner)
