@@ -246,8 +246,8 @@ class BaseLineScanner(object):
             while start > 0 and s[start - 1] in (' ', '\t'):
                 start -= 1
         # g.trace(repr(s[sigStart:codeEnd]))
-        body1 = self.undentBody(s[start: sigStart], ignoreComments=False)
-        body2 = self.undentBody(s[sigStart: codeEnd])
+        body1 = self.undent_body(s[start: sigStart], ignoreComments=False)
+        body2 = self.undent_body(s[sigStart: codeEnd])
         body = body1 + body2
         if trace: g.trace('body: %s' % repr(body))
         tail = body[len(body.rstrip()):]
@@ -272,10 +272,10 @@ class BaseLineScanner(object):
         else:
             prefix = ''
         # Create the node.
-        return self.createHeadline(parent, prefix + body, headline)
+        return self.create_headline(parent, prefix + body, headline)
     #@+node:ekr.20161030190924.26: *4* BLS.create_headline
     def create_headline(self, parent, body, headline):
-        return self.importCommands.createHeadline(parent, body, headline)
+        return self.importCommands.create_headline(parent, body, headline)
     #@+node:ekr.20161030190924.27: *4* BLS.end_gen
     def end_gen(self, s):
         '''Do any language-specific post-processing.'''
@@ -340,9 +340,9 @@ class BaseLineScanner(object):
         if extend:
             classHead = classHead + extend
         # Create the class node.
-        class_node = self.createHeadline(parent, '', headline)
+        class_node = self.create_headline(parent, '', headline)
         # Remember the indentation of the class line.
-        undentVal = self.getLeadingIndent(classHead, 0)
+        undentVal = self.get_leading_indent(classHead, 0)
         # Call the helper to parse the inner part of the class.
         putRef, bodyIndent, classDelim, decls, trailing = self.putClassHelper(
             s, i, codeEnd, class_node)
@@ -357,11 +357,11 @@ class BaseLineScanner(object):
         # Remove the leading whitespace.
         result = (
             prefix +
-            self.undentBy(classHead, undentVal) +
-            self.undentBy(classDelim, undentVal) +
-            self.undentBy(decls, undentVal) +
-            self.undentBy(ref, undentVal) +
-            self.undentBy(trailing, undentVal))
+            self.undent_by(classHead, undentVal) +
+            self.undent_by(classDelim, undentVal) +
+            self.undent_by(decls, undentVal) +
+            self.undent_by(ref, undentVal) +
+            self.undent_by(trailing, undentVal))
         result = self.adjust_class_ref(result)
         # Append the result to the class node.
         self.appendTextToClassNode(class_node, result)
@@ -420,11 +420,11 @@ class BaseLineScanner(object):
             j = g.skip_ws(s, i + len(delim1))
             if g.is_nl(s, j): j = g.skip_nl(s, j)
             classDelim = s[i: j]
-            end2 = self.skipBlock(s, i, delim1=delim1, delim2=delim2)
-            start, putRef, bodyIndent2 = self.scanHelper(s, j, end=end2, parent=class_node, kind='class')
+            end2 = self.new_skip_block(s, i, delim1=delim1, delim2=delim2)
+            start, putRef, bodyIndent2 = self.scan_helper(s, j, end=end2, parent=class_node, kind='class')
         else:
             classDelim = ''
-            start, putRef, bodyIndent2 = self.scanHelper(s, i, end=end, parent=class_node, kind='class')
+            start, putRef, bodyIndent2 = self.scan_helper(s, i, end=end, parent=class_node, kind='class')
         if bodyIndent is None: bodyIndent = bodyIndent2
         # Restore the output indentation.
         self.output_indent = old_output_indent
@@ -477,12 +477,12 @@ class BaseLineScanner(object):
         if self.is_rst:
             return s # Never unindent rst code.
         # Calculate the amount to be removed from each line.
-        undentVal = self.getLeadingIndent(s, 0, ignoreComments=ignoreComments)
+        undentVal = self.get_leading_indent(s, 0, ignoreComments=ignoreComments)
         if trace: g.trace(undentVal, g.splitLines(s)[0].rstrip())
         if undentVal == 0:
             return s
         else:
-            result = self.undentBy(s, undentVal)
+            result = self.undent_by(s, undentVal)
             if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
             return result
     #@+node:ekr.20161030190924.40: *4* BLS.undent_by
@@ -614,12 +614,12 @@ class BaseLineScanner(object):
                 # # # i = self.skipId(s, i)
             # # # elif kind == 'outer' and g.match(s, i, self.outerBlockDelim1): # Do this after testing for classes.
                 # # # # i1 = i # for debugging
-                # # # i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
+                # # # i = self.skip_block(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
                 # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
             # # # else: i += 1
             # # # if progress >= i:
                 # g.pdb()
-                ### i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
+                ### i = self.skip_block(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
             # # #assert progress < i, 'i: %d, ch: %s' % (i, repr(lines[i]))
         return start, putRef, bodyIndent
     #@+node:ekr.20161030190924.13: *4* BLS.skip_block (NEW)
@@ -697,7 +697,7 @@ class BaseLineScanner(object):
                 # # # if self.outerBlockEndsDecls:
                     # # # break
                 # # # else:
-                    # # # i = self.skipBlock(s, i,
+                    # # # i = self.skip_block(s, i,
                         # # # delim1=self.outerBlockDelim1,
                         # # # delim2=self.outerBlockDelim2)
             # # # else:
