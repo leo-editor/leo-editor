@@ -141,6 +141,7 @@ class BaseLineScanner(object):
         self.outerBlockDelim2 = None
         self.functionSpelling = '<function spelling>'
         self.classId = '<classID>'
+        self.method_name = '<methodName>'
         ### self.class_kind = '<class_kind>'
 
         # State vars.
@@ -689,7 +690,7 @@ class BaseLineScanner(object):
         # return start + 1 # 2012/04/04: Ensure progress in caller.
     #@+node:ekr.20161030190924.11: *4* BLS.new_put_block
     def new_put_block(self, lines, i, j, parent):
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         if trace:
             g.trace('Block...\n', ''.join(lines[i:j]))
     #@+node:ekr.20161030190924.12: *4* BLS.scan_helper (REVISE)
@@ -1057,7 +1058,7 @@ class BaseLineScanner(object):
     #@+node:ekr.20161030032639.1: *5* BLS.make_children
     def make_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks'''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         if trace:
             g.trace('parent', parent_block.description(), 'BLOCKS...\n')
             for block in blocks:
