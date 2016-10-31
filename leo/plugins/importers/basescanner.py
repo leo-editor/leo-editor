@@ -90,7 +90,7 @@ class BaseLineScanner(object):
     '''The base class for all new (line-oriented) scanner classes.'''
 
     #@+others
-    #@+node:ekr.20161027114542.1: *3*  BaseLineScanner.ctor
+    #@+node:ekr.20161027114542.1: *3*  BLS.ctor
     def __init__(self,
         importCommands,
         atAuto,
@@ -127,7 +127,7 @@ class BaseLineScanner(object):
         self.isPrepass = False
         self.root = None
         self.tab_width = None
-    #@+node:ekr.20161027094537.16: *3* BaseLineScanner.check & helpers
+    #@+node:ekr.20161027094537.16: *3* BLS.check & helpers
     def check(self, unused_s, parent):
         '''BaseLineScanner.check'''
         trace = True and not g.unitTesting
@@ -160,7 +160,7 @@ class BaseLineScanner(object):
                 for i, s in enumerate(g.splitLines(s2)):
                     print('%3s %s' % (i+1, s.rstrip()))
         return ok
-    #@+node:ekr.20161027114045.1: *4* BaseLineScanner.clean_* & strip_*
+    #@+node:ekr.20161027114045.1: *4* BLS.clean_* & strip_*
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -180,7 +180,7 @@ class BaseLineScanner(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
-    #@+node:ekr.20161027094537.27: *4* BaseLineScanner.trial_write
+    #@+node:ekr.20161027094537.27: *4* BLS.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
@@ -201,7 +201,7 @@ class BaseLineScanner(object):
                 trialWrite=True,
             )
         return g.toUnicode(at.stringOutput, self.encoding)
-    #@+node:ekr.20161027114007.1: *3* BaseLineScanner.run (entry point) & helpers
+    #@+node:ekr.20161027114007.1: *3* BLS.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         c = self.c
@@ -221,7 +221,10 @@ class BaseLineScanner(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        self.scan(s, parent)
+        if new_gen:
+            self.new_scan(s, parent)
+        else:
+            self.scan(s, parent)
         self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
@@ -238,7 +241,7 @@ class BaseLineScanner(object):
             root.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
         return ok
-    #@+node:ekr.20161027114007.3: *4* BaseLineScanner.check_blanks_and_tabs
+    #@+node:ekr.20161027114007.3: *4* BLS.check_blanks_and_tabs
     def check_blanks_and_tabs(self, s):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
@@ -251,7 +254,7 @@ class BaseLineScanner(object):
         if not ok:
             self.report('intermixed blanks and tabs')
         return ok
-    #@+node:ekr.20161027182014.1: *4* BaseLineScanner.insert_ignore_directive
+    #@+node:ekr.20161027182014.1: *4* BLS.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
         parent.b = parent.b.rstrip() + '\n@ignore\n'
@@ -261,7 +264,7 @@ class BaseLineScanner(object):
             if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
                 g.warning('inserting @ignore')
                 c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161027183458.1: *4* BaseLineScanner.post_pass & helper
+    #@+node:ekr.20161027183458.1: *4* BLS.post_pass & helper
     def post_pass(self, parent):
         '''Clean up parent's children.'''
         # Clean the headlines.
@@ -283,7 +286,7 @@ class BaseLineScanner(object):
                 back.b = back.b + s
                 aList.append(p.copy())
         self.c.deletePositionsInList(aList)
-    #@+node:ekr.20161027114007.4: *4* BaseLineScanner.regularize_whitespace
+    #@+node:ekr.20161027114007.4: *4* BLS.regularize_whitespace
     def regularize_whitespace(self, s):
         '''Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
@@ -305,9 +308,9 @@ class BaseLineScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
-    #@+node:ekr.20161027094537.25: *3* BaseLineScanner.scan & helpers
+    #@+node:ekr.20161027094537.25: *3* BLS.scan & helpers
     def scan(self, s1, parent):
-        '''A line-based Perl scanner.'''
+        '''The *old* line-based scanner.'''
         trace = False and not g.unitTesting
         trace_blocks = False
         if trace: g.trace('===== ', self.root.h)
@@ -345,7 +348,7 @@ class BaseLineScanner(object):
             parent.b = '@language %s\n@others\n' % (self.language)
             for block in blocks:
                 self.put_block(block, parent)
-    #@+node:ekr.20161027094537.18: *4* BaseLineScanner.max_blocks_indent
+    #@+node:ekr.20161027094537.18: *4* BLS.max_blocks_indent
     def max_blocks_indent(self, blocks):
         '''Return the maximum indentation that can be removed from all blocks.'''
         n = 16
@@ -356,7 +359,7 @@ class BaseLineScanner(object):
                     i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
                     n = min(n, width)
         return n
-    #@+node:ekr.20161027094537.19: *4* BaseLineScanner.put_block
+    #@+node:ekr.20161027094537.19: *4* BLS.put_block
     def put_block(self, block, parent, create_child=True):
         '''Create nodes for block and all its children.'''
         if create_child:
@@ -367,7 +370,7 @@ class BaseLineScanner(object):
         p.b = p.b + ''.join(block.lines)
         for child in block.children:
             self.put_block(child, p)
-    #@+node:ekr.20161027094537.21: *4* BaseLineScanner.rescan_block & helpers
+    #@+node:ekr.20161027094537.21: *4* BLS.rescan_block & helpers
     def rescan_block(self, parent_block, top_level=False):
         '''Rescan a non-simple block, possibly creating child blocks.'''
         state = self.state
@@ -422,11 +425,10 @@ class BaseLineScanner(object):
             for block in blocks:
                 print(block)
         self.make_children(blocks, first_line, last_line, parent_block)
-    #@+node:ekr.20161030032639.1: *5* BaseLineScanner.make_children
+    #@+node:ekr.20161030032639.1: *5* BLS.make_children
     def make_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks'''
         trace = True and not g.unitTesting and self.root.h.endswith('.py')
-        c = self.c
         if trace:
             g.trace('parent', parent_block.description(), 'BLOCKS...\n')
             for block in blocks:
@@ -436,7 +438,7 @@ class BaseLineScanner(object):
         else:
             self.make_at_others_children(blocks, first_line, last_line, parent_block)
      
-    #@+node:ekr.20161027094537.20: *5* BaseLineScanner.ref_line
+    #@+node:ekr.20161027094537.20: *5* BLS.ref_line
     def ref_line(self, block):
         '''Return a reference to the block.'''
         
@@ -451,7 +453,7 @@ class BaseLineScanner(object):
         return g.angleBrackets(' ' + h + ' ')
 
        
-    #@+node:ekr.20161027094537.23: *5* BaseLineScanner.make_ref_children
+    #@+node:ekr.20161027094537.23: *5* BLS.make_ref_children
     def make_ref_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks'''
         c = self.c
@@ -484,10 +486,9 @@ class BaseLineScanner(object):
         parent_block.children = children
         # Continue the rescan.
         self.rescan_blocks(children)
-    #@+node:ekr.20161027094537.22: *5* BaseLineScanner.make_at_others_children
+    #@+node:ekr.20161027094537.22: *5* BLS.make_at_others_children
     def make_at_others_children(self, blocks, first_line, last_line, parent_block):
         '''Generate child blocks for all blocks using @others.'''
-        trace = True and not g.unitTesting
         c = self.c
         if not blocks:
             return
@@ -509,7 +510,7 @@ class BaseLineScanner(object):
             children.append(child_block)
         parent_block.children = children
         self.rescan_blocks(children)
-    #@+node:ekr.20161027094537.24: *4* BaseLineScanner.rescan_blocks
+    #@+node:ekr.20161027094537.24: *4* BLS.rescan_blocks
     def rescan_blocks(self, blocks):
         '''Rescan all blocks, finding more blocks and adjusting text.'''
         for block in blocks:
@@ -518,7 +519,7 @@ class BaseLineScanner(object):
                 block.headline = block.get_headline()
             if not block.simple:
                 self.rescan_block(block)
-    #@+node:ekr.20161027115813.6: *4* BaseLineScanner.scan_block
+    #@+node:ekr.20161027115813.6: *4* BLS.scan_block
     def scan_block(self, i, lines):
         '''Scan lines[i:]. Return (i, lines).'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
@@ -545,8 +546,12 @@ class BaseLineScanner(object):
             for line in result:
                 print(line.rstrip())
         return i, result
-    #@+node:ekr.20161027181809.1: *3* BaseLineScanner.utils
-    #@+node:ekr.20161027094537.17: *4* BaseLineScanner.dump_block & dump_blocks
+    #@+node:ekr.20161031041540.1: *3* BLS.new_scan & helpers
+    def new_scan(self, s1, parent):
+        '''The *new* line-based scanner, using proper (old-style) code generation.'''
+        assert False, g.callers()
+    #@+node:ekr.20161027181809.1: *3* BLS.utils
+    #@+node:ekr.20161027094537.17: *4* BLS.dump_block & dump_blocks
     def dump_block(self, block):
         '''Dump one block.'''
         lines = block.lines if isinstance(block, Block) else block
@@ -560,7 +565,7 @@ class BaseLineScanner(object):
             print('  block: %s' % i)
             self.dump_block(block)
 
-    #@+node:ekr.20161027181903.1: *4* BaseLineScanner.error, oops, report and warning
+    #@+node:ekr.20161027181903.1: *4* BLS.error, oops, report and warning
     def error(self, s):
         self.errors += 1
         self.importCommands.errors += 1
