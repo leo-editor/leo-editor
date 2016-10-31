@@ -550,11 +550,201 @@ class BaseLineScanner(object):
                 print(line.rstrip())
         return i, result
     #@+node:ekr.20161031041540.1: *3* BLS.new_scan & helpers
-    def new_scan(self, s1, parent):
-        '''new_scan: The *new* line-based scanner, using proper (old-style) code generation.'''
+    def new_scan(self, s, parent, parse_body=False):
+        '''
+        new_scan: The *new* line-based scanner, using proper (old-style) code generation.
+        
+        Create a child of self.root for:
+        - Leading outer-level declarations.
+        - Outer-level classes.
+        - Outer-level functions.
+        '''
         # Test: aTestExample.
-        assert False, g.callers()
-        # Test3: aTestExample.
+        # Init the parser status ivars.
+        self.methodsSeen = False
+        # Create the initial body text in the root.
+        if parse_body:
+            pass
+        else:
+            self.put_root_text(parent)
+        lines = g.splitlines(s)
+        # Parse the decls.
+        i = 0
+        if self.has_decls:
+            i = self.skip_decls(lines, i, len(lines), inClass=False)
+            decls = ''.join(lines[:i])
+            if decls.strip():
+                self.create_decls_node(parent, decls)
+        # Scan the rest of the file.
+        start, junk, junk = self.scan_helper(
+            lines, i, end=len(lines), parent=parent, kind='outer')
+        # Finish adding to the parent's body text.
+        self.add_ref(parent)
+        if start < len(lines):
+            self.append_to_body(parent, ''.join(lines[start:]))
+        # Do any language-specific post-processing.
+        self.end_gen(lines)
+        # Test2: aTestExample.
+    #@+node:ekr.20161030190924.11: *4* BLS.new_put_block
+    def new_put_block(self, lines, i, j, parent):
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        if trace:
+            g.trace('Block...\n', ''.join(lines[i:j]))
+    #@+node:ekr.20161030190924.12: *4* BLS.scan_helper (REVISE)
+    ### def scanHelper(self, s, i, end, parent, kind):
+    def scan_helper(self, lines, i, end, parent, kind):
+        '''Common scanning code used by both scan and putClassHelper.'''
+        assert kind in ('class', 'outer')
+        start = i; putRef = False; bodyIndent = None
+        # Prevent scanners from going beyond end.
+        # Potentially expensive, but unavoidable.
+        ### if self.hasNestedClasses and end < len(s):
+            ### s = s[: end] # Potentially expensive, but unavoidable.
+        ### if self.has_nested_classes and end < len(lines):
+        if end < len(lines):
+            lines = lines[:end]
+        state = self.state
+        while i < end:
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                putRef = True
+                if bodyIndent is None:
+                    bodyIndent = self.get_indent(line) ### was getIndent(s, i)
+                j = self.skip_block(lines, i)
+                ### self.putClass(s, i, self.sigEnd, self.codeEnd, start, parent)
+                self.new_put_block(lines, i, j, parent)
+                    ### put_block combines putClass and putFunction.
+                i = j
+            else:
+                i += 1
+            assert progress < i, 'i: %d, ch: %s' % (i, repr(lines[i]))
+            # # # if s[i] in (' ', '\t', '\n'):
+                # # # i += 1 # Prevent lookahead below, and speed up the scan.
+            # # # elif self.startsComment(s, i):
+                # # # i = self.skipComment(s, i)
+            # # # elif self.startsString(s, i):
+                # # # i = self.skipString(s, i)
+            # # # elif self.hasRegex and self.startsRegex(s, i):
+                # # # i = self.skipRegex(s, i)
+            # # # elif self.startsClass(s, i): # Sets sigStart,sigEnd & codeEnd ivars.
+                # # # putRef = True
+                # # # if bodyIndent is None: bodyIndent = self.getIndent(s, i)
+                # # # end2 = self.codeEnd # putClass may change codeEnd ivar.
+                # # # self.putClass(s, i, self.sigEnd, self.codeEnd, start, parent)
+                # # # i = start = end2
+            # # # elif self.startsFunction(s, i): # Sets sigStart,sigEnd & codeEnd ivars.
+                # # # putRef = True
+                # # # if bodyIndent is None: bodyIndent = self.getIndent(s, i)
+                # # # self.putFunction(s, self.sigStart, self.codeEnd, start, parent)
+                # # # i = start = self.codeEnd
+            # # # elif self.startsId(s, i):
+                # # # i = self.skipId(s, i)
+            # # # elif kind == 'outer' and g.match(s, i, self.outerBlockDelim1): # Do this after testing for classes.
+                # # # # i1 = i # for debugging
+                # # # i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
+                # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
+            # # # else: i += 1
+            # # # if progress >= i:
+                # g.pdb()
+                ### i = self.skipBlock(s, i, delim1=self.outerBlockDelim1, delim2=self.outerBlockDelim2)
+            # # #assert progress < i, 'i: %d, ch: %s' % (i, repr(lines[i]))
+        return start, putRef, bodyIndent
+    #@+node:ekr.20161030190924.13: *4* BLS.skip_block (NEW)
+    def skip_block(self, lines, i):
+        '''Skip over all lines of the block.'''
+        trace = True and not g.unitTesting
+        state = self.state
+        i1 = 1
+        i += 1
+        if trace: g.trace('first line', lines[i])
+        while i < len(lines):
+            line = lines[i]
+            if trace: print(line.rstrip())
+            state.scan_line(line)
+            if state.continues_block():
+                break
+            else:
+                i += 1
+        assert i > i1, repr(lines[i])
+        return i
+        
+    #@+node:ekr.20161030190924.14: *4* BLS.skip_decls
+    def skip_decls(self, lines, i, end, inClass):
+        '''
+        Skip everything until the start of the next class or function.
+        The decls *must* end in a newline.
+        '''
+        state = self.state
+        ### Not needed here.
+        # Prevent scanners from going beyond end.
+        # if end < len(lines):
+            # lines = lines[:end] 
+        start = i
+        while i < end:
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                self.method_name = line
+                break
+            else:
+                i += 1
+            assert(progress < i)
+        decls = ''.join(lines [start: i])
+        return i if decls.strip() else start
+            # # # if s[i] in (' ', '\t', '\n'):
+                # # # i += 1 # Prevent lookahead below, and speed up the scan.
+            # # # elif self.startsComment(s, i):
+                # # # # Add the comment to the decl if it *doesn't* start the line.
+                # # # i2, junk = g.getLine(s, i)
+                # # # i2 = self.skipWs(s, i2)
+                # # # if i2 == i and prefix is None:
+                    # # # prefix = i2 # Bug fix: must include leading whitespace in the comment.
+                # # # i = self.skipComment(s, i)
+            # # # elif self.startsString(s, i):
+                # # # i = self.skipString(s, i)
+                # # # prefix = None
+            # # # elif self.startsClass(s, i):
+                # # # # Important: do not include leading ws in the decls.
+                # # # classOrFunc = True
+                # # # i = g.find_line_start(s, i)
+                # # # i = self.adjustDefStart(s, i)
+                # # # break
+            # # # elif self.startsFunction(s, i):
+                # # # # Important: do not include leading ws in the decls.
+                # # # classOrFunc = True
+                # # # i = g.find_line_start(s, i)
+                # # # i = self.adjustDefStart(s, i)
+                # # # break
+            # # # elif self.startsId(s, i):
+                # # # i = self.skipId(s, i)
+                # # # prefix = None
+            # # # # Don't skip outer blocks: they may contain classes.
+            # # # elif g.match(s, i, self.outerBlockDelim1):
+                # # # if self.outerBlockEndsDecls:
+                    # # # break
+                # # # else:
+                    # # # i = self.skipBlock(s, i,
+                        # # # delim1=self.outerBlockDelim1,
+                        # # # delim2=self.outerBlockDelim2)
+            # # # else:
+                # # # i += 1; prefix = None
+            # # # assert(progress < i)
+        ###if prefix is not None:
+        ###    i = g.find_line_start(s, prefix) # i = prefix
+        ###
+        # decls = lines [start: i]
+        # if inClass and not classOrFunc:
+            # # Don't return decls if a class contains nothing but decls.
+            # if trace and decls.strip(): g.trace('**class is all decls...\n', decls)
+            # return start
+        # elif decls.strip():
+            # if trace or self.trace: g.trace('\n' + decls)
+            # return i
+        # else: # Ignore empty decls.
+            # return start
     #@+node:ekr.20161027181809.1: *3* BLS.utils
     #@+node:ekr.20161027094537.17: *4* BLS.dump_block & dump_blocks
     def dump_block(self, block):
@@ -594,6 +784,326 @@ class BaseLineScanner(object):
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
+    #@+node:ekr.20161030190924.18: *4* BLS.get_indent (NEW)
+    def get_indent(self, line):
+        junk, indent = g.skip_leading_ws_with_indent(line, 0, self.tab_width)
+        return indent
+    #@+node:ekr.20161030190924.19: *3* BLS.Code generation (REVISE)
+    #@+node:ekr.20161030190924.20: *4* BLS.adjust_parent
+    def adjust_parent(self, parent, headline):
+        '''Return the effective parent.
+
+        This is overridden by the RstScanner class.'''
+        return parent
+    #@+node:ekr.20161030190924.21: *4* BLS.add_ref
+    def add_ref(self, parent):
+        '''Create an unindented @others or section reference in the parent node.'''
+        if self.is_rst and not self.atAuto:
+            return
+        if self.tree_type in ('@clean', '@file', '@nosent', None):
+            self.append_to_body(parent, '@others\n')
+        if self.tree_type == '@root' and self.methodsSeen:
+            self.append_to_body(parent,
+                g.angleBrackets(' ' + self.method_name + ' methods ') + '\n\n')
+    #@+node:ekr.20161030190924.22: *4* BLS.append_to_body & setBodyString
+    def append_to_body(self, p, s):
+        '''
+        Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.
+        '''
+        assert g.isString(s), (repr(s), g.callers())
+        assert g.isString(p.b), (repr(p.b), g.callers())
+        ### self.importCommands.appendStringToBody(p, s)
+        p.b = p.b + s
+
+    # def set_body_string(self, p, s):
+        # '''Similar to c.setBodyString,
+        # but does not recolor the text or redraw the screen.'''
+        # return self.importCommands.setBodyString(p, s)
+    #@+node:ekr.20161030190924.23: *4* BLS.compute_body
+    def compute_body(self, s, start, sigStart, codeEnd):
+        '''Return the head and tail of the body.'''
+        trace = False
+        body1 = s[start: sigStart]
+        # Adjust start backwards to get a better undent.
+        if body1.strip():
+            while start > 0 and s[start - 1] in (' ', '\t'):
+                start -= 1
+        # g.trace(repr(s[sigStart:codeEnd]))
+        body1 = self.undentBody(s[start: sigStart], ignoreComments=False)
+        body2 = self.undentBody(s[sigStart: codeEnd])
+        body = body1 + body2
+        if trace: g.trace('body: %s' % repr(body))
+        tail = body[len(body.rstrip()):]
+        if '\n' not in tail:
+            self.warning(
+                '%s %s does not end with a newline; one will be added\n%s' % (
+                self.functionSpelling, self.sigId, g.get_line(s, codeEnd)))
+        return body1, body2
+    #@+node:ekr.20161030190924.24: *4* BLS.create_decls_node
+    def create_decls_node(self, parent, s):
+        '''Create a child node of parent containing s.'''
+        # Create the node for the decls.
+        headline = '%s declarations' % self.method_name
+        body = self.undent_body(s)
+        self.create_headline(parent, body, headline)
+    #@+node:ekr.20161030190924.25: *4* BLS.create_function_node
+    def create_function_node(self, headline, body, parent):
+        # Create the prefix line for @root trees.
+        if self.tree_type == '@root':
+            prefix = g.angleBrackets(' ' + headline + ' methods ') + '=\n\n'
+            self.methodsSeen = True
+        else:
+            prefix = ''
+        # Create the node.
+        return self.createHeadline(parent, prefix + body, headline)
+    #@+node:ekr.20161030190924.26: *4* BLS.create_headline
+    def create_headline(self, parent, body, headline):
+        return self.importCommands.createHeadline(parent, body, headline)
+    #@+node:ekr.20161030190924.27: *4* BLS.end_gen
+    def end_gen(self, s):
+        '''Do any language-specific post-processing.'''
+        pass
+    #@+node:ekr.20161030190924.28: *4* BLS.get_leading_indent
+    def get_leading_indent(self, s, i, ignoreComments=True):
+        '''Return the leading whitespace of a line.
+        Ignore blank and comment lines if ignoreComments is True'''
+        width = 0
+        i = g.find_line_start(s, i)
+        if ignoreComments:
+            while i < len(s):
+                # g.trace(g.get_line(s,i))
+                j = g.skip_ws(s, i)
+                if g.is_nl(s, j) or g.match(s, j, self.comment_delim):
+                    i = g.skip_line(s, i) # ignore blank lines and comment lines.
+                else:
+                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                    break
+        else:
+            i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+        # g.trace('returns:',width)
+        return width
+    #@+node:ekr.20161030190924.29: *4* BLS.indent_body
+    def indent_body(self, s, lws=None):
+        '''Add whitespace equivalent to one tab for all non-blank lines of s.'''
+        result = []
+        if not lws: lws = self.tab_ws
+        for line in g.splitLines(s):
+            if line.strip():
+                result.append(lws + line)
+            elif line.endswith('\n'):
+                result.append('\n')
+        result = ''.join(result)
+        return result
+    #@+node:ekr.20161030190924.31: *4* BLS.put_class & helpers
+    def put_class(self, s, i, sigEnd, codeEnd, start, parent):
+        '''Creates a child node c of parent for the class,
+        and a child of c for each def in the class.'''
+        trace = False
+        if trace:
+            # g.trace('tab_width',self.tab_width)
+            g.trace('sig', repr(s[i: sigEnd]))
+        # Enter a new class 1: save the old class info.
+        oldmethod_name = self.method_name
+        oldStartSigIndent = self.startSigIndent
+        # Enter a new class 2: init the new class info.
+        self.indentRefFlag = None
+        class_kind = self.classId
+        class_name = self.sigId
+        headline = '%s %s' % (class_kind, class_name)
+        headline = headline.strip()
+        self.method_name = headline
+        # Compute the starting lines of the class.
+        prefix = self.createClassNodePrefix()
+        if not self.sigId:
+            g.trace('Can not happen: no sigId')
+            self.sigId = 'Unknown class name'
+        classHead = s[start: sigEnd]
+        i = self.extendSignature(s, sigEnd)
+        extend = s[sigEnd: i]
+        if extend:
+            classHead = classHead + extend
+        # Create the class node.
+        class_node = self.createHeadline(parent, '', headline)
+        # Remember the indentation of the class line.
+        undentVal = self.getLeadingIndent(classHead, 0)
+        # Call the helper to parse the inner part of the class.
+        putRef, bodyIndent, classDelim, decls, trailing = self.putClassHelper(
+            s, i, codeEnd, class_node)
+        # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
+        # Set the body of the class node.
+        ref = putRef and self.getClassNodeRef(class_name) or ''
+        if trace: g.trace('undentVal', undentVal, 'bodyIndent', bodyIndent)
+        # Give ref the same indentation as the body of the class.
+        if ref:
+            bodyWs = g.computeLeadingWhitespace(bodyIndent, self.tab_width)
+            ref = '%s%s' % (bodyWs, ref)
+        # Remove the leading whitespace.
+        result = (
+            prefix +
+            self.undentBy(classHead, undentVal) +
+            self.undentBy(classDelim, undentVal) +
+            self.undentBy(decls, undentVal) +
+            self.undentBy(ref, undentVal) +
+            self.undentBy(trailing, undentVal))
+        result = self.adjust_class_ref(result)
+        # Append the result to the class node.
+        self.appendTextToClassNode(class_node, result)
+        # Exit the new class: restore the previous class info.
+        self.method_name = oldmethod_name
+        self.startSigIndent = oldStartSigIndent
+    #@+node:ekr.20161030190924.32: *5* BLS.adjust_class_ref
+    def adjust_class_ref(self, s):
+        '''Over-ridden by xml and html scanners.'''
+        return s
+    #@+node:ekr.20161030190924.33: *5* BLS.appendTextToClassNode
+    def appendTextToClassNode(self, class_node, s):
+        self.append_to_body(class_node, s)
+    #@+node:ekr.20161030190924.34: *5* BLS.createClassNodePrefix
+    def createClassNodePrefix(self):
+        '''Create the class node prefix.'''
+        if self.tree_type == '@root':
+            prefix = g.angleBrackets(' ' + self.method_name + ' methods ') + '=\n\n'
+            self.methodsSeen = True
+        else:
+            prefix = ''
+        return prefix
+    #@+node:ekr.20161030190924.35: *5* BLS.getClassNodeRef
+    def getClassNodeRef(self, class_name):
+        '''Insert the proper body text in the class_vnode.'''
+        if self.tree_type in ('@clean', '@file', '@nosent', None):
+            s = '@others'
+        else:
+            s = g.angleBrackets(' class %s methods ' % (class_name))
+        return '%s\n' % (s)
+    #@+node:ekr.20161030190924.36: *5* BLS.putClassHelper
+    def putClassHelper(self, s, i, end, class_node):
+        '''
+        s contains the body of a class, not including the signature.
+
+        Parse s for inner methods and classes, and create nodes.
+        '''
+        trace = False and not g.unitTesting
+        # Increase the output indentation (used only in startsHelper).
+        # This allows us to detect over-indented classes and functions.
+        old_output_indent = self.output_indent
+        self.output_indent += abs(self.tab_width)
+        # Parse the decls.
+        if self.hasDecls: # 2011/11/11
+            j = i; i = self.skip_decls(s, i, end, inClass=True)
+            decls = s[j: i]
+        else:
+            decls = ''
+        # Set the body indent if there are real decls.
+        bodyIndent = decls.strip() and self.getIndent(s, i) or None
+        if trace: g.trace('bodyIndent', bodyIndent)
+        # Parse the rest of the class.
+        delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
+        if g.match(s, i, delim1):
+            # Do *not* use g.skip_ws_and_nl here!
+            j = g.skip_ws(s, i + len(delim1))
+            if g.is_nl(s, j): j = g.skip_nl(s, j)
+            classDelim = s[i: j]
+            end2 = self.skipBlock(s, i, delim1=delim1, delim2=delim2)
+            start, putRef, bodyIndent2 = self.scanHelper(s, j, end=end2, parent=class_node, kind='class')
+        else:
+            classDelim = ''
+            start, putRef, bodyIndent2 = self.scanHelper(s, i, end=end, parent=class_node, kind='class')
+        if bodyIndent is None: bodyIndent = bodyIndent2
+        # Restore the output indentation.
+        self.output_indent = old_output_indent
+        # Return the results.
+        trailing = s[start: end]
+        return putRef, bodyIndent, classDelim, decls, trailing
+    #@+node:ekr.20161030190924.37: *4* BLS.put_function
+    def put_function(self, s, sigStart, codeEnd, start, parent):
+        '''Create a node of parent for a function defintion.'''
+        trace = False and not g.unitTesting
+        verbose = True
+        # Enter a new function: save the old function info.
+        oldStartSigIndent = self.startSigIndent
+        if self.sigId:
+            headline = self.sigId
+        else:
+            g.trace('Can not happen: no sigId')
+            headline = 'unknown function'
+        body1, body2 = self.computeBody(s, start, sigStart, codeEnd)
+        body = body1 + body2
+        parent = self.adjustParent(parent, headline)
+        if trace:
+            # pylint: disable=maybe-no-member
+            g.trace('parent', parent and parent.h)
+            if verbose:
+                # g.trace('**body1...\n',body1)
+                g.trace(self.atAutoSeparateNonDefNodes)
+                g.trace('**body...\n%s' % body)
+        # 2010/11/04: Fix wishlist bug 670744.
+        if self.atAutoSeparateNonDefNodes:
+            if body1.strip():
+                if trace: g.trace('head', body1)
+                line1 = g.splitLines(body1.lstrip())[0]
+                line1 = line1.strip() or 'non-def code'
+                self.createFunctionNode(line1, body1, parent)
+                body = body2
+        self.lastParent = self.createFunctionNode(headline, body, parent)
+        # Exit the function: restore the function info.
+        self.startSigIndent = oldStartSigIndent
+    #@+node:ekr.20161030190924.38: *4* BLS.put_root_text
+    def put_root_text(self, p):
+        self.append_to_body(p, '%s@language %s\n@tabwidth %d\n' % (
+            self.root_line, self.language, self.tab_width))
+    #@+node:ekr.20161030190924.39: *4* BLS.undent_body
+    def undent_body(self, s, ignoreComments=True):
+        '''Remove the first line's leading indentation from all lines of s.'''
+        trace = False and not g.unitTesting
+        verbose = False
+        if trace and verbose: g.trace('before...\n', g.listToString(g.splitLines(s)))
+        if self.is_rst:
+            return s # Never unindent rst code.
+        # Calculate the amount to be removed from each line.
+        undentVal = self.getLeadingIndent(s, 0, ignoreComments=ignoreComments)
+        if trace: g.trace(undentVal, g.splitLines(s)[0].rstrip())
+        if undentVal == 0:
+            return s
+        else:
+            result = self.undentBy(s, undentVal)
+            if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
+            return result
+    #@+node:ekr.20161030190924.40: *4* BLS.undent_by
+    def undent_by(self, s, undentVal):
+        '''Remove leading whitespace equivalent to undentVal from each line.
+        For strict languages, add an underindentEscapeString for underindented line.'''
+        trace = False and not g.app.unitTesting
+        if self.is_rst:
+            return s # Never unindent rst code.
+        tag = self.c.atFileCommands.underindentEscapeString
+        result = []; tab_width = self.tab_width
+        for line in g.splitlines(s):
+            lws_s = g.get_leading_ws(line)
+            lws = g.computeWidth(lws_s, tab_width)
+            s = g.removeLeadingWhitespace(line, undentVal, tab_width)
+            # 2011/10/29: Add underindentEscapeString only for strict languages.
+            if self.strict and s.strip() and lws < undentVal:
+                if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                    undentVal, lws, repr(line)))
+                # Bug fix 2012/06/05: end the underindent count with a period,
+                # to protect against lines that start with a digit!
+                result.append("%s%s.%s" % (tag, undentVal - lws, s.lstrip()))
+            else:
+                if trace: g.trace(repr(s))
+                result.append(s)
+        return ''.join(result)
+    #@+node:ekr.20161030190924.41: *4* BLS.underindentedComment & underindentedLine
+    def underindented_comment(self, line):
+        if self.atAutoWarnsAboutLeadingWhitespace:
+            self.warning(
+                'underindented python comments.\nExtra leading whitespace will be added\n' + line)
+
+    def underindented_line(self, line):
+        if self.warnAboutUnderindentedLines:
+            self.error(
+                'underindented line.\n' +
+                'Extra leading whitespace will be added\n' + line)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
