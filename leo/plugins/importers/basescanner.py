@@ -300,7 +300,7 @@ class BaseLineScanner(object):
         return self.create_headline(parent, prefix + body, headline)
     #@+node:ekr.20161030190924.26: *4* BLS.create_headline
     def create_headline(self, parent, body, headline):
-        return self.importCommands.create_headline(parent, body, headline)
+        return self.importCommands.createHeadline(parent, body, headline)
     #@+node:ekr.20161030190924.27: *4* BLS.end_gen
     def end_gen(self, s):
         '''Do any language-specific post-processing.'''
@@ -508,8 +508,10 @@ class BaseLineScanner(object):
         self.startSigIndent = oldStartSigIndent
     #@+node:ekr.20161030190924.38: *4* BLS.put_root_text
     def put_root_text(self, p):
-        self.append_to_body(p, '%s@language %s\n@tabwidth %d\n' % (
-            self.root_line, self.language, self.tab_width))
+        ### self.append_to_body(p, '%s@language %s\n@tabwidth %d\n' % (
+        ###    self.root_line, self.language, self.tab_width))
+        self.append_to_body(p, '@language %s\n@tabwidth %d\n' % (
+            self.language, self.tab_width))
     #@+node:ekr.20161030190924.39: *4* BLS.undent_body
     def undent_body(self, s, ignoreComments=True):
         '''Remove the first line's leading indentation from all lines of s.'''
@@ -601,7 +603,7 @@ class BaseLineScanner(object):
     #@+node:ekr.20161030190924.13: *4* BLS.gen_skip_block
     def gen_skip_block(self, lines, i):
         '''Skip over all lines of the block.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         state = self.state
         i1 = 1
         i += 1
@@ -614,7 +616,7 @@ class BaseLineScanner(object):
                 break
             else:
                 i += 1
-        assert i > i1, repr(lines[i])
+        ### assert i > i1, repr(lines[i])
         return i
         
     #@+node:ekr.20161031082049.1: *4* BLS.OLDgen_skip_block (was skipBlock)
