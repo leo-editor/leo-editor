@@ -223,10 +223,14 @@
 <v t="ekr.20161023110341.1"><vh>Script: find all external calls to commander</vh></v>
 </v>
 </v>
-<v t="ekr.20161031054707.1"><vh>@@button pep8 @key=Ctrl-5</vh>
-<v t="ekr.20161031054707.2"><vh>change_all</vh></v>
-<v t="ekr.20161031054707.3"><vh>init</vh></v>
-<v t="ekr.20161031054707.4"><vh>to_pep8</vh></v>
+<v t="ekr.20161031080633.1"><vh>@@button pep8 @key=Ctrl-5</vh>
+<v t="ekr.20161031080633.2"><vh>change_all &amp; helpers</vh>
+<v t="ekr.20161031080633.3"><vh>change_body</vh></v>
+<v t="ekr.20161031080633.4"><vh>change_headline</vh></v>
+</v>
+<v t="ekr.20161031080633.5"><vh>clear</vh></v>
+<v t="ekr.20161031080633.6"><vh>get_name</vh></v>
+<v t="ekr.20161031080633.7"><vh>to_pep8</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2562,61 +2566,92 @@ if 1:
 </t>
 <t tx="ekr.20161023110345.1"># https://github.com/leo-editor/leo-editor/issues/325
 # This issue has been closed and abandoned.</t>
-<t tx="ekr.20161031054707.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
+<t tx="ekr.20161031080633.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
 # aTestExample notFoundExample.
 import re
 @others
 change = True # True: actually make the changes.
-target = 'BLS.new_scan &amp; helpers'
-name, root = init()
+table = (
+    'BLS.new_scan &amp; helpers',
+    'BLS.Code generation',
+)
+# clear()
+name = get_name()
+new_name = to_pep8(name)
 if len(name) &lt; 2:
     g.es_print('name too short:', name)
+elif new_name == name:
+    g.es_print('already pep8:', name)
 else:
-    new_name = to_pep8(name)
-    if new_name == name:
-        g.es_print('already pep8:', name)
-    else:
-        g.es_print('%s -&gt; %s' % (name, new_name))
-        change_all()
-</t>
-<t tx="ekr.20161031054707.2">def change_all():
-    '''Change name to new_name throughout root's tree.'''
-    u = c.undoer
-    bunch = u.beforeChangeTree(root)
-    any_found = False
-    pattern = re.compile(r'\b%s\b' % name)
-    for p in root.self_and_subtree():
-        found, indices = False, []
-        for m in pattern.finditer(p.b):
-            any_found, found = True, True
-            indices.append(str(m.start()))
-        if found:
-            g.es_print(', '.join(indices), p.h)
-            s = p.b
-            for i in reversed(indices):
-                i = int(i)
-                s = s[:i] + new_name + s[i+len(name):]
-            if change:
-                p.b = s
-            else:
-                g.es_print(s)
-    if any_found:
-        u.afterChangeTree(root, 'pep8', bunch)
+    g.es_print('%s -&gt; %s' % (name, new_name))
+    c.findCommands.ftm.setFindText(new_name)
+        # Preload the replacement text.
+    found = False
+    for target in table:
+        root = g.findNodeAnywhere(c, target)
+        assert root, target
+        found = change_all() or found
+    if found:
+        c.redraw()
     else:
         g.es_print('not found:', name)
 </t>
-<t tx="ekr.20161031054707.3">def init():
+<t tx="ekr.20161031080633.2">def change_all():
+    '''Change name to new_name throughout root's tree.'''
+    u = c.undoer
+    bunch = u.beforeChangeTree(root)
+    found = False
+    pattern = re.compile(r'\b%s\b' % name)
+    for p in root.self_and_subtree():
+        found = change_headline(p, pattern) or found
+        found = change_body(p, pattern) or found
+    if found:
+        u.afterChangeTree(root, 'pep8', bunch)
+    return found
+</t>
+<t tx="ekr.20161031080633.3">def change_body(p, pattern):
+    indices = []
+    for m in pattern.finditer(p.b):
+        indices.append(str(m.start()))
+    if indices:
+        n = len(indices)
+        g.es_print('%s change%s: %s' % (n, g.plural(n), p.h))
+        s = p.b
+        for i in reversed(indices):
+            i = int(i)
+            s = s[:i] + new_name + s[i+len(name):]
+        if change:
+            p.b = s
+            p.setDirty()
+        else:
+            g.es_print(s)
+    return bool(indices)</t>
+<t tx="ekr.20161031080633.4">def change_headline(p, pattern):
+    m = pattern.search(p.h)
+    if m:
+        i = m.start()
+        s = p.h
+        s = s[:i] + new_name + s[i+len(name):]
+        if change:
+            p.h = s
+            p.setDirty()
+            g.es_print('changed headline', s)
+        else:
+            g.es_print('headline', s)
+    return bool(m)
+</t>
+<t tx="ekr.20161031080633.5">def clear():
     g.cls()
     c.k.simulateCommand('clear-log')
-    root = g.findNodeAnywhere(c, target)
-    assert root, target
+</t>
+<t tx="ekr.20161031080633.6">def get_name():
     i, j = c.editCommands.extendToWord(event=None, select=False)
     w = c.frame.body.wrapper
     s = w.getAllText()
     name = s[i:j]
-    return name, root
+    return name
 </t>
-<t tx="ekr.20161031054707.4">def to_pep8(s):
+<t tx="ekr.20161031080633.7">def to_pep8(s):
     
     if len(s) &gt; 1 and s[0].islower() and s.lower() != s:
         result = []

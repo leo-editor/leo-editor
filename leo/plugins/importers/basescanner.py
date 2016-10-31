@@ -118,10 +118,15 @@ class BaseLineScanner(object):
         self.strict = strict
             # True: leading whitespace is significant.
         assert state, 'Caller must provide a line state instance'
+        
+        # Set from ivars...
+        self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
+        self.is_rst = name in ('rst',)
 
         # Settings...
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
+        self.warn_about_underindented_lines = True
 
         # State vars.
         self.errors = 0
@@ -337,11 +342,19 @@ class BaseLineScanner(object):
         # if not self.sig_id:
             # g.trace('Can not happen: no sig_id')
             # self.sig_id = 'Unknown class name'
-        classHead = s[start: sigEnd]
-        i = self.extendSignature(s, sigEnd)
-        extend = s[sigEnd: i]
-        if extend:
-            classHead = classHead + extend
+        
+        ### To do: replace all the following
+        if 1:
+            ### To do: class_head = lines[i]
+            classHead = '<classHead>'
+            if hasattr(self, 'clean_headline'):
+                classHead = self.clean_headline(classHead)
+        else:
+            classHead = s[start: sigEnd]
+            i = self.extend_signature(s, sigEnd)
+            extend = s[sigEnd: i]
+            if extend:
+                classHead = classHead + extend
         # Create the class node.
         class_node = self.create_headline(parent, '', headline)
         # Remember the indentation of the class line.
@@ -367,7 +380,7 @@ class BaseLineScanner(object):
             self.undent_by(trailing, undentVal))
         result = self.adjust_class_ref(result)
         # Append the result to the class node.
-        self.appendTextToClassNode(class_node, result)
+        self.append_text_to_class_node(class_node, result)
         # Exit the new class: restore the previous class info.
         self.method_name = oldmethod_name
         self.startSigIndent = oldStartSigIndent
@@ -375,8 +388,8 @@ class BaseLineScanner(object):
     def adjust_class_ref(self, s):
         '''Over-ridden by xml and html scanners.'''
         return s
-    #@+node:ekr.20161030190924.33: *5* BLS.appendTextToClassNode
-    def appendTextToClassNode(self, class_node, s):
+    #@+node:ekr.20161030190924.33: *5* BLS.append_text_to_class_node
+    def append_text_to_class_node(self, class_node, s):
         self.append_to_body(class_node, s)
     #@+node:ekr.20161030190924.34: *5* BLS.createClassNodePrefix
     def createClassNodePrefix(self):
@@ -462,9 +475,9 @@ class BaseLineScanner(object):
                 if trace: g.trace('head', body1)
                 line1 = g.splitLines(body1.lstrip())[0]
                 line1 = line1.strip() or 'non-def code'
-                self.createFunctionNode(line1, body1, parent)
+                self.create_function_node(line1, body1, parent)
                 body = body2
-        self.lastParent = self.createFunctionNode(headline, body, parent)
+        self.lastParent = self.create_function_node(headline, body, parent)
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
     #@+node:ekr.20161030190924.38: *4* BLS.put_root_text
@@ -519,7 +532,7 @@ class BaseLineScanner(object):
                 'underindented python comments.\nExtra leading whitespace will be added\n' + line)
 
     def underindented_line(self, line):
-        if self.warnAboutUnderindentedLines:
+        if self.warn_about_underindented_lines:
             self.error(
                 'underindented line.\n' +
                 'Extra leading whitespace will be added\n' + line)
