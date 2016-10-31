@@ -94,8 +94,8 @@ class BaseLineScanner(object):
     def __init__(self,
         importCommands,
         atAuto,
-        gen_clean = True, # True: clean blank lines.
-        gen_refs = False, # True: generate section references.
+        gen_clean = True, ### To be removed. True: clean blank lines.
+        gen_refs = False, ### To be removed. True: generate section references.
         language = None, # For @language directive.
         name = None, # The kind of importer.
         state = None,
@@ -107,8 +107,12 @@ class BaseLineScanner(object):
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
-        self.gen_clean = gen_clean
-        self.gen_refs = gen_refs
+        if new_gen: ### 
+            self.gen_refs = name in ('javascript',)
+            self.gen_clean = name in ('python',)
+        else:
+            self.gen_clean = gen_clean
+            self.gen_refs = gen_refs
         assert language or name
         self.language = language or name ###
             # For the @language directive.
