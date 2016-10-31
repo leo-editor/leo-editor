@@ -13,6 +13,7 @@ class JavaScriptScanState(basescanner.ScanState):
     #@+node:ekr.20161004071532.1: *3* js_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting 
         i = 0
         while i < len(s):

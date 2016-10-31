@@ -83,6 +83,7 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
+new_gen = False
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
