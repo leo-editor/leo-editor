@@ -356,7 +356,7 @@ class BaseLineScanner(object):
         headline = headline.strip()
         self.method_name = headline
         # Compute the starting lines of the class.
-        prefix = self.createClassNodePrefix()
+        prefix = self.create_class_node_prefix()
         ###
         # if not self.sig_id:
             # g.trace('Can not happen: no sig_id')
@@ -381,11 +381,11 @@ class BaseLineScanner(object):
         # Remember the indentation of the class line.
         undentVal = self.get_leading_indent(classHead, 0)
         # Call the helper to parse the inner part of the class.
-        putRef, bodyIndent, classDelim, decls, trailing = self.putClassHelper(
+        putRef, bodyIndent, classDelim, decls, trailing = self.put_class_helper(
             s, i, codeEnd, class_node)
         # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
         # Set the body of the class node.
-        ref = putRef and self.getClassNodeRef(class_name) or ''
+        ref = putRef and self.get_class_node_ref(class_name) or ''
         if trace: g.trace('undentVal', undentVal, 'bodyIndent', bodyIndent)
         # Give ref the same indentation as the body of the class.
         if ref:
@@ -412,8 +412,8 @@ class BaseLineScanner(object):
     #@+node:ekr.20161030190924.33: *5* BLS.append_text_to_class_node
     def append_text_to_class_node(self, class_node, s):
         self.append_to_body(class_node, s)
-    #@+node:ekr.20161030190924.34: *5* BLS.createClassNodePrefix
-    def createClassNodePrefix(self):
+    #@+node:ekr.20161030190924.34: *5* BLS.create_class_node_prefix
+    def create_class_node_prefix(self):
         '''Create the class node prefix.'''
         if self.tree_type == '@root':
             prefix = g.angleBrackets(' ' + self.method_name + ' methods ') + '=\n\n'
@@ -421,16 +421,16 @@ class BaseLineScanner(object):
         else:
             prefix = ''
         return prefix
-    #@+node:ekr.20161030190924.35: *5* BLS.getClassNodeRef
-    def getClassNodeRef(self, class_name):
+    #@+node:ekr.20161030190924.35: *5* BLS.get_class_node_ref
+    def get_class_node_ref(self, class_name):
         '''Insert the proper body text in the class_vnode.'''
         if self.tree_type in ('@clean', '@file', '@nosent', None):
             s = '@others'
         else:
             s = g.angleBrackets(' class %s methods ' % (class_name))
         return '%s\n' % (s)
-    #@+node:ekr.20161030190924.36: *5* BLS.putClassHelper
-    def putClassHelper(self, lines, i, end, class_node):
+    #@+node:ekr.20161030190924.36: *5* BLS.put_class_helper
+    def put_class_helper(self, lines, i, end, class_node):
         '''
         lines contains the body of a class, not including the signature.
 
@@ -606,18 +606,16 @@ class BaseLineScanner(object):
         '''Skip over all lines of the block.'''
         trace = False and not g.unitTesting
         state = self.state
-        i1 = 1
         i += 1
         if trace: g.trace('first line', lines[i])
         while i < len(lines):
             line = lines[i]
             if trace: print(line.rstrip())
             state.scan_line(line)
-            if state.continues_block():
+            if state.continues_block(): ######### ?????????
                 break
             else:
                 i += 1
-        ### assert i > i1, repr(lines[i])
         return i
         
     #@+node:ekr.20161031082049.1: *4* BLS.OLDgen_skip_block (was skipBlock)
@@ -693,28 +691,24 @@ class BaseLineScanner(object):
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
         if trace:
             g.trace('Block...\n', ''.join(lines[i:j]))
-    #@+node:ekr.20161030190924.12: *4* BLS.scan_helper (REVISE)
-    ### def scan_helper(self, s, i, end, parent, kind):
+    #@+node:ekr.20161030190924.12: *4* BLS.scan_helper (Test) (Why is this working??)
     def scan_helper(self, lines, i, end, parent, kind):
-        '''Common scanning code used by both scan and putClassHelper.'''
+        '''Common scanning code used by both scan and put_class_helper.'''
         assert kind in ('class', 'outer')
-        start = i; putRef = False; bodyIndent = None
+        state = self.state
+        bodyIndent, putRef, start = None, False, i
         # Prevent scanners from going beyond end.
-        # Potentially expensive, but unavoidable.
-        ### if self.hasNestedClasses and end < len(s):
-            ### s = s[: end] # Potentially expensive, but unavoidable.
-        ### if self.has_nested_classes and end < len(lines):
         if end < len(lines):
             lines = lines[:end]
-        state = self.state
         while i < end:
             progress = i
             line = lines[i]
             state.scan_line(line)
             if state.starts_block():
                 putRef = True
+                self.headline = line
                 if bodyIndent is None:
-                    bodyIndent = self.get_indent(line) ### was getIndent(s, i)
+                    bodyIndent = self.get_indent(line)
                 j = self.gen_skip_block(lines, i)
                 ### self.putClass(s, i, self.sigEnd, self.codeEnd, start, parent)
                 self.new_put_block(lines, i, j, parent)
