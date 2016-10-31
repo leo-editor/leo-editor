@@ -123,12 +123,14 @@ class BaseLineScanner(object):
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
 
-        # Set by run...
+        # State vars.
         self.errors = 0
         ic.errors = 0
         self.mismatchWarningGiven = False
         self.isPrepass = False
+        self.output_indent = 0
         self.root = None
+        self.sig_id = None ### To be removed.
         self.tab_width = None
     #@+node:ekr.20161027094537.16: *3* BLS.check & helpers
     def check(self, unused_s, parent):
@@ -254,7 +256,7 @@ class BaseLineScanner(object):
         if '\n' not in tail:
             self.warning(
                 '%s %s does not end with a newline; one will be added\n%s' % (
-                self.functionSpelling, self.sigId, g.get_line(s, codeEnd)))
+                self.functionSpelling, self.sig_id, g.get_line(s, codeEnd)))
         return body1, body2
     #@+node:ekr.20161030190924.24: *4* BLS.create_decls_node
     def create_decls_node(self, parent, s):
@@ -312,7 +314,7 @@ class BaseLineScanner(object):
         result = ''.join(result)
         return result
     #@+node:ekr.20161030190924.31: *4* BLS.put_class & helpers
-    def put_class(self, s, i, sigEnd, codeEnd, start, parent):
+    def put_class(self, s, i, sigEnd, codeEnd, start, parent): ###
         '''Creates a child node c of parent for the class,
         and a child of c for each def in the class.'''
         trace = False
@@ -325,15 +327,16 @@ class BaseLineScanner(object):
         # Enter a new class 2: init the new class info.
         self.indentRefFlag = None
         class_kind = self.classId
-        class_name = self.sigId
+        class_name = '<no class name>' ### self.sig_id
         headline = '%s %s' % (class_kind, class_name)
         headline = headline.strip()
         self.method_name = headline
         # Compute the starting lines of the class.
         prefix = self.createClassNodePrefix()
-        if not self.sigId:
-            g.trace('Can not happen: no sigId')
-            self.sigId = 'Unknown class name'
+        ###
+        # if not self.sig_id:
+            # g.trace('Can not happen: no sig_id')
+            # self.sig_id = 'Unknown class name'
         classHead = s[start: sigEnd]
         i = self.extendSignature(s, sigEnd)
         extend = s[sigEnd: i]
@@ -438,14 +441,14 @@ class BaseLineScanner(object):
         verbose = True
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
-        if self.sigId:
-            headline = self.sigId
+        if self.sig_id:
+            headline = self.sig_id
         else:
-            g.trace('Can not happen: no sigId')
+            g.trace('Can not happen: no sig_id')
             headline = 'unknown function'
-        body1, body2 = self.computeBody(s, start, sigStart, codeEnd)
+        body1, body2 = self.compute_body(s, start, sigStart, codeEnd)
         body = body1 + body2
-        parent = self.adjustParent(parent, headline)
+        parent = self.adjust_parent(parent, headline)
         if trace:
             # pylint: disable=maybe-no-member
             g.trace('parent', parent and parent.h)
