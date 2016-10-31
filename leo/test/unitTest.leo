@@ -58,7 +58,7 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161029115749.2"><vh>@gnxs</vh></v>
+<v t="ekr.20161031055427.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="edward.20160919054711.14"><vh>@gnxs</vh></v>
@@ -1233,9 +1233,20 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e38710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3871197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
+<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
+<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
+<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
+</v>
+<v t="ekr.20110610122533.3407"></v>
+</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
@@ -1289,14 +1300,7 @@
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
-<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
-<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
-<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
-<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
-<v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
-<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
-</v>
+<v t="ekr.20090529141856.4774"></v>
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
@@ -1420,10 +1424,6 @@
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-</v>
-<v t="ekr.20090529141856.4774"></v>
-<v t="ekr.20110610122533.3407"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7934,7 +7934,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="8">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14674,7 +14674,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15407,10 +15407,18 @@ a = b &lt;&lt; c &gt;&gt; d
 False: (Legacy):      The @auto write code ignores section references.
 </t>
 <t tx="ekr.20161027183259.1"></t>
-<t tx="ekr.20161029115749.2">gnx: ekr.20161029115723.8
-unl: def child1
-gnx: ekr.20161029115723.9
-unl: def child1--&gt;def child1_method1
+<t tx="ekr.20161031055427.1">gnx: ekr.20161031055404.9
+unl: class class1
+gnx: ekr.20161031055404.10
+unl: class class1--&gt;class1_method1
+gnx: ekr.20161031055404.11
+unl: class class1--&gt;class1_method2
+gnx: ekr.20161031055404.12
+unl: class class2
+gnx: ekr.20161031055404.13
+unl: class class2--&gt;class2_method1
+gnx: ekr.20161031055404.14
+unl: class class2--&gt;class2_method2
 </t>
 </tnodes>
 </leo_file>

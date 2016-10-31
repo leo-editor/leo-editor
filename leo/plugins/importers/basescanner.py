@@ -97,6 +97,7 @@ class BaseLineScanner(object):
         gen_clean = True, # True: clean blank lines.
         gen_refs = False, # True: generate section references.
         language = None, # For @language directive.
+        name = None, # The kind of importer.
         state = None,
         strict = False,
     ):
@@ -108,8 +109,10 @@ class BaseLineScanner(object):
         self.encoding = ic.encoding
         self.gen_clean = gen_clean
         self.gen_refs = gen_refs
-        self.language = language
+        assert language or name
+        self.language = language or name ###
             # For the @language directive.
+        self.name = name or language
         self.state = state
             # A scanner instance.
         self.strict = strict
