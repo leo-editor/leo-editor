@@ -223,6 +223,11 @@
 <v t="ekr.20161023110341.1"><vh>Script: find all external calls to commander</vh></v>
 </v>
 </v>
+<v t="ekr.20161031054707.1"><vh>@@button pep8 @key=Ctrl-5</vh>
+<v t="ekr.20161031054707.2"><vh>change_all</vh></v>
+<v t="ekr.20161031054707.3"><vh>init</vh></v>
+<v t="ekr.20161031054707.4"><vh>to_pep8</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2557,5 +2562,71 @@ if 1:
 </t>
 <t tx="ekr.20161023110345.1"># https://github.com/leo-editor/leo-editor/issues/325
 # This issue has been closed and abandoned.</t>
+<t tx="ekr.20161031054707.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
+# aTestExample notFoundExample.
+import re
+@others
+change = True # True: actually make the changes.
+target = 'BLS.new_scan &amp; helpers'
+name, root = init()
+if len(name) &lt; 2:
+    g.es_print('name too short:', name)
+else:
+    new_name = to_pep8(name)
+    if new_name == name:
+        g.es_print('already pep8:', name)
+    else:
+        g.es_print('%s -&gt; %s' % (name, new_name))
+        change_all()
+</t>
+<t tx="ekr.20161031054707.2">def change_all():
+    '''Change name to new_name throughout root's tree.'''
+    u = c.undoer
+    bunch = u.beforeChangeTree(root)
+    any_found = False
+    pattern = re.compile(r'\b%s\b' % name)
+    for p in root.self_and_subtree():
+        found, indices = False, []
+        for m in pattern.finditer(p.b):
+            any_found, found = True, True
+            indices.append(str(m.start()))
+        if found:
+            g.es_print(', '.join(indices), p.h)
+            s = p.b
+            for i in reversed(indices):
+                i = int(i)
+                s = s[:i] + new_name + s[i+len(name):]
+            if change:
+                p.b = s
+            else:
+                g.es_print(s)
+    if any_found:
+        u.afterChangeTree(root, 'pep8', bunch)
+    else:
+        g.es_print('not found:', name)
+</t>
+<t tx="ekr.20161031054707.3">def init():
+    g.cls()
+    c.k.simulateCommand('clear-log')
+    root = g.findNodeAnywhere(c, target)
+    assert root, target
+    i, j = c.editCommands.extendToWord(event=None, select=False)
+    w = c.frame.body.wrapper
+    s = w.getAllText()
+    name = s[i:j]
+    return name, root
+</t>
+<t tx="ekr.20161031054707.4">def to_pep8(s):
+    
+    if len(s) &gt; 1 and s[0].islower() and s.lower() != s:
+        result = []
+        for ch in s:
+            result.append(ch)
+            if ch.isupper():
+                result.pop()
+                result.append('_%s' % (ch.lower()))
+        return ''.join(result)
+    else:
+        return name</t>
 </tnodes>
 </leo_file>

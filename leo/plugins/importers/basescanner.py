@@ -548,8 +548,10 @@ class BaseLineScanner(object):
         return i, result
     #@+node:ekr.20161031041540.1: *3* BLS.new_scan & helpers
     def new_scan(self, s1, parent):
-        '''The *new* line-based scanner, using proper (old-style) code generation.'''
+        '''new_scan: The *new* line-based scanner, using proper (old-style) code generation.'''
+        # Test: aTestExample.
         assert False, g.callers()
+        # Test3: aTestExample.
     #@+node:ekr.20161027181809.1: *3* BLS.utils
     #@+node:ekr.20161027094537.17: *4* BLS.dump_block & dump_blocks
     def dump_block(self, block):
