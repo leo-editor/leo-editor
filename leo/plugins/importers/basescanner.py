@@ -132,29 +132,13 @@ class BaseLineScanner(object):
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-        self.at_auto_separate_non_def_nodes = False ### ???
-        
-        #### To be removed
-        delim1, junk, junk = g.set_delims_from_language(language)
-        self.comment_delim = delim1
-        self.outerBlockDelim1 = None
-        self.outerBlockDelim2 = None
-        self.functionSpelling = '<function spelling>'
-        ### self.classId = '<classID>'
-        self.method_name = '<methodName>'
-        ### self.class_kind = '<class_kind>'
+        self.at_auto_separate_non_def_nodes = False
+            # Not used at present.
 
         # State vars.
         self.errors = 0
-        ic.errors = 0
-        self.mismatchWarningGiven = False
-        self.headline = '<headline>' ### What about nesting?
-        self.indentRefFlag = False ### New...
-        self.isPrepass = False
-        ### self.output_indent = 0
+        ic.errors = 0 # Required.
         self.root = None
-        self.root_line = '<root line>' ### To do.
-        self.sig_id = None ### To be removed.
         self.tab_width = None
         self.tab_ws = ''
             # Set in run: the whitespace equivalent to one tab.
