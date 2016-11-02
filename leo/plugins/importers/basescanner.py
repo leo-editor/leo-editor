@@ -183,6 +183,11 @@ class BaseLineScanner(object):
                 g.trace('===== s2')
                 for i, s in enumerate(g.splitLines(s2)):
                     g.es_print('%3s %r' % (i+1, s.rstrip()))
+        if 0: # This is wrong headed.
+            if not self.strict and not ok:
+                # Suppress the error if lws is the cause.
+                clean = self.strip_lws # strip_all, clean_blank_lines
+                ok = clean(s1) == clean(s2)
         return ok
     #@+node:ekr.20161027114045.1: *4* BLS.clean_blank_lines
     def clean_blank_lines(self, s):
@@ -354,31 +359,37 @@ class BaseLineScanner(object):
         if not g.unitTesting:
             g.warning('Warning:', s)
     #@+node:ekr.20161101094729.1: *3* BLS.Parsers
-    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (top-level)
-    def gen_lines(self, indent_flag, lines, parent):
+    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (top-level) & helper
+    def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
         '''
         Parse all the given lines, adding to parent.b and creating
         child nodes as necessary.
         '''
-        trace = False and not g.unitTesting # and self.root.h.endswith('.py')
-        if trace: g.trace(len(lines))
+        trace = False and not g.unitTesting # and self.root.h.endswith('debug.js')
+        trace_lines = False
+        if not lines:
+            return
         state = self.state
+        if trace:
+            g.trace(tag, state, repr(lines and lines[0]))
+            g.trace('===== entry lines:...')
+            for line in lines:
+                print(line.rstrip())
+            print('----- end entry lines.')
+        state.push()
+        state.clear()
         i, ref_flag = 0, False
         while i < len(lines):
             progress = i
             line = lines[i]
             state.scan_line(line)
-            if trace: print(line.rstrip())
+            if trace and trace_lines: g.trace(line.rstrip())
             if state.starts_block():
                 # Generate the reference first.
                 ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
                 # Scan the code block and its tail.
-                n_block, n_tail = self.skip_code_block(i, lines)
-                    ########## Python must skip to the next def at this level.
-                code_lines = lines[i:i+n_block]
-                i += n_block
-                tail_lines = lines[i:i+n_tail]
-                i += n_tail
+                code_lines, tail_lines = self.skip_code_block(i, lines)
+                i += (len(code_lines) + len(tail_lines))
                 if self.gen_refs:
                     self.rescan_code_block(code_lines, parent)
                     self.append_to_body(parent, ''.join(tail_lines))
@@ -390,6 +401,78 @@ class BaseLineScanner(object):
                 self.append_to_body(parent, line)
                 i += 1
             assert progress < i
+        state.pop()
+    #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
+    def skip_code_block(self, i, lines):
+        '''
+        lines[i] starts a class or function.
+        
+        Return (code_lines, tail_lines) where:
+        - code_lines are all the lines of the class or function.
+        - tail lines are all lines up to but not including the next class or function.
+        '''
+        trace = False and not g.unitTesting # and self.root.h.endswith('debug.js')
+        trace_lines = False
+        trace_entry = True
+        trace_results = True
+        state = self.state
+        assert state.starts_block()
+        state.push()
+        state.clear()
+        if trace:
+            g.trace(repr(lines and lines[0]))
+            if trace_entry:
+                g.trace('===== entry lines:...')
+                for j in range(i, len(lines)):
+                    print('  %s' % lines[j].rstrip()) # entry lines.
+                print('----- end entry lines')
+        # Scan the code block.
+        # We have cleared the state, so rescan the first line.
+        block_i = i
+        state.scan_line(lines[i])
+        assert state.starts_block()
+        i += 1
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            if trace and trace_lines: g.trace(line.rstrip())
+            state.scan_line(line)
+            if state.continues_block():
+                i += 1
+            ########## Special case for python ?????
+            else:
+                i += 1
+                break
+            assert progress < i
+        code_lines = lines[block_i:i]
+        if trace and trace_results:
+            g.trace('===== code lines:...')
+            for line in code_lines:
+                print('  %s' % line.rstrip()) # code lines.
+            print('----- end code lines')
+        # Scan the block's tail.
+        # Line i is *not* part of the code block and it has not been scanned.
+        tail_i = i
+        if i < len(lines):
+            state.scan_line(lines[i])
+            if not state.starts_block():
+                i += 1 # Add the just-scanned line.
+                while i < len(lines):
+                    line = lines[i]
+                    if trace and trace_lines: g.trace(line.rstrip())
+                    state.scan_line(line)
+                    if state.starts_block():
+                        break
+                    else:
+                        i += 1
+        tail_lines = lines[tail_i:i]
+        if trace and trace_results:
+            g.trace('===== tail lines:...')
+            for line in tail_lines:
+                print('  %s' % line.rstrip()) # tail lines.
+            print('----- end-tail-lines')
+        state.pop()
+        return code_lines, tail_lines
     #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
     def gen_ref(self, indent_flag, line, parent, ref_flag):
         '''
@@ -414,7 +497,7 @@ class BaseLineScanner(object):
             if trace: g.trace('indent_ws: %r line: %r' % (indent_ws, line))
             self.append_to_body(parent, ref)
         return ref_flag
-    #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block
+    #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (calls gen_lines)
     def rescan_code_block(self, lines, parent):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
@@ -436,67 +519,14 @@ class BaseLineScanner(object):
             last_line = lines[-1]
             lines = lines[1:-1]
         self.append_to_body(child, first_line)
-        state.push()
         self.gen_lines(
             indent_flag = True,
             lines = lines,
-            parent = child)
+            parent = child,
+            tag = 'rescan_code_block')
         if last_line:
             self.append_to_body(child, last_line)
-        state.pop()
-    #@+node:ekr.20161030190924.13: *4* BLS.skip_code_block
-    def skip_code_block(self, i, lines):
-        '''
-        lines[i] starts a class or function.
-        Scan all lines of the class or function, and any tail lines.
-        Return (n_block, n_tail)
-        '''
-        trace = False and not g.unitTesting and self.root.h.endswith('.py')
-        trace_lines = True
-        trace_results = True
-        state = self.state
-        # Scan the code block.
-        assert state.starts_block()
-        block_i = i
-        i += 1
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            if trace and trace_lines: print(line.rstrip())
-            state.scan_line(line)
-            if state.continues_block():
-                i += 1
-            ########## Special case for python ?????
-            else:
-                i += 1
-                break
-            assert progress < i
-        n_block = i - block_i
-        if trace and trace_results:
-            g.trace('===== code lines:...')
-            for j in range(block_i, i):
-                print('  %s' % lines[j].rstrip()) # code lines.
-            print('')
-        # Scan the block's tail.
-        # Careful: never scan the same line twice.
-        tail_i = i
-        if not state.starts_block():
-            i += 1
-            while i < len(lines):
-                line = lines[i]
-                if trace and trace_lines: g.trace(line.rstrip())
-                state.scan_line(line)
-                if state.starts_block():
-                    break
-                else:
-                    i += 1 
-        n_tail = i - tail_i
-        if trace and trace_results:
-            g.trace('===== tail lines:...')
-            for j in range(tail_i, min(i, len(lines)-1)):
-                print('  %s' % lines[j].rstrip()) # tail lines.
-            print('')
-        return n_block, n_tail
+        
     #@+node:ekr.20161101094905.1: *3* BLS.Top level
     #@+node:ekr.20161031041540.1: *4* BLS.new_scan
     def new_scan(self, s, parent, parse_body=False):
@@ -524,6 +554,8 @@ class BaseLineScanner(object):
     #@+node:ekr.20161027114007.1: *4* BLS.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace('=' * 30, parent.h)
         c = self.c
         if prepass:
             g.trace('(BaseLineScanner) Can not happen, prepass is True')
@@ -550,13 +582,11 @@ class BaseLineScanner(object):
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
             self.insert_ignore_directive(parent)
-        if self.atAuto and ok:
-            for p in root.self_and_subtree():
-                p.clearDirty()
-            c.setChanged(changed)
-        else:
-            root.setDirty(setDescendentsDirty=False)
-            c.setChanged(True)
+        # It's always useless for an an import to dirty the outline.
+        for p in root.self_and_subtree():
+            p.clearDirty()
+        c.setChanged(changed)
+        if trace: g.trace('-' * 30, parent.h)
         return ok
     #@+node:ekr.20161027114007.3: *5* BLS.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):
@@ -594,10 +624,9 @@ class BaseLineScanner(object):
         parent.b = parent.b.rstrip() + '\n@ignore\n'
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
-        else:
-            if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
-                g.warning('inserting @ignore')
-                c.import_error_nodes.append(parent.h)
+        elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+            g.warning('inserting @ignore')
+            c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161027183458.1: *5* BLS.post_pass & helper
     def post_pass(self, parent):
         '''Clean up parent's children.'''
@@ -2375,7 +2404,7 @@ class ScanState(object):
         self.stack = []
 
     def __repr__(self):
-        return 'ScanState: base: %3r state: %3r context: %2r' % (
+        return 'ScanState: base: %3r now: %3r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
@@ -2395,7 +2424,13 @@ class ScanState(object):
         '''Return the present counts.'''
         assert not self.context, repr(self.context)
         return self.curlies, self.parens
-    #@+node:ekr.20161027115813.5: *3* state.push & pop
+    #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
+    def clear(self):
+        '''Clear the state.'''
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = ''
+
     def pop(self):
         '''Restore the base state from the stack.'''
         self.base_curlies, self.base_parens = self.stack.pop()
@@ -2405,7 +2440,6 @@ class ScanState(object):
         self.stack.append((self.base_curlies, self.base_parens),)
         self.base_curlies = self.curlies
         self.base_parens = self.parens
-
     #@+node:ekr.20161027115813.7: *3* state.scan_line
     def scan_line(self, s, block_comment=None, line_comment='#'):
         '''

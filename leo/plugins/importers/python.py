@@ -89,7 +89,12 @@ class PythonScanState: ###(basescanner.ScanState):
         '''Return the present counts.'''
         assert not self.context, repr(self.context)
         return self.indent
-    #@+node:ekr.20161029103952.5: *3* python_state.push & pop
+    #@+node:ekr.20161029103952.5: *3* python_state.clear, push & pop
+    def clear(self):
+        '''Clear the state.'''
+        self.base_indent = self.indent = 0
+        self.context = '' 
+
     def pop(self):
         '''Restore the base state from the stack.'''
         self.base_indent = self.stack.pop()
