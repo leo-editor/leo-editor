@@ -502,7 +502,6 @@ class BaseLineScanner(object):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
             return
-        state = self.state
         first_line = lines[0]
         assert first_line.strip
         headline = self.clean_headline(first_line)
