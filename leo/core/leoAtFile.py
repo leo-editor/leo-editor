@@ -1256,6 +1256,7 @@ class AtFile(object):
         Previously only at.scanHeaderForThin (import code) called this method.
         '''
         at = self
+        # g.trace('=====', at.errors)
         s = at.openFileHelper(fn)
         if s is not None:
             e, s = g.stripBOM(s)
@@ -1297,6 +1298,11 @@ class AtFile(object):
         if at.errors:
             g.trace('can not happen: at.errors > 0')
             e = at.encoding
+            if g.unitTesting: assert False, g.callers()
+                # This can happen when the showTree command in a unit test is left on.
+                # A @file/@clean node is created which refers to a non-existent file.
+                # It's surprisingly difficult to set at.error=0 safely elsewhere.
+                # Otoh, I'm not sure why this test here is ever really useful.
         else:
             at.initReadLine(s)
             old_encoding = at.encoding
