@@ -81,6 +81,7 @@ if g.isPython3:
 else:
     import StringIO
     StringIO = StringIO.StringIO
+import re
 import time
 #@-<< imports >>
 new_ctors = False
@@ -147,10 +148,11 @@ class BaseLineScanner(object):
     def check(self, unused_s, parent):
         '''BaseLineScanner.check'''
         trace = True and not g.unitTesting
-        trace_all_lines = True
+        trace_all_lines = False
+        no_clean = False
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
-        if self.gen_clean:
+        if not no_clean and self.gen_clean:
             clean = self.strip_lws # strip_all, clean_blank_lines
             s1, s2 = clean(s1), clean(s2)
         ok = s1 == s2
@@ -158,18 +160,18 @@ class BaseLineScanner(object):
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
             g.trace('===== PERFECT IMPORT FAILED =====', parent.h)
-            g.trace('len(s1): %s len(s2): %s' % (n1, n2))
+            print('len(s1): %s len(s2): %s' % (n1, n2))
             for i in range(min(n1, n2)):
                 line1, line2 = lines1[i], lines2[i]
                 if line1 != line2:
-                     g.trace('first mismatched line: %s' % i)
-                     g.trace(repr(line1))
-                     g.trace(repr(line2))
+                     print('first mismatched line: %s' % i)
+                     print(repr(line1))
+                     print(repr(line2))
                      break
             else:
-                g.trace('all common lines match')
+                print('all common lines match')
             if trace and trace_all_lines:
-                g.trace('===== s1: %s' % parent.h)
+                print('===== s1: %s' % parent.h)
                 for i, s in enumerate(g.splitLines(s1)):
                     print('%3s %s' % (i+1, s.rstrip()))
                 g.trace('===== s2')
@@ -260,16 +262,28 @@ class BaseLineScanner(object):
             elif line.endswith('\n'):
                 result.append('\n')
         return ''.join(result)
-    #@+node:ekr.20161101081522.1: *4* BLS.undent
+    #@+node:ekr.20161101081522.1: *4* BLS.undent & helper
     def undent(self, lines):
         '''Remove self.tab_ws from the start of all lines.'''
+        trace = False and not g.unitTesting and self.root.h.find('main') > -1
         if self.is_rst:
             return ''.join(lines) # Never unindent rst code.
-        ws = self.tab_ws # A string.
+        ### ws = self.tab_ws # A string.
+        ws = self.common_lws(lines)
+        if trace:
+            g.trace('common_lws:', repr(ws))
+            print('===== lines:\n%s' % ''.join(lines))
         result = []
         for s in lines:
+            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
+                # result.append(self.tab_ws + s.lstrip())
+                    # # A useful hack.
             if s.startswith(ws):
                 result.append(s[len(ws):])
+            elif s.strip().endswith('>>') and s.strip().startswith('<<'):
+                result.append(s.lstrip())
+                # result.append(self.tab_ws + s.lstrip())
+                    # A useful hack.
             elif self.strict:
                 # Indicate that the line is underindented.
                 result.append("%s%s.%s" % (
@@ -278,7 +292,32 @@ class BaseLineScanner(object):
                     s.lstrip()))
             else:
                 result.append(s.lstrip())
+        if trace:
+            print('----- result:\n%s' % ''.join(result))
         return ''.join(result)
+    #@+node:ekr.20161102055342.1: *5* common_lws
+    def common_lws(self, lines):
+        '''Return the lws common to all lines.'''
+        trace = False and not g.unitTesting
+        if not lines:
+            return ''
+        pattern = r'(\s*)'
+        m = re.match(pattern, lines[0])
+        lws = m.group(0) if m else ''
+        # if trace: g.trace('=====', repr(lines[0]))
+        for s in lines:
+            m = re.match(pattern, s)
+            lws2 = m.group(0) if m else ''
+            if s.strip().endswith('>>') and s.strip().startswith('<<'):
+                pass # Ignore section references.
+            elif lws2.startswith(lws):
+                pass
+            elif lws.startswith(lws2):
+                lws = lws2
+            else:
+                break
+        if trace: g.trace(repr(lws), repr(lines[0]))
+        return lws
     #@+node:ekr.20161030190924.41: *4* BLS.underindented_comment/line
     def underindented_comment(self, line):
         if self.at_auto_warns_about_leading_whitespace:
@@ -291,6 +330,30 @@ class BaseLineScanner(object):
             self.error(
                 'underindented line.\n'
                 'Extra leading whitespace will be added\n' + line)
+    #@+node:ekr.20161027181903.1: *3* BLS.Messages
+    def error(self, s):
+        self.errors += 1
+        self.importCommands.errors += 1
+        if g.unitTesting:
+            if self.errors == 1:
+                g.app.unitTestDict['actualErrorMessage'] = s
+            g.app.unitTestDict['actualErrors'] = self.errors
+            if 0: # For debugging unit tests.
+                g.trace(g.callers())
+                g.error('', s)
+        else:
+            g.error('Error:', s)
+
+    def oops(self):
+        g.pr('BaseScanner oops: %s must be overridden in subclass' % g.callers())
+
+    def report(self, message):
+        if self.strict: self.error(message)
+        else: self.warning(message)
+
+    def warning(self, s):
+        if not g.unitTesting:
+            g.warning('Warning:', s)
     #@+node:ekr.20161101094729.1: *3* BLS.Parsers
     #@+node:ekr.20161030190924.13: *4* BLS.skip_code_block
     def skip_code_block(self, i, lines):
@@ -531,6 +594,12 @@ class BaseLineScanner(object):
         if hasattr(self, 'clean_nodes'):
             # pylint: disable=no-member
             self.clean_nodes(parent)
+        # Unindent nodes.
+        for p in parent.subtree():
+            if p.b.strip():
+                p.b = self.undent(g.splitLines(p.b))
+            else:
+                p.b = ''
         # Delete empty nodes.
         aList = []
         for p in parent.subtree():
@@ -562,45 +631,6 @@ class BaseLineScanner(object):
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
         return ''.join(result)
-    #@+node:ekr.20161027181809.1: *3* BLS.utils
-    #@+node:ekr.20161027094537.17: *4* BLS.dump_block & dump_blocks
-    def dump_block(self, block):
-        '''Dump one block.'''
-        lines = block.lines if isinstance(block, Block) else block
-        for j, s in enumerate(lines):
-            print('    %3s %s' % (j, s.rstrip()))
-            
-    def dump_blocks(self, blocks, parent):
-        '''Dump all blocks, which may be Block instances or lists of strings.'''
-        g.trace('blocks in %s...' % parent.h)
-        for i, block in enumerate(blocks):
-            print('  block: %s' % i)
-            self.dump_block(block)
-
-    #@+node:ekr.20161027181903.1: *4* BLS.error, oops, report and warning
-    def error(self, s):
-        self.errors += 1
-        self.importCommands.errors += 1
-        if g.unitTesting:
-            if self.errors == 1:
-                g.app.unitTestDict['actualErrorMessage'] = s
-            g.app.unitTestDict['actualErrors'] = self.errors
-            if 0: # For debugging unit tests.
-                g.trace(g.callers())
-                g.error('', s)
-        else:
-            g.error('Error:', s)
-
-    def oops(self):
-        g.pr('BaseScanner oops: %s must be overridden in subclass' % g.callers())
-
-    def report(self, message):
-        if self.strict: self.error(message)
-        else: self.warning(message)
-
-    def warning(self, s):
-        if not g.unitTesting:
-            g.warning('Warning:', s)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -2285,68 +2315,6 @@ class BaseScanner(object):
             line_number += s[j: i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
-    #@-others
-#@+node:ekr.20161027094537.2: ** class Block
-class Block:
-    '''A class describing a block of lines.'''
-
-    def __init__(self, lines, simple=None):
-        '''Ctor for the Block class.'''
-        assert simple in (True, False), g.callers()
-        self.children = []
-        self.lines = lines
-        self.headline = ''
-        self.simple = simple
-        
-    def description(self):
-        return 'Block: simple: %s lines: %s children: %s %s' % (
-            int(self.simple), len(self.lines),
-            len(self.children), self.get_headline())
-        
-    def __repr__(self):
-        return '%s Block...\n%s' % (
-            'Simple' if self.simple else 'Complex',
-            ''.join(self.lines),
-        )
-            
-    __str__ = __repr__
-    
-    #@+others
-    #@+node:ekr.20161027094537.3: *3* block.get_headline
-    def get_headline(self):
-        '''Return the block's headline.'''
-        if self.headline:
-            return self.headline
-        elif self.lines:
-            for line in self.lines:
-                if line.strip():
-                    return line.strip()
-            return 'blank lines'
-            
-        else:
-            return '<no headline>'
-    #@+node:ekr.20161027094537.4: *3* block.undent
-    def undent(self, c, n, clean=True):
-        '''Unindent all block lines by n.'''
-        if n > 0:
-            result = []
-            for s in self.lines:
-                if s.strip():
-                    if s[:n] == ' ' * n:
-                        result.append(s[n:])
-                    elif s[0] == '\t':
-                        i  = 0
-                        while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
-                            i += 1
-                        result.append(s[i:])
-                    else:
-                        g.trace('can not happen mixed leading whitespace:', n, repr(s))
-                        return
-                elif clean:
-                    result.append(s)
-                else:
-                    result.append('\n' if s.endswith('\n') else '')
-            self.lines = result
     #@-others
 #@+node:ekr.20161027115813.1: ** class ScanState
 class ScanState(object):

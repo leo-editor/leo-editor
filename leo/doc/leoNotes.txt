@@ -18789,6 +18789,81 @@ def skip_matching_python_parens(s, i):
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
 .. @+node:ekr.20161102052106.1: *3* old line-oriented importers
+.. @+node:ekr.20161102071703.2: *4* class Block
+class Block:
+    '''A class describing a block of lines.'''
+
+    def __init__(self, lines, simple=None):
+        '''Ctor for the Block class.'''
+        assert simple in (True, False), g.callers()
+        self.children = []
+        self.lines = lines
+        self.headline = ''
+        self.simple = simple
+        
+    def description(self):
+        return 'Block: simple: %s lines: %s children: %s %s' % (
+            int(self.simple), len(self.lines),
+            len(self.children), self.get_headline())
+        
+    def __repr__(self):
+        return '%s Block...\n%s' % (
+            'Simple' if self.simple else 'Complex',
+            ''.join(self.lines),
+        )
+            
+    __str__ = __repr__
+    
+    @others
+.. @+node:ekr.20161102071703.3: *5* block.get_headline
+def get_headline(self):
+    '''Return the block's headline.'''
+    if self.headline:
+        return self.headline
+    elif self.lines:
+        for line in self.lines:
+            if line.strip():
+                return line.strip()
+        return 'blank lines'
+        
+    else:
+        return '<no headline>'
+.. @+node:ekr.20161102071703.4: *5* block.undent
+def undent(self, c, n, clean=True):
+    '''Unindent all block lines by n.'''
+    if n > 0:
+        result = []
+        for s in self.lines:
+            if s.strip():
+                if s[:n] == ' ' * n:
+                    result.append(s[n:])
+                elif s[0] == '\t':
+                    i  = 0
+                    while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
+                        i += 1
+                    result.append(s[i:])
+                else:
+                    g.trace('can not happen mixed leading whitespace:', n, repr(s))
+                    return
+            elif clean:
+                result.append(s)
+            else:
+                result.append('\n' if s.endswith('\n') else '')
+        self.lines = result
+.. @+node:ekr.20161102071703.5: *4* BLS.dump_block & dump_blocks
+def dump_block(self, block):
+    '''Dump one block.'''
+    lines = block.lines if isinstance(block, Block) else block
+    for j, s in enumerate(lines):
+        print('    %3s %s' % (j, s.rstrip()))
+        
+def dump_blocks(self, blocks, parent):
+    '''Dump all blocks, which may be Block instances or lists of strings.'''
+    g.trace('blocks in %s...' % parent.h)
+    for i, block in enumerate(blocks):
+        print('  block: %s' % i)
+        self.dump_block(block)
+
 .. @+node:ekr.20161102052106.2: *4* BLS.scan & helpers (All deleted)
 def scan(self, s1, parent):
     '''The *old* line-based scanner.'''
