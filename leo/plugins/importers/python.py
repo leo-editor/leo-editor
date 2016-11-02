@@ -27,19 +27,16 @@ class PythonLineScanner(basescanner.BaseLineScanner):
         
     #@+others
     #@+node:ekr.20161029103640.2: *3* python.clean_headline
-    def clean_headline(self, p):
-        '''Return a cleaned up headline for p, or None for no change.'''
-        m = re.match(r'def\s+(\w+)', p.h)
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s, or None for no change.'''
+        m = re.match(r'def\s+(\w+)', s)
         if m:
             return m.group(1)
-        m = re.match(r'class\s+(\w+)', p.h)
+        m = re.match(r'class\s+(\w+)', s)
         if m:
             return 'class %s' % m.group(1)
         else:
-            return None
-
-        # m = re.match(r'(def|class)\s+(\w+)', p.h)
-        # return m.group(1) + ' ' + m.group(2) if m else None
+            return s
     #@+node:ekr.20161029103640.3: *3* python.clean_nodes
     def clean_nodes(self, parent):
         '''Clean nodes as part of the post pass.'''

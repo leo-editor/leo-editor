@@ -91,10 +91,10 @@ class PerlScanner(basescanner.BaseLineScanner):
         
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl.clean_headline
-    def clean_headline(self, p):
-        '''Return a cleaned up headline for p, or None for no change.'''
-        m = re.match(r'sub\s+(\w+)', p.h)
-        return 'sub ' + m.group(1) if m else None
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        m = re.match(r'sub\s+(\w+)', s)
+        return 'sub ' + m.group(1) if m else s
     #@+node:ekr.20161027194956.1: *3* perl.clean_nodes
     def clean_nodes(self, parent):
         '''Clean nodes as part of the post pass.'''

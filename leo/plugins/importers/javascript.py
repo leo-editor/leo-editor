@@ -3,6 +3,7 @@
 '''The @auto importer for JavaScript.'''
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
+# import re
 #@+others
 #@+node:ekr.20161004092007.1: ** class JavaScriptScanState
 class JavaScriptScanState(basescanner.ScanState):
@@ -99,6 +100,23 @@ class JavaScriptScanner(basescanner.BaseLineScanner):
             state = JavaScriptScanState(),
             strict = False, # True: leave leading whitespace alone.
         )
+        
+    #@+others
+    #@+node:ekr.20161101183354.1: *3* js_state.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        s = s.strip()
+        # Don't clean a headline twice.
+        if s.endswith('>>') and s.startswith('<<'):
+            return s
+        else:
+            i = s.find('(')
+            return s if i == -1 else s[:i]
+        # Simple regex eats too much.
+            # m = re.match(r'(.*)\(', s)
+            # g.trace('===== js state', m.group(1) if m else s)
+            # return m.group(1) if m else s
+    #@-others
 #@-others
 importer_dict = {
     'class': JavaScriptScanner,

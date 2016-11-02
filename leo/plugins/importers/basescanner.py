@@ -83,7 +83,10 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
-new_gen = False
+#@+<< basescanner: new_gen >>
+#@+node:ekr.20161101172006.1: ** << basescanner: new_gen >>
+new_gen = True
+#@-<< basescanner: new_gen >>
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
@@ -107,21 +110,21 @@ class BaseLineScanner(object):
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
-        if new_gen: ### 
-            self.gen_refs = name in ('javascript',)
-            self.gen_clean = name in ('python',)
-        else:
-            self.gen_clean = gen_clean
-            self.gen_refs = gen_refs
-        assert language or name
         self.language = language or name ###
             # For the @language directive.
         self.name = name or language
+        assert language or name
         self.state = state
             # A scanner instance.
         self.strict = strict
             # True: leading whitespace is significant.
         assert state, 'Caller must provide a line state instance'
+        if False: ### not yet. new_gen: ### 
+            self.gen_refs = name in ('javascript',)
+            self.gen_clean = name in ('python',)
+        else:
+            self.gen_clean = gen_clean
+            self.gen_refs = gen_refs
         
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
@@ -234,12 +237,12 @@ class BaseLineScanner(object):
         ### self.importCommands.appendStringToBody(p, s)
         p.b = p.b + s
     #@+node:ekr.20161101061949.1: *4* BLS.clean_headline
-    def clean_headline(self, p):
+    def clean_headline(self, s):
         '''
-        Return the cleaned version of p's headline.
+        Return the cleaned version headline s.
         Will typically be overridden in subclasses.
         '''
-        return p.h.strip()
+        return s.strip()
     #@+node:ekr.20161030190924.26: *4* BLS.create_child_node (Test)
     def create_child_node(self, parent, body, headline):
         p = parent.insertAsLastChild()
@@ -298,37 +301,50 @@ class BaseLineScanner(object):
         Scan all lines of the class or function, and any tail lines.
         Return (n_block, n_tail)
         '''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting and self.root.h.endswith('bug128.js')
+        trace_lines = False
+        trace_results = True
         state = self.state
         # Scan the code block.
         assert state.starts_block()
-        if trace: g.trace('first line', lines[i])
-        ############### Push and pop state?????
         block_i = i
         i += 1
         while i < len(lines):
             progress = i
             line = lines[i]
-            if trace: print(line.rstrip())
+            if trace and trace_lines: print(line.rstrip())
             state.scan_line(line)
             if state.continues_block():
-                break
+                i += 1
             else:
                 i += 1
+                break
             assert progress < i
         n_block = i - block_i
+        if trace and trace_results:
+            g.trace('===== code lines:...')
+            for j in range(block_i, i):
+                print('  %s' % lines[j].rstrip())
+            print('')
         # Scan the block's tail.
         # Careful: never scan the same line twice.
         tail_i = i
-        if not state.starts_block:
+        if not state.starts_block():
             i += 1
             while i < len(lines):
-                state.scan_line(lines[i])
+                line = lines[i]
+                if trace and trace_lines: g.trace(line.rstrip())
+                state.scan_line(line)
                 if state.starts_block():
                     break
                 else:
                     i += 1 
         n_tail = i - tail_i
+        if trace and trace_results:
+            g.trace('===== tail lines:...')
+            for j in range(tail_i, i):
+                print('  %s' % lines[j].rstrip())
+            print('')
         return n_block, n_tail
     #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (top-level) (Test)
     def gen_lines(self, indent_flag, lines, parent):
@@ -338,7 +354,7 @@ class BaseLineScanner(object):
         '''
         trace = False and not g.unitTesting
         state = self.state
-        i, ref_flag, result = 0, False, []
+        i, ref_flag = 0, False
         while i < len(lines):
             progress = i
             line = lines[i]
@@ -355,15 +371,14 @@ class BaseLineScanner(object):
                 i += n_tail
                 if self.gen_refs:
                     self.rescan_code_block(code_lines, parent)
-                    result.extend(tail_lines)
+                    self.append_to_body(parent, ''.join(tail_lines))
                 else:
                     all_lines = code_lines.extend(tail_lines)
                     self.rescan_code_block(all_lines, parent)
             else:
-                self.append_to_body(line, parent)
+                self.append_to_body(parent, line)
                 i += 1
             assert progress < i
-        self.append_to_body(parent, ''.join(result))
     #@+node:ekr.20161101113520.1: *4* BLS.gen_ref (Test)
     def gen_ref(self, indent_flag, line, parent, ref_flag):
         '''
@@ -371,30 +386,37 @@ class BaseLineScanner(object):
         #@+others
         #@-others
         '''
+        ### if self.root.h.endswith('bug128.js'):
+            # g.pdb()
         indent_ws = self.tab_ws if indent_flag else ''
         if self.is_rst and not self.atAuto:
             return None, None
         elif self.gen_refs:
+            headline = self.clean_headline(line)
             ref = '%s%s\n' % (
                 indent_ws,
-                g.angleBrackets(' class %s methods ' % line)) ### (class_name))
+                g.angleBrackets(' %s ' % headline)) ### line.rstrip()))
         else:
             ref = None if ref_flag else '%s@others\n' % indent_ws
             ref_flag = True # Don't generate another @others.
         if ref:
-            self.append_to_body(ref, parent)
+            self.append_to_body(parent, ref)
         return ref_flag
     #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (Test)
     def rescan_code_block(self, lines, parent):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
             return
+        state = self.state
         first_line = lines[0]
         assert first_line.strip
+        headline = self.clean_headline(first_line)
+        if self.gen_refs:
+            headline = g.angleBrackets(' %s ' % headline) ### first_line
         child = self.create_child_node(
             parent,
             body = '',
-            headline = self.clean_headline(first_line))
+            headline = headline)
         if self.name == 'python':
             last_line = None
             lines = lines[1:]
@@ -402,12 +424,14 @@ class BaseLineScanner(object):
             last_line = lines[-1]
             lines = lines[1:-1]
         self.append_to_body(child, first_line)
+        state.push()
         self.gen_lines(
             indent_flag = True,
             lines = lines,
             parent = child)
         if last_line:
             self.append_to_body(child, last_line)
+        state.pop()
     #@+node:ekr.20161101094905.1: *3* BLS.Top level
     #@+node:ekr.20161031041540.1: *4* BLS.new_scan (Test)
     def new_scan(self, s, parent, parse_body=False):
@@ -501,11 +525,10 @@ class BaseLineScanner(object):
     def post_pass(self, parent):
         '''Clean up parent's children.'''
         # Clean the headlines.
-        if hasattr(self, 'clean_headline'):
-            # pylint: disable=no-member
-            for p in parent.subtree():
-                h = self.clean_headline(p)
-                if h: p.h = h
+        for p in parent.subtree():
+            h = self.clean_headline(p.h)
+            assert h
+            if h != p.h: p.h = h
         # Clean the nodes, in a language-dependent way.
         if hasattr(self, 'clean_nodes'):
             # pylint: disable=no-member
