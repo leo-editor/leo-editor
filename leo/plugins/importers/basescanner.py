@@ -93,6 +93,8 @@ class BaseLineScanner(object):
 
     #@+others
     #@+node:ekr.20161027114542.1: *3* BLS.__init__
+    #@@nobeautify
+
     def __init__(self,
         importCommands,
         atAuto,
@@ -109,7 +111,7 @@ class BaseLineScanner(object):
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
-        self.language = language or name ###
+        self.language = language or name
             # For the @language directive.
         self.name = name or language
         assert language or name
@@ -118,8 +120,7 @@ class BaseLineScanner(object):
         self.strict = strict
             # True: leading whitespace is significant.
         assert state, 'Caller must provide a line state instance'
-        
-        
+
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
@@ -133,6 +134,7 @@ class BaseLineScanner(object):
             self.gen_clean = gen_clean
             self.gen_refs = gen_refs
         self.tab_width = None # Must be set in run()
+
         # The ws equivalent to one tab.
         # self.tab_ws = ' ' * abs(self.tab_width) if self.tab_width < 0 else '\t'
 
@@ -147,7 +149,6 @@ class BaseLineScanner(object):
         self.errors = 0
         ic.errors = 0 # Required.
         self.ws_error = False
-        c.atFileCommands.errors = 0 # Required for unit tests.
         self.root = None
     #@+node:ekr.20161027094537.16: *3* BLS.check & helpers
     def check(self, unused_s, parent):
