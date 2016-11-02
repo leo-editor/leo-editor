@@ -12853,14 +12853,6 @@ function restart()
 
 '''
 
-# Double each backslash (they are in a docstring).
-# chars = [z for z in s]
-# s = []
-# for z in char:
-    # if z == '\\': s.append('\\\\')
-    # else: s.append(z)
-# s = s.join('')
-
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
