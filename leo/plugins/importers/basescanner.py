@@ -83,7 +83,6 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
-new_gen = True
 new_ctors = False
     # Fails at present.
 #@+others
@@ -242,7 +241,7 @@ class BaseLineScanner(object):
         Will typically be overridden in subclasses.
         '''
         return s.strip()
-    #@+node:ekr.20161030190924.26: *4* BLS.create_child_node (Test)
+    #@+node:ekr.20161030190924.26: *4* BLS.create_child_node
     def create_child_node(self, parent, body, headline):
         p = parent.insertAsLastChild()
         assert g.isString(body), repr(body)
