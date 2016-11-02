@@ -263,10 +263,16 @@ class PyflakesCommand(object):
                             break
         paths = list(set(self.seen))
         if paths:
+            # These messages are important for clarity.
             total_errors = self.check_all(paths)
-            if total_errors or force:
-                g.es_print('pyflakes: %s file%s in %s' % (
+            if total_errors > 0:
+                g.es_print('ERROR: pyflakes: %s error%s' % (
+                    total_errors, g.plural(total_errors)))
+            elif force:
+                g.es_print('OK: pyflakes: %s file%s in %s' % (
                     len(paths), g.plural(paths), g.timeSince(t1)))
+            else:
+                g.es_print('OK: pyflakes')
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand(object):
