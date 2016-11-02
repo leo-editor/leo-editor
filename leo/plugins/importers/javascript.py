@@ -109,13 +109,12 @@ class JavaScriptScanner(basescanner.BaseLineScanner):
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
+        elif 1:
+            # Imo, showing the whole line is better than truncating it.
+            return s
         else:
             i = s.find('(')
             return s if i == -1 else s[:i]
-        # Simple regex eats too much.
-            # m = re.match(r'(.*)\(', s)
-            # g.trace('===== js state', m.group(1) if m else s)
-            # return m.group(1) if m else s
     #@-others
 #@-others
 importer_dict = {
