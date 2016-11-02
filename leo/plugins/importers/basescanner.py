@@ -92,7 +92,7 @@ class BaseLineScanner(object):
     '''The base class for all new (line-oriented) scanner classes.'''
 
     #@+others
-    #@+node:ekr.20161027114542.1: *3*  BLS.ctor
+    #@+node:ekr.20161027114542.1: *3* BLS.__init__
     def __init__(self,
         importCommands,
         atAuto,
@@ -230,23 +230,14 @@ class BaseLineScanner(object):
                 trialWrite=True,
             )
         return g.toUnicode(at.stringOutput, self.encoding)
-    #@+node:ekr.20161030190924.19: *3* BLS.Code generation
+    #@+node:ekr.20161102181704.1: *3* BLS.Overrides
+    # These can be overridden in subclasses.
     #@+node:ekr.20161030190924.20: *4* BLS.adjust_parent
     def adjust_parent(self, parent, headline):
         '''Return the effective parent.
 
         This is overridden by the RstScanner class.'''
         return parent
-    #@+node:ekr.20161030190924.22: *4* BLS.append_to_body
-    def append_to_body(self, p, s):
-        '''
-        Similar to c.appendStringToBody,
-        but does not recolor the text or redraw the screen.
-        '''
-        assert g.isString(s), (repr(s), g.callers())
-        assert g.isString(p.b), (repr(p.b), g.callers())
-        ### self.importCommands.appendStringToBody(p, s)
-        p.b = p.b + s
     #@+node:ekr.20161101061949.1: *4* BLS.clean_headline
     def clean_headline(self, s):
         '''
@@ -254,111 +245,7 @@ class BaseLineScanner(object):
         Will typically be overridden in subclasses.
         '''
         return s.strip()
-    #@+node:ekr.20161030190924.26: *4* BLS.create_child_node
-    def create_child_node(self, parent, body, headline):
-        p = parent.insertAsLastChild()
-        assert g.isString(body), repr(body)
-        assert g.isString(headline), repr(headline)
-        p.b = g.u(body)
-        p.h = g.u(headline)
-        return p
-    #@+node:ekr.20161102072135.1: *4* BLS.get_lws
-    def get_lws(self, s):
-        '''Return the characters of the lws of s.'''
-        m = re.match(r'(\s*)', s)
-        return m.group(0) if m else ''
-    #@+node:ekr.20161101081522.1: *4* BLS.undent & helper
-    def undent(self, lines):
-        '''Remove maximal leading whitespace from the start of all lines.'''
-        trace = False and not g.unitTesting # and self.root.h.find('main') > -1
-        if self.is_rst:
-            return ''.join(lines) # Never unindent rst code.
-        ws = self.common_lws(lines)
-        if trace:
-            g.trace('common_lws:', repr(ws))
-            print('===== lines:\n%s' % ''.join(lines))
-        result = []
-        for s in lines:
-            ###
-            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # result.append(self.tab_ws + s.lstrip())
-                    # # A useful hack.
-            if s.startswith(ws):
-                result.append(s[len(ws):])
-            ###
-            # elif s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # result.append(s.lstrip())
-                # # result.append(self.tab_ws + s.lstrip())
-                    # # A useful hack.
-            elif self.strict:
-                # Indicate that the line is underindented.
-                result.append("%s%s.%s" % (
-                    self.c.atFileCommands.underindentEscapeString,
-                    g.computeWidth(ws, self.tab_width),
-                    s.lstrip()))
-            else:
-                result.append(s.lstrip())
-        if trace:
-            print('----- result:\n%s' % ''.join(result))
-        return ''.join(result)
-    #@+node:ekr.20161102055342.1: *5* common_lws
-    def common_lws(self, lines):
-        '''Return the lws common to all lines.'''
-        trace = False and not g.unitTesting
-        if not lines:
-            return ''
-        lws = self.get_lws(lines[0])
-        for s in lines:
-            lws2 = self.get_lws(s)
-            ###
-            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # pass # Ignore section references.
-            # el
-            if lws2.startswith(lws):
-                pass
-            elif lws.startswith(lws2):
-                lws = lws2
-            else:
-                lws = '' # Nothing in common.
-                break
-        if trace: g.trace(repr(lws), repr(lines[0]))
-        return lws
-    #@+node:ekr.20161030190924.41: *4* BLS.underindented_comment/line
-    def underindented_comment(self, line):
-        if self.at_auto_warns_about_leading_whitespace:
-            self.warning(
-                'underindented python comments.\n' +
-                'Extra leading whitespace will be added\n' + line)
-
-    def underindented_line(self, line):
-        if self.warn_about_underindented_lines:
-            self.error(
-                'underindented line.\n'
-                'Extra leading whitespace will be added\n' + line)
-    #@+node:ekr.20161027181903.1: *3* BLS.Messages
-    def error(self, s):
-        self.errors += 1
-        self.importCommands.errors += 1
-        if g.unitTesting:
-            if self.errors == 1:
-                g.app.unitTestDict['actualErrorMessage'] = s
-            g.app.unitTestDict['actualErrors'] = self.errors
-        else:
-            g.error('Error:', s)
-
-    def oops(self):
-        g.pr('BaseScanner oops: %s must be overridden in subclass' % g.callers())
-
-    def report(self, message):
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
-
-    def warning(self, s):
-        if not g.unitTesting:
-            g.warning('Warning:', s)
-    #@+node:ekr.20161101094729.1: *3* BLS.Parsers
+    #@+node:ekr.20161101094729.1: *3* BLS.Scanning & code generation
     #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (top-level) & helper
     def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
         '''
@@ -473,30 +360,29 @@ class BaseLineScanner(object):
             print('----- end-tail-lines')
         state.pop()
         return code_lines, tail_lines
-    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
-    def gen_ref(self, indent_flag, line, parent, ref_flag):
+    #@+node:ekr.20161031041540.1: *4* BLS.new_scan
+    def new_scan(self, s, parent, parse_body=False):
         '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
+        new_scan: The main line of the line-based scanner and code generator.
+        
+        Create a child of self.root for:
+        - Leading outer-level declarations.
+        - Outer-level classes.
+        - Outer-level functions.
         '''
-        trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
-            ### Ignore indent_flag: Hurray!
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = self.clean_headline(line)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % headline))
+        # Create the initial body text in the root.
+        if parse_body:
+            pass
         else:
-            ref = None if ref_flag else '%s@others\n' % indent_ws
-            ref_flag = True # Don't generate another @others.
-        if ref:
-            if trace: g.trace('indent_ws: %r line: %r' % (indent_ws, line))
-            self.append_to_body(parent, ref)
-        return ref_flag
+            self.append_to_body(parent,
+                '@language %s\n@tabwidth %d\n' % (
+                    self.language,
+                    self.tab_width))
+            self.gen_lines(
+                indent_flag = False,
+                lines = g.splitlines(s),
+                parent = parent,
+            )
     #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (calls gen_lines)
     def rescan_code_block(self, lines, parent):
         '''Create a child of the parent, and add lines to parent.b.'''
@@ -526,31 +412,7 @@ class BaseLineScanner(object):
         if last_line:
             self.append_to_body(child, last_line)
         
-    #@+node:ekr.20161101094905.1: *3* BLS.Top level
-    #@+node:ekr.20161031041540.1: *4* BLS.new_scan
-    def new_scan(self, s, parent, parse_body=False):
-        '''
-        new_scan: The main line of the line-based scanner and code generator.
-        
-        Create a child of self.root for:
-        - Leading outer-level declarations.
-        - Outer-level classes.
-        - Outer-level functions.
-        '''
-        # Create the initial body text in the root.
-        if parse_body:
-            pass
-        else:
-            self.append_to_body(parent,
-                '@language %s\n@tabwidth %d\n' % (
-                    self.language,
-                    self.tab_width))
-            self.gen_lines(
-                indent_flag = False,
-                lines = g.splitlines(s),
-                parent = parent,
-            )
-    #@+node:ekr.20161027114007.1: *4* BLS.run (entry point) & helpers
+    #@+node:ekr.20161027114007.1: *3* BLS.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and not g.unitTesting
@@ -587,7 +449,7 @@ class BaseLineScanner(object):
         c.setChanged(changed)
         if trace: g.trace('-' * 30, parent.h)
         return ok
-    #@+node:ekr.20161027114007.3: *5* BLS.check_blanks_and_tabs
+    #@+node:ekr.20161027114007.3: *4* BLS.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
@@ -617,7 +479,7 @@ class BaseLineScanner(object):
             else:
                 g.es_print(message)
         return ok
-    #@+node:ekr.20161027182014.1: *5* BLS.insert_ignore_directive
+    #@+node:ekr.20161027182014.1: *4* BLS.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
         parent.b = parent.b.rstrip() + '\n@ignore\n'
@@ -626,7 +488,7 @@ class BaseLineScanner(object):
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
             g.warning('inserting @ignore')
             c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161027183458.1: *5* BLS.post_pass & helper
+    #@+node:ekr.20161027183458.1: *4* BLS.post_pass & helper
     def post_pass(self, parent):
         '''Clean up parent's children.'''
         # Clean the headlines.
@@ -653,7 +515,7 @@ class BaseLineScanner(object):
                 back.b = back.b + s
                 aList.append(p.copy())
         self.c.deletePositionsInList(aList)
-    #@+node:ekr.20161027114007.4: *5* BLS.regularize_whitespace
+    #@+node:ekr.20161027114007.4: *4* BLS.regularize_whitespace
     def regularize_whitespace(self, s):
         '''
         Regularize leading whitespace in s:
@@ -696,6 +558,142 @@ class BaseLineScanner(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('Changed %s lines' % count) 
         return ''.join(result)
+    #@+node:ekr.20161030190924.19: *3* BLS.Utils
+    #@+node:ekr.20161030190924.22: *4* BLS.append_to_body
+    def append_to_body(self, p, s):
+        '''
+        Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.
+        '''
+        assert g.isString(s), (repr(s), g.callers())
+        assert g.isString(p.b), (repr(p.b), g.callers())
+        ### self.importCommands.appendStringToBody(p, s)
+        p.b = p.b + s
+    #@+node:ekr.20161030190924.26: *4* BLS.create_child_node
+    def create_child_node(self, parent, body, headline):
+        p = parent.insertAsLastChild()
+        assert g.isString(body), repr(body)
+        assert g.isString(headline), repr(headline)
+        p.b = g.u(body)
+        p.h = g.u(headline)
+        return p
+    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
+    def gen_ref(self, indent_flag, line, parent, ref_flag):
+        '''
+        Generate the ref line and a flag telling this method whether a previous
+        #@+others
+        #@-others
+        '''
+        trace = False and not g.unitTesting
+        indent_ws = self.get_lws(line)
+            ### Ignore indent_flag: Hurray!
+        if self.is_rst and not self.atAuto:
+            return None, None
+        elif self.gen_refs:
+            headline = self.clean_headline(line)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % headline))
+        else:
+            ref = None if ref_flag else '%s@others\n' % indent_ws
+            ref_flag = True # Don't generate another @others.
+        if ref:
+            if trace: g.trace('indent_ws: %r line: %r' % (indent_ws, line))
+            self.append_to_body(parent, ref)
+        return ref_flag
+    #@+node:ekr.20161102072135.1: *4* BLS.get_lws
+    def get_lws(self, s):
+        '''Return the characters of the lws of s.'''
+        m = re.match(r'(\s*)', s)
+        return m.group(0) if m else ''
+    #@+node:ekr.20161027181903.1: *4* BLS.Messages
+    def error(self, s):
+        self.errors += 1
+        self.importCommands.errors += 1
+        if g.unitTesting:
+            if self.errors == 1:
+                g.app.unitTestDict['actualErrorMessage'] = s
+            g.app.unitTestDict['actualErrors'] = self.errors
+        else:
+            g.error('Error:', s)
+
+    def report(self, message):
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
+
+    def warning(self, s):
+        if not g.unitTesting:
+            g.warning('Warning:', s)
+    #@+node:ekr.20161101081522.1: *4* BLS.undent & helper
+    def undent(self, lines):
+        '''Remove maximal leading whitespace from the start of all lines.'''
+        trace = False and not g.unitTesting # and self.root.h.find('main') > -1
+        if self.is_rst:
+            return ''.join(lines) # Never unindent rst code.
+        ws = self.common_lws(lines)
+        if trace:
+            g.trace('common_lws:', repr(ws))
+            print('===== lines:\n%s' % ''.join(lines))
+        result = []
+        for s in lines:
+            ###
+            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
+                # result.append(self.tab_ws + s.lstrip())
+                    # # A useful hack.
+            if s.startswith(ws):
+                result.append(s[len(ws):])
+            ###
+            # elif s.strip().endswith('>>') and s.strip().startswith('<<'):
+                # result.append(s.lstrip())
+                # # result.append(self.tab_ws + s.lstrip())
+                    # # A useful hack.
+            elif self.strict:
+                # Indicate that the line is underindented.
+                result.append("%s%s.%s" % (
+                    self.c.atFileCommands.underindentEscapeString,
+                    g.computeWidth(ws, self.tab_width),
+                    s.lstrip()))
+            else:
+                result.append(s.lstrip())
+        if trace:
+            print('----- result:\n%s' % ''.join(result))
+        return ''.join(result)
+    #@+node:ekr.20161102055342.1: *5* common_lws
+    def common_lws(self, lines):
+        '''Return the lws common to all lines.'''
+        trace = False and not g.unitTesting
+        if not lines:
+            return ''
+        lws = self.get_lws(lines[0])
+        for s in lines:
+            lws2 = self.get_lws(s)
+            ###
+            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
+                # pass # Ignore section references.
+            # el
+            if lws2.startswith(lws):
+                pass
+            elif lws.startswith(lws2):
+                lws = lws2
+            else:
+                lws = '' # Nothing in common.
+                break
+        if trace: g.trace(repr(lws), repr(lines[0]))
+        return lws
+    #@+node:ekr.20161030190924.41: *4* BLS.underindented_comment/line
+    def underindented_comment(self, line):
+        if self.at_auto_warns_about_leading_whitespace:
+            self.warning(
+                'underindented python comments.\n' +
+                'Extra leading whitespace will be added\n' + line)
+
+    def underindented_line(self, line):
+        if self.warn_about_underindented_lines:
+            self.error(
+                'underindented line.\n'
+                'Extra leading whitespace will be added\n' + line)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
