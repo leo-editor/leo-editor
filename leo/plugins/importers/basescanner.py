@@ -253,13 +253,13 @@ class BaseLineScanner(object):
         Parse all the given lines, adding to parent.b and creating
         child nodes as necessary.
         '''
-        trace = False and not g.unitTesting # and self.root.h.endswith('debug.js')
+        trace = False and not g.unitTesting
         trace_lines = False
         if not lines:
             return
         gen_refs, state = self.gen_refs, self.state
         if trace:
-            g.trace(tag, state, repr(lines and lines[0]))
+            g.trace(tag, repr(lines[0]))
             g.trace('===== entry lines:...')
             for line in lines:
                 print(line.rstrip())

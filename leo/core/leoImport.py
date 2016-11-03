@@ -1501,6 +1501,9 @@ class LeoImportCommands(object):
 
     def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.pas')
+        
+    def perlUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.pl')
 
     def phpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.php')

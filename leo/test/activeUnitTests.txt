@@ -12936,6 +12936,35 @@ end.
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pascalUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161103015908.1: *5* Perl tests
+#@+node:ekr.20161103015940.1: *6* @test perl-1
+fileName = p.h
+
+s = '''\
+#!/usr/bin/perl
+
+# Function definition
+sub Hello{
+   print "Hello, World!\n";
+}
+
+sub Test{
+   print "Test!\n";
+}
+"\N{LATIN SMALL LIGATURE FI}" =~ /fi/i;
+
+$bar = "foo";
+if ($bar =~ /foo/){
+   print "Second time is matching\n";
+}else{
+   print "Second time is not matching\n";
+}
+
+# Function call
+Hello();
+'''
+
+c.importCommands.perlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
