@@ -247,31 +247,31 @@ class BaseLineScanner(object):
         '''
         return s.strip()
     #@+node:ekr.20161101094729.1: *3* BLS.Scanning & code generation
-    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (top-level) & helper
+    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (entry) & helpers
     def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
         '''
-        Parse all the given lines, adding to parent.b and creating
-        child nodes as necessary.
+        The entry point for parsing and code generation. Also called by
+        rescan_code_block.
+        
+        Parse all lines, adding to parent.b, creating child nodes as necessary.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = False
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
         if not lines:
             return
         gen_refs, state = self.gen_refs, self.state
         if trace:
-            g.trace(tag, repr(lines[0]))
-            g.trace('===== entry lines:...')
+            g.trace(tag, state)
+            print('===== entry lines:...')
             for line in lines:
                 print(line.rstrip())
             print('----- end entry lines.')
         assert not state.context, state
-        state.push()
+        ### state.push()
         i, ref_flag = 0, False
         while i < len(lines):
             progress = i
             line = lines[i]
             state.scan_line(line)
-            if trace and trace_lines: g.trace(line.rstrip())
             if state.starts_block():
                 # Generate the reference first.
                 ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
@@ -292,7 +292,7 @@ class BaseLineScanner(object):
                 self.append_to_body(parent, line)
                 i += 1
             assert progress < i
-        state.pop()
+        ### state.pop()
     #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
     def skip_code_block(self, i, lines):
         '''
@@ -302,7 +302,7 @@ class BaseLineScanner(object):
         - code_lines are all the lines of the class or function.
         - tail lines are all lines up to but not including the next class or function.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
         trace_lines = False
         trace_entry = True
         trace_results = True
@@ -311,13 +311,12 @@ class BaseLineScanner(object):
         assert not state.context, state
         state.push()
         state.clear()
-        if trace:
-            g.trace(repr(lines and lines[0]))
-            if trace_entry:
-                g.trace('===== entry lines:...')
-                for j in range(i, len(lines)):
-                    print('  %s' % lines[j].rstrip()) # entry lines.
-                print('----- end entry lines')
+        if trace and trace_entry:
+            g.trace(state)
+            print('===== entry lines:...')
+            for j in range(i, len(lines)):
+                print('  %s' % lines[j].rstrip()) # entry lines.
+            print('----- end entry lines')
         # Scan the code block.
         # We have cleared the state, so rescan the first line.
         block_i = i
@@ -327,11 +326,13 @@ class BaseLineScanner(object):
         while i < len(lines):
             progress = i
             line = lines[i]
-            if trace and trace_lines: g.trace(line.rstrip())
+            if trace and trace_lines:
+                g.trace(state, line.rstrip())
             state.scan_line(line)
             if state.continues_block():
                 i += 1
-            ########## Special case for python ?????
+            elif self.name == 'python':
+                break
             else:
                 i += 1
                 break
@@ -418,11 +419,12 @@ class BaseLineScanner(object):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
             return
+        state = self.state ###
         first_line = lines[0]
         assert first_line.strip
         headline = self.clean_headline(first_line)
         if self.gen_refs:
-            headline = g.angleBrackets(' %s ' % headline) ### first_line
+            headline = g.angleBrackets(' %s ' % headline)
         child = self.create_child_node(
             parent,
             body = '',
@@ -434,11 +436,13 @@ class BaseLineScanner(object):
             last_line = lines[-1]
             lines = lines[1:-1]
         self.append_to_body(child, first_line)
+        state.push() ###
         self.gen_lines(
             indent_flag = True,
             lines = lines,
             parent = child,
             tag = 'rescan_code_block')
+        state.pop() ###
         if last_line:
             self.append_to_body(child, last_line)
         
