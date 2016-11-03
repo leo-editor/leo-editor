@@ -12938,8 +12938,6 @@ g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pascalUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161103015908.1: *5* Perl tests
 #@+node:ekr.20161103015940.1: *6* @test perl-1
-fileName = p.h
-
 s = '''\
 #!/usr/bin/perl
 
@@ -12964,6 +12962,40 @@ if ($bar =~ /foo/){
 Hello();
 '''
 
+c.importCommands.perlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161103021621.1: *6* @test perlpod comment
+s = '''\
+#!/usr/bin/perl
+          
+sub Test{
+   print "Test!\n";
+}
+
+=begin comment
+sub World {
+    print "This is not a funtion!"
+}
+=cut
+
+# Function definition
+sub Hello{
+   print "Hello, World!\n";
+}
+'''
+c.importCommands.perlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161103021420.1: *6* @test perl multi-line string
+s = '''\
+#!/usr/bin/perl
+
+# This would print with a line break in the middle
+print "Hello
+
+sub World {
+    print "This is not a funtion!"
+}
+
+world\n";
+'''
 c.importCommands.perlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class

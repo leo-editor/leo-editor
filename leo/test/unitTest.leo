@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3871097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735808000000302e362e32372e38710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1308,8 +1308,10 @@
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
+<v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
+<v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 </v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
@@ -1431,6 +1433,7 @@
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20161103015908.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7941,7 +7944,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">
+<t tx="ekr.20070417092935" str_leo_pos="9,1">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14673,7 +14676,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15421,9 +15424,7 @@ unl: class class2--&gt;class2_method2
 </t>
 <t tx="ekr.20161102104718.1"></t>
 <t tx="ekr.20161103015908.1"></t>
-<t tx="ekr.20161103015940.1">fileName = p.h
-
-s = '''\
+<t tx="ekr.20161103015940.1">s = '''\
 #!/usr/bin/perl
 
 # Function definition
@@ -15447,6 +15448,40 @@ if ($bar =~ /foo/){
 Hello();
 '''
 
+c.importCommands.perlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161103021420.1">s = '''\
+#!/usr/bin/perl
+
+# This would print with a line break in the middle
+print "Hello
+
+sub World {
+    print "This is not a funtion!"
+}
+
+world\n";
+'''
+c.importCommands.perlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161103021621.1">s = '''\
+#!/usr/bin/perl
+          
+sub Test{
+   print "Test!\n";
+}
+
+=begin comment
+sub World {
+    print "This is not a funtion!"
+}
+=cut
+
+# Function definition
+sub Hello{
+   print "Hello, World!\n";
+}
+'''
 c.importCommands.perlUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
