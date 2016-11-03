@@ -154,7 +154,7 @@ class BaseLineScanner(object):
     def check(self, unused_s, parent):
         '''BaseLineScanner.check'''
         trace = True # and not g.unitTesting
-        trace_lines = False
+        trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
         fn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
@@ -257,7 +257,7 @@ class BaseLineScanner(object):
         trace_lines = False
         if not lines:
             return
-        state = self.state
+        gen_refs, state = self.gen_refs, self.state
         if trace:
             g.trace(tag, state, repr(lines and lines[0]))
             g.trace('===== entry lines:...')
@@ -265,9 +265,9 @@ class BaseLineScanner(object):
                 print(line.rstrip())
             print('----- end entry lines.')
         state.push()
-        state.clear()
         i, ref_flag = 0, False
         while i < len(lines):
+            state.clear()
             progress = i
             line = lines[i]
             state.scan_line(line)
@@ -278,14 +278,17 @@ class BaseLineScanner(object):
                 # Scan the code block and its tail.
                 code_lines, tail_lines = self.skip_code_block(i, lines)
                 i += (len(code_lines) + len(tail_lines))
-                if self.gen_refs:
+                if gen_refs:
                     self.rescan_code_block(code_lines, parent)
                     self.append_to_body(parent, ''.join(tail_lines))
                 else:
-                    all_lines = code_lines.extend(tail_lines)
-                    self.rescan_code_block(all_lines, parent)
+                    code_lines.extend(tail_lines)
+                    self.rescan_code_block(code_lines, parent)
             else:
-                #### This does not work with @others ##########
+                # This works for both @others and section references.
+                # After @others, child nodes contain *all* lines.
+                if ref_flag and not gen_refs:
+                    g.trace('Can not happen: line not in tail: %r' % line)
                 self.append_to_body(parent, line)
                 i += 1
             assert progress < i
@@ -361,6 +364,31 @@ class BaseLineScanner(object):
             print('----- end-tail-lines')
         state.pop()
         return code_lines, tail_lines
+    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
+    def gen_ref(self, indent_flag, line, parent, ref_flag):
+        '''
+        Generate the ref line and a flag telling this method whether a previous
+        #@+others
+        #@-others
+        '''
+        trace = False and not g.unitTesting
+        indent_ws = self.get_lws(line)
+            ### Ignore indent_flag: Hurray!
+        if self.is_rst and not self.atAuto:
+            return None, None
+        elif self.gen_refs:
+            headline = self.clean_headline(line)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % headline))
+        else:
+            ref = None if ref_flag else '%s@others\n' % indent_ws
+            ref_flag = True # Don't generate another @others.
+        if ref:
+            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+            self.append_to_body(parent, ref)
+        return ref_flag
     #@+node:ekr.20161031041540.1: *4* BLS.new_scan
     def new_scan(self, s, parent, parse_body=False):
         '''
@@ -578,30 +606,6 @@ class BaseLineScanner(object):
         p.b = g.u(body)
         p.h = g.u(headline)
         return p
-    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
-    def gen_ref(self, indent_flag, line, parent, ref_flag):
-        '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        '''
-        trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
-            ### Ignore indent_flag: Hurray!
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = self.clean_headline(line)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % headline))
-        else:
-            ref = None if ref_flag else '%s@others\n' % indent_ws
-            ref_flag = True # Don't generate another @others.
-        if ref:
-            if trace: g.trace('indent_ws: %r line: %r' % (indent_ws, line))
-            self.append_to_body(parent, ref)
-        return ref_flag
     #@+node:ekr.20161102072135.1: *4* BLS.get_lws
     def get_lws(self, s):
         '''Return the characters of the lws of s.'''
