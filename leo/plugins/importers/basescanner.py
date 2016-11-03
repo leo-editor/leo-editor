@@ -267,7 +267,6 @@ class BaseLineScanner(object):
         state.push()
         i, ref_flag = 0, False
         while i < len(lines):
-            state.clear()
             progress = i
             line = lines[i]
             state.scan_line(line)
