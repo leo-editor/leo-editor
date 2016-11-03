@@ -264,6 +264,7 @@ class BaseLineScanner(object):
             for line in lines:
                 print(line.rstrip())
             print('----- end entry lines.')
+        assert not state.context, state
         state.push()
         i, ref_flag = 0, False
         while i < len(lines):
@@ -301,12 +302,13 @@ class BaseLineScanner(object):
         - code_lines are all the lines of the class or function.
         - tail lines are all lines up to but not including the next class or function.
         '''
-        trace = False and not g.unitTesting # and self.root.h.endswith('debug.js')
+        trace = False and not g.unitTesting
         trace_lines = False
         trace_entry = True
         trace_results = True
         state = self.state
         assert state.starts_block()
+        assert not state.context, state
         state.push()
         state.clear()
         if trace:
@@ -2420,11 +2422,6 @@ class ScanState(object):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and (
             (self.curlies > self.base_curlies or self.parens > self.base_parens))
-    #@+node:ekr.20161027115813.4: *3* state.get_base
-    def get_base (self):
-        '''Return the present counts.'''
-        assert not self.context, repr(self.context)
-        return self.curlies, self.parens
     #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
     def clear(self):
         '''Clear the state.'''
@@ -2441,6 +2438,10 @@ class ScanState(object):
         self.stack.append((self.base_curlies, self.base_parens),)
         self.base_curlies = self.curlies
         self.base_parens = self.parens
+    #@+node:ekr.20161103065140.1: *3* state.match
+    def match(self, s, i, pattern):
+        '''Return True if the pattern matches at s[i:]'''
+        return s[i:i+len(pattern)] == pattern
     #@+node:ekr.20161027115813.7: *3* state.scan_line
     def scan_line(self, s, block_comment=None, line_comment='#'):
         '''

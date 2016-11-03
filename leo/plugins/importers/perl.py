@@ -16,6 +16,7 @@ class PerlScanState(basescanner.ScanState):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
+        match = self.match
         i = 0
         while i < len(s):
             progress = i
@@ -24,7 +25,7 @@ class PerlScanState(basescanner.ScanState):
                 assert self.context in ('"', "'", "="), repr(self.context)
                 if ch == '\\':
                     i += 1
-                elif i == 0 and self.context == '=' and s[i:i+4] == '=cut':
+                elif i == 0 and self.context == '=' and match(s, i, '=cut'):
                     self.context = '' # End the perlpod string.
                     i += 4
                 elif self.context == ch:
@@ -39,22 +40,24 @@ class PerlScanState(basescanner.ScanState):
             elif ch == '}': self.curlies -= 1
             elif ch == '(': self.parens += 1
             elif ch == ')': self.parens -= 1
-            elif ch == '/': i = self.skip_regex(s, i+1)
-            elif i == 0 and ch == '=': self.context = '=' # perlpod string.
-            elif s[i:i+3] == 'm//': i = self.skip_regex(s, i+3)
-            elif s[i:i+4] == 's///': i = self.skip_regex(s, i+4)
-            elif s[i:i+5] == 'tr///': i = self.skip_regex(s, i+5)
+            elif i == 0 and ch == '=':
+                self.context = '=' # perlpod string.
+            else:
+                for pattern in ('/', 'm///', 's///', 'tr///'):
+                    if match(s, i, pattern):
+                        i = self.skip_regex(s, i, pattern)
+                        break
             i += 1
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
     #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
-    def skip_regex(self, s, i):
+    def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting
         if trace: g.trace(repr(s), self.parens)
-        assert s[i-1] == '/', repr(s[i])
-        i += 1
+        assert self.match(s, i, pattern)
+        i += len(pattern)
         while i < len(s) and s[i] in ' \t':
             i += 1
         if i < len(s) and s[i] == '/':
@@ -62,7 +65,6 @@ class PerlScanState(basescanner.ScanState):
             while i < len(s):
                 progress = i
                 ch = s[i]
-                # g.trace(repr(ch))
                 if ch == '\\':
                     i += 2
                 elif ch == '/':
@@ -71,7 +73,6 @@ class PerlScanState(basescanner.ScanState):
                 else:
                     i += 1
                 assert progress < i
-        
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@-others

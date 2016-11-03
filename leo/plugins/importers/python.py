@@ -4,7 +4,10 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 import re
+#@+<< python: new_scanner >>
+#@+node:ekr.20161103070215.1: ** << python: new_scanner >>
 new_scanner = False
+#@-<< python: new_scanner >>
 #@+others
 #@+node:ekr.20161029103640.1: ** class PythonLineScanner
 class PythonLineScanner(basescanner.BaseLineScanner):
@@ -28,15 +31,16 @@ class PythonLineScanner(basescanner.BaseLineScanner):
     #@+others
     #@+node:ekr.20161029103640.2: *3* python.clean_headline
     def clean_headline(self, s):
-        '''Return a cleaned up headline s, or None for no change.'''
-        m = re.match(r'def\s+(\w+)', s)
+        '''Return a cleaned up headline s.'''
+        m = re.match(r'\s*def\s+(\w+)', s)
         if m:
             return m.group(1)
-        m = re.match(r'class\s+(\w+)', s)
-        if m:
-            return 'class %s' % m.group(1)
         else:
-            return s
+            m = re.match(r'\s*class\s+(\w+)', s)
+            if m:
+                return 'class %s' % m.group(1)
+            else:
+                return s.strip()
     #@+node:ekr.20161029103640.3: *3* python.clean_nodes
     def clean_nodes(self, parent):
         '''Clean nodes as part of the post pass.'''
@@ -50,12 +54,11 @@ class PythonLineScanner(basescanner.BaseLineScanner):
                 p.b = ''.join(lines)
     #@-others
 #@+node:ekr.20161029103615.1: ** class PythonScanState
-class PythonScanState: ###(basescanner.ScanState):
+class PythonScanState:
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
         '''Ctor for the PythonScanState class.'''
-        ### basescanner.ScanState.__init__(self)
         self.tab_width = c.tab_width
         self.base_indent, self.indent = 0, 0
         self.context = '' # Represents cross-line constructs.
@@ -84,11 +87,6 @@ class PythonScanState: ###(basescanner.ScanState):
         else:
             ### return self.indent >= self.base_indent
             return self.is_class_or_def and self.indent >= self.base_indent
-    #@+node:ekr.20161029103952.4: *3* python_state.get_base
-    def get_base (self):
-        '''Return the present counts.'''
-        assert not self.context, repr(self.context)
-        return self.indent
     #@+node:ekr.20161029103952.5: *3* python_state.clear, push & pop
     def clear(self):
         '''Clear the state.'''
