@@ -4,6 +4,7 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 import re
+ScanState = basescanner.ScanState
 gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161029103640.1: ** class PythonLineScanner
@@ -51,71 +52,62 @@ class PythonLineScanner(basescanner.BaseLineScanner):
                 p.b = ''.join(lines)
     #@-others
 #@+node:ekr.20161029103615.1: ** class PythonScanState
-class PythonScanState:
+class PythonScanState(ScanState):
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
-        '''Ctor for the PythonScanState class.'''
+        '''PythonScanState ctor.'''
+        ScanState.__init__(self)
+            # Init the base class.
+        self.comment_only_line = False
+        self.context = '' # In self.contexts.
+        self.contexts = ['', '"""', "'''", '"', "'"]
+        self.indent = 0
         self.tab_width = c.tab_width
-        self.base_indent, self.indent = 0, 0
-        self.context = '' # Represents cross-line constructs.
-        self.is_class_or_def = False
-        self.stack = []
+
+    ###
+    # def __init__(self, c):
+        # '''Ctor for the PythonScanState class.'''
+        # self.tab_width = c.tab_width
+        # self.base_indent, self.indent = 0, 0
+        # self.context = '' # Represents cross-line constructs.
+        # self.is_class_or_def = False
+        # self.stack = []
 
     #@+others
     #@+node:ekr.20161029103952.2: *3* python_state.__repr__ & __str__
     def __repr__(self):
-        return 'PythonScanState: base indent: %2d indent: %2d context: %2r' % (
-            self.base_indent, self.indent, self.context)
+        '''PythonScanState.__repr__'''
+        ###
+        if True: ### gen_v2:
+            return 'PythonScanState: indent: %s context: %2r' % (
+                self.indent, self.context)
+        ###
+        # else:
+            # return 'PythonScanState: base indent: %2d indent: %2d context: %2r' % (
+                # self.base_indent, self.indent, self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161029103952.3: *3* python_state.continues_block and starts_block
-    def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the block.'''
-        if self.context: ###  or not self.is_class_or_def:
-            return True
-        else:
-            return self.indent > self.base_indent
-
-    def starts_block(self):
-        '''Return True if the just-scanned line starts an inner block.'''
-        if self.context: ### or not self.is_class_or_def:
-            return False
-        else:
-            ### return self.indent >= self.base_indent
-            return self.is_class_or_def and self.indent >= self.base_indent
-    #@+node:ekr.20161029103952.5: *3* python_state.clear, push & pop
-    def clear(self):
-        '''Clear the state.'''
-        self.base_indent = self.indent = 0
-        self.context = '' 
-
-    def pop(self):
-        '''Restore the base state from the stack.'''
-        self.base_indent = self.stack.pop()
-        
-    def push(self):
-        '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append(self.base_indent)
-        self.base_indent = self.indent
-    #@+node:ekr.20161029103615.2: *3* python_state.scan_line
+    #@+node:ekr.20161104143211.3: *3* python_state.get_lws
+    def get_lws(self, s):
+        '''Return the the lws (a number) of line s.'''
+        return g.computeLeadingWhitespaceWidth(s, self.tab_width)
+    #@+node:ekr.20161104143211.4: *3* python_state.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return '', 0
+    #@+node:ekr.20161104143211.6: *3* python_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         #pylint: disable=arguments-differ
         trace = False and not g.unitTesting
-        
-        def match(i, pattern):
-            return pattern and g.match_word(s, i, pattern)
-
-        if self.context == 'bs-nl':
-            self.is_class_or_def = False
-            self.context = ''
+        was_bs_nl = self.context == 'bs-nl'
+        if was_bs_nl:
+            self.context = '' # Don't change self.indent.
         else:
-            lws_i = g.skip_ws(s, 0)
-            self.is_class_or_def = match(lws_i, 'class') or match(lws_i, 'def')
-            self.indent = g.computeLeadingWhitespaceWidth(s, self.tab_width)
-        contexts = ['', '"""', "'''", '"', "'"]
-        assert self.context in contexts, repr(self.context)
+            self.indent = self.get_lws(s)
+        assert self.context in self.contexts, repr(self.context)
+        self.comment_only_line = False
         i = 0
         while i < len(s):
             progress = i
@@ -129,6 +121,7 @@ class PythonScanState:
                     pass # Eat the string character later.
             elif ch == '#':
                 # The single-line comment ends the line.
+                self.comment_only_line = not was_bs_nl and not s[:i].strip()
                 break 
             elif s[i:i+3] in ('"""', "'''"):
                 self.context = s[i:i+3]
@@ -141,13 +134,23 @@ class PythonScanState:
                 i += 1 # Eat the *next* character.
             i += 1
             assert progress < i
-        if trace:
-            g.trace(
-                'indents:', self.base_indent, self.indent,
-                'class/def? %5s' % (self.is_class_or_def),
-                'continue? %5s' % (self.continues_block()),
-                'context: %3s' % repr(self.context),
-                s.rstrip())
+        if trace: g.trace(self, s.rstrip())
+        # For v2 scanner:
+        return self.context, self.indent
+    #@+node:ekr.20161104143211.5: *3* python_state.V2: comparisons (Test)
+    # Only BLS.new_gen_lines uses these.
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or self.indent == other.indent
+        
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and self.indent < other.indent
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and self.indent < other.indent
     #@-others
 #@+node:ekr.20161029120457.1: ** class PythonScanner (legacy: to be replaced)
 class PythonScanner(basescanner.BaseScanner):

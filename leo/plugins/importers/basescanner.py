@@ -267,7 +267,7 @@ class BaseLineScanner(object):
         self.tab_width = c.getTabWidth(p=root)
         ws_ok = self.check_blanks_and_tabs(s) # Only issues warnings.
         # Regularize leading whitespace
-        if not ws_ok: ### self.strict:
+        if not ws_ok:
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
@@ -407,7 +407,6 @@ class BaseLineScanner(object):
         '''
         assert g.isString(s), (repr(s), g.callers())
         assert g.isString(p.b), (repr(p.b), g.callers())
-        ### self.importCommands.appendStringToBody(p, s)
         p.b = p.b + s
     #@+node:ekr.20161030190924.26: *4* BLS.create_child_node
     def create_child_node(self, parent, body, headline):
@@ -530,7 +529,6 @@ class BaseLineScanner(object):
                 print(line.rstrip())
             print('----- end entry lines.')
         assert not state.context, state
-        ### state.push()
         i, ref_flag = 0, False
         while i < len(lines):
             progress = i
@@ -556,7 +554,6 @@ class BaseLineScanner(object):
                 self.append_to_body(parent, line)
                 i += 1
             assert progress < i
-        ### state.pop()
     #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
     def skip_code_block(self, i, lines):
         '''
@@ -683,7 +680,7 @@ class BaseLineScanner(object):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
             return
-        state = self.state ###
+        state = self.state
         first_line = lines[0]
         assert first_line.strip
         headline = self.clean_headline(first_line)
@@ -700,13 +697,13 @@ class BaseLineScanner(object):
             last_line = lines[-1]
             lines = lines[1:-1]
         self.append_to_body(child, first_line)
-        state.push() ###
+        state.push()
         self.gen_lines(
             indent_flag = True,
             lines = lines,
             parent = child,
             tag = 'rescan_code_block')
-        state.pop() ###
+        state.pop()
         if last_line:
             self.append_to_body(child, last_line)
         
@@ -2437,59 +2434,34 @@ class ScanState(object):
     '''
 
     #@+others
-    #@+node:ekr.20161027115813.2: *3* state.ctor & repr
+    #@+node:ekr.20161027115813.2: *3* state.__init__ & __repr__
     def __init__(self):
         '''Ctor for the singleton ScanState class.'''
-        ### Now defined only in JavaScriptScanState
-        # self.base_parens = self.parens= 0
         self.base_curlies = self.curlies = 0
         self.parens = 0
         self.context = '' # Represents cross-line constructs.
         self.stack = []
 
     def __repr__(self):
-        ###
-        if 1:
-            return 'ScanState: base: %r now: %r context: %2r' % (
-                '{' * self.base_curlies, '{' * self.curlies, self.context)
-        # else:
-            # return 'ScanState: base: %3r now: %3r context: %2r' % (
-                # '{' * self.base_curlies + '(' * self.base_parens, 
-                # '{' * self.curlies + '(' * self.parens,
-                # self.context)
+        '''ScanState.__repr__'''
+        return 'ScanState: base: %r now: %r context: %2r' % (
+            '{' * self.base_curlies, '{' * self.curlies, self.context)
             
     __str__ = __repr__
-    #@+node:ekr.20161027115813.3: *3* state.continues_block and starts_block
-    def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        ### return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
-        return self.context or self.curlies > self.base_curlies
-
-    def starts_block(self):
-        '''Return True if the just-scanned line starts an inner block.'''
-        ###
-        # return not self.context and (
-            # (self.curlies > self.base_curlies or self.parens > self.base_parens))
-        return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
     def clear(self):
         '''Clear the state.'''
         self.base_curlies = self.curlies = 0
-        ### self.base_curlies = self.curlies = 0
-        ### self.base_parens = self.parens = 0
         self.context = ''
 
     def pop(self):
         '''Restore the base state from the stack.'''
-        ### self.base_curlies, self.base_parens = self.stack.pop()
         self.base_curlies = self.stack.pop()
         
     def push(self):
         '''Save the base state on the stack and enter a new base state.'''
-        ### self.stack.append((self.base_curlies, self.base_parens),)
         self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
-        ### self.base_parens = self.parens
     #@+node:ekr.20161103065140.1: *3* state.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -2544,14 +2516,39 @@ class ScanState(object):
                 break # The single-line comment ends the line.
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
-            ### elif ch == '(': self.parens += 1
-            ### elif ch == ')': self.parens -= 1
             i += 1
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
         if gen_v2:
             return self.context, self.curlies
+    #@+node:ekr.20161027115813.3: *3* state.V1: continues_block and starts_block
+    def continues_block(self):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self.context or self.curlies > self.base_curlies
+
+    def starts_block(self):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return not self.context and self.curlies > self.base_curlies
+    #@+node:ekr.20161104084712.22: *3* state.V2: comparisons (Test)
+    # Only BLS.new_gen_lines uses these.
+    # See https://docs.python.org/2/reference/datamodel.html#basic-customization
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or self.curlies == other.curlies
+        
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and self.curlies < other.curlies
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and self.curlies < other.curlies
+        
+    def __ne__(self, other): return not self.__ne__(other)  
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
     #@-others
 #@+node:ekr.20161104090312.1: ** class Target
 class Target:
