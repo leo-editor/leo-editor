@@ -72,8 +72,8 @@ tokens. The entire `ScanState` would have to be rewritten for languages
 such as Python.
 '''
 #@-<< basescanner docstring >>
-#@+<< imports >>
-#@+node:ekr.20161027163734.1: ** << imports >>
+#@+<< basescanner imports >>
+#@+node:ekr.20161027163734.1: ** << basescanner imports >>
 import leo.core.leoGlobals as g
 if g.isPython3:
     import io
@@ -83,7 +83,7 @@ else:
     StringIO = StringIO.StringIO
 import re
 import time
-#@-<< imports >>
+#@-<< basescanner imports >>
 #@+<< basescanner switches >>
 #@+node:ekr.20161104071309.1: ** << basescanner switches >>
 gen_v2 = False
@@ -713,7 +713,7 @@ class BaseLineScanner(object):
             self.append_to_body(child, last_line)
         
     #@+node:ekr.20161104084810.1: *3* BLS.V2: new_gen_lines & helper
-    def new_gen_lines(self, lines, parent):
+    def v2_gen_lines(self, lines, parent):
         '''Parse all lines, adding to parent.b, creating child nodes as necessary.'''
         state = self.state # The subclass of ScanState for this importer
         indent = 0 # Not used yet.
@@ -2539,6 +2539,26 @@ class ScanState(object):
         if trace:
             g.trace(self, s.rstrip())
     #@-others
+#@+node:ekr.20161104090312.1: ** class Target
+class Target:
+    '''
+    A class describing a target node p.
+    
+    indent is the cumulative indent in effect for node p.
+    state is the base state for the node. Used to cut back the stack.
+    '''
+
+    def __init__(self, indent, p, state):
+        '''Ctor for the Block class.'''
+        self.indent = indent
+        self.p = p
+        self.ref_flag = False
+            # True: @others or section reference should be generated.
+        self.state = state
+
+    def __repr__(self):
+        return 'Target: indent: %s state: %s p: %s' % (
+            self.indent, self.state, self.p.h)
 #@-others
 #@@language python
 #@@tabwidth -4
