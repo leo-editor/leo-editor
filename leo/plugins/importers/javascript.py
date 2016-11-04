@@ -139,6 +139,26 @@ class JavaScriptScanState(ScanState):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
+    #@+node:ekr.20161104171051.1: *3* js_state.V2: comparisons (Revise)
+    # Curly brackets dominate parens for mixed comparisons.
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or (
+            self.curlies == other.curlies and
+            self.parens == other.parens)
+        
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and (
+            self.curlies < other.curlies or
+            (self.curlies == other.curlies and self.parens < other.parens))
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and (
+            self.curlies > other.curlies or
+            (self.curlies == other.curlies and self.parens > other.parens))
     #@-others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 class JavaScriptScanner(basescanner.BaseLineScanner):
