@@ -20,6 +20,16 @@ class JavaScriptScanState(basescanner.ScanState):
         self.stack = []
 
     #@+others
+    #@+node:ekr.20161104145747.1: *3* js_state.__repr__
+    def __repr__(self):
+        '''JavaScriptScanState __repr__'''
+        ### This will change for gen_v2.
+        return 'JavaScriptScanState: base: %r now: %r context: %2r' % (
+            '{' * self.base_curlies + '(' * self.base_parens, 
+            '{' * self.curlies + '(' * self.parens,
+            self.context)
+
+    __str__ = __repr__
     #@+node:ekr.20161104141518.1: *3* js_state.clear, push & pop
     def clear(self):
         '''Clear the state.'''
@@ -45,6 +55,10 @@ class JavaScriptScanState(basescanner.ScanState):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and (
             (self.curlies > self.base_curlies or self.parens > self.base_parens))
+    #@+node:ekr.20161104145705.1: *3* js_state.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return '', 0, 0
     #@+node:ekr.20161004071532.1: *3* js_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''

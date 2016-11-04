@@ -4,14 +4,41 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
+ScanState = basescanner.ScanState
 gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161027094537.5: ** class PerlScanState
-class PerlScanState(basescanner.ScanState):
+class PerlScanState(ScanState):
     '''A class to store and update scanning state.'''
-    # Use the base class ctor.
+    def __init__(self):
+        '''Ctor for the PerlScanState class.'''
+        ScanState.__init__(self)
+            # Init the base class.
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = '' # Represents cross-line constructs.
+        self.stack = []
 
     #@+others
+    #@+node:ekr.20161104150450.1: *3* perl_state.__repr__
+    def __repr__(self):
+        '''PerlScanState.__repr__'''
+        return 'PerlScanState: base: %3r now: %3r context: %2r' % (
+            '{' * self.base_curlies + '(' * self.base_parens, 
+            '{' * self.curlies + '(' * self.parens,
+            self.context)
+
+    __str__ = __repr__
+    #@+node:ekr.20161104084712.5: *3* perl_state.clear (to be removed)
+    def clear(self):
+        '''Clear the state.'''
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = ''
+    #@+node:ekr.20161104150004.1: *3* perl_state.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return '', 0, 0
     #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
