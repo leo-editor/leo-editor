@@ -2462,6 +2462,11 @@ class ScanState(object):
         '''Save the base state on the stack and enter a new base state.'''
         self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
+    #@+node:ekr.20161104144603.1: *3* state.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        assert False, 'must be overridden in subclasses'
+        return '', 0 # Most languages use a single count.
     #@+node:ekr.20161103065140.1: *3* state.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''

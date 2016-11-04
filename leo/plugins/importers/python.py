@@ -65,27 +65,12 @@ class PythonScanState(ScanState):
         self.indent = 0
         self.tab_width = c.tab_width
 
-    ###
-    # def __init__(self, c):
-        # '''Ctor for the PythonScanState class.'''
-        # self.tab_width = c.tab_width
-        # self.base_indent, self.indent = 0, 0
-        # self.context = '' # Represents cross-line constructs.
-        # self.is_class_or_def = False
-        # self.stack = []
-
     #@+others
     #@+node:ekr.20161029103952.2: *3* python_state.__repr__ & __str__
     def __repr__(self):
         '''PythonScanState.__repr__'''
-        ###
-        if True: ### gen_v2:
-            return 'PythonScanState: indent: %s context: %2r' % (
-                self.indent, self.context)
-        ###
-        # else:
-            # return 'PythonScanState: base indent: %2d indent: %2d context: %2r' % (
-                # self.base_indent, self.indent, self.context)
+        return 'PythonScanState: indent: %s context: %2r' % (
+            self.indent, self.context)
 
     __str__ = __repr__
     #@+node:ekr.20161104143211.3: *3* python_state.get_lws
