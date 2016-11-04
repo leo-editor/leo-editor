@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e38710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e32372e3871157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1250,6 +1250,7 @@
 <v t="ekr.20090529141856.4776"></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
+<v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
 <v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
@@ -7951,7 +7952,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -15405,6 +15406,36 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
+</t>
+<t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
+table = (
+    (None, (0, 0, '/*'),    r'/* abc'),
+    (None, (0, 0, ''),      r'a + b // /*'),
+    (None, (0, 1, ''),      r'(function'),
+    (None, (1, 1, ''),      r'(function(a) {'),
+    (None, (0, 0, ''),      r'var x = /abc/'),
+    (None, (0, 0, ''),      r'var x = /a"c/'),
+    (None, (0, 0, ''),      r'var x = /a\//'),
+    (None, (0, 0, ''),      r'var x = /a\//'),
+    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    (None, (0, 1, ''),      r'var x = (0,'),
+)
+for base, result, s in table:
+    scanner = js.JavaScriptScanState(c)
+    if base:
+        scanner.curlies, scanner.parens, scanner.context = base
+    else:
+        scanner.curlies, scanner.parens, scanner.context = 0, 0, ''
+    scanner.scan_line(s)
+    expected_curlies, expected_parens, expected_context = result
+    ok = (
+        scanner.curlies == expected_curlies and
+        scanner.parens == expected_parens and
+        scanner.context == expected_context)
+    assert ok, 'expected: %s %s %r, got: %s %s %r in %r' % (
+        expected_curlies, expected_parens, expected_context,
+        scanner.curlies, scanner.parens, scanner.context, s)
+# print('done')
 </t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
