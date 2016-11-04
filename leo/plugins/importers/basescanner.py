@@ -726,7 +726,7 @@ class BaseLineScanner(object):
                 child = self.create_child_node(target.p, body, headline)
                 stack.append(Target(indent, child, new_state))
             elif new_state < prev_state:
-                self.cut_stack(new_state, prev_state, stack)
+                self.cut_stack(new_state, stack)
             # Common code...
             p = stack[-1].p
             prev_state = new_state
@@ -736,9 +736,24 @@ class BaseLineScanner(object):
             target = stack.pop()
             ### Write lines & tail lines.
     #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
-    def cut_stack(self, new_state, prev_state, stack):
-        '''cut back the stack until stack[-1] matches new_state.'''
-        g.trace(new_state, prev_state)
+    def cut_stack(self, state, stack):
+        '''Cut back the stack until stack[-1] matches new_state.'''
+        trace = True and not g.unitTesting
+        while stack:
+            top_state = stack[-1].state
+            if top_state > state:
+                if trace: g.trace('top_state > state', top_state)
+                stack.pop()
+            elif top_state == state:
+                if trace: g.trace('top_state > state', top_state)
+                break
+            else:
+                if trace: g.trace('top_state < state', top_state)
+                g.trace('===== overshoot')
+                break
+        if not stack:
+            g.trace('===== underflow')
+            stack = [self.state.initial_state()]
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -2581,10 +2596,11 @@ class Target:
         self.ref_flag = False
             # True: @others or section reference should be generated.
             # It's always True when gen_refs is True.
+        self.state = state
 
     def __repr__(self):
-        return 'Target: indent: %s p: %s' % (
-            self.indent, self.p.h)
+        return 'Target: indent: %s state: %s p: %s' % (
+            self.indent, self.state, self.p.h)
 #@-others
 #@@language python
 #@@tabwidth -4
