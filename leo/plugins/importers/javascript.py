@@ -4,16 +4,17 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 # import re
+ScanState = basescanner.ScanState
 gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161004092007.1: ** class JavaScriptScanState
-class JavaScriptScanState(basescanner.ScanState):
+class JavaScriptScanState(ScanState):
     '''A class to store and update scanning state.'''
 
     def __init__(self):
         '''Ctor for the JavaScriptScanState class.'''
-        # pylint: disable=super-init-not-called
-        # Don't inject other ivars.
+        ScanState.__init__(self)
+            # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
         self.context = '' # Represents cross-line constructs.
