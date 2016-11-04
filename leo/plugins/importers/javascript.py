@@ -4,13 +4,47 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 # import re
+gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161004092007.1: ** class JavaScriptScanState
 class JavaScriptScanState(basescanner.ScanState):
     '''A class to store and update scanning state.'''
-    # Use the base class ctor.
+
+    def __init__(self):
+        '''Ctor for the JavaScriptScanState class.'''
+        # pylint: disable=super-init-not-called
+        # Don't inject other ivars.
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = '' # Represents cross-line constructs.
+        self.stack = []
 
     #@+others
+    #@+node:ekr.20161104141518.1: *3* js_state.clear, push & pop
+    def clear(self):
+        '''Clear the state.'''
+        self.base_curlies = self.curlies = 0
+        self.base_parens = self.parens = 0
+        self.context = ''
+
+    def pop(self):
+        '''Restore the base state from the stack.'''
+        self.base_curlies, self.base_parens = self.stack.pop()
+        
+    def push(self):
+        '''Save the base state on the stack and enter a new base state.'''
+        self.stack.append((self.base_curlies, self.base_parens),)
+        self.base_curlies = self.curlies
+        self.base_parens = self.parens
+    #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
+    def continues_block(self):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
+
+    def starts_block(self):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return not self.context and (
+            (self.curlies > self.base_curlies or self.parens > self.base_parens))
     #@+node:ekr.20161004071532.1: *3* js_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''

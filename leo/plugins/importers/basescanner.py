@@ -86,9 +86,7 @@ import time
 #@-<< basescanner imports >>
 #@+<< basescanner switches >>
 #@+node:ekr.20161104071309.1: ** << basescanner switches >>
-gen_v2 = False
-    # True: Use V2 (newest) line scanners.
-    # False: Use V1 lines scanners
+gen_v2 = g.gen_v2
 new_ctors = False
     # Fails at present.
 #@-<< basescanner switches >>
@@ -273,7 +271,7 @@ class BaseLineScanner(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        if gen_v2:
+        if g.gen_v2:
             self.v2_gen_lines(s, parent)
         else:
             self.v1_scan(s, parent)
@@ -2442,43 +2440,56 @@ class ScanState(object):
     #@+node:ekr.20161027115813.2: *3* state.ctor & repr
     def __init__(self):
         '''Ctor for the singleton ScanState class.'''
+        ### Now defined only in JavaScriptScanState
+        # self.base_parens = self.parens= 0
         self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
+        self.parens = 0
         self.context = '' # Represents cross-line constructs.
         self.stack = []
 
     def __repr__(self):
-        return 'ScanState: base: %3r now: %3r context: %2r' % (
-            '{' * self.base_curlies + '(' * self.base_parens, 
-            '{' * self.curlies + '(' * self.parens,
-            self.context)
+        ###
+        if 1:
+            return 'ScanState: base: %r now: %r context: %2r' % (
+                '{' * self.base_curlies, '{' * self.curlies, self.context)
+        # else:
+            # return 'ScanState: base: %3r now: %3r context: %2r' % (
+                # '{' * self.base_curlies + '(' * self.base_parens, 
+                # '{' * self.curlies + '(' * self.parens,
+                # self.context)
             
     __str__ = __repr__
     #@+node:ekr.20161027115813.3: *3* state.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
+        ### return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
+        return self.context or self.curlies > self.base_curlies
 
     def starts_block(self):
         '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and (
-            (self.curlies > self.base_curlies or self.parens > self.base_parens))
+        ###
+        # return not self.context and (
+            # (self.curlies > self.base_curlies or self.parens > self.base_parens))
+        return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
     def clear(self):
         '''Clear the state.'''
         self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
+        ### self.base_curlies = self.curlies = 0
+        ### self.base_parens = self.parens = 0
         self.context = ''
 
     def pop(self):
         '''Restore the base state from the stack.'''
-        self.base_curlies, self.base_parens = self.stack.pop()
+        ### self.base_curlies, self.base_parens = self.stack.pop()
+        self.base_curlies = self.stack.pop()
         
     def push(self):
         '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append((self.base_curlies, self.base_parens),)
+        ### self.stack.append((self.base_curlies, self.base_parens),)
+        self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
-        self.base_parens = self.parens
+        ### self.base_parens = self.parens
     #@+node:ekr.20161103065140.1: *3* state.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -2500,9 +2511,10 @@ class ScanState(object):
         '''
         trace = False and not g.unitTesting
         
-        def match(i, pattern):
-            return pattern and pattern == s[i:i+len(pattern)]
+        # def match(i, pattern):
+            # return pattern and pattern == s[i:i+len(pattern)]
 
+        match = self.match
         contexts = strings = ['"', "'"]
         block1, block2 = None, None
         if block_comment:
@@ -2518,26 +2530,28 @@ class ScanState(object):
                     i += 1 # Eat the next character later.
                 elif self.context in strings and self.context == ch:
                     self.context = '' # End the string.
-                elif self.context == block1 and match(i, block2):
+                elif self.context == block1 and match(s, i, block2):
                     self.context = '' # End the block comment.
                     i += (len(block2) - 1)
                 else:
                     pass # Eat the string character later.
             elif ch in strings:
                 self.context = ch
-            elif match(i, block1):
+            elif match(s, i, block1):
                 self.context = block1
                 i += (len(block1) - 1)
-            elif match(i, line_comment):
+            elif match(s, i, line_comment):
                 break # The single-line comment ends the line.
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
-            elif ch == '(': self.parens += 1
-            elif ch == ')': self.parens -= 1
+            ### elif ch == '(': self.parens += 1
+            ### elif ch == ')': self.parens -= 1
             i += 1
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
+        if gen_v2:
+            return self.context, self.curlies
     #@-others
 #@+node:ekr.20161104090312.1: ** class Target
 class Target:

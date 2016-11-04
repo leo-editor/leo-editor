@@ -4,10 +4,7 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 import re
-#@+<< python: new_scanner >>
-#@+node:ekr.20161103070215.1: ** << python: new_scanner >>
-new_scanner = False
-#@-<< python: new_scanner >>
+gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161029103640.1: ** class PythonLineScanner
 class PythonLineScanner(basescanner.BaseLineScanner):
@@ -384,7 +381,7 @@ class PythonScanner(basescanner.BaseScanner):
     #@-others
 #@-others
 importer_dict = {
-    'class': PythonLineScanner if new_scanner else PythonScanner,
+    'class': PythonLineScanner if gen_v2 else PythonScanner,
     'extensions': ['.py', '.pyw', '.pyi'],
         # mypy uses .pyi extension.
 }

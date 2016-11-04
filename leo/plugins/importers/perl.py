@@ -4,6 +4,7 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
+gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161027094537.5: ** class PerlScanState
 class PerlScanState(basescanner.ScanState):

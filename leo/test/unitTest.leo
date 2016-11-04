@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e32372e3871097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e38710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1249,6 +1249,81 @@
 <v t="ekr.20161102104718.1"><vh>Intermixed blanks and tabs</vh>
 <v t="ekr.20090529141856.4776"></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
+</v>
+</v>
+<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
+<v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
+<v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
+<v t="ekr.20090529141856.4738"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20090529141856.4739"><vh>@test python decorator</vh></v>
+<v t="ekr.20090529141856.4740"><vh>@test python def inside def</vh></v>
+<v t="ekr.20090529141856.4741"><vh>@test docstring only</vh></v>
+<v t="ekr.20090529141856.4742"><vh>@test overindent def--no following def</vh></v>
+<v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
+<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
+<v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
+<v t="ekr.20101101034131.6042"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
+<v t="ekr.20090529141856.4747"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20090529141856.4748"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20090529141856.4749"><vh>@test python def test 1</vh></v>
+<v t="ekr.20090529141856.4750"><vh>@test python def test 2</vh></v>
+<v t="ekr.20090529141856.4751"><vh>@test python empty decls</vh></v>
+<v t="ekr.20090529141856.4752"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20090529141856.4753"><vh>@test python indent decls</vh></v>
+<v t="ekr.20090529141856.4754"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20090529141856.4755"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20090529141856.4756"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20090529141856.4757"><vh>@test python underindent method</vh></v>
+<v t="ekr.20090529141856.4758"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
+<v t="ekr.20090529141856.4759"><vh>@test string test: extra indent</vh></v>
+<v t="ekr.20090529141856.4760"><vh>@test string underindent lines</vh></v>
+<v t="ekr.20090529141856.4761"><vh>@test string underindent lines 2</vh></v>
+<v t="ekr.20090529141856.4762"><vh>@test trailing comment</vh></v>
+<v t="ekr.20090529141856.4763"><vh>@test trailing comment--outer levels</vh></v>
+<v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
+<v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
+</v>
+<v t="ekr.20161103075725.1"><vh>Python failing tests</vh>
+<v t="ekr.20090529141856.4759"></v>
+<v t="ekr.20090529141856.4761"></v>
+<v t="ekr.20140206132559.4567"><vh>@test ic.parse-body</vh>
+<v t="ekr.20150919073819.1"><vh>copy</vh></v>
+<v t="ekr.20140206132559.4560"><vh>before</vh></v>
+<v t="ekr.20140206132559.4564"><vh>expected</vh>
+<v t="ekr.20150919074321.1"><vh>class aClass</vh>
+<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074321.3"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20150919074122.1"><vh>@test ic.parse-body mypy</vh>
+<v t="ekr.20150919074220.1"><vh>copy</vh></v>
+<v t="ekr.20150919074132.1"><vh>before</vh></v>
+<v t="ekr.20150919074154.1"><vh>expected</vh>
+<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
+<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
+<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
+<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
+<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
+<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
+<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
+<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
+<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
+<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
+<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
+<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
+<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
+<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
+<v t="ekr.20150919074211.16"><vh>join</vh></v>
+<v t="ekr.20150919074211.17"><vh>default</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
@@ -1308,48 +1383,13 @@
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
-<v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
-<v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
-<v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
-</v>
+<v t="ekr.20161103015908.1"></v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
-<v t="ekr.20090529141856.4738"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20090529141856.4739"><vh>@test python decorator</vh></v>
-<v t="ekr.20090529141856.4740"><vh>@test python def inside def</vh></v>
-<v t="ekr.20090529141856.4741"><vh>@test docstring only</vh></v>
-<v t="ekr.20090529141856.4742"><vh>@test overindent def--no following def</vh></v>
-<v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
-<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
-<v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
-<v t="ekr.20101101034131.6042"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
-<v t="ekr.20090529141856.4747"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20090529141856.4748"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20090529141856.4749"><vh>@test python def test 1</vh></v>
-<v t="ekr.20090529141856.4750"><vh>@test python def test 2</vh></v>
-<v t="ekr.20090529141856.4751"><vh>@test python empty decls</vh></v>
-<v t="ekr.20090529141856.4752"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20090529141856.4753"><vh>@test python indent decls</vh></v>
-<v t="ekr.20090529141856.4754"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20090529141856.4755"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20090529141856.4756"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20090529141856.4757"><vh>@test python underindent method</vh></v>
-<v t="ekr.20090529141856.4758"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
-<v t="ekr.20090529141856.4759"><vh>@test string test: extra indent</vh></v>
-<v t="ekr.20090529141856.4760"><vh>@test string underindent lines</vh></v>
-<v t="ekr.20090529141856.4761"><vh>@test string underindent lines 2</vh></v>
-<v t="ekr.20090529141856.4762"><vh>@test trailing comment</vh></v>
-<v t="ekr.20090529141856.4763"><vh>@test trailing comment--outer levels</vh></v>
-<v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
-<v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
-</v>
+<v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"></v>
@@ -1387,40 +1427,8 @@
 <v t="ekr.20111214100515.3921"><vh>@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20111104112332.3954"><vh>@test ic.HtmlScanner.adjust_class_ref</vh></v>
 <v t="ekr.20111111074026.3972"><vh>@test ic.HtmlScanner.skipComment/Id/String</vh></v>
-<v t="ekr.20140206132559.4567"><vh>@test ic.parse-body</vh>
-<v t="ekr.20150919073819.1"><vh>copy</vh></v>
-<v t="ekr.20140206132559.4560"><vh>before</vh></v>
-<v t="ekr.20140206132559.4564"><vh>expected</vh>
-<v t="ekr.20150919074321.1"><vh>class aClass</vh>
-<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074321.3"><vh>spam</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20150919074122.1"><vh>@test ic.parse-body mypy</vh>
-<v t="ekr.20150919074220.1"><vh>copy</vh></v>
-<v t="ekr.20150919074132.1"><vh>before</vh></v>
-<v t="ekr.20150919074154.1"><vh>expected</vh>
-<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
-<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
-<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
-<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
-<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
-<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
-<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
-<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
-<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
-<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
-<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
-<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
-<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
-<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
-<v t="ekr.20150919074211.16"><vh>join</vh></v>
-<v t="ekr.20150919074211.17"><vh>default</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
 <v t="ekr.20100131180007.5393"><vh>@test ic.reportMismatch</vh></v>
 <v t="ekr.20111105065243.3837"><vh>@test ic.RstScanner.removeBlankLinesTokens (rst)</vh></v>
 <v t="ekr.20111104112332.3955"><vh>@test ic.skip...Token (HtmlScanner)</vh></v>
@@ -1432,14 +1440,6 @@
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20161103015908.1"></v>
-<v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161103075725.1"><vh>Python failing tests</vh>
-<v t="ekr.20090529141856.4759"></v>
-<v t="ekr.20090529141856.4761"></v>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -7951,7 +7951,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="11">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14683,7 +14683,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
