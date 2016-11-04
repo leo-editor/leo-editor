@@ -11,9 +11,9 @@ gen_v2 = g.gen_v2
 class JavaScriptScanState(ScanState):
     '''A class to store and update scanning state.'''
 
-    def __init__(self):
+    def __init__(self, c):
         '''Ctor for the JavaScriptScanState class.'''
-        ScanState.__init__(self)
+        ScanState.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
@@ -151,7 +151,7 @@ class JavaScriptScanner(basescanner.BaseLineScanner):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = True, # True: generate section references.
             language = 'javascript', # For @language.
-            state = JavaScriptScanState(),
+            state = JavaScriptScanState(c),
             strict = False, # True: leave leading whitespace alone.
         )
         

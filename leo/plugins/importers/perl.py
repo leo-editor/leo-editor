@@ -10,9 +10,9 @@ gen_v2 = g.gen_v2
 #@+node:ekr.20161027094537.5: ** class PerlScanState
 class PerlScanState(ScanState):
     '''A class to store and update scanning state.'''
-    def __init__(self):
+    def __init__(self, c):
         '''Ctor for the PerlScanState class.'''
-        ScanState.__init__(self)
+        ScanState.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
@@ -118,7 +118,7 @@ class PerlScanner(basescanner.BaseLineScanner):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = False, # Don't generate section references.
             language = 'perl', # For @language.
-            state = PerlScanState(),
+            state = PerlScanState(c),
             strict = False, # True: leave leading whitespace alone.
         )
         

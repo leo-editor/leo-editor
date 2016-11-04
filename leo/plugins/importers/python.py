@@ -57,7 +57,7 @@ class PythonScanState(ScanState):
     
     def __init__(self, c):
         '''PythonScanState ctor.'''
-        ScanState.__init__(self)
+        ScanState.__init__(self, c)
             # Init the base class.
         self.comment_only_line = False
         self.context = '' # In self.contexts.
@@ -73,10 +73,6 @@ class PythonScanState(ScanState):
             self.indent, self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104143211.3: *3* python_state.get_lws
-    def get_lws(self, s):
-        '''Return the the lws (a number) of line s.'''
-        return g.computeLeadingWhitespaceWidth(s, self.tab_width)
     #@+node:ekr.20161104143211.4: *3* python_state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''

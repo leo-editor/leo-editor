@@ -2434,9 +2434,14 @@ class ScanState(object):
     '''
 
     #@+others
+    #@+node:ekr.20161104143211.3: *3* state.get_lws
+    def get_lws(self, s):
+        '''Return the the lws (a number) of line s.'''
+        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
     #@+node:ekr.20161027115813.2: *3* state.__init__ & __repr__
-    def __init__(self):
+    def __init__(self, c):
         '''Ctor for the singleton ScanState class.'''
+        self.c = c
         self.base_curlies = self.curlies = 0
         self.parens = 0
         self.context = '' # Represents cross-line constructs.
