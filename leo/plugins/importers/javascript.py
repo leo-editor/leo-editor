@@ -47,14 +47,19 @@ class JavaScriptScanState(basescanner.ScanState):
         self.base_curlies = self.curlies
         self.base_parens = self.parens
     #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
-    def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.context or self.curlies > self.base_curlies or self.parens > self.base_parens
-
-    def starts_block(self):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and (
-            (self.curlies > self.base_curlies or self.parens > self.base_parens))
+    if not gen_v2:
+        
+        def continues_block(self):
+            '''Return True if the just-scanned lines should be placed in the inner block.'''
+            return (self.context or
+                    self.curlies > self.base_curlies or
+                    self.parens > self.base_parens)
+        
+        def starts_block(self):
+            '''Return True if the just-scanned line starts an inner block.'''
+            return not self.context and (
+                (self.curlies > self.base_curlies or
+                 self.parens > self.base_parens))
     #@+node:ekr.20161104145705.1: *3* js_state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''

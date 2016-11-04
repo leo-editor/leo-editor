@@ -2528,13 +2528,15 @@ class ScanState(object):
         if gen_v2:
             return self.context, self.curlies
     #@+node:ekr.20161027115813.3: *3* state.V1: continues_block and starts_block
-    def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.context or self.curlies > self.base_curlies
+    if not gen_v2:
 
-    def starts_block(self):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and self.curlies > self.base_curlies
+        def continues_block(self):
+            '''Return True if the just-scanned lines should be placed in the inner block.'''
+            return self.context or self.curlies > self.base_curlies
+        
+        def starts_block(self):
+            '''Return True if the just-scanned line starts an inner block.'''
+            return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161104084712.22: *3* state.V2: comparisons (Test)
     # Only BLS.new_gen_lines uses these.
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
