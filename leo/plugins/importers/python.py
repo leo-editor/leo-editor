@@ -117,7 +117,8 @@ class PythonScanState(ScanState):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         # For v2 scanner:
-        return self.context, self.indent
+        if gen_v2:
+            return self.context, self.indent
     #@+node:ekr.20161104143211.5: *3* python_state.V2: comparisons (Test)
     # Only BLS.new_gen_lines uses these.
 

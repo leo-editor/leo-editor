@@ -79,6 +79,8 @@ class PerlScanState(ScanState):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
+        if gen_v2:
+            return self.context, self.curlies, self.parens
     #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''

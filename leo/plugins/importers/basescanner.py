@@ -708,14 +708,14 @@ class BaseLineScanner(object):
             self.append_to_body(child, last_line)
         
     #@+node:ekr.20161104084810.1: *3* BLS.V2: new_gen_lines & helper
-    def v2_gen_lines(self, lines, parent):
-        '''Parse all lines, adding to parent.b, creating child nodes as necessary.'''
+    def v2_gen_lines(self, s, parent):
+        '''Parse all lines of s, adding to parent.b, creating child nodes as necessary.'''
         state = self.state # The subclass of ScanState for this importer
         indent = 0 # Not used yet.
         prev_state = state.initial_state()
         stack = [Target(indent, parent, prev_state)]
-        target = parent # Same as stack[0].target
-        for line in lines:
+        for line in g.splitLines(s):
+            target = stack[-1] # Loop invariant.
             new_state = state.scan_line(line)
             if new_state > prev_state:
                 # create @others or section ref in target >>
@@ -723,15 +723,18 @@ class BaseLineScanner(object):
                 target.ref_flag = self.gen_ref(
                     indent_flag, line, parent, target.ref_flag)
                 body, headline = '', line
-                target = self.create_child_node(target, body, headline)
-                stack.append(Target(indent, target, new_state))
+                child = self.create_child_node(target.p, body, headline)
+                stack.append(Target(indent, child, new_state))
             elif new_state < prev_state:
                 self.cut_stack(new_state, prev_state, stack)
             # Common code...
-            target = stack[-1].p
+            p = stack[-1].p
             prev_state = new_state
-            target.b = target.b + line
+            p.b = p.b + line
                 # Or an optimized version of this.
+        while stack:
+            target = stack.pop()
+            ### Write lines & tail lines.
     #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
     def cut_stack(self, new_state, prev_state, stack):
         '''cut back the stack until stack[-1] matches new_state.'''
@@ -2577,11 +2580,11 @@ class Target:
         self.p = p
         self.ref_flag = False
             # True: @others or section reference should be generated.
-        self.state = state
+            # It's always True when gen_refs is True.
 
     def __repr__(self):
-        return 'Target: indent: %s state: %s p: %s' % (
-            self.indent, self.state, self.p.h)
+        return 'Target: indent: %s p: %s' % (
+            self.indent, self.p.h)
 #@-others
 #@@language python
 #@@tabwidth -4

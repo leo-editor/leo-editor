@@ -109,8 +109,10 @@ class JavaScriptScanState(ScanState):
             # elif ch == ']': self.squares -= 1
             i += 1
             assert progress < i
-        if trace and s.strip().startswith('//') and self.continues_block():
-            g.trace(self, s.rstrip())
+        if trace: g.trace(self, s.rstrip())
+        if gen_v2:
+            return self.context, self.curlies, self.parens
+
     #@+node:ekr.20161011045426.1: *3* js_state.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
