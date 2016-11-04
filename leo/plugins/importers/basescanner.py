@@ -84,8 +84,14 @@ else:
 import re
 import time
 #@-<< imports >>
+#@+<< basescanner switches >>
+#@+node:ekr.20161104071309.1: ** << basescanner switches >>
+gen_v2 = False
+    # True: Use V2 (newest) line scanners.
+    # False: Use V1 lines scanners
 new_ctors = False
     # Fails at present.
+#@-<< basescanner switches >>
 #@+others
 #@+node:ekr.20161027114718.1: ** class BaseLineScanner
 class BaseLineScanner(object):
@@ -246,206 +252,6 @@ class BaseLineScanner(object):
         Will typically be overridden in subclasses.
         '''
         return s.strip()
-    #@+node:ekr.20161101094729.1: *3* BLS.Scanning & code generation
-    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (entry) & helpers
-    def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
-        '''
-        The entry point for parsing and code generation. Also called by
-        rescan_code_block.
-        
-        Parse all lines, adding to parent.b, creating child nodes as necessary.
-        '''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
-        if not lines:
-            return
-        gen_refs, state = self.gen_refs, self.state
-        if trace:
-            g.trace(tag, state)
-            print('===== entry lines:...')
-            for line in lines:
-                print(line.rstrip())
-            print('----- end entry lines.')
-        assert not state.context, state
-        ### state.push()
-        i, ref_flag = 0, False
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            state.scan_line(line)
-            if state.starts_block():
-                # Generate the reference first.
-                ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
-                # Scan the code block and its tail.
-                code_lines, tail_lines = self.skip_code_block(i, lines)
-                i += (len(code_lines) + len(tail_lines))
-                if gen_refs:
-                    self.rescan_code_block(code_lines, parent)
-                    self.append_to_body(parent, ''.join(tail_lines))
-                else:
-                    code_lines.extend(tail_lines)
-                    self.rescan_code_block(code_lines, parent)
-            else:
-                # This works for both @others and section references.
-                # After @others, child nodes contain *all* lines.
-                if ref_flag and not gen_refs:
-                    g.trace('Can not happen: line not in tail: %r' % line)
-                self.append_to_body(parent, line)
-                i += 1
-            assert progress < i
-        ### state.pop()
-    #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
-    def skip_code_block(self, i, lines):
-        '''
-        lines[i] starts a class or function.
-        
-        Return (code_lines, tail_lines) where:
-        - code_lines are all the lines of the class or function.
-        - tail lines are all lines up to but not including the next class or function.
-        '''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
-        trace_lines = False
-        trace_entry = True
-        trace_results = True
-        state = self.state
-        assert state.starts_block()
-        assert not state.context, state
-        state.push()
-        state.clear()
-        if trace and trace_entry:
-            g.trace(state)
-            print('===== entry lines:...')
-            for j in range(i, len(lines)):
-                print('  %s' % lines[j].rstrip()) # entry lines.
-            print('----- end entry lines')
-        # Scan the code block.
-        # We have cleared the state, so rescan the first line.
-        block_i = i
-        state.scan_line(lines[i])
-        assert state.starts_block()
-        i += 1
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            if trace and trace_lines:
-                g.trace(state, line.rstrip())
-            state.scan_line(line)
-            if state.continues_block():
-                i += 1
-            elif self.name == 'python':
-                break
-            else:
-                i += 1
-                break
-            assert progress < i
-        code_lines = lines[block_i:i]
-        if trace and trace_results:
-            g.trace('===== code lines:...')
-            for line in code_lines:
-                print('  %s' % line.rstrip()) # code lines.
-            print('----- end code lines')
-        # Scan the block's tail.
-        # Line i is *not* part of the code block and it has not been scanned.
-        tail_i = i
-        if i < len(lines):
-            state.scan_line(lines[i])
-            if not state.starts_block():
-                i += 1 # Add the just-scanned line.
-                while i < len(lines):
-                    line = lines[i]
-                    if trace and trace_lines: g.trace(line.rstrip())
-                    state.scan_line(line)
-                    if state.starts_block():
-                        break
-                    else:
-                        i += 1
-        tail_lines = lines[tail_i:i]
-        if trace and trace_results:
-            g.trace('===== tail lines:...')
-            for line in tail_lines:
-                print('  %s' % line.rstrip()) # tail lines.
-            print('----- end-tail-lines')
-        state.pop()
-        return code_lines, tail_lines
-    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
-    def gen_ref(self, indent_flag, line, parent, ref_flag):
-        '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        '''
-        trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
-            ### Ignore indent_flag: Hurray!
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = self.clean_headline(line)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % headline))
-        else:
-            ref = None if ref_flag else '%s@others\n' % indent_ws
-            ref_flag = True # Don't generate another @others.
-        if ref:
-            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
-                '*' * 20, indent_ws, line, parent.h))
-            self.append_to_body(parent, ref)
-        return ref_flag
-    #@+node:ekr.20161031041540.1: *4* BLS.new_scan
-    def new_scan(self, s, parent, parse_body=False):
-        '''
-        new_scan: The main line of the line-based scanner and code generator.
-        
-        Create a child of self.root for:
-        - Leading outer-level declarations.
-        - Outer-level classes.
-        - Outer-level functions.
-        '''
-        # Create the initial body text in the root.
-        if parse_body:
-            pass
-        else:
-            self.append_to_body(parent,
-                '@language %s\n@tabwidth %d\n' % (
-                    self.language,
-                    self.tab_width))
-            self.gen_lines(
-                indent_flag = False,
-                lines = g.splitlines(s),
-                parent = parent,
-            )
-    #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (calls gen_lines)
-    def rescan_code_block(self, lines, parent):
-        '''Create a child of the parent, and add lines to parent.b.'''
-        if not lines:
-            return
-        state = self.state ###
-        first_line = lines[0]
-        assert first_line.strip
-        headline = self.clean_headline(first_line)
-        if self.gen_refs:
-            headline = g.angleBrackets(' %s ' % headline)
-        child = self.create_child_node(
-            parent,
-            body = '',
-            headline = headline)
-        if self.name == 'python':
-            last_line = None
-            lines = lines[1:]
-        else:
-            last_line = lines[-1]
-            lines = lines[1:-1]
-        self.append_to_body(child, first_line)
-        state.push() ###
-        self.gen_lines(
-            indent_flag = True,
-            lines = lines,
-            parent = child,
-            tag = 'rescan_code_block')
-        state.pop() ###
-        if last_line:
-            self.append_to_body(child, last_line)
-        
     #@+node:ekr.20161027114007.1: *3* BLS.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
@@ -467,8 +273,10 @@ class BaseLineScanner(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        self.new_scan(s, parent)
-            ### The switchover to the new line-oriented scanner is complete.
+        if gen_v2:
+            self.v2_gen_lines(s, parent)
+        else:
+            self.v1_scan(s, parent)
         self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
@@ -704,6 +512,235 @@ class BaseLineScanner(object):
             self.error(
                 'underindented line.\n'
                 'Extra leading whitespace will be added\n' + line)
+    #@+node:ekr.20161101094729.1: *3* BLS.V1: Scanning & code generation
+    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (entry) & helpers
+    def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
+        '''
+        The entry point for parsing and code generation. Also called by
+        rescan_code_block.
+        
+        Parse all lines, adding to parent.b, creating child nodes as necessary.
+        '''
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        if not lines:
+            return
+        gen_refs, state = self.gen_refs, self.state
+        if trace:
+            g.trace(tag, state)
+            print('===== entry lines:...')
+            for line in lines:
+                print(line.rstrip())
+            print('----- end entry lines.')
+        assert not state.context, state
+        ### state.push()
+        i, ref_flag = 0, False
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                # Generate the reference first.
+                ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
+                # Scan the code block and its tail.
+                code_lines, tail_lines = self.skip_code_block(i, lines)
+                i += (len(code_lines) + len(tail_lines))
+                if gen_refs:
+                    self.rescan_code_block(code_lines, parent)
+                    self.append_to_body(parent, ''.join(tail_lines))
+                else:
+                    code_lines.extend(tail_lines)
+                    self.rescan_code_block(code_lines, parent)
+            else:
+                # This works for both @others and section references.
+                # After @others, child nodes contain *all* lines.
+                if ref_flag and not gen_refs:
+                    g.trace('Can not happen: line not in tail: %r' % line)
+                self.append_to_body(parent, line)
+                i += 1
+            assert progress < i
+        ### state.pop()
+    #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
+    def skip_code_block(self, i, lines):
+        '''
+        lines[i] starts a class or function.
+        
+        Return (code_lines, tail_lines) where:
+        - code_lines are all the lines of the class or function.
+        - tail lines are all lines up to but not including the next class or function.
+        '''
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace_lines = False
+        trace_entry = True
+        trace_results = True
+        state = self.state
+        assert state.starts_block()
+        assert not state.context, state
+        state.push()
+        state.clear()
+        if trace and trace_entry:
+            g.trace(state)
+            print('===== entry lines:...')
+            for j in range(i, len(lines)):
+                print('  %s' % lines[j].rstrip()) # entry lines.
+            print('----- end entry lines')
+        # Scan the code block.
+        # We have cleared the state, so rescan the first line.
+        block_i = i
+        state.scan_line(lines[i])
+        assert state.starts_block()
+        i += 1
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            if trace and trace_lines:
+                g.trace(state, line.rstrip())
+            state.scan_line(line)
+            if state.continues_block():
+                i += 1
+            elif self.name == 'python':
+                break
+            else:
+                i += 1
+                break
+            assert progress < i
+        code_lines = lines[block_i:i]
+        if trace and trace_results:
+            g.trace('===== code lines:...')
+            for line in code_lines:
+                print('  %s' % line.rstrip()) # code lines.
+            print('----- end code lines')
+        # Scan the block's tail.
+        # Line i is *not* part of the code block and it has not been scanned.
+        tail_i = i
+        if i < len(lines):
+            state.scan_line(lines[i])
+            if not state.starts_block():
+                i += 1 # Add the just-scanned line.
+                while i < len(lines):
+                    line = lines[i]
+                    if trace and trace_lines: g.trace(line.rstrip())
+                    state.scan_line(line)
+                    if state.starts_block():
+                        break
+                    else:
+                        i += 1
+        tail_lines = lines[tail_i:i]
+        if trace and trace_results:
+            g.trace('===== tail lines:...')
+            for line in tail_lines:
+                print('  %s' % line.rstrip()) # tail lines.
+            print('----- end-tail-lines')
+        state.pop()
+        return code_lines, tail_lines
+    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
+    def gen_ref(self, indent_flag, line, parent, ref_flag):
+        '''
+        Generate the ref line and a flag telling this method whether a previous
+        #@+others
+        #@-others
+        '''
+        trace = False and not g.unitTesting
+        indent_ws = self.get_lws(line)
+            ### Ignore indent_flag: Hurray!
+        if self.is_rst and not self.atAuto:
+            return None, None
+        elif self.gen_refs:
+            headline = self.clean_headline(line)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % headline))
+        else:
+            ref = None if ref_flag else '%s@others\n' % indent_ws
+            ref_flag = True # Don't generate another @others.
+        if ref:
+            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+            self.append_to_body(parent, ref)
+        return ref_flag
+    #@+node:ekr.20161031041540.1: *4* BLS.v1_scan
+    def v1_scan(self, s, parent, parse_body=False):
+        '''
+        v1_scan: V1 of line-based scanners and code generators.
+        
+        Create a child of self.root for:
+        - Leading outer-level declarations.
+        - Outer-level classes.
+        - Outer-level functions.
+        '''
+        # Create the initial body text in the root.
+        if parse_body:
+            pass
+        else:
+            self.append_to_body(parent,
+                '@language %s\n@tabwidth %d\n' % (
+                    self.language,
+                    self.tab_width))
+            self.gen_lines(
+                indent_flag = False,
+                lines = g.splitlines(s),
+                parent = parent,
+            )
+    #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (calls gen_lines)
+    def rescan_code_block(self, lines, parent):
+        '''Create a child of the parent, and add lines to parent.b.'''
+        if not lines:
+            return
+        state = self.state ###
+        first_line = lines[0]
+        assert first_line.strip
+        headline = self.clean_headline(first_line)
+        if self.gen_refs:
+            headline = g.angleBrackets(' %s ' % headline)
+        child = self.create_child_node(
+            parent,
+            body = '',
+            headline = headline)
+        if self.name == 'python':
+            last_line = None
+            lines = lines[1:]
+        else:
+            last_line = lines[-1]
+            lines = lines[1:-1]
+        self.append_to_body(child, first_line)
+        state.push() ###
+        self.gen_lines(
+            indent_flag = True,
+            lines = lines,
+            parent = child,
+            tag = 'rescan_code_block')
+        state.pop() ###
+        if last_line:
+            self.append_to_body(child, last_line)
+        
+    #@+node:ekr.20161104084810.1: *3* BLS.V2: new_gen_lines & helper
+    def new_gen_lines(self, lines, parent):
+        '''Parse all lines, adding to parent.b, creating child nodes as necessary.'''
+        state = self.state # The subclass of ScanState for this importer
+        indent = 0 # Not used yet.
+        prev_state = state.initial_state()
+        stack = [Target(indent, parent, prev_state)]
+        target = parent # Same as stack[0].target
+        for line in lines:
+            new_state = state.scan_line(line)
+            if new_state > prev_state:
+                # create @others or section ref in target >>
+                indent_flag = False # for compatibility with gen_ref.
+                target.ref_flag = self.gen_ref(
+                    indent_flag, line, parent, target.ref_flag)
+                body, headline = '', line
+                target = self.create_child_node(target, body, headline)
+                stack.append(Target(indent, target, new_state))
+            elif new_state < prev_state:
+                self.cut_stack(new_state, prev_state, stack)
+            # Common code...
+            target = stack[-1].p
+            prev_state = new_state
+            target.b = target.b + line
+                # Or an optimized version of this.
+    #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
+    def cut_stack(self, new_state, prev_state, stack):
+        '''cut back the stack until stack[-1] matches new_state.'''
+        g.trace(new_state, prev_state)
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
