@@ -4,8 +4,12 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 import re
+#@+<< python: new_scanner >>
+#@+node:ekr.20161103070215.1: ** << python: new_scanner >>
+new_scanner = False
+#@-<< python: new_scanner >>
 ScanState = basescanner.ScanState
-gen_v2 = g.gen_v2
+gen_v2 = g.gen_v2 and new_scanner
 #@+others
 #@+node:ekr.20161029103640.1: ** class PythonLineScanner
 class PythonLineScanner(basescanner.BaseLineScanner):

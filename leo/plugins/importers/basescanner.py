@@ -738,7 +738,7 @@ class BaseLineScanner(object):
     #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
     def cut_stack(self, state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = True and not g.unitTesting
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
         while stack:
             top_state = stack[-1].state
             if top_state > state:
@@ -2551,7 +2551,11 @@ class ScanState(object):
         if gen_v2:
             return self.context, self.curlies
     #@+node:ekr.20161027115813.3: *3* state.V1: continues_block and starts_block
-    if not gen_v2:
+    if gen_v2:
+        
+        pass
+        
+    else:
 
         def continues_block(self):
             '''Return True if the just-scanned lines should be placed in the inner block.'''

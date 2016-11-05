@@ -48,7 +48,11 @@ class JavaScriptScanState(ScanState):
         self.base_curlies = self.curlies
         self.base_parens = self.parens
     #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
-    if not gen_v2:
+    if gen_v2:
+        
+        pass
+        
+    else:
         
         def continues_block(self):
             '''Return True if the just-scanned lines should be placed in the inner block.'''
