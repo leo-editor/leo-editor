@@ -8,7 +8,7 @@ import re
 #@+node:ekr.20161103070215.1: ** << python: new_scanner >>
 new_scanner = False
 #@-<< python: new_scanner >>
-ScanState = basescanner.ScanState
+StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2 and new_scanner
 #@+others
 #@+node:ekr.20161029103640.1: ** class PythonLineScanner
@@ -56,12 +56,12 @@ class PythonLineScanner(basescanner.BaseLineScanner):
                 p.b = ''.join(lines)
     #@-others
 #@+node:ekr.20161029103615.1: ** class PythonScanState
-class PythonScanState(ScanState):
+class PythonScanState(StateScanner):
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
         '''PythonScanState ctor.'''
-        ScanState.__init__(self, c)
+        StateScanner.__init__(self, c)
             # Init the base class.
         self.comment_only_line = False
         self.context = '' # In self.contexts.

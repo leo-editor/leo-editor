@@ -28,12 +28,12 @@ code.
 **Overview of the code**
 
 `leo/plugins/basescanner.py` contains two new classes: `BaseLineScanner`
-(BLS) and `ScanState` classes. The BLS class replaces the horribly complex
+(BLS) and `StateScanner` classes. The BLS class replaces the horribly complex
 BaseScanner class.
 
-The ScanState class encapsulates *all* language-dependent knowledge.
+The StateScanner class encapsulates *all* language-dependent knowledge.
 
-Using ScanState methods, `BLS.scan` breaks input files Leo nodes. This is
+Using StateScanner methods, `BLS.scan` breaks input files Leo nodes. This is
 necessarily a complex algorithm.
 
 Leo's import infrastructure, in `leoImport.py`, instantiates the scanner
@@ -47,28 +47,28 @@ New style importers consist of the following:
    and an optional `clean_headline method`. This method tells how to
    simplify headlines.
 
-2. A subclass of the ScanState class that overrides `ScanState.scan_line`.
+2. A subclass of the StateScanner class that overrides `StateScanner.scan_line`.
 
-`ScanState.scan_line` updates the net number of curly brackets and parens
+`StateScanner.scan_line` updates the net number of curly brackets and parens
 at the end of each line. `scan_line` must compute these numbers
 *accurately*, taking into account constructs such as multi-line comments,
 strings and regular expressions.
 
 **Importing Python**
 
-The `ScanState` class would have to be completely rewritten for Python
+The `StateScanner` class would have to be completely rewritten for Python
 because Python uses indentation levels to indicate structure, not curly
 brackets.
 
 **Summary**
 
-Writing a new-style (line-by-line) importer is easy because the `ScanState`
+Writing a new-style (line-by-line) importer is easy because the `StateScanner`
 and `BaseLineScanner` classes hide all complex details.
 
-The `ScanState` class encapsulate *all* language-specific information.
+The `StateScanner` class encapsulate *all* language-specific information.
 
-Most importers simply override `ScanState.scan_line`, which simply scans
-tokens. The entire `ScanState` would have to be rewritten for languages
+Most importers simply override `StateScanner.scan_line`, which simply scans
+tokens. The entire `StateScanner` would have to be rewritten for languages
 such as Python.
 '''
 #@-<< basescanner docstring >>
@@ -709,21 +709,20 @@ class BaseLineScanner(object):
         
     #@+node:ekr.20161104084810.1: *3* BLS.V2: new_gen_lines & helper
     def v2_gen_lines(self, s, parent):
-        '''Parse all lines of s, adding to parent.b, creating child nodes as necessary.'''
-        state = self.state # The subclass of ScanState for this importer
-        indent = 0 # Not used yet.
+        '''Parse all lines of s into parent and created child nodes.'''
+        trace = True and not g.unitTesting
+        state = self.state
+        indent = 0 ### To do
         prev_state = state.initial_state()
         stack = [Target(indent, parent, prev_state)]
         for line in g.splitLines(s):
             target = stack[-1] # Loop invariant.
             new_state = state.scan_line(line)
+            if trace: g.trace(new_state, line.rstrip())
             if state.v2_starts_block(new_state, prev_state):
-                # create @others or section ref in target >>
-                indent_flag = False # for compatibility with gen_ref.
-                target.ref_flag = self.gen_ref(
-                    indent_flag, line, parent, target.ref_flag)
-                body, headline = '', line
-                child = self.create_child_node(target.p, body, headline)
+                target.ref_flag = self.v2_gen_ref(
+                    line, parent, target.ref_flag)
+                child = self.create_child_node(target.p, '', line)
                 stack.append(Target(indent, child, new_state))
             elif state.v2_continues_block(new_state, prev_state):
                 pass
@@ -740,7 +739,7 @@ class BaseLineScanner(object):
     #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = True and not g.unitTesting and self.root.h.endswith('.js')
         state = self.state
         while stack:
             top_state = stack[-1].state
@@ -757,6 +756,30 @@ class BaseLineScanner(object):
         if not stack:
             g.trace('===== underflow')
             stack = [state.initial_state()]
+    #@+node:ekr.20161105044835.1: *4* BLS.v2_gen_ref
+    def v2_gen_ref(self, line, parent, ref_flag):
+        '''
+        Generate the ref line and a flag telling this method whether a previous
+        #@+others
+        #@-others
+        '''
+        trace = False and not g.unitTesting
+        indent_ws = self.get_lws(line)
+        if self.is_rst and not self.atAuto:
+            return None, None
+        elif self.gen_refs:
+            headline = self.clean_headline(line)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % headline))
+        else:
+            ref = None if ref_flag else '%s@others\n' % indent_ws
+            ref_flag = True # Don't generate another @others.
+        if ref:
+            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+            self.append_to_body(parent, ref)
+        return ref_flag
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -2442,26 +2465,22 @@ class BaseScanner(object):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
-#@+node:ekr.20161027115813.1: ** class ScanState
-class ScanState(object):
+#@+node:ekr.20161027115813.1: ** class StateScanner
+class StateScanner(object):
     '''
     A class to manage scanning state, including a state stack.
     
     Most importers (subclasses of BaseLineScanner) will typically need only
-    override ScanState.scan_line!
+    override StateScanner.scan_line!
     
     A Python importer would have to replace this entire class because
     Python uses indentation, not brackets, to delimit classes and defs.
     '''
 
     #@+others
-    #@+node:ekr.20161104143211.3: *3* state.get_lws
-    def get_lws(self, s):
-        '''Return the the lws (a number) of line s.'''
-        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
     #@+node:ekr.20161027115813.2: *3* state.__init__ & __repr__
     def __init__(self, c):
-        '''Ctor for the singleton ScanState class.'''
+        '''Ctor for the StateScanner class.'''
         self.c = c
         self.base_curlies = self.curlies = 0
         self.parens = 0
@@ -2469,8 +2488,8 @@ class ScanState(object):
         self.stack = []
 
     def __repr__(self):
-        '''ScanState.__repr__'''
-        return 'ScanState: base: %r now: %r context: %2r' % (
+        '''StateScanner.__repr__'''
+        return 'StateScanner: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies, '{' * self.curlies, self.context)
             
     __str__ = __repr__
@@ -2488,6 +2507,10 @@ class ScanState(object):
         '''Save the base state on the stack and enter a new base state.'''
         self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
+    #@+node:ekr.20161104143211.3: *3* state.get_lws
+    def get_lws(self, s):
+        '''Return the the lws (a number) of line s.'''
+        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
     #@+node:ekr.20161104144603.1: *3* state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
@@ -2504,7 +2527,7 @@ class ScanState(object):
         but it should be overridden for languages that have regex syntax
         or for languages like Python that do not delimit structure with brackets.
 
-        Sets three ivars for ScanState.starts_block and ScanState.continues_block:
+        Sets three ivars for StateScanner.starts_block and StateScanner.continues_block:
         
         - .context is non-empty if we are scanning a multi-line string, comment
           or regex.

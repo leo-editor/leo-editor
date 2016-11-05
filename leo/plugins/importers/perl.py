@@ -4,15 +4,15 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
-ScanState = basescanner.ScanState
+StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161027094537.5: ** class PerlScanState
-class PerlScanState(ScanState):
+class PerlScanState(StateScanner):
     '''A class to store and update scanning state.'''
     def __init__(self, c):
         '''Ctor for the PerlScanState class.'''
-        ScanState.__init__(self, c)
+        StateScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0

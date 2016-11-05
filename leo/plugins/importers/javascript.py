@@ -4,16 +4,16 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 # import re
-ScanState = basescanner.ScanState
+StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
 #@+node:ekr.20161004092007.1: ** class JavaScriptScanState
-class JavaScriptScanState(ScanState):
+class JavaScriptScanState(StateScanner):
     '''A class to store and update scanning state.'''
 
     def __init__(self, c):
         '''Ctor for the JavaScriptScanState class.'''
-        ScanState.__init__(self, c)
+        StateScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
@@ -24,7 +24,6 @@ class JavaScriptScanState(ScanState):
     #@+node:ekr.20161104145747.1: *3* js_state.__repr__
     def __repr__(self):
         '''JavaScriptScanState __repr__'''
-        ### This will change for gen_v2.
         return 'JavaScriptScanState: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
@@ -50,7 +49,7 @@ class JavaScriptScanState(ScanState):
     #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
     if gen_v2:
         
-        # ScanState defines v2_starts_block & v2_continues_block.
+        # StateScanner defines v2_starts_block & v2_continues_block.
         pass
         
     else:
