@@ -710,47 +710,51 @@ class ImportController(object):
         if last_line:
             self.append_to_body(child, last_line)
         
-    #@+node:ekr.20161104084810.1: *3* IC.V2: new_gen_lines & helper
+    #@+node:ekr.20161104084810.1: *3* IC.V2: new_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         scanner = self.scanner
         indent = 0 ### To do
         prev_state = scanner.initial_state()
         stack = [Target(indent, parent, prev_state)]
         for line in g.splitLines(s):
-            target = stack[-1] # Loop invariant.
             new_state = scanner.scan_line(line)
             if trace: g.trace(new_state, line.rstrip())
             if scanner.v2_starts_block(new_state, prev_state):
-                target.ref_flag = self.v2_gen_ref(
-                    line, parent, target.ref_flag)
-                child = self.create_child_node(target.p, '', line)
+                target=stack[-1]
+                # Insert the reference in *this* node.
+                h = self.v2_gen_ref(line, parent, target)
+                # Create a new child and associated target.
+                child = self.create_child_node(target.p, line, h)
                 stack.append(Target(indent, child, new_state))
             elif scanner.v2_continues_block(new_state, prev_state):
-                pass
-            else:
+                p = stack[-1].p
+                p.b = p.b + line
+            else: 
+                p = stack[-1].p # Put the closing line in *this* node.
+                p.b = p.b + line
+                #### Scan triailing lines here? ####
                 self.cut_stack(new_state, stack)
-            # Common code...
-            p = stack[-1].p
             prev_state = new_state
-            p.b = p.b + line
-                # Or an optimized version of this.
-        while stack:
-            target = stack.pop()
-            ### Write lines & tail lines.
+        if 0:  ### Write lines & tail lines.
+            while stack:
+                target = stack.pop()
     #@+node:ekr.20161104084810.2: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = True and not g.unitTesting and self.root.h.endswith('.js')
-        scanner = self.scanner
+        trace = False and not g.unitTesting and self.root.h.endswith('.js')
+        trace_stack = True
+        if trace and trace_stack:
+            g.trace('Stack...')
+            print('\n'.join([repr(z) for z in stack]))
         while stack:
             top_state = stack[-1].state
             if top_state > new_state:
                 if trace: g.trace('top_state > state', top_state)
                 stack.pop()
             elif top_state == new_state:
-                if trace: g.trace('top_state > state', top_state)
+                if trace: g.trace('top_state == state', top_state)
                 break
             else:
                 if trace: g.trace('top_state < state', top_state)
@@ -758,9 +762,11 @@ class ImportController(object):
                 break
         if not stack:
             g.trace('===== underflow')
-            stack = [scanner.initial_state()]
+            stack = [self.scanner.initial_state()]
+        if trace:
+            g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
-    def v2_gen_ref(self, line, parent, ref_flag):
+    def v2_gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous
         #@+others
@@ -768,21 +774,24 @@ class ImportController(object):
         '''
         trace = False and not g.unitTesting
         indent_ws = self.get_lws(line)
+        h = self.clean_headline(line) 
         if self.is_rst and not self.atAuto:
             return None, None
         elif self.gen_refs:
-            headline = self.clean_headline(line)
+            headline = g.angleBrackets(' %s ' % h)
             ref = '%s%s\n' % (
                 indent_ws,
-                g.angleBrackets(' %s ' % headline))
+                g.angleBrackets(' %s ' % h))
         else:
-            ref = None if ref_flag else '%s@others\n' % indent_ws
-            ref_flag = True # Don't generate another @others.
+            ref = None if target.ref_flag else '%s@others\n' % indent_ws
+            target.ref_flag = True
+                # Don't generate another @others in this target.
+            headline = h
         if ref:
             if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
                 '*' * 20, indent_ws, line, parent.h))
-            self.append_to_body(parent, ref)
-        return ref_flag
+            parent.b = parent.b + ref
+        return headline
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
