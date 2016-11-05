@@ -22660,7 +22660,7 @@ table = (
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    scanner = js.JavaScriptScanState(c)
+    scanner = js.JavaScriptStateScanner(c)
     if base:
         scanner.curlies, scanner.parens, scanner.context = base
     else:

@@ -2465,6 +2465,24 @@ class BaseScanner(object):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
+#@+node:ekr.20161105045904.1: ** class ScanState
+class ScanState:
+    '''A class representing the state of the v2 scan.'''
+    
+    def __init__(self, context, curlies, parens=None):
+        '''Ctor for the ScanState class.'''
+        self.context = context
+        self.curlies = curlies
+        if parens is not None:
+            self.parens = parens
+
+    def __repr__(self):
+        '''ScanState.__repr__'''
+        s = 'ScanState: context: %r curlies: %s' % (
+            self.context, self.curlies)
+        if hasattr(self, 'parens'):
+            s += ' parens: %s' % (self.parens)
+        return s
 #@+node:ekr.20161027115813.1: ** class StateScanner
 class StateScanner(object):
     '''
@@ -2483,9 +2501,11 @@ class StateScanner(object):
         '''Ctor for the StateScanner class.'''
         self.c = c
         self.base_curlies = self.curlies = 0
-        self.parens = 0
         self.context = '' # Represents cross-line constructs.
-        self.stack = []
+        if gen_v2:
+            self.state = ScanState(self.context, self.curlies)
+        else:
+            self.stack = []
 
     def __repr__(self):
         '''StateScanner.__repr__'''
@@ -2494,19 +2514,25 @@ class StateScanner(object):
             
     __str__ = __repr__
     #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
-    def clear(self):
-        '''Clear the state.'''
-        self.base_curlies = self.curlies = 0
-        self.context = ''
-
-    def pop(self):
-        '''Restore the base state from the stack.'''
-        self.base_curlies = self.stack.pop()
+    if gen_v2:
         
-    def push(self):
-        '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append(self.base_curlies)
-        self.base_curlies = self.curlies
+        pass
+        
+    else:
+
+        def clear(self):
+            '''Clear the state.'''
+            self.base_curlies = self.curlies = 0
+            self.context = ''
+        
+        def pop(self):
+            '''Restore the base state from the stack.'''
+            self.base_curlies = self.stack.pop()
+            
+        def push(self):
+            '''Save the base state on the stack and enter a new base state.'''
+            self.stack.append(self.base_curlies)
+            self.base_curlies = self.curlies
     #@+node:ekr.20161104143211.3: *3* state.get_lws
     def get_lws(self, s):
         '''Return the the lws (a number) of line s.'''

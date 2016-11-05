@@ -7,12 +7,12 @@ import leo.plugins.importers.basescanner as basescanner
 StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
-#@+node:ekr.20161004092007.1: ** class JavaScriptScanState
-class JavaScriptScanState(StateScanner):
+#@+node:ekr.20161004092007.1: ** class JavaScriptStateScanner
+class JavaScriptStateScanner(StateScanner):
     '''A class to store and update scanning state.'''
 
     def __init__(self, c):
-        '''Ctor for the JavaScriptScanState class.'''
+        '''Ctor for the JavaScriptStateScanner class.'''
         StateScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
@@ -23,8 +23,8 @@ class JavaScriptScanState(StateScanner):
     #@+others
     #@+node:ekr.20161104145747.1: *3* js_state.__repr__
     def __repr__(self):
-        '''JavaScriptScanState __repr__'''
-        return 'JavaScriptScanState: base: %r now: %r context: %2r' % (
+        '''JavaScriptStateScanner __repr__'''
+        return 'JavaScriptStateScanner: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
@@ -177,7 +177,7 @@ class JavaScriptScanner(basescanner.BaseLineScanner):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = True, # True: generate section references.
             language = 'javascript', # For @language.
-            state = JavaScriptScanState(c),
+            state = JavaScriptStateScanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         

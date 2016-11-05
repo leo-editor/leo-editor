@@ -25,7 +25,7 @@ class PythonLineScanner(basescanner.BaseLineScanner):
             gen_clean = False, # True: clean blank lines & unindent blocks.
             gen_refs = False, # Don't generate section references.
             language = 'python', # For @language.
-            state = PythonScanState(c),
+            state = PythonStateScanner(c),
             strict = True, # True: leave leading whitespace alone.
             ############ Customize rescan blocks ###########
         )
@@ -55,12 +55,12 @@ class PythonLineScanner(basescanner.BaseLineScanner):
                     next.b = lines.pop() + next.b
                 p.b = ''.join(lines)
     #@-others
-#@+node:ekr.20161029103615.1: ** class PythonScanState
-class PythonScanState(StateScanner):
+#@+node:ekr.20161029103615.1: ** class PythonStateScanner
+class PythonStateScanner(StateScanner):
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
-        '''PythonScanState ctor.'''
+        '''PythonStateScanner ctor.'''
         StateScanner.__init__(self, c)
             # Init the base class.
         self.comment_only_line = False
@@ -72,8 +72,8 @@ class PythonScanState(StateScanner):
     #@+others
     #@+node:ekr.20161029103952.2: *3* py_state.__repr__ & __str__
     def __repr__(self):
-        '''PythonScanState.__repr__'''
-        return 'PythonScanState: indent: %s context: %2r' % (
+        '''PythonStateScanner.__repr__'''
+        return 'PythonStateScanner: indent: %s context: %2r' % (
             self.indent, self.context)
 
     __str__ = __repr__

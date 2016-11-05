@@ -7,11 +7,11 @@ import re
 StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
-#@+node:ekr.20161027094537.5: ** class PerlScanState
-class PerlScanState(StateScanner):
+#@+node:ekr.20161027094537.5: ** class PerlStateScanner
+class PerlStateScanner(StateScanner):
     '''A class to store and update scanning state.'''
     def __init__(self, c):
-        '''Ctor for the PerlScanState class.'''
+        '''Ctor for the PerlStateScanner class.'''
         StateScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
@@ -22,8 +22,8 @@ class PerlScanState(StateScanner):
     #@+others
     #@+node:ekr.20161104150450.1: *3* perl_state.__repr__
     def __repr__(self):
-        '''PerlScanState.__repr__'''
-        return 'PerlScanState: base: %3r now: %3r context: %2r' % (
+        '''PerlStateScanner.__repr__'''
+        return 'PerlStateScanner: base: %3r now: %3r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
@@ -120,7 +120,7 @@ class PerlScanner(basescanner.BaseLineScanner):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = False, # Don't generate section references.
             language = 'perl', # For @language.
-            state = PerlScanState(c),
+            state = PerlStateScanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         
