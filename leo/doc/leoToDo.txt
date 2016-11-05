@@ -3,6 +3,23 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20161105140325.1: ** Posts
+@language rest
+@wrap
+
+* Post: the new "pipeline".
+  Discuss ScanState and LineScanner classes in detail.
+
+*** Post: pep8 script
+- The difference between camelCase and pep8_style disambiguates old from new code.
+
+* Post: tests are the root of all complexity.
+  - The new perfect import tests work the same for all languages.
+    This makes everything much more reliable.
+    
+* Post: complications belong int new_gen_lines.
+  Complications should not infect the ScanState classes!
+  
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
