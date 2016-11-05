@@ -4,7 +4,6 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
-### ScanState = basescanner.ScanState
 LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2
 #@+others
@@ -22,7 +21,7 @@ class Perl_ImportController(basescanner.ImportController):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = False, # Don't generate section references.
             language = 'perl', # For @language.
-            state = Perl_StateScanner(c),
+            state = Perl_Scanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         
@@ -89,11 +88,11 @@ class Perl_ScanState:
     def __le__(self, other): return NotImplemented
     #@-others
 
-#@+node:ekr.20161027094537.5: ** class Perl_StateScanner
-class Perl_StateScanner(LineScanner):
+#@+node:ekr.20161027094537.5: ** class Perl_Scanner
+class Perl_Scanner(LineScanner):
     '''A class to store and update scanning state.'''
     def __init__(self, c):
-        '''Ctor for the Perl_StateScanner class.'''
+        '''Ctor for the Perl_Scanner class.'''
         LineScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
@@ -102,27 +101,26 @@ class Perl_StateScanner(LineScanner):
         self.stack = []
 
     #@+others
-    #@+node:ekr.20161104150450.1: *3* perl_state.__repr__
+    #@+node:ekr.20161104150450.1: *3* perl_scan.__repr__
     def __repr__(self):
-        '''Perl_StateScanner.__repr__'''
-        return 'Perl_StateScanner: base: %3r now: %3r context: %2r' % (
+        '''Perl_Scanner.__repr__'''
+        return 'Perl_Scanner: base: %3r now: %3r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104084712.5: *3* perl_state.clear (to be removed)
+    #@+node:ekr.20161104084712.5: *3* perl_scan.clear (to be removed)
     def clear(self):
         '''Clear the state.'''
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
         self.context = ''
-    #@+node:ekr.20161104150004.1: *3* perl_state.initial_state
+    #@+node:ekr.20161104150004.1: *3* perl_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        # return '', 0, 0
         return Perl_ScanState('', 0, 0)
-    #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
+    #@+node:ekr.20161027094537.11: *3* perl_scan.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -164,7 +162,7 @@ class Perl_StateScanner(LineScanner):
             g.trace(self, s.rstrip())
         if gen_v2:
             return Perl_ScanState(self.context, self.curlies, self.parens)
-    #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
+    #@+node:ekr.20161027094537.12: *3* perl_scan.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting

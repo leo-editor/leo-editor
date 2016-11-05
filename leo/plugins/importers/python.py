@@ -8,7 +8,6 @@ import re
 #@+node:ekr.20161103070215.1: ** << python: new_scanner >>
 new_scanner = False
 #@-<< python: new_scanner >>
-### ScanState = basescanner.ScanState
 LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2 and new_scanner
 #@+others
@@ -61,7 +60,7 @@ class Python_ImportController(basescanner.ImportController):
             gen_clean = False, # True: clean blank lines & unindent blocks.
             gen_refs = False, # Don't generate section references.
             language = 'python', # For @language.
-            state = Python_StateScanner(c),
+            state = Python_Scanner(c),
             strict = True, # True: leave leading whitespace alone.
         )
         
@@ -90,12 +89,12 @@ class Python_ImportController(basescanner.ImportController):
                     next.b = lines.pop() + next.b
                 p.b = ''.join(lines)
     #@-others
-#@+node:ekr.20161029103615.1: ** class Python_StateScanner
-class Python_StateScanner(LineScanner):
+#@+node:ekr.20161029103615.1: ** class Python_Scanner
+class Python_Scanner(LineScanner):
     '''A class to store and update scanning state.'''
     
     def __init__(self, c):
-        '''Python_StateScanner ctor.'''
+        '''Python_Scanner ctor.'''
         LineScanner.__init__(self, c)
             # Init the base class.
         self.comment_only_line = False
@@ -105,19 +104,18 @@ class Python_StateScanner(LineScanner):
         self.tab_width = c.tab_width
 
     #@+others
-    #@+node:ekr.20161029103952.2: *3* py_state.__repr__ & __str__
+    #@+node:ekr.20161029103952.2: *3* py_scan.__repr__ & __str__
     def __repr__(self):
-        '''Python_StateScanner.__repr__'''
-        return 'Python_StateScanner: indent: %s context: %2r' % (
+        '''Python_Scanner.__repr__'''
+        return 'Python_Scanner: indent: %s context: %2r' % (
             self.indent, self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104143211.4: *3* py_state.initial_state
+    #@+node:ekr.20161104143211.4: *3* py_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        ### return '', 0
         return Python_ScanState('', 0)
-    #@+node:ekr.20161104143211.6: *3* py_state.scan_line
+    #@+node:ekr.20161104143211.6: *3* py_scan.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         #pylint: disable=arguments-differ
@@ -159,9 +157,7 @@ class Python_StateScanner(LineScanner):
         # For v2 scanner:
         if gen_v2:
             return Python_ScanState(self.context, self.indent)
-    #@+node:ekr.20161104143211.5: *3* py_state.V2: comparisons
-    # Only BLS.new_gen_lines uses these.
-
+    #@+node:ekr.20161104143211.5: *3* py_scan.V2: comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.indent == other.indent
@@ -173,7 +169,7 @@ class Python_StateScanner(LineScanner):
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
         return not self.context and self.indent < other.indent
-    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
+    #@+node:ekr.20161105042258.1: *3* py_scan.v2_starts/continues_block
     def v2_continues_block(self, new_state, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return prev_state == new_state

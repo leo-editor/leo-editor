@@ -28,16 +28,16 @@ code.
 **Overview of the code**
 
 `leo/plugins/basescanner.py` contains two new classes: `ImportController`
-(BLS) and `LineScanner` classes. The BLS class replaces the horribly complex
+(IC) and `LineScanner` classes. The IC class replaces the horribly complex
 BaseScanner class.
 
 The LineScanner class encapsulates *all* language-dependent knowledge.
 
-Using LineScanner methods, `BLS.scan` breaks input files Leo nodes. This is
+Using LineScanner methods, `IC.scan` breaks input files Leo nodes. This is
 necessarily a complex algorithm.
 
 Leo's import infrastructure, in `leoImport.py`, instantiates the scanner
-and calls `BLS.run`, which calls `BLS.scan`.
+and calls `IC.run`, which calls `IC.scan`.
 
 **Writing a new importer**
 
@@ -96,7 +96,7 @@ class ImportController(object):
     '''The base class for all new (line-oriented) controller classes.'''
 
     #@+others
-    #@+node:ekr.20161027114542.1: *3* BLS.__init__
+    #@+node:ekr.20161027114542.1: *3* IC.__init__
     #@@nobeautify
 
     def __init__(self,
@@ -157,7 +157,7 @@ class ImportController(object):
         ic.errors = 0 # Required.
         self.ws_error = False
         self.root = None
-    #@+node:ekr.20161027094537.16: *3* BLS.check & helpers
+    #@+node:ekr.20161027094537.16: *3* IC.check & helpers
     def check(self, unused_s, parent):
         '''ImportController.check'''
         trace = True # and not g.unitTesting
@@ -197,7 +197,7 @@ class ImportController(object):
                 clean = self.strip_lws # strip_all, clean_blank_lines
                 ok = clean(s1) == clean(s2)
         return ok
-    #@+node:ekr.20161027114045.1: *4* BLS.clean_blank_lines
+    #@+node:ekr.20161027114045.1: *4* IC.clean_blank_lines
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -205,7 +205,7 @@ class ImportController(object):
                 for z in g.splitLines(s)
         ])
         return result
-    #@+node:ekr.20161102131659.1: *4* BLS.strip_*
+    #@+node:ekr.20161102131659.1: *4* IC.strip_*
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
         return self.strip_lws(self.strip_blank_lines(s))
@@ -217,7 +217,7 @@ class ImportController(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
-    #@+node:ekr.20161027094537.27: *4* BLS.trial_write
+    #@+node:ekr.20161027094537.27: *4* IC.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
@@ -238,22 +238,22 @@ class ImportController(object):
                 trialWrite=True,
             )
         return g.toUnicode(at.stringOutput, self.encoding)
-    #@+node:ekr.20161102181704.1: *3* BLS.Overrides
+    #@+node:ekr.20161102181704.1: *3* IC.Overrides
     # These can be overridden in subclasses.
-    #@+node:ekr.20161030190924.20: *4* BLS.adjust_parent
+    #@+node:ekr.20161030190924.20: *4* IC.adjust_parent
     def adjust_parent(self, parent, headline):
         '''Return the effective parent.
 
         This is overridden by the RstScanner class.'''
         return parent
-    #@+node:ekr.20161101061949.1: *4* BLS.clean_headline
+    #@+node:ekr.20161101061949.1: *4* IC.clean_headline
     def clean_headline(self, s):
         '''
         Return the cleaned version headline s.
         Will typically be overridden in subclasses.
         '''
         return s.strip()
-    #@+node:ekr.20161027114007.1: *3* BLS.run (entry point) & helpers
+    #@+node:ekr.20161027114007.1: *3* IC.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and not g.unitTesting
@@ -292,7 +292,7 @@ class ImportController(object):
         c.setChanged(changed)
         if trace: g.trace('-' * 30, parent.h)
         return ok
-    #@+node:ekr.20161027114007.3: *4* BLS.check_blanks_and_tabs
+    #@+node:ekr.20161027114007.3: *4* IC.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):
         '''Check for intermixed blank & tabs.'''
         # Do a quick check for mixed leading tabs/blanks.
@@ -322,7 +322,7 @@ class ImportController(object):
             else:
                 g.es_print(message)
         return ok
-    #@+node:ekr.20161027182014.1: *4* BLS.insert_ignore_directive
+    #@+node:ekr.20161027182014.1: *4* IC.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
         parent.b = parent.b.rstrip() + '\n@ignore\n'
@@ -331,7 +331,7 @@ class ImportController(object):
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
             g.warning('inserting @ignore')
             c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161027183458.1: *4* BLS.post_pass & helper
+    #@+node:ekr.20161027183458.1: *4* IC.post_pass & helper
     def post_pass(self, parent):
         '''Clean up parent's children.'''
         # Clean the headlines.
@@ -358,7 +358,7 @@ class ImportController(object):
                 back.b = back.b + s
                 aList.append(p.copy())
         self.c.deletePositionsInList(aList)
-    #@+node:ekr.20161027114007.4: *4* BLS.regularize_whitespace
+    #@+node:ekr.20161027114007.4: *4* IC.regularize_whitespace
     def regularize_whitespace(self, s):
         '''
         Regularize leading whitespace in s:
@@ -401,8 +401,8 @@ class ImportController(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('Changed %s lines' % count) 
         return ''.join(result)
-    #@+node:ekr.20161030190924.19: *3* BLS.Utils
-    #@+node:ekr.20161030190924.22: *4* BLS.append_to_body
+    #@+node:ekr.20161030190924.19: *3* IC.Utils
+    #@+node:ekr.20161030190924.22: *4* IC.append_to_body
     def append_to_body(self, p, s):
         '''
         Similar to c.appendStringToBody,
@@ -411,7 +411,7 @@ class ImportController(object):
         assert g.isString(s), (repr(s), g.callers())
         assert g.isString(p.b), (repr(p.b), g.callers())
         p.b = p.b + s
-    #@+node:ekr.20161030190924.26: *4* BLS.create_child_node
+    #@+node:ekr.20161030190924.26: *4* IC.create_child_node
     def create_child_node(self, parent, body, headline):
         p = parent.insertAsLastChild()
         assert g.isString(body), repr(body)
@@ -419,12 +419,12 @@ class ImportController(object):
         p.b = g.u(body)
         p.h = g.u(headline)
         return p
-    #@+node:ekr.20161102072135.1: *4* BLS.get_lws
+    #@+node:ekr.20161102072135.1: *4* IC.get_lws
     def get_lws(self, s):
         '''Return the characters of the lws of s.'''
         m = re.match(r'(\s*)', s)
         return m.group(0) if m else ''
-    #@+node:ekr.20161027181903.1: *4* BLS.Messages
+    #@+node:ekr.20161027181903.1: *4* IC.Messages
     def error(self, s):
         self.errors += 1
         self.importCommands.errors += 1
@@ -444,7 +444,7 @@ class ImportController(object):
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161101081522.1: *4* BLS.undent & helper
+    #@+node:ekr.20161101081522.1: *4* IC.undent & helper
     def undent(self, lines):
         '''Remove maximal leading whitespace from the start of all lines.'''
         trace = False and not g.unitTesting # and self.root.h.find('main') > -1
@@ -500,7 +500,7 @@ class ImportController(object):
                 break
         if trace: g.trace(repr(lws), repr(lines[0]))
         return lws
-    #@+node:ekr.20161030190924.41: *4* BLS.underindented_comment/line
+    #@+node:ekr.20161030190924.41: *4* IC.underindented_comment/line
     def underindented_comment(self, line):
         if self.at_auto_warns_about_leading_whitespace:
             self.warning(
@@ -512,8 +512,8 @@ class ImportController(object):
             self.error(
                 'underindented line.\n'
                 'Extra leading whitespace will be added\n' + line)
-    #@+node:ekr.20161101094729.1: *3* BLS.V1: Scanning & code generation
-    #@+node:ekr.20161101094324.1: *4* BLS.gen_lines (entry) & helpers
+    #@+node:ekr.20161101094729.1: *3* IC.V1: Scanning & code generation
+    #@+node:ekr.20161101094324.1: *4* IC.gen_lines (entry) & helpers
     def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
         '''
         The entry point for parsing and code generation. Also called by
@@ -557,7 +557,7 @@ class ImportController(object):
                 self.append_to_body(parent, line)
                 i += 1
             assert progress < i
-    #@+node:ekr.20161030190924.13: *5* BLS.skip_code_block
+    #@+node:ekr.20161030190924.13: *5* IC.skip_code_block
     def skip_code_block(self, i, lines):
         '''
         lines[i] starts a class or function.
@@ -630,7 +630,7 @@ class ImportController(object):
             print('----- end-tail-lines')
         state.pop()
         return code_lines, tail_lines
-    #@+node:ekr.20161101113520.1: *4* BLS.gen_ref
+    #@+node:ekr.20161101113520.1: *4* IC.gen_ref
     def gen_ref(self, indent_flag, line, parent, ref_flag):
         '''
         Generate the ref line and a flag telling this method whether a previous
@@ -655,7 +655,7 @@ class ImportController(object):
                 '*' * 20, indent_ws, line, parent.h))
             self.append_to_body(parent, ref)
         return ref_flag
-    #@+node:ekr.20161031041540.1: *4* BLS.v1_scan
+    #@+node:ekr.20161031041540.1: *4* IC.v1_scan
     def v1_scan(self, s, parent, parse_body=False):
         '''
         v1_scan: V1 of line-based scanners and code generators.
@@ -678,7 +678,7 @@ class ImportController(object):
                 lines = g.splitlines(s),
                 parent = parent,
             )
-    #@+node:ekr.20161101124821.1: *4* BLS.rescan_code_block (calls gen_lines)
+    #@+node:ekr.20161101124821.1: *4* IC.rescan_code_block (calls gen_lines)
     def rescan_code_block(self, lines, parent):
         '''Create a child of the parent, and add lines to parent.b.'''
         if not lines:
@@ -710,7 +710,7 @@ class ImportController(object):
         if last_line:
             self.append_to_body(child, last_line)
         
-    #@+node:ekr.20161104084810.1: *3* BLS.V2: new_gen_lines & helper
+    #@+node:ekr.20161104084810.1: *3* IC.V2: new_gen_lines & helper
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
         trace = True and not g.unitTesting
@@ -739,7 +739,7 @@ class ImportController(object):
         while stack:
             target = stack.pop()
             ### Write lines & tail lines.
-    #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
+    #@+node:ekr.20161104084810.2: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = True and not g.unitTesting and self.root.h.endswith('.js')
@@ -759,7 +759,7 @@ class ImportController(object):
         if not stack:
             g.trace('===== underflow')
             stack = [scanner.initial_state()]
-    #@+node:ekr.20161105044835.1: *4* BLS.v2_gen_ref
+    #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
     def v2_gen_ref(self, line, parent, ref_flag):
         '''
         Generate the ref line and a flag telling this method whether a previous
@@ -2508,8 +2508,8 @@ class ScanState:
 #@+node:ekr.20161027115813.1: ** class LineScanner
 class LineScanner(object):
     '''
-    A class to manage scanning state, including a state stack.
-    
+    A class to scan lines.
+
     Most importers (subclasses of ImportController) will typically need only
     override LineScanner.scan_line!
     
@@ -2564,7 +2564,6 @@ class LineScanner(object):
     def initial_state(self):
         '''Return the initial counts.'''
         assert False, 'must be overridden in subclasses'
-        return ScanState('', 0)
     #@+node:ekr.20161103065140.1: *3* scanner.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -2640,7 +2639,7 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161104084712.22: *3* scanner.V2: comparisons
-    # Only BLS.new_gen_lines uses these.
+    # Only IC.new_gen_lines uses these.
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
 
     def __eq__(self, other):

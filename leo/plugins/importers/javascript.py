@@ -3,7 +3,6 @@
 '''The @auto importer for JavaScript.'''
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
-# import re
 LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2
 #@+others
@@ -20,7 +19,7 @@ class JS_ImportController(basescanner.ImportController):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = True, # True: generate section references.
             language = 'javascript', # For @language.
-            state = JS_StateScanner(c),
+            state = JS_Scanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         
@@ -84,12 +83,12 @@ class JS_ScanState:
     def __le__(self, other): return NotImplemented
     #@-others
 
-#@+node:ekr.20161004092007.1: ** class JS_StateScanner
-class JS_StateScanner(LineScanner):
+#@+node:ekr.20161004092007.1: ** class JS_Scanner
+class JS_Scanner(LineScanner):
     '''A class to store and update scanning state.'''
 
     def __init__(self, c):
-        '''Ctor for the JS_StateScanner class.'''
+        '''Ctor for the JS_Scanner class.'''
         LineScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
@@ -100,8 +99,8 @@ class JS_StateScanner(LineScanner):
     #@+others
     #@+node:ekr.20161104145747.1: *3* js_scan.__repr__
     def __repr__(self):
-        '''JS_StateScanner __repr__'''
-        return 'JS_StateScanner: base: %r now: %r context: %2r' % (
+        '''JS_Scanner __repr__'''
+        return 'JS_Scanner: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
@@ -145,7 +144,6 @@ class JS_StateScanner(LineScanner):
     #@+node:ekr.20161104145705.1: *3* js_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        ### return '', 0, 0
         return JS_ScanState('', 0, 0)
     #@+node:ekr.20161004071532.1: *3* js_scan.scan_line
     def scan_line(self, s):
