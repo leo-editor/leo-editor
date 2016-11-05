@@ -8,7 +8,7 @@
 
 Legacy (character-oriented) importers use BaseScanner class.
 
-New (line-oriented) importers use BaseLineScanner class. Here's how:
+New (line-oriented) importers use ImportController class. Here's how:
 
 **Executive overview**
 
@@ -27,13 +27,13 @@ code.
 
 **Overview of the code**
 
-`leo/plugins/basescanner.py` contains two new classes: `BaseLineScanner`
-(BLS) and `StateScanner` classes. The BLS class replaces the horribly complex
+`leo/plugins/basescanner.py` contains two new classes: `ImportController`
+(BLS) and `LineScanner` classes. The BLS class replaces the horribly complex
 BaseScanner class.
 
-The StateScanner class encapsulates *all* language-dependent knowledge.
+The LineScanner class encapsulates *all* language-dependent knowledge.
 
-Using StateScanner methods, `BLS.scan` breaks input files Leo nodes. This is
+Using LineScanner methods, `BLS.scan` breaks input files Leo nodes. This is
 necessarily a complex algorithm.
 
 Leo's import infrastructure, in `leoImport.py`, instantiates the scanner
@@ -43,32 +43,32 @@ and calls `BLS.run`, which calls `BLS.scan`.
 
 New style importers consist of the following:
 
-1. A subclass of BaseLineScanner class that overrides two methods, the ctor
+1. A subclass of ImportController class that overrides two methods, the ctor
    and an optional `clean_headline method`. This method tells how to
    simplify headlines.
 
-2. A subclass of the StateScanner class that overrides `StateScanner.scan_line`.
+2. A subclass of the LineScanner class that overrides `LineScanner.scan_line`.
 
-`StateScanner.scan_line` updates the net number of curly brackets and parens
+`LineScanner.scan_line` updates the net number of curly brackets and parens
 at the end of each line. `scan_line` must compute these numbers
 *accurately*, taking into account constructs such as multi-line comments,
 strings and regular expressions.
 
 **Importing Python**
 
-The `StateScanner` class would have to be completely rewritten for Python
+The `LineScanner` class would have to be completely rewritten for Python
 because Python uses indentation levels to indicate structure, not curly
 brackets.
 
 **Summary**
 
-Writing a new-style (line-by-line) importer is easy because the `StateScanner`
-and `BaseLineScanner` classes hide all complex details.
+Writing a new-style (line-by-line) importer is easy because the `LineScanner`
+and `ImportController` classes hide all complex details.
 
-The `StateScanner` class encapsulate *all* language-specific information.
+The `LineScanner` class encapsulate *all* language-specific information.
 
-Most importers simply override `StateScanner.scan_line`, which simply scans
-tokens. The entire `StateScanner` would have to be rewritten for languages
+Most importers simply override `LineScanner.scan_line`, which simply scans
+tokens. The entire `LineScanner` would have to be rewritten for languages
 such as Python.
 '''
 #@-<< basescanner docstring >>
@@ -91,9 +91,9 @@ new_ctors = False
     # Fails at present.
 #@-<< basescanner switches >>
 #@+others
-#@+node:ekr.20161027114718.1: ** class BaseLineScanner
-class BaseLineScanner(object):
-    '''The base class for all new (line-oriented) scanner classes.'''
+#@+node:ekr.20161027114718.1: ** class ImportController
+class ImportController(object):
+    '''The base class for all new (line-oriented) controller classes.'''
 
     #@+others
     #@+node:ekr.20161027114542.1: *3* BLS.__init__
@@ -159,7 +159,7 @@ class BaseLineScanner(object):
         self.root = None
     #@+node:ekr.20161027094537.16: *3* BLS.check & helpers
     def check(self, unused_s, parent):
-        '''BaseLineScanner.check'''
+        '''ImportController.check'''
         trace = True # and not g.unitTesting
         trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
@@ -260,7 +260,7 @@ class BaseLineScanner(object):
         if trace: g.trace('=' * 30, parent.h)
         c = self.c
         if prepass:
-            g.trace('(BaseLineScanner) Can not happen, prepass is True')
+            g.trace('(ImportController) Can not happen, prepass is True')
             return True, [] # Don't split any nodes.
         self.root = root = parent.copy()
         self.file_s = s
@@ -2472,84 +2472,71 @@ class BaseScanner(object):
 class ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, context,
-        curlies=None,
-        indent=None,
-        parens=None,
-        tag=''
-    ):
+    def __init__(self, context, curlies):
         '''Ctor for the ScanState class.'''
         self.context = context
         self.curlies = curlies
-        self.indent = indent
-        self.parens = parens
-        self.tag = tag
         
-    #@+others
-    #@+node:ekr.20161105085731.1: *3* ScanState.__repr__
     def __repr__(self):
         '''ScanState.__repr__'''
-        aList = ['%sScanState: context: %r' % (self.tag, self.context)]
-        for ivar in ('curlies', 'indent', 'parens'):
-            val = getattr(self, ivar)
-            if val is not None:
-                aList.append(aList.append('%s: %s' % (ivar, val)))
-        return ' '.join(aList)
+        return 'ScanState context: %r curlies: %s' % (
+            self.context, self.curlies)
+
+    #@+others
     #@+node:ekr.20161105085900.1: *3* ScanState: V2: comparisons
-    # Only BLS.new_gen_lines uses these.
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
 
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.curlies == other.curlies
-        
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.curlies < other.curlies
+    if 0: ### Moved to ScanState classes
 
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.curlies < other.curlies
+        def __eq__(self, other):
+            '''Return True if the state continues the previous state.'''
+            return self.context or self.curlies == other.curlies
+            
+        def __lt__(self, other):
+            '''Return True if we should exit one or more blocks.'''
+            return not self.context and self.curlies < other.curlies
         
-    def __ne__(self, other): return not self.__ne__(other)  
-    def __ge__(self, other): return NotImplemented
-    def __le__(self, other): return NotImplemented
+        def __gt__(self, other):
+            '''Return True if we should enter a new block.'''
+            return not self.context and self.curlies < other.curlies
+            
+        def __ne__(self, other): return not self.__ne__(other)  
+        def __ge__(self, other): return NotImplemented
+        def __le__(self, other): return NotImplemented
     #@-others
 
-#@+node:ekr.20161027115813.1: ** class StateScanner
-class StateScanner(object):
+#@+node:ekr.20161027115813.1: ** class LineScanner
+class LineScanner(object):
     '''
     A class to manage scanning state, including a state stack.
     
-    Most importers (subclasses of BaseLineScanner) will typically need only
-    override StateScanner.scan_line!
+    Most importers (subclasses of ImportController) will typically need only
+    override LineScanner.scan_line!
     
     A Python importer would have to replace this entire class because
     Python uses indentation, not brackets, to delimit classes and defs.
     '''
 
     #@+others
-    #@+node:ekr.20161027115813.2: *3* state.__init__ & __repr__
-    def __init__(self, c, tag=''):
-        '''Ctor for the StateScanner class.'''
+    #@+node:ekr.20161027115813.2: *3* scanner.__init__ & __repr__
+    def __init__(self, c):
+        '''Ctor for the LineScanner class.'''
         self.c = c
         self.base_curlies = self.curlies = 0
         self.context = '' # Represents cross-line constructs.
-        self.tag = tag
         if gen_v2:
             pass
         else:
             self.stack = []
 
     def __repr__(self):
-        '''StateScanner.__repr__'''
-        return '%sStateScanner: base: %r now: %r context: %2r' % (
-            self.tag,
+        '''LineScanner.__repr__'''
+        return 'LineScanner: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies,
             '{' * self.curlies, self.context)
             
     __str__ = __repr__
-    #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
+    #@+node:ekr.20161027115813.5: *3* scanner.clear, push & pop
     if gen_v2:
         
         pass
@@ -2569,31 +2556,27 @@ class StateScanner(object):
             '''Save the base state on the stack and enter a new base state.'''
             self.stack.append(self.base_curlies)
             self.base_curlies = self.curlies
-    #@+node:ekr.20161104143211.3: *3* state.get_lws
+    #@+node:ekr.20161104143211.3: *3* scanner.get_lws
     def get_lws(self, s):
         '''Return the the lws (a number) of line s.'''
         return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
-    #@+node:ekr.20161104144603.1: *3* state.initial_state
+    #@+node:ekr.20161104144603.1: *3* scanner.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
         assert False, 'must be overridden in subclasses'
-        return ScanState(
-            context = '',
-            curlies = 0,
-            tag = '<Unknown Language>',
-        )
-    #@+node:ekr.20161103065140.1: *3* state.match
+        return ScanState('', 0)
+    #@+node:ekr.20161103065140.1: *3* scanner.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
         return s[i:i+len(pattern)] == pattern
-    #@+node:ekr.20161027115813.7: *3* state.scan_line
+    #@+node:ekr.20161027115813.7: *3* scanner.scan_line
     def scan_line(self, s, block_comment=None, line_comment='#'):
         '''
         A generalized line scanner.  This will suffice for many languages,
         but it should be overridden for languages that have regex syntax
         or for languages like Python that do not delimit structure with brackets.
 
-        Sets three ivars for StateScanner.starts_block and StateScanner.continues_block:
+        Sets three ivars for LineScanner.starts_block and LineScanner.continues_block:
         
         - .context is non-empty if we are scanning a multi-line string, comment
           or regex.
@@ -2641,12 +2624,8 @@ class StateScanner(object):
         if trace:
             g.trace(self, s.rstrip())
         if gen_v2:
-            return ScanState(
-                self.context,
-                curlies = self.curlies,
-                tag = self.name.capitalize(),
-            )
-    #@+node:ekr.20161027115813.3: *3* state.V1: continues_block and starts_block
+            return ScanState(self.context, self.curlies)
+    #@+node:ekr.20161027115813.3: *3* scanner.V1: continues_block and starts_block
     if gen_v2:
         
         pass
@@ -2660,7 +2639,7 @@ class StateScanner(object):
         def starts_block(self):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
-    #@+node:ekr.20161104084712.22: *3* state.V2: comparisons
+    #@+node:ekr.20161104084712.22: *3* scanner.V2: comparisons
     # Only BLS.new_gen_lines uses these.
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
 
@@ -2679,7 +2658,7 @@ class StateScanner(object):
     def __ne__(self, other): return not self.__ne__(other)  
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
-    #@+node:ekr.20161105042006.1: *3* state.v2_starts/continues_block
+    #@+node:ekr.20161105042006.1: *3* scanner.v2_starts/continues_block
     def v2_continues_block(self, new_state, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return new_state == prev_state

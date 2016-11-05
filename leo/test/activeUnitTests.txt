@@ -14885,6 +14885,36 @@ for fn in glob.glob(pattern):
     sfn = g.shortFileName(fn)
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
+#@+node:ekr.20161011052016.1: *4* @test importers.javascript.scan_line
+import leo.plugins.importers.javascript as js
+table = (
+    (None, (0, 0, '/*'),    r'/* abc'),
+    (None, (0, 0, ''),      r'a + b // /*'),
+    (None, (0, 1, ''),      r'(function'),
+    (None, (1, 1, ''),      r'(function(a) {'),
+    (None, (0, 0, ''),      r'var x = /abc/'),
+    (None, (0, 0, ''),      r'var x = /a"c/'),
+    (None, (0, 0, ''),      r'var x = /a\//'),
+    (None, (0, 0, ''),      r'var x = /a\//'),
+    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    (None, (0, 1, ''),      r'var x = (0,'),
+)
+for base, result, s in table:
+    scanner = js.JS_StateScanner(c)
+    if base:
+        scanner.curlies, scanner.parens, scanner.context = base
+    else:
+        scanner.curlies, scanner.parens, scanner.context = 0, 0, ''
+    scanner.scan_line(s)
+    expected_curlies, expected_parens, expected_context = result
+    ok = (
+        scanner.curlies == expected_curlies and
+        scanner.parens == expected_parens and
+        scanner.context == expected_context)
+    assert ok, 'expected: %s %s %r, got: %s %s %r in %r' % (
+        expected_curlies, expected_parens, expected_context,
+        scanner.curlies, scanner.parens, scanner.context, s)
+# print('done')
 #@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -22645,36 +22675,6 @@ for fn in files:
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
-#@+node:ekr.20161011052016.1: *4* @test importers.javascript.scan_line
-import leo.plugins.importers.javascript as js
-table = (
-    (None, (0, 0, '/*'),    r'/* abc'),
-    (None, (0, 0, ''),      r'a + b // /*'),
-    (None, (0, 1, ''),      r'(function'),
-    (None, (1, 1, ''),      r'(function(a) {'),
-    (None, (0, 0, ''),      r'var x = /abc/'),
-    (None, (0, 0, ''),      r'var x = /a"c/'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
-    (None, (0, 1, ''),      r'var x = (0,'),
-)
-for base, result, s in table:
-    scanner = js.JavaScriptStateScanner(c)
-    if base:
-        scanner.curlies, scanner.parens, scanner.context = base
-    else:
-        scanner.curlies, scanner.parens, scanner.context = 0, 0, ''
-    scanner.scan_line(s)
-    expected_curlies, expected_parens, expected_context = result
-    ok = (
-        scanner.curlies == expected_curlies and
-        scanner.parens == expected_parens and
-        scanner.context == expected_context)
-    assert ok, 'expected: %s %s %r, got: %s %s %r in %r' % (
-        expected_curlies, expected_parens, expected_context,
-        scanner.curlies, scanner.parens, scanner.context, s)
-# print('done')
 #@+node:ekr.20100131171342.5501: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

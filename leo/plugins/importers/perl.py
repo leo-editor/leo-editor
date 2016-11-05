@@ -4,16 +4,97 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
-ScanState = basescanner.ScanState
-StateScanner = basescanner.StateScanner
+### ScanState = basescanner.ScanState
+LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2
 #@+others
-#@+node:ekr.20161027094537.5: ** class PerlStateScanner
-class PerlStateScanner(StateScanner):
+#@+node:ekr.20161027094537.13: ** class Perl_ImportController
+class Perl_ImportController(basescanner.ImportController):
+    '''A scanner for the perl language.'''
+    
+    def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
+        '''The ctor for the Perl_ImportController class.'''
+        c = importCommands.c
+        clean = c.config.getBool('perl_importer_clean_lws', default=False)
+        # Init the base class.
+        basescanner.ImportController.__init__(self, importCommands,
+            atAuto = atAuto,
+            gen_clean = clean, # True: clean blank lines.
+            gen_refs = False, # Don't generate section references.
+            language = 'perl', # For @language.
+            state = Perl_StateScanner(c),
+            strict = False, # True: leave leading whitespace alone.
+        )
+        
+    #@+others
+    #@+node:ekr.20161027183713.1: *3* perl_ic.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        m = re.match(r'sub\s+(\w+)', s)
+        return 'sub ' + m.group(1) if m else s
+    #@+node:ekr.20161027194956.1: *3* perl_ic.clean_nodes
+    def clean_nodes(self, parent):
+        '''Clean nodes as part of the post pass.'''
+        # Move trailing comments into following def nodes.
+        for p in parent.subtree():
+            next = p.threadNext()
+            lines = g.splitLines(p.b)
+            if lines and next:
+                while lines and lines[-1].strip().startswith('#'):
+                    next.b = lines.pop() + next.b
+                p.b = ''.join(lines)
+    #@-others
+#@+node:ekr.20161105095705.1: ** class Perl_ScanState
+class Perl_ScanState:
+    '''A class representing the state of the v2 scan.'''
+    
+    def __init__(self, context, curlies, parens):
+        '''Ctor for the Perl_ScanState class.'''
+        self.context = context
+        self.curlies = curlies
+        self.parens = parens
+        
+    def __repr__(self):
+        '''Perl_ScanState.__repr__'''
+        return 'Perl_ScanState context: %r curlies: %s parens: %s' % (
+            self.context, self.curlies, self.parens)
+            
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20161105095705.2: *3* Perl_ScanState: V2: comparisons
+    # Curly brackets dominate parens for mixed comparisons.
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or (
+            self.curlies == other.curlies and
+            self.parens == other.parens)
+
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and (
+            self.curlies < other.curlies or
+            (self.curlies == other.curlies and self.parens < other.parens))
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and (
+            self.curlies > other.curlies or
+            (self.curlies == other.curlies and self.parens > other.parens))
+
+    def __ne__(self, other): return not self.__ne__(other)
+
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
+    #@-others
+
+#@+node:ekr.20161027094537.5: ** class Perl_StateScanner
+class Perl_StateScanner(LineScanner):
     '''A class to store and update scanning state.'''
     def __init__(self, c):
-        '''Ctor for the PerlStateScanner class.'''
-        StateScanner.__init__(self, c)
+        '''Ctor for the Perl_StateScanner class.'''
+        LineScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
@@ -23,8 +104,8 @@ class PerlStateScanner(StateScanner):
     #@+others
     #@+node:ekr.20161104150450.1: *3* perl_state.__repr__
     def __repr__(self):
-        '''PerlStateScanner.__repr__'''
-        return 'PerlStateScanner: base: %3r now: %3r context: %2r' % (
+        '''Perl_StateScanner.__repr__'''
+        return 'Perl_StateScanner: base: %3r now: %3r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
@@ -40,12 +121,7 @@ class PerlStateScanner(StateScanner):
     def initial_state(self):
         '''Return the initial counts.'''
         # return '', 0, 0
-        return ScanState(
-            context = '',
-            curlies = 0,
-            parens = 0,
-            tag = 'Perl',
-        )
+        return Perl_ScanState('', 0, 0)
     #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
@@ -87,11 +163,7 @@ class PerlStateScanner(StateScanner):
         if trace:
             g.trace(self, s.rstrip())
         if gen_v2:
-            return ScanState(
-                self.context,
-                curlies = self.curlies,
-                tag = 'Perl',
-            )
+            return Perl_ScanState(self.context, self.curlies, self.parens)
     #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
@@ -117,45 +189,9 @@ class PerlStateScanner(StateScanner):
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@-others
-#@+node:ekr.20161027094537.13: ** class PerlScanner
-class PerlScanner(basescanner.BaseLineScanner):
-    '''A scanner for the perl language.'''
-    
-    def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
-        '''The ctor for the PerlScanner class.'''
-        c = importCommands.c
-        clean = c.config.getBool('perl_importer_clean_lws', default=False)
-        # Init the base class.
-        basescanner.BaseLineScanner.__init__(self, importCommands,
-            atAuto = atAuto,
-            gen_clean = clean, # True: clean blank lines.
-            gen_refs = False, # Don't generate section references.
-            language = 'perl', # For @language.
-            state = PerlStateScanner(c),
-            strict = False, # True: leave leading whitespace alone.
-        )
-        
-    #@+others
-    #@+node:ekr.20161027183713.1: *3* perl.clean_headline
-    def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
-        m = re.match(r'sub\s+(\w+)', s)
-        return 'sub ' + m.group(1) if m else s
-    #@+node:ekr.20161027194956.1: *3* perl.clean_nodes
-    def clean_nodes(self, parent):
-        '''Clean nodes as part of the post pass.'''
-        # Move trailing comments into following def nodes.
-        for p in parent.subtree():
-            next = p.threadNext()
-            lines = g.splitLines(p.b)
-            if lines and next:
-                while lines and lines[-1].strip().startswith('#'):
-                    next.b = lines.pop() + next.b
-                p.b = ''.join(lines)
-    #@-others
 #@-others
 importer_dict = {
-    'class': PerlScanner,
+    'class': Perl_ImportController,
     'extensions': ['.pl',],
 }
 #@-leo

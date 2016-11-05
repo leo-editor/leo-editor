@@ -4,17 +4,93 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 # import re
-ScanState = basescanner.ScanState
-StateScanner = basescanner.StateScanner
+LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2
 #@+others
-#@+node:ekr.20161004092007.1: ** class JavaScriptStateScanner
-class JavaScriptStateScanner(StateScanner):
+#@+node:ekr.20140723122936.18049: ** class JS_ImportController
+class JS_ImportController(basescanner.ImportController):
+    
+    def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
+        '''The ctor for the JS_ImportController class.'''
+        c = importCommands.c
+        clean = c.config.getBool('js_importer_clean_lws', default=False)
+        # Init the base class.
+        basescanner.ImportController.__init__(self, importCommands,
+            atAuto = atAuto,
+            gen_clean = clean, # True: clean blank lines.
+            gen_refs = True, # True: generate section references.
+            language = 'javascript', # For @language.
+            state = JS_StateScanner(c),
+            strict = False, # True: leave leading whitespace alone.
+        )
+        
+    #@+others
+    #@+node:ekr.20161101183354.1: *3* js_ic.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        s = s.strip()
+        # Don't clean a headline twice.
+        if s.endswith('>>') and s.startswith('<<'):
+            return s
+        elif 1:
+            # Imo, showing the whole line is better than truncating it.
+            return s
+        else:
+            i = s.find('(')
+            return s if i == -1 else s[:i]
+    #@-others
+#@+node:ekr.20161105092745.1: ** class JS_ScanState
+class JS_ScanState:
+    '''A class representing the state of the v2 scan.'''
+    
+    def __init__(self, context, curlies, parens):
+        '''Ctor for the JavaScriptScanState class.'''
+        self.context = context
+        self.curlies = curlies
+        self.parens = parens
+        
+    def __repr__(self):
+        '''ScanState.__repr__'''
+        return 'JS_ScanState context: %r curlies: %s parens: %s' % (
+            self.context, self.curlies, self.parens)
+            
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20161105092745.3: *3* JS_ScanState: V2: comparisons
+    # Curly brackets dominate parens for mixed comparisons.
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or (
+            self.curlies == other.curlies and
+            self.parens == other.parens)
+        
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and (
+            self.curlies < other.curlies or
+            (self.curlies == other.curlies and self.parens < other.parens))
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and (
+            self.curlies > other.curlies or
+            (self.curlies == other.curlies and self.parens > other.parens))
+        
+    def __ne__(self, other): return not self.__ne__(other)
+
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
+    #@-others
+
+#@+node:ekr.20161004092007.1: ** class JS_StateScanner
+class JS_StateScanner(LineScanner):
     '''A class to store and update scanning state.'''
 
     def __init__(self, c):
-        '''Ctor for the JavaScriptStateScanner class.'''
-        StateScanner.__init__(self, c)
+        '''Ctor for the JS_StateScanner class.'''
+        LineScanner.__init__(self, c)
             # Init the base class.
         self.base_curlies = self.curlies = 0
         self.base_parens = self.parens = 0
@@ -22,16 +98,16 @@ class JavaScriptStateScanner(StateScanner):
         self.stack = []
 
     #@+others
-    #@+node:ekr.20161104145747.1: *3* js_state.__repr__
+    #@+node:ekr.20161104145747.1: *3* js_scan.__repr__
     def __repr__(self):
-        '''JavaScriptStateScanner __repr__'''
-        return 'JavaScriptStateScanner: base: %r now: %r context: %2r' % (
+        '''JS_StateScanner __repr__'''
+        return 'JS_StateScanner: base: %r now: %r context: %2r' % (
             '{' * self.base_curlies + '(' * self.base_parens, 
             '{' * self.curlies + '(' * self.parens,
             self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104141518.1: *3* js_state.clear, push & pop
+    #@+node:ekr.20161104141518.1: *3* js_scan.clear, push & pop
     def clear(self):
         '''Clear the state.'''
         self.base_curlies = self.curlies = 0
@@ -47,10 +123,10 @@ class JavaScriptStateScanner(StateScanner):
         self.stack.append((self.base_curlies, self.base_parens),)
         self.base_curlies = self.curlies
         self.base_parens = self.parens
-    #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
+    #@+node:ekr.20161104141423.1: *3* js_scan.continues_block and starts_block
     if gen_v2:
         
-        # StateScanner defines v2_starts_block & v2_continues_block.
+        # LineScanner defines v2_starts_block & v2_continues_block.
         pass
         
     else:
@@ -66,16 +142,12 @@ class JavaScriptStateScanner(StateScanner):
             return not self.context and (
                 (self.curlies > self.base_curlies or
                  self.parens > self.base_parens))
-    #@+node:ekr.20161104145705.1: *3* js_state.initial_state
+    #@+node:ekr.20161104145705.1: *3* js_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
         ### return '', 0, 0
-        return ScanState(
-            context='',
-            curlies=0,
-            parens=0,
-            tag='JavaScript')
-    #@+node:ekr.20161004071532.1: *3* js_state.scan_line
+        return JS_ScanState('', 0, 0)
+    #@+node:ekr.20161004071532.1: *3* js_scan.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -121,13 +193,8 @@ class JavaScriptStateScanner(StateScanner):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
-            return ScanState(
-                self.context,
-                curlies = self.curlies,
-                parens = self.parens,
-                tag = 'JavaScript',
-            )
-    #@+node:ekr.20161011045426.1: *3* js_state.skip_possible_regex
+            return JS_ScanState(self.context, self.curlies, self.parens)
+    #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
         trace = False and not g.unitTesting
@@ -153,62 +220,30 @@ class JavaScriptStateScanner(StateScanner):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
-    #@+node:ekr.20161104171051.1: *3* js_state.V2: comparisons (Revise)
-    # Curly brackets dominate parens for mixed comparisons.
+    #@+node:ekr.20161104171051.1: *3* js_scan.V2: comparisons (Delete)
+    # # Curly brackets dominate parens for mixed comparisons.
 
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or (
-            self.curlies == other.curlies and
-            self.parens == other.parens)
+    # def __eq__(self, other):
+        # '''Return True if the state continues the previous state.'''
+        # return self.context or (
+            # self.curlies == other.curlies and
+            # self.parens == other.parens)
         
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and (
-            self.curlies < other.curlies or
-            (self.curlies == other.curlies and self.parens < other.parens))
+    # def __lt__(self, other):
+        # '''Return True if we should exit one or more blocks.'''
+        # return not self.context and (
+            # self.curlies < other.curlies or
+            # (self.curlies == other.curlies and self.parens < other.parens))
 
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and (
-            self.curlies > other.curlies or
-            (self.curlies == other.curlies and self.parens > other.parens))
-    #@-others
-#@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
-class JavaScriptScanner(basescanner.BaseLineScanner):
-    
-    def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
-        '''The ctor for the JavaScriptScanner class.'''
-        c = importCommands.c
-        clean = c.config.getBool('js_importer_clean_lws', default=False)
-        # Init the base class.
-        basescanner.BaseLineScanner.__init__(self, importCommands,
-            atAuto = atAuto,
-            gen_clean = clean, # True: clean blank lines.
-            gen_refs = True, # True: generate section references.
-            language = 'javascript', # For @language.
-            state = JavaScriptStateScanner(c),
-            strict = False, # True: leave leading whitespace alone.
-        )
-        
-    #@+others
-    #@+node:ekr.20161101183354.1: *3* js_state.clean_headline
-    def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
-        s = s.strip()
-        # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):
-            return s
-        elif 1:
-            # Imo, showing the whole line is better than truncating it.
-            return s
-        else:
-            i = s.find('(')
-            return s if i == -1 else s[:i]
+    # def __gt__(self, other):
+        # '''Return True if we should enter a new block.'''
+        # return not self.context and (
+            # self.curlies > other.curlies or
+            # (self.curlies == other.curlies and self.parens > other.parens))
     #@-others
 #@-others
 importer_dict = {
-    'class': JavaScriptScanner,
+    'class': JS_ImportController,
     'extensions': ['.js',],
 }
 #@-leo
