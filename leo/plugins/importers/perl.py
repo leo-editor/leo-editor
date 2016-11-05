@@ -110,17 +110,47 @@ class Perl_Scanner(LineScanner):
             self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104084712.5: *3* perl_scan.clear (to be removed)
-    def clear(self):
-        '''Clear the state.'''
-        self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
-        self.context = ''
     #@+node:ekr.20161104150004.1: *3* perl_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
         return Perl_ScanState('', 0, 0)
-    #@+node:ekr.20161027094537.11: *3* perl_scan.scan_line
+    #@+node:ekr.20161027094537.12: *3* perl_scan.skip_regex
+    def skip_regex(self, s, i, pattern):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s), self.parens)
+        assert self.match(s, i, pattern)
+        i += len(pattern)
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i-1
+    #@+node:ekr.20161104084712.5: *3* perl_scan.v1: clear
+    if gen_v2:
+        
+        pass ###
+        
+    else:
+        
+        def clear(self):
+            '''Clear the state.'''
+            self.base_curlies = self.curlies = 0
+            self.base_parens = self.parens = 0
+            self.context = ''
+    #@+node:ekr.20161027094537.11: *3* perl_scan.v1: scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -162,30 +192,50 @@ class Perl_Scanner(LineScanner):
             g.trace(self, s.rstrip())
         if gen_v2:
             return Perl_ScanState(self.context, self.curlies, self.parens)
-    #@+node:ekr.20161027094537.12: *3* perl_scan.skip_regex
-    def skip_regex(self, s, i, pattern):
-        '''look ahead for a regex /'''
+    #@+node:ekr.20161105140842.2: *3* perl_scan.v2_scan_line
+    def v2_scan_line(self, s, prev_state):
+        '''Update the scan state by scanning s.'''
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
-        if trace: g.trace(repr(s), self.parens)
-        assert self.match(s, i, pattern)
-        i += len(pattern)
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
+        match = self.match
+        context = prev_state.context
+        curlies, parens = prev_state.curlies, prev_state.parens
+        i = 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if context:
+                assert context in ('"', "'", "="), repr(context)
                 if ch == '\\':
-                    i += 2
-                elif ch == '/':
                     i += 1
-                    break
+                elif i == 0 and context == '=' and match(s, i, '=cut'):
+                    context = '' # End the perlpod string.
+                    i += 4
+                elif context == ch:
+                    context = '' # End the string.
                 else:
-                    i += 1
-                assert progress < i
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i-1
+                    pass # Eat the string character later.
+            elif ch == '#':
+                break # The single-line comment ends the line.
+            elif ch in ('"', "'"):
+                context = ch
+            elif ch == '{': curlies += 1
+            elif ch == '}': curlies -= 1
+            elif ch == '(': parens += 1
+            elif ch == ')': parens -= 1
+            elif i == 0 and ch == '=':
+                context = '=' # perlpod string.
+            else:
+                for pattern in ('/', 'm///', 's///', 'tr///'):
+                    if match(s, i, pattern):
+                        i = self.skip_regex(s, i, pattern)
+                        break
+            i += 1
+            assert progress < i
+        if trace:
+            g.trace(self, s.rstrip())
+        if gen_v2:
+            return Perl_ScanState(context, curlies, parens)
     #@-others
 #@-others
 importer_dict = {

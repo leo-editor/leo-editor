@@ -106,22 +106,6 @@ class JS_Scanner(LineScanner):
             self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104141518.1: *3* js_scan.clear, push & pop
-    def clear(self):
-        '''Clear the state.'''
-        self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
-        self.context = ''
-
-    def pop(self):
-        '''Restore the base state from the stack.'''
-        self.base_curlies, self.base_parens = self.stack.pop()
-        
-    def push(self):
-        '''Save the base state on the stack and enter a new base state.'''
-        self.stack.append((self.base_curlies, self.base_parens),)
-        self.base_curlies = self.curlies
-        self.base_parens = self.parens
     #@+node:ekr.20161104141423.1: *3* js_scan.continues_block and starts_block
     if gen_v2:
         
@@ -145,7 +129,55 @@ class JS_Scanner(LineScanner):
     def initial_state(self):
         '''Return the initial counts.'''
         return JS_ScanState('', 0, 0)
-    #@+node:ekr.20161004071532.1: *3* js_scan.scan_line
+    #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
+    def skip_possible_regex(self, s, i):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s), self.parens)
+        assert s[i] in '=(', repr(s[i])
+        i += 1
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                # g.trace(repr(ch))
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i-1
+    #@+node:ekr.20161104141518.1: *3* js_scan.v1: clear, push & pop
+    if gen_v2:
+        
+        pass ###
+        
+    else:
+
+        def clear(self):
+            '''Clear the state.'''
+            self.base_curlies = self.curlies = 0
+            self.base_parens = self.parens = 0
+            self.context = ''
+        
+        def pop(self):
+            '''Restore the base state from the stack.'''
+            self.base_curlies, self.base_parens = self.stack.pop()
+            
+        def push(self):
+            '''Save the base state on the stack and enter a new base state.'''
+            self.stack.append((self.base_curlies, self.base_parens),)
+            self.base_curlies = self.curlies
+            self.base_parens = self.parens
+    #@+node:ekr.20161004071532.1: *3* js_scan.v1: scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -192,32 +224,51 @@ class JS_Scanner(LineScanner):
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
             return JS_ScanState(self.context, self.curlies, self.parens)
-    #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
-    def skip_possible_regex(self, s, i):
-        '''look ahead for a regex /'''
+    #@+node:ekr.20161105140842.5: *3* js_scan.v2_scan_line
+    def v2_scan_line(self, s, prev_state):
+        '''Update the scan state by scanning s.'''
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
-        if trace: g.trace(repr(s), self.parens)
-        assert s[i] in '=(', repr(s[i])
-        i += 1
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                # g.trace(repr(ch))
-                if ch == '\\':
-                    i += 2
-                elif ch == '/':
+        context = prev_state.context
+        curlies, parens = prev_state.curlies, prev_state.parens
+        i = 0
+        while i < len(s):
+            progress = i
+            ch, s2 = s[i], s[i:i+2]
+            if context == '/*':
+                if s2 == '*/':
+                    context = ''
                     i += 1
-                    break
                 else:
-                    i += 1
-                assert progress < i
-        
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i-1
+                    pass # Eat the next comment char.
+            elif context:
+                assert context in ('"', "'"), repr(context)
+                if ch == '\\':
+                    i += 1 # Bug fix 2016/10/27: was += 2
+                elif context == ch:
+                    context = '' # End the string.
+                else:
+                    pass # Eat the string character.
+            elif s2 == '//':
+                break # The single-line comment ends the line.
+            elif s2 == '/*':
+                context = '/*'
+                i += 1
+            elif ch in ('"', "'"): context = ch
+            elif ch == '=':
+                i = self.skip_possible_regex(s, i)
+            elif ch == '\\': i += 2
+            elif ch == '{': curlies += 1
+            elif ch == '}': curlies -= 1
+            elif ch == '(':
+                parens += 1
+                i = self.skip_possible_regex(s, i)
+            elif ch == ')': parens -= 1
+            i += 1
+            assert progress < i
+        if trace: g.trace(self, s.rstrip())
+        if gen_v2:
+            return JS_ScanState(context, curlies, parens)
     #@-others
 #@-others
 importer_dict = {

@@ -719,7 +719,7 @@ class ImportController(object):
         prev_state = scanner.initial_state()
         stack = [Target(indent, parent, prev_state)]
         for line in g.splitLines(s):
-            new_state = scanner.scan_line(line)
+            new_state = scanner.v2_scan_line(line, prev_state)
             if trace: g.trace(new_state, line.rstrip())
             if scanner.v2_starts_block(new_state, prev_state):
                 target=stack[-1]
@@ -2530,12 +2530,12 @@ class LineScanner(object):
     #@+node:ekr.20161027115813.2: *3* scanner.__init__ & __repr__
     def __init__(self, c):
         '''Ctor for the LineScanner class.'''
-        self.c = c
-        self.base_curlies = self.curlies = 0
-        self.context = '' # Represents cross-line constructs.
         if gen_v2:
             pass
         else:
+            self.context = '' # Represents cross-line constructs.
+            self.c = c
+            self.base_curlies = self.curlies = 0
             self.stack = []
 
     def __repr__(self):
@@ -2577,7 +2577,8 @@ class LineScanner(object):
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
         return s[i:i+len(pattern)] == pattern
-    #@+node:ekr.20161027115813.7: *3* scanner.scan_line
+    #@+node:ekr.20161105141816.1: *3* V1 methods
+    #@+node:ekr.20161027115813.7: *4* scanner.scan_line
     def scan_line(self, s, block_comment=None, line_comment='#'):
         '''
         A generalized line scanner.  This will suffice for many languages,
@@ -2633,7 +2634,7 @@ class LineScanner(object):
             g.trace(self, s.rstrip())
         if gen_v2:
             return ScanState(self.context, self.curlies)
-    #@+node:ekr.20161027115813.3: *3* scanner.V1: continues_block and starts_block
+    #@+node:ekr.20161027115813.3: *4* scanner.V1: continues_block and starts_block
     if gen_v2:
         
         pass
@@ -2647,27 +2648,31 @@ class LineScanner(object):
         def starts_block(self):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
-    #@+node:ekr.20161104084712.22: *3* scanner.V2: comparisons
-    # Only IC.new_gen_lines uses these.
-    # See https://docs.python.org/2/reference/datamodel.html#basic-customization
-
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.curlies == other.curlies
+    #@+node:ekr.20161105141836.1: *3* V2 methods
+    #@+node:ekr.20161104084712.22: *4* scanner.V2: comparisons (to be removed)
+    if gen_v2:
         
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.curlies < other.curlies
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.curlies < other.curlies
+        pass ###
         
-    def __ne__(self, other): return not self.__ne__(other)
+    else:
 
-    def __ge__(self, other): return NotImplemented
-    def __le__(self, other): return NotImplemented
-    #@+node:ekr.20161105042006.1: *3* scanner.v2_starts/continues_block
+        def __eq__(self, other):
+            '''Return True if the state continues the previous state.'''
+            return self.context or self.curlies == other.curlies
+            
+        def __lt__(self, other):
+            '''Return True if we should exit one or more blocks.'''
+            return not self.context and self.curlies < other.curlies
+        
+        def __gt__(self, other):
+            '''Return True if we should enter a new block.'''
+            return not self.context and self.curlies < other.curlies
+            
+        def __ne__(self, other): return not self.__ne__(other)
+        
+        def __ge__(self, other): return NotImplemented
+        def __le__(self, other): return NotImplemented
+    #@+node:ekr.20161105042006.1: *4* scanner.v2_starts/continues_block
     def v2_continues_block(self, new_state, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return new_state == prev_state
@@ -2675,6 +2680,59 @@ class LineScanner(object):
     def v2_starts_block(self, new_state, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return new_state > prev_state
+    #@+node:ekr.20161105140842.4: *4* scanner.v2_scan_line
+    def v2_scan_line(self, s, prev_state, block_comment=None, line_comment='#'):
+        '''
+        A generalized line scanner.  This will suffice for many languages,
+        but it should be overridden for languages that have regex syntax
+        or for languages like Python that do not delimit structure with brackets.
+
+        Sets three ivars for LineScanner.starts_block and LineScanner.continues_block:
+        
+        - .context is non-empty if we are scanning a multi-line string, comment
+          or regex.
+        
+        - .curlies and .parens are the present counts of open curly-brackets
+          and parentheses.
+        '''
+        trace = False and not g.unitTesting
+        match = self.match
+        context, curlies = prev_state.context, prev_state.curlies
+        contexts = strings = ['"', "'"]
+        block1, block2 = None, None
+        if block_comment:
+            block1, block2 = block_comment
+            contexts.append(block1)
+        i = 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if context:
+                assert context in contexts, repr(context)
+                if ch == '\\':
+                    i += 1 # Eat the next character later.
+                elif context in strings and context == ch:
+                    context = '' # End the string.
+                elif context == block1 and match(s, i, block2):
+                    context = '' # End the block comment.
+                    i += (len(block2) - 1)
+                else:
+                    pass # Eat the string character later.
+            elif ch in strings:
+                context = ch
+            elif match(s, i, block1):
+                context = block1
+                i += (len(block1) - 1)
+            elif match(s, i, line_comment):
+                break # The single-line comment ends the line.
+            elif ch == '{': curlies += 1
+            elif ch == '}': curlies -= 1
+            i += 1
+            assert progress < i
+        if trace:
+            g.trace(self, s.rstrip())
+        if gen_v2:
+            return ScanState(context, curlies)
     #@-others
 #@+node:ekr.20161104090312.1: ** class Target
 class Target:
