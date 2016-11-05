@@ -161,7 +161,6 @@ class Perl_Scanner(LineScanner):
     #@+node:ekr.20161027094537.11: *3* perl_scan.v1: scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
-        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         match = self.match
         i = 0

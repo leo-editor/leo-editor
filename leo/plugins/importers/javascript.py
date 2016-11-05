@@ -184,7 +184,6 @@ class JS_Scanner(LineScanner):
     #@+node:ekr.20161004071532.1: *4* js_scan.v1: scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
-        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting 
         i = 0
         while i < len(s):
@@ -229,6 +228,10 @@ class JS_Scanner(LineScanner):
         if gen_v2:
             return JS_ScanState(self.context, self.curlies, self.parens)
     #@+node:ekr.20161105170758.1: *3* js_scan.V2
+    #@+node:ekr.20161104145705.1: *4* js_scan.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return JS_ScanState('', 0, 0)
     #@+node:ekr.20161105140842.5: *4* js_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
@@ -274,10 +277,6 @@ class JS_Scanner(LineScanner):
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
             return JS_ScanState(context, curlies, parens)
-    #@+node:ekr.20161104145705.1: *4* js_scan.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return JS_ScanState('', 0, 0)
     #@-others
 #@-others
 importer_dict = {

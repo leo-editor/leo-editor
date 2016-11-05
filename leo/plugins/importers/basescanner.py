@@ -2481,12 +2481,9 @@ class ImportController(object):
 class LineScanner(object):
     '''
     A class to scan lines.
-
-    Most importers (subclasses of ImportController) will typically need only
-    override LineScanner.scan_line!
     
-    A Python importer would have to replace this entire class because
-    Python uses indentation, not brackets, to delimit classes and defs.
+    Subclasses overide *both* the scan_line and v2_scan_line methods.
+    These methods work with the various X_ScanState classes.
     '''
 
     #@+others
@@ -2512,10 +2509,6 @@ class LineScanner(object):
     def get_lws(self, s):
         '''Return the the lws (a number) of line s.'''
         return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
-    #@+node:ekr.20161104144603.1: *3* scanner.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        assert False, 'must be overridden in subclasses'
     #@+node:ekr.20161103065140.1: *3* scanner.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -2542,31 +2535,17 @@ class LineScanner(object):
             self.stack.append(self.base_curlies)
             self.base_curlies = self.curlies
     #@+node:ekr.20161027115813.7: *4* scanner.scan_line
-    def scan_line(self, s, block_comment=None, line_comment='#'):
+    def scan_line(self, s):
         '''
-        A generalized line scanner.  This will suffice for many languages,
-        but it should be overridden for languages that have regex syntax
-        or for languages like Python that do not delimit structure with brackets.
+        A *typical* line scanner. Subclasses should redefine this method.
 
-        Sets three ivars for LineScanner.starts_block and LineScanner.continues_block:
-        
-        - .context is non-empty if we are scanning a multi-line string, comment
-          or regex.
-        
-        - .curlies and .parens are the present counts of open curly-brackets
-          and parentheses.
+        Commented-out code illustrates how to handle block comments.
         '''
         trace = False and not g.unitTesting
-        
-        # def match(i, pattern):
-            # return pattern and pattern == s[i:i+len(pattern)]
-
-        match = self.match
         contexts = strings = ['"', "'"]
-        block1, block2 = None, None
-        if block_comment:
-            block1, block2 = block_comment
-            contexts.append(block1)
+        # match = self.match
+        # block1, block2 = '/*', '*/
+        # contexts.append(block1)
         i = 0
         while i < len(s):
             progress = i
@@ -2577,17 +2556,18 @@ class LineScanner(object):
                     i += 1 # Eat the next character later.
                 elif self.context in strings and self.context == ch:
                     self.context = '' # End the string.
-                elif self.context == block1 and match(s, i, block2):
-                    self.context = '' # End the block comment.
-                    i += (len(block2) - 1)
+                # elif self.context == block1 and match(s, i, block2):
+                    # self.context = '' # End the block comment.
+                    # i += (len(block2) - 1)
                 else:
                     pass # Eat the string character later.
             elif ch in strings:
                 self.context = ch
-            elif match(s, i, block1):
-                self.context = block1
-                i += (len(block1) - 1)
-            elif match(s, i, line_comment):
+            # elif match(s, i, block1):
+                # self.context = block1
+                # i += (len(block1) - 1)
+            # elif match(s, i, line_comment):
+            elif ch == '#':
                 break # The single-line comment ends the line.
             elif ch == '{': self.curlies += 1
             elif ch == '}': self.curlies -= 1
@@ -2612,6 +2592,10 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
+    #@+node:ekr.20161104144603.1: *4* scanner.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        assert False, 'Subclasses must override LineScanner.initial_state.'
     #@+node:ekr.20161105140842.4: *4* scanner.v2_scan_line
     def v2_scan_line(self, s, prev_state, block_comment=None, line_comment='#'):
         '''
