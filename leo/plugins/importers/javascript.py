@@ -50,6 +50,7 @@ class JavaScriptScanState(ScanState):
     #@+node:ekr.20161104141423.1: *3* js_state.continues_block and starts_block
     if gen_v2:
         
+        # ScanState defines v2_starts_block & v2_continues_block.
         pass
         
     else:

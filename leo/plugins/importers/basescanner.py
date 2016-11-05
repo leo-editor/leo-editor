@@ -717,7 +717,7 @@ class BaseLineScanner(object):
         for line in g.splitLines(s):
             target = stack[-1] # Loop invariant.
             new_state = state.scan_line(line)
-            if new_state > prev_state:
+            if state.v2_starts_block(new_state, prev_state):
                 # create @others or section ref in target >>
                 indent_flag = False # for compatibility with gen_ref.
                 target.ref_flag = self.gen_ref(
@@ -725,7 +725,9 @@ class BaseLineScanner(object):
                 body, headline = '', line
                 child = self.create_child_node(target.p, body, headline)
                 stack.append(Target(indent, child, new_state))
-            elif new_state < prev_state:
+            elif state.v2_continues_block(new_state, prev_state):
+                pass
+            else:
                 self.cut_stack(new_state, stack)
             # Common code...
             p = stack[-1].p
@@ -736,15 +738,16 @@ class BaseLineScanner(object):
             target = stack.pop()
             ### Write lines & tail lines.
     #@+node:ekr.20161104084810.2: *4* BLS.cut_stack
-    def cut_stack(self, state, stack):
+    def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        state = self.state
         while stack:
             top_state = stack[-1].state
-            if top_state > state:
+            if top_state > new_state:
                 if trace: g.trace('top_state > state', top_state)
                 stack.pop()
-            elif top_state == state:
+            elif top_state == new_state:
                 if trace: g.trace('top_state > state', top_state)
                 break
             else:
@@ -753,7 +756,7 @@ class BaseLineScanner(object):
                 break
         if not stack:
             g.trace('===== underflow')
-            stack = [self.state.initial_state()]
+            stack = [state.initial_state()]
     #@-others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -2583,6 +2586,14 @@ class ScanState(object):
     def __ne__(self, other): return not self.__ne__(other)  
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
+    #@+node:ekr.20161105042006.1: *3* state.v2_starts/continues_block
+    def v2_continues_block(self, new_state, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return new_state == prev_state
+
+    def v2_starts_block(self, new_state, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return new_state > prev_state
     #@-others
 #@+node:ekr.20161104090312.1: ** class Target
 class Target:

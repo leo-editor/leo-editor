@@ -70,18 +70,18 @@ class PythonScanState(ScanState):
         self.tab_width = c.tab_width
 
     #@+others
-    #@+node:ekr.20161029103952.2: *3* python_state.__repr__ & __str__
+    #@+node:ekr.20161029103952.2: *3* py_state.__repr__ & __str__
     def __repr__(self):
         '''PythonScanState.__repr__'''
         return 'PythonScanState: indent: %s context: %2r' % (
             self.indent, self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104143211.4: *3* python_state.initial_state
+    #@+node:ekr.20161104143211.4: *3* py_state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
         return '', 0
-    #@+node:ekr.20161104143211.6: *3* python_state.scan_line
+    #@+node:ekr.20161104143211.6: *3* py_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         #pylint: disable=arguments-differ
@@ -123,7 +123,7 @@ class PythonScanState(ScanState):
         # For v2 scanner:
         if gen_v2:
             return self.context, self.indent
-    #@+node:ekr.20161104143211.5: *3* python_state.V2: comparisons (Test)
+    #@+node:ekr.20161104143211.5: *3* py_state.V2: comparisons
     # Only BLS.new_gen_lines uses these.
 
     def __eq__(self, other):
@@ -137,6 +137,18 @@ class PythonScanState(ScanState):
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
         return not self.context and self.indent < other.indent
+    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
+    def v2_continues_block(self, new_state, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return prev_state == new_state
+            ### Modify?
+
+    def v2_starts_block(self, new_state, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        if 1: ### Not correct.
+            return new_state > prev_state
+        else:
+            pass ### To do.
     #@-others
 #@+node:ekr.20161029120457.1: ** class PythonScanner (legacy: to be replaced)
 class PythonScanner(basescanner.BaseScanner):
