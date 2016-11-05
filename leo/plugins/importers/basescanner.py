@@ -2472,20 +2472,50 @@ class BaseScanner(object):
 class ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, context, curlies, parens=None):
+    def __init__(self, context,
+        curlies=None,
+        indent=None,
+        parens=None,
+        tag=''
+    ):
         '''Ctor for the ScanState class.'''
         self.context = context
         self.curlies = curlies
-        if parens is not None:
-            self.parens = parens
-
+        self.indent = indent
+        self.parens = parens
+        self.tag = tag
+        
+    #@+others
+    #@+node:ekr.20161105085731.1: *3* ScanState.__repr__
     def __repr__(self):
         '''ScanState.__repr__'''
-        s = 'ScanState: context: %r curlies: %s' % (
-            self.context, self.curlies)
-        if hasattr(self, 'parens'):
-            s += ' parens: %s' % (self.parens)
-        return s
+        aList = ['%sScanState: context: %r' % (self.tag, self.context)]
+        for ivar in ('curlies', 'indent', 'parens'):
+            val = getattr(self, ivar)
+            if val is not None:
+                aList.append(aList.append('%s: %s' % (ivar, val)))
+        return ' '.join(aList)
+    #@+node:ekr.20161105085900.1: *3* ScanState: V2: comparisons
+    # Only BLS.new_gen_lines uses these.
+    # See https://docs.python.org/2/reference/datamodel.html#basic-customization
+
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or self.curlies == other.curlies
+        
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and self.curlies < other.curlies
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and self.curlies < other.curlies
+        
+    def __ne__(self, other): return not self.__ne__(other)  
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
+    #@-others
+
 #@+node:ekr.20161027115813.1: ** class StateScanner
 class StateScanner(object):
     '''
@@ -2500,20 +2530,23 @@ class StateScanner(object):
 
     #@+others
     #@+node:ekr.20161027115813.2: *3* state.__init__ & __repr__
-    def __init__(self, c):
+    def __init__(self, c, tag=''):
         '''Ctor for the StateScanner class.'''
         self.c = c
         self.base_curlies = self.curlies = 0
         self.context = '' # Represents cross-line constructs.
+        self.tag = tag
         if gen_v2:
-            self.state = ScanState(self.context, self.curlies)
+            pass
         else:
             self.stack = []
 
     def __repr__(self):
         '''StateScanner.__repr__'''
-        return 'StateScanner: base: %r now: %r context: %2r' % (
-            '{' * self.base_curlies, '{' * self.curlies, self.context)
+        return '%sStateScanner: base: %r now: %r context: %2r' % (
+            self.tag,
+            '{' * self.base_curlies,
+            '{' * self.curlies, self.context)
             
     __str__ = __repr__
     #@+node:ekr.20161027115813.5: *3* state.clear, push & pop
@@ -2544,7 +2577,11 @@ class StateScanner(object):
     def initial_state(self):
         '''Return the initial counts.'''
         assert False, 'must be overridden in subclasses'
-        return '', 0 # Most languages use a single count.
+        return ScanState(
+            context = '',
+            curlies = 0,
+            tag = '<Unknown Language>',
+        )
     #@+node:ekr.20161103065140.1: *3* state.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -2604,7 +2641,11 @@ class StateScanner(object):
         if trace:
             g.trace(self, s.rstrip())
         if gen_v2:
-            return self.context, self.curlies
+            return ScanState(
+                self.context,
+                curlies = self.curlies,
+                tag = self.name.capitalize(),
+            )
     #@+node:ekr.20161027115813.3: *3* state.V1: continues_block and starts_block
     if gen_v2:
         
@@ -2619,7 +2660,7 @@ class StateScanner(object):
         def starts_block(self):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
-    #@+node:ekr.20161104084712.22: *3* state.V2: comparisons (Test)
+    #@+node:ekr.20161104084712.22: *3* state.V2: comparisons
     # Only BLS.new_gen_lines uses these.
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
 

@@ -4,6 +4,7 @@
 import leo.plugins.importers.basescanner as basescanner
 import leo.core.leoGlobals as g
 import re
+ScanState = basescanner.ScanState
 StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
@@ -38,7 +39,13 @@ class PerlStateScanner(StateScanner):
     #@+node:ekr.20161104150004.1: *3* perl_state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return '', 0, 0
+        # return '', 0, 0
+        return ScanState(
+            context = '',
+            curlies = 0,
+            parens = 0,
+            tag = 'Perl',
+        )
     #@+node:ekr.20161027094537.11: *3* perl_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
@@ -80,7 +87,11 @@ class PerlStateScanner(StateScanner):
         if trace:
             g.trace(self, s.rstrip())
         if gen_v2:
-            return self.context, self.curlies, self.parens
+            return ScanState(
+                self.context,
+                curlies = self.curlies,
+                tag = 'Perl',
+            )
     #@+node:ekr.20161027094537.12: *3* perl_state.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''

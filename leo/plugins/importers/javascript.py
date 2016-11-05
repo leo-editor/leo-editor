@@ -4,6 +4,7 @@
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 # import re
+ScanState = basescanner.ScanState
 StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2
 #@+others
@@ -68,7 +69,12 @@ class JavaScriptStateScanner(StateScanner):
     #@+node:ekr.20161104145705.1: *3* js_state.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return '', 0, 0
+        ### return '', 0, 0
+        return ScanState(
+            context='',
+            curlies=0,
+            parens=0,
+            tag='JavaScript')
     #@+node:ekr.20161004071532.1: *3* js_state.scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
@@ -115,8 +121,12 @@ class JavaScriptStateScanner(StateScanner):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
-            return self.context, self.curlies, self.parens
-
+            return ScanState(
+                self.context,
+                curlies = self.curlies,
+                parens = self.parens,
+                tag = 'JavaScript',
+            )
     #@+node:ekr.20161011045426.1: *3* js_state.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''

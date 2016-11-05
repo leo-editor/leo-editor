@@ -8,6 +8,7 @@ import re
 #@+node:ekr.20161103070215.1: ** << python: new_scanner >>
 new_scanner = False
 #@-<< python: new_scanner >>
+ScanState = basescanner.ScanState
 StateScanner = basescanner.StateScanner
 gen_v2 = g.gen_v2 and new_scanner
 #@+others
@@ -122,7 +123,11 @@ class PythonStateScanner(StateScanner):
         if trace: g.trace(self, s.rstrip())
         # For v2 scanner:
         if gen_v2:
-            return self.context, self.indent
+            return ScanState(
+                self.context,
+                indent = self.indent,
+                tag = 'Python',
+            )
     #@+node:ekr.20161104143211.5: *3* py_state.V2: comparisons
     # Only BLS.new_gen_lines uses these.
 
