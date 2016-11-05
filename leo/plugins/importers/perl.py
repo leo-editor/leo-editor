@@ -61,7 +61,7 @@ class Perl_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161105095705.2: *3* Perl_ScanState: V2: comparisons
+    #@+node:ekr.20161105095705.2: *3* Perl_ScanState: comparisons
     # Curly brackets dominate parens for mixed comparisons.
 
     def __eq__(self, other):
@@ -86,8 +86,14 @@ class Perl_ScanState:
 
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
-    #@+node:ekr.20161105171600.1: *3* Perl_ScanState: v2.starts/continues_block
-    # Defined in the base LineScanner class.
+    #@+node:ekr.20161105174820.1: *3* Perl_ScanState: v2.starts/continues_block
+    def v2_continues_block(self, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self == prev_state
+
+    def v2_starts_block(self, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return self > prev_state
     #@-others
 
 #@+node:ekr.20161027094537.5: ** class Perl_Scanner

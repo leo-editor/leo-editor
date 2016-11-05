@@ -89,15 +89,15 @@ class Python_ScanState:
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
-    def v2_continues_block(self, new_state, prev_state):
+    def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return prev_state == new_state
+        return self == prev_state
             ### Modify?
 
-    def v2_starts_block(self, new_state, prev_state):
+    def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         if 1: ### Not correct.
-            return new_state > prev_state
+            return self > prev_state
         else:
             pass ### To do.
     #@-others

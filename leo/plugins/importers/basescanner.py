@@ -2405,15 +2405,14 @@ class ImportController(object):
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
             if trace: g.trace(new_state, line.rstrip())
-            ### To do: new_state.starts_block(prev_state)
-            if scanner.v2_starts_block(new_state, prev_state):
+            if new_state.v2_starts_block(prev_state):
                 target=stack[-1]
                 # Insert the reference in *this* node.
                 h = self.v2_gen_ref(line, parent, target)
                 # Create a new child and associated target.
                 child = self.create_child_node(target.p, line, h)
                 stack.append(Target(indent, child, new_state))
-            elif scanner.v2_continues_block(new_state, prev_state):
+            elif new_state.v2_continues_block(prev_state):
                 p = stack[-1].p
                 p.b = p.b + line
             else: 
@@ -2613,16 +2612,6 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
-    #@+node:ekr.20161105042006.1: *4* scanner.v2_starts/continues_block
-    # These will likely suffice for all languages except Python.
-
-    def v2_continues_block(self, new_state, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return new_state == prev_state
-
-    def v2_starts_block(self, new_state, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return new_state > prev_state
     #@+node:ekr.20161105140842.4: *4* scanner.v2_scan_line
     def v2_scan_line(self, s, prev_state, block_comment=None, line_comment='#'):
         '''
@@ -2718,8 +2707,6 @@ class ScanState_V2:
 
     #@+others
     #@+node:ekr.20161105085900.1: *3* ScanState: V2: comparisons
-    # See https://docs.python.org/2/reference/datamodel.html#basic-customization
-
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.curlies == other.curlies
@@ -2735,6 +2722,14 @@ class ScanState_V2:
     def __ne__(self, other): return not self.__ne__(other)  
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
+    #@+node:ekr.20161105180504.1: *3* ScanState: v2.starts/continues_block
+    def v2_continues_block(self, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self == prev_state
+
+    def v2_starts_block(self, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return self > prev_state
     #@-others
 
 #@+node:ekr.20161104090312.1: ** class Target

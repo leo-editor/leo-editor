@@ -82,7 +82,13 @@ class JS_ScanState:
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105171502.1: *3* JS_ScanState: v2.starts/continues_block
-    # Defined in the base LineScanner class.
+    def v2_continues_block(self, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self == prev_state
+
+    def v2_starts_block(self, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return self > prev_state
     #@-others
 
 #@+node:ekr.20161004092007.1: ** class JS_Scanner
