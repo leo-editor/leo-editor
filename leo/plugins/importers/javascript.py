@@ -81,6 +81,8 @@ class JS_ScanState:
 
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
+    #@+node:ekr.20161105171502.1: *3* JS_ScanState: v2.starts/continues_block
+    # Defined in the base LineScanner class.
     #@-others
 
 #@+node:ekr.20161004092007.1: ** class JS_Scanner
@@ -106,29 +108,6 @@ class JS_Scanner(LineScanner):
             self.context)
 
     __str__ = __repr__
-    #@+node:ekr.20161104141423.1: *3* js_scan.continues_block and starts_block
-    if gen_v2:
-        
-        # LineScanner defines v2_starts_block & v2_continues_block.
-        pass
-        
-    else:
-        
-        def continues_block(self):
-            '''Return True if the just-scanned lines should be placed in the inner block.'''
-            return (self.context or
-                    self.curlies > self.base_curlies or
-                    self.parens > self.base_parens)
-        
-        def starts_block(self):
-            '''Return True if the just-scanned line starts an inner block.'''
-            return not self.context and (
-                (self.curlies > self.base_curlies or
-                 self.parens > self.base_parens))
-    #@+node:ekr.20161104145705.1: *3* js_scan.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return JS_ScanState('', 0, 0)
     #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
@@ -155,7 +134,8 @@ class JS_Scanner(LineScanner):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
-    #@+node:ekr.20161104141518.1: *3* js_scan.v1: clear, push & pop
+    #@+node:ekr.20161105170738.1: *3* js_scan.V1
+    #@+node:ekr.20161104141518.1: *4* js_scan.v1: clear, push & pop
     if gen_v2:
         
         pass ###
@@ -177,7 +157,25 @@ class JS_Scanner(LineScanner):
             self.stack.append((self.base_curlies, self.base_parens),)
             self.base_curlies = self.curlies
             self.base_parens = self.parens
-    #@+node:ekr.20161004071532.1: *3* js_scan.v1: scan_line
+    #@+node:ekr.20161104141423.1: *4* js_scan.v1: continues_block and starts_block
+    if gen_v2:
+
+        pass ###
+        
+    else:
+        
+        def continues_block(self):
+            '''Return True if the just-scanned lines should be placed in the inner block.'''
+            return (self.context or
+                    self.curlies > self.base_curlies or
+                    self.parens > self.base_parens)
+        
+        def starts_block(self):
+            '''Return True if the just-scanned line starts an inner block.'''
+            return not self.context and (
+                (self.curlies > self.base_curlies or
+                 self.parens > self.base_parens))
+    #@+node:ekr.20161004071532.1: *4* js_scan.v1: scan_line
     def scan_line(self, s):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -224,7 +222,8 @@ class JS_Scanner(LineScanner):
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
             return JS_ScanState(self.context, self.curlies, self.parens)
-    #@+node:ekr.20161105140842.5: *3* js_scan.v2_scan_line
+    #@+node:ekr.20161105170758.1: *3* js_scan.V2
+    #@+node:ekr.20161105140842.5: *4* js_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         # pylint: disable=arguments-differ
@@ -269,6 +268,10 @@ class JS_Scanner(LineScanner):
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
             return JS_ScanState(context, curlies, parens)
+    #@+node:ekr.20161104145705.1: *4* js_scan.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return JS_ScanState('', 0, 0)
     #@-others
 #@-others
 importer_dict = {

@@ -64,12 +64,12 @@ class Python_ScanState:
         self.indent = indent
         
     def __repr__(self):
-        '''ScanState.__repr__'''
-        return 'PythonScanState: context: %r indent: %s' % (
+        '''Python_ScanState.__repr__'''
+        return 'Python_ScanState: context: %r indent: %s' % (
             self.context, self.indent)
 
     #@+others
-    #@+node:ekr.20161105100227.3: *3* Python_state: comparisons (Test)
+    #@+node:ekr.20161105100227.3: *3* py_state.comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.indent == other.indent
@@ -88,6 +88,18 @@ class Python_ScanState:
 
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
+    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
+    def v2_continues_block(self, new_state, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return prev_state == new_state
+            ### Modify?
+
+    def v2_starts_block(self, new_state, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        if 1: ### Not correct.
+            return new_state > prev_state
+        else:
+            pass ### To do.
     #@-others
 
 #@+node:ekr.20161029120457.1: ** V1: class PythonScanner
@@ -363,18 +375,6 @@ class Python_Scanner(LineScanner):
 
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
-    #@+node:ekr.20161105042258.1: *3* py_scan.v2_starts/continues_block
-    def v2_continues_block(self, new_state, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return prev_state == new_state
-            ### Modify?
-
-    def v2_starts_block(self, new_state, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        if 1: ### Not correct.
-            return new_state > prev_state
-        else:
-            pass ### To do.
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''

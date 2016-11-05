@@ -7,18 +7,18 @@
 @language rest
 @wrap
 
-* Post: the new "pipeline".
+* Post: About the V2 line scanners.
     - Not so much a pipeline as a component architectue.
     - class ScanState:
         - Encapsules state info.
         - Provides a *per-language* way of comparing states.
+        - ### Soon: defines starts_block and continues_block methods.
     - class LineScanner:
+        - Controls scanning of each input line.
         - The ctor has collapsed and is now language independent.
-        - Provides a *per-language* way of calling:
-            - scanner.v2_scan_line.
-            - scanner.starts_block and scanner.continues_block.
+        - Calls *per-language* version of scanner.v2_scan_line.
     class Target:
-        - Not much more than a NamedTuple.
+        - A container for info for the node receiving input lines.
 
 *** Post: pep8 script
 - The difference between camelCase and pep8_style disambiguates old from new code.
