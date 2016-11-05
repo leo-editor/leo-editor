@@ -710,7 +710,7 @@ class ImportController(object):
         if last_line:
             self.append_to_body(child, last_line)
         
-    #@+node:ekr.20161104084810.1: *3* IC.V2: new_gen_lines & helpers
+    #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
         trace = False and not g.unitTesting
@@ -2649,7 +2649,7 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
-    #@+node:ekr.20161104084712.22: *4* scanner.V2: comparisons (to be removed)
+    #@+node:ekr.20161104084712.22: *4* scanner.V2: comparisons
     if gen_v2:
         
         pass ###
