@@ -218,26 +218,6 @@ class JS_Scanner(LineScanner):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
-    #@+node:ekr.20161104171051.1: *3* js_scan.V2: comparisons (Delete)
-    # # Curly brackets dominate parens for mixed comparisons.
-
-    # def __eq__(self, other):
-        # '''Return True if the state continues the previous state.'''
-        # return self.context or (
-            # self.curlies == other.curlies and
-            # self.parens == other.parens)
-        
-    # def __lt__(self, other):
-        # '''Return True if we should exit one or more blocks.'''
-        # return not self.context and (
-            # self.curlies < other.curlies or
-            # (self.curlies == other.curlies and self.parens < other.parens))
-
-    # def __gt__(self, other):
-        # '''Return True if we should enter a new block.'''
-        # return not self.context and (
-            # self.curlies > other.curlies or
-            # (self.curlies == other.curlies and self.parens > other.parens))
     #@-others
 #@-others
 importer_dict = {

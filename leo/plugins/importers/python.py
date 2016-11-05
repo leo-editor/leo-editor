@@ -41,7 +41,8 @@ class Python_ScanState:
         return not self.context and self.indent > other.indent
             ### Test
         
-    def __ne__(self, other): return not self.__ne__(other)  
+    def __ne__(self, other): return not self.__ne__(other)
+
     def __ge__(self, other): return NotImplemented
     def __le__(self, other): return NotImplemented
     #@-others
@@ -169,6 +170,11 @@ class Python_Scanner(LineScanner):
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
         return not self.context and self.indent < other.indent
+
+    def __ne__(self, other): return not self.__ne__(other)
+
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105042258.1: *3* py_scan.v2_starts/continues_block
     def v2_continues_block(self, new_state, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
