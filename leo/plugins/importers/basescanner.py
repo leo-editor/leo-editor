@@ -2495,23 +2495,21 @@ class ScanState:
     #@+node:ekr.20161105085900.1: *3* ScanState: V2: comparisons
     # See https://docs.python.org/2/reference/datamodel.html#basic-customization
 
-    if 0: ### Moved to ScanState classes
-
-        def __eq__(self, other):
-            '''Return True if the state continues the previous state.'''
-            return self.context or self.curlies == other.curlies
-            
-        def __lt__(self, other):
-            '''Return True if we should exit one or more blocks.'''
-            return not self.context and self.curlies < other.curlies
+    def __eq__(self, other):
+        '''Return True if the state continues the previous state.'''
+        return self.context or self.curlies == other.curlies
         
-        def __gt__(self, other):
-            '''Return True if we should enter a new block.'''
-            return not self.context and self.curlies < other.curlies
-            
-        def __ne__(self, other): return not self.__ne__(other)  
-        def __ge__(self, other): return NotImplemented
-        def __le__(self, other): return NotImplemented
+    def __lt__(self, other):
+        '''Return True if we should exit one or more blocks.'''
+        return not self.context and self.curlies < other.curlies
+
+    def __gt__(self, other):
+        '''Return True if we should enter a new block.'''
+        return not self.context and self.curlies < other.curlies
+        
+    def __ne__(self, other): return not self.__ne__(other)  
+    def __ge__(self, other): return NotImplemented
+    def __le__(self, other): return NotImplemented
     #@-others
 
 #@+node:ekr.20161027115813.1: ** class LineScanner
@@ -2530,11 +2528,11 @@ class LineScanner(object):
     #@+node:ekr.20161027115813.2: *3* scanner.__init__ & __repr__
     def __init__(self, c):
         '''Ctor for the LineScanner class.'''
+        self.c = c
         if gen_v2:
             pass
         else:
             self.context = '' # Represents cross-line constructs.
-            self.c = c
             self.base_curlies = self.curlies = 0
             self.stack = []
 
@@ -2649,30 +2647,9 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
-    #@+node:ekr.20161104084712.22: *4* scanner.V2: comparisons
-    if gen_v2:
-        
-        pass ###
-        
-    else:
-
-        def __eq__(self, other):
-            '''Return True if the state continues the previous state.'''
-            return self.context or self.curlies == other.curlies
-            
-        def __lt__(self, other):
-            '''Return True if we should exit one or more blocks.'''
-            return not self.context and self.curlies < other.curlies
-        
-        def __gt__(self, other):
-            '''Return True if we should enter a new block.'''
-            return not self.context and self.curlies < other.curlies
-            
-        def __ne__(self, other): return not self.__ne__(other)
-        
-        def __ge__(self, other): return NotImplemented
-        def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105042006.1: *4* scanner.v2_starts/continues_block
+    # These will likely suffice for all languages except Python.
+
     def v2_continues_block(self, new_state, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return new_state == prev_state
