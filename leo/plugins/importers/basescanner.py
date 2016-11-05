@@ -106,7 +106,7 @@ class BaseLineScanner(object):
         gen_refs = False, ### To be removed. True: generate section references.
         language = None, # For @language directive.
         name = None, # The kind of importer.
-        state = None,
+        state = None, ### To do: use scanner keyword instead of state.
         strict = False,
     ):
         '''ctor for BaseScanner.'''
@@ -119,8 +119,11 @@ class BaseLineScanner(object):
             # For the @language directive.
         self.name = name or language
         assert language or name
-        self.state = state
-            # A scanner instance.
+        if gen_v2:
+            self.scanner = state ###
+        else:
+            self.state = state
+                # A scanner instance.
         self.strict = strict
             # True: leading whitespace is significant.
         assert state, 'Caller must provide a line state instance'
@@ -711,20 +714,20 @@ class BaseLineScanner(object):
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
         trace = True and not g.unitTesting
-        state = self.state
+        scanner = self.scanner
         indent = 0 ### To do
-        prev_state = state.initial_state()
+        prev_state = scanner.initial_state()
         stack = [Target(indent, parent, prev_state)]
         for line in g.splitLines(s):
             target = stack[-1] # Loop invariant.
-            new_state = state.scan_line(line)
+            new_state = scanner.scan_line(line)
             if trace: g.trace(new_state, line.rstrip())
-            if state.v2_starts_block(new_state, prev_state):
+            if scanner.v2_starts_block(new_state, prev_state):
                 target.ref_flag = self.v2_gen_ref(
                     line, parent, target.ref_flag)
                 child = self.create_child_node(target.p, '', line)
                 stack.append(Target(indent, child, new_state))
-            elif state.v2_continues_block(new_state, prev_state):
+            elif scanner.v2_continues_block(new_state, prev_state):
                 pass
             else:
                 self.cut_stack(new_state, stack)
@@ -740,7 +743,7 @@ class BaseLineScanner(object):
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = True and not g.unitTesting and self.root.h.endswith('.js')
-        state = self.state
+        scanner = self.scanner
         while stack:
             top_state = stack[-1].state
             if top_state > new_state:
@@ -755,7 +758,7 @@ class BaseLineScanner(object):
                 break
         if not stack:
             g.trace('===== underflow')
-            stack = [state.initial_state()]
+            stack = [scanner.initial_state()]
     #@+node:ekr.20161105044835.1: *4* BLS.v2_gen_ref
     def v2_gen_ref(self, line, parent, ref_flag):
         '''
