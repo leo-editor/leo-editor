@@ -1850,14 +1850,18 @@ class ImportController(object):
         fn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
+        clean = self.strip_lws # strip_all, clean_blank_lines
         if self.ws_error or (not no_clean and self.gen_clean):
-            clean = self.strip_lws # strip_all, clean_blank_lines
             s1, s2 = clean(s1), clean(s2)
         # Forgive trailing whitespace problems in the last line:
-        if self.ws_error: ### or gen_v2
-            s1 = s1.rstrip()+'\n'
-            s2 = s2.rstrip()+'\n'
+        if self.ws_error:
+            s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
         ok = s1 == s2
+        if not ok and self.name == 'javascript':
+            s1, s2 = clean(s1), clean(s2)
+            ok = s1 == s2
+            if ok:
+                g.es_print('Leading whitespaced changed for javascript.')
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
@@ -2460,8 +2464,10 @@ class ImportController(object):
                 if trace: g.trace('top_state == state', top_state)
                 break
             else:
-                if trace: g.trace('top_state < state', top_state)
-                g.trace('===== overshoot')
+                if trace:
+                    g.trace('top_state < state', top_state)
+                    g.trace('===== overshoot')
+                        # Can happen with valid javascript programs.
                 break
         if not stack:
             g.trace('===== underflow')

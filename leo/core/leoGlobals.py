@@ -18,7 +18,6 @@ isPython3 = sys.version_info >= (3, 0, 0)
 gen_v2 = True
     # True: use V2 version of line-oriented importers.
     # Used by several importers.
-if gen_v2: print ('===== gen_v2 =====')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
