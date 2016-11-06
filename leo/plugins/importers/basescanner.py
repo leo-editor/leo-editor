@@ -1853,8 +1853,8 @@ class ImportController(object):
         if self.ws_error or (not no_clean and self.gen_clean):
             clean = self.strip_lws # strip_all, clean_blank_lines
             s1, s2 = clean(s1), clean(s2)
-        # Forgive problems in the last line:
-        if gen_v2 or self.ws_error:
+        # Forgive trailing whitespace problems in the last line:
+        if self.ws_error: ### or gen_v2
             s1 = s1.rstrip()+'\n'
             s2 = s2.rstrip()+'\n'
         ok = s1 == s2
