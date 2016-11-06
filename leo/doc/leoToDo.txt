@@ -3,12 +3,34 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20161105140325.1: ** Posts
+.. @+node:ekr.20161027202809.1: ** ** To do next
 @language rest
 @wrap
 
-*** Post: pep8 script
-- The difference between camelCase and pep8_style disambiguates old from new code.
+**** @auto bugs:
+    1. cancelling @auto write creates orphan nodes!
+    2. Cloned @auto nodes duplicates section references!
+    - See ekr.leo
+    
+**** Bug: Refresh from disk can jump around the screen
+
+**** Study notebook.py plugin.
+
+- check pid logic in BPM.
+- p.b & p.h setters should check that s is a string.
+- Create leoFind wrappers:
+    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
+    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
+
+- Use new importers for all languages.
+
+- Finish Homebrew installation: see child node.
+
+* Allow key unbinding.
+
+* Use code like search-finised code to highlight toggle commands.
+
+@language python
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
@@ -18,6 +40,8 @@ https://github.com/leo-editor/leo-editor/issues/106
 Requires 5.4 final
 
 .. @+node:ekr.20161024101901.1: ** ** Line numbers are not always accurate
+.. @+node:ekr.20161106074940.1: ** A new project? visualize massive git changes
+This is likely impossible, but git contains all history...
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap
