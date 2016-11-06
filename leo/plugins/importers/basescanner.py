@@ -1853,6 +1853,9 @@ class ImportController(object):
         if self.ws_error or (not no_clean and self.gen_clean):
             clean = self.strip_lws # strip_all, clean_blank_lines
             s1, s2 = clean(s1), clean(s2)
+        # Forgive problems in the last line:
+        if gen_v2 or self.ws_error:
+            s1 = s1.rstrip()+'\n'
         ok = s1 == s2
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
@@ -1862,7 +1865,7 @@ class ImportController(object):
             for i in range(min(n1, n2)):
                 line1, line2 = lines1[i], lines2[i]
                 if line1 != line2:
-                     g.es_print('first mismatched line: %s' % i)
+                     g.es_print('first mismatched line: %s' % (i+1))
                      g.es_print(repr(line1))
                      g.es_print(repr(line2))
                      break
@@ -1871,10 +1874,10 @@ class ImportController(object):
             if trace and trace_lines:
                 g.es_print('===== s1: %s' % parent.h)
                 for i, s in enumerate(g.splitLines(s1)):
-                    g.es_print('%3s %r' % (i+1, s.rstrip()))
+                    g.es_print('%3s %r' % (i+1, s))
                 g.trace('===== s2')
                 for i, s in enumerate(g.splitLines(s2)):
-                    g.es_print('%3s %r' % (i+1, s.rstrip()))
+                    g.es_print('%3s %r' % (i+1, s))
         if 0: # This is wrong headed.
             if not self.strict and not ok:
                 # Suppress the error if lws is the cause.
@@ -2097,6 +2100,9 @@ class ImportController(object):
         p.b = p.b + s
     #@+node:ekr.20161030190924.26: *4* IC.create_child_node
     def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace('\n\n%s === in === %s\n' % (headline, parent.h))
         p = parent.insertAsLastChild()
         assert g.isString(body), repr(body)
         assert g.isString(headline), repr(headline)
@@ -2397,33 +2403,33 @@ class ImportController(object):
     #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting and self.root.h.endswith('javascript-3.js')
         scanner = self.scanner
-        indent = 0 ### To do
+        tail_p = None
         prev_state = scanner.initial_state()
-        stack = [Target(indent, parent, prev_state)]
+        stack = [Target(parent, prev_state)]
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
-            if trace: g.trace(new_state, line.rstrip())
+            if trace: g.trace(bool(tail_p), new_state, repr(line))
             if new_state.v2_starts_block(prev_state):
+                tail_p = None
                 target=stack[-1]
                 # Insert the reference in *this* node.
                 h = self.v2_gen_ref(line, parent, target)
                 # Create a new child and associated target.
                 child = self.create_child_node(target.p, line, h)
-                stack.append(Target(indent, child, new_state))
+                stack.append(Target(child, new_state))
+                prev_state = new_state
             elif new_state.v2_continues_block(prev_state):
-                p = stack[-1].p
+                p = tail_p or stack[-1].p
                 p.b = p.b + line
-            else: 
+            else:
+                # The block is ending. Add tail lines until the start of the next block.
                 p = stack[-1].p # Put the closing line in *this* node.
+                # tail_p = p
                 p.b = p.b + line
-                #### Scan triailing lines here? ####
                 self.cut_stack(new_state, stack)
             prev_state = new_state
-        if 0:  ### Write lines & tail lines.
-            while stack:
-                target = stack.pop()
     #@+node:ekr.20161104084810.2: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -2721,14 +2727,11 @@ class ScanState_V2:
 class Target:
     '''
     A class describing a target node p.
-    
-    indent is the cumulative indent in effect for node p.
-    state is the base state for the node. Used to cut back the stack.
+    state is used to cut back the stack.
     '''
 
-    def __init__(self, indent, p, state):
+    def __init__(self, p, state):
         '''Ctor for the Block class.'''
-        self.indent = indent
         self.p = p
         self.ref_flag = False
             # True: @others or section reference should be generated.
@@ -2736,8 +2739,7 @@ class Target:
         self.state = state
 
     def __repr__(self):
-        return 'Target: indent: %s state: %s p: %s' % (
-            self.indent, self.state, self.p.h)
+        return 'Target: state: %s p: %s' % (self.state, self.p.h)
 #@-others
 #@@language python
 #@@tabwidth -4
