@@ -99,19 +99,25 @@ class JS_Scanner(LineScanner):
         '''Ctor for the JS_Scanner class.'''
         LineScanner.__init__(self, c)
             # Init the base class.
-        self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
-        self.context = '' # Represents cross-line constructs.
-        self.stack = []
+        if gen_v2:
+            pass
+        else:
+            self.base_curlies = self.curlies = 0
+            self.base_parens = self.parens = 0
+            self.context = '' # Represents cross-line constructs.
+            self.stack = []
 
     #@+others
     #@+node:ekr.20161104145747.1: *3* js_scan.__repr__
     def __repr__(self):
         '''JS_Scanner __repr__'''
-        return 'JS_Scanner: base: %r now: %r context: %2r' % (
-            '{' * self.base_curlies + '(' * self.base_parens, 
-            '{' * self.curlies + '(' * self.parens,
-            self.context)
+        if gen_v2:
+            return 'JS_Scanner'
+        else:
+            return 'JS_Scanner: base: %r now: %r context: %2r' % (
+                '{' * self.base_curlies + '(' * self.base_parens, 
+                '{' * self.curlies + '(' * self.parens,
+                self.context)
 
     __str__ = __repr__
     #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
