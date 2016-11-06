@@ -25,7 +25,7 @@ class Python_ImportController(basescanner.ImportController):
             gen_clean = False, # True: clean blank lines & unindent blocks.
             gen_refs = False, # Don't generate section references.
             language = 'python', # For @language.
-            state = Python_Scanner(c),
+            scanner = Python_Scanner(c),
             strict = True, # True: leave leading whitespace alone.
         )
         

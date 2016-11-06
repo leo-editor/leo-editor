@@ -21,7 +21,7 @@ class Perl_ImportController(basescanner.ImportController):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = False, # Don't generate section references.
             language = 'perl', # For @language.
-            state = Perl_Scanner(c),
+            scanner = Perl_Scanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         

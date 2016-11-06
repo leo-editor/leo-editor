@@ -19,7 +19,7 @@ class JS_ImportController(basescanner.ImportController):
             gen_clean = clean, # True: clean blank lines.
             gen_refs = True, # True: generate section references.
             language = 'javascript', # For @language.
-            state = JS_Scanner(c),
+            scanner = JS_Scanner(c),
             strict = False, # True: leave leading whitespace alone.
         )
         

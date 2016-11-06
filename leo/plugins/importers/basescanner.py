@@ -1790,7 +1790,7 @@ class ImportController(object):
         gen_refs = False, ### To be removed. True: generate section references.
         language = None, # For @language directive.
         name = None, # The kind of importer.
-        state = None, ### To do: use scanner keyword instead of state.
+        scanner = None, ### To do: use scanner keyword instead of state.
         strict = False,
     ):
         '''ctor for BaseScanner.'''
@@ -1804,13 +1804,13 @@ class ImportController(object):
         self.name = name or language
         assert language or name
         if gen_v2:
-            self.scanner = state ###
+            self.scanner = scanner
         else:
-            self.state = state
+            self.state = scanner
                 # A scanner instance.
         self.strict = strict
             # True: leading whitespace is significant.
-        assert state, 'Caller must provide a line state instance'
+        assert scanner, 'Caller must provide a LineScanner instance'
 
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
