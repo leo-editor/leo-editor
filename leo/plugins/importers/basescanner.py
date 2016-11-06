@@ -2491,6 +2491,7 @@ class LineScanner(object):
     def __init__(self, c):
         '''Ctor for the LineScanner class.'''
         self.c = c
+        self.tab_width = c.tab_width
         if gen_v2:
             pass
         else:

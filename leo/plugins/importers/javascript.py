@@ -109,17 +109,20 @@ class JS_Scanner(LineScanner):
 
     #@+others
     #@+node:ekr.20161104145747.1: *3* js_scan.__repr__
-    def __repr__(self):
-        '''JS_Scanner __repr__'''
-        if gen_v2:
-            return 'JS_Scanner'
-        else:
+    if gen_v2:
+        
+        pass ###
+        
+    else:
+
+        def __repr__(self):
+            '''JS_Scanner __repr__'''
             return 'JS_Scanner: base: %r now: %r context: %2r' % (
                 '{' * self.base_curlies + '(' * self.base_parens, 
                 '{' * self.curlies + '(' * self.parens,
                 self.context)
-
-    __str__ = __repr__
+        
+        __str__ = __repr__
     #@+node:ekr.20161011045426.1: *3* js_scan.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''

@@ -103,10 +103,13 @@ class Perl_Scanner(LineScanner):
         '''Ctor for the Perl_Scanner class.'''
         LineScanner.__init__(self, c)
             # Init the base class.
-        self.base_curlies = self.curlies = 0
-        self.base_parens = self.parens = 0
-        self.context = '' # Represents cross-line constructs.
-        self.stack = []
+        if gen_v2:
+            pass
+        else:
+            self.base_curlies = self.curlies = 0
+            self.base_parens = self.parens = 0
+            self.context = '' # Represents cross-line constructs.
+            self.stack = []
 
     #@+others
     #@+node:ekr.20161104150450.1: *3* perl_scan.__repr__

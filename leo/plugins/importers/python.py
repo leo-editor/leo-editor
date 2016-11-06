@@ -62,6 +62,9 @@ class Python_ScanState:
         '''Ctor for the Python_ScanState class.'''
         self.context = context
         self.indent = indent
+        self.comment_only_line = False
+        self.context = '' # In self.contexts.
+        self.contexts = ['', '"""', "'''", '"', "'"]
         
     def __repr__(self):
         '''Python_ScanState.__repr__'''
@@ -340,11 +343,13 @@ class Python_Scanner(LineScanner):
         '''Python_Scanner ctor.'''
         LineScanner.__init__(self, c)
             # Init the base class.
-        self.comment_only_line = False
-        self.context = '' # In self.contexts.
-        self.contexts = ['', '"""', "'''", '"', "'"]
-        self.indent = 0
-        self.tab_width = c.tab_width
+        if gen_v2:
+            pass
+        else:
+            self.comment_only_line = False
+            self.context = '' # In self.contexts.
+            self.contexts = ['', '"""', "'''", '"', "'"]
+            self.indent = 0
 
     #@+others
     #@+node:ekr.20161029103952.2: *3* py_scan.__repr__ & __str__
