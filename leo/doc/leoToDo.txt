@@ -7,29 +7,8 @@
 @language rest
 @wrap
 
-* Post: About the V2 line scanners.
-    - Not so much a pipeline as a component architectue.
-    - The ScanState classes.
-        - Encapsules state info.
-        - Defines comparison operators: __eq__, __gt__, etc.
-        - Defines v2_starts_block and continues_block methods.
-        - Each class is intended to be completely self contains.
-          The ScanState and ScanState_v2 are *not* intended to be base classes.
-    - class LineScanner:
-        - Controls scanning of each input line.
-        - The ctor has collapsed and is now language independent.
-        - Calls *per-language* version of scanner.v2_scan_line.
-
 *** Post: pep8 script
 - The difference between camelCase and pep8_style disambiguates old from new code.
-
-* Post: tests are the root of all complexity.
-  - The new perfect import tests work the same for all languages.
-    This makes everything much more reliable.
-    
-* Post: complications belong int new_gen_lines.
-  Complications should not infect the ScanState classes!
-  
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
