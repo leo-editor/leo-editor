@@ -2569,7 +2569,10 @@ if 1:
 </t>
 <t tx="ekr.20161023110345.1"># https://github.com/leo-editor/leo-editor/issues/325
 # This issue has been closed and abandoned.</t>
-<t tx="ekr.20161031130627.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
+<t tx="ekr.20161031130627.1">'''
+Undoably converts the word at the cursor to pep8 style throughout a given tree.
+Also sets the find text to the new word.
+'''
 # aTestExample notFoundExample.
 import re
 # clear()
@@ -2594,7 +2597,7 @@ Pep8(table, change=True).run()
     @others
 </t>
 <t tx="ekr.20161031130627.3">def change_all(self, name, new_name, root):
-    '''Change name to new_name throughout root's tree.'''
+    '''Undoably change name to new_name throughout root's tree.'''
     u = c.undoer
     bunch = u.beforeChangeTree(root)
     found = False
