@@ -2403,8 +2403,8 @@ class ImportController(object):
     #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = True and not g.unitTesting and self.root.h.endswith('javascript-3.js')
-        scanner = self.scanner
+        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
+        gen_refs, scanner = self.gen_refs, self.scanner
         tail_p = None
         prev_state = scanner.initial_state()
         stack = [Target(parent, prev_state)]
@@ -2415,9 +2415,9 @@ class ImportController(object):
                 tail_p = None
                 target=stack[-1]
                 # Insert the reference in *this* node.
-                h = self.v2_gen_ref(line, parent, target)
+                h = self.v2_gen_ref(line, target.p, target)
                 # Create a new child and associated target.
-                child = self.create_child_node(target.p, line, h)
+                child = self.v2_create_child_node(target.p, line, h)
                 stack.append(Target(child, new_state))
                 prev_state = new_state
             elif new_state.v2_continues_block(prev_state):
@@ -2426,10 +2426,22 @@ class ImportController(object):
             else:
                 # The block is ending. Add tail lines until the start of the next block.
                 p = stack[-1].p # Put the closing line in *this* node.
-                # tail_p = p
+                if not gen_refs:
+                    tail_p = p # Put trailing lines in this node.
                 p.b = p.b + line
                 self.cut_stack(new_state, stack)
             prev_state = new_state
+    #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
+    def v2_create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
+        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (headline, parent.h, body))
+        p = parent.insertAsLastChild()
+        assert g.isString(body), repr(body)
+        assert g.isString(headline), repr(headline)
+        p.b = p.b + body
+        p.h = headline
+        return p
     #@+node:ekr.20161104084810.2: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
