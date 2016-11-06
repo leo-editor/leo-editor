@@ -1856,6 +1856,7 @@ class ImportController(object):
         # Forgive problems in the last line:
         if gen_v2 or self.ws_error:
             s1 = s1.rstrip()+'\n'
+            s2 = s2.rstrip()+'\n'
         ok = s1 == s2
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
