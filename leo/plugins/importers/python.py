@@ -94,19 +94,33 @@ class Python_ScanState:
         '''Return True if we should enter a new block.'''
         return not self.context and self.indent > other.indent
 
-    def __ne__(self, other): return not self.__ne__(other)
+    def __ne__(self, other): return not self.__eq__(other)
 
-    def __ge__(self, other): return NotImplemented
+    def __ge__(self, other): return self > other or self == other
 
-    def __le__(self, other): return NotImplemented
+    def __le__(self, other): return self < other or self == other
     #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block (Test)
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
-        return self == prev_state or self.comment_only
+        if prev_state.class_or_def:
+            # The first line *after* the class or def *is* in the block.
+            prev_state.class_or_def = False
+            return True
+        else:
+            return self == prev_state #### or self.comment_only
 
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and self.class_or_def
+        trace = False and not g.unitTesting
+        if not self.context and self.class_or_def:
+            if trace:
+                g.trace('prev_state', prev_state)
+                g.trace('this_state', self)
+                g.trace(self == prev_state, 'or', self > prev_state)
+            return self == prev_state or self > prev_state
+                # The >= operator is not implemented
+        else:
+            return False
     #@-others
 #@+node:ekr.20161029120457.1: ** V1: class PythonScanner
 class PythonScanner(basescanner.BaseScanner):
@@ -381,10 +395,9 @@ class Python_Scanner(LineScanner):
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
-        class_or_def = bool(self.class_or_def_pattern.match(s))
-        comment_only = bool(self.comment_only_pattern.match(s))
         was_bs_nl = context == 'bs-nl'
-            # Used at end to suppress comment_only.
+        class_or_def = bool(self.class_or_def_pattern.match(s)) and not was_bs_nl
+        comment_only = bool(self.comment_only_pattern.match(s)) and not was_bs_nl
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
@@ -415,13 +428,12 @@ class Python_Scanner(LineScanner):
             i += 1
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        # For v2 scanner:
         if gen_v2:
             return Python_ScanState(
                 context,
                 indent,
-                class_or_def = class_or_def and not was_bs_nl,
-                comment_only = comment_only and not was_bs_nl,
+                class_or_def = class_or_def,
+                comment_only = comment_only,
             )
     #@-others
 #@-others

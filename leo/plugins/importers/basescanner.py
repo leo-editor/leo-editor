@@ -2400,11 +2400,13 @@ class ImportController(object):
     #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         gen_refs, scanner = self.gen_refs, self.scanner
+        is_python = self.name == 'python'
         tail_p = None
         prev_state = scanner.initial_state()
         stack = [Target(parent, prev_state)]
+        ### if trace: g.pdb()
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
             if trace: g.trace(new_state, 'tail:', int(bool(tail_p)), repr(line))
@@ -2416,17 +2418,26 @@ class ImportController(object):
                 # Create a new child and associated target.
                 child = self.v2_create_child_node(target.p, line, h)
                 stack.append(Target(child, new_state))
-                prev_state = new_state
             elif new_state.v2_continues_block(prev_state):
                 p = tail_p or stack[-1].p
                 p.b = p.b + line
             else:
                 # The block is ending. Add tail lines until the start of the next block.
                 p = stack[-1].p # Put the closing line in *this* node.
-                if not gen_refs:
+                if not gen_refs and not is_python:
                     tail_p = p # Put trailing lines in this node.
-                p.b = p.b + line
-                self.cut_stack(new_state, stack)
+                if is_python:
+                    # Unlike other languages, *this* line not only *ends*
+                    # a block, but *starts* a block.
+                    self.cut_stack(new_state, stack)
+                    target = stack[-1]
+                    h = self.clean_headline(line)
+                    child = self.v2_create_child_node(target.p.parent(), line, h)
+                    stack.pop()
+                    stack.append(Target(child, new_state))
+                else:
+                    p.b = p.b + line
+                    self.cut_stack(new_state, stack)
             prev_state = new_state
     #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
@@ -2442,22 +2453,25 @@ class ImportController(object):
     #@+node:ekr.20161104084810.2: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.js')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         trace_stack = True
         if trace and trace_stack:
+            print('')
+            g.trace(new_state)
             g.trace('Stack...')
             print('\n'.join([repr(z) for z in stack]))
+            print('')
         while stack:
             top_state = stack[-1].state
             if top_state > new_state:
-                if trace: g.trace('top_state > state', top_state)
+                if trace: g.trace(' top_state > state', top_state)
                 stack.pop()
             elif top_state == new_state:
                 if trace: g.trace('top_state == state', top_state)
                 break
             else:
                 if trace:
-                    g.trace('top_state < state', top_state)
+                    g.trace(' top_state < state', top_state)
                     g.trace('===== overshoot')
                         # Can happen with valid javascript programs.
                 break
@@ -2715,11 +2729,11 @@ class ScanState_V2:
         '''Return True if we should enter a new block.'''
         return not self.context and self.curlies < other.curlies
 
-    def __ne__(self, other): return not self.__ne__(other)
+    def __ne__(self, other): return not self.__eq__(other)
 
-    def __ge__(self, other): return NotImplemented
+    def __ge__(self, other): return self > other or self == other
 
-    def __le__(self, other): return NotImplemented
+    def __le__(self, other): return self < other or self == other
     #@+node:ekr.20161105180504.1: *3* ScanState: v2.starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
@@ -2746,7 +2760,8 @@ class Target:
         self.state = state
 
     def __repr__(self):
-        return 'Target: state: %s p: %s' % (self.state, self.p.h)
+        return 'Target: state: %s p: %s' % (
+            self.state, g.shortFileName(self.p.h))
 #@-others
 #@@language python
 #@@tabwidth -4

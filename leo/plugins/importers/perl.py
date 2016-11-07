@@ -82,11 +82,11 @@ class Perl_ScanState:
             self.curlies > other.curlies or
             (self.curlies == other.curlies and self.parens > other.parens))
 
-    def __ne__(self, other): return not self.__ne__(other)
+    def __ne__(self, other): return not self.__eq__(other)
 
-    def __ge__(self, other): return NotImplemented
+    def __ge__(self, other): return self > other or self == other
 
-    def __le__(self, other): return NotImplemented
+    def __le__(self, other): return self < other or self == other
     #@+node:ekr.20161105174820.1: *3* Perl_ScanState: v2.starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
