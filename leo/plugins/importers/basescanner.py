@@ -1860,8 +1860,10 @@ class ImportController(object):
         if not ok and self.name == 'javascript':
             s1, s2 = clean(s1), clean(s2)
             ok = s1 == s2
-            if ok:
-                g.es_print('Leading whitespaced changed for javascript.')
+            if ok and not g.unitTesting:
+                g.es_print(
+                    'indentation error: leading whitespace changed in:',
+                    self.root.h)
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
@@ -2056,9 +2058,8 @@ class ImportController(object):
         Regularize leading whitespace in s:
         Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
         '''
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_lines = False
-        report = trace or not g.unitTesting
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
         fn = g.shortFileName(self.root.h)
@@ -2085,13 +2086,13 @@ class ImportController(object):
                 result.append(s)
         if count:
             self.ws_error = True # A flag to check.
-            if report:
-                g.es_print('\nWarning: Intermixed tabs and blanks in', fn)
+            if not g.unitTesting:
+                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
                 # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es_print('Changed leading %s to %s in %s line%s' % (
+                g.es_print('changed leading %s to %s in %s line%s' % (
                     kind2, kind, count, g.plural(count)))
             if g.unitTesting: # Sets flag for unit tests.
-                self.report('Changed %s lines' % count) 
+                self.report('changed %s lines' % count) 
         return ''.join(result)
     #@+node:ekr.20161030190924.19: *3* IC.Utils
     #@+node:ekr.20161030190924.22: *4* IC.append_to_body
