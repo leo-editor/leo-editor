@@ -2089,8 +2089,8 @@ class ImportController(object):
             if not g.unitTesting:
                 # g.es_print('Warning: Intermixed tabs and blanks in', fn)
                 # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es_print('changed leading %s to %s in %s line%s' % (
-                    kind2, kind, count, g.plural(count)))
+                g.es_print('changed leading %s to %s in %s line%s in %s' % (
+                    kind2, kind, count, g.plural(count), fn))
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
         return ''.join(result)
