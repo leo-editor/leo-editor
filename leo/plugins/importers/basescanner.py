@@ -1833,8 +1833,7 @@ class ImportController(object):
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
-        self.at_auto_separate_non_def_nodes = False
-            # Not used at present.
+        # self.at_auto_separate_non_def_nodes = False
 
         # State vars.
         self.errors = 0
@@ -1844,7 +1843,7 @@ class ImportController(object):
     #@+node:ekr.20161027094537.16: *3* IC.check & helpers
     def check(self, unused_s, parent):
         '''ImportController.check'''
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
         fn = g.shortFileName(self.root.h)
@@ -2025,7 +2024,7 @@ class ImportController(object):
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
             g.warning('inserting @ignore')
             c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161027183458.1: *4* IC.post_pass & helper
+    #@+node:ekr.20161027183458.1: *4* IC.post_pass
     def post_pass(self, parent):
         '''Clean up parent's children.'''
         # Clean the headlines.
@@ -2040,7 +2039,7 @@ class ImportController(object):
         # Unindent nodes.
         for p in parent.subtree():
             if p.b.strip():
-                p.b = self.undent(g.splitLines(p.b))
+                p.b = self.undent(p)
             else:
                 p.b = ''
         # Delete empty nodes.
@@ -2095,32 +2094,13 @@ class ImportController(object):
                 self.report('changed %s lines' % count) 
         return ''.join(result)
     #@+node:ekr.20161030190924.19: *3* IC.Utils
-    #@+node:ekr.20161030190924.22: *4* IC.append_to_body
-    def append_to_body(self, p, s):
-        '''
-        Similar to c.appendStringToBody,
-        but does not recolor the text or redraw the screen.
-        '''
-        assert g.isString(s), (repr(s), g.callers())
-        assert g.isString(p.b), (repr(p.b), g.callers())
-        p.b = p.b + s
-    #@+node:ekr.20161030190924.26: *4* IC.create_child_node
-    def create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('\n\n%s === in === %s\n' % (headline, parent.h))
-        p = parent.insertAsLastChild()
-        assert g.isString(body), repr(body)
-        assert g.isString(headline), repr(headline)
-        p.b = g.u(body)
-        p.h = g.u(headline)
-        return p
-    #@+node:ekr.20161102072135.1: *4* IC.get_lws
+    #@+node:ekr.20161107154026.1: *4* IC.Common Utils
+    #@+node:ekr.20161102072135.1: *5* IC.get_lws
     def get_lws(self, s):
         '''Return the characters of the lws of s.'''
         m = re.match(r'(\s*)', s)
         return m.group(0) if m else ''
-    #@+node:ekr.20161027181903.1: *4* IC.Messages
+    #@+node:ekr.20161027181903.1: *5* IC.Messages
     def error(self, s):
         self.errors += 1
         self.importCommands.errors += 1
@@ -2140,10 +2120,11 @@ class ImportController(object):
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
-    #@+node:ekr.20161101081522.1: *4* IC.undent & helper
-    def undent(self, lines):
+    #@+node:ekr.20161101081522.1: *5* IC.undent & helper
+    def undent(self, p):
         '''Remove maximal leading whitespace from the start of all lines.'''
         trace = False and not g.unitTesting # and self.root.h.find('main') > -1
+        lines = g.splitLines(p.b)
         if self.is_rst:
             return ''.join(lines) # Never unindent rst code.
         ws = self.common_lws(lines)
@@ -2165,7 +2146,7 @@ class ImportController(object):
         if trace:
             print('----- result:\n%s' % ''.join(result))
         return ''.join(result)
-    #@+node:ekr.20161102055342.1: *5* common_lws
+    #@+node:ekr.20161102055342.1: *6* common_lws
     def common_lws(self, lines):
         '''Return the lws common to all lines.'''
         trace = False and not g.unitTesting
@@ -2187,7 +2168,7 @@ class ImportController(object):
                 break
         if trace: g.trace(repr(lws), repr(lines[0]))
         return lws
-    #@+node:ekr.20161030190924.41: *4* IC.underindented_comment/line
+    #@+node:ekr.20161030190924.41: *5* IC.underindented_comment/line
     def underindented_comment(self, line):
         if self.at_auto_warns_about_leading_whitespace:
             self.warning(
@@ -2199,6 +2180,27 @@ class ImportController(object):
             self.error(
                 'underindented line.\n'
                 'Extra leading whitespace will be added\n' + line)
+    #@+node:ekr.20161107154044.1: *4* IC.Utils (V1)
+    #@+node:ekr.20161030190924.26: *5* IC.create_child_node (V1)
+    def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace('\n\n%s === in === %s\n' % (headline, parent.h))
+        p = parent.insertAsLastChild()
+        assert g.isString(body), repr(body)
+        assert g.isString(headline), repr(headline)
+        p.b = g.u(body)
+        p.h = g.u(headline)
+        return p
+    #@+node:ekr.20161030190924.22: *5* IC.append_to_body (V1)
+    def append_to_body(self, p, s):
+        '''
+        Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.
+        '''
+        assert g.isString(s), (repr(s), g.callers())
+        assert g.isString(p.b), (repr(p.b), g.callers())
+        p.b = p.b + s
     #@+node:ekr.20161101094729.1: *3* IC.V1: Scanning & code generation
     #@+node:ekr.20161101094324.1: *4* IC.gen_lines (entry) & helpers
     def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
@@ -2396,7 +2398,6 @@ class ImportController(object):
         state.pop()
         if last_line:
             self.append_to_body(child, last_line)
-        
     #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
@@ -2406,11 +2407,13 @@ class ImportController(object):
         tail_p = None
         prev_state = scanner.initial_state()
         stack = [Target(parent, prev_state)]
-        ### if trace: g.pdb()
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
-            if trace: g.trace(new_state, 'tail:', int(bool(tail_p)), repr(line))
-            if new_state.v2_starts_block(prev_state):
+            starts = new_state.v2_starts_block(prev_state)
+            continues = new_state.v2_continues_block(prev_state)
+            if trace: g.trace('%s tail: %s +: %s =: %s %r' % (
+                new_state, int(bool(tail_p)), int(starts), int(continues), line))
+            if starts:
                 tail_p = None
                 target=stack[-1]
                 # Insert the reference in *this* node.
@@ -2418,7 +2421,7 @@ class ImportController(object):
                 # Create a new child and associated target.
                 child = self.v2_create_child_node(target.p, line, h)
                 stack.append(Target(child, new_state))
-            elif new_state.v2_continues_block(prev_state):
+            elif continues:
                 p = tail_p or stack[-1].p
                 p.b = p.b + line
             else:
@@ -2429,7 +2432,7 @@ class ImportController(object):
                 if is_python:
                     # Unlike other languages, *this* line not only *ends*
                     # a block, but *starts* a block.
-                    self.cut_stack(new_state, stack)
+                    self.cut_stack(new_state, parent, stack)
                     target = stack[-1]
                     h = self.clean_headline(line)
                     child = self.v2_create_child_node(target.p.parent(), line, h)
@@ -2437,7 +2440,7 @@ class ImportController(object):
                     stack.append(Target(child, new_state))
                 else:
                     p.b = p.b + line
-                    self.cut_stack(new_state, stack)
+                    self.cut_stack(new_state, parent, stack)
             prev_state = new_state
     #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
@@ -2451,35 +2454,32 @@ class ImportController(object):
         p.h = headline
         return p
     #@+node:ekr.20161104084810.2: *4* IC.cut_stack
-    def cut_stack(self, new_state, stack):
+    def cut_stack(self, new_state, parent, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
         trace_stack = True
         if trace and trace_stack:
             print('')
             g.trace(new_state)
-            g.trace('Stack...')
+            print('Stack...')
             print('\n'.join([repr(z) for z in stack]))
             print('')
         while stack:
             top_state = stack[-1].state
             if top_state > new_state:
-                if trace: g.trace(' top_state > state', top_state)
+                if trace: g.trace('top_state > state', top_state)
                 stack.pop()
             elif top_state == new_state:
                 if trace: g.trace('top_state == state', top_state)
                 break
             else:
-                if trace:
-                    g.trace(' top_state < state', top_state)
-                    g.trace('===== overshoot')
-                        # Can happen with valid javascript programs.
+                if trace: g.trace('OVERSHOOT: top_state < state', top_state)
+                    # Can happen with valid javascript programs.
                 break
         if not stack:
-            g.trace('===== underflow')
-            stack = [self.scanner.initial_state()]
-        if trace:
-            g.trace('new target.p:', stack[-1].p.h)
+            if trace: g.trace('===== underflow')
+            stack.append(Target(parent, self.scanner.initial_state()))
+        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''

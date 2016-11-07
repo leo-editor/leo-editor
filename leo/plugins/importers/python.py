@@ -11,8 +11,19 @@ new_scanner = False
 #@-<< python: new_scanner >>
 LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2 and new_scanner
+#@+<< Global scanning patterns >>
+#@+node:ekr.20161107155520.1: ** << Global scanning patterns >>
+ws_pattern = re.compile(r'^\s*$|^\s*#')
+    # Matches lines containing nothing but ws or comments.
+starts_pattern = re.compile(r'\s*(class|def)')
+    # Matches lines that apparently starts a class or def.
+#@-<< Global scanning patterns >>
 #@+others
-#@+node:ekr.20161029103640.1: ** class Python_ImportController
+#@+node:ekr.20161107154640.1: ** is_ws_line
+def is_ws_line(s):
+    '''Return True if s is nothing but whitespace and comments.'''
+    return bool(ws_pattern.match(s))
+#@+node:ekr.20161029103640.1: ** class Python_ImportController (ImportController)
 class Python_ImportController(basescanner.ImportController):
     '''A scanner for the perl language.'''
 
@@ -31,7 +42,7 @@ class Python_ImportController(basescanner.ImportController):
         )
 
     #@+others
-    #@+node:ekr.20161029103640.2: *3* python.clean_headline
+    #@+node:ekr.20161029103640.2: *3* python_ic.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
         m = re.match(r'\s*def\s+(\w+)', s)
@@ -43,42 +54,106 @@ class Python_ImportController(basescanner.ImportController):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
-    #@+node:ekr.20161029103640.3: *3* python.clean_nodes
+    #@+node:ekr.20161029103640.3: *3* python_ic.clean_nodes (Does nothing)
     def clean_nodes(self, parent):
-        '''Clean nodes as part of the post pass.'''
-        # Move trailing comments into following def nodes.
-        for p in parent.subtree():
-            next = p.threadNext()
-            lines = g.splitLines(p.b)
-            if lines and next:
-                while lines and lines[-1].strip().startswith('#'):
-                    next.b = lines.pop() + next.b
-                p.b = ''.join(lines)
+        '''
+        Clean nodes as part of the post pass.
+        Called *before* undent, so there are no underindent escapes here!
+        
+        For Python, it's best not to move lines around.
+        '''
+        pass
+    #@+node:ekr.20161107111224.1: *3* python_ic.common_lws
+    def common_lws(self, lines):
+        '''Return the lws common to all lines.'''
+        trace = False and not g.unitTesting
+        if not lines:
+            return ''
+        head = True
+        for s in lines:
+            is_ws = is_ws_line(s)
+            if head:
+                if not is_ws: # A real line.
+                    head = False
+                    lws = self.get_lws(s)
+            elif is_ws:
+                # Ignore lines containing only whitespace or comments.
+                pass
+            else:
+                lws2 = self.get_lws(s)
+                if lws2.startswith(lws):
+                    pass
+                elif lws.startswith(lws2):
+                    lws = lws2
+                else:
+                    lws = '' # Nothing in common.
+                    break
+        if head:
+            lws = '' # All head lines.
+        if trace: g.trace(repr(lws), repr(lines[0]))
+        return lws
+    #@+node:ekr.20161107112448.1: *3* python_ic.undent
+    def undent(self, p):
+        '''
+            Python_ImportController.undent.
+            Remove maximal leading whitespace from the start of all lines.
+            
+            Called *after* clean_node, so all lines have been moved.
+        '''
+        trace = False and not g.unitTesting
+        lines = g.splitLines(p.b)
+        if self.is_rst:
+            return ''.join(lines) # Never unindent rst code.
+        ws = self.common_lws(lines)
+        if trace:
+            g.trace('common_lws:', repr(ws))
+            print('===== lines:\n%s' % ''.join(lines))
+        result = []
+        # Move underindented *trailing* whitespace-only lines
+        # to the end of the parent.
+        parent = p.parent()
+        while lines:
+            line = lines[-1]
+            if line.startswith(ws):
+                break
+            elif ws_pattern.match(line):
+                parent.b = parent.b + lines.pop()
+            else:
+                break
+        p.b = ''.join(lines)
+        # Handle the remaining lines.
+        for s in lines:
+            if s.startswith(ws):
+                result.append(s[len(ws):])
+            else:
+                # Like the base class.
+                # Indicate that the line is underindented.
+                result.append("%s%s.%s" % (
+                    self.c.atFileCommands.underindentEscapeString,
+                    g.computeWidth(ws, self.tab_width),
+                    s.lstrip()))
+        if trace:
+            print('----- result:\n%s' % ''.join(result))
+        return ''.join(result)
     #@-others
-#@+node:ekr.20161105100227.1: ** class Python_ScanState
-class Python_ScanState:
+#@+node:ekr.20161105100227.1: ** class Python_State
+class Python_State:
     '''A class representing the state of the v2 scan.'''
 
-    def __init__(self, context, indent, class_or_def=False, comment_only=False):
-        '''Ctor for the Python_ScanState class.'''
-        self.class_or_def = class_or_def
-        self.comment_only = comment_only
+    def __init__(self, context, indent, starts=False, ws=False):
+        '''Ctor for the Python_State class.'''
         self.context = context
         self.contexts = ['', '"""', "'''", '"', "'"]
         self.indent = indent
+        self.starts = starts
+        self.ws = ws # whitespace line, possibly ending in a comment.
 
     #@+others
     #@+node:ekr.20161106185131.1: *3* py_state.__repr__
     def __repr__(self):
-        '''Python_ScanState.__repr__'''
-        return 'PyState context: %r indent: %s starts: %s #: %s' % (
-            self.context,
-            self.indent,
-            int(self.class_or_def),
-            int(self.comment_only),
-        )
-        # return 'PyState context: %r indent: %s starts: %5s #: %5s' % (
-            # self.context, self.indent, self.class_or_def, self.comment_only)
+        '''Python_State.__repr__'''
+        return '<PyState %r indent: %s starts: %s ws: %s>' % (
+            self.context, self.indent, int(self.starts), int(self.ws))
 
     __str__ = __repr__
     #@+node:ekr.20161105100227.3: *3* py_state.comparisons
@@ -99,28 +174,19 @@ class Python_ScanState:
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block (Test)
+    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
-        if prev_state.class_or_def:
+        if prev_state.starts:
             # The first line *after* the class or def *is* in the block.
-            prev_state.class_or_def = False
+            prev_state.starts = False
             return True
         else:
-            return self == prev_state #### or self.comment_only
+            return self == prev_state or self.ws
 
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
-        trace = False and not g.unitTesting
-        if not self.context and self.class_or_def:
-            if trace:
-                g.trace('prev_state', prev_state)
-                g.trace('this_state', self)
-                g.trace(self == prev_state, 'or', self > prev_state)
-            return self == prev_state or self > prev_state
-                # The >= operator is not implemented
-        else:
-            return False
+        return not self.context and self.starts and self >= prev_state
     #@-others
 #@+node:ekr.20161029120457.1: ** V1: class PythonScanner
 class PythonScanner(basescanner.BaseScanner):
@@ -352,7 +418,7 @@ class PythonScanner(basescanner.BaseScanner):
         # Returns len(s) on unterminated string.
         return g.skip_python_string(s, i, verbose=False)
     #@-others
-#@+node:ekr.20161029103615.1: ** V2: class Python_Scanner
+#@+node:ekr.20161029103615.1: ** class Python_Scanner (V2)
 class Python_Scanner(LineScanner):
     '''A class to store and update scanning state.'''
 
@@ -384,20 +450,16 @@ class Python_Scanner(LineScanner):
     #@+node:ekr.20161104143211.4: *3* py_scan.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return Python_ScanState('', 0)
+        return Python_State('', 0)
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
-    class_or_def_pattern = re.compile(r'\s*(class|def)')
-    comment_only_pattern = re.compile(r'\s*#')
-    lws_pattern = re.compile(r'(\s*)')
-
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
-        class_or_def = bool(self.class_or_def_pattern.match(s)) and not was_bs_nl
-        comment_only = bool(self.comment_only_pattern.match(s)) and not was_bs_nl
+        starts = bool(starts_pattern.match(s)) and not was_bs_nl
+        ws = is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
@@ -429,12 +491,7 @@ class Python_Scanner(LineScanner):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         if gen_v2:
-            return Python_ScanState(
-                context,
-                indent,
-                class_or_def = class_or_def,
-                comment_only = comment_only,
-            )
+            return Python_State(context, indent, starts=starts, ws=ws)
     #@-others
 #@-others
 importer_dict = {

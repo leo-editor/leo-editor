@@ -5,7 +5,7 @@ import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.basescanner as basescanner
 #@+others
-#@+node:ekr.20160505094722.2: ** class CoffeeScriptScanner
+#@+node:ekr.20160505094722.2: ** class CoffeeScriptScanner(BaseScanner)
 class CoffeeScriptScanner(basescanner.BaseScanner):
 
     #@+others
