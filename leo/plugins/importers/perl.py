@@ -85,6 +85,7 @@ class Perl_ScanState:
     def __ne__(self, other): return not self.__ne__(other)
 
     def __ge__(self, other): return NotImplemented
+
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105174820.1: *3* Perl_ScanState: v2.starts/continues_block
     def v2_continues_block(self, prev_state):

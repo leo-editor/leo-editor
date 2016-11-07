@@ -64,7 +64,7 @@ class JS_ScanState:
         return self.context or (
             self.curlies == other.curlies and
             self.parens == other.parens)
-        
+
     def __lt__(self, other):
         '''Return True if we should exit one or more blocks.'''
         return not self.context and (
@@ -76,10 +76,11 @@ class JS_ScanState:
         return not self.context and (
             self.curlies > other.curlies or
             (self.curlies == other.curlies and self.parens > other.parens))
-        
+
     def __ne__(self, other): return not self.__ne__(other)
 
     def __ge__(self, other): return NotImplemented
+
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105171502.1: *3* JS_ScanState: v2.starts/continues_block
     def v2_continues_block(self, prev_state):

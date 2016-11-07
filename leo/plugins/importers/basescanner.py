@@ -2706,7 +2706,7 @@ class ScanState_V2:
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.curlies == other.curlies
-        
+
     def __lt__(self, other):
         '''Return True if we should exit one or more blocks.'''
         return not self.context and self.curlies < other.curlies
@@ -2714,9 +2714,11 @@ class ScanState_V2:
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
         return not self.context and self.curlies < other.curlies
-        
-    def __ne__(self, other): return not self.__ne__(other)  
+
+    def __ne__(self, other): return not self.__ne__(other)
+
     def __ge__(self, other): return NotImplemented
+
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105180504.1: *3* ScanState: v2.starts/continues_block
     def v2_continues_block(self, prev_state):

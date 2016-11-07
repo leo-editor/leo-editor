@@ -15,7 +15,7 @@ gen_v2 = g.gen_v2 and new_scanner
 #@+node:ekr.20161029103640.1: ** class Python_ImportController
 class Python_ImportController(basescanner.ImportController):
     '''A scanner for the perl language.'''
-    
+
     def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
         '''The ctor for the PythonScanner class.'''
         c = importCommands.c
@@ -29,7 +29,7 @@ class Python_ImportController(basescanner.ImportController):
             scanner = Python_Scanner(c),
             strict = True, # True: leave leading whitespace alone.
         )
-        
+
     #@+others
     #@+node:ekr.20161029103640.2: *3* python.clean_headline
     def clean_headline(self, s):
@@ -78,24 +78,23 @@ class Python_ScanState:
         '''Python_ScanState.__repr__'''
         return 'Python_ScanState: context: %r indent: %s' % (
             self.context, self.indent)
-    #@+node:ekr.20161105100227.3: *3* py_state.comparisons
+    #@+node:ekr.20161105100227.3: *3* py_state.comparisons (revise)
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.indent == other.indent
-        
+
     def __lt__(self, other):
         '''Return True if we should exit one or more blocks.'''
         return not self.context and self.indent < other.indent
-            ### Test
 
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
         return not self.context and self.indent > other.indent
-            ### Test
-        
+
     def __ne__(self, other): return not self.__ne__(other)
 
     def __ge__(self, other): return NotImplemented
+
     def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
@@ -348,9 +347,9 @@ class Python_Scanner(LineScanner):
     #@+others
     #@+node:ekr.20161106190835.1: *3* py_scan.__init__
     if gen_v2:
-        
+
         pass ### Use the base-class ctor
-        
+
     else:
 
         def __init__(self, c):
@@ -375,12 +374,15 @@ class Python_Scanner(LineScanner):
         '''Return the initial counts.'''
         return Python_ScanState('', 0)
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
+    class_or_def_pattern = re.compile(r'\s*(class|def)')
+
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
+        self.is_class_or_def = class_or_def_pattern.match(s)
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
@@ -402,7 +404,7 @@ class Python_Scanner(LineScanner):
             elif ch == '#':
                 # The single-line comment ends the line.
                 self.comment_only_line = not was_bs_nl and not s[:i].strip()
-                break 
+                break
             elif s[i:i+3] in ('"""', "'''"):
                 context = s[i:i+3]
             elif ch in ('"', "'"):
