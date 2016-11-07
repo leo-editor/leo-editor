@@ -70,8 +70,8 @@ class Python_ScanState:
         '''Ctor for the Python_ScanState class.'''
         self.class_or_def = class_or_def
         self.comment_only = comment_only
-        self.context = ''
         self.context = context
+        self.contexts = ['', '"""', "'''", '"', "'"]
         self.indent = indent
     #@+node:ekr.20161106185131.1: *3* py_state.__repr__
     def __repr__(self):
@@ -344,19 +344,25 @@ class PythonScanner(basescanner.BaseScanner):
 #@+node:ekr.20161029103615.1: ** V2: class Python_Scanner
 class Python_Scanner(LineScanner):
     '''A class to store and update scanning state.'''
-    
-    def __init__(self, c):
-        '''Python_Scanner ctor.'''
-        LineScanner.__init__(self, c)
-            # Init the base class.
-        if gen_v2:
-            pass
-        else:
-            self.comment_only_line = False
-            self.context = '' # In self.contexts.
-            self.indent = 0
 
     #@+others
+    #@+node:ekr.20161106190835.1: *3* py_scan.__init__
+    if gen_v2:
+        
+        pass ### Use the base-class ctor
+        
+    else:
+
+        def __init__(self, c):
+            '''Python_Scanner ctor.'''
+            LineScanner.__init__(self, c)
+                # Init the base class.
+            if gen_v2:
+                pass
+            else:
+                self.comment_only_line = False
+                self.context = '' # In self.contexts.
+                self.indent = 0
     #@+node:ekr.20161029103952.2: *3* py_scan.__repr__ & __str__
     def __repr__(self):
         '''Python_Scanner.__repr__'''
