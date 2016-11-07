@@ -7,6 +7,7 @@ import re
 #@+<< python: new_scanner >>
 #@+node:ekr.20161103070215.1: ** << python: new_scanner >>
 new_scanner = False
+
 #@-<< python: new_scanner >>
 LineScanner = basescanner.LineScanner
 gen_v2 = g.gen_v2 and new_scanner
@@ -343,12 +344,12 @@ class Python_Scanner(LineScanner):
         '''Python_Scanner ctor.'''
         LineScanner.__init__(self, c)
             # Init the base class.
+        self.contexts = ['', '"""', "'''", '"', "'"]
         if gen_v2:
             pass
         else:
             self.comment_only_line = False
             self.context = '' # In self.contexts.
-            self.contexts = ['', '"""', "'''", '"', "'"]
             self.indent = 0
 
     #@+others

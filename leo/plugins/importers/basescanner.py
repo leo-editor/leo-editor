@@ -2151,17 +2151,8 @@ class ImportController(object):
             print('===== lines:\n%s' % ''.join(lines))
         result = []
         for s in lines:
-            ###
-            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # result.append(self.tab_ws + s.lstrip())
-                    # # A useful hack.
             if s.startswith(ws):
                 result.append(s[len(ws):])
-            ###
-            # elif s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # result.append(s.lstrip())
-                # # result.append(self.tab_ws + s.lstrip())
-                    # # A useful hack.
             elif self.strict:
                 # Indicate that the line is underindented.
                 result.append("%s%s.%s" % (
@@ -2513,9 +2504,12 @@ class LineScanner(object):
 
     #@+others
     #@+node:ekr.20161027115813.2: *3* scanner.__init__ & __repr__
-    def __init__(self, c):
+    def __init__(self, c, language=None):
         '''Ctor for the LineScanner class.'''
         self.c = c
+        self.language = language 
+        self.comment_delims = g.set_delims_from_language(language) if language else None
+            # For general_line_scanner
         self.tab_width = c.tab_width
         if gen_v2:
             pass
@@ -2618,6 +2612,50 @@ class LineScanner(object):
             '''Return True if the just-scanned line starts an inner block.'''
             return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
+    #@+node:ekr.20161106180704.1: *4* scanner.general_scan_line
+    def general_scan_line(self, s):
+        '''
+        A generalized line scanner, using comment delims set in the ctor from
+        the language keword arg.
+        '''
+        trace = False and not g.unitTesting
+        
+        match = self.match
+        assert self.comment_delims
+        line_comment, block1, block2 = self.comment_delims
+        contexts = strings = ['"', "'"]
+        if block1:
+            contexts.append(block1)
+        i = 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if self.context:
+                assert self.context in contexts, repr(self.context)
+                if ch == '\\':
+                    i += 1 # Eat the next character later.
+                elif self.context in strings and self.context == ch:
+                    self.context = '' # End the string.
+                elif block1 and self.context == block1 and match(s, i, block2):
+                    self.context = '' # End the block comment.
+                    i += (len(block2) - 1)
+                else:
+                    pass # Eat the string character later.
+            elif ch in strings:
+                self.context = ch
+            elif block1 and match(s, i, block1):
+                self.context = block1
+                i += (len(block1) - 1)
+            elif line_comment and match(s, i, line_comment):
+                break # The single-line comment ends the line.
+            elif ch == '{': self.curlies += 1
+            elif ch == '}': self.curlies -= 1
+            i += 1
+            assert progress < i
+        if trace:
+            g.trace(self, s.rstrip())
+        if gen_v2:
+            return ScanState(self.context, self.curlies)
     #@+node:ekr.20161104144603.1: *4* scanner.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
