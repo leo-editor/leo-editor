@@ -59,26 +59,29 @@ class Python_ImportController(basescanner.ImportController):
 class Python_ScanState:
     '''A class representing the state of the v2 scan.'''
 
-    #@+others
-    #@+node:ekr.20161106185058.1: *3* py_state.__init__
-    def __init__(self,
-        context,
-        indent,
-        class_or_def = False,
-        comment_only = False,
-    ):
+    def __init__(self, context, indent, class_or_def=False, comment_only=False):
         '''Ctor for the Python_ScanState class.'''
         self.class_or_def = class_or_def
         self.comment_only = comment_only
         self.context = context
         self.contexts = ['', '"""', "'''", '"', "'"]
         self.indent = indent
+
+    #@+others
     #@+node:ekr.20161106185131.1: *3* py_state.__repr__
     def __repr__(self):
         '''Python_ScanState.__repr__'''
-        return 'Python_ScanState: context: %r indent: %s' % (
-            self.context, self.indent)
-    #@+node:ekr.20161105100227.3: *3* py_state.comparisons (revise)
+        return 'PyState context: %r indent: %s starts: %s #: %s' % (
+            self.context,
+            self.indent,
+            int(self.class_or_def),
+            int(self.comment_only),
+        )
+        # return 'PyState context: %r indent: %s starts: %5s #: %5s' % (
+            # self.context, self.indent, self.class_or_def, self.comment_only)
+
+    __str__ = __repr__
+    #@+node:ekr.20161105100227.3: *3* py_state.comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.indent == other.indent
@@ -96,20 +99,15 @@ class Python_ScanState:
     def __ge__(self, other): return NotImplemented
 
     def __le__(self, other): return NotImplemented
-    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block
+    #@+node:ekr.20161105042258.1: *3* py_state.v2_starts/continues_block (Test)
     def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-            ### Modify?
+        '''Return True if the just-scanned line continues the present block.'''
+        return self == prev_state or self.comment_only
 
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
-        if 1: ### Not correct.
-            return self > prev_state
-        else:
-            pass ### To do.
+        return not self.context and self.class_or_def
     #@-others
-
 #@+node:ekr.20161029120457.1: ** V1: class PythonScanner
 class PythonScanner(basescanner.BaseScanner):
     #@+others
@@ -375,21 +373,22 @@ class Python_Scanner(LineScanner):
         return Python_ScanState('', 0)
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
     class_or_def_pattern = re.compile(r'\s*(class|def)')
+    comment_only_pattern = re.compile(r'\s*#')
+    lws_pattern = re.compile(r'(\s*)')
 
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
+        class_or_def = bool(self.class_or_def_pattern.match(s))
+        comment_only = bool(self.comment_only_pattern.match(s))
         was_bs_nl = context == 'bs-nl'
-        self.is_class_or_def = class_or_def_pattern.match(s)
+            # Used at end to suppress comment_only.
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
             indent = self.get_lws(s)
-        class_or_def = prev_state.class_or_def
-                # True: the previous line started the block.
-        comment_only = False ### prev_state.comment_only
         i = 0
         while i < len(s):
             progress = i
@@ -403,14 +402,13 @@ class Python_Scanner(LineScanner):
                     pass # Eat the string character later.
             elif ch == '#':
                 # The single-line comment ends the line.
-                self.comment_only_line = not was_bs_nl and not s[:i].strip()
                 break
             elif s[i:i+3] in ('"""', "'''"):
                 context = s[i:i+3]
             elif ch in ('"', "'"):
                 context = ch
             elif s[i:] == r'\\\n':
-                context = 'bs-nl' # The *next* line can't be a def or class.
+                context = 'bs-nl' # The *next* line is a continuation line.
                 break
             elif ch == r'\\':
                 i += 1 # Eat the *next* character.
@@ -422,8 +420,9 @@ class Python_Scanner(LineScanner):
             return Python_ScanState(
                 context,
                 indent,
-                class_or_def = class_or_def,
-                comment_only = comment_only)
+                class_or_def = class_or_def and not was_bs_nl,
+                comment_only = comment_only and not was_bs_nl,
+            )
     #@-others
 #@-others
 importer_dict = {

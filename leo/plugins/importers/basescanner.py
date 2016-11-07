@@ -2400,14 +2400,14 @@ class ImportController(object):
     #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
+        trace = True and not g.unitTesting and self.root.h.endswith('.py')
         gen_refs, scanner = self.gen_refs, self.scanner
         tail_p = None
         prev_state = scanner.initial_state()
         stack = [Target(parent, prev_state)]
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
-            if trace: g.trace(bool(tail_p), new_state, repr(line))
+            if trace: g.trace(new_state, 'tail:', int(bool(tail_p)), repr(line))
             if new_state.v2_starts_block(prev_state):
                 tail_p = None
                 target=stack[-1]
