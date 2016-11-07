@@ -244,7 +244,6 @@ class JS_Scanner(LineScanner):
     #@+node:ekr.20161105140842.5: *4* js_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
-        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens

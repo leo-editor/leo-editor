@@ -58,21 +58,26 @@ class Python_ImportController(basescanner.ImportController):
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
     '''A class representing the state of the v2 scan.'''
-    
-    def __init__(self, context, indent):
+
+    #@+others
+    #@+node:ekr.20161106185058.1: *3* py_state.__init__
+    def __init__(self,
+        context,
+        indent,
+        class_or_def = False,
+        comment_only = False,
+    ):
         '''Ctor for the Python_ScanState class.'''
+        self.class_or_def = class_or_def
+        self.comment_only = comment_only
+        self.context = ''
         self.context = context
         self.indent = indent
-        self.comment_only_line = False
-        self.context = '' # In self.contexts.
-        self.contexts = ['', '"""', "'''", '"', "'"]
-        
+    #@+node:ekr.20161106185131.1: *3* py_state.__repr__
     def __repr__(self):
         '''Python_ScanState.__repr__'''
         return 'Python_ScanState: context: %r indent: %s' % (
             self.context, self.indent)
-
-    #@+others
     #@+node:ekr.20161105100227.3: *3* py_state.comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
@@ -344,7 +349,6 @@ class Python_Scanner(LineScanner):
         '''Python_Scanner ctor.'''
         LineScanner.__init__(self, c)
             # Init the base class.
-        self.contexts = ['', '"""', "'''", '"', "'"]
         if gen_v2:
             pass
         else:
@@ -367,16 +371,17 @@ class Python_Scanner(LineScanner):
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
-        #pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
+        assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
             indent = self.get_lws(s)
-        assert context in self.contexts, repr(context)
-        self.comment_only_line = False
+        class_or_def = prev_state.class_or_def
+                # True: the previous line started the block.
+        comment_only = False ### prev_state.comment_only
         i = 0
         while i < len(s):
             progress = i
@@ -406,7 +411,11 @@ class Python_Scanner(LineScanner):
         if trace: g.trace(self, s.rstrip())
         # For v2 scanner:
         if gen_v2:
-            return Python_ScanState(context, indent)
+            return Python_ScanState(
+                context,
+                indent,
+                class_or_def = class_or_def,
+                comment_only = comment_only)
     #@-others
 #@-others
 importer_dict = {

@@ -2660,59 +2660,6 @@ class LineScanner(object):
     def initial_state(self):
         '''Return the initial counts.'''
         assert False, 'Subclasses must override LineScanner.initial_state.'
-    #@+node:ekr.20161105140842.4: *4* scanner.v2_scan_line
-    def v2_scan_line(self, s, prev_state, block_comment=None, line_comment='#'):
-        '''
-        A generalized line scanner.  This will suffice for many languages,
-        but it should be overridden for languages that have regex syntax
-        or for languages like Python that do not delimit structure with brackets.
-
-        Sets three ivars for LineScanner.starts_block and LineScanner.continues_block:
-        
-        - .context is non-empty if we are scanning a multi-line string, comment
-          or regex.
-        
-        - .curlies and .parens are the present counts of open curly-brackets
-          and parentheses.
-        '''
-        trace = False and not g.unitTesting
-        match = self.match
-        context, curlies = prev_state.context, prev_state.curlies
-        contexts = strings = ['"', "'"]
-        block1, block2 = None, None
-        if block_comment:
-            block1, block2 = block_comment
-            contexts.append(block1)
-        i = 0
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            if context:
-                assert context in contexts, repr(context)
-                if ch == '\\':
-                    i += 1 # Eat the next character later.
-                elif context in strings and context == ch:
-                    context = '' # End the string.
-                elif context == block1 and match(s, i, block2):
-                    context = '' # End the block comment.
-                    i += (len(block2) - 1)
-                else:
-                    pass # Eat the string character later.
-            elif ch in strings:
-                context = ch
-            elif match(s, i, block1):
-                context = block1
-                i += (len(block1) - 1)
-            elif match(s, i, line_comment):
-                break # The single-line comment ends the line.
-            elif ch == '{': curlies += 1
-            elif ch == '}': curlies -= 1
-            i += 1
-            assert progress < i
-        if trace:
-            g.trace(self, s.rstrip())
-        if gen_v2:
-            return ScanState_V2(context, curlies)
     #@-others
 #@+node:ekr.20161105172716.1: ** class ScanState
 class ScanState:
