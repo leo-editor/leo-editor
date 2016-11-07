@@ -364,23 +364,6 @@ class Python_Scanner(LineScanner):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_ScanState('', 0)
-    #@+node:ekr.20161104143211.5: *3* py_scan.V2: comparisons
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.indent == other.indent
-        
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.indent < other.indent
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.indent < other.indent
-
-    def __ne__(self, other): return not self.__ne__(other)
-
-    def __ge__(self, other): return NotImplemented
-    def __le__(self, other): return NotImplemented
     #@+node:ekr.20161105140842.3: *3* py_scan.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
