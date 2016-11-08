@@ -2432,7 +2432,7 @@ class ImportController(object):
                 if is_python:
                     # Unlike other languages, *this* line not only *ends*
                     # a block, but *starts* a block.
-                    self.cut_stack(new_state, parent, stack)
+                    self.cut_stack(new_state, stack) ### parent
                     target = stack[-1]
                     h = self.clean_headline(line)
                     child = self.v2_create_child_node(target.p.parent(), line, h)
@@ -2440,7 +2440,7 @@ class ImportController(object):
                     stack.append(Target(child, new_state))
                 else:
                     p.b = p.b + line
-                    self.cut_stack(new_state, parent, stack)
+                    self.cut_stack(new_state, stack) ### parent
             prev_state = new_state
     #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
@@ -2453,32 +2453,33 @@ class ImportController(object):
         p.b = p.b + body
         p.h = headline
         return p
-    #@+node:ekr.20161104084810.2: *4* IC.cut_stack
-    def cut_stack(self, new_state, parent, stack):
+    #@+node:ekr.20161107212224.1: *4* IC.cut_stack
+    def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
         trace_stack = True
         if trace and trace_stack:
-            print('')
-            g.trace(new_state)
-            print('Stack...')
             print('\n'.join([repr(z) for z in stack]))
-            print('')
+        assert stack # Fail on entry.
         while stack:
             top_state = stack[-1].state
-            if top_state > new_state:
-                if trace: g.trace('top_state > state', top_state)
-                stack.pop()
+            if new_state < top_state:
+                if trace: g.trace('new_state < top_state', top_state)
+                ###
+                # target = stack[-1]
+                # target.write_body()
+                if len(stack) == 1:
+                    break
+                else:
+                    target = stack.pop() 
             elif top_state == new_state:
-                if trace: g.trace('top_state == state', top_state)
+                if trace: g.trace('new_state == top_state', top_state)
                 break
             else:
-                if trace: g.trace('OVERSHOOT: top_state < state', top_state)
+                if trace: g.trace('OVERSHOOT: new_state > top_state', top_state)
                     # Can happen with valid javascript programs.
                 break
-        if not stack:
-            if trace: g.trace('===== underflow')
-            stack.append(Target(parent, self.scanner.initial_state()))
+        assert stack # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
@@ -2507,6 +2508,13 @@ class ImportController(object):
                 '*' * 20, indent_ws, line, parent.h))
             parent.b = parent.b + ref
         return headline
+    #@+node:ekr.20161107212053.1: *4* IC.root_directives
+    def root_directives(self, p):
+        '''Return the proper directives for the root node p.'''
+        return [
+            '@language %s\n' % self.language,
+            '@tabwidth %d\n' % self.tab_width,
+        ]
     #@-others
 #@+node:ekr.20161027115813.1: ** class LineScanner
 class LineScanner(object):

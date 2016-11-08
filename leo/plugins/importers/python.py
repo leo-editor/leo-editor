@@ -101,9 +101,9 @@ class Python_ImportController(basescanner.ImportController):
             Called *after* clean_node, so all lines have been moved.
         '''
         trace = False and not g.unitTesting
-        lines = g.splitLines(p.b)
         if self.is_rst:
-            return ''.join(lines) # Never unindent rst code.
+            return p.b # Never unindent rst code.
+        lines = g.splitLines(p.b)
         ws = self.common_lws(lines)
         if trace:
             g.trace('common_lws:', repr(ws))
