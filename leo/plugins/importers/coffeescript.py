@@ -88,8 +88,8 @@ class CoffeeScriptScanner(basescanner.BaseScanner):
         parent.b =  prefix + parent.b.lstrip()
         self.move_trailing_lines(parent)
         self.undent_nodes(parent)
-        ok = self.errors == 0
-        # g.app.unitTestDict['result'] = ok
+        ok = self.errors == 0 ### and self.check(s, parent)
+        g.app.unitTestDict['result'] = ok
         if self.atAuto and ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()

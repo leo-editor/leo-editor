@@ -1480,6 +1480,9 @@ class LeoImportCommands(object):
 
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+        
+    def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
 
     def elispUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.el')

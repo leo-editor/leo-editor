@@ -1651,13 +1651,18 @@ class BaseScanner(object):
             g.app.unitTestDict['result'] = ok
             # Insert an @ignore directive if there were any serious problems.
             if not ok: self.insertIgnoreDirective(parent)
-            if self.atAuto and ok:
-                for p in root.self_and_subtree():
-                    p.clearDirty()
-                c.setChanged(changed)
-            else:
-                root.setDirty(setDescendentsDirty=False)
-                c.setChanged(True)
+            # It's always useless for an an import to dirty the outline.
+            for p in root.self_and_subtree():
+                p.clearDirty()
+            c.setChanged(changed)
+            ###
+            # if self.atAuto and ok:
+                # for p in root.self_and_subtree():
+                    # p.clearDirty()
+                # c.setChanged(changed)
+            # else:
+                # root.setDirty(setDescendentsDirty=False)
+                # c.setChanged(True)
             return ok
     #@+node:ekr.20140727075002.18271: *4* BaseScanner.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):
@@ -2423,17 +2428,6 @@ class ImportController(object):
             prev_state = new_state
         # Put directives at the end, so as not to interfere with shebang lines, etc.
         parent.b = parent.b + ''.join(self.root_directives())
-    #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
-    def v2_create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
-        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (headline, parent.h, body))
-        p = parent.insertAsLastChild()
-        assert g.isString(body), repr(body)
-        assert g.isString(headline), repr(headline)
-        p.b = p.b + body
-        p.h = headline
-        return p
     #@+node:ekr.20161107212224.1: *4* IC.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -2489,6 +2483,13 @@ class ImportController(object):
         stack.pop()
             ###### Is this where the line got lost?
         stack.append(Target(child, new_state))
+    #@+node:ekr.20161107212053.1: *4* IC.root_directives
+    def root_directives(self):
+        '''Return the proper directives for the root node p.'''
+        return [
+            '@language %s\n' % self.language,
+            '@tabwidth %d\n' % self.tab_width,
+        ]
     #@+node:ekr.20161107214653.1: *4* IC.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
@@ -2498,6 +2499,17 @@ class ImportController(object):
         # Create a new child and associated target.
         child = self.v2_create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
+    #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
+    def v2_create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
+        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (headline, parent.h, body))
+        p = parent.insertAsLastChild()
+        assert g.isString(body), repr(body)
+        assert g.isString(headline), repr(headline)
+        p.b = p.b + body
+        p.h = headline
+        return p
     #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''
@@ -2525,13 +2537,6 @@ class ImportController(object):
                 '*' * 20, indent_ws, line, parent.h))
             parent.b = parent.b + ref
         return headline
-    #@+node:ekr.20161107212053.1: *4* IC.root_directives
-    def root_directives(self):
-        '''Return the proper directives for the root node p.'''
-        return [
-            '@language %s\n' % self.language,
-            '@tabwidth %d\n' % self.tab_width,
-        ]
     #@-others
 #@+node:ekr.20161027115813.1: ** class LineScanner
 class LineScanner(object):

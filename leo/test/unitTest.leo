@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657331711958030000002d7e2e711a580b000000756e6465726c696e657332711b58010000003d711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1357,6 +1357,9 @@
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
@@ -7957,7 +7960,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14689,7 +14692,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15545,5 +15548,738 @@ FAIL: runTest (leo.core.leoTest.GeneralTestCase)
 
 </t>
 <t tx="ekr.20161106105920.1"></t>
+<t tx="ekr.20161108034116.1"></t>
+<t tx="ekr.20161108034138.1">@killcolor
+
+s = '''\
+
+# The JavaScript to CoffeeScript compiler.
+# Common usage:
+#
+#
+#     var src = "var square = function(n) { return n * n };"
+#
+#     js2coffee = require('js2coffee');
+#     js2coffee.build(src);
+#     //=&gt; "square = (n) -&gt; n * n"
+
+# ## Requires
+#
+# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
+# engine written in JavaScript).
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+_ = @_ or require('underscore')
+
+{Types, Typenames, Node} = @NodeExt or require('./node_ext')
+
+{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
+  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
+
+# ## Main entry point
+# This is `require('js2coffee').build()`. It takes a JavaScript source
+# string as an argument, and it returns the CoffeeScript version.
+#
+# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
+#    returns a `Node` object of type `script`.
+#
+# 2. This node is now passed onto `Builder#build()`.
+
+buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+
+  output = trim builder.build(scriptNode)
+  (rtrim line for line in output.split('\n')).join('\n')
+# ## Builder class
+# This is the main class that proccesses the AST and spits out streng.
+# See the `buildCoffee()` function above for info on how this is used.
+
+class Builder
+  constructor: -&gt;
+    @transformer = new Transformer
+  # `build()`
+  # The main entry point.
+
+  # This finds the appropriate @builder function for `node` based on it's type,
+  # the passes the node onto that function.
+  #
+  # For instance, for a `function` node, it calls `@builders.function(node)`.
+  # It defaults to `@builders.other` if it can't find a function for it.
+
+  build: (args...) -&gt;
+    node = args[0]
+    @transform node
+
+    name = 'other'
+    name = node.typeName()  if node != undefined and node.typeName
+
+    fn  = (@[name] or @other)
+    out = fn.apply(this, args)
+
+    if node.parenthesized then paren(out) else out
+  # `transform()`
+  # Perform a transformation on the node, if a transformation function is
+  # available.
+
+  transform: (args...) -&gt;
+    @transformer.transform.apply(@transformer, args)
+  # `body()`
+  # Works like `@build()`, and is used for code blocks. It cleans up the returned
+  # code block by removing any extraneous spaces and such.
+
+  body: (node, opts={}) -&gt;
+    str = @build(node, opts)
+    str = blockTrim(str)
+    str = unshift(str)
+
+    if str.length &gt; 0 then str else ""
+  # ## The builders
+  #
+  # Each of these method are passed a Node, and is expected to return
+  # a string representation of it CoffeeScript counterpart.
+  #
+  # These are invoked using the main entry point, `Builder#build()`.
+
+  # `script`
+  # This is the main entry point.
+
+  'script': (n, opts={}) -&gt;
+    c = new Code
+
+    # *Functions must always be declared first in a block.*
+    _.each n.functions,    (item) =&gt; c.add @build(item)
+    _.each n.nonfunctions, (item) =&gt; c.add @build(item)
+
+    c.toString()
+  # `property_identifier`
+  # A key in an object literal.
+
+  'property_identifier': (n) -&gt;
+    str = n.value.toString()
+
+    # **Caveat:**
+    # *In object literals like `{ '#foo click': b }`, ensure that the key is
+    # quoted if need be.*
+
+    if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
+      str
+    else
+      strEscape str
+  # `identifier`
+  # Any object identifier like a variable name.
+
+  'identifier': (n) -&gt;
+    if n.value is 'undefined'
+      '`undefined`'
+    else if n.property_accessor
+      n.value.toString()
+    else
+      unreserve n.value.toString()
+  'number': (n) -&gt;
+    "#{n.src()}"
+  'id': (n) -&gt;
+    if n.property_accessor
+      n
+    else
+      unreserve n
+  # `id_param`
+  # Function parameters. Belongs to `list`.
+
+  'id_param': (n) -&gt;
+    if n.toString() in ['undefined']
+      "#{n}_"
+    else
+      @id n
+  # `return`
+  # A return statement. Has `n.value` of type `id`.
+
+  'return': (n) -&gt;
+    if not n.value?
+      "return\n"
+
+    else
+      "return #{@build(n.value)}\n"
+  # `;` (aka, statement)
+  # A single statement.
+
+  ';': (n) -&gt;
+    # **Caveat:**
+    # Some statements can be blank as some people are silly enough to use `;;`
+    # sometimes. They should be ignored.
+
+    unless n.expression?
+      ""
+
+    else if n.expression.typeName() == 'object_init'
+      src = @object_init(n.expression)
+      if n.parenthesized
+        src
+      else
+        "#{unshift(blockTrim(src))}\n"
+
+    else
+      @build(n.expression) + "\n"
+  # `new` + `new_with_args`
+  # For `new X` and `new X(y)` respctively.
+
+  'new': (n) -&gt; "new #{@build n.left()}"
+  'new_with_args': (n) -&gt; "new #{@build n.left()}(#{@build n.right()})"
+  # ### Unary operators
+
+  'unary_plus': (n) -&gt; "+#{@build n.left()}"
+  'unary_minus': (n) -&gt; "-#{@build n.left()}"
+  # ### Keywords
+
+  'this': (n) -&gt; 'this'
+  'null': (n) -&gt; 'null'
+  'true': (n) -&gt; 'true'
+  'false': (n) -&gt; 'false'
+  'void': (n) -&gt; 'undefined'
+  'debugger': (n) -&gt; "debugger\n"
+  'break': (n) -&gt; "break\n"
+  'continue': (n) -&gt; "continue\n"
+  # ### Some simple operators
+
+  '~': (n) -&gt; "~#{@build n.left()}"
+  'typeof': (n) -&gt; "typeof #{@build n.left()}"
+  'index': (n) -&gt;
+    right = @build n.right()
+    if _.any(n.children, (child) -&gt; child.typeName() == 'object_init' and child.children.length &gt; 1)
+      right = "{#{right}}"
+    "#{@build n.left()}[#{right}]"
+  'throw': (n) -&gt; "throw #{@build n.exception}"
+  '!': (n) -&gt;
+    target = n.left()
+    negations = 1
+    ++negations while (target.isA '!') and target = target.left()
+    if (negations &amp; 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
+      target.negated = not target.negated
+      return @build target
+    "#{if negations &amp; 1 then 'not ' else '!!'}#{@build target}"
+  # ### Binary operators
+  # All of these are rerouted to the `binary_operator` @builder.
+
+  # TODO: make a function that generates these functions, invoked like so:
+  #   in: binop 'in', 'of'
+  #   '+': binop '+'
+  #   and so on...
+
+  in: (n) -&gt;    @binary_operator n, 'of'
+  '+': (n) -&gt;   @binary_operator n, '+'
+  '-': (n) -&gt;   @binary_operator n, '-'
+  '*': (n) -&gt;   @binary_operator n, '*'
+  '/': (n) -&gt;   @binary_operator n, '/'
+  '%': (n) -&gt;   @binary_operator n, '%'
+  '&gt;': (n) -&gt;   @binary_operator n, '&gt;'
+  '&lt;': (n) -&gt;   @binary_operator n, '&lt;'
+  '&amp;': (n) -&gt;   @binary_operator n, '&amp;'
+  '|': (n) -&gt;   @binary_operator n, '|'
+  '^': (n) -&gt;   @binary_operator n, '^'
+  '&amp;&amp;': (n) -&gt;  @binary_operator n, 'and'
+  '||': (n) -&gt;  @binary_operator n, 'or'
+  '&lt;&lt;': (n) -&gt;  @binary_operator n, '&lt;&lt;'
+  '&lt;=': (n) -&gt;  @binary_operator n, '&lt;='
+  '&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;'
+  '&gt;=': (n) -&gt;  @binary_operator n, '&gt;='
+  '===': (n) -&gt; @binary_operator n, 'is'
+  '!==': (n) -&gt; @binary_operator n, 'isnt'
+  '&gt;&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;&gt;'
+  instanceof: (n) -&gt; @binary_operator n, 'instanceof'
+  '==': (n) -&gt;
+    # TODO: throw warning
+    @binary_operator n, 'is'
+  '!=': (n) -&gt;
+    # TODO: throw warning
+    @binary_operator n, 'isnt'
+  'binary_operator': do -&gt;
+    INVERSIONS =
+      is: 'isnt'
+      in: 'not in'
+      of: 'not of'
+      instanceof: 'not instanceof'
+    INVERSIONS[v] = k for own k, v of INVERSIONS
+    (n, sign) -&gt;
+      sign = INVERSIONS[sign] if n.negated
+      "#{@build n.left()} #{sign} #{@build n.right()}"
+  # ### Increments and decrements
+  # For `a++` and `--b`.
+
+  '--': (n) -&gt; @increment_decrement n, '--'
+  '++': (n) -&gt; @increment_decrement n, '++'
+  'increment_decrement': (n, sign) -&gt;
+    if n.postfix
+      "#{@build n.left()}#{sign}"
+    else
+      "#{sign}#{@build n.left()}"
+  # `=` (aka, assignment)
+  # For `a = b` (but not `var a = b`: that's `var`).
+
+  '=': (n) -&gt;
+    sign = if n.assignOp?
+      Types[n.assignOp] + '='
+    else
+      '='
+
+    "#{@build n.left()} #{sign} #{@build n.right()}"
+  # `,` (aka, comma)
+  # For `a = 1, b = 2'
+
+  ',': (n) -&gt;
+    list = _.map n.children, (item) =&gt; @build(item) + "\n"
+    list.join('')
+  # `regexp`
+  # Regular expressions.
+
+  'regexp': (n) -&gt;
+    m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
+    value = m[1]
+    flag  = m[2]
+
+    # **Caveat:**
+    # *If it begins with `=` or a space, the CoffeeScript parser will choke if
+    # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
+
+    begins_with = value[0]
+
+    if begins_with in [' ', '=']
+      if flag.length &gt; 0
+        "RegExp(#{strEscape value}, \"#{flag}\")"
+      else
+        "RegExp(#{strEscape value})"
+    else
+      "/#{value}/#{flag}"
+  'string': (n) -&gt;
+    strEscape n.value
+  # `call`
+  # A Function call.
+  # `n.left` is an `id`, and `n.right` is a `list`.
+
+  'call': (n) -&gt;
+    if n.right().children.length == 0
+      "#{@build n.left()}()"
+    else
+      "#{@build n.left()}(#{@build n.right()})"
+  # `call_statement`
+  # A `call` that's on it's own line.
+
+  'call_statement': (n) -&gt;
+    left = @build n.left()
+
+    # **Caveat:**
+    # *When calling in this way: `function () { ... }()`,
+    # ensure that there are parenthesis around the anon function
+    # (eg, `(-&gt; ...)()`).*
+
+    left = paren(left)  if n.left().isA('function')
+
+    if n.right().children.length == 0
+      "#{left}()"
+    else
+      "#{left} #{@build n.right()}"
+  # `list`
+  # A parameter list.
+
+  'list': (n) -&gt;
+    list = _.map(n.children, (item) =&gt;
+      if n.children.length &gt; 1
+        item.is_list_element = true
+      @build(item))
+
+    list.join(", ")
+  'delete': (n) -&gt;
+    ids = _.map(n.children, (el) =&gt; @build(el))
+    ids = ids.join(', ')
+    "delete #{ids}\n"
+  # `.` (scope resolution?)
+  # For instances such as `object.value`.
+
+  '.': (n) -&gt;
+    # **Caveat:**
+    # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
+
+    # **Caveat:**
+    # *If called as `x.prototype`, it should use double colons (`x::`).*
+
+    left  = @build n.left()
+    right_obj = n.right()
+    right_obj.property_accessor = true
+    right = @build right_obj
+
+    if n.isThis and n.isPrototype
+      "@::"
+    else if n.isThis
+      "@#{right}"
+    else if n.isPrototype
+      "#{left}::"
+    else if n.left().isPrototype
+      "#{left}#{right}"
+    else
+      "#{left}.#{right}"
+  'try': (n) -&gt;
+    c = new Code
+    c.add 'try'
+    c.scope @body(n.tryBlock)
+
+    _.each n.catchClauses, (clause) =&gt;
+      c.add @build(clause)
+
+    if n.finallyBlock?
+      c.add "finally"
+      c.scope @body(n.finallyBlock)
+
+    c
+  'catch': (n) -&gt;
+    body_ = @body(n.block)
+    return '' if trim(body_).length == 0
+
+    c = new Code
+
+    if n.varName?
+      c.add "catch #{n.varName}"
+    else
+      c.add 'catch'
+
+    c.scope @body(n.block)
+    c
+  # `?` (ternary operator)
+  # For `a ? b : c`. Note that these will always be parenthesized, as (I
+  # believe) the order of operations in JS is different in CS.
+
+  '?': (n) -&gt;
+    "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
+  'for': (n) -&gt;
+    c = new Code
+
+    if n.setup?
+      c.add "#{@build n.setup}\n"
+
+    if n.condition?
+      c.add "while #{@build n.condition}\n"
+    else
+      c.add "loop"
+
+    c.scope @body(n.body)
+    c.scope @body(n.update)  if n.update?
+    c
+  'for_in': (n) -&gt;
+    c = new Code
+
+    c.add "for #{@build n.iterator} of #{@build n.object}"
+    c.scope @body(n.body)
+    c
+  'while': (n) -&gt;
+    c = new Code
+
+    keyword   = if n.positive then "while" else "until"
+    body_     = @body(n.body)
+
+    # *Use `loop` whin something will go on forever (like `while (true)`).*
+    if truthy(n.condition)
+      statement = "loop"
+    else
+      statement = "#{keyword} #{@build n.condition}"
+
+    if isSingleLine(body_) and statement isnt "loop"
+      c.add "#{trim body_}  #{statement}\n"
+    else
+      c.add statement
+      c.scope body_
+    c
+  'do': (n) -&gt;
+    c = new Code
+
+    c.add "loop"
+    c.scope @body(n.body)
+    c.scope "break unless #{@build n.condition}"  if n.condition?
+
+    c
+  'if': (n) -&gt;
+    c = new Code
+
+    keyword = if n.positive then "if" else "unless"
+    body_   = @body(n.thenPart)
+    n.condition.parenthesized = false
+
+    # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
+    # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
+    if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
+      console.log n.thenPart
+      c.add "#{@build n.condition}\n"
+
+    else if isSingleLine(body_) and !n.elsePart?
+      c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
+
+    else
+      c.add "#{keyword} #{@build n.condition}"
+      c.scope @body(n.thenPart)
+
+      if n.elsePart?
+        if n.elsePart.typeName() == 'if'
+          c.add "else #{@build(n.elsePart).toString()}"
+        else
+          c.add "else\n"
+          c.scope @body(n.elsePart)
+
+    c
+  'switch': (n) -&gt;
+    c = new Code
+
+    c.add "switch #{@build n.discriminant}\n"
+
+    fall_through = false
+    _.each n.cases, (item) =&gt;
+      if item.value == 'default'
+        c.scope "else"
+      else
+        if fall_through == true
+          c.add ", #{@build item.caseLabel}\n"
+        else
+          c.add "  when #{@build item.caseLabel}"
+          
+      if @body(item.statements).length == 0
+        fall_through = true
+      else
+        fall_through = false
+        c.add "\n"
+        c.scope @body(item.statements), 2
+
+      first = false
+
+    c
+  'existence_check': (n) -&gt;
+    "#{@build n.left()}?"
+  'array_init': (n) -&gt;
+    if n.children.length == 0
+      "[]"
+    else
+      "[ #{@list n} ]"
+  # `property_init`
+  # Belongs to `object_init`;
+  # left is a `identifier`, right can be anything.
+
+  'property_init': (n) -&gt;
+    left = n.left()
+    right = n.right()
+    right.is_property_value = true
+    "#{@property_identifier left}: #{@build right}"
+  # `object_init`
+  # An object initializer.
+  # Has many `property_init`.
+
+  'object_init': (n, options={}) -&gt;
+    if n.children.length == 0
+      "{}"
+
+    else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
+      @build n.children[0]
+
+    else
+      list = _.map n.children, (item) =&gt; @build item
+
+      c = new Code
+      c.scope list.join("\n")
+      c = "{#{c}}"  if options.brackets?
+      c
+  # `function`
+  # A function. Can be an anonymous function (`function () { .. }`), or a named
+  # function (`function name() { .. }`).
+
+  'function': (n) -&gt;
+    c = new Code
+
+    params = _.map n.params, (str) =&gt;
+      if str.constructor == String
+        @id_param str
+      else
+        @build str
+
+    if n.name
+      c.add "#{n.name} = "
+
+    if n.params.length &gt; 0
+      c.add "(#{params.join ', '}) -&gt;"
+    else
+      c.add "-&gt;"
+
+    body = @body(n.body)
+    if trim(body).length &gt; 0
+      c.scope body
+    else
+      c.add "\n"
+
+    c
+  'var': (n) -&gt;
+    list = _.map n.children, (item) =&gt;
+      "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
+
+    _.compact(list).join("\n") + "\n"
+  # ### Unsupported things
+  #
+  # Due to CoffeeScript limitations, the following things are not supported:
+  #
+  #  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
+  #  * Break labels (`my_label: ...`)
+  #  * Constants
+
+  'other': (n) -&gt;   @unsupported n, "#{n.typeName()} is not supported yet"
+  'getter': (n) -&gt;  @unsupported n, "getter syntax is not supported; use __defineGetter__"
+  'setter': (n) -&gt;  @unsupported n, "setter syntax is not supported; use __defineSetter__"
+  'label': (n) -&gt;   @unsupported n, "labels are not supported by CoffeeScript"
+  'const': (n) -&gt;   @unsupported n, "consts are not supported by CoffeeScript"
+  'block': (args...) -&gt;
+    @script.apply @, args
+  # `unsupported()`
+  # Throws an unsupported error.
+  'unsupported': (node, message) -&gt;
+    throw new UnsupportedError("Unsupported: #{message}", node)
+# ## AST manipulation
+# Manipulation of the abstract syntax tree happens here. All these are done on
+# the `build()` step, done just before a node is passed onto `Builders`.
+
+class Transformer
+  transform: (args...) -&gt;
+    node = args[0]
+    return  if node.transformed?
+    type = node.typeName()
+    fn = @[type]
+
+    if fn
+      fn.apply(this, args)
+      node.transformed = true
+  'script': (n) -&gt;
+    n.functions    = []
+    n.nonfunctions = []
+
+    _.each n.children, (item) =&gt;
+      if item.isA('function')
+        n.functions.push item
+      else
+        n.nonfunctions.push item
+
+    last = null
+
+    # *Statements don't need parens, unless they are consecutive object
+    # literals.*
+    _.each n.nonfunctions, (item) =&gt;
+      if item.expression?
+        expr = item.expression
+
+        if last?.isA('object_init') and expr.isA('object_init')
+          item.parenthesized = true
+        else
+          item.parenthesized = false
+
+        last = expr
+  '.': (n) -&gt;
+    n.isThis      = n.left().isA('this')
+    n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
+  ';': (n) -&gt;
+    if n.expression?
+      # *Statements don't need parens.*
+      n.expression.parenthesized = false
+
+      # *If the statement only has one function call (eg, `alert(2);`), the
+      # parentheses should be omitted (eg, `alert 2`).*
+      if n.expression.isA('call')
+        n.expression.type = Typenames['call_statement']
+        @call_statement n
+  'function': (n) -&gt;
+    # *Unwrap the `return`s.*
+    n.body.walk last: true, (parent, node, list) -&gt;
+      if node.isA('return') and node.value
+        # Hax
+        lastNode = if list
+          parent[list]
+        else
+          parent.children[parent.children.length-1]
+
+        if lastNode
+          lastNode.type = Typenames[';']
+          lastNode.expression = lastNode.value
+  'switch': (n) -&gt;
+    _.each n.cases, (item) =&gt;
+      block = item.statements
+      ch    = block.children
+
+      # *CoffeeScript does not need `break` statements on `switch` blocks.*
+      delete ch[ch.length-1] if block.last()?.isA('break')
+  'call_statement': (n) -&gt;
+    if n.children[1]
+      _.each n.children[1].children, (child, i) -&gt;
+        if child.isA('function') and i != n.children[1].children.length-1
+          child.parenthesized = true
+  'return': (n) -&gt;
+    # *Doing "return {x:2, y:3}" should parenthesize the return value.*
+    if n.value and n.value.isA('object_init') and n.value.children.length &gt; 1
+      n.value.parenthesized = true
+  'block': (n) -&gt;
+    @script n
+  'if': (n) -&gt;
+    # *Account for `if(x) {} else { something }` which should be `something unless x`.*
+    if n.thenPart.children.length == 0 and n.elsePart?.children.length &gt; 0
+      n.positive = false
+      n.thenPart = n.elsePart
+      delete n.elsePart
+
+    @inversible n
+  'while': (n) -&gt;
+    # *A while with a blank body (`while(x){}`) should be accounted for.*
+    # *You can't have empty blocks, so put a `continue` in there. (#78)*
+    if n.body.children.length is 0
+      n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
+
+    @inversible n
+  'inversible': (n) -&gt;
+    @transform n.condition
+    positive = if n.positive? then n.positive else true
+
+    # *Invert a '!='. (`if (x != y)` =&gt; `unless x is y`)*
+    if n.condition.isA('!=')
+      n.condition.type = Typenames['==']
+      n.positive = not positive
+
+    # *Invert a '!'. (`if (!x)` =&gt; `unless x`)*
+    else if n.condition.isA('!')
+      n.condition = n.condition.left()
+      n.positive = not positive
+
+    else
+      n.positive = positive
+  '==': (n) -&gt;
+    if n.right().isA('null', 'void')
+      n.type     = Typenames['!']
+      n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
+  '!=': (n) -&gt;
+    if n.right().isA('null', 'void')
+      n.type     = Typenames['existence_check']
+      n.children = [n.left()]
+class UnsupportedError
+  constructor: (str, src) -&gt;
+    @message = str
+    @cursor  = src.start
+    @line    = src.lineno
+    @source  = src.tokenizer.source
+  toString: -&gt; @message
+
+# ## Exports
+
+@Js2coffee = exports =
+  version: '0.1.3'
+  build: buildCoffee
+  UnsupportedError: UnsupportedError
+
+module.exports = exports  if module?
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
+</t>
 </tnodes>
 </leo_file>
