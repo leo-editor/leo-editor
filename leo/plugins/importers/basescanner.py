@@ -84,12 +84,6 @@ else:
 import re
 import time
 #@-<< basescanner imports >>
-#@+<< basescanner switches >>
-#@+node:ekr.20161104071309.1: ** << basescanner switches >>
-gen_v2 = g.gen_v2
-new_ctors = False
-    # Fails at present.
-#@-<< basescanner switches >>
 #@+others
 #@+node:ekr.20161027114701.1: ** class BaseScanner
 class BaseScanner(object):
@@ -1808,11 +1802,13 @@ class ImportController(object):
             # For the @language directive.
         self.name = name or language
         assert language or name
-        if gen_v2:
-            self.scanner = scanner
-        else:
-            self.state = scanner
-                # A scanner instance.
+        ###
+        self.state = scanner # A scanner instance.
+        # if gen_v2:
+            # self.scanner = scanner
+        # else:
+            # self.state = scanner
+                # # A scanner instance.
         self.strict = strict
             # True: leading whitespace is significant.
         assert scanner, 'Caller must provide a LineScanner instance'
@@ -1822,13 +1818,16 @@ class ImportController(object):
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
         
-        # Constants...
-        if new_ctors: ### not yet.
-            self.gen_refs = name in ('javascript',)
-            self.gen_clean = name in ('python',)
-        else:
-            self.gen_clean = gen_clean
-            self.gen_refs = gen_refs
+        # Constants..
+        ###
+        self.gen_clean = gen_clean
+        self.gen_refs = gen_refs
+        # if new_ctors: ### not yet.
+            # self.gen_refs = name in ('javascript',)
+            # self.gen_clean = name in ('python',)
+        # else:
+            # self.gen_clean = gen_clean
+            # self.gen_refs = gen_refs
         self.tab_width = None # Must be set in run()
 
         # The ws equivalent to one tab.
@@ -1972,10 +1971,12 @@ class ImportController(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        if g.gen_v2:
-            self.v2_gen_lines(s, parent)
-        else:
-            self.v1_scan(s, parent)
+        ###
+        self.v1_scan(s, parent)
+        # if g.gen_v2:
+            # self.v2_gen_lines(s, parent)
+        # else:
+            # self.v1_scan(s, parent)
         self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
@@ -2403,140 +2404,6 @@ class ImportController(object):
         state.pop()
         if last_line:
             self.append_to_body(child, last_line)
-    #@+node:ekr.20161104084810.1: *3* IC.V2: v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
-        '''Parse all lines of s into parent and created child nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.py')
-        scanner = self.scanner
-        tail_p = None
-        prev_state = scanner.initial_state()
-        stack = [Target(parent, prev_state)]
-        for line in g.splitLines(s):
-            new_state = scanner.v2_scan_line(line, prev_state)
-            if trace: g.trace('%s tail: %s %r' % (
-                new_state, int(bool(tail_p)), line))
-            # if trace: g.trace('%s tail: %s +: %s =: %s %r' % (
-                # new_state, int(bool(tail_p)), int(starts), int(continues), line))
-            if new_state.v2_starts_block(prev_state):
-                tail_p = None
-                self.start_new_block(line, new_state, stack)
-            elif new_state.v2_continues_block(prev_state):
-                p = tail_p or stack[-1].p
-                p.b = p.b + line
-            else:
-                tail_p = self.end_block(line, new_state, stack)
-            prev_state = new_state
-        # Put directives at the end, so as not to interfere with shebang lines, etc.
-        parent.b = parent.b + ''.join(self.root_directives())
-    #@+node:ekr.20161107212224.1: *4* IC.cut_stack
-    def cut_stack(self, new_state, stack):
-        '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.py')
-        trace_stack = True
-        if trace and trace_stack:
-            print('\n'.join([repr(z) for z in stack]))
-        assert stack # Fail on entry.
-        while stack:
-            top_state = stack[-1].state
-            if new_state < top_state:
-                if trace: g.trace('new_state < top_state', top_state)
-                if len(stack) == 1:
-                    break
-                else:
-                    stack.pop() 
-            elif top_state == new_state:
-                if trace: g.trace('new_state == top_state', top_state)
-                break
-            else:
-                if trace: g.trace('OVERSHOOT: new_state > top_state', top_state)
-                    # Can happen with valid javascript programs.
-                break
-        assert stack # Fail on exit.
-        if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161107220211.1: *4* IC.end_block & helper
-    def end_block(self, line, new_state, stack):
-        # The block is ending. Add tail lines until the start of the next block.
-        is_python = self.name == 'python'
-        p = stack[-1].p # Put the closing line in *this* node.
-        if is_python or self.gen_refs:
-            tail_p = None
-        else:
-            tail_p = p # Put trailing lines in this node.
-        if is_python:
-            self.end_python_block(line, new_state, stack)
-        else:
-            p.b = p.b + line
-            self.cut_stack(new_state, stack)
-        ### This doesn't work
-        ### if not self.gen_refs:
-        ###    tail_p = stack[-1].p
-        return tail_p
-    #@+node:ekr.20161107214238.1: *5* IC.ends_python
-    def end_python_block(self, line, new_state, stack):
-        '''Handle lines at a lower level.'''
-        # Unlike other languages, *this* line not only *ends*
-        # a block, but *starts* a block.
-        self.cut_stack(new_state, stack)
-        target = stack[-1]
-        h = self.clean_headline(line)
-        child = self.v2_create_child_node(target.p.parent(), line, h)
-        stack.pop()
-            ###### Is this where the line got lost?
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161107212053.1: *4* IC.root_directives
-    def root_directives(self):
-        '''Return the proper directives for the root node p.'''
-        return [
-            '@language %s\n' % self.language,
-            '@tabwidth %d\n' % self.tab_width,
-        ]
-    #@+node:ekr.20161107214653.1: *4* IC.start_new_block
-    def start_new_block(self, line, new_state, stack):
-        '''Create a child node and update the stack.'''
-        target=stack[-1]
-        # Insert the reference in *this* node.
-        h = self.v2_gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        child = self.v2_create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
-    def v2_create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
-        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (headline, parent.h, body))
-        p = parent.insertAsLastChild()
-        assert g.isString(body), repr(body)
-        assert g.isString(headline), repr(headline)
-        p.b = p.b + body
-        p.h = headline
-        return p
-    #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
-    def v2_gen_ref(self, line, parent, target):
-        '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        '''
-        trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
-        h = self.clean_headline(line) 
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = g.angleBrackets(' %s ' % h)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % h))
-        else:
-            ref = None if target.ref_flag else '%s@others\n' % indent_ws
-            target.ref_flag = True
-                # Don't generate another @others in this target.
-            headline = h
-        if ref:
-            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
-                '*' * 20, indent_ws, line, parent.h))
-            parent.b = parent.b + ref
-        return headline
     #@-others
 #@+node:ekr.20161027115813.1: ** class LineScanner
 class LineScanner(object):
@@ -2556,12 +2423,9 @@ class LineScanner(object):
         self.comment_delims = g.set_delims_from_language(language) if language else None
             # For general_line_scanner
         self.tab_width = c.tab_width
-        if gen_v2:
-            pass
-        else:
-            self.context = '' # Represents cross-line constructs.
-            self.base_curlies = self.curlies = 0
-            self.stack = []
+        self.context = '' # Represents cross-line constructs.
+        self.base_curlies = self.curlies = 0
+        self.stack = []
 
     def __repr__(self):
         '''LineScanner.__repr__'''
@@ -2580,25 +2444,19 @@ class LineScanner(object):
         return s[i:i+len(pattern)] == pattern
     #@+node:ekr.20161105141816.1: *3* V1 methods
     #@+node:ekr.20161027115813.5: *4* scanner.clear, push & pop
-    if gen_v2:
-        
-        pass
-        
-    else:
+    def clear(self):
+        '''Clear the state.'''
+        self.base_curlies = self.curlies = 0
+        self.context = ''
 
-        def clear(self):
-            '''Clear the state.'''
-            self.base_curlies = self.curlies = 0
-            self.context = ''
+    def pop(self):
+        '''Restore the base state from the stack.'''
+        self.base_curlies = self.stack.pop()
         
-        def pop(self):
-            '''Restore the base state from the stack.'''
-            self.base_curlies = self.stack.pop()
-            
-        def push(self):
-            '''Save the base state on the stack and enter a new base state.'''
-            self.stack.append(self.base_curlies)
-            self.base_curlies = self.curlies
+    def push(self):
+        '''Save the base state on the stack and enter a new base state.'''
+        self.stack.append(self.base_curlies)
+        self.base_curlies = self.curlies
     #@+node:ekr.20161027115813.7: *4* scanner.scan_line
     def scan_line(self, s):
         '''
@@ -2640,22 +2498,17 @@ class LineScanner(object):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-        if gen_v2:
-            return ScanState(self.context, self.curlies)
+        ###
+        # if gen_v2:
+            # return ScanState(self.context, self.curlies)
     #@+node:ekr.20161027115813.3: *4* scanner.V1: continues_block and starts_block
-    if gen_v2:
-        
-        pass
-        
-    else:
+    def continues_block(self):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self.context or self.curlies > self.base_curlies
 
-        def continues_block(self):
-            '''Return True if the just-scanned lines should be placed in the inner block.'''
-            return self.context or self.curlies > self.base_curlies
-        
-        def starts_block(self):
-            '''Return True if the just-scanned line starts an inner block.'''
-            return not self.context and self.curlies > self.base_curlies
+    def starts_block(self):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return not self.context and self.curlies > self.base_curlies
     #@+node:ekr.20161105141836.1: *3* V2 methods
     #@+node:ekr.20161106180704.1: *4* scanner.general_scan_line
     def general_scan_line(self, s):
@@ -2699,8 +2552,9 @@ class LineScanner(object):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-        if gen_v2:
-            return ScanState(self.context, self.curlies)
+        ###
+        # if gen_v2:
+            # return ScanState(self.context, self.curlies)
     #@+node:ekr.20161104144603.1: *4* scanner.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
@@ -2731,49 +2585,6 @@ class ScanState:
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and self.curlies > self.base_curlies
     #@-others
-#@+node:ekr.20161105045904.1: ** class ScanState_V2
-class ScanState_V2:
-    '''A class representing the state of the v2 scan.'''
-    
-    def __init__(self, context, curlies):
-        '''Ctor for the ScanState class.'''
-        self.context = context
-        self.curlies = curlies
-        
-    def __repr__(self):
-        '''ScanState.__repr__'''
-        return 'ScanState_V2 context: %r curlies: %s' % (
-            self.context, self.curlies)
-
-    #@+others
-    #@+node:ekr.20161105085900.1: *3* ScanState: V2: comparisons
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.curlies == other.curlies
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.curlies < other.curlies
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.curlies < other.curlies
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161105180504.1: *3* ScanState: v2.starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
-    #@-others
-
 #@+node:ekr.20161104090312.1: ** class Target
 class Target:
     '''
