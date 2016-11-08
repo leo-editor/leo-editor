@@ -18788,7 +18788,28 @@ def skip_matching_python_parens(s, i):
     '''
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
-.. @+node:ekr.20161104065840.1: *3* Line-oriented importers
+.. @+node:ekr.20161104065840.1: *3* Unused Line-oriented importers
+.. @+node:ekr.20161108164115.1: *4* Utils (V1)
+.. @+node:ekr.20161108164115.2: *5* IC.create_child_node (V1)
+def create_child_node(self, parent, body, headline):
+    '''Create a child node of parent.'''
+    trace = False and not g.unitTesting
+    if trace: g.trace('\n\n%s === in === %s\n' % (headline, parent.h))
+    p = parent.insertAsLastChild()
+    assert g.isString(body), repr(body)
+    assert g.isString(headline), repr(headline)
+    p.b = g.u(body)
+    p.h = g.u(headline)
+    return p
+.. @+node:ekr.20161108164115.3: *5* IC.append_to_body (V1)
+def append_to_body(self, p, s):
+    '''
+    Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.
+    '''
+    assert g.isString(s), (repr(s), g.callers())
+    assert g.isString(p.b), (repr(p.b), g.callers())
+    p.b = p.b + s
 .. @+node:ekr.20161108154628.1: *4* ImportController V1 Scanning & code generation
 .. @+node:ekr.20161108154628.2: *5* IC.gen_lines (entry) & helpers
 def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
