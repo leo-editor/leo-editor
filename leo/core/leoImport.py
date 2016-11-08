@@ -397,7 +397,9 @@ class LeoImportCommands(object):
                     else:
                         d[ext] = scanner_class
         elif sfn not in (
-            'basescanner.py', # doesn't have importer_dict.
+            # These are base classes, not real plugins.
+            'basescanner.py',
+            'linescanner.py',
         ):
             g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
     #@+node:ekr.20031218072017.3289: *3* ic.Export

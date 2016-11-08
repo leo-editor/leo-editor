@@ -15,7 +15,7 @@ import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-gen_v2 = True
+gen_v2 = False
     # True: use V2 version of line-oriented importers.
     # Used by several importers.
 in_bridge = False
