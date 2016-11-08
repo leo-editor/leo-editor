@@ -9,6 +9,8 @@
 
 - Encourage everyone to use issue tracker.
 
+- A "looking over Edward's shoulder" video.
+
 **** @auto bugs:
     1. cancelling @auto write creates orphan nodes!
     2. Cloned @auto nodes duplicates section references!
