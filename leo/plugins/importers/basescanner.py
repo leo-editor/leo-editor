@@ -1,77 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
-#@+<< basescanner docstring >>
-#@+node:ekr.20161029051724.1: ** << basescanner docstring >>
-'''
-#@@language rest
-#@@wrap
-
-Legacy (character-oriented) importers use BaseScanner class.
-
-New (line-oriented) importers use ImportController class. Here's how:
-
-**Executive overview**
-
-New importers, for example, the javascript and perl importers, copy entire
-lines from the input file to Leo nodes. This makes the new importers much
-less error prone than the legacy (character-by-character) importers.
-
-New importers *nothing* about parsing. They know only about how to scan
-tokens *accurately*. Again, this makes the new importers more simple and
-robust than the legacy importers.
-
-New importers are simple to write because two base classes handle all
-complex details. Importers override just three methods. The `scan_line`
-method is the most important of these. It is straightforward token-scanning
-code.
-
-**Overview of the code**
-
-`leo/plugins/basescanner.py` contains two new classes: `ImportController`
-(IC) and `LineScanner` classes. The IC class replaces the horribly complex
-BaseScanner class.
-
-The LineScanner class encapsulates *all* language-dependent knowledge.
-
-Using LineScanner methods, `IC.scan` breaks input files Leo nodes. This is
-necessarily a complex algorithm.
-
-Leo's import infrastructure, in `leoImport.py`, instantiates the scanner
-and calls `IC.run`, which calls `IC.scan`.
-
-**Writing a new importer**
-
-New style importers consist of the following:
-
-1. A subclass of ImportController class that overrides two methods, the ctor
-   and an optional `clean_headline method`. This method tells how to
-   simplify headlines.
-
-2. A subclass of the LineScanner class that overrides `LineScanner.scan_line`.
-
-`LineScanner.scan_line` updates the net number of curly brackets and parens
-at the end of each line. `scan_line` must compute these numbers
-*accurately*, taking into account constructs such as multi-line comments,
-strings and regular expressions.
-
-**Importing Python**
-
-The `LineScanner` class would have to be completely rewritten for Python
-because Python uses indentation levels to indicate structure, not curly
-brackets.
-
-**Summary**
-
-Writing a new-style (line-by-line) importer is easy because the `LineScanner`
-and `ImportController` classes hide all complex details.
-
-The `LineScanner` class encapsulate *all* language-specific information.
-
-Most importers simply override `LineScanner.scan_line`, which simply scans
-tokens. The entire `LineScanner` would have to be rewritten for languages
-such as Python.
-'''
-#@-<< basescanner docstring >>
+'''Legacy (character-oriented) importers. Will eventually disappear'''
 #@+<< basescanner imports >>
 #@+node:ekr.20161027163734.1: ** << basescanner imports >>
 import leo.core.leoGlobals as g
@@ -2501,82 +2430,7 @@ class LineScanner(object):
         ###
         # if gen_v2:
             # return ScanState(self.context, self.curlies)
-    #@+node:ekr.20161027115813.3: *4* scanner.V1: continues_block and starts_block
-    def continues_block(self):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self.context or self.curlies > self.base_curlies
-
-    def starts_block(self):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and self.curlies > self.base_curlies
-    #@+node:ekr.20161105141836.1: *3* V2 methods
-    #@+node:ekr.20161106180704.1: *4* scanner.general_scan_line
-    def general_scan_line(self, s):
-        '''
-        A generalized line scanner, using comment delims set in the ctor from
-        the language keword arg.
-        '''
-        trace = False and not g.unitTesting
-        
-        match = self.match
-        assert self.comment_delims
-        line_comment, block1, block2 = self.comment_delims
-        contexts = strings = ['"', "'"]
-        if block1:
-            contexts.append(block1)
-        i = 0
-        while i < len(s):
-            progress = i
-            ch = s[i]
-            if self.context:
-                assert self.context in contexts, repr(self.context)
-                if ch == '\\':
-                    i += 1 # Eat the next character later.
-                elif self.context in strings and self.context == ch:
-                    self.context = '' # End the string.
-                elif block1 and self.context == block1 and match(s, i, block2):
-                    self.context = '' # End the block comment.
-                    i += (len(block2) - 1)
-                else:
-                    pass # Eat the string character later.
-            elif ch in strings:
-                self.context = ch
-            elif block1 and match(s, i, block1):
-                self.context = block1
-                i += (len(block1) - 1)
-            elif line_comment and match(s, i, line_comment):
-                break # The single-line comment ends the line.
-            elif ch == '{': self.curlies += 1
-            elif ch == '}': self.curlies -= 1
-            i += 1
-            assert progress < i
-        if trace:
-            g.trace(self, s.rstrip())
-        ###
-        # if gen_v2:
-            # return ScanState(self.context, self.curlies)
-    #@+node:ekr.20161104144603.1: *4* scanner.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        assert False, 'Subclasses must override LineScanner.initial_state.'
-    #@-others
-#@+node:ekr.20161105172716.1: ** class ScanState
-class ScanState:
-    '''A class representing the state of the v1 scan.'''
-    
-    def __init__(self, context, curlies):
-        '''Ctor for the ScanState class.'''
-        self.base_curlies = curlies
-        self.context = context
-        self.curlies = curlies
-        
-    def __repr__(self):
-        '''ScanState.__repr__'''
-        return 'ScanState context: %r curlies: %s' % (
-            self.context, self.curlies)
-
-    #@+others
-    #@+node:ekr.20161105172716.3: *3* ScanState: V1: starts/continues_block
+    #@+node:ekr.20161027115813.3: *4* scanner.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self.context or self.curlies > self.base_curlies
@@ -2585,24 +2439,6 @@ class ScanState:
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and self.curlies > self.base_curlies
     #@-others
-#@+node:ekr.20161104090312.1: ** class Target
-class Target:
-    '''
-    A class describing a target node p.
-    state is used to cut back the stack.
-    '''
-
-    def __init__(self, p, state):
-        '''Ctor for the Block class.'''
-        self.p = p
-        self.ref_flag = False
-            # True: @others or section reference should be generated.
-            # It's always True when gen_refs is True.
-        self.state = state
-
-    def __repr__(self):
-        return 'Target: state: %s p: %s' % (
-            self.state, g.shortFileName(self.p.h))
 #@-others
 #@@language python
 #@@tabwidth -4
