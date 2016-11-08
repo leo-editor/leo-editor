@@ -2402,46 +2402,27 @@ class ImportController(object):
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
-        gen_refs, scanner = self.gen_refs, self.scanner
-        is_python = self.name == 'python'
+        scanner = self.scanner
         tail_p = None
         prev_state = scanner.initial_state()
         stack = [Target(parent, prev_state)]
         for line in g.splitLines(s):
             new_state = scanner.v2_scan_line(line, prev_state)
-            starts = new_state.v2_starts_block(prev_state)
-            continues = new_state.v2_continues_block(prev_state)
-            if trace: g.trace('%s tail: %s +: %s =: %s %r' % (
-                new_state, int(bool(tail_p)), int(starts), int(continues), line))
-            if starts:
+            if trace: g.trace('%s tail: %s %r' % (
+                new_state, int(bool(tail_p)), line))
+            # if trace: g.trace('%s tail: %s +: %s =: %s %r' % (
+                # new_state, int(bool(tail_p)), int(starts), int(continues), line))
+            if new_state.v2_starts_block(prev_state):
                 tail_p = None
-                target=stack[-1]
-                # Insert the reference in *this* node.
-                h = self.v2_gen_ref(line, target.p, target)
-                # Create a new child and associated target.
-                child = self.v2_create_child_node(target.p, line, h)
-                stack.append(Target(child, new_state))
-            elif continues:
+                self.start_new_block(line, new_state, stack)
+            elif new_state.v2_continues_block(prev_state):
                 p = tail_p or stack[-1].p
                 p.b = p.b + line
             else:
-                # The block is ending. Add tail lines until the start of the next block.
-                p = stack[-1].p # Put the closing line in *this* node.
-                if not gen_refs and not is_python:
-                    tail_p = p # Put trailing lines in this node.
-                if is_python:
-                    # Unlike other languages, *this* line not only *ends*
-                    # a block, but *starts* a block.
-                    self.cut_stack(new_state, stack) ### parent
-                    target = stack[-1]
-                    h = self.clean_headline(line)
-                    child = self.v2_create_child_node(target.p.parent(), line, h)
-                    stack.pop()
-                    stack.append(Target(child, new_state))
-                else:
-                    p.b = p.b + line
-                    self.cut_stack(new_state, stack) ### parent
+                tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
+        # Put directives at the end, so as not to interfere with shebang lines, etc.
+        parent.b = parent.b + ''.join(self.root_directives())
     #@+node:ekr.20161106104418.1: *4* IC.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
@@ -2465,13 +2446,10 @@ class ImportController(object):
             top_state = stack[-1].state
             if new_state < top_state:
                 if trace: g.trace('new_state < top_state', top_state)
-                ###
-                # target = stack[-1]
-                # target.write_body()
                 if len(stack) == 1:
                     break
                 else:
-                    target = stack.pop() 
+                    stack.pop() 
             elif top_state == new_state:
                 if trace: g.trace('new_state == top_state', top_state)
                 break
@@ -2481,6 +2459,45 @@ class ImportController(object):
                 break
         assert stack # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161107220211.1: *4* IC.end_block & helper
+    def end_block(self, line, new_state, stack):
+        # The block is ending. Add tail lines until the start of the next block.
+        is_python = self.name == 'python'
+        p = stack[-1].p # Put the closing line in *this* node.
+        if is_python or self.gen_refs:
+            tail_p = None
+        else:
+            tail_p = p # Put trailing lines in this node.
+        if is_python:
+            self.end_python_block(line, new_state, stack)
+        else:
+            p.b = p.b + line
+            self.cut_stack(new_state, stack)
+        ### This doesn't work
+        ### if not self.gen_refs:
+        ###    tail_p = stack[-1].p
+        return tail_p
+    #@+node:ekr.20161107214238.1: *5* IC.ends_python
+    def end_python_block(self, line, new_state, stack):
+        '''Handle lines at a lower level.'''
+        # Unlike other languages, *this* line not only *ends*
+        # a block, but *starts* a block.
+        self.cut_stack(new_state, stack)
+        target = stack[-1]
+        h = self.clean_headline(line)
+        child = self.v2_create_child_node(target.p.parent(), line, h)
+        stack.pop()
+            ###### Is this where the line got lost?
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161107214653.1: *4* IC.start_new_block
+    def start_new_block(self, line, new_state, stack):
+        '''Create a child node and update the stack.'''
+        target=stack[-1]
+        # Insert the reference in *this* node.
+        h = self.v2_gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.v2_create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
     #@+node:ekr.20161105044835.1: *4* IC.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''
@@ -2509,7 +2526,7 @@ class ImportController(object):
             parent.b = parent.b + ref
         return headline
     #@+node:ekr.20161107212053.1: *4* IC.root_directives
-    def root_directives(self, p):
+    def root_directives(self):
         '''Return the proper directives for the root node p.'''
         return [
             '@language %s\n' % self.language,
