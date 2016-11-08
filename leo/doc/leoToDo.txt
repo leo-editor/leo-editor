@@ -7,6 +7,8 @@
 @language rest
 @wrap
 
+- Encourage everyone to use issue tracker.
+
 **** @auto bugs:
     1. cancelling @auto write creates orphan nodes!
     2. Cloned @auto nodes duplicates section references!
