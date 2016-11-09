@@ -6,8 +6,8 @@ import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 #@+others
-#@+node:ekr.20160505094722.2: ** class CoffeeScriptScanner(Importer)
-class CoffeeScriptScanner(Importer):
+#@+node:ekr.20160505094722.2: ** class CoffeeScriptImporter(Importer)
+class CoffeeScriptImporter(Importer):
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee.__init__
@@ -204,7 +204,7 @@ class CoffeeScriptScanner(Importer):
     #@-others
 #@-others
 importer_dict = {
-    'class': CoffeeScriptScanner,
+    'class': CoffeeScriptImporter,
     'extensions': ['.coffee', ],
 }
 #@-leo
