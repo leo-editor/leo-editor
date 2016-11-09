@@ -813,7 +813,7 @@ class BaseScanner(object):
     def putRootText(self, p):
         self.appendStringToBody(p, '%s@language %s\n@tabwidth %d\n' % (
             self.rootLine, self.alternate_language or self.language, self.tab_width))
-    #@+node:ekr.20140727075002.18225: *4* BaseScanner.undentBody
+    #@+node:ekr.20140727075002.18225: *4* BaseScanner.undentBody & helper
     def undentBody(self, s, ignoreComments=True):
         '''Remove the first line's leading indentation from all lines of s.'''
         trace = False and not g.unitTesting
@@ -830,7 +830,7 @@ class BaseScanner(object):
             result = self.undentBy(s, undentVal)
             if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
             return result
-    #@+node:ekr.20140727075002.18226: *4* BaseScanner.undentBy
+    #@+node:ekr.20140727075002.18226: *5* BaseScanner.undentBy
     def undentBy(self, s, undentVal):
         '''Remove leading whitespace equivalent to undentVal from each line.
         For strict languages, add an underindentEscapeString for underindented line.'''
@@ -1578,14 +1578,6 @@ class BaseScanner(object):
             for p in root.self_and_subtree():
                 p.clearDirty()
             c.setChanged(changed)
-            ###
-            # if self.atAuto and ok:
-                # for p in root.self_and_subtree():
-                    # p.clearDirty()
-                # c.setChanged(changed)
-            # else:
-                # root.setDirty(setDescendentsDirty=False)
-                # c.setChanged(True)
             return ok
     #@+node:ekr.20140727075002.18271: *4* BaseScanner.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):
@@ -1714,11 +1706,11 @@ class ImportController(object):
     def __init__(self,
         importCommands,
         atAuto,
-        gen_clean = True, ### To be removed. True: clean blank lines.
-        gen_refs = False, ### To be removed. True: generate section references.
+        gen_clean = True,
+        gen_refs = False,
         language = None, # For @language directive.
         name = None, # The kind of importer.
-        scanner = None, ### To do: use scanner keyword instead of state.
+        scanner = None,
         strict = False,
     ):
         '''ctor for BaseScanner.'''
@@ -1731,13 +1723,7 @@ class ImportController(object):
             # For the @language directive.
         self.name = name or language
         assert language or name
-        ###
         self.state = scanner # A scanner instance.
-        # if gen_v2:
-            # self.scanner = scanner
-        # else:
-            # self.state = scanner
-                # # A scanner instance.
         self.strict = strict
             # True: leading whitespace is significant.
         assert scanner, 'Caller must provide a LineScanner instance'
@@ -1748,15 +1734,8 @@ class ImportController(object):
         self.tree_type = ic.treeType # '@root', '@file', etc.
         
         # Constants..
-        ###
         self.gen_clean = gen_clean
         self.gen_refs = gen_refs
-        # if new_ctors: ### not yet.
-            # self.gen_refs = name in ('javascript',)
-            # self.gen_clean = name in ('python',)
-        # else:
-            # self.gen_clean = gen_clean
-            # self.gen_refs = gen_refs
         self.tab_width = None # Must be set in run()
 
         # The ws equivalent to one tab.
@@ -1900,12 +1879,7 @@ class ImportController(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        ###
         self.v1_scan(s, parent)
-        # if g.gen_v2:
-            # self.v2_gen_lines(s, parent)
-        # else:
-            # self.v1_scan(s, parent)
         self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
@@ -2090,10 +2064,6 @@ class ImportController(object):
         lws = self.get_lws(lines[0])
         for s in lines:
             lws2 = self.get_lws(s)
-            ###
-            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # pass # Ignore section references.
-            # el
             if lws2.startswith(lws):
                 pass
             elif lws.startswith(lws2):
@@ -2427,9 +2397,6 @@ class LineScanner(object):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-        ###
-        # if gen_v2:
-            # return ScanState(self.context, self.curlies)
     #@+node:ekr.20161027115813.3: *4* scanner.continues_block and starts_block
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''

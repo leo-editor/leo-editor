@@ -98,14 +98,12 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
+        delim1, junk, junk = g.set_delims_from_language(name)
+        self.comment_delim = delim1
         
         # Constants...
-        ### new_ctors
         self.gen_refs = name in ('javascript',)
         self.gen_clean = name in ('python',)
-        ###
-        # self.gen_clean = gen_clean
-        # self.gen_refs = gen_refs
         self.tab_width = None # Must be set in run()
 
         # The ws equivalent to one tab.
@@ -298,12 +296,7 @@ class Importer(object):
             s = self.regularize_whitespace(s)
         # Generate the nodes, including directives and section references.
         changed = c.isChanged()
-        ###
         self.v2_gen_lines(s, parent)
-        # if g.gen_v2:
-            # self.v2_gen_lines(s, parent)
-        # else:
-            # self.v1_scan(s, parent)
         self.post_pass(parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
@@ -559,6 +552,67 @@ class Importer(object):
                 '*' * 20, indent_ws, line, parent.h))
             parent.b = parent.b + ref
         return headline
+    #@+node:ekr.20161108180546.1: *3* i.Utils (basescanner.py)
+    #@+node:ekr.20161108180532.1: *4* BaseScanner.getLeadingIndent
+    def getLeadingIndent(self, s, i, ignoreComments=True):
+        '''Return the leading whitespace of a line.
+        Ignore blank and comment lines if ignoreComments is True'''
+        width = 0
+        i = g.find_line_start(s, i)
+        if ignoreComments:
+            while i < len(s):
+                # g.trace(g.get_line(s,i))
+                j = g.skip_ws(s, i)
+                if g.is_nl(s, j) or g.match(s, j, self.comment_delim):
+                    i = g.skip_line(s, i) # ignore blank lines and comment lines.
+                else:
+                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                    break
+        else:
+            i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+        # g.trace('returns:',width)
+        return width
+    #@+node:ekr.20161108180655.1: *4* BaseScanner.undentBody & helper
+    def undentBody(self, s, ignoreComments=True):
+        '''Remove the first line's leading indentation from all lines of s.'''
+        trace = False and not g.unitTesting
+        verbose = False
+        if trace and verbose: g.trace('before...\n', g.listToString(g.splitLines(s)))
+        if self.is_rst:
+            return s # Never unindent rst code.
+        # Calculate the amount to be removed from each line.
+        undentVal = self.getLeadingIndent(s, 0, ignoreComments=ignoreComments)
+        if trace: g.trace(undentVal, g.splitLines(s)[0].rstrip())
+        if undentVal == 0:
+            return s
+        else:
+            result = self.undentBy(s, undentVal)
+            if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
+            return result
+    #@+node:ekr.20161108180655.2: *5* BaseScanner.undentBy
+    def undentBy(self, s, undentVal):
+        '''Remove leading whitespace equivalent to undentVal from each line.
+        For strict languages, add an underindentEscapeString for underindented line.'''
+        trace = False and not g.app.unitTesting
+        if self.is_rst:
+            return s # Never unindent rst code.
+        tag = self.c.atFileCommands.underindentEscapeString
+        result = []; tab_width = self.tab_width
+        for line in g.splitlines(s):
+            lws_s = g.get_leading_ws(line)
+            lws = g.computeWidth(lws_s, tab_width)
+            s = g.removeLeadingWhitespace(line, undentVal, tab_width)
+            # 2011/10/29: Add underindentEscapeString only for strict languages.
+            if self.strict and s.strip() and lws < undentVal:
+                if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                    undentVal, lws, repr(line)))
+                # Bug fix 2012/06/05: end the underindent count with a period,
+                # to protect against lines that start with a digit!
+                result.append("%s%s.%s" % (tag, undentVal - lws, s.lstrip()))
+            else:
+                if trace: g.trace(repr(s))
+                result.append(s)
+        return ''.join(result)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s):
@@ -628,10 +682,6 @@ class Importer(object):
         lws = self.get_lws(lines[0])
         for s in lines:
             lws2 = self.get_lws(s)
-            ###
-            # if s.strip().endswith('>>') and s.strip().startswith('<<'):
-                # pass # Ignore section references.
-            # el
             if lws2.startswith(lws):
                 pass
             elif lws.startswith(lws2):
