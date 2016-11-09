@@ -77,24 +77,19 @@ class CoffeeScriptImporter(Importer):
     def undent_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
         for p in parent.self_and_subtree():
-            p.b = self.undent_body(p.b)
-    #@+node:ekr.20160505180032.1: *4* coffee.undent_body
-    def undent_body(self, s):
+            p.b = self.undent_coffeescript_body(p.b)
+    #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
+    def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
         leading_lines = []
         lines = g.splitLines(s)
         # First, completely undent all leading whitespace or comment lines.
-        for s in lines:
-            strip = s.strip()
-            if not strip or strip.startswith('#'):
-                leading_lines.append(strip + '\n')
-            else:
-                break
+        leading_lines = [z.strip() + '\n' for z in lines if self.is_ws_line(z)]
+            # This can add a trailing newline in the file!
         i = len(leading_lines)
         # Don't unindent the def/class line! It prevents later undents.
         s = ''.join(lines[i:])
-        s = self.undentBody(s, ignoreComments=True)
-            # undentBody is defined in the base class.
+        self.undent_body_lines(lines[i:], ignoreComments=True)
         # Remove all blank lines from leading lines.
         while leading_lines and not leading_lines[0].strip():
             leading_lines = leading_lines[1:]
