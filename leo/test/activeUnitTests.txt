@@ -15583,6 +15583,47 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
+#@+node:ekr.20161109065940.1: *4* @test Importer.get_leading_indent
+# g.cls()
+import leo.plugins.importers.linescanner as linescanner
+# import imp
+# imp.reload(linescanner)
+lines_table = [
+    'abc',
+    '    xyz',
+    '    ',
+    '  # comment',
+]
+for language in ('python', 'coffeescript'):
+    importer = linescanner.Importer(
+        c.importCommands,
+        atAuto = True,
+        language = language,
+    )
+    # print('%s %r' % (language, importer.comment_delim))
+    assert importer.comment_delim == '#', importer.comment_delim
+    for line in lines_table:
+        lines = [line]
+        n = importer.get_leading_indent(lines, 0)
+        # print('%s %r' % (n, line))
+#@+node:ekr.20161109065949.1: *4* @test Importer.is_ws_line
+# g.cls()
+import leo.plugins.importers.linescanner as linescanner
+# import imp
+# imp.reload(linescanner)
+table = [
+    (False, 'abc'),
+    (False, '    xyz'),
+    (True, '    '),
+    (True,'  # comment'),
+]
+importer = linescanner.Importer(
+    c.importCommands,
+    atAuto = True,
+    language = 'python',
+)
+for val, s in table:
+    assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
 d = g.app.extra_extension_dict
 
