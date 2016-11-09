@@ -15633,21 +15633,16 @@ table = (
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    scanner = js.JS_Scanner(c)
-    if base:
-        scanner.curlies, scanner.parens, scanner.context = base
-    else:
-        scanner.curlies, scanner.parens, scanner.context = 0, 0, ''
-    scanner.scan_line(s)
-    expected_curlies, expected_parens, expected_context = result
+    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    prev_state = js.JS_ScanState('', 0, 0)
+    new_state = importer.v2_scan_line(s, prev_state)
+    curlies, parens, context = result
+    expected_state = js.JS_ScanState(context, curlies, parens)
     ok = (
-        scanner.curlies == expected_curlies and
-        scanner.parens == expected_parens and
-        scanner.context == expected_context)
-    assert ok, 'expected: %s %s %r, got: %s %s %r in %r' % (
-        expected_curlies, expected_parens, expected_context,
-        scanner.curlies, scanner.parens, scanner.context, s)
-# print('done')
+        new_state.curlies == expected_state.curlies and
+        new_state.parens == expected_state.parens and
+        new_state.context == expected_state.context)
+    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
 #@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

@@ -1233,7 +1233,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -14692,7 +14692,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15429,21 +15429,16 @@ table = (
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    scanner = js.JS_Scanner(c)
-    if base:
-        scanner.curlies, scanner.parens, scanner.context = base
-    else:
-        scanner.curlies, scanner.parens, scanner.context = 0, 0, ''
-    scanner.scan_line(s)
-    expected_curlies, expected_parens, expected_context = result
+    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    prev_state = js.JS_ScanState('', 0, 0)
+    new_state = importer.v2_scan_line(s, prev_state)
+    curlies, parens, context = result
+    expected_state = js.JS_ScanState(context, curlies, parens)
     ok = (
-        scanner.curlies == expected_curlies and
-        scanner.parens == expected_parens and
-        scanner.context == expected_context)
-    assert ok, 'expected: %s %s %r, got: %s %s %r in %r' % (
-        expected_curlies, expected_parens, expected_context,
-        scanner.curlies, scanner.parens, scanner.context, s)
-# print('done')
+        new_state.curlies == expected_state.curlies and
+        new_state.parens == expected_state.parens and
+        new_state.context == expected_state.context)
+    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
 </t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 

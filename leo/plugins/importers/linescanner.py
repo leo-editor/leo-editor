@@ -279,7 +279,8 @@ class Importer(object):
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and not g.unitTesting
-        if trace: g.trace('=' * 30, parent.h)
+        # g.trace('='*40, self.name)
+        if trace: g.trace('=' * 10, parent.h)
         c = self.c
         if prepass:
             g.trace('(ImportController) Can not happen, prepass is True')
