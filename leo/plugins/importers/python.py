@@ -27,7 +27,6 @@ class Python_ImportController(ImportController):
 
     def __init__(self, importCommands, atAuto, language=None, alternate_language=None):
         '''The ctor for the Python_ImportController class.'''
-        c = importCommands.c
         # Init the base class.
         ImportController.__init__(self,
             importCommands,

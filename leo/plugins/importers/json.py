@@ -6,7 +6,6 @@
 import json
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
-# import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
