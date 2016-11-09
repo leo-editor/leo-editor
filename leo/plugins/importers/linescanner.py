@@ -98,12 +98,14 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-        delim1, junk, junk = g.set_delims_from_language(name)
+        delim1, junk, junk = g.set_delims_from_language(self.name)
         self.comment_delim = delim1
         
         # Constants...
         self.gen_refs = name in ('javascript',)
         self.gen_clean = name in ('python',)
+        self.ScanState = ScanState
+            # Must be set by subclasses that use general_scan_line.
         self.tab_width = None # Must be set in run()
 
         # The ws equivalent to one tab.
@@ -147,21 +149,22 @@ class Importer(object):
     #@+node:ekr.20161108131153.3: *4* i.check & helpers
     def check(self, unused_s, parent):
         '''ImportController.check'''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
         fn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
-        clean = self.strip_lws # strip_all, clean_blank_lines
         if self.ws_error or (not no_clean and self.gen_clean):
-            s1, s2 = clean(s1), clean(s2)
+            s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
+        else:
+            s1, s2 = self.clean_blank_lines(s1), self.clean_blank_lines(s2)
         # Forgive trailing whitespace problems in the last line:
-        if self.ws_error:
+        if True:
             s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
         ok = s1 == s2
         if not ok and self.name == 'javascript':
-            s1, s2 = clean(s1), clean(s2)
+            s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
             ok = s1 == s2
             if ok and not g.unitTesting:
                 g.es_print(
@@ -236,14 +239,14 @@ class Importer(object):
             )
         return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108155143.5: *4* i.general_scan_line
-    def general_scan_line(self, s):
+    def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
         trace = False and not g.unitTesting
         match = self.match
         comment_delims = g.set_delims_from_language(self.name)
         line_comment, block1, block2 = comment_delims
         contexts = strings = ['"', "'"]
-        context, curlies = '', 0
+        context, curlies = prev_state.context, prev_state.curlies
         if block1:
             contexts.append(block1)
         i = 0
@@ -272,14 +275,14 @@ class Importer(object):
             elif ch == '}': curlies -= 1
             i += 1
             assert progress < i
-        if trace:
-            g.trace(self, s.rstrip())
-        return ScanState(context, curlies)
+        new_state = self.ScanState(context, curlies)
+        if trace: g.trace(new_state, s.rstrip())
+        return new_state
     #@+node:ekr.20161108131153.10: *4* i.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and not g.unitTesting
-        # g.trace('='*40, self.name)
+        # g.trace('='*20, self.name)
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
         if prepass:
@@ -423,10 +426,11 @@ class Importer(object):
     #@+node:ekr.20161108160409.1: *4* i.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''Parse all lines of s into parent and created child nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.c')
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
+        # if trace: g.pdb()
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             if trace: g.trace('%s tail: %s %r' % (
@@ -553,7 +557,116 @@ class Importer(object):
                 '*' * 20, indent_ws, line, parent.h))
             parent.b = parent.b + ref
         return headline
+    #@+node:ekr.20161108131153.15: *3* i.Utils
+    #@+node:ekr.20161108155143.3: *4* i.get_int_lws
+    def get_int_lws(self, s):
+        '''Return the the lws (a number) of line s.'''
+        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
+    #@+node:ekr.20161108131153.17: *4* i.get_lws (returns a string)
+    def get_lws(self, s):
+        '''Return the characters of the lws of s.'''
+        m = re.match(r'(\s*)', s)
+        return m.group(0) if m else ''
+    #@+node:ekr.20161108155143.4: *4* i.match
+    def match(self, s, i, pattern):
+        '''Return True if the pattern matches at s[i:]'''
+        return s[i:i+len(pattern)] == pattern
+    #@+node:ekr.20161108131153.18: *4* i.Messages
+    def error(self, s):
+        self.errors += 1
+        self.importCommands.errors += 1
+        if g.unitTesting:
+            if self.errors == 1:
+                g.app.unitTestDict['actualErrorMessage'] = s
+            g.app.unitTestDict['actualErrors'] = self.errors
+        else:
+            g.error('Error:', s)
+
+    def report(self, message):
+        if self.strict:
+            self.error(message)
+        else:
+            self.warning(message)
+
+    def warning(self, s):
+        if not g.unitTesting:
+            g.warning('Warning:', s)
+    #@+node:ekr.20161108131153.19: *4* i.undent & helper
+    def undent(self, p):
+        '''Remove maximal leading whitespace from the start of all lines.'''
+        trace = False and not g.unitTesting # and self.root.h.endswith('.c')
+        lines = g.splitLines(p.b)
+        if self.is_rst:
+            return ''.join(lines) # Never unindent rst code.
+        ws = self.common_lws(lines)
+        if trace:
+            g.trace('common_lws:', repr(ws))
+            print('===== lines...')
+            for z in lines:
+                print(repr(z))
+        result = []
+        for s in lines:
+            if s.startswith(ws):
+                result.append(s[len(ws):])
+            elif not s.strip(): ### New: always clean blank lines. check allows this.
+                result.append(s)
+            ### elif self.strict:
+            else:
+                # Indicate that the line is underindented.
+                result.append("%s%s.%s" % (
+                    self.c.atFileCommands.underindentEscapeString,
+                    g.computeWidth(ws, self.tab_width),
+                    s.lstrip()))
+            ###
+            # elif s.lstrip():
+                # result.append(s.lstrip())
+            # else:
+                # result.append(s)
+        if trace:
+            print('----- result...')
+            for z in result:
+                print(repr(z))
+        return ''.join(result)
+    #@+node:ekr.20161108131153.20: *5* i.common_lws
+    def common_lws(self, lines):
+        '''Return the lws common to all lines.'''
+        trace = False and not g.unitTesting # and self.root.h.endswith('.c')
+        if not lines:
+            return ''
+        lws = self.get_lws(lines[0])
+        delim = self.comment_delim
+        for s in lines:
+            s_strip = s.strip()
+            if delim and s_strip and s_strip.startswith(delim):
+                pass
+            elif s_strip:
+                lws2 = self.get_lws(s)
+                if lws2.startswith(lws):
+                    pass
+                elif lws.startswith(lws2):
+                    lws = lws2
+                else:
+                    lws = '' # Nothing in common.
+                    break
+        if trace:
+            g.trace('delim', repr(delim), repr(lws))
+            for z in lines:
+                print(repr(z))
+        return lws
+    #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
+    def underindented_comment(self, line):
+        if self.at_auto_warns_about_leading_whitespace:
+            self.warning(
+                'underindented python comments.\n' +
+                'Extra leading whitespace will be added\n' + line)
+
+    def underindented_line(self, line):
+        if self.warn_about_underindented_lines:
+            self.error(
+                'underindented line.\n'
+                'Extra leading whitespace will be added\n' + line)
     #@+node:ekr.20161108180546.1: *3* i.Utils (basescanner.py)
+    # The coffescript importer uses these.  The Python importer might too.
     #@+node:ekr.20161108180532.1: *4* BaseScanner.getLeadingIndent
     def getLeadingIndent(self, s, i, ignoreComments=True):
         '''Return the leading whitespace of a line.
@@ -614,96 +727,6 @@ class Importer(object):
                 if trace: g.trace(repr(s))
                 result.append(s)
         return ''.join(result)
-    #@+node:ekr.20161108131153.15: *3* i.Utils
-    #@+node:ekr.20161108155143.3: *4* i.get_int_lws
-    def get_int_lws(self, s):
-        '''Return the the lws (a number) of line s.'''
-        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
-    #@+node:ekr.20161108131153.17: *4* i.get_lws (returns a string)
-    def get_lws(self, s):
-        '''Return the characters of the lws of s.'''
-        m = re.match(r'(\s*)', s)
-        return m.group(0) if m else ''
-    #@+node:ekr.20161108155143.4: *4* i.match
-    def match(self, s, i, pattern):
-        '''Return True if the pattern matches at s[i:]'''
-        return s[i:i+len(pattern)] == pattern
-    #@+node:ekr.20161108131153.18: *4* i.Messages
-    def error(self, s):
-        self.errors += 1
-        self.importCommands.errors += 1
-        if g.unitTesting:
-            if self.errors == 1:
-                g.app.unitTestDict['actualErrorMessage'] = s
-            g.app.unitTestDict['actualErrors'] = self.errors
-        else:
-            g.error('Error:', s)
-
-    def report(self, message):
-        if self.strict:
-            self.error(message)
-        else:
-            self.warning(message)
-
-    def warning(self, s):
-        if not g.unitTesting:
-            g.warning('Warning:', s)
-    #@+node:ekr.20161108131153.19: *4* i.undent & helper
-    def undent(self, p):
-        '''Remove maximal leading whitespace from the start of all lines.'''
-        trace = False and not g.unitTesting # and self.root.h.find('main') > -1
-        lines = g.splitLines(p.b)
-        if self.is_rst:
-            return ''.join(lines) # Never unindent rst code.
-        ws = self.common_lws(lines)
-        if trace:
-            g.trace('common_lws:', repr(ws))
-            print('===== lines:\n%s' % ''.join(lines))
-        result = []
-        for s in lines:
-            if s.startswith(ws):
-                result.append(s[len(ws):])
-            elif self.strict:
-                # Indicate that the line is underindented.
-                result.append("%s%s.%s" % (
-                    self.c.atFileCommands.underindentEscapeString,
-                    g.computeWidth(ws, self.tab_width),
-                    s.lstrip()))
-            else:
-                result.append(s.lstrip())
-        if trace:
-            print('----- result:\n%s' % ''.join(result))
-        return ''.join(result)
-    #@+node:ekr.20161108131153.20: *5* common_lws
-    def common_lws(self, lines):
-        '''Return the lws common to all lines.'''
-        trace = False and not g.unitTesting
-        if not lines:
-            return ''
-        lws = self.get_lws(lines[0])
-        for s in lines:
-            lws2 = self.get_lws(s)
-            if lws2.startswith(lws):
-                pass
-            elif lws.startswith(lws2):
-                lws = lws2
-            else:
-                lws = '' # Nothing in common.
-                break
-        if trace: g.trace(repr(lws), repr(lines[0]))
-        return lws
-    #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
-    def underindented_comment(self, line):
-        if self.at_auto_warns_about_leading_whitespace:
-            self.warning(
-                'underindented python comments.\n' +
-                'Extra leading whitespace will be added\n' + line)
-
-    def underindented_line(self, line):
-        if self.warn_about_underindented_lines:
-            self.error(
-                'underindented line.\n'
-                'Extra leading whitespace will be added\n' + line)
     #@-others
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:

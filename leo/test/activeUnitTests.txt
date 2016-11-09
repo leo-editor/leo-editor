@@ -12128,11 +12128,11 @@ s = '''\
 class cTestClass1 {
 
     int foo (int a) {
-# an underindented line.
+// an underindented line.
         a = 2 ;
     }
 
-    # This should go with the next function.
+    // This should go with the next function.
 
     char bar (float c) {
         ;
@@ -12140,7 +12140,7 @@ class cTestClass1 {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 1
+### g.app.unitTestDict ['expectedErrors'] = 1
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4720: *6* @test defaultImporter

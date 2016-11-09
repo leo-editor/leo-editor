@@ -1,32 +1,91 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file importers/c.py
 '''The @auto importer for the C language and other related languages.'''
-import leo.plugins.importers.basescanner as basescanner
+import leo.plugins.importers.linescanner as linescanner
+import re
+Importer = linescanner.Importer
 #@+others
-#@+node:ekr.20140723122936.17928: ** class CScanner
-class CScanner(basescanner.BaseScanner):
+#@+node:ekr.20140723122936.17928: ** class C_Importer
+class C_Importer(Importer):
 
     def __init__(self, importCommands, atAuto):
+        '''C_Importer.__init__'''
         # Init the base class.
-        basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='c')
-        # Set the parser delims.
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.classTags = ['class',]
-        self.extraIdChars = ':'
-        self.functionTags = []
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = '#' # A hack: treat preprocess directives as comments(!)
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.outerBlockEndsDecls = False # To handle extern statement.
-        self.sigHeadExtraTokens = ['*']
-        self.sigFailTokens = [';', '=']
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'c')
+        # Overrides...
+        self.ScanState = C_ScanState
+        self.v2_scan_line = self.general_scan_line
+        
+    #@+others
+    #@+node:ekr.20161108232255.1: *3* c.initial_state
+    def initial_state(self):
+        return C_ScanState('', 0)
+    #@+node:ekr.20161108232258.1: *3* c.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        type1 = r'(static|extern)*'
+        type2 = r'(void|int|float|double|char)*'
+        class_pattern = r'\s*%s\s*class\s+(\w+)' % (type1)
+        pattern = r'\s*%s\s*%s\s*(\w+)' % (type1, type2)
+        m = re.match(class_pattern, s)
+        if m: return 'class ' + m.group(2)
+        m = re.match(pattern, s)
+        if m:
+            return '%s %s' % (m.group(2), m.group(3))
+        else:
+            return s
+    #@-others
+#@+node:ekr.20161108223159.1: ** class C_ScanState
+class C_ScanState:
+    '''A class representing the state of the v2 scan.'''
+
+    def __init__(self, context, curlies):
+        '''C_ScanState.__init__'''
+        self.context = context
+        self.curlies = curlies
+
+    def __repr__(self):
+        '''C_ScanState.__repr__'''
+        return 'C_ScanState context: %r curlies: %s' % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20161108223159.2: *3* c_state: comparisons
+    def __eq__(self, other):
+        '''True if this state continues the present block.'''
+        return self.context or self.curlies == other.curlies
+
+    def __lt__(self, other):
+        '''True if this state exits one or more blocks.'''
+        return not self.context and self.curlies < other.curlies
+            
+    def __gt__(self, other):
+        '''True if this state enters a new block.'''
+        return not self.context and self.curlies > other.curlies
+
+    def __ne__(self, other): return not self.__eq__(other)
+
+    def __ge__(self, other): return self > other or self == other
+
+    def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161108223159.3: *3* c_state: v2.starts/continues_block
+    def v2_continues_block(self, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self == prev_state
+
+    def v2_starts_block(self, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return self > prev_state
+    #@-others
+
 #@-others
 importer_dict = {
-    'class': CScanner,
+    'class': C_Importer,
     'extensions': ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++',],
 }
 #@-leo

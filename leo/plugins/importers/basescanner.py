@@ -2055,7 +2055,7 @@ class ImportController(object):
         if trace:
             print('----- result:\n%s' % ''.join(result))
         return ''.join(result)
-    #@+node:ekr.20161102055342.1: *6* common_lws
+    #@+node:ekr.20161102055342.1: *6* IC.common_lws
     def common_lws(self, lines):
         '''Return the lws common to all lines.'''
         trace = False and not g.unitTesting
