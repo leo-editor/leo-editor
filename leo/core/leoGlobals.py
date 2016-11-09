@@ -4741,7 +4741,7 @@ def computeLeadingWhitespace(width, tab_width):
         return ('\t' * tabs) + (' ' * blanks)
     else: # 7/3/02: negative tab width always gets converted to blanks.
         return (' ' * width)
-#@+node:ekr.20120605172139.10263: *4* g.computeLeadingWhitespaceWidth (new)
+#@+node:ekr.20120605172139.10263: *4* g.computeLeadingWhitespaceWidth
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
 
 def computeLeadingWhitespaceWidth(s, tab_width):

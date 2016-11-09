@@ -98,7 +98,7 @@ class RstScanner(basescanner.BaseScanner):
             g.trace('level: %s kind: %s ch: %s under2: %s under1: %s' % (
                 level, kind, ch, self.underlines2, self.underlines1))
         return level
-    #@+node:ekr.20140723122936.18104: *3* createDeclsNode
+    #@+node:ekr.20140723122936.18104: *3* createDeclsNode (RstScanner)
     def createDeclsNode(self, parent, s):
         '''Create a child node of parent containing s.'''
         # Create the node for the decls.

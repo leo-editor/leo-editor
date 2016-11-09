@@ -90,7 +90,10 @@ class Importer(object):
         self.language = language or name
             # For the @language directive.
         self.name = name or language
-        assert language or name
+        language = self.language
+        name = self.name
+        assert language and name
+        assert self.language and self.name
         self.strict = strict
             # True: leading whitespace is significant.
 
@@ -98,18 +101,18 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-        delim1, junk, junk = g.set_delims_from_language(self.name)
-        self.comment_delim = delim1
+        single_delim, junk1, junk2 = g.set_delims_from_language(self.name)
+        self.comment_delim = single_delim
+        # Compile ws_pattern for i.is_ws_line.
+        pattern = r'^\s*$|^\s*%s' % (single_delim or '')
+        self.ws_pattern = re.compile(pattern)
         
         # Constants...
         self.gen_refs = name in ('javascript',)
         self.gen_clean = name in ('python',)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
-        self.tab_width = None # Must be set in run()
-
-        # The ws equivalent to one tab.
-        # self.tab_ws = ' ' * abs(self.tab_width) if self.tab_width < 0 else '\t'
+        self.tab_width = c.tab_width # Also set in run()
 
         # Settings...
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
@@ -558,15 +561,6 @@ class Importer(object):
             parent.b = parent.b + ref
         return headline
     #@+node:ekr.20161108131153.15: *3* i.Utils
-    #@+node:ekr.20161108155143.3: *4* i.get_int_lws
-    def get_int_lws(self, s):
-        '''Return the the lws (a number) of line s.'''
-        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
-    #@+node:ekr.20161108131153.17: *4* i.get_lws (returns a string)
-    def get_lws(self, s):
-        '''Return the characters of the lws of s.'''
-        m = re.match(r'(\s*)', s)
-        return m.group(0) if m else ''
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
@@ -591,6 +585,39 @@ class Importer(object):
     def warning(self, s):
         if not g.unitTesting:
             g.warning('Warning:', s)
+    #@+node:ekr.20161109045619.1: *4* i.print_lines
+    def print_lines(self, lines):
+        '''Print lines for debugging.'''
+        for line in lines:
+            print(repr(line))
+    #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
+    def underindented_comment(self, line):
+        if self.at_auto_warns_about_leading_whitespace:
+            self.warning(
+                'underindented python comments.\n' +
+                'Extra leading whitespace will be added\n' + line)
+
+    def underindented_line(self, line):
+        if self.warn_about_underindented_lines:
+            self.error(
+                'underindented line.\n'
+                'Extra leading whitespace will be added\n' + line)
+    #@+node:ekr.20161109045312.1: *3* i.Whitespace
+    #@+node:ekr.20161108155143.3: *4* i.get_int_lws
+    def get_int_lws(self, s):
+        '''Return the the lws (a number) of line s.'''
+        assert self.tab_width == self.c.tab_width, (self.tab_width, self.c.tab_width)
+        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
+    #@+node:ekr.20161108131153.17: *4* i.get_lws (returns a string)
+    def get_lws(self, s):
+        '''Return the characters of the lws of s.'''
+        m = re.match(r'(\s*)', s)
+        return m.group(0) if m else ''
+    #@+node:ekr.20161109052011.1: *4* i.is_ws_line
+    def is_ws_line(self, s):
+        '''Return True if s is nothing but whitespace and single-line comments.'''
+        # g.trace(bool(self.ws_pattern.match(s)), repr(s))
+        return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
         '''Remove maximal leading whitespace from the start of all lines.'''
@@ -634,12 +661,8 @@ class Importer(object):
         if not lines:
             return ''
         lws = self.get_lws(lines[0])
-        delim = self.comment_delim
         for s in lines:
-            s_strip = s.strip()
-            if delim and s_strip and s_strip.startswith(delim):
-                pass
-            elif s_strip:
+            if not self.is_ws_line(s):
                 lws2 = self.get_lws(s)
                 if lws2.startswith(lws):
                     pass
@@ -649,64 +672,36 @@ class Importer(object):
                     lws = '' # Nothing in common.
                     break
         if trace:
-            g.trace('delim', repr(delim), repr(lws))
-            for z in lines:
-                print(repr(z))
+            g.trace(repr(lws))
+            self.print_lines(lines)
         return lws
-    #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
-    def underindented_comment(self, line):
-        if self.at_auto_warns_about_leading_whitespace:
-            self.warning(
-                'underindented python comments.\n' +
-                'Extra leading whitespace will be added\n' + line)
-
-    def underindented_line(self, line):
-        if self.warn_about_underindented_lines:
-            self.error(
-                'underindented line.\n'
-                'Extra leading whitespace will be added\n' + line)
-    #@+node:ekr.20161108180546.1: *3* i.Utils (basescanner.py)
-    # The coffescript importer uses these.  The Python importer might too.
-    #@+node:ekr.20161108180532.1: *4* BaseScanner.getLeadingIndent
-    def getLeadingIndent(self, s, i, ignoreComments=True):
-        '''Return the leading whitespace of a line.
-        Ignore blank and comment lines if ignoreComments is True'''
-        width = 0
-        i = g.find_line_start(s, i)
-        if ignoreComments:
-            while i < len(s):
-                # g.trace(g.get_line(s,i))
-                j = g.skip_ws(s, i)
-                if g.is_nl(s, j) or g.match(s, j, self.comment_delim):
-                    i = g.skip_line(s, i) # ignore blank lines and comment lines.
-                else:
-                    i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-                    break
-        else:
-            i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-        # g.trace('returns:',width)
-        return width
-    #@+node:ekr.20161108180655.1: *4* BaseScanner.undentBody & helper
+    #@+node:ekr.20161108180655.1: *4* i.undentBody & helper
     def undentBody(self, s, ignoreComments=True):
         '''Remove the first line's leading indentation from all lines of s.'''
         trace = False and not g.unitTesting
         verbose = False
-        if trace and verbose: g.trace('before...\n', g.listToString(g.splitLines(s)))
+        if trace and verbose:
+            g.trace('before...')
+            self.print_lines(g.splitLines(s))
         if self.is_rst:
             return s # Never unindent rst code.
         # Calculate the amount to be removed from each line.
-        undentVal = self.getLeadingIndent(s, 0, ignoreComments=ignoreComments)
+        undentVal = self.get_leading_indent([s], 0, ignoreComments=ignoreComments)
         if trace: g.trace(undentVal, g.splitLines(s)[0].rstrip())
         if undentVal == 0:
             return s
         else:
             result = self.undentBy(s, undentVal)
-            if trace and verbose: g.trace('after...\n', g.listToString(g.splitLines(result)))
+            if trace and verbose:
+                g.trace('after...')
+                self.print_lines(g.splitLines(result))
             return result
-    #@+node:ekr.20161108180655.2: *5* BaseScanner.undentBy
+    #@+node:ekr.20161108180655.2: *5* i.undentBy
     def undentBy(self, s, undentVal):
-        '''Remove leading whitespace equivalent to undentVal from each line.
-        For strict languages, add an underindentEscapeString for underindented line.'''
+        '''
+        Remove leading whitespace equivalent to undentVal from each line.
+        For strict languages, add an underindentEscapeString for underindented line.
+        '''
         trace = False and not g.app.unitTesting
         if self.is_rst:
             return s # Never unindent rst code.
@@ -727,6 +722,19 @@ class Importer(object):
                 if trace: g.trace(repr(s))
                 result.append(s)
         return ''.join(result)
+    #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
+    def get_leading_indent(self, lines, i, ignoreComments=True):
+        '''
+        Return the leading whitespace of a line: an int.
+        Ignore blank and comment lines if ignoreComments is True
+        '''
+        if ignoreComments:
+            while i < len(lines):
+                if self.is_ws_line(lines[i]):
+                    i += 1
+                else:
+                    break
+        return self.get_int_lws(lines[i]) if i < len(lines) else 0
     #@-others
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:

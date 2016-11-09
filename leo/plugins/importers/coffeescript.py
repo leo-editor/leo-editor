@@ -13,7 +13,8 @@ class CoffeeScriptImporter(Importer):
     #@+node:ekr.20160505101118.1: *3* coffee.__init__
     def __init__(self, importCommands, atAuto):
         '''Ctor for CoffeeScriptScanner class.'''
-        Importer.__init__(self, importCommands,
+        Importer.__init__(self,
+            importCommands,
             atAuto = atAuto,
             language = 'coffeescript',
             strict = False
@@ -128,7 +129,6 @@ class CoffeeScriptImporter(Importer):
             return
         i, body_lines = 0, []
         lines = g.splitLines(s1)
-        # level = self.get_int_lws(lines[0])
         while i < len(lines):
             progress = i
             s = lines[i]
@@ -146,10 +146,9 @@ class CoffeeScriptImporter(Importer):
                 if is_class:
                     # The indentation will be the difference between s and s2
                     if i+1 < len(lines):
-                        s2 = ''.join(lines[i+1:])
-                        s1_level = self.getLeadingIndent(s, 0, ignoreComments=False)
-                        s2_level = self.getLeadingIndent(s2, 0, ignoreComments=True)
-                        # g.trace(s1_level, s2_level, s.rstrip())
+                        s1_level = self.get_leading_indent(lines, i, ignoreComments=False)
+                        s2_level = self.get_leading_indent(lines, i+1, ignoreComments=True)
+                        # g.trace('(coffeescript)', s1_level, s2_level, repr(s))
                     else:
                         self.errors += 1
                         return

@@ -9,14 +9,14 @@ ImportController = basescanner.ImportController
 Importer = linescanner.Importer
 v2 = False
 #@+<< Global scanning patterns >>
-#@+node:ekr.20161107155520.1: ** << Global scanning patterns >>
+#@+node:ekr.20161107155520.1: ** << Global scanning patterns >> (python.py)
 ws_pattern = re.compile(r'^\s*$|^\s*#')
     # Matches lines containing nothing but ws or comments.
 starts_pattern = re.compile(r'\s*(class|def)')
     # Matches lines that apparently starts a class or def.
 #@-<< Global scanning patterns >>
 #@+others
-#@+node:ekr.20161107154640.1: ** is_ws_line
+#@+node:ekr.20161107154640.1: ** is_ws_line (python.py)
 def is_ws_line(s):
     '''Return True if s is nothing but whitespace and comments.'''
     return bool(ws_pattern.match(s))

@@ -78,7 +78,7 @@ class MarkdownScanner(basescanner.BaseScanner):
             # g.trace(s[start:sigStart])
             g.trace('body: %s' % repr(body1 + body2), '\n', g.callers())
         return body1, body2
-    #@+node:ekr.20141110223158.16: *3* mds.createDeclsNode (new)
+    #@+node:ekr.20141110223158.16: *3* mds.createDeclsNode
     def createDeclsNode(self, parent, s):
         '''Create a child node of parent containing s.'''
         # Create the node for the decls.
