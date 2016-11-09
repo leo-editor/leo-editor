@@ -19,15 +19,16 @@ class CoffeeScriptImporter(Importer):
             language = 'coffeescript',
             strict = False
         )
-        self.strict = False
         self.at_others = []
             # A list of postitions that have an @others directive.
         self.at_tab_width = None
             # Default, overridden later.
         self.def_name = None
         self.errors = 0
+        self.root = None
         self.tab_width = self.c.tab_width or -4
             # Used to compute lws.
+        
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -81,19 +82,33 @@ class CoffeeScriptImporter(Importer):
     #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
-        leading_lines = []
+        trace = False and not g.unitTesting # and self.root.h.endswith('2a')
         lines = g.splitLines(s)
-        # First, completely undent all leading whitespace or comment lines.
-        leading_lines = [z.strip() + '\n' for z in lines if self.is_ws_line(z)]
-            # This can add a trailing newline in the file!
+        if trace:
+            g.trace('='*20)
+            self.print_lines(lines)
+        # Undent all leading whitespace or comment lines.
+        leading_lines = []
+        for line in lines:
+            if self.is_ws_line(line):
+                # Tricky.  Stipping a black line deletes it.
+                leading_lines.append(line if line.isspace() else line.lstrip())
+            else:
+                break
         i = len(leading_lines)
         # Don't unindent the def/class line! It prevents later undents.
-        s = ''.join(lines[i:])
-        self.undent_body_lines(lines[i:], ignoreComments=True)
+        tail = self.undent_body_lines(lines[i:], ignoreComments=True)
         # Remove all blank lines from leading lines.
-        while leading_lines and not leading_lines[0].strip():
-            leading_lines = leading_lines[1:]
-        return ''.join(leading_lines) + s
+        if 0:
+            for i, line in enumerate(leading_lines):
+                if not line.isspace():
+                    leading_lines = leading_lines[i:]
+                    break
+        result = ''.join(leading_lines) + tail
+        if trace:
+            g.trace('-'*20)
+            self.print_lines(g.splitLines(result))
+        return result
 
 
     #@+node:ekr.20160505100917.1: *3* coffee.run
@@ -104,12 +119,15 @@ class CoffeeScriptImporter(Importer):
         changed = c.isChanged()
         if prepass:
             return False, []
+        # Set ivars for check()
+        self.root = parent.copy()
+        self.file_s = s
         self.scan(s, parent, indent=False)
-        prefix = '@language coffeescript\n@tabwidth %s\n\n' % (
+        suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
             self.at_tab_width or -2)
-        parent.b =  prefix + parent.b.lstrip()
+        parent.b = parent.b.lstrip() + suffix
         self.post_pass(parent)
-        ok = self.errors == 0 ### and self.check(s, parent)
+        ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
         # It's always useless for an an import to dirty the outline.
         for p in parent.self_and_subtree():
@@ -120,6 +138,7 @@ class CoffeeScriptImporter(Importer):
     def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
         # pylint: disable=arguments-differ
+        trace = False and not g.unitTesting
         if not s1.strip():
             return
         i, body_lines = 0, []
@@ -127,10 +146,9 @@ class CoffeeScriptImporter(Importer):
         while i < len(lines):
             progress = i
             s = lines[i]
-            strip = s.strip()
             is_class = g.match_word(s, 0, 'class')
             is_def = do_def and not is_class and self.starts_def(s)
-            if strip.startswith('#'):
+            if self.is_ws_line(s):
                 body_lines.append(s)
                 i += 1
             elif is_class or is_def:
@@ -150,7 +168,7 @@ class CoffeeScriptImporter(Importer):
                     indent = max(0, s2_level-s1_level)
                     if not self.at_tab_width:
                         self.at_tab_width = -indent
-                    child.b = child.b + ' '*indent+'@others\n\n'
+                    child.b = child.b + ' '*indent+'@others\n'
                     self.at_others.append(child.copy())
                 elif not any([parent == z for z in self.at_others]):
                     self.at_others.append(parent.copy())
@@ -164,6 +182,9 @@ class CoffeeScriptImporter(Importer):
                 body_lines.append(s)
                 i += 1
             assert progress < i
+        if trace:
+            g.trace('returns...')
+            self.print_lines(body_lines)
         parent.b = parent.b + ''.join(body_lines)
     #@+node:ekr.20160505114047.1: *4* coffee.class_name
     def class_name(self, s):
@@ -178,10 +199,9 @@ class CoffeeScriptImporter(Importer):
         assert lines
         block_lines = [lines[0]]
         level1 = self.get_int_lws(lines[0])
-        for i, s in enumerate(lines[1:]):
-            strip = s.strip()
+        for s in lines[1:]:
             level = self.get_int_lws(s)
-            if not strip or strip.startswith('#') or level > level1:
+            if self.is_ws_line(s) or level > level1:
                 block_lines.append(s)
             else:
                 break

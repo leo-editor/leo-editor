@@ -108,6 +108,7 @@ class Importer(object):
         self.ws_pattern = re.compile(pattern)
         
         # Constants...
+        self.escape = c.atFileCommands.underindentEscapeString
         self.gen_refs = name in ('javascript',)
         self.gen_clean = name in ('python',)
         self.ScanState = ScanState
@@ -152,7 +153,9 @@ class Importer(object):
     #@+node:ekr.20161108131153.3: *4* i.check & helpers
     def check(self, unused_s, parent):
         '''ImportController.check'''
-        trace = False # and not g.unitTesting
+        # g.trace('='*20, self.root.h)
+        trace = True # and not g.unitTesting
+        trace_all = False
         trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
         fn = g.shortFileName(self.root.h)
@@ -187,13 +190,13 @@ class Importer(object):
                      break
             else:
                 g.es_print('all common lines match')
-            if trace and trace_lines:
-                g.es_print('===== s1: %s' % parent.h)
-                for i, s in enumerate(g.splitLines(s1)):
-                    g.es_print('%3s %r' % (i+1, s))
-                g.trace('===== s2')
-                for i, s in enumerate(g.splitLines(s2)):
-                    g.es_print('%3s %r' % (i+1, s))
+        if trace and trace_all or (not ok and trace_lines):
+            g.es_print('===== s1: %s' % parent.h)
+            for i, s in enumerate(g.splitLines(s1)):
+                g.es_print('%3s %r' % (i+1, s))
+            g.trace('===== s2')
+            for i, s in enumerate(g.splitLines(s2)):
+                g.es_print('%3s %r' % (i+1, s))
         if 0: # This is wrong headed.
             if not self.strict and not ok:
                 # Suppress the error if lws is the cause.
@@ -689,9 +692,8 @@ class Importer(object):
         Return the resulting string.
         '''
         trace = False and not g.unitTesting
-        verbose = False
-        if trace and verbose:
-            g.trace('before...')
+        if trace:
+            g.trace('='*20)
             self.print_lines(lines)
         s = ''.join(lines)
         if self.is_rst:
@@ -703,8 +705,8 @@ class Importer(object):
             return s
         else:
             result = self.undent_by(s, undent_val)
-            if trace and verbose:
-                g.trace('after...')
+            if trace:
+                g.trace('-'*209)
                 self.print_lines(g.splitLines(result))
             return result
     #@+node:ekr.20161108180655.2: *5* i.undent_by
@@ -716,19 +718,19 @@ class Importer(object):
         trace = False and not g.app.unitTesting
         if self.is_rst:
             return s # Never unindent rst code.
-        tag = self.c.atFileCommands.underindentEscapeString
-        result = []; tab_width = self.tab_width
+        result = []
         for line in g.splitlines(s):
-            lws_s = g.get_leading_ws(line)
-            lws = g.computeWidth(lws_s, tab_width)
-            s = g.removeLeadingWhitespace(line, undent_val, tab_width)
-            # 2011/10/29: Add underindentEscapeString only for strict languages.
-            if self.strict and s.strip() and lws < undent_val:
+            lws_s = self.get_lws(line)
+            s = line[len(lws_s):]
+            lws = g.computeWidth(lws_s, self.tab_width)
+            # Add underindentEscapeString only for strict languages.
+            if self.strict and not s.isspace() and lws < undent_val:
                 if trace: g.trace('undent_val: %s, lws: %s, %s' % (
                     undent_val, lws, repr(line)))
-                # Bug fix 2012/06/05: end the underindent count with a period,
-                # to protect against lines that start with a digit!
-                result.append("%s%s.%s" % (tag, undent_val - lws, s.lstrip()))
+                # End the underindent count with a period to
+                # protect against lines that start with a digit!
+                result.append("%s%s.%s" % (
+                    self.escape, undent_val-lws, s.lstrip()))
             else:
                 if trace: g.trace(repr(s))
                 result.append(s)
