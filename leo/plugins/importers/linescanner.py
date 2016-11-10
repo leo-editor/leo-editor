@@ -429,23 +429,23 @@ class Importer(object):
         return ''.join(result)
     #@+node:ekr.20161108160409.1: *4* i.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
-        '''Parse all lines of s into parent and created child nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.c')
+        '''
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        '''
+        trace = False and not g.unitTesting and self.root.h.endswith('-test.py')
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
-        # if trace: g.pdb()
+        # if trace: g.pdb('Entry: %s' % (self.root.h))
         for line in g.splitLines(s):
-            new_state = self.v2_scan_line(line, prev_state)
-            if trace: g.trace('%s tail: %s %r' % (
-                new_state, int(bool(tail_p)), line))
-            # if trace: g.trace('%s tail: %s +: %s =: %s %r' % (
-                # new_state, int(bool(tail_p)), int(starts), int(continues), line))
-            if new_state.v2_starts_block(prev_state):
+            bunch = self.scan_next_line(line, prev_state, tail_p, trace)
+            new_state = bunch.new_state
+            if bunch.starts_block:
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            elif new_state.v2_continues_block(prev_state):
+            elif bunch.continues_block:
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
@@ -453,15 +453,37 @@ class Importer(object):
             prev_state = new_state
         # Put directives at the end, so as not to interfere with shebang lines, etc.
         self.add_root_directives(parent)
-        self.finalize(parent)
+        self.finalize_ivars(parent)
+    #@+node:ekr.20161110070826.1: *5* i.scan_next_line
+    def scan_next_line(self, line, prev_state, tail_p, trace):
+        '''
+        Set up the vars and trace.
+        Having this be a separate method is useful while single-stepping.
+        '''
+        new_state = self.v2_scan_line(line, prev_state)
+        starts_block = new_state.v2_starts_block(prev_state)
+        continues_block = new_state.v2_continues_block(prev_state)
+        if trace:
+            g.trace('%s tail: %s +: %s =: %s %r' % (
+                new_state,
+                int(bool(tail_p)),
+                int(starts_block),
+                int(continues_block),
+                line),
+            )
+        return g.Bunch(
+            continues_block=continues_block,
+            new_state = new_state,
+            starts_block = starts_block,
+        )
     #@+node:ekr.20161110042512.1: *5* i.Injected lines
     #@+node:ekr.20161110042554.1: *6* i.add_line
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
         assert hasattr(p.v, '_import_lines'), repr(p)
         p.v._import_lines.append(s)
-    #@+node:ekr.20161110042020.1: *6* i.finalize
-    def finalize(self, parent):
+    #@+node:ekr.20161110042020.1: *6* i.finalize_ivars
+    def finalize_ivars(self, parent):
         '''
         Update the body text of all nodes in parent's tree using the injected
         v._import_lines lists.
@@ -471,7 +493,7 @@ class Importer(object):
             assert not v._bodyString, repr(v._bodyString)
             v._bodyString = ''.join(v._import_lines)
             delattr(v, '_import_lines')
-    #@+node:ekr.20161110041440.1: *6* i.inject_lines_var
+    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         assert not p.v._bodyString, repr(p.v._bodyString)

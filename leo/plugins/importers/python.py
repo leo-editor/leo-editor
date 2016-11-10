@@ -7,7 +7,7 @@ import leo.plugins.importers.linescanner as linescanner
 import re
 ImportController = basescanner.ImportController
 Importer = linescanner.Importer
-v2 = False
+v2 = False # True: use v2_gen_lines.
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes
 #@+node:ekr.20161029103640.1: *3* class Python_ImportController (ImportController)
@@ -375,11 +375,23 @@ class Py_Importer(Importer):
             # Matches lines that apparently starts a class or def.
 
     #@+others
-    #@+node:ekr.20161104143211.4: *4* py_scan.initial_state
+    #@+node:ekr.20161110073751.1: *4* py_i.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        m = re.match(r'\s*def\s+(\w+)', s)
+        if m:
+            return m.group(1)
+        else:
+            m = re.match(r'\s*class\s+(\w+)', s)
+            if m:
+                return 'class %s' % m.group(1)
+            else:
+                return s.strip()
+    #@+node:ekr.20161104143211.4: *4* py_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161105140842.3: *4* py_scan.v2_scan_line
+    #@+node:ekr.20161105140842.3: *4* py_i.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
