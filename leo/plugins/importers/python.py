@@ -7,7 +7,10 @@ import leo.plugins.importers.linescanner as linescanner
 import re
 ImportController = basescanner.ImportController
 Importer = linescanner.Importer
+#@+<< python: v2 >>
+#@+node:ekr.20161110121459.1: ** << python: v2 >>
 v2 = False # True: use v2_gen_lines.
+#@-<< python: v2 >>
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes
 #@+node:ekr.20161029103640.1: *3* class Python_ImportController (ImportController)

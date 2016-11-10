@@ -181,7 +181,7 @@ class Importer(object):
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
-            z if z.strip() else z.replace(' ','').replace('\t','')
+            z if not z.isspace() else z.replace(' ','').replace('\t','')
                 for z in g.splitLines(s)
         ])
         return result
@@ -192,7 +192,7 @@ class Importer(object):
 
     def strip_blank_lines(self, s):
         '''Strip all blank lines from s.'''
-        return ''.join([z for z in g.splitLines(s) if z.strip()])
+        return ''.join([z for z in g.splitLines(s) if not z.isspace()])
 
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
@@ -372,7 +372,7 @@ class Importer(object):
             self.clean_nodes(parent)
         # Unindent nodes.
         for p in parent.subtree():
-            if p.b.strip():
+            if not p.b.isspace():
                 p.b = self.undent(p)
             else:
                 p.b = ''
@@ -381,7 +381,8 @@ class Importer(object):
         for p in parent.subtree():
             s = p.b
             back = p.threadBack()
-            if not s.strip() and not p.isCloned() and back != parent:
+            # Move the whitespace from p to back.
+            if s.isspace() and not p.isCloned() and back != parent:
                 back.b = back.b + s
                 aList.append(p.copy())
         self.c.deletePositionsInList(aList)
@@ -700,7 +701,7 @@ class Importer(object):
         for s in lines:
             if s.startswith(ws):
                 result.append(s[len(ws):])
-            elif not s.strip():
+            elif not not s.isspace():
                 result.append(s)
             else:
                 # Indicate that the line is underindented.
