@@ -103,10 +103,7 @@ class Importer(object):
         self.tree_type = ic.treeType # '@root', '@file', etc.
         single_delim, junk1, junk2 = g.set_delims_from_language(self.name)
         self.comment_delim = single_delim
-        # Compile ws_pattern for i.is_ws_line.
-        pattern = r'^\s*$|^\s*%s' % (single_delim or '')
-        self.ws_pattern = re.compile(pattern)
-        
+
         # Constants...
         self.escape = c.atFileCommands.underindentEscapeString
         self.gen_refs = name in ('javascript',)
@@ -114,6 +111,7 @@ class Importer(object):
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = c.tab_width # Also set in run()
+        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (single_delim or ''))
 
         # Settings...
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
@@ -126,31 +124,7 @@ class Importer(object):
         ic.errors = 0 # Required.
         self.ws_error = False
         self.root = None
-    #@+node:ekr.20161108131153.7: *3* i.Overrides
-    # These can be overridden in subclasses.
-    #@+node:ekr.20161108131153.8: *4* i.adjust_parent
-    def adjust_parent(self, parent, headline):
-        '''Return the effective parent.
-
-        This is overridden by the RstScanner class.'''
-        return parent
-    #@+node:ekr.20161108131153.9: *4* i.clean_headline
-    def clean_headline(self, s):
-        '''
-        Return the cleaned version headline s.
-        Will typically be overridden in subclasses.
-        '''
-        return s.strip()
-    #@+node:ekr.20161108155143.6: *4* i.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        assert False, 'Importer.initial_state: to be over-ridden by subclasses.'
-    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
-    def v2_scan_line(self, s, prev_state):
-        '''To be overridden by subclasses.'''
-        assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
-    #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161108131153.3: *4* i.check & helpers
+    #@+node:ekr.20161108131153.3: *3* i.check & helpers
     def check(self, unused_s, parent):
         '''ImportController.check'''
         # g.trace('='*20, self.root.h)
@@ -203,7 +177,7 @@ class Importer(object):
                 clean = self.strip_lws # strip_all, clean_blank_lines
                 ok = clean(s1) == clean(s2)
         return ok
-    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
+    #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -211,7 +185,7 @@ class Importer(object):
                 for z in g.splitLines(s)
         ])
         return result
-    #@+node:ekr.20161108131153.5: *5* i.strip_*
+    #@+node:ekr.20161108131153.5: *4* i.strip_*
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
         return self.strip_lws(self.strip_blank_lines(s))
@@ -223,7 +197,7 @@ class Importer(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
-    #@+node:ekr.20161108131153.6: *5* i.trial_write
+    #@+node:ekr.20161108131153.6: *4* i.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
@@ -244,6 +218,30 @@ class Importer(object):
                 trialWrite=True,
             )
         return g.toUnicode(at.stringOutput, self.encoding)
+    #@+node:ekr.20161108131153.7: *3* i.Overrides
+    # These can be overridden in subclasses.
+    #@+node:ekr.20161108131153.8: *4* i.adjust_parent
+    def adjust_parent(self, parent, headline):
+        '''Return the effective parent.
+
+        This is overridden by the RstScanner class.'''
+        return parent
+    #@+node:ekr.20161108131153.9: *4* i.clean_headline
+    def clean_headline(self, s):
+        '''
+        Return the cleaned version headline s.
+        Will typically be overridden in subclasses.
+        '''
+        return s.strip()
+    #@+node:ekr.20161108155143.6: *4* i.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        assert False, 'Importer.initial_state: to be over-ridden by subclasses.'
+    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
+    def v2_scan_line(self, s, prev_state):
+        '''To be overridden by subclasses.'''
+        assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
+    #@+node:ekr.20161108165530.1: *3* i.Top level
     #@+node:ekr.20161108155143.5: *4* i.general_scan_line
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
@@ -330,7 +328,7 @@ class Importer(object):
         w = self.tab_width
         blanks = tabs = 0
         for s in g.splitLines(lines):
-            lws = self.get_lws(s)
+            lws = self.get_str_lws(s)
             blanks += lws.count(' ')
             tabs += lws.count('\t')
         # Make sure whitespace matches @tabwidth directive.
@@ -436,6 +434,7 @@ class Importer(object):
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
+        self.inject_lines_ivar(parent)
         # if trace: g.pdb()
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
@@ -448,13 +447,89 @@ class Importer(object):
                 self.start_new_block(line, new_state, stack)
             elif new_state.v2_continues_block(prev_state):
                 p = tail_p or stack[-1].p
-                p.b = p.b + line
+                ### p.b = p.b + line
+                self.add_line(p, line)
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
         # Put directives at the end, so as not to interfere with shebang lines, etc.
-        parent.b = parent.b + ''.join(self.root_directives())
-    #@+node:ekr.20161108160409.2: *5* i.cut_stack
+        ### parent.b = parent.b + ''.join(self.root_directives())
+        self.add_root_directives(parent)
+        self.finalize(parent)
+    #@+node:ekr.20161110042512.1: *5* i.Injected lines
+    #@+node:ekr.20161110042554.1: *6* i.add_line
+    def add_line(self, p, s):
+        '''Append the line s to p.v._import_lines.'''
+        assert hasattr(p.v, '_import_lines'), repr(p)
+        p.v._import_lines.append(s)
+    #@+node:ekr.20161110042020.1: *6* i.finalize
+    def finalize(self, parent):
+        '''
+        Update the body text of all nodes in parent's tree using the injected
+        v._import_lines lists.
+        '''
+        for p in parent.self_and_subtree():
+            v = p.v
+            assert not v._bodyString, repr(v._bodyString)
+            v._bodyString = ''.join(v._import_lines)
+            delattr(v, '_import_lines')
+    #@+node:ekr.20161110041440.1: *6* i.inject_lines_var
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        assert not p.v._bodyString, repr(p.v._bodyString)
+        p.v._import_lines = []
+    #@+node:ekr.20161110042847.1: *5* i.Start/end block
+    #@+node:ekr.20161108160409.3: *6* i.end_block & helper
+    def end_block(self, line, new_state, stack):
+        # The block is ending. Add tail lines until the start of the next block.
+        is_python = self.name == 'python'
+        p = stack[-1].p # Put the closing line in *this* node.
+        if is_python or self.gen_refs:
+            tail_p = None
+        else:
+            tail_p = p # Put trailing lines in this node.
+        if is_python:
+            self.end_python_block(line, new_state, stack)
+        else:
+            ### p.b = p.b + line
+            self.add_line(p, line)
+            self.cut_stack(new_state, stack)
+        ### This doesn't work
+        ### if not self.gen_refs:
+        ###    tail_p = stack[-1].p
+        return tail_p
+    #@+node:ekr.20161108160409.4: *7* i.ends_python
+    def end_python_block(self, line, new_state, stack):
+        '''Handle lines at a lower level.'''
+        # Unlike other languages, *this* line not only *ends*
+        # a block, but *starts* a block.
+        self.cut_stack(new_state, stack)
+        target = stack[-1]
+        h = self.clean_headline(line)
+        child = self.v2_create_child_node(target.p.parent(), line, h)
+        stack.pop()
+            ###### Is this where the line got lost?
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161108160409.6: *6* i.start_new_block
+    def start_new_block(self, line, new_state, stack):
+        '''Create a child node and update the stack.'''
+        target=stack[-1]
+        # Insert the reference in *this* node.
+        h = self.v2_gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.v2_create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161110042938.1: *5* i.Utils for v2_gen_lines
+    #@+node:ekr.20161108160409.5: *6* i.add_root_directives
+    def add_root_directives(self, parent):
+        '''Return the proper directives for the root node p.'''
+        table = [
+            '@language %s\n' % self.language,
+            '@tabwidth %d\n' % self.tab_width,
+        ]
+        for line in table:
+            self.add_line(parent, line)
+    #@+node:ekr.20161108160409.2: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
@@ -479,53 +554,7 @@ class Importer(object):
                 break
         assert stack # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161108160409.3: *5* i.end_block & helper
-    def end_block(self, line, new_state, stack):
-        # The block is ending. Add tail lines until the start of the next block.
-        is_python = self.name == 'python'
-        p = stack[-1].p # Put the closing line in *this* node.
-        if is_python or self.gen_refs:
-            tail_p = None
-        else:
-            tail_p = p # Put trailing lines in this node.
-        if is_python:
-            self.end_python_block(line, new_state, stack)
-        else:
-            p.b = p.b + line
-            self.cut_stack(new_state, stack)
-        ### This doesn't work
-        ### if not self.gen_refs:
-        ###    tail_p = stack[-1].p
-        return tail_p
-    #@+node:ekr.20161108160409.4: *6* i.ends_python
-    def end_python_block(self, line, new_state, stack):
-        '''Handle lines at a lower level.'''
-        # Unlike other languages, *this* line not only *ends*
-        # a block, but *starts* a block.
-        self.cut_stack(new_state, stack)
-        target = stack[-1]
-        h = self.clean_headline(line)
-        child = self.v2_create_child_node(target.p.parent(), line, h)
-        stack.pop()
-            ###### Is this where the line got lost?
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161108160409.5: *5* i.root_directives
-    def root_directives(self):
-        '''Return the proper directives for the root node p.'''
-        return [
-            '@language %s\n' % self.language,
-            '@tabwidth %d\n' % self.tab_width,
-        ]
-    #@+node:ekr.20161108160409.6: *5* i.start_new_block
-    def start_new_block(self, line, new_state, stack):
-        '''Create a child node and update the stack.'''
-        target=stack[-1]
-        # Insert the reference in *this* node.
-        h = self.v2_gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        child = self.v2_create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161108160409.7: *5* i.v2_create_child_node
+    #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
         trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
@@ -533,10 +562,12 @@ class Importer(object):
         p = parent.insertAsLastChild()
         assert g.isString(body), repr(body)
         assert g.isString(headline), repr(headline)
-        p.b = p.b + body
+        self.inject_lines_ivar(p)
+        ### p.b = p.b + body
+        self.add_line(p, body)
         p.h = headline
         return p
-    #@+node:ekr.20161108160409.8: *5* i.v2_gen_ref
+    #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous
@@ -544,7 +575,7 @@ class Importer(object):
         #@-others
         '''
         trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
+        indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line) 
         if self.is_rst and not self.atAuto:
             return None, None
@@ -561,7 +592,8 @@ class Importer(object):
         if ref:
             if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
                 '*' * 20, indent_ws, line, parent.h))
-            parent.b = parent.b + ref
+            ### parent.b = parent.b + ref
+            self.add_line(parent,ref)
         return headline
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161108155143.4: *4* i.match
@@ -624,8 +656,8 @@ class Importer(object):
                 else:
                     break
         return self.get_int_lws(lines[i]) if i < len(lines) else 0
-    #@+node:ekr.20161108131153.17: *4* i.get_lws (returns a string)
-    def get_lws(self, s):
+    #@+node:ekr.20161108131153.17: *4* i.get_str_lws
+    def get_str_lws(self, s):
         '''Return the characters of the lws of s.'''
         m = re.match(r'(\s*)', s)
         return m.group(0) if m else ''
@@ -670,10 +702,10 @@ class Importer(object):
         trace = False and not g.unitTesting # and self.root.h.endswith('.c')
         if not lines:
             return ''
-        lws = self.get_lws(lines[0])
+        lws = self.get_str_lws(lines[0])
         for s in lines:
             if not self.is_ws_line(s):
-                lws2 = self.get_lws(s)
+                lws2 = self.get_str_lws(s)
                 if lws2.startswith(lws):
                     pass
                 elif lws.startswith(lws2):
@@ -721,7 +753,7 @@ class Importer(object):
             return s # Never unindent rst code.
         result = []
         for line in g.splitlines(s):
-            lws_s = self.get_lws(line)
+            lws_s = self.get_str_lws(line)
             lws = g.computeWidth(lws_s, self.tab_width)
             # Add underindentEscapeString only for strict languages.
             if self.strict and not line.isspace() and lws < undent_val:

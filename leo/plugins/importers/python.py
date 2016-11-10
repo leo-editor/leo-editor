@@ -8,18 +8,7 @@ import re
 ImportController = basescanner.ImportController
 Importer = linescanner.Importer
 v2 = False
-#@+<< Global scanning patterns >>
-#@+node:ekr.20161107155520.1: ** << Global scanning patterns >> (python.py)
-ws_pattern = re.compile(r'^\s*$|^\s*#')
-    # Matches lines containing nothing but ws or comments.
-starts_pattern = re.compile(r'\s*(class|def)')
-    # Matches lines that apparently starts a class or def.
-#@-<< Global scanning patterns >>
 #@+others
-#@+node:ekr.20161107154640.1: ** is_ws_line (python.py)
-def is_ws_line(s):
-    '''Return True if s is nothing but whitespace and comments.'''
-    return bool(ws_pattern.match(s))
 #@+node:ekr.20161108203248.1: ** V1 classes
 #@+node:ekr.20161029103640.1: *3* class Python_ImportController (ImportController)
 class Python_ImportController(ImportController):
@@ -37,17 +26,14 @@ class Python_ImportController(ImportController):
             scanner = PythonScanner(importCommands, atAuto),
             strict = True, # True: leave leading whitespace alone.
         )
-        
-    # importCommands,
-    # atAuto,
-    # gen_clean = True,
-    # gen_refs = False,
-    # language = None, # For @language directive.
-    # name = None, # The kind of importer.
-    # scanner = None,
-    # strict = False,
+        self.ws_pattern = re.compile(r'^\s*$|^\s*#')
+            # Matches lines containing nothing but ws or comments.
 
     #@+others
+    #@+node:ekr.20161107154640.1: *4* python_ic.is_ws_line
+    def is_ws_line(self, s):
+        '''Return True if s is nothing but whitespace and comments.'''
+        return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161029103640.2: *4* python_ic.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -77,16 +63,16 @@ class Python_ImportController(ImportController):
             return ''
         head = True
         for s in lines:
-            is_ws = is_ws_line(s)
+            is_ws = self.is_ws_line(s)
             if head:
                 if not is_ws: # A real line.
                     head = False
-                    lws = self.get_lws(s)
+                    lws = self.get_str_lws(s)
             elif is_ws:
                 # Ignore lines containing only whitespace or comments.
                 pass
             else:
-                lws2 = self.get_lws(s)
+                lws2 = self.get_str_lws(s)
                 if lws2.startswith(lws):
                     pass
                 elif lws.startswith(lws2):
@@ -122,7 +108,7 @@ class Python_ImportController(ImportController):
             line = lines[-1]
             if line.startswith(ws):
                 break
-            elif ws_pattern.match(line):
+            elif self.is_ws_line(line):
                 parent.b = parent.b + lines.pop()
             else:
                 break
@@ -385,6 +371,8 @@ class Py_Importer(Importer):
             atAuto = atAuto,
             language = 'python',
         )
+        self.starts_pattern = re.compile(r'\s*(class|def)')
+            # Matches lines that apparently starts a class or def.
 
     #@+others
     #@+node:ekr.20161104143211.4: *4* py_scan.initial_state
@@ -398,12 +386,12 @@ class Py_Importer(Importer):
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
-        starts = bool(starts_pattern.match(s)) and not was_bs_nl
-        ws = is_ws_line(s) and not was_bs_nl
+        starts = bool(self.starts_pattern.match(s)) and not was_bs_nl
+        ws = self.is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
             context = '' # Don't change indent.
         else:
-            indent = self.get_lws(s)
+            indent = self.get_int_lws(s)
         i = 0
         while i < len(s):
             progress = i

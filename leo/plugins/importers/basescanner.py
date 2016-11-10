@@ -1903,7 +1903,7 @@ class ImportController(object):
         w = self.tab_width
         blanks = tabs = 0
         for s in g.splitLines(lines):
-            lws = self.get_lws(s)
+            lws = self.get_str_lws(s)
             blanks += lws.count(' ')
             tabs += lws.count('\t')
         # Make sure whitespace matches @tabwidth directive.
@@ -2004,8 +2004,8 @@ class ImportController(object):
         return ''.join(result)
     #@+node:ekr.20161030190924.19: *3* IC.Utils
     #@+node:ekr.20161107154026.1: *4* IC.Common Utils
-    #@+node:ekr.20161102072135.1: *5* IC.get_lws
-    def get_lws(self, s):
+    #@+node:ekr.20161102072135.1: *5* IC.get_str_lws
+    def get_str_lws(self, s):
         '''Return the characters of the lws of s.'''
         m = re.match(r'(\s*)', s)
         return m.group(0) if m else ''
@@ -2061,9 +2061,9 @@ class ImportController(object):
         trace = False and not g.unitTesting
         if not lines:
             return ''
-        lws = self.get_lws(lines[0])
+        lws = self.get_str_lws(lines[0])
         for s in lines:
-            lws2 = self.get_lws(s)
+            lws2 = self.get_str_lws(s)
             if lws2.startswith(lws):
                 pass
             elif lws.startswith(lws2):
@@ -2232,7 +2232,7 @@ class ImportController(object):
         #@-others
         '''
         trace = False and not g.unitTesting
-        indent_ws = self.get_lws(line)
+        indent_ws = self.get_str_lws(line)
             ### Ignore indent_flag: Hurray!
         if self.is_rst and not self.atAuto:
             return None, None
@@ -2333,8 +2333,8 @@ class LineScanner(object):
             '{' * self.curlies, self.context)
             
     __str__ = __repr__
-    #@+node:ekr.20161104143211.3: *3* scanner.get_lws
-    def get_lws(self, s):
+    #@+node:ekr.20161104143211.3: *3* scanner.get_int_lws
+    def get_int_lws(self, s):
         '''Return the the lws (a number) of line s.'''
         return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
     #@+node:ekr.20161103065140.1: *3* scanner.match

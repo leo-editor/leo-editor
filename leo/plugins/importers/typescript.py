@@ -4,7 +4,7 @@
 import leo.plugins.importers.javascript as javascript
 JS_Importer = javascript.JS_Importer
 #@+others
-#@+node:ekr.20140723122936.18111: ** class TS_ImportController(JS_ImportController)
+#@+node:ekr.20140723122936.18111: ** class TS_ImportController(JS_Importer)
 class TS_Importer(JS_Importer):
     
     def __init__(self, importCommands, atAuto):
