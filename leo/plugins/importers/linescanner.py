@@ -359,25 +359,36 @@ class Importer(object):
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
             g.warning('inserting @ignore')
             c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161108131153.13: *5* i.post_pass
+    #@+node:ekr.20161108131153.13: *5* i.post_pass & helpers
     def post_pass(self, parent):
-        '''Clean up parent's children.'''
-        # Clean the headlines.
+        '''Clean up parent and all its descendants.'''
+        self.clean_all_headlines(parent)
+        self.clean_all_nodes(parent)
+        self.unindent_all_nodes(parent)
+        self.delete_all_empty_nodes(parent)
+    #@+node:ekr.20161110125940.1: *6* i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        '''
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        '''
         for p in parent.subtree():
             h = self.clean_headline(p.h)
             assert h
             if h != p.h: p.h = h
-        # Clean the nodes, in a language-dependent way.
+    #@+node:ekr.20161110130157.1: *6* i.clean_all_nodes
+    def clean_all_nodes(self, parent):
+        '''Clean the nodes in parent's tree, in a language-dependent way.'''
         if hasattr(self, 'clean_nodes'):
             # pylint: disable=no-member
             self.clean_nodes(parent)
-        # Unindent nodes.
-        for p in parent.subtree():
-            if not p.b.isspace():
-                p.b = self.undent(p)
-            else:
-                p.b = ''
-        # Delete empty nodes.
+    #@+node:ekr.20161110130709.1: *6* i.delete_all_empty_nodes
+    def delete_all_empty_nodes(self, parent):
+        '''
+        Delete nodes consisting of nothing but whitespace.
+        Move the whitespace to the preceding node.
+        '''
+        c = self.c
         aList = []
         for p in parent.subtree():
             s = p.b
@@ -386,7 +397,16 @@ class Importer(object):
             if s.isspace() and not p.isCloned() and back != parent:
                 back.b = back.b + s
                 aList.append(p.copy())
-        self.c.deletePositionsInList(aList)
+        c.deletePositionsInList(aList)
+    #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes
+    def unindent_all_nodes(self, parent):
+        '''Unindent all nodes in parent's tree.'''
+        for p in parent.subtree():
+            if p.b.isspace():
+                # Somewhat dubious, but i.check covers for us.
+                p.b = ''
+            else:
+                p.b = self.undent(p)
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
         '''
