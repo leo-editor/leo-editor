@@ -447,13 +447,11 @@ class Importer(object):
                 self.start_new_block(line, new_state, stack)
             elif new_state.v2_continues_block(prev_state):
                 p = tail_p or stack[-1].p
-                ### p.b = p.b + line
                 self.add_line(p, line)
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
         # Put directives at the end, so as not to interfere with shebang lines, etc.
-        ### parent.b = parent.b + ''.join(self.root_directives())
         self.add_root_directives(parent)
         self.finalize(parent)
     #@+node:ekr.20161110042512.1: *5* i.Injected lines
@@ -491,7 +489,6 @@ class Importer(object):
         if is_python:
             self.end_python_block(line, new_state, stack)
         else:
-            ### p.b = p.b + line
             self.add_line(p, line)
             self.cut_stack(new_state, stack)
         ### This doesn't work
@@ -563,7 +560,6 @@ class Importer(object):
         assert g.isString(body), repr(body)
         assert g.isString(headline), repr(headline)
         self.inject_lines_ivar(p)
-        ### p.b = p.b + body
         self.add_line(p, body)
         p.h = headline
         return p
@@ -592,7 +588,6 @@ class Importer(object):
         if ref:
             if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
                 '*' * 20, indent_ws, line, parent.h))
-            ### parent.b = parent.b + ref
             self.add_line(parent,ref)
         return headline
     #@+node:ekr.20161108131153.15: *3* i.Utils

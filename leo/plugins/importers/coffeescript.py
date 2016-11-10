@@ -291,7 +291,6 @@ class CS_Importer(Importer):
             suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
                 self.at_tab_width or -2)
             parent.b = parent.b.rstrip() + suffix
-            ### Not sure if this will be used with the V2 code.
             self.post_pass(parent)
         ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
