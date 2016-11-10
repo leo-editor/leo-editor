@@ -132,7 +132,7 @@ class Importer(object):
         trace_all = False
         trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
-        fn = g.shortFileName(self.root.h)
+        sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         if self.ws_error or (not no_clean and self.gen_clean):
@@ -153,7 +153,8 @@ class Importer(object):
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
-            print('\n===== PERFECT IMPORT FAILED =====', fn)
+            g.es('@auto failed:', sfn, color='red')
+            print('\n===== PERFECT IMPORT FAILED =====', sfn)
             print('len(s1): %s len(s2): %s' % (n1, n2))
             for i in range(min(n1, n2)):
                 line1, line2 = lines1[i], lines2[i]
