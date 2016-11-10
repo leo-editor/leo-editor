@@ -185,8 +185,11 @@ class PyflakesCommand(object):
 
     #@+others
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, paths):
-        '''Run pyflakes on fn.'''
+    def check_all(self, log_flag, paths):
+        '''
+        Run pyflakes on all files in paths.
+        If log_flag is True, write an entry to the log.
+        '''
         from pyflakes import api, reporter
         total_errors = 0
         for fn in sorted(paths):
@@ -196,6 +199,7 @@ class PyflakesCommand(object):
             if not s.strip():
                 return
             if 1:
+                g.es_print('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
                 class LogStream:
                     def write(self, s):
@@ -263,8 +267,10 @@ class PyflakesCommand(object):
                             break
         paths = list(set(self.seen))
         if paths:
-            # These messages are important for clarity.
-            total_errors = self.check_all(paths)
+            # All these messages are important for clarity.
+            # g.es_print('Pyflakes...')
+            log_flag = not force
+            total_errors = self.check_all(log_flag, paths)
             if total_errors > 0:
                 g.es_print('ERROR: pyflakes: %s error%s' % (
                     total_errors, g.plural(total_errors)))
