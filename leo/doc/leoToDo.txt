@@ -7,6 +7,10 @@
 @language rest
 @wrap
 
+- Post: how importers handle whitespace.  It's almost magic.
+    *** Importers are *all* about whitespace.
+    *** Compare the various undent methods.
+
 - Encourage everyone to use issue tracker.
 
 - A "looking over Edward's shoulder" video.
