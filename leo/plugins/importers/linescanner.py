@@ -441,6 +441,7 @@ class Importer(object):
         self.inject_lines_ivar(parent)
         # if trace: g.pdb('Entry: %s' % (self.root.h))
         for line in g.splitLines(s):
+            # pylint doesn't understand bunches. pylint: disable=no-member
             bunch = self.scan_next_line(line, prev_state, tail_p, trace)
             new_state = bunch.new_state
             if bunch.starts_block:
@@ -701,7 +702,8 @@ class Importer(object):
         for s in lines:
             if s.startswith(ws):
                 result.append(s[len(ws):])
-            elif not not s.isspace():
+            elif s.isspace():
+                # Never change blank lines.
                 result.append(s)
             else:
                 # Indicate that the line is underindented.
