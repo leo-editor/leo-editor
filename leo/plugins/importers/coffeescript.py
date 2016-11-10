@@ -159,6 +159,7 @@ class CoffeeScriptImporter(Importer):
             g.trace('='*40)
             self.print_lines(lines)
         i, body_lines = 0, []
+        at_others = False
         while i < len(lines):
             progress = i
             s = lines[i]
@@ -189,11 +190,18 @@ class CoffeeScriptImporter(Importer):
                 elif not any([parent == z for z in self.at_others]):
                     self.at_others.append(parent.copy())
                     body_lines.append('@others\n\n')
+                    at_others = True
                 block_lines = self.skip_block(lines[i:])
                 assert block_lines
                 i += len(block_lines)
                 s2 = ''.join(block_lines[1:])
                 self.scan(s2, child, do_def=not is_def)
+            elif at_others:
+                # Alas, this is necessary.
+                child = parent.insertAsLastChild()
+                child.h = s
+                child.b = s
+                i += 1
             else:
                 body_lines.append(s)
                 i += 1
