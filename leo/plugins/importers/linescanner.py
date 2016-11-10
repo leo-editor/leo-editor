@@ -173,30 +173,30 @@ class Importer(object):
             s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
             ok = s1 == s2
             if ok and not g.unitTesting:
-                g.es_print(
+                print(
                     'indentation error: leading whitespace changed in:',
                     self.root.h)
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
-            g.es_print('\n===== PERFECT IMPORT FAILED =====', fn)
-            g.es_print('len(s1): %s len(s2): %s' % (n1, n2))
+            print('\n===== PERFECT IMPORT FAILED =====', fn)
+            print('len(s1): %s len(s2): %s' % (n1, n2))
             for i in range(min(n1, n2)):
                 line1, line2 = lines1[i], lines2[i]
                 if line1 != line2:
-                     g.es_print('first mismatched line: %s' % (i+1))
-                     g.es_print(repr(line1))
-                     g.es_print(repr(line2))
+                     print('first mismatched line: %s' % (i+1))
+                     print(repr(line1))
+                     print(repr(line2))
                      break
             else:
-                g.es_print('all common lines match')
+                print('all common lines match')
         if trace and trace_all or (not ok and trace_lines):
-            g.es_print('===== s1: %s' % parent.h)
+            print('===== s1: %s' % parent.h)
             for i, s in enumerate(g.splitLines(s1)):
-                g.es_print('%3s %r' % (i+1, s))
+                print('%3s %r' % (i+1, s))
             g.trace('===== s2')
             for i, s in enumerate(g.splitLines(s2)):
-                g.es_print('%3s %r' % (i+1, s))
+                print('%3s %r' % (i+1, s))
         if 0: # This is wrong headed.
             if not self.strict and not ok:
                 # Suppress the error if lws is the cause.
@@ -614,7 +614,7 @@ class Importer(object):
     #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
     def get_leading_indent(self, lines, i, ignoreComments=True):
         '''
-        Return the leading whitespace of a line: an int.
+        Return the leading whitespace (an int) of the first significant line.
         Ignore blank and comment lines if ignoreComments is True
         '''
         if ignoreComments:
@@ -713,7 +713,8 @@ class Importer(object):
     def undent_by(self, s, undent_val):
         '''
         Remove leading whitespace equivalent to undent_val from each line.
-        For strict languages, add an underindentEscapeString for underindented line.
+        
+        Strict languages: prepend the underindent escape for underindented lines.
         '''
         trace = False and not g.app.unitTesting
         if self.is_rst:
@@ -721,18 +722,18 @@ class Importer(object):
         result = []
         for line in g.splitlines(s):
             lws_s = self.get_lws(line)
-            s = line[len(lws_s):]
             lws = g.computeWidth(lws_s, self.tab_width)
             # Add underindentEscapeString only for strict languages.
-            if self.strict and not s.isspace() and lws < undent_val:
-                if trace: g.trace('undent_val: %s, lws: %s, %s' % (
-                    undent_val, lws, repr(line)))
+            if self.strict and not line.isspace() and lws < undent_val:
+                if trace: g.trace('undent_val: %s, lws: %s, %r' % (
+                    undent_val, lws, line))
                 # End the underindent count with a period to
                 # protect against lines that start with a digit!
                 result.append("%s%s.%s" % (
-                    self.escape, undent_val-lws, s.lstrip()))
+                    self.escape, undent_val-lws, line.lstrip()))
             else:
-                if trace: g.trace(repr(s))
+                if trace: g.trace(undent_val, repr(line))
+                s = g.removeLeadingWhitespace(line, undent_val, self.tab_width)
                 result.append(s)
         return ''.join(result)
     #@-others

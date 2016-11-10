@@ -17,7 +17,7 @@ class CoffeeScriptImporter(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'coffeescript',
-            strict = False
+            strict = True
         )
         self.at_others = []
             # A list of postitions that have an @others directive.
@@ -32,8 +32,19 @@ class CoffeeScriptImporter(Importer):
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
+        if trace:
+            g.trace('='*60)
+            for p in parent.self_and_subtree():
+                print('***** %s' % p.h)
+                self.print_lines(g.splitLines(p.b))
         self.move_trailing_lines(parent)
         self.undent_nodes(parent)
+        if trace:
+            g.trace('-'*60)
+            for p in parent.self_and_subtree():
+                print('***** %s' % p.h)
+                self.print_lines(g.splitLines(p.b))
     #@+node:ekr.20160505173347.1: *4* coffee.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p.b and return them.'''
@@ -82,7 +93,7 @@ class CoffeeScriptImporter(Importer):
     #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
-        trace = False and not g.unitTesting # and self.root.h.endswith('2a')
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
         lines = g.splitLines(s)
         if trace:
             g.trace('='*20)
@@ -125,10 +136,12 @@ class CoffeeScriptImporter(Importer):
         self.scan(s, parent, indent=False)
         suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
             self.at_tab_width or -2)
-        parent.b = parent.b.lstrip() + suffix
+        parent.b = parent.b.rstrip() + suffix
         self.post_pass(parent)
         ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
+        if not ok:
+            parent.b += '\n@ignore\n'
         # It's always useless for an an import to dirty the outline.
         for p in parent.self_and_subtree():
             p.clearDirty()
@@ -138,11 +151,14 @@ class CoffeeScriptImporter(Importer):
     def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
         # pylint: disable=arguments-differ
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
         if not s1.strip():
             return
-        i, body_lines = 0, []
         lines = g.splitLines(s1)
+        if trace:
+            g.trace('='*40)
+            self.print_lines(lines)
+        i, body_lines = 0, []
         while i < len(lines):
             progress = i
             s = lines[i]
@@ -183,7 +199,7 @@ class CoffeeScriptImporter(Importer):
                 i += 1
             assert progress < i
         if trace:
-            g.trace('returns...')
+            g.trace('-'*40)
             self.print_lines(body_lines)
         parent.b = parent.b + ''.join(body_lines)
     #@+node:ekr.20160505114047.1: *4* coffee.class_name
@@ -196,7 +212,11 @@ class CoffeeScriptImporter(Importer):
     #@+node:ekr.20160505102909.1: *4* coffee.skip_block
     def skip_block(self, lines):
         '''Return all lines of the block that starts at lines[0].'''
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
         assert lines
+        if trace:
+            g.trace('='*40, len(lines))
+            self.print_lines(lines)
         block_lines = [lines[0]]
         level1 = self.get_int_lws(lines[0])
         for s in lines[1:]:
@@ -205,6 +225,9 @@ class CoffeeScriptImporter(Importer):
                 block_lines.append(s)
             else:
                 break
+        if trace:
+            g.trace('-'*40, len(lines))
+            self.print_lines(block_lines)
         return block_lines
     #@+node:ekr.20160505113917.1: *4* coffee.starts_def
     def starts_def(self, s):
