@@ -28,13 +28,18 @@ class C_Importer(Importer):
         '''Return a cleaned up headline s.'''
         type1 = r'(static|extern)*'
         type2 = r'(void|int|float|double|char)*'
-        class_pattern = r'\s*%s\s*class\s+(\w+)' % (type1)
-        pattern = r'\s*%s\s*%s\s*(\w+)' % (type1, type2)
+        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
         m = re.match(class_pattern, s)
-        if m: return 'class ' + m.group(2)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            return '%sclass %s' % (prefix1, m.group(2))
         m = re.match(pattern, s)
         if m:
-            return '%s %s' % (m.group(2), m.group(3))
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+            h = m.group(3) or '<no c function name>'
+            return '%s%s%s' % (prefix1, prefix2, h)
         else:
             return s
     #@-others

@@ -27,15 +27,27 @@ class Perl_Importer(Importer):
         return 'sub ' + m.group(1) if m else s
     #@+node:ekr.20161027194956.1: *3* perl_i.clean_nodes
     def clean_nodes(self, parent):
-        '''Clean nodes as part of the post pass.'''
+        '''Clean nodes as part of the perl post pass.'''
         # Move trailing comments into following def nodes.
         for p in parent.subtree():
             next = p.threadNext()
-            lines = g.splitLines(p.b)
-            if lines and next:
-                while lines and lines[-1].strip().startswith('#'):
-                    next.b = lines.pop() + next.b
-                p.b = ''.join(lines)
+                # This can be a node *outside* parent's tree!
+            if next and self.has_lines(next):
+                if 1:
+                    lines = self.get_lines(p)
+                    if lines:
+                        tail = []
+                        while lines and lines[-1].strip().startswith('#'):
+                            tail.append(lines.pop())
+                        if tail:
+                            self.set_lines(p, lines)
+                            self.prepend_lines(next, reversed(tail))
+                else: # Alter p.b directly.
+                    lines = g.splitLines(p.b)
+                    if lines:
+                        while lines and lines[-1].strip().startswith('#'):
+                            next.b = lines.pop() + next.b
+                        p.b = ''.join(lines)
     #@+node:ekr.20161104150004.1: *3* perl_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''

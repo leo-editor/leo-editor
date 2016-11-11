@@ -143,18 +143,12 @@ class CS_Importer(Importer):
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
                 self.print_lines(g.splitLines(p.b))
-        # Remove all v._import_list temporaries.
-        self.finalize_ivars(parent)
-        # From here on, use the inefficient p.b.
-        # Otherwise overrides would have to know about p.v._import_lines.
+        # ===== Generic: use base Importer methods =====
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         # ===== Specific to coffeescript =====
         self.move_trailing_lines(parent)
         self.undent_nodes(parent)
-        # Same as i.post_pass.
-        # Put directives at the end.
-        self.add_root_directives(parent)
         if trace:
             g.trace('-'*60)
             for p in parent.self_and_subtree():
@@ -295,13 +289,17 @@ class CS_Importer(Importer):
         self.root = parent.copy()
         self.file_s = s
         if V2:
+            # Pass 1 of the code generation pipeline.
             self.v2_gen_lines(s, parent)
+            # Stage 2 of the pipeline: optional
+            self.post_pass(parent)
+            # State 3 of the pipeline: required.
+            self.finish(parent)
         else: # Legacy code.  To be retired.
             self.scan(s, parent, indent=False)
             suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
                 self.at_tab_width or -2)
             parent.b = parent.b.rstrip() + suffix
-        self.post_pass(parent)
         ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
         if not ok:
