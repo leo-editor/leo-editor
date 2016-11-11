@@ -41,6 +41,34 @@
 * Use code like search-finised code to highlight toggle commands.
 
 @language python
+.. @+node:ekr.20161111105838.1: *3* ----- To do for Importers
+@language rest
+@wrap
+@nosearch
+
+C Language:
+- Must backtrack to find start of signature line!
+- Some headlines are None None
+
+Python:
+- Fix two failed unit tests.
+
+Coffeescript:
+- Define coffeescript in terms of python.
+    - Just override py_i.clean_headline, has_decorators.
+- Add unit tests for failing coffeescript imports.
+
+Later:
+* Better test files.
+* Unit tests for all ScanState classes.
+* Unit tests with showTree = True.
+    - Test the generated tree, then delete all children.
+- Remove indent_flag after python tests pass.
+- Remove append_to_body.
+- Handle all ### comments:
+- Better docstring for scan_line.
+    - It exists to make starts_block and continues_block work properly.
+
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
