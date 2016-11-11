@@ -5,7 +5,6 @@ import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
-V2 = True # True: use non-recursive v2_gen_lines.
 #@+others
 #@+node:ekr.20160505094722.2: ** class CS_Importer(Importer)
 class CS_Importer(Importer):
@@ -20,11 +19,6 @@ class CS_Importer(Importer):
             language = 'coffeescript',
             strict = True
         )
-        if V2:
-            pass
-        else:
-            self.at_others = []
-                # A list of postitions that have an @others directive.
         self.at_tab_width = None
             # Default, overridden later.
         self.def_name = None
@@ -51,89 +45,6 @@ class CS_Importer(Importer):
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
     #@+node:ekr.20161110044040.1: *3* coffee.V1
-    #@+node:ekr.20160505100958.1: *4* coffee.scan & helper(legacy, recursive)
-    def scan(self, s1, parent, indent=True, do_def=True):
-        '''Create an outline from Coffeescript (.coffee) file.'''
-        # pylint: disable=arguments-differ
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
-        if not s1.strip():
-            return
-        lines = g.splitLines(s1)
-        if trace:
-            g.trace('='*40)
-            self.print_lines(lines)
-        i, body_lines = 0, []
-        at_others = False
-        while i < len(lines):
-            progress = i
-            s = lines[i]
-            is_class = g.match_word(s, 0, 'class')
-            is_def = do_def and not is_class and self.starts_def(s)
-            if self.is_ws_line(s):
-                body_lines.append(s)
-                i += 1
-            elif is_class or is_def:
-                # Important: all undents are done in a later pass.
-                child = parent.insertAsLastChild()
-                child.h = self.class_name(s) if is_class else self.def_name
-                child.b = s
-                if is_class:
-                    # The indentation will be the difference between s and s2
-                    if i+1 < len(lines):
-                        s1_level = self.get_leading_indent(lines, i, ignoreComments=False)
-                        s2_level = self.get_leading_indent(lines, i+1, ignoreComments=True)
-                        # g.trace('(coffeescript)', s1_level, s2_level, repr(s))
-                    else:
-                        self.errors += 1
-                        return
-                    indent = max(0, s2_level-s1_level)
-                    if not self.at_tab_width:
-                        self.at_tab_width = -indent
-                    child.b = child.b + ' '*indent+'@others\n'
-                    self.at_others.append(child.copy())
-                elif not any([parent == z for z in self.at_others]):
-                    self.at_others.append(parent.copy())
-                    body_lines.append('@others\n\n')
-                    at_others = True
-                block_lines = self.skip_block(lines[i:])
-                assert block_lines
-                i += len(block_lines)
-                s2 = ''.join(block_lines[1:])
-                self.scan(s2, child, do_def=not is_def)
-            elif at_others:
-                # Alas, this is necessary.
-                child = parent.insertAsLastChild()
-                child.h = s
-                child.b = s
-                i += 1
-            else:
-                body_lines.append(s)
-                i += 1
-            assert progress < i
-        if trace:
-            g.trace('-'*40)
-            self.print_lines(body_lines)
-        parent.b = parent.b + ''.join(body_lines)
-    #@+node:ekr.20160505102909.1: *5* coffee.skip_block
-    def skip_block(self, lines):
-        '''Return all lines of the block that starts at lines[0].'''
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
-        assert lines
-        if trace:
-            g.trace('='*40, len(lines))
-            self.print_lines(lines)
-        block_lines = [lines[0]]
-        level1 = self.get_int_lws(lines[0])
-        for s in lines[1:]:
-            level = self.get_int_lws(s)
-            if self.is_ws_line(s) or level > level1:
-                block_lines.append(s)
-            else:
-                break
-        if trace:
-            g.trace('-'*40, len(lines))
-            self.print_lines(block_lines)
-        return block_lines
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -288,18 +199,7 @@ class CS_Importer(Importer):
         # Set ivars for check()
         self.root = parent.copy()
         self.file_s = s
-        if V2:
-            # Pass 1 of the code generation pipeline.
-            self.v2_gen_lines(s, parent)
-            # Stage 2 of the pipeline: optional
-            self.post_pass(parent)
-            # State 3 of the pipeline: required.
-            self.finish(parent)
-        else: # Legacy code.  To be retired.
-            self.scan(s, parent, indent=False)
-            suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
-                self.at_tab_width or -2)
-            parent.b = parent.b.rstrip() + suffix
+        self.generate_nodes(s, parent)
         ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
         if not ok:
