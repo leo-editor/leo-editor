@@ -128,14 +128,14 @@ class Importer(object):
         self.ws_error = False
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
-    # All code in passes 1 and 2 must use this API to change body text.
+    # All code in passes 1 and 2 *must* use this API to change body text.
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
         assert not p.b, repr(p.b)
         assert hasattr(p.v, '_import_lines'), repr(p)
         p.v._import_lines.append(s)
 
-    def clear_lines(self, p, lines):
+    def clear_lines(self, p):
         p.v._import_lines = []
 
     def extend_lines(self, p, lines):
@@ -406,8 +406,8 @@ class Importer(object):
             self.add_line(p, line)
             self.cut_stack(new_state, stack)
         ### This doesn't work
-        ### if not self.gen_refs:
-        ###    tail_p = stack[-1].p
+        # if not self.gen_refs:
+        #    tail_p = stack[-1].p
         return tail_p
     #@+node:ekr.20161108160409.4: *8* i.ends_python
     def end_python_block(self, line, new_state, stack):
@@ -419,7 +419,7 @@ class Importer(object):
         h = self.clean_headline(line)
         child = self.v2_create_child_node(target.p.parent(), line, h)
         stack.pop()
-            ###### Is this where the line got lost?
+            ### Is this where the line got lost?
         stack.append(Target(child, new_state))
     #@+node:ekr.20161108160409.6: *7* i.start_new_block
     def start_new_block(self, line, new_state, stack):
@@ -544,13 +544,9 @@ class Importer(object):
         for p in parent.subtree():
             back = p.threadBack()
             if back != parent and not p.isCloned():
-                ### s = p.b
                 lines = self.get_lines(p)
                 # Move the whitespace from p to back.
-                ### s = ''.join(lines)
-                ### if s.isspace():
                 if all([z.isspace() for z in lines]):
-                    ### back.b = back.b + s
                     self.extend_lines(back, lines)
                     aList.append(p.copy())
         c.deletePositionsInList(aList)
@@ -561,14 +557,9 @@ class Importer(object):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        return ####
-        use_api = True
         pattern = self.escape_pattern # A compiled regex pattern
         for p in parent.subtree():
-            if use_api:
-                lines = self.get_lines(p)
-            else:
-                lines = g.splitLines(p.b)
+            lines = self.get_lines(p)
             tail = []
             while lines:
                 line = lines[-1]
@@ -580,10 +571,8 @@ class Importer(object):
                         n = int(n_str)
                     except ValueError:
                         break
-                    # g.trace(n, p.h, repr(line))
                     if n == abs(self.tab_width):
                         new_line = line[len(m.group(0)):]
-                        # g.trace('new line', repr(new_line))
                         tail.append(new_line)
                     else:
                         g.trace('unexpected unindent value', n)
@@ -594,35 +583,19 @@ class Importer(object):
                 parent = p.parent()
                 if parent.parent() == self.root:
                     parent = parent.parent()
-                # g.trace('='*30, parent.h, self.root.h)
-                # g.trace('head...\n%s' % lines)
-                # g.trace('tail...\n%s' % head)
-                if use_api:
-                    self.set_lines(p, lines)
-                    self.extend_lines(parent, reversed(tail))
-                else: # Use p.b
-                    head = ''.join(lines)
-                    tail = ''.join(reversed(tail))
-                    p.b = head
-                    parent.b = parent.b + tail
+                self.set_lines(p, lines)
+                self.extend_lines(parent, reversed(tail))
+                
     #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes (test)
     def unindent_all_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
-        use_api = True
         for p in parent.subtree():
-            if use_api:
-                lines = self.get_lines(p)
-                if all([z.isspace() for z in lines]):
-                    # Somewhat dubious, but i.check covers for us.
-                    self.clear_lines(p)
-                else:
-                    self.set_lines(p, self.undent(p))
+            lines = self.get_lines(p)
+            if all([z.isspace() for z in lines]):
+                # Somewhat dubious, but i.check covers for us.
+                self.clear_lines(p)
             else:
-                if p.b.isspace():
-                    # Somewhat dubious, but i.check covers for us.
-                    p.b = ''
-                else:
-                    p.b = self.undent(p)
+                self.set_lines(p, self.undent(p))
     #@+node:ekr.20161111023249.1: *5* Stage 3: i.finish & helpers
     def finish(self, parent):
         '''
@@ -642,12 +615,7 @@ class Importer(object):
             '@language %s\n' % self.language,
             '@tabwidth %d\n' % self.tab_width,
         ]
-        # g.trace('='*20, parent.h)
-        if 1: # Use the API.
-            self.extend_lines(parent, table)
-        else:
-            parent.b = parent.b + ''.join(table)
-        
+        self.extend_lines(parent, table)
     #@+node:ekr.20161110042020.1: *6* i.finalize_ivars
     def finalize_ivars(self, parent):
         '''
