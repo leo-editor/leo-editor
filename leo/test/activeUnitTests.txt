@@ -13064,7 +13064,7 @@ buildCoffee = (str) ->
 
 g.app.unitTestDict ['expectedErrors'] = 0
 
-c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
 
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4732: *6* @test elisp functions

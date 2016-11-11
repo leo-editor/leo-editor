@@ -51,99 +51,6 @@ class CS_Importer(Importer):
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
     #@+node:ekr.20161110044040.1: *3* coffee.V1
-    #@+node:ekr.20161108181857.1: *4* coffee.post_pass & helpers
-    def post_pass(self, parent):
-        '''Massage the created nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
-        if trace:
-            g.trace('='*60)
-            for p in parent.self_and_subtree():
-                print('***** %s' % p.h)
-                self.print_lines(g.splitLines(p.b))
-        self.move_trailing_lines(parent)
-        self.undent_nodes(parent)
-        if trace:
-            g.trace('-'*60)
-            for p in parent.self_and_subtree():
-                print('***** %s' % p.h)
-                self.print_lines(g.splitLines(p.b))
-    #@+node:ekr.20160505173347.1: *5* coffee.delete_trailing_lines
-    def delete_trailing_lines(self, p):
-        '''Delete the trailing lines of p.b and return them.'''
-        body_lines, trailing_lines = [], []
-        for s in g.splitLines(p.b):
-            strip = s.strip()
-            if not strip or strip.startswith('#'):
-                trailing_lines.append(s)
-            else:
-                body_lines.extend(trailing_lines)
-                body_lines.append(s)
-                trailing_lines = []
-        # Clear trailing lines if they are all blank.
-        if all([not z.strip() for z in trailing_lines]):
-            trailing_lines = []
-        p.b = ''.join(body_lines)
-        return trailing_lines
-    #@+node:ekr.20160505170558.1: *5* coffee.move_trailing_lines
-    def move_trailing_lines(self, parent):
-        '''Move trailing lines into the following node.'''
-        prev_lines = []
-        last = None
-        for p in parent.subtree():
-            trailing_lines = self.delete_trailing_lines(p)
-            if prev_lines:
-                # g.trace('moving lines from', last.h, 'to', p.h)
-                p.b = ''.join(prev_lines) + p.b
-            prev_lines = trailing_lines
-            last = p.copy()
-        if prev_lines:
-            # These should go after the @others lines in the parent.
-            lines = g.splitLines(parent.b)
-            for i, s in enumerate(lines):
-                if s.strip().startswith('@others'):
-                    lines = lines[:i+1] + prev_lines + lines[i+2:]
-                    parent.b = ''.join(lines)
-                    break
-            else:
-                # Fall back.
-                last.b = last.b + ''.join(prev_lines)
-    #@+node:ekr.20160505170639.1: *5* coffee.undent_nodes
-    def undent_nodes(self, parent):
-        '''Unindent all nodes in parent's tree.'''
-        for p in parent.self_and_subtree():
-            p.b = self.undent_coffeescript_body(p.b)
-    #@+node:ekr.20160505180032.1: *5* coffee.undent_coffeescript_body
-    def undent_coffeescript_body(self, s):
-        '''Return the undented body of s.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
-        lines = g.splitLines(s)
-        if trace:
-            g.trace('='*20)
-            self.print_lines(lines)
-        # Undent all leading whitespace or comment lines.
-        leading_lines = []
-        for line in lines:
-            if self.is_ws_line(line):
-                # Tricky.  Stipping a black line deletes it.
-                leading_lines.append(line if line.isspace() else line.lstrip())
-            else:
-                break
-        i = len(leading_lines)
-        # Don't unindent the def/class line! It prevents later undents.
-        tail = self.undent_body_lines(lines[i:], ignoreComments=True)
-        # Remove all blank lines from leading lines.
-        if 0:
-            for i, line in enumerate(leading_lines):
-                if not line.isspace():
-                    leading_lines = leading_lines[i:]
-                    break
-        result = ''.join(leading_lines) + tail
-        if trace:
-            g.trace('-'*20)
-            self.print_lines(g.splitLines(result))
-        return result
-
-
     #@+node:ekr.20160505100958.1: *4* coffee.scan & helper(legacy, recursive)
     def scan(self, s1, parent, indent=True, do_def=True):
         '''Create an outline from Coffeescript (.coffee) file.'''
@@ -227,6 +134,109 @@ class CS_Importer(Importer):
             g.trace('-'*40, len(lines))
             self.print_lines(block_lines)
         return block_lines
+    #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
+    def post_pass(self, parent):
+        '''Massage the created nodes.'''
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
+        if trace:
+            g.trace('='*60)
+            for p in parent.self_and_subtree():
+                print('***** %s' % p.h)
+                self.print_lines(g.splitLines(p.b))
+        # Remove all v._import_list temporaries.
+        self.finalize_ivars(parent)
+        # From here on, use the inefficient p.b.
+        # Otherwise overrides would have to know about p.v._import_lines.
+        self.clean_all_headlines(parent)
+        self.clean_all_nodes(parent)
+        # ===== Specific to coffeescript =====
+        self.move_trailing_lines(parent)
+        self.undent_nodes(parent)
+        # Same as i.post_pass.
+        # Put directives at the end.
+        self.add_root_directives(parent)
+        if trace:
+            g.trace('-'*60)
+            for p in parent.self_and_subtree():
+                print('***** %s' % p.h)
+                self.print_lines(g.splitLines(p.b))
+    #@+node:ekr.20160505173347.1: *4* coffee.delete_trailing_lines
+    def delete_trailing_lines(self, p):
+        '''Delete the trailing lines of p.b and return them.'''
+        body_lines, trailing_lines = [], []
+        for s in g.splitLines(p.b):
+            strip = s.strip()
+            if not strip or strip.startswith('#'):
+                trailing_lines.append(s)
+            else:
+                body_lines.extend(trailing_lines)
+                body_lines.append(s)
+                trailing_lines = []
+        # Clear trailing lines if they are all blank.
+        if all([not z.strip() for z in trailing_lines]):
+            trailing_lines = []
+        p.b = ''.join(body_lines)
+        return trailing_lines
+    #@+node:ekr.20160505170558.1: *4* coffee.move_trailing_lines
+    def move_trailing_lines(self, parent):
+        '''Move trailing lines into the following node.'''
+        prev_lines = []
+        last = None
+        for p in parent.subtree():
+            trailing_lines = self.delete_trailing_lines(p)
+            if prev_lines:
+                # g.trace('moving lines from', last.h, 'to', p.h)
+                p.b = ''.join(prev_lines) + p.b
+            prev_lines = trailing_lines
+            last = p.copy()
+        if prev_lines:
+            # These should go after the @others lines in the parent.
+            lines = g.splitLines(parent.b)
+            for i, s in enumerate(lines):
+                if s.strip().startswith('@others'):
+                    lines = lines[:i+1] + prev_lines + lines[i+2:]
+                    parent.b = ''.join(lines)
+                    break
+            else:
+                # Fall back.
+                last.b = last.b + ''.join(prev_lines)
+    #@+node:ekr.20160505170639.1: *4* coffee.undent_nodes
+    def undent_nodes(self, parent):
+        '''Unindent all nodes in parent's tree.'''
+        for p in parent.self_and_subtree():
+            p.b = self.undent_coffeescript_body(p.b)
+    #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
+    def undent_coffeescript_body(self, s):
+        '''Return the undented body of s.'''
+        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
+        lines = g.splitLines(s)
+        if trace:
+            g.trace('='*20)
+            self.print_lines(lines)
+        # Undent all leading whitespace or comment lines.
+        leading_lines = []
+        for line in lines:
+            if self.is_ws_line(line):
+                # Tricky.  Stipping a black line deletes it.
+                leading_lines.append(line if line.isspace() else line.lstrip())
+            else:
+                break
+        i = len(leading_lines)
+        # Don't unindent the def/class line! It prevents later undents.
+        tail = self.undent_body_lines(lines[i:], ignoreComments=True)
+        # Remove all blank lines from leading lines.
+        if 0:
+            for i, line in enumerate(leading_lines):
+                if not line.isspace():
+                    leading_lines = leading_lines[i:]
+                    break
+        result = ''.join(leading_lines) + tail
+        if trace:
+            g.trace('-'*20)
+            self.print_lines(g.splitLines(result))
+        return result
+
+
     #@+node:ekr.20161110044110.1: *3* coffee.V2
     #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line
     def v2_scan_line(self, s, prev_state):
@@ -291,7 +301,7 @@ class CS_Importer(Importer):
             suffix = '\n@language coffeescript\n@tabwidth %s\n' % (
                 self.at_tab_width or -2)
             parent.b = parent.b.rstrip() + suffix
-            self.post_pass(parent)
+        self.post_pass(parent)
         ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
         if not ok:

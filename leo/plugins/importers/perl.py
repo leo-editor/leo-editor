@@ -20,12 +20,12 @@ class Perl_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161027183713.1: *3* perl_ic.clean_headline
+    #@+node:ekr.20161027183713.1: *3* perl_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
         m = re.match(r'sub\s+(\w+)', s)
         return 'sub ' + m.group(1) if m else s
-    #@+node:ekr.20161027194956.1: *3* perl_ic.clean_nodes
+    #@+node:ekr.20161027194956.1: *3* perl_i.clean_nodes
     def clean_nodes(self, parent):
         '''Clean nodes as part of the post pass.'''
         # Move trailing comments into following def nodes.

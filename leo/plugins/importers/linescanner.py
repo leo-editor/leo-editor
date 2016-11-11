@@ -106,6 +106,9 @@ class Importer(object):
 
         # Constants...
         self.escape = c.atFileCommands.underindentEscapeString
+        self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
+            # m.group(1) is the unindent value.
+        self.escape_pattern = re.compile(self.escape_string)
         self.gen_refs = name in ('javascript',)
         self.gen_clean = name in ('python',)
         self.ScanState = ScanState
@@ -234,6 +237,14 @@ class Importer(object):
         Will typically be overridden in subclasses.
         '''
         return s.strip()
+    #@+node:ekr.20161110173058.1: *4* i.clean_nodes
+    def clean_nodes(self, parent):
+        '''
+        Clean all nodes in parent's tree.
+        Subclasses override this as desired.
+        See perl_i.clean_nodes for an examplle.
+        '''
+        pass
     #@+node:ekr.20161108155143.6: *4* i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
@@ -362,10 +373,34 @@ class Importer(object):
     #@+node:ekr.20161108131153.13: *5* i.post_pass & helpers
     def post_pass(self, parent):
         '''Clean up parent and all its descendants.'''
+        # g.trace('='*40)
+        # Remove all v._import_list temporaries.
+        self.finalize_ivars(parent)
+        # From here on, use the inefficient p.b.
+        # Otherwise overrides would have to know about p.v._import_lines.
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
+        # These passes must follow unindent_all_nodes.
+        self.promote_trailing_underindented_lines(parent)
+        # This probably should be the last pass.
         self.delete_all_empty_nodes(parent)
+        # Put directives at the end, so as not to interfere with shebang lines, etc.
+        self.add_root_directives(parent)
+    #@+node:ekr.20161108160409.5: *6* i.add_root_directives
+    def add_root_directives(self, parent):
+        '''Return the proper directives for the root node p.'''
+        table = [
+            '@language %s\n' % self.language,
+            '@tabwidth %d\n' % self.tab_width,
+        ]
+        if 1:
+            # Use p.b.
+            parent.b = parent.b + ''.join(table)
+        else:
+            # use p.v._import_lines.
+            for line in table:
+                self.add_line(parent, line)
     #@+node:ekr.20161110125940.1: *6* i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
@@ -379,9 +414,10 @@ class Importer(object):
     #@+node:ekr.20161110130157.1: *6* i.clean_all_nodes
     def clean_all_nodes(self, parent):
         '''Clean the nodes in parent's tree, in a language-dependent way.'''
-        if hasattr(self, 'clean_nodes'):
-            # pylint: disable=no-member
-            self.clean_nodes(parent)
+        # i.clean_nodes does nothing.
+        # Subclasses may override as desired.
+        # See perl_i.clean_nodes for an example.
+        self.clean_nodes(parent)
     #@+node:ekr.20161110130709.1: *6* i.delete_all_empty_nodes
     def delete_all_empty_nodes(self, parent):
         '''
@@ -398,6 +434,53 @@ class Importer(object):
                 back.b = back.b + s
                 aList.append(p.copy())
         c.deletePositionsInList(aList)
+    #@+node:ekr.20161110131509.1: *6* i.promote_trailing_underindented_lines
+    def promote_trailing_underindented_lines(self, parent):
+        '''
+        Promote all trailing underindent lines to the node's parent node,
+        deleting one tab's worth of indentation. Typically, this will remove
+        the underindent escape.
+        '''
+        return ####
+        pattern = self.escape_pattern # A compiled regex pattern
+        for p in parent.subtree():
+            lines = g.splitLines(p.b)
+            tail = []
+            while lines:
+                line = lines[-1]
+                m = pattern.match(line)
+                if m:
+                    lines.pop()
+                    n_str = m.group(1)
+                    try:
+                        n = int(n_str)
+                    except ValueError:
+                        break
+                    # g.trace(n, p.h, repr(line))
+                    if n == abs(self.tab_width):
+                        new_line = line[len(m.group(0)):]
+                        # g.trace('new line', repr(new_line))
+                        tail.append(new_line)
+                    else:
+                        g.trace('unexpected unindent value', n)
+                        break
+                else:
+                    break
+            if tail:
+                parent = p.parent()
+                if parent.parent() == self.root:
+                    parent = parent.parent()
+                # g.trace('='*30, parent.h, self.root.h)
+                # g.trace('head...\n%s' % lines)
+                # g.trace('tail...\n%s' % head)
+                if 1: # Use p.b
+                    head = ''.join(lines)
+                    tail = ''.join(reversed(tail))
+                    p.b = head
+                    parent.b = parent.b + tail
+                else: # Use v._import_lines
+                    p.v._import_lines = lines
+                    parent.v._import_lines.extend(tail)
     #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
@@ -474,9 +557,6 @@ class Importer(object):
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
-        # Put directives at the end, so as not to interfere with shebang lines, etc.
-        self.add_root_directives(parent)
-        self.finalize_ivars(parent)
     #@+node:ekr.20161110070826.1: *5* i.scan_next_line
     def scan_next_line(self, line, prev_state, tail_p, trace):
         '''
@@ -562,15 +642,6 @@ class Importer(object):
         child = self.v2_create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
     #@+node:ekr.20161110042938.1: *5* i.Utils for v2_gen_lines
-    #@+node:ekr.20161108160409.5: *6* i.add_root_directives
-    def add_root_directives(self, parent):
-        '''Return the proper directives for the root node p.'''
-        table = [
-            '@language %s\n' % self.language,
-            '@tabwidth %d\n' % self.tab_width,
-        ]
-        for line in table:
-            self.add_line(parent, line)
     #@+node:ekr.20161108160409.2: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
