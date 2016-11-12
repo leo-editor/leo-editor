@@ -232,14 +232,14 @@ if encOK:
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
     def sn_decode(s):
-        return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).strip()
+        return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
 
     def sn_encode(s):
         pad = ' '*(16-len(s)%16)
         return '\n'.join(textwrap.wrap(
-            base64.b64encode(AES.new(__ENCKEY[0]).encrypt(s+pad)),
+            base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8'))),
             break_long_words = True
-        ))
+        )).decode('utf-8')
 
     @g.command('stickynoteenckey')
     def sn_getenckey(dummy=None):
@@ -258,8 +258,8 @@ if encOK:
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()
-        sha.update(txt)
-        md5.update(txt)
+        sha.update(txt.encode('utf-8'))
+        md5.update(txt.encode('utf-8'))
         __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
         if len(__ENCKEY[0]) != 32:
             raise Exception("sn_getenckey failed to build key")
