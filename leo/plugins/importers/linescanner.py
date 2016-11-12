@@ -125,6 +125,7 @@ class Importer(object):
         # State vars.
         self.errors = 0
         ic.errors = 0 # Required.
+        self.parse_body = False
         self.ws_error = False
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
@@ -156,9 +157,9 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''ImportController.check'''
         # g.trace('='*20, self.root.h)
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_all = False
-        trace_lines = True
+        trace_lines = False
         no_clean = True # True: strict lws check for *all* languages.
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
@@ -324,6 +325,9 @@ class Importer(object):
         '''
         A three-stage pipeline to generate all imported nodes.
         '''
+        trace = False and not g.unitTesting
+        if trace: g.trace('='*20)
+            #### g.pdb()
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
         self.v2_gen_lines(s, parent)
@@ -344,7 +348,7 @@ class Importer(object):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and not g.unitTesting and self.root.h.endswith('-test.py')
+        trace = False and not g.unitTesting # and self.root.h.endswith('-test.py')
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
@@ -378,9 +382,9 @@ class Importer(object):
         starts_block = new_state.v2_starts_block(prev_state)
         continues_block = new_state.v2_continues_block(prev_state)
         if trace:
-            g.trace('%s tail: %s +: %s =: %s %r' % (
+            g.trace('%s tail: %s +: %5s =: %5s %r' % (
                 new_state,
-                int(bool(tail_p)),
+                bool(tail_p),
                 int(starts_block),
                 int(continues_block),
                 line),
@@ -615,7 +619,10 @@ class Importer(object):
             '@language %s\n' % self.language,
             '@tabwidth %d\n' % self.tab_width,
         ]
-        self.extend_lines(parent, table)
+        if self.parse_body:
+            pass
+        else:
+            self.extend_lines(parent, table)
     #@+node:ekr.20161110042020.1: *6* i.finalize_ivars
     def finalize_ivars(self, parent):
         '''
@@ -631,7 +638,7 @@ class Importer(object):
     #@+node:ekr.20161108131153.10: *4* i.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         # g.trace('='*20, self.name)
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
@@ -642,6 +649,7 @@ class Importer(object):
         self.file_s = s
         # Init the error/status info.
         self.errors = 0
+        self.parse_body = parse_body
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
         ws_ok = self.check_blanks_and_tabs(s) # Only issues warnings.
@@ -663,7 +671,7 @@ class Importer(object):
         for p in root.self_and_subtree():
             p.clearDirty()
         c.setChanged(changed)
-        if trace: g.trace('-' * 30, parent.h)
+        if trace: g.trace('-' * 10, parent.h)
         return ok
     #@+node:ekr.20161108131153.11: *5* i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):

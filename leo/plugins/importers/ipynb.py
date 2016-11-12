@@ -58,11 +58,10 @@ class Import_IPYNB(object):
         self.indent_cells()
         c.selectPosition(self.root)
         c.redraw()
-    #@+node:ekr.20160412103110.1: *4* run: @auto entry
+    #@+node:ekr.20160412103110.1: *4* ipynb.run
     def run(self, s, parent, parse_body=False, prepass=False):
         '''
-        @auto entry point.
-        Signature must match signature of BaseScanner.run().
+        @auto entry point. Called by code in leoImport.py.
         '''
         c = self.c
         fn = parent.atAutoNodeName()

@@ -2115,7 +2115,7 @@ class ImportController(object):
         
         Parse all lines, adding to parent.b, creating child nodes as necessary.
         '''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         if not lines:
             return
         gen_refs, state = self.gen_refs, self.state
@@ -2160,7 +2160,7 @@ class ImportController(object):
         - code_lines are all the lines of the class or function.
         - tail lines are all lines up to but not including the next class or function.
         '''
-        trace = True and not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and not g.unitTesting and self.root.h.endswith('.py')
         trace_lines = False
         trace_entry = True
         trace_results = True
@@ -2410,4 +2410,5 @@ class LineScanner(object):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
+
 #@-leo

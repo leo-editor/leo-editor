@@ -131,7 +131,7 @@ class Python_ImportController(ImportController):
             print('----- result:\n%s' % ''.join(result))
         return ''.join(result)
     #@-others
-#@+node:ekr.20161029120457.1: *3* V1: class PythonScanner
+#@+node:ekr.20161029120457.1: *3* V1: class PythonScanner (BaseScanner)
 class PythonScanner(basescanner.BaseScanner):
     #@+others
     #@+node:ekr.20161029120457.2: *4*  __init__ (PythonScanner)
@@ -445,7 +445,7 @@ class Python_State:
         self.contexts = ['', '"""', "'''", '"', "'"]
         self.indent = indent
         self.starts = starts
-        self.ws = ws # whitespace line, possibly ending in a comment.
+        self.ws = ws # A bool: True if a whitespace line, possibly ending in a comment.
         
     def __repr__(self):
         '''Py_State.__repr__'''
@@ -476,6 +476,7 @@ class Python_State:
     #@+node:ekr.20161105042258.1: *4* py_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
+        # g.trace('*'*20, repr(self.ws))
         if prev_state.starts:
             # The first line *after* the class or def *is* in the block.
             prev_state.starts = False

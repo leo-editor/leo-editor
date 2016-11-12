@@ -32,12 +32,12 @@ class CTextScanner(BaseScanner):
 
     """
     #@+others
-    #@+node:tbrown.20140801105909.47552: *3* write_lines
+    #@+node:tbrown.20140801105909.47552: *3* CTextScanner.write_lines
     def write_lines(self, node, lines):
         """write the body lines to body normalizing whitespace"""
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
-    #@+node:tbrown.20140801105909.47553: *3* run
+    #@+node:tbrown.20140801105909.47553: *3* CTextScanner.run
     def run(self, s, parent, parse_body=False, prepass=False):
 
         cchar = '#'
