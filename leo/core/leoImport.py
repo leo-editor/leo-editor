@@ -1533,7 +1533,7 @@ class LeoImportCommands(object):
 
     def defaultImporterUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
-    #@+node:ekr.20070713082220: *4* ic.scannerUnitTest
+    #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, atAuto=False, ext=None, fileName=None, s=None, showTree=False):
         '''
         Run a unit test of an import scanner,
@@ -1543,14 +1543,11 @@ class LeoImportCommands(object):
         c = self.c; h = p.h; old_root = p.copy()
         oldChanged = c.changed
         d = g.app.unitTestDict
-        expectedErrors = d.get('expectedErrors')
-        expectedErrorMessage = d.get('expectedErrorMessage')
-        expectedMismatchLine = d.get('expectedMismatchLine')
         g.app.unitTestDict = {}
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
-        # Run the actual test.
+        # Run the actual test using the **GeneralTestCase** class.
         self.createOutline(title.strip(), p.copy(), atAuto=atAuto, s=s, ext=ext)
         # Set ok.
         d = g.app.unitTestDict
@@ -1565,21 +1562,9 @@ class LeoImportCommands(object):
             c.setChanged(oldChanged)
         c.redraw(old_root)
         if g.app.unitTesting:
-            # Put all the info in the assertion message.
-            table = (
-                '',
-                # 'p.h:                  %s' % (p.h),
-                'ext:                  %s' % (ext),
-                'fileName:             %s' % (fileName),
-                'result:               %s' % (d.get('result')),
-                'actual errors:        %s' % (d.get('actualErrors')),
-                'expected errors:      %s' % (d.get('expectedErrors')),
-                'actualMismatchLine:   %s' % (repr(d.get('actualMismatchLine'))),
-                'expectedMismatchLine: %s' % (repr(d.get('expectedMismatchLine'))),
-                'actualErrorMessage:   %s' % (repr(d.get('actualErrorMessage'))),
-                'expectedErrorMessage: %s' % (repr(d.get('expectedErrorMessage'))),
-            )
-            assert ok, '\n'.join(table)
+            if not ok:
+                g.app.unitTestDict['fail'] = p.h
+            assert ok, p.h
         return ok
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
