@@ -196,9 +196,12 @@ if encOK:
 
         def focusin():
             if v is c.p.v:
-                if sn_decode(v.b) != nf.toPlainText():
+                decoded = sn_decode(v.b)
+                if decoded is None:
+                    return
+                if decoded != nf.toPlainText():
                     # only when needed to avoid scroll jumping
-                    nf.setPlainText(sn_decode(v.b))
+                    nf.setPlainText(decoded)
                 nf.setWindowTitle(p.h)
                 nf.dirty = False
 
@@ -219,27 +222,38 @@ if encOK:
 
         if rekey:
             unsecret = sn_decode(v.b)
+            if unsecret is None:
+                return
             sn_getenckey()
             secret = sn_encode(unsecret)
             v.b = secret
 
         ### c = event['c']
         ### p = c.p
+        decoded = sn_decode(v.b)
+        if decoded is None:
+            return
         nf = mknote(c,p, focusin=focusin, focusout=focusout)
-        nf.setPlainText(sn_decode(v.b))
+        nf.setPlainText(decoded)
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
     def sn_decode(s):
-        return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
+        try:
+            return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
+        except UnicodeDecodeError:
+            g.es("Decode failed")
+            __ENCKEY[0] = None
+            return None
 
     def sn_encode(s):
         pad = ' '*(16-len(s)%16)
-        return '\n'.join(textwrap.wrap(
-            base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8'))),
-            break_long_words = True
-        )).decode('utf-8')
+        txt = base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8')))
+        if g.isPython3:
+            txt = str(txt, 'utf-8')
+        wrapped = textwrap.wrap(txt, break_long_words=True)
+        return '\n'.join(wrapped)
 
     @g.command('stickynoteenckey')
     def sn_getenckey(dummy=None):
