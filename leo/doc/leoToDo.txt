@@ -7,9 +7,12 @@
 @language rest
 @wrap
 
-- Post: how importers handle whitespace.  It's almost magic.
-    *** Importers are *all* about whitespace.
-    *** Compare the various undent methods.
+- Put engineering notebook files in GitHub .md files.
+
+- Use regex in g.match.  Add g.match_any.
+    pattern = '|'.join([r"\b%s\b" z for z in args])
+    
+Leo 5.5 final by Thanksgiving.
 
 - Encourage everyone to use issue tracker.
 
@@ -69,6 +72,21 @@ Later:
 - Better docstring for scan_line.
     - It exists to make starts_block and continues_block work properly.
 
+.. @+node:ekr.20161111032447.1: *3* Failed attempt at ''';; abbreviation
+@nocolor
+##""";;={|{insert('"');insert('"');insert('"');insert('\n');insert('"');insert('"');insert('"');do('back-char')}|}
+##''';;={|{insert("'");insert("'");insert("'");insert('\n');insert("'");insert("'");insert("'");do('back-char')}|}
+###''';;={|{ch="'''";nl="\n";insert(ch);insert(nl);insert(ch)}|}
+### do('insert-newline')
+# This work, but doesn't handle indentation properly.
+''';;='''
+\:
+\:'''
+@color
+
+# We need helpers:
+''';;={|{do('insert-single-triple-quote-docstring')}|}
+""";;={|{do('insert-double-triple-quote-docstring')}|}
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
