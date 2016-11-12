@@ -1547,11 +1547,6 @@ class LeoImportCommands(object):
         expectedErrorMessage = d.get('expectedErrorMessage')
         expectedMismatchLine = d.get('expectedMismatchLine')
         g.app.unitTestDict = {}
-        # {
-            # 'expectedErrors': expectedErrors,
-            # 'expectedErrorMessage': expectedErrorMessage,
-            # 'expectedMismatchLine': expectedMismatchLine,
-        # }
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
@@ -1559,19 +1554,7 @@ class LeoImportCommands(object):
         self.createOutline(title.strip(), p.copy(), atAuto=atAuto, s=s, ext=ext)
         # Set ok.
         d = g.app.unitTestDict
-        if 1: ### Disable expected mismatch business...
-            ok = d.get('result') is True
-        else: ### Original, very weird, code.
-            ok = ((d.get('result') and expectedErrors in (None, 0)) or
-                (
-                    # BaseScanner.checkTrialWrite returns *True* if the following match.
-                    d.get('actualErrors') == d.get('expectedErrors') and
-                    d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
-                    (
-                        expectedErrorMessage is None or
-                        d.get('actualErrorMessage') == d.get('expectedErrorMessage')
-                    )
-                ))
+        ok = d.get('result') is True
         if trace:
             g.trace('-'*10, ok, p.h)
             g.printDict(d)

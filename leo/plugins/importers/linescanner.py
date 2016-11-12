@@ -206,10 +206,7 @@ class Importer(object):
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
             d = g.app.unitTestDict
-            ### ok = d.get('expectedMismatchLine') == bad_i1
-            ### ok = False
             d['result'] = ok
-            ### d['actualErrors'] = self.errors
             if not ok: d['fail'] = g.callers()
         if 0: # This is wrong headed.
             if not self.strict and not ok:
