@@ -188,27 +188,6 @@ class CS_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return CS_State('', 0)
-    #@+node:ekr.20160505100917.1: *3* coffee.run
-    def run(self, s, parent, parse_body=False, prepass=False):
-        '''The top-level code for the coffeescript scanners.'''
-        # g.trace('='*40)
-        c = self.c
-        changed = c.isChanged()
-        if prepass:
-            return False, []
-        # Set ivars for check()
-        self.root = parent.copy()
-        self.file_s = s
-        self.generate_nodes(s, parent)
-        ok = self.errors == 0 and self.check(s, parent)
-        g.app.unitTestDict['result'] = ok
-        if not ok:
-            parent.b += '\n@ignore\n'
-        # It's always useless for an an import to dirty the outline.
-        for p in parent.self_and_subtree():
-            p.clearDirty()
-        c.setChanged(changed)
-        return ok
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_State
 class CS_State:

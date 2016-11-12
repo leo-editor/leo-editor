@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.44" body_secondary_ratio="0.71">
-	<global_window_position top="158" left="579" height="919" width="1214"/>
+	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1233,11 +1233,12 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -1252,20 +1253,64 @@
 </v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
+<v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
+<v t="ekr.20150919073819.1"><vh>copy</vh></v>
+<v t="ekr.20140206132559.4560"><vh>before</vh>
+<v t="ekr.20161112061414.1"><vh>class aClass</vh>
+<v t="ekr.20161112061414.2"><vh>__init__</vh></v>
+<v t="ekr.20161112061414.3"><vh>spam</vh></v>
+</v>
+<v t="ekr.20161112061414.4"><vh>bClass = aClass</vh></v>
+</v>
+<v t="ekr.20140206132559.4564"><vh>expected</vh>
+<v t="ekr.20150919074321.1"><vh>class aClass</vh>
+<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074321.3"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20150919074122.1"><vh>@@@test ic.parse-body mypy</vh>
+<v t="ekr.20150919074220.1"><vh>copy</vh></v>
+<v t="ekr.20150919074132.1"><vh>before</vh>
+<v t="ekr.20161112061406.1"><vh>class TypeJoinVisitor</vh></v>
+</v>
+<v t="ekr.20150919074154.1"><vh>expected</vh>
+<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
+<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
+<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
+<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
+<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
+<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
+<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
+<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
+<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
+<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
+<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
+<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
+<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
+<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
+<v t="ekr.20150919074211.16"><vh>join</vh></v>
+<v t="ekr.20150919074211.17"><vh>default</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test python comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test python decorator</vh></v>
 <v t="ekr.20090529141856.4740"><vh>@test python def inside def</vh></v>
 <v t="ekr.20090529141856.4741"><vh>@test docstring only</vh></v>
-<v t="ekr.20090529141856.4742"><vh>@test overindent def--no following def</vh></v>
-<v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
-<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
+<v t="ekr.20090529141856.4742"><vh>@test python overindent def--no following def</vh></v>
+<v t="ekr.20090529141856.4743"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20090529141856.4744"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
 <v t="ekr.20101101034131.6042"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
@@ -1289,43 +1334,11 @@
 <v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20161103075725.1"><vh>Python failing tests</vh>
-<v t="ekr.20090529141856.4759"></v>
-<v t="ekr.20090529141856.4761"></v>
-<v t="ekr.20140206132559.4567"><vh>@test ic.parse-body</vh>
-<v t="ekr.20150919073819.1"><vh>copy</vh></v>
-<v t="ekr.20140206132559.4560"><vh>before</vh></v>
-<v t="ekr.20140206132559.4564"><vh>expected</vh>
-<v t="ekr.20150919074321.1"><vh>class aClass</vh>
-<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074321.3"><vh>spam</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20150919074122.1"><vh>@test ic.parse-body mypy</vh>
-<v t="ekr.20150919074220.1"><vh>copy</vh></v>
-<v t="ekr.20150919074132.1"><vh>before</vh></v>
-<v t="ekr.20150919074154.1"><vh>expected</vh>
-<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
-<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
-<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
-<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
-<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
-<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
-<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
-<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
-<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
-<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
-<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
-<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
-<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
-<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
-<v t="ekr.20150919074211.16"><vh>join</vh></v>
-<v t="ekr.20150919074211.17"><vh>default</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20161112061534.1"><vh>Python tests perfect import fails, but test passes</vh>
+<v t="ekr.20090529141856.4738"></v>
+<v t="ekr.20090529141856.4743"></v>
+<v t="ekr.20090529141856.4757"></v>
+<v t="ekr.20090529141856.4758"></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
@@ -1335,10 +1348,10 @@
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -1349,20 +1362,24 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh></v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh>
+<v t="ekr.20161112072933.22"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161112072933.23"><vh>buildCoffee = (str) -&gt;</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+</v>
+</v>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -1373,10 +1390,10 @@
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -1384,28 +1401,28 @@
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"></v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4774" a="E"></v>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"></v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20161103015908.1" a="E"></v>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20090529141856.4736" a="E"></v>
+<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
 </v>
@@ -1414,7 +1431,7 @@
 </v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
@@ -1423,7 +1440,7 @@
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
-<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
 <v t="ekr.20111228125719.3909"><vh>@test ic.BaseScanner.insertIgnoreDirective</vh></v>
 <v t="ekr.20111110095252.3845"><vh>@test ic.compareTokens: mismatched length</vh>
 <v t="ekr.20111110095252.3846"><vh>&lt;&lt; define tokens &gt;&gt;</vh></v>
@@ -7959,7 +7976,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="12">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14474,12 +14491,7 @@ finally:
 <t tx="ekr.20140121160228.4845">def spam_top2():
     pass
 </t>
-<t tx="ekr.20140206132559.4560">class aClass:
-    def __init__(self):
-        pass
-    def spam(self):
-        pass
-bClass = aClass
+<t tx="ekr.20140206132559.4560">@others
 </t>
 <t tx="ekr.20140206132559.4564">@others
 bClass = aClass
@@ -14691,7 +14703,7 @@ After subheader text
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -14766,153 +14778,7 @@ finally:
     before.h = 'before'
     c.redraw()
 </t>
-<t tx="ekr.20150919074132.1">class TypeJoinVisitor(TypeVisitor[Type]):
-    """Implementation of the least upper bound algorithm.
-
-    Attributes:
-      s: The other (left) type operand.
-    """
-
-    def __init__(self, s: Type) -&gt; None:
-        self.s = s
-
-    def visit_unbound_type(self, t: UnboundType) -&gt; Type:
-        if isinstance(self.s, Void) or isinstance(self.s, ErrorType):
-            return ErrorType()
-        else:
-            return AnyType()
-
-    def visit_union_type(self, t: UnionType) -&gt; Type:
-        if is_subtype(self.s, t):
-            return t
-        else:
-            return UnionType(t.items + [self.s])
-
-    def visit_error_type(self, t: ErrorType) -&gt; Type:
-        return t
-
-    def visit_type_list(self, t: TypeList) -&gt; Type:
-        assert False, 'Not supported'
-
-    def visit_any(self, t: AnyType) -&gt; Type:
-        return t
-
-    def visit_void(self, t: Void) -&gt; Type:
-        if isinstance(self.s, Void):
-            return t
-        else:
-            return ErrorType()
-
-    def visit_none_type(self, t: NoneTyp) -&gt; Type:
-        if not isinstance(self.s, Void):
-            return self.s
-        else:
-            return self.default(self.s)
-
-    def visit_erased_type(self, t: ErasedType) -&gt; Type:
-        return self.s
-
-    def visit_type_var(self, t: TypeVarType) -&gt; Type:
-        if isinstance(self.s, TypeVarType) and (cast(TypeVarType, self.s)).id == t.id:
-            return self.s
-        else:
-            return self.default(self.s)
-
-    def visit_instance(self, t: Instance) -&gt; Type:
-        if isinstance(self.s, Instance):
-            return join_instances(t, cast(Instance, self.s))
-        elif isinstance(self.s, FunctionLike):
-            return join_types(t, self.s.fallback)
-        else:
-            return self.default(self.s)
-
-    def visit_callable_type(self, t: CallableType) -&gt; Type:
-        # TODO: Consider subtyping instead of just similarity.
-        if isinstance(self.s, CallableType) and is_similar_callables(
-                t, cast(CallableType, self.s)):
-            return combine_similar_callables(t, cast(CallableType, self.s))
-        elif isinstance(self.s, Overloaded):
-            # Switch the order of arguments to that we'll get to visit_overloaded.
-            return join_types(t, self.s)
-        else:
-            return join_types(t.fallback, self.s)
-
-    def visit_overloaded(self, t: Overloaded) -&gt; Type:
-        # This is more complex than most other cases. Here are some
-        # examples that illustrate how this works.
-        #
-        # First let's define a concise notation:
-        #  - Cn are callable types (for n in 1, 2, ...)
-        #  - Ov(C1, C2, ...) is an overloaded type with items C1, C2, ...
-        #  - Callable[[T, ...], S] is written as [T, ...] -&gt; S.
-        #
-        # We want some basic properties to hold (assume Cn are all
-        # unrelated via Any-similarity):
-        #
-        #   join(Ov(C1, C2), C1) == C1
-        #   join(Ov(C1, C2), Ov(C1, C2)) == Ov(C1, C2)
-        #   join(Ov(C1, C2), Ov(C1, C3)) == C1
-        #   join(Ov(C2, C2), C3) == join of fallback types
-        #
-        # The presence of Any types makes things more interesting. The join is the
-        # most general type we can get with respect to Any:
-        #
-        #   join(Ov([int] -&gt; int, [str] -&gt; str), [Any] -&gt; str) == Any -&gt; str
-        #
-        # We could use a simplification step that removes redundancies, but that's not
-        # implemented right now. Consider this example, where we get a redundancy:
-        #
-        #   join(Ov([int, Any] -&gt; Any, [str, Any] -&gt; Any), [Any, int] -&gt; Any) ==
-        #       Ov([Any, int] -&gt; Any, [Any, int] -&gt; Any)
-        #
-        # TODO: Use callable subtyping instead of just similarity.
-        result = []  # type: List[CallableType]
-        s = self.s
-        if isinstance(s, FunctionLike):
-            # The interesting case where both types are function types.
-            for t_item in t.items():
-                for s_item in s.items():
-                    if is_similar_callables(t_item, s_item):
-                        result.append(combine_similar_callables(t_item, s_item))
-            if result:
-                # TODO: Simplify redundancies from the result.
-                if len(result) == 1:
-                    return result[0]
-                else:
-                    return Overloaded(result)
-            return join_types(t.fallback, s.fallback)
-        return join_types(t.fallback, s)
-
-    def visit_tuple_type(self, t: TupleType) -&gt; Type:
-        if (isinstance(self.s, TupleType) and
-                cast(TupleType, self.s).length() == t.length()):
-            items = []  # type: List[Type]
-            for i in range(t.length()):
-                items.append(self.join(t.items[i],
-                                       (cast(TupleType, self.s)).items[i]))
-            # TODO: What if the fallback types are different?
-            return TupleType(items, t.fallback)
-        else:
-            return self.default(self.s)
-
-    def join(self, s: Type, t: Type) -&gt; Type:
-        return join_types(s, t)
-
-    def default(self, typ: Type) -&gt; Type:
-        if isinstance(typ, Instance):
-            return object_from_instance(typ)
-        elif isinstance(typ, UnboundType):
-            return AnyType()
-        elif isinstance(typ, Void) or isinstance(typ, ErrorType):
-            return ErrorType()
-        elif isinstance(typ, TupleType):
-            return self.default(typ.fallback)
-        elif isinstance(typ, FunctionLike):
-            return self.default(typ.fallback)
-        elif isinstance(typ, TypeVarType):
-            return self.default(typ.upper_bound)
-        else:
-            return AnyType()
+<t tx="ekr.20150919074132.1">@others
 </t>
 <t tx="ekr.20150919074154.1">@others
 </t>
@@ -15524,23 +15390,7 @@ sub Hello{
 '''
 c.importCommands.perlUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20161103075725.1">======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test string test: extra indent
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test string underindent lines 2
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test ic.parse-body
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
-@test ic.parse-body mypy
-
-</t>
+<t tx="ekr.20161103075725.1"># These fail with the NEW (strict) import tests and the OLD scanners.</t>
 <t tx="ekr.20161108034116.1"></t>
 <t tx="ekr.20161108034138.1">@killcolor
 
@@ -16335,6 +16185,183 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
 
+</t>
+<t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
+    """Implementation of the least upper bound algorithm.
+
+    Attributes:
+      s: The other (left) type operand.
+    """
+
+    def __init__(self, s: Type) -&gt; None:
+        self.s = s
+
+    def visit_unbound_type(self, t: UnboundType) -&gt; Type:
+        if isinstance(self.s, Void) or isinstance(self.s, ErrorType):
+            return ErrorType()
+        else:
+            return AnyType()
+
+    def visit_union_type(self, t: UnionType) -&gt; Type:
+        if is_subtype(self.s, t):
+            return t
+        else:
+            return UnionType(t.items + [self.s])
+
+    def visit_error_type(self, t: ErrorType) -&gt; Type:
+        return t
+
+    def visit_type_list(self, t: TypeList) -&gt; Type:
+        assert False, 'Not supported'
+
+    def visit_any(self, t: AnyType) -&gt; Type:
+        return t
+
+    def visit_void(self, t: Void) -&gt; Type:
+        if isinstance(self.s, Void):
+            return t
+        else:
+            return ErrorType()
+
+    def visit_none_type(self, t: NoneTyp) -&gt; Type:
+        if not isinstance(self.s, Void):
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_erased_type(self, t: ErasedType) -&gt; Type:
+        return self.s
+
+    def visit_type_var(self, t: TypeVarType) -&gt; Type:
+        if isinstance(self.s, TypeVarType) and (cast(TypeVarType, self.s)).id == t.id:
+            return self.s
+        else:
+            return self.default(self.s)
+
+    def visit_instance(self, t: Instance) -&gt; Type:
+        if isinstance(self.s, Instance):
+            return join_instances(t, cast(Instance, self.s))
+        elif isinstance(self.s, FunctionLike):
+            return join_types(t, self.s.fallback)
+        else:
+            return self.default(self.s)
+
+    def visit_callable_type(self, t: CallableType) -&gt; Type:
+        # TODO: Consider subtyping instead of just similarity.
+        if isinstance(self.s, CallableType) and is_similar_callables(
+                t, cast(CallableType, self.s)):
+            return combine_similar_callables(t, cast(CallableType, self.s))
+        elif isinstance(self.s, Overloaded):
+            # Switch the order of arguments to that we'll get to visit_overloaded.
+            return join_types(t, self.s)
+        else:
+            return join_types(t.fallback, self.s)
+
+    def visit_overloaded(self, t: Overloaded) -&gt; Type:
+        # This is more complex than most other cases. Here are some
+        # examples that illustrate how this works.
+        #
+        # First let's define a concise notation:
+        #  - Cn are callable types (for n in 1, 2, ...)
+        #  - Ov(C1, C2, ...) is an overloaded type with items C1, C2, ...
+        #  - Callable[[T, ...], S] is written as [T, ...] -&gt; S.
+        #
+        # We want some basic properties to hold (assume Cn are all
+        # unrelated via Any-similarity):
+        #
+        #   join(Ov(C1, C2), C1) == C1
+        #   join(Ov(C1, C2), Ov(C1, C2)) == Ov(C1, C2)
+        #   join(Ov(C1, C2), Ov(C1, C3)) == C1
+        #   join(Ov(C2, C2), C3) == join of fallback types
+        #
+        # The presence of Any types makes things more interesting. The join is the
+        # most general type we can get with respect to Any:
+        #
+        #   join(Ov([int] -&gt; int, [str] -&gt; str), [Any] -&gt; str) == Any -&gt; str
+        #
+        # We could use a simplification step that removes redundancies, but that's not
+        # implemented right now. Consider this example, where we get a redundancy:
+        #
+        #   join(Ov([int, Any] -&gt; Any, [str, Any] -&gt; Any), [Any, int] -&gt; Any) ==
+        #       Ov([Any, int] -&gt; Any, [Any, int] -&gt; Any)
+        #
+        # TODO: Use callable subtyping instead of just similarity.
+        result = []  # type: List[CallableType]
+        s = self.s
+        if isinstance(s, FunctionLike):
+            # The interesting case where both types are function types.
+            for t_item in t.items():
+                for s_item in s.items():
+                    if is_similar_callables(t_item, s_item):
+                        result.append(combine_similar_callables(t_item, s_item))
+            if result:
+                # TODO: Simplify redundancies from the result.
+                if len(result) == 1:
+                    return result[0]
+                else:
+                    return Overloaded(result)
+            return join_types(t.fallback, s.fallback)
+        return join_types(t.fallback, s)
+
+    def visit_tuple_type(self, t: TupleType) -&gt; Type:
+        if (isinstance(self.s, TupleType) and
+                cast(TupleType, self.s).length() == t.length()):
+            items = []  # type: List[Type]
+            for i in range(t.length()):
+                items.append(self.join(t.items[i],
+                                       (cast(TupleType, self.s)).items[i]))
+            # TODO: What if the fallback types are different?
+            return TupleType(items, t.fallback)
+        else:
+            return self.default(self.s)
+
+    def join(self, s: Type, t: Type) -&gt; Type:
+        return join_types(s, t)
+
+    def default(self, typ: Type) -&gt; Type:
+        if isinstance(typ, Instance):
+            return object_from_instance(typ)
+        elif isinstance(typ, UnboundType):
+            return AnyType()
+        elif isinstance(typ, Void) or isinstance(typ, ErrorType):
+            return ErrorType()
+        elif isinstance(typ, TupleType):
+            return self.default(typ.fallback)
+        elif isinstance(typ, FunctionLike):
+            return self.default(typ.fallback)
+        elif isinstance(typ, TypeVarType):
+            return self.default(typ.upper_bound)
+        else:
+            return AnyType()
+</t>
+<t tx="ekr.20161112061414.1">class aClass:
+    @others
+</t>
+<t tx="ekr.20161112061414.2">def __init__(self):
+    pass
+</t>
+<t tx="ekr.20161112061414.3">def spam(self):
+    pass
+</t>
+<t tx="ekr.20161112061414.4">bClass = aClass
+</t>
+<t tx="ekr.20161112061534.1"># To do: make sure the unit test fails.</t>
+<t tx="ekr.20161112072933.22"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161112072933.23">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 </t>
 </tnodes>
 </leo_file>

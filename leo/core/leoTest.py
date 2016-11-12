@@ -1289,29 +1289,12 @@ class TestManager(object):
             )
             if not ok: break
             p2.moveToThreadNext()
-        if not report:
-            return ok
-        if ok:
-            if 0:
-                g.pr('compareOutlines ok', newline=False)
-                if tag: g.pr('tag:', tag)
-                else: g.pr('')
-                if p1: g.pr('p1', p1, p1.v)
-                if p2: g.pr('p2', p2, p2.v)
-        else:
-            g.pr('compareOutlines failed', newline=False)
-            if tag: g.pr('tag:', tag)
-            else: g.pr('')
-            if p1: g.pr('p1', p1.h)
-            if p2: g.pr('p2', p2.h)
-            if not p1 or not p2:
-                g.pr('p1 and p2')
-            if p1.numberOfChildren() != p2.numberOfChildren():
-                g.pr('p1.numberOfChildren()=%d, p2.numberOfChildren()=%d' % (
-                    p1.numberOfChildren(), p2.numberOfChildren()))
-            if compareHeadlines and (p1.h != p2.h):
-                g.pr('p1.head', p1.h)
-                g.pr('p2.head', p2.h)
+        if report and not ok:
+            g.pr('\ncompareOutlines failed: tag:', (tag or ''))
+            g.pr('p1.h:', p1 and p1.h or '<no p1>')
+            g.pr('p2.h:', p2 and p2.h or '<no p2>')
+            g.pr('p1.numberOfChildren(): %s' % p1.numberOfChildren())
+            g.pr('p2.numberOfChildren(): %s' % p2.numberOfChildren())
             if b1 != b2:
                 self.showTwoBodies(p1.h, p1.b, p2.b)
             if p1.isCloned() != p2.isCloned():

@@ -182,7 +182,8 @@ class Importer(object):
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
             n1, n2 = len(lines1), len(lines2)
-            g.es('@auto failed:', sfn, color='red')
+            if not g.unitTesting:
+                g.es('@auto failed:', sfn, color='red')
             print('\n===== PERFECT IMPORT FAILED =====', sfn)
             print('len(s1): %s len(s2): %s' % (n1, n2))
             for i in range(min(n1, n2)):
@@ -201,11 +202,21 @@ class Importer(object):
             g.trace('===== s2')
             for i, s in enumerate(g.splitLines(s2)):
                 print('%3s %r' % (i+1, s))
+        # Ensure that the unit tests fail when they should.
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if g.app.unitTesting:
+            d = g.app.unitTestDict
+            ### ok = d.get('expectedMismatchLine') == bad_i1
+            ### ok = False
+            d['result'] = ok
+            d['actualErrors'] = self.errors
+            if not ok: d['fail'] = g.callers()
         if 0: # This is wrong headed.
             if not self.strict and not ok:
                 # Suppress the error if lws is the cause.
                 clean = self.strip_lws # strip_all, clean_blank_lines
                 ok = clean(s1) == clean(s2)
+        # g.trace('='*40, ok)
         return ok
     #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
     def clean_blank_lines(self, s):

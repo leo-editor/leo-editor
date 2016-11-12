@@ -1539,6 +1539,7 @@ class LeoImportCommands(object):
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         '''
+        trace = False
         c = self.c; h = p.h; old_root = p.copy()
         oldChanged = c.changed
         d = g.app.unitTestDict
@@ -1553,20 +1554,30 @@ class LeoImportCommands(object):
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
+        if 0: ### New: Does this create resurrected nodes?
+            while old_root.hasChildren():
+                old_root.firstChild().doDelete()
+            c.setChanged(oldChanged)
         # Run the actual test.
         self.createOutline(title.strip(), p.copy(), atAuto=atAuto, s=s, ext=ext)
         # Set ok.
         d = g.app.unitTestDict
-        ok = ((d.get('result') and expectedErrors in (None, 0)) or
-            (
-                # BaseScanner.checkTrialWrite returns *True* if the following match.
-                d.get('actualErrors') == d.get('expectedErrors') and
-                d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
+        if 1: ### Disable expected mismatch business...
+            ok = d.get('result') is True
+        else: ### Original, very weird, code.
+            ok = ((d.get('result') and expectedErrors in (None, 0)) or
                 (
-                    expectedErrorMessage is None or
-                    d.get('actualErrorMessage') == d.get('expectedErrorMessage')
-                )
-            ))
+                    # BaseScanner.checkTrialWrite returns *True* if the following match.
+                    d.get('actualErrors') == d.get('expectedErrors') and
+                    d.get('actualMismatchLine') == d.get('expectedMismatchLine') and
+                    (
+                        expectedErrorMessage is None or
+                        d.get('actualErrorMessage') == d.get('expectedErrorMessage')
+                    )
+                ))
+        if trace:
+            g.trace('-'*10, ok, p.h)
+            g.printDict(d)
         # Clean up.
         if not showTree:
             while old_root.hasChildren():
