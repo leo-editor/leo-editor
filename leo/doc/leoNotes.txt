@@ -19397,6 +19397,22 @@ def scan_block(self, i, lines):
         for line in result:
             print(line.rstrip())
     return i, result
+.. @+node:ekr.20161112105641.1: *3* from ic.scannerUnitTest
+            # Put all the info in the assertion message.
+            table = (
+                '',
+                # 'p.h:                  %s' % (p.h),
+                'ext:                  %s' % (ext),
+                'fileName:             %s' % (fileName),
+                'result:               %s' % (d.get('result')),
+                'actual errors:        %s' % (d.get('actualErrors')),
+                'expected errors:      %s' % (d.get('expectedErrors')),
+                'actualMismatchLine:   %s' % (repr(d.get('actualMismatchLine'))),
+                'expectedMismatchLine: %s' % (repr(d.get('expectedMismatchLine'))),
+                'actualErrorMessage:   %s' % (repr(d.get('actualErrorMessage'))),
+                'expectedErrorMessage: %s' % (repr(d.get('expectedErrorMessage'))),
+            )
+            assert ok, '\n'.join(table)
 .. @-all
 .. @@nosearch
 .. @-leo

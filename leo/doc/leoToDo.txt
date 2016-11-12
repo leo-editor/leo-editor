@@ -7,6 +7,8 @@
 @language rest
 @wrap
 
+** Pyflakes is called *before* saving the file???
+
 - Put engineering notebook files in GitHub .md files.
 
 - Use regex in g.match.  Add g.match_any.
