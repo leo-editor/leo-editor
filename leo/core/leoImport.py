@@ -1546,18 +1546,15 @@ class LeoImportCommands(object):
         expectedErrors = d.get('expectedErrors')
         expectedErrorMessage = d.get('expectedErrorMessage')
         expectedMismatchLine = d.get('expectedMismatchLine')
-        g.app.unitTestDict = {
-            'expectedErrors': expectedErrors,
-            'expectedErrorMessage': expectedErrorMessage,
-            'expectedMismatchLine': expectedMismatchLine,
-        }
+        g.app.unitTestDict = {}
+        # {
+            # 'expectedErrors': expectedErrors,
+            # 'expectedErrorMessage': expectedErrorMessage,
+            # 'expectedMismatchLine': expectedMismatchLine,
+        # }
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
-        if 0: ### New: Does this create resurrected nodes?
-            while old_root.hasChildren():
-                old_root.firstChild().doDelete()
-            c.setChanged(oldChanged)
         # Run the actual test.
         self.createOutline(title.strip(), p.copy(), atAuto=atAuto, s=s, ext=ext)
         # Set ok.

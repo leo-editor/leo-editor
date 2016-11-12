@@ -12140,8 +12140,7 @@ class cTestClass1 {
 }
 '''
 
-### g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4720: *6* @test defaultImporter
 fileName = p.h
@@ -12223,7 +12222,7 @@ aaa::bbb::doit
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
+# g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4724: *6* @test c old-style decl 1
@@ -12241,7 +12240,7 @@ ReleaseCharSet(cset)
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4725: *6* @test c old-style decl 2
@@ -12257,7 +12256,7 @@ Tcl_NewLongObj(longValue)
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4726: *6* @test c extern
@@ -12272,7 +12271,7 @@ void    init(void);
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4727: *5* c# tests
@@ -12285,7 +12284,7 @@ namespace {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4729: *6* @test c# namespace no indent
@@ -12297,7 +12296,7 @@ class cTestClass1 {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4730: *6* @@test c# ref card
@@ -13042,7 +13041,7 @@ module.exports = exports  if module?
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161109084732.1: *6* @test coffeescript-2a
@@ -13062,7 +13061,7 @@ buildCoffee = (str) ->
   scriptNode = parser.parse str
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
 
@@ -13103,7 +13102,7 @@ s = '''\
 ;;; a.el ends here
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4733: *6* @test elisp 2
@@ -13120,7 +13119,7 @@ s = '''\
    (+ 1 2 3))
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111029112647.4099: *5* html tests
@@ -13165,7 +13164,7 @@ s = '''\
 </html>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
@@ -13240,7 +13239,7 @@ s = '''
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
@@ -13251,7 +13250,7 @@ s = '''
 <html><head>headline</head><body>body</body></html>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
@@ -13278,7 +13277,7 @@ s = '''\
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111029120441.3982: *6* @test html: uppercase tags
@@ -13293,7 +13292,7 @@ s = '''\
 </HTML>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111112103320.3849: *6* @test html: improperly nested tags
@@ -13314,7 +13313,7 @@ s = '''\
 </body>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111112103320.3887: *6* @test html: improperly terminated tags
@@ -13333,7 +13332,7 @@ s = '''\
 <!-- oops: missing tags. -->
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
@@ -13352,7 +13351,7 @@ s = '''\
 <html>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100803234640.5804: *5* ini tests
@@ -13369,7 +13368,7 @@ port=143
 file = "payroll.dat"
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.iniUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4766: *5* Java tests
@@ -13381,7 +13380,7 @@ interface Bicycle {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4768: *6* @test java interface test2
@@ -13392,7 +13391,7 @@ void changeGear(int newValue);
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4769: *6* @@test constants.java
@@ -13425,7 +13424,7 @@ public final class AdminPermission extends BasicPermission
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 
@@ -13497,7 +13496,7 @@ public class BundleException extends Exception {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4774: *5* Javascript tests
@@ -13570,7 +13569,7 @@ String.prototype.toJSONString = function()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4777: *6* @@test JSON
@@ -13603,7 +13602,7 @@ String.prototype.toJSONString = function()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4778: *6* @test Javascript-3
@@ -13624,7 +13623,7 @@ function restart()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140218042220.4347: *6* @test Javascript-4
@@ -13645,7 +13644,7 @@ var c3 = (function () {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140218151418.4353: *6* @test Javascript-5
 s = '''\
@@ -13663,7 +13662,7 @@ console.log("Listening on " + port);
 });
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
@@ -13704,8 +13703,8 @@ end;
 end.
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pascalUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161103015908.1: *5* Perl tests
 #@+node:ekr.20161103015940.1: *6* @test perl-1
@@ -13786,8 +13785,8 @@ class cc {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100219080213.5367: *6* @test php import conditional class
 s = '''\
@@ -13806,8 +13805,8 @@ if (expr) {
 ?>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20100219080213.5368: *6* @test php import classes & functions
 s = '''\
@@ -13850,8 +13849,8 @@ class FlagsEnum extends Enum {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
@@ -13864,8 +13863,8 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4738: *6* @test python comment after dict assign
 @tabwidth -4
@@ -13879,8 +13878,8 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4739: *6* @test python decorator
 @tabwidth -4
@@ -13895,8 +13894,8 @@ class Index:
         return "Hello world!"
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4740: *6* @test python def inside def
 @tabwidth -4
@@ -13914,8 +13913,8 @@ class aClass:
         a = 3
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4741: *6* @test docstring only
 @tabwidth -4
@@ -13926,8 +13925,8 @@ s = '''\
 """
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4742: *6* @test python overindent def--no following def
 @tabwidth -4
@@ -13946,8 +13945,8 @@ class aClass:
         pr('input...')
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4743: *6* @test python overindent def--one following def
 @tabwidth -4
@@ -13969,8 +13968,8 @@ class aClass:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4744: *6* @test python overindented def 3
 @tabwidth -4
@@ -14002,7 +14001,7 @@ def spam():
     pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20101101034131.6042: *6* @test python bug 603720
@@ -14135,9 +14134,9 @@ class cls:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
-g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
+# g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+# g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
+# g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4753: *6* @test python indent decls
@@ -14180,8 +14179,8 @@ class mainPages(mammalProviderBase):
         return ans
 ''' 
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4754: *6* @test python minimal class 1
 @tabwidth -4
@@ -14263,7 +14262,7 @@ f = open(fileName)
 s = f.read()
 f.close()
 
-g.app.unitTestDict['testingLeoImport.py'] = True
+# g.app.unitTestDict['testingLeoImport.py'] = True
 
 c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
 #@+node:ekr.20090529141856.4759: *6* @test string test: extra indent
@@ -14285,8 +14284,8 @@ class BaseScanner:
 '''
 
 # We expect mismatches because the indentation does not match @tabwidth -4.
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3
+# g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+# g.app.unitTestDict ['expectedMismatchLine'] = 3
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4760: *6* @test string underindent lines
 @tabwidth -4
@@ -14303,7 +14302,7 @@ class BaseScanner:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4761: *6* @test string underindent lines 2
 @tabwidth -4
@@ -14321,7 +14320,7 @@ class BaseScanner:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4762: *6* @test trailing comment
 @tabwidth -4
@@ -14335,8 +14334,8 @@ class aClass: # trailing comment
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4763: *6* @test trailing comment--outer levels
 @tabwidth -4
@@ -14348,8 +14347,8 @@ xyz = 6 # trailing comment
 pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4764: *6* @test two functions (for comparison with unindent does not end function)
 @tabwidth -4
@@ -14364,8 +14363,8 @@ def bar():
     pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4765: *6* @test unindent in triple string does not end function
 @tabwidth -4
@@ -14388,8 +14387,8 @@ def bar():
 showTree = False
 keepTree = False
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
 
 if showTree:
@@ -14433,7 +14432,7 @@ document.body.appendChild(button)
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20121011100210.4035: *6* @test TypeScript module
@@ -14463,7 +14462,7 @@ document.body.appendChild(button)
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 ### g.app.unitTestDict['testingLeoImport.py'] = False # Added
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
@@ -14480,7 +14479,7 @@ s = '''\
 </html>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111026105935.3966: *6* @test xml 2
@@ -14490,7 +14489,7 @@ s = '''\
 </nodeA>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20120306173116.3933: *6* @test xml non-ascii tags
@@ -14502,14 +14501,14 @@ s = '''\
 <_.ÌÑ>
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 try:
     c.importCommands.markdownUnitTest(p,s=s,showTree=True)
     table = (
@@ -14561,8 +14560,8 @@ Section 3, line 1
 '''
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
 << define s >>
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 try:
     c.importCommands.markdownUnitTest(p,s=s,showTree=True)
     table = (
@@ -14637,7 +14636,7 @@ After subheader text
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
@@ -14683,8 +14682,8 @@ section 3.1.1
 section 3.1.1, line 1
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20141111095646.11: *5* @@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
@@ -14699,8 +14698,8 @@ Chapter
 
 The top chapter.
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 s = '''\
@@ -14743,8 +14742,8 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 s = '''\
@@ -14755,8 +14754,8 @@ top
 
 The top section
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
 s = '''\
@@ -14768,8 +14767,8 @@ top
 
 The top section
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4789: *5* @test rST import test: trailing whitespace
 s = '''\
@@ -14783,8 +14782,8 @@ top
 
 The top section.
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20140724220921.5199: *4*  Tests of individual methods
 #@+node:ekr.20111228125719.3909: *5* @test ic.BaseScanner.insertIgnoreDirective

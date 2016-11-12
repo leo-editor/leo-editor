@@ -209,7 +209,7 @@ class Importer(object):
             ### ok = d.get('expectedMismatchLine') == bad_i1
             ### ok = False
             d['result'] = ok
-            d['actualErrors'] = self.errors
+            ### d['actualErrors'] = self.errors
             if not ok: d['fail'] = g.callers()
         if 0: # This is wrong headed.
             if not self.strict and not ok:

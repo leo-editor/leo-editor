@@ -1233,12 +1233,12 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
-expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -1253,7 +1253,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 </v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
-<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
@@ -1302,7 +1302,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
 <v t="ekr.20090529141856.4738"><vh>@test python comment after dict assign</vh></v>
 <v t="ekr.20090529141856.4739"><vh>@test python decorator</vh></v>
@@ -1348,10 +1348,10 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
-<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4782" a="M"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -1362,12 +1362,12 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh>
 <v t="ekr.20161112072933.22"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
@@ -1375,11 +1375,11 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -1390,10 +1390,10 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -1401,28 +1401,28 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"></v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1" a="E"></v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20161103015908.1"></v>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"></v>
-<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
+<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
 </v>
@@ -1431,7 +1431,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 </v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
@@ -1440,7 +1440,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
-<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
 <v t="ekr.20111228125719.3909"><vh>@test ic.BaseScanner.insertIgnoreDirective</vh></v>
 <v t="ekr.20111110095252.3845"><vh>@test ic.compareTokens: mismatched length</vh>
 <v t="ekr.20111110095252.3846"><vh>&lt;&lt; define tokens &gt;&gt;</vh></v>
@@ -1465,6 +1465,141 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20161011052016.1"></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20161112100302.1"><vh>Found:unitTestDict</vh>
+<v t="ekr.20081111150402.11"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111221062755.3909"><vh>@test all top-level read/write commands give proper read/write error dialogs</vh>
+<v t="ekr.20111221062755.3910"><vh>child</vh></v>
+</v>
+<v t="ekr.20071113201736"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20100131171342.5482"></v>
+<v t="ekr.20090615053403.4957"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20070611105728"><vh>@test c.demote: illegal clone demote</vh></v>
+<v t="ekr.20071113201833"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111124090010.3939"><vh>@test g.app.config @buttons and @commands logic</vh></v>
+<v t="ekr.20071113201854"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20071113202045"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20071113202153"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20071113202153.1"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20071113202153.2"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
+<v t="ekr.20111003145300.3467"><vh>a</vh></v>
+</v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
+<v t="ekr.20100131171342.5603"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20061101121602.350"></v>
+<v t="ekr.20061101121602.354"><vh>@test upcase-word</vh>
+<v t="ekr.20061101121602.355"><vh>work</vh></v>
+<v t="ekr.20061101121602.356"><vh>before sel=3.7,3.7</vh></v>
+<v t="ekr.20061101121602.357"><vh>after sel=3.7,3.7</vh></v>
+</v>
+<v t="ekr.20081111084046.4"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111107065245.3833"><vh>@test c.frame.minimize-all</vh></v>
+<v t="ekr.20051109143831"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
+<v t="ekr.20111120124051.3992" a="M"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20090529141856.4790"></v>
+<v t="ekr.20090529141856.4782" a="M"></v>
+<v t="ekr.20090529141856.4719"></v>
+<v t="ekr.20090529141856.4723"></v>
+<v t="ekr.20090529141856.4724"></v>
+<v t="ekr.20090529141856.4725"></v>
+<v t="ekr.20161108034138.1"></v>
+<v t="ekr.20090529141856.4732"></v>
+<v t="ekr.20111107102431.3849"></v>
+<v t="ekr.20100803234640.5805"></v>
+<v t="ekr.20100219080213.5366"></v>
+<v t="ekr.20100219080213.5367"></v>
+<v t="ekr.20110610122533.3405"><vh>@@test zz restore the screen</vh></v>
+<v t="ekr.20121011094154.3911"></v>
+<v t="ekr.20100219080213.5368"></v>
+<v t="ekr.20090529141856.4737"></v>
+<v t="ekr.20090529141856.4738"></v>
+<v t="ekr.20121011100210.4035"></v>
+<v t="ekr.20090529141856.4781"></v>
+<v t="ekr.20090529141856.4760"></v>
+<v t="ekr.20090529141856.4761"></v>
+<v t="ekr.20090529141856.4762"></v>
+<v t="ekr.20090529141856.4763"></v>
+<v t="ekr.20081111084046.1"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20070306091949"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20090529141856.4764"></v>
+<v t="ekr.20090529141856.4765"></v>
+<v t="ekr.20061101121602.174"></v>
+<v t="ekr.20081111082931.1"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20061101121602.178"><vh>@test downcase-word</vh>
+<v t="ekr.20061101121602.179"><vh>work</vh></v>
+<v t="ekr.20061101121602.180"><vh>before sel=1.4,1.4</vh></v>
+<v t="ekr.20061101121602.181"><vh>after sel=1.4,1.4</vh></v>
+</v>
+<v t="ekr.20081111084046.3"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111107065530.3833"><vh>@test c.frame.resize-to-screen</vh></v>
+<v t="ekr.20140724164600.4590"></v>
+<v t="ekr.20100131171342.5607"><vh>@test k.registerCommand</vh></v>
+<v t="ekr.20100131171342.5609"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20071113202452"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20160410152100.2"></v>
+<v t="ekr.20160411033840.1"></v>
+<v t="ekr.20141111092038.12"></v>
+<v t="ekr.20090529141856.4726"></v>
+<v t="ekr.20090529141856.4785"></v>
+<v t="ekr.20140725132959.4593"></v>
+<v t="ekr.20090529141856.4786"></v>
+<v t="ekr.20090529141856.4787"></v>
+<v t="ekr.20090529141856.4728"></v>
+<v t="ekr.20090529141856.4729"></v>
+<v t="ekr.20090529141856.4788"></v>
+<v t="ekr.20090529141856.4789"></v>
+<v t="ekr.20161109084732.1"></v>
+<v t="ekr.20090529141856.4733"></v>
+<v t="ekr.20071113202510"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20111029112647.4101"></v>
+<v t="ekr.20111109143012.3839"></v>
+<v t="ekr.20140218122321.4349"></v>
+<v t="ekr.20111102164107.3975"></v>
+<v t="ekr.20111029120441.3982"></v>
+<v t="ekr.20111112103320.3849"></v>
+<v t="ekr.20111112103320.3887"></v>
+<v t="ekr.20111112103320.3893"></v>
+<v t="ekr.20050218015346"><vh>@@suite run all plugin test routines</vh>
+<v t="ekr.20050218015346.11"><vh>&lt;&lt; class testRoutineTestCase &gt;&gt;</vh>
+<v t="ekr.20050218015346.12"><vh>__init__</vh></v>
+<v t="ekr.20050218015346.13"><vh> fail</vh></v>
+<v t="ekr.20050218015346.16"><vh>runTest</vh></v>
+<v t="ekr.20050218015346.17"><vh>shortDescription</vh></v>
+</v>
+<v t="ekr.20050218015346.18"><vh>addTestRoutinesInPluginToSuite</vh></v>
+<v t="ekr.20050218015346.19"><vh>findTestsInModule</vh>
+<v t="ekr.20050218015346.20"><vh>&lt;&lt; print classes, methods &amp; functions &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
+</v>
+<v t="ekr.20100131171342.5501"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20090529141856.4767"></v>
+<v t="ekr.20090529141856.4768"></v>
+<v t="ekr.20090529141856.4770"></v>
+<v t="ekr.20090529141856.4773"></v>
+<v t="ekr.20050218015346.13"></v>
+<v t="ekr.20090529141856.4776"></v>
+<v t="ekr.20090529141856.4777"></v>
+<v t="ekr.20090529141856.4778"></v>
+<v t="ekr.20140218042220.4347"></v>
+<v t="ekr.20140218151418.4353"></v>
+<v t="ekr.20090529141856.4735"></v>
+<v t="ekr.20050120095423.15"><vh>fail</vh></v>
+<v t="ekr.20050120095423.17"><vh>setUp</vh></v>
+<v t="ekr.20090529141856.4739"></v>
+<v t="ekr.20090529141856.4740"></v>
+<v t="ekr.20090529141856.4741"></v>
+<v t="ekr.20090529141856.4742"></v>
+<v t="ekr.20090529141856.4743"></v>
+<v t="ekr.20090529141856.4745"></v>
+<v t="ekr.20090529141856.4752"></v>
+<v t="ekr.20090529141856.4753"></v>
+<v t="ekr.20090529141856.4758"></v>
+<v t="ekr.20090529141856.4759"></v>
+<v t="ekr.20111026105935.3966"></v>
+<v t="ekr.20120306173116.3933"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1602,6 +1737,224 @@ c.testManager.runLeoTest(path)
 c.testManager.runLeoTest(path)
 </t>
 <t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050120095423.15">def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    g.app.unitTestDict["fail"] = g.callerName(2)
+</t>
+<t tx="ekr.20050120095423.17">def setUp(self):
+
+    g.app.unitTestDict = {}
+</t>
+<t tx="ekr.20050218015346"># This test, if run at all, should be run elsewhere:
+# Actually importing plugins affects other unit tests.
+
+import glob
+import inspect
+import unittest
+
+changed = c.isChanged() ; p1 = c.p
+&lt;&lt; class testRoutineTestCase &gt;&gt;
+@others
+
+plugins = getAllPlugins()
+
+# g.printList(plugins)
+
+print('@suite run all plugin test routines')
+
+if 1:
+    g.app.unitTestDict["fail"] = False
+    suite = unittest.makeSuite(unittest.TestCase)
+    for plugin in plugins:
+        n = addTestRoutinesInPluginToSuite(c,g,plugin,suite)
+        if n:
+            plural = g.choose(n==1,'','s')
+            s = 'found %2d test routine%s for %s' % (n,plural,plugin)
+            g.es_print(s)
+    # if 1: # For @suite nodes.  Better for unit testing.
+        # g.app.scriptDict['suite'] = suite
+    # else: # For script button nodes.  Good for testing.
+        # # Verbosity: 1: print just dots.
+        # unittest.TextTestRunner(verbosity=1).run(suite)
+        # c.setChanged(changed) # Restore changed state.
+        # c.selectVnode(p1) # N.B. Restore the selected node.
+</t>
+<t tx="ekr.20050218015346.11">class testRoutineTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+</t>
+<t tx="ekr.20050218015346.12">def __init__ (self,c,g,moduleName,theClass,f,code,verbose=False):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.moduleName = moduleName
+    self.theClass = theClass
+    self.f = f
+    self.g = g
+    self.code = code
+    self.p = c.p.copy()
+    self.verbose = verbose
+</t>
+<t tx="ekr.20050218015346.13">def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    g.app.unitTestDict["fail"] = g.callerName(2)
+</t>
+<t tx="ekr.20050218015346.16">def runTest (self):
+
+    f = self.f ; name = f.__name__ ; theClass = self.theClass
+
+    d = {'c':self.c,'g':self.g,'p':self.p}
+
+    if 1: # Use dead text to ensure a clean environment.
+        # The present code assumes all leading whitespace is consistent.
+        code = removeLeadingWs(self.code)
+        # The code is a def statement.  We concoct a call to the function or method.
+        if theClass:
+            s = '%s\n%s(self=None)\n' % (code,name)
+        else:
+            s = '%s\n%s()\n' % (code,name)
+
+        if self.verbose:
+            g.trace('executing...\n\n%s' % s)
+
+        exec(s,d) # Execute s in a environment containing c, g and p.
+
+    else: # Use live objects.
+        if theClass:
+            # Create a subclass of f's original class.
+            class __dummyClass(theClass):
+                # Create a ctor with a known signature.
+                def __init__(self): pass
+            # Make f a method of the dummyClass with name 'f'.
+            # N.B. f is still a method of theClass, and must be called as such!
+            if 0: # Override the method with f's actual name.
+                g.funcToMethod(f,__dummyClass,name)
+                obj = __dummyClass()
+                f = getattr(obj,name)
+                f(obj)
+            else:
+                # Use the name 'f' for f's name.
+                g.funcToMethod(f,__dummyClass,'f')
+                # Create an instance of __dummyClass and call it's f method.
+                obj = __dummyClass()
+                obj.f()
+        else: # Execute a plain function.
+            f(**keys)
+</t>
+<t tx="ekr.20050218015346.17">def shortDescription (self):
+
+    return 'test function',repr(self.f)
+</t>
+<t tx="ekr.20050218015346.18">def addTestRoutinesInPluginToSuite (c,g,pluginName,suite):
+
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
+
+    plugin = g.importFromPath(pluginName,path,verbose=True)
+    if not plugin:
+        return len([])
+
+    tests = findTestsInModule(plugin,pluginName)
+
+    for test in tests:
+        theClass,f = test
+        code = inspect.getsource(f)
+        testCase = testRoutineTestCase(c,g,pluginName,theClass,f,code,verbose=False)
+        suite.addTest(testCase)
+
+    return len(tests)
+</t>
+<t tx="ekr.20050218015346.19">def findTestsInModule (module,moduleName):
+
+    # g.trace(moduleName)
+
+    toString = g.listToString
+    try:
+        functions = inspect.getmembers(module,inspect.isfunction)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isfunction) for %s' % moduleName)
+        functions = []
+    try:
+        classes = inspect.getmembers(module,inspect.isclass)
+    except Exception:
+        g.trace('Exception in inspect.getmembers(module,inspect.isclass) for %s' % moduleName)
+        classes = []
+
+    # Ignore subclasses of TestCase.
+    classes = [theClass for className,theClass in classes
+        if not issubclass(theClass,unittest.TestCase)]
+
+    allMethods = []
+    for theClass in classes:
+        try:
+            methods = inspect.getmembers(theClass,inspect.ismethod)
+        except Exception:
+            # This looks like a bug in inspect: The zodb classes have no methods.
+            # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
+            methods = []
+        # print('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
+        methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
+        allMethods.extend(methods)
+
+    # Hack: remove duplicate tests from leoGlobals.py.
+    functions = [(None,f) for name,f in functions
+        if name.startswith('test_') and not name.startswith('test_g_')]
+
+    if 0:
+        &lt;&lt; print classes, methods &amp; functions &gt;&gt;
+
+    result = functions
+    result.extend(allMethods)
+    return result
+</t>
+<t tx="ekr.20050218015346.20">print('=' * 40)
+
+if classes:
+    print('classes in %s...\n%s' % (moduleName,toString(classes)))
+else:
+    print('no classes in %s' % (moduleName))
+if allMethods:
+    print('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
+else:
+    print('no test methods in %s' % (moduleName))
+if functions:
+    print('test functions in %s...\n%s' % (moduleName,toString(functions)))
+else:
+    print('no test functions in %s' % (moduleName))
+</t>
+<t tx="ekr.20050218015346.22">def removeLeadingWs (code):
+
+    if not code.strip():
+        return ''
+
+    lines = g.splitLines(code)
+    line = lines[0]
+    i = g.skip_ws(line,0)
+    ws = line[0:i]
+    if not ws:
+        return code
+    result = [] ; n = len(ws)
+    for line in lines:
+        if line.startswith(ws):
+            result.append(line[n:])
+        elif not line.strip() and line.endswith('\n'):
+            result.append('\n')
+        else:
+            print('unitTest.leo:underindented line:%s' % repr(line))
+            result.append(line)
+
+    # g.trace(g.listToString(result))
+
+    result = ''.join(result)
+    return result
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -7557,6 +7910,14 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 </t>
+<t tx="ekr.20051109143831"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractAllHeadlines()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+
+</t>
 <t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
@@ -7750,6 +8111,30 @@ some 90% of all presidentially declared disasters are weather related, leading t
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
+<t tx="ekr.20061101121602.178">c.testManager.runEditCommandTest(p)
+assert g.app.unitTestDict.get('colorized')
+</t>
+<t tx="ekr.20061101121602.179">xyzzy line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.180">XYZZY line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.181">xyzzy line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
 <t tx="ekr.20061101121602.282">c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20061101121602.283">Americans live in the most severe weather-prone country on Earth. Each year,
@@ -7819,6 +8204,30 @@ StormReady communities are better prepared to save lives from the onslaught of s
 SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+</t>
+<t tx="ekr.20061101121602.354">c.testManager.runEditCommandTest(p)
+assert g.app.unitTestDict.get('colorized')
+</t>
+<t tx="ekr.20061101121602.355">first line
+line 1
+    LINE a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.356">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.357">first line
+line 1
+    LINE a
+        line b
+line c
+last line
 </t>
 <t tx="ekr.20061104172236.23">w = c.frame.body.bodyCtrl
 y = 10
@@ -7976,10 +8385,41 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12">
+<t tx="ekr.20070306091949"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoEditCommands tests.')
+</t>
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
+</t>
+<t tx="ekr.20070611105728"># Remove any previous children.
+while p.hasChildren():
+    p.firstChild().doDelete()
+# Create two cloned children.
+c.selectPosition(p)
+c.insertHeadline()
+p2 = c.p
+p2.moveToFirstChildOf(p)
+p2.setHeadString('aClone')
+c.selectPosition(p2)
+c.clone()
+assert 2 == p.numberOfChildren()
+
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()
 </t>
 <t tx="ekr.20070926095117">def mungeKey (h,kind,substitute=True):
 
@@ -8045,6 +8485,78 @@ finally:
         c.recolor()
 
 # end:
+</t>
+<t tx="ekr.20071113201736"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoAtFile tests')
+</t>
+<t tx="ekr.20071113201833"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoCommands tests')
+</t>
+<t tx="ekr.20071113201854"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoConfig tests')
+</t>
+<t tx="ekr.20071113202045"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoFileCommands tests.')
+</t>
+<t tx="ekr.20071113202153"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoFind tests.')
+</t>
+<t tx="ekr.20071113202153.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoFrame tests.')
+</t>
+<t tx="ekr.20071113202153.2"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoGlobals tests.')
+</t>
+<t tx="ekr.20071113202452"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoNodes tests.')
+</t>
+<t tx="ekr.20071113202510"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoUndo tests.')
 </t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
@@ -8146,6 +8658,46 @@ pass
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
+<t tx="ekr.20081111082931.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081111084046.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+</t>
+<t tx="ekr.20081111084046.3"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081111084046.4"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+</t>
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.selectPosition(p)
+c.contractParent()
+c.selectPosition(p.parent())
+if 0: # Do not do this! It would changed unitTest.leo!
+    c.save() # Only good way to save the present expansion/selection state.
+g.app.unitTestDict['restoreSelectedNode']=False
+c.bodyWantsFocus()
+
+# Print does not work: it is redirected.
+g.es('all unit tests done',color='blue')
+</t>
 <t tx="ekr.20081121164135.1">path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
 c.testManager.runLeoTest(path)
 </t>
@@ -8205,8 +8757,7 @@ class cTestClass1 {
 }
 '''
 
-### g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4720">fileName = p.h
@@ -8288,7 +8839,7 @@ aaa::bbb::doit
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
+# g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
@@ -8306,7 +8857,7 @@ ReleaseCharSet(cset)
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
@@ -8322,7 +8873,7 @@ Tcl_NewLongObj(longValue)
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
@@ -8337,7 +8888,7 @@ void    init(void);
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
@@ -8350,7 +8901,7 @@ namespace {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
 </t>
@@ -8362,7 +8913,7 @@ class cTestClass1 {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
 </t>
@@ -8397,7 +8948,7 @@ if sys.platform.lower().startswith('win'):
 ;;; a.el ends here
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
@@ -8414,7 +8965,7 @@ c.importCommands.elispUnitTest(p,s=s,showTree=False)
    (+ 1 2 3))
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
@@ -8456,8 +9007,8 @@ end;
 end.
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pascalUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
@@ -8470,8 +9021,8 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4738">@tabwidth -4
@@ -8485,8 +9036,8 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4739">@tabwidth -4
@@ -8501,8 +9052,8 @@ class Index:
         return "Hello world!"
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4740">@tabwidth -4
@@ -8520,8 +9071,8 @@ class aClass:
         a = 3
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4741">@tabwidth -4
@@ -8532,8 +9083,8 @@ s = '''\
 """
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4742">@tabwidth -4
@@ -8552,8 +9103,8 @@ class aClass:
         pr('input...')
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4743">@tabwidth -4
@@ -8575,8 +9126,8 @@ class aClass:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4744">@tabwidth -4
@@ -8608,7 +9159,7 @@ def spam():
     pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
@@ -8710,9 +9261,9 @@ class cls:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
-g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
+# g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+# g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
+# g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
@@ -8755,8 +9306,8 @@ class mainPages(mammalProviderBase):
         return ans
 ''' 
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4754">@tabwidth -4
@@ -8838,7 +9389,7 @@ f = open(fileName)
 s = f.read()
 f.close()
 
-g.app.unitTestDict['testingLeoImport.py'] = True
+# g.app.unitTestDict['testingLeoImport.py'] = True
 
 c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
 </t>
@@ -8860,8 +9411,8 @@ class BaseScanner:
 '''
 
 # We expect mismatches because the indentation does not match @tabwidth -4.
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3
+# g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+# g.app.unitTestDict ['expectedMismatchLine'] = 3
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4760">@tabwidth -4
@@ -8878,7 +9429,7 @@ class BaseScanner:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4761">@tabwidth -4
@@ -8896,7 +9447,7 @@ class BaseScanner:
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+# g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4762">@tabwidth -4
@@ -8910,8 +9461,8 @@ class aClass: # trailing comment
         pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4763">@tabwidth -4
@@ -8923,8 +9474,8 @@ xyz = 6 # trailing comment
 pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4764">@tabwidth -4
@@ -8939,8 +9490,8 @@ def bar():
     pass
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4765">@tabwidth -4
@@ -8963,8 +9514,8 @@ def bar():
 showTree = False
 keepTree = False
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
 
 if showTree:
@@ -8990,7 +9541,7 @@ interface Bicycle {
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 </t>
@@ -9001,7 +9552,7 @@ void changeGear(int newValue);
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 </t>
@@ -9034,7 +9585,7 @@ public final class AdminPermission extends BasicPermission
 }
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 
@@ -9106,7 +9657,7 @@ public class BundleException extends Exception {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaUnitTest(p,s=s,showTree=False)
 </t>
@@ -9179,7 +9730,7 @@ String.prototype.toJSONString = function()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
@@ -9212,7 +9763,7 @@ String.prototype.toJSONString = function()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
@@ -9233,7 +9784,7 @@ function restart()
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
@@ -9249,7 +9800,7 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 &lt;/html&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -9318,8 +9869,8 @@ section 3.1.1
 section 3.1.1, line 1
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4786">s = '''\
@@ -9362,8 +9913,8 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4787">s = '''\
@@ -9374,8 +9925,8 @@ top
 
 The top section
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4788">s = '''\
@@ -9387,8 +9938,8 @@ top
 
 The top section
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4789">s = '''\
@@ -9402,8 +9953,8 @@ top
 
 The top section.
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4790">import leo.core.leoImport as leoImport
@@ -9441,6 +9992,14 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
+</t>
+<t tx="ekr.20090615053403.4957"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoColor tests')
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -9797,6 +10356,54 @@ for ivar in ivars:
         val = getattr(g.app,ivar)
         assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
 </t>
+<t tx="ekr.20100131171342.5501" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractAllHeadlines()
+h = 'All unit tests'
+p = c.testManager.findNodeAnywhere(h)
+if p:
+    p.expand()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.selectPosition(p)
+    c.redraw()
+
+print('\nEnd of plugins unit tests')
+</t>
+<t tx="ekr.20100131171342.5603" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoGui tests.')
+</t>
+<t tx="ekr.20100131171342.5607">k = c.k ; p = c.p
+w = c.edit_widget(p)
+commandName = 'test-registerCommand'
+
+def callback (event=None,c=c): # Must have an event param to pass later unit test.
+    g.app.unitTestDict[commandName] = True
+
+# Test 1
+g.app.unitTestDict[commandName] = False
+k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
+k.simulateCommand(commandName)
+assert g.app.unitTestDict.get(commandName)
+
+if 0: # Test 2
+    g.app.unitTestDict[commandName] = False
+    k.manufactureKeyPressForCommandName(w,commandName)
+    assert g.app.unitTestDict.get(commandName)
+</t>
+<t tx="ekr.20100131171342.5609" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+# print('\nEnd of leoKeys tests.')
+</t>
 <t tx="ekr.20100131180007.5393">import leo.plugins.importers.leo_rst as leo_rst
 ic = c.importCommands
 scanner = leo_rst.RstScanner(importCommands=ic,atAuto=True)
@@ -9971,8 +10578,8 @@ class cc {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20100219080213.5367">s = '''\
@@ -9991,8 +10598,8 @@ if (expr) {
 ?&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20100219080213.5368">s = '''\
@@ -10035,8 +10642,8 @@ class FlagsEnum extends Enum {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20100223094723.5375"></t>
@@ -10235,7 +10842,7 @@ port=143
 file = "payroll.dat"
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.iniUnitTest(p,s=s,showTree=False)
 </t>
@@ -10606,6 +11213,11 @@ if not g.app.isExternalUnitTest:
     assert p == target, 'p' #p and p.h
     assert found, 'not found'
 </t>
+<t tx="ekr.20110610122533.3405"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode'] = False
+</t>
 <t tx="ekr.20110610122533.3406"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
     fn = '../test/at-auto-unit-test.py'
@@ -10703,13 +11315,28 @@ for i in range(len(aList)):
 
 g.es('"%s": total tests: %s' % (p.h,total))
 </t>
+<t tx="ekr.20111003145300.3466">'''Test that dragging this node onto the child node generates a warning.'''
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    fn = '&lt;file name&gt;'
+    p2 = p.firstChild()
+    tree = c.frame.tree
+    w = tree.treeWidget
+    if hasattr(tree,'treeWidget'):
+        for w.was_control_drag in (True,False):
+            tree.treeWidget.intraFileDrop(fn,p,p2)
+            assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
+</t>
+<t tx="ekr.20111003145300.3467"></t>
 <t tx="ekr.20111026105935.3966">s = '''\
 &lt;nodeA&gt;
 &lt;nodeB/&gt;
 &lt;/nodeA&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -10735,7 +11362,7 @@ nodeB
 &lt;/html&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -10750,7 +11377,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 &lt;/HTML&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -10777,7 +11404,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -10984,6 +11611,30 @@ finally:
         p.firstChild().doDelete()
     c.redraw()
 </t>
+<t tx="ekr.20111107065245.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
+</t>
+<t tx="ekr.20111107065530.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
+</t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
 # fn = r'c:\recent\data4.html'
@@ -11106,7 +11757,7 @@ s = '''
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -11196,7 +11847,7 @@ run-all-unit-tests-locally          = Alt-6
 &lt;/body&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -11215,7 +11866,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 &lt;!-- oops: missing tags. --&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -11234,7 +11885,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 &lt;html&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -11375,6 +12026,57 @@ w.insert(1,'z')         ; check('xzyac')
 w.deleteTextSelection() ; check('xzyac')
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtWidgets.QApplication)
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    # w_name = w.__class__.__name__
+    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
+    p1 = p.copy()
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            delete_children(p1)
+    finally:
+        delete_children(p1)
+        c.redraw()
+</t>
 <t tx="ekr.20111121081052.3909">if g.app.isExternalUnitTest:
     pass # Prints to console, which is annoying.
 else:
@@ -11429,6 +12131,60 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
+</t>
+<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            # print('Alt-9 is bound')
+            break
+    else:
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+</t>
+<t tx="ekr.20111124090010.3939">'''Test that the config parser visits @buttons and @commands nodes for
+leoSettings.leo and unitTest.leo.
+
+If strict is True, also test that the config parser vists the nodes in
+myLeoSettings.leo. This may fail on machines without @buttons and @commands
+nodes in myLeoSettings.leo.
+'''
+
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    strict = True # Set to False if you are not EKR.
+    
+    table = ['leoSettings.leo','unitTest.leo']
+    if strict:
+        table.append('myLeoSettings.leo')
+    
+    keys = ('config.doButtons-file-names','config.doCommands-file-names')
+    d = g.app.config.unitTestDict # Always created for this unit test.
+    
+    for key in keys:
+        aList = d.get(key,[])
+        for fn in table:
+            # print(fn)
+            # print(repr(aList))
+            assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -11534,6 +12290,44 @@ finally:
 @others
 # end.
 @ignore</t>
+<t tx="ekr.20111221062755.3909">child = p.firstChild()
+assert child
+assert child.h == 'child',child.h
+c.selectPosition(child)
+
+table = (
+    'import-file',
+    'open-outline',
+    'read-at-auto-nodes',
+    'read-at-file-nodes',
+    'read-at-shadow-nodes',
+   # 'read-file-into-node',
+   # 'read-outline-only',
+   'save-file',
+   'save-file-as',
+   'save-file-to',
+    'write-at-auto-nodes',
+    'write-at-file-nodes',
+    'write-at-shadow-nodes',
+    'write-dirty-at-auto-nodes',
+    'write-dirty-at-file-nodes',
+    'write-dirty-at-shadow-nodes',
+    #'write-file-from-node',
+    'write-missing-at-file-nodes',
+    #'write-outline-only',
+)
+
+tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
+
+d = g.app.unitTestDict
+for commandName in table:
+    for tag,n in tags:
+        d[tag] = 0
+    c.k.simulateCommand(commandName)
+    for tag,n in tags:
+        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+</t>
+<t tx="ekr.20111221062755.3910"></t>
 <t tx="ekr.20111228125719.3909">import leo.core.leoImport as leoImport
 import leo.plugins.importers.basescanner as basescanner
 
@@ -11564,9 +12358,27 @@ s = '''\
 &lt;_.ÌÑ&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20120307133953.3947">import sys
+if sys.platform.startswith('win'):
+    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(fn1),fn1
+    url1 = 'file://' + fn1 + '#Leo 4.10 Release notes'
+    table = (
+        (r'file://C:/prog/test.sh',             ['os_startfile']),
+        (r'file://C:/prog',                     ['os_startfile']),
+        (r'http://writemonkey.com/index.php',   ['browser']),
+        (url1,                                  ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
+        (r'#--&gt;Before 4.10 b1',                 ['g.recursiveUNLSearch']),
+    )
+    for url,aList in table:
+        g.handleUrl(c=c,p=c.p,url=url)
+        for kind in aList:
+            assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
+                kind,url)
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>
@@ -11594,7 +12406,7 @@ document.body.appendChild(button)
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 </t>
@@ -11624,7 +12436,7 @@ document.body.appendChild(button)
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 ### g.app.unitTestDict['testingLeoImport.py'] = False # Added
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
@@ -14617,7 +15429,7 @@ var c3 = (function () {
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140218122321.4349">@language html
@@ -14627,7 +15439,7 @@ s = '''
 &lt;html&gt;&lt;head&gt;headline&lt;/head&gt;&lt;body&gt;body&lt;/body&gt;&lt;/html&gt;
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -14646,7 +15458,7 @@ console.log("Listening on " + port);
 });
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
@@ -14682,8 +15494,8 @@ Chapter
 
 The top chapter.
 '''
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = None
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
@@ -14700,10 +15512,10 @@ After subheader text
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15145,8 +15957,8 @@ def spam(): # line 2
     pass</t>
 <t tx="ekr.20160410152100.1"></t>
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 try:
     c.importCommands.markdownUnitTest(p,s=s,showTree=True)
     table = (
@@ -15174,8 +15986,8 @@ finally:
         c.redraw()
 </t>
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = None
+# g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedMismatchLine'] = None
 try:
     c.importCommands.markdownUnitTest(p,s=s,showTree=True)
     table = (
@@ -16120,7 +16932,7 @@ module.exports = exports  if module?
 
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
 </t>
@@ -16181,7 +16993,7 @@ buildCoffee = (str) -&gt;
   scriptNode = parser.parse str
 '''
 
-g.app.unitTestDict ['expectedErrors'] = 0
+# g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
 
@@ -16363,5 +17175,6 @@ c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
   builder    = new Builder
   scriptNode = parser.parse str
 </t>
+<t tx="ekr.20161112100302.1"># flattened, ignore-case, head, body</t>
 </tnodes>
 </leo_file>
