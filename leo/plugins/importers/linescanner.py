@@ -316,7 +316,7 @@ class Importer(object):
         Return the state table used by python.scan_table.
         None indicates that the pattern will never match when in a state.
         '''
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         table = self.cached_scan_tables.get(context)
         if table:
             return table

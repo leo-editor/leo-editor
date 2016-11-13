@@ -76,72 +76,63 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line (revise)
+    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_table
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
-        match = self.match
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
         i = 0
         while i < len(s):
             progress = i
-            if context:
-                context, i = self.do_ch_in_context(context, i, s)
-            else:
-                context, i, curlies, parens = self.do_ch_out_of_context(
-                    i, s, curlies, parens)
+            table = self.get_table(context)
+            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            curlies += delta_c
+            parens += delta_p
             assert progress < i, (i, repr(s))
         if trace:
             g.trace(self, s.rstrip())
         return Perl_ScanState(context, curlies, parens)
-    #@+node:ekr.20161113034218.1: *4* perl_i.do_ch_in_context
-    def do_ch_in_context(self, context, i, s):
-        '''The perl v2_scan_line handler for when a context is in effect.'''
-        # pylint: disable=arguments-differ
-        assert context in ('"', "'", "="), repr(context)
-        cut = '=cut'
-        ch = s[i]
-        if ch == '\\':
-            i += 2
-        elif i == 0 and context == '=' and self.match(s, i, cut):
-            context = '' # End the perlpod string.
-            i += len(cut)
-        elif context == ch:
-            context = '' # End the string.
-            i += 1
+    #@+node:ekr.20161113140420.1: *4* perl_i.get_table
+    #@@nobeautify
+    cached_scan_tables = {}
+
+    def get_table(self, context):
+        '''
+        Return the state table used by perl.scan_table.
+        None indicates that the pattern will never match when in a state.
+        '''
+        trace = False and not g.unitTesting
+        table = self.cached_scan_tables.get(context)
+        if table:
+            return table
         else:
-            i += 1
-        return context, i
-    #@+node:ekr.20161113034639.1: *4* perl_i.do_ch_out_of_context
-    def do_ch_out_of_context(self, i, s, curlies, parens):
-        '''The perl v2_scan_line handler for when no context is in effect.'''
-        # pylint: disable=arguments-differ
-        ch = s[i]
-        if ch in ('"', "'"):
-            context = ch
-            i += 1
-        elif ch == '#':
-            context = ''
-            i = len(s) # The single-line comment ends the line.
-        elif i == 0 and ch == '=':
-            context = '=' # perlpod string.
-            i += 1
-        else:
-            for pattern in ('/', 'm///', 's///', 'tr///'):
-                if self.match(s, i, pattern):
-                    context = ''
-                    i = self.skip_regex(s, i, pattern)
-                    break
-            else:
-                context = ''
-                if ch == '{': curlies += 1
-                elif ch == '}': curlies -= 1
-                elif ch == '(': parens += 1
-                elif ch == ')': parens -= 1
-                else: pass
-                i += 1
-        return context, i, curlies, parens
+        
+            def d(n):
+                return 0 if context else n
+        
+            table = (
+                # in-ctx: the next context when the pattern matches the line *and* the context.
+                # out-ctx:the next context when the pattern matches the line *outside* any context.
+                # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+                ('len+1', '\\',    context,   context,  0,       0,       0),
+                ('all',   '#',     '',        '',       0,       0,       0),
+                ('len',   '"',     '"',       '',       0,       0,       0),
+                ('len',   "'",     "'",       '',       0,       0,       0),
+                ('len',   '=',     '=cut',    context,  0,       0,       0),
+                ('len',   '=cut',  context,   '',       0,       0,       0),
+                ('len',   '{',     context,   context,  d(1),    0,       0),
+                ('len',   '}',     context,   context,  d(-1),   0,       0),
+                ('len',   '(',     context,   context,  0,       d(1),    0),
+                ('len',   ')',     context,   context,  0,       d(-1),   0),
+                ('len',   '[',     context,   context,  0,       0,       d(1)),
+                ('len',   ']',     context,   context,  0,       0,       d(-1)),
+            )
+            self.cached_scan_tables[context] = table
+            if trace: g.trace('created table for general state', context)
+            return table
     #@-others
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:

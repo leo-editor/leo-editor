@@ -394,7 +394,7 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line (test)
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -415,7 +415,7 @@ class Py_Importer(Importer):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return Python_State(context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161113082348.1: *4* py_i.get_table
+    #@+node:ekr.20161113082348.1: *5* py_i.get_table
     #@@nobeautify
     cached_scan_tables = {}
 
@@ -424,7 +424,7 @@ class Py_Importer(Importer):
         Return the state table used by python.scan_table.
         None indicates that the pattern will never match when in a state.
         '''
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         table = self.cached_scan_tables.get(context)
         if table:
             return table
