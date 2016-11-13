@@ -143,7 +143,7 @@ class CS_Importer(Importer):
 
 
     #@+node:ekr.20161110044110.1: *3* coffee.V2
-    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line
+    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & helpers
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -159,42 +159,39 @@ class CS_Importer(Importer):
         i = 0
         while i < len(s):
             progress = i
-            table = self.in_table(context) if context else self.out_table()
-            context, i = self.scan_table(i, s, table)
+            table = self.get_table(context)
+            context, i = self.scan_table(context, i, s, table)
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161113052816.1: *5* coffee.in_table
-    def in_table(self, context):
-        '''Return the in-context table for coffeescript.'''
+    #@+node:ekr.20161113064226.1: *5* coffee.get_table
+    #@@nobeautify
+
+    def get_table(self, context):
+        '''Return the coffeescript state table used by coffee.scan_table.'''
         return (
-            ('len+1',   '\\',   context),
-            ('len',     '###',  ''),
-            ('len',     '"',    ''),
-            ('len',     "'",    ''),
-        )
-    #@+node:ekr.20161113053127.1: *5* coffee.out_table
-    def out_table(self):
-        '''Return the out-of-context table for coffeescript.'''
-        return (
-            ('len', '###',  '###'), # Coffeedoc-style docstring.
-            ('all', '#',    ''),
-            ('len', '"',    '"'),
-            ('len', "'",    "'"),
-            ('len', '\\\n', 'bs-nl'),
+            # kind,   pattern, out-state, in-state.
+            ('len',   '\\\n',  'bs-nl',   context),
+            ('len+1', '\\',    context,   context),
+            ('len',   '###',   '###',     ''), # Coffeedoc-style docstring.
+            ('all',   '#',     '',        ''),
+            ('len',   '"',     '"',       ''),
+            ('len',   "'",     "'",       ''),
         )
     #@+node:ekr.20161113052225.1: *5* coffee.scan_table
-    def scan_table(self, i, s, table):
+    def scan_table(self, context, i, s, table):
         '''Scan the given table in the given context.'''
-        for kind, pattern, new_context in table:
+        for kind, pattern, out_context, in_context in table:
             if self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
-                if kind == 'all':
-                    return new_context, len(s)
-                elif kind == 'len+1':
-                    return new_context, i + len(pattern) + 1
-                else:
-                    return new_context, i + len(pattern)
+                if not context or context == pattern:
+                    new_context = in_context if context else out_context
+                    if kind == 'all':
+                        return new_context, len(s)
+                    elif kind == 'len+1':
+                        return new_context, i + len(pattern) + 1
+                    else:
+                        return new_context, i + len(pattern)
         return '', i+1
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
