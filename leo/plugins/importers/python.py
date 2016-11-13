@@ -394,7 +394,7 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161105140842.3: *4* py_i.v2_scan_line
+    #@+node:ekr.20161105140842.3: *4* py_i.v2_scan_line (old)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting

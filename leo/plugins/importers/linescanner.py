@@ -105,6 +105,8 @@ class Importer(object):
         self.comment_delim = single_delim
 
         # Constants...
+        data = g.set_delims_from_language(self.name)
+        self.single_comment, self.block1, self.block2 = data
         self.escape = c.atFileCommands.underindentEscapeString
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
             # m.group(1) is the unindent value.
@@ -123,6 +125,7 @@ class Importer(object):
         # self.at_auto_separate_non_def_nodes = False
 
         # State vars.
+        ### self.context_stack = []
         self.errors = 0
         ic.errors = 0 # Required.
         self.parse_body = False
@@ -288,46 +291,65 @@ class Importer(object):
         '''To be overridden by subclasses.'''
         assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161108155143.5: *4* i.general_scan_line
+    #@+node:ekr.20161112185942.1: *4* i.general_scan_line (new)
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
         trace = False and not g.unitTesting
-        match = self.match
-        comment_delims = g.set_delims_from_language(self.name)
-        line_comment, block1, block2 = comment_delims
-        contexts = strings = ['"', "'"]
-        context, curlies = prev_state.context, prev_state.curlies
-        if block1:
-            contexts.append(block1)
+        self.strings = ['"', "'"] # Only one-character strings.
+        self.contexts = ['', '"', "'"]
+        if self.block1 and self.block1 not in self.contexts:
+            self.contexts.append(self.block1)
+        self.context, self.curlies = prev_state.context, prev_state.curlies
+        assert self.context in self.contexts, repr(self.context)
         i = 0
         while i < len(s):
             progress = i
-            ch = s[i]
-            if context:
-                assert context in contexts, repr(context)
-                if ch == '\\':
-                    i += 1 # Eat the next character later.
-                elif context in strings and context == ch:
-                    context = '' # End the string.
-                elif block1 and context == block1 and match(s, i, block2):
-                    context = '' # End the block comment.
-                    i += (len(block2) - 1)
-                else:
-                    pass # Eat the string character later.
-            elif ch in strings:
-                context = ch
-            elif block1 and match(s, i, block1):
-                context = block1
-                i += (len(block1) - 1)
-            elif line_comment and match(s, i, line_comment):
-                break # The single-line comment ends the line.
-            elif ch == '{': curlies += 1
-            elif ch == '}': curlies -= 1
-            i += 1
+            if self.context:
+                i = self.do_ch_in_context(i, s)
+            else:
+                i = self.do_ch_out_of_context(i, s)
             assert progress < i
-        new_state = self.ScanState(context, curlies)
-        if trace: g.trace(new_state, s.rstrip())
+        new_state = self.ScanState(self.context, self.curlies)
+        if trace: g.trace(new_state, repr(s))
         return new_state
+    #@+node:ekr.20161112185942.2: *5* i.do_ch_in_context
+    def do_ch_in_context(self, i, s):
+        '''general_scan_line handler for when a context is in effect.'''
+        match = self.match
+        context = self.context
+        ch = s[i]
+        if ch == '\\':
+            i += 2 # Eat the next character.
+        elif ch == context and context in self.strings:
+            self.context = '' # End the string.
+            i += 1
+        elif match(s, i, self.block2) and self.block1 and context == self.block1:
+            self.context = '' # End the block comment.
+            i += len(self.block2)
+        else:
+            i += 1 # Eat the character. It doesn't end the context.
+        return i
+    #@+node:ekr.20161112185942.3: *5* i.do_ch_out_of_context
+    def do_ch_out_of_context(self, i, s):
+        '''general_scan_line handler for when no context is in effect.'''
+        ch = s[i]
+        if ch in self.strings: # Only single-character string delims.
+            self.context = ch
+            i += 1
+        elif self.block1 and self.match(s, i, self.block1):
+            self.context = self.block1
+            i += len(self.block1)
+        elif self.single_comment and self.match(s, i, self.single_comment):
+            i = len(s) # The single-line comment ends the line.
+        elif ch == '{':
+            self.curlies += 1
+            i += 1
+        elif ch == '}':
+            self.curlies -= 1
+            i += 1
+        else:
+            i += 1
+        return i
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
