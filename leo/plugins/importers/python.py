@@ -376,6 +376,7 @@ class Py_Importer(Importer):
         )
         self.starts_pattern = re.compile(r'\s*(class|def)')
             # Matches lines that apparently starts a class or def.
+        self.contexts = ['', 'bs-nl', '"""', "'''", '"', "'"]
 
     #@+others
     #@+node:ekr.20161110073751.1: *4* py_i.clean_headline
@@ -398,9 +399,6 @@ class Py_Importer(Importer):
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
-        # Init the contstant self.contexts.
-        self.strings = ['"', "'"]
-        self.contexts = prev_state.contexts
         # Init self.context, indent and ws.
         self.context, indent = prev_state.context, prev_state.indent
         assert self.context in self.contexts, repr(self.context)
