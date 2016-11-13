@@ -150,7 +150,6 @@ class CS_Importer(Importer):
         context, indent = prev_state.context, prev_state.indent
         assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
-        # starts = bool(starts_pattern.match(s)) and not was_bs_nl
         starts = self.starts_def(s)
         ws = self.is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
@@ -162,28 +161,47 @@ class CS_Importer(Importer):
             progress = i
             ch = s[i]
             if context:
-                if ch == '\\':
-                    i += 1 # Eat the *next* character too.
-                elif context == ch:
-                    context = '' # End the string.
-                else:
-                    pass # Eat the string character later.
-            elif ch == '#':
-                # The single-line comment ends the line.
-                break
-            elif s[i:i+3] in ('"""', "'''"):
-                context = s[i:i+3]
-            elif ch in ('"', "'"):
-                context = ch
-            elif s[i:] == r'\\\n':
-                context = 'bs-nl' # The *next* line is a continuation line.
-                break
-            elif ch == r'\\':
-                i += 1 # Eat the *next* character.
-            i += 1
+                context, i = self.do_ch_in_context(context, i, s)
+            else:
+                context, i = self.do_ch_out_of_context(i, s)
+                i += 1
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)
+    #@+node:ekr.20161113043646.1: *5* do_ch_in_context
+    def do_ch_in_context(self, context, i, s):
+        '''The coffeescript v2_scan_line handler for when a context is in effect.'''
+        ch = s[i]
+        if ch == '\\':
+            i += 2 # Eat the *next* character too.
+        elif context == ch:
+            context = '' # End the string.
+            i += 1
+        else:
+            i += 1
+        return context, i
+    #@+node:ekr.20161113044240.1: *5* do_ch_out_of_context
+    def do_ch_out_of_context(self, i, s):
+        ch = s[i]
+        if ch == '#':
+            context = ''
+            i = len(s) # The single-line comment ends the line.
+        elif s[i:i+3] in ('"""', "'''"):
+            context = s[i:i+3]
+            i += 3
+        elif ch in ('"', "'"):
+            context = ch
+            i += 1
+        elif s[i:] == r'\\\n':
+            context = 'bs-nl' # The *next* line is a continuation line.
+            i += 2 # Eat the *next* character.
+        elif ch == r'\\':
+            context = ''
+            i += 2 # Eat the *next* character.
+        else:
+            context = ''
+            i += 1
+        return context, i
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
