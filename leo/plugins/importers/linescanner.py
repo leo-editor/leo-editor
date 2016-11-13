@@ -291,17 +291,12 @@ class Importer(object):
         '''To be overridden by subclasses.'''
         assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161112185942.1: *4* i.general_scan_line
+    #@+node:ekr.20161112185942.1: *4* i.general_scan_line (revise)
     # Used by C_Importer.
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
         trace = False and not g.unitTesting
-        self.strings = ['"', "'"] # Only one-character strings.
-        self.contexts = ['', '"', "'"]
-        if self.block1 and self.block1 not in self.contexts:
-            self.contexts.append(self.block1)
         self.context, self.curlies = prev_state.context, prev_state.curlies
-        assert self.context in self.contexts, repr(self.context)
         i = 0
         while i < len(s):
             progress = i
@@ -321,7 +316,7 @@ class Importer(object):
         ch = s[i]
         if ch == '\\':
             i += 2 # Eat the next character.
-        elif ch == context and context in self.strings:
+        elif ch == context and context in ('"', "'"):
             self.context = '' # End the string.
             i += 1
         elif match(s, i, self.block2) and self.block1 and context == self.block1:
@@ -334,7 +329,7 @@ class Importer(object):
     def do_ch_out_of_context(self, i, s):
         '''general_scan_line handler for when no context is in effect.'''
         ch = s[i]
-        if ch in self.strings: # Only single-character string delims.
+        if ch in ('"' "'"): # Only single-character string delims.
             self.context = ch
             i += 1
         elif self.block1 and self.match(s, i, self.block1):
@@ -791,12 +786,13 @@ class Importer(object):
         i.scan_table: Scan the given table in the given context.
         May be overridden in subclasses.
         '''
-        # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
+        # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
             if self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
                 if not context or context == pattern:
                     new_context = in_context if context else out_context
+                    assert new_context is not None, (pattern, repr(s))
                     if kind == 'all':
                         i = len(s)
                     elif kind == 'len+1':
@@ -804,7 +800,7 @@ class Importer(object):
                     else:
                         i += len(pattern)
                     return new_context, i, delta_c, delta_p, delta_s
-        # No match: staty in present state.
+        # No match: stay in present state. All deltas are zero.
         return '', i+1, 0, 0, 0
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161108155143.4: *4* i.match

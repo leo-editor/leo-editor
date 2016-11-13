@@ -143,12 +143,11 @@ class CS_Importer(Importer):
 
 
     #@+node:ekr.20161110044110.1: *3* coffee.V2
-    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & helpers
+    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & get_table
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
-        assert context in prev_state.contexts, repr(context)
         was_bs_nl = context == 'bs-nl'
         starts = self.starts_def(s)
         ws = self.is_ws_line(s) and not was_bs_nl
@@ -170,7 +169,10 @@ class CS_Importer(Importer):
     cached_scan_tables = {}
 
     def get_table(self, context):
-        '''Return the coffeescript state table used by coffee.scan_table.'''
+        '''
+        Return the coffeescript state table used by coffee.scan_table.
+        None indicates that the pattern will never match when in a state.
+        '''
         table = self.cached_scan_tables.get(context)
         if table:
             return table
@@ -180,7 +182,11 @@ class CS_Importer(Importer):
                 return 0 if context else n
         
             table = (
-                # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
+                # in-ctx: the next context when the pattern matches the line *and* the context.
+                # out-ctx:the next context when the pattern matches the line *outside* any context.
+                # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
                 ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
                 ('len+1', '\\',    context,   context,  0,       0,       0),
                 # Coffeedoc-style docstring.
@@ -210,7 +216,6 @@ class CS_State:
         '''CS_State ctor.'''
         assert isinstance(indent, int), (repr(indent), g.callers())
         self.context = context
-        self.contexts = ['', '"""', "'''", '"', "'"]
         self.indent = indent
         self.starts = starts
         self.ws = ws # whitespace line, possibly ending in a comment.

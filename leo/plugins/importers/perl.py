@@ -76,7 +76,7 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line
+    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line (revise)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting

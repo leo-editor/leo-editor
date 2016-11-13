@@ -376,8 +376,6 @@ class Py_Importer(Importer):
         )
         self.starts_pattern = re.compile(r'\s*(class|def)')
             # Matches lines that apparently starts a class or def.
-        self.contexts = ['', 'bs-nl', '"""', "'''", '"', "'"]
-        self.scan_table = self.get_scan_table()
 
     #@+others
     #@+node:ekr.20161110073751.1: *4* py_i.clean_headline
@@ -400,14 +398,13 @@ class Py_Importer(Importer):
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
-        # Init self.context, indent and ws.
-        self.context, indent = prev_state.context, prev_state.indent
-        assert self.context in self.contexts, repr(self.context)
-        was_bs_nl = self.context == 'bs-nl'
+        # Init context, indent and ws.
+        context, indent = prev_state.context, prev_state.indent
+        was_bs_nl = context == 'bs-nl'
         starts = bool(self.starts_pattern.match(s)) and not was_bs_nl
         ws = self.is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
-            self.context = '' # Don't change indent.
+            context = '' # Don't change indent.
         else:
             indent = self.get_int_lws(s)
         i = 0
@@ -417,7 +414,7 @@ class Py_Importer(Importer):
             context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        return Python_State(self.context, indent, starts=starts, ws=ws)
+        return Python_State(context, indent, starts=starts, ws=ws)
     #@+node:ekr.20161113082348.1: *4* py_i.get_table
     #@@nobeautify
     cached_scan_tables = {}
@@ -458,7 +455,6 @@ class Python_State:
     def __init__(self, context, indent, starts=False, ws=False):
         '''Ctor for the Python_State class.'''
         self.context = context
-        self.contexts = ['', 'bs-nl', '"""', "'''", '"', "'"]
         self.indent = indent
         self.starts = starts
         self.ws = ws # A bool: True if a whitespace line, possibly ending in a comment.
