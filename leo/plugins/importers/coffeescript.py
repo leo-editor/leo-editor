@@ -166,21 +166,21 @@ class CS_Importer(Importer):
         return CS_State(context, indent, starts=starts, ws=ws)
     #@+node:ekr.20161113052816.1: *5* coffee.in_table
     def in_table(self, context):
-        '''Return the in-context table for the given context.'''
+        '''Return the in-context table for coffeescript.'''
         return (
             ('len+1',   '\\',   context),
-            ('len',     '"""',  ''),
-            ('len',     "'''",  ''),
+            # ('len',     '"""',  ''),
+            # ('len',     "'''",  ''),
             ('len',     '"',    ''),
             ('len',     "'",    ''),
         )
     #@+node:ekr.20161113053127.1: *5* coffee.out_table
     def out_table(self):
-        '''Return the out-of-context table.'''
+        '''Return the out-of-context table for coffeescript.'''
         return (
             ('all', '#',    ''),
-            ('len', '"""',  '"""'),
-            ('len', "'''",  "'''"),
+            # ('len', '"""',  '"""'),
+            # ('len', "'''",  "'''"),
             ('len', '"',    '"'),
             ('len', "'",    "'"),
             ('len', '\\\n', 'bs-nl'),
