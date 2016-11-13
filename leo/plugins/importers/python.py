@@ -380,12 +380,6 @@ class Py_Importer(Importer):
         self.scan_table = self.get_scan_table()
 
     #@+others
-    #@+node:ekr.20161113064118.1: *4* py_i.get_scan_table
-    def get_scan_table(self):
-        
-        return (
-            ### To do
-        )
     #@+node:ekr.20161110073751.1: *4* py_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -402,7 +396,7 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -419,67 +413,43 @@ class Py_Importer(Importer):
         i = 0
         while i < len(s):
             progress = i
-            if self.context:
-                i = self.do_ch_in_context(i, s)
-            else:
-                i = self.do_ch_out_of_context(i, s)
+            table = self.get_table(context)
+            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return Python_State(self.context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161112191527.2: *5* py_i.do_ch_in_context
-    def do_ch_in_context(self, i, s):
-        '''PYthon v2_scan_line handler for when a context is in effect.'''
-        assert self.context in self.contexts, repr(self.context)
-        assert self.context != 'bs-nl'
-        ch = s[i]
-        if ch == '\\':
-            i += 2 # Eat the next character
-        elif self.context[0] in ('"',"'"):
-            if self.match(s, i, self.context):
-                # End the string, and the context.
-                i += len(self.context)
-                self.context = ''
-            else:
-                # Continue the string
-                i += 1
+    #@+node:ekr.20161113082348.1: *4* py_i.get_table
+    #@@nobeautify
+    cached_scan_tables = {}
+
+    def get_table(self, context):
+        '''python.get_table: return the state table used by python.scan_table.'''
+        table = self.cached_scan_tables.get(context)
+        if table:
+            return table
         else:
-            # Continue the present state.
-            i += 1
-        return i
-    #@+node:ekr.20161112191527.3: *5* py_i.do_ch_out_of_context
-    def do_ch_out_of_context(self, i, s):
-        '''Python v2_scan_line handler for when no context is in effect.'''
-        ch = s[i]
-        if ch == r'\\':
-            i += 2 # Eat the *next* character.
-        elif s[i:] == '\\\n':
-            # The *next* line is a continuation line.
-            self.context = 'bs-nl'
-            i += 2
-        elif ch == '#':
-            # The single-line comment ends the line.
-            i = len(s)
-        elif s[i:i+3] in ('"""', "'''"):
-            # self.context_stack.append(s[i:i+3])
-            self.context = s[i:i+3]
-            i += 3
-        elif ch in ('"', "'"):
-            self.context = ch
-            i += 1
-        else: ### To be removed.
-            i += 1
-        # elif ch not in '([{}])':
-            # i += 1
-        # else:
-            # i += 1
-            # if ch == '(': self.parens += 1
-            # elif ch == '[': self.squares += 1
-            # elif ch == '{': self.curlies += 1
-            # elif ch == ')': self.parens -= 1
-            # elif ch == ']': self.squares -= 1
-            # elif ch == '}': self.curlies -= 1
-            # else: assert False, repr(ch)
-        return i
+        
+            def d(n):
+                return 0 if context else n
+        
+            table = (
+                # kind,   pattern, out of ctx, in ctx, delta{}, delta(), delta[]
+                ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
+                ('len+1', '\\',    context,   context,  0,       0,       0),
+                ('len',   '"""',   '"""',     context,  0,       0,       0),
+                ('len',   "'''",   "'''",     context,  0,       0,       0),
+                ('all',   '#',     '',        '',       0,       0,       0),
+                ('len',   '"',     '"',       '',       0,       0,       0),
+                ('len',   "'",     "'",       '',       0,       0,       0),
+                ('len',   '{',     context,   context,  d(1),    0,       0),
+                ('len',   '}',     context,   context,  d(-1),   0,       0),
+                ('len',   '(',     context,   context,  0,       d(1),    0),
+                ('len',   ')',     context,   context,  0,       d(-1),   0),
+                ('len',   '[',     context,   context,  0,       0,       d(1)),
+                ('len',   ']',     context,   context,  0,       0,       d(-1)),
+            )
+            self.cached_scan_tables[context] = table
+            return table
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State
 class Python_State:
