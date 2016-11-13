@@ -785,6 +785,27 @@ class Importer(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
         return ''.join(result)
+    #@+node:ekr.20161113052225.1: *4* i.scan_table
+    def scan_table(self, context, i, s, table):
+        '''
+        i.scan_table: Scan the given table in the given context.
+        May be overridden in subclasses.
+        '''
+        # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
+        for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
+            if self.match(s, i, pattern):
+                assert kind in ('all', 'len', 'len+1'), kind
+                if not context or context == pattern:
+                    new_context = in_context if context else out_context
+                    if kind == 'all':
+                        i = len(s)
+                    elif kind == 'len+1':
+                        i += (len(pattern) + 1)
+                    else:
+                        i += len(pattern)
+                    return new_context, i, delta_c, delta_p, delta_s
+        # No match: staty in present state.
+        return '', i+1, 0, 0, 0
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):

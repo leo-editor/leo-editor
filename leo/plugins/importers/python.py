@@ -377,8 +377,15 @@ class Py_Importer(Importer):
         self.starts_pattern = re.compile(r'\s*(class|def)')
             # Matches lines that apparently starts a class or def.
         self.contexts = ['', 'bs-nl', '"""', "'''", '"', "'"]
+        self.scan_table = self.get_scan_table()
 
     #@+others
+    #@+node:ekr.20161113064118.1: *4* py_i.get_scan_table
+    def get_scan_table(self):
+        
+        return (
+            ### To do
+        )
     #@+node:ekr.20161110073751.1: *4* py_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''

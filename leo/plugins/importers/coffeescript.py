@@ -160,7 +160,8 @@ class CS_Importer(Importer):
         while i < len(s):
             progress = i
             table = self.get_table(context)
-            context, i = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            # curlies, parens, squares = curlies + delta_c, parents + delta_p, squares + delta_s
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)
@@ -169,30 +170,25 @@ class CS_Importer(Importer):
 
     def get_table(self, context):
         '''Return the coffeescript state table used by coffee.scan_table.'''
+        def d(n):
+            return 0 if context else n
+
         return (
-            # kind,   pattern, out-state, in-state.
-            ('len',   '\\\n',  'bs-nl',   context),
-            ('len+1', '\\',    context,   context),
-            ('len',   '###',   '###',     ''), # Coffeedoc-style docstring.
-            ('all',   '#',     '',        ''),
-            ('len',   '"',     '"',       ''),
-            ('len',   "'",     "'",       ''),
+            # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
+            ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            # Coffeedoc-style docstring.
+            ('len',   '###',   '###',     '',       0,       0,       0),
+            ('all',   '#',     '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
         )
-    #@+node:ekr.20161113052225.1: *5* coffee.scan_table
-    def scan_table(self, context, i, s, table):
-        '''Scan the given table in the given context.'''
-        for kind, pattern, out_context, in_context in table:
-            if self.match(s, i, pattern):
-                assert kind in ('all', 'len', 'len+1'), kind
-                if not context or context == pattern:
-                    new_context = in_context if context else out_context
-                    if kind == 'all':
-                        return new_context, len(s)
-                    elif kind == 'len+1':
-                        return new_context, i + len(pattern) + 1
-                    else:
-                        return new_context, i + len(pattern)
-        return '', i+1
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
