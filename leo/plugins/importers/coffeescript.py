@@ -169,8 +169,7 @@ class CS_Importer(Importer):
         '''Return the in-context table for coffeescript.'''
         return (
             ('len+1',   '\\',   context),
-            # ('len',     '"""',  ''),
-            # ('len',     "'''",  ''),
+            ('len',     '###',  ''),
             ('len',     '"',    ''),
             ('len',     "'",    ''),
         )
@@ -178,9 +177,8 @@ class CS_Importer(Importer):
     def out_table(self):
         '''Return the out-of-context table for coffeescript.'''
         return (
+            ('len', '###',  '###'), # Coffeedoc-style docstring.
             ('all', '#',    ''),
-            # ('len', '"""',  '"""'),
-            # ('len', "'''",  "'''"),
             ('len', '"',    '"'),
             ('len', "'",    "'"),
             ('len', '\\\n', 'bs-nl'),
