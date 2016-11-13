@@ -159,49 +159,45 @@ class CS_Importer(Importer):
         i = 0
         while i < len(s):
             progress = i
-            ch = s[i]
-            if context:
-                context, i = self.do_ch_in_context(context, i, s)
-            else:
-                context, i = self.do_ch_out_of_context(i, s)
-                i += 1
+            table = self.in_table(context) if context else self.out_table()
+            context, i = self.scan_table(i, s, table)
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161113043646.1: *5* do_ch_in_context
-    def do_ch_in_context(self, context, i, s):
-        '''The coffeescript v2_scan_line handler for when a context is in effect.'''
-        ch = s[i]
-        if ch == '\\':
-            i += 2 # Eat the *next* character too.
-        elif context == ch:
-            context = '' # End the string.
-            i += 1
-        else:
-            i += 1
-        return context, i
-    #@+node:ekr.20161113044240.1: *5* do_ch_out_of_context
-    def do_ch_out_of_context(self, i, s):
-        ch = s[i]
-        if ch == '#':
-            context = ''
-            i = len(s) # The single-line comment ends the line.
-        elif s[i:i+3] in ('"""', "'''"):
-            context = s[i:i+3]
-            i += 3
-        elif ch in ('"', "'"):
-            context = ch
-            i += 1
-        elif s[i:] == r'\\\n':
-            context = 'bs-nl' # The *next* line is a continuation line.
-            i += 2 # Eat the *next* character.
-        elif ch == r'\\':
-            context = ''
-            i += 2 # Eat the *next* character.
-        else:
-            context = ''
-            i += 1
-        return context, i
+    #@+node:ekr.20161113052816.1: *5* coffee.in_table
+    def in_table(self, context):
+        '''Return the in-context table for the given context.'''
+        return (
+            ('len+1',   '\\',   context),
+            ('len',     '"""',  ''),
+            ('len',     "'''",  ''),
+            ('len',     '"',    ''),
+            ('len',     "'",    ''),
+        )
+    #@+node:ekr.20161113053127.1: *5* coffee.out_table
+    def out_table(self):
+        '''Return the out-of-context table.'''
+        return (
+            ('all', '#',    ''),
+            ('len', '"""',  '"""'),
+            ('len', "'''",  "'''"),
+            ('len', '"',    '"'),
+            ('len', "'",    "'"),
+            ('len', '\\\n', 'bs-nl'),
+        )
+    #@+node:ekr.20161113052225.1: *5* coffee.scan_table
+    def scan_table(self, i, s, table):
+        '''Scan the given table in the given context.'''
+        for kind, pattern, new_context in table:
+            if self.match(s, i, pattern):
+                assert kind in ('all', 'len', 'len+1'), kind
+                if kind == 'all':
+                    return new_context, len(s)
+                elif kind == 'len+1':
+                    return new_context, i + len(pattern) + 1
+                else:
+                    return new_context, i + len(pattern)
+        return '', i+1
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
