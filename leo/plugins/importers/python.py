@@ -394,46 +394,94 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161105140842.3: *4* py_i.v2_scan_line (old)
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers
     def v2_scan_line(self, s, prev_state):
-        '''Update the scan state by scanning s.'''
+        '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
-        context, indent = prev_state.context, prev_state.indent
-        assert context in prev_state.contexts, repr(context)
-        was_bs_nl = context == 'bs-nl'
+        # Init the contstant self.contexts.
+        self.strings = ['"', "'"]
+        self.contexts = prev_state.contexts
+        # Init self.context, indent and ws.
+        self.context, indent = prev_state.context, prev_state.indent
+        assert self.context in self.contexts, repr(self.context)
+        was_bs_nl = self.context == 'bs-nl'
         starts = bool(self.starts_pattern.match(s)) and not was_bs_nl
         ws = self.is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
-            context = '' # Don't change indent.
+            self.context = '' # Don't change indent.
         else:
             indent = self.get_int_lws(s)
         i = 0
         while i < len(s):
             progress = i
-            ch = s[i]
-            if context:
-                if ch == '\\':
-                    i += 1 # Eat the *next* character too.
-                elif context == ch:
-                    context = '' # End the string.
-                else:
-                    pass # Eat the string character later.
-            elif ch == '#':
-                # The single-line comment ends the line.
-                break
-            elif s[i:i+3] in ('"""', "'''"):
-                context = s[i:i+3]
-            elif ch in ('"', "'"):
-                context = ch
-            elif s[i:] == r'\\\n':
-                context = 'bs-nl' # The *next* line is a continuation line.
-                break
-            elif ch == r'\\':
-                i += 1 # Eat the *next* character.
-            i += 1
+            if self.context:
+                i = self.do_ch_in_context(i, s)
+            else:
+                i = self.do_ch_out_of_context(i, s)
             assert progress < i
+        ### self.context = stack[-1] if stack else ''
         if trace: g.trace(self, s.rstrip())
-        return Python_State(context, indent, starts=starts, ws=ws)
+        return Python_State(self.context, indent, starts=starts, ws=ws)
+    #@+node:ekr.20161112191527.2: *5* py_i.do_ch_in_context
+    def do_ch_in_context(self, i, s):
+        '''PYthon v2_scan_line handler for when a context is in effect.'''
+        ### stack = self.context_stack
+        ### context = stack[-1]
+        assert self.context in self.contexts, repr(self.context)
+        ch = s[i]
+        if ch == '\\':
+            i += 2 # Eat the next character
+        elif self.context[0] in ('"',"'"):
+            if self.match(s, i, self.context):
+                # End the string, and the context.
+                ### stack.pop()
+                i += len(self.context)
+            else:
+                # Continue the string
+                i += 1
+        ###
+        # elif (
+            # (ch == ')' and context == '(') or
+            # (ch == ']' and context == '[') or
+            # (ch == '}' and context == '{')
+        # ):
+            # ### stack.pop()
+            # self.context = ''
+            # i += 1
+        # elif ch in '([{':
+            # stack.append(ch)
+            # i += 1
+        else:
+            # Continue the present state.
+            i += 1
+        return i
+    #@+node:ekr.20161112191527.3: *5* py_i.do_ch_out_of_context
+    def do_ch_out_of_context(self, i, s):
+        '''Python v2_scan_line handler for when no context is in effect.'''
+        ch = s[i]
+        if ch == r'\\':
+            i += 2 # Eat the *next* character.
+        elif s[i:] == '\\\n':
+            # The *next* line is a continuation line.
+            ### self.context_stack.append('bs-nl')
+            self.context = 'bs-nl'
+            i += 2
+        elif ch == '#':
+            # The single-line comment ends the line.
+            i = len(s)
+        elif s[i:i+3] in ('"""', "'''"):
+            # self.context_stack.append(s[i:i+3])
+            self.context = s[i:i+3]
+            i += 3
+        elif ch in ('"', "'"):
+            self.context = ch
+            i += 1
+        # elif ch in '\'"([{':
+            # self.context_stack.append(ch)
+            # i += 1
+        else:
+            i += 1
+        return i
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State
 class Python_State:
@@ -442,7 +490,7 @@ class Python_State:
     def __init__(self, context, indent, starts=False, ws=False):
         '''Ctor for the Python_State class.'''
         self.context = context
-        self.contexts = ['', '"""', "'''", '"', "'"]
+        self.contexts = ['', 'bs-nl', '"""', "'''", '"', "'"]
         self.indent = indent
         self.starts = starts
         self.ws = ws # A bool: True if a whitespace line, possibly ending in a comment.
