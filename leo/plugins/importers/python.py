@@ -417,38 +417,24 @@ class Py_Importer(Importer):
             else:
                 i = self.do_ch_out_of_context(i, s)
             assert progress < i
-        ### self.context = stack[-1] if stack else ''
         if trace: g.trace(self, s.rstrip())
         return Python_State(self.context, indent, starts=starts, ws=ws)
     #@+node:ekr.20161112191527.2: *5* py_i.do_ch_in_context
     def do_ch_in_context(self, i, s):
         '''PYthon v2_scan_line handler for when a context is in effect.'''
-        ### stack = self.context_stack
-        ### context = stack[-1]
         assert self.context in self.contexts, repr(self.context)
+        assert self.context != 'bs-nl'
         ch = s[i]
         if ch == '\\':
             i += 2 # Eat the next character
         elif self.context[0] in ('"',"'"):
             if self.match(s, i, self.context):
                 # End the string, and the context.
-                ### stack.pop()
                 i += len(self.context)
+                self.context = ''
             else:
                 # Continue the string
                 i += 1
-        ###
-        # elif (
-            # (ch == ')' and context == '(') or
-            # (ch == ']' and context == '[') or
-            # (ch == '}' and context == '{')
-        # ):
-            # ### stack.pop()
-            # self.context = ''
-            # i += 1
-        # elif ch in '([{':
-            # stack.append(ch)
-            # i += 1
         else:
             # Continue the present state.
             i += 1
@@ -461,7 +447,6 @@ class Py_Importer(Importer):
             i += 2 # Eat the *next* character.
         elif s[i:] == '\\\n':
             # The *next* line is a continuation line.
-            ### self.context_stack.append('bs-nl')
             self.context = 'bs-nl'
             i += 2
         elif ch == '#':
@@ -474,11 +459,19 @@ class Py_Importer(Importer):
         elif ch in ('"', "'"):
             self.context = ch
             i += 1
-        # elif ch in '\'"([{':
-            # self.context_stack.append(ch)
-            # i += 1
-        else:
+        else: ### To be removed.
             i += 1
+        # elif ch not in '([{}])':
+            # i += 1
+        # else:
+            # i += 1
+            # if ch == '(': self.parens += 1
+            # elif ch == '[': self.squares += 1
+            # elif ch == '{': self.curlies += 1
+            # elif ch == ')': self.parens -= 1
+            # elif ch == ']': self.squares -= 1
+            # elif ch == '}': self.curlies -= 1
+            # else: assert False, repr(ch)
         return i
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State

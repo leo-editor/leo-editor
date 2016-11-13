@@ -291,7 +291,8 @@ class Importer(object):
         '''To be overridden by subclasses.'''
         assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161112185942.1: *4* i.general_scan_line (new)
+    #@+node:ekr.20161112185942.1: *4* i.general_scan_line
+    # Used by C_Importer.
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
         trace = False and not g.unitTesting
@@ -312,7 +313,7 @@ class Importer(object):
         new_state = self.ScanState(self.context, self.curlies)
         if trace: g.trace(new_state, repr(s))
         return new_state
-    #@+node:ekr.20161112185942.2: *5* i.do_ch_in_context
+    #@+node:ekr.20161112185942.2: *5* i.do_ch_in_context (general_scan_line)
     def do_ch_in_context(self, i, s):
         '''general_scan_line handler for when a context is in effect.'''
         match = self.match
@@ -329,7 +330,7 @@ class Importer(object):
         else:
             i += 1 # Eat the character. It doesn't end the context.
         return i
-    #@+node:ekr.20161112185942.3: *5* i.do_ch_out_of_context
+    #@+node:ekr.20161112185942.3: *5* i.do_ch_out_of_context (i.general_scan_line)
     def do_ch_out_of_context(self, i, s):
         '''general_scan_line handler for when no context is in effect.'''
         ch = s[i]
