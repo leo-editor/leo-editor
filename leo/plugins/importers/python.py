@@ -420,7 +420,11 @@ class Py_Importer(Importer):
     cached_scan_tables = {}
 
     def get_table(self, context):
-        '''python.get_table: return the state table used by python.scan_table.'''
+        '''
+        Return the state table used by python.scan_table.
+        None indicates that the pattern will never match when in a state.
+        '''
+        trace = True # and not g.unitTesting
         table = self.cached_scan_tables.get(context)
         if table:
             return table
@@ -430,7 +434,11 @@ class Py_Importer(Importer):
                 return 0 if context else n
         
             table = (
-                # kind,   pattern, out of ctx, in ctx, delta{}, delta(), delta[]
+                # in-ctx: the next context when the pattern matches the line *and* the context.
+                # out-ctx:the next context when the pattern matches the line *outside* any context.
+                # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
                 ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
                 ('len+1', '\\',    context,   context,  0,       0,       0),
                 ('len',   '"""',   '"""',     context,  0,       0,       0),
@@ -446,6 +454,7 @@ class Py_Importer(Importer):
                 ('len',   ']',     context,   context,  0,       0,       d(-1)),
             )
             self.cached_scan_tables[context] = table
+            if trace: g.trace('created table for python state', context)
             return table
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State

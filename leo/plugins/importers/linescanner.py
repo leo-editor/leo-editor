@@ -291,61 +291,64 @@ class Importer(object):
         '''To be overridden by subclasses.'''
         assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161112185942.1: *4* i.general_scan_line (revise)
+    #@+node:ekr.20161112185942.1: *4* i.general_scan_line
     # Used by C_Importer.
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
         trace = False and not g.unitTesting
-        self.context, self.curlies = prev_state.context, prev_state.curlies
+        context, curlies = prev_state.context, prev_state.curlies
         i = 0
         while i < len(s):
             progress = i
-            if self.context:
-                i = self.do_ch_in_context(i, s)
-            else:
-                i = self.do_ch_out_of_context(i, s)
+            table = self.get_table(context)
+            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            curlies += delta_c
             assert progress < i
-        new_state = self.ScanState(self.context, self.curlies)
+        new_state = self.ScanState(context, curlies)
         if trace: g.trace(new_state, repr(s))
         return new_state
-    #@+node:ekr.20161112185942.2: *5* i.do_ch_in_context (general_scan_line)
-    def do_ch_in_context(self, i, s):
-        '''general_scan_line handler for when a context is in effect.'''
-        match = self.match
-        context = self.context
-        ch = s[i]
-        if ch == '\\':
-            i += 2 # Eat the next character.
-        elif ch == context and context in ('"', "'"):
-            self.context = '' # End the string.
-            i += 1
-        elif match(s, i, self.block2) and self.block1 and context == self.block1:
-            self.context = '' # End the block comment.
-            i += len(self.block2)
+    #@+node:ekr.20161113135037.1: *5* i.get_table (for I.general_scan_line)
+    #@@nobeautify
+    cached_scan_tables = {}
+
+    def get_table(self, context):
+        '''
+        Return the state table used by python.scan_table.
+        None indicates that the pattern will never match when in a state.
+        '''
+        trace = True # and not g.unitTesting
+        table = self.cached_scan_tables.get(context)
+        if table:
+            return table
         else:
-            i += 1 # Eat the character. It doesn't end the context.
-        return i
-    #@+node:ekr.20161112185942.3: *5* i.do_ch_out_of_context (i.general_scan_line)
-    def do_ch_out_of_context(self, i, s):
-        '''general_scan_line handler for when no context is in effect.'''
-        ch = s[i]
-        if ch in ('"' "'"): # Only single-character string delims.
-            self.context = ch
-            i += 1
-        elif self.block1 and self.match(s, i, self.block1):
-            self.context = self.block1
-            i += len(self.block1)
-        elif self.single_comment and self.match(s, i, self.single_comment):
-            i = len(s) # The single-line comment ends the line.
-        elif ch == '{':
-            self.curlies += 1
-            i += 1
-        elif ch == '}':
-            self.curlies -= 1
-            i += 1
-        else:
-            i += 1
-        return i
+        
+            def d(n):
+                return 0 if context else n
+                
+            block1, block2 = self.block1, self.block2
+        
+            table = (
+                # in-ctx: the next context when the pattern matches the line *and* the context.
+                # out-ctx:the next context when the pattern matches the line *outside* any context.
+                # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+                ('len+1', '\\',    context,   context,  0,       0,       0),
+                ('all',   '#',     '',        '',       0,       0,       0),
+                ('len',   '"',     '"',       '',       0,       0,       0),
+                ('len',   "'",     "'",       '',       0,       0,       0),
+                ('len',   block1,  block1,    context,  0,       0,       0),
+                ('len',   block2,  context,   '',       0,       0,       0),
+                ('len',   '{',     context,   context,  d(1),    0,       0),
+                ('len',   '}',     context,   context,  d(-1),   0,       0),
+                ('len',   '(',     context,   context,  0,       d(1),    0),
+                ('len',   ')',     context,   context,  0,       d(-1),   0),
+                ('len',   '[',     context,   context,  0,       0,       d(1)),
+                ('len',   ']',     context,   context,  0,       0,       d(-1)),
+            )
+            self.cached_scan_tables[context] = table
+            if trace: g.trace('created table for general state', context)
+            return table
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
@@ -784,7 +787,7 @@ class Importer(object):
     def scan_table(self, context, i, s, table):
         '''
         i.scan_table: Scan the given table in the given context.
-        May be overridden in subclasses.
+        May be overridden in subclasses, but most importers will use this code.
         '''
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:

@@ -170,9 +170,10 @@ class CS_Importer(Importer):
 
     def get_table(self, context):
         '''
-        Return the coffeescript state table used by coffee.scan_table.
+        Return the state table used by coffee.scan_table.
         None indicates that the pattern will never match when in a state.
         '''
+        trace = True # and not g.unitTesting
         table = self.cached_scan_tables.get(context)
         if table:
             return table
@@ -202,6 +203,7 @@ class CS_Importer(Importer):
                 ('len',   ']',     context,   context,  0,       0,       d(-1)),
             )
             self.cached_scan_tables[context] = table
+            if trace: g.trace('created table for coffescript state', context)
             return table
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
