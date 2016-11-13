@@ -167,28 +167,36 @@ class CS_Importer(Importer):
         return CS_State(context, indent, starts=starts, ws=ws)
     #@+node:ekr.20161113064226.1: *5* coffee.get_table
     #@@nobeautify
+    cached_scan_tables = {}
 
     def get_table(self, context):
         '''Return the coffeescript state table used by coffee.scan_table.'''
-        def d(n):
-            return 0 if context else n
-
-        return (
-            # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
-            ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
-            ('len+1', '\\',    context,   context,  0,       0,       0),
-            # Coffeedoc-style docstring.
-            ('len',   '###',   '###',     '',       0,       0,       0),
-            ('all',   '#',     '',        '',       0,       0,       0),
-            ('len',   '"',     '"',       '',       0,       0,       0),
-            ('len',   "'",     "'",       '',       0,       0,       0),
-            ('len',   '{',     context,   context,  d(1),    0,       0),
-            ('len',   '}',     context,   context,  d(-1),   0,       0),
-            ('len',   '(',     context,   context,  0,       d(1),    0),
-            ('len',   ')',     context,   context,  0,       d(-1),   0),
-            ('len',   '[',     context,   context,  0,       0,       d(1)),
-            ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        )
+        table = self.cached_scan_tables.get(context)
+        if table:
+            return table
+        else:
+        
+            def d(n):
+                return 0 if context else n
+        
+            table = (
+                # kind,   pattern, out-state, in-state, delta{}, delta(), delta[]
+                ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
+                ('len+1', '\\',    context,   context,  0,       0,       0),
+                # Coffeedoc-style docstring.
+                ('len',   '###',   '###',     '',       0,       0,       0),
+                ('all',   '#',     '',        '',       0,       0,       0),
+                ('len',   '"',     '"',       '',       0,       0,       0),
+                ('len',   "'",     "'",       '',       0,       0,       0),
+                ('len',   '{',     context,   context,  d(1),    0,       0),
+                ('len',   '}',     context,   context,  d(-1),   0,       0),
+                ('len',   '(',     context,   context,  0,       d(1),    0),
+                ('len',   ')',     context,   context,  0,       d(-1),   0),
+                ('len',   '[',     context,   context,  0,       0,       d(1)),
+                ('len',   ']',     context,   context,  0,       0,       d(-1)),
+            )
+            self.cached_scan_tables[context] = table
+            return table
     #@+node:ekr.20161110044000.2: *4* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
