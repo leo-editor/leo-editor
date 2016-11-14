@@ -363,7 +363,7 @@ class PylintCommand(object):
         '''Run pylint on fn with the given pylint configuration file.'''
         c = self.c
         if not os.path.exists(fn):
-            print('file not found:', fn)
+            print('pylint: file not found:', fn)
             return
         if 1: # Invoke pylint directly.
             # Escaping args is harder here because we are creating an args array.
@@ -382,7 +382,7 @@ class PylintCommand(object):
             command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
                 sys.executable, ','.join(args))
         if self.wait:
-            g.es_print(g.shortFileName(fn))
+            g.es_print('pylint:', g.shortFileName(fn))
             proc = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,

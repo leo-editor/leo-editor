@@ -169,7 +169,7 @@ class BackgroundProcessManager(object):
 
             def callback(data=data):
                 fn = data.fn
-                self.put_log(g.shortFileName(fn))
+                self.put_log('%s: %s' % (kind, g.shortFileName(fn)))
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -184,7 +184,7 @@ class BackgroundProcessManager(object):
             self.process_queue.append(data)
         else:
             # Start the process immediately.
-            self.put_log(g.shortFileName(fn))
+            self.put_log('%s: %s' % (kind, g.shortFileName(fn)))
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,

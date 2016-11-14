@@ -1931,7 +1931,7 @@ def run_pylint(fn, rc,
     # Prints error number.
     # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     args.append(fn)
-    g.trace('args:', args)
+    # g.trace('args:', args)
     if sherlock:
         sherlock = g.SherlockTracer(
                 dots=dots,
