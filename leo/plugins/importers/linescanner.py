@@ -334,7 +334,7 @@ class Importer(object):
                         'FAIL2: context: %r new_context: %r\n%s\n%s' % (
                             context, new_context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161112185942.1: *4* i.general_scan_line
+    #@+node:ekr.20161112185942.1: *4* i.general_scan_line & i.get_table
     # Used by C_Importer.
     def general_scan_line(self, s, prev_state):
         '''A generalized line scanner.'''
@@ -344,13 +344,18 @@ class Importer(object):
         while i < len(s):
             progress = i
             table = self.get_table(context)
-            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            data = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s, bs_nl = data
+            ###
+            # parens += delta_p
+            # squares += delta_s
+            # use bs_nl?
             curlies += delta_c
             assert progress < i
         new_state = self.ScanState(context, curlies)
         if trace: g.trace(new_state, repr(s))
         return new_state
-    #@+node:ekr.20161113135037.1: *5* i.get_table (for I.general_scan_line)
+    #@+node:ekr.20161113135037.1: *5* i.get_table
     #@@nobeautify
     cached_scan_tables = {}
 
@@ -831,6 +836,8 @@ class Importer(object):
         '''
         i.scan_table: Scan the given table in the given context.
         May be overridden in subclasses, but most importers will use this code.
+        
+        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
         trace = False and not g.unitTesting
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
@@ -850,10 +857,11 @@ class Importer(object):
                         i += (len(pattern) + 1)
                     else:
                         i += len(pattern)
-                    return new_context, i, delta_c, delta_p, delta_s
+                    bs_nl = pattern == '\\\n'
+                    return new_context, i, delta_c, delta_p, delta_s, bs_nl
         # No match: stay in present state. All deltas are zero.
         if trace: g.trace('NO MATCH: i: %s ch: %r context: %5r line: %r' % (i, s[i], context, s))
-        return context, i+1, 0, 0, 0
+        return context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):

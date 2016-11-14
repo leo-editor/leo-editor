@@ -143,7 +143,7 @@ class CS_Importer(Importer):
 
 
     #@+node:ekr.20161110044110.1: *3* coffee.V2
-    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & get_table
+    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & coffee.get_table
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -159,8 +159,13 @@ class CS_Importer(Importer):
         while i < len(s):
             progress = i
             table = self.get_table(context)
-            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
-            # curlies, parens, squares = curlies + delta_c, parents + delta_p, squares + delta_s
+            data = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s, bs_nl = data
+            ###
+            # curlies += delta_c
+            # parens += delta_p
+            # squares += delta_s
+            # use bs_nl?
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)

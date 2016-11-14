@@ -76,7 +76,7 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_table
+    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & perl_i.get_table
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -86,9 +86,13 @@ class Perl_Importer(Importer):
         while i < len(s):
             progress = i
             table = self.get_table(context)
-            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            data = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s, bs_nl = data
             curlies += delta_c
             parens += delta_p
+            ###
+            # squares += delta_s
+            # use bs_nl?
             assert progress < i, (i, repr(s))
         if trace:
             g.trace(self, s.rstrip())

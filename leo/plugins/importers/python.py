@@ -394,7 +394,7 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line (test)
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & py_i.get_table (passed)
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -411,7 +411,13 @@ class Py_Importer(Importer):
         while i < len(s):
             progress = i
             table = self.get_table(context)
-            context, i, delta_c, delta_p, delta_s = self.scan_table(context, i, s, table)
+            data = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s, bs_nl = data
+            ###
+            # curlies += delta_c
+            # parens += delta_p
+            # squares += delta_s
+            # use bs_nl?
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return Python_State(context, indent, starts=starts, ws=ws)
