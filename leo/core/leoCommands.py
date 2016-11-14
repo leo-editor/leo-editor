@@ -2283,9 +2283,9 @@ class Commands(object):
         if g.app.syntax_error_files and c.config.getBool('syntax-error-popup', default=False):
             aList = sorted(set(g.app.syntax_error_files))
             g.app.syntax_error_files = []
-            message = 'Syntax error in:\n\n%s' % '\n'.join(aList)
+            message = 'Python errors in:\n\n%s' % '\n'.join(aList)
             g.app.gui.runAskOkDialog(c,
-                title='Syntax Error',
+                title='Python Errors',
                 message=message,
                 text="Ok")
     #@+node:ekr.20110228162720.13980: *6* c.saveAll

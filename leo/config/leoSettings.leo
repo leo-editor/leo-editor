@@ -11037,7 +11037,7 @@ QFrame#gutter {
 <t tx="ekr.20150703053956.2">@LightSteelBlue1</t>
 <t tx="ekr.20150703053956.3"># black</t>
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
-<t tx="ekr.20150710084507.1">True: raise a dialog warning about syntax errors when writing files.</t>
+<t tx="ekr.20150710084507.1">True: raise a dialog warning about Python errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
 <t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>

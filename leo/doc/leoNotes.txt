@@ -6435,6 +6435,7 @@ class PyflakesCommand(object):
 def check_all(self, paths):
     '''Run pyflakes on fn.'''
     from pyflakes import api, reporter
+    total_errors = 0
     for fn in sorted(paths):
         # Report the file name.
         sfn = g.shortFileName(fn)
@@ -6446,9 +6447,12 @@ def check_all(self, paths):
             warningStream=sys.stderr,
             )
         errors = api.check(s, sfn, r)
+        total_errors += errors
         if False and errors:
             # Annoying.
             print('%s error%s in %s' % (errors, g.plural(errors), fn))
+    ok = not total_errors
+    return ok
 .. @+node:ekr.20160923163813.16: *6* pyflakes.find
 def find(self, p):
     '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
@@ -6494,9 +6498,10 @@ def run(self, p=None):
                         break
     paths = list(set(self.seen))
     if paths:
-        self.check_all(paths)
-    g.es_print('pyflakes: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
+        ok = self.check_all(paths)
+        g.es_print('pyflakes: %s file%s in %s' % (
+            len(paths), g.plural(paths), g.timeSince(t1)))
+    return ok
 .. @+node:ekr.20160923163813.7: *4* @@button test-flake8 @key=Ctrl-7
 # g.cls()
 import flake8
@@ -6647,6 +6652,7 @@ class PyflakesCommand(object):
 def check_all(self, paths):
     '''Run pyflakes on fn.'''
     from pyflakes import api, reporter
+    total_errors = 0
     for fn in sorted(paths):
         # Report the file name.
         sfn = g.shortFileName(fn)
@@ -6658,9 +6664,12 @@ def check_all(self, paths):
             warningStream=sys.stderr,
             )
         errors = api.check(s, sfn, r)
+        total_errors += errors
         if False and errors:
             # Annoying.
             print('%s error%s in %s' % (errors, g.plural(errors), fn))
+    ok = not total_errors
+    return ok
 .. @+node:ekr.20160923163813.16: *6* pyflakes.find
 def find(self, p):
     '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
@@ -6706,9 +6715,10 @@ def run(self, p=None):
                         break
     paths = list(set(self.seen))
     if paths:
-        self.check_all(paths)
-    g.es_print('pyflakes: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
+        ok = self.check_all(paths)
+        g.es_print('pyflakes: %s file%s in %s' % (
+            len(paths), g.plural(paths), g.timeSince(t1)))
+    return ok
 .. @+node:ekr.20160923163813.18: *4* flake8 command
 @g.command('flake8')
 def flake8_command(event):

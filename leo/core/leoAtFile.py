@@ -4223,6 +4223,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, root, s=None, targetFn=None):
+        '''Perform python-related checks on root.'''
         at = self
         if not targetFn:
             targetFn = at.targetFileName
@@ -4234,10 +4235,14 @@ class AtFile(object):
             ok = at.checkPythonSyntax(root, s)
             # Syntax checking catches most indentation problems.
             # if ok: at.tabNannyNode(root,s)
-            if not ok:
+            # if not ok:
+                # g.app.syntax_error_files.append(g.shortFileName(targetFn))
+            if at.runPyFlakesOnWrite and not g.unitTesting:
+                ok2 = self.runPyflakes(root)
+            else:
+                ok2 = True
+            if not ok or not ok2:
                 g.app.syntax_error_files.append(g.shortFileName(targetFn))
-            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
-                self.runPyflakes(root)
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p, body, supress=False):
         at = self
@@ -4281,7 +4286,8 @@ class AtFile(object):
         try:
             import leo.commands.checkerCommands as checkerCommands
             if checkerCommands.pyflakes:
-                checkerCommands.PyflakesCommand(self.c).run(p=root)
+                ok = checkerCommands.PyflakesCommand(self.c).run(p=root)
+                return ok
         except Exception:
             g.es_exception()
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode
@@ -4814,7 +4820,6 @@ class AtFile(object):
                 return False
             else:
                 # A mismatch.
-                at.checkPythonCode(root)
                 #@+<< report if the files differ only in line endings >>
                 #@+node:ekr.20041019090322: *6* << report if the files differ only in line endings >>
                 if (
@@ -4839,6 +4844,8 @@ class AtFile(object):
                     if root:
                         root.setDirty() # New in 4.4.8.
                         root.setOrphan() # 2010/10/22.
+                at.checkPythonCode(root)
+                    # Bug fix: check *after* writing the file.
                 at.fileChangedFlag = ok
                 return ok
         else:
@@ -4858,6 +4865,7 @@ class AtFile(object):
                     root.setOrphan() # 2010/10/22.
             # No original file to change. Return value tested by a unit test.
             at.fileChangedFlag = False
+            at.checkPythonCode(root)
             return False
     #@+node:ekr.20041005105605.216: *5* at.warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.

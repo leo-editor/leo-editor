@@ -186,40 +186,27 @@ class PyflakesCommand(object):
     #@+others
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, log_flag, paths):
-        '''
-        Run pyflakes on all files in paths.
-        If log_flag is True, write an entry to the log.
-        '''
+        '''Run pyflakes on all files in paths.'''
         from pyflakes import api, reporter
         total_errors = 0
         for fn in sorted(paths):
             # Report the file name.
             sfn = g.shortFileName(fn)
             s = g.readFileIntoEncodedString(fn, silent=False)
-            if not s.strip():
-                return
-            if 1:
+            if s.strip():
                 g.es_print('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
                 class LogStream:
                     def write(self, s):
                         if s.strip():
                             g.es_print(s)
-
+        
                 r = reporter.Reporter(
                     errorStream=LogStream(),
                     warningStream=LogStream(),
                 )
-            else:
-                r = reporter.Reporter(
-                    errorStream=sys.stderr,
-                    warningStream=sys.stderr,
-                    )
-            errors = api.check(s, sfn, r)
-            if False and errors:
-                # Annoying.
-                print('%s error%s in %s' % (errors, g.plural(errors), fn))
-            total_errors += errors
+                errors = api.check(s, sfn, r)
+                total_errors += errors
         return total_errors
     #@+node:ekr.20160516072613.3: *3* pyflakes.find
     def find(self, p):
@@ -267,8 +254,7 @@ class PyflakesCommand(object):
                             break
         paths = list(set(self.seen))
         if paths:
-            # All these messages are important for clarity.
-            # g.es_print('Pyflakes...')
+            # These messages are important for clarity.
             log_flag = not force
             total_errors = self.check_all(log_flag, paths)
             if total_errors > 0:
@@ -279,6 +265,10 @@ class PyflakesCommand(object):
                     len(paths), g.plural(paths), g.timeSince(t1)))
             else:
                 g.es_print('OK: pyflakes')
+            ok = total_errors == 0
+        else:
+            ok = True
+        return ok
     #@-others
 #@+node:ekr.20150514125218.8: ** class PylintCommand
 class PylintCommand(object):
