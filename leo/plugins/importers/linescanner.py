@@ -832,14 +832,18 @@ class Importer(object):
         i.scan_table: Scan the given table in the given context.
         May be overridden in subclasses, but most importers will use this code.
         '''
+        trace = False and not g.unitTesting
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
             if self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
                 assert pattern, pattern
-                if context == '' or context == pattern:
+                if pattern.startswith('\\') or context == '' or context == pattern:
                     new_context = out_context if context == '' else in_context
                     assert new_context is not None, (pattern, repr(s))
+                    if trace: g.trace(
+                        '   MATCH: i: %s ch: %r kind: %s pattern: %r context: %5r new_context: %5r line: %r' % (
+                        i, s[i], kind, pattern, context, new_context, s))
                     if kind == 'all':
                         i = len(s)
                     elif kind == 'len+1':
@@ -848,6 +852,7 @@ class Importer(object):
                         i += len(pattern)
                     return new_context, i, delta_c, delta_p, delta_s
         # No match: stay in present state. All deltas are zero.
+        if trace: g.trace('NO MATCH: i: %s ch: %r context: %5r line: %r' % (i, s[i], context, s))
         return context, i+1, 0, 0, 0
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
