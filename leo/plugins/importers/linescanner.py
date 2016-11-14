@@ -125,7 +125,6 @@ class Importer(object):
         # self.at_auto_separate_non_def_nodes = False
 
         # State vars.
-        ### self.context_stack = []
         self.errors = 0
         ic.errors = 0 # Required.
         self.parse_body = False
