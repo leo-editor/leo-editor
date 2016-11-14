@@ -439,13 +439,13 @@ class Py_Importer(Importer):
                 # deltas: the change to the indicated counts.  Always zero when inside a context.
 
                 # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
-                ('len+1', '\\',    context,   context,  0,       0,       0),
-                ('len',   '"""',   '"""',     context,  0,       0,       0),
-                ('len',   "'''",   "'''",     context,  0,       0,       0),
+                ('len',   '"""',   '"""',     '',       0,       0,       0),
+                ('len',   "'''",   "'''",     '',       0,       0,       0),
                 ('all',   '#',     '',        '',       0,       0,       0),
                 ('len',   '"',     '"',       '',       0,       0,       0),
                 ('len',   "'",     "'",       '',       0,       0,       0),
+                ('len',   '\\\n',  context,   context,  0,       0,       0),
+                ('len+1', '\\',    context,   context,  0,       0,       0),
                 ('len',   '{',     context,   context,  d(1),    0,       0),
                 ('len',   '}',     context,   context,  d(-1),   0,       0),
                 ('len',   '(',     context,   context,  0,       d(1),    0),
@@ -470,7 +470,7 @@ class Python_State:
         
     def __repr__(self):
         '''Py_State.__repr__'''
-        return '<PyState %r indent: %s starts: %s ws: %s>' % (
+        return '<PyState %7r indent: %s starts: %s ws: %s>' % (
             self.context, self.indent, int(self.starts), int(self.ws))
     
     __str__ = __repr__

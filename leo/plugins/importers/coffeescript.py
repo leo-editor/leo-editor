@@ -188,7 +188,7 @@ class CS_Importer(Importer):
                 # deltas: the change to the indicated counts.  Always zero when inside a context.
 
                 # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len',   '\\\n',  'bs-nl',   context,  0,       0,       0),
+                ('len',   '\\\n',  context,   context,  0,       0,       0),
                 ('len+1', '\\',    context,   context,  0,       0,       0),
                 # Coffeedoc-style docstring.
                 ('len',   '###',   '###',     '',       0,       0,       0),

@@ -289,6 +289,50 @@ class Importer(object):
     def v2_scan_line(self, s, prev_state):
         '''To be overridden by subclasses.'''
         assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
+    #@+node:ekr.20161114025200.1: *3* i.Tests
+    #@+node:ekr.20161114024119.1: *4* i.test_scan_state
+    def test_scan_state(self, tests, State):
+        '''
+        Test a state scanner.
+        `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
+        
+        A typical @command test:
+            
+            if c.isChanged(): c.save()
+            < < imp.reload importers.linescanner and importers.python > >
+            importer = py.Py_Importer(c.importCommands, atAuto=True)
+            importer.test_scan_state(tests, Python_State)
+        '''
+        # g.cls()
+        assert self.comment_delim == '#', self.comment_delim
+        trace_contexts = False
+        trace_states = True
+        table = self.get_table(context='')
+        contexts = self.all_contexts(table)
+        if trace_contexts: print('\ncontexts:'+' '.join([repr(z) for z in contexts]))
+        for bunch in tests:
+            assert bunch.line is not None
+            line = bunch.line
+            ctx = getattr(bunch, 'ctx', None)
+            print('===== ctx: %r line: %r' % (ctx, line))
+            if ctx: # Test one transition.
+                ctx_in, ctx_out = ctx
+                prev_state =  State(ctx_in, 0)
+                new_state = self.v2_scan_line(line, prev_state)
+                new_context = new_state.context
+                if trace_states: print('prev: %s\n new: %s' % (prev_state, new_state))
+                assert new_context == ctx_out, (
+                    'FAIL1: context: %r new_context: %r ctx_out: %r\n%s\n%s' % (
+                        ctx_in, new_context, ctx_out, prev_state, new_state))
+            else: # Test all transitions.
+                for context in contexts:
+                    prev_state =  State(context, 0)
+                    new_state = self.v2_scan_line(line, prev_state)
+                    new_context = new_state.context
+                    if trace_states: print('prev: %s\n new: %s' % (prev_state, new_state))
+                    assert new_context == context, (
+                        'FAIL2: context: %r new_context: %r\n%s\n%s' % (
+                            context, new_context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.Top level
     #@+node:ekr.20161112185942.1: *4* i.general_scan_line
     # Used by C_Importer.
@@ -792,8 +836,9 @@ class Importer(object):
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
             if self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
-                if not context or context == pattern:
-                    new_context = in_context if context else out_context
+                assert pattern, pattern
+                if context == '' or context == pattern:
+                    new_context = out_context if context == '' else in_context
                     assert new_context is not None, (pattern, repr(s))
                     if kind == 'all':
                         i = len(s)
@@ -803,8 +848,18 @@ class Importer(object):
                         i += len(pattern)
                     return new_context, i, delta_c, delta_p, delta_s
         # No match: stay in present state. All deltas are zero.
-        return '', i+1, 0, 0, 0
+        return context, i+1, 0, 0, 0
     #@+node:ekr.20161108131153.15: *3* i.Utils
+    #@+node:ekr.20161114012522.1: *4* i.all_contexts
+    def all_contexts(self, table):
+        '''
+        Return a list of all contexts contained in the third column of the given table.
+        This is a support method for unit tests.
+        '''
+        contexts = set()
+        for data in table:
+            contexts.add(data[2])
+        return sorted(contexts)
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
