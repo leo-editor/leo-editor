@@ -194,12 +194,12 @@ class PyflakesCommand(object):
             sfn = g.shortFileName(fn)
             s = g.readFileIntoEncodedString(fn, silent=False)
             if s.strip():
-                g.es_print('Pyflakes: %s' % sfn)
+                g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
                 class LogStream:
                     def write(self, s):
                         if s.strip():
-                            g.es_print(s)
+                            g.es(s)
         
                 r = reporter.Reporter(
                     errorStream=LogStream(),
@@ -258,13 +258,13 @@ class PyflakesCommand(object):
             log_flag = not force
             total_errors = self.check_all(log_flag, paths)
             if total_errors > 0:
-                g.es_print('ERROR: pyflakes: %s error%s' % (
+                g.es('ERROR: pyflakes: %s error%s' % (
                     total_errors, g.plural(total_errors)))
             elif force:
-                g.es_print('OK: pyflakes: %s file%s in %s' % (
+                g.es('OK: pyflakes: %s file%s in %s' % (
                     len(paths), g.plural(paths), g.timeSince(t1)))
             else:
-                g.es_print('OK: pyflakes')
+                g.es('OK: pyflakes')
             ok = total_errors == 0
         else:
             ok = True
