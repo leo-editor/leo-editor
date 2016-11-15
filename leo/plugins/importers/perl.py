@@ -76,7 +76,7 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & perl_i.get_table
+    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_table
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -87,56 +87,45 @@ class Perl_Importer(Importer):
             progress = i
             table = self.get_table(context)
             data = self.scan_table(context, i, s, table)
+            ### Or: new_state.update(date)
             context, i, delta_c, delta_p, delta_s, bs_nl = data
             curlies += delta_c
             parens += delta_p
-            ###
-            # squares += delta_s
-            # use bs_nl?
             assert progress < i, (i, repr(s))
         if trace:
             g.trace(self, s.rstrip())
         return Perl_ScanState(context, curlies, parens)
-    #@+node:ekr.20161113140420.1: *4* perl_i.get_table
+    #@+node:ekr.20161113140420.1: *4* perl_i.get_new_table
     #@@nobeautify
-    cached_scan_tables = {}
 
-    def get_table(self, context):
-        '''
-        Return the state table used by perl.scan_table.
-        None indicates that the pattern will never match when in a state.
-        '''
+    def get_new_table(self, context):
+        '''Return a new perl state table for the given context.'''
         trace = False and not g.unitTesting
-        table = self.cached_scan_tables.get(context)
-        if table:
-            return table
-        else:
         
-            def d(n):
-                return 0 if context else n
-        
-            table = (
-                # in-ctx: the next context when the pattern matches the line *and* the context.
-                # out-ctx:the next context when the pattern matches the line *outside* any context.
-                # deltas: the change to the indicated counts.  Always zero when inside a context.
+        def d(n):
+            return 0 if context else n
 
-                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len+1', '\\',    context,   context,  0,       0,       0),
-                ('all',   '#',     '',        '',       0,       0,       0),
-                ('len',   '"',     '"',       '',       0,       0,       0),
-                ('len',   "'",     "'",       '',       0,       0,       0),
-                ('len',   '=',     '=cut',    context,  0,       0,       0),
-                ('len',   '=cut',  context,   '',       0,       0,       0),
-                ('len',   '{',     context,   context,  d(1),    0,       0),
-                ('len',   '}',     context,   context,  d(-1),   0,       0),
-                ('len',   '(',     context,   context,  0,       d(1),    0),
-                ('len',   ')',     context,   context,  0,       d(-1),   0),
-                ('len',   '[',     context,   context,  0,       0,       d(1)),
-                ('len',   ']',     context,   context,  0,       0,       d(-1)),
-            )
-            self.cached_scan_tables[context] = table
-            if trace: g.trace('created table for general state', context)
-            return table
+        table = (
+            # in-ctx: the next context when the pattern matches the line *and* the context.
+            # out-ctx:the next context when the pattern matches the line *outside* any context.
+            # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            ('all',   '#',     '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   '=',     '=cut',    context,  0,       0,       0),
+            ('len',   '=cut',  context,   '',       0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
+        )
+        if trace: g.trace('created table for general state', (context))
+        return table
     #@-others
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:

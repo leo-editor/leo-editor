@@ -101,8 +101,8 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-        single_delim, junk1, junk2 = g.set_delims_from_language(self.name)
-        self.comment_delim = single_delim
+        comment_delim, junk1, junk2 = g.set_delims_from_language(self.name)
+        self.comment_delim = comment_delim
 
         # Constants...
         data = g.set_delims_from_language(self.name)
@@ -116,7 +116,7 @@ class Importer(object):
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = c.tab_width # Also set in run()
-        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (single_delim or ''))
+        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (comment_delim or ''))
 
         # Settings...
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
@@ -281,6 +281,60 @@ class Importer(object):
         See perl_i.clean_nodes for an examplle.
         '''
         pass
+    #@+node:ekr.20161115075016.1: *4* i.get_new_table (generalized)
+    #@@nobeautify
+
+    def get_new_table(self, context):
+        '''
+        Return a **general** state table for the given context.
+        
+        This will do for some languages. Subclasses may override...
+        '''
+        trace = False and not g.unitTesting
+        
+        def d(n):
+            return 0 if context else n
+
+        comment, block1, block2 = self.comment_delim, self.block1, self.block2
+            
+        table = (
+            # in-ctx: the next context when the pattern matches the line *and* the context.
+            # out-ctx:the next context when the pattern matches the line *outside* any context.
+            # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            ('all',   comment, '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   block1,  block1,    context,  0,       0,       0),
+            ('len',   block2,  context,   '',       0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
+        )
+        if trace: g.trace('created table for python state', repr(context))
+        return table
+    #@+node:ekr.20161113135037.1: *4* i.get_table
+    #@@nobeautify
+    cached_scan_tables = {}
+
+    def get_table(self, context):
+        '''
+        Return the state table for the given context.
+        
+        This method handles caching.  x.get_new_table returns the actual table.
+        '''
+        table = self.cached_scan_tables.get(context)
+        if table:
+            return table
+        else:
+            table = self.get_new_table(context)
+            self.cached_scan_tables[context] = table
+            return table
     #@+node:ekr.20161108155143.6: *4* i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
@@ -293,7 +347,8 @@ class Importer(object):
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
         '''
-        Test a state scanner.
+        Test x.v2_scan_line or i.general_scan_line.
+
         `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
         
         A typical @command test:
@@ -355,48 +410,6 @@ class Importer(object):
         new_state = self.ScanState(context, curlies)
         if trace: g.trace(new_state, repr(s))
         return new_state
-    #@+node:ekr.20161113135037.1: *5* i.get_table
-    #@@nobeautify
-    cached_scan_tables = {}
-
-    def get_table(self, context):
-        '''
-        Return the state table used by python.scan_table.
-        None indicates that the pattern will never match when in a state.
-        '''
-        trace = False and not g.unitTesting
-        table = self.cached_scan_tables.get(context)
-        if table:
-            return table
-        else:
-        
-            def d(n):
-                return 0 if context else n
-                
-            block1, block2 = self.block1, self.block2
-        
-            table = (
-                # in-ctx: the next context when the pattern matches the line *and* the context.
-                # out-ctx:the next context when the pattern matches the line *outside* any context.
-                # deltas: the change to the indicated counts.  Always zero when inside a context.
-
-                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len+1', '\\',    context,   context,  0,       0,       0),
-                ('all',   '#',     '',        '',       0,       0,       0),
-                ('len',   '"',     '"',       '',       0,       0,       0),
-                ('len',   "'",     "'",       '',       0,       0,       0),
-                ('len',   block1,  block1,    context,  0,       0,       0),
-                ('len',   block2,  context,   '',       0,       0,       0),
-                ('len',   '{',     context,   context,  d(1),    0,       0),
-                ('len',   '}',     context,   context,  d(-1),   0,       0),
-                ('len',   '(',     context,   context,  0,       d(1),    0),
-                ('len',   ')',     context,   context,  0,       d(-1),   0),
-                ('len',   '[',     context,   context,  0,       0,       d(1)),
-                ('len',   ']',     context,   context,  0,       0,       d(-1)),
-            )
-            self.cached_scan_tables[context] = table
-            if trace: g.trace('created table for general state', context)
-            return table
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
@@ -425,7 +438,6 @@ class Importer(object):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and not g.unitTesting # and self.root.h.endswith('-test.py')
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
@@ -433,7 +445,7 @@ class Importer(object):
         # if trace: g.pdb('Entry: %s' % (self.root.h))
         for line in g.splitLines(s):
             # pylint doesn't understand bunches. pylint: disable=no-member
-            bunch = self.scan_next_line(line, prev_state, tail_p, trace)
+            bunch = self.scan_next_line(line, prev_state, tail_p)
             new_state = bunch.new_state
             if bunch.starts_block:
                 tail_p = None
@@ -444,75 +456,7 @@ class Importer(object):
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
-    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, repr(p.v._bodyString)
-        p.v._import_lines = []
-    #@+node:ekr.20161110070826.1: *6* i.scan_next_line
-    def scan_next_line(self, line, prev_state, tail_p, trace):
-        '''
-        Set up the vars and trace.
-        Having this be a separate method is useful while single-stepping.
-        '''
-        new_state = self.v2_scan_line(line, prev_state)
-        starts_block = new_state.v2_starts_block(prev_state)
-        continues_block = new_state.v2_continues_block(prev_state)
-        if trace:
-            g.trace('%s tail: %s +: %5s =: %5s %r' % (
-                new_state,
-                bool(tail_p),
-                int(starts_block),
-                int(continues_block),
-                line),
-            )
-        return g.Bunch(
-            continues_block=continues_block,
-            new_state = new_state,
-            starts_block = starts_block,
-        )
-    #@+node:ekr.20161110042847.1: *6* i.Start/end block
-    #@+node:ekr.20161108160409.3: *7* i.end_block & helper
-    def end_block(self, line, new_state, stack):
-        # The block is ending. Add tail lines until the start of the next block.
-        is_python = self.name == 'python'
-        p = stack[-1].p # Put the closing line in *this* node.
-        if is_python or self.gen_refs:
-            tail_p = None
-        else:
-            tail_p = p # Put trailing lines in this node.
-        if is_python:
-            self.end_python_block(line, new_state, stack)
-        else:
-            self.add_line(p, line)
-            self.cut_stack(new_state, stack)
-        ### This doesn't work
-        # if not self.gen_refs:
-        #    tail_p = stack[-1].p
-        return tail_p
-    #@+node:ekr.20161108160409.4: *8* i.ends_python
-    def end_python_block(self, line, new_state, stack):
-        '''Handle lines at a lower level.'''
-        # Unlike other languages, *this* line not only *ends*
-        # a block, but *starts* a block.
-        self.cut_stack(new_state, stack)
-        target = stack[-1]
-        h = self.clean_headline(line)
-        child = self.v2_create_child_node(target.p.parent(), line, h)
-        stack.pop()
-            ### Is this where the line got lost?
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161108160409.6: *7* i.start_new_block
-    def start_new_block(self, line, new_state, stack):
-        '''Create a child node and update the stack.'''
-        target=stack[-1]
-        # Insert the reference in *this* node.
-        h = self.v2_gen_ref(line, target.p, target)
-        # Create a new child and associated target.
-        child = self.v2_create_child_node(target.p, line, h)
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161110042938.1: *6* i.Utils for v2_gen_lines
-    #@+node:ekr.20161108160409.2: *7* i.cut_stack
+    #@+node:ekr.20161108160409.2: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and not g.unitTesting and self.root.h.endswith('.py')
@@ -537,7 +481,73 @@ class Importer(object):
                 break
         assert stack # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161108160409.7: *7* i.v2_create_child_node
+    #@+node:ekr.20161108160409.3: *6* i.end_block (sets_tail_p)
+    def end_block(self, line, new_state, stack):
+        # The block is ending. Add tail lines until the start of the next block.
+        is_python = self.name == 'python'
+        p = stack[-1].p # Put the closing line in *this* node.
+        ###
+        # if is_python or self.gen_refs:
+            # tail_p = None
+        # else:
+            # tail_p = p # Put trailing lines in this node.
+        if is_python:
+            tail_p = self.end_python_block(line, new_state, p, stack)
+        else:
+            self.add_line(p, line)
+            self.cut_stack(new_state, stack)
+            tail_p = None if self.gen_refs else p
+        ### This doesn't work
+        # if not self.gen_refs:
+        #    tail_p = stack[-1].p
+        return tail_p
+    #@+node:ekr.20161108160409.4: *6* i.end_python_block
+    def end_python_block(self, line, new_state, p, stack):
+        '''
+        Handle lines at a lower level.
+        '''
+        assert not self.is_ws_line(line)
+        self.cut_stack(new_state, stack)
+        target = stack[-1]
+        h = self.clean_headline(line)
+        child = self.v2_create_child_node(target.p.parent(), line, h)
+        stack.pop()
+            ### Is this where the line got lost?
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        assert not p.v._bodyString, repr(p.v._bodyString)
+        p.v._import_lines = []
+    #@+node:ekr.20161110070826.1: *6* i.scan_next_line
+    def scan_next_line(self, line, prev_state, tail_p):
+        '''
+        Set up the vars and trace.
+        Having this be a separate method is useful while single-stepping.
+        '''
+        ### trace = False and not g.unitTesting
+        trace = False and g.unitTesting and self.root.h.endswith('.py')
+        new_state = self.v2_scan_line(line, prev_state)
+        starts_block = new_state.v2_starts_block(prev_state)
+        continues_block = new_state.v2_continues_block(prev_state)
+        if trace:
+            g.trace('%r\n%s\nstarts: %5s continues: %5s tail: %s\n' % (
+                line, new_state, starts_block, continues_block, tail_p and tail_p.h))
+        return g.Bunch(
+            continues_block=continues_block,
+            new_state = new_state,
+            starts_block = starts_block,
+        )
+    #@+node:ekr.20161108160409.6: *6* i.start_new_block
+    def start_new_block(self, line, new_state, stack):
+        '''Create a child node and update the stack.'''
+        target=stack[-1]
+        # Insert the reference in *this* node.
+        h = self.v2_gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.v2_create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
         trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
@@ -549,7 +559,7 @@ class Importer(object):
         self.add_line(p, body)
         p.h = headline
         return p
-    #@+node:ekr.20161108160409.8: *7* i.v2_gen_ref
+    #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous

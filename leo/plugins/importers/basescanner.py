@@ -2356,7 +2356,7 @@ class LineScanner(object):
         '''Save the base state on the stack and enter a new base state.'''
         self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
-    #@+node:ekr.20161027115813.7: *4* scanner.scan_line
+    #@+node:ekr.20161027115813.7: *4* scanner.scan_line (V2)
     def scan_line(self, s):
         '''
         A *typical* line scanner. Subclasses should redefine this method.

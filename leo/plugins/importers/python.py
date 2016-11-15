@@ -393,113 +393,136 @@ class Py_Importer(Importer):
     #@+node:ekr.20161104143211.4: *4* py_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & py_i.get_table (passed)
+        return Python_State() # Python_State('', 0)
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        # Init context, indent and ws.
-        context, indent = prev_state.context, prev_state.indent
-        was_bs_nl = context == 'bs-nl'
-        starts = bool(self.starts_pattern.match(s)) and not was_bs_nl
-        ws = self.is_ws_line(s) and not was_bs_nl
-        if was_bs_nl:
-            context = '' # Don't change indent.
-        else:
-            indent = self.get_int_lws(s)
+        trace = False and g.unitTesting ### and not g.unitTesting
+        context = prev_state.context
+        new_state = self.new_state(s, prev_state)
         i = 0
         while i < len(s):
             progress = i
             table = self.get_table(context)
             data = self.scan_table(context, i, s, table)
-            context, i, delta_c, delta_p, delta_s, bs_nl = data
-            ###
-            # curlies += delta_c
-            # parens += delta_p
-            # squares += delta_s
-            # use bs_nl?
+            i = new_state.update(data)
             assert progress < i
-        if trace: g.trace(self, s.rstrip())
-        return Python_State(context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161113082348.1: *5* py_i.get_table
+        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
+        return new_state
+    #@+node:ekr.20161113082348.1: *5* py_i.get_new_table
     #@@nobeautify
-    cached_scan_tables = {}
 
-    def get_table(self, context):
-        '''
-        Return the state table used by python.scan_table.
-        None indicates that the pattern will never match when in a state.
-        '''
+    def get_new_table(self, context):
+        '''Return a new python state table for the given context.'''
         trace = False and not g.unitTesting
-        table = self.cached_scan_tables.get(context)
-        if table:
-            return table
-        else:
-        
-            def d(n):
-                return 0 if context else n
-        
-            table = (
-                # in-ctx: the next context when the pattern matches the line *and* the context.
-                # out-ctx:the next context when the pattern matches the line *outside* any context.
-                # deltas: the change to the indicated counts.  Always zero when inside a context.
 
-                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len',   '"""',   '"""',     '',       0,       0,       0),
-                ('len',   "'''",   "'''",     '',       0,       0,       0),
-                ('all',   '#',     '',        '',       0,       0,       0),
-                ('len',   '"',     '"',       '',       0,       0,       0),
-                ('len',   "'",     "'",       '',       0,       0,       0),
-                ('len',   '\\\n',  context,   context,  0,       0,       0),
-                ('len+1', '\\',    context,   context,  0,       0,       0),
-                ('len',   '{',     context,   context,  d(1),    0,       0),
-                ('len',   '}',     context,   context,  d(-1),   0,       0),
-                ('len',   '(',     context,   context,  0,       d(1),    0),
-                ('len',   ')',     context,   context,  0,       d(-1),   0),
-                ('len',   '[',     context,   context,  0,       0,       d(1)),
-                ('len',   ']',     context,   context,  0,       0,       d(-1)),
-            )
-            self.cached_scan_tables[context] = table
-            if trace: g.trace('created table for python state', context)
-            return table
+        def d(n):
+            return 0 if context else n
+
+        table = (
+            # in-ctx: the next context when the pattern matches the line *and* the context.
+            # out-ctx:the next context when the pattern matches the line *outside* any context.
+            # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+            ('len',   '"""',   '"""',     '',       0,       0,       0),
+            ('len',   "'''",   "'''",     '',       0,       0,       0),
+            ('all',   '#',     '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   '\\\n',  context,   context,  0,       0,       0),
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
+        )
+        if trace: g.trace('created table for python state', repr(context))
+        return table
+    #@+node:ekr.20161114165644.1: *5* py_i.new_state
+    def new_state(self, s, prev_state):
+        '''Init a new state from the previous state.'''
+        # Create a new state with default value for everything.
+        new_state = Python_State()
+        # Copy the counts.
+        new_state.curlies = prev_state.curlies
+        new_state.parens = prev_state.parens
+        new_state.squares = prev_state.parens
+        # Set the indent.
+        ws = self.is_ws_line(s)
+        if ws or prev_state.bs_nl:
+            # Essential for __eq__ operator to work properly.
+            new_state.indent = prev_state.indent
+        else:
+            new_state.indent = self.get_int_lws(s)
+        # Set the starts and ws flags:
+        if prev_state.bs_nl:
+            self.starts = self.ws = False
+        else:
+            new_state.starts = bool(self.starts_pattern.match(s))
+            new_state.ws = ws
+        return new_state
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State
 class Python_State:
     '''A class representing the state of the v2 scan.'''
 
-    def __init__(self, context, indent, starts=False, ws=False):
-        '''Ctor for the Python_State class.'''
-        self.context = context
-        self.indent = indent
-        self.starts = starts
-        self.ws = ws # A bool: True if a whitespace line, possibly ending in a comment.
-        
-    def __repr__(self):
-        '''Py_State.__repr__'''
-        return '<PyState %7r indent: %s starts: %s ws: %s>' % (
-            self.context, self.indent, int(self.starts), int(self.ws))
+    def __init__(self):
     
-    __str__ = __repr__
+        '''Ctor for the Python_State class.'''
+        self.bs_nl = self.starts = self.ws = False
+        self.context = ''
+        self.curlies = self.indent = self.parens = self.squares = 0
 
     #@+others
+    #@+node:ekr.20161114152246.1: *4* py_state.__repr__
+    def __repr__(self):
+        '''Py_State.__repr__'''
+        return '<PyState %7r indent: %s counts: %s{, %s(, %s[, starts: %5s ws: %5s>' % (
+            self.context, self.indent,
+            self.curlies, self.parens, self.squares,
+            self.starts, self.ws,
+        )
+
+    __str__ = __repr__
     #@+node:ekr.20161105100227.3: *4* py_state.comparisons
+    def in_context(self):
+        '''True if in a special context.'''
+        return self.context or self.curlies > 0 or self.parens > 0 or self.squares > 0 or self.bs_nl
+        
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
-        return self.context or self.indent == other.indent
+        return self.in_context() or self.indent == other.indent
 
     def __lt__(self, other):
         '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.indent < other.indent
+        return not self.in_context() and self.indent < other.indent
 
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
-        return not self.context and self.indent > other.indent
+        return not self.in_context() and self.indent > other.indent
 
     def __ne__(self, other): return not self.__eq__(other)
 
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161114164452.1: *4* py_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        self.parens += delta_p
+        self.squares += delta_s
+        return i
+
     #@+node:ekr.20161105042258.1: *4* py_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
@@ -509,11 +532,11 @@ class Python_State:
             prev_state.starts = False
             return True
         else:
-            return self == prev_state or self.ws
+            return self == prev_state or self.in_context() or self.ws
 
     def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and self.starts and self >= prev_state
+        '''Return True if the just-scanned line starts an **inner** block.'''
+        return not self.in_context() and self.starts and self >= prev_state
     #@-others
 #@-others
 importer_dict = {

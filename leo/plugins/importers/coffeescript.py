@@ -143,7 +143,43 @@ class CS_Importer(Importer):
 
 
     #@+node:ekr.20161110044110.1: *3* coffee.V2
-    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line & coffee.get_table
+    #@+node:ekr.20161113064226.1: *4* coffee.get_new_table
+    #@@nobeautify
+
+    def get_new_table(self, context):
+        '''Return a new coffeescript state table for the given context.'''
+        trace = False and not g.unitTesting
+
+        def d(n):
+            return 0 if context else n
+
+        table = (
+            # in-ctx: the next context when the pattern matches the line *and* the context.
+            # out-ctx:the next context when the pattern matches the line *outside* any context.
+            # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+            ('len',   '\\\n',  context,   context,  0,       0,       0),
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            # Coffeedoc-style docstring.
+            ('len',   '###',   '###',     '',       0,       0,       0),
+            ('all',   '#',     '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
+        )
+        if trace: g.trace('created table for coffescript state', repr(context))
+        return table
+    #@+node:ekr.20161110044000.2: *4* coffee.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return CS_State('', 0)
+    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -169,51 +205,6 @@ class CS_Importer(Importer):
             assert progress < i
         if trace: g.trace(self, s.rstrip())
         return CS_State(context, indent, starts=starts, ws=ws)
-    #@+node:ekr.20161113064226.1: *5* coffee.get_table
-    #@@nobeautify
-    cached_scan_tables = {}
-
-    def get_table(self, context):
-        '''
-        Return the state table used by coffee.scan_table.
-        None indicates that the pattern will never match when in a state.
-        '''
-        trace = False and not g.unitTesting
-        table = self.cached_scan_tables.get(context)
-        if table:
-            return table
-        else:
-        
-            def d(n):
-                return 0 if context else n
-        
-            table = (
-                # in-ctx: the next context when the pattern matches the line *and* the context.
-                # out-ctx:the next context when the pattern matches the line *outside* any context.
-                # deltas: the change to the indicated counts.  Always zero when inside a context.
-
-                # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-                ('len',   '\\\n',  context,   context,  0,       0,       0),
-                ('len+1', '\\',    context,   context,  0,       0,       0),
-                # Coffeedoc-style docstring.
-                ('len',   '###',   '###',     '',       0,       0,       0),
-                ('all',   '#',     '',        '',       0,       0,       0),
-                ('len',   '"',     '"',       '',       0,       0,       0),
-                ('len',   "'",     "'",       '',       0,       0,       0),
-                ('len',   '{',     context,   context,  d(1),    0,       0),
-                ('len',   '}',     context,   context,  d(-1),   0,       0),
-                ('len',   '(',     context,   context,  0,       d(1),    0),
-                ('len',   ')',     context,   context,  0,       d(-1),   0),
-                ('len',   '[',     context,   context,  0,       0,       d(1)),
-                ('len',   ']',     context,   context,  0,       0,       d(-1)),
-            )
-            self.cached_scan_tables[context] = table
-            if trace: g.trace('created table for coffescript state', context)
-            return table
-    #@+node:ekr.20161110044000.2: *4* coffee.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return CS_State('', 0)
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_State
 class CS_State:
