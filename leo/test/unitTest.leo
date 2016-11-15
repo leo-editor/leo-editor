@@ -1241,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
 marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
@@ -1385,9 +1385,13 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161115063144.2"><vh>@@test python nested class</vh></v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115084500.1"><vh>Passed</vh>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
+<v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+</v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
@@ -1475,6 +1479,7 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 </v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20161115063144.34"></v>
+<v t="ekr.20161115092708.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7985,7 +7990,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="12">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -15967,16 +15972,6 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
 
 </t>
-<t tx="ekr.20161115063144.2">s = '''\
-NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-      's': 'http://www.w3.org/2000/svg',
-      'xlink' : 'http://www.w3.org/1999/xlink'}
-
-tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20161115063144.20">@tabwidth -4
     # Required when running unit tests externally.
 
@@ -16685,6 +16680,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
 # Leo bug 603720
 # Within the docstring we must change '\' to '\\'
+### To do: use r''' instead of doubling backslashes.
 s = '''\
 def foo():
     s = \\
@@ -16699,17 +16695,15 @@ class bar:
 foo()
 '''
 
-showTree = False
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
-tree = c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
-
-if showTree:
-    c.redraw_now()
-    foo = g.findNodeInTree(c,p,'foo')
-    assert foo
-    s = "file('/tmp/script', 'w').write(s)"
-    print('foo.b',repr(foo.b))
-    assert foo.b.find(s) &gt; -1,"foo.b: %s" % foo.b
+# if showTree:
+    # c.redraw_now()
+    # foo = g.findNodeInTree(c,p,'foo')
+    # assert foo
+    # s = "file('/tmp/script', 'w').write(s)"
+    # print('foo.b',repr(foo.b))
+    # assert foo.b.find(s) &gt; -1,"foo.b: %s" % foo.b
 </t>
 <t tx="ekr.20161115063144.5">@tabwidth -4
     # Required when running unit tests externally.
@@ -16772,6 +16766,38 @@ class Index:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161115084500.1"></t>
+<t tx="ekr.20161115092708.1"># g.cls()
+import leo.plugins.importers.python as python
+&lt;&lt; define python tests &gt;&gt;
+importer = python.Py_Importer(c.importCommands, atAuto=True)
+importer.test_scan_state(tests, State=python.Python_State)
+</t>
+<t tx="ekr.20161115092708.2"># A list of dictionaries.
+if 0:
+    tests = [
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+    ]
+else:
+    tests = [
+        g.Bunch(line='\n'),
+        g.Bunch(line='\\\n'),
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+        g.Bunch(line="s = '\\''", ctx=('', '')),
+        g.Bunch(line='# comment'),
+        g.Bunch(line='  # comment'),
+        g.Bunch(line='    # comment'),
+        g.Bunch(line='a = "string"'),
+        g.Bunch(line='a = "Continued string', ctx=('', '"')),
+        g.Bunch(line='end of continued string"', ctx=('"', '')),
+        g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+        g.Bunch(line='a = """#', ctx=('', '"""')),
+        g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+        g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+        g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+        g.Bunch(line='a = {[(')
+    ]
 </t>
 </tnodes>
 </leo_file>

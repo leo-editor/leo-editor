@@ -328,12 +328,14 @@ class Importer(object):
         
         This method handles caching.  x.get_new_table returns the actual table.
         '''
-        table = self.cached_scan_tables.get(context)
+        key = '%s..%s' % (self.name, context)
+            # Bug fix: must keep tables separate.
+        table = self.cached_scan_tables.get(key)
         if table:
             return table
         else:
             table = self.get_new_table(context)
-            self.cached_scan_tables[context] = table
+            self.cached_scan_tables[key] = table
             return table
     #@+node:ekr.20161108155143.6: *4* i.initial_state
     def initial_state(self):
@@ -358,7 +360,7 @@ class Importer(object):
             importer = py.Py_Importer(c.importCommands, atAuto=True)
             importer.test_scan_state(tests, Python_State)
         '''
-        # g.cls()
+        trace = False and g.unitTesting
         assert self.comment_delim == '#', self.comment_delim
         trace_contexts = False
         trace_states = True
@@ -369,25 +371,32 @@ class Importer(object):
             assert bunch.line is not None
             line = bunch.line
             ctx = getattr(bunch, 'ctx', None)
-            print('===== ctx: %r line: %r' % (ctx, line))
+            if trace: g.trace('===== ctx: %r line: %r' % (ctx, line))
             if ctx: # Test one transition.
                 ctx_in, ctx_out = ctx
-                prev_state =  State(ctx_in, 0)
+                prev_state =  State()
+                prev_state.context = ctx_in
                 new_state = self.v2_scan_line(line, prev_state)
                 new_context = new_state.context
-                if trace_states: print('prev: %s\n new: %s' % (prev_state, new_state))
+                # if new_context != ctx_out:
+                    # g.trace('contexts', contexts)
+                    # g.trace('table...\n', table)
+                    # g.pdb()
+                if trace and trace_states: g.trace(
+                    '\nprev: %s\n new: %s' % (prev_state, new_state))
                 assert new_context == ctx_out, (
-                    'FAIL1: context: %r new_context: %r ctx_out: %r\n%s\n%s' % (
-                        ctx_in, new_context, ctx_out, prev_state, new_state))
+                    'FAIL1:\nline: %r\ncontext: %r new_context: %r ctx_out: %r\n%s\n%s' % (
+                        line, ctx_in, new_context, ctx_out, prev_state, new_state))
             else: # Test all transitions.
                 for context in contexts:
-                    prev_state =  State(context, 0)
+                    prev_state =  State()
+                    prev_state.context = context
                     new_state = self.v2_scan_line(line, prev_state)
-                    new_context = new_state.context
-                    if trace_states: print('prev: %s\n new: %s' % (prev_state, new_state))
-                    assert new_context == context, (
-                        'FAIL2: context: %r new_context: %r\n%s\n%s' % (
-                            context, new_context, prev_state, new_state))
+                    if trace and trace_states: g.trace(
+                        '\nprev: %s\n new: %s' % (prev_state, new_state))
+                    assert new_state.context == context, (
+                        'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
+                            line, context, new_context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.Top level
     #@+node:ekr.20161112185942.1: *4* i.general_scan_line & i.get_table
     # Used by C_Importer.
@@ -442,15 +451,12 @@ class Importer(object):
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
-        # if trace: g.pdb('Entry: %s' % (self.root.h))
         for line in g.splitLines(s):
-            # pylint doesn't understand bunches. pylint: disable=no-member
-            bunch = self.scan_next_line(line, prev_state, tail_p)
-            new_state = bunch.new_state
-            if bunch.starts_block:
+            new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
+            if starts:
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            elif bunch.continues_block:
+            elif continues:
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
@@ -519,25 +525,24 @@ class Importer(object):
         '''Inject _import_lines into p.v.'''
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
-    #@+node:ekr.20161110070826.1: *6* i.scan_next_line
-    def scan_next_line(self, line, prev_state, tail_p):
+    #@+node:ekr.20161110070826.1: *6* i.gen_next_line *** (helper of v2_gen_line)
+    def gen_next_line(self, line, prev_state, tail_p):
         '''
-        Set up the vars and trace.
-        Having this be a separate method is useful while single-stepping.
+        Set up the vars for i.v2_gen_lines.
+        
+        A separate method is useful while single-stepping.
         '''
         ### trace = False and not g.unitTesting
-        trace = False and g.unitTesting and self.root.h.endswith('.py')
+        trace = False and g.unitTesting # and self.root.h.endswith('.py')
         new_state = self.v2_scan_line(line, prev_state)
         starts_block = new_state.v2_starts_block(prev_state)
         continues_block = new_state.v2_continues_block(prev_state)
         if trace:
-            g.trace('%r\n%s\nstarts: %5s continues: %5s tail: %s\n' % (
-                line, new_state, starts_block, continues_block, tail_p and tail_p.h))
-        return g.Bunch(
-            continues_block=continues_block,
-            new_state = new_state,
-            starts_block = starts_block,
-        )
+            g.trace('%r\n%s\nbs-nl: %5s starts: %5s continues: %5s tail: %s\n' % (
+                line, new_state,
+                getattr(new_state, 'bs_nl', '<no bs-nl attr>'),
+                starts_block, continues_block, tail_p and tail_p.h))
+        return new_state, starts_block, continues_block
     #@+node:ekr.20161108160409.6: *6* i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
@@ -844,22 +849,37 @@ class Importer(object):
     #@+node:ekr.20161113052225.1: *4* i.scan_table
     def scan_table(self, context, i, s, table):
         '''
-        i.scan_table: Scan the given table in the given context.
+        i.scan_table: Scan at position i of s with the give context and table.
         May be overridden in subclasses, but most importers will use this code.
         
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
-        trace = False and not g.unitTesting
+        ### trace = False and not g.unitTesting
+        trace = False and g.unitTesting
+        if trace: g.trace('='*20, repr(context))
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
             if self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
                 assert pattern, pattern
-                if pattern.startswith('\\') or context == '' or context == pattern:
-                    new_context = out_context if context == '' else in_context
+                # Backslash patterns must match in all contexts!
+                if pattern.startswith('\\'):
+                    ok = True
+                    if trace: g.trace(
+                        '----- context: %r in_context: %r out_context: %r' % (
+                            context, in_context, out_context))
+                    new_context = out_context
+                elif context == '':
+                    ok = True
+                    new_context = out_context
+                else:
+                    ok = context == pattern
+                    new_context = in_context
+                if ok:
                     assert new_context is not None, (pattern, repr(s))
                     if trace: g.trace(
-                        '   MATCH: i: %s ch: %r kind: %s pattern: %r context: %5r new_context: %5r line: %r' % (
+                        '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
+                        'context: %5r new_context: %5r line: %r' % (
                         i, s[i], kind, pattern, context, new_context, s))
                     if kind == 'all':
                         i = len(s)
@@ -870,15 +890,17 @@ class Importer(object):
                     bs_nl = pattern == '\\\n'
                     return new_context, i, delta_c, delta_p, delta_s, bs_nl
         # No match: stay in present state. All deltas are zero.
-        if trace: g.trace('NO MATCH: i: %s ch: %r context: %5r line: %r' % (i, s[i], context, s))
+        if trace: g.trace('NO MATCH: i: %s ch: %4r context: %5r line: %r' % (i, s[i], context, s))
         return context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
         '''
         Return a list of all contexts contained in the third column of the given table.
+        
         This is a support method for unit tests.
         '''
+        # Order must not matter, so sorting is ok.
         contexts = set()
         for data in table:
             contexts.add(data[2])

@@ -394,15 +394,15 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State() # Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers ***
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
-        trace = False and g.unitTesting ### and not g.unitTesting
-        context = prev_state.context
+        trace = False and not g.unitTesting
         new_state = self.new_state(s, prev_state)
         i = 0
         while i < len(s):
             progress = i
+            context = new_state.context
             table = self.get_table(context)
             data = self.scan_table(context, i, s, table)
             i = new_state.update(data)
@@ -446,6 +446,7 @@ class Py_Importer(Importer):
         '''Init a new state from the previous state.'''
         # Create a new state with default value for everything.
         new_state = Python_State()
+        new_state.context = prev_state.context
         # Copy the counts.
         new_state.curlies = prev_state.curlies
         new_state.parens = prev_state.parens
@@ -480,10 +481,10 @@ class Python_State:
     #@+node:ekr.20161114152246.1: *4* py_state.__repr__
     def __repr__(self):
         '''Py_State.__repr__'''
-        return '<PyState %7r indent: %s counts: %s{, %s(, %s[, starts: %5s ws: %5s>' % (
+        return 'PyState: %7r indent: %s counts: %s{ %s( %s[ starts: %5s ws: %5s bs-nl: %5s' % (
             self.context, self.indent,
             self.curlies, self.parens, self.squares,
-            self.starts, self.ws,
+            self.starts, self.ws, self.bs_nl, 
         )
 
     __str__ = __repr__
@@ -526,7 +527,6 @@ class Python_State:
     #@+node:ekr.20161105042258.1: *4* py_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
-        # g.trace('*'*20, repr(self.ws))
         if prev_state.starts:
             # The first line *after* the class or def *is* in the block.
             prev_state.starts = False

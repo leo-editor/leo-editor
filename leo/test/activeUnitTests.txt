@@ -13819,31 +13819,39 @@ class FlagsEnum extends Enum {
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
-#@+node:ekr.20161115063144.2: *6* @@test python nested class
-s = '''\
-NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-      's': 'http://www.w3.org/2000/svg',
-      'xlink' : 'http://www.w3.org/1999/xlink'}
-
-tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.3: *6* @test python bad class test
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-class testClass1 # no colon
-    pass
-
-def spam():
-    pass
-'''
-
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.34: *6* @test python basic nesting test
+#@+node:ekr.20161115084500.1: *6* Passed
+#@+node:ekr.20161115092708.1: *7* @test i.scan_state (for python)
+# g.cls()
+import leo.plugins.importers.python as python
+<< define python tests >>
+importer = python.Py_Importer(c.importCommands, atAuto=True)
+importer.test_scan_state(tests, State=python.Python_State)
+#@+node:ekr.20161115092708.2: *8* << define python tests >>
+# A list of dictionaries.
+if 0:
+    tests = [
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+    ]
+else:
+    tests = [
+        g.Bunch(line='\n'),
+        g.Bunch(line='\\\n'),
+        g.Bunch(line='s = "\\""', ctx=('', '')),
+        g.Bunch(line="s = '\\''", ctx=('', '')),
+        g.Bunch(line='# comment'),
+        g.Bunch(line='  # comment'),
+        g.Bunch(line='    # comment'),
+        g.Bunch(line='a = "string"'),
+        g.Bunch(line='a = "Continued string', ctx=('', '"')),
+        g.Bunch(line='end of continued string"', ctx=('"', '')),
+        g.Bunch(line='a = """Continued docstring', ctx=('', '"""')),
+        g.Bunch(line='a = """#', ctx=('', '"""')),
+        g.Bunch(line='end of continued string"""', ctx=('"""', '')),
+        g.Bunch(line="a = '''Continued docstring", ctx=('', "'''")),
+        g.Bunch(line="end of continued string'''", ctx=("'''", '')),
+        g.Bunch(line='a = {[(')
+    ]
+#@+node:ekr.20161115063144.34: *7* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
 s = '''\
 class class1:
@@ -13861,12 +13869,27 @@ class class2:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.3: *7* @test python bad class test
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+class testClass1 # no colon
+    pass
+
+def spam():
+    pass
+'''
+
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.4: *6* @test python bug 603720
 @tabwidth -4
     # Required when running unit tests externally.
 
 # Leo bug 603720
 # Within the docstring we must change '\' to '\\'
+### To do: use r''' instead of doubling backslashes.
 s = '''\
 def foo():
     s = \\
@@ -13881,17 +13904,15 @@ class bar:
 foo()
 '''
 
-showTree = False
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
-tree = c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
-
-if showTree:
-    c.redraw_now()
-    foo = g.findNodeInTree(c,p,'foo')
-    assert foo
-    s = "file('/tmp/script', 'w').write(s)"
-    print('foo.b',repr(foo.b))
-    assert foo.b.find(s) > -1,"foo.b: %s" % foo.b
+# if showTree:
+    # c.redraw_now()
+    # foo = g.findNodeInTree(c,p,'foo')
+    # assert foo
+    # s = "file('/tmp/script', 'w').write(s)"
+    # print('foo.b',repr(foo.b))
+    # assert foo.b.find(s) > -1,"foo.b: %s" % foo.b
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
