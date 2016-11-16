@@ -423,8 +423,8 @@ class Py_Importer(Importer):
     #@+node:ekr.20161116034633.1: *4* py_i.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''
-        Non-recursively parse all lines of s into parent, creating descendant
-        nodes as needed.
+        Non-recursively parse all lines of s into parent,
+        creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
         prev_state = Python_State()
@@ -435,19 +435,24 @@ class Py_Importer(Importer):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
             self.gen_refs = top.gen_refs
-            if trace: g.trace('\nline: %r\nnew_state: %s\ntop: %s' % (
+            if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
             if self.starts_block(line, new_state):
                 self.start_new_block(line, new_state, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
-            else:
-                # An unusual special case: underindented trailing lines.
-                ### if True or trace: g.trace('UNDERINDENT', self.root.h)
-                ########### self.cut_stack(new_state, stack)
-                top = stack[-1]
-                ### top.gen_refs = True ### Too drastic.
+            elif self.is_ws_line(line):
                 self.add_line(top.p, line)
+            else:
+                # Unusual: An underindented "real" line.
+                if trace: g.trace('UNDERINDENT',
+                    g.shortFileName(self.root.h), repr(line))
+                self.cut_stack(new_state, stack)
+                top = stack[-1]
+                self.add_line(top.p, line)
+                # Tricky: force section references.
+                if top.at_others_flag:
+                    top.gen_refs = True
             prev_state = new_state
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
     def cut_stack(self, new_state, stack):

@@ -14172,6 +14172,24 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.24: *7* @test python overindented def 3
+@tabwidth -4
+    # Required when running unit tests externally.
+
+# This caused PyParse.py not to be imported properly.
+s = r'''
+import re
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+for ch in "({[":
+   _tran[ord(ch)] = '('
+class testClass1:
+    pass
+'''
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
 #@+node:ekr.20161115063144.25: *7* @test python string test: extra indent
 @tabwidth -4
     # Required when running unit tests externally.
@@ -14260,6 +14278,25 @@ def foo():
     pass
 
 def bar():
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.31: *7* @test python underindent method
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+
+class emptyClass: 
+
+    def spam():
+
+        """docstring line 1
+under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
     pass
 '''
 
@@ -14758,43 +14795,6 @@ f.close()
 # g.app.unitTestDict['testingLeoImport.py'] = True
 
 c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
-#@+node:ekr.20161115063144.24: *7* @test python overindented def 3
-@tabwidth -4
-    # Required when running unit tests externally.
-
-# This caused PyParse.py not to be imported properly.
-s = r'''
-import re
-if 0: # Causes the 'overindent'
-   if 0:   # for throwaway debugging output
-      def dump(*stuff):
-        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
-for ch in "({[":
-   _tran[ord(ch)] = '('
-class testClass1:
-    pass
-'''
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
-#@+node:ekr.20161115063144.31: *7* @test python underindent method
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-
-class emptyClass: 
-
-    def spam():
-
-        """docstring line 1
-under-indented docstring line"""
-        pass
-
-def followingDef(): # comment
-    pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20121011094154.3906: *5* TypeScript tests
 @language python
 #@+node:ekr.20121011094154.3911: *6* @test TypeScript class

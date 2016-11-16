@@ -559,7 +559,12 @@ class Importer(object):
                 indent_ws,
                 g.angleBrackets(' %s ' % h))
         else:
-            ref = None if target.ref_flag else '%s@others\n' % indent_ws
+            ### ref = None if target.ref_flag else '%s@others\n' % indent_ws
+            if target.ref_flag:
+                ref = None
+            else:
+                ref = '%s@others\n' % indent_ws
+                target.at_others_flag = True
             target.ref_flag = True
                 # Don't generate another @others in this target.
             headline = h
@@ -942,10 +947,11 @@ class Importer(object):
                 else:
                     break
         return self.get_int_lws(lines[i]) if i < len(lines) else 0
-    #@+node:ekr.20161108131153.17: *4* i.get_str_lws
+    #@+node:ekr.20161108131153.17: *4* i.get_str_lws (TEST)
     def get_str_lws(self, s):
         '''Return the characters of the lws of s.'''
-        m = re.match(r'(\s*)', s)
+        ### m = re.match(r'(\s*)', s)
+        m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line
     def is_ws_line(self, s):
@@ -1115,6 +1121,8 @@ class Target:
 
     def __init__(self, p, state):
         '''Target ctor.'''
+        self.at_others_flag = False
+            # True: @others has been generated for this target.
         self.p = p
         self.gen_refs = False
             # Can be forced True.
