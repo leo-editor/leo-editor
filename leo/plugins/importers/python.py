@@ -388,22 +388,7 @@ class Py_Importer(Importer):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
-    def v2_scan_line(self, s, prev_state):
-        '''Update the Python scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        new_state = Python_State(prev = prev_state)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
-        return new_state
-    #@+node:ekr.20161113082348.1: *5* py_i.get_new_table
+    #@+node:ekr.20161113082348.1: *4* py_i.get_new_table
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -441,9 +426,10 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and g.unitTesting
+        trace = False and not g.unitTesting and parent.h.endswith('at-auto-unit-test.py')
         prev_state = Python_State()
-        stack = [Target(parent, prev_state)]
+        target = Target(parent, prev_state)
+        stack = [target, target]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
@@ -460,54 +446,57 @@ class Py_Importer(Importer):
         trace = False and g.unitTesting
         if trace:
             g.trace(new_state)
-            print('\n'.join([repr(z) for z in stack]))
+            g.printList(stack)
         assert stack # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.indent < top_state.indent:
                 if trace: g.trace('new_state < top_state', top_state)
-                if len(stack) == 1:
-                    break
-                else:
-                    stack.pop() 
+                assert len(stack) > 1, stack # <
+                stack.pop()
             elif top_state.indent == new_state.indent:
                 if trace: g.trace('new_state == top_state', top_state)
+                assert len(stack) > 1, stack # ==
+                stack.pop()
                 break
             else:
                 g.trace('OVERSHOOT: new_state > top_state', top_state)
                     # Might happen with javascript, shouldn't happen for python.
                 break
         assert stack # Fail on exit.
-        if trace:
-            g.trace('new target.p:', stack[-1].p.h)
+        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161116034633.7: *5* python_i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
+        trace = True and g.unitTesting # and self.root.h.endswith('at-auto-unit-test.py')
         assert not new_state.in_context(), new_state
-        target=stack[-1]
-        if new_state.indent >= target.state.indent:
-            # Insert the reference in *this* node.
-            h = self.v2_gen_ref(line, target.p, target)
-            # Create a new child and associated target.
-            child = self.v2_create_child_node(target.p, line, h)
+        top = target=stack[-1]
+        if trace:
+            g.trace('line', repr(line))
+            g.trace('top_state', top.state)
+            g.trace('new_state', new_state)
+            g.printList(stack)
+        if new_state.indent > top.state.indent:
+            target=stack[-1]
+            parent = target.p
+            h = self.v2_gen_ref(line, parent, target)
+            child = self.v2_create_child_node(parent, line, h)
+            stack.append(Target(child, new_state))
+        elif new_state.indent == top.state.indent:
+            stack.pop()
+            target=stack[-1]
+            parent = target.p
+            h = self.v2_gen_ref(line, parent, target)
+            child = self.v2_create_child_node(parent, line, h)
             stack.append(Target(child, new_state))
         else:
-            ### From end_python_block.
             self.cut_stack(new_state, stack)
             target = stack[-1]
-            ### if new_state.starts: ### Always true!!
-            parent = target.p.parent()
-            h = self.clean_headline(line)
+            parent = target.p
+            h = self.v2_gen_ref(line, parent, target)
             child = self.v2_create_child_node(parent, line, h)
             stack.pop()
             stack.append(Target(child, new_state))
-                ### return None
-            ### Impossible: the line *does* start a block.
-            # else:
-                # # Leave the stack alone: put lines in the node at this level.
-                # p = target.p
-                # self.add_line(p, line)
-                # ### return p
     #@+node:ekr.20161116040557.1: *5* python_i.starts_block
     def starts_block(self, line, new_state):
         '''True if the line startswith class or def outside any context.'''
@@ -515,6 +504,22 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
+    def v2_scan_line(self, s, prev_state):
+        '''Update the Python scan state by scanning s.'''
+        trace = False and not g.unitTesting
+        new_state = Python_State(prev = prev_state)
+        new_state.indent = self.get_int_lws(s)
+        i = 0
+        while i < len(s):
+            progress = i
+            context = new_state.context
+            table = self.get_table(context)
+            data = self.scan_table(context, i, s, table)
+            i = new_state.update(data)
+            assert progress < i
+        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
+        return new_state
     #@-others
 #@+node:ekr.20161105100227.1: *3* class Python_State
 class Python_State:
