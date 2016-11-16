@@ -159,9 +159,9 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''ImportController.check'''
         # g.trace('='*20, self.root.h)
-        trace = False # and not g.unitTesting
-        trace_all = False
-        trace_lines = False
+        trace = False and g.unitTesting # and not g.unitTesting
+        trace_all = True
+        trace_lines = True
         no_clean = True # True: strict lws check for *all* languages.
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
@@ -328,7 +328,7 @@ class Importer(object):
         
         This method handles caching.  x.get_new_table returns the actual table.
         '''
-        key = '%s..%s' % (self.name, context)
+        key = '%s.%s' % (self.name, context)
             # Bug fix: must keep tables separate.
         table = self.cached_scan_tables.get(key)
         if table:
@@ -450,6 +450,7 @@ class Importer(object):
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
+        # if g.unitTesting: g.pdb() ###
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
             new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
@@ -465,8 +466,8 @@ class Importer(object):
     #@+node:ekr.20161108160409.2: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('.py')
-        trace_stack = True
+        trace = False and g.unitTesting ### not g.unitTesting and self.root.h.endswith('.py')
+        trace_stack = False
         if trace and trace_stack:
             print('\n'.join([repr(z) for z in stack]))
         assert stack # Fail on entry.
@@ -491,41 +492,41 @@ class Importer(object):
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
         is_python = self.name == 'python'
-        p = stack[-1].p # Put the closing line in *this* node.
-        ###
-        # if is_python or self.gen_refs:
-            # tail_p = None
-        # else:
-            # tail_p = p # Put trailing lines in this node.
+        p = stack[-1].p
         if is_python:
             tail_p = self.end_python_block(line, new_state, p, stack)
         else:
             self.add_line(p, line)
             self.cut_stack(new_state, stack)
             tail_p = None if self.gen_refs else p
-        ### This doesn't work
-        # if not self.gen_refs:
-        #    tail_p = stack[-1].p
         return tail_p
     #@+node:ekr.20161108160409.4: *6* i.end_python_block
     def end_python_block(self, line, new_state, p, stack):
         '''
         Handle lines at a lower level.
         '''
+        # trace = True and g.unitTesting
         assert not self.is_ws_line(line)
         self.cut_stack(new_state, stack)
         target = stack[-1]
-        h = self.clean_headline(line)
-        child = self.v2_create_child_node(target.p.parent(), line, h)
-        stack.pop()
-            ### Is this where the line got lost?
-        stack.append(Target(child, new_state))
+        # if trace: g.trace(new_state, line)
+        if new_state.starts:
+            h = self.clean_headline(line)
+            child = self.v2_create_child_node(target.p.parent(), line, h)
+            stack.pop()
+            stack.append(Target(child, new_state))
+            return None
+        else:
+            # Leave the stack alone: put lines in the node at this level.
+            p = target.p
+            self.add_line(p, line)
+            return p
     #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
-    #@+node:ekr.20161110070826.1: *6* i.gen_next_line *** (helper of v2_gen_line)
+    #@+node:ekr.20161110070826.1: *6* i.gen_next_line
     def gen_next_line(self, line, prev_state, tail_p):
         '''
         Set up the vars for i.v2_gen_lines.
@@ -546,6 +547,8 @@ class Importer(object):
     #@+node:ekr.20161108160409.6: *6* i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
+        if hasattr(new_state, 'in_context'):
+            assert not new_state.in_context(), ('start_new_block', new_state)
         target=stack[-1]
         # Insert the reference in *this* node.
         h = self.v2_gen_ref(line, target.p, target)

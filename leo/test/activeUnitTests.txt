@@ -13076,6 +13076,23 @@ buildCoffee = (str) ->
 
   builder    = new Builder
   scriptNode = parser.parse str
+#@+node:ekr.20161115201207.15: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
+# Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+#@+node:ekr.20161115201207.16: *8* buildCoffee = (str) ->
+buildCoffee = (str) ->
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4732: *6* @test elisp functions
 s = '''\
@@ -13883,13 +13900,12 @@ def spam():
 
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.4: *6* @test python bug 603720
+#@+node:ekr.20161115063144.4: *7* @test python bug 603720
 @tabwidth -4
     # Required when running unit tests externally.
 
 # Leo bug 603720
 # Within the docstring we must change '\' to '\\'
-### To do: use r''' instead of doubling backslashes.
 s = '''\
 def foo():
     s = \\
@@ -13905,14 +13921,6 @@ foo()
 '''
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
-# if showTree:
-    # c.redraw_now()
-    # foo = g.findNodeInTree(c,p,'foo')
-    # assert foo
-    # s = "file('/tmp/script', 'w').write(s)"
-    # print('foo.b',repr(foo.b))
-    # assert foo.b.find(s) > -1,"foo.b: %s" % foo.b
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.

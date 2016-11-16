@@ -394,7 +394,7 @@ class Py_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return Python_State() # Python_State('', 0)
-    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers ***
+    #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line & helpers
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -453,7 +453,7 @@ class Py_Importer(Importer):
         new_state.squares = prev_state.parens
         # Set the indent.
         ws = self.is_ws_line(s)
-        if ws or prev_state.bs_nl:
+        if ws or prev_state.bs_nl or new_state.in_context():
             # Essential for __eq__ operator to work properly.
             new_state.indent = prev_state.indent
         else:
@@ -481,11 +481,11 @@ class Python_State:
     #@+node:ekr.20161114152246.1: *4* py_state.__repr__
     def __repr__(self):
         '''Py_State.__repr__'''
-        return 'PyState: %7r indent: %s counts: %s{ %s( %s[ starts: %5s ws: %5s bs-nl: %5s' % (
-            self.context, self.indent,
-            self.curlies, self.parens, self.squares,
-            self.starts, self.ws, self.bs_nl, 
-        )
+        return (
+            'PyState: %7r indent: %s {%s} (%s) [%s] '  % (
+                self.context, self.indent, self.curlies, self.parens, self.squares) +
+            'starts: %-5s ws: %-5s bs-nl: %-5s' % (
+                self.starts, self.ws, self.bs_nl))
 
     __str__ = __repr__
     #@+node:ekr.20161105100227.3: *4* py_state.comparisons
@@ -495,15 +495,18 @@ class Python_State:
         
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
-        return self.in_context() or self.indent == other.indent
+        ### return self.in_context() or self.indent == other.indent
+        return self.indent == other.indent
 
     def __lt__(self, other):
         '''Return True if we should exit one or more blocks.'''
-        return not self.in_context() and self.indent < other.indent
+        ### return not self.in_context() and self.indent < other.indent
+        return self.indent < other.indent
 
     def __gt__(self, other):
         '''Return True if we should enter a new block.'''
-        return not self.in_context() and self.indent > other.indent
+        ### return not self.in_context() and self.indent > other.indent
+        return self.indent > other.indent
 
     def __ne__(self, other): return not self.__eq__(other)
 
