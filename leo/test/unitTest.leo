@@ -2,121 +2,14 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.44" body_secondary_ratio="0.71">
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.71">
 	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
-<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
-<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
-<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
-<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
-</v>
-<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
-<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
-<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
-<v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
-<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
-<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
-<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
-</v>
-<v t="ekr.20050328101834"><vh>@page http plugin</vh>
-<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
-<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
-<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
-</v>
-<v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
-<v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
-<v t="ekr.20131111155830.4251"><vh>@data vim-command-tails</vh></v>
-<v t="ekr.20131111155830.4252"><vh>@data vim-commands</vh></v>
-<v t="ekr.20131111155830.4253"><vh>@data vim-motions</vh></v>
-<v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
-</v>
-</v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh>
-<v t="edward.20150612083734.1"><vh>@data:#@auto</vh></v>
-<v t="edward.20150612083734.2"><vh>@data:#@auto</vh>
-<v t="edward.20150612083734.3"><vh>@gnxs</vh></v>
-</v>
-<v t="edward.20150612083734.4"><vh>@data:#@auto</vh></v>
-<v t="edward.20150612083734.5"><vh>@data:#@auto</vh>
-<v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150625052701.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161031055427.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="edward.20160919054711.14"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="edward.20160919054710.11"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="edward.20160919054710.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="edward.20160919054709.9"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
-<v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160403143351.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
-<v t="ekr.20160403143351.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160917122402.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20160917122402.2"><vh>@data:#@auto</vh>
-<v t="ekr.20160917122402.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160917122402.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20160917122402.5"><vh>@data:#@auto</vh>
-<v t="ekr.20160917122402.6"><vh>@gnxs</vh></v>
-</v>
-</v>
-<v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
-<v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
-<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
-<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
-<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
-<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
-<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
-<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
-<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
-</v>
-<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
-<v t="ekr.20070217072822"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
-</v>
-</v>
-<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
-<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
-<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
-<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
-<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
-<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20111123042627.6654"></v>
-<v t="ekr.20111112093605.4679"></v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -1241,7 +1134,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1405,6 +1298,7 @@
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161116094845.1"><vh>@test python defs on one line</vh></v>
 <v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
@@ -1415,19 +1309,19 @@
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
 <v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
 <v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20161115210617.1"><vh>Python fail</vh>
 <v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 </v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
@@ -1484,6 +1378,23 @@
 <v t="ekr.20161011052016.1"></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20161116102232.1"><vh>formatter.py stuff (Don't delete yet)</vh>
+<v t="ekr.20161116095335.1"><vh>@test python 1 formatter (fails)</vh></v>
+<v t="ekr.20161116100231.1"><vh>@test python 2 formatter (fails)</vh></v>
+<v t="ekr.20161116100305.1"><vh>@test python 3 formatter (fails)</vh></v>
+<v t="ekr.20161116100359.1"><vh>@test python 4 formatter (fails without class AbstractWriter)</vh></v>
+<v t="ekr.20161116100445.1"><vh>@test python 5 formatter (fails with AbstractWriter)</vh></v>
+<v t="ekr.20161116100555.1"><vh>@test python 6 formatter (fails)</vh></v>
+<v t="ekr.20161116100652.1"><vh>@test python 7 formatter (fails)</vh></v>
+<v t="ekr.20161116100728.1"><vh>@test python 8 formatter (fails)</vh></v>
+<v t="ekr.20161116100848.1"><vh>@test python 9 formatter (fails)</vh></v>
+<v t="ekr.20161116101134.1"><vh>@test python 10 formatter (fails: uses r''')</vh></v>
+<v t="ekr.20161116101625.1"><vh>@test python 11 formatter (fails: uses r''')</vh></v>
+<v t="ekr.20161116101731.1"><vh>@test python 12 formatter (fails: uses r''')</vh></v>
+<v t="ekr.20161116101840.1"><vh>@test python 13 formatter (fails)</vh>
+<v t="ekr.20161116102447.1"><vh>@file c:/leo.repo/leo-editor/leo/test/python 13 formatter (fails)</vh></v>
+</v>
+</v>
 <v t="ekr.20090529141856.4736"></v>
 </vnodes>
 <tnodes>
@@ -1507,44 +1418,6 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
-</t>
-<t tx="edward.20150612083734.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="edward.20150612083734.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="edward.20150612083734.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="edward.20150612083734.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="edward.20150612083734.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="edward.20150612083734.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="edward.20160919054709.9">gnx: edward.20160416174241.4
-unl: section 1
-gnx: edward.20160416174241.5
-unl: section 2
-</t>
-<t tx="edward.20160919054710.11">gnx: edward.20160416174241.17
-unl: section 1
-gnx: edward.20160416174241.18
-unl: section 2
-</t>
-<t tx="edward.20160919054710.4">gnx: edward.20160416174241.15
-unl: section 1
-gnx: edward.20160416174241.16
-unl: section 2
-</t>
-<t tx="edward.20160919054711.14">gnx: edward.20160416174241.19
-unl: section 1
-gnx: edward.20160416174241.20
-unl: section 2
 </t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4
@@ -1620,11 +1493,6 @@ c.testManager.runLeoTest(path)
 <t tx="ekr.20040831104758">path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
 c.testManager.runLeoTest(path)
 </t>
-<t tx="ekr.20041121151002"></t>
-<t tx="ekr.20050328101834"></t>
-<t tx="ekr.20050328101834.1"></t>
-<t tx="ekr.20050328101834.2"></t>
-<t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050417201845"></t>
 <t tx="ekr.20050417201845.1">before
     &lt;&lt; section &gt;&gt;
@@ -2056,7 +1924,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
-<t tx="ekr.20051013162226"></t>
 <t tx="ekr.20051104081502">@language python
 @tabwidth -4
 </t>
@@ -7845,161 +7712,6 @@ for x in range(0,100,10):
     event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
     c.frame.body.onClick(event)
 </t>
-<t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
-
-dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
-s   = g.os_path_join(dir,g.u('chinese\u8116test.leo'),encoding='utf-8')
-    
-if not g.os_path_exists(dir):
-    import os
-    os.mkdir(dir)
-    g.pr('created chinese folder')
-    
-if not g.os_path_exists(s):
-    f = file(s,'w')
-    f.close()
-    g.pr('created chinese file')
-    
-</t>
-<t tx="ekr.20070217065840">@nocolor-node
-
-@
-To make unit tests, do the following:
-    
-- Use the make-test script (Alt-5) to create a suboutline for a unit test.
-- Put text in the before node, selected desired text, then do the do-before script (Alt-6).
-- Execute the command, then do the do-after script (Alt-7).
-</t>
-<t tx="ekr.20070217065840.1">try:
-    p1 = p.insertAfter()
-    c.setHeadString(p1,'@test ')
-    body = 'c.testManager.runEditCommandTest(c,p)'
-    c.setBodyString(p1,body)
-    for s in ('work','before','after'):
-        p2 = p1.insertAsLastChild()
-        c.setHeadString(p2,s)
-    p1.expand()
-finally:
-    c.redraw()
-    c.editPosition(p1)</t>
-<t tx="ekr.20070217065840.2">@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. The work node should have body text. If all is as expected,
-copy the body text the work node to the before node, and represent the selection
-range of the work in the headline of the before node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top and work.b:
-
-    c.setBodyString(before,work.b)
-    c.setBodyString(after,'')
-    putSelectionInHeadline(c,before,'before',sel)
-    c.redraw()
-else:
-    g.es_print('do-before: not in a proper @test tree')</t>
-<t tx="ekr.20070217065840.3">def getSel(c):
-    
-    w = c.frame.body.bodyCtrl
-    i,j= w.getSelectionRange()
-    if i == j:
-        i = j = w.getInsertPoint()
-        sel = (i,i)
-    return i,j</t>
-<t tx="ekr.20070217065840.4">def findNodes(p):
-    
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-    
-    for p in p.self_and_parents_iter():
-        if p.h.startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild() 
-    before = work and work.next()     
-    after  = before and before.next()
-    if (
-        work   and work.h.startswith('work') and
-        before and before.h.startswith('before') and
-        after  and after.h.startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None</t>
-<t tx="ekr.20070217065840.5">def putSelectionInHeadline (c,p,prefix,sel):
-    
-    # g.trace(p.h,repr(sel))
-
-    w = c.frame.body.bodyCtrl
-    i,j = sel
-    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
-    s = '%s sel=%s,%s' % (prefix,i,j)
-    c.setHeadString(p,s)
-</t>
-<t tx="ekr.20070217065840.6">@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. If all is as expected, copy the work node to the after node,
-and represent the selection range of the work node in the headline of the after node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top:
-    c.setBodyString(after,work.b)
-    putSelectionInHeadline(c,after,'after',sel)
-    c.redraw()
-else:
-    g.es_print('do-after: not in @test tree')</t>
-<t tx="ekr.20070217065840.8">def findNodes(p):
-    
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-    
-    for p in p.self_and_parents_iter():
-        if p.h.startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild()
-    before = work and work.next()
-    after  = before and before.next()
-    if (
-        work   and work.h.startswith('work') and
-        before and before.h.startswith('before') and
-        after  and after.h.startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None</t>
-<t tx="ekr.20070217065840.9">def putSelectionInHeadline (c,p,prefix,sel):
-    
-    # g.trace(p.h,repr(sel))
-    
-    w = c.frame.body.bodyCtrl
-    i,j = sel
-    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
-    s = '%s sel=%s,%s' % (prefix,i,j)
-    c.setHeadString(p,s)
-</t>
-<t tx="ekr.20070217072822">def getSel(c):
-    
-    w = c.frame.body.bodyCtrl
-    i,j= w.getSelectionRange()
-    if i == j:
-        i = j = w.getInsertPoint()
-        sel = (i,i)
-    return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10">
-@nosearch</t>
-<t tx="ekr.20070503064257"></t>
-<t tx="ekr.20070528100318"># Required to make a typing test work.
-</t>
 <t tx="ekr.20070926095117">def mungeKey (h,kind,substitute=True):
 
     key = h[len(kind):].strip()
@@ -8012,31 +7724,6 @@ else:
 
 
 </t>
-<t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
-assert g.os_path_exists(fn),fn
-c1 = c
-c2 = g.openWithFileName(fn,old_c=None,enableLog=False)
-assert c2
-c.frame.bringToFront()
-g.app.setLog(c.frame.log)
-
-d1 = {} ; d2 = {}
-for c,d in ( (c1,d1),(c2,d2)):
-    for p in c.all_unique_positions():
-        if p.h.startswith('@test'):
-            d[p.h]=p.h
-
-if 0: # not important
-    g.pr()
-    g.pr('----- Only in unitTest.leo')
-    for h in sorted(d1.keys()):
-        if not d2.get(h):
-            print(h)
-
-print('\n----- Only in leoPy.leo')
-for h in sorted(d2.keys()):
-    if not d1.get(h):
-        print(h)</t>
 <t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
 @language python
 
@@ -8066,10 +7753,6 @@ finally:
 # end:
 </t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
-
-Important: this may cause crashes on some platforms.
-</t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080806084924.2">@others
@@ -8934,60 +8617,6 @@ for ext in g.app.extension_dict.keys():
 <t tx="ekr.20090704085350.5036">def eggs():
     pass
 </t>
-<t tx="ekr.20091206090247.5060"># Use these with caution.</t>
-<t tx="ekr.20091206090247.5061">count = 0
-for p in c.all_unique_positions():
-    count += 1
-    # Empty tnodeLists are not errors because they never get written to the .leo file.
-    v = p.v
-    if hasattr(v,"tnodeList") and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
-        g.es("deleting tnodeList for " + `v`,color="blue")
-        delattr(v,"tnodeList")
-        c.setChanged(True)
-
-s = "%d nodes" % count
-print(s) ; g.es(s)</t>
-<t tx="ekr.20091206090247.5062"># About the only time you should run this script is when:
-# - changing the format of timestamps in nodeIndices.setTimestamp or
-# - when making a retroactive change to leoID.txt.
-
-if 0: # This is usually a very bad idea.
-
-    for p in c.all_positions():
-        p.v.fileIndex = None
-
-    g.es("all timestamps cleared")</t>
-<t tx="ekr.20091206090247.5063">doDelete = False
-put = g.es_print
-for p in c.all_positions():
-    if p.v.u:
-        put("found v.u:",p.h,
-            g.listToString(p.v.u.keys()))
-        if doDelete:
-            p.v.u = None
-put('done') 
-c.redraw()</t>
-<t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
-for p in c.all_unique_positions():
-    nodes += 1
-    lines += len(g.splitLines(p.b))
-
-pages = ((nodes * 10) + lines) / 50
-s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
-print(s); g.es(s)</t>
-<t tx="ekr.20100123172713.5114"></t>
-<t tx="ekr.20100123172713.5116">count = 0
-for p in c.all_unique_positions():
-    count += 1
-    # Empty tnodeLists are not errors because they never get written to the .leo file.
-    v = p.v
-    if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
-        g.es("deleting tnodeList for " + `v`,color="blue")
-        delattr(v,"tnodeList")
-        c.setChanged(True)
-
-s = "%d nodes" % count
-print s ; g.es(s)</t>
 <t tx="ekr.20100125180231.5120">@first # -*- coding: utf-8 -*-
 
 s = g.ue('炰','utf-8')
@@ -9707,16 +9336,6 @@ file = "payroll.dat"
 
 c.importCommands.iniUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20101009105124.6195">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-
-False:
-    (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.
-</t>
 <t tx="ekr.20101021205258.6013"></t>
 <t tx="ekr.20101220161557.6013"># Some of these tests give warnings.</t>
 <t tx="ekr.20101220161557.6014">@language python
@@ -9961,11 +9580,6 @@ StormReady communities are better prepared to save lives from the onslaught of s
 
 Last paragraph.
 </t>
-<t tx="ekr.20110521073115.3494"></t>
-<t tx="ekr.20110521073115.3495">builtins, including cython builtins
-</t>
-<t tx="ekr.20110521073115.3496">cython keywords
-</t>
 <t tx="ekr.20110610122533.3388"></t>
 <t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -10148,16 +9762,6 @@ g.es('"%s": total tests: %s' % (p.h,total))
 
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
-
-html
-body
-head
-div
-table
-nodeA
-nodeB
 </t>
 <t tx="ekr.20111029112647.4099"></t>
 <t tx="ekr.20111029112647.4101">s = '''\
@@ -10599,8 +10203,7 @@ for func,s,expected in table:
     assert result == expected,'expected %s got %s' % (
         repr(expected),repr(result))
 </t>
-<t tx="ekr.20111112092813.4154">g.cls()</t>
-<t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
+<t tx="ekr.20111112093605.4679" str_leo_pos="9"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
 # These are now EKR's preferred settings everywhere:
 # there should be little need to run unit tests externally.
 
@@ -10839,28 +10442,6 @@ else:
 <t tx="ekr.20111121113227.4035">c.k.simulateCommand('add-editor')
 c.k.simulateCommand('delete-editor')
 </t>
-<t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
-
-# **Important**: to change these defaults, put
-# an @enabled-plugins node in myLeoSettings.leo.
-
-# Highly-recommended plugins:
-plugins_menu.py
-free_layout.py # needs to be early
-viewrendered.py
-
-# Recommended plugins:
-### contextmenu.py
-# leo_to_html.py
-mod_scripting.py
-# nav_qt.py
-# quicksearch.py
-# stickynotes.py
-# todo.py
-</t>
-<t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
-<t tx="ekr.20111124094121.3942"></t>
-<t tx="ekr.20111124094121.3943"></t>
 <t tx="ekr.20111125182408.3947">def setup():
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -12524,276 +12105,6 @@ if 0:
 </t>
 <t tx="ekr.20131111155107.4242">first line
 </t>
-<t tx="ekr.20131111155830.4249"></t>
-<t tx="ekr.20131111155830.4250"># Not yet...
-
-    &lt;BS&gt;        delete the character in front of the cursor
-N   &lt;Del&gt;       delete N characters under and after the cursor
-    &lt;Del&gt;       delete the character under the cursor
-    &lt;Del&gt;       while entering a count: delete last character
-    &lt;Down&gt;      recall newer command-line that starts with current command
-    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
-    &lt;Left&gt;      (motion) cursor left
-    &lt;Right&gt;     (motion) cursor right
-    &lt;S-Down&gt;    recall newer command-line from history
-    &lt;S-Left&gt;    (motion) cursor one word left
-    &lt;S-Right&gt;   (motion) cursor one word right
-    &lt;S-Up&gt;      recall older command-line from history
-    &lt;Up&gt;        recall older command-line that starts with current command
-
-N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
-N   CTRL-A                  add N to the number at or after the cursor
-N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  (motion?) cursor to beginning of command-line
-    CTRL-BREAK              MS-DOS: during searches: interrupt the search
-    CTRL-C                  during searches: interrupt the search
-N   CTRL-D                  window N lines Downwards (default: 1/2 window)
-N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  (motion?) cursor to end of command-line
-N   CTRL-F                  (motion) window N pages Forwards (downwards)
-    CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  (motion) go to Nth newer position in jump list
-    CTRL-K {char1} {char2}  enter digraph
-    CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  (motion) go to Nth older position in jump list
-N   CTRL-R                  redo last N undone changes
-    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
-N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
-N   CTRL-U                  window N lines Upwards (default: 1/2 window)
-    CTRL-U                  remove all characters
-    CTRL-V                  highlight blockwise or stop highlighting
-    CTRL-V                  start highlighting blockwise   }  highlighted text
-    CTRL-V {char}           insert {char} literally
-    CTRL-V {number}         enter decimal value of character (up to three digits)
-    CTRL-W                  delete the word in front of the cursor
-    CTRL-W +                Increase current window height
-    CTRL-W -                Decrease current window height
-    CTRL-W =                Make all windows equal height
-    CTRL-W CTRL-W           Move cursor to window below (wrap)
-    CTRL-W CTRL-^           Split window and edit alternate file
-    CTRL-W R                Rotate windows upwards
-    CTRL-W W                Move cursor to window above (wrap)
-    CTRL-W ]                Split window and jump to tag under cursor
-    CTRL-W _                Set current window height (default: very high)
-    CTRL-W b                Move cursor to bottom window
-    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
-    CTRL-W f                Split window and edit file name under the cursor
-    CTRL-W j                Move cursor to window below
-    CTRL-W k                Move cursor to window above
-    CTRL-W n  or :new       Create new empty window
-    CTRL-W o  or :on[ly]    Make current window only one on the screen
-    CTRL-W p                Move cursor to previous active window
-    CTRL-W q  or :q[uit]    Quit editing and close window
-    CTRL-W r                Rotate windows downwards
-    CTRL-W s                Split window into two parts
-    CTRL-W t                Move cursor to top window
-    CTRL-W x                Exchange current window with next one
-N   CTRL-X                  subtract N from the number at or after the cursor
-N   CTRL-Y                  window N lines upwards (default: 1)
-    CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
-<t tx="ekr.20131111155830.4251">char F
-char T
-char f
-char r
-char t
-letter m
-letter q
-motion &lt;
-motion &gt;
-motion c
-motion d
-motion gU
-motion gq
-motion gu
-motion g~
-motion y
-pattern /
-pattern ?
-register @
-</t>
-<t tx="ekr.20131111155830.4252"># http://tnerual.eriogerg.free.fr/vimqrc.html
-vim_0 0
-vim_tilda ~
-vim_plus +
-vim_underscore _
-vim_minus -
-vim_comma ,
-vim_dot .
-vim_semicolon ;
-vim_lparen (
-vim_rparen )
-vim_lcurly {
-vim_rcurly }
-vim_vertical |
-vim_backtick `
-vim_dollar $
-vim_caret ^
-vim_percent %
-vim_langle &lt;
-vim_langle &lt;&lt;
-vim_rangle &gt;
-vim_rangle &gt;&gt;
-vim_pound #
-vim_star *
-vim_slash /\\n
-vim_slash /
-vim_question ?\\n
-vim_question ?
-vim_at @
-vim_at @@
-vim_dquote "
-vim_lsquare [#
-vim_lsquare [(
-vim_lsquare [*
-vim_lsquare [[
-vim_lsquare []
-vim_lsquare [p
-vim_lsquare [{
-vim_rsquare ]#
-vim_rsquare ])
-vim_rsquare ]*
-vim_rsquare ][
-vim_rsquare ]]
-vim_rsquare ]p
-vim_rsquare ]}
-vim_A A
-vim_B B
-vim_C C
-vim_D D
-vim_E E
-vim_F F
-vim_G G
-vim_H H
-vim_I I
-vim_J J
-vim_K K
-vim_M M
-vim_L L
-vim_N N
-vim_O O
-vim_P P
-vim_R R
-vim_S S
-vim_T T
-vim_U U
-vim_V V
-vim_W W
-vim_X X
-vim_Y Y
-vim_Z ZQ
-vim_Z ZZ
-vim_a a
-vim_b b
-vim_c c
-vim_d dd
-vim_d d
-vim_g g~
-vim_g g^
-vim_g g#
-vim_g g$
-vim_g g*
-vim_g g0
-vim_g gD
-vim_g gE
-vim_g gI
-vim_g gU
-vim_g ga
-vim_g gd
-vim_g ge
-vim_g gf
-vim_g gg
-vim_g gj
-vim_g gk
-vim_g gq
-vim_g gs
-vim_g gu
-vim_g gv
-vim_h h
-vim_i i
-vim_j j
-vim_k k
-vim_l l
-vim_n n
-vim_m m
-vim_o o
-vim_p p
-vim_q q
-vim_r r
-vim_s s
-vim_t t
-vim_u u
-vim_v v
-vim_w w
-vim_x x
-vim_y y
-vim_y yy
-vim_z z-
-vim_z z.
-vim_z z&lt;CR&gt;
-vim_z zb
-vim_z zh
-vim_z zl
-vim_z zt
-vim_z zz
-</t>
-<t tx="ekr.20131111155830.4253"># CR
-# Ctrl-End
-# Ctrl-Home
-# Ctrl-Left
-# Ctrl-M
-# Ctrl-N
-# Ctrl-P
-# Ctrl-Right
-# End
-# Home
-# Shift-Left
-# Shift-Right
-
-( 	
-)
-{
-}
-[[
-[]
-][
-]]
-$
-^	
-+
-,
--
-;
-_
-0
-B
-E
-F
-G
-T
-W
-b
-e
-f
-g$
-g^
-g0
-gE
-# gEnd
-# gHome	
-ge
-gg
-h
-j
-k
-t
-w
-</t>
-<t tx="ekr.20131111155830.4254">char F
-char T
-char f
-char t
-</t>
 <t tx="ekr.20131111160618.4261"></t>
 <t tx="ekr.20131111162157.4270">@language python
 # http://docs.python.org/2/library/re.html
@@ -14024,7 +13335,6 @@ finally:
 <t tx="ekr.20140211090146.4581">def last1():
     pass
 </t>
-<t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140218042220.4347">s = '''\
 
 var c3 = (function () {
@@ -14071,7 +13381,6 @@ console.log("Listening on " + port);
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140723134017.4464"># This causes problems!
 import glob
 import importlib
@@ -14107,7 +13416,6 @@ The top chapter.
 
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
 <t tx="ekr.20141111092038.12">s = '''
 
@@ -14123,7 +13431,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -14137,9 +13445,6 @@ c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 <t tx="ekr.20150208213643.19"># node 2 text B.
 </t>
 <t tx="ekr.20150214063940.11"></t>
-<t tx="ekr.20150216110251.11"># Do not delete this node.
-# It is used by unit tests.</t>
-<t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
 for p in p.children():
     b = leoBeautify.PythonTokenBeautifier(c)
@@ -14157,24 +13462,6 @@ for p in p.children():
     pass
 @ The following could be added to the 'else' clause::
     # Accumulate everything else.
-</t>
-<t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
-
-# This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150625052701.1">gnx: ekr.20080904084223.1
-</t>
-<t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
-</t>
-<t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
-unl: at_auto_child
-</t>
-<t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
-</t>
-<t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
-</t>
-<t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
-</t>
-<t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
 <t tx="ekr.20150919073819.1">class aClass:
     def __init__(self):
@@ -14540,18 +13827,6 @@ def spam(): // line 2
 @others
 # Last line: line 6
 </t>
-<t tx="ekr.20160403143348.1">gnx: ekr.20111214104615.3942
-</t>
-<t tx="ekr.20160403143348.2">gnx: ekr.20160403142841.9
-unl: at-auto-section-ref-test declarations
-</t>
-<t tx="ekr.20160403143351.1">gnx: ekr.20090704085350.5056
-</t>
-<t tx="ekr.20160403143351.2">gnx: ekr.20160403142841.10
-unl: spam
-gnx: ekr.20160403142841.11
-unl: eggs
-</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
     pass</t>
 <t tx="ekr.20160403150216.1">@nocolor-node
@@ -14680,24 +13955,6 @@ section 3, line 1
 
 '''
 </t>
-<t tx="ekr.20160917122402.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20160917122402.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20160917122402.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20160917122402.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20160917122402.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20160917122402.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
 table = (
     (None, (0, 0, '/*'),    r'/* abc'),
@@ -14729,23 +13986,7 @@ for base, result, s in table:
 a = b &lt;&lt; c &gt;&gt; d
 
 </t>
-<t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
-False: (Legacy):      The @auto write code ignores section references.
-</t>
 <t tx="ekr.20161027183259.1"></t>
-<t tx="ekr.20161031055427.1">gnx: ekr.20161031055404.9
-unl: class class1
-gnx: ekr.20161031055404.10
-unl: class class1--&gt;class1_method1
-gnx: ekr.20161031055404.11
-unl: class class1--&gt;class1_method2
-gnx: ekr.20161031055404.12
-unl: class class2
-gnx: ekr.20161031055404.13
-unl: class class2--&gt;class2_method1
-gnx: ekr.20161031055404.14
-unl: class class2--&gt;class2_method2
-</t>
 <t tx="ekr.20161102104718.1"></t>
 <t tx="ekr.20161103015908.1"></t>
 <t tx="ekr.20161103015940.1">s = '''\
@@ -16224,7 +15465,7 @@ if showTree:
 </t>
 <t tx="ekr.20161115063144.33">@killcolor
 
-s = '''\
+s = r'''\
 
 """Generic output formatting.
 """
@@ -16830,5 +16071,1502 @@ else:
 @language coffeescript
 @tabwidth -4
 </t>
+<t tx="ekr.20161116094845.1">@killcolor
+
+s = '''\
+class NullFormatter:
+
+    def end_paragraph(self, blankline): pass
+    def add_line_break(self): pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116095335.1">@killcolor
+
+s = '''\
+class AbstractFormatter:
+    """The standard formatter.
+
+    This implementation has demonstrated wide applicability to many writers,
+    and may be used directly in most circumstances.  It has been used to
+    implement a full-featured World Wide Web browser.
+
+    """
+
+    #  Space handling policy:  blank spaces at the boundary between elements
+    #  are handled by the outermost context.  "Literal" data is not checked
+    #  to determine context, so spaces in literal data are handled directly
+    #  in all circumstances.
+
+    def __init__(self, writer):
+        self.writer = writer            # Output device
+        self.align = None               # Current alignment
+        self.align_stack = []           # Alignment stack
+        self.font_stack = []            # Font state
+        self.margin_stack = []          # Margin state
+        self.spacing = None             # Vertical spacing state
+        self.style_stack = []           # Other state, e.g. color
+        self.nospace = 1                # Should leading space be suppressed
+        self.softspace = 0              # Should a space be inserted
+        self.para_end = 1               # Just ended a paragraph
+        self.parskip = 0                # Skipped space between paragraphs?
+        self.hard_break = 1             # Have a hard break
+        self.have_label = 0
+
+    def format_counter(self, format, counter):
+        label = ''
+        for c in format:
+            if c == '1':
+                label = label + ('%d' % counter)
+            elif c in 'aA':
+                if counter &gt; 0:
+                    label = label + self.format_letter(c, counter)
+            elif c in 'iI':
+                if counter &gt; 0:
+                    label = label + self.format_roman(c, counter)
+            else:
+                label = label + c
+        return label
+
+    def format_letter(self, case, counter):
+        label = ''
+        while counter &gt; 0:
+            counter, x = divmod(counter-1, 26)
+            # This makes a strong assumption that lowercase letters
+            # and uppercase letters form two contiguous blocks, with
+            # letters in order!
+            s = chr(ord(case) + x)
+            label = s + label
+        return label
+
+    def format_roman(self, case, counter):
+        ones = ['i', 'x', 'c', 'm']
+        fives = ['v', 'l', 'd']
+        label, index = '', 0
+        # This will die of IndexError when counter is too big
+        while counter &gt; 0:
+            counter, x = divmod(counter, 10)
+            if x == 9:
+                label = ones[index] + ones[index+1] + label
+            elif x == 4:
+                label = ones[index] + fives[index] + label
+            else:
+                if x &gt;= 5:
+                    s = fives[index]
+                    x = x-5
+                else:
+                    s = ''
+                s = s + ones[index]*x
+                label = s + label
+            index = index + 1
+        if case == 'I':
+            return label.upper()
+        return label
+
+    def add_flowing_data(self, data):
+        if not data: return
+        # The following looks a bit convoluted but is a great improvement over
+        # data = regsub.gsub('[' + string.whitespace + ']+', ' ', data)
+        prespace = data[:1].isspace()
+        postspace = data[-1:].isspace()
+        data = " ".join(data.split())
+        if self.nospace and not data:
+            return
+        elif prespace or self.softspace:
+            if not data:
+                if not self.nospace:
+                    self.softspace = 1
+                    self.parskip = 0
+                return
+            if not self.nospace:
+                data = ' ' + data
+        self.hard_break = self.nospace = self.para_end = \
+                          self.parskip = self.have_label = 0
+        self.softspace = postspace
+        self.writer.send_flowing_data(data)
+
+    def add_literal_data(self, data):
+        if not data: return
+        if self.softspace:
+            self.writer.send_flowing_data(" ")
+        self.hard_break = data[-1:] == '\n'
+        self.nospace = self.para_end = self.softspace = \
+                       self.parskip = self.have_label = 0
+        self.writer.send_literal_data(data)
+
+    def flush_softspace(self):
+        if self.softspace:
+            self.hard_break = self.para_end = self.parskip = \
+                              self.have_label = self.softspace = 0
+            self.nospace = 1
+            self.writer.send_flowing_data(' ')
+
+    def push_alignment(self, align):
+        if align and align != self.align:
+            self.writer.new_alignment(align)
+            self.align = align
+            self.align_stack.append(align)
+        else:
+            self.align_stack.append(self.align)
+
+    def pop_alignment(self):
+        if self.align_stack:
+            del self.align_stack[-1]
+        if self.align_stack:
+            self.align = align = self.align_stack[-1]
+            self.writer.new_alignment(align)
+        else:
+            self.align = None
+            self.writer.new_alignment(None)
+
+    def push_font(self, (size, i, b, tt)):
+        if self.softspace:
+            self.hard_break = self.para_end = self.softspace = 0
+            self.nospace = 1
+            self.writer.send_flowing_data(' ')
+        if self.font_stack:
+            csize, ci, cb, ctt = self.font_stack[-1]
+            if size is AS_IS: size = csize
+            if i is AS_IS: i = ci
+            if b is AS_IS: b = cb
+            if tt is AS_IS: tt = ctt
+        font = (size, i, b, tt)
+        self.font_stack.append(font)
+        self.writer.new_font(font)
+
+    def pop_font(self):
+        if self.font_stack:
+            del self.font_stack[-1]
+        if self.font_stack:
+            font = self.font_stack[-1]
+        else:
+            font = None
+        self.writer.new_font(font)
+
+    def push_margin(self, margin):
+        self.margin_stack.append(margin)
+        fstack = filter(None, self.margin_stack)
+        if not margin and fstack:
+            margin = fstack[-1]
+        self.writer.new_margin(margin, len(fstack))
+
+    def pop_margin(self):
+        if self.margin_stack:
+            del self.margin_stack[-1]
+        fstack = filter(None, self.margin_stack)
+        if fstack:
+            margin = fstack[-1]
+        else:
+            margin = None
+        self.writer.new_margin(margin, len(fstack))
+
+    def set_spacing(self, spacing):
+        self.spacing = spacing
+        self.writer.new_spacing(spacing)
+
+    def push_style(self, *styles):
+        if self.softspace:
+            self.hard_break = self.para_end = self.softspace = 0
+            self.nospace = 1
+            self.writer.send_flowing_data(' ')
+        for style in styles:
+            self.style_stack.append(style)
+        self.writer.new_styles(tuple(self.style_stack))
+
+    def pop_style(self, n=1):
+        del self.style_stack[-n:]
+        self.writer.new_styles(tuple(self.style_stack))
+
+    def assert_line_data(self, flag=1):
+        self.nospace = self.hard_break = not flag
+        self.para_end = self.parskip = self.have_label = 0
+
+
+class NullWriter:
+    """Minimal writer interface to use in testing &amp; inheritance.
+
+    A writer which only provides the interface definition; no actions are
+    taken on any methods.  This should be the base class for all writers
+    which do not need to inherit any implementation methods.
+
+    """
+    def __init__(self): pass
+    def flush(self): pass
+    def new_alignment(self, align): pass
+    def new_font(self, font): pass
+    def new_margin(self, margin, level): pass
+    def new_spacing(self, spacing): pass
+    def new_styles(self, styles): pass
+    def send_paragraph(self, blankline): pass
+    def send_line_break(self): pass
+    def send_hor_rule(self, *args, **kw): pass
+    def send_label_data(self, data): pass
+    def send_flowing_data(self, data): pass
+    def send_literal_data(self, data): pass
+
+
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def new_alignment(self, align):
+        print "new_alignment(%s)" % `align`
+
+    def new_font(self, font):
+        print "new_font(%s)" % `font`
+
+    def new_margin(self, margin, level):
+        print "new_margin(%s, %d)" % (`margin`, level)
+
+    def new_spacing(self, spacing):
+        print "new_spacing(%s)" % `spacing`
+
+    def new_styles(self, styles):
+        print "new_styles(%s)" % `styles`
+
+    def send_paragraph(self, blankline):
+        print "send_paragraph(%s)" % `blankline`
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+    """Simple writer class which writes output on the file object passed in
+    as the file parameter or, if file is omitted, on standard output.  The
+    output is simply word-wrapped to the number of columns specified by
+    the maxcol parameter.  This class is suitable for reflowing a sequence
+    of paragraphs.
+
+    """
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100231.1">@killcolor
+
+s = '''\
+class NullWriter:
+    """Minimal writer interface to use in testing &amp; inheritance.
+
+    A writer which only provides the interface definition; no actions are
+    taken on any methods.  This should be the base class for all writers
+    which do not need to inherit any implementation methods.
+
+    """
+    def __init__(self): pass
+    def flush(self): pass
+    def new_alignment(self, align): pass
+    def new_font(self, font): pass
+    def new_margin(self, margin, level): pass
+    def new_spacing(self, spacing): pass
+    def new_styles(self, styles): pass
+    def send_paragraph(self, blankline): pass
+    def send_line_break(self): pass
+    def send_hor_rule(self, *args, **kw): pass
+    def send_label_data(self, data): pass
+    def send_flowing_data(self, data): pass
+    def send_literal_data(self, data): pass
+
+
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def new_alignment(self, align):
+        print "new_alignment(%s)" % `align`
+
+    def new_font(self, font):
+        print "new_font(%s)" % `font`
+
+    def new_margin(self, margin, level):
+        print "new_margin(%s, %d)" % (`margin`, level)
+
+    def new_spacing(self, spacing):
+        print "new_spacing(%s)" % `spacing`
+
+    def new_styles(self, styles):
+        print "new_styles(%s)" % `styles`
+
+    def send_paragraph(self, blankline):
+        print "send_paragraph(%s)" % `blankline`
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+    """Simple writer class which writes output on the file object passed in
+    as the file parameter or, if file is omitted, on standard output.  The
+    output is simply word-wrapped to the number of columns specified by
+    the maxcol parameter.  This class is suitable for reflowing a sequence
+    of paragraphs.
+
+    """
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100305.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def new_alignment(self, align):
+        print "new_alignment(%s)" % `align`
+
+    def new_font(self, font):
+        print "new_font(%s)" % `font`
+
+    def new_margin(self, margin, level):
+        print "new_margin(%s, %d)" % (`margin`, level)
+
+    def new_spacing(self, spacing):
+        print "new_spacing(%s)" % `spacing`
+
+    def new_styles(self, styles):
+        print "new_styles(%s)" % `styles`
+
+    def send_paragraph(self, blankline):
+        print "send_paragraph(%s)" % `blankline`
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+    """Simple writer class which writes output on the file object passed in
+    as the file parameter or, if file is omitted, on standard output.  The
+    output is simply word-wrapped to the number of columns specified by
+    the maxcol parameter.  This class is suitable for reflowing a sequence
+    of paragraphs.
+
+    """
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100359.1">@killcolor
+
+s = '''\
+class DumbWriter(NullWriter):
+    """Simple writer class which writes output on the file object passed in
+    as the file parameter or, if file is omitted, on standard output.  The
+    output is simply word-wrapped to the number of columns specified by
+    the maxcol parameter.  This class is suitable for reflowing a sequence
+    of paragraphs.
+
+    """
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100445.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def new_alignment(self, align):
+        print "new_alignment(%s)" % `align`
+
+    def new_font(self, font):
+        print "new_font(%s)" % `font`
+
+    def new_margin(self, margin, level):
+        print "new_margin(%s, %d)" % (`margin`, level)
+
+    def new_spacing(self, spacing):
+        print "new_spacing(%s)" % `spacing`
+
+    def new_styles(self, styles):
+        print "new_styles(%s)" % `styles`
+
+    def send_paragraph(self, blankline):
+        print "send_paragraph(%s)" % `blankline`
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100555.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def new_alignment(self, align):
+        print "new_alignment(%s)" % `align`
+
+    def new_font(self, font):
+        print "new_font(%s)" % `font`
+
+    def new_margin(self, margin, level):
+        print "new_margin(%s, %d)" % (`margin`, level)
+
+    def new_spacing(self, spacing):
+        print "new_spacing(%s)" % `spacing`
+
+    def new_styles(self, styles):
+        print "new_styles(%s)" % `styles`
+
+    def send_paragraph(self, blankline):
+        print "send_paragraph(%s)" % `blankline`
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100652.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+    def send_flowing_data(self, data):
+        if not data: return
+        atbreak = self.atbreak or data[0].isspace()
+        col = self.col
+        maxcol = self.maxcol
+        write = self.file.write
+        for word in data.split():
+            if atbreak:
+                if col + len(word) &gt;= maxcol:
+                    write('\n')
+                    col = 0
+                else:
+                    write(' ')
+                    col = col + 1
+            write(word)
+            col = col + len(word)
+            atbreak = 1
+        self.col = col
+        self.atbreak = data[-1].isspace()
+
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100728.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def reset(self):
+        self.col = 0
+        self.atbreak = 0
+
+    def send_paragraph(self, blankline):
+        self.file.write('\n'*blankline)
+        self.col = 0
+        self.atbreak = 0
+
+    def send_line_break(self):
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116100848.1">@killcolor
+
+s = '''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116101134.1">@killcolor
+
+s = r'''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+    def send_literal_data(self, data):
+        self.file.write(data)
+        i = data.rfind('\n')
+        if i &gt;= 0:
+            self.col = 0
+            data = data[i+1:]
+        data = data.expandtabs()
+        self.col = self.col + len(data)
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116101625.1">@killcolor
+
+s = r'''\
+class AbstractWriter(NullWriter):
+    """A writer which can be used in debugging formatters, but not much else.
+
+    Each method simply announces itself by printing its name and
+    arguments on standard output.
+
+    """
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116101731.1">@killcolor
+
+s = r'''\
+class AbstractWriter(NullWriter):
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161116101840.1">@killcolor
+
+s = r'''\
+class AbstractWriter(NullWriter):
+
+    def send_line_break(self):
+        print "send_line_break()"
+
+    def send_hor_rule(self, *args, **kw):
+        print "send_hor_rule()"
+
+    def send_label_data(self, data):
+        print "send_label_data(%s)" % `data`
+
+    def send_flowing_data(self, data):
+        print "send_flowing_data(%s)" % `data`
+
+    def send_literal_data(self, data):
+        print "send_literal_data(%s)" % `data`
+
+class DumbWriter(NullWriter):
+
+    def __init__(self, file=None, maxcol=72):
+        self.file = file or sys.stdout
+        self.maxcol = maxcol
+        NullWriter.__init__(self)
+        self.reset()
+
+    def send_hor_rule(self, *args, **kw):
+        self.file.write('\n')
+        self.file.write('-'*self.maxcol)
+        self.file.write('\n')
+        self.col = 0
+        self.atbreak = 0
+
+def test(file = None):
+    w = DumbWriter()
+    f = AbstractFormatter(w)
+    if file is not None:
+        fp = open(file)
+    elif sys.argv[1:]:
+        fp = open(sys.argv[1])
+    else:
+        fp = sys.stdin
+    while 1:
+        line = fp.readline()
+        if not line:
+            break
+        if line == '\n':
+            f.end_paragraph(1)
+        else:
+            f.add_flowing_data(line)
+    f.end_paragraph(0)
+
+if __name__ == '__main__':
+    test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20161116102232.1"></t>
 </tnodes>
 </leo_file>

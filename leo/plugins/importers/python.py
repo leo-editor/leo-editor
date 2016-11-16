@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 Target = linescanner.Target
 #@+<< python: v2 >>
 #@+node:ekr.20161110121459.1: ** << python: v2 >>
-v2 = False # True: use v2_gen_lines.
+v2 = True # True: use v2_gen_lines.
 #@-<< python: v2 >>
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes
@@ -443,10 +443,10 @@ class Py_Importer(Importer):
                 self.add_line(top.p, line)
             else:
                 # An unusual special case: underindented trailing lines.
-                if trace: g.trace('UNDERINDENT', top.ref_flag)
-                self.cut_stack(new_state, stack)
+                ### if True or trace: g.trace('UNDERINDENT', self.root.h)
+                ########### self.cut_stack(new_state, stack)
                 top = stack[-1]
-                top.gen_refs = True
+                ### top.gen_refs = True ### Too drastic.
                 self.add_line(top.p, line)
             prev_state = new_state
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
