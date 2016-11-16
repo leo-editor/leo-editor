@@ -101,8 +101,8 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-        comment_delim, junk1, junk2 = g.set_delims_from_language(self.name)
-        self.comment_delim = comment_delim
+        ### comment_delim, junk1, junk2 = g.set_delims_from_language(self.name)
+        ### self.comment_delim = comment_delim
 
         # Constants...
         data = g.set_delims_from_language(self.name)
@@ -116,7 +116,7 @@ class Importer(object):
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = c.tab_width # Also set in run()
-        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (comment_delim or ''))
+        self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
 
         # Settings...
         self.at_auto_warns_about_leading_whitespace = c.config.getBool(
@@ -295,7 +295,7 @@ class Importer(object):
         def d(n):
             return 0 if context else n
 
-        comment, block1, block2 = self.comment_delim, self.block1, self.block2
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
             
         table = (
             # in-ctx: the next context when the pattern matches the line *and* the context.
@@ -361,7 +361,7 @@ class Importer(object):
             importer.test_scan_state(tests, Python_State)
         '''
         trace = False and g.unitTesting
-        assert self.comment_delim == '#', self.comment_delim
+        assert self.single_comment == '#', self.single_comment
         trace_contexts = False
         trace_states = True
         table = self.get_table(context='')
@@ -450,7 +450,6 @@ class Importer(object):
         tail_p = None
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
-        # if g.unitTesting: g.pdb() ###
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
             new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
@@ -466,7 +465,7 @@ class Importer(object):
     #@+node:ekr.20161108160409.2: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and g.unitTesting ### not g.unitTesting and self.root.h.endswith('.py')
+        trace = False and g.unitTesting
         trace_stack = False
         if trace and trace_stack:
             print('\n'.join([repr(z) for z in stack]))
@@ -491,50 +490,25 @@ class Importer(object):
     #@+node:ekr.20161108160409.3: *6* i.end_block (sets_tail_p)
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
-        is_python = self.name == 'python'
+        ### p = tail_p or stack[-1].p
         p = stack[-1].p
-        if is_python:
-            tail_p = self.end_python_block(line, new_state, p, stack)
-        else:
-            self.add_line(p, line)
-            self.cut_stack(new_state, stack)
-            tail_p = None if self.gen_refs else p
-        return tail_p
-    #@+node:ekr.20161108160409.4: *6* i.end_python_block
-    def end_python_block(self, line, new_state, p, stack):
-        '''
-        Handle lines at a lower level.
-        '''
-        # trace = True and g.unitTesting
-        assert not self.is_ws_line(line)
+        self.add_line(p, line)
         self.cut_stack(new_state, stack)
-        target = stack[-1]
-        # if trace: g.trace(new_state, line)
-        if new_state.starts:
-            h = self.clean_headline(line)
-            child = self.v2_create_child_node(target.p.parent(), line, h)
-            stack.pop()
-            stack.append(Target(child, new_state))
-            return None
-        else:
-            # Leave the stack alone: put lines in the node at this level.
-            p = target.p
-            self.add_line(p, line)
-            return p
+        tail_p = None if self.gen_refs else p
+        return tail_p
     #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
-    #@+node:ekr.20161110070826.1: *6* i.gen_next_line
+    #@+node:ekr.20161110070826.1: *6* i.gen_next_line (good trace)
     def gen_next_line(self, line, prev_state, tail_p):
         '''
         Set up the vars for i.v2_gen_lines.
         
         A separate method is useful while single-stepping.
         '''
-        ### trace = False and not g.unitTesting
-        trace = False and g.unitTesting # and self.root.h.endswith('.py')
+        trace = False
         new_state = self.v2_scan_line(line, prev_state)
         starts_block = new_state.v2_starts_block(prev_state)
         continues_block = new_state.v2_continues_block(prev_state)
@@ -976,7 +950,7 @@ class Importer(object):
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line
     def is_ws_line(self, s):
         '''Return True if s is nothing but whitespace and single-line comments.'''
-        # g.trace(bool(self.ws_pattern.match(s)), repr(s))
+        # g.trace('(Importer)', bool(self.ws_pattern.match(s)), repr(s))
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):

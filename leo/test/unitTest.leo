@@ -1241,8 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
-marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1314,7 +1313,7 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
 <v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
-<v t="ekr.20090529141856.4782" a="M"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
@@ -1341,6 +1340,12 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 <v t="ekr.20161113051029.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh></v>
 <v t="ekr.20161115062917.7"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
 <v t="ekr.20161115062917.8"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161115201207.15"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161115201207.16"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161116045137.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161116045137.10"><vh>buildCoffee = (str) -&gt;</vh></v>
 </v>
 </v>
 </v>
@@ -1385,43 +1390,45 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161115084500.1"><vh>Passed</vh>
+<v t="ekr.20161115084500.1"><vh>Python passed</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
 <v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-</v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
 <v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
 <v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
 <v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
 <v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
 <v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
 <v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
 <v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
 <v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+</v>
+<v t="ekr.20161115210617.1"><vh>Python fail</vh>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+</v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -1478,6 +1485,7 @@ marks="ekr.20111120124051.3992,ekr.20090529141856.4782,"><vh>@file activeUnitTes
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20161115063144.11"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -14116,7 +14124,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -15550,7 +15558,7 @@ for language in ('python', 'coffeescript'):
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
-    assert importer.comment_delim == '#', importer.comment_delim
+    assert importer.single_comment == '#', importer.single_comment
     for line in lines_table:
         lines = [line]
         n = importer.get_leading_indent(lines, 0)
@@ -16787,6 +16795,41 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
+</t>
+<t tx="ekr.20161115201207.15"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161115201207.16">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161115210617.1"></t>
+<t tx="ekr.20161116045137.10">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161116045137.9"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
 </t>
 </tnodes>
 </leo_file>

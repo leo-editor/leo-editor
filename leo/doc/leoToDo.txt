@@ -9,10 +9,12 @@
 
 - Put engineering notebook files in GitHub .md files.
 
+- Pylint --recent option.  Last hour? Last day?
+
 - Use regex in g.match.  Add g.match_any.
     pattern = '|'.join([r"\b%s\b" z for z in args])
     
-Leo 5.5 final by Thanksgiving.
+Leo 5.5 final by Thanksgiving?
 
 - Encourage everyone to use issue tracker.
 

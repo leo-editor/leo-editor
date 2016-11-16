@@ -13093,6 +13093,23 @@ buildCoffee = (str) ->
 
   builder    = new Builder
   scriptNode = parser.parse str
+#@+node:ekr.20161116045137.9: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
+# Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+#@+node:ekr.20161116045137.10: *8* buildCoffee = (str) ->
+buildCoffee = (str) ->
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4732: *6* @test elisp functions
 s = '''\
@@ -13836,7 +13853,7 @@ class FlagsEnum extends Enum {
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
-#@+node:ekr.20161115084500.1: *6* Passed
+#@+node:ekr.20161115084500.1: *6* Python passed
 #@+node:ekr.20161115092708.1: *7* @test i.scan_state (for python)
 # g.cls()
 import leo.plugins.importers.python as python
@@ -13868,6 +13885,20 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
+#@+node:ekr.20161115063144.3: *7* @test python bad class test
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+class testClass1 # no colon
+    pass
+
+def spam():
+    pass
+'''
+
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *7* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
 s = '''\
@@ -13884,20 +13915,6 @@ class class2:
         pass
 # last line
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.3: *7* @test python bad class test
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-class testClass1 # no colon
-    pass
-
-def spam():
-    pass
-'''
-
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.4: *7* @test python bug 603720
@@ -13921,7 +13938,7 @@ foo()
 '''
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.5: *6* @test python class test 2
+#@+node:ekr.20161115063144.5: *7* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -13931,7 +13948,7 @@ class testClass2:
 '''
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.6: *6* @test python class tests 1
+#@+node:ekr.20161115063144.6: *7* @test python class tests 1
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -13945,7 +13962,7 @@ class testClass1:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.7: *6* @test python comment after dict assign
+#@+node:ekr.20161115063144.7: *7* @test python comment after dict assign
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -13958,7 +13975,7 @@ tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.8: *6* @test python decls test 1
+#@+node:ekr.20161115063144.8: *7* @test python decls test 1
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -13969,7 +13986,7 @@ a = 3
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.9: *6* @test python decorator
+#@+node:ekr.20161115063144.9: *7* @test python decorator
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -13983,7 +14000,7 @@ class Index:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.10: *6* @test python def inside def
+#@+node:ekr.20161115063144.10: *7* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14000,32 +14017,7 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.11: *6* @test python def test 1
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-
-class test:
-
-    def importFilesCommand (self,files=None,treeType=None,
-        perfectImport=True,testing=False,verbose=False):
-            # Not a command.  It must *not* have an event arg.
-
-        c = self.c
-        if c == None: return
-        p = c.currentPosition()
-
-    # Used by paste logic.
-
-    def convertMoreStringToOutlineAfter (self,s,firstVnode):
-        s = string.replace(s,"\\r","")
-        strings = string.split(s,"\\n")
-        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.12: *6* @test python def test 2
+#@+node:ekr.20161115063144.12: *7* @test python def test 2
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14042,7 +14034,7 @@ class test:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.13: *6* @test python docstring only
+#@+node:ekr.20161115063144.13: *7* @test python docstring only
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14052,7 +14044,7 @@ s = '''\
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.14: *6* @test python empty decls
+#@+node:ekr.20161115063144.14: *7* @test python empty decls
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14063,7 +14055,7 @@ a = 3
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.15: *6* @test python extra leading ws test
+#@+node:ekr.20161115063144.15: *7* @test python extra leading ws test
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14076,7 +14068,7 @@ class cls:
 
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.16: *6* @test python indent decls
+#@+node:ekr.20161115063144.16: *7* @test python indent decls
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14117,23 +14109,7 @@ class mainPages(mammalProviderBase):
 ''' 
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.17: *6* @test python leoImportNosent.py
-@encoding utf-8
-    # leoImport.py uses unicode characters, so *this* test must have the directive above.
-
-@tabwidth -4
-    # Required when running unit tests externally.
-
-fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
-
-f = open(fileName)
-s = f.read()
-f.close()
-
-# g.app.unitTestDict['testingLeoImport.py'] = True
-
-c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
-#@+node:ekr.20161115063144.18: *6* @test python looks like section ref
+#@+node:ekr.20161115063144.18: *7* @test python looks like section ref
 # ~/at-auto-test.py
 
 s = '''\
@@ -14142,7 +14118,7 @@ a = b << c >> d
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.19: *6* @test python minimal class 1
+#@+node:ekr.20161115063144.19: *7* @test python minimal class 1
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14164,7 +14140,7 @@ def gpRun(gp, cmd, args, log = None):
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
 
-#@+node:ekr.20161115063144.20: *6* @test python minimal class 2
+#@+node:ekr.20161115063144.20: *7* @test python minimal class 2
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14177,7 +14153,7 @@ def followingDef():
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.21: *6* @test python minimal class 3
+#@+node:ekr.20161115063144.21: *7* @test python minimal class 3
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14190,7 +14166,7 @@ def followingDef(): # comment
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.22: *6* @test python overindent def--no following def
+#@+node:ekr.20161115063144.22: *7* @test python overindent def--no following def
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14208,7 +14184,7 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.23: *6* @test python overindent def--one following def
+#@+node:ekr.20161115063144.23: *7* @test python overindent def--one following def
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14229,25 +14205,7 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.24: *6* @test python overindented def 3
-@tabwidth -4
-    # Required when running unit tests externally.
-
-# This caused PyParse.py not to be imported properly.
-s = r'''
-import re
-if 0: # Causes the 'overindent'
-   if 0:   # for throwaway debugging output
-      def dump(*stuff):
-        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
-for ch in "({[":
-   _tran[ord(ch)] = '('
-class testClass1:
-    pass
-'''
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
-#@+node:ekr.20161115063144.25: *6* @test python string test: extra indent
+#@+node:ekr.20161115063144.25: *7* @test python string test: extra indent
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14266,7 +14224,7 @@ class BaseScanner:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.26: *6* @test python string underindent lines
+#@+node:ekr.20161115063144.26: *7* @test python string underindent lines
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14282,7 +14240,7 @@ class BaseScanner:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.27: *6* @test python string underindent lines 2
+#@+node:ekr.20161115063144.27: *7* @test python string underindent lines 2
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14299,7 +14257,7 @@ class BaseScanner:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.28: *6* @test python trailing comment
+#@+node:ekr.20161115063144.28: *7* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14312,7 +14270,7 @@ class aClass: # trailing comment
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.29: *6* @test python trailing comment--outer levels
+#@+node:ekr.20161115063144.29: *7* @test python trailing comment--outer levels
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14323,7 +14281,7 @@ pass
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.30: *6* @test python two functions
+#@+node:ekr.20161115063144.30: *7* @test python two functions
 # For comparison with unindent does not end function.
 
 @tabwidth -4
@@ -14339,26 +14297,7 @@ def bar():
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.31: *6* @test python underindent method
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-
-class emptyClass: 
-
-    def spam():
-
-        """docstring line 1
-under-indented docstring line"""
-        pass
-
-def followingDef(): # comment
-    pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.32: *6* @test python unindent in triple string does not end function
+#@+node:ekr.20161115063144.32: *7* @test python unindent in triple string does not end function
 @tabwidth -4
     # Required when running unit tests externally.
 
@@ -14395,7 +14334,67 @@ if showTree:
             while p.hasChildren():
                 p.firstChild().doDelete()
         c.redraw(p)
-#@+node:ekr.20161115063144.33: *6* @test python unittest/perfectImport/formatter.py
+#@+node:ekr.20161115210617.1: *6* Python fail
+#@+node:ekr.20161115063144.11: *7* @test python def test 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+
+class test:
+
+    def importFilesCommand (self,files=None,treeType=None,
+        perfectImport=True,testing=False,verbose=False):
+            # Not a command.  It must *not* have an event arg.
+
+        c = self.c
+        if c == None: return
+        p = c.currentPosition()
+
+    # Used by paste logic.
+
+    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+        s = string.replace(s,"\\r","")
+        strings = string.split(s,"\\n")
+        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.17: *7* @test python leoImportNosent.py
+@encoding utf-8
+    # leoImport.py uses unicode characters, so *this* test must have the directive above.
+
+@tabwidth -4
+    # Required when running unit tests externally.
+
+fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
+
+f = open(fileName)
+s = f.read()
+f.close()
+
+# g.app.unitTestDict['testingLeoImport.py'] = True
+
+c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
+#@+node:ekr.20161115063144.24: *7* @test python overindented def 3
+@tabwidth -4
+    # Required when running unit tests externally.
+
+# This caused PyParse.py not to be imported properly.
+s = r'''
+import re
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+for ch in "({[":
+   _tran[ord(ch)] = '('
+class testClass1:
+    pass
+'''
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
+#@+node:ekr.20161115063144.33: *7* @test python unittest/perfectImport/formatter.py
 @killcolor
 
 s = '''\
@@ -14832,6 +14831,25 @@ def test(file = None):
 
 if __name__ == '__main__':
     test()
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.31: *7* @test python underindent method
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+
+class emptyClass: 
+
+    def spam():
+
+        """docstring line 1
+under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
@@ -16061,7 +16079,7 @@ for language in ('python', 'coffeescript'):
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
-    assert importer.comment_delim == '#', importer.comment_delim
+    assert importer.single_comment == '#', importer.single_comment
     for line in lines_table:
         lines = [line]
         n = importer.get_leading_indent(lines, 0)
