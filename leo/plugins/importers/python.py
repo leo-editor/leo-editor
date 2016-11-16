@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 Target = linescanner.Target
 #@+<< python: v2 >>
 #@+node:ekr.20161110121459.1: ** << python: v2 >>
-v2 = True # True: use v2_gen_lines.
+v2 = False # True: use v2_gen_lines.
 #@-<< python: v2 >>
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes

@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.49" body_secondary_ratio="0.71">
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.41">
 	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1134,7 +1134,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1226,21 +1226,7 @@
 </v>
 <v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh>
-<v t="ekr.20161112072933.22"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
-<v t="ekr.20161112072933.23"><vh>buildCoffee = (str) -&gt;</vh></v>
-</v>
-<v t="ekr.20161113051029.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh></v>
-<v t="ekr.20161115062917.7"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
-<v t="ekr.20161115062917.8"><vh>buildCoffee = (str) -&gt;</vh></v>
-</v>
-<v t="ekr.20161115201207.15"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
-<v t="ekr.20161115201207.16"><vh>buildCoffee = (str) -&gt;</vh></v>
-</v>
-<v t="ekr.20161116045137.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
-<v t="ekr.20161116045137.10"><vh>buildCoffee = (str) -&gt;</vh></v>
-</v>
-</v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh></v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
@@ -1378,7 +1364,7 @@
 <v t="ekr.20161011052016.1"></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161116102232.1"><vh>formatter.py stuff (Don't delete yet)</vh>
+<v t="ekr.20161116102232.1"><vh>@ignore formatter.py stuff (Don't delete yet)</vh>
 <v t="ekr.20161116095335.1"><vh>@test python 1 formatter (fails)</vh></v>
 <v t="ekr.20161116100231.1"><vh>@test python 2 formatter (fails)</vh></v>
 <v t="ekr.20161116100305.1"><vh>@test python 3 formatter (fails)</vh></v>
@@ -10203,7 +10189,7 @@ for func,s,expected in table:
     assert result == expected,'expected %s got %s' % (
         repr(expected),repr(result))
 </t>
-<t tx="ekr.20111112093605.4679" str_leo_pos="9"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
+<t tx="ekr.20111112093605.4679" str_leo_pos="8"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
 # These are now EKR's preferred settings everywhere:
 # there should be little need to run unit tests externally.
 
@@ -13431,7 +13417,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -14839,7 +14825,7 @@ buildCoffee = (str) -&gt;
 '''
 
 
-c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
 
 </t>
 <t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
@@ -15000,41 +14986,6 @@ c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
     pass
 </t>
 <t tx="ekr.20161112061414.4">bClass = aClass
-</t>
-<t tx="ekr.20161112072933.22"># Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-</t>
-<t tx="ekr.20161112072933.23">buildCoffee = (str) -&gt;
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-</t>
-<t tx="ekr.20161113051029.9"></t>
-<t tx="ekr.20161115062917.7"># Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-</t>
-<t tx="ekr.20161115062917.8">buildCoffee = (str) -&gt;
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
 </t>
 <t tx="ekr.20161115063006.1"></t>
 <t tx="ekr.20161115063144.10">@tabwidth -4
@@ -16036,41 +15987,7 @@ else:
         g.Bunch(line='a = {[(')
     ]
 </t>
-<t tx="ekr.20161115201207.15"># Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-</t>
-<t tx="ekr.20161115201207.16">buildCoffee = (str) -&gt;
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-</t>
 <t tx="ekr.20161115210617.1"></t>
-<t tx="ekr.20161116045137.10">buildCoffee = (str) -&gt;
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-</t>
-<t tx="ekr.20161116045137.9"># Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-</t>
 <t tx="ekr.20161116094845.1">@killcolor
 
 s = '''\
@@ -17565,8 +17482,9 @@ if __name__ == '__main__':
     test()
 '''
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=True)
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20161116102232.1"></t>
+<t tx="ekr.20161116102232.1">@ignore</t>
+<t tx="ekr.20161116102447.1"></t>
 </tnodes>
 </leo_file>

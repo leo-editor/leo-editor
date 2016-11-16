@@ -13039,77 +13039,8 @@ buildCoffee = (str) ->
 '''
 
 
-c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
 
-#@+node:ekr.20161112072933.22: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
-# Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161112072933.23: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-#@+node:ekr.20161113051029.9: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
-#@+node:ekr.20161115062917.7: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
-# Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161115062917.8: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-#@+node:ekr.20161115201207.15: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
-# Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161115201207.16: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-#@+node:ekr.20161116045137.9: *7* @clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a
-# Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161116045137.10: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4732: *6* @test elisp functions
 s = '''\
