@@ -426,19 +426,28 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and not g.unitTesting and parent.h.endswith('at-auto-unit-test.py')
+        trace = False and g.unitTesting
         prev_state = Python_State()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
-            if trace: g.trace('%r\n%s' % (line, new_state))
+            top = stack[-1]
+            self.gen_refs = top.gen_refs
+            if trace: g.trace('\nline: %r\nnew_state: %s\ntop: %s' % (
+                line, new_state, top))
             if self.starts_block(line, new_state):
                 self.start_new_block(line, new_state, stack)
+            elif new_state.indent >= top.state.indent:
+                self.add_line(top.p, line)
             else:
-                p = stack[-1].p
-                self.add_line(p, line)
+                # An unusual special case: underindented trailing lines.
+                if trace: g.trace('UNDERINDENT', top.ref_flag)
+                self.cut_stack(new_state, stack)
+                top = stack[-1]
+                top.gen_refs = True
+                self.add_line(top.p, line)
             prev_state = new_state
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
     def cut_stack(self, new_state, stack):
@@ -447,7 +456,7 @@ class Py_Importer(Importer):
         if trace:
             g.trace(new_state)
             g.printList(stack)
-        assert stack # Fail on entry.
+        assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.indent < top_state.indent:
@@ -463,12 +472,16 @@ class Py_Importer(Importer):
                 g.trace('OVERSHOOT: new_state > top_state', top_state)
                     # Might happen with javascript, shouldn't happen for python.
                 break
-        assert stack # Fail on exit.
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161116034633.7: *5* python_i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
-        trace = True and g.unitTesting # and self.root.h.endswith('at-auto-unit-test.py')
+        trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
         top = target=stack[-1]
         if trace:
@@ -476,6 +489,7 @@ class Py_Importer(Importer):
             g.trace('top_state', top.state)
             g.trace('new_state', new_state)
             g.printList(stack)
+            # g.pdb()
         if new_state.indent > top.state.indent:
             target=stack[-1]
             parent = target.p
@@ -495,7 +509,6 @@ class Py_Importer(Importer):
             parent = target.p
             h = self.v2_gen_ref(line, parent, target)
             child = self.v2_create_child_node(parent, line, h)
-            stack.pop()
             stack.append(Target(child, new_state))
     #@+node:ekr.20161116040557.1: *5* python_i.starts_block
     def starts_block(self, line, new_state):

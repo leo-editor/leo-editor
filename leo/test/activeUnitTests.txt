@@ -14017,6 +14017,31 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.11: *7* @test python def test 1
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+
+class test:
+
+    def importFilesCommand (self,files=None,treeType=None,
+        perfectImport=True,testing=False,verbose=False):
+            # Not a command.  It must *not* have an event arg.
+
+        c = self.c
+        if c == None: return
+        p = c.currentPosition()
+
+    # Used by paste logic.
+
+    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+        s = string.replace(s,"\\r","")
+        strings = string.split(s,"\\n")
+        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.12: *7* @test python def test 2
 @tabwidth -4
     # Required when running unit tests externally.
@@ -14205,6 +14230,24 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.24: *7* @test python overindented def 3
+@tabwidth -4
+    # Required when running unit tests externally.
+
+# This caused PyParse.py not to be imported properly.
+s = r'''
+import re
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+for ch in "({[":
+   _tran[ord(ch)] = '('
+class testClass1:
+    pass
+'''
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
 #@+node:ekr.20161115063144.25: *7* @test python string test: extra indent
 @tabwidth -4
     # Required when running unit tests externally.
@@ -14297,6 +14340,25 @@ def bar():
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161115063144.31: *7* @test python underindent method
+@tabwidth -4
+    # Required when running unit tests externally.
+
+s = '''\
+
+class emptyClass: 
+
+    def spam():
+
+        """docstring line 1
+under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.32: *7* @test python unindent in triple string does not end function
 @tabwidth -4
     # Required when running unit tests externally.
@@ -14335,31 +14397,6 @@ if showTree:
                 p.firstChild().doDelete()
         c.redraw(p)
 #@+node:ekr.20161115210617.1: *6* Python fail
-#@+node:ekr.20161115063144.11: *7* @test python def test 1
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-
-class test:
-
-    def importFilesCommand (self,files=None,treeType=None,
-        perfectImport=True,testing=False,verbose=False):
-            # Not a command.  It must *not* have an event arg.
-
-        c = self.c
-        if c == None: return
-        p = c.currentPosition()
-
-    # Used by paste logic.
-
-    def convertMoreStringToOutlineAfter (self,s,firstVnode):
-        s = string.replace(s,"\\r","")
-        strings = string.split(s,"\\n")
-        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.17: *7* @test python leoImportNosent.py
 @encoding utf-8
     # leoImport.py uses unicode characters, so *this* test must have the directive above.
@@ -14376,24 +14413,6 @@ f.close()
 # g.app.unitTestDict['testingLeoImport.py'] = True
 
 c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
-#@+node:ekr.20161115063144.24: *7* @test python overindented def 3
-@tabwidth -4
-    # Required when running unit tests externally.
-
-# This caused PyParse.py not to be imported properly.
-s = r'''
-import re
-if 0: # Causes the 'overindent'
-   if 0:   # for throwaway debugging output
-      def dump(*stuff):
-        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
-for ch in "({[":
-   _tran[ord(ch)] = '('
-class testClass1:
-    pass
-'''
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
 #@+node:ekr.20161115063144.33: *7* @test python unittest/perfectImport/formatter.py
 @killcolor
 
@@ -14831,25 +14850,6 @@ def test(file = None):
 
 if __name__ == '__main__':
     test()
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.31: *7* @test python underindent method
-@tabwidth -4
-    # Required when running unit tests externally.
-
-s = '''\
-
-class emptyClass: 
-
-    def spam():
-
-        """docstring line 1
-under-indented docstring line"""
-        pass
-
-def followingDef(): # comment
-    pass
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)

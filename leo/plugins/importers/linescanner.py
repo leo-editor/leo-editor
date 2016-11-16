@@ -1114,8 +1114,10 @@ class Target:
     '''
 
     def __init__(self, p, state):
-        '''Ctor for the Block class.'''
+        '''Target ctor.'''
         self.p = p
+        self.gen_refs = False
+            # Can be forced True.
         self.ref_flag = False
             # True: @others or section reference should be generated.
             # It's always True when gen_refs is True.

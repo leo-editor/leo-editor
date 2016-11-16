@@ -1241,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1403,6 +1403,7 @@
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
 <v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
 <v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
@@ -1414,20 +1415,19 @@
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
 <v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
 <v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 </v>
 <v t="ekr.20161115210617.1"><vh>Python fail</vh>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 </v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
@@ -1485,7 +1485,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161115063144.11"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7996,7 +7995,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="10">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -14124,7 +14123,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
