@@ -441,7 +441,7 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = True and g.unitTesting
+        trace = False and g.unitTesting
         prev_state = Python_State()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
@@ -527,6 +527,7 @@ class Python_State:
             self.bs_nl = prev.bs_nl
             self.context = prev.context
             self.curlies = prev.curlies
+            self.indent = prev.indent
             self.parens = prev.parens
             self.squares = prev.parens
         else:
