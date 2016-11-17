@@ -434,7 +434,7 @@ class Py_Importer(Importer):
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
-            self.gen_refs = top.gen_refs
+            ### self.gen_refs = top.gen_refs
             if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
             if self.starts_block(line, new_state):
@@ -444,15 +444,7 @@ class Py_Importer(Importer):
             elif self.is_ws_line(line):
                 self.add_line(top.p, line)
             else:
-                # Unusual: An underindented "real" line.
-                if trace: g.trace('UNDERINDENT',
-                    g.shortFileName(self.root.h), repr(line))
-                self.cut_stack(new_state, stack)
-                top = stack[-1]
-                self.add_line(top.p, line)
-                # Tricky: force section references.
-                if top.at_others_flag:
-                    top.gen_refs = True
+                self.underindented_line(line, new_state, stack)
             prev_state = new_state
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
     def cut_stack(self, new_state, stack):
@@ -474,8 +466,8 @@ class Py_Importer(Importer):
                 stack.pop()
                 break
             else:
-                g.trace('OVERSHOOT: new_state > top_state', top_state)
-                    # Might happen with javascript, shouldn't happen for python.
+                # This happens often in valid Python programs.
+                if trace: g.trace('new_state > top_state', top_state)
                 break
         # Restore the guard entry if necessary.
         if len(stack) == 1:
@@ -488,31 +480,33 @@ class Py_Importer(Importer):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
-        top = target=stack[-1]
+        top = stack[-1]
         if trace:
             g.trace('line', repr(line))
             g.trace('top_state', top.state)
             g.trace('new_state', new_state)
             g.printList(stack)
-            # g.pdb()
         if new_state.indent > top.state.indent:
-            target=stack[-1]
-            parent = target.p
-            h = self.v2_gen_ref(line, parent, target)
+            top = stack[-1]
+            parent = top.p
+            self.gen_refs = top.gen_refs
+            h = self.v2_gen_ref(line, parent, top)
             child = self.v2_create_child_node(parent, line, h)
             stack.append(Target(child, new_state))
         elif new_state.indent == top.state.indent:
             stack.pop()
-            target=stack[-1]
-            parent = target.p
-            h = self.v2_gen_ref(line, parent, target)
+            top = stack[-1]
+            parent = top.p
+            self.gen_refs = top.gen_refs
+            h = self.v2_gen_ref(line, parent, top)
             child = self.v2_create_child_node(parent, line, h)
             stack.append(Target(child, new_state))
         else:
             self.cut_stack(new_state, stack)
-            target = stack[-1]
-            parent = target.p
-            h = self.v2_gen_ref(line, parent, target)
+            top = stack[-1]
+            parent = top.p
+            self.gen_refs = top.gen_refs
+            h = self.v2_gen_ref(line, parent, top)
             child = self.v2_create_child_node(parent, line, h)
             stack.append(Target(child, new_state))
     #@+node:ekr.20161116040557.1: *5* python_i.starts_block
@@ -522,6 +516,23 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
+    #@+node:ekr.20161116173901.1: *5* python_i.underindent_real_line
+    def underindented_line(self, line, new_state, stack):
+        '''
+        Handle an unusual case: an underindented tail line.
+        
+        line is **not** a class/def line. It *is* underindented so it
+        *terminates* the previous block.
+        '''
+        top = stack[-1]
+        assert new_state.indent < top.state.indent, (new_state, top.state)
+        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
+        self.cut_stack(new_state, stack)
+        top = stack[-1]
+        self.add_line(top.p, line)
+        # Tricky: force section references for later class/def lines.
+        if top.at_others_flag:
+            top.gen_refs = True
     #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
@@ -562,14 +573,10 @@ class Python_State:
     #@+node:ekr.20161114152246.1: *4* py_state.__repr__
     def __repr__(self):
         '''Py_State.__repr__'''
-        return 'PyState: %7r indent: %s {%s} (%s) [%s] bs-nl: %s'  % (
-            self.context, self.indent, self.curlies, self.parens, self.squares, self.bs_nl)
-        ###
-        # return (
-            # 'PyState: %7r indent: %s {%s} (%s) [%s] '  % (
-                # self.context, self.indent, self.curlies, self.parens, self.squares) +
-            # 'starts: %-5s ws: %-5s bs-nl: %-5s' % (
-                # self.starts, self.ws, self.bs_nl))
+        return 'PyState: %7r indent: %2s {%s} (%s) [%s] bs-nl: %s'  % (
+            self.context, self.indent,
+            self.curlies, self.parens, self.squares,
+            int(self.bs_nl))
 
     __str__ = __repr__
     #@+node:ekr.20161114164452.1: *4* py_state.update

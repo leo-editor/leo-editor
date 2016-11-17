@@ -157,11 +157,12 @@ class Importer(object):
         p.v._import_lines = list(lines)
     #@+node:ekr.20161108131153.3: *3* i.check & helpers
     def check(self, unused_s, parent):
-        '''ImportController.check'''
+        '''Importer.check'''
         # g.trace('='*20, self.root.h)
         trace = False and g.unitTesting # and not g.unitTesting
         trace_all = True
         trace_lines = True
+        c = self.c
         no_clean = True # True: strict lws check for *all* languages.
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
@@ -209,7 +210,10 @@ class Importer(object):
         if g.app.unitTesting:
             d = g.app.unitTestDict
             d['result'] = ok
-            if not ok: d['fail'] = g.callers()
+            if not ok:
+                d['fail'] = g.callers()
+                # Used in a unit test.
+                c.importCommands.errors += 1
         if 0: # This is wrong headed.
             if not self.strict and not ok:
                 # Suppress the error if lws is the cause.
@@ -1132,8 +1136,12 @@ class Target:
         self.state = state
 
     def __repr__(self):
-        return 'Target: state: %s p: %s' % (
-            self.state, g.shortFileName(self.p.h))
+        return 'Target: %s @others: %s refs: %s p: %s' % (
+            self.state,
+            int(self.at_others_flag),
+            int(self.gen_refs),
+            g.shortFileName(self.p.h),
+        )
 #@-others
 #@@language python
 #@@tabwidth -4

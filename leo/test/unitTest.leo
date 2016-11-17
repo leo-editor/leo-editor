@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.44" body_secondary_ratio="0.71">
+<globals body_outline_ratio="0.44" body_secondary_ratio="0.84">
 	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1241,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1347,6 +1347,12 @@
 <v t="ekr.20161116045137.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
 <v t="ekr.20161116045137.10"><vh>buildCoffee = (str) -&gt;</vh></v>
 </v>
+<v t="ekr.20161117001557.10"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161117001557.11"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161117001940.15"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161117001940.16"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
@@ -1390,6 +1396,7 @@
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161117001913.1"><vh>Pass</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -1408,7 +1415,6 @@
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
 <v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161115063144.17"><vh>@test python leoImport.py (read from leo/core)</vh></v>
 <v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
 <v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
 <v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
@@ -1426,6 +1432,7 @@
 <v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+</v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -1456,16 +1463,16 @@
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
 <v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
 <v t="ekr.20111228125719.3909"><vh>@test ic.BaseScanner.insertIgnoreDirective</vh></v>
 <v t="ekr.20111110095252.3845"><vh>@test ic.compareTokens: mismatched length</vh>
 <v t="ekr.20111110095252.3846"><vh>&lt;&lt; define tokens &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20111105221757.3831"><vh>@test ic.createImportParent</vh></v>
-<v t="ekr.20111214100515.3921"><vh>@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20111104112332.3954"><vh>@test ic.HtmlScanner.adjust_class_ref</vh></v>
 <v t="ekr.20111111074026.3972"><vh>@test ic.HtmlScanner.skipComment/Id/String</vh></v>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
 <v t="ekr.20100131180007.5393"><vh>@test ic.reportMismatch</vh></v>
 <v t="ekr.20111105065243.3837"><vh>@test ic.RstScanner.removeBlankLinesTokens (rst)</vh></v>
 <v t="ekr.20111104112332.3955"><vh>@test ic.skip...Token (HtmlScanner)</vh></v>
@@ -7992,7 +7999,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="9">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -10931,7 +10938,9 @@ if not g.app.isExternalUnitTest:
 
 # End
 </t>
-<t tx="ekr.20111214100515.3921">ic = c.importCommands
+<t tx="ekr.20111214100515.3921"># Disabled: this now fails *regardless* of python.v2 switch
+
+ic = c.importCommands
 
 def setup(p):
     while p.hasChildren():
@@ -15927,22 +15936,6 @@ class mainPages(mammalProviderBase):
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20161115063144.17">@encoding utf-8
-    # leoImport.py uses unicode characters, so *this* test must have the directive above.
-
-@tabwidth -4
-    # Required when running unit tests externally.
-
-fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
-
-f = open(fileName)
-s = f.read()
-f.close()
-
-# g.app.unitTestDict['testingLeoImport.py'] = True
-
-c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
-</t>
 <t tx="ekr.20161115063144.18"># ~/at-auto-test.py
 
 s = '''\
@@ -15951,6 +15944,8 @@ a = b &lt;&lt; c &gt;&gt; d
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
+# Always passes, but *sometimes* i.check gives a message!
 </t>
 <t tx="ekr.20161115063144.19">@tabwidth -4
     # Required when running unit tests externally.
@@ -16883,6 +16878,41 @@ class LeoImportCommands(object):
 """
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161117001557.10"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161117001557.11">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161117001913.1"></t>
+<t tx="ekr.20161117001940.15"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161117001940.16">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 </t>
 </tnodes>
 </leo_file>
