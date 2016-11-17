@@ -14030,9 +14030,25 @@ class Index:
     @cherrypy.expose
     def index(self):
         return "Hello world!"
+        
+    @cmd('abc')
+    def abc(self):
+        return "abc"
 '''
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
+    index = g.findNodeInTree(c, p, 'index')
+    assert index
+    lines = g.splitLines(index.b)
+    assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
+    assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
+    abc = g.findNodeInTree(c,p, 'abc')
+    lines = g.splitLines(abc.b)
+    assert lines[0] == "@cmd('abc')\n", repr(lines[0])
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.

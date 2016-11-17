@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 Target = linescanner.Target
 #@+<< python: v2 >>
 #@+node:ekr.20161110121459.1: ** << python: v2 >>
-v2 = False # True: use v2_gen_lines.
+v2 = True # True: use v2_gen_lines.
 #@-<< python: v2 >>
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes
@@ -447,6 +447,23 @@ class Py_Importer(Importer):
                 self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
             prev_p = stack[-1].p.copy()
+    #@+node:ekr.20161116173901.1: *5* python_i.add_underindented_line
+    def add_underindented_line(self, line, new_state, stack):
+        '''
+        Handle an unusual case: an underindented tail line.
+        
+        line is **not** a class/def line. It *is* underindented so it
+        *terminates* the previous block.
+        '''
+        top = stack[-1]
+        assert new_state.indent < top.state.indent, (new_state, top.state)
+        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
+        self.cut_stack(new_state, stack)
+        top = stack[-1]
+        self.add_line(top.p, line)
+        # Tricky: force section references for later class/def lines.
+        if top.at_others_flag:
+            top.gen_refs = True
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -476,6 +493,44 @@ class Py_Importer(Importer):
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161117060359.1: *5* python_i.move_decorators & helpers
+    def move_decorators(self, new_p, prev_p):
+        '''Move decorators from the end of prev_p to the start of new_state.p'''
+        # trace = True and g.unitTesting
+        if new_p.v == prev_p.v:
+            return
+        prev_lines = prev_p.v._import_lines
+        new_lines = new_p.v._import_lines
+        moved_lines = []
+        if prev_lines and self.is_at_others(prev_lines[-1]):
+            at_others_line = prev_lines.pop()
+        else:
+            at_others_line = None
+        while prev_lines:
+            line = prev_lines[-1]
+            if self.is_decorator(line):
+                prev_lines.pop()
+                moved_lines.append(line)
+            else:
+                break
+        if at_others_line:
+            prev_lines.append(at_others_line)
+        if moved_lines:
+            new_p.v._import_lines = list(reversed(moved_lines)) + new_lines
+     
+    #@+node:ekr.20161117080504.1: *6* def python_i.is_at_others/is_decorator
+    at_others_pattern = re.compile(r'^\s*@others$')
+
+    def is_at_others(self, line):
+        '''True if line is @others'''
+        return self.at_others_pattern.match(line)
+
+    decorator_pattern = re.compile(r'^\s*@(.*)$')
+
+    def is_decorator(self, line):
+        '''True if line is a python decorator, not a Leo directive.'''
+        m = self.decorator_pattern.match(line)
+        return m and m.group(1) not in g.globalDirectiveList
     #@+node:ekr.20161116034633.7: *5* python_i.start_new_block
     def start_new_block(self, line, new_state, prev_p, stack):
         '''Create a child node and update the stack.'''
@@ -483,6 +538,7 @@ class Py_Importer(Importer):
         trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
         top = stack[-1]
+        prev_p = top.p.copy()
         if trace:
             g.trace('line', repr(line))
             g.trace('top_state', top.state)
@@ -503,6 +559,8 @@ class Py_Importer(Importer):
         child = self.v2_create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
         # Handle previous decorators.
+        new_p = stack[-1].p.copy()
+        self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161116040557.1: *5* python_i.starts_block
     def starts_block(self, line, new_state):
         '''True if the line startswith class or def outside any context.'''
@@ -510,23 +568,6 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
-    #@+node:ekr.20161116173901.1: *5* python_i.add_underindented_line
-    def add_underindented_line(self, line, new_state, stack):
-        '''
-        Handle an unusual case: an underindented tail line.
-        
-        line is **not** a class/def line. It *is* underindented so it
-        *terminates* the previous block.
-        '''
-        top = stack[-1]
-        assert new_state.indent < top.state.indent, (new_state, top.state)
-        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
-        self.cut_stack(new_state, stack)
-        top = stack[-1]
-        self.add_line(top.p, line)
-        # Tricky: force section references for later class/def lines.
-        if top.at_others_flag:
-            top.gen_refs = True
     #@+node:ekr.20161112191527.1: *4* py_i.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the Python scan state by scanning s.'''
