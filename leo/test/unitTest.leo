@@ -1241,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1390,7 +1390,6 @@
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161115084500.1"><vh>Python passed</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -1403,32 +1402,30 @@
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
 <v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
 <v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
 <v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161115063144.17"><vh>@test python leoImport.py (read from leo/core)</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
 <v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
 <v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
 <v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
 <v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
 <v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-</v>
-<v t="ekr.20161115210617.1"><vh>Python fail</vh>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 <v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-</v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -1485,7 +1482,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161115063144.11"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7996,7 +7992,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -16764,7 +16760,6 @@ class Index:
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20161115084500.1"></t>
 <t tx="ekr.20161115092708.1"># g.cls()
 import leo.plugins.importers.python as python
 &lt;&lt; define python tests &gt;&gt;
@@ -16813,7 +16808,6 @@ else:
   builder    = new Builder
   scriptNode = parser.parse str
 </t>
-<t tx="ekr.20161115210617.1"></t>
 <t tx="ekr.20161116045137.10">buildCoffee = (str) -&gt;
   str  = str.replace /\r/g, ''
   str += "\n"
@@ -16830,6 +16824,65 @@ else:
 @others
 @language coffeescript
 @tabwidth -4
+</t>
+<t tx="ekr.20161117000902.1">s = r"""
+# -*- coding: utf-8 -*-
+import leo.core.leoGlobals as g
+class LeoImportCommands(object):
+    '''A class implementing all of Leo's import/export code.'''
+    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+        '''Create an outline by importing a file or string.'''
+
+    def dispatch(self, ext, p):
+        '''Return the correct scanner function for p, an @auto node.'''
+        # Match the @auto type first, then the file extension.
+        return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+    def scanner_for_at_auto(self, p):
+        '''A factory returning a scanner function for p, an @auto node.'''
+        d = self.atAutoDict
+        for key in d.keys():
+            aClass = d.get(key)
+            if aClass and g.match_word(p.h, 0, key):
+                if trace: g.trace('found', aClass.__name__)
+
+                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                    try:
+                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        return scanner.run(s, parent, prepass=prepass)
+                    except Exception:
+                        g.es_print('Exception running', aClass.__name__)
+                        g.es_exception()
+                        return None
+
+                if trace: g.trace('found', p.h)
+                return scanner_for_at_auto_cb
+        if trace: g.trace('not found', p.h, sorted(d.keys()))
+        return None
+    def scanner_for_ext(self, ext):
+        '''A factory returning a scanner function for the given file extension.'''
+        aClass = self.classDispatchDict.get(ext)
+        if aClass:
+
+            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+                try:
+                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    return scanner.run(s, parent, prepass=prepass)
+                except Exception:
+                    g.es_print('Exception running', aClass.__name__)
+                    g.es_exception()
+                    return None
+
+            return scanner_for_ext_cb
+        else:
+            return None
+    def get_import_filename(self, fileName, parent):
+        '''Return the absolute path of the file and set .default_directory.'''
+
+    def init_import(self, atAuto, atShadow, ext, fileName, s):
+        '''Init ivars &amp; vars for imports.'''
+"""
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
