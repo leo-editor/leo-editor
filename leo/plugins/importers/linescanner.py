@@ -943,10 +943,9 @@ class Importer(object):
                 else:
                     break
         return self.get_int_lws(lines[i]) if i < len(lines) else 0
-    #@+node:ekr.20161108131153.17: *4* i.get_str_lws (TEST)
+    #@+node:ekr.20161108131153.17: *4* i.get_str_lws
     def get_str_lws(self, s):
         '''Return the characters of the lws of s.'''
-        ### m = re.match(r'(\s*)', s)
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line

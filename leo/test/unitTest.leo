@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.44" body_secondary_ratio="0.84">
+<globals body_outline_ratio="0.64" body_secondary_ratio="0.84">
 	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1241,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31322e3971157d71165809000000756e69745f7465737471175804000000616263647118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657331710958030000002d7e2e710a580b000000756e6465726c696e657332710b58010000003d710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1481,10 +1481,11 @@
 <v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
-<v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
+<v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
+<v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
+<v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20161011052016.1"></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -16913,6 +16914,19 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
   builder    = new Builder
   scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161117011147.1">import leo.plugins.importers.linescanner as linescanner
+table = [
+    ('', 'abc\n'),
+    ('    ', '    xyz\n'),
+    ('    ', '    \n'),
+    ('  ','  # comment\n'),
+    ('', '\n'),
+]
+importer = linescanner.Importer(c.importCommands,
+    atAuto=True, language='python')
+for val, s in table:
+    assert val == importer.get_str_lws(s), (val, repr(s))
 </t>
 </tnodes>
 </leo_file>

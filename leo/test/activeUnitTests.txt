@@ -16141,47 +16141,6 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
-#@+node:ekr.20161109065940.1: *4* @test Importer.get_leading_indent
-# g.cls()
-import leo.plugins.importers.linescanner as linescanner
-# import imp
-# imp.reload(linescanner)
-lines_table = [
-    'abc',
-    '    xyz',
-    '    ',
-    '  # comment',
-]
-for language in ('python', 'coffeescript'):
-    importer = linescanner.Importer(
-        c.importCommands,
-        atAuto = True,
-        language = language,
-    )
-    # print('%s %r' % (language, importer.comment_delim))
-    assert importer.single_comment == '#', importer.single_comment
-    for line in lines_table:
-        lines = [line]
-        n = importer.get_leading_indent(lines, 0)
-        # print('%s %r' % (n, line))
-#@+node:ekr.20161109065949.1: *4* @test Importer.is_ws_line
-# g.cls()
-import leo.plugins.importers.linescanner as linescanner
-# import imp
-# imp.reload(linescanner)
-table = [
-    (False, 'abc'),
-    (False, '    xyz'),
-    (True, '    '),
-    (True,'  # comment'),
-]
-importer = linescanner.Importer(
-    c.importCommands,
-    atAuto = True,
-    language = 'python',
-)
-for val, s in table:
-    assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
 d = g.app.extra_extension_dict
 
@@ -16217,6 +16176,60 @@ for fn in glob.glob(pattern):
     sfn = g.shortFileName(fn)
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
+#@+node:ekr.20161109065940.1: *4* @test Importer.get_leading_indent
+# g.cls()
+import leo.plugins.importers.linescanner as linescanner
+# import imp
+# imp.reload(linescanner)
+lines_table = [
+    'abc',
+    '    xyz',
+    '    ',
+    '  # comment',
+]
+for language in ('python', 'coffeescript'):
+    importer = linescanner.Importer(
+        c.importCommands,
+        atAuto = True,
+        language = language,
+    )
+    # print('%s %r' % (language, importer.comment_delim))
+    assert importer.single_comment == '#', importer.single_comment
+    for line in lines_table:
+        lines = [line]
+        n = importer.get_leading_indent(lines, 0)
+        # print('%s %r' % (n, line))
+#@+node:ekr.20161117011147.1: *4* @test Importer.get_str_lws
+import leo.plugins.importers.linescanner as linescanner
+table = [
+    ('', 'abc\n'),
+    ('    ', '    xyz\n'),
+    ('    ', '    \n'),
+    ('  ','  # comment\n'),
+    ('', '\n'),
+]
+importer = linescanner.Importer(c.importCommands,
+    atAuto=True, language='python')
+for val, s in table:
+    assert val == importer.get_str_lws(s), (val, repr(s))
+#@+node:ekr.20161109065949.1: *4* @test Importer.is_ws_line
+# g.cls()
+import leo.plugins.importers.linescanner as linescanner
+# import imp
+# imp.reload(linescanner)
+table = [
+    (False, 'abc'),
+    (False, '    xyz'),
+    (True, '    '),
+    (True,'  # comment'),
+]
+importer = linescanner.Importer(
+    c.importCommands,
+    atAuto = True,
+    language = 'python',
+)
+for val, s in table:
+    assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20161011052016.1: *4* @test importers.javascript.scan_line
 import leo.plugins.importers.javascript as js
 table = (
