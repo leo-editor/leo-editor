@@ -101,8 +101,6 @@ class Importer(object):
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-        ### comment_delim, junk1, junk2 = g.set_delims_from_language(self.name)
-        ### self.comment_delim = comment_delim
 
         # Constants...
         data = g.set_delims_from_language(self.name)
@@ -428,9 +426,6 @@ class Importer(object):
         '''
         A three-stage pipeline to generate all imported nodes.
         '''
-        trace = False and not g.unitTesting
-        if trace: g.trace('='*20)
-            #### g.pdb()
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
         self.v2_gen_lines(s, parent)
@@ -494,7 +489,6 @@ class Importer(object):
     #@+node:ekr.20161108160409.3: *6* i.end_block (sets_tail_p)
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
-        ### p = tail_p or stack[-1].p
         p = stack[-1].p
         self.add_line(p, line)
         self.cut_stack(new_state, stack)
@@ -563,7 +557,6 @@ class Importer(object):
                 indent_ws,
                 g.angleBrackets(' %s ' % h))
         else:
-            ### ref = None if target.ref_flag else '%s@others\n' % indent_ws
             if target.ref_flag:
                 ref = None
             else:
@@ -840,7 +833,6 @@ class Importer(object):
         
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
-        ### trace = False and not g.unitTesting
         trace = False and g.unitTesting
         if trace: g.trace('='*20, repr(context))
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]

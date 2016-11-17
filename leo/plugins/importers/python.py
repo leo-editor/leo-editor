@@ -434,7 +434,6 @@ class Py_Importer(Importer):
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
-            ### self.gen_refs = top.gen_refs
             if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
             if self.starts_block(line, new_state):
@@ -556,7 +555,6 @@ class Python_State:
 
     def __init__(self, prev=None):
         '''Ctor for the Python_State class.'''
-        ### self.starts = self.ws = False
         if prev:
             self.bs_nl = prev.bs_nl
             self.context = prev.context
