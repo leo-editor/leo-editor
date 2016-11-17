@@ -13036,9 +13036,7 @@ buildCoffee = (str) ->
   scriptNode = parser.parse str
 '''
 
-
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
-
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4732: *6* @test elisp functions
 s = '''\
@@ -14940,7 +14938,7 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 << define s >>
 
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
         (2, 'Section 1#'),
@@ -14952,7 +14950,7 @@ try:
     )
     after = p.nodeAfterTree()
     root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
+    assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
         n2 = p.level() - root.level()
@@ -14992,7 +14990,7 @@ Section 3, line 1
 << define s >>
 
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be True.
     table = (
         (1, 'Top'),
         (2, 'Section 1'),
@@ -15004,7 +15002,7 @@ try:
     )
     after = p.nodeAfterTree()
     root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
+    assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
         n2 = p.level() - root.level()

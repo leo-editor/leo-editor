@@ -1556,7 +1556,12 @@ class LeoImportCommands(object):
             g.trace('-'*10, ok, p.h)
             g.printDict(d)
         # Clean up.
-        if not showTree:
+        if showTree:
+            # 2016/11/17: Make sure saving the outline doesn't create any file.
+            for child in old_root.children():
+                if child.isAnyAtFileNode():
+                    child.h = '@' + child.h
+        else:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)

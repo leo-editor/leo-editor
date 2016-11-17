@@ -219,7 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -303,6 +303,13 @@
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh></v>
+<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
+<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
+</v>
+<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
+<v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
+</v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
@@ -333,7 +340,7 @@
 </v>
 <v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh></v>
+<v t="ekr.20161109084732.1"></v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
@@ -394,12 +401,8 @@
 </v>
 </v>
 <v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
-<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
-<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
-</v>
-<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
-<v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
-</v>
+<v t="ekr.20160410152100.2"></v>
+<v t="ekr.20160411033840.1"></v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
 <v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
@@ -2804,7 +2807,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -3229,7 +3232,7 @@ def spam(): # line 2
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
 
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
         (2, 'Section 1#'),
@@ -3241,7 +3244,7 @@ try:
     )
     after = p.nodeAfterTree()
     root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
+    assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
         n2 = p.level() - root.level()
@@ -3257,7 +3260,7 @@ finally:
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True)
+    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be True.
     table = (
         (1, 'Top'),
         (2, 'Section 1'),
@@ -3269,7 +3272,7 @@ try:
     )
     after = p.nodeAfterTree()
     root = p.firstChild().next()
-    assert root.h.startswith('@auto-m'), root.h
+    assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
         n2 = p.level() - root.level()
@@ -4243,9 +4246,7 @@ buildCoffee = (str) -&gt;
   scriptNode = parser.parse str
 '''
 
-
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
-
 </t>
 <t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
     """Implementation of the least upper bound algorithm.

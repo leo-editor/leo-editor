@@ -213,6 +213,11 @@ class GeneralTestCase(unittest.TestCase):
 class ImportExportTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
     #@+others
+    #@+node:ekr.20051104075904.81: *3*  fail (importExportTestCase)
+    def fail(self, msg=None):
+        """Mark a unit test as having failed."""
+        import leo.core.leoGlobals as g
+        g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.80: *3* __init__ (importExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
         # Init the base class.
@@ -227,11 +232,6 @@ class ImportExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
         self.old_p = c.p
-    #@+node:ekr.20051104075904.81: *3*  fail (importExportTestCase)
-    def fail(self, msg=None):
-        """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
-        g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.82: *3* importExport
     def importExport(self):
         c = self.c; p = self.p
