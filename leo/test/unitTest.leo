@@ -2,14 +2,121 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.49" body_secondary_ratio="0.57">
+<globals body_outline_ratio="0.44" body_secondary_ratio="0.71">
 	<global_window_position top="109" left="518" height="919" width="1214"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20070417092935"><vh>Startup</vh>
+<v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
+<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
+<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
+<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
+</v>
+<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
+<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
+<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
+<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
+</v>
+<v t="ekr.20050328101834"><vh>@page http plugin</vh>
+<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
+<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
+</v>
+<v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
+<v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
+<v t="ekr.20131111155830.4251"><vh>@data vim-command-tails</vh></v>
+<v t="ekr.20131111155830.4252"><vh>@data vim-commands</vh></v>
+<v t="ekr.20131111155830.4253"><vh>@data vim-motions</vh></v>
+<v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
+</v>
+</v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh>
+<v t="edward.20150612083734.1"><vh>@data:#@auto</vh></v>
+<v t="edward.20150612083734.2"><vh>@data:#@auto</vh>
+<v t="edward.20150612083734.3"><vh>@gnxs</vh></v>
+</v>
+<v t="edward.20150612083734.4"><vh>@data:#@auto</vh></v>
+<v t="edward.20150612083734.5"><vh>@data:#@auto</vh>
+<v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150625052701.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
+<v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
+<v t="ekr.20161031055427.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
+<v t="edward.20160919054711.14"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
+<v t="edward.20160919054710.11"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
+<v t="edward.20160919054710.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="edward.20160919054709.9"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
+<v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160403143351.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
+<v t="ekr.20160403143351.2"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160917122402.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20160917122402.2"><vh>@data:#@auto</vh>
+<v t="ekr.20160917122402.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20160917122402.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20160917122402.5"><vh>@data:#@auto</vh>
+<v t="ekr.20160917122402.6"><vh>@gnxs</vh></v>
+</v>
+</v>
+<v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
+<v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
+<v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
+<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
+<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
+<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
+<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
+<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
+<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
+<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
+</v>
+<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
+<v t="ekr.20070217072822"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
+</v>
+</v>
+<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
+<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
+<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
+<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
+<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
+<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111123042627.6654"></v>
+<v t="ekr.20111112093605.4679"></v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -1134,7 +1241,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
@@ -1226,7 +1333,21 @@
 </v>
 <v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh></v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2a</vh>
+<v t="ekr.20161112072933.22"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161112072933.23"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161113051029.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh></v>
+<v t="ekr.20161115062917.7"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161115062917.8"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161115201207.15"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161115201207.16"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+<v t="ekr.20161116045137.9"><vh>@clean c:/leo.repo/leo-editor/leo/test/coffeescript-2a</vh>
+<v t="ekr.20161116045137.10"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
@@ -1282,9 +1403,7 @@
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
 <v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161116094845.1"><vh>@test python defs on one line</vh></v>
 <v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
 <v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
@@ -1295,19 +1414,20 @@
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
 <v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
 <v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20161115210617.1"><vh>Python fail</vh>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.17"><vh>@test python leoImportNosent.py</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 </v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
@@ -1365,7 +1485,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161115063144.17"></v>
+<v t="ekr.20161115063144.11"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1388,6 +1508,44 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
+</t>
+<t tx="edward.20150612083734.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="edward.20150612083734.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="edward.20150612083734.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="edward.20150612083734.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="edward.20150612083734.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="edward.20150612083734.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="edward.20160919054709.9">gnx: edward.20160416174241.4
+unl: section 1
+gnx: edward.20160416174241.5
+unl: section 2
+</t>
+<t tx="edward.20160919054710.11">gnx: edward.20160416174241.17
+unl: section 1
+gnx: edward.20160416174241.18
+unl: section 2
+</t>
+<t tx="edward.20160919054710.4">gnx: edward.20160416174241.15
+unl: section 1
+gnx: edward.20160416174241.16
+unl: section 2
+</t>
+<t tx="edward.20160919054711.14">gnx: edward.20160416174241.19
+unl: section 1
+gnx: edward.20160416174241.20
+unl: section 2
 </t>
 <t tx="ekr.20040712101754.2">@language python
 @tabwidth -4
@@ -1463,6 +1621,11 @@ c.testManager.runLeoTest(path)
 <t tx="ekr.20040831104758">path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile3.leo")
 c.testManager.runLeoTest(path)
 </t>
+<t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050328101834"></t>
+<t tx="ekr.20050328101834.1"></t>
+<t tx="ekr.20050328101834.2"></t>
+<t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050417201845"></t>
 <t tx="ekr.20050417201845.1">before
     &lt;&lt; section &gt;&gt;
@@ -1894,6 +2057,7 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
+<t tx="ekr.20051013162226"></t>
 <t tx="ekr.20051104081502">@language python
 @tabwidth -4
 </t>
@@ -7682,6 +7846,161 @@ for x in range(0,100,10):
     event = g.app.gui.create_key_event(c,None,None,w,x=x,y=y)
     c.frame.body.onClick(event)
 </t>
+<t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
+
+dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
+s   = g.os_path_join(dir,g.u('chinese\u8116test.leo'),encoding='utf-8')
+    
+if not g.os_path_exists(dir):
+    import os
+    os.mkdir(dir)
+    g.pr('created chinese folder')
+    
+if not g.os_path_exists(s):
+    f = file(s,'w')
+    f.close()
+    g.pr('created chinese file')
+    
+</t>
+<t tx="ekr.20070217065840">@nocolor-node
+
+@
+To make unit tests, do the following:
+    
+- Use the make-test script (Alt-5) to create a suboutline for a unit test.
+- Put text in the before node, selected desired text, then do the do-before script (Alt-6).
+- Execute the command, then do the do-after script (Alt-7).
+</t>
+<t tx="ekr.20070217065840.1">try:
+    p1 = p.insertAfter()
+    c.setHeadString(p1,'@test ')
+    body = 'c.testManager.runEditCommandTest(c,p)'
+    c.setBodyString(p1,body)
+    for s in ('work','before','after'):
+        p2 = p1.insertAsLastChild()
+        c.setHeadString(p2,s)
+    p1.expand()
+finally:
+    c.redraw()
+    c.editPosition(p1)</t>
+<t tx="ekr.20070217065840.2">@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. The work node should have body text. If all is as expected,
+copy the body text the work node to the before node, and represent the selection
+range of the work in the headline of the before node.
+@c
+
+@others
+
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top and work.b:
+
+    c.setBodyString(before,work.b)
+    c.setBodyString(after,'')
+    putSelectionInHeadline(c,before,'before',sel)
+    c.redraw()
+else:
+    g.es_print('do-before: not in a proper @test tree')</t>
+<t tx="ekr.20070217065840.3">def getSel(c):
+    
+    w = c.frame.body.bodyCtrl
+    i,j= w.getSelectionRange()
+    if i == j:
+        i = j = w.getInsertPoint()
+        sel = (i,i)
+    return i,j</t>
+<t tx="ekr.20070217065840.4">def findNodes(p):
+    
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+    
+    for p in p.self_and_parents_iter():
+        if p.h.startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild() 
+    before = work and work.next()     
+    after  = before and before.next()
+    if (
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
+    ):
+        return top,work,before,after
+    else:
+        return None,None,None,None</t>
+<t tx="ekr.20070217065840.5">def putSelectionInHeadline (c,p,prefix,sel):
+    
+    # g.trace(p.h,repr(sel))
+
+    w = c.frame.body.bodyCtrl
+    i,j = sel
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+    s = '%s sel=%s,%s' % (prefix,i,j)
+    c.setHeadString(p,s)
+</t>
+<t tx="ekr.20070217065840.6">@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. If all is as expected, copy the work node to the after node,
+and represent the selection range of the work node in the headline of the after node.
+@c
+
+@others
+
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top:
+    c.setBodyString(after,work.b)
+    putSelectionInHeadline(c,after,'after',sel)
+    c.redraw()
+else:
+    g.es_print('do-after: not in @test tree')</t>
+<t tx="ekr.20070217065840.8">def findNodes(p):
+    
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+    
+    for p in p.self_and_parents_iter():
+        if p.h.startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild()
+    before = work and work.next()
+    after  = before and before.next()
+    if (
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
+    ):
+        return top,work,before,after
+    else:
+        return None,None,None,None</t>
+<t tx="ekr.20070217065840.9">def putSelectionInHeadline (c,p,prefix,sel):
+    
+    # g.trace(p.h,repr(sel))
+    
+    w = c.frame.body.bodyCtrl
+    i,j = sel
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+    s = '%s sel=%s,%s' % (prefix,i,j)
+    c.setHeadString(p,s)
+</t>
+<t tx="ekr.20070217072822">def getSel(c):
+    
+    w = c.frame.body.bodyCtrl
+    i,j= w.getSelectionRange()
+    if i == j:
+        i = j = w.getInsertPoint()
+        sel = (i,i)
+    return i,j</t>
+<t tx="ekr.20070417092935" str_leo_pos="9">
+@nosearch</t>
+<t tx="ekr.20070503064257"></t>
+<t tx="ekr.20070528100318"># Required to make a typing test work.
+</t>
 <t tx="ekr.20070926095117">def mungeKey (h,kind,substitute=True):
 
     key = h[len(kind):].strip()
@@ -7694,6 +8013,31 @@ for x in range(0,100,10):
 
 
 </t>
+<t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
+assert g.os_path_exists(fn),fn
+c1 = c
+c2 = g.openWithFileName(fn,old_c=None,enableLog=False)
+assert c2
+c.frame.bringToFront()
+g.app.setLog(c.frame.log)
+
+d1 = {} ; d2 = {}
+for c,d in ( (c1,d1),(c2,d2)):
+    for p in c.all_unique_positions():
+        if p.h.startswith('@test'):
+            d[p.h]=p.h
+
+if 0: # not important
+    g.pr()
+    g.pr('----- Only in unitTest.leo')
+    for h in sorted(d1.keys()):
+        if not d2.get(h):
+            print(h)
+
+print('\n----- Only in leoPy.leo')
+for h in sorted(d2.keys()):
+    if not d1.get(h):
+        print(h)</t>
 <t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
 @language python
 
@@ -7723,6 +8067,10 @@ finally:
 # end:
 </t>
 <t tx="ekr.20071113203234"></t>
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
+
+Important: this may cause crashes on some platforms.
+</t>
 <t tx="ekr.20080405085247.1"></t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080806084924.2">@others
@@ -8587,6 +8935,60 @@ for ext in g.app.extension_dict.keys():
 <t tx="ekr.20090704085350.5036">def eggs():
     pass
 </t>
+<t tx="ekr.20091206090247.5060"># Use these with caution.</t>
+<t tx="ekr.20091206090247.5061">count = 0
+for p in c.all_unique_positions():
+    count += 1
+    # Empty tnodeLists are not errors because they never get written to the .leo file.
+    v = p.v
+    if hasattr(v,"tnodeList") and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
+        g.es("deleting tnodeList for " + `v`,color="blue")
+        delattr(v,"tnodeList")
+        c.setChanged(True)
+
+s = "%d nodes" % count
+print(s) ; g.es(s)</t>
+<t tx="ekr.20091206090247.5062"># About the only time you should run this script is when:
+# - changing the format of timestamps in nodeIndices.setTimestamp or
+# - when making a retroactive change to leoID.txt.
+
+if 0: # This is usually a very bad idea.
+
+    for p in c.all_positions():
+        p.v.fileIndex = None
+
+    g.es("all timestamps cleared")</t>
+<t tx="ekr.20091206090247.5063">doDelete = False
+put = g.es_print
+for p in c.all_positions():
+    if p.v.u:
+        put("found v.u:",p.h,
+            g.listToString(p.v.u.keys()))
+        if doDelete:
+            p.v.u = None
+put('done') 
+c.redraw()</t>
+<t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
+for p in c.all_unique_positions():
+    nodes += 1
+    lines += len(g.splitLines(p.b))
+
+pages = ((nodes * 10) + lines) / 50
+s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
+print(s); g.es(s)</t>
+<t tx="ekr.20100123172713.5114"></t>
+<t tx="ekr.20100123172713.5116">count = 0
+for p in c.all_unique_positions():
+    count += 1
+    # Empty tnodeLists are not errors because they never get written to the .leo file.
+    v = p.v
+    if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
+        g.es("deleting tnodeList for " + `v`,color="blue")
+        delattr(v,"tnodeList")
+        c.setChanged(True)
+
+s = "%d nodes" % count
+print s ; g.es(s)</t>
 <t tx="ekr.20100125180231.5120">@first # -*- coding: utf-8 -*-
 
 s = g.ue('炰','utf-8')
@@ -9306,6 +9708,16 @@ file = "payroll.dat"
 
 c.importCommands.iniUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20101009105124.6195">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
+</t>
 <t tx="ekr.20101021205258.6013"></t>
 <t tx="ekr.20101220161557.6013"># Some of these tests give warnings.</t>
 <t tx="ekr.20101220161557.6014">@language python
@@ -9550,6 +9962,11 @@ StormReady communities are better prepared to save lives from the onslaught of s
 
 Last paragraph.
 </t>
+<t tx="ekr.20110521073115.3494"></t>
+<t tx="ekr.20110521073115.3495">builtins, including cython builtins
+</t>
+<t tx="ekr.20110521073115.3496">cython keywords
+</t>
 <t tx="ekr.20110610122533.3388"></t>
 <t tx="ekr.20110610122533.3389"># Not valid for external tests: uses @&lt;file&gt; node.
 if not g.app.isExternalUnitTest:
@@ -9732,6 +10149,16 @@ g.es('"%s": total tests: %s' % (p.h,total))
 
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+nodeA
+nodeB
 </t>
 <t tx="ekr.20111029112647.4099"></t>
 <t tx="ekr.20111029112647.4101">s = '''\
@@ -10173,7 +10600,8 @@ for func,s,expected in table:
     assert result == expected,'expected %s got %s' % (
         repr(expected),repr(result))
 </t>
-<t tx="ekr.20111112093605.4679" str_leo_pos="7"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
+<t tx="ekr.20111112092813.4154">g.cls()</t>
+<t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
 # These are now EKR's preferred settings everywhere:
 # there should be little need to run unit tests externally.
 
@@ -10412,6 +10840,28 @@ else:
 <t tx="ekr.20111121113227.4035">c.k.simulateCommand('add-editor')
 c.k.simulateCommand('delete-editor')
 </t>
+<t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
+
+# **Important**: to change these defaults, put
+# an @enabled-plugins node in myLeoSettings.leo.
+
+# Highly-recommended plugins:
+plugins_menu.py
+free_layout.py # needs to be early
+viewrendered.py
+
+# Recommended plugins:
+### contextmenu.py
+# leo_to_html.py
+mod_scripting.py
+# nav_qt.py
+# quicksearch.py
+# stickynotes.py
+# todo.py
+</t>
+<t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
+<t tx="ekr.20111124094121.3942"></t>
+<t tx="ekr.20111124094121.3943"></t>
 <t tx="ekr.20111125182408.3947">def setup():
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -12075,6 +12525,276 @@ if 0:
 </t>
 <t tx="ekr.20131111155107.4242">first line
 </t>
+<t tx="ekr.20131111155830.4249"></t>
+<t tx="ekr.20131111155830.4250"># Not yet...
+
+    &lt;BS&gt;        delete the character in front of the cursor
+N   &lt;Del&gt;       delete N characters under and after the cursor
+    &lt;Del&gt;       delete the character under the cursor
+    &lt;Del&gt;       while entering a count: delete last character
+    &lt;Down&gt;      recall newer command-line that starts with current command
+    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
+    &lt;Left&gt;      (motion) cursor left
+    &lt;Right&gt;     (motion) cursor right
+    &lt;S-Down&gt;    recall newer command-line from history
+    &lt;S-Left&gt;    (motion) cursor one word left
+    &lt;S-Right&gt;   (motion) cursor one word right
+    &lt;S-Up&gt;      recall older command-line from history
+    &lt;Up&gt;        recall older command-line that starts with current command
+
+N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
+N   CTRL-A                  add N to the number at or after the cursor
+N   CTRL-B                  window N pages Backwards (upwards)
+    CTRL-B                  (motion?) cursor to beginning of command-line
+    CTRL-BREAK              MS-DOS: during searches: interrupt the search
+    CTRL-C                  during searches: interrupt the search
+N   CTRL-D                  window N lines Downwards (default: 1/2 window)
+N   CTRL-E                  window N lines downwards (default: 1)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
+    CTRL-G                  show current file name (with path) and cursor position
+N   CTRL-I                  (motion) go to Nth newer position in jump list
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-L                  Clear and redraw the screen.
+N   CTRL-O                  (motion) go to Nth older position in jump list
+N   CTRL-R                  redo last N undone changes
+    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
+N   CTRL-U                  window N lines Upwards (default: 1/2 window)
+    CTRL-U                  remove all characters
+    CTRL-V                  highlight blockwise or stop highlighting
+    CTRL-V                  start highlighting blockwise   }  highlighted text
+    CTRL-V {char}           insert {char} literally
+    CTRL-V {number}         enter decimal value of character (up to three digits)
+    CTRL-W                  delete the word in front of the cursor
+    CTRL-W +                Increase current window height
+    CTRL-W -                Decrease current window height
+    CTRL-W =                Make all windows equal height
+    CTRL-W CTRL-W           Move cursor to window below (wrap)
+    CTRL-W CTRL-^           Split window and edit alternate file
+    CTRL-W R                Rotate windows upwards
+    CTRL-W W                Move cursor to window above (wrap)
+    CTRL-W ]                Split window and jump to tag under cursor
+    CTRL-W _                Set current window height (default: very high)
+    CTRL-W b                Move cursor to bottom window
+    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
+    CTRL-W f                Split window and edit file name under the cursor
+    CTRL-W j                Move cursor to window below
+    CTRL-W k                Move cursor to window above
+    CTRL-W n  or :new       Create new empty window
+    CTRL-W o  or :on[ly]    Make current window only one on the screen
+    CTRL-W p                Move cursor to previous active window
+    CTRL-W q  or :q[uit]    Quit editing and close window
+    CTRL-W r                Rotate windows downwards
+    CTRL-W s                Split window into two parts
+    CTRL-W t                Move cursor to top window
+    CTRL-W x                Exchange current window with next one
+N   CTRL-X                  subtract N from the number at or after the cursor
+N   CTRL-Y                  window N lines upwards (default: 1)
+    CTRL-Z                  Same as ":stop!"
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
+<t tx="ekr.20131111155830.4251">char F
+char T
+char f
+char r
+char t
+letter m
+letter q
+motion &lt;
+motion &gt;
+motion c
+motion d
+motion gU
+motion gq
+motion gu
+motion g~
+motion y
+pattern /
+pattern ?
+register @
+</t>
+<t tx="ekr.20131111155830.4252"># http://tnerual.eriogerg.free.fr/vimqrc.html
+vim_0 0
+vim_tilda ~
+vim_plus +
+vim_underscore _
+vim_minus -
+vim_comma ,
+vim_dot .
+vim_semicolon ;
+vim_lparen (
+vim_rparen )
+vim_lcurly {
+vim_rcurly }
+vim_vertical |
+vim_backtick `
+vim_dollar $
+vim_caret ^
+vim_percent %
+vim_langle &lt;
+vim_langle &lt;&lt;
+vim_rangle &gt;
+vim_rangle &gt;&gt;
+vim_pound #
+vim_star *
+vim_slash /\\n
+vim_slash /
+vim_question ?\\n
+vim_question ?
+vim_at @
+vim_at @@
+vim_dquote "
+vim_lsquare [#
+vim_lsquare [(
+vim_lsquare [*
+vim_lsquare [[
+vim_lsquare []
+vim_lsquare [p
+vim_lsquare [{
+vim_rsquare ]#
+vim_rsquare ])
+vim_rsquare ]*
+vim_rsquare ][
+vim_rsquare ]]
+vim_rsquare ]p
+vim_rsquare ]}
+vim_A A
+vim_B B
+vim_C C
+vim_D D
+vim_E E
+vim_F F
+vim_G G
+vim_H H
+vim_I I
+vim_J J
+vim_K K
+vim_M M
+vim_L L
+vim_N N
+vim_O O
+vim_P P
+vim_R R
+vim_S S
+vim_T T
+vim_U U
+vim_V V
+vim_W W
+vim_X X
+vim_Y Y
+vim_Z ZQ
+vim_Z ZZ
+vim_a a
+vim_b b
+vim_c c
+vim_d dd
+vim_d d
+vim_g g~
+vim_g g^
+vim_g g#
+vim_g g$
+vim_g g*
+vim_g g0
+vim_g gD
+vim_g gE
+vim_g gI
+vim_g gU
+vim_g ga
+vim_g gd
+vim_g ge
+vim_g gf
+vim_g gg
+vim_g gj
+vim_g gk
+vim_g gq
+vim_g gs
+vim_g gu
+vim_g gv
+vim_h h
+vim_i i
+vim_j j
+vim_k k
+vim_l l
+vim_n n
+vim_m m
+vim_o o
+vim_p p
+vim_q q
+vim_r r
+vim_s s
+vim_t t
+vim_u u
+vim_v v
+vim_w w
+vim_x x
+vim_y y
+vim_y yy
+vim_z z-
+vim_z z.
+vim_z z&lt;CR&gt;
+vim_z zb
+vim_z zh
+vim_z zl
+vim_z zt
+vim_z zz
+</t>
+<t tx="ekr.20131111155830.4253"># CR
+# Ctrl-End
+# Ctrl-Home
+# Ctrl-Left
+# Ctrl-M
+# Ctrl-N
+# Ctrl-P
+# Ctrl-Right
+# End
+# Home
+# Shift-Left
+# Shift-Right
+
+( 	
+)
+{
+}
+[[
+[]
+][
+]]
+$
+^	
++
+,
+-
+;
+_
+0
+B
+E
+F
+G
+T
+W
+b
+e
+f
+g$
+g^
+g0
+gE
+# gEnd
+# gHome	
+ge
+gg
+h
+j
+k
+t
+w
+</t>
+<t tx="ekr.20131111155830.4254">char F
+char T
+char f
+char t
+</t>
 <t tx="ekr.20131111160618.4261"></t>
 <t tx="ekr.20131111162157.4270">@language python
 # http://docs.python.org/2/library/re.html
@@ -13305,6 +14025,7 @@ finally:
 <t tx="ekr.20140211090146.4581">def last1():
     pass
 </t>
+<t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140218042220.4347">s = '''\
 
 var c3 = (function () {
@@ -13351,6 +14072,7 @@ console.log("Listening on " + port);
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140723134017.4464"># This causes problems!
 import glob
 import importlib
@@ -13386,6 +14108,7 @@ The top chapter.
 
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140906072925.5224"></t>
 <t tx="ekr.20141111092038.12">s = '''
 
@@ -13415,6 +14138,9 @@ c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 <t tx="ekr.20150208213643.19"># node 2 text B.
 </t>
 <t tx="ekr.20150214063940.11"></t>
+<t tx="ekr.20150216110251.11"># Do not delete this node.
+# It is used by unit tests.</t>
+<t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150529183247.1">import leo.core.leoBeautify as leoBeautify
 for p in p.children():
     b = leoBeautify.PythonTokenBeautifier(c)
@@ -13432,6 +14158,24 @@ for p in p.children():
     pass
 @ The following could be added to the 'else' clause::
     # Accumulate everything else.
+</t>
+<t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
+
+# This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150625052701.1">gnx: ekr.20080904084223.1
+</t>
+<t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
+</t>
+<t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
+unl: at_auto_child
+</t>
+<t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
+</t>
+<t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
+</t>
+<t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
+</t>
+<t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
 <t tx="ekr.20150919073819.1">class aClass:
     def __init__(self):
@@ -13797,6 +14541,18 @@ def spam(): // line 2
 @others
 # Last line: line 6
 </t>
+<t tx="ekr.20160403143348.1">gnx: ekr.20111214104615.3942
+</t>
+<t tx="ekr.20160403143348.2">gnx: ekr.20160403142841.9
+unl: at-auto-section-ref-test declarations
+</t>
+<t tx="ekr.20160403143351.1">gnx: ekr.20090704085350.5056
+</t>
+<t tx="ekr.20160403143351.2">gnx: ekr.20160403142841.10
+unl: spam
+gnx: ekr.20160403142841.11
+unl: eggs
+</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
     pass</t>
 <t tx="ekr.20160403150216.1">@nocolor-node
@@ -13925,6 +14681,24 @@ section 3, line 1
 
 '''
 </t>
+<t tx="ekr.20160917122402.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20160917122402.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20160917122402.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20160917122402.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20160917122402.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20160917122402.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
 <t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
 table = (
     (None, (0, 0, '/*'),    r'/* abc'),
@@ -13956,7 +14730,23 @@ for base, result, s in table:
 a = b &lt;&lt; c &gt;&gt; d
 
 </t>
+<t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
+False: (Legacy):      The @auto write code ignores section references.
+</t>
 <t tx="ekr.20161027183259.1"></t>
+<t tx="ekr.20161031055427.1">gnx: ekr.20161031055404.9
+unl: class class1
+gnx: ekr.20161031055404.10
+unl: class class1--&gt;class1_method1
+gnx: ekr.20161031055404.11
+unl: class class1--&gt;class1_method2
+gnx: ekr.20161031055404.12
+unl: class class2
+gnx: ekr.20161031055404.13
+unl: class class2--&gt;class2_method1
+gnx: ekr.20161031055404.14
+unl: class class2--&gt;class2_method2
+</t>
 <t tx="ekr.20161102104718.1"></t>
 <t tx="ekr.20161103015908.1"></t>
 <t tx="ekr.20161103015940.1">s = '''\
@@ -14809,7 +15599,7 @@ buildCoffee = (str) -&gt;
 '''
 
 
-c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
 
 </t>
 <t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
@@ -14970,6 +15760,41 @@ c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
     pass
 </t>
 <t tx="ekr.20161112061414.4">bClass = aClass
+</t>
+<t tx="ekr.20161112072933.22"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161112072933.23">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161113051029.9"></t>
+<t tx="ekr.20161115062917.7"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161115062917.8">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 </t>
 <t tx="ekr.20161115063006.1"></t>
 <t tx="ekr.20161115063144.10">@tabwidth -4
@@ -15400,7 +16225,7 @@ if showTree:
 </t>
 <t tx="ekr.20161115063144.33">@killcolor
 
-s = r'''\
+s = '''\
 
 """Generic output formatting.
 """
@@ -15971,17 +16796,40 @@ else:
         g.Bunch(line='a = {[(')
     ]
 </t>
+<t tx="ekr.20161115201207.15"># Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161115201207.16">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
 <t tx="ekr.20161115210617.1"></t>
-<t tx="ekr.20161116094845.1">@killcolor
+<t tx="ekr.20161116045137.10">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
 
-s = '''\
-class NullFormatter:
+  builder    = new Builder
+  scriptNode = parser.parse str
+</t>
+<t tx="ekr.20161116045137.9"># Js2coffee relies on Narcissus's parser.
 
-    def end_paragraph(self, blankline): pass
-    def add_line_break(self): pass
-'''
+{parser} = @Narcissus or require('./narcissus_packed')
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
 </t>
 </tnodes>
 </leo_file>
