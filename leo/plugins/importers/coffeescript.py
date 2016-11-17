@@ -27,24 +27,49 @@ class CS_Importer(Importer):
         self.tab_width = self.c.tab_width or -4
             # Used to compute lws.
         
-    #@+node:ekr.20161110035601.1: *3* coffee.Common helpers
-    #@+node:ekr.20160505114047.1: *4* coffee.class_name
+    #@+node:ekr.20160505114047.1: *3* coffee.class_name
     def class_name(self, s):
         '''Return the name of the class in line s.'''
         assert s.startswith('class')
         m = re.match(r'class(\s+)(\w+)',s)
         name = m.group(2) if m else '<**bad class name**>'
         return 'class ' + name
-    #@+node:ekr.20160505113917.1: *4* coffee.starts_def
-    def starts_def(self, s):
-        '''
-        Return True if line s starts a coffeescript function.
-        Sets or clears the def_name ivar.
-        '''
-        m = re.match('(.+):(.*)->', s) or re.match('(.+)=(.*)->', s)
-        self.def_name = m.group(1).strip() if m else None
-        return bool(m)
-    #@+node:ekr.20161110044040.1: *3* coffee.V1
+    #@+node:ekr.20161113064226.1: *3* coffee.get_new_table
+    #@@nobeautify
+
+    def get_new_table(self, context):
+        '''Return a new coffeescript state table for the given context.'''
+        trace = False and not g.unitTesting
+
+        def d(n):
+            return 0 if context else n
+
+        table = (
+            # in-ctx: the next context when the pattern matches the line *and* the context.
+            # out-ctx:the next context when the pattern matches the line *outside* any context.
+            # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+            ('len',   '\\\n',  context,   context,  0,       0,       0),
+            ('len+1', '\\',    context,   context,  0,       0,       0),
+            # Coffeedoc-style docstring.
+            ('len',   '###',   '###',     '',       0,       0,       0),
+            ('all',   '#',     '',        '',       0,       0,       0),
+            ('len',   '"',     '"',       '',       0,       0,       0),
+            ('len',   "'",     "'",       '',       0,       0,       0),
+            ('len',   '{',     context,   context,  d(1),    0,       0),
+            ('len',   '}',     context,   context,  d(-1),   0,       0),
+            ('len',   '(',     context,   context,  0,       d(1),    0),
+            ('len',   ')',     context,   context,  0,       d(-1),   0),
+            ('len',   '[',     context,   context,  0,       0,       d(1)),
+            ('len',   ']',     context,   context,  0,       0,       d(-1)),
+        )
+        if trace: g.trace('created table for coffescript state', repr(context))
+        return table
+    #@+node:ekr.20161110044000.2: *3* coffee.initial_state
+    def initial_state(self):
+        '''Return the initial counts.'''
+        return CS_State('', 0)
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -142,44 +167,16 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20161110044110.1: *3* coffee.V2
-    #@+node:ekr.20161113064226.1: *4* coffee.get_new_table
-    #@@nobeautify
-
-    def get_new_table(self, context):
-        '''Return a new coffeescript state table for the given context.'''
-        trace = False and not g.unitTesting
-
-        def d(n):
-            return 0 if context else n
-
-        table = (
-            # in-ctx: the next context when the pattern matches the line *and* the context.
-            # out-ctx:the next context when the pattern matches the line *outside* any context.
-            # deltas: the change to the indicated counts.  Always zero when inside a context.
-
-            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-            ('len',   '\\\n',  context,   context,  0,       0,       0),
-            ('len+1', '\\',    context,   context,  0,       0,       0),
-            # Coffeedoc-style docstring.
-            ('len',   '###',   '###',     '',       0,       0,       0),
-            ('all',   '#',     '',        '',       0,       0,       0),
-            ('len',   '"',     '"',       '',       0,       0,       0),
-            ('len',   "'",     "'",       '',       0,       0,       0),
-            ('len',   '{',     context,   context,  d(1),    0,       0),
-            ('len',   '}',     context,   context,  d(-1),   0,       0),
-            ('len',   '(',     context,   context,  0,       d(1),    0),
-            ('len',   ')',     context,   context,  0,       d(-1),   0),
-            ('len',   '[',     context,   context,  0,       0,       d(1)),
-            ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        )
-        if trace: g.trace('created table for coffescript state', repr(context))
-        return table
-    #@+node:ekr.20161110044000.2: *4* coffee.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return CS_State('', 0)
-    #@+node:ekr.20161110044000.3: *4* coffee.v2_scan_line
+    #@+node:ekr.20160505113917.1: *3* coffee.starts_def
+    def starts_def(self, s):
+        '''
+        Return True if line s starts a coffeescript function.
+        Sets or clears the def_name ivar.
+        '''
+        m = re.match('(.+):(.*)->', s) or re.match('(.+)=(.*)->', s)
+        self.def_name = m.group(1).strip() if m else None
+        return bool(m)
+    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting

@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 Target = linescanner.Target
 #@+<< python: v2 >>
 #@+node:ekr.20161110121459.1: ** << python: v2 >>
-v2 = False # True: use v2_gen_lines.
+v2 = True # True: use v2_gen_lines.
 #@-<< python: v2 >>
 #@+others
 #@+node:ekr.20161108203248.1: ** V1 classes
@@ -431,20 +431,22 @@ class Py_Importer(Importer):
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
+        prev_p = None
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
             if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
             if self.starts_block(line, new_state):
-                self.start_new_block(line, new_state, stack)
+                self.start_new_block(line, new_state, prev_p, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
             elif self.is_ws_line(line):
                 self.add_line(top.p, line)
             else:
-                self.underindented_line(line, new_state, stack)
+                self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
+            prev_p = stack[-1].p.copy()
     #@+node:ekr.20161116034633.2: *5* python_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -475,8 +477,9 @@ class Py_Importer(Importer):
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161116034633.7: *5* python_i.start_new_block
-    def start_new_block(self, line, new_state, stack):
+    def start_new_block(self, line, new_state, prev_p, stack):
         '''Create a child node and update the stack.'''
+        # pylint: disable=arguments-differ
         trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
         top = stack[-1]
@@ -485,29 +488,21 @@ class Py_Importer(Importer):
             g.trace('top_state', top.state)
             g.trace('new_state', new_state)
             g.printList(stack)
+        # Adjust the stack.
         if new_state.indent > top.state.indent:
-            top = stack[-1]
-            parent = top.p
-            self.gen_refs = top.gen_refs
-            h = self.v2_gen_ref(line, parent, top)
-            child = self.v2_create_child_node(parent, line, h)
-            stack.append(Target(child, new_state))
+            pass
         elif new_state.indent == top.state.indent:
             stack.pop()
-            top = stack[-1]
-            parent = top.p
-            self.gen_refs = top.gen_refs
-            h = self.v2_gen_ref(line, parent, top)
-            child = self.v2_create_child_node(parent, line, h)
-            stack.append(Target(child, new_state))
         else:
             self.cut_stack(new_state, stack)
-            top = stack[-1]
-            parent = top.p
-            self.gen_refs = top.gen_refs
-            h = self.v2_gen_ref(line, parent, top)
-            child = self.v2_create_child_node(parent, line, h)
-            stack.append(Target(child, new_state))
+        # Create the child.
+        top = stack[-1]
+        parent = top.p
+        self.gen_refs = top.gen_refs
+        h = self.v2_gen_ref(line, parent, top)
+        child = self.v2_create_child_node(parent, line, h)
+        stack.append(Target(child, new_state))
+        # Handle previous decorators.
     #@+node:ekr.20161116040557.1: *5* python_i.starts_block
     def starts_block(self, line, new_state):
         '''True if the line startswith class or def outside any context.'''
@@ -515,8 +510,8 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
-    #@+node:ekr.20161116173901.1: *5* python_i.underindented_line
-    def underindented_line(self, line, new_state, stack):
+    #@+node:ekr.20161116173901.1: *5* python_i.add_underindented_line
+    def add_underindented_line(self, line, new_state, stack):
         '''
         Handle an unusual case: an underindented tail line.
         
