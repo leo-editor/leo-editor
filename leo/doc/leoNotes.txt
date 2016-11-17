@@ -18798,1187 +18798,6 @@ def skip_matching_python_parens(s, i):
     '''
     # Deprecated: No longer used in Leo's core.
     return skip_matching_python_delims(s, i, '(', ')')
-.. @+node:ekr.20161117163434.1: *3* Old importers
-.. @+node:ekr.20161117164227.1: *4* Unit Tests for character-oriented scanners
-.. @+node:ekr.20161117164227.2: *5* @test ic.BaseScanner.insertIgnoreDirective
-import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-
-def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-importCommands = c.importCommands
-bic = basescanner.BaseScanner(importCommands,atAuto=False,language='python')
-
-try:
-    setup(p)
-    child = p.insertAsLastChild()
-    child.h = 'child'
-    bic.insertIgnoreDirective(parent=child)
-    assert child.b.find('@ignore') == 0
-finally:
-    if 1:
-        setup(p)
-.. @+node:ekr.20161117164227.3: *5* @test ic.compareTokens: mismatched length
-import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-
-ic = c.importCommands
-bs = basescanner.BaseScanner(ic,atAuto=True,language='html')
-
-<< define tokens >>
-
-table = (
-    (tokens11,tokens12),
-    (tokens21,tokens22),
-)
-
-for tokens1,tokens2 in table:
-    bs.compareTokens(tokens1,tokens2)
-.. @+node:ekr.20161117164227.4: *6* << define tokens >>
-@ 2011/11/10:
-
-File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in scanAndCompare
-n1,n2,ok = self.compareTokens(tokens1,tokens2)
-File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in compareTokens
-else:      kind1,val1 = 'eof','',n1
-ValueError: too many values to unpack
-@c
-
-tokens11 = ()
-tokens12 = (('id','abc',0),)
-
-# Test similar situation, reversed.
-
-tokens21 = (('id','abc',0),)
-tokens22 = ()
-.. @+node:ekr.20161117164227.5: *5* @test ic.createImportParent
-files = ('x.h','x.cpp')
-
-while p.hasChildren():
-    p.firstChild().doDelete()
-
-try:
-    current = c.importCommands.createImportParent(c.p,files)
-    assert current
-    assert current.h == 'x'
-    assert p.firstChild() == current
-finally:
-    while p.hasChildren():
-        p.firstChild().doDelete()
-    c.redraw()
-.. @+node:ekr.20161117164227.6: *5* @test ic.HtmlScanner.adjust_class_ref
-import leo.plugins.importers.html as html
-ic = c.importCommands
-hs = html.HtmlScanner(importCommands=ic,atAuto=True)
-
-s = '''
-<aTag>  @others
-</aTag>
-'''
-
-# Avoid probems with representation of @others in scripts.
-expected = '\n<aTag>\n@others\n</aTag>\n'
-
-result = hs.adjust_class_ref(s)
-assert result == expected,'expected...\n%s\ngot...\n%s' % (
-    repr(expected),repr(result))
-.. @+node:ekr.20161117164227.7: *5* @test ic.HtmlScanner.skipComment/Id/String
-import leo.plugins.importers.html as html
-ic = c.importCommands
-hs = html.HtmlScanner(importCommands=ic,atAuto=True)
-
-table = (
-    # Yes, both single and double quotes are valid in html.
-    (hs.skipComment, '<!-- comment --> after',  '<!-- comment -->'),
-    (hs.skipComment, '<!-- a\nb --> after',     '<!-- a\nb -->'),
-    (hs.skipId,      'abc>',                    'abc'),
-    (hs.skipId,      'abc"',                    'abc'),
-    (hs.skipId,      'abc<!--',                 'abc'),
-    (hs.skipId,      'a.b-c9:d after',          'a.b-c9:d'),
-    (hs.skipString,  '"a string" after',        '"a string"'),
-    (hs.skipString,  "'a string2' after",       "'a string2'"),
-    (hs.skipString,  "'a string<'>",            "'a string<'"),
-    (hs.skipString,  "'a string>'<",            "'a string>'"),
-)
-
-for func,s,expected in table:
-    
-    i = func(s,0)
-    result = s[0:i]
-    assert result == expected,'expected %s got %s' % (
-        repr(expected),repr(result))
-.. @+node:ekr.20161117164227.8: *5* @test ic.reportMismatch
-import leo.plugins.importers.leo_rst as leo_rst
-ic = c.importCommands
-scanner = leo_rst.RstScanner(importCommands=ic,atAuto=True)
-scanner.root = p
-s1 = ["abc","xyz",]
-s2 = ["xyz",]
-scanner.reportMismatch(s1,s2,1,1)
-s1 = ["xyz",]
-s2 = ["abc","xyz",]
-scanner.reportMismatch(s1,s2,1,1)
-.. @+node:ekr.20161117164227.9: *5* @test ic.skip...Token (HtmlScanner)
-import leo.plugins.importers.html as html
-ic = c.importCommands
-scanner = html.HtmlScanner(importCommands=ic,atAuto=True)
-tails = (
-    '<whatever>',
-    '+ abc', # don't concatenate with id or whitespace.
-    '<!-- tail comment -->',
-    '"tail string"',
-) 
-table = (
-    (scanner.skipCommentToken,  '<!-- Test -->'),
-    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
-    # (scanner.skipNewlineToken,'\n'),
-        # xmlScanner.skipNewlineToken throws exception (on purpose).
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-)
-
-# Special test for whitespace: Converts all runs of whitespace to a single blank.
-if 0: # No longer does this.
-    s = ' \n\t\t \n'
-    i,result = scanner.skipWsToken(s+tails[0],0)
-    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-    expected = ' '
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-    
-for f,s in table:
-    for tail in tails:
-        i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-.. @+node:ekr.20161117164014.1: *5* @test ic.skip...Token (PythonScanner)
-import leo.plugins.importers.python as python
-ic = c.importCommands
-scanner = python.PythonScanner(importCommands=ic,atAuto=True)
-tails = (
-    '+ abc', # don't concatenate with id or whitespace.
-    '# tail comment',
-    '"tail string"',
-    "'tail string'",
-)
-table = (
-    (scanner.skipCommentToken,  '# Test'),
-    (scanner.skipIdToken,       'ab_c'),
-    (scanner.skipNewlineToken,  '\n'),
-    (scanner.skipOtherToken,    '+'),
-    (scanner.skipOtherToken,    '#'),
-    (scanner.skipStringToken,   '"A string"'),
-    (scanner.skipWsToken,       ' '),
-    (scanner.skipWsToken,       '\t '),
-)
-    
-for f,s in table:
-    for tail in tails:
-        if f.__name__ == 'skipCommentToken':
-            i,result = f(s,0)
-        else:
-            i,result = f(s+tail,0)
-        expected = s
-        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
-        assert result == expected,'expected...\n%s\ngot...\n%s' % (
-            repr(expected),repr(result))
-.. @+node:ekr.20161117164227.10: *5* @test ic.tokenize (HtmlScanner)
-import leo.plugins.importers.html as html
-ic = c.importCommands
-hs = html.HtmlScanner(importCommands=ic,atAuto=True)
-s = '''
-<!-- a comment -->
-<html "string">
-Test.
-</html>
-'''
-<< define expected >>
-result = hs.tokenize(s)
-if 1:
-    assert result == expected,'expected...\n%s\ngot...\n%s' % (
-        repr(expected),repr(result))
-else:
-    print(result)
-    
-@
-AssertionError: expected...
-[('ws', ' ', 0), ('comment', '<!-- a comment -->', 1), ('ws', ' ', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', ' ',
- 2), ('string', '"string"', 2), ('other', '>', 2), ('ws', ' ', 2), ('id', 'Test.', 3), ('ws', ' ', 3), ('other', '<', 4)
-, ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('ws', ' ', 4)]
-got...
-[('nl', '\n', 0), ('comment', '<!-- a comment -->', 1), ('nl', '\n', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', '
-', 2), ('string', '"string"', 2), ('other', '>', 2), ('nl', '\n', 2), ('id', 'Test.', 3), ('nl', '\n', 3), ('other', '<'
-, 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('nl', '\n', 4)]
-
-----------------------------------------------------------------------
-Ran 1 test in 0.018s
-
-FAILED (failures=1)
-
-.. @+node:ekr.20161117164227.11: *6* << define expected >>
-# expected = [
-    # ('ws', ' ', 0),
-    # ('comment', '<!-- a comment -->', 1),
-    # ('ws', ' ', 1),
-    # ('other', '<', 2), ('id', 'html', 2),
-    # ('ws', ' ',2), ('string', '"string"', 2),
-    # ('other', '>', 2),
-    # ('ws', ' ', 2),
-    # ('id', 'Test.', 3),
-    # ('ws', ' ', 3),
-    # ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
-    # ('ws', ' ', 4),
-# ]
-
-expected = [
-    ('nl', '\n', 0),
-    ('comment', '<!-- a comment -->', 1),
-    ('nl', '\n', 1),
-    ('other', '<', 2),
-    ('id', 'html', 2),
-    ('ws', ' ', 2),
-    ('string', '"string"', 2),
-    ('other', '>', 2),
-    ('nl', '\n', 2),
-    ('id', 'Test.', 3),
-    ('nl', '\n', 3),
-    ('other', '<', 4),
-    ('other', '/', 4),
-    ('id', 'html', 4),
-    ('other', '>', 4),
-    ('nl', '\n', 4),
-]
-.. @+node:ekr.20161117163444.1: *4* Character-oriented importers
-.. @+node:ekr.20161117163301.1: *5* Python: character-oriented importers
-.. @+node:ekr.20161117163301.2: *6* class Python_ImportController (ImportController)
-class Python_ImportController(ImportController):
-    '''The legacy importer for the python language.'''
-
-    def __init__(self, importCommands, atAuto, language=None, alternate_language=None):
-        '''The ctor for the Python_ImportController class.'''
-        # Init the base class.
-        ImportController.__init__(self,
-            importCommands,
-            atAuto,
-            gen_clean = False, # True: clean blank lines & unindent blocks.
-            gen_refs = False, # Don't generate section references.
-            language = 'python', # For @language.
-            scanner = PythonScanner(importCommands, atAuto),
-            strict = True, # True: leave leading whitespace alone.
-        )
-        self.ws_pattern = re.compile(r'^\s*$|^\s*#')
-            # Matches lines containing nothing but ws or comments.
-
-    @others
-.. @+node:ekr.20161117163301.3: *7* python_ic.is_ws_line
-def is_ws_line(self, s):
-    '''Return True if s is nothing but whitespace and comments.'''
-    # g.trace('(python)', self.ws_pattern.match(s), repr(s))
-    return bool(self.ws_pattern.match(s))
-.. @+node:ekr.20161117163301.4: *7* python_ic.clean_headline
-def clean_headline(self, s):
-    '''Return a cleaned up headline s.'''
-    m = re.match(r'\s*def\s+(\w+)', s)
-    if m:
-        return m.group(1)
-    else:
-        m = re.match(r'\s*class\s+(\w+)', s)
-        if m:
-            return 'class %s' % m.group(1)
-        else:
-            return s.strip()
-.. @+node:ekr.20161117163301.5: *7* python_ic.clean_nodes (Does nothing)
-def clean_nodes(self, parent):
-    '''
-    Clean nodes as part of the post pass.
-    Called *before* undent, so there are no underindent escapes here!
-    
-    For Python, it's best not to move lines around.
-    '''
-    pass
-.. @+node:ekr.20161117163301.6: *7* python_ic.common_lws
-def common_lws(self, lines):
-    '''Return the lws common to all lines.'''
-    trace = False and not g.unitTesting
-    if not lines:
-        return ''
-    head = True
-    for s in lines:
-        is_ws = self.is_ws_line(s)
-        if head:
-            if not is_ws: # A real line.
-                head = False
-                lws = self.get_str_lws(s)
-        elif is_ws:
-            # Ignore lines containing only whitespace or comments.
-            pass
-        else:
-            lws2 = self.get_str_lws(s)
-            if lws2.startswith(lws):
-                pass
-            elif lws.startswith(lws2):
-                lws = lws2
-            else:
-                lws = '' # Nothing in common.
-                break
-    if head:
-        lws = '' # All head lines.
-    if trace: g.trace(repr(lws), repr(lines[0]))
-    return lws
-.. @+node:ekr.20161117163301.7: *7* python_ic.undent
-def undent(self, p):
-    '''
-        Python_ImportController.undent.
-        Remove maximal leading whitespace from the start of all lines.
-        
-        Called *after* clean_node, so all lines have been moved.
-    '''
-    trace = False and not g.unitTesting
-    if self.is_rst:
-        return p.b # Never unindent rst code.
-    lines = g.splitLines(p.b)
-    ws = self.common_lws(lines)
-    if trace:
-        g.trace('common_lws:', repr(ws))
-        print('===== lines:\n%s' % ''.join(lines))
-    result = []
-    # Move underindented *trailing* whitespace-only lines
-    # to the end of the parent.
-    parent = p.parent()
-    while lines:
-        line = lines[-1]
-        if line.startswith(ws):
-            break
-        elif self.is_ws_line(line):
-            parent.b = parent.b + lines.pop()
-        else:
-            break
-    p.b = ''.join(lines)
-    # Handle the remaining lines.
-    for s in lines:
-        if s.startswith(ws):
-            result.append(s[len(ws):])
-        else:
-            # Like the base class.
-            # Indicate that the line is underindented.
-            result.append("%s%s.%s" % (
-                self.c.atFileCommands.underindentEscapeString,
-                g.computeWidth(ws, self.tab_width),
-                s.lstrip()))
-    if trace:
-        print('----- result:\n%s' % ''.join(result))
-    return ''.join(result)
-.. @+node:ekr.20161117163301.8: *6* class PythonScanner (BaseScanner)
-class PythonScanner(basescanner.BaseScanner):
-    @others
-.. @+node:ekr.20161117163301.9: *7*  __init__ (PythonScanner)
-def __init__(self, importCommands, atAuto):
-    # Init the base class.
-    basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='python')
-    # Set the parser delims.
-    self.lineCommentDelim = '#'
-    self.classTags = ['class',]
-    self.functionTags = ['def',]
-    self.ignoreBlankLines = True
-    self.blockDelim1 = self.blockDelim2 = None
-        # Suppress the check for the block delim.
-        # The check is done in skipSigTail.
-    self.strict = True
-.. @+node:ekr.20161117163301.10: *7* adjustDefStart (PythonScanner)
-def adjustDefStart(self, s, i):
-    '''A hook to allow the Python importer to adjust the
-    start of a class or function to include decorators.
-    '''
-    # Invariant: i does not change.
-    # Invariant: start is the present return value.
-    try:
-        assert s[i] != '\n'
-        start = j = g.find_line_start(s, i) if i > 0 else 0
-        # g.trace('entry',j,i,repr(s[j:i+10]))
-        assert j == 0 or s[j - 1] == '\n'
-        while j > 0:
-            progress = j
-            j1 = j = g.find_line_start(s, j - 2)
-            # g.trace('line',repr(s[j:progress]))
-            j = g.skip_ws(s, j)
-            if not g.match(s, j, '@'):
-                break
-            k = g.skip_id(s, j + 1)
-            word = s[j: k]
-            # Leo directives halt the scan.
-            if word and word in g.globalDirectiveList:
-                break
-            # A decorator.
-            start = j = j1
-            assert j < progress
-        # g.trace('**returns %s, %s' % (repr(s[start:i]),repr(s[i:i+20])))
-        return start
-    except AssertionError:
-        g.es_exception()
-        return i
-.. @+node:ekr.20161117163301.11: *7* extendSignature
-def extendSignature(self, s, i):
-    '''Extend the text to be added to the class node following the signature.
-
-    The text *must* end with a newline.'''
-    # Add a docstring to the class node,
-    # And everything on the line following it
-    j = g.skip_ws_and_nl(s, i)
-    if g.match(s, j, '"""') or g.match(s, j, "'''"):
-        j = g.skip_python_string(s, j)
-        if j < len(s): # No scanning error.
-            # Return the docstring only if nothing but whitespace follows.
-            j = g.skip_ws(s, j)
-            if g.is_nl(s, j):
-                return j + 1
-    return i
-.. @+node:ekr.20161117163301.12: *7* findClass (PythonScanner)
-def findClass(self, p):
-    '''Return the index end of the class or def in a node, or -1.'''
-    s, i = p.b, 0
-    while i < len(s):
-        progress = i
-        if s[i] in (' ', '\t', '\n'):
-            i += 1
-        elif self.startsComment(s, i):
-            i = self.skipComment(s, i)
-        elif self.startsString(s, i):
-            i = self.skipString(s, i)
-        elif self.startsClass(s, i):
-            return 'class', self.sigStart, self.codeEnd
-        elif self.startsFunction(s, i):
-            return 'def', self.sigStart, self.codeEnd
-        elif self.startsId(s, i):
-            i = self.skipId(s, i)
-        else:
-            i += 1
-        assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
-    return None, -1, -1
-.. @+node:ekr.20161117163301.13: *7* skipCodeBlock (PythonScanner) & helpers
-def skipCodeBlock(self, s, i, kind):
-    trace = False; verbose = True
-    # if trace: g.trace('***',g.callers())
-    startIndent = self.startSigIndent
-    if trace: g.trace('startIndent', startIndent)
-    assert startIndent is not None
-    i = start = g.skip_ws_and_nl(s, i)
-    parenCount = 0
-    underIndentedStart = None # The start of trailing underindented blank or comment lines.
-    while i < len(s):
-        progress = i
-        ch = s[i]
-        if g.is_nl(s, i):
-            if trace and verbose: g.trace(g.get_line(s, i))
-            backslashNewline = (i > 0 and g.match(s, i - 1, '\\\n'))
-            if backslashNewline:
-                # An underindented line, including docstring,
-                # does not end the code block.
-                i += 1 # 2010/11/01
-            else:
-                i = g.skip_nl(s, i)
-                j = g.skip_ws(s, i)
-                if g.is_nl(s, j):
-                    pass # We have already made progress.
-                else:
-                    i, underIndentedStart, breakFlag = self.pythonNewlineHelper(
-                        s, i, parenCount, startIndent, underIndentedStart)
-                    if breakFlag: break
-        elif ch == '#':
-            i = g.skip_to_end_of_line(s, i)
-        elif ch == '"' or ch == '\'':
-            i = g.skip_python_string(s, i)
-        elif ch in '[{(':
-            i += 1; parenCount += 1
-            # g.trace('ch',ch,parenCount)
-        elif ch in ']})':
-            i += 1; parenCount -= 1
-            # g.trace('ch',ch,parenCount)
-        else: i += 1
-        assert(progress < i)
-    # The actual end of the block.
-    if underIndentedStart is not None:
-        i = underIndentedStart
-        if trace: g.trace('***backtracking to underindent range')
-        if trace: g.trace(g.get_line(s, i))
-    if 0 < i < len(s) and not g.match(s, i - 1, '\n'):
-        g.trace('Can not happen: Python block does not end in a newline.')
-        g.trace(g.get_line(s, i))
-        return i, False
-    # 2010/02/19: Include all following material
-    # until the next 'def' or 'class'
-    i = self.skipToTheNextClassOrFunction(s, i, startIndent)
-    if (trace or self.trace) and s[start: i].strip():
-        g.trace('%s returns\n' % (kind) + s[start: i])
-    return i, True
-.. @+node:ekr.20161117163301.14: *8* pythonNewlineHelper
-def pythonNewlineHelper(self, s, i, parenCount, startIndent, underIndentedStart):
-    trace = False
-    breakFlag = False
-    j, indent = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-    if trace: g.trace(
-        'startIndent', startIndent, 'indent', indent, 'parenCount', parenCount,
-        'line', repr(g.get_line(s, j)))
-    if indent <= startIndent and parenCount == 0:
-        # An underindented line: it ends the block *unless*
-        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
-        if g.match(s, j, '#'):
-            if trace: g.trace('underindent: comment')
-            if underIndentedStart is None: underIndentedStart = i
-            i = j
-        elif g.match(s, j, '\n'):
-            if trace: g.trace('underindent: blank line')
-            # Blank lines never start the range of underindented lines.
-            i = j
-        else:
-            if trace: g.trace('underindent: end of block')
-            breakFlag = True # The actual end of the block.
-    else:
-        if underIndentedStart and g.match(s, j, '\n'):
-            # Add the blank line to the underindented range.
-            if trace: g.trace('properly indented blank line extends underindent range')
-        elif underIndentedStart and g.match(s, j, '#'):
-            # Add the (properly indented!) comment line to the underindented range.
-            if trace: g.trace('properly indented comment line extends underindent range')
-        elif underIndentedStart is None:
-            pass
-        else:
-            # A properly indented non-comment line.
-            # Give a message for all underindented comments in underindented range.
-            if trace: g.trace('properly indented line generates underindent errors')
-            s2 = s[underIndentedStart: i]
-            lines = g.splitlines(s2)
-            for line in lines:
-                if line.strip():
-                    junk, indent = g.skip_leading_ws_with_indent(line, 0, self.tab_width)
-                    if indent <= startIndent:
-                        if j not in self.errorLines: # No error yet given.
-                            self.errorLines.append(j)
-                            self.underindentedComment(line)
-            underIndentedStart = None
-    if trace: g.trace('breakFlag', breakFlag, 'returns', i, 'underIndentedStart', underIndentedStart)
-    return i, underIndentedStart, breakFlag
-.. @+node:ekr.20161117163301.15: *8* skipToTheNextClassOrFunction (New in 4.8)
-def skipToTheNextClassOrFunction(self, s, i, lastIndent):
-    '''Skip to the next python def or class.
-    Return the original i if nothing more is found.
-    This allows the "if __name__ == '__main__' hack
-    to appear at the top level.'''
-    return i # A rewrite is needed.
-.. @+node:ekr.20161117163301.16: *7* skipSigTail
-# This must be overridden in order to handle newlines properly.
-
-def skipSigTail(self, s, i, kind):
-    '''Skip from the end of the arg list to the start of the block.'''
-    if 1: # New code
-        while i < len(s):
-            ch = s[i]
-            if ch == ':':
-                return i, True
-            elif ch == '\n':
-                return i, False
-            elif self.startsComment(s, i):
-                i = self.skipComment(s, i)
-            else:
-                i += 1
-        return i, False
-    else: # old code
-        while i < len(s):
-            ch = s[i]
-            if ch == '\n':
-                break
-            elif ch in (' ', '\t',):
-                i += 1
-            elif self.startsComment(s, i):
-                i = self.skipComment(s, i)
-            else:
-                break
-        return i, g.match(s, i, ':')
-.. @+node:ekr.20161117163301.17: *7* skipString
-def skipString(self, s, i):
-    # Returns len(s) on unterminated string.
-    return g.skip_python_string(s, i, verbose=False)
-.. @+node:ekr.20161117163409.1: *4* V1 of line-oriented importers
-.. @+node:ekr.20161108154628.1: *5* ImportController.Scanning & code generation
-.. @+node:ekr.20161108154628.2: *6* IC.gen_lines (entry) & helpers
-def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
-    '''
-    The entry point for parsing and code generation. Also called by
-    rescan_code_block.
-    
-    Parse all lines, adding to parent.b, creating child nodes as necessary.
-    '''
-    trace = True and not g.unitTesting and self.root.h.endswith('.py')
-    if not lines:
-        return
-    gen_refs, state = self.gen_refs, self.state
-    if trace:
-        g.trace(tag, state)
-        print('===== entry lines:...')
-        for line in lines:
-            print(line.rstrip())
-        print('----- end entry lines.')
-    assert not state.context, state
-    i, ref_flag = 0, False
-    while i < len(lines):
-        progress = i
-        line = lines[i]
-        state.scan_line(line)
-        if state.starts_block():
-            # Generate the reference first.
-            ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
-            # Scan the code block and its tail.
-            code_lines, tail_lines = self.skip_code_block(i, lines)
-            i += (len(code_lines) + len(tail_lines))
-            if gen_refs:
-                self.rescan_code_block(code_lines, parent)
-                self.append_to_body(parent, ''.join(tail_lines))
-            else:
-                code_lines.extend(tail_lines)
-                self.rescan_code_block(code_lines, parent)
-        else:
-            # This works for both @others and section references.
-            # After @others, child nodes contain *all* lines.
-            if ref_flag and not gen_refs:
-                g.trace('Can not happen: line not in tail: %r' % line)
-            self.append_to_body(parent, line)
-            i += 1
-        assert progress < i
-.. @+node:ekr.20161108154628.3: *7* IC.skip_code_block
-def skip_code_block(self, i, lines):
-    '''
-    lines[i] starts a class or function.
-    
-    Return (code_lines, tail_lines) where:
-    - code_lines are all the lines of the class or function.
-    - tail lines are all lines up to but not including the next class or function.
-    '''
-    trace = True and not g.unitTesting and self.root.h.endswith('.py')
-    trace_lines = False
-    trace_entry = True
-    trace_results = True
-    state = self.state
-    assert state.starts_block()
-    assert not state.context, state
-    state.push()
-    state.clear()
-    if trace and trace_entry:
-        g.trace(state)
-        print('===== entry lines:...')
-        for j in range(i, len(lines)):
-            print('  %s' % lines[j].rstrip()) # entry lines.
-        print('----- end entry lines')
-    # Scan the code block.
-    # We have cleared the state, so rescan the first line.
-    block_i = i
-    state.scan_line(lines[i])
-    assert state.starts_block()
-    i += 1
-    while i < len(lines):
-        progress = i
-        line = lines[i]
-        if trace and trace_lines:
-            g.trace(state, line.rstrip())
-        state.scan_line(line)
-        if state.continues_block():
-            i += 1
-        elif self.name == 'python':
-            break
-        else:
-            i += 1
-            break
-        assert progress < i
-    code_lines = lines[block_i:i]
-    if trace and trace_results:
-        g.trace('===== code lines:...')
-        for line in code_lines:
-            print('  %s' % line.rstrip()) # code lines.
-        print('----- end code lines')
-    # Scan the block's tail.
-    # Line i is *not* part of the code block and it has not been scanned.
-    tail_i = i
-    if i < len(lines):
-        state.scan_line(lines[i])
-        if not state.starts_block():
-            i += 1 # Add the just-scanned line.
-            while i < len(lines):
-                line = lines[i]
-                if trace and trace_lines: g.trace(line.rstrip())
-                state.scan_line(line)
-                if state.starts_block():
-                    break
-                else:
-                    i += 1
-    tail_lines = lines[tail_i:i]
-    if trace and trace_results:
-        g.trace('===== tail lines:...')
-        for line in tail_lines:
-            print('  %s' % line.rstrip()) # tail lines.
-        print('----- end-tail-lines')
-    state.pop()
-    return code_lines, tail_lines
-.. @+node:ekr.20161108154628.4: *6* IC.gen_ref
-def gen_ref(self, indent_flag, line, parent, ref_flag):
-    '''
-    Generate the ref line and a flag telling this method whether a previous
-    @others
-    '''
-    trace = False and not g.unitTesting
-    indent_ws = self.get_lws(line)
-        ### Ignore indent_flag: Hurray!
-    if self.is_rst and not self.atAuto:
-        return None, None
-    elif self.gen_refs:
-        headline = self.clean_headline(line)
-        ref = '%s%s\n' % (
-            indent_ws,
-            g.angleBrackets(' %s ' % headline))
-    else:
-        ref = None if ref_flag else '%s@others\n' % indent_ws
-        ref_flag = True # Don't generate another @others.
-    if ref:
-        if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
-            '*' * 20, indent_ws, line, parent.h))
-        self.append_to_body(parent, ref)
-    return ref_flag
-.. @+node:ekr.20161108154628.5: *6* IC.v1_scan
-def v1_scan(self, s, parent, parse_body=False):
-    '''
-    v1_scan: V1 of line-based scanners and code generators.
-    
-    Create a child of self.root for:
-    - Leading outer-level declarations.
-    - Outer-level classes.
-    - Outer-level functions.
-    '''
-    # Create the initial body text in the root.
-    if parse_body:
-        pass
-    else:
-        self.append_to_body(parent,
-            '@language %s\n@tabwidth %d\n' % (
-                self.language,
-                self.tab_width))
-        self.gen_lines(
-            indent_flag = False,
-            lines = g.splitlines(s),
-            parent = parent,
-        )
-.. @+node:ekr.20161108154628.6: *6* IC.rescan_code_block (calls gen_lines)
-def rescan_code_block(self, lines, parent):
-    '''Create a child of the parent, and add lines to parent.b.'''
-    if not lines:
-        return
-    state = self.state
-    first_line = lines[0]
-    assert first_line.strip
-    headline = self.clean_headline(first_line)
-    if self.gen_refs:
-        headline = g.angleBrackets(' %s ' % headline)
-    child = self.create_child_node(
-        parent,
-        body = '',
-        headline = headline)
-    if self.name == 'python':
-        last_line = None
-        lines = lines[1:]
-    else:
-        last_line = lines[-1]
-        lines = lines[1:-1]
-    self.append_to_body(child, first_line)
-    state.push()
-    self.gen_lines(
-        indent_flag = True,
-        lines = lines,
-        parent = child,
-        tag = 'rescan_code_block')
-    state.pop()
-    if last_line:
-        self.append_to_body(child, last_line)
-.. @+node:ekr.20161108154742.1: *5* Scanner methods
-.. @+node:ekr.20161108154742.2: *6* scanner.clear, push & pop
-def clear(self):
-    '''Clear the state.'''
-    self.base_curlies = self.curlies = 0
-    self.context = ''
-
-def pop(self):
-    '''Restore the base state from the stack.'''
-    self.base_curlies = self.stack.pop()
-    
-def push(self):
-    '''Save the base state on the stack and enter a new base state.'''
-    self.stack.append(self.base_curlies)
-    self.base_curlies = self.curlies
-.. @+node:ekr.20161108154742.3: *6* scanner.scan_line
-def scan_line(self, s):
-    '''
-    A *typical* line scanner. Subclasses should redefine this method.
-
-    Commented-out code illustrates how to handle block comments.
-    '''
-    trace = False and not g.unitTesting
-    contexts = strings = ['"', "'"]
-    # match = self.match
-    # block1, block2 = '/*', '*/
-    # contexts.append(block1)
-    i = 0
-    while i < len(s):
-        progress = i
-        ch = s[i]
-        if self.context:
-            assert self.context in contexts, repr(self.context)
-            if ch == '\\':
-                i += 1 # Eat the next character later.
-            elif self.context in strings and self.context == ch:
-                self.context = '' # End the string.
-            # elif self.context == block1 and match(s, i, block2):
-                # self.context = '' # End the block comment.
-                # i += (len(block2) - 1)
-            else:
-                pass # Eat the string character later.
-        elif ch in strings:
-            self.context = ch
-        # elif match(s, i, block1):
-            # self.context = block1
-            # i += (len(block1) - 1)
-        # elif match(s, i, line_comment):
-        elif ch == '#':
-            break # The single-line comment ends the line.
-        elif ch == '{': self.curlies += 1
-        elif ch == '}': self.curlies -= 1
-        i += 1
-        assert progress < i
-    if trace:
-        g.trace(self, s.rstrip())
-    if gen_v2:
-        return ScanState(self.context, self.curlies)
-.. @+node:ekr.20161108154742.4: *6* scanner.continues_block and starts_block
-def continues_block(self):
-    '''Return True if the just-scanned lines should be placed in the inner block.'''
-    return self.context or self.curlies > self.base_curlies
-
-def starts_block(self):
-    '''Return True if the just-scanned line starts an inner block.'''
-    return not self.context and self.curlies > self.base_curlies
-.. @+node:ekr.20161102071703.2: *5* class Block
-class Block:
-    '''A class describing a block of lines.'''
-
-    def __init__(self, lines, simple=None):
-        '''Ctor for the Block class.'''
-        assert simple in (True, False), g.callers()
-        self.children = []
-        self.lines = lines
-        self.headline = ''
-        self.simple = simple
-        
-    def description(self):
-        return 'Block: simple: %s lines: %s children: %s %s' % (
-            int(self.simple), len(self.lines),
-            len(self.children), self.get_headline())
-        
-    def __repr__(self):
-        return '%s Block...\n%s' % (
-            'Simple' if self.simple else 'Complex',
-            ''.join(self.lines),
-        )
-            
-    __str__ = __repr__
-    
-    @others
-.. @+node:ekr.20161102071703.3: *6* block.get_headline
-def get_headline(self):
-    '''Return the block's headline.'''
-    if self.headline:
-        return self.headline
-    elif self.lines:
-        for line in self.lines:
-            if line.strip():
-                return line.strip()
-        return 'blank lines'
-        
-    else:
-        return '<no headline>'
-.. @+node:ekr.20161102071703.4: *6* block.undent
-def undent(self, c, n, clean=True):
-    '''Unindent all block lines by n.'''
-    if n > 0:
-        result = []
-        for s in self.lines:
-            if s.strip():
-                if s[:n] == ' ' * n:
-                    result.append(s[n:])
-                elif s[0] == '\t':
-                    i  = 0
-                    while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
-                        i += 1
-                    result.append(s[i:])
-                else:
-                    g.trace('can not happen mixed leading whitespace:', n, repr(s))
-                    return
-            elif clean:
-                result.append(s)
-            else:
-                result.append('\n' if s.endswith('\n') else '')
-        self.lines = result
-.. @+node:ekr.20161102071703.5: *5* BLS.dump_block & dump_blocks
-def dump_block(self, block):
-    '''Dump one block.'''
-    lines = block.lines if isinstance(block, Block) else block
-    for j, s in enumerate(lines):
-        print('    %3s %s' % (j, s.rstrip()))
-        
-def dump_blocks(self, blocks, parent):
-    '''Dump all blocks, which may be Block instances or lists of strings.'''
-    g.trace('blocks in %s...' % parent.h)
-    for i, block in enumerate(blocks):
-        print('  block: %s' % i)
-        self.dump_block(block)
-
-.. @+node:ekr.20161102052106.2: *5* BLS.scan & helpers
-def scan(self, s1, parent):
-    '''The *old* line-based scanner.'''
-    trace = False and not g.unitTesting
-    trace_blocks = False
-    if trace: g.trace('===== ', self.root.h)
-    state = self.state
-    lines = g.splitLines(s1)
-    if self.gen_refs:
-        block = Block(lines, simple=False)
-        self.rescan_block(block, top_level=True)
-        parent.b = '@language %s\n' % (self.language)
-        self.put_block(block, parent, create_child=False)
-    else:
-        # Find all top-level blocks.
-        blocks, block_lines = [], []
-        i = 0
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            state.scan_line(line)
-            if state.starts_block():
-                if block_lines: blocks.append(Block(block_lines, simple=True))
-                i, block_lines = self.scan_block(i, lines)
-                blocks.append(Block(block_lines, simple=False))
-                block_lines = []
-            else:
-                block_lines.append(line)
-                i += 1
-            assert progress < i
-        # End the blocks properly.
-        if block_lines:
-            blocks.append(Block(block_lines, simple=True))
-        if trace and trace_blocks:
-            self.dump_blocks(blocks, parent)
-        # Rescan all the blocks, possibly creating more child blocks.
-        self.rescan_blocks(blocks)
-        parent.b = '@language %s\n@others\n' % (self.language)
-        for block in blocks:
-            self.put_block(block, parent)
-.. @+node:ekr.20161102052106.3: *6* BLS.max_blocks_indent
-def max_blocks_indent(self, blocks):
-    '''Return the maximum indentation that can be removed from all blocks.'''
-    n = 16
-    for block in blocks:
-        for s in block.lines:
-            if s.strip() or not self.gen_clean:
-                i = g.find_line_start(s, 0)
-                i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-                n = min(n, width)
-    return n
-.. @+node:ekr.20161102052106.4: *6* BLS.put_block
-def put_block(self, block, parent, create_child=True):
-    '''Create nodes for block and all its children.'''
-    if create_child:
-        p = parent.insertAsLastChild()
-        p.h = block.headline
-    else:
-        p = parent
-    p.b = p.b + ''.join(block.lines)
-    for child in block.children:
-        self.put_block(child, p)
-.. @+node:ekr.20161102052106.5: *6* BLS.rescan_block & helpers
-def rescan_block(self, parent_block, top_level=False):
-    '''Rescan a non-simple block, possibly creating child blocks.'''
-    state = self.state
-    trace = False and not g.unitTesting
-    if top_level:
-        # Scan everything.
-        first_line, last_line = None, None
-        lines = parent_block.lines
-    else:
-        first_line = parent_block.lines[0]
-        if self.language == 'python':
-            # Scan everything except the first line.
-            last_line = None
-            lines = parent_block.lines[1:]
-        else:
-            # The first and last lines begin and end the block.
-            # Only scan the interior lines.
-            last_line = parent_block.lines[-1]
-            lines = parent_block.lines[1:-1]
-    if trace:
-        g.trace('ENTRY: parent: %s\n%s' % (
-            parent_block.description(),
-            ''.join(lines),
-        ))
-    state.push() # Set the bases to the present counts.
-    blocks, block_lines = [], []
-    i = 0
-    while i < len(lines):
-        progress = i
-        line = lines[i]
-        state.scan_line(line)
-        if state.starts_block():
-            if block_lines:
-                # Finish any previous block.
-                blocks.append(Block(block_lines, simple=True))
-            # This is the *only* rescanning that is done.
-            ### state.push() ###
-            i, block_lines = self.scan_block(i, lines)
-            ### state.pop() ###
-            blocks.append(Block(block_lines, simple=False))
-            block_lines = []
-        else:
-            block_lines.append(line)
-            i += 1
-        assert progress < i
-    state.pop() # Restore the bases.
-    # End the lines.
-    if block_lines:
-        blocks.append(Block(block_lines, simple=True))
-    if trace:
-        g.trace('BLOCKS...')
-        for block in blocks:
-            print(block)
-    self.make_children(blocks, first_line, last_line, parent_block)
-.. @+node:ekr.20161102052106.6: *7* BLS.make_children
-def make_children(self, blocks, first_line, last_line, parent_block):
-    '''Generate child blocks for all blocks'''
-    trace = False and not g.unitTesting and self.root.h.endswith('.py')
-    if trace:
-        g.trace('parent', parent_block.description(), 'BLOCKS...\n')
-        for block in blocks:
-            print(block)
-    if self.gen_refs:
-        self.make_ref_children(blocks, first_line, last_line, parent_block)
-    else:
-        self.make_at_others_children(blocks, first_line, last_line, parent_block)
- 
-.. @+node:ekr.20161102052106.7: *7* BLS.ref_line
-def ref_line(self, block):
-    '''Return a reference to the block.'''
-    
-    def munge(h):
-        '''Munge a headline for use in a section reference.'''
-        for z in '<>': # {}()[]
-            h = h.replace(z,'')
-        return h.strip()
-
-    # Always return a reference
-    h = munge(block.get_headline())
-    return g.angleBrackets(' ' + h + ' ')
-
-   
-.. @+node:ekr.20161102052106.8: *7* BLS.make_ref_children
-def make_ref_children(self, blocks, first_line, last_line, parent_block):
-    '''Generate child blocks for all blocks'''
-    c = self.c
-    body, children = [], []
-    for block in blocks:
-        if block.simple:
-            # This line is never a section reference.
-            # g.trace(block.get_headline())
-            body.extend(block.lines)
-        else:
-            child_block = Block(block.lines, simple=False)
-            children.append(child_block)
-            ref = self.ref_line(child_block)
-            child_block.headline = ref
-            if self.gen_clean:
-                # This local calculation is probably good enough.
-                child_undent = self.max_blocks_indent([child_block])
-                child_block.undent(c, child_undent, clean=self.gen_clean)
-                body.append(' '*child_undent + ref + '\n')
-            else:
-                # Don't indent the ref, and don't unindent the children.
-                body.append(ref)
-    # Replace the block with the child blocks.
-    parent_block.lines = []
-    if first_line is not None:
-        parent_block.lines.append(first_line)
-    parent_block.lines.extend(body)
-    if last_line is not None:
-        parent_block.lines.append(last_line)
-    parent_block.children = children
-    # Continue the rescan.
-    self.rescan_blocks(children)
-.. @+node:ekr.20161102052106.9: *7* BLS.make_at_others_children
-def make_at_others_children(self, blocks, first_line, last_line, parent_block):
-    '''Generate child blocks for all blocks using @others.'''
-    c = self.c
-    if not blocks:
-        return
-    max_indent = 4 if self.gen_clean else 0
-        # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
-    parent_block.lines = [
-        first_line,
-        '%s@others\n' % (' ' * max_indent)
-    ]
-    if last_line: parent_block.lines.append(last_line)
-    children = []
-    for block in blocks:
-        child_block = Block(block.lines, simple=block.simple)
-        if self.gen_clean:
-            child_undent = self.max_blocks_indent([child_block])
-        else:
-            child_undent = max_indent
-        child_block.undent(c, child_undent, clean=self.gen_clean)
-        children.append(child_block)
-    parent_block.children = children
-    self.rescan_blocks(children)
-.. @+node:ekr.20161102052106.10: *6* BLS.rescan_blocks
-def rescan_blocks(self, blocks):
-    '''Rescan all blocks, finding more blocks and adjusting text.'''
-    for block in blocks:
-        assert isinstance(block, Block)
-        if not block.headline:
-            block.headline = block.get_headline()
-        if not block.simple:
-            self.rescan_block(block)
-.. @+node:ekr.20161102052106.11: *6* BLS.scan_block
-def scan_block(self, i, lines):
-    '''Scan lines[i:]. Return (i, lines).'''
-    trace = False and not g.unitTesting and self.root.h.endswith('.py')
-    state = self.state
-    i1 = i
-    i += 1
-    while i < len(lines):
-        progress = i
-        state.scan_line(lines[i])
-        if state.continues_block():
-            i += 1
-        elif self.language == 'python':
-            break
-        else:
-            i += 1 # Add the line that ends the block
-            break
-        assert progress < i
-    # DON'T add extra trailing lines.
-    # The last line *must* be the line that ends the block.
-    # The post pass can adjust blocks...
-    result = lines[i1:i]
-    if trace:
-        g.trace(g.callers(1), i1, '==== returns')
-        for line in result:
-            print(line.rstrip())
-    return i, result
 .. @+node:ekr.20161117164321.1: *3* Unused unit tests
 # Some of these tests give warnings.
 .. @+node:ekr.20161117164510.1: *4* Tk gui tests
@@ -30117,6 +28936,1187 @@ test\\unittest\\perfectImport\\formatter.py
 .. @+node:ekr.20161117164321.786: *6* dialog
 openFileDialog
 test\\unittest\\perfectImport\\formatter.py
+.. @+node:ekr.20161117163434.1: *3* Old importers
+.. @+node:ekr.20161117164227.1: *4* Unit Tests for character-oriented scanners
+.. @+node:ekr.20161117164227.2: *5* @test ic.BaseScanner.insertIgnoreDirective
+import leo.core.leoImport as leoImport
+import leo.plugins.importers.basescanner as basescanner
+
+def setup(p):
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+importCommands = c.importCommands
+bic = basescanner.BaseScanner(importCommands,atAuto=False,language='python')
+
+try:
+    setup(p)
+    child = p.insertAsLastChild()
+    child.h = 'child'
+    bic.insertIgnoreDirective(parent=child)
+    assert child.b.find('@ignore') == 0
+finally:
+    if 1:
+        setup(p)
+.. @+node:ekr.20161117164227.3: *5* @test ic.compareTokens: mismatched length
+import leo.core.leoImport as leoImport
+import leo.plugins.importers.basescanner as basescanner
+
+ic = c.importCommands
+bs = basescanner.BaseScanner(ic,atAuto=True,language='html')
+
+<< define tokens >>
+
+table = (
+    (tokens11,tokens12),
+    (tokens21,tokens22),
+)
+
+for tokens1,tokens2 in table:
+    bs.compareTokens(tokens1,tokens2)
+.. @+node:ekr.20161117164227.4: *6* << define tokens >>
+@ 2011/11/10:
+
+File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in scanAndCompare
+n1,n2,ok = self.compareTokens(tokens1,tokens2)
+File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in compareTokens
+else:      kind1,val1 = 'eof','',n1
+ValueError: too many values to unpack
+@c
+
+tokens11 = ()
+tokens12 = (('id','abc',0),)
+
+# Test similar situation, reversed.
+
+tokens21 = (('id','abc',0),)
+tokens22 = ()
+.. @+node:ekr.20161117164227.5: *5* @test ic.createImportParent
+files = ('x.h','x.cpp')
+
+while p.hasChildren():
+    p.firstChild().doDelete()
+
+try:
+    current = c.importCommands.createImportParent(c.p,files)
+    assert current
+    assert current.h == 'x'
+    assert p.firstChild() == current
+finally:
+    while p.hasChildren():
+        p.firstChild().doDelete()
+    c.redraw()
+.. @+node:ekr.20161117164227.6: *5* @test ic.HtmlScanner.adjust_class_ref
+import leo.plugins.importers.html as html
+ic = c.importCommands
+hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+
+s = '''
+<aTag>  @others
+</aTag>
+'''
+
+# Avoid probems with representation of @others in scripts.
+expected = '\n<aTag>\n@others\n</aTag>\n'
+
+result = hs.adjust_class_ref(s)
+assert result == expected,'expected...\n%s\ngot...\n%s' % (
+    repr(expected),repr(result))
+.. @+node:ekr.20161117164227.7: *5* @test ic.HtmlScanner.skipComment/Id/String
+import leo.plugins.importers.html as html
+ic = c.importCommands
+hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+
+table = (
+    # Yes, both single and double quotes are valid in html.
+    (hs.skipComment, '<!-- comment --> after',  '<!-- comment -->'),
+    (hs.skipComment, '<!-- a\nb --> after',     '<!-- a\nb -->'),
+    (hs.skipId,      'abc>',                    'abc'),
+    (hs.skipId,      'abc"',                    'abc'),
+    (hs.skipId,      'abc<!--',                 'abc'),
+    (hs.skipId,      'a.b-c9:d after',          'a.b-c9:d'),
+    (hs.skipString,  '"a string" after',        '"a string"'),
+    (hs.skipString,  "'a string2' after",       "'a string2'"),
+    (hs.skipString,  "'a string<'>",            "'a string<'"),
+    (hs.skipString,  "'a string>'<",            "'a string>'"),
+)
+
+for func,s,expected in table:
+    
+    i = func(s,0)
+    result = s[0:i]
+    assert result == expected,'expected %s got %s' % (
+        repr(expected),repr(result))
+.. @+node:ekr.20161117164227.8: *5* @test ic.reportMismatch
+import leo.plugins.importers.leo_rst as leo_rst
+ic = c.importCommands
+scanner = leo_rst.RstScanner(importCommands=ic,atAuto=True)
+scanner.root = p
+s1 = ["abc","xyz",]
+s2 = ["xyz",]
+scanner.reportMismatch(s1,s2,1,1)
+s1 = ["xyz",]
+s2 = ["abc","xyz",]
+scanner.reportMismatch(s1,s2,1,1)
+.. @+node:ekr.20161117164227.9: *5* @test ic.skip...Token (HtmlScanner)
+import leo.plugins.importers.html as html
+ic = c.importCommands
+scanner = html.HtmlScanner(importCommands=ic,atAuto=True)
+tails = (
+    '<whatever>',
+    '+ abc', # don't concatenate with id or whitespace.
+    '<!-- tail comment -->',
+    '"tail string"',
+) 
+table = (
+    (scanner.skipCommentToken,  '<!-- Test -->'),
+    (scanner.skipIdToken,       'a_b-c.d:e'), # Valid in xml ids:  ".-:"
+    # (scanner.skipNewlineToken,'\n'),
+        # xmlScanner.skipNewlineToken throws exception (on purpose).
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+)
+
+# Special test for whitespace: Converts all runs of whitespace to a single blank.
+if 0: # No longer does this.
+    s = ' \n\t\t \n'
+    i,result = scanner.skipWsToken(s+tails[0],0)
+    assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+    expected = ' '
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+    
+for f,s in table:
+    for tail in tails:
+        i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+.. @+node:ekr.20161117164014.1: *5* @test ic.skip...Token (PythonScanner)
+import leo.plugins.importers.python as python
+ic = c.importCommands
+scanner = python.PythonScanner(importCommands=ic,atAuto=True)
+tails = (
+    '+ abc', # don't concatenate with id or whitespace.
+    '# tail comment',
+    '"tail string"',
+    "'tail string'",
+)
+table = (
+    (scanner.skipCommentToken,  '# Test'),
+    (scanner.skipIdToken,       'ab_c'),
+    (scanner.skipNewlineToken,  '\n'),
+    (scanner.skipOtherToken,    '+'),
+    (scanner.skipOtherToken,    '#'),
+    (scanner.skipStringToken,   '"A string"'),
+    (scanner.skipWsToken,       ' '),
+    (scanner.skipWsToken,       '\t '),
+)
+    
+for f,s in table:
+    for tail in tails:
+        if f.__name__ == 'skipCommentToken':
+            i,result = f(s,0)
+        else:
+            i,result = f(s+tail,0)
+        expected = s
+        assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
+        assert result == expected,'expected...\n%s\ngot...\n%s' % (
+            repr(expected),repr(result))
+.. @+node:ekr.20161117164227.10: *5* @test ic.tokenize (HtmlScanner)
+import leo.plugins.importers.html as html
+ic = c.importCommands
+hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+s = '''
+<!-- a comment -->
+<html "string">
+Test.
+</html>
+'''
+<< define expected >>
+result = hs.tokenize(s)
+if 1:
+    assert result == expected,'expected...\n%s\ngot...\n%s' % (
+        repr(expected),repr(result))
+else:
+    print(result)
+    
+@
+AssertionError: expected...
+[('ws', ' ', 0), ('comment', '<!-- a comment -->', 1), ('ws', ' ', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', ' ',
+ 2), ('string', '"string"', 2), ('other', '>', 2), ('ws', ' ', 2), ('id', 'Test.', 3), ('ws', ' ', 3), ('other', '<', 4)
+, ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('ws', ' ', 4)]
+got...
+[('nl', '\n', 0), ('comment', '<!-- a comment -->', 1), ('nl', '\n', 1), ('other', '<', 2), ('id', 'html', 2), ('ws', '
+', 2), ('string', '"string"', 2), ('other', '>', 2), ('nl', '\n', 2), ('id', 'Test.', 3), ('nl', '\n', 3), ('other', '<'
+, 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4), ('nl', '\n', 4)]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=1)
+
+.. @+node:ekr.20161117164227.11: *6* << define expected >>
+# expected = [
+    # ('ws', ' ', 0),
+    # ('comment', '<!-- a comment -->', 1),
+    # ('ws', ' ', 1),
+    # ('other', '<', 2), ('id', 'html', 2),
+    # ('ws', ' ',2), ('string', '"string"', 2),
+    # ('other', '>', 2),
+    # ('ws', ' ', 2),
+    # ('id', 'Test.', 3),
+    # ('ws', ' ', 3),
+    # ('other', '<', 4), ('other', '/', 4), ('id', 'html', 4), ('other', '>', 4),
+    # ('ws', ' ', 4),
+# ]
+
+expected = [
+    ('nl', '\n', 0),
+    ('comment', '<!-- a comment -->', 1),
+    ('nl', '\n', 1),
+    ('other', '<', 2),
+    ('id', 'html', 2),
+    ('ws', ' ', 2),
+    ('string', '"string"', 2),
+    ('other', '>', 2),
+    ('nl', '\n', 2),
+    ('id', 'Test.', 3),
+    ('nl', '\n', 3),
+    ('other', '<', 4),
+    ('other', '/', 4),
+    ('id', 'html', 4),
+    ('other', '>', 4),
+    ('nl', '\n', 4),
+]
+.. @+node:ekr.20161117163444.1: *4* Character-oriented importers
+.. @+node:ekr.20161117163301.1: *5* Python: character-oriented importers
+.. @+node:ekr.20161117163301.2: *6* class Python_ImportController (ImportController)
+class Python_ImportController(ImportController):
+    '''The legacy importer for the python language.'''
+
+    def __init__(self, importCommands, atAuto, language=None, alternate_language=None):
+        '''The ctor for the Python_ImportController class.'''
+        # Init the base class.
+        ImportController.__init__(self,
+            importCommands,
+            atAuto,
+            gen_clean = False, # True: clean blank lines & unindent blocks.
+            gen_refs = False, # Don't generate section references.
+            language = 'python', # For @language.
+            scanner = PythonScanner(importCommands, atAuto),
+            strict = True, # True: leave leading whitespace alone.
+        )
+        self.ws_pattern = re.compile(r'^\s*$|^\s*#')
+            # Matches lines containing nothing but ws or comments.
+
+    @others
+.. @+node:ekr.20161117163301.3: *7* python_ic.is_ws_line
+def is_ws_line(self, s):
+    '''Return True if s is nothing but whitespace and comments.'''
+    # g.trace('(python)', self.ws_pattern.match(s), repr(s))
+    return bool(self.ws_pattern.match(s))
+.. @+node:ekr.20161117163301.4: *7* python_ic.clean_headline
+def clean_headline(self, s):
+    '''Return a cleaned up headline s.'''
+    m = re.match(r'\s*def\s+(\w+)', s)
+    if m:
+        return m.group(1)
+    else:
+        m = re.match(r'\s*class\s+(\w+)', s)
+        if m:
+            return 'class %s' % m.group(1)
+        else:
+            return s.strip()
+.. @+node:ekr.20161117163301.5: *7* python_ic.clean_nodes (Does nothing)
+def clean_nodes(self, parent):
+    '''
+    Clean nodes as part of the post pass.
+    Called *before* undent, so there are no underindent escapes here!
+    
+    For Python, it's best not to move lines around.
+    '''
+    pass
+.. @+node:ekr.20161117163301.6: *7* python_ic.common_lws
+def common_lws(self, lines):
+    '''Return the lws common to all lines.'''
+    trace = False and not g.unitTesting
+    if not lines:
+        return ''
+    head = True
+    for s in lines:
+        is_ws = self.is_ws_line(s)
+        if head:
+            if not is_ws: # A real line.
+                head = False
+                lws = self.get_str_lws(s)
+        elif is_ws:
+            # Ignore lines containing only whitespace or comments.
+            pass
+        else:
+            lws2 = self.get_str_lws(s)
+            if lws2.startswith(lws):
+                pass
+            elif lws.startswith(lws2):
+                lws = lws2
+            else:
+                lws = '' # Nothing in common.
+                break
+    if head:
+        lws = '' # All head lines.
+    if trace: g.trace(repr(lws), repr(lines[0]))
+    return lws
+.. @+node:ekr.20161117163301.7: *7* python_ic.undent
+def undent(self, p):
+    '''
+        Python_ImportController.undent.
+        Remove maximal leading whitespace from the start of all lines.
+        
+        Called *after* clean_node, so all lines have been moved.
+    '''
+    trace = False and not g.unitTesting
+    if self.is_rst:
+        return p.b # Never unindent rst code.
+    lines = g.splitLines(p.b)
+    ws = self.common_lws(lines)
+    if trace:
+        g.trace('common_lws:', repr(ws))
+        print('===== lines:\n%s' % ''.join(lines))
+    result = []
+    # Move underindented *trailing* whitespace-only lines
+    # to the end of the parent.
+    parent = p.parent()
+    while lines:
+        line = lines[-1]
+        if line.startswith(ws):
+            break
+        elif self.is_ws_line(line):
+            parent.b = parent.b + lines.pop()
+        else:
+            break
+    p.b = ''.join(lines)
+    # Handle the remaining lines.
+    for s in lines:
+        if s.startswith(ws):
+            result.append(s[len(ws):])
+        else:
+            # Like the base class.
+            # Indicate that the line is underindented.
+            result.append("%s%s.%s" % (
+                self.c.atFileCommands.underindentEscapeString,
+                g.computeWidth(ws, self.tab_width),
+                s.lstrip()))
+    if trace:
+        print('----- result:\n%s' % ''.join(result))
+    return ''.join(result)
+.. @+node:ekr.20161117163301.8: *6* class PythonScanner (BaseScanner)
+class PythonScanner(basescanner.BaseScanner):
+    @others
+.. @+node:ekr.20161117163301.9: *7*  __init__ (PythonScanner)
+def __init__(self, importCommands, atAuto):
+    # Init the base class.
+    basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='python')
+    # Set the parser delims.
+    self.lineCommentDelim = '#'
+    self.classTags = ['class',]
+    self.functionTags = ['def',]
+    self.ignoreBlankLines = True
+    self.blockDelim1 = self.blockDelim2 = None
+        # Suppress the check for the block delim.
+        # The check is done in skipSigTail.
+    self.strict = True
+.. @+node:ekr.20161117163301.10: *7* adjustDefStart (PythonScanner)
+def adjustDefStart(self, s, i):
+    '''A hook to allow the Python importer to adjust the
+    start of a class or function to include decorators.
+    '''
+    # Invariant: i does not change.
+    # Invariant: start is the present return value.
+    try:
+        assert s[i] != '\n'
+        start = j = g.find_line_start(s, i) if i > 0 else 0
+        # g.trace('entry',j,i,repr(s[j:i+10]))
+        assert j == 0 or s[j - 1] == '\n'
+        while j > 0:
+            progress = j
+            j1 = j = g.find_line_start(s, j - 2)
+            # g.trace('line',repr(s[j:progress]))
+            j = g.skip_ws(s, j)
+            if not g.match(s, j, '@'):
+                break
+            k = g.skip_id(s, j + 1)
+            word = s[j: k]
+            # Leo directives halt the scan.
+            if word and word in g.globalDirectiveList:
+                break
+            # A decorator.
+            start = j = j1
+            assert j < progress
+        # g.trace('**returns %s, %s' % (repr(s[start:i]),repr(s[i:i+20])))
+        return start
+    except AssertionError:
+        g.es_exception()
+        return i
+.. @+node:ekr.20161117163301.11: *7* extendSignature
+def extendSignature(self, s, i):
+    '''Extend the text to be added to the class node following the signature.
+
+    The text *must* end with a newline.'''
+    # Add a docstring to the class node,
+    # And everything on the line following it
+    j = g.skip_ws_and_nl(s, i)
+    if g.match(s, j, '"""') or g.match(s, j, "'''"):
+        j = g.skip_python_string(s, j)
+        if j < len(s): # No scanning error.
+            # Return the docstring only if nothing but whitespace follows.
+            j = g.skip_ws(s, j)
+            if g.is_nl(s, j):
+                return j + 1
+    return i
+.. @+node:ekr.20161117163301.12: *7* findClass (PythonScanner)
+def findClass(self, p):
+    '''Return the index end of the class or def in a node, or -1.'''
+    s, i = p.b, 0
+    while i < len(s):
+        progress = i
+        if s[i] in (' ', '\t', '\n'):
+            i += 1
+        elif self.startsComment(s, i):
+            i = self.skipComment(s, i)
+        elif self.startsString(s, i):
+            i = self.skipString(s, i)
+        elif self.startsClass(s, i):
+            return 'class', self.sigStart, self.codeEnd
+        elif self.startsFunction(s, i):
+            return 'def', self.sigStart, self.codeEnd
+        elif self.startsId(s, i):
+            i = self.skipId(s, i)
+        else:
+            i += 1
+        assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
+    return None, -1, -1
+.. @+node:ekr.20161117163301.13: *7* skipCodeBlock (PythonScanner) & helpers
+def skipCodeBlock(self, s, i, kind):
+    trace = False; verbose = True
+    # if trace: g.trace('***',g.callers())
+    startIndent = self.startSigIndent
+    if trace: g.trace('startIndent', startIndent)
+    assert startIndent is not None
+    i = start = g.skip_ws_and_nl(s, i)
+    parenCount = 0
+    underIndentedStart = None # The start of trailing underindented blank or comment lines.
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if g.is_nl(s, i):
+            if trace and verbose: g.trace(g.get_line(s, i))
+            backslashNewline = (i > 0 and g.match(s, i - 1, '\\\n'))
+            if backslashNewline:
+                # An underindented line, including docstring,
+                # does not end the code block.
+                i += 1 # 2010/11/01
+            else:
+                i = g.skip_nl(s, i)
+                j = g.skip_ws(s, i)
+                if g.is_nl(s, j):
+                    pass # We have already made progress.
+                else:
+                    i, underIndentedStart, breakFlag = self.pythonNewlineHelper(
+                        s, i, parenCount, startIndent, underIndentedStart)
+                    if breakFlag: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s, i)
+        elif ch == '"' or ch == '\'':
+            i = g.skip_python_string(s, i)
+        elif ch in '[{(':
+            i += 1; parenCount += 1
+            # g.trace('ch',ch,parenCount)
+        elif ch in ']})':
+            i += 1; parenCount -= 1
+            # g.trace('ch',ch,parenCount)
+        else: i += 1
+        assert(progress < i)
+    # The actual end of the block.
+    if underIndentedStart is not None:
+        i = underIndentedStart
+        if trace: g.trace('***backtracking to underindent range')
+        if trace: g.trace(g.get_line(s, i))
+    if 0 < i < len(s) and not g.match(s, i - 1, '\n'):
+        g.trace('Can not happen: Python block does not end in a newline.')
+        g.trace(g.get_line(s, i))
+        return i, False
+    # 2010/02/19: Include all following material
+    # until the next 'def' or 'class'
+    i = self.skipToTheNextClassOrFunction(s, i, startIndent)
+    if (trace or self.trace) and s[start: i].strip():
+        g.trace('%s returns\n' % (kind) + s[start: i])
+    return i, True
+.. @+node:ekr.20161117163301.14: *8* pythonNewlineHelper
+def pythonNewlineHelper(self, s, i, parenCount, startIndent, underIndentedStart):
+    trace = False
+    breakFlag = False
+    j, indent = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+    if trace: g.trace(
+        'startIndent', startIndent, 'indent', indent, 'parenCount', parenCount,
+        'line', repr(g.get_line(s, j)))
+    if indent <= startIndent and parenCount == 0:
+        # An underindented line: it ends the block *unless*
+        # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
+        if g.match(s, j, '#'):
+            if trace: g.trace('underindent: comment')
+            if underIndentedStart is None: underIndentedStart = i
+            i = j
+        elif g.match(s, j, '\n'):
+            if trace: g.trace('underindent: blank line')
+            # Blank lines never start the range of underindented lines.
+            i = j
+        else:
+            if trace: g.trace('underindent: end of block')
+            breakFlag = True # The actual end of the block.
+    else:
+        if underIndentedStart and g.match(s, j, '\n'):
+            # Add the blank line to the underindented range.
+            if trace: g.trace('properly indented blank line extends underindent range')
+        elif underIndentedStart and g.match(s, j, '#'):
+            # Add the (properly indented!) comment line to the underindented range.
+            if trace: g.trace('properly indented comment line extends underindent range')
+        elif underIndentedStart is None:
+            pass
+        else:
+            # A properly indented non-comment line.
+            # Give a message for all underindented comments in underindented range.
+            if trace: g.trace('properly indented line generates underindent errors')
+            s2 = s[underIndentedStart: i]
+            lines = g.splitlines(s2)
+            for line in lines:
+                if line.strip():
+                    junk, indent = g.skip_leading_ws_with_indent(line, 0, self.tab_width)
+                    if indent <= startIndent:
+                        if j not in self.errorLines: # No error yet given.
+                            self.errorLines.append(j)
+                            self.underindentedComment(line)
+            underIndentedStart = None
+    if trace: g.trace('breakFlag', breakFlag, 'returns', i, 'underIndentedStart', underIndentedStart)
+    return i, underIndentedStart, breakFlag
+.. @+node:ekr.20161117163301.15: *8* skipToTheNextClassOrFunction (New in 4.8)
+def skipToTheNextClassOrFunction(self, s, i, lastIndent):
+    '''Skip to the next python def or class.
+    Return the original i if nothing more is found.
+    This allows the "if __name__ == '__main__' hack
+    to appear at the top level.'''
+    return i # A rewrite is needed.
+.. @+node:ekr.20161117163301.16: *7* skipSigTail
+# This must be overridden in order to handle newlines properly.
+
+def skipSigTail(self, s, i, kind):
+    '''Skip from the end of the arg list to the start of the block.'''
+    if 1: # New code
+        while i < len(s):
+            ch = s[i]
+            if ch == ':':
+                return i, True
+            elif ch == '\n':
+                return i, False
+            elif self.startsComment(s, i):
+                i = self.skipComment(s, i)
+            else:
+                i += 1
+        return i, False
+    else: # old code
+        while i < len(s):
+            ch = s[i]
+            if ch == '\n':
+                break
+            elif ch in (' ', '\t',):
+                i += 1
+            elif self.startsComment(s, i):
+                i = self.skipComment(s, i)
+            else:
+                break
+        return i, g.match(s, i, ':')
+.. @+node:ekr.20161117163301.17: *7* skipString
+def skipString(self, s, i):
+    # Returns len(s) on unterminated string.
+    return g.skip_python_string(s, i, verbose=False)
+.. @+node:ekr.20161117163409.1: *4* OLD (First) line-oriented importers
+.. @+node:ekr.20161108154628.1: *5* ImportController.Scanning & code generation
+.. @+node:ekr.20161108154628.2: *6* IC.gen_lines (entry) & helpers
+def gen_lines(self, indent_flag, lines, parent, tag='top-level'):
+    '''
+    The entry point for parsing and code generation. Also called by
+    rescan_code_block.
+    
+    Parse all lines, adding to parent.b, creating child nodes as necessary.
+    '''
+    trace = True and not g.unitTesting and self.root.h.endswith('.py')
+    if not lines:
+        return
+    gen_refs, state = self.gen_refs, self.state
+    if trace:
+        g.trace(tag, state)
+        print('===== entry lines:...')
+        for line in lines:
+            print(line.rstrip())
+        print('----- end entry lines.')
+    assert not state.context, state
+    i, ref_flag = 0, False
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        state.scan_line(line)
+        if state.starts_block():
+            # Generate the reference first.
+            ref_flag = self.gen_ref(indent_flag, line, parent, ref_flag)
+            # Scan the code block and its tail.
+            code_lines, tail_lines = self.skip_code_block(i, lines)
+            i += (len(code_lines) + len(tail_lines))
+            if gen_refs:
+                self.rescan_code_block(code_lines, parent)
+                self.append_to_body(parent, ''.join(tail_lines))
+            else:
+                code_lines.extend(tail_lines)
+                self.rescan_code_block(code_lines, parent)
+        else:
+            # This works for both @others and section references.
+            # After @others, child nodes contain *all* lines.
+            if ref_flag and not gen_refs:
+                g.trace('Can not happen: line not in tail: %r' % line)
+            self.append_to_body(parent, line)
+            i += 1
+        assert progress < i
+.. @+node:ekr.20161108154628.3: *7* IC.skip_code_block
+def skip_code_block(self, i, lines):
+    '''
+    lines[i] starts a class or function.
+    
+    Return (code_lines, tail_lines) where:
+    - code_lines are all the lines of the class or function.
+    - tail lines are all lines up to but not including the next class or function.
+    '''
+    trace = True and not g.unitTesting and self.root.h.endswith('.py')
+    trace_lines = False
+    trace_entry = True
+    trace_results = True
+    state = self.state
+    assert state.starts_block()
+    assert not state.context, state
+    state.push()
+    state.clear()
+    if trace and trace_entry:
+        g.trace(state)
+        print('===== entry lines:...')
+        for j in range(i, len(lines)):
+            print('  %s' % lines[j].rstrip()) # entry lines.
+        print('----- end entry lines')
+    # Scan the code block.
+    # We have cleared the state, so rescan the first line.
+    block_i = i
+    state.scan_line(lines[i])
+    assert state.starts_block()
+    i += 1
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        if trace and trace_lines:
+            g.trace(state, line.rstrip())
+        state.scan_line(line)
+        if state.continues_block():
+            i += 1
+        elif self.name == 'python':
+            break
+        else:
+            i += 1
+            break
+        assert progress < i
+    code_lines = lines[block_i:i]
+    if trace and trace_results:
+        g.trace('===== code lines:...')
+        for line in code_lines:
+            print('  %s' % line.rstrip()) # code lines.
+        print('----- end code lines')
+    # Scan the block's tail.
+    # Line i is *not* part of the code block and it has not been scanned.
+    tail_i = i
+    if i < len(lines):
+        state.scan_line(lines[i])
+        if not state.starts_block():
+            i += 1 # Add the just-scanned line.
+            while i < len(lines):
+                line = lines[i]
+                if trace and trace_lines: g.trace(line.rstrip())
+                state.scan_line(line)
+                if state.starts_block():
+                    break
+                else:
+                    i += 1
+    tail_lines = lines[tail_i:i]
+    if trace and trace_results:
+        g.trace('===== tail lines:...')
+        for line in tail_lines:
+            print('  %s' % line.rstrip()) # tail lines.
+        print('----- end-tail-lines')
+    state.pop()
+    return code_lines, tail_lines
+.. @+node:ekr.20161108154628.4: *6* IC.gen_ref
+def gen_ref(self, indent_flag, line, parent, ref_flag):
+    '''
+    Generate the ref line and a flag telling this method whether a previous
+    @others
+    '''
+    trace = False and not g.unitTesting
+    indent_ws = self.get_lws(line)
+        ### Ignore indent_flag: Hurray!
+    if self.is_rst and not self.atAuto:
+        return None, None
+    elif self.gen_refs:
+        headline = self.clean_headline(line)
+        ref = '%s%s\n' % (
+            indent_ws,
+            g.angleBrackets(' %s ' % headline))
+    else:
+        ref = None if ref_flag else '%s@others\n' % indent_ws
+        ref_flag = True # Don't generate another @others.
+    if ref:
+        if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
+            '*' * 20, indent_ws, line, parent.h))
+        self.append_to_body(parent, ref)
+    return ref_flag
+.. @+node:ekr.20161108154628.5: *6* IC.v1_scan
+def v1_scan(self, s, parent, parse_body=False):
+    '''
+    v1_scan: V1 of line-based scanners and code generators.
+    
+    Create a child of self.root for:
+    - Leading outer-level declarations.
+    - Outer-level classes.
+    - Outer-level functions.
+    '''
+    # Create the initial body text in the root.
+    if parse_body:
+        pass
+    else:
+        self.append_to_body(parent,
+            '@language %s\n@tabwidth %d\n' % (
+                self.language,
+                self.tab_width))
+        self.gen_lines(
+            indent_flag = False,
+            lines = g.splitlines(s),
+            parent = parent,
+        )
+.. @+node:ekr.20161108154628.6: *6* IC.rescan_code_block (calls gen_lines)
+def rescan_code_block(self, lines, parent):
+    '''Create a child of the parent, and add lines to parent.b.'''
+    if not lines:
+        return
+    state = self.state
+    first_line = lines[0]
+    assert first_line.strip
+    headline = self.clean_headline(first_line)
+    if self.gen_refs:
+        headline = g.angleBrackets(' %s ' % headline)
+    child = self.create_child_node(
+        parent,
+        body = '',
+        headline = headline)
+    if self.name == 'python':
+        last_line = None
+        lines = lines[1:]
+    else:
+        last_line = lines[-1]
+        lines = lines[1:-1]
+    self.append_to_body(child, first_line)
+    state.push()
+    self.gen_lines(
+        indent_flag = True,
+        lines = lines,
+        parent = child,
+        tag = 'rescan_code_block')
+    state.pop()
+    if last_line:
+        self.append_to_body(child, last_line)
+.. @+node:ekr.20161108154742.1: *5* Scanner methods
+.. @+node:ekr.20161108154742.2: *6* scanner.clear, push & pop
+def clear(self):
+    '''Clear the state.'''
+    self.base_curlies = self.curlies = 0
+    self.context = ''
+
+def pop(self):
+    '''Restore the base state from the stack.'''
+    self.base_curlies = self.stack.pop()
+    
+def push(self):
+    '''Save the base state on the stack and enter a new base state.'''
+    self.stack.append(self.base_curlies)
+    self.base_curlies = self.curlies
+.. @+node:ekr.20161108154742.3: *6* scanner.scan_line
+def scan_line(self, s):
+    '''
+    A *typical* line scanner. Subclasses should redefine this method.
+
+    Commented-out code illustrates how to handle block comments.
+    '''
+    trace = False and not g.unitTesting
+    contexts = strings = ['"', "'"]
+    # match = self.match
+    # block1, block2 = '/*', '*/
+    # contexts.append(block1)
+    i = 0
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if self.context:
+            assert self.context in contexts, repr(self.context)
+            if ch == '\\':
+                i += 1 # Eat the next character later.
+            elif self.context in strings and self.context == ch:
+                self.context = '' # End the string.
+            # elif self.context == block1 and match(s, i, block2):
+                # self.context = '' # End the block comment.
+                # i += (len(block2) - 1)
+            else:
+                pass # Eat the string character later.
+        elif ch in strings:
+            self.context = ch
+        # elif match(s, i, block1):
+            # self.context = block1
+            # i += (len(block1) - 1)
+        # elif match(s, i, line_comment):
+        elif ch == '#':
+            break # The single-line comment ends the line.
+        elif ch == '{': self.curlies += 1
+        elif ch == '}': self.curlies -= 1
+        i += 1
+        assert progress < i
+    if trace:
+        g.trace(self, s.rstrip())
+    if gen_v2:
+        return ScanState(self.context, self.curlies)
+.. @+node:ekr.20161108154742.4: *6* scanner.continues_block and starts_block
+def continues_block(self):
+    '''Return True if the just-scanned lines should be placed in the inner block.'''
+    return self.context or self.curlies > self.base_curlies
+
+def starts_block(self):
+    '''Return True if the just-scanned line starts an inner block.'''
+    return not self.context and self.curlies > self.base_curlies
+.. @+node:ekr.20161102071703.2: *5* class Block
+class Block:
+    '''A class describing a block of lines.'''
+
+    def __init__(self, lines, simple=None):
+        '''Ctor for the Block class.'''
+        assert simple in (True, False), g.callers()
+        self.children = []
+        self.lines = lines
+        self.headline = ''
+        self.simple = simple
+        
+    def description(self):
+        return 'Block: simple: %s lines: %s children: %s %s' % (
+            int(self.simple), len(self.lines),
+            len(self.children), self.get_headline())
+        
+    def __repr__(self):
+        return '%s Block...\n%s' % (
+            'Simple' if self.simple else 'Complex',
+            ''.join(self.lines),
+        )
+            
+    __str__ = __repr__
+    
+    @others
+.. @+node:ekr.20161102071703.3: *6* block.get_headline
+def get_headline(self):
+    '''Return the block's headline.'''
+    if self.headline:
+        return self.headline
+    elif self.lines:
+        for line in self.lines:
+            if line.strip():
+                return line.strip()
+        return 'blank lines'
+        
+    else:
+        return '<no headline>'
+.. @+node:ekr.20161102071703.4: *6* block.undent
+def undent(self, c, n, clean=True):
+    '''Unindent all block lines by n.'''
+    if n > 0:
+        result = []
+        for s in self.lines:
+            if s.strip():
+                if s[:n] == ' ' * n:
+                    result.append(s[n:])
+                elif s[0] == '\t':
+                    i  = 0
+                    while i < len(s) and s[i] == '\t' and i*c.tab_width <= n:
+                        i += 1
+                    result.append(s[i:])
+                else:
+                    g.trace('can not happen mixed leading whitespace:', n, repr(s))
+                    return
+            elif clean:
+                result.append(s)
+            else:
+                result.append('\n' if s.endswith('\n') else '')
+        self.lines = result
+.. @+node:ekr.20161102071703.5: *5* BLS.dump_block & dump_blocks
+def dump_block(self, block):
+    '''Dump one block.'''
+    lines = block.lines if isinstance(block, Block) else block
+    for j, s in enumerate(lines):
+        print('    %3s %s' % (j, s.rstrip()))
+        
+def dump_blocks(self, blocks, parent):
+    '''Dump all blocks, which may be Block instances or lists of strings.'''
+    g.trace('blocks in %s...' % parent.h)
+    for i, block in enumerate(blocks):
+        print('  block: %s' % i)
+        self.dump_block(block)
+
+.. @+node:ekr.20161102052106.2: *5* BLS.scan & helpers
+def scan(self, s1, parent):
+    '''The *old* line-based scanner.'''
+    trace = False and not g.unitTesting
+    trace_blocks = False
+    if trace: g.trace('===== ', self.root.h)
+    state = self.state
+    lines = g.splitLines(s1)
+    if self.gen_refs:
+        block = Block(lines, simple=False)
+        self.rescan_block(block, top_level=True)
+        parent.b = '@language %s\n' % (self.language)
+        self.put_block(block, parent, create_child=False)
+    else:
+        # Find all top-level blocks.
+        blocks, block_lines = [], []
+        i = 0
+        while i < len(lines):
+            progress = i
+            line = lines[i]
+            state.scan_line(line)
+            if state.starts_block():
+                if block_lines: blocks.append(Block(block_lines, simple=True))
+                i, block_lines = self.scan_block(i, lines)
+                blocks.append(Block(block_lines, simple=False))
+                block_lines = []
+            else:
+                block_lines.append(line)
+                i += 1
+            assert progress < i
+        # End the blocks properly.
+        if block_lines:
+            blocks.append(Block(block_lines, simple=True))
+        if trace and trace_blocks:
+            self.dump_blocks(blocks, parent)
+        # Rescan all the blocks, possibly creating more child blocks.
+        self.rescan_blocks(blocks)
+        parent.b = '@language %s\n@others\n' % (self.language)
+        for block in blocks:
+            self.put_block(block, parent)
+.. @+node:ekr.20161102052106.3: *6* BLS.max_blocks_indent
+def max_blocks_indent(self, blocks):
+    '''Return the maximum indentation that can be removed from all blocks.'''
+    n = 16
+    for block in blocks:
+        for s in block.lines:
+            if s.strip() or not self.gen_clean:
+                i = g.find_line_start(s, 0)
+                i, width = g.skip_leading_ws_with_indent(s, i, self.tab_width)
+                n = min(n, width)
+    return n
+.. @+node:ekr.20161102052106.4: *6* BLS.put_block
+def put_block(self, block, parent, create_child=True):
+    '''Create nodes for block and all its children.'''
+    if create_child:
+        p = parent.insertAsLastChild()
+        p.h = block.headline
+    else:
+        p = parent
+    p.b = p.b + ''.join(block.lines)
+    for child in block.children:
+        self.put_block(child, p)
+.. @+node:ekr.20161102052106.5: *6* BLS.rescan_block & helpers
+def rescan_block(self, parent_block, top_level=False):
+    '''Rescan a non-simple block, possibly creating child blocks.'''
+    state = self.state
+    trace = False and not g.unitTesting
+    if top_level:
+        # Scan everything.
+        first_line, last_line = None, None
+        lines = parent_block.lines
+    else:
+        first_line = parent_block.lines[0]
+        if self.language == 'python':
+            # Scan everything except the first line.
+            last_line = None
+            lines = parent_block.lines[1:]
+        else:
+            # The first and last lines begin and end the block.
+            # Only scan the interior lines.
+            last_line = parent_block.lines[-1]
+            lines = parent_block.lines[1:-1]
+    if trace:
+        g.trace('ENTRY: parent: %s\n%s' % (
+            parent_block.description(),
+            ''.join(lines),
+        ))
+    state.push() # Set the bases to the present counts.
+    blocks, block_lines = [], []
+    i = 0
+    while i < len(lines):
+        progress = i
+        line = lines[i]
+        state.scan_line(line)
+        if state.starts_block():
+            if block_lines:
+                # Finish any previous block.
+                blocks.append(Block(block_lines, simple=True))
+            # This is the *only* rescanning that is done.
+            ### state.push() ###
+            i, block_lines = self.scan_block(i, lines)
+            ### state.pop() ###
+            blocks.append(Block(block_lines, simple=False))
+            block_lines = []
+        else:
+            block_lines.append(line)
+            i += 1
+        assert progress < i
+    state.pop() # Restore the bases.
+    # End the lines.
+    if block_lines:
+        blocks.append(Block(block_lines, simple=True))
+    if trace:
+        g.trace('BLOCKS...')
+        for block in blocks:
+            print(block)
+    self.make_children(blocks, first_line, last_line, parent_block)
+.. @+node:ekr.20161102052106.6: *7* BLS.make_children
+def make_children(self, blocks, first_line, last_line, parent_block):
+    '''Generate child blocks for all blocks'''
+    trace = False and not g.unitTesting and self.root.h.endswith('.py')
+    if trace:
+        g.trace('parent', parent_block.description(), 'BLOCKS...\n')
+        for block in blocks:
+            print(block)
+    if self.gen_refs:
+        self.make_ref_children(blocks, first_line, last_line, parent_block)
+    else:
+        self.make_at_others_children(blocks, first_line, last_line, parent_block)
+ 
+.. @+node:ekr.20161102052106.7: *7* BLS.ref_line
+def ref_line(self, block):
+    '''Return a reference to the block.'''
+    
+    def munge(h):
+        '''Munge a headline for use in a section reference.'''
+        for z in '<>': # {}()[]
+            h = h.replace(z,'')
+        return h.strip()
+
+    # Always return a reference
+    h = munge(block.get_headline())
+    return g.angleBrackets(' ' + h + ' ')
+
+   
+.. @+node:ekr.20161102052106.8: *7* BLS.make_ref_children
+def make_ref_children(self, blocks, first_line, last_line, parent_block):
+    '''Generate child blocks for all blocks'''
+    c = self.c
+    body, children = [], []
+    for block in blocks:
+        if block.simple:
+            # This line is never a section reference.
+            # g.trace(block.get_headline())
+            body.extend(block.lines)
+        else:
+            child_block = Block(block.lines, simple=False)
+            children.append(child_block)
+            ref = self.ref_line(child_block)
+            child_block.headline = ref
+            if self.gen_clean:
+                # This local calculation is probably good enough.
+                child_undent = self.max_blocks_indent([child_block])
+                child_block.undent(c, child_undent, clean=self.gen_clean)
+                body.append(' '*child_undent + ref + '\n')
+            else:
+                # Don't indent the ref, and don't unindent the children.
+                body.append(ref)
+    # Replace the block with the child blocks.
+    parent_block.lines = []
+    if first_line is not None:
+        parent_block.lines.append(first_line)
+    parent_block.lines.extend(body)
+    if last_line is not None:
+        parent_block.lines.append(last_line)
+    parent_block.children = children
+    # Continue the rescan.
+    self.rescan_blocks(children)
+.. @+node:ekr.20161102052106.9: *7* BLS.make_at_others_children
+def make_at_others_children(self, blocks, first_line, last_line, parent_block):
+    '''Generate child blocks for all blocks using @others.'''
+    c = self.c
+    if not blocks:
+        return
+    max_indent = 4 if self.gen_clean else 0
+        # self.max_blocks_indent(blocks) doesn't necessarily work when gen_clean is False.
+    parent_block.lines = [
+        first_line,
+        '%s@others\n' % (' ' * max_indent)
+    ]
+    if last_line: parent_block.lines.append(last_line)
+    children = []
+    for block in blocks:
+        child_block = Block(block.lines, simple=block.simple)
+        if self.gen_clean:
+            child_undent = self.max_blocks_indent([child_block])
+        else:
+            child_undent = max_indent
+        child_block.undent(c, child_undent, clean=self.gen_clean)
+        children.append(child_block)
+    parent_block.children = children
+    self.rescan_blocks(children)
+.. @+node:ekr.20161102052106.10: *6* BLS.rescan_blocks
+def rescan_blocks(self, blocks):
+    '''Rescan all blocks, finding more blocks and adjusting text.'''
+    for block in blocks:
+        assert isinstance(block, Block)
+        if not block.headline:
+            block.headline = block.get_headline()
+        if not block.simple:
+            self.rescan_block(block)
+.. @+node:ekr.20161102052106.11: *6* BLS.scan_block
+def scan_block(self, i, lines):
+    '''Scan lines[i:]. Return (i, lines).'''
+    trace = False and not g.unitTesting and self.root.h.endswith('.py')
+    state = self.state
+    i1 = i
+    i += 1
+    while i < len(lines):
+        progress = i
+        state.scan_line(lines[i])
+        if state.continues_block():
+            i += 1
+        elif self.language == 'python':
+            break
+        else:
+            i += 1 # Add the line that ends the block
+            break
+        assert progress < i
+    # DON'T add extra trailing lines.
+    # The last line *must* be the line that ends the block.
+    # The post pass can adjust blocks...
+    result = lines[i1:i]
+    if trace:
+        g.trace(g.callers(1), i1, '==== returns')
+        for line in result:
+            print(line.rstrip())
+    return i, result
 .. @-all
 .. @@nosearch
 .. @-leo
