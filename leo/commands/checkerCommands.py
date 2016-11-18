@@ -199,7 +199,8 @@ class PyflakesCommand(object):
                 class LogStream:
                     def write(self, s):
                         if s.strip():
-                            g.es(s)
+                            g.es_print(s)
+                                # It *is* useful to send pyflakes errors to the console.
         
                 r = reporter.Reporter(
                     errorStream=LogStream(),
