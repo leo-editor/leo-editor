@@ -1,9 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file importers/c.py
 '''The @auto importer for the C language and other related languages.'''
+# import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
+# ScanState = linescanner.ScanState
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -14,15 +16,17 @@ class C_Importer(Importer):
         Importer.__init__(self,
             importCommands,
             atAuto = atAuto,
-            language = 'c')
+            language = 'c',
+            state_class = C_ScanState,
+        )
         # Overrides...
-        self.ScanState = C_ScanState
-        self.v2_scan_line = self.general_scan_line
+        ### self.ScanState = C_ScanState
+        ### self.v2_scan_line = self.general_scan_line
         
     #@+others
     #@+node:ekr.20161108232255.1: *3* c.initial_state
     def initial_state(self):
-        return C_ScanState('', 0)
+        return C_ScanState() ### '', 0)
     #@+node:ekr.20161108232258.1: *3* c.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -46,11 +50,17 @@ class C_Importer(Importer):
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
     '''A class representing the state of the v2 scan.'''
-
-    def __init__(self, context, curlies):
-        '''C_ScanState.__init__'''
-        self.context = context
-        self.curlies = curlies
+    
+    def __init__(self, prev=None):
+        '''C_ScanSate ctor'''
+        if prev:
+            self.context = prev.context
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            self.curlies = 0
+        # self.context = context
+        # self.curlies = curlies
 
     def __repr__(self):
         '''C_ScanState.__repr__'''
@@ -86,6 +96,20 @@ class C_ScanState:
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return self > prev_state
+    #@+node:ekr.20161118051111.1: *3* c_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        # self.parens += delta_p
+        # self.squares += delta_s
+        return i
+
     #@-others
 
 #@-others

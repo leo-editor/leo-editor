@@ -65,8 +65,6 @@ class Importer(object):
     '''
     The new, unified, simplified, interface to Leo's importer code.
     
-    Unifies the old ImportController and Scanner classes.
-    
     Eventually, all importers will create use this class.
     '''
     
@@ -79,6 +77,7 @@ class Importer(object):
         atAuto, # True when called from @auto logic.
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
+        state_class = None, # For v2_scan_line
         strict = False,
     ):
         '''Importer.__init__.'''
@@ -94,6 +93,7 @@ class Importer(object):
         name = self.name
         assert language and name
         assert self.language and self.name
+        self.state_class = state_class
         self.strict = strict
             # True: leading whitespace is significant.
 
@@ -343,10 +343,27 @@ class Importer(object):
     def initial_state(self):
         '''Return the initial counts.'''
         assert False, 'Importer.initial_state: to be over-ridden by subclasses.'
-    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
+    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line (generalized)
     def v2_scan_line(self, s, prev_state):
-        '''To be overridden by subclasses.'''
-        assert False, 'Importer.v2_scan_line: to be over-ridden by subclasses.'
+        '''
+        A generalized scan-line method, depending on self.scanner_class.
+        
+        This class's ctor must support the 'prev' keyword, it must have a
+        context ivar, and it must have an update method.
+        '''
+        trace = False and not g.unitTesting
+        new_state = self.state_class(prev = prev_state)
+        new_state.indent = self.get_int_lws(s)
+        i = 0
+        while i < len(s):
+            progress = i
+            context = new_state.context
+            table = self.get_table(context)
+            data = self.scan_table(context, i, s, table)
+            i = new_state.update(data)
+            assert progress < i
+        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
+        return new_state
     #@+node:ekr.20161114025200.1: *3* i.Tests
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
@@ -400,27 +417,6 @@ class Importer(object):
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161112185942.1: *4* i.general_scan_line & i.get_table
-    # Used by C_Importer.
-    def general_scan_line(self, s, prev_state):
-        '''A generalized line scanner.'''
-        trace = False and not g.unitTesting
-        context, curlies = prev_state.context, prev_state.curlies
-        i = 0
-        while i < len(s):
-            progress = i
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            context, i, delta_c, delta_p, delta_s, bs_nl = data
-            ###
-            # parens += delta_p
-            # squares += delta_s
-            # use bs_nl?
-            curlies += delta_c
-            assert progress < i
-        new_state = self.ScanState(context, curlies)
-        if trace: g.trace(new_state, repr(s))
-        return new_state
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
@@ -714,7 +710,7 @@ class Importer(object):
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
         if prepass:
-            g.trace('(ImportController) Can not happen, prepass is True')
+            g.trace('(Importer) Can not happen, prepass is True')
             return True, [] # Don't split any nodes.
         self.root = root = parent.copy()
         self.file_s = s
@@ -1066,20 +1062,35 @@ class Importer(object):
     #@-others
 #@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
-    '''A class representing the state of the scan.'''
+    '''
+    The base class for classes representing the state of the line-oriented
+    scan.
+    '''
     
-    def __init__(self, context, curlies):
-        '''Ctor for the ScanState class.'''
-        self.context = context
-        self.curlies = curlies
+    def __init__(self, prev=None):
+        '''Ctor for the ScanState class, used by i.general_scan_line.'''
+        if prev:
+            self.bs_nl = prev.bs_nl
+            self.context = prev.context
+            self.curlies = prev.curlies
+            self.indent = prev.indent
+            self.parens = prev.parens
+            self.squares = prev.parens
+        else:
+            self.bs_nl = False
+            self.context = ''
+            self.curlies = self.indent = self.parens = self.squares = 0
 
+    #@+others
+    #@+node:ekr.20161118043146.1: *3* ScanState.__repr__
     def __repr__(self):
         '''ScanState.__repr__'''
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)
+    #@+node:ekr.20161108171914.2: *3* ScanState.comparisons
+    # These comparisions (in the base ScanState class) use only curly brackets.
+    # Subclasses can define comparisons that use indentation or other brackets.
 
-    #@+others
-    #@+node:ekr.20161108171914.2: *3* ScanState: comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''
         return self.context or self.curlies == other.curlies
@@ -1097,7 +1108,21 @@ class ScanState:
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161108171914.3: *3* ScanState: v2.starts/continues_block
+    #@+node:ekr.20161118043530.1: *3* ScanState.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        self.parens += delta_p
+        self.squares += delta_s
+        return i
+
+    #@+node:ekr.20161108171914.3: *3* ScanState.v2.starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self == prev_state
@@ -1106,7 +1131,6 @@ class ScanState:
         '''Return True if the just-scanned line starts an inner block.'''
         return self > prev_state
     #@-others
-
 #@+node:ekr.20161108155158.1: ** class Target
 class Target:
     '''
