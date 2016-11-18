@@ -14,7 +14,9 @@ class JS_Importer(Importer):
         Importer.__init__(self,
             importCommands,
             atAuto = atAuto,
-            language = 'javascript')
+            language = 'javascript',
+            state_class = JS_ScanState,
+        )
 
     #@+others
     #@+node:ekr.20161011045426.1: *3* js_i.skip_possible_regex
@@ -47,7 +49,7 @@ class JS_Importer(Importer):
     def initial_state(self):
         '''Return the initial counts.'''
         return JS_ScanState('', 0, 0)
-    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line
+    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (To do: rewrite)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting

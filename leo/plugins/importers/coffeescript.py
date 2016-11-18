@@ -17,6 +17,8 @@ class CS_Importer(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'coffeescript',
+            state_class = CS_State,
+                # Not used: This class overrides v2_scan_line.
             strict = True
         )
         self.at_tab_width = None
@@ -176,7 +178,7 @@ class CS_Importer(Importer):
         m = re.match('(.+):(.*)->', s) or re.match('(.+)=(.*)->', s)
         self.def_name = m.group(1).strip() if m else None
         return bool(m)
-    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line
+    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (To do: rewrite)
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -214,15 +216,15 @@ class CS_State:
         self.indent = indent
         self.starts = starts
         self.ws = ws # whitespace line, possibly ending in a comment.
-        
+
+    #@+others
+    #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
     def __repr__(self):
         '''CS_State.__repr__'''
         return '<CSState %r indent: %s starts: %s ws: %s>' % (
             self.context, self.indent, int(self.starts), int(self.ws))
-    
-    __str__ = __repr__
 
-    #@+others
+    __str__ = __repr__
     #@+node:ekr.20161110045131.2: *3* cs_state.comparisons
     def __eq__(self, other):
         '''Return True if the state continues the previous state.'''

@@ -3,6 +3,7 @@
 '''The @auto importer for TypeScript.'''
 import leo.plugins.importers.javascript as javascript
 JS_Importer = javascript.JS_Importer
+# JS_ScanState = javascript.JS_ScanState
 #@+others
 #@+node:ekr.20140723122936.18111: ** class TS_Importer(JS_Importer)
 class TS_Importer(JS_Importer):

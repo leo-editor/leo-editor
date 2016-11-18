@@ -17,6 +17,7 @@ class Perl_Importer(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'perl',
+            state_class = Perl_ScanState,
         )
         
     #@+others
@@ -77,6 +78,8 @@ class Perl_Importer(Importer):
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
     #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_table
+    ### To do: delete this.
+
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
