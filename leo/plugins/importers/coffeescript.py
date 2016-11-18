@@ -17,7 +17,7 @@ class CS_Importer(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'coffeescript',
-            state_class = CS_State,
+            state_class = CS_ScanState,
                 # Not used: This class overrides v2_scan_line.
             strict = True
         )
@@ -71,7 +71,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20161110044000.2: *3* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return CS_State('', 0)
+        return CS_ScanState('', 0)
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -196,17 +196,13 @@ class CS_Importer(Importer):
             table = self.get_table(context)
             data = self.scan_table(context, i, s, table)
             context, i, delta_c, delta_p, delta_s, bs_nl = data
-            ###
-            # curlies += delta_c
-            # parens += delta_p
-            # squares += delta_s
-            # use bs_nl?
+            # Only context and indent matter!
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        return CS_State(context, indent, starts=starts, ws=ws)
+        return CS_ScanState(context, indent, starts=starts, ws=ws)
     #@-others
-#@+node:ekr.20161110045131.1: ** class CS_State
-class CS_State:
+#@+node:ekr.20161110045131.1: ** class CS_ScanState
+class CS_ScanState:
     '''A class representing the state of the v2 scan.'''
 
     def __init__(self, context, indent, starts=False, ws=False):

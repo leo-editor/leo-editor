@@ -124,7 +124,7 @@ class JS_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161105092745.3: *3* JS_ScanState: comparisons
+    #@+node:ekr.20161105092745.3: *3* js_state: comparisons
     # Curly brackets dominate parens for mixed comparisons.
 
     def __eq__(self, other):
@@ -150,7 +150,7 @@ class JS_ScanState:
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161105171502.1: *3* JS_ScanState: v2_starts/continues_block
+    #@+node:ekr.20161105171502.1: *3* js_state: v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self == prev_state
