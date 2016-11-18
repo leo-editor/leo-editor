@@ -354,8 +354,9 @@ class Importer(object):
         3. The class must have an update method.
         '''
         trace = False and not g.unitTesting
-        new_state = self.state_class(prev = prev_state)
-        new_state.indent = self.get_int_lws(s)
+        indent = self.get_int_lws(s)
+        new_state = self.state_class(indent=indent, prev=prev_state, s=s)
+        new_state.indent = indent ### To be removed.
         i = 0
         while i < len(s):
             progress = i
@@ -1069,13 +1070,15 @@ class ScanState:
     scan.
     '''
     
-    def __init__(self, prev=None):
+    def __init__(self, indent=None, prev=None, s=None):
         '''Ctor for the ScanState class, used by i.general_scan_line.'''
         if prev:
+            assert indent is not None
+            assert s is not None
+            self.indent = indent ### NOT prev.indent
             self.bs_nl = prev.bs_nl
             self.context = prev.context
             self.curlies = prev.curlies
-            self.indent = prev.indent
             self.parens = prev.parens
             self.squares = prev.parens
         else:

@@ -47,7 +47,7 @@ class C_Importer(Importer):
 class C_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, indent=None, prev=None, s=None):
+    def __init__(self, indent=0, prev=None, s=None):
         '''C_ScanSate ctor'''
         if prev:
             assert indent is not None
