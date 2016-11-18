@@ -12291,10 +12291,10 @@ if sys.platform.lower().startswith('win'):
 
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
 #@+node:ekr.20161108034116.1: *5* coffeescript tests
-#@+node:ekr.20161108034138.1: *6* @@test coffeescript-1
+#@+node:ekr.20161108034138.1: *6* @test coffeescript-1
 @killcolor
 
-s = '''\
+s = r'''
 
 # The JavaScript to CoffeeScript compiler.
 # Common usage:
@@ -13021,8 +13021,10 @@ module.exports = exports  if module?
 '''
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161109084732.1: *6* @test coffeescript-2a
-s = r'''# Js2coffee relies on Narcissus's parser.
+#@+node:ekr.20161109084732.1: *6* @test coffeescript-2
+s = r'''
+
+# Js2coffee relies on Narcissus's parser.
 
 {parser} = @Narcissus or require('./narcissus_packed')
 
@@ -13034,6 +13036,41 @@ buildCoffee = (str) ->
 
   builder    = new Builder
   scriptNode = parser.parse str
+'''
+
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161118144658.1: *6* @test coffeescript-3
+@tabwidth -2 # Required
+
+s = r'''
+class Builder
+  constructor: ->
+    @transformer = new Transformer
+  # `build()`
+
+  build: (args...) ->
+    node = args[0]
+    @transform node
+
+    name = 'other'
+    name = node.typeName()  if node != undefined and node.typeName
+
+    fn  = (@[name] or @other)
+    out = fn.apply(this, args)
+
+    if node.parenthesized then paren(out) else out
+  # `transform()`
+
+  transform: (args...) ->
+    @transformer.transform.apply(@transformer, args)
+
+  # `body()`
+
+  body: (node, opts={}) ->
+    str = @build(node, opts)
+    str = blockTrim(str)
+    str = unshift(str)
+    if str.length > 0 then str else ""
 '''
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)

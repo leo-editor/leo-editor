@@ -5,6 +5,8 @@ import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
+Target = linescanner.Target
+new = False # True: use i.v2_scan_line (ctor follows protocol).
 #@+others
 #@+node:ekr.20160505094722.2: ** class CS_Importer(Importer)
 class CS_Importer(Importer):
@@ -21,21 +23,10 @@ class CS_Importer(Importer):
                 # Not used: This class overrides v2_scan_line.
             strict = True
         )
-        self.at_tab_width = None
-            # Default, overridden later.
-        self.def_name = None
         self.errors = 0
         self.root = None
-        self.tab_width = self.c.tab_width or -4
-            # Used to compute lws.
-        
-    #@+node:ekr.20160505114047.1: *3* coffee.class_name
-    def class_name(self, s):
-        '''Return the name of the class in line s.'''
-        assert s.startswith('class')
-        m = re.match(r'class(\s+)(\w+)',s)
-        name = m.group(2) if m else '<**bad class name**>'
-        return 'class ' + name
+        self.tab_width = None
+            # NOT the same as self.c.tabwidth.  Set in run().
     #@+node:ekr.20161113064226.1: *3* coffee.get_new_table
     #@@nobeautify
 
@@ -71,8 +62,12 @@ class CS_Importer(Importer):
     #@+node:ekr.20161110044000.2: *3* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return CS_ScanState('', 0)
-    #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers
+        if new:
+            # pylint: disable=no-value-for-parameter
+            return CS_ScanState()
+        else:
+            return CS_ScanState('', 0)
+    #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
         trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
@@ -80,18 +75,26 @@ class CS_Importer(Importer):
             g.trace('='*60)
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
-                self.print_lines(g.splitLines(p.b))
+                g.printList(p.v._import_lines)
         # ===== Generic: use base Importer methods =====
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         # ===== Specific to coffeescript =====
-        self.move_trailing_lines(parent)
-        self.undent_nodes(parent)
+        #
+        ### self.move_trailing_lines(parent)
+        # ===== Generic: use base Importer methods =====
+        self.unindent_all_nodes(parent)
+        #
+        # This sub-pass must follow unindent_all_nodes.
+        self.promote_trailing_underindented_lines(parent)
+        #
+        # This probably should be the last sub-pass.
+        self.delete_all_empty_nodes(parent)
         if trace:
             g.trace('-'*60)
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
-                self.print_lines(g.splitLines(p.b))
+                g.printList(p.v._import_lines)
     #@+node:ekr.20160505173347.1: *4* coffee.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p.b and return them.'''
@@ -132,11 +135,6 @@ class CS_Importer(Importer):
             else:
                 # Fall back.
                 last.b = last.b + ''.join(prev_lines)
-    #@+node:ekr.20160505170639.1: *4* coffee.undent_nodes
-    def undent_nodes(self, parent):
-        '''Unindent all nodes in parent's tree.'''
-        for p in parent.self_and_subtree():
-            p.b = self.undent_coffeescript_body(p.b)
     #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
@@ -169,49 +167,186 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20160505113917.1: *3* coffee.starts_def
-    def starts_def(self, s):
+    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (To do: use base class method)
+    if new:
+        
+        pass
+        
+    else:
+
+        def v2_scan_line(self, s, prev_state):
+            '''Update the coffeescript scan state by scanning s.'''
+            trace = False and not g.unitTesting
+            context, indent = prev_state.context, prev_state.indent
+            was_bs_nl = context == 'bs-nl'
+            starts = None ### Not used. ### self.starts_def(s)
+            ws = self.is_ws_line(s) and not was_bs_nl
+            if was_bs_nl:
+                context = '' # Don't change indent.
+            else:
+                indent = self.get_int_lws(s)
+            i = 0
+            while i < len(s):
+                progress = i
+                table = self.get_table(context)
+                data = self.scan_table(context, i, s, table)
+                context, i, delta_c, delta_p, delta_s, bs_nl = data
+                # Only context and indent matter!
+                assert progress < i
+            if trace: g.trace(self, s.rstrip())
+            return CS_ScanState(context, indent, starts=starts, ws=ws)
+    #@+node:ekr.20161118134555.1: *3* COFFEE.v2_gen_lines & helpers
+    def v2_gen_lines(self, s, parent):
         '''
-        Return True if line s starts a coffeescript function.
-        Sets or clears the def_name ivar.
+        Non-recursively parse all lines of s into parent,
+        creating descendant nodes as needed.
         '''
-        m = re.match('(.+):(.*)->', s) or re.match('(.+)=(.*)->', s)
-        self.def_name = m.group(1).strip() if m else None
-        return bool(m)
-    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (To do: rewrite)
-    def v2_scan_line(self, s, prev_state):
-        '''Update the coffeescript scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        context, indent = prev_state.context, prev_state.indent
-        was_bs_nl = context == 'bs-nl'
-        starts = self.starts_def(s)
-        ws = self.is_ws_line(s) and not was_bs_nl
-        if was_bs_nl:
-            context = '' # Don't change indent.
+        trace = False and g.unitTesting
+        prev_state = CS_ScanState('', 0) ###
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        self.inject_lines_ivar(parent)
+        for line in g.splitLines(s):
+            new_state = self.v2_scan_line(line, prev_state)
+            top = stack[-1]
+            if trace: g.trace('(CS_Importer) line: %r\nnew_state: %s\ntop: %s' % (
+                line, new_state, top))
+            if self.starts_block(line, new_state):
+                self.start_new_block(line, new_state, stack)
+            elif new_state.indent >= top.state.indent:
+                self.add_line(top.p, line)
+            elif self.is_ws_line(line):
+                self.add_line(top.p, line)
+            else:
+                self.add_underindented_line(line, new_state, stack)
+            prev_state = new_state
+    #@+node:ekr.20161118134555.2: *4* COFFEE.add_underindented_line (Same as Python)
+    def add_underindented_line(self, line, new_state, stack):
+        '''
+        Handle an unusual case: an underindented tail line.
+        
+        line is **not** a class/def line. It *is* underindented so it
+        *terminates* the previous block.
+        '''
+        top = stack[-1]
+        assert new_state.indent < top.state.indent, (new_state, top.state)
+        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
+        self.cut_stack(new_state, stack)
+        top = stack[-1]
+        self.add_line(top.p, line)
+        # Tricky: force section references for later class/def lines.
+        if top.at_others_flag:
+            top.gen_refs = True
+    #@+node:ekr.20161118134555.3: *4* COFFEE.cut_stack (Same as Python)
+    def cut_stack(self, new_state, stack):
+        '''Cut back the stack until stack[-1] matches new_state.'''
+        trace = False and g.unitTesting
+        if trace:
+            g.trace(new_state)
+            g.printList(stack)
+        assert len(stack) > 1 # Fail on entry.
+        while stack:
+            top_state = stack[-1].state
+            if new_state.indent < top_state.indent:
+                if trace: g.trace('new_state < top_state', top_state)
+                assert len(stack) > 1, stack # <
+                stack.pop()
+            elif top_state.indent == new_state.indent:
+                if trace: g.trace('new_state == top_state', top_state)
+                assert len(stack) > 1, stack # ==
+                stack.pop()
+                break
+            else:
+                # This happens often in valid Python programs.
+                if trace: g.trace('new_state > top_state', top_state)
+                break
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
+        if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161118134555.6: *4* COFFEE.start_new_block
+    def start_new_block(self, line, new_state, stack):
+        '''Create a child node and update the stack.'''
+        # pylint: disable=arguments-differ
+        trace = False and g.unitTesting
+        assert not new_state.in_context(), new_state
+        top = stack[-1]
+        ### prev_p = top.p.copy()
+        if trace:
+            g.trace('line', repr(line))
+            g.trace('top_state', top.state)
+            g.trace('new_state', new_state)
+            g.printList(stack)
+        # Adjust the stack.
+        if new_state.indent > top.state.indent:
+            pass
+        elif new_state.indent == top.state.indent:
+            stack.pop()
         else:
-            indent = self.get_int_lws(s)
-        i = 0
-        while i < len(s):
-            progress = i
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            context, i, delta_c, delta_p, delta_s, bs_nl = data
-            # Only context and indent matter!
-            assert progress < i
-        if trace: g.trace(self, s.rstrip())
-        return CS_ScanState(context, indent, starts=starts, ws=ws)
+            self.cut_stack(new_state, stack)
+        # Create the child.
+        top = stack[-1]
+        parent = top.p
+        self.gen_refs = top.gen_refs
+        h = self.v2_gen_ref(line, parent, top)
+        child = self.v2_create_child_node(parent, line, h)
+        stack.append(Target(child, new_state))
+        # Handle previous decorators.
+        ### new_p = stack[-1].p.copy()
+        ### self.move_decorators(new_p, prev_p)
+    #@+node:ekr.20161118134555.7: *4* COFFEE.starts_block
+    pattern_table = [
+        re.compile(r'\s*class'),
+        re.compile(r'\s*(.+):(.*)->'),
+        re.compile(r'\s*(.+)=(.*)->'),
+    ]
+
+    def starts_block(self, line, new_state):
+        '''True if the line startswith class or def outside any context.'''
+        if new_state.in_context():
+            return False
+        elif self.is_ws_line(line):
+            return False # Guard against false matches below.
+        for pattern in self.pattern_table:
+            if pattern.match(line):
+                # g.trace('='*10, repr(line))
+                return True
+        return False
+     
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
     '''A class representing the state of the v2 scan.'''
-
-    def __init__(self, context, indent, starts=False, ws=False):
-        '''CS_State ctor.'''
-        assert isinstance(indent, int), (repr(indent), g.callers())
-        self.context = context
-        self.indent = indent
-        self.starts = starts
-        self.ws = ws # whitespace line, possibly ending in a comment.
+    
+    if new:
+        
+        def __init__(self, indent=None, prev=None, s=None):
+            '''Ctor for the ScanState class, used by i.general_scan_line.'''
+            if prev:
+                assert indent is not None
+                assert s is not None
+                self.indent = indent ### NOT prev.indent
+                self.context = prev.context
+                self.curlies = prev.curlies
+                self.parens = prev.parens
+                self.squares = prev.square
+            else:
+                self.bs_nl = False
+                self.context = ''
+                self.starts = self.ws = False
+    
+    else:
+    
+        def __init__(self, context, indent, starts=False, ws=False):
+            '''CS_State ctor.'''
+            assert isinstance(indent, int), (repr(indent), g.callers())
+            self.bs_nl = False ### New ###
+            self.context = context
+            self.indent = indent
+            self.starts = starts
+            self.ws = ws # whitespace line, possibly ending in a comment.
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
@@ -252,6 +387,18 @@ class CS_ScanState:
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and self.starts and self >= prev_state
+            ############ Why not use the python way ???????????????\
+    #@+node:ekr.20161118140100.1: *3* cs_state.in_context
+    def in_context(self):
+        '''True if in a special context.'''
+        return (
+            self.context or
+            ###
+            # self.curlies > 0 or
+            # self.parens > 0 or
+            # self.squares > 0 or
+            self.bs_nl
+        )
     #@-others
 #@-others
 importer_dict = {

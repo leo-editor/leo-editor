@@ -74,18 +74,18 @@ class Py_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = Python_State()
+        prev_state = Python_State() ###
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
-        prev_p = None
+        ### prev_p = None
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
             if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
             if self.starts_block(line, new_state):
-                self.start_new_block(line, new_state, prev_p, stack)
+                self.start_new_block(line, new_state, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
             elif self.is_ws_line(line):
@@ -93,7 +93,7 @@ class Py_Importer(Importer):
             else:
                 self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
-            prev_p = stack[-1].p.copy()
+            ### prev_p = stack[-1].p.copy()
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line
     def add_underindented_line(self, line, new_state, stack):
         '''
@@ -179,7 +179,7 @@ class Py_Importer(Importer):
         m = self.decorator_pattern.match(line)
         return m and m.group(1) not in g.globalDirectiveList
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
-    def start_new_block(self, line, new_state, prev_p, stack):
+    def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
         # pylint: disable=arguments-differ
         trace = False and g.unitTesting

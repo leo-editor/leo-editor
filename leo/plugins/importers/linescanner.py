@@ -113,7 +113,7 @@ class Importer(object):
         self.gen_clean = name in ('python',)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
-        self.tab_width = c.tab_width # Also set in run()
+        self.tab_width = 0 # Must be set in run, using self.root.
         self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
 
         # Settings...
@@ -529,15 +529,16 @@ class Importer(object):
     #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('javascript-3.js')
-        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (headline, parent.h, body))
-        p = parent.insertAsLastChild()
+        trace = False and g.unitTesting
+        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (
+            headline, parent.h, body))
+        child = parent.insertAsLastChild()
         assert g.isString(body), repr(body)
         assert g.isString(headline), repr(headline)
-        self.inject_lines_ivar(p)
-        self.add_line(p, body)
-        p.h = headline
-        return p
+        self.inject_lines_ivar(child)
+        self.add_line(child, body)
+        child.h = headline
+        return child
     #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):
         '''
@@ -545,7 +546,7 @@ class Importer(object):
         #@+others
         #@-others
         '''
-        trace = False and not g.unitTesting
+        trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line) 
         if self.is_rst and not self.atAuto:
@@ -565,8 +566,10 @@ class Importer(object):
                 # Don't generate another @others in this target.
             headline = h
         if ref:
-            if trace: g.trace('%s indent_ws: %r line: %r parent: %s' % (
+            if trace:
+                g.trace('%s indent_ws: %r line: %r parent: %s' % (
                 '*' * 20, indent_ws, line, parent.h))
+                g.printList(parent.v._import_lines)
             self.add_line(parent,ref)
         return headline
     #@+node:ekr.20161108131153.13: *5* Stage 2: i.post_pass & helpers
@@ -660,7 +663,7 @@ class Importer(object):
                 self.set_lines(p, lines)
                 self.extend_lines(parent, reversed(tail))
                 
-    #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes (test)
+    #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
         for p in parent.subtree():
@@ -708,8 +711,8 @@ class Importer(object):
     #@+node:ekr.20161108131153.10: *4* i.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
-        trace = False # and not g.unitTesting
-        # g.trace('='*20, self.name)
+        trace = False and g.unitTesting
+        if trace: g.trace('='*20, self.name)
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
         if prepass:
@@ -927,8 +930,9 @@ class Importer(object):
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s):
         '''Return the the lws (a number) of line s.'''
-        assert self.tab_width == self.c.tab_width, (self.tab_width, self.c.tab_width)
-        return g.computeLeadingWhitespaceWidth(s, self.c.tab_width)
+        ### This assert is WRONG. self.tab_width is computed using self.root.
+        ### assert self.tab_width == self.c.tab_width, (self.tab_width, self.c.tab_width)
+        return g.computeLeadingWhitespaceWidth(s, self.tab_width)
     #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
     def get_leading_indent(self, lines, i, ignoreComments=True):
         '''
@@ -1080,7 +1084,7 @@ class ScanState:
             self.context = prev.context
             self.curlies = prev.curlies
             self.parens = prev.parens
-            self.squares = prev.parens
+            self.squares = prev.squares
         else:
             self.bs_nl = False
             self.context = ''
