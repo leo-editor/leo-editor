@@ -14,10 +14,13 @@ class Py_Importer(Importer):
     
     def __init__(self, importCommands, atAuto, language=None, alternate_language=None):
         '''Py_Importer.ctor.'''
-        Importer.__init__(self, importCommands, atAuto=atAuto, language='python')
-            # Init the base class.
-        self.starts_pattern = re.compile(r'\s*(class|def)')
-            # Matches lines that apparently starts a class or def.
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            atAuto=atAuto,
+            language='python',
+            state_class = Python_State,
+        )
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
@@ -206,28 +209,15 @@ class Py_Importer(Importer):
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161116040557.1: *4* python_i.starts_block
+    starts_pattern = re.compile(r'\s*(class|def)')
+        # Matches lines that apparently starts a class or def.
+
     def starts_block(self, line, new_state):
         '''True if the line startswith class or def outside any context.'''
         if new_state.in_context():
             return False
         else:
             return bool(self.starts_pattern.match(line))
-    #@+node:ekr.20161112191527.1: *3* py_i.v2_scan_line
-    def v2_scan_line(self, s, prev_state):
-        '''Update the Python scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        new_state = Python_State(prev = prev_state)
-        new_state.indent = self.get_int_lws(s)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
-        return new_state
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_State(ScanState)
 class Python_State(ScanState):

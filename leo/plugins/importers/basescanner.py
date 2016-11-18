@@ -2233,7 +2233,7 @@ class ImportController(object):
         '''
         trace = False and not g.unitTesting
         indent_ws = self.get_str_lws(line)
-            ### Ignore indent_flag: Hurray!
+            # Ignore indent_flag: Hurray!
         if self.is_rst and not self.atAuto:
             return None, None
         elif self.gen_refs:

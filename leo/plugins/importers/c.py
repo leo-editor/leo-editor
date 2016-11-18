@@ -19,14 +19,11 @@ class C_Importer(Importer):
             language = 'c',
             state_class = C_ScanState,
         )
-        # Overrides...
-        ### self.ScanState = C_ScanState
-        ### self.v2_scan_line = self.general_scan_line
         
     #@+others
     #@+node:ekr.20161108232255.1: *3* c.initial_state
     def initial_state(self):
-        return C_ScanState() ### '', 0)
+        return C_ScanState()
     #@+node:ekr.20161108232258.1: *3* c.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''

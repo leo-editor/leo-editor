@@ -348,8 +348,10 @@ class Importer(object):
         '''
         A generalized scan-line method, depending on self.scanner_class.
         
-        This class's ctor must support the 'prev' keyword, it must have a
-        context ivar, and it must have an update method.
+        This class should follow this protocol:
+        1. The class's ctor must support the 'prev' keyword,
+        2. The class must have a context ivar, and
+        3. The class must have an update method.
         '''
         trace = False and not g.unitTesting
         new_state = self.state_class(prev = prev_state)
