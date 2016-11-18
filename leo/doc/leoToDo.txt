@@ -7,6 +7,9 @@
 @language rest
 @wrap
 
+- Post: unit testing as you go along:
+    - Use imp.reload to get the latest version of your code.
+
 - Put engineering notebook files in GitHub .md files.
 
 - Pylint --recent option.  Last hour? Last day?
