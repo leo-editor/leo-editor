@@ -205,6 +205,9 @@ class TextFrame(leoFrame.LeoFrame):
         c.setLog() # writeWaitingLog hangs without this(!)
         # So updateRecentFiles will update our menus.
         g.app.windowList.append(f)
+    #@+node:ekr.20161118195504.1: *3* getFocus
+    def getFocus(self):
+        return None
     #@+node:ekr.20150107090324.27: *3* setInitialWindowGeometry
     def setInitialWindowGeometry(self): pass # N/A
     #@+node:ekr.20150107090324.28: *3* setMinibufferBindings
