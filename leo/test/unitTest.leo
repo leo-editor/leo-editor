@@ -219,7 +219,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657332711158010000003d7112580b000000756e6465726c696e657331711358030000002d7e2e711475735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
+expanded="ekr.20161103015908.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -379,10 +380,12 @@
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
+<v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
+<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
@@ -430,6 +433,8 @@
 </v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20161108034116.1"></v>
+<v t="ekr.20121011094154.3906"></v>
+<v t="ekr.20161103015908.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -883,7 +888,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="11,4">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2388,8 +2393,7 @@ document.body.appendChild(button)
 
 '''
 
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
 </t>
 <t tx="ekr.20121011100210.4035">s = '''
 
@@ -2417,9 +2421,7 @@ document.body.appendChild(button)
 
 '''
 
-### g.app.unitTestDict['testingLeoImport.py'] = False # Added
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -2809,7 +2811,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -5568,6 +5570,60 @@ class Builder
 '''
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20161119031833.1"># ('len',   'tr///', '/',       context,  0,       0,       0),
+# ('len',   's///',  '/',       context,  0,       0,       0),
+# ('len',   'm//',   '/',       context,  0,       0,       0),
+# ('len',   '/',     '/',       '',       0,       0,       0),
+
+s = '''\
+#!/usr/bin/perl
+
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+'''
+
+c.importCommands.perlUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20161119032623.1"># ('len',   'tr///', '/',       context,  0,       0,       0),
+# ('len',   's///',  '/',       context,  0,       0,       0),
+# ('len',   'm//',   '/',       context,  0,       0,       0),
+# ('len',   '/',     '/',       '',       0,       0,       0),
+
+s = '''\
+#!/usr/bin/perl
+
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+'''
+
+c.importCommands.perlUnitTest(p,s=s,showTree=True)
 </t>
 </tnodes>
 </leo_file>

@@ -13736,6 +13736,60 @@ sub World {
 world\n";
 '''
 c.importCommands.perlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161119031833.1: *6* @test perl regex-1
+# ('len',   'tr///', '/',       context,  0,       0,       0),
+# ('len',   's///',  '/',       context,  0,       0,       0),
+# ('len',   'm//',   '/',       context,  0,       0,       0),
+# ('len',   '/',     '/',       '',       0,       0,       0),
+
+s = '''\
+#!/usr/bin/perl
+
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+'''
+
+c.importCommands.perlUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161119032623.1: *6* @test perl regex-2
+# ('len',   'tr///', '/',       context,  0,       0,       0),
+# ('len',   's///',  '/',       context,  0,       0,       0),
+# ('len',   'm//',   '/',       context,  0,       0,       0),
+# ('len',   '/',     '/',       '',       0,       0,       0),
+
+s = '''\
+#!/usr/bin/perl
+
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+'''
+
+c.importCommands.perlUnitTest(p,s=s,showTree=True)
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -14903,8 +14957,7 @@ document.body.appendChild(button)
 
 '''
 
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
 #@+node:ekr.20121011100210.4035: *6* @test TypeScript module
 s = '''
 
@@ -14932,9 +14985,7 @@ document.body.appendChild(button)
 
 '''
 
-### g.app.unitTestDict['testingLeoImport.py'] = False # Added
-
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
 #@+node:ekr.20090529141856.4780: *5* xml tests
 #@+node:ekr.20090529141856.4781: *6* @test xml 1
 s = '''\

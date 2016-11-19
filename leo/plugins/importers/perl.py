@@ -112,7 +112,13 @@ class Perl_Importer(Importer):
             # in-ctx: the next context when the pattern matches the line *and* the context.
             # out-ctx:the next context when the pattern matches the line *outside* any context.
             # deltas: the change to the indicated counts.  Always zero when inside a context.
-
+            
+            ### To do:
+            # /whatever/
+            # m//whatever/
+            # s///whatever/
+            # tr///whatever/
+            
             # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
             ('len+1', '\\',    context,   context,  0,       0,       0),
             ('all',   '#',     '',        '',       0,       0,       0),
@@ -120,6 +126,10 @@ class Perl_Importer(Importer):
             ('len',   "'",     "'",       '',       0,       0,       0),
             ('len',   '=',     '=cut',    context,  0,       0,       0),
             ('len',   '=cut',  context,   '',       0,       0,       0),
+            ('len',   'tr///', '/',       context,  0,       0,       0),
+            ('len',   's///',  '/',       context,  0,       0,       0),
+            ('len',   'm//',   '/',       context,  0,       0,       0),
+            ('len',   '/',     '/',       '',       0,       0,       0),
             ('len',   '{',     context,   context,  d(1),    0,       0),
             ('len',   '}',     context,   context,  d(-1),   0,       0),
             ('len',   '(',     context,   context,  0,       d(1),    0),
