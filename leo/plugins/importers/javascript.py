@@ -45,7 +45,7 @@ class JS_Importer(Importer):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
-    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (To do: rewrite)
+    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (Rewrite, then remove)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting

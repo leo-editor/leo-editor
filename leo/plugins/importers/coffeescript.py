@@ -158,7 +158,7 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (To do: use base class method)
+    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (Remove)
     def v2_scan_line(self, s, prev_state):
         '''Update the coffeescript scan state by scanning s.'''
         trace = False and not g.unitTesting

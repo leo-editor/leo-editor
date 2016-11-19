@@ -215,6 +215,28 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
+    #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
+    def findClass(self, p):
+        '''Return the index end of the class or def in a node, or -1.'''
+        s, i = p.b, 0
+        while i < len(s):
+            progress = i
+            if s[i] in (' ', '\t', '\n'):
+                i += 1
+            elif self.startsComment(s, i):
+                i = self.skipComment(s, i)
+            elif self.startsString(s, i):
+                i = self.skipString(s, i)
+            elif self.startsClass(s, i):
+                return 'class', self.sigStart, self.codeEnd
+            elif self.startsFunction(s, i):
+                return 'def', self.sigStart, self.codeEnd
+            elif self.startsId(s, i):
+                i = self.skipId(s, i)
+            else:
+                i += 1
+            assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
+        return None, -1, -1
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:

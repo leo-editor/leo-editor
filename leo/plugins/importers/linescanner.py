@@ -956,11 +956,7 @@ class Importer(object):
         trace = False and not g.unitTesting # and self.root.h.endswith('.c')
         if self.is_rst:
             return p.b # Never unindent rst code.
-        use_api = True
-        if use_api:
-            lines = self.get_lines(p)
-        else:
-            lines = g.splitLines(p.b)
+        lines = self.get_lines(p)
         ws = self.common_lws(lines)
         if trace:
             g.trace('common_lws:', repr(ws))
@@ -984,10 +980,7 @@ class Importer(object):
             print('----- result...')
             for z in result:
                 print(repr(z))
-        if use_api:
-            return result
-        else:
-            return ''.join(result)
+        return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
