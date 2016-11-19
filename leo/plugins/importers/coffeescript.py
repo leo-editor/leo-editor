@@ -6,7 +6,6 @@ import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
-new = False # True: use i.v2_scan_line (ctor follows protocol).
 #@+others
 #@+node:ekr.20160505094722.2: ** class CS_Importer(Importer)
 class CS_Importer(Importer):
@@ -62,11 +61,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20161110044000.2: *3* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        if new:
-            # pylint: disable=no-value-for-parameter
-            return CS_ScanState()
-        else:
-            return CS_ScanState('', 0)
+        return CS_ScanState() ### ('', 0)
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -168,33 +163,33 @@ class CS_Importer(Importer):
 
 
     #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (To do: use base class method)
-    if new:
-        
-        pass
-        
-    else:
-
-        def v2_scan_line(self, s, prev_state):
-            '''Update the coffeescript scan state by scanning s.'''
-            trace = False and not g.unitTesting
-            context, indent = prev_state.context, prev_state.indent
-            was_bs_nl = context == 'bs-nl'
-            starts = None ### Not used. ### self.starts_def(s)
-            ws = self.is_ws_line(s) and not was_bs_nl
-            if was_bs_nl:
-                context = '' # Don't change indent.
-            else:
-                indent = self.get_int_lws(s)
-            i = 0
-            while i < len(s):
-                progress = i
-                table = self.get_table(context)
-                data = self.scan_table(context, i, s, table)
-                context, i, delta_c, delta_p, delta_s, bs_nl = data
-                # Only context and indent matter!
-                assert progress < i
-            if trace: g.trace(self, s.rstrip())
-            return CS_ScanState(context, indent, starts=starts, ws=ws)
+    def v2_scan_line(self, s, prev_state):
+        '''Update the coffeescript scan state by scanning s.'''
+        trace = False and not g.unitTesting
+        context, indent = prev_state.context, prev_state.indent
+        was_bs_nl = context == 'bs-nl'
+        starts = None ### Not used. ### self.starts_def(s)
+        ws = self.is_ws_line(s) and not was_bs_nl
+        if was_bs_nl:
+            context = '' # Don't change indent.
+        else:
+            indent = self.get_int_lws(s)
+        i = 0
+        while i < len(s):
+            progress = i
+            table = self.get_table(context)
+            data = self.scan_table(context, i, s, table)
+            context, i, delta_c, delta_p, delta_s, bs_nl = data
+            # Only context and indent matter!
+            assert progress < i
+        if trace: g.trace(self, s.rstrip())
+        ### return CS_ScanState(context, indent, starts=starts, ws=ws)
+        ### Temporary hack...
+        prev_state = g.Bunch(
+            bs_nl=was_bs_nl, context=context,
+            indent=indent, starts=starts, ws=ws)
+        d = {'prev': prev_state, 'indent':indent, 's':s}
+        return CS_ScanState(d)
     #@+node:ekr.20161118134555.1: *3* COFFEE.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''
@@ -318,31 +313,30 @@ class CS_Importer(Importer):
 class CS_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    if new: ### Not yet.
-        
-        def __init__(self, d=None):
-            '''Ctor for the ScanState class, used by i.general_scan_line.'''
-            if d:
-                ### To do: compute self.ws from s?
-                indent = d.get('indent')
-                prev = d.get('prev')
-                self.indent = prev.indent if prev.bs_nl else indent
-                self.context = prev.context
-            else:
-                self.bs_nl = False
-                self.context = ''
-                self.starts = self.ws = False
-    
-    else:
-    
-        def __init__(self, context, indent, starts=False, ws=False):
-            '''CS_State ctor.'''
-            assert isinstance(indent, int), (repr(indent), g.callers())
-            self.bs_nl = False ### New ###
-            self.context = context
-            self.indent = indent
-            self.starts = starts
-            self.ws = ws # whitespace line, possibly ending in a comment.
+    def __init__(self, d=None):
+        '''Ctor for the ScanState class, used by i.general_scan_line.'''
+        if d:
+            ### To do: compute self.ws from s?
+            indent = d.get('indent')
+            prev = d.get('prev') ### A g.Bunch, for now
+            self.bs_nl = prev.bs_nl
+            self.context = prev.context
+            self.indent = prev.indent if prev.bs_nl else indent
+            self.ws = prev.ws
+        else:
+            self.bs_nl = False
+            self.context = ''
+            self.indent = 0
+            self.starts = self.ws = False
+
+    # def __init__(self, context, indent, starts=False, ws=False):
+        # '''CS_State ctor.'''
+        # assert isinstance(indent, int), (repr(indent), g.callers())
+        # self.bs_nl = False ### New ###
+        # self.context = context
+        # self.indent = indent
+        # self.starts = starts
+        # self.ws = ws # whitespace line, possibly ending in a comment.
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
@@ -370,6 +364,31 @@ class CS_ScanState:
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161118140100.1: *3* cs_state.in_context
+    def in_context(self):
+        '''True if in a special context.'''
+        return (
+            self.context or
+            ###
+            # self.curlies > 0 or
+            # self.parens > 0 or
+            # self.squares > 0 or
+            self.bs_nl
+        )
+    #@+node:ekr.20161119052920.1: *3* cs_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        # self.bs_nl = bs_nl
+        self.context = context
+        # self.curlies += delta_c  
+        # self.parens += delta_p
+        # self.squares += delta_s
+        return i
+
     #@+node:ekr.20161110045131.3: *3* cs_state.v2_starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned line continues the present block.'''
@@ -383,17 +402,6 @@ class CS_ScanState:
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and self.starts and self >= prev_state
-    #@+node:ekr.20161118140100.1: *3* cs_state.in_context
-    def in_context(self):
-        '''True if in a special context.'''
-        return (
-            self.context or
-            ###
-            # self.curlies > 0 or
-            # self.parens > 0 or
-            # self.squares > 0 or
-            self.bs_nl
-        )
     #@-others
 #@-others
 importer_dict = {
