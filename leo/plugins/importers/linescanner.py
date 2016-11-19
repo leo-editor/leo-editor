@@ -446,7 +446,8 @@ class Importer(object):
         '''
         tail_p = None
         prev_state = self.state_class()
-        stack = [Target(parent, prev_state)]
+        target = Target(parent, prev_state)
+        stack = [target, target]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
             new_state = self.gen_next_line(line, prev_state, tail_p)
@@ -462,30 +463,35 @@ class Importer(object):
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
-    #@+node:ekr.20161108160409.2: *6* i.cut_stack (doesn't assume stack entry)
+    #@+node:ekr.20161119130337.1: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and g.unitTesting
         if trace:
             g.trace(new_state)
             g.printList(stack)
-        assert stack # Fail on entry.
+        assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
-                if len(stack) == 1:
-                    break
-                else:
-                    stack.pop() 
+                assert len(stack) > 1, stack # <
+                stack.pop()
             elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
+                assert len(stack) > 1, stack # ==
+                ### This is the only difference between i.cut_stack and python/cs.cut_stack
+                #### stack.pop()
                 break
             else:
-                if trace: g.trace('OVERSHOOT: new_state > top_state', top_state)
-                    # Can happen with valid javascript programs.
+                # This happens often in valid Python programs.
+                if trace: g.trace('new_state > top_state', top_state)
                 break
-        assert stack # Fail on exit.
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161108160409.3: *6* i.end_block (sets_tail_p)
     def end_block(self, line, new_state, stack):
