@@ -84,9 +84,8 @@ class Py_Importer(Importer):
                 line, new_state, top))
             if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.starts_block(line, new_state, prev_state): # Overridden method.
+            elif self.starts_block(line, new_state, prev_state):
                 self.start_new_block(line, new_state, prev_state, stack)
-            ### elif new_state.indent >= top.state.indent:
             elif new_state.level() >= top.state.level():
                 self.add_line(top.p, line)
             else:

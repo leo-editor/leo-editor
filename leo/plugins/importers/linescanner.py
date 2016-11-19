@@ -449,16 +449,13 @@ class Importer(object):
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
-            ### new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
             new_state = self.gen_next_line(line, prev_state, tail_p)
             if self.is_ws_line(line):
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
-            ### elif new_state.level() > prev_state.level(): ### starts:
             elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            ### elif new_state.level() == prev_state.level(): ### continues
             elif self.continues_block(line, new_state, prev_state):
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
@@ -507,11 +504,8 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         new_state = self.v2_scan_line(line, prev_state)
-        ### starts_block = new_state.v2_starts_block(prev_state)
-        ### continues_block = new_state.v2_continues_block(prev_state)
         if trace: g.trace('%r\n%s\nbs-nl: %5s tail: %s\n' % (
             line, new_state, getattr(new_state, 'bs_nl', 'None'), tail_p and tail_p.h))
-        ### return new_state, starts_block, continues_block
         return new_state
     #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
