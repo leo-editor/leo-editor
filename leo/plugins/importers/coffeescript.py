@@ -11,7 +11,7 @@ Target = linescanner.Target
 class CS_Importer(Importer):
 
     #@+others
-    #@+node:ekr.20160505101118.1: *3* coffee.__init__
+    #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
     def __init__(self, importCommands, atAuto):
         '''Ctor for CoffeeScriptScanner class.'''
         Importer.__init__(self,
@@ -26,7 +26,7 @@ class CS_Importer(Importer):
         self.root = None
         self.tab_width = None
             # NOT the same as self.c.tabwidth.  Set in run().
-    #@+node:ekr.20161113064226.1: *3* coffee.get_new_table
+    #@+node:ekr.20161113064226.1: *3* coffee_i.get_new_table
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -58,7 +58,7 @@ class CS_Importer(Importer):
         )
         if trace: g.trace('created table for coffescript state', repr(context))
         return table
-    #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers (revise)
+    #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
         trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
@@ -86,7 +86,7 @@ class CS_Importer(Importer):
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
                 g.printList(p.v._import_lines)
-    #@+node:ekr.20160505173347.1: *4* coffee.delete_trailing_lines
+    #@+node:ekr.20160505173347.1: *4* coffee_i.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p.b and return them.'''
         body_lines, trailing_lines = [], []
@@ -103,7 +103,7 @@ class CS_Importer(Importer):
             trailing_lines = []
         p.b = ''.join(body_lines)
         return trailing_lines
-    #@+node:ekr.20160505170558.1: *4* coffee.move_trailing_lines
+    #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
         prev_lines = []
@@ -126,7 +126,7 @@ class CS_Importer(Importer):
             else:
                 # Fall back.
                 last.b = last.b + ''.join(prev_lines)
-    #@+node:ekr.20160505180032.1: *4* coffee.undent_coffeescript_body
+    #@+node:ekr.20160505180032.1: *4* coffee_i.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
         trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
@@ -158,7 +158,7 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20161118134555.1: *3* COFFEE.v2_gen_lines & helpers
+    #@+node:ekr.20161118134555.1: *3* coffee_i.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent,
@@ -183,7 +183,7 @@ class CS_Importer(Importer):
             else:
                 self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
-    #@+node:ekr.20161118134555.2: *4* COFFEE.add_underindented_line (Same as Python)
+    #@+node:ekr.20161118134555.2: *4* coffee_i.add_underindented_line (Same as Python)
     def add_underindented_line(self, line, new_state, stack):
         '''
         Handle an unusual case: an underindented tail line.
@@ -200,7 +200,7 @@ class CS_Importer(Importer):
         # Tricky: force section references for later class/def lines.
         if top.at_others_flag:
             top.gen_refs = True
-    #@+node:ekr.20161118134555.3: *4* COFFEE.cut_stack (Same as Python)
+    #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and g.unitTesting
@@ -229,7 +229,7 @@ class CS_Importer(Importer):
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161118134555.6: *4* COFFEE.start_new_block
+    #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
         # pylint: disable=arguments-differ
@@ -255,7 +255,7 @@ class CS_Importer(Importer):
         h = self.v2_gen_ref(line, parent, top)
         child = self.v2_create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
-    #@+node:ekr.20161118134555.7: *4* COFFEE.starts_block
+    #@+node:ekr.20161118134555.7: *4* coffee_i.starts_block
     pattern_table = [
         re.compile(r'^\s*class'),
         re.compile(r'^\s*(.+):(.*)->'),

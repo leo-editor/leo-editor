@@ -445,7 +445,7 @@ class Importer(object):
         nodes as needed.
         '''
         tail_p = None
-        prev_state = self.state_class() ### self.initial_state()
+        prev_state = self.state_class()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
