@@ -454,22 +454,24 @@ class Importer(object):
             if self.is_ws_line(line):
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
-            elif new_state.level() > prev_state.level(): ### starts:
+            ### elif new_state.level() > prev_state.level(): ### starts:
+            elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            elif new_state.level() == prev_state.level(): ### continues
+            ### elif new_state.level() == prev_state.level(): ### continues
+            elif self.continues_block(line, new_state, prev_state):
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
                 tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
-    #@+node:ekr.20161108160409.2: *6* i.cut_stack
+    #@+node:ekr.20161108160409.2: *6* i.cut_stack (doesn't assume stack entry)
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and g.unitTesting
-        trace_stack = False
-        if trace and trace_stack:
-            print('\n'.join([repr(z) for z in stack]))
+        if trace:
+            g.trace(new_state)
+            g.printList(stack)
         assert stack # Fail on entry.
         while stack:
             top_state = stack[-1].state
@@ -496,11 +498,6 @@ class Importer(object):
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
-    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, repr(p.v._bodyString)
-        p.v._import_lines = []
     #@+node:ekr.20161110070826.1: *6* i.gen_next_line (good trace)
     def gen_next_line(self, line, prev_state, tail_p):
         '''
@@ -516,6 +513,11 @@ class Importer(object):
             line, new_state, getattr(new_state, 'bs_nl', 'None'), tail_p and tail_p.h))
         ### return new_state, starts_block, continues_block
         return new_state
+    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        assert not p.v._bodyString, repr(p.v._bodyString)
+        p.v._import_lines = []
     #@+node:ekr.20161108160409.6: *6* i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
@@ -527,6 +529,14 @@ class Importer(object):
         # Create a new child and associated target.
         child = self.v2_create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
+    #@+node:ekr.20161119124217.1: *6* i.starts/continues_block (NEW)
+    def starts_block(self, line, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        return new_state.level() > prev_state.level()
+        
+    def continues_block(self, line, new_state, prev_state):
+        '''True if the new state continues a block.'''
+        return new_state.level() == prev_state.level()
     #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''

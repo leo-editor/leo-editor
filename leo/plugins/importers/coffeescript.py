@@ -176,9 +176,10 @@ class CS_Importer(Importer):
                 line, new_state, top))
             if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.starts_block(line, prev_state): ### Overridden method.
+            elif self.starts_block(line, new_state, prev_state): ### Overridden method.
                 self.start_new_block(line, new_state, stack)
-            elif new_state.indent >= top.state.indent:
+            ### elif new_state.indent >= top.state.indent:
+            elif new_state.level() >= top.state.level():
                 self.add_line(top.p, line)
             else:
                 self.add_underindented_line(line, new_state, stack)
@@ -220,7 +221,7 @@ class CS_Importer(Importer):
                 stack.pop()
                 break
             else:
-                # This happens often in valid Python programs.
+                # This happens often in valid coffescript programs.
                 if trace: g.trace('new_state > top_state', top_state)
                 break
         # Restore the guard entry if necessary.
@@ -262,7 +263,7 @@ class CS_Importer(Importer):
         re.compile(r'^\s*(.+)=(.*)->'),
     ]
 
-    def starts_block(self, line, prev_state):
+    def starts_block(self, line, new_state, prev_state):
         '''True if the line starts with the patterns above outside any context.'''
         if prev_state.in_context():
             return False
