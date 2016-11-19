@@ -219,8 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657331710d58030000002d7e2e710e580b000000756e6465726c696e657332710f58010000003d711075735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
-expanded="ekr.20161103015908.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -340,7 +339,11 @@ expanded="ekr.20161103015908.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh>
+<v t="ekr.20161119035149.41"><vh>@@file c:/leo.repo/leo-editor/leo/test/coffeescript-2</vh>
+<v t="ekr.20161119035149.42"><vh>buildCoffee = (str) -&gt;</vh></v>
+</v>
+</v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
@@ -380,7 +383,7 @@ expanded="ekr.20161103015908.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
@@ -432,9 +435,7 @@ expanded="ekr.20161103015908.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161108034116.1"></v>
 <v t="ekr.20121011094154.3906"></v>
-<v t="ekr.20161103015908.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -888,7 +889,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11,4">
+<t tx="ekr.20070417092935" str_leo_pos="5">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2393,7 +2394,7 @@ document.body.appendChild(button)
 
 '''
 
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20121011100210.4035">s = '''
 
@@ -2421,7 +2422,7 @@ document.body.appendChild(button)
 
 '''
 
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -5624,6 +5625,25 @@ sub test4 {
 '''
 
 c.importCommands.perlUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20161119035149.41">
+
+# Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161119035149.42">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 </t>
 </tnodes>
 </leo_file>

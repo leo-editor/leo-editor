@@ -211,11 +211,11 @@ class CS_Importer(Importer):
             top = stack[-1]
             if trace: g.trace('(CS_Importer) line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
-            if self.starts_block(line, new_state):
+            if self.is_ws_line(line):
+                self.add_line(top.p, line)
+            elif self.starts_block(line, new_state):
                 self.start_new_block(line, new_state, stack)
             elif new_state.indent >= top.state.indent:
-                self.add_line(top.p, line)
-            elif self.is_ws_line(line):
                 self.add_line(top.p, line)
             else:
                 self.add_underindented_line(line, new_state, stack)
@@ -298,17 +298,15 @@ class CS_Importer(Importer):
         ### self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161118134555.7: *4* COFFEE.starts_block
     pattern_table = [
-        re.compile(r'\s*class'),
-        re.compile(r'\s*(.+):(.*)->'),
-        re.compile(r'\s*(.+)=(.*)->'),
+        re.compile(r'^\s*class'),
+        re.compile(r'^\s*(.+):(.*)->'),
+        re.compile(r'^\s*(.+)=(.*)->'),
     ]
 
-    def starts_block(self, line, new_state):
-        '''True if the line startswith class or def outside any context.'''
-        if new_state.in_context():
+    def starts_block(self, line, prev_state):
+        '''True if the line starts with the patterns above outside any context.'''
+        if prev_state.in_context():
             return False
-        elif self.is_ws_line(line):
-            return False # Guard against false matches below.
         for pattern in self.pattern_table:
             if pattern.match(line):
                 # g.trace('='*10, repr(line))
@@ -387,7 +385,6 @@ class CS_ScanState:
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return not self.context and self.starts and self >= prev_state
-            ############ Why not use the python way ???????????????\
     #@+node:ekr.20161118140100.1: *3* cs_state.in_context
     def in_context(self):
         '''True if in a special context.'''

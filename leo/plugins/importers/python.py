@@ -208,7 +208,7 @@ class Py_Importer(Importer):
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
-    #@+node:ekr.20161116040557.1: *4* python_i.starts_block
+    #@+node:ekr.20161116040557.1: *4* python_i.starts_block (V2)
     starts_pattern = re.compile(r'\s*(class|def)')
         # Matches lines that apparently starts a class or def.
 

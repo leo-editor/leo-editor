@@ -449,12 +449,13 @@ class Importer(object):
         prev_state = self.initial_state()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
+        # if g.unitTesting: g.pdb()
         for line in g.splitLines(s):
             new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
             if starts:
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            elif continues:
+            elif continues or self.is_ws_line(line):
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
@@ -505,7 +506,7 @@ class Importer(object):
         
         A separate method is useful while single-stepping.
         '''
-        trace = False
+        trace = False and g.unitTesting
         new_state = self.v2_scan_line(line, prev_state)
         starts_block = new_state.v2_starts_block(prev_state)
         continues_block = new_state.v2_continues_block(prev_state)

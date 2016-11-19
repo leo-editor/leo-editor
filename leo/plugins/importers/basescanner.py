@@ -2342,7 +2342,7 @@ class LineScanner(object):
         '''Return True if the pattern matches at s[i:]'''
         return s[i:i+len(pattern)] == pattern
     #@+node:ekr.20161105141816.1: *3* V1 methods
-    #@+node:ekr.20161027115813.5: *4* scanner.clear, push & pop
+    #@+node:ekr.20161027115813.5: *4* scanner.clear, push & pop (V1)
     def clear(self):
         '''Clear the state.'''
         self.base_curlies = self.curlies = 0
@@ -2356,7 +2356,7 @@ class LineScanner(object):
         '''Save the base state on the stack and enter a new base state.'''
         self.stack.append(self.base_curlies)
         self.base_curlies = self.curlies
-    #@+node:ekr.20161027115813.7: *4* scanner.scan_line (V2)
+    #@+node:ekr.20161027115813.7: *4* scanner.scan_line (V1)
     def scan_line(self, s):
         '''
         A *typical* line scanner. Subclasses should redefine this method.
@@ -2397,7 +2397,7 @@ class LineScanner(object):
             assert progress < i
         if trace:
             g.trace(self, s.rstrip())
-    #@+node:ekr.20161027115813.3: *4* scanner.continues_block and starts_block
+    #@+node:ekr.20161027115813.3: *4* scanner.continues_block and starts_block (V1)
     def continues_block(self):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self.context or self.curlies > self.base_curlies

@@ -13039,6 +13039,25 @@ buildCoffee = (str) ->
 '''
 
 c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161119035149.41: *7* @@file c:/leo.repo/leo-editor/leo/test/coffeescript-2
+
+
+# Js2coffee relies on Narcissus's parser.
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+# Main entry point
+
+@others
+@language coffeescript
+@tabwidth -4
+#@+node:ekr.20161119035149.42: *8* buildCoffee = (str) ->
+buildCoffee = (str) ->
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
 #@+node:ekr.20161118144658.1: *6* @test coffeescript-3
 @tabwidth -2 # Required
 
@@ -14957,7 +14976,7 @@ document.body.appendChild(button)
 
 '''
 
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20121011100210.4035: *6* @test TypeScript module
 s = '''
 
@@ -14985,7 +15004,7 @@ document.body.appendChild(button)
 
 '''
 
-c.importCommands.typeScriptUnitTest(p,s=s,showTree=True)
+c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4780: *5* xml tests
 #@+node:ekr.20090529141856.4781: *6* @test xml 1
 s = '''\
