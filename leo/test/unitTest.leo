@@ -219,7 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f746573747107580400000061626364710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -265,43 +265,6 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
-<v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
-<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
-<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
-<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
-<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
-<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
-<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
-<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
-<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
-<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
-<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
@@ -396,6 +359,9 @@
 <v t="ekr.20161119051936.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161119051936.6"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161119074649.11"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161119074649.12"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -410,6 +376,9 @@
 <v t="ekr.20161119051936.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161119051936.8"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161119074649.13"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161119074649.14"><vh>sub test1</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
@@ -417,7 +386,43 @@
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
+<v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
+<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
+<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
+<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
+<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
+<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
+<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
+<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
+<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
+<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+</v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
@@ -457,6 +462,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20161108034116.1"></v>
+<v t="ekr.20090529141856.4736"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -5399,7 +5405,7 @@ try:
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
 </t>
 <t tx="ekr.20161115092708.1"># g.cls()
@@ -5806,6 +5812,50 @@ sub test4 {
 @tabwidth -4
 </t>
 <t tx="ekr.20161119051936.8">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161119074649.11">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161119074649.12">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161119074649.13">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161119074649.14">sub test1 {
     s = /}/g;
 }
 

@@ -14250,7 +14250,7 @@ try:
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4

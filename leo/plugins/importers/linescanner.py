@@ -444,22 +444,25 @@ class Importer(object):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
+        trace = False and g.unitTesting
         tail_p = None
         prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
-            new_state = self.gen_next_line(line, prev_state, tail_p)
+            new_state = self.v2_scan_line(line, prev_state)
+            top = stack[-1]
+            if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.is_ws_line(line):
-                p = tail_p or stack[-1].p
+                p = tail_p or top.p
                 self.add_line(p, line)
             elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(line, new_state, prev_state, stack)
-            elif self.continues_block(line, new_state, prev_state):
-            ### elif new_state.level() == prev_state.level():
-                p = tail_p or stack[-1].p
+            elif new_state.level() >= top.state.level():
+                # Comparing new_state against prev_state does not work for python.
+                p = tail_p or top.p
                 self.add_line(p, line)
             else:
                 tail_p = self.end_block(line, new_state, stack)
@@ -502,18 +505,6 @@ class Importer(object):
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
-    #@+node:ekr.20161110070826.1: *6* i.gen_next_line (good trace)
-    def gen_next_line(self, line, prev_state, tail_p):
-        '''
-        Set up the vars for i.v2_gen_lines.
-        
-        A separate method is useful while single-stepping.
-        '''
-        trace = False and g.unitTesting
-        new_state = self.v2_scan_line(line, prev_state)
-        if trace: g.trace('%r\n%s\nbs-nl: %5s tail: %s\n' % (
-            line, new_state, getattr(new_state, 'bs_nl', 'None'), tail_p and tail_p.h))
-        return new_state
     #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
@@ -530,14 +521,20 @@ class Importer(object):
         # Create a new child and associated target.
         child = self.v2_create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
-    #@+node:ekr.20161119124217.1: *6* i.starts/continues_block (NEW)
+    #@+node:ekr.20161119124217.1: *6* i.starts_block (new)
     def starts_block(self, line, new_state, prev_state):
         '''True if the new state starts a block.'''
         return new_state.level() > prev_state.level()
-        
-    def continues_block(self, line, new_state, prev_state):
-        '''True if the new state continues a block.'''
-        return new_state.level() == prev_state.level()
+    #@+node:ekr.20161119162451.1: *6* i.trace_status
+    def trace_status(self, line, new_state, prev_state, stack, top):
+        '''Print everything important in the v2_gen_lines loop.'''
+        print('')
+        print('===== %r' % line)
+        print('     top.p: %s' % top.p.h)
+        print('len(stack): %s' % len(stack))
+        print(' new_state: %s' % new_state)
+        print('prev_state: %s' % prev_state)
+        print(' top.state: %s' % top.state)
     #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''

@@ -66,32 +66,7 @@ class Py_Importer(Importer):
         )
         if trace: g.trace('created table for python state', repr(context))
         return table
-    #@+node:ekr.20161116034633.1: *3* py_i.v2_gen_lines (To be removed)
-    def v2_gen_lines(self, s, parent):
-        '''
-        Non-recursively parse all lines of s into parent,
-        creating descendant nodes as needed.
-        '''
-        trace = False and g.unitTesting
-        prev_state = self.state_class()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        self.inject_lines_ivar(parent)
-        for line in g.splitLines(s):
-            new_state = self.v2_scan_line(line, prev_state)
-            top = stack[-1]
-            if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
-                line, new_state, top))
-            if self.is_ws_line(line):
-                self.add_line(top.p, line)
-            elif self.starts_block(line, new_state, prev_state):
-                self.start_new_block(line, new_state, prev_state, stack)
-            elif new_state.level() >= top.state.level():
-                self.add_line(top.p, line)
-            else:
-                self.add_underindented_line(line, new_state, stack)
-            prev_state = new_state
-    #@+node:ekr.20161119131508.1: *3* py_i.overrides of i.v2_gen_lines helpers
+    #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.v2_gen_lines
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line (end_block)
     def add_underindented_line(self, line, new_state, stack):
         '''
@@ -101,16 +76,17 @@ class Py_Importer(Importer):
         *terminates* the previous block.
         '''
         top = stack[-1]
-        assert new_state.indent < top.state.indent, (new_state, top.state)
-        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
+        assert new_state.indent < top.state.indent, ('\nnew: %s\ntop: %s' % (
+            new_state, top.state))
         self.cut_stack(new_state, stack)
         top = stack[-1]
         self.add_line(top.p, line)
         # Tricky: force section references for later class/def lines.
         if top.at_others_flag:
             top.gen_refs = True
-        return None
-        
+        tail_p = None if self.gen_refs else top.p
+        return tail_p
+
     end_block = add_underindented_line
     #@+node:ekr.20161116034633.2: *4* python_i.cut_stack
     def cut_stack(self, new_state, stack):
@@ -144,7 +120,6 @@ class Py_Importer(Importer):
     #@+node:ekr.20161117060359.1: *4* python_i.move_decorators & helpers
     def move_decorators(self, new_p, prev_p):
         '''Move decorators from the end of prev_p to the start of new_state.p'''
-        # trace = True and g.unitTesting
         if new_p.v == prev_p.v:
             return
         prev_lines = prev_p.v._import_lines
@@ -182,7 +157,6 @@ class Py_Importer(Importer):
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
     def start_new_block(self, line, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        # pylint: disable=arguments-differ
         trace = False and g.unitTesting
         assert not prev_state.in_context(), prev_state
         top = stack[-1]
@@ -209,7 +183,7 @@ class Py_Importer(Importer):
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
-    #@+node:ekr.20161116040557.1: *4* python_i.starts/continues_block
+    #@+node:ekr.20161116040557.1: *4* python_i.starts_block
     starts_pattern = re.compile(r'\s*(class|def)')
         # Matches lines that apparently starts a class or def.
 
@@ -219,10 +193,6 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
-            
-    def continues_block(self, line, new_state, prev_state):
-        '''True if the line continues the present block.'''
-        return new_state.level() >= prev_state.level()
     #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
     def findClass(self, p):
         '''
