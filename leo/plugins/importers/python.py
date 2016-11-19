@@ -217,7 +217,12 @@ class Py_Importer(Importer):
             return bool(self.starts_pattern.match(line))
     #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
     def findClass(self, p):
-        '''Return the index end of the class or def in a node, or -1.'''
+        '''
+        Return the index end of the class or def in a node, or -1.
+        '''
+        ### To do: rewrite this class.
+        # pylint: disable=no-member
+            # The methods here are character-oriented methods that no longer exist.
         s, i = p.b, 0
         while i < len(s):
             progress = i

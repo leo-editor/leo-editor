@@ -158,33 +158,6 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20161110044000.3: *3* coffee.v2_scan_line (Remove)
-    def v2_scan_line(self, s, prev_state):
-        '''Update the coffeescript scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        context, indent = prev_state.context, prev_state.indent
-        was_bs_nl = context == 'bs-nl'
-        ws = self.is_ws_line(s) and not was_bs_nl
-        if was_bs_nl:
-            context = '' # Don't change indent.
-        else:
-            indent = self.get_int_lws(s)
-        i = 0
-        while i < len(s):
-            progress = i
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            context, i, delta_c, delta_p, delta_s, bs_nl = data
-            # Only context and indent matter!
-            assert progress < i
-        if trace: g.trace(self, s.rstrip())
-        ### return CS_ScanState(context, indent, starts=starts, ws=ws)
-        ### Temporary hack...
-        prev_state = g.Bunch(
-            bs_nl=was_bs_nl, context=context,
-            indent=indent, starts=None, ws=ws)
-        d = {'prev': prev_state, 'indent':indent, 's':s}
-        return CS_ScanState(d)
     #@+node:ekr.20161118134555.1: *3* COFFEE.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
         '''
@@ -308,11 +281,13 @@ class CS_ScanState:
         '''CS_ScanState ctor.'''
         if d:
             indent = d.get('indent')
-            prev = d.get('prev') ### A g.Bunch, for now
-            self.bs_nl = prev.bs_nl
+            is_ws_line = d.get('is_ws_line')
+            prev = d.get('prev')
+            assert indent is not None and is_ws_line is not None
+            self.ws = is_ws_line and prev.context != 'bs-nl'
+            self.bs_nl = False
             self.context = prev.context
             self.indent = prev.indent if prev.bs_nl else indent
-            self.ws = prev.ws
         else:
             self.bs_nl = False
             self.context = ''

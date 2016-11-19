@@ -348,9 +348,13 @@ class Importer(object):
         3. The class must have an update method.
         '''
         trace = False and not g.unitTesting
-        indent = self.get_int_lws(s)
-        d = {'indent':indent, 'prev':prev_state, 's':s}
-            # This allows new data to be added without changing ScanState signatures.
+        # This dict allows new data to be added without changing ScanState signatures.
+        d = {
+            'indent': self.get_int_lws(s),
+            'is_ws_line': self.is_ws_line(s),
+            'prev':prev_state,
+            's':s,
+        }
         new_state = self.state_class(d)
         i = 0
         while i < len(s):
