@@ -19,7 +19,7 @@ class Py_Importer(Importer):
             importCommands,
             atAuto=atAuto,
             language='python',
-            state_class = Python_State,
+            state_class = Python_ScanState,
         )
 
     #@+others
@@ -35,6 +35,10 @@ class Py_Importer(Importer):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
+    #@+node:ekr.20161119041146.1: *3* py_i.initial_state
+    def initial_state(self):
+        '''Py_Importer.initial_state.'''
+        return Python_ScanState()
     #@+node:ekr.20161113082348.1: *3* py_i.get_new_table
     #@@nobeautify
 
@@ -74,26 +78,24 @@ class Py_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = Python_State() ###
+        prev_state = self.initial_state() ### Python_ScanState() ###
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
-        ### prev_p = None
         for line in g.splitLines(s):
             new_state = self.v2_scan_line(line, prev_state)
             top = stack[-1]
             if trace: g.trace('line: %r\nnew_state: %s\ntop: %s' % (
                 line, new_state, top))
-            if self.starts_block(line, new_state):
-                self.start_new_block(line, new_state, stack)
-            elif new_state.indent >= top.state.indent:
+            if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.is_ws_line(line):
+            elif self.starts_block(line, prev_state):
+                self.start_new_block(line, new_state, prev_state, stack)
+            elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
             else:
                 self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
-            ### prev_p = stack[-1].p.copy()
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line
     def add_underindented_line(self, line, new_state, stack):
         '''
@@ -179,11 +181,11 @@ class Py_Importer(Importer):
         m = self.decorator_pattern.match(line)
         return m and m.group(1) not in g.globalDirectiveList
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
-    def start_new_block(self, line, new_state, stack):
+    def start_new_block(self, line, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         # pylint: disable=arguments-differ
         trace = False and g.unitTesting
-        assert not new_state.in_context(), new_state
+        assert not prev_state.in_context(), prev_state
         top = stack[-1]
         prev_p = top.p.copy()
         if trace:
@@ -208,20 +210,37 @@ class Py_Importer(Importer):
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
-    #@+node:ekr.20161116040557.1: *4* python_i.starts_block (V2)
+    #@+node:ekr.20161116040557.1: *4* python_i.starts_block
     starts_pattern = re.compile(r'\s*(class|def)')
         # Matches lines that apparently starts a class or def.
 
-    def starts_block(self, line, new_state):
+    def starts_block(self, line, prev_state):
         '''True if the line startswith class or def outside any context.'''
-        if new_state.in_context():
+        if prev_state.in_context():
             return False
         else:
             return bool(self.starts_pattern.match(line))
     #@-others
-#@+node:ekr.20161105100227.1: ** class Python_State(ScanState)
-class Python_State(ScanState):
+#@+node:ekr.20161105100227.1: ** class Python_ScanState
+class Python_ScanState:
     '''A class representing the state of the line-oriented scan.'''
+    
+    def __init__(self, indent=None, prev=None, s=None):
+        '''Python_ScanState ctor.'''
+        if prev:
+            assert indent is not None
+            assert s is not None
+            if not prev.bs_nl:
+                self.indent = indent ### NOT prev.indent
+            self.context = prev.context
+            self.curlies = prev.curlies
+            self.parens = prev.parens
+            self.squares = prev.squares
+        else:
+            self.bs_nl = False
+            self.context = ''
+            self.curlies = self.parens = self.squares = 0
+            self.indent = 0
     
     # Use the ScanState ctor.
     # pylint: disable=super-init-not-called
@@ -246,6 +265,28 @@ class Python_State(ScanState):
             self.squares > 0 or
             self.bs_nl
         )
+    #@+node:ekr.20161119042358.1: *3* py_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        self.parens += delta_p
+        self.squares += delta_s
+        return i
+
+    #@+node:ekr.20161119042435.1: *3* py_state.v2.starts/continues_block
+    def v2_continues_block(self, prev_state):
+        '''Return True if the just-scanned lines should be placed in the inner block.'''
+        return self == prev_state
+
+    def v2_starts_block(self, prev_state):
+        '''Return True if the just-scanned line starts an inner block.'''
+        return self > prev_state
     #@-others
 #@-others
 importer_dict = {

@@ -380,7 +380,7 @@ class Importer(object):
             if c.isChanged(): c.save()
             < < imp.reload importers.linescanner and importers.python > >
             importer = py.Py_Importer(c.importCommands, atAuto=True)
-            importer.test_scan_state(tests, Python_State)
+            importer.test_scan_state(tests, Python_ScanState)
         '''
         trace = False and g.unitTesting
         assert self.single_comment == '#', self.single_comment

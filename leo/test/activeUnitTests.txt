@@ -13038,26 +13038,7 @@ buildCoffee = (str) ->
   scriptNode = parser.parse str
 '''
 
-c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-#@+node:ekr.20161119035149.41: *7* @@file c:/leo.repo/leo-editor/leo/test/coffeescript-2
-
-
-# Js2coffee relies on Narcissus's parser.
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-# Main entry point
-
-@others
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161119035149.42: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
+c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161118144658.1: *6* @test coffeescript-3
 @tabwidth -2 # Required
 
@@ -13782,6 +13763,72 @@ sub test4 {
 '''
 
 c.importCommands.perlUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161119041435.17: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119041435.18: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161119042544.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119042544.3: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161119042817.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119042817.2: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -13809,6 +13856,72 @@ sub test4 {
 '''
 
 c.importCommands.perlUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161119041435.19: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119041435.20: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161119042544.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119042544.5: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161119042817.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161119042817.4: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -13895,7 +14008,7 @@ c.importCommands.phpUnitTest(p,s=s,showTree=False)
 import leo.plugins.importers.python as python
 << define python tests >>
 importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_State)
+importer.test_scan_state(tests, State=python.Python_ScanState)
 #@+node:ekr.20161115092708.2: *7* << define python tests >>
 # A list of dictionaries.
 if 0:

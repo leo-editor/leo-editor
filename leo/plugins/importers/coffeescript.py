@@ -202,7 +202,7 @@ class CS_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = CS_ScanState('', 0) ###
+        prev_state = self.initial_state() ### CS_ScanState('', 0) ###
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
@@ -213,7 +213,7 @@ class CS_Importer(Importer):
                 line, new_state, top))
             if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.starts_block(line, new_state):
+            elif self.starts_block(line, prev_state):
                 self.start_new_block(line, new_state, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
