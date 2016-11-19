@@ -1068,18 +1068,18 @@ class Importer(object):
                 result.append(s)
         return ''.join(result)
     #@-others
-#@+node:ekr.20161108171914.1: ** class ScanState (Revise)
+#@+node:ekr.20161108171914.1: ** class ScanState
 class ScanState:
     '''
     The base class for classes representing the state of the line-oriented
     scan.
     '''
     
-    def __init__(self, indent=None, prev=None, s=None): ###
-        '''Ctor for the ScanState class, used by i.general_scan_line.'''
-        if prev:
-            assert indent is not None
-            assert s is not None
+    def __init__(self, d=None):
+        '''ScanState ctor.'''
+        if d:
+            indent = d.get('indent')
+            prev = d.get('prev')
             self.indent = indent # NOT prev.indent
             self.bs_nl = prev.bs_nl
             self.context = prev.context

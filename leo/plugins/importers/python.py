@@ -5,7 +5,6 @@ import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
-ScanState = linescanner.ScanState
 Target = linescanner.Target
 #@+others
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
@@ -223,7 +222,7 @@ class Py_Importer(Importer):
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
-    '''A class representing the state of the line-oriented scan.'''
+    '''A class representing the state of the python line-oriented scan.'''
     
     def __init__(self, d=None):
         '''Python_ScanState ctor.'''

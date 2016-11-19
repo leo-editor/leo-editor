@@ -121,10 +121,10 @@ class Perl_Importer(Importer):
     #@-others
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:
-    '''A class representing the state of the v2 scan.'''
+    '''A class representing the state of the perl line-oriented scan.'''
     
     def __init__(self, d=None):
-        '''Ctor for the Perl_ScanState class.'''
+        '''Perl_ScanState ctor.'''
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -133,13 +133,6 @@ class Perl_ScanState:
         else:
             self.context = ''
             self.curlies = self.parens = 0
-
-    ###
-    # def __init__(self, context, curlies, parens):
-        # '''Ctor for the Perl_ScanState class.'''
-        # self.context = context
-        # self.curlies = curlies
-        # self.parens = parens
         
     def __repr__(self):
         '''Perl_ScanState.__repr__'''

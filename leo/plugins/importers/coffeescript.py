@@ -306,10 +306,10 @@ class CS_Importer(Importer):
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
-    '''A class representing the state of the v2 scan.'''
+    '''A class representing the state of the coffeescript line-oriented scan.'''
     
     def __init__(self, d=None):
-        '''Ctor for the ScanState class, used by i.general_scan_line.'''
+        '''CS_ScanState ctor.'''
         if d:
             indent = d.get('indent')
             prev = d.get('prev') ### A g.Bunch, for now

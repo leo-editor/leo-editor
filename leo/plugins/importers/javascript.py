@@ -114,7 +114,7 @@ class JS_Importer(Importer):
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
-    '''A class representing the state of the v2 scan.'''
+    '''A class representing the state of the javascript line-oriented scan.'''
     
     def __init__(self, d=None):
         '''JS_ScanState ctor'''
@@ -128,7 +128,7 @@ class JS_ScanState:
             self.curlies = self.parens = 0
         
     def __repr__(self):
-        '''ScanState.__repr__'''
+        '''JS_ScanState.__repr__'''
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
             

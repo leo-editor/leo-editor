@@ -5,7 +5,6 @@ import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
-# ScanState = linescanner.ScanState
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
@@ -50,7 +49,7 @@ class TS_Importer(Importer):
     #@+node:ekr.20161118093751.3: *3* ts_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return TS_ScanState() ### ('', 0) ###
+        return TS_ScanState()
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -67,7 +66,7 @@ class TS_Importer(Importer):
     #@-others
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:
-    '''A class representing the state of the v2 scan.'''
+    '''A class representing the state of the typescript line-oriented scan.'''
     
     def __init__(self, d=None):
         '''TS_ScanState ctor.'''
@@ -78,12 +77,6 @@ class TS_ScanState:
         else:
             self.context = ''
             self.curlies = 0
-    
-    ###
-    # def __init__(self, context, curlies=0):
-        # '''TS_State ctor.'''
-        # self.context = context
-        # self.curlies = curlies
         
     #@+others
     #@+node:ekr.20161118071747.15: *3* ts_state.__repr__
