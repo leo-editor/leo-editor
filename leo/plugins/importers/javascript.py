@@ -19,33 +19,7 @@ class JS_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161011045426.1: *3* js_i.skip_possible_regex
-    def skip_possible_regex(self, s, i):
-        '''look ahead for a regex /'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(repr(s))
-        assert s[i] in '=(', repr(s[i])
-        i += 1
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                # g.trace(repr(ch))
-                if ch == '\\':
-                    i += 2
-                elif ch == '/':
-                    i += 1
-                    break
-                else:
-                    i += 1
-                assert progress < i
-        
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i-1
-    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (Rewrite, then remove)
+    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line & helper
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
@@ -87,13 +61,34 @@ class JS_Importer(Importer):
             i += 1
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        ### Not yet:
-        ### d = {'context':context, 'curlies':curlies, 'parens':parens}
-        new_state = JS_ScanState()
-        new_state.context = context
-        new_state.curlies = curlies
-        new_state.parens = parens
-        return new_state
+        d = {'context':context, 'curlies':curlies, 'parens':parens}
+        return JS_ScanState(d)
+    #@+node:ekr.20161011045426.1: *4* js_i.skip_possible_regex
+    def skip_possible_regex(self, s, i):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s))
+        assert s[i] in '=(', repr(s[i])
+        i += 1
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                # g.trace(repr(ch))
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i-1
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -115,10 +110,10 @@ class JS_ScanState:
     def __init__(self, d=None):
         '''JS_ScanState ctor'''
         if d:
-            prev = d.get('prev')
-            self.context = prev.context
-            self.curlies = prev.curlies
-            self.parens = prev.parens
+            # d is *different* from the dict created by i.v2_scan_line.
+            self.context = d.get('context')
+            self.curlies = d.get('curlies')
+            self.parens = d.get('parens')
         else:
             self.context = ''
             self.curlies = self.parens = 0
