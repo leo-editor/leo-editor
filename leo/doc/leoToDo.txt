@@ -7,6 +7,8 @@
 @language rest
 @wrap
 
+- Does pylint -a end properly??
+
 - Post: unit testing as you go along:
     - Use imp.reload to get the latest version of your code.
 
