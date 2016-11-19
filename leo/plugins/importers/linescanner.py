@@ -356,7 +356,7 @@ class Importer(object):
         trace = False and not g.unitTesting
         indent = self.get_int_lws(s)
         new_state = self.state_class(indent=indent, prev=prev_state, s=s)
-        new_state.indent = indent ### To be removed.
+        ### new_state.indent = indent ### To be removed.
         i = 0
         while i < len(s):
             progress = i

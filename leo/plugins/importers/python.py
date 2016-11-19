@@ -230,8 +230,7 @@ class Python_ScanState:
         if prev:
             assert indent is not None
             assert s is not None
-            if not prev.bs_nl:
-                self.indent = indent ### NOT prev.indent
+            self.indent = prev.indent if prev.bs_nl else indent
             self.context = prev.context
             self.curlies = prev.curlies
             self.parens = prev.parens
@@ -241,9 +240,6 @@ class Python_ScanState:
             self.context = ''
             self.curlies = self.parens = self.squares = 0
             self.indent = 0
-    
-    # Use the ScanState ctor.
-    # pylint: disable=super-init-not-called
 
     #@+others
     #@+node:ekr.20161114152246.1: *3* py_state.__repr__
