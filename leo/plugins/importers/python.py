@@ -66,7 +66,7 @@ class Py_Importer(Importer):
         )
         if trace: g.trace('created table for python state', repr(context))
         return table
-    #@+node:ekr.20161116034633.1: *3* py_i.v2_gen_lines & helpers
+    #@+node:ekr.20161116034633.1: *3* py_i.v2_gen_lines (To be removed)
     def v2_gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent,
@@ -91,7 +91,8 @@ class Py_Importer(Importer):
             else:
                 self.add_underindented_line(line, new_state, stack)
             prev_state = new_state
-    #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line
+    #@+node:ekr.20161119131508.1: *3* py_i.overrides of i.v2_gen_lines helpers
+    #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line (end_block)
     def add_underindented_line(self, line, new_state, stack):
         '''
         Handle an unusual case: an underindented tail line.
@@ -108,6 +109,9 @@ class Py_Importer(Importer):
         # Tricky: force section references for later class/def lines.
         if top.at_others_flag:
             top.gen_refs = True
+        return None
+        
+    end_block = add_underindented_line
     #@+node:ekr.20161116034633.2: *4* python_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -205,7 +209,7 @@ class Py_Importer(Importer):
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
-    #@+node:ekr.20161116040557.1: *4* python_i.starts_block
+    #@+node:ekr.20161116040557.1: *4* python_i.starts/continues_block
     starts_pattern = re.compile(r'\s*(class|def)')
         # Matches lines that apparently starts a class or def.
 
@@ -215,6 +219,10 @@ class Py_Importer(Importer):
             return False
         else:
             return bool(self.starts_pattern.match(line))
+            
+    def continues_block(self, line, new_state, prev_state):
+        '''True if the line continues the present block.'''
+        return new_state.level() >= prev_state.level()
     #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
     def findClass(self, p):
         '''

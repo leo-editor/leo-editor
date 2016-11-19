@@ -456,8 +456,9 @@ class Importer(object):
                 self.add_line(p, line)
             elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
-                self.start_new_block(line, new_state, stack)
+                self.start_new_block(line, new_state, prev_state, stack)
             elif self.continues_block(line, new_state, prev_state):
+            ### elif new_state.level() == prev_state.level():
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
@@ -480,8 +481,8 @@ class Importer(object):
             elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
-                ### This is the only difference between i.cut_stack and python/cs.cut_stack
-                #### stack.pop()
+                # This is the only difference between i.cut_stack and python/cs.cut_stack
+                # stack.pop()
                 break
             else:
                 # This happens often in valid Python programs.
@@ -519,7 +520,7 @@ class Importer(object):
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
     #@+node:ekr.20161108160409.6: *6* i.start_new_block
-    def start_new_block(self, line, new_state, stack):
+    def start_new_block(self, line, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
