@@ -170,6 +170,7 @@ class TextFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.__init__(self, c, gui)
         assert self.c == c
         self.top = None ###
+        self.ratio = self.secondary_ratio = 0.0
         ### self.title = title # Per leoFrame.__init__
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
     def createFirstTreeNode(self):
