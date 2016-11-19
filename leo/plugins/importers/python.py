@@ -84,7 +84,7 @@ class Py_Importer(Importer):
                 line, new_state, top))
             if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.starts_block(line, prev_state):
+            elif self.starts_block(line, prev_state): # Overridden method.
                 self.start_new_block(line, new_state, prev_state, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
@@ -118,11 +118,11 @@ class Py_Importer(Importer):
         assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
-            if new_state.indent < top_state.indent:
+            if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
                 assert len(stack) > 1, stack # <
                 stack.pop()
-            elif top_state.indent == new_state.indent:
+            elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
                 stack.pop()
@@ -273,6 +273,10 @@ class Python_ScanState:
             int(self.bs_nl))
 
     __str__ = __repr__
+    #@+node:ekr.20161119115700.1: *3* py_state.level
+    def level(self):
+        '''Python_ScanState.level.'''
+        return self.indent
     #@+node:ekr.20161116035849.1: *3* py_state.in_context
     def in_context(self):
         '''True if in a special context.'''
@@ -297,14 +301,6 @@ class Python_ScanState:
         self.squares += delta_s
         return i
 
-    #@+node:ekr.20161119042435.1: *3* py_state.v2.starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
     #@-others
 #@-others
 PythonScanner = Py_Importer # Used in Leo's core.

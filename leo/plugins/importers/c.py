@@ -62,32 +62,10 @@ class C_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161108223159.2: *3* c_state: comparisons
-    def __eq__(self, other):
-        '''True if this state continues the present block.'''
-        return self.context or self.curlies == other.curlies
-
-    def __lt__(self, other):
-        '''True if this state exits one or more blocks.'''
-        return not self.context and self.curlies < other.curlies
-            
-    def __gt__(self, other):
-        '''True if this state enters a new block.'''
-        return not self.context and self.curlies > other.curlies
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161108223159.3: *3* c_state: v2.starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
+    #@+node:ekr.20161119115315.1: *3* c_state.level
+    def level(self):
+        '''C_ScanState.level.'''
+        return self.curlies
     #@+node:ekr.20161118051111.1: *3* c_state.update
     def update(self, data):
         '''

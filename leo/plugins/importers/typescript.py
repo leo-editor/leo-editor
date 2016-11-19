@@ -81,24 +81,10 @@ class TS_ScanState:
         return '<TS_State %r curlies: %s>' % (self.context, self.curlies)
 
     __str__ = __repr__
-    #@+node:ekr.20161118071747.16: *3* ts_state.comparisons
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.curlies == other.curlies
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return self.curlies < other.curlies
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return self.curlies > other.curlies
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161119115736.1: *3* ts_state.level
+    def level(self):
+        '''TS_ScanState.level.'''
+        return self.curlies
     #@+node:ekr.20161118082821.1: *3* ts_state.is_ws_line
     ws_pattern = re.compile(r'^\s*$|^\s*#')
 
@@ -117,14 +103,6 @@ class TS_ScanState:
         self.curlies += delta_c  
         return i
 
-    #@+node:ekr.20161118071747.17: *3* ts_state.v2_starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned line continues the present block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
     #@-others
 #@-others
 importer_dict = {

@@ -126,40 +126,10 @@ class JS_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161105092745.3: *3* js_state: comparisons
-    # Curly brackets dominate parens for mixed comparisons.
-
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or (
-            self.curlies == other.curlies and
-            self.parens == other.parens)
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and (
-            self.curlies < other.curlies or
-            (self.curlies == other.curlies and self.parens < other.parens))
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and (
-            self.curlies > other.curlies or
-            (self.curlies == other.curlies and self.parens > other.parens))
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161105171502.1: *3* js_state: v2_starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
+    #@+node:ekr.20161119115505.1: *3* js_state.level
+    def level(self):
+        '''JS_ScanState.level.'''
+        return (self.curlies, self.parens)
     #@+node:ekr.20161119051049.1: *3* js_state.update
     def update(self, data):
         '''

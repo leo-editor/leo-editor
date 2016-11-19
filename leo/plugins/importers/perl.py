@@ -138,32 +138,10 @@ class Perl_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161105095705.2: *3* perl_state: comparisons
-    # Curly brackets dominate parens for mixed comparisons.
-
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or (
-            self.curlies == other.curlies and
-            self.parens == other.parens)
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and (
-            self.curlies < other.curlies or
-            (self.curlies == other.curlies and self.parens < other.parens))
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and (
-            self.curlies > other.curlies or
-            (self.curlies == other.curlies and self.parens > other.parens))
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161119115617.1: *3* perl_state.level
+    def level(self):
+        '''Perl_ScanState.level.'''
+        return (self.curlies, self.parens)
     #@+node:ekr.20161119050522.1: *3* perl_state.update
     def update(self, data):
         '''
@@ -178,14 +156,6 @@ class Perl_ScanState:
         # self.squares += delta_s
         return i
 
-    #@+node:ekr.20161105174820.1: *3* perl_state: v2.starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
     #@-others
 
 #@-others

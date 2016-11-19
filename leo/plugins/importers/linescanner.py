@@ -449,11 +449,15 @@ class Importer(object):
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
-            new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
-            if starts:
+            ### new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
+            new_state = self.gen_next_line(line, prev_state, tail_p)
+            if self.is_ws_line(line):
+                p = tail_p or stack[-1].p
+                self.add_line(p, line)
+            elif new_state.level() > prev_state.level(): ### starts:
                 tail_p = None
                 self.start_new_block(line, new_state, stack)
-            elif continues or self.is_ws_line(line):
+            elif new_state.level() == prev_state.level(): ### continues
                 p = tail_p or stack[-1].p
                 self.add_line(p, line)
             else:
@@ -469,13 +473,13 @@ class Importer(object):
         assert stack # Fail on entry.
         while stack:
             top_state = stack[-1].state
-            if new_state < top_state:
+            if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
                 if len(stack) == 1:
                     break
                 else:
                     stack.pop() 
-            elif top_state == new_state:
+            elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 break
             else:
@@ -506,14 +510,12 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         new_state = self.v2_scan_line(line, prev_state)
-        starts_block = new_state.v2_starts_block(prev_state)
-        continues_block = new_state.v2_continues_block(prev_state)
-        if trace:
-            g.trace('%r\n%s\nbs-nl: %5s starts: %5s continues: %5s tail: %s\n' % (
-                line, new_state,
-                getattr(new_state, 'bs_nl', '<no bs-nl attr>'),
-                starts_block, continues_block, tail_p and tail_p.h))
-        return new_state, starts_block, continues_block
+        ### starts_block = new_state.v2_starts_block(prev_state)
+        ### continues_block = new_state.v2_continues_block(prev_state)
+        if trace: g.trace('%r\n%s\nbs-nl: %5s tail: %s\n' % (
+            line, new_state, getattr(new_state, 'bs_nl', 'None'), tail_p and tail_p.h))
+        ### return new_state, starts_block, continues_block
+        return new_state
     #@+node:ekr.20161108160409.6: *6* i.start_new_block
     def start_new_block(self, line, new_state, stack):
         '''Create a child node and update the stack.'''
@@ -1087,27 +1089,10 @@ class ScanState:
         '''ScanState.__repr__'''
         return 'ScanState context: %r curlies: %s' % (
             self.context, self.curlies)
-    #@+node:ekr.20161108171914.2: *3* ScanState.comparisons
-    # These comparisions (in the base ScanState class) use only curly brackets.
-    # Subclasses can define comparisons that use indentation or other brackets.
-
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.curlies == other.curlies
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.curlies < other.curlies
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.curlies < other.curlies
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161119115215.1: *3* ScanState.level
+    def level(self):
+        '''ScanState.level.'''
+        return self.curlies
     #@+node:ekr.20161118043530.1: *3* ScanState.update
     def update(self, data):
         '''
@@ -1122,14 +1107,6 @@ class ScanState:
         self.squares += delta_s
         return i
 
-    #@+node:ekr.20161108171914.3: *3* ScanState.v2.starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned lines should be placed in the inner block.'''
-        return self == prev_state
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return self > prev_state
     #@-others
 #@+node:ekr.20161108155158.1: ** class Target
 class Target:

@@ -176,7 +176,7 @@ class CS_Importer(Importer):
                 line, new_state, top))
             if self.is_ws_line(line):
                 self.add_line(top.p, line)
-            elif self.starts_block(line, prev_state):
+            elif self.starts_block(line, prev_state): ### Overridden method.
                 self.start_new_block(line, new_state, stack)
             elif new_state.indent >= top.state.indent:
                 self.add_line(top.p, line)
@@ -210,11 +210,11 @@ class CS_Importer(Importer):
         assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
-            if new_state.indent < top_state.indent:
+            if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
                 assert len(stack) > 1, stack # <
                 stack.pop()
-            elif top_state.indent == new_state.indent:
+            elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
                 stack.pop()
@@ -302,24 +302,10 @@ class CS_ScanState:
             self.context, self.indent, int(self.starts), int(self.ws))
 
     __str__ = __repr__
-    #@+node:ekr.20161110045131.2: *3* cs_state.comparisons
-    def __eq__(self, other):
-        '''Return True if the state continues the previous state.'''
-        return self.context or self.indent == other.indent
-
-    def __lt__(self, other):
-        '''Return True if we should exit one or more blocks.'''
-        return not self.context and self.indent < other.indent
-
-    def __gt__(self, other):
-        '''Return True if we should enter a new block.'''
-        return not self.context and self.indent > other.indent
-
-    def __ne__(self, other): return not self.__eq__(other)
-
-    def __ge__(self, other): return self > other or self == other
-
-    def __le__(self, other): return self < other or self == other
+    #@+node:ekr.20161119115413.1: *3* cs_state.level
+    def level(self):
+        '''CS_ScanState.level.'''
+        return self.indent
     #@+node:ekr.20161118140100.1: *3* cs_state.in_context
     def in_context(self):
         '''True if in a special context.'''
@@ -344,19 +330,6 @@ class CS_ScanState:
         # self.squares += delta_s
         return i
 
-    #@+node:ekr.20161110045131.3: *3* cs_state.v2_starts/continues_block
-    def v2_continues_block(self, prev_state):
-        '''Return True if the just-scanned line continues the present block.'''
-        if prev_state.starts:
-            # The first line *after* the class or def *is* in the block.
-            prev_state.starts = False
-            return True
-        else:
-            return self == prev_state or self.ws
-
-    def v2_starts_block(self, prev_state):
-        '''Return True if the just-scanned line starts an inner block.'''
-        return not self.context and self.starts and self >= prev_state
     #@-others
 #@-others
 importer_dict = {
