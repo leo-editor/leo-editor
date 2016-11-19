@@ -58,10 +58,6 @@ class CS_Importer(Importer):
         )
         if trace: g.trace('created table for coffescript state', repr(context))
         return table
-    #@+node:ekr.20161110044000.2: *3* coffee.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return CS_ScanState()
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -196,7 +192,7 @@ class CS_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = self.initial_state()
+        prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)

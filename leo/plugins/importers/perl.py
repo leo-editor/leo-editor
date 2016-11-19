@@ -49,10 +49,6 @@ class Perl_Importer(Importer):
                         while lines and lines[-1].strip().startswith('#'):
                             next.b = lines.pop() + next.b
                         p.b = ''.join(lines)
-    #@+node:ekr.20161104150004.1: *3* perl_i.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return Perl_ScanState()
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''

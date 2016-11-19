@@ -46,10 +46,6 @@ class TS_Importer(Importer):
         
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
-    #@+node:ekr.20161118093751.3: *3* ts_i.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        return TS_ScanState()
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''

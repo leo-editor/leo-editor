@@ -34,10 +34,6 @@ class Py_Importer(Importer):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
-    #@+node:ekr.20161119041146.1: *3* py_i.initial_state
-    def initial_state(self):
-        '''Py_Importer.initial_state.'''
-        return Python_ScanState()
     #@+node:ekr.20161113082348.1: *3* py_i.get_new_table
     #@@nobeautify
 
@@ -77,7 +73,7 @@ class Py_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = self.initial_state()
+        prev_state = self.state_class()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
@@ -284,6 +280,7 @@ class Python_ScanState:
         return self > prev_state
     #@-others
 #@-others
+PythonScanner = Py_Importer # Used in Leo's core.
 importer_dict = {
     'class': Py_Importer,
     'extensions': ['.py', '.pyw', '.pyi'],

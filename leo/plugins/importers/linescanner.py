@@ -34,8 +34,6 @@ complex details. Typical importer subclass will override the following methods:
   
 - `i.clean_headline`: Massage the definition line so it looks good in a headline.
 
-- `initial_state`: Sets the initial state for `i.v2_gen_lines`.
-
 **Writing a new importer**
 
 Do the following:
@@ -339,10 +337,6 @@ class Importer(object):
             table = self.get_new_table(context)
             self.cached_scan_tables[key] = table
             return table
-    #@+node:ekr.20161108155143.6: *4* i.initial_state
-    def initial_state(self):
-        '''Return the initial counts.'''
-        assert False, 'Importer.initial_state: to be over-ridden by subclasses.'
     #@+node:ekr.20161108170435.1: *4* i.v2_scan_line (generalized)
     def v2_scan_line(self, s, prev_state):
         '''
@@ -447,10 +441,9 @@ class Importer(object):
         nodes as needed.
         '''
         tail_p = None
-        prev_state = self.initial_state()
+        prev_state = self.state_class() ### self.initial_state()
         stack = [Target(parent, prev_state)]
         self.inject_lines_ivar(parent)
-        # if g.unitTesting: g.pdb()
         for line in g.splitLines(s):
             new_state, starts, continues = self.gen_next_line(line, prev_state, tail_p)
             if starts:
