@@ -50,7 +50,7 @@ class TS_Importer(Importer):
     #@+node:ekr.20161118093751.3: *3* ts_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return TS_ScanState('', 0) ###
+        return TS_ScanState() ### ('', 0) ###
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -69,15 +69,17 @@ class TS_Importer(Importer):
 class TS_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, indent=None, prev=None, s=None):
+    def __init__(self, d=None):
         '''TS_ScanState ctor.'''
-        if prev:
+        if d:
+            prev = d.get('prev')
             self.context = prev.context
             self.curlies = prev.curlies
         else:
             self.context = ''
             self.curlies = 0
     
+    ###
     # def __init__(self, context, curlies=0):
         # '''TS_State ctor.'''
         # self.context = context

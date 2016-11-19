@@ -355,8 +355,9 @@ class Importer(object):
         '''
         trace = False and not g.unitTesting
         indent = self.get_int_lws(s)
-        new_state = self.state_class(indent=indent, prev=prev_state, s=s)
-        ### new_state.indent = indent ### To be removed.
+        d = {'indent':indent, 'prev':prev_state, 's':s}
+            # This allows new data to be added without changing ScanState signatures.
+        new_state = self.state_class(d)
         i = 0
         while i < len(s):
             progress = i
@@ -1068,7 +1069,7 @@ class Importer(object):
                 result.append(s)
         return ''.join(result)
     #@-others
-#@+node:ekr.20161108171914.1: ** class ScanState
+#@+node:ekr.20161108171914.1: ** class ScanState (Revise)
 class ScanState:
     '''
     The base class for classes representing the state of the line-oriented

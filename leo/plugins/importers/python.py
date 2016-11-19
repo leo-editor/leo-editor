@@ -78,7 +78,7 @@ class Py_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = self.initial_state() ### Python_ScanState() ###
+        prev_state = self.initial_state()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
@@ -225,11 +225,11 @@ class Py_Importer(Importer):
 class Python_ScanState:
     '''A class representing the state of the line-oriented scan.'''
     
-    def __init__(self, indent=None, prev=None, s=None):
+    def __init__(self, d=None):
         '''Python_ScanState ctor.'''
-        if prev:
-            assert indent is not None
-            assert s is not None
+        if d:
+            indent = d.get('indent')
+            prev = d.get('prev')
             self.indent = prev.indent if prev.bs_nl else indent
             self.context = prev.context
             self.curlies = prev.curlies

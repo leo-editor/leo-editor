@@ -47,18 +47,15 @@ class C_Importer(Importer):
 class C_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, indent=0, prev=None, s=None):
+    def __init__(self, d=None):
         '''C_ScanSate ctor'''
-        if prev:
-            assert indent is not None
-            assert s is not None
+        if d:
+            prev = d.get('prev')
             self.context = prev.context
             self.curlies = prev.curlies
         else:
             self.context = ''
             self.curlies = 0
-        # self.context = context
-        # self.curlies = curlies
 
     def __repr__(self):
         '''C_ScanState.__repr__'''

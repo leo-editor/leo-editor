@@ -202,7 +202,7 @@ class CS_Importer(Importer):
         creating descendant nodes as needed.
         '''
         trace = False and g.unitTesting
-        prev_state = self.initial_state() ### CS_ScanState('', 0) ###
+        prev_state = self.initial_state()
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
@@ -314,22 +314,20 @@ class CS_Importer(Importer):
         return False
      
     #@-others
-#@+node:ekr.20161110045131.1: ** class CS_ScanState
+#@+node:ekr.20161110045131.1: ** class CS_ScanState (Revise)
 class CS_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    if new:
+    if new: ### Not yet.
         
-        def __init__(self, indent=None, prev=None, s=None):
+        def __init__(self, d=None):
             '''Ctor for the ScanState class, used by i.general_scan_line.'''
-            if prev:
-                assert indent is not None
-                assert s is not None
-                self.indent = indent ### NOT prev.indent
+            if d:
+                ### To do: compute self.ws from s?
+                indent = d.get('indent')
+                prev = d.get('prev')
+                self.indent = prev.indent if prev.bs_nl else indent
                 self.context = prev.context
-                self.curlies = prev.curlies
-                self.parens = prev.parens
-                self.squares = prev.square
             else:
                 self.bs_nl = False
                 self.context = ''

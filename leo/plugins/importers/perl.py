@@ -52,7 +52,7 @@ class Perl_Importer(Importer):
     #@+node:ekr.20161104150004.1: *3* perl_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return Perl_ScanState('', 0, 0)
+        return Perl_ScanState() ### '', 0, 0)
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
@@ -77,27 +77,27 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_table
+    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_new_table
     ### To do: delete this.
 
-    def v2_scan_line(self, s, prev_state):
-        '''Update the scan state by scanning s.'''
-        trace = False and not g.unitTesting
-        context = prev_state.context
-        curlies, parens = prev_state.curlies, prev_state.parens
-        i = 0
-        while i < len(s):
-            progress = i
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
-            ### Or: new_state.update(date)
-            context, i, delta_c, delta_p, delta_s, bs_nl = data
-            curlies += delta_c
-            parens += delta_p
-            assert progress < i, (i, repr(s))
-        if trace:
-            g.trace(self, s.rstrip())
-        return Perl_ScanState(context, curlies, parens)
+    # def v2_scan_line(self, s, prev_state):
+        # '''Update the scan state by scanning s.'''
+        # trace = False and not g.unitTesting
+        # context = prev_state.context
+        # curlies, parens = prev_state.curlies, prev_state.parens
+        # i = 0
+        # while i < len(s):
+            # progress = i
+            # table = self.get_table(context)
+            # data = self.scan_table(context, i, s, table)
+            # ### Or: new_state.update(date)
+            # context, i, delta_c, delta_p, delta_s, bs_nl = data
+            # curlies += delta_c
+            # parens += delta_p
+            # assert progress < i, (i, repr(s))
+        # if trace:
+            # g.trace(self, s.rstrip())
+        # return Perl_ScanState(context, curlies, parens)
     #@+node:ekr.20161113140420.1: *4* perl_i.get_new_table
     #@@nobeautify
 
@@ -144,11 +144,23 @@ class Perl_Importer(Importer):
 class Perl_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, context, curlies, parens):
+    def __init__(self, d=None):
         '''Ctor for the Perl_ScanState class.'''
-        self.context = context
-        self.curlies = curlies
-        self.parens = parens
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            self.curlies = prev.curlies
+            self.parens = prev.parens
+        else:
+            self.context = ''
+            self.curlies = self.parens = 0
+
+    ###
+    # def __init__(self, context, curlies, parens):
+        # '''Ctor for the Perl_ScanState class.'''
+        # self.context = context
+        # self.curlies = curlies
+        # self.parens = parens
         
     def __repr__(self):
         '''Perl_ScanState.__repr__'''
@@ -158,7 +170,7 @@ class Perl_ScanState:
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20161105095705.2: *3* Perl_ScanState: comparisons
+    #@+node:ekr.20161105095705.2: *3* perl_state: comparisons
     # Curly brackets dominate parens for mixed comparisons.
 
     def __eq__(self, other):
@@ -184,7 +196,21 @@ class Perl_ScanState:
     def __ge__(self, other): return self > other or self == other
 
     def __le__(self, other): return self < other or self == other
-    #@+node:ekr.20161105174820.1: *3* Perl_ScanState: v2.starts/continues_block
+    #@+node:ekr.20161119050522.1: *3* perl_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        # self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        self.parens += delta_p
+        # self.squares += delta_s
+        return i
+
+    #@+node:ekr.20161105174820.1: *3* perl_state: v2.starts/continues_block
     def v2_continues_block(self, prev_state):
         '''Return True if the just-scanned lines should be placed in the inner block.'''
         return self == prev_state

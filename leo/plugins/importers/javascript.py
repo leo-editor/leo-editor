@@ -48,7 +48,7 @@ class JS_Importer(Importer):
     #@+node:ekr.20161104145705.1: *3* js_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return JS_ScanState('', 0, 0)
+        return JS_ScanState() ### ('', 0, 0)
     #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (To do: rewrite)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
@@ -91,7 +91,14 @@ class JS_Importer(Importer):
             i += 1
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        return JS_ScanState(context, curlies, parens)
+        ### return JS_ScanState(context, curlies, parens)
+        ### Not yet:
+        ### d = {'context':context, 'curlies':curlies, 'parens':parens}
+        new_state = JS_ScanState()
+        new_state.context = context
+        new_state.curlies = curlies
+        new_state.parens = parens
+        return new_state
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
@@ -110,11 +117,23 @@ class JS_Importer(Importer):
 class JS_ScanState:
     '''A class representing the state of the v2 scan.'''
     
-    def __init__(self, context, curlies, parens):
-        '''Ctor for the JavaScriptScanState class.'''
-        self.context = context
-        self.curlies = curlies
-        self.parens = parens
+    def __init__(self, d=None):
+        '''JS_ScanState ctor'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            self.curlies = prev.curlies
+            self.parens = prev.parens
+        else:
+            self.context = ''
+            self.curlies = self.parens = 0
+    
+    ###
+    # def __init__(self, context, curlies, parens):
+        # '''Ctor for the JavaScriptScanState class.'''
+        # self.context = context
+        # self.curlies = curlies
+        # self.parens = parens
         
     def __repr__(self):
         '''ScanState.__repr__'''
@@ -158,6 +177,20 @@ class JS_ScanState:
     def v2_starts_block(self, prev_state):
         '''Return True if the just-scanned line starts an inner block.'''
         return self > prev_state
+    #@+node:ekr.20161119051049.1: *3* js_state.update
+    def update(self, data):
+        '''
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        # self.bs_nl = bs_nl
+        self.context = context
+        self.curlies += delta_c  
+        self.parens += delta_p
+        # self.squares += delta_s
+        return i
+
     #@-others
 
 #@-others
