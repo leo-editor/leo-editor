@@ -58,6 +58,98 @@ class CS_Importer(Importer):
         )
         if trace: g.trace('created table for coffescript state', repr(context))
         return table
+    #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.v2_gen_lines
+    #@+node:ekr.20161118134555.2: *4* coffee_i.add_underindented_line (Same as Python)
+    def add_underindented_line(self, line, new_state, stack):
+        '''
+        Handle an unusual case: an underindented tail line.
+        
+        line is **not** a class/def line. It *is* underindented so it
+        *terminates* the previous block.
+        '''
+        top = stack[-1]
+        assert new_state.indent < top.state.indent, (new_state, top.state)
+        self.cut_stack(new_state, stack)
+        top = stack[-1]
+        self.add_line(top.p, line)
+        # Tricky: force section references for later class/def lines.
+        if top.at_others_flag:
+            top.gen_refs = True
+        tail_p = None if self.gen_refs else top.p
+        return tail_p
+
+    end_block = add_underindented_line
+    #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
+    def cut_stack(self, new_state, stack):
+        '''Cut back the stack until stack[-1] matches new_state.'''
+        trace = False and g.unitTesting
+        if trace:
+            g.trace(new_state)
+            g.printList(stack)
+        assert len(stack) > 1 # Fail on entry.
+        while stack:
+            top_state = stack[-1].state
+            if new_state.level() < top_state.level():
+                if trace: g.trace('new_state < top_state', top_state)
+                assert len(stack) > 1, stack # <
+                stack.pop()
+            elif top_state.level() == new_state.level():
+                if trace: g.trace('new_state == top_state', top_state)
+                assert len(stack) > 1, stack # ==
+                stack.pop()
+                break
+            else:
+                # This happens often in valid coffescript programs.
+                if trace: g.trace('new_state > top_state', top_state)
+                break
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
+        if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
+    def start_new_block(self, line, new_state, prev_state, stack):
+        '''Create a child node and update the stack.'''
+        trace = False and g.unitTesting
+        assert not new_state.in_context(), new_state
+        top = stack[-1]
+        if trace:
+            g.trace('line', repr(line))
+            g.trace('top_state', top.state)
+            g.trace('new_state', new_state)
+            g.printList(stack)
+        # Adjust the stack.
+        if new_state.indent > top.state.indent:
+            pass
+        elif new_state.indent == top.state.indent:
+            stack.pop()
+        else:
+            self.cut_stack(new_state, stack)
+        # Create the child.
+        top = stack[-1]
+        parent = top.p
+        self.gen_refs = top.gen_refs
+        h = self.v2_gen_ref(line, parent, top)
+        child = self.v2_create_child_node(parent, line, h)
+        stack.append(Target(child, new_state))
+    #@+node:ekr.20161118134555.7: *4* coffee_i.starts_block
+    pattern_table = [
+        re.compile(r'^\s*class'),
+        re.compile(r'^\s*(.+):(.*)->'),
+        re.compile(r'^\s*(.+)=(.*)->'),
+    ]
+
+    def starts_block(self, line, new_state, prev_state):
+        '''True if the line starts with the patterns above outside any context.'''
+        if prev_state.in_context():
+            return False
+        for pattern in self.pattern_table:
+            if pattern.match(line):
+                # g.trace('='*10, repr(line))
+                return True
+        return False
+     
     #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -158,120 +250,6 @@ class CS_Importer(Importer):
         return result
 
 
-    #@+node:ekr.20161118134555.1: *3* coffee_i.v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
-        '''
-        Non-recursively parse all lines of s into parent,
-        creating descendant nodes as needed.
-        '''
-        trace = False and g.unitTesting
-        prev_state = self.state_class()
-        target = Target(parent, prev_state)
-        stack = [target, target]
-        self.inject_lines_ivar(parent)
-        for line in g.splitLines(s):
-            new_state = self.v2_scan_line(line, prev_state)
-            top = stack[-1]
-            if trace: g.trace('(CS_Importer) line: %r\nnew_state: %s\ntop: %s' % (
-                line, new_state, top))
-            if self.is_ws_line(line):
-                self.add_line(top.p, line)
-            elif self.starts_block(line, new_state, prev_state):
-                self.start_new_block(line, new_state, stack)
-            elif new_state.level() >= top.state.level():
-                self.add_line(top.p, line)
-            else:
-                self.add_underindented_line(line, new_state, stack)
-            prev_state = new_state
-    #@+node:ekr.20161118134555.2: *4* coffee_i.add_underindented_line (Same as Python)
-    def add_underindented_line(self, line, new_state, stack):
-        '''
-        Handle an unusual case: an underindented tail line.
-        
-        line is **not** a class/def line. It *is* underindented so it
-        *terminates* the previous block.
-        '''
-        top = stack[-1]
-        assert new_state.indent < top.state.indent, (new_state, top.state)
-        # g.trace('='*20, '%s\nline: %r' % (g.shortFileName(self.root.h), repr(line)))
-        self.cut_stack(new_state, stack)
-        top = stack[-1]
-        self.add_line(top.p, line)
-        # Tricky: force section references for later class/def lines.
-        if top.at_others_flag:
-            top.gen_refs = True
-    #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
-    def cut_stack(self, new_state, stack):
-        '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and g.unitTesting
-        if trace:
-            g.trace(new_state)
-            g.printList(stack)
-        assert len(stack) > 1 # Fail on entry.
-        while stack:
-            top_state = stack[-1].state
-            if new_state.level() < top_state.level():
-                if trace: g.trace('new_state < top_state', top_state)
-                assert len(stack) > 1, stack # <
-                stack.pop()
-            elif top_state.level() == new_state.level():
-                if trace: g.trace('new_state == top_state', top_state)
-                assert len(stack) > 1, stack # ==
-                stack.pop()
-                break
-            else:
-                # This happens often in valid coffescript programs.
-                if trace: g.trace('new_state > top_state', top_state)
-                break
-        # Restore the guard entry if necessary.
-        if len(stack) == 1:
-            if trace: g.trace('RECOPY:', stack)
-            stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
-        if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
-    def start_new_block(self, line, new_state, stack):
-        '''Create a child node and update the stack.'''
-        # pylint: disable=arguments-differ
-        trace = False and g.unitTesting
-        assert not new_state.in_context(), new_state
-        top = stack[-1]
-        if trace:
-            g.trace('line', repr(line))
-            g.trace('top_state', top.state)
-            g.trace('new_state', new_state)
-            g.printList(stack)
-        # Adjust the stack.
-        if new_state.indent > top.state.indent:
-            pass
-        elif new_state.indent == top.state.indent:
-            stack.pop()
-        else:
-            self.cut_stack(new_state, stack)
-        # Create the child.
-        top = stack[-1]
-        parent = top.p
-        self.gen_refs = top.gen_refs
-        h = self.v2_gen_ref(line, parent, top)
-        child = self.v2_create_child_node(parent, line, h)
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161118134555.7: *4* coffee_i.starts_block
-    pattern_table = [
-        re.compile(r'^\s*class'),
-        re.compile(r'^\s*(.+):(.*)->'),
-        re.compile(r'^\s*(.+)=(.*)->'),
-    ]
-
-    def starts_block(self, line, new_state, prev_state):
-        '''True if the line starts with the patterns above outside any context.'''
-        if prev_state.in_context():
-            return False
-        for pattern in self.pattern_table:
-            if pattern.match(line):
-                # g.trace('='*10, repr(line))
-                return True
-        return False
-     
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
