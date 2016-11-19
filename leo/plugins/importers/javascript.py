@@ -48,7 +48,7 @@ class JS_Importer(Importer):
     #@+node:ekr.20161104145705.1: *3* js_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return JS_ScanState() ### ('', 0, 0)
+        return JS_ScanState()
     #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line (To do: rewrite)
     def v2_scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
@@ -91,7 +91,6 @@ class JS_Importer(Importer):
             i += 1
             assert progress < i
         if trace: g.trace(self, s.rstrip())
-        ### return JS_ScanState(context, curlies, parens)
         ### Not yet:
         ### d = {'context':context, 'curlies':curlies, 'parens':parens}
         new_state = JS_ScanState()
@@ -127,13 +126,6 @@ class JS_ScanState:
         else:
             self.context = ''
             self.curlies = self.parens = 0
-    
-    ###
-    # def __init__(self, context, curlies, parens):
-        # '''Ctor for the JavaScriptScanState class.'''
-        # self.context = context
-        # self.curlies = curlies
-        # self.parens = parens
         
     def __repr__(self):
         '''ScanState.__repr__'''

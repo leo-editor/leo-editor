@@ -52,7 +52,7 @@ class Perl_Importer(Importer):
     #@+node:ekr.20161104150004.1: *3* perl_i.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return Perl_ScanState() ### '', 0, 0)
+        return Perl_ScanState()
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
@@ -77,28 +77,7 @@ class Perl_Importer(Importer):
                 assert progress < i
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i
-    #@+node:ekr.20161105140842.2: *3* perl_i.v2_scan_line & get_new_table
-    ### To do: delete this.
-
-    # def v2_scan_line(self, s, prev_state):
-        # '''Update the scan state by scanning s.'''
-        # trace = False and not g.unitTesting
-        # context = prev_state.context
-        # curlies, parens = prev_state.curlies, prev_state.parens
-        # i = 0
-        # while i < len(s):
-            # progress = i
-            # table = self.get_table(context)
-            # data = self.scan_table(context, i, s, table)
-            # ### Or: new_state.update(date)
-            # context, i, delta_c, delta_p, delta_s, bs_nl = data
-            # curlies += delta_c
-            # parens += delta_p
-            # assert progress < i, (i, repr(s))
-        # if trace:
-            # g.trace(self, s.rstrip())
-        # return Perl_ScanState(context, curlies, parens)
-    #@+node:ekr.20161113140420.1: *4* perl_i.get_new_table
+    #@+node:ekr.20161113140420.1: *3* perl_i.get_new_table
     #@@nobeautify
 
     def get_new_table(self, context):

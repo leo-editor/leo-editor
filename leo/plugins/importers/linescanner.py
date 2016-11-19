@@ -932,8 +932,7 @@ class Importer(object):
     #@+node:ekr.20161108155143.3: *4* i.get_int_lws
     def get_int_lws(self, s):
         '''Return the the lws (a number) of line s.'''
-        ### This assert is WRONG. self.tab_width is computed using self.root.
-        ### assert self.tab_width == self.c.tab_width, (self.tab_width, self.c.tab_width)
+        # Important: use self.tab_width, *not* c.tab_width.
         return g.computeLeadingWhitespaceWidth(s, self.tab_width)
     #@+node:ekr.20161109053143.1: *4* i.get_leading_indent
     def get_leading_indent(self, lines, i, ignoreComments=True):
@@ -1076,12 +1075,12 @@ class ScanState:
     scan.
     '''
     
-    def __init__(self, indent=None, prev=None, s=None):
+    def __init__(self, indent=None, prev=None, s=None): ###
         '''Ctor for the ScanState class, used by i.general_scan_line.'''
         if prev:
             assert indent is not None
             assert s is not None
-            self.indent = indent ### NOT prev.indent
+            self.indent = indent # NOT prev.indent
             self.bs_nl = prev.bs_nl
             self.context = prev.context
             self.curlies = prev.curlies

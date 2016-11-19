@@ -61,7 +61,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20161110044000.2: *3* coffee.initial_state
     def initial_state(self):
         '''Return the initial counts.'''
-        return CS_ScanState() ### ('', 0)
+        return CS_ScanState()
     #@+node:ekr.20161108181857.1: *3* coffee.post_pass & helpers (revise)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -168,7 +168,6 @@ class CS_Importer(Importer):
         trace = False and not g.unitTesting
         context, indent = prev_state.context, prev_state.indent
         was_bs_nl = context == 'bs-nl'
-        starts = None ### Not used. ### self.starts_def(s)
         ws = self.is_ws_line(s) and not was_bs_nl
         if was_bs_nl:
             context = '' # Don't change indent.
@@ -187,7 +186,7 @@ class CS_Importer(Importer):
         ### Temporary hack...
         prev_state = g.Bunch(
             bs_nl=was_bs_nl, context=context,
-            indent=indent, starts=starts, ws=ws)
+            indent=indent, starts=None, ws=ws)
         d = {'prev': prev_state, 'indent':indent, 's':s}
         return CS_ScanState(d)
     #@+node:ekr.20161118134555.1: *3* COFFEE.v2_gen_lines & helpers
@@ -268,7 +267,6 @@ class CS_Importer(Importer):
         trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
         top = stack[-1]
-        ### prev_p = top.p.copy()
         if trace:
             g.trace('line', repr(line))
             g.trace('top_state', top.state)
@@ -288,9 +286,6 @@ class CS_Importer(Importer):
         h = self.v2_gen_ref(line, parent, top)
         child = self.v2_create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
-        # Handle previous decorators.
-        ### new_p = stack[-1].p.copy()
-        ### self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161118134555.7: *4* COFFEE.starts_block
     pattern_table = [
         re.compile(r'^\s*class'),
@@ -309,14 +304,13 @@ class CS_Importer(Importer):
         return False
      
     #@-others
-#@+node:ekr.20161110045131.1: ** class CS_ScanState (Revise)
+#@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
     '''A class representing the state of the v2 scan.'''
     
     def __init__(self, d=None):
         '''Ctor for the ScanState class, used by i.general_scan_line.'''
         if d:
-            ### To do: compute self.ws from s?
             indent = d.get('indent')
             prev = d.get('prev') ### A g.Bunch, for now
             self.bs_nl = prev.bs_nl
@@ -328,15 +322,6 @@ class CS_ScanState:
             self.context = ''
             self.indent = 0
             self.starts = self.ws = False
-
-    # def __init__(self, context, indent, starts=False, ws=False):
-        # '''CS_State ctor.'''
-        # assert isinstance(indent, int), (repr(indent), g.callers())
-        # self.bs_nl = False ### New ###
-        # self.context = context
-        # self.indent = indent
-        # self.starts = starts
-        # self.ws = ws # whitespace line, possibly ending in a comment.
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
@@ -369,7 +354,6 @@ class CS_ScanState:
         '''True if in a special context.'''
         return (
             self.context or
-            ###
             # self.curlies > 0 or
             # self.parens > 0 or
             # self.squares > 0 or
