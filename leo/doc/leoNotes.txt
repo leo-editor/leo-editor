@@ -30117,6 +30117,21 @@ def scan_block(self, i, lines):
         for line in result:
             print(line.rstrip())
     return i, result
+.. @+node:ekr.20161120132310.1: *3* old, buggy, undoable make-md-heads
+c.undoer.beforeChangeGroup(p, 'make-all-md-heads', verboseUndoGroup=True)
+any_changed = False
+for root in c.all_unique_roots(predicate):
+    print(root.h)
+    bunch = c.undoer.beforeChangeTree(root)
+    changed = False
+    for p in root.self_and_subtree():
+        changed2 = markup(p, root)
+        changed = changed or changed2
+        any_changed = any_changed or changed
+    if changed:
+        c.undoer.afterChangeTree(root, 'make-md-heads', bunch)
+if any_changed:
+    c.undoer.afterChangeGroup(c.rootPosition(), 'make-all-md-heads')
 .. @-all
 .. @@nosearch
 .. @-leo
