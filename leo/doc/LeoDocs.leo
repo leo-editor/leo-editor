@@ -19382,10 +19382,13 @@ importer for a new language.
 
 @others
 @language md
+
 </t>
 <t tx="ekr.20161120073756.1">## Overview
 
-This is the overview.</t>
+This is the overview.
+
+</t>
 <t tx="ekr.20161120074501.1">'''Create markdown headers throughout the nearest .md outline.'''
 g.cls()
 import re
@@ -19428,7 +19431,7 @@ def markup(p, root):
         g.es_print('changed: %s' % (p.h))
         p.setDirty()
         c.setChanged(True)
-        p.b = ''.join(lines)
+        p.b = s
 </t>
 <t tx="ekr.20161120081854.1">### Node 2 header
 
@@ -19516,6 +19519,7 @@ f()
 There is no way that `i.is_ws_line` can determine that is a valid is part of a docstring.
 
 **Aha**: Indentation mostly doesn't matter in python!! Python blocks begin if and only if a line begins with class or def outside of any context (string, docstring or comment).
+
 </t>
 <t tx="ekr.20161120164818.1">### The Importer class *is* a pipeline
 
@@ -19575,7 +19579,9 @@ The Importer class is organized as pipeline:
 - Stage 2 post-processes the nodes in several sub-stages.
 - Stage 3 finishes up in a language independent way.
 
-Subclasses of the Importer class may further customize the importers by overriding severa short methods.</t>
+Subclasses of the Importer class may further customize the importers by overriding severa short methods.
+
+</t>
 <t tx="ekr.20161120164900.1">### Importer API for setting body text
 
 As of 6dbeb6a, all code in stages 1, 2 and 3 must use the following API to change body text. It is easier, faster than setting p.b to strings. And it stresses the GC much less.
@@ -19606,6 +19612,7 @@ def set_lines(self, p, lines):
 ```
 
 The actual code uses `p.v._import_lines` explicitly rather than using the get_lines or set_lines methods. It's clearer, imo.
+
 </t>
 <t tx="ekr.20161120164930.1">### Almost all importers will work the same way
 
@@ -19614,6 +19621,7 @@ After the old importer classes are retired, almost all importers will be subclas
 **json.py, and .ipynb.py** In both cases, the incoming text is a json dict, so normal import code is out of the question.
 
 **ctext.py** The importer is very simple. It doesn't need to be a subclass of Importer.
+
 </t>
 <t tx="ekr.20161120165011.1">### Most scan_line methods are table-driven
 
@@ -19655,7 +19663,9 @@ def v2_scan_line(self, s, prev_state):
         assert progress &lt; i
     return new_state
 ```
-The tables returned by `i.get_table` describe scanning much more clearly than the blah-blah-blah of code.</t>
+The tables returned by `i.get_table` describe scanning much more clearly than the blah-blah-blah of code.
+
+</t>
 <t tx="ekr.20161120165052.1">### Python *does* need to handle all kinds of brackets
 
 I'm not sure that the present python code can be made to work without understanding the nesting levels of parens, curly-brackets and square-brackets. Consider this code from @test python comment after dict assign:
@@ -19671,6 +19681,7 @@ tabLevels = 4
 This is valid code, no matter what kind of indentation is used in the dict.
 
 To handle this, `i.scan_table` now keeps of brackets for all languages.
+
 </t>
 <t tx="ekr.20161120165207.1">### i.scan_table
 
@@ -19710,20 +19721,20 @@ def scan_table(self, context, i, s, table):
                 return new_context, i, delta_c, delta_p, delta_s, bs_nl
     # No match: stay in present state. All deltas are zero.
     return context, i+1, 0, 0, 0, False
-```</t>
+```
+
+</t>
 <t tx="ekr.20161120165244.1">### state.level()
 
 ScanState classes all define a state.level() method that returns either an int or a tuple of ints. This allows comparisons such as the following for *all* languages:
 ```python
 if new_state.level() &gt; prev_state.level():
-    # enter new blockgs
+    # enter new block.
 ```
 
 There are several special cases, however.
 
-**1: pattern matching**
-
-Languages that use a regex pattern to determine whether a line starts a block must take care. x.starts_block must fail if prev_state.context is non-empty. In that case, the next line is in a comment or string. Here is a python example:
+**Pattern matching** Languages that use a regex pattern to determine whether a line starts a block must take care. x.starts_block must fail if prev_state.context is non-empty. In that case, the next line is in a comment or string. Here is a python example:
 ```python
 s = r'''
 def spam():
@@ -19733,12 +19744,13 @@ def spam():
 
 And similarly for coffeescript.
 
-At present, the C-language importer only counts curly brackets, but this can lead to a strange assignment of lines to block in cases such as:
+**Missing function signature lines** At present, the C-language importer only counts curly brackets, but this can lead to a strange assignment of lines to block in cases such as:
 ```c
 static void foo(bar)
 {}
 ```
 The block associated with foo will consist only of the line {}, with an unhelpful headline. The perfect import check will succeed, but the post-pass should move the int foo(bar) line into the next block. Theoretically, the post-pass should be aware of comments that intervene between the two lines given above, but in practice we can ignore such bizarre cases, because the file will still import correctly.
+
 </t>
 <t tx="ekr.20161120165336.1">### A subtle detail about comparisons.
 
@@ -19793,7 +19805,9 @@ Yes, it would be possible to define `Python_ScanState.update` so that it preserv
 
 Summary
 
-It's unlikely that the code discussed here will ever have to change. Still, it's important for future maintainers to understand something that caused me hours of confusion.</t>
+It's unlikely that the code discussed here will ever have to change. Still, it's important for future maintainers to understand something that caused me hours of confusion.
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
