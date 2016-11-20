@@ -19424,7 +19424,7 @@ def markup(p, root):
     # Ensure a blank line, so as not to interfere with later headers.
     s = ''.join(lines).rstrip()+'\n\n'
     if p.b != s:
-        print('changed: %s' % (p.h))
+        g.es_print('changed: %s' % (p.h))
         p.setDirty()
         c.setChanged(True)
         p.b = ''.join(lines)
@@ -19543,7 +19543,6 @@ def post_pass(self, parent):
     # This probably should be the last sub-pass.
     self.delete_all_empty_nodes(parent)
 ```
-
 Subclasses may override i.post_pass for complete control over post processing.
 
 **Stage 3: i.finish**

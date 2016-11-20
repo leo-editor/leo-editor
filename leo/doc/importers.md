@@ -145,7 +145,6 @@ def post_pass(self, parent):
     # This probably should be the last sub-pass.
     self.delete_all_empty_nodes(parent)
 ```
-
 Subclasses may override i.post_pass for complete control over post processing.
 
 **Stage 3: i.finish**
