@@ -6229,6 +6229,41 @@ class Commands(object):
     all_vnodes_iter = all_nodes
     all_unique_tnodes_iter = all_unique_nodes
     all_unique_vnodes_iter = all_unique_nodes
+    #@+node:ekr.20091001141621.6044: *4* c.all_positions
+    def all_positions(self):
+        '''A generator return all positions of the outline, in outline order.'''
+        c = self
+        p = c.rootPosition() # Make one copy.
+        while p:
+            yield p.copy() # Major bug fix: 2016/10/02
+            p.moveToThreadNext()
+        # raise stopIteration
+    # Compatibility with old code.
+
+    all_positions_iter = all_positions
+    allNodes_iter = all_positions
+    #@+node:ekr.20161120121226.1: *4* c.all_roots
+    def all_roots(self, predicate=None):
+        '''
+        A generator yielding *all* the root positions in the outline that
+        satisfy the given predicate. p.isAnyAtFileNode is the default
+        predicate.
+        
+        The generator yields all **root** anywhere in the outline that satisfy
+        the predicate. Once a root is found, the generator skips its subtree.
+        '''
+        c = self
+        if predicate is None:
+            def predicate(p):
+                return p.isAnyAtFileNode()
+        p = c.rootPosition()
+        while p:
+            if predicate(p):
+                yield p
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+
     #@+node:ekr.20091001141621.6062: *4* c.all_unique_positions
     def all_unique_positions(self):
         '''
@@ -6250,19 +6285,6 @@ class Commands(object):
 
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
-    #@+node:ekr.20091001141621.6044: *4* c.all_positions
-    def all_positions(self):
-        '''A generator return all positions of the outline, in outline order.'''
-        c = self
-        p = c.rootPosition() # Make one copy.
-        while p:
-            yield p.copy() # Major bug fix: 2016/10/02
-            p.moveToThreadNext()
-        # raise stopIteration
-    # Compatibility with old code.
-
-    all_positions_iter = all_positions
-    allNodes_iter = all_positions
     #@+node:ekr.20150316175921.5: *4* c.safe_all_positions
     def safe_all_positions(self):
         '''
