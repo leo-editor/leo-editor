@@ -49,13 +49,13 @@ Last night I attempted to concatenate lines to a new lines list in the Target cl
 
 Some simple solution must be found. e660cd2 completely solves the problem:
 
-- i.v2_gen_lines injects v._importer_lines list into the root vnode using `i.inject_lines_ivar'.
+- `i.v2_gen_lines` injects `v._importer_lines` list into the root vnode using `i.inject_lines_ivar'.
 
-- Similarly, i.v2_create_child_node calls `i.inject_lines_ivar' into each created node.
+- Similarly, `i.v2_create_child_node` calls `i.inject_lines_ivar' into each created node.
 
-- Replace p.b = p.b + s by p.v._importer_lines.append(s) self.add_line(p, s).
+- Replace `p.b = p.b + s` by `self.add_line(p, s)`.
 
-- i.v2_gen_lines calls self.finalize, which does the following:
+- `i.v2_gen_lines` calls `self.finalize`, which does the following:
 ```python
 for p in parent.self_and_subtree():
     v = p.v
@@ -102,7 +102,7 @@ This is a one-line predicate that is crucial conceptually, and greatly clarifies
 
 It returns True if the line is either blank or contains nothing but leading whitespace followed by a single-line comment. v2_gen_lines must put such lines in the existing block, regardless of their indentation.
 
-Update: i.undent does not recognize the underindented line in the following (legal!, tested) python program:
+`i.undent` does not recognize the underindented line in the following (legal!) python program:
 ```python
 if 1:
     def f():
@@ -115,7 +115,7 @@ is a valid
 
 f()
 ```
-There is no way that i.is_ws_line can determine that is a valid is part of a docstring.
+There is no way that `i.is_ws_line` can determine that is a valid is part of a docstring.
 
 **Aha**: Indentation mostly doesn't matter in python!! Python blocks begin if and only if a line begins with class or def outside of any context (string, docstring or comment).
 ### The Importer class *is* a pipeline
@@ -145,13 +145,13 @@ def post_pass(self, parent):
     # This probably should be the last sub-pass.
     self.delete_all_empty_nodes(parent)
 ```
-Subclasses may override i.post_pass for complete control over post processing.
+Subclasses may override `i.post_pass` for complete control over post processing.
 
 **Stage 3: i.finish**
 
-Does *essential* late processing. It inserts Leo directives in the root nodes and, last of all, converts sets p.b to p.v._import_lines and then deletes all v._import_lines attributes. 
+Does *essential* late processing. It inserts Leo directives in the root nodes and, last of all, does `p.b = p.v._import_lines` and then deletes all `v._import_lines` attributes. 
 
-Subclasses should never have to override i.finish.
+Subclasses should never have to override `i.finish`.
 
 Furthermore, subclasses of the Importer class can easily modify code by overriding the following Importer methods:
 
@@ -171,9 +171,12 @@ def clean_headline(self, s):
 ```
 **Summary**
 
-The Importer class is organized as pipeline. Stage 1 creates the nodes. Stage 2 consists of several sub-stages, each of which adjust nodes in various ways. Stage 3 finishes up in a language independent way.
+The Importer class is organized as pipeline:
+- Stage 1 creates the nodes.
+- Stage 2 post-processes the nodes in several sub-stages.
+- Stage 3 finishes up in a language independent way.
 
-Subclasses of the Importer class may further customize the importers by override short methods.
+Subclasses of the Importer class may further customize the importers by overriding severa short methods.
 ### Almost all importers will work the same way
 
 After the old importer classes are retired, almost all importers will be subclasses of the Importer class, except for the following:
@@ -183,10 +186,10 @@ After the old importer classes are retired, almost all importers will be subclas
 **ctext.py** The importer is very simple. It doesn't need to be a subclass of Importer.
 ### Most scan_line methods are table-driven
 
-The new coffeescript.scanner is an example of the nifty new pattern. Search for v2_scan_line and its helpers, i.get_new_table and i.scan_table.
+The new coffeescript.scanner is an example of the nifty new pattern. See `i.v2_scan_line` and its helpers, `i.get_new_table` and `i.scan_table`.
 
-Update 11/20/2016: A lot has happened in the past week. Here is the revised i.v2_scan_line. It implicitly defines a protocol that all ScanState classes must follow:
-
+Here is the revised `i.v2_scan_line`. It implicitly defines a protocol that all ScanState classes must follow:
+```python
 def v2_scan_line(self, s, prev_state):
     '''
     A generalized scan-line method.
@@ -220,7 +223,7 @@ def v2_scan_line(self, s, prev_state):
         i = new_state.update(data)
         assert progress < i
     return new_state
-
+```
 The tables returned by `i.get_table` describe scanning much more clearly than the blah-blah-blah of code.
 ### Python *does* need to handle all kinds of brackets
 
