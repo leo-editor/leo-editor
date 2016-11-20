@@ -454,8 +454,10 @@ class Position(object):
         the predicate. Once a root is found, the generator skips its subtree.
         '''
         if predicate is None:
+
             def predicate(p):
                 return p.isAnyAtFileNode()
+
         # First, look up the tree.
         p1 = self
         for p in p1.self_and_parents():
