@@ -435,6 +435,43 @@ class Position(object):
     # Compatibility with old code.
 
     following_siblings_iter = following_siblings
+    #@+node:ekr.20161120105707.1: *4* p.nearest_roots (aka p.nearest)
+    def nearest_roots(self, predicate=None):
+        '''
+        A generator yielding all the root positions "near" p1 = self that
+        satisfy the given predicate. p.isAnyAtFileNode is the default
+        predicate.
+        
+        This pattern occurs many times in Leo's code. It's time to make it
+        official. It allows user to execute commands from:
+        - Anywhere *within* a tree, or
+        - On all trees *within* a tree.
+        
+        The search first proceeds up the p's tree. If a root is found, this
+        generator yields just that root.
+        
+        Otherwise, the generator yields all nodes in p.subtree() that satisfy
+        the predicate. Once a root is found, the generator skips its subtree.
+        '''
+        # First, look up the tree.
+        if predicate is None:
+            predicate=self.isAnyAtFileNode
+        p1 = self
+        for p in p1.self_and_parents():
+            if predicate(p):
+                yield p
+                return
+        # Next, look for all .md files in the tree.
+        after = p1.nodeAfterTree()
+        p = p1
+        while p and p != after:
+            if predicate(p):
+                yield p
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+
+    nearest = nearest_roots
     #@+node:ekr.20091002083910.6104: *4* p.nodes
     def nodes(self):
         '''Yield p.v and all vnodes in p's subtree.'''

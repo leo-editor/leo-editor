@@ -235,6 +235,10 @@
 </v>
 <v t="ekr.20161031130627.9"><vh>clear</vh></v>
 </v>
+<v t="ekr.20161120113810.1"><vh>@button make-md-heads</vh>
+<v t="ekr.20161120113810.2"><vh>run</vh></v>
+<v t="ekr.20161120113810.3"><vh>markup</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2684,6 +2688,52 @@ Pep8(table, change=True).run()
 <t tx="ekr.20161031130627.9">def clear():
     g.cls()
     c.k.simulateCommand('clear-log')
+</t>
+<t tx="ekr.20161120113810.1">'''Create markdown headers throughout the nearest .md outline.'''
+import re
+@others
+run(p)
+@language python
+@tabwidth -4</t>
+<t tx="ekr.20161120113810.2">def run(p1):
+    '''Run markup on all nearby trees.'''
+
+    def predicate(p):
+        return p.isAnyAtFileNode() and p.h.strip().endswith('.md')
+
+    for root in p1.nearest_roots(predicate):
+        for p in root.self_and_subtree():
+            markup(p, root)
+</t>
+<t tx="ekr.20161120113810.3">pattern = re.compile(r'^(#+\s+)(.*)$')
+
+def markup(p, root):
+    '''prepend p.b[0] with markdown section markup, if appriate.'''
+    # g.trace(p.h)
+    root_level = root.level()
+    lines = g.splitLines(p.b)
+    if len(lines) &lt; 2: return
+    line0, line1 = lines[0], lines[1]
+    if (
+        not p.h.startswith('@md-ignore') and
+        not line0.isspace() and # A real first line.
+        not line0.startswith('@') and # Not a directive
+        line1.isspace() # the next line is blank
+    ):
+        m = pattern.match(line0)
+        if m:
+            # g.trace('FOUND', repr(m.group(1)), repr(m.group(2)))
+            # Remove existing markup.
+            line0 = m.group(2) + '\n'
+        hashes = '#'*(p.level()-root_level+1)
+        lines[0] = '%s %s' % (hashes, line0)
+        # g.printList(lines)
+        s = ''.join(lines)
+        if p.b != s:
+            print('changed %s' % (p.h))
+            p.setDirty()
+            c.setChanged(True)
+            p.b = ''.join(lines)
 </t>
 </tnodes>
 </leo_file>
