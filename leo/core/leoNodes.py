@@ -435,17 +435,12 @@ class Position(object):
     # Compatibility with old code.
 
     following_siblings_iter = following_siblings
-    #@+node:ekr.20161120105707.1: *4* p.nearest_roots (aka p.nearest)
+    #@+node:ekr.20161120105707.1: *4* p.nearest_roots
     def nearest_roots(self, predicate=None):
         '''
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
-        This pattern occurs many times in Leo's code. It's time to make it
-        official. It allows user to execute commands from:
-        - Anywhere *within* a tree, or
-        - On all trees *within* a tree.
         
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
@@ -474,7 +469,45 @@ class Position(object):
             else:
                 p.moveToThreadNext()
 
-    nearest = nearest_roots
+    #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
+    def nearest_unique_roots(self, predicate=None):
+        '''
+        A generator yielding all unique root positions "near" p1 = self that
+        satisfy the given predicate. p.isAnyAtFileNode is the default
+        predicate.
+        
+        The search first proceeds up the p's tree. If a root is found, this
+        generator yields just that root.
+        
+        Otherwise, the generator yields all unique nodes in p.subtree() that
+        satisfy the predicate. Once a root is found, the generator skips its
+        subtree.
+        '''
+        if predicate is None:
+
+            def predicate(p):
+                return p.isAnyAtFileNode()
+
+        # First, look up the tree.
+        p1 = self
+        for p in p1.self_and_parents():
+            if predicate(p):
+                yield p
+                return
+        # Next, look for all unique .md files in the tree.
+        seen = set()
+        after = p1.nodeAfterTree()
+        p = p1
+        while p and p != after:
+            if predicate(p):
+                if p.v not in seen:
+                    seen.add(p.v)
+                    yield p
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+
+    nearest = nearest_unique_roots
     #@+node:ekr.20091002083910.6104: *4* p.nodes
     def nodes(self):
         '''Yield p.v and all vnodes in p's subtree.'''
