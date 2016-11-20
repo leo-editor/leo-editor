@@ -975,7 +975,7 @@
 <v t="ekr.20161120132534.1"><vh>Creating your State class</vh></v>
 <v t="ekr.20161120164435.1"><vh>Notes about new importers</vh>
 <v t="ekr.20161120164520.1"><vh>Intro</vh></v>
-<v t="ekr.20161120164550.1"><vh>Post 2</vh></v>
+<v t="ekr.20161120164550.1"><vh>Design</vh></v>
 <v t="ekr.20161120164618.1"><vh>p.b is a huge performance bug</vh></v>
 <v t="ekr.20161120164900.1"><vh>Importer API for setting body text</vh></v>
 <v t="ekr.20161120164653.1"><vh>i.is_ws_line</vh></v>
@@ -19374,7 +19374,7 @@ the BPM in any way
 
 These .md files are intended to be viewed on [GitHub](https://github.com/leo-editor/leo-editor/tree/master/leo/doc).
 
-[This page]() contains the cheat sheet for the GitHub flavor of markdown.
+[This page](https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md) contains the cheat sheet for the GitHub flavor of markdown.
 </t>
 <t tx="ekr.20161120073038.1"># For Devs: All About Importers
 
@@ -19437,7 +19437,7 @@ def markup(p, root):
 More</t>
 <t tx="ekr.20161120132534.1"></t>
 <t tx="ekr.20161120164435.1"></t>
-<t tx="ekr.20161120164520.1">Simplifying Leos importers is crucial so that future devs can add importers and fix existing importers.
+<t tx="ekr.20161120164520.1">### Simplifying Leos importers is crucial so that future devs can add importers and fix existing importers.
 
 This issue will continue previous engineering notebook posts. All are welcome to comment.
 
@@ -19445,34 +19445,33 @@ This issue will continue previous engineering notebook posts. All are welcome to
 
     Nov. 6: Important documentation for devs: Leo's new importers
 </t>
-<t tx="ekr.20161120164550.1">The typescript importer refutes that notion expressed in the middle-of-the-night post that nothing simpler than the state-scanner code can be imagined. There are at least four ways that the present code base can be simplified.
+<t tx="ekr.20161120164550.1">### Design
 
-    For at least some languages, including python, rescanning may be significantly simpler than v2_gen_lines and its helpers. The scan method in importers.typescript.py is shockingly simple. importers.python.py may use very similar code.
+The typescript importer refutes that notion expressed in the middle-of-the-night post that nothing simpler than the state-scanner code can be imagined. There are at least four ways that the present code base can be simplified.
 
-    Explorations last night show that the coffeescript scanner depends very little on the base BaseScanner class. Indeed, the coffeescript scanner uses just a few of its utilities! So the coffeescript scanner could easily be adapted to the V2 scanner code in LineScanner.
+For at least some languages, including python, rescanning may be significantly simpler than v2_gen_lines and its helpers. The scan method in importers.typescript.py is shockingly simple. importers.python.py may use very similar code.
 
-    It should be possible to simplify the "cassette" at the top level of each importer in leo/plugins/importers. Rather than separating the Controller and Scanner classes, a single Controller class will suffice. The coffeescript importer already uses this approach. Unifying these classes should simplify both the code, the cassette interface, and the documentation.
+Explorations last night show that the coffeescript scanner depends very little on the base BaseScanner class. Indeed, the coffeescript scanner uses just a few of its utilities! So the coffeescript scanner could easily be adapted to the V2 scanner code in LineScanner.
 
-    [Completed] A head-slapping moment. Put the LineScanner class and related stuff in a new file, linescanner.py. Doh! This will be a great aid in keeping the new and legacy code bases separate. Much less need for tests on gen_v2.
+It should be possible to simplify the "cassette" at the top level of each importer in leo/plugins/importers. Rather than separating the Controller and Scanner classes, a single Controller class will suffice. The coffeescript importer already uses this approach. Unifying these classes should simplify both the code, the cassette interface, and the documentation.
+
+[Completed] A head-slapping moment. Put the LineScanner class and related stuff in a new file, linescanner.py. Doh! This will be a great aid in keeping the new and legacy code bases separate. Much less need for tests on gen_v2.
 
 Update: 4. didn't work the first time. I made too many changes at once. The way forward was to focus on goals, namely:
 
-    Exactly one way of importing any file. This may vary from language to language.
-    A single file, linescanner.py, containing all the supporting code.
-    Unifying the various classes into a single Importer class.
-    The eventual elimination of all switches.
+Exactly one way of importing any file. This may vary from language to language. A single file, linescanner.py, containing all the supporting code. Unifying the various classes into a single Importer class. The eventual elimination of all switches.
 
 After reverting the code, a more incremental approach did work. The plan was to remove all switches from both basescanner.py and linescanner.py. That worked very well:
 
-    basescanner.py now contains no V2 code.
-    linescanner.py now contains only V2 code.
-    The cassette interface to linescanner.py will be a single class: the Importer class.
+basescanner.py now contains no V2 code.
+linescanner.py now contains only V2 code.
+The cassette interface to linescanner.py will be a single class: the Importer class.
 
 Next: I'll start converting the best code, which is probably the coffeescript importer. I'll make that work using only code in linescanner.py. Then I'll use that template to add new importers, one language at a time.
 
 Update: The coffeescript, javascript, perl, python and typescript importers have been fully converted. The Python importer presently uses the legacy code, based on a local switch in python.py. These conversions went much more easily than I expected.
 </t>
-<t tx="ekr.20161120164618.1">p.b is a huge performance bug
+<t tx="ekr.20161120164618.1">### p.b is a huge performance bug
 
 Fixed at e660cd2, as described below.
 
@@ -19500,7 +19499,7 @@ Some simple solution must be found. e660cd2 completely solves the problem:
 
 The assert was helpful initially.
 </t>
-<t tx="ekr.20161120164653.1">i.is_ws_line
+<t tx="ekr.20161120164653.1">### i.is_ws_line
 
 This is a one-line predicate that is crucial conceptually, and greatly clarifies the code in several places.
 
@@ -19528,7 +19527,7 @@ There is no way that i.is_ws_line can determine that is a valid is part of a doc
     Best: Aha: Indentation mostly doesn't matter in python!! Python blocks begin if and only if a line begins with class or def outside of any context (string, docstring or comment). The easy way to do this is to override i.v2_gen_lines. It's a simple, beautiful solution. It will remove special case code from both i.v2_gen_lines and the new python_i.v2_gen_lines.
 
 </t>
-<t tx="ekr.20161120164718.1">Prefer s.isspace() to s.strip()
+<t tx="ekr.20161120164718.1">### Prefer s.isspace() to s.strip()
 
 Until today, I have always tested for an empty string using not s.strip(). But Doh, this is an unnecessary stress on the GC. s.isspace() much faster and more pythonic.
 
@@ -19553,7 +19552,7 @@ the new code now tests:
 
 Update 2: As discussed on leo-editor, using s.isspace() works because s is never empty ('') for any line.
 </t>
-<t tx="ekr.20161120164818.1">The Importer class *is* a pipeline
+<t tx="ekr.20161120164818.1">### The Importer class *is* a pipeline
 
 @tfer Tom's importer proposal, was the first to suggest that the importers be organized as a pipeline. At first, I dismissed that suggestion, but in fact Tom's suggestions have been marinating in the back of my mind ever since. Thank you, Tom! Leo's great new importers owe a lot to you.
 
@@ -19603,7 +19602,7 @@ Summary
 The Importer class is organized as pipeline. Stage 1 creates the nodes. Stage 2 consists of several sub-stages, each of which adjust nodes in various ways. Stage 3 finishes up in a language independent way.
 
 Subclasses of the Importer class may further customize the importers by override short methods.</t>
-<t tx="ekr.20161120164900.1">Importer API for setting body text
+<t tx="ekr.20161120164900.1">### Importer API for setting body text
 
 As of 6dbeb6a, all code in stages 1, 2 and 3 must use the following API to change body text. It is easier, faster than setting p.b to strings. And it stresses the GC much less.
 
@@ -19633,7 +19632,7 @@ def set_lines(self, p, lines):
 
 Update: in practice, I prefer using p.v._import_lines explicitly rather than using the get_lines or set_lines methods. It's clearer, imo.
 </t>
-<t tx="ekr.20161120164930.1">Almost all importers will work the same way
+<t tx="ekr.20161120164930.1">### Almost all importers will work the same way
 
 After the old importer classes are retired, almost all importers will be subclasses of the Importer class, except for the following:
 
@@ -19641,7 +19640,7 @@ After the old importer classes are retired, almost all importers will be subclas
 
     ctext.py. The importer is very simple. It doesn't need to be a subclass of Importer.
 </t>
-<t tx="ekr.20161120165011.1">Most scan_line methods are table-driven
+<t tx="ekr.20161120165011.1">### Most scan_line methods are table-driven
 
 The new coffeescript.scanner is an example of the nifty new pattern. Search for v2_scan_line and its helpers, in_table, out_table i.get_table, i.get_new_table and i.scan_table.
 
@@ -19685,7 +19684,7 @@ The tables returned by in_table(context) and out_table() i.get_table describe th
 
 I feel like an absolute idiot for not using this easy pattern earlier. Furthermore, it would have saved me considerable work had I had proper unit tests for all scanners. This will happen next.
 </t>
-<t tx="ekr.20161120165052.1">Python *does* need to handle all kinds of brackets
+<t tx="ekr.20161120165052.1">### Python *does* need to handle all kinds of brackets
 
 I'm not sure that the present python code can be made to work without understanding the nesting levels of parens, curly-brackets and square-brackets. Consider this code from @test python comment after dict assign:
 
@@ -19702,7 +19701,7 @@ I would rather not have the python scanner keep track of brackets. We shall see.
 
 It's not a problem. i.scan_table now keeps of brackets for all languages.
 </t>
-<t tx="ekr.20161120165207.1">i.scan_table
+<t tx="ekr.20161120165207.1">### i.scan_table
 
 Here is the latest (as of 11/15/2016). Note the hack for recognizing backslash. i.scan_table also adds a bs-nl flag to the returned 6-tuple. For sure, "bs-nl" can not be context!
 
@@ -19741,12 +19740,12 @@ def scan_table(self, context, i, s, table):
     # No match: stay in present state. All deltas are zero.
     return context, i+1, 0, 0, 0, False
 </t>
-<t tx="ekr.20161120165244.1">When context does, and doesn't matter
+<t tx="ekr.20161120165244.1">### When context does, and doesn't matter
 
 As discussed here, the client code that uses i.v2_scan_line can (usually) ignore context! This should simplify x.v2_gen_lines and the various ScanState classes. Indeed, ScanState classes will defined a state.level method that returns either an int or a tuple of ints. With this very easy infrastructure in place, comparisons such as:
 
 if new_state.level() &gt; prev_state.level():
-    &lt;&lt; enter new block &gt;&gt;
+    # enter new blockgs
 
 with "just work", regardless of language. This will be surprisingly important in collapsing code (making it independent of language).
 
@@ -19766,7 +19765,7 @@ static void foo(bar)
 
 The block associated with foo will consist only of the line {}, with an unhelpful headline. The perfect import check will succeed, but the post-pass should move the int foo(bar) line into the next block. Theoretically, the post-pass should be aware of comments that intervene between the two lines given above, but in practice we can ignore such bizarre cases, because the file will still import correctly.
 </t>
-<t tx="ekr.20161120165336.1">A subtle detail about comparisons.
+<t tx="ekr.20161120165336.1">### A subtle detail about comparisons.
 
 the python and coffeescript importers no longer override i.v2_gen_lines.
 
