@@ -343,21 +343,21 @@ Here is the code I am talking about, in `i.v2_gen_lines`:
         prev_state = new_state
 ```
 As the comment states, changing:
-
-    `elif new_state.level() >= top.state.level():`
-
+```python
+    elif new_state.level() >= top.state.level():
+```
 to:
-
-    `elif new_state.level() >= prev_state.level():`
-
+```python
+    elif new_state.level() >= prev_state.level():
+```
 does not work for python, but it does work for importers for language that use braces, not indentation.
 
 **What's going on?**
 
-After a bit of noodling, the answer became clear. For languages that use braces, prev_state.level() is always the same as top_state.level(), because intervening lines that don't have brackets can't possibly change prev_state.level(). But for python, state.level() is state.indent, and state.indent depends on the vagaries of leading whitespace. So top_state.level() isn't guaranteed to be prev_state.level().
+After a bit of noodling, the answer became clear. For languages that use braces, `prev_state.level()` is always the same as `top_state.level()`, because intervening lines that don't have brackets can't possibly change `prev_state.level()`. But for python, `state.level()` is `state.indent`, and `state.indent` depends on the vagaries of leading whitespace. So `top_state.level()` isn't guaranteed to be `prev_state.level()`.
 
-Yes, it would be possible to define Python_ScanState.update so that it preserves state.level(), but there is no reason to do that. Worse, if it were done, it would be a serious, unnecessary constraint on update.
+Yes, it would be possible to define `Python_ScanState.update` so that it preserves `state.level()`, but that would add a serious, unnecessary constraint on update.
 
 Summary
 
-It's unlikely that the code discussed here will ever have to change. Still, it's important for future maintainers to understand something that caused me hours of confusion yesterday.
+It's unlikely that the code discussed here will ever have to change. Still, it's important for future maintainers to understand something that caused me hours of confusion.
