@@ -235,8 +235,8 @@
 </v>
 <v t="ekr.20161031130627.9"><vh>clear</vh></v>
 </v>
-<v t="ekr.20161120125733.1"><vh>@button make-md-heads</vh>
-<v t="ekr.20161120125733.2"><vh>markup</vh></v>
+<v t="ekr.20161120175101.1"><vh>@button make-md-heads</vh>
+<v t="ekr.20161120175101.2"><vh>markup</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2688,7 +2688,7 @@ Pep8(table, change=True).run()
     g.cls()
     c.k.simulateCommand('clear-log')
 </t>
-<t tx="ekr.20161120125733.1">'''Create markdown headers in **all** .md files.'''
+<t tx="ekr.20161120175101.1">'''Create markdown headers throughout the nearest .md outline.'''
 g.cls()
 import re
 @others
@@ -2700,10 +2700,11 @@ for root in c.all_unique_roots(predicate):
     print(root.h)
     for p in root.self_and_subtree():
         markup(p, root)
+c.redraw()
 
 @language python
 @tabwidth -4</t>
-<t tx="ekr.20161120125733.2">pattern = re.compile(r'^(#+\s+)(.*)$')
+<t tx="ekr.20161120175101.2">pattern = re.compile(r'^(#+\s+)(.*)$')
 
 def markup(p, root):
     '''prepend p.b[0] with markdown section markup, if appriate.'''
@@ -2717,20 +2718,19 @@ def markup(p, root):
         not line0.startswith('@') and # Not a directive
         line1.isspace() # the next line is blank
     ):
+        # Remove existing markup.
         m = pattern.match(line0)
-        if m:
-            # g.trace('FOUND', repr(m.group(1)), repr(m.group(2)))
-            # Remove existing markup.
-            line0 = m.group(2) + '\n'
+        if m:  line0 = m.group(2) + '\n'
+        # Add the correct markup.
         hashes = '#'*(p.level()-root_level+1)
         lines[0] = '%s %s' % (hashes, line0)
-        # g.printList(lines)
-        s = ''.join(lines)
-        if p.b != s:
-            print('changed %s' % (p.h))
-            p.setDirty()
-            c.setChanged(True)
-            p.b = ''.join(lines)
+    # Ensure a blank line, so as not to interfere with later headers.
+    s = ''.join(lines).rstrip()+'\n\n'
+    if p.b != s:
+        g.es_print('changed: %s' % (p.h))
+        p.setDirty()
+        c.setChanged(True)
+        p.b = s
 </t>
 </tnodes>
 </leo_file>
