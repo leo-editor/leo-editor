@@ -30117,21 +30117,23 @@ def scan_block(self, i, lines):
         for line in result:
             print(line.rstrip())
     return i, result
-.. @+node:ekr.20161120132310.1: *3* old, buggy, undoable make-md-heads
-c.undoer.beforeChangeGroup(p, 'make-all-md-heads', verboseUndoGroup=True)
-any_changed = False
-for root in c.all_unique_roots(predicate):
-    print(root.h)
-    bunch = c.undoer.beforeChangeTree(root)
-    changed = False
+.. @+node:ekr.20161121132652.1: *3* replace_in_headlines (NOT USED)
+def replace_in_headlines(find, replace):
+    # root = _values['root']
+    # g.trace(c.shortFileName())
+    # g.trace('c.p.h', c.p.h)
+    g.trace('root =====', root.h)
+    g.trace('find', repr(find), 'replace', repr(replace))
     for p in root.self_and_subtree():
-        changed2 = markup(p, root)
-        changed = changed or changed2
-        any_changed = any_changed or changed
-    if changed:
-        c.undoer.afterChangeTree(root, 'make-md-heads', bunch)
-if any_changed:
-    c.undoer.afterChangeGroup(c.rootPosition(), 'make-all-md-heads')
+        h = p.h
+        i = h.find(find)
+        g.trace('SEARCH', h)
+        if i > -1:
+            h = h[:i] + replace + h[i+len(find):]
+            g.trace(p.h, '==>', h)
+            # p.h = h
+    # _values[s] = x
+    return ''
 .. @-all
 .. @@nosearch
 .. @-leo

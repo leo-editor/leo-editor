@@ -7,6 +7,9 @@
 @language rest
 @wrap
 
+* Aha: use separate windows to compare code.
+  Seems much better than separate body panes.
+
 - Does pylint -a end properly??
 
 - Post: unit testing as you go along:

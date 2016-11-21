@@ -40,6 +40,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.event = None
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.last_hit = None # Distinguish between text and tree abbreviations.
+        self.root = None # The root of tree abbreviations.
         self.save_ins = None # Saved insert point.
         self.save_sel = None # Saved selection range.
         self.store = {'rlist': [], 'stext': ''} # For dynamic expansion.
@@ -214,17 +215,66 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Words start with '@'.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c
-        ch = g.toUnicode(event and event.char or '')
         w = self.editWidget(event, forceFocus=False)
         if not w: return False
-        if self.expanding: return False
-        if w.hasSelection(): return False
+        ch = self.get_ch(event, stroke, w)
+        if not ch: return False
+        if trace and verbose:
+            print('')
+            g.trace('ch: %r stroke: %r' % (ch, stroke))
+        s, i, j, prefixes = self.get_prefixes(w)
+        for prefix in prefixes:
+            i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
+            if word: break
+        else:
+            return False
+        c.abbrev_subst_env['_abr'] = word
+        if tag == 'tree':
+            self.root = c.p
+            self.last_hit = c.p.copy()
+            self.expand_tree(w, i, j, val, word)
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
+        else:
+            # Never expand a search for text matches.
+            place_holder = '__NEXT_PLACEHOLDER' in val
+            if place_holder:
+                expand_search = bool(self.last_hit)
+            else:
+                self.last_hit = None
+                expand_search = False
+            if trace:
+                g.trace('expand_search: %s last_hit: %s' % (
+                    expand_search, self.last_hit))
+            self.expand_text(w, i, j, val, word, expand_search)
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
+            # Restore the selection range.
+            if self.save_ins:
+                if trace:  g.trace('sel: %s ins: %s' % (
+                    self.save_sel, self.save_ins))
+                ins = self.save_ins
+                # pylint: disable=unpacking-non-sequence
+                sel1, sel2 = self.save_sel
+                if sel1 == sel2:
+                    # New in Leo 5.5
+                    self.post_pass()
+                else:
+                    # some abbreviations *set* the selection range
+                    # so only restore non-empty ranges
+                    w.setSelectionRange(sel1, sel2, insert=ins)
+        return True
+    #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
+    def get_ch(self, event, stroke, w):
+        '''Get the ch from the stroke.'''
+        ch = g.toUnicode(event and event.char or '')
+        if self.expanding: return None
+        if w.hasSelection(): return None
         assert g.isStrokeOrNone(stroke), stroke
         if stroke in ('BackSpace', 'Delete'):
-            if trace and verbose: g.trace(stroke)
-            return False
+            return None
         d = {'Return': '\n', 'Tab': '\t', 'space': ' ', 'underscore': '_'}
         if stroke:
             ch = d.get(stroke.s, stroke.s)
@@ -238,7 +288,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     ch = event and event.char or ''
         else:
             ch = event.char
-        if trace and verbose: g.trace('ch', repr(ch), 'stroke', repr(stroke))
+        return ch
+    #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
+    def get_prefixes(self, w):
+        '''Return the prefixes at the current insertion point of w.'''
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
         s = w.getAllText()
@@ -248,57 +301,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             prefixes.append(s[i: j])
             i -= 1
         prefixes = list(reversed(prefixes))
-        if '' not in prefixes: prefixes.append('')
-        for prefix in prefixes:
-            i = j - len(prefix)
-            word = g.toUnicode(prefix) + g.toUnicode(ch)
-            val, tag = self.tree_abbrevs_d.get(word), 'tree'
-            # if val: g.trace('*****',word,'...\n\n',len(val))
-            if not val:
-                val, tag = self.abbrevs.get(word, (None, None))
-            if val:
-                if trace and verbose: g.trace(repr(word), 'val', val, 'tag', tag)
-                # Require a word match if the abbreviation is itself a word.
-                if ch in ' \t\n': word = word.rstrip()
-                if word.isalnum() and word[0].isalpha():
-                    if i == 0 or s[i - 1] in ' \t\n':
-                        break
-                    else:
-                        i -= 1
-                else:
-                    break
-            else: i -= 1
-        else:
-            return False
-        c.abbrev_subst_env['_abr'] = word
-        if tag == 'tree':
-            self.last_hit = c.p.copy()
-            self.expand_tree(w, i, j, val, word)
-            c.frame.body.forceFullRecolor()
-            c.bodyWantsFocusNow()
-        else:
-            # Never expand a search for text matches.
-            place_holder = '__NEXT_PLACEHOLDER' in val
-            if place_holder:
-                expand_search = bool(self.last_hit)
-            else:
-                self.last_hit = None
-                expand_search = False
-            if trace: g.trace('expand_search', expand_search, 'last_hit', self.last_hit)
-            self.expand_text(w, i, j, val, word, expand_search)
-            c.frame.body.forceFullRecolor()
-            c.bodyWantsFocusNow()
-            # Restore the selection range.
-            if self.save_ins:
-                if trace: g.trace('sel', self.save_sel, 'ins', self.save_ins)
-                ins = self.save_ins
-                # pylint: disable=unpacking-non-sequence
-                sel1, sel2 = self.save_sel
-                if sel1 != sel2:
-                    # some abbreviations *set* the selection range
-                    # so only restore non-empty ranges
-                    w.setSelectionRange(sel1, sel2, insert=ins)
-        return True
+        if '' not in prefixes:
+            prefixes.append('')
+        return s, i, j, prefixes
+    #@+node:ekr.20161121121636.1: *4* abbrev.exec_content
+    def exec_content(self, content):
+        '''Execute the content in the environment, and return the result.'''
     #@+node:ekr.20150514043850.12: *4* abbrev.expand_text
     def expand_text(self, w, i, j, val, word, expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
@@ -319,9 +327,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     p.moveToThreadNext()
         else:
             self.find_place_holder(p, do_placeholder)
-    #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree & helper
+    #@+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
     def expand_tree(self, w, i, j, tree_s, word):
-        '''Paste tree_s as children of c.p.'''
+        '''
+        Paste tree_s as children of c.p.
+        This happens *before* any substitutions are made.
+        '''
+        trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
         if not c.canPasteOutline(tree_s):
             return g.trace('bad copied outline: %s' % tree_s)
@@ -330,8 +342,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.replace_abbrev_name(w, i, j, None)
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
+        if trace:
+            for z in old_p.self_and_subtree():
+                g.trace(z.h)
+        # Original code.  Probably unwise to change it.
         do_placeholder = False
-        for p in old_p.subtree():
+        for p in old_p.self_and_subtree(): ### Was old_p.subtree()
             # Search for the next place-holder.
             val, do_placeholder = self.make_script_substitutions(0, 0, p.b)
             if not do_placeholder: p.b = val
@@ -340,6 +356,20 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if self.find_place_holder(p, do_placeholder):
                 break
         u.afterChangeTree(old_p, 'tree-abbreviation', bunch)
+    #@+node:ekr.20150514043850.17: *5* abbrev.paste_tree
+    def paste_tree(self, old_p, s):
+        '''Paste the tree corresponding to s (xml) into the tree.'''
+        c = self.c
+        c.fileCommands.leo_file_encoding = 'utf-8'
+        p = c.pasteOutline(s=s, redrawFlag=False, undoFlag=False)
+        if p:
+            # Promote the name node, then delete it.
+            p.moveToLastChildOf(old_p)
+            c.selectPosition(p)
+            c.promote(undoFlag=False)
+            p.doDelete()
+        else:
+            g.trace('paste failed')
     #@+node:ekr.20150514043850.14: *4* abbrev.find_place_holder
     def find_place_holder(self, p, do_placeholder):
         '''
@@ -394,9 +424,15 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if len(content) != 2:
                 break
             content, rest = content
-            if trace: g.trace('**content', content)
+            if trace:
+                g.trace('**c', c.shortFileName())
+                g.trace('**p', c.p.h)
+                g.trace('**content', repr(content))
             try:
                 self.expanding = True
+                if not c.abbrev_subst_env.get('root'):
+                    if trace: g.trace('===== root:', c.p.h)
+                    c.abbrev_subst_env['root'] = c.p.copy()
                 c.abbrev_subst_env['x'] = ''
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
             finally:
@@ -422,6 +458,60 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if trace:
             g.trace(do_placeholder, val)
         return val, do_placeholder
+    #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
+    def make_script_substitutions_in_headline(self, p):
+        '''Make scripting substitutions in p.h.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        pattern = re.compile('^(.*)%s(.+)%s(.*)$' % (
+            re.escape(c.abbrev_subst_start),
+            re.escape(c.abbrev_subst_end),
+        ))
+        changed = False
+        if trace: g.trace('===== p', p.h)
+        # Perform at most one scripting substition.
+        m = pattern.match(p.h)
+        if m:
+            content = m.group(2)
+            if trace: g.trace('MATCH:', m.group(1))
+            c.abbrev_subst_env['x'] = ''
+            try:
+                exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+                x = c.abbrev_subst_env.get('x')
+                if x:
+                    p.h = "%s%s%s" % (m.group(1), x, m.group(3))
+                    changed = True
+                elif trace:
+                    g.trace('ignoring empty result', p.h)
+            except Exception:
+                # Leave p.h alone.
+                g.trace('scripting error in', p.h)
+                g.es_exception()
+        return changed
+    #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
+    def match_prefix(self, ch, i, j, prefix, s):
+        
+        i = j - len(prefix)
+        word = g.toUnicode(prefix) + g.toUnicode(ch)
+        tag = 'tree'
+        val = self.tree_abbrevs_d.get(word)
+        # if val: g.trace('*****',word,'...\n\n',len(val))
+        if not val:
+            val, tag = self.abbrevs.get(word, (None, None))
+        if val:
+            ### if trace and verbose: g.trace(repr(word), 'val', val, 'tag', tag)
+            # Require a word match if the abbreviation is itself a word.
+            if ch in ' \t\n': word = word.rstrip()
+            if word.isalnum() and word[0].isalpha():
+                if i == 0 or s[i - 1] in ' \t\n':
+                    return i, tag, word, val
+                else:
+                    i -= 1
+            else:
+                return i, tag, word, val
+        else:
+            i -= 1
+            return i, tag, None, None
     #@+node:ekr.20150514043850.16: *4* abbrev.next_place
     def next_place(self, s, offset=0):
         """
@@ -449,20 +539,20 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         end = start + len(place_holder)
         if trace: g.trace(start, end, g.callers())
         return s2, start, end
-    #@+node:ekr.20150514043850.17: *4* abbrev.paste_tree
-    def paste_tree(self, old_p, s):
-        '''Paste the tree corresponding to s (xml) into the tree.'''
+    #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
+    def post_pass(self):
+        '''The post pass: make script substitutions in all headlines.'''
+        trace = False and not g.unitTesting
         c = self.c
-        c.fileCommands.leo_file_encoding = 'utf-8'
-        p = c.pasteOutline(s=s, redrawFlag=False, undoFlag=False)
-        if p:
-            # Promote the name node, then delete it.
-            p.moveToLastChildOf(old_p)
-            c.selectPosition(p)
-            c.promote(undoFlag=False)
-            p.doDelete()
-        else:
-            g.trace('paste failed')
+        if self.root:
+            if trace: g.trace(self.root.h)
+            bunch = c.undoer.beforeChangeTree(c.p)
+            changed = False
+            for p in self.root.self_and_subtree():
+                changed2 = self.make_script_substitutions_in_headline(p)
+                changed = changed or changed2
+            if changed:
+                c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_abbrev_name
     def replace_abbrev_name(self, w, i, j, s):
         '''Replace the abbreviation name by s.'''
