@@ -12,8 +12,6 @@
 - Post: unit testing as you go along:
     - Use imp.reload to get the latest version of your code.
 
-- Put engineering notebook files in GitHub .md files.
-
 - Pylint --recent option.  Last hour? Last day?
 
 - Use regex in g.match.  Add g.match_any.
