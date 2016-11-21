@@ -281,6 +281,7 @@ class Importer(object):
         See perl_i.clean_nodes for an examplle.
         '''
         pass
+    #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
     #@+node:ekr.20161115075016.1: *4* i.get_new_table (generalized)
     #@@nobeautify
 
@@ -340,12 +341,19 @@ class Importer(object):
     #@+node:ekr.20161108170435.1: *4* i.v2_scan_line (generalized)
     def v2_scan_line(self, s, prev_state):
         '''
-        A generalized scan-line method, depending on self.scanner_class.
+        A generalized scan-line method.
         
-        This class should follow this protocol:
-        1. The class's ctor must support the 'prev' keyword,
-        2. The class must have a context ivar, and
-        3. The class must have an update method.
+        SCAN STATE PROTOCOL:
+        
+        The Importer class should have a state_class ivar that references a
+        **state class**. This class probably should *not* be subclass of the
+        ScanState class, but it should observe the following protocol:
+        
+        1. The state class's ctor must have the following signature:
+            
+            def __init__(self, d)
+            
+        2. The state class must have an update method.
         '''
         trace = False and not g.unitTesting
         # This dict allows new data to be added without changing ScanState signatures.
