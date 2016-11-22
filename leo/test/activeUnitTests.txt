@@ -12266,8 +12266,23 @@ namespace {
     }
 }
 '''
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    root = c.p.firstChild()
+    assert (
+        root.h.startswith('@@file') and
+        root.h.endswith('c# namespace indent')), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20090529141856.4729: *6* @test c# namespace no indent
 s = '''\
 namespace {
@@ -12276,19 +12291,33 @@ class cTestClass1 {
 }
 }
 '''
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    root = c.p.firstChild()
+    assert (
+        root.h.startswith('@@file') and
+        root.h.endswith('c# namespace no indent')), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20090529141856.4730: *6* @@test c# ref card
 import sys
 
 if sys.platform.lower().startswith('win'):
 
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','big-c#-test.c#'))
-
+    fileName = g.os_path_abspath(g.os_path_join(
+        g.app.loadDir,'..','test','big-c#-test.c#'))
     f = open(fileName)
     s = f.read()
     f.close()
-
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
 #@+node:ekr.20161108034116.1: *5* coffeescript tests
 #@+node:ekr.20161108034138.1: *6* @test coffeescript-1

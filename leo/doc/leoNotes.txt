@@ -30117,6 +30117,34 @@ def scan_block(self, i, lines):
         for line in result:
             print(line.rstrip())
     return i, result
+.. @+node:ekr.20161121202229.1: *4* OLD importers/cshart.py
+'''The @auto importer for C#.'''
+import leo.plugins.importers.basescanner as basescanner
+@others
+importer_dict = {
+    'class': CSharpScanner,
+    'extensions': ['.cs', '.c#',],
+}
+.. @+node:ekr.20161121202229.2: *5* class CSharpScanner
+class CSharpScanner(basescanner.BaseScanner):
+
+    def __init__(self, importCommands, atAuto):
+        # Init the base class.
+        basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='c')
+        # Set the parser delims.
+        self.blockCommentDelim1 = '/*'
+        self.blockCommentDelim2 = '*/'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+        self.classTags = ['class', 'interface', 'namespace',]
+        self.extraIdChars = ':'
+        self.functionTags = []
+        self.lineCommentDelim = '//'
+        self.lineCommentDelim2 = None
+        self.outerBlockDelim1 = '{'
+        self.outerBlockDelim2 = '}'
+        self.sigHeadExtraTokens = []
+        self.sigFailTokens = [';', '='] # Just like C.
 .. @+node:ekr.20161121132652.1: *3* replace_in_headlines (NOT USED)
 def replace_in_headlines(find, replace):
     # root = _values['root']

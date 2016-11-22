@@ -219,7 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -295,7 +295,7 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
@@ -461,8 +461,7 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161108034116.1"></v>
-<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20090529141856.4727" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -916,7 +915,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="8">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1150,8 +1149,23 @@ namespace {
     }
 }
 '''
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    root = c.p.firstChild()
+    assert (
+        root.h.startswith('@@file') and
+        root.h.endswith('c# namespace indent')), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20090529141856.4729">s = '''\
 namespace {
@@ -1160,19 +1174,33 @@ class cTestClass1 {
 }
 }
 '''
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.cSharpUnitTest(p,s=s,showTree=True)
+    table = [
+        'namespace',
+        'class cTestClass1',
+    ]
+    root = c.p.firstChild()
+    assert (
+        root.h.startswith('@@file') and
+        root.h.endswith('c# namespace no indent')), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20090529141856.4730">import sys
 
 if sys.platform.lower().startswith('win'):
 
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','big-c#-test.c#'))
-
+    fileName = g.os_path_abspath(g.os_path_join(
+        g.app.loadDir,'..','test','big-c#-test.c#'))
     f = open(fileName)
     s = f.read()
     f.close()
-
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4731"></t>
@@ -2839,7 +2867,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
