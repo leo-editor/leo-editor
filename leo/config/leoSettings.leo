@@ -135,6 +135,7 @@
 <v t="ekr.20150428102831.2"><vh>do</vh></v>
 <v t="ekr.20150428102831.8"><vh>file_name</vh></v>
 <v t="ekr.20150428102831.5"><vh>get</vh></v>
+<v t="ekr.20161121172936.1"><vh>get_language</vh></v>
 <v t="jlunz.20150821113251.1"><vh>html_tag</vh></v>
 <v t="ekr.20150428102831.9"><vh>in_class</vh></v>
 <v t="ekr.20150428102831.3"><vh>insert</vh></v>
@@ -144,17 +145,17 @@
 </v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20161121044950.1"><vh>@outline-data tree-abbreviations</vh>
-<v t="ekr.20161121135525.1"><vh>importer;;</vh>
-<v t="ekr.20161121135525.2"><vh>@@file importers/{|{x=get("name").lower()}|}.py</vh>
-<v t="ekr.20161121135525.3"><vh>class {|{x=get("name").capitalize()}|}_Importer</vh>
-<v t="ekr.20161121135525.4"><vh>{|{x=get("name").lower()}|}.Overrides</vh>
-<v t="ekr.20161121135525.5"><vh>{|{x=get("name").lower()}|}.clean_headline</vh></v>
-<v t="ekr.20161121135525.6"><vh>{|{x=get("name").lower()}|}.clean_nodes</vh></v>
+<v t="ekr.20161121175840.1"><vh>importer;;</vh>
+<v t="ekr.20161121175840.2"><vh>@@file importers/{|{x=name}|}.py</vh>
+<v t="ekr.20161121175840.3"><vh>class {|{x=cap_name}|}_Importer</vh>
+<v t="ekr.20161121175840.4"><vh>{|{x=name}|}.Overrides</vh>
+<v t="ekr.20161121175840.5"><vh>{|{x=name}|}.clean_headline</vh></v>
+<v t="ekr.20161121175840.6"><vh>{|{x=name}|}.clean_nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20161121135525.7"><vh>class class {|{x=get("name").capitalize()}|}_ScanState</vh>
-<v t="ekr.20161121135525.8"><vh>{|{x=get("name").lower()}|}_state.level</vh></v>
-<v t="ekr.20161121135525.9"><vh>{|{x=get("name").lower()}|}_state.update</vh></v>
+<v t="ekr.20161121175840.7"><vh>class class {|{x=cap_name}|}_ScanState</vh>
+<v t="ekr.20161121175840.8"><vh>{|{x=name}|}_state.level</vh></v>
+<v t="ekr.20161121175840.9"><vh>{|{x=name}|}_state.update</vh></v>
 </v>
 </v>
 </v>
@@ -2507,6 +2508,7 @@
 </v>
 <v t="ekr.20100904134301.11000"></v>
 <v t="ekr.20161121044950.1"></v>
+<v t="ekr.20150428102831.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -10951,7 +10953,6 @@ except KeyError:
 </t>
 <t tx="ekr.20150428102831.4">def ask(s, default="", prompt=None):
     """Ask, always, for a value for template field 's'"""
-    g.trace('prompt', prompt)
     x = g.app.gui.runAskOkCancelStringDialog(
         c,
         title = s,
@@ -11861,20 +11862,31 @@ Put notes about each version here.
 <t tx="ekr.20161121044950.9">class &lt;|Controller Class Name|&gt;:
     
     @others</t>
-<t tx="ekr.20161121135525.1"></t>
-<t tx="ekr.20161121135525.2">'''
-The @auto importer for the {|{x=get('name',prompt='Enter language name')}|} language.
+<t tx="ekr.20161121172936.1">def get_language():
+    '''Get a language name, and set name and cap_name in the namespace.'''
+    x = g.app.gui.runAskOkCancelStringDialog(
+        c,
+        title = 'Language',
+        message = 'Enter language name. Case does not matter.',
+    )
+    # g.trace('===== x:', repr(x))
+    if not x: x = 'no-language!'
+    _values = c.abbrev_subst_env['name'] = x.lower()
+    _values = c.abbrev_subst_env['cap_name'] = x.capitalize()
+    return x.lower()
+</t>
+<t tx="ekr.20161121175840.1"></t>
+<t tx="ekr.20161121175840.2">'''
+The @auto importer for the {|{x=get_language()}|} language.
 
-Created {|{x=time.strftime("%Y/%m/%d")}|} from the `importer` abbreviation in leoSettings.py.
+Created {|{x=time.strftime("%Y/%m/%d")}|} by the `importer;;` abbreviation.
 '''
-# import leo.core.leoGlobals as g
-# import re
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 @others
 importer_dict = {
-    'class': {|{x=get('name').capitalize()}|}_Importer,
-    'extensions': [&lt;|comma-separated lists of extensions, with leading periods|&gt;],
+    'class': {|{x=cap_name}|}_Importer,
+    'extensions': [&lt;|comma-separated lists of extensions|&gt;],
         # Example: ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++']
 }
 @language python
@@ -11882,25 +11894,25 @@ importer_dict = {
 
 
 </t>
-<t tx="ekr.20161121135525.3">class {|{x=get('name').capitalize()}|}_Importer(Importer):
-    '''The importer for the {|{x=get('name').lower()}|} lanuage.'''
+<t tx="ekr.20161121175840.3">class {|{x=cap_name}|}_Importer(Importer):
+    '''The importer for the {|{x=name}|} lanuage.'''
 
     def __init__(self, importCommands, atAuto):
-        '''{|{x=get('name').capitalize()}|}_Importer.__init__'''
+        '''{|{x=cap_name}|}_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
             atAuto = atAuto,
-            language = '{|{x=get("name").lower()}|}',
-            state_class = {|{x=get('name').capitalize()}|}_ScanState,
+            language = '{|{x=name}|}',
+            state_class = {|{x=cap_name}|}_ScanState,
             strict = &lt;|True leading whitespace is significant. Otherwise False|&gt;,
         )
         
     @others
 </t>
-<t tx="ekr.20161121135525.4"># These can be overridden in subclasses.
+<t tx="ekr.20161121175840.4"># These can be overridden in subclasses.
 </t>
-<t tx="ekr.20161121135525.5">### Define an override if desired...
+<t tx="ekr.20161121175840.5">### Define an override if desired...
 
 if 0: # The base class
     def clean_headline(self, s):
@@ -11910,6 +11922,7 @@ if 0: # The base class
 if 0: # A more complex example, for the C language.
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
+        import re
         type1 = r'(static|extern)*'
         type2 = r'(void|int|float|double|char)*'
         class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
@@ -11927,7 +11940,7 @@ if 0: # A more complex example, for the C language.
         else:
             return s
 </t>
-<t tx="ekr.20161121135525.6">def clean_nodes(self, parent):
+<t tx="ekr.20161121175840.6">def clean_nodes(self, parent):
     '''
     Clean all nodes in parent's tree.
     Subclasses override this as desired.
@@ -11935,11 +11948,11 @@ if 0: # A more complex example, for the C language.
     '''
     pass
 </t>
-<t tx="ekr.20161121135525.7">class {|{x=get('name').capitalize()}|}_ScanState:
-    '''A class representing the state of the {|{x=get('name').lower()}|} line-oriented scan.'''
+<t tx="ekr.20161121175840.7">class {|{x=cap_name}|}_ScanState:
+    '''A class representing the state of the {|{x=name}|} line-oriented scan.'''
     
     def __init__(self, d=None):
-        '''{|{x=get('name').capitalize()}|}_ScanState.__init__'''
+        '''{|{x=cap_name}|}_ScanState.__init__'''
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -11951,9 +11964,9 @@ if 0: # A more complex example, for the C language.
             self.curlies = 0
 
     def __repr__(self):
-        '''{|{x=get('name').capitalize()}|}_ScanState.__repr__'''
+        '''{|{x=cap_name}|}_ScanState.__repr__'''
         ### Adjust these by hand.
-        return "{|{x=get('name').capitalize()}|}_ScanState context: %r curlies: %s" % (
+        return "{|{x=cap_name}|}_ScanState context: %r curlies: %s" % (
             self.context, self.curlies)
 
     __str__ = __repr__
@@ -11961,18 +11974,17 @@ if 0: # A more complex example, for the C language.
     @others
 
 </t>
-<t tx="ekr.20161121135525.8">def level(self):
-    '''{|{x=get('name').capitalize()}|}_ScanState.level.'''
-    return &lt;|level|&gt;
+<t tx="ekr.20161121175840.8">def level(self):
+    '''{|{x=cap_name}|}_ScanState.level.'''
+    return &lt;|self.curlies|&gt;
         ### Examples:
         # self.indent # for python, coffeescript.
         # self.curlies
         # (self, curlies, self.parens)
-        
 </t>
-<t tx="ekr.20161121135525.9">def update(self, data):
+<t tx="ekr.20161121175840.9">def update(self, data):
     '''
-    {|{x=get('name').capitalize()}|}_ScanState.update
+    {|{x=cap_name}|}_ScanState.update
 
     Update the state using the 6-tuple returned by v2_scan_line.
     Return i = data[1]
@@ -11980,9 +11992,9 @@ if 0: # A more complex example, for the C language.
     context, i, delta_c, delta_p, delta_s, bs_nl = data
     # All ScanState classes must have a context ivar.
     self.context = context
-    ### Update the ivars defined in {|{x=get('name').capitalize()}|}_ScanState.__init__
+    self.curlies += delta_c  
+    ### Update {|{x=cap_name}|}_ScanState ivars
     # self.bs_nl = bs_nl
-    # self.curlies += delta_c  
     # self.parens += delta_p
     # self.squares += delta_s
     return i

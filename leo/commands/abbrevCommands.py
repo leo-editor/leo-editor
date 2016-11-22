@@ -430,9 +430,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.trace('**content', repr(content))
             try:
                 self.expanding = True
-                if not c.abbrev_subst_env.get('root'):
-                    if trace: g.trace('===== root:', c.p.h)
-                    c.abbrev_subst_env['root'] = c.p.copy()
                 c.abbrev_subst_env['x'] = ''
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
             finally:
