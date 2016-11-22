@@ -450,6 +450,7 @@ class Position(object):
         '''
         if predicate is None:
 
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -485,6 +486,7 @@ class Position(object):
         '''
         if predicate is None:
 
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 

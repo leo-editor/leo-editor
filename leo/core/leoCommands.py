@@ -6254,7 +6254,8 @@ class Commands(object):
         '''
         c = self
         if predicate is None:
-        
+
+            # pylint: disable=function-redefined    
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6278,7 +6279,8 @@ class Commands(object):
         '''
         c = self
         if predicate is None:
-            
+
+            # pylint: disable=function-redefined        
             def predicate(p):
                 return p.isAnyAtFileNode()
 
