@@ -238,23 +238,23 @@
 <v t="ekr.20161120175101.1"><vh>@button make-md-heads</vh>
 <v t="ekr.20161120175101.2"><vh>markup</vh></v>
 </v>
-<v t="ekr.20161122031444.1"><vh>@button make-importer</vh>
-<v t="ekr.20161122031444.2"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
-<v t="ekr.20161122031444.3"><vh>copy_tree</vh></v>
-<v t="ekr.20161122031444.4"><vh>make_substitutions</vh></v>
-<v t="ekr.20161122031444.5"><vh>run</vh></v>
-<v t="ekr.20161122031444.6"><vh>substitue</vh></v>
+<v t="ekr.20161122062926.1"><vh>@button make-importer</vh>
+<v t="ekr.20161122062926.2"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
+<v t="ekr.20161122062926.3"><vh>copy_tree</vh></v>
+<v t="ekr.20161122062926.4"><vh>make_substitutions</vh></v>
+<v t="ekr.20161122062926.5"><vh>run</vh></v>
+<v t="ekr.20161122062926.6"><vh>substitue</vh></v>
 </v>
-<v t="ekr.20161122031444.7"><vh>@@file importers/{{name}}.py</vh>
-<v t="ekr.20161122031444.8"><vh>class {{cap_name}}_Importer</vh>
-<v t="ekr.20161122031444.9"><vh>{{name}}.Overrides</vh>
-<v t="ekr.20161122031444.10"><vh>{{name}}.clean_headline</vh></v>
-<v t="ekr.20161122031444.11"><vh>{{name}}.clean_nodes</vh></v>
+<v t="ekr.20161122062926.7"><vh>@@file importers/{{name}}.py</vh>
+<v t="ekr.20161122062926.8"><vh>class {{cap_name}}_Importer</vh>
+<v t="ekr.20161122062926.9"><vh>{{name}}.Overrides</vh>
+<v t="ekr.20161122062926.10"><vh>{{name}}.clean_headline</vh></v>
+<v t="ekr.20161122062926.11"><vh>{{name}}.clean_nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20161122031444.12"><vh>class class {{cap_name}}_ScanState</vh>
-<v t="ekr.20161122031444.13"><vh>{{name}}_state.level</vh></v>
-<v t="ekr.20161122031444.14"><vh>{{name}}_state.update</vh></v>
+<v t="ekr.20161122062926.12"><vh>class class {{cap_name}}_ScanState</vh>
+<v t="ekr.20161122062926.13"><vh>{{name}}_state.level</vh></v>
+<v t="ekr.20161122062926.14"><vh>{{name}}_state.update</vh></v>
 </v>
 </v>
 </v>
@@ -2752,7 +2752,7 @@ def markup(p, root):
         c.setChanged(True)
         p.b = s
 </t>
-<t tx="ekr.20161122031444.1">g.cls()
+<t tx="ekr.20161122062926.1">g.cls()
 # define constants that describe the new language.
 name = 'html'
     # The name of the language, case doesn't matter.
@@ -2767,7 +2767,7 @@ state_ivar = 'self.tag_level'
 &lt;&lt; define run &amp; helpers &gt;&gt;
 run(extensions, name, state_ivar)
 </t>
-<t tx="ekr.20161122031444.10">### Define an override if desired...
+<t tx="ekr.20161122062926.10">### Define an override if desired...
 
 if 0: # The base class
     def clean_headline(self, s):
@@ -2795,7 +2795,7 @@ if 0: # A more complex example, for the C language.
         else:
             return s
 </t>
-<t tx="ekr.20161122031444.11">def clean_nodes(self, parent):
+<t tx="ekr.20161122062926.11">def clean_nodes(self, parent):
     '''
     Clean all nodes in parent's tree.
     Subclasses override this as desired.
@@ -2803,7 +2803,7 @@ if 0: # A more complex example, for the C language.
     '''
     pass
 </t>
-<t tx="ekr.20161122031444.12">class {{cap_name}}_ScanState:
+<t tx="ekr.20161122062926.12">class {{cap_name}}_ScanState:
     '''A class representing the state of the {{name}} line-oriented scan.'''
     
     def __init__(self, d=None):
@@ -2828,7 +2828,7 @@ if 0: # A more complex example, for the C language.
 
     @others
 </t>
-<t tx="ekr.20161122031444.13">def level(self):
+<t tx="ekr.20161122062926.13">def level(self):
     '''{{cap_name}}_ScanState.level.'''
     return {{state_ivar}}
         ### Examples:
@@ -2836,7 +2836,7 @@ if 0: # A more complex example, for the C language.
         # self.curlies
         # (self, curlies, self.parens)
 </t>
-<t tx="ekr.20161122031444.14">def update(self, data):
+<t tx="ekr.20161122062926.14">def update(self, data):
     '''
     {{cap_name}}_ScanState.update
 
@@ -2853,18 +2853,15 @@ if 0: # A more complex example, for the C language.
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20161122031444.2">@others</t>
-<t tx="ekr.20161122031444.3">def copy_tree(source, root, h):
+<t tx="ekr.20161122062926.2">@others</t>
+<t tx="ekr.20161122062926.3">def copy_tree(source, root, h):
     '''Copy the source tree to the node after p, with headline h.'''
-    c.selectPosition(source)
-    c.k.simulateCommand('copy-node')
-    c.k.simulateCommand('contract-all')
-    c.redraw()
-    c.selectPosition(root)
-    c.k.simulateCommand('paste-node')
-    return c.p
-</t>
-<t tx="ekr.20161122031444.4">def make_substitutions(destination, patterns):
+    p2 = root.insertAfter()
+    source.copyTreeFromSelfTo(p2)
+    p2.h = h
+    return p2
+ </t>
+<t tx="ekr.20161122062926.4">def make_substitutions(destination, patterns):
     '''Make all substitutions in the destination tree.'''
     for p in destination.self_and_subtree():
         h = substitute(p.h, patterns)
@@ -2876,7 +2873,7 @@ if 0: # A more complex example, for the C language.
             # g.trace('CHANGED:', p.b, '==&gt;', b)
             p.b = b
 </t>
-<t tx="ekr.20161122031444.5">def run(extensions, name, state_ivar):
+<t tx="ekr.20161122062926.5">def run(extensions, name, state_ivar):
     '''The driver for this script.'''
     patterns = {
         'cap_name': name.capitalize(),
@@ -2893,8 +2890,9 @@ if 0: # A more complex example, for the C language.
     assert source, h
     destination = copy_tree(source, root, h)
     make_substitutions(destination, patterns)
+    c.contractAllHeadlines()
     c.redraw()</t>
-<t tx="ekr.20161122031444.6">def substitute(s, patterns):
+<t tx="ekr.20161122062926.6">def substitute(s, patterns):
     '''Make all substitutions in s.'''
     for pattern in patterns:
         find = '{{%s}}' % pattern
@@ -2909,7 +2907,7 @@ if 0: # A more complex example, for the C language.
             assert progress &lt; i
     return s
 </t>
-<t tx="ekr.20161122031444.7">'''The @auto importer for the {{name}} language.'''
+<t tx="ekr.20161122062926.7">'''The @auto importer for the {{name}} language.'''
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 @others
@@ -2922,7 +2920,7 @@ importer_dict = {
 
 
 </t>
-<t tx="ekr.20161122031444.8">class {{cap_name}}_Importer(Importer):
+<t tx="ekr.20161122062926.8">class {{cap_name}}_Importer(Importer):
     '''The importer for the {{name}} lanuage.'''
 
     def __init__(self, importCommands, atAuto):
@@ -2938,7 +2936,7 @@ importer_dict = {
         
     @others
 </t>
-<t tx="ekr.20161122031444.9"># These can be overridden in subclasses.
+<t tx="ekr.20161122062926.9"># These can be overridden in subclasses.
 </t>
 </tnodes>
 </leo_file>
