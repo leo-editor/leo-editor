@@ -24,23 +24,13 @@ class Csharp_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161121200106.4: *3* csharp.Overrides
-    # These can be overridden in subclasses.
-    #@+node:ekr.20161121200106.5: *4* csharp.clean_headline
+    #@+node:ekr.20161121200106.5: *3* csharp.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         if s.endswith('{'):
             s = s[:-1].strip()
         return s
-    #@+node:ekr.20161121200106.6: *4* csharp.clean_nodes
-    def clean_nodes(self, parent):
-        '''
-        Clean all nodes in parent's tree.
-        Subclasses override this as desired.
-        See perl_i.clean_nodes for an examplle.
-        '''
-        pass
     #@-others
 #@+node:ekr.20161121200106.7: ** class class Csharp_ScanState
 class Csharp_ScanState:
