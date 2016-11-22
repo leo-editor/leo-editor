@@ -14,35 +14,66 @@ Importer instance and calls `i.run`, which calls `i.scan_lines`.
 The `Importer` class replaces the horribly complex BaseScanner class.
 It encapsulates *all* language-dependent knowledge.
 
-New importers, for example, the javascript and perl importers, copy
-entire lines from the input file to Leo nodes. This makes the new
-importers much less error prone than the legacy
+New importers copy entire lines from the input file to Leo nodes. This
+makes the new importers much less error prone than the legacy
 (character-by-character) importers.
 
-New importers *nothing* about parsing. They know only about how to
-scan tokens *accurately*. Again, this makes the new importers more
-simple and robust than the legacy importers.
-
-New importers are simple to write because the `Importer` class handles
-complex details. Typical importer subclass will override the following methods:
-
-- `i.run`: For complete controll of scanning.
-
-- `i.scan_line`: Straightforward token-scanning code used by `i.v2_gen_lines`.
-
-  If desired, `i.scan_line` can just call `i.general_scan_line`.
-  
-- `i.clean_headline`: Massage the definition line so it looks good in a headline.
+New importers know *nothing* about parsing. They know only about how to
+scan tokens *accurately*.
 
 **Writing a new importer**
 
-Do the following:
+Just run the importer;; abbreviation!
 
-1. Create a new subclass of the `Importer` class.
+To make the importer importer;; functional you must:
 
-2. Override the `clean_headline method` and `scan_line` methods.
+1. Copy it from leoSettings (@settings-->Abbreviations-->@outline-data tree-abbreviations) to the corresponding location in myLeoSettings.leo.
 
-`scan_line` updates the net number of curly brackets and parens at the end of each line. `scan_line` must compute these numbers *accurately*, taking into account constructs such as multi-line comments, strings and regular expressions.
+2. Make sure @bool scripting-abbreviations is True in myLeoSettings.leo.
+
+**Using the abbreviation**
+
+1. Just type importer;; in the body pane of an empty node.
+
+A dialog will prompt you for the name of the language.  Suppose you type x.
+
+2. Now you will be prompted for to fill in the first field::
+
+    'extensions': [comma-separated lists of extensions, with leading periods],
+
+The italicized field will be highlighted.  Type '.x' (including quotes) followed by two commas.
+
+3. You will then be prompted to fill in the second field::
+
+    strict = True leading whitespace is significant. Otherwise False,
+
+Again, the italicized field will be highlighted.
+
+Type False, followed by two commas.
+
+4. You will then be prompted for the last field::
+
+    return level
+        ### Examples:
+        # self.indent # for python, coffeescript.
+        # self.curlies
+        # (self, curlies, self.parens)
+   
+Only "level" is highlighted. The comments provide some hints about what to type.
+
+Let's type "self.curlies" followed by two commas.
+
+5. Nothing more is highlighted, so that's it! No more substitutions remain.
+   The outline is ready to use!
+
+Take a look at the result. The new tree is an almost complete @@file node
+for the importer. Subtrees contain an X_Importer class and an X_ScanState
+class. Docstrings, ctors and __repr__ methods are complete.
+
+Note: The generated tree contain ### comments showing where more work may
+be needed. I might remove the need for some of them, but there is no great
+need to do so.
+
 '''
 #@-<< linescanner docstring >>
 #@+<< linescanner imports >>
