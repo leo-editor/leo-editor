@@ -11876,11 +11876,7 @@ Put notes about each version here.
     return x.lower()
 </t>
 <t tx="ekr.20161121175840.1"></t>
-<t tx="ekr.20161121175840.2">'''
-The @auto importer for the {|{x=get_language()}|} language.
-
-Created {|{x=time.strftime("%Y/%m/%d")}|} by the `importer;;` abbreviation.
-'''
+<t tx="ekr.20161121175840.2">'''The @auto importer for the {|{x=get_language()}|} language.'''
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 @others

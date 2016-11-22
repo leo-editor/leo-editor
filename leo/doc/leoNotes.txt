@@ -30162,6 +30162,10 @@ def replace_in_headlines(find, replace):
             # p.h = h
     # _values[s] = x
     return ''
+.. @+node:ekr.20161121211905.1: *3* From importer;; abbreviation
+From docstring:
+    
+# Created {|{x=time.strftime("%Y/%m/%d")}|} by the `importer;;` abbreviation.
 .. @-all
 .. @@nosearch
 .. @-leo
