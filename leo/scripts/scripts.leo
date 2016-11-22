@@ -238,6 +238,26 @@
 <v t="ekr.20161120175101.1"><vh>@button make-md-heads</vh>
 <v t="ekr.20161120175101.2"><vh>markup</vh></v>
 </v>
+<v t="ekr.20161122030051.1"><vh>@button make-importer</vh>
+<v t="ekr.20161122030051.2"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
+<v t="ekr.20161122030051.3"><vh>copy_tree</vh></v>
+<v t="ekr.20161122030051.4"><vh>make_substitutions</vh></v>
+<v t="ekr.20161122030051.5"><vh>run</vh></v>
+<v t="ekr.20161122030051.6"><vh>substitue</vh></v>
+</v>
+<v t="ekr.20161122030051.7"><vh>@@file importers/{{name}}.py</vh>
+<v t="ekr.20161122030051.8"><vh>class {{cap_name}}_Importer</vh>
+<v t="ekr.20161122030051.9"><vh>{{name}}.Overrides</vh>
+<v t="ekr.20161122030051.10"><vh>{{name}}.clean_headline</vh></v>
+<v t="ekr.20161122030051.11"><vh>{{name}}.clean_nodes</vh></v>
+</v>
+</v>
+<v t="ekr.20161122030051.12"><vh>class class {{cap_name}}_ScanState</vh>
+<v t="ekr.20161122030051.13"><vh>{{name}}_state.level</vh></v>
+<v t="ekr.20161122030051.14"><vh>{{name}}_state.update</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2731,6 +2751,193 @@ def markup(p, root):
         p.setDirty()
         c.setChanged(True)
         p.b = s
+</t>
+<t tx="ekr.20161122030051.1">g.cls()
+# define constants that describe the new language.
+name = 'html'
+    # The name of the language, case doesn't matter.
+extensions = ['.html',]
+    # A list of file extensions supported by this importer.
+state_ivar = 'self.tag_level'
+    # 'self.indent' for python, coffeescript.
+    # 'self.curlies' for many other languages
+    # '(self, curlies, self.parens)' for more complex comparisons
+&lt;&lt; define run &amp; helpers &gt;&gt;
+run(extensions, name, state_ivar)
+</t>
+<t tx="ekr.20161122030051.10">### Define an override if desired...
+
+if 0: # The base class
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        return s.strip()
+        
+if 0: # A more complex example, for the C language.
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        import re
+        type1 = r'(static|extern)*'
+        type2 = r'(void|int|float|double|char)*'
+        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
+        m = re.match(class_pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            return '%sclass %s' % (prefix1, m.group(2))
+        m = re.match(pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+            h = m.group(3) or '&lt;no c function name&gt;'
+            return '%s%s%s' % (prefix1, prefix2, h)
+        else:
+            return s
+</t>
+<t tx="ekr.20161122030051.11">def clean_nodes(self, parent):
+    '''
+    Clean all nodes in parent's tree.
+    Subclasses override this as desired.
+    See perl_i.clean_nodes for an examplle.
+    '''
+    pass
+</t>
+<t tx="ekr.20161122030051.12">class {{cap_name}}_ScanState:
+    '''A class representing the state of the {{name}} line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''{{cap_name}}_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            ### Adjust these by hand.
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            ### Adjust these by hand.
+            self.curlies = 0
+
+    def __repr__(self):
+        '''{{cap_name}}_ScanState.__repr__'''
+        ### Adjust these by hand.
+        return "{{cap_name}}_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    @others
+
+</t>
+<t tx="ekr.20161122030051.13">def level(self):
+    '''{{cap_name}}_ScanState.level.'''
+    return {{state_ivar}}
+        ### Examples:
+        # self.indent # for python, coffeescript.
+        # self.curlies
+        # (self, curlies, self.parens)
+</t>
+<t tx="ekr.20161122030051.14">def update(self, data):
+    '''
+    {{cap_name}}_ScanState.update
+
+    Update the state using the 6-tuple returned by v2_scan_line.
+    Return i = data[1]
+    '''
+    context, i, delta_c, delta_p, delta_s, bs_nl = data
+    # All ScanState classes must have a context ivar.
+    self.context = context
+    self.curlies += delta_c  
+    ### Update {{cap_name}}_ScanState ivars
+    # self.bs_nl = bs_nl
+    # self.parens += delta_p
+    # self.squares += delta_s
+    return i
+</t>
+<t tx="ekr.20161122030051.2">@others</t>
+<t tx="ekr.20161122030051.3">def copy_tree(source, root, h):
+    '''Copy the source tree to the node after p, with headline h.'''
+    c.selectPosition(source)
+    c.k.simulateCommand('copy-node')
+    c.k.simulateCommand('contract-all')
+    c.redraw()
+    c.selectPosition(root)
+    c.k.simulateCommand('paste-node')
+    return c.p
+</t>
+<t tx="ekr.20161122030051.4">def make_substitutions(destination, patterns):
+    '''Make all substitutions in the destination tree.'''
+    for p in destination.self_and_subtree():
+        h = substitute(p.h, patterns)
+        if p.h != h:
+            # g.trace('CHANGED:', p.h, '==&gt;', h)
+            p.h = h
+        b = substitute(p.b, patterns)
+        if p.b != b:
+            # g.trace('CHANGED:', p.b, '==&gt;', b)
+            p.b = b
+</t>
+<t tx="ekr.20161122030051.5">def run(extensions, name, state_ivar):
+    '''The driver for this script.'''
+    patterns = {
+        'cap_name': name.capitalize(),
+        'extensions': '[%s]' % ', '.join(extensions),
+        'name': name.lower(),
+        'state_ivar': state_ivar,
+    }
+    h = '@button make-importer'
+    root = g.findNodeAnywhere(c, h)
+    assert root, h
+    h = '@@file importers/{{name}}.py'
+    source = g.findNodeInTree(c, root, h)
+    assert source, h
+    destination = copy_tree(source, root, h)
+    make_substitutions(destination, patterns)
+    c.redraw()</t>
+<t tx="ekr.20161122030051.6">def substitute(s, patterns):
+    '''Make all substitutions in s.'''
+    for pattern in patterns:
+        find = '{{%s}}' % pattern
+        replace = patterns.get(pattern)
+        i = 0
+        while i &lt; len(s):
+            progress = i
+            j = s.find(find, i)
+            if j == -1: break
+            s = s[:j] + replace + s[j+len(find):]
+            i = j+len(replace)
+            assert progress &lt; i
+    return s
+</t>
+<t tx="ekr.20161122030051.7">'''The @auto importer for the {{name}} language.'''
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
+@others
+importer_dict = {
+    'class': {{cap_name}}_Importer,
+    'extensions': [&lt;|comma-separated lists of extensions|&gt;],
+        # Example: ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++']
+}
+@language python
+@tabwidth -4
+
+
+</t>
+<t tx="ekr.20161122030051.8">class {{cap_name}}_Importer(Importer):
+    '''The importer for the {{name}} lanuage.'''
+
+    def __init__(self, importCommands, atAuto):
+        '''{{cap_name}}_Importer.__init__'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = '{{name}}',
+            state_class = {{cap_name}}_ScanState,
+            strict = &lt;|True leading whitespace is significant. Otherwise False|&gt;,
+        )
+        
+    @others
+</t>
+<t tx="ekr.20161122030051.9"># These can be overridden in subclasses.
 </t>
 </tnodes>
 </leo_file>
