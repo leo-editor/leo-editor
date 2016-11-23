@@ -262,7 +262,6 @@ class CS_ScanState:
             is_ws_line = d.get('is_ws_line')
             prev = d.get('prev')
             assert indent is not None and is_ws_line is not None
-            self.ws = is_ws_line and prev.context != 'bs-nl'
             self.bs_nl = False
             self.context = prev.context
             self.indent = prev.indent if prev.bs_nl else indent
@@ -270,14 +269,12 @@ class CS_ScanState:
             self.bs_nl = False
             self.context = ''
             self.indent = 0
-            self.starts = self.ws = False
 
     #@+others
     #@+node:ekr.20161118064325.1: *3* cs_state.__repr__
     def __repr__(self):
         '''CS_State.__repr__'''
-        return '<CSState %r indent: %s starts: %s ws: %s>' % (
-            self.context, self.indent, int(self.starts), int(self.ws))
+        return '<CSState %r indent: %s>' % (self.context, self.indent)
 
     __str__ = __repr__
     #@+node:ekr.20161119115413.1: *3* cs_state.level
@@ -287,13 +284,7 @@ class CS_ScanState:
     #@+node:ekr.20161118140100.1: *3* cs_state.in_context
     def in_context(self):
         '''True if in a special context.'''
-        return (
-            self.context or
-            # self.curlies > 0 or
-            # self.parens > 0 or
-            # self.squares > 0 or
-            self.bs_nl
-        )
+        return self.context or self.bs_nl
     #@+node:ekr.20161119052920.1: *3* cs_state.update
     def update(self, data):
         '''

@@ -219,7 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -629,6 +629,9 @@
 <v t="ekr.20161123004945.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161123004945.34"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161123012354.8"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161123012354.9"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -657,6 +660,9 @@
 </v>
 <v t="ekr.20161123004946.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161123004946.2"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161123012354.10"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161123012354.11"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -766,9 +772,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4774"></v>
-<v t="ekr.20090529141856.4780"></v>
-<v t="ekr.20111029112647.4099"></v>
-<v t="ekr.20161103015908.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1222,7 +1225,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -7163,6 +7166,50 @@ def abc(self):
 </t>
 <t tx="ekr.20161123012127.9">&lt;link id="L1"&gt;
     @others
+</t>
+<t tx="ekr.20161123012354.10">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123012354.11">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161123012354.8">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123012354.9">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 </t>
 </tnodes>
 </leo_file>
