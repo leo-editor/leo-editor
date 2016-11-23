@@ -330,7 +330,7 @@ class Importer(object):
 
         comment, block1, block2 = self.single_comment, self.block1, self.block2
             
-        table = (
+        table = [
             # in-ctx: the next context when the pattern matches the line *and* the context.
             # out-ctx:the next context when the pattern matches the line *outside* any context.
             # deltas: the change to the indicated counts.  Always zero when inside a context.
@@ -348,7 +348,7 @@ class Importer(object):
             ('len',   ')',     context,   context,  0,       d(-1),   0),
             ('len',   '[',     context,   context,  0,       0,       d(1)),
             ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        )
+        ]
         if trace: g.trace('created table for python state', repr(context))
         return table
     #@+node:ekr.20161113135037.1: *4* i.get_table
@@ -561,7 +561,7 @@ class Importer(object):
         # Create a new child and associated target.
         child = self.v2_create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
-    #@+node:ekr.20161119124217.1: *6* i.starts_block (new)
+    #@+node:ekr.20161119124217.1: *6* i.starts_block
     def starts_block(self, line, new_state, prev_state):
         '''True if the new state starts a block.'''
         return new_state.level() > prev_state.level()
@@ -889,9 +889,10 @@ class Importer(object):
         if trace: g.trace('='*20, repr(context))
         # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
         for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
-            if self.match(s, i, pattern):
+            # pattern may be None in the general table,
+            # because not all languages have all comment delims.
+            if pattern and self.match(s, i, pattern):
                 assert kind in ('all', 'len', 'len+1'), kind
-                assert pattern, pattern
                 # Backslash patterns must match in all contexts!
                 if pattern.startswith('\\'):
                     ok = True

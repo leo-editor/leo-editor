@@ -117,6 +117,7 @@
 </v>
 <v t="ekr.20111123042627.6654"></v>
 <v t="ekr.20111112093605.4679"></v>
+<v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -219,7 +220,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -281,10 +283,10 @@
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -295,12 +297,12 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh>
 <v t="ekr.20161123080717.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/coffeescript-1</vh>
 <v t="ekr.20161123080717.2"><vh>buildCoffee = (str) -&gt;</vh></v>
@@ -644,15 +646,129 @@
 <v t="ekr.20161123085600.109"><vh>toString: -&gt; @message</vh></v>
 </v>
 </v>
+<v t="ekr.20161123114539.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/coffeescript-1</vh>
+<v t="ekr.20161123114539.22"><vh>buildCoffee = (str) -&gt;</vh></v>
+<v t="ekr.20161123114539.23"><vh>class Builder</vh>
+<v t="ekr.20161123114539.24"><vh>constructor: -&gt;</vh></v>
+<v t="ekr.20161123114539.25"><vh>build: (args...) -&gt;</vh></v>
+<v t="ekr.20161123114539.26"><vh>transform: (args...) -&gt;</vh></v>
+<v t="ekr.20161123114539.27"><vh>body: (node, opts={}) -&gt;</vh></v>
+<v t="ekr.20161123114539.28"><vh>'script': (n, opts={}) -&gt;</vh></v>
+<v t="ekr.20161123114539.29"><vh>'property_identifier': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.30"><vh>'identifier': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.31"><vh>'number': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.32"><vh>'id': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.33"><vh>'id_param': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.34"><vh>'return': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.35"><vh>';': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.36"><vh>'new': (n) -&gt; "new #{@build n.left()}"</vh></v>
+<v t="ekr.20161123114539.37"><vh>'new_with_args': (n) -&gt; "new #{@build n.left()}(#{@build n.right()})"</vh></v>
+<v t="ekr.20161123114539.38"><vh>'unary_plus': (n) -&gt; "+#{@build n.left()}"</vh></v>
+<v t="ekr.20161123114539.39"><vh>'unary_minus': (n) -&gt; "-#{@build n.left()}"</vh></v>
+<v t="ekr.20161123114539.40"><vh>'this': (n) -&gt; 'this'</vh></v>
+<v t="ekr.20161123114539.41"><vh>'null': (n) -&gt; 'null'</vh></v>
+<v t="ekr.20161123114539.42"><vh>'true': (n) -&gt; 'true'</vh></v>
+<v t="ekr.20161123114539.43"><vh>'false': (n) -&gt; 'false'</vh></v>
+<v t="ekr.20161123114539.44"><vh>'void': (n) -&gt; 'undefined'</vh></v>
+<v t="ekr.20161123114539.45"><vh>'debugger': (n) -&gt; "debugger\n"</vh></v>
+<v t="ekr.20161123114539.46"><vh>'break': (n) -&gt; "break\n"</vh></v>
+<v t="ekr.20161123114539.47"><vh>'continue': (n) -&gt; "continue\n"</vh></v>
+<v t="ekr.20161123114539.48"><vh>'~': (n) -&gt; "~#{@build n.left()}"</vh></v>
+<v t="ekr.20161123114539.49"><vh>'typeof': (n) -&gt; "typeof #{@build n.left()}"</vh></v>
+<v t="ekr.20161123114539.50"><vh>'index': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.51"><vh>'throw': (n) -&gt; "throw #{@build n.exception}"</vh></v>
+<v t="ekr.20161123114539.52"><vh>'!': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.53"><vh>in: (n) -&gt;    @binary_operator n, 'of'</vh></v>
+<v t="ekr.20161123114539.54"><vh>'+': (n) -&gt;   @binary_operator n, '+'</vh></v>
+<v t="ekr.20161123114539.55"><vh>'-': (n) -&gt;   @binary_operator n, '-'</vh></v>
+<v t="ekr.20161123114539.56"><vh>'*': (n) -&gt;   @binary_operator n, '*'</vh></v>
+<v t="ekr.20161123114539.57"><vh>'/': (n) -&gt;   @binary_operator n, '/'</vh></v>
+<v t="ekr.20161123114539.58"><vh>'%': (n) -&gt;   @binary_operator n, '%'</vh></v>
+<v t="ekr.20161123114539.59"><vh>'&gt;': (n) -&gt;   @binary_operator n, '&gt;'</vh></v>
+<v t="ekr.20161123114539.60"><vh>'&lt;': (n) -&gt;   @binary_operator n, '&lt;'</vh></v>
+<v t="ekr.20161123114539.61"><vh>'&amp;': (n) -&gt;   @binary_operator n, '&amp;'</vh></v>
+<v t="ekr.20161123114539.62"><vh>'|': (n) -&gt;   @binary_operator n, '|'</vh></v>
+<v t="ekr.20161123114539.63"><vh>'^': (n) -&gt;   @binary_operator n, '^'</vh></v>
+<v t="ekr.20161123114539.64"><vh>'&amp;&amp;': (n) -&gt;  @binary_operator n, 'and'</vh></v>
+<v t="ekr.20161123114539.65"><vh>'||': (n) -&gt;  @binary_operator n, 'or'</vh></v>
+<v t="ekr.20161123114539.66"><vh>'&lt;&lt;': (n) -&gt;  @binary_operator n, '&lt;&lt;'</vh></v>
+<v t="ekr.20161123114539.67"><vh>'&lt;=': (n) -&gt;  @binary_operator n, '&lt;='</vh></v>
+<v t="ekr.20161123114539.68"><vh>'&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;'</vh></v>
+<v t="ekr.20161123114539.69"><vh>'&gt;=': (n) -&gt;  @binary_operator n, '&gt;='</vh></v>
+<v t="ekr.20161123114539.70"><vh>'===': (n) -&gt; @binary_operator n, 'is'</vh></v>
+<v t="ekr.20161123114539.71"><vh>'!==': (n) -&gt; @binary_operator n, 'isnt'</vh></v>
+<v t="ekr.20161123114539.72"><vh>'&gt;&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;&gt;'</vh></v>
+<v t="ekr.20161123114539.73"><vh>instanceof: (n) -&gt; @binary_operator n, 'instanceof'</vh></v>
+<v t="ekr.20161123114539.74"><vh>'==': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.75"><vh>'!=': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.76"><vh>'binary_operator': do -&gt;</vh></v>
+<v t="ekr.20161123114539.77"><vh>'--': (n) -&gt; @increment_decrement n, '--'</vh></v>
+<v t="ekr.20161123114539.78"><vh>'++': (n) -&gt; @increment_decrement n, '++'</vh></v>
+<v t="ekr.20161123114539.79"><vh>'increment_decrement': (n, sign) -&gt;</vh></v>
+<v t="ekr.20161123114539.80"><vh>'=': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.81"><vh>',': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.82"><vh>'regexp': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.83"><vh>'string': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.84"><vh>'call': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.85"><vh>'call_statement': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.86"><vh>'list': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.87"><vh>'delete': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.88"><vh>'.': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.89"><vh>'try': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.90"><vh>'catch': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.91"><vh>'?': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.92"><vh>'for': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.93"><vh>'for_in': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.94"><vh>'while': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.95"><vh>'do': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.96"><vh>'if': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.97"><vh>'switch': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.98"><vh>'existence_check': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.99"><vh>'array_init': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.100"><vh>'property_init': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.101"><vh>'object_init': (n, options={}) -&gt;</vh></v>
+<v t="ekr.20161123114539.102"><vh>'function': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.103"><vh>'var': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.104"><vh>'other': (n) -&gt;   @unsupported n, "#{n.typeName()} is not supported yet"</vh></v>
+<v t="ekr.20161123114539.105"><vh>'getter': (n) -&gt;  @unsupported n, "getter syntax is not supported; use __defineGetter__"</vh></v>
+<v t="ekr.20161123114539.106"><vh>'setter': (n) -&gt;  @unsupported n, "setter syntax is not supported; use __defineSetter__"</vh></v>
+<v t="ekr.20161123114539.107"><vh>'label': (n) -&gt;   @unsupported n, "labels are not supported by CoffeeScript"</vh></v>
+<v t="ekr.20161123114539.108"><vh>'const': (n) -&gt;   @unsupported n, "consts are not supported by CoffeeScript"</vh></v>
+<v t="ekr.20161123114539.109"><vh>'block': (args...) -&gt;</vh></v>
+<v t="ekr.20161123114539.110"><vh>'unsupported': (node, message) -&gt;</vh></v>
+</v>
+<v t="ekr.20161123114539.111"><vh>class Transformer</vh>
+<v t="ekr.20161123114539.112"><vh>transform: (args...) -&gt;</vh></v>
+<v t="ekr.20161123114539.113"><vh>'script': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.114"><vh>'.': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.115"><vh>';': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.116"><vh>'function': (n) -&gt;</vh>
+<v t="ekr.20161123114539.117"><vh>n.body.walk last: true, (parent, node, list) -&gt;</vh></v>
+</v>
+<v t="ekr.20161123114539.118"><vh>'switch': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.119"><vh>'call_statement': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.120"><vh>'return': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.121"><vh>'block': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.122"><vh>'if': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.123"><vh>'while': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.124"><vh>'inversible': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.125"><vh>'==': (n) -&gt;</vh></v>
+<v t="ekr.20161123114539.126"><vh>'!=': (n) -&gt;</vh></v>
+</v>
+<v t="ekr.20161123114539.127"><vh>class UnsupportedError</vh>
+<v t="ekr.20161123114539.128"><vh>constructor: (str, src) -&gt;</vh></v>
+<v t="ekr.20161123114539.129"><vh>toString: -&gt; @message</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh>
 <v t="ekr.20161122160952.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
@@ -689,6 +805,12 @@
 <v t="ekr.20161123012126.2"><vh>&lt;html&gt;</vh>
 <v t="ekr.20161123012126.3"><vh>&lt;head&gt;</vh></v>
 <v t="ekr.20161123012126.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123114540.18"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123114540.19"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123114540.20"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123114540.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
 </v>
 </v>
 </v>
@@ -873,6 +995,42 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161123114540.22"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123114540.23"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123114540.24"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123114540.25"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123114540.26"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123114540.27"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123114540.28"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123114540.29"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123114540.30"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123114540.31"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123114540.32"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123114540.33"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123114540.34"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123114540.35"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123114540.36"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123114540.37"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123114540.38"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123114540.39"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123114540.40"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123114540.41"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
@@ -916,12 +1074,21 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161123114541.11"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161123114541.12"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123114541.13"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161123114541.14"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161123114541.15"><vh>&lt;link id="L2"&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -929,7 +1096,7 @@
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -937,10 +1104,10 @@
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
@@ -975,6 +1142,9 @@
 <v t="ekr.20161123012354.8"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161123012354.9"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161123114542.14"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161123114542.15"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -1007,14 +1177,17 @@
 <v t="ekr.20161123012354.10"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161123012354.11"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161123114542.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161123114542.17"><vh>sub test1</vh></v>
 </v>
 </v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+</v>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -1050,6 +1223,12 @@
 <v t="ekr.20161123004947.4"><vh>abc</vh></v>
 </v>
 </v>
+<v t="ekr.20161123114543.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161123114543.20"><vh>class Index</vh>
+<v t="ekr.20161123114543.21"><vh>index</vh></v>
+<v t="ekr.20161123114543.22"><vh>abc</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
@@ -1076,22 +1255,22 @@
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
@@ -1100,7 +1279,7 @@
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
-<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -1114,9 +1293,6 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"></v>
-<v t="ekr.20161108034116.1"></v>
-<v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1570,7 +1746,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="8">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2682,7 +2858,7 @@ class FlagsEnum extends Enum {
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20100803234640.5804"></t>
-<t tx="ekr.20100803234640.5805">s = '''\
+<t tx="ekr.20100803234640.5805">s = r'''
 ; last modified 1 April 2001 by John Doe
 [owner]
 name=John Doe
@@ -2693,9 +2869,18 @@ server=192.0.2.62     ; use IP address in case network name resolution is not wo
 port=143
 file = "payroll.dat"
 '''
+table = ('[owner]', '[database]')
+try:
+    c.importCommands.iniUnitTest(p,s=s,showTree=True)
+    if 1:
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 
-
-c.importCommands.iniUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -7819,7 +8004,7 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123080717.109">toString: -&gt; @message
 
-\\-2.# ## Exports
+# ## Exports
 
 </t>
 <t tx="ekr.20161123080717.11">'number': (n) -&gt;
@@ -8454,9 +8639,9 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123080717.90">'unsupported': (node, message) -&gt;
   throw new UnsupportedError("Unsupported: #{message}", node)
-\\-2.# ## AST manipulation
-\\-2.# Manipulation of the abstract syntax tree happens here. All these are done on
-\\-2.# the `build()` step, done just before a node is passed onto `Builders`.
+# ## AST manipulation
+# Manipulation of the abstract syntax tree happens here. All these are done on
+# the `build()` step, done just before a node is passed onto `Builders`.
 
 </t>
 <t tx="ekr.20161123080717.91">class Transformer
@@ -8666,7 +8851,7 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123085124.109">toString: -&gt; @message
 
-\\-2.# ## Exports
+# ## Exports
 
 </t>
 <t tx="ekr.20161123085124.11">'number': (n) -&gt;
@@ -9301,9 +9486,9 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123085124.90">'unsupported': (node, message) -&gt;
   throw new UnsupportedError("Unsupported: #{message}", node)
-\\-2.# ## AST manipulation
-\\-2.# Manipulation of the abstract syntax tree happens here. All these are done on
-\\-2.# the `build()` step, done just before a node is passed onto `Builders`.
+# ## AST manipulation
+# Manipulation of the abstract syntax tree happens here. All these are done on
+# the `build()` step, done just before a node is passed onto `Builders`.
 
 </t>
 <t tx="ekr.20161123085124.91">class Transformer
@@ -9505,7 +9690,7 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123085600.109">toString: -&gt; @message
 
-\\-2.# ## Exports
+# ## Exports
 
 </t>
 <t tx="ekr.20161123085600.11">'number': (n) -&gt;
@@ -10140,9 +10325,9 @@ module.exports = exports  if module?
 </t>
 <t tx="ekr.20161123085600.90">'unsupported': (node, message) -&gt;
   throw new UnsupportedError("Unsupported: #{message}", node)
-\\-2.# ## AST manipulation
-\\-2.# Manipulation of the abstract syntax tree happens here. All these are done on
-\\-2.# the `build()` step, done just before a node is passed onto `Builders`.
+# ## AST manipulation
+# Manipulation of the abstract syntax tree happens here. All these are done on
+# the `build()` step, done just before a node is passed onto `Builders`.
 
 </t>
 <t tx="ekr.20161123085600.91">class Transformer
@@ -10227,6 +10412,1028 @@ module.exports = exports  if module?
     _.each n.children[1].children, (child, i) -&gt;
       if child.isA('function') and i != n.children[1].children.length-1
         child.parenthesized = true
+</t>
+<t tx="ekr.20161123114539.100">'property_init': (n) -&gt;
+  left = n.left()
+  right = n.right()
+  right.is_property_value = true
+  "#{@property_identifier left}: #{@build right}"
+# `object_init`
+# An object initializer.
+# Has many `property_init`.
+
+</t>
+<t tx="ekr.20161123114539.101">'object_init': (n, options={}) -&gt;
+  if n.children.length == 0
+    "{}"
+
+  else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
+    @build n.children[0]
+
+  else
+    list = _.map n.children, (item) =&gt; @build item
+
+    c = new Code
+    c.scope list.join("\n")
+    c = "{#{c}}"  if options.brackets?
+    c
+# `function`
+# A function. Can be an anonymous function (`function () { .. }`), or a named
+# function (`function name() { .. }`).
+
+</t>
+<t tx="ekr.20161123114539.102">'function': (n) -&gt;
+  c = new Code
+
+  params = _.map n.params, (str) =&gt;
+    if str.constructor == String
+      @id_param str
+    else
+      @build str
+
+  if n.name
+    c.add "#{n.name} = "
+
+  if n.params.length &gt; 0
+    c.add "(#{params.join ', '}) -&gt;"
+  else
+    c.add "-&gt;"
+
+  body = @body(n.body)
+  if trim(body).length &gt; 0
+    c.scope body
+  else
+    c.add "\n"
+
+  c
+</t>
+<t tx="ekr.20161123114539.103">'var': (n) -&gt;
+  list = _.map n.children, (item) =&gt;
+    "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
+
+  _.compact(list).join("\n") + "\n"
+# ### Unsupported things
+#
+# Due to CoffeeScript limitations, the following things are not supported:
+#
+#  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
+#  * Break labels (`my_label: ...`)
+#  * Constants
+
+</t>
+<t tx="ekr.20161123114539.104">'other': (n) -&gt;   @unsupported n, "#{n.typeName()} is not supported yet"
+</t>
+<t tx="ekr.20161123114539.105">'getter': (n) -&gt;  @unsupported n, "getter syntax is not supported; use __defineGetter__"
+</t>
+<t tx="ekr.20161123114539.106">'setter': (n) -&gt;  @unsupported n, "setter syntax is not supported; use __defineSetter__"
+</t>
+<t tx="ekr.20161123114539.107">'label': (n) -&gt;   @unsupported n, "labels are not supported by CoffeeScript"
+</t>
+<t tx="ekr.20161123114539.108">'const': (n) -&gt;   @unsupported n, "consts are not supported by CoffeeScript"
+</t>
+<t tx="ekr.20161123114539.109">'block': (args...) -&gt;
+  @script.apply @, args
+# `unsupported()`
+# Throws an unsupported error.
+</t>
+<t tx="ekr.20161123114539.110">'unsupported': (node, message) -&gt;
+  throw new UnsupportedError("Unsupported: #{message}", node)
+\\-2.# ## AST manipulation
+\\-2.# Manipulation of the abstract syntax tree happens here. All these are done on
+\\-2.# the `build()` step, done just before a node is passed onto `Builders`.
+
+</t>
+<t tx="ekr.20161123114539.111">class Transformer
+  @others
+</t>
+<t tx="ekr.20161123114539.112">transform: (args...) -&gt;
+  node = args[0]
+  return  if node.transformed?
+  type = node.typeName()
+  fn = @[type]
+
+  if fn
+    fn.apply(this, args)
+    node.transformed = true
+</t>
+<t tx="ekr.20161123114539.113">'script': (n) -&gt;
+  n.functions    = []
+  n.nonfunctions = []
+
+  _.each n.children, (item) =&gt;
+    if item.isA('function')
+      n.functions.push item
+    else
+      n.nonfunctions.push item
+
+  last = null
+
+  # *Statements don't need parens, unless they are consecutive object
+  # literals.*
+  _.each n.nonfunctions, (item) =&gt;
+    if item.expression?
+      expr = item.expression
+
+      if last?.isA('object_init') and expr.isA('object_init')
+        item.parenthesized = true
+      else
+        item.parenthesized = false
+
+      last = expr
+</t>
+<t tx="ekr.20161123114539.114">'.': (n) -&gt;
+  n.isThis      = n.left().isA('this')
+  n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
+</t>
+<t tx="ekr.20161123114539.115">';': (n) -&gt;
+  if n.expression?
+    # *Statements don't need parens.*
+    n.expression.parenthesized = false
+
+    # *If the statement only has one function call (eg, `alert(2);`), the
+    # parentheses should be omitted (eg, `alert 2`).*
+    if n.expression.isA('call')
+      n.expression.type = Typenames['call_statement']
+      @call_statement n
+</t>
+<t tx="ekr.20161123114539.116">'function': (n) -&gt;
+  # *Unwrap the `return`s.*
+  @others
+</t>
+<t tx="ekr.20161123114539.117">n.body.walk last: true, (parent, node, list) -&gt;
+  if node.isA('return') and node.value
+    # Hax
+    lastNode = if list
+      parent[list]
+    else
+      parent.children[parent.children.length-1]
+
+    if lastNode
+      lastNode.type = Typenames[';']
+      lastNode.expression = lastNode.value
+</t>
+<t tx="ekr.20161123114539.118">'switch': (n) -&gt;
+  _.each n.cases, (item) =&gt;
+    block = item.statements
+    ch    = block.children
+
+    # *CoffeeScript does not need `break` statements on `switch` blocks.*
+    delete ch[ch.length-1] if block.last()?.isA('break')
+</t>
+<t tx="ekr.20161123114539.119">'call_statement': (n) -&gt;
+  if n.children[1]
+    _.each n.children[1].children, (child, i) -&gt;
+      if child.isA('function') and i != n.children[1].children.length-1
+        child.parenthesized = true
+</t>
+<t tx="ekr.20161123114539.120">'return': (n) -&gt;
+  # *Doing "return {x:2, y:3}" should parenthesize the return value.*
+  if n.value and n.value.isA('object_init') and n.value.children.length &gt; 1
+    n.value.parenthesized = true
+</t>
+<t tx="ekr.20161123114539.121">'block': (n) -&gt;
+  @script n
+</t>
+<t tx="ekr.20161123114539.122">'if': (n) -&gt;
+  # *Account for `if(x) {} else { something }` which should be `something unless x`.*
+  if n.thenPart.children.length == 0 and n.elsePart?.children.length &gt; 0
+    n.positive = false
+    n.thenPart = n.elsePart
+    delete n.elsePart
+
+  @inversible n
+</t>
+<t tx="ekr.20161123114539.123">'while': (n) -&gt;
+  # *A while with a blank body (`while(x){}`) should be accounted for.*
+  # *You can't have empty blocks, so put a `continue` in there. (#78)*
+  if n.body.children.length is 0
+    n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
+
+  @inversible n
+</t>
+<t tx="ekr.20161123114539.124">'inversible': (n) -&gt;
+  @transform n.condition
+  positive = if n.positive? then n.positive else true
+
+  # *Invert a '!='. (`if (x != y)` =&gt; `unless x is y`)*
+  if n.condition.isA('!=')
+    n.condition.type = Typenames['==']
+    n.positive = not positive
+
+  # *Invert a '!'. (`if (!x)` =&gt; `unless x`)*
+  else if n.condition.isA('!')
+    n.condition = n.condition.left()
+    n.positive = not positive
+
+  else
+    n.positive = positive
+</t>
+<t tx="ekr.20161123114539.125">'==': (n) -&gt;
+  if n.right().isA('null', 'void')
+    n.type     = Typenames['!']
+    n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
+</t>
+<t tx="ekr.20161123114539.126">'!=': (n) -&gt;
+  if n.right().isA('null', 'void')
+    n.type     = Typenames['existence_check']
+    n.children = [n.left()]
+</t>
+<t tx="ekr.20161123114539.127">class UnsupportedError
+  @others
+</t>
+<t tx="ekr.20161123114539.128">constructor: (str, src) -&gt;
+  @message = str
+  @cursor  = src.start
+  @line    = src.lineno
+  @source  = src.tokenizer.source
+</t>
+<t tx="ekr.20161123114539.129">toString: -&gt; @message
+
+\\-2.# ## Exports
+
+</t>
+<t tx="ekr.20161123114539.21">
+
+# The JavaScript to CoffeeScript compiler.
+# Common usage:
+#
+#
+#     var src = "var square = function(n) { return n * n };"
+#
+#     js2coffee = require('js2coffee');
+#     js2coffee.build(src);
+#     //=&gt; "square = (n) -&gt; n * n"
+
+# ## Requires
+#
+# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
+# engine written in JavaScript).
+
+{parser} = @Narcissus or require('./narcissus_packed')
+
+_ = @_ or require('underscore')
+
+{Types, Typenames, Node} = @NodeExt or require('./node_ext')
+
+{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
+  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
+
+# ## Main entry point
+# This is `require('js2coffee').build()`. It takes a JavaScript source
+# string as an argument, and it returns the CoffeeScript version.
+#
+# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
+#    returns a `Node` object of type `script`.
+#
+# 2. This node is now passed onto `Builder#build()`.
+
+@others
+@Js2coffee = exports =
+  version: '0.1.3'
+  build: buildCoffee
+  UnsupportedError: UnsupportedError
+
+module.exports = exports  if module?
+@language coffeescript
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114539.22">buildCoffee = (str) -&gt;
+  str  = str.replace /\r/g, ''
+  str += "\n"
+
+  builder    = new Builder
+  scriptNode = parser.parse str
+
+  output = trim builder.build(scriptNode)
+  (rtrim line for line in output.split('\n')).join('\n')
+# ## Builder class
+# This is the main class that proccesses the AST and spits out streng.
+# See the `buildCoffee()` function above for info on how this is used.
+
+</t>
+<t tx="ekr.20161123114539.23">class Builder
+  @others
+</t>
+<t tx="ekr.20161123114539.24">constructor: -&gt;
+  @transformer = new Transformer
+# `build()`
+# The main entry point.
+
+# This finds the appropriate @builder function for `node` based on it's type,
+# the passes the node onto that function.
+#
+# For instance, for a `function` node, it calls `@builders.function(node)`.
+# It defaults to `@builders.other` if it can't find a function for it.
+
+</t>
+<t tx="ekr.20161123114539.25">build: (args...) -&gt;
+  node = args[0]
+  @transform node
+
+  name = 'other'
+  name = node.typeName()  if node != undefined and node.typeName
+
+  fn  = (@[name] or @other)
+  out = fn.apply(this, args)
+
+  if node.parenthesized then paren(out) else out
+# `transform()`
+# Perform a transformation on the node, if a transformation function is
+# available.
+
+</t>
+<t tx="ekr.20161123114539.26">transform: (args...) -&gt;
+  @transformer.transform.apply(@transformer, args)
+# `body()`
+# Works like `@build()`, and is used for code blocks. It cleans up the returned
+# code block by removing any extraneous spaces and such.
+
+</t>
+<t tx="ekr.20161123114539.27">body: (node, opts={}) -&gt;
+  str = @build(node, opts)
+  str = blockTrim(str)
+  str = unshift(str)
+
+  if str.length &gt; 0 then str else ""
+# ## The builders
+#
+# Each of these method are passed a Node, and is expected to return
+# a string representation of it CoffeeScript counterpart.
+#
+# These are invoked using the main entry point, `Builder#build()`.
+
+# `script`
+# This is the main entry point.
+
+</t>
+<t tx="ekr.20161123114539.28">'script': (n, opts={}) -&gt;
+  c = new Code
+
+  # *Functions must always be declared first in a block.*
+  _.each n.functions,    (item) =&gt; c.add @build(item)
+  _.each n.nonfunctions, (item) =&gt; c.add @build(item)
+
+  c.toString()
+# `property_identifier`
+# A key in an object literal.
+
+</t>
+<t tx="ekr.20161123114539.29">'property_identifier': (n) -&gt;
+  str = n.value.toString()
+
+  # **Caveat:**
+  # *In object literals like `{ '#foo click': b }`, ensure that the key is
+  # quoted if need be.*
+
+  if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
+    str
+  else
+    strEscape str
+# `identifier`
+# Any object identifier like a variable name.
+
+</t>
+<t tx="ekr.20161123114539.30">'identifier': (n) -&gt;
+  if n.value is 'undefined'
+    '`undefined`'
+  else if n.property_accessor
+    n.value.toString()
+  else
+    unreserve n.value.toString()
+</t>
+<t tx="ekr.20161123114539.31">'number': (n) -&gt;
+  "#{n.src()}"
+</t>
+<t tx="ekr.20161123114539.32">'id': (n) -&gt;
+  if n.property_accessor
+    n
+  else
+    unreserve n
+# `id_param`
+# Function parameters. Belongs to `list`.
+
+</t>
+<t tx="ekr.20161123114539.33">'id_param': (n) -&gt;
+  if n.toString() in ['undefined']
+    "#{n}_"
+  else
+    @id n
+# `return`
+# A return statement. Has `n.value` of type `id`.
+
+</t>
+<t tx="ekr.20161123114539.34">'return': (n) -&gt;
+  if not n.value?
+    "return\n"
+
+  else
+    "return #{@build(n.value)}\n"
+# `;` (aka, statement)
+# A single statement.
+
+</t>
+<t tx="ekr.20161123114539.35">';': (n) -&gt;
+  # **Caveat:**
+  # Some statements can be blank as some people are silly enough to use `;;`
+  # sometimes. They should be ignored.
+
+  unless n.expression?
+    ""
+
+  else if n.expression.typeName() == 'object_init'
+    src = @object_init(n.expression)
+    if n.parenthesized
+      src
+    else
+      "#{unshift(blockTrim(src))}\n"
+
+  else
+    @build(n.expression) + "\n"
+# `new` + `new_with_args`
+# For `new X` and `new X(y)` respctively.
+
+</t>
+<t tx="ekr.20161123114539.36">'new': (n) -&gt; "new #{@build n.left()}"
+</t>
+<t tx="ekr.20161123114539.37">'new_with_args': (n) -&gt; "new #{@build n.left()}(#{@build n.right()})"
+# ### Unary operators
+
+</t>
+<t tx="ekr.20161123114539.38">'unary_plus': (n) -&gt; "+#{@build n.left()}"
+</t>
+<t tx="ekr.20161123114539.39">'unary_minus': (n) -&gt; "-#{@build n.left()}"
+# ### Keywords
+
+</t>
+<t tx="ekr.20161123114539.40">'this': (n) -&gt; 'this'
+</t>
+<t tx="ekr.20161123114539.41">'null': (n) -&gt; 'null'
+</t>
+<t tx="ekr.20161123114539.42">'true': (n) -&gt; 'true'
+</t>
+<t tx="ekr.20161123114539.43">'false': (n) -&gt; 'false'
+</t>
+<t tx="ekr.20161123114539.44">'void': (n) -&gt; 'undefined'
+</t>
+<t tx="ekr.20161123114539.45">'debugger': (n) -&gt; "debugger\n"
+</t>
+<t tx="ekr.20161123114539.46">'break': (n) -&gt; "break\n"
+</t>
+<t tx="ekr.20161123114539.47">'continue': (n) -&gt; "continue\n"
+# ### Some simple operators
+
+</t>
+<t tx="ekr.20161123114539.48">'~': (n) -&gt; "~#{@build n.left()}"
+</t>
+<t tx="ekr.20161123114539.49">'typeof': (n) -&gt; "typeof #{@build n.left()}"
+</t>
+<t tx="ekr.20161123114539.50">'index': (n) -&gt;
+  right = @build n.right()
+  if _.any(n.children, (child) -&gt; child.typeName() == 'object_init' and child.children.length &gt; 1)
+    right = "{#{right}}"
+  "#{@build n.left()}[#{right}]"
+</t>
+<t tx="ekr.20161123114539.51">'throw': (n) -&gt; "throw #{@build n.exception}"
+</t>
+<t tx="ekr.20161123114539.52">'!': (n) -&gt;
+  target = n.left()
+  negations = 1
+  ++negations while (target.isA '!') and target = target.left()
+  if (negations &amp; 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
+    target.negated = not target.negated
+    return @build target
+  "#{if negations &amp; 1 then 'not ' else '!!'}#{@build target}"
+# ### Binary operators
+# All of these are rerouted to the `binary_operator` @builder.
+
+# TODO: make a function that generates these functions, invoked like so:
+#   in: binop 'in', 'of'
+#   '+': binop '+'
+#   and so on...
+
+</t>
+<t tx="ekr.20161123114539.53">in: (n) -&gt;    @binary_operator n, 'of'
+</t>
+<t tx="ekr.20161123114539.54">'+': (n) -&gt;   @binary_operator n, '+'
+</t>
+<t tx="ekr.20161123114539.55">'-': (n) -&gt;   @binary_operator n, '-'
+</t>
+<t tx="ekr.20161123114539.56">'*': (n) -&gt;   @binary_operator n, '*'
+</t>
+<t tx="ekr.20161123114539.57">'/': (n) -&gt;   @binary_operator n, '/'
+</t>
+<t tx="ekr.20161123114539.58">'%': (n) -&gt;   @binary_operator n, '%'
+</t>
+<t tx="ekr.20161123114539.59">'&gt;': (n) -&gt;   @binary_operator n, '&gt;'
+</t>
+<t tx="ekr.20161123114539.60">'&lt;': (n) -&gt;   @binary_operator n, '&lt;'
+</t>
+<t tx="ekr.20161123114539.61">'&amp;': (n) -&gt;   @binary_operator n, '&amp;'
+</t>
+<t tx="ekr.20161123114539.62">'|': (n) -&gt;   @binary_operator n, '|'
+</t>
+<t tx="ekr.20161123114539.63">'^': (n) -&gt;   @binary_operator n, '^'
+</t>
+<t tx="ekr.20161123114539.64">'&amp;&amp;': (n) -&gt;  @binary_operator n, 'and'
+</t>
+<t tx="ekr.20161123114539.65">'||': (n) -&gt;  @binary_operator n, 'or'
+</t>
+<t tx="ekr.20161123114539.66">'&lt;&lt;': (n) -&gt;  @binary_operator n, '&lt;&lt;'
+</t>
+<t tx="ekr.20161123114539.67">'&lt;=': (n) -&gt;  @binary_operator n, '&lt;='
+</t>
+<t tx="ekr.20161123114539.68">'&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;'
+</t>
+<t tx="ekr.20161123114539.69">'&gt;=': (n) -&gt;  @binary_operator n, '&gt;='
+</t>
+<t tx="ekr.20161123114539.70">'===': (n) -&gt; @binary_operator n, 'is'
+</t>
+<t tx="ekr.20161123114539.71">'!==': (n) -&gt; @binary_operator n, 'isnt'
+</t>
+<t tx="ekr.20161123114539.72">'&gt;&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;&gt;'
+</t>
+<t tx="ekr.20161123114539.73">instanceof: (n) -&gt; @binary_operator n, 'instanceof'
+</t>
+<t tx="ekr.20161123114539.74">'==': (n) -&gt;
+  # TODO: throw warning
+  @binary_operator n, 'is'
+</t>
+<t tx="ekr.20161123114539.75">'!=': (n) -&gt;
+  # TODO: throw warning
+  @binary_operator n, 'isnt'
+</t>
+<t tx="ekr.20161123114539.76">'binary_operator': do -&gt;
+  INVERSIONS =
+    is: 'isnt'
+    in: 'not in'
+    of: 'not of'
+    instanceof: 'not instanceof'
+  INVERSIONS[v] = k for own k, v of INVERSIONS
+  (n, sign) -&gt;
+    sign = INVERSIONS[sign] if n.negated
+    "#{@build n.left()} #{sign} #{@build n.right()}"
+# ### Increments and decrements
+# For `a++` and `--b`.
+
+</t>
+<t tx="ekr.20161123114539.77">'--': (n) -&gt; @increment_decrement n, '--'
+</t>
+<t tx="ekr.20161123114539.78">'++': (n) -&gt; @increment_decrement n, '++'
+</t>
+<t tx="ekr.20161123114539.79">'increment_decrement': (n, sign) -&gt;
+  if n.postfix
+    "#{@build n.left()}#{sign}"
+  else
+    "#{sign}#{@build n.left()}"
+# `=` (aka, assignment)
+# For `a = b` (but not `var a = b`: that's `var`).
+
+</t>
+<t tx="ekr.20161123114539.80">'=': (n) -&gt;
+  sign = if n.assignOp?
+    Types[n.assignOp] + '='
+  else
+    '='
+
+  "#{@build n.left()} #{sign} #{@build n.right()}"
+# `,` (aka, comma)
+# For `a = 1, b = 2'
+
+</t>
+<t tx="ekr.20161123114539.81">',': (n) -&gt;
+  list = _.map n.children, (item) =&gt; @build(item) + "\n"
+  list.join('')
+# `regexp`
+# Regular expressions.
+
+</t>
+<t tx="ekr.20161123114539.82">'regexp': (n) -&gt;
+  m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
+  value = m[1]
+  flag  = m[2]
+
+  # **Caveat:**
+  # *If it begins with `=` or a space, the CoffeeScript parser will choke if
+  # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
+
+  begins_with = value[0]
+
+  if begins_with in [' ', '=']
+    if flag.length &gt; 0
+      "RegExp(#{strEscape value}, \"#{flag}\")"
+    else
+      "RegExp(#{strEscape value})"
+  else
+    "/#{value}/#{flag}"
+</t>
+<t tx="ekr.20161123114539.83">'string': (n) -&gt;
+  strEscape n.value
+# `call`
+# A Function call.
+# `n.left` is an `id`, and `n.right` is a `list`.
+
+</t>
+<t tx="ekr.20161123114539.84">'call': (n) -&gt;
+  if n.right().children.length == 0
+    "#{@build n.left()}()"
+  else
+    "#{@build n.left()}(#{@build n.right()})"
+# `call_statement`
+# A `call` that's on it's own line.
+
+</t>
+<t tx="ekr.20161123114539.85">'call_statement': (n) -&gt;
+  left = @build n.left()
+
+  # **Caveat:**
+  # *When calling in this way: `function () { ... }()`,
+  # ensure that there are parenthesis around the anon function
+  # (eg, `(-&gt; ...)()`).*
+
+  left = paren(left)  if n.left().isA('function')
+
+  if n.right().children.length == 0
+    "#{left}()"
+  else
+    "#{left} #{@build n.right()}"
+# `list`
+# A parameter list.
+
+</t>
+<t tx="ekr.20161123114539.86">'list': (n) -&gt;
+  list = _.map(n.children, (item) =&gt;
+    if n.children.length &gt; 1
+      item.is_list_element = true
+    @build(item))
+
+  list.join(", ")
+</t>
+<t tx="ekr.20161123114539.87">'delete': (n) -&gt;
+  ids = _.map(n.children, (el) =&gt; @build(el))
+  ids = ids.join(', ')
+  "delete #{ids}\n"
+# `.` (scope resolution?)
+# For instances such as `object.value`.
+
+</t>
+<t tx="ekr.20161123114539.88">'.': (n) -&gt;
+  # **Caveat:**
+  # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
+
+  # **Caveat:**
+  # *If called as `x.prototype`, it should use double colons (`x::`).*
+
+  left  = @build n.left()
+  right_obj = n.right()
+  right_obj.property_accessor = true
+  right = @build right_obj
+
+  if n.isThis and n.isPrototype
+    "@::"
+  else if n.isThis
+    "@#{right}"
+  else if n.isPrototype
+    "#{left}::"
+  else if n.left().isPrototype
+    "#{left}#{right}"
+  else
+    "#{left}.#{right}"
+</t>
+<t tx="ekr.20161123114539.89">'try': (n) -&gt;
+  c = new Code
+  c.add 'try'
+  c.scope @body(n.tryBlock)
+
+  _.each n.catchClauses, (clause) =&gt;
+    c.add @build(clause)
+
+  if n.finallyBlock?
+    c.add "finally"
+    c.scope @body(n.finallyBlock)
+
+  c
+</t>
+<t tx="ekr.20161123114539.90">'catch': (n) -&gt;
+  body_ = @body(n.block)
+  return '' if trim(body_).length == 0
+
+  c = new Code
+
+  if n.varName?
+    c.add "catch #{n.varName}"
+  else
+    c.add 'catch'
+
+  c.scope @body(n.block)
+  c
+# `?` (ternary operator)
+# For `a ? b : c`. Note that these will always be parenthesized, as (I
+# believe) the order of operations in JS is different in CS.
+
+</t>
+<t tx="ekr.20161123114539.91">'?': (n) -&gt;
+  "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
+</t>
+<t tx="ekr.20161123114539.92">'for': (n) -&gt;
+  c = new Code
+
+  if n.setup?
+    c.add "#{@build n.setup}\n"
+
+  if n.condition?
+    c.add "while #{@build n.condition}\n"
+  else
+    c.add "loop"
+
+  c.scope @body(n.body)
+  c.scope @body(n.update)  if n.update?
+  c
+</t>
+<t tx="ekr.20161123114539.93">'for_in': (n) -&gt;
+  c = new Code
+
+  c.add "for #{@build n.iterator} of #{@build n.object}"
+  c.scope @body(n.body)
+  c
+</t>
+<t tx="ekr.20161123114539.94">'while': (n) -&gt;
+  c = new Code
+
+  keyword   = if n.positive then "while" else "until"
+  body_     = @body(n.body)
+
+  # *Use `loop` whin something will go on forever (like `while (true)`).*
+  if truthy(n.condition)
+    statement = "loop"
+  else
+    statement = "#{keyword} #{@build n.condition}"
+
+  if isSingleLine(body_) and statement isnt "loop"
+    c.add "#{trim body_}  #{statement}\n"
+  else
+    c.add statement
+    c.scope body_
+  c
+</t>
+<t tx="ekr.20161123114539.95">'do': (n) -&gt;
+  c = new Code
+
+  c.add "loop"
+  c.scope @body(n.body)
+  c.scope "break unless #{@build n.condition}"  if n.condition?
+
+  c
+</t>
+<t tx="ekr.20161123114539.96">'if': (n) -&gt;
+  c = new Code
+
+  keyword = if n.positive then "if" else "unless"
+  body_   = @body(n.thenPart)
+  n.condition.parenthesized = false
+
+  # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
+  # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
+  if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
+    console.log n.thenPart
+    c.add "#{@build n.condition}\n"
+
+  else if isSingleLine(body_) and !n.elsePart?
+    c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
+
+  else
+    c.add "#{keyword} #{@build n.condition}"
+    c.scope @body(n.thenPart)
+
+    if n.elsePart?
+      if n.elsePart.typeName() == 'if'
+        c.add "else #{@build(n.elsePart).toString()}"
+      else
+        c.add "else\n"
+        c.scope @body(n.elsePart)
+
+  c
+</t>
+<t tx="ekr.20161123114539.97">'switch': (n) -&gt;
+  c = new Code
+
+  c.add "switch #{@build n.discriminant}\n"
+
+  fall_through = false
+  _.each n.cases, (item) =&gt;
+    if item.value == 'default'
+      c.scope "else"
+    else
+      if fall_through == true
+        c.add ", #{@build item.caseLabel}\n"
+      else
+        c.add "  when #{@build item.caseLabel}"
+        
+    if @body(item.statements).length == 0
+      fall_through = true
+    else
+      fall_through = false
+      c.add "\n"
+      c.scope @body(item.statements), 2
+
+    first = false
+
+  c
+</t>
+<t tx="ekr.20161123114539.98">'existence_check': (n) -&gt;
+  "#{@build n.left()}?"
+</t>
+<t tx="ekr.20161123114539.99">'array_init': (n) -&gt;
+  if n.children.length == 0
+    "[]"
+  else
+    "[ #{@list n} ]"
+# `property_init`
+# Belongs to `object_init`;
+# left is a `identifier`, right can be anything.
+
+</t>
+<t tx="ekr.20161123114540.18">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114540.19">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123114540.20">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123114540.21">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123114540.22">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114540.23">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161123114540.24">&lt;body&gt;
+    @others
+</t>
+<t tx="ekr.20161123114540.25">&lt;table id="0"&gt;
+    @others
+&lt;/table&gt;
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123114540.26">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123114540.27">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123114540.28">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+</t>
+<t tx="ekr.20161123114540.29">&lt;table id="3"&gt;
+    @others
+&lt;/table&gt;
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+</t>
+<t tx="ekr.20161123114540.30">&lt;tr&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123114540.31">&lt;td width="368"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123114540.32">&lt;table id="4"&gt;
+    @others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123114540.33">&lt;tbody id="5"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123114540.34">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123114540.35">&lt;td width="550"&gt;
+    @others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123114540.36">&lt;table id="6"&gt;
+    @others
+&lt;/table&gt;
+</t>
+<t tx="ekr.20161123114540.37">&lt;tbody id="6"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123114540.38">&lt;tr&gt;
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123114540.39">&lt;td width="100%" colspan="2"&gt;
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123114540.40">&lt;DIV class="webonly"&gt;
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123114540.41">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123114541.11">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114541.12">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161123114541.13">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161123114541.14">&lt;link id="L1"&gt;
+    @others
+</t>
+<t tx="ekr.20161123114541.15">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+&lt;title&gt;TITLE&lt;/title&gt;
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123114542.14">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114542.15">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161123114542.16">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114542.17">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161123114543.19">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161123114543.20">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161123114543.21">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161123114543.22">@cmd('abc')
+def abc(self):
+    return "abc"
 </t>
 </tnodes>
 </leo_file>
