@@ -150,7 +150,7 @@ class CS_Importer(Importer):
                 return True
         return False
      
-    #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers (test)
+    #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
         trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
@@ -164,7 +164,7 @@ class CS_Importer(Importer):
         self.clean_all_nodes(parent)
         # ===== Specific to coffeescript =====
         #
-        ### self.move_trailing_lines(parent)
+        self.move_trailing_lines(parent)
         # ===== Generic: use base Importer methods =====
         self.unindent_all_nodes(parent)
         #
@@ -178,11 +178,13 @@ class CS_Importer(Importer):
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
                 g.printList(p.v._import_lines)
-    #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper
+    #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper (not ready)
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
+        return ### Not ready yet, and maybe never.
+        # pylint: disable=unreachable
         prev_lines = []
-        ### last = None
+        last = None
         for p in parent.subtree():
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
@@ -190,7 +192,7 @@ class CS_Importer(Importer):
                 ###  p.b = ''.join(prev_lines) + p.b
                 self.prepend_lines(p, prev_lines)
             prev_lines = trailing_lines
-            ### last = p.copy()
+            last = p.copy()
         if prev_lines:
             # These should go after the @others lines in the parent.
             ### lines = g.splitLines(parent.b)
@@ -199,12 +201,13 @@ class CS_Importer(Importer):
                 if s.strip().startswith('@others'):
                     lines = lines[:i+1] + prev_lines + lines[i+2:]
                     ### parent.b = ''.join(lines)
-                    parent.set_lines(lines)
+                    self.set_lines(parent, lines)
                     break
             else:
                 # Fall back.
                 ### last.b = last.b + ''.join(prev_lines)
-                self.set_lines(prev_lines)
+                assert last, "move_trailing_lines"
+                self.set_lines(last, prev_lines)
     #@+node:ekr.20160505173347.1: *5* coffee_i.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p and return them.'''
@@ -213,7 +216,8 @@ class CS_Importer(Importer):
         for s in self.get_lines(p):
             ### strip = s.strip()
             ### if not strip or strip.startswith('#'):
-            if self.is_ws_line(s):
+            
+            if s.isspace(): ### self.is_ws_line(s):
                 trailing_lines.append(s)
             else:
                 body_lines.extend(trailing_lines)
