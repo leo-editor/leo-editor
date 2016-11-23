@@ -202,6 +202,7 @@ class Importer(object):
             s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
         ok = s1 == s2
         if not ok and not self.strict:
+            # Issue an error only if something *other than* lws is amiss.
             if trace and trace_status: g.trace(
                 '===== %s NOT OK cleaning LWS' % self.name)
             s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
