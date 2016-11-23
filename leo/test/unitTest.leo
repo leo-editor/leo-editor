@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.57">
+<globals body_outline_ratio="0.58" body_secondary_ratio="0.80">
 	<global_window_position top="48" left="810" height="958" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -219,7 +219,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -311,14 +311,269 @@
 </v>
 <v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
-<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
-<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh>
+<v t="ekr.20161122160952.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161122160952.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161122160952.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161122160952.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123001804.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123001804.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123001804.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123001804.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123004141.18"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123004141.19"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123004141.20"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123004141.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123004944.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123004944.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123004944.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123004944.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123005136.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123005136.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123005136.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123005136.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161123012126.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161123012126.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123012126.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161123012126.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh>
+<v t="ekr.20161123001804.5"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123001804.6"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123001804.7"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123001804.8"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123001804.9"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123001804.10"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123001804.11"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123001804.12"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123001804.13"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123001804.14"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123001804.15"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123001804.16"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123001804.17"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123001804.18"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123001804.19"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123001804.20"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123001804.21"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123001804.22"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123001804.23"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123001804.24"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004141.22"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123004141.23"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123004141.24"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123004141.25"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123004141.26"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123004141.27"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123004141.28"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123004141.29"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123004141.30"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123004141.31"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123004141.32"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123004141.33"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123004141.34"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123004141.35"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123004141.36"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123004141.37"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123004141.38"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004141.39"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004141.40"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004141.41"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004944.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123004944.6"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123004944.7"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123004944.8"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123004944.9"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123004944.10"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123004944.11"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123004944.12"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123004944.13"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123004944.14"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123004944.15"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123004944.16"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123004944.17"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123004944.18"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123004944.19"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123004944.20"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123004944.21"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004944.22"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004944.23"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123004944.24"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005136.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123005136.6"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123005136.7"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123005136.8"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123005136.9"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123005136.10"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123005136.11"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123005136.12"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123005136.13"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123005136.14"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123005136.15"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123005136.16"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123005136.17"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123005136.18"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123005136.19"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123005136.20"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123005136.21"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005136.22"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005136.23"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005136.24"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123012126.5"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161123012126.6"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123012126.7"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161123012126.8"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161123012126.9"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123012126.10"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161123012126.11"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161123012126.12"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161123012126.13"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161123012126.14"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161123012126.15"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161123012126.16"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161123012126.17"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161123012126.18"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161123012126.19"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161123012126.20"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161123012126.21"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123012126.22"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123012126.23"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123012126.24"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
-<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
+<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh>
+<v t="ekr.20161123005110.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161123005110.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123005110.3"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161123005110.4"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161123005110.5"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005130.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161123005130.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123005130.3"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161123005130.4"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161123005130.5"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123005136.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161123005136.45"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123005136.46"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161123005136.47"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161123005136.48"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161123012127.6"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161123012127.7"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161123012127.8"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161123012127.9"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161123012127.10"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20100803234640.5804"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
@@ -368,6 +623,12 @@
 <v t="ekr.20161122071255.14"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161122071255.15"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161123004143.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161123004143.9"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161123004945.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161123004945.34"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -390,6 +651,12 @@
 </v>
 <v t="ekr.20161122071255.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161122071255.17"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161123004143.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161123004143.11"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161123004946.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161123004946.2"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -420,6 +687,18 @@
 <v t="ekr.20161122071256.13"><vh>class Index</vh>
 <v t="ekr.20161122071256.14"><vh>index</vh></v>
 <v t="ekr.20161122071256.15"><vh>abc</vh></v>
+</v>
+</v>
+<v t="ekr.20161123004144.9"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161123004144.10"><vh>class Index</vh>
+<v t="ekr.20161123004144.11"><vh>index</vh></v>
+<v t="ekr.20161123004144.12"><vh>abc</vh></v>
+</v>
+</v>
+<v t="ekr.20161123004947.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161123004947.2"><vh>class Index</vh>
+<v t="ekr.20161123004947.3"><vh>index</vh></v>
+<v t="ekr.20161123004947.4"><vh>abc</vh></v>
 </v>
 </v>
 </v>
@@ -486,8 +765,10 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20090529141856.4774"></v>
 <v t="ekr.20090529141856.4780"></v>
 <v t="ekr.20111029112647.4099"></v>
+<v t="ekr.20161103015908.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -941,7 +1222,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="11">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1564,8 +1845,6 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 &lt;/body&gt;
 &lt;/html&gt;
 '''
-
-
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4782">@first # -*- coding: utf-8 -*-
@@ -2116,14 +2395,27 @@ nodeB
 &lt;head&gt;
     &lt;title&gt;Bodystring&lt;/title&gt;
 &lt;/head&gt;
-&lt;body class='bodystring'&gt;
+&lt;body class="bodystring"&gt;
 &lt;div id='bodydisplay'&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 '''
-
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = [
+    '&lt;html&gt;',
+    '&lt;head&gt;',
+    '&lt;body class="bodystring"&gt;',
+]
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    root = c.p.firstChild()
+    assert root.h.endswith('lowercase tags'), root.h
+    p2 = root.firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 0:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20111029120441.3982">s = '''\
 &lt;HTML&gt;
@@ -2139,8 +2431,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20111102164107.3975">s = '''\
-
+<t tx="ekr.20111102164107.3975">s = r'''
 &lt;td width="550"&gt;
 &lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;
     &lt;td class="blutopgrabot" height="28"&gt;&lt;/td&gt;
@@ -2161,8 +2452,20 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 &lt;/td&gt;
 
 '''
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = (
+    '&lt;td width="550"&gt;',
+    '&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;',
+    '&lt;table&gt;',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -2265,7 +2568,7 @@ s = '''
 '''
 
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -2298,7 +2601,7 @@ run-all-unit-tests-locally          = Alt-6
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20111112103320.3887">s = '''\
+<t tx="ekr.20111112103320.3887">s = r'''
 &lt;html&gt;
 
 &lt;head&gt;
@@ -2312,9 +2615,16 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     
 &lt;!-- oops: missing tags. --&gt;
 '''
-
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20111112103320.3893">s = '''\
 &lt;html&gt;
@@ -2328,11 +2638,18 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     &lt;title&gt;TITLE&lt;/title&gt;
     
 &lt;/head&gt;
-&lt;html&gt;
+&lt;/html&gt;
 '''
-
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+finally:
+    if 0:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
@@ -2889,7 +3206,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -6044,6 +6361,808 @@ def index(self):
 <t tx="ekr.20161122071256.15">@cmd('abc')
 def abc(self):
     return "abc"
+</t>
+<t tx="ekr.20161122160952.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161122160952.2">&lt;html&gt;
+@others
+</t>
+<t tx="ekr.20161122160952.3">&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161122160952.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123001804.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123001804.10">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123001804.11">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+</t>
+<t tx="ekr.20161123001804.12">&lt;table id="3"&gt;
+@others
+                &lt;/table&gt;
+
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+</t>
+<t tx="ekr.20161123001804.13">&lt;tr&gt;
+@others
+                &lt;/tr&gt;
+</t>
+<t tx="ekr.20161123001804.14">&lt;td width="368"&gt;
+    @others
+                    &lt;/td&gt;
+</t>
+<t tx="ekr.20161123001804.15">            &lt;table id="4"&gt;
+
+@others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123001804.16">&lt;tbody id="5"&gt;
+
+@others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123001804.17">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123001804.18">&lt;td width="550"&gt;
+@others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123001804.19">&lt;table id="6"&gt;
+
+@others
+&lt;/table&gt;
+
+</t>
+<t tx="ekr.20161123001804.2">&lt;html&gt;
+@others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123001804.20">&lt;tbody id="6"&gt;
+@others
+&lt;/tbody&gt;
+
+</t>
+<t tx="ekr.20161123001804.21">&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123001804.22">&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123001804.23">&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123001804.24">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20161123001804.3">&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123001804.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123001804.5">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123001804.6">&lt;html&gt;
+
+@others
+</t>
+<t tx="ekr.20161123001804.7">&lt;body&gt;
+
+@others
+</t>
+<t tx="ekr.20161123001804.8">&lt;table id="0"&gt;
+@others
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123001804.9">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004141.18">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004141.19">&lt;html&gt;
+@others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123004141.20">&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123004141.21">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123004141.22">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004141.23">&lt;html&gt;
+
+@others
+</t>
+<t tx="ekr.20161123004141.24">&lt;body&gt;
+
+@others
+</t>
+<t tx="ekr.20161123004141.25">&lt;table id="0"&gt;
+@others
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123004141.26">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004141.27">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123004141.28">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+</t>
+<t tx="ekr.20161123004141.29">&lt;table id="3"&gt;
+@others
+                &lt;/table&gt;
+
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+</t>
+<t tx="ekr.20161123004141.30">&lt;tr&gt;
+@others
+                &lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004141.31">&lt;td width="368"&gt;
+    @others
+                    &lt;/td&gt;
+</t>
+<t tx="ekr.20161123004141.32">            &lt;table id="4"&gt;
+
+@others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123004141.33">&lt;tbody id="5"&gt;
+
+@others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123004141.34">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004141.35">&lt;td width="550"&gt;
+@others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123004141.36">&lt;table id="6"&gt;
+
+@others
+&lt;/table&gt;
+
+</t>
+<t tx="ekr.20161123004141.37">&lt;tbody id="6"&gt;
+@others
+&lt;/tbody&gt;
+
+</t>
+<t tx="ekr.20161123004141.38">&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004141.39">&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123004141.40">&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123004141.41">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20161123004143.10">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004143.11">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161123004143.8">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004143.9">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161123004144.10">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161123004144.11">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161123004144.12">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161123004144.9">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004944.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004944.10">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123004944.11">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+</t>
+<t tx="ekr.20161123004944.12">&lt;table id="3"&gt;
+@others
+                &lt;/table&gt;
+
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+</t>
+<t tx="ekr.20161123004944.13">&lt;tr&gt;
+@others
+                &lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004944.14">&lt;td width="368"&gt;
+    @others
+                    &lt;/td&gt;
+</t>
+<t tx="ekr.20161123004944.15">            &lt;table id="4"&gt;
+
+@others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123004944.16">&lt;tbody id="5"&gt;
+
+@others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123004944.17">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004944.18">&lt;td width="550"&gt;
+@others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123004944.19">&lt;table id="6"&gt;
+
+@others
+&lt;/table&gt;
+
+</t>
+<t tx="ekr.20161123004944.2">&lt;html&gt;
+@others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123004944.20">&lt;tbody id="6"&gt;
+@others
+&lt;/tbody&gt;
+
+</t>
+<t tx="ekr.20161123004944.21">&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004944.22">&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123004944.23">&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123004944.24">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20161123004944.3">&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123004944.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123004944.5">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004944.6">&lt;html&gt;
+
+@others
+</t>
+<t tx="ekr.20161123004944.7">&lt;body&gt;
+
+@others
+</t>
+<t tx="ekr.20161123004944.8">&lt;table id="0"&gt;
+@others
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123004944.9">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123004945.33">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004945.34">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161123004946.1">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004946.2">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161123004947.1">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161123004947.2">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161123004947.3">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161123004947.4">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161123005110.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123005110.2">&lt;html&gt;
+@others
+</t>
+<t tx="ekr.20161123005110.3">&lt;head&gt;
+    &lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161123005110.4">&lt;link id="L1"&gt;
+@others
+</t>
+<t tx="ekr.20161123005110.5">    &lt;link id="L2"&gt;
+    &lt;link id="L3" /&gt;
+    &lt;link id='L4' /&gt;
+    
+    &lt;title&gt;TITLE&lt;/title&gt;
+    
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123005130.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123005130.2">&lt;html&gt;
+@others
+</t>
+<t tx="ekr.20161123005130.3">&lt;head&gt;
+    &lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161123005130.4">&lt;link id="L1"&gt;
+@others
+</t>
+<t tx="ekr.20161123005130.5">    &lt;link id="L2"&gt;
+    &lt;link id="L3" /&gt;
+    &lt;link id='L4' /&gt;
+    
+    &lt;title&gt;TITLE&lt;/title&gt;
+    
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123005136.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123005136.10">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123005136.11">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+</t>
+<t tx="ekr.20161123005136.12">&lt;table id="3"&gt;
+@others
+                &lt;/table&gt;
+
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+</t>
+<t tx="ekr.20161123005136.13">&lt;tr&gt;
+@others
+                &lt;/tr&gt;
+</t>
+<t tx="ekr.20161123005136.14">&lt;td width="368"&gt;
+    @others
+                    &lt;/td&gt;
+</t>
+<t tx="ekr.20161123005136.15">            &lt;table id="4"&gt;
+
+@others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123005136.16">&lt;tbody id="5"&gt;
+
+@others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123005136.17">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123005136.18">&lt;td width="550"&gt;
+@others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123005136.19">&lt;table id="6"&gt;
+
+@others
+&lt;/table&gt;
+
+</t>
+<t tx="ekr.20161123005136.2">&lt;html&gt;
+@others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123005136.20">&lt;tbody id="6"&gt;
+@others
+&lt;/tbody&gt;
+
+</t>
+<t tx="ekr.20161123005136.21">&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123005136.22">&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123005136.23">&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123005136.24">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20161123005136.3">&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123005136.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123005136.44">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123005136.45">&lt;html&gt;
+@others
+</t>
+<t tx="ekr.20161123005136.46">&lt;head&gt;
+    &lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161123005136.47">&lt;link id="L1"&gt;
+@others
+</t>
+<t tx="ekr.20161123005136.48">    &lt;link id="L2"&gt;
+    &lt;link id="L3" /&gt;
+    &lt;link id='L4' /&gt;
+    
+    &lt;title&gt;TITLE&lt;/title&gt;
+    
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123005136.5">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123005136.6">&lt;html&gt;
+
+@others
+</t>
+<t tx="ekr.20161123005136.7">&lt;body&gt;
+
+@others
+</t>
+<t tx="ekr.20161123005136.8">&lt;table id="0"&gt;
+@others
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123005136.9">&lt;tr valign="top"&gt;
+@others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123012126.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123012126.10">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123012126.11">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+</t>
+<t tx="ekr.20161123012126.12">&lt;table id="3"&gt;
+    @others
+&lt;/table&gt;
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+</t>
+<t tx="ekr.20161123012126.13">&lt;tr&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123012126.14">&lt;td width="368"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123012126.15">&lt;table id="4"&gt;
+    @others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161123012126.16">&lt;tbody id="5"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123012126.17">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123012126.18">&lt;td width="550"&gt;
+    @others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161123012126.19">&lt;table id="6"&gt;
+    @others
+&lt;/table&gt;
+</t>
+<t tx="ekr.20161123012126.2">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123012126.20">&lt;tbody id="6"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161123012126.21">&lt;tr&gt;
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123012126.22">&lt;td width="100%" colspan="2"&gt;
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161123012126.23">&lt;DIV class="webonly"&gt;
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161123012126.24">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123012126.3">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161123012126.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161123012126.5">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123012126.6">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161123012126.7">&lt;body&gt;
+    @others
+</t>
+<t tx="ekr.20161123012126.8">&lt;table id="0"&gt;
+    @others
+&lt;/table&gt;
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161123012126.9">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161123012127.10">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+&lt;title&gt;TITLE&lt;/title&gt;
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161123012127.6">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161123012127.7">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161123012127.8">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161123012127.9">&lt;link id="L1"&gt;
+    @others
 </t>
 </tnodes>
 </leo_file>

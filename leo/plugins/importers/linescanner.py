@@ -139,7 +139,6 @@ class Importer(object):
             # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
         self.gen_refs = name in ('javascript',)
-        self.gen_clean = name in ('python',)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0 # Must be set in run, using self.root.
@@ -185,16 +184,16 @@ class Importer(object):
     #@+node:ekr.20161108131153.3: *3* i.check & helpers
     def check(self, unused_s, parent):
         '''Importer.check'''
-        # g.trace('='*20, self.root.h)
-        trace = False and g.unitTesting # and not g.unitTesting
-        trace_all = True
-        trace_lines = True
+        trace = False and g.unitTesting
+        trace_all = False
+        trace_lines = False
+        trace_status = True
         c = self.c
-        no_clean = True # True: strict lws check for *all* languages.
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
-        if self.ws_error or (not no_clean and self.gen_clean):
+        if self.ws_error:
+            if trace and trace_status: g.trace('===== ws_error: cleaning lws')
             s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
         else:
             s1, s2 = self.clean_blank_lines(s1), self.clean_blank_lines(s2)
@@ -202,12 +201,13 @@ class Importer(object):
         if True:
             s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
         ok = s1 == s2
-        if not ok and self.name == 'javascript':
+        if not ok and not self.strict:
+            if trace and trace_status: g.trace(
+                '===== %s NOT OK cleaning LWS' % self.name)
             s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
             ok = s1 == s2
             if ok and not g.unitTesting:
-                print(
-                    'indentation error: leading whitespace changed in:',
+                print('indentation error: leading whitespace changed in:',
                     self.root.h)
         if not ok:
             lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
@@ -846,6 +846,7 @@ class Importer(object):
         fn = g.shortFileName(self.root.h)
         lines = g.splitLines(s)
         count, result, tab_width = 0, [], self.tab_width
+        self.ws_error = False ### 2016/11/23
         if tab_width < 0: # Convert tabs to blanks.
             for n, line in enumerate(lines):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
@@ -939,14 +940,18 @@ class Importer(object):
         return s[i:i+len(pattern)] == pattern
     #@+node:ekr.20161108131153.18: *4* i.Messages
     def error(self, s):
+        '''Issue an error and cause a unit test to fail.'''
+        trace = False
         self.errors += 1
         self.importCommands.errors += 1
-        if g.unitTesting:
-            if self.errors == 1:
-                g.app.unitTestDict['actualErrorMessage'] = s
-            g.app.unitTestDict['actualErrors'] = self.errors
-        else:
+        if trace or not g.unitTesting:
             g.error('Error:', s)
+        # if g.unitTesting:
+            # if self.errors == 1:
+                # g.app.unitTestDict['actualErrorMessage'] = s
+            # g.app.unitTestDict['actualErrors'] = self.errors
+        # else:
+            # g.error('Error:', s)
 
     def report(self, message):
         if self.strict:
@@ -1006,7 +1011,7 @@ class Importer(object):
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):
         '''Remove maximal leading whitespace from the start of all lines.'''
-        trace = False and not g.unitTesting # and self.root.h.endswith('.c')
+        trace = False and g.unitTesting
         if self.is_rst:
             return p.b # Never unindent rst code.
         lines = self.get_lines(p)
