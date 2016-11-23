@@ -12315,6 +12315,41 @@ if sys.platform.lower().startswith('win'):
     s = f.read()
     f.close()
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
+#@+node:ekr.20161123115047.1: *5* dart tests (new)
+#@+node:ekr.20161123120652.1: *6* @test dart hello world
+s = r'''
+var name = 'Bob';
+
+hello() {
+  print('Hello, World!');
+}
+
+// Define a function.
+printNumber(num aNumber) {
+  print('The number is $aNumber.'); // Print to console.
+}
+
+// This is where the app starts executing.
+void main() {
+  var number = 42; // Declare and initialize a variable.
+  printNumber(number); // Call a function.
+}
+'''
+table = (
+    'hello',
+    'printNumber',
+    'void main',
+)
+try:
+    c.importCommands.dartUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not p2, p2.h
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161108034116.1: *5* coffeescript tests
 #@+node:ekr.20161108034138.1: *6* @test coffeescript-1
 @killcolor

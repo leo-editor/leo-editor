@@ -1,43 +1,82 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.1: * @file importers/dart.py
-'''The @auto importer for dart.'''
+'''The @auto importer for the dart language.'''
+import re
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
+#@+others
+#@+node:ekr.20161123120245.2: ** class Dart_Importer
+class Dart_Importer(Importer):
+    '''The importer for the dart lanuage.'''
 
-import leo.core.leoGlobals as g
-import leo.plugins.importers.basescanner as basescanner
-
-class DartScanner(basescanner.BaseScanner):
-    '''Scanner for .dart files.'''
+    def __init__(self, importCommands, atAuto):
+        '''Dart_Importer.__init__'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'dart',
+            state_class = Dart_ScanState,
+            strict = False,
+        )
+        
     #@+others
-    #@+node:ekr.20141116100154.7: ** dart.__init__
-    def __init__ (self,importCommands,atAuto):
-        '''Ctor for the DartScanner class.'''
-        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='dart')
-             # Init the base class.
-        # Set the parser delims.
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.classTags = ['class',]
-        self.extraIdChars = '$'
-        self.functionTags = []
-        self.lineCommentDelim = '//'
-        # self.lineCommentDelim2 = '#' # A hack: treat preprocess directives as comments(!)
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.outerBlockEndsDecls = False # To handle extern statement.
-        self.sigHeadExtraTokens = []
-        self.sigFailTokens = [';','=']
-        self.strict = False
-    #@+node:ekr.20141116100154.19: ** dart.skipString
-    def skipString (self,s,i):
-        '''Skip a string, including a Python triple string.'''
-        # Returns len(s) on unterminated string.
-        return g.skip_python_string(s,i,verbose=False)
-    #@-others
+    #@+node:ekr.20161123121021.1: *3* dart_i.clean_headline
+    dart_pattern = re.compile(r'^\s*([\w_]+\s*)+\(')
 
+    def clean_headline(self, line):
+        
+        m = self.dart_pattern.match(line)
+        if m:
+            return m.group(0).strip('(').strip()
+        else:
+            return line.strip()
+    #@-others
+#@+node:ekr.20161123120245.6: ** class class Dart_ScanState
+class Dart_ScanState:
+    '''A class representing the state of the dart line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''Dart_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            self.curlies = 0
+
+    def __repr__(self):
+        '''Dart_ScanState.__repr__'''
+        return "Dart_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20161123120245.7: *3* dart_state.level
+    def level(self):
+        '''Dart_ScanState.level.'''
+        return self.curlies
+    #@+node:ekr.20161123120245.8: *3* dart_state.update
+    def update(self, data):
+        '''
+        Dart_ScanState.update
+
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        # All ScanState classes must have a context ivar.
+        self.context = context
+        self.curlies += delta_c  
+        return i
+    #@-others
+#@-others
 importer_dict = {
-    'class': DartScanner,
-    'extensions': ['.dart',],
+    'class': Dart_Importer,
+    'extensions': ['.dart'],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo
