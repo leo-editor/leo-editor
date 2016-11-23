@@ -12315,7 +12315,7 @@ if sys.platform.lower().startswith('win'):
     s = f.read()
     f.close()
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
-#@+node:ekr.20161123115047.1: *5* dart tests (new)
+#@+node:ekr.20161123115047.1: *5* dart tests
 #@+node:ekr.20161123120652.1: *6* @test dart hello world
 s = r'''
 var name = 'Bob';
@@ -12342,11 +12342,12 @@ table = (
 )
 try:
     c.importCommands.dartUnitTest(p,s=s,showTree=True)
-    p2 = c.p.firstChild().firstChild()
+    root = c.p.firstChild()
+    p2 = root.firstChild()
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    assert not p2, p2.h
+    assert not root.isAncestorOf(p2), p2.h
 finally:
     if 1:
         p.deleteAllChildren()
@@ -13199,3364 +13200,8 @@ try:
           assert p2.h == h, (p2.h, h)
           p2.moveToThreadNext()
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
-#@+node:ekr.20161123080717.1: *7* @@file c:/leo.repo/leo-editor/leo/test/coffeescript-1
-
-
-# The JavaScript to CoffeeScript compiler.
-# Common usage:
-#
-#
-#     var src = "var square = function(n) { return n * n };"
-#
-#     js2coffee = require('js2coffee');
-#     js2coffee.build(src);
-#     //=> "square = (n) -> n * n"
-
-# ## Requires
-#
-# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
-# engine written in JavaScript).
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-_ = @_ or require('underscore')
-
-{Types, Typenames, Node} = @NodeExt or require('./node_ext')
-
-{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
-  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
-
-# ## Main entry point
-# This is `require('js2coffee').build()`. It takes a JavaScript source
-# string as an argument, and it returns the CoffeeScript version.
-#
-# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
-#    returns a `Node` object of type `script`.
-#
-# 2. This node is now passed onto `Builder#build()`.
-
-@others
-@Js2coffee = exports =
-  version: '0.1.3'
-  build: buildCoffee
-  UnsupportedError: UnsupportedError
-
-module.exports = exports  if module?
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161123080717.2: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-
-  output = trim builder.build(scriptNode)
-  (rtrim line for line in output.split('\n')).join('\n')
-# ## Builder class
-# This is the main class that proccesses the AST and spits out streng.
-# See the `buildCoffee()` function above for info on how this is used.
-
-#@+node:ekr.20161123080717.3: *8* class Builder
-class Builder
-  @others
-#@+node:ekr.20161123080717.4: *9* constructor: ->
-constructor: ->
-  @transformer = new Transformer
-# `build()`
-# The main entry point.
-
-# This finds the appropriate @builder function for `node` based on it's type,
-# the passes the node onto that function.
-#
-# For instance, for a `function` node, it calls `@builders.function(node)`.
-# It defaults to `@builders.other` if it can't find a function for it.
-
-#@+node:ekr.20161123080717.5: *9* build: (args...) ->
-build: (args...) ->
-  node = args[0]
-  @transform node
-
-  name = 'other'
-  name = node.typeName()  if node != undefined and node.typeName
-
-  fn  = (@[name] or @other)
-  out = fn.apply(this, args)
-
-  if node.parenthesized then paren(out) else out
-# `transform()`
-# Perform a transformation on the node, if a transformation function is
-# available.
-
-#@+node:ekr.20161123080717.6: *9* transform: (args...) ->
-transform: (args...) ->
-  @transformer.transform.apply(@transformer, args)
-# `body()`
-# Works like `@build()`, and is used for code blocks. It cleans up the returned
-# code block by removing any extraneous spaces and such.
-
-#@+node:ekr.20161123080717.7: *9* body: (node, opts={}) ->
-body: (node, opts={}) ->
-  str = @build(node, opts)
-  str = blockTrim(str)
-  str = unshift(str)
-
-  if str.length > 0 then str else ""
-# ## The builders
-#
-# Each of these method are passed a Node, and is expected to return
-# a string representation of it CoffeeScript counterpart.
-#
-# These are invoked using the main entry point, `Builder#build()`.
-
-# `script`
-# This is the main entry point.
-
-#@+node:ekr.20161123080717.8: *9* 'script': (n, opts={}) ->
-'script': (n, opts={}) ->
-  c = new Code
-
-  # *Functions must always be declared first in a block.*
-  _.each n.functions,    (item) => c.add @build(item)
-  _.each n.nonfunctions, (item) => c.add @build(item)
-
-  c.toString()
-# `property_identifier`
-# A key in an object literal.
-
-#@+node:ekr.20161123080717.9: *9* 'property_identifier': (n) ->
-'property_identifier': (n) ->
-  str = n.value.toString()
-
-  # **Caveat:**
-  # *In object literals like `{ '#foo click': b }`, ensure that the key is
-  # quoted if need be.*
-
-  if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
-    str
-  else
-    strEscape str
-# `identifier`
-# Any object identifier like a variable name.
-
-#@+node:ekr.20161123080717.10: *9* 'identifier': (n) ->
-'identifier': (n) ->
-  if n.value is 'undefined'
-    '`undefined`'
-  else if n.property_accessor
-    n.value.toString()
-  else
-    unreserve n.value.toString()
-#@+node:ekr.20161123080717.11: *9* 'number': (n) ->
-'number': (n) ->
-  "#{n.src()}"
-#@+node:ekr.20161123080717.12: *9* 'id': (n) ->
-'id': (n) ->
-  if n.property_accessor
-    n
-  else
-    unreserve n
-# `id_param`
-# Function parameters. Belongs to `list`.
-
-#@+node:ekr.20161123080717.13: *9* 'id_param': (n) ->
-'id_param': (n) ->
-  if n.toString() in ['undefined']
-    "#{n}_"
-  else
-    @id n
-# `return`
-# A return statement. Has `n.value` of type `id`.
-
-#@+node:ekr.20161123080717.14: *9* 'return': (n) ->
-'return': (n) ->
-  if not n.value?
-    "return\n"
-
-  else
-    "return #{@build(n.value)}\n"
-# `;` (aka, statement)
-# A single statement.
-
-#@+node:ekr.20161123080717.15: *9* ';': (n) ->
-';': (n) ->
-  # **Caveat:**
-  # Some statements can be blank as some people are silly enough to use `;;`
-  # sometimes. They should be ignored.
-
-  unless n.expression?
-    ""
-
-  else if n.expression.typeName() == 'object_init'
-    src = @object_init(n.expression)
-    if n.parenthesized
-      src
-    else
-      "#{unshift(blockTrim(src))}\n"
-
-  else
-    @build(n.expression) + "\n"
-# `new` + `new_with_args`
-# For `new X` and `new X(y)` respctively.
-
-#@+node:ekr.20161123080717.16: *9* 'new': (n) -> "new #{@build n.left()}"
-'new': (n) -> "new #{@build n.left()}"
-#@+node:ekr.20161123080717.17: *9* 'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-# ### Unary operators
-
-#@+node:ekr.20161123080717.18: *9* 'unary_plus': (n) -> "+#{@build n.left()}"
-'unary_plus': (n) -> "+#{@build n.left()}"
-#@+node:ekr.20161123080717.19: *9* 'unary_minus': (n) -> "-#{@build n.left()}"
-'unary_minus': (n) -> "-#{@build n.left()}"
-# ### Keywords
-
-#@+node:ekr.20161123080717.20: *9* 'this': (n) -> 'this'
-'this': (n) -> 'this'
-#@+node:ekr.20161123080717.21: *9* 'null': (n) -> 'null'
-'null': (n) -> 'null'
-#@+node:ekr.20161123080717.22: *9* 'true': (n) -> 'true'
-'true': (n) -> 'true'
-#@+node:ekr.20161123080717.23: *9* 'false': (n) -> 'false'
-'false': (n) -> 'false'
-#@+node:ekr.20161123080717.24: *9* 'void': (n) -> 'undefined'
-'void': (n) -> 'undefined'
-#@+node:ekr.20161123080717.25: *9* 'debugger': (n) -> "debugger\n"
-'debugger': (n) -> "debugger\n"
-#@+node:ekr.20161123080717.26: *9* 'break': (n) -> "break\n"
-'break': (n) -> "break\n"
-#@+node:ekr.20161123080717.27: *9* 'continue': (n) -> "continue\n"
-'continue': (n) -> "continue\n"
-# ### Some simple operators
-
-#@+node:ekr.20161123080717.28: *9* '~': (n) -> "~#{@build n.left()}"
-'~': (n) -> "~#{@build n.left()}"
-#@+node:ekr.20161123080717.29: *9* 'typeof': (n) -> "typeof #{@build n.left()}"
-'typeof': (n) -> "typeof #{@build n.left()}"
-#@+node:ekr.20161123080717.30: *9* 'index': (n) ->
-'index': (n) ->
-  right = @build n.right()
-  if _.any(n.children, (child) -> child.typeName() == 'object_init' and child.children.length > 1)
-    right = "{#{right}}"
-  "#{@build n.left()}[#{right}]"
-#@+node:ekr.20161123080717.31: *9* 'throw': (n) -> "throw #{@build n.exception}"
-'throw': (n) -> "throw #{@build n.exception}"
-#@+node:ekr.20161123080717.32: *9* '!': (n) ->
-'!': (n) ->
-  target = n.left()
-  negations = 1
-  ++negations while (target.isA '!') and target = target.left()
-  if (negations & 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
-    target.negated = not target.negated
-    return @build target
-  "#{if negations & 1 then 'not ' else '!!'}#{@build target}"
-# ### Binary operators
-# All of these are rerouted to the `binary_operator` @builder.
-
-# TODO: make a function that generates these functions, invoked like so:
-#   in: binop 'in', 'of'
-#   '+': binop '+'
-#   and so on...
-
-#@+node:ekr.20161123080717.33: *9* in: (n) ->    @binary_operator n, 'of'
-in: (n) ->    @binary_operator n, 'of'
-#@+node:ekr.20161123080717.34: *9* '+': (n) ->   @binary_operator n, '+'
-'+': (n) ->   @binary_operator n, '+'
-#@+node:ekr.20161123080717.35: *9* '-': (n) ->   @binary_operator n, '-'
-'-': (n) ->   @binary_operator n, '-'
-#@+node:ekr.20161123080717.36: *9* '*': (n) ->   @binary_operator n, '*'
-'*': (n) ->   @binary_operator n, '*'
-#@+node:ekr.20161123080717.37: *9* '/': (n) ->   @binary_operator n, '/'
-'/': (n) ->   @binary_operator n, '/'
-#@+node:ekr.20161123080717.38: *9* '%': (n) ->   @binary_operator n, '%'
-'%': (n) ->   @binary_operator n, '%'
-#@+node:ekr.20161123080717.39: *9* '>': (n) ->   @binary_operator n, '>'
-'>': (n) ->   @binary_operator n, '>'
-#@+node:ekr.20161123080717.40: *9* '<': (n) ->   @binary_operator n, '<'
-'<': (n) ->   @binary_operator n, '<'
-#@+node:ekr.20161123080717.41: *9* '&': (n) ->   @binary_operator n, '&'
-'&': (n) ->   @binary_operator n, '&'
-#@+node:ekr.20161123080717.42: *9* '|': (n) ->   @binary_operator n, '|'
-'|': (n) ->   @binary_operator n, '|'
-#@+node:ekr.20161123080717.43: *9* '^': (n) ->   @binary_operator n, '^'
-'^': (n) ->   @binary_operator n, '^'
-#@+node:ekr.20161123080717.44: *9* '&&': (n) ->  @binary_operator n, 'and'
-'&&': (n) ->  @binary_operator n, 'and'
-#@+node:ekr.20161123080717.45: *9* '||': (n) ->  @binary_operator n, 'or'
-'||': (n) ->  @binary_operator n, 'or'
-#@+node:ekr.20161123080717.46: *9* '<<': (n) ->  @binary_operator n, '<<'
-'<<': (n) ->  @binary_operator n, '<<'
-#@+node:ekr.20161123080717.47: *9* '<=': (n) ->  @binary_operator n, '<='
-'<=': (n) ->  @binary_operator n, '<='
-#@+node:ekr.20161123080717.48: *9* '>>': (n) ->  @binary_operator n, '>>'
-'>>': (n) ->  @binary_operator n, '>>'
-#@+node:ekr.20161123080717.49: *9* '>=': (n) ->  @binary_operator n, '>='
-'>=': (n) ->  @binary_operator n, '>='
-#@+node:ekr.20161123080717.50: *9* '===': (n) -> @binary_operator n, 'is'
-'===': (n) -> @binary_operator n, 'is'
-#@+node:ekr.20161123080717.51: *9* '!==': (n) -> @binary_operator n, 'isnt'
-'!==': (n) -> @binary_operator n, 'isnt'
-#@+node:ekr.20161123080717.52: *9* '>>>': (n) ->  @binary_operator n, '>>>'
-'>>>': (n) ->  @binary_operator n, '>>>'
-#@+node:ekr.20161123080717.53: *9* instanceof: (n) -> @binary_operator n, 'instanceof'
-instanceof: (n) -> @binary_operator n, 'instanceof'
-#@+node:ekr.20161123080717.54: *9* '==': (n) ->
-'==': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'is'
-#@+node:ekr.20161123080717.55: *9* '!=': (n) ->
-'!=': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'isnt'
-#@+node:ekr.20161123080717.56: *9* 'binary_operator': do ->
-'binary_operator': do ->
-  INVERSIONS =
-    is: 'isnt'
-    in: 'not in'
-    of: 'not of'
-    instanceof: 'not instanceof'
-  INVERSIONS[v] = k for own k, v of INVERSIONS
-  (n, sign) ->
-    sign = INVERSIONS[sign] if n.negated
-    "#{@build n.left()} #{sign} #{@build n.right()}"
-# ### Increments and decrements
-# For `a++` and `--b`.
-
-#@+node:ekr.20161123080717.57: *9* '--': (n) -> @increment_decrement n, '--'
-'--': (n) -> @increment_decrement n, '--'
-#@+node:ekr.20161123080717.58: *9* '++': (n) -> @increment_decrement n, '++'
-'++': (n) -> @increment_decrement n, '++'
-#@+node:ekr.20161123080717.59: *9* 'increment_decrement': (n, sign) ->
-'increment_decrement': (n, sign) ->
-  if n.postfix
-    "#{@build n.left()}#{sign}"
-  else
-    "#{sign}#{@build n.left()}"
-# `=` (aka, assignment)
-# For `a = b` (but not `var a = b`: that's `var`).
-
-#@+node:ekr.20161123080717.60: *9* '=': (n) ->
-'=': (n) ->
-  sign = if n.assignOp?
-    Types[n.assignOp] + '='
-  else
-    '='
-
-  "#{@build n.left()} #{sign} #{@build n.right()}"
-# `,` (aka, comma)
-# For `a = 1, b = 2'
-
-#@+node:ekr.20161123080717.61: *9* ',': (n) ->
-',': (n) ->
-  list = _.map n.children, (item) => @build(item) + "\n"
-  list.join('')
-# `regexp`
-# Regular expressions.
-
-#@+node:ekr.20161123080717.62: *9* 'regexp': (n) ->
-'regexp': (n) ->
-  m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
-  value = m[1]
-  flag  = m[2]
-
-  # **Caveat:**
-  # *If it begins with `=` or a space, the CoffeeScript parser will choke if
-  # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
-
-  begins_with = value[0]
-
-  if begins_with in [' ', '=']
-    if flag.length > 0
-      "RegExp(#{strEscape value}, \"#{flag}\")"
-    else
-      "RegExp(#{strEscape value})"
-  else
-    "/#{value}/#{flag}"
-#@+node:ekr.20161123080717.63: *9* 'string': (n) ->
-'string': (n) ->
-  strEscape n.value
-# `call`
-# A Function call.
-# `n.left` is an `id`, and `n.right` is a `list`.
-
-#@+node:ekr.20161123080717.64: *9* 'call': (n) ->
-'call': (n) ->
-  if n.right().children.length == 0
-    "#{@build n.left()}()"
-  else
-    "#{@build n.left()}(#{@build n.right()})"
-# `call_statement`
-# A `call` that's on it's own line.
-
-#@+node:ekr.20161123080717.65: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  left = @build n.left()
-
-  # **Caveat:**
-  # *When calling in this way: `function () { ... }()`,
-  # ensure that there are parenthesis around the anon function
-  # (eg, `(-> ...)()`).*
-
-  left = paren(left)  if n.left().isA('function')
-
-  if n.right().children.length == 0
-    "#{left}()"
-  else
-    "#{left} #{@build n.right()}"
-# `list`
-# A parameter list.
-
-#@+node:ekr.20161123080717.66: *9* 'list': (n) ->
-'list': (n) ->
-  list = _.map(n.children, (item) =>
-    if n.children.length > 1
-      item.is_list_element = true
-    @build(item))
-
-  list.join(", ")
-#@+node:ekr.20161123080717.67: *9* 'delete': (n) ->
-'delete': (n) ->
-  ids = _.map(n.children, (el) => @build(el))
-  ids = ids.join(', ')
-  "delete #{ids}\n"
-# `.` (scope resolution?)
-# For instances such as `object.value`.
-
-#@+node:ekr.20161123080717.68: *9* '.': (n) ->
-'.': (n) ->
-  # **Caveat:**
-  # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
-
-  # **Caveat:**
-  # *If called as `x.prototype`, it should use double colons (`x::`).*
-
-  left  = @build n.left()
-  right_obj = n.right()
-  right_obj.property_accessor = true
-  right = @build right_obj
-
-  if n.isThis and n.isPrototype
-    "@::"
-  else if n.isThis
-    "@#{right}"
-  else if n.isPrototype
-    "#{left}::"
-  else if n.left().isPrototype
-    "#{left}#{right}"
-  else
-    "#{left}.#{right}"
-#@+node:ekr.20161123080717.69: *9* 'try': (n) ->
-'try': (n) ->
-  c = new Code
-  c.add 'try'
-  c.scope @body(n.tryBlock)
-
-  _.each n.catchClauses, (clause) =>
-    c.add @build(clause)
-
-  if n.finallyBlock?
-    c.add "finally"
-    c.scope @body(n.finallyBlock)
-
-  c
-#@+node:ekr.20161123080717.70: *9* 'catch': (n) ->
-'catch': (n) ->
-  body_ = @body(n.block)
-  return '' if trim(body_).length == 0
-
-  c = new Code
-
-  if n.varName?
-    c.add "catch #{n.varName}"
-  else
-    c.add 'catch'
-
-  c.scope @body(n.block)
-  c
-# `?` (ternary operator)
-# For `a ? b : c`. Note that these will always be parenthesized, as (I
-# believe) the order of operations in JS is different in CS.
-
-#@+node:ekr.20161123080717.71: *9* '?': (n) ->
-'?': (n) ->
-  "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
-#@+node:ekr.20161123080717.72: *9* 'for': (n) ->
-'for': (n) ->
-  c = new Code
-
-  if n.setup?
-    c.add "#{@build n.setup}\n"
-
-  if n.condition?
-    c.add "while #{@build n.condition}\n"
-  else
-    c.add "loop"
-
-  c.scope @body(n.body)
-  c.scope @body(n.update)  if n.update?
-  c
-#@+node:ekr.20161123080717.73: *9* 'for_in': (n) ->
-'for_in': (n) ->
-  c = new Code
-
-  c.add "for #{@build n.iterator} of #{@build n.object}"
-  c.scope @body(n.body)
-  c
-#@+node:ekr.20161123080717.74: *9* 'while': (n) ->
-'while': (n) ->
-  c = new Code
-
-  keyword   = if n.positive then "while" else "until"
-  body_     = @body(n.body)
-
-  # *Use `loop` whin something will go on forever (like `while (true)`).*
-  if truthy(n.condition)
-    statement = "loop"
-  else
-    statement = "#{keyword} #{@build n.condition}"
-
-  if isSingleLine(body_) and statement isnt "loop"
-    c.add "#{trim body_}  #{statement}\n"
-  else
-    c.add statement
-    c.scope body_
-  c
-#@+node:ekr.20161123080717.75: *9* 'do': (n) ->
-'do': (n) ->
-  c = new Code
-
-  c.add "loop"
-  c.scope @body(n.body)
-  c.scope "break unless #{@build n.condition}"  if n.condition?
-
-  c
-#@+node:ekr.20161123080717.76: *9* 'if': (n) ->
-'if': (n) ->
-  c = new Code
-
-  keyword = if n.positive then "if" else "unless"
-  body_   = @body(n.thenPart)
-  n.condition.parenthesized = false
-
-  # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
-  # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
-  if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
-    console.log n.thenPart
-    c.add "#{@build n.condition}\n"
-
-  else if isSingleLine(body_) and !n.elsePart?
-    c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
-
-  else
-    c.add "#{keyword} #{@build n.condition}"
-    c.scope @body(n.thenPart)
-
-    if n.elsePart?
-      if n.elsePart.typeName() == 'if'
-        c.add "else #{@build(n.elsePart).toString()}"
-      else
-        c.add "else\n"
-        c.scope @body(n.elsePart)
-
-  c
-#@+node:ekr.20161123080717.77: *9* 'switch': (n) ->
-'switch': (n) ->
-  c = new Code
-
-  c.add "switch #{@build n.discriminant}\n"
-
-  fall_through = false
-  _.each n.cases, (item) =>
-    if item.value == 'default'
-      c.scope "else"
-    else
-      if fall_through == true
-        c.add ", #{@build item.caseLabel}\n"
-      else
-        c.add "  when #{@build item.caseLabel}"
-        
-    if @body(item.statements).length == 0
-      fall_through = true
-    else
-      fall_through = false
-      c.add "\n"
-      c.scope @body(item.statements), 2
-
-    first = false
-
-  c
-#@+node:ekr.20161123080717.78: *9* 'existence_check': (n) ->
-'existence_check': (n) ->
-  "#{@build n.left()}?"
-#@+node:ekr.20161123080717.79: *9* 'array_init': (n) ->
-'array_init': (n) ->
-  if n.children.length == 0
-    "[]"
-  else
-    "[ #{@list n} ]"
-# `property_init`
-# Belongs to `object_init`;
-# left is a `identifier`, right can be anything.
-
-#@+node:ekr.20161123080717.80: *9* 'property_init': (n) ->
-'property_init': (n) ->
-  left = n.left()
-  right = n.right()
-  right.is_property_value = true
-  "#{@property_identifier left}: #{@build right}"
-# `object_init`
-# An object initializer.
-# Has many `property_init`.
-
-#@+node:ekr.20161123080717.81: *9* 'object_init': (n, options={}) ->
-'object_init': (n, options={}) ->
-  if n.children.length == 0
-    "{}"
-
-  else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
-    @build n.children[0]
-
-  else
-    list = _.map n.children, (item) => @build item
-
-    c = new Code
-    c.scope list.join("\n")
-    c = "{#{c}}"  if options.brackets?
-    c
-# `function`
-# A function. Can be an anonymous function (`function () { .. }`), or a named
-# function (`function name() { .. }`).
-
-#@+node:ekr.20161123080717.82: *9* 'function': (n) ->
-'function': (n) ->
-  c = new Code
-
-  params = _.map n.params, (str) =>
-    if str.constructor == String
-      @id_param str
-    else
-      @build str
-
-  if n.name
-    c.add "#{n.name} = "
-
-  if n.params.length > 0
-    c.add "(#{params.join ', '}) ->"
-  else
-    c.add "->"
-
-  body = @body(n.body)
-  if trim(body).length > 0
-    c.scope body
-  else
-    c.add "\n"
-
-  c
-#@+node:ekr.20161123080717.83: *9* 'var': (n) ->
-'var': (n) ->
-  list = _.map n.children, (item) =>
-    "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
-
-  _.compact(list).join("\n") + "\n"
-# ### Unsupported things
-#
-# Due to CoffeeScript limitations, the following things are not supported:
-#
-#  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
-#  * Break labels (`my_label: ...`)
-#  * Constants
-
-#@+node:ekr.20161123080717.84: *9* 'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-#@+node:ekr.20161123080717.85: *9* 'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-#@+node:ekr.20161123080717.86: *9* 'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-#@+node:ekr.20161123080717.87: *9* 'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-#@+node:ekr.20161123080717.88: *9* 'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-#@+node:ekr.20161123080717.89: *9* 'block': (args...) ->
-'block': (args...) ->
-  @script.apply @, args
-# `unsupported()`
-# Throws an unsupported error.
-#@+node:ekr.20161123080717.90: *9* 'unsupported': (node, message) ->
-'unsupported': (node, message) ->
-  throw new UnsupportedError("Unsupported: #{message}", node)
-# ## AST manipulation
-# Manipulation of the abstract syntax tree happens here. All these are done on
-# the `build()` step, done just before a node is passed onto `Builders`.
-
-#@+node:ekr.20161123080717.91: *8* class Transformer
-class Transformer
-  @others
-#@+node:ekr.20161123080717.92: *9* transform: (args...) ->
-transform: (args...) ->
-  node = args[0]
-  return  if node.transformed?
-  type = node.typeName()
-  fn = @[type]
-
-  if fn
-    fn.apply(this, args)
-    node.transformed = true
-#@+node:ekr.20161123080717.93: *9* 'script': (n) ->
-'script': (n) ->
-  n.functions    = []
-  n.nonfunctions = []
-
-  _.each n.children, (item) =>
-    if item.isA('function')
-      n.functions.push item
-    else
-      n.nonfunctions.push item
-
-  last = null
-
-  # *Statements don't need parens, unless they are consecutive object
-  # literals.*
-  _.each n.nonfunctions, (item) =>
-    if item.expression?
-      expr = item.expression
-
-      if last?.isA('object_init') and expr.isA('object_init')
-        item.parenthesized = true
-      else
-        item.parenthesized = false
-
-      last = expr
-#@+node:ekr.20161123080717.94: *9* '.': (n) ->
-'.': (n) ->
-  n.isThis      = n.left().isA('this')
-  n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
-#@+node:ekr.20161123080717.95: *9* ';': (n) ->
-';': (n) ->
-  if n.expression?
-    # *Statements don't need parens.*
-    n.expression.parenthesized = false
-
-    # *If the statement only has one function call (eg, `alert(2);`), the
-    # parentheses should be omitted (eg, `alert 2`).*
-    if n.expression.isA('call')
-      n.expression.type = Typenames['call_statement']
-      @call_statement n
-#@+node:ekr.20161123080717.96: *9* 'function': (n) ->
-'function': (n) ->
-  # *Unwrap the `return`s.*
-  @others
-#@+node:ekr.20161123080717.97: *10* n.body.walk last: true, (parent, node, list) ->
-n.body.walk last: true, (parent, node, list) ->
-  if node.isA('return') and node.value
-    # Hax
-    lastNode = if list
-      parent[list]
-    else
-      parent.children[parent.children.length-1]
-
-    if lastNode
-      lastNode.type = Typenames[';']
-      lastNode.expression = lastNode.value
-#@+node:ekr.20161123080717.98: *9* 'switch': (n) ->
-'switch': (n) ->
-  _.each n.cases, (item) =>
-    block = item.statements
-    ch    = block.children
-
-    # *CoffeeScript does not need `break` statements on `switch` blocks.*
-    delete ch[ch.length-1] if block.last()?.isA('break')
-#@+node:ekr.20161123080717.99: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  if n.children[1]
-    _.each n.children[1].children, (child, i) ->
-      if child.isA('function') and i != n.children[1].children.length-1
-        child.parenthesized = true
-#@+node:ekr.20161123080717.100: *9* 'return': (n) ->
-'return': (n) ->
-  # *Doing "return {x:2, y:3}" should parenthesize the return value.*
-  if n.value and n.value.isA('object_init') and n.value.children.length > 1
-    n.value.parenthesized = true
-#@+node:ekr.20161123080717.101: *9* 'block': (n) ->
-'block': (n) ->
-  @script n
-#@+node:ekr.20161123080717.102: *9* 'if': (n) ->
-'if': (n) ->
-  # *Account for `if(x) {} else { something }` which should be `something unless x`.*
-  if n.thenPart.children.length == 0 and n.elsePart?.children.length > 0
-    n.positive = false
-    n.thenPart = n.elsePart
-    delete n.elsePart
-
-  @inversible n
-#@+node:ekr.20161123080717.103: *9* 'while': (n) ->
-'while': (n) ->
-  # *A while with a blank body (`while(x){}`) should be accounted for.*
-  # *You can't have empty blocks, so put a `continue` in there. (#78)*
-  if n.body.children.length is 0
-    n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
-
-  @inversible n
-#@+node:ekr.20161123080717.104: *9* 'inversible': (n) ->
-'inversible': (n) ->
-  @transform n.condition
-  positive = if n.positive? then n.positive else true
-
-  # *Invert a '!='. (`if (x != y)` => `unless x is y`)*
-  if n.condition.isA('!=')
-    n.condition.type = Typenames['==']
-    n.positive = not positive
-
-  # *Invert a '!'. (`if (!x)` => `unless x`)*
-  else if n.condition.isA('!')
-    n.condition = n.condition.left()
-    n.positive = not positive
-
-  else
-    n.positive = positive
-#@+node:ekr.20161123080717.105: *9* '==': (n) ->
-'==': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['!']
-    n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
-#@+node:ekr.20161123080717.106: *9* '!=': (n) ->
-'!=': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['existence_check']
-    n.children = [n.left()]
-#@+node:ekr.20161123080717.107: *8* class UnsupportedError
-class UnsupportedError
-  @others
-#@+node:ekr.20161123080717.108: *9* constructor: (str, src) ->
-constructor: (str, src) ->
-  @message = str
-  @cursor  = src.start
-  @line    = src.lineno
-  @source  = src.tokenizer.source
-#@+node:ekr.20161123080717.109: *9* toString: -> @message
-toString: -> @message
-
-# ## Exports
-
-#@+node:ekr.20161123085124.1: *7* @@file c:/leo.repo/leo-editor/leo/test/coffeescript-1
-
-
-# The JavaScript to CoffeeScript compiler.
-# Common usage:
-#
-#
-#     var src = "var square = function(n) { return n * n };"
-#
-#     js2coffee = require('js2coffee');
-#     js2coffee.build(src);
-#     //=> "square = (n) -> n * n"
-
-# ## Requires
-#
-# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
-# engine written in JavaScript).
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-_ = @_ or require('underscore')
-
-{Types, Typenames, Node} = @NodeExt or require('./node_ext')
-
-{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
-  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
-
-# ## Main entry point
-# This is `require('js2coffee').build()`. It takes a JavaScript source
-# string as an argument, and it returns the CoffeeScript version.
-#
-# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
-#    returns a `Node` object of type `script`.
-#
-# 2. This node is now passed onto `Builder#build()`.
-
-@others
-@Js2coffee = exports =
-  version: '0.1.3'
-  build: buildCoffee
-  UnsupportedError: UnsupportedError
-
-module.exports = exports  if module?
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161123085124.2: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-
-  output = trim builder.build(scriptNode)
-  (rtrim line for line in output.split('\n')).join('\n')
-# ## Builder class
-# This is the main class that proccesses the AST and spits out streng.
-# See the `buildCoffee()` function above for info on how this is used.
-
-#@+node:ekr.20161123085124.3: *8* class Builder
-class Builder
-  @others
-#@+node:ekr.20161123085124.4: *9* constructor: ->
-constructor: ->
-  @transformer = new Transformer
-# `build()`
-# The main entry point.
-
-# This finds the appropriate @builder function for `node` based on it's type,
-# the passes the node onto that function.
-#
-# For instance, for a `function` node, it calls `@builders.function(node)`.
-# It defaults to `@builders.other` if it can't find a function for it.
-
-#@+node:ekr.20161123085124.5: *9* build: (args...) ->
-build: (args...) ->
-  node = args[0]
-  @transform node
-
-  name = 'other'
-  name = node.typeName()  if node != undefined and node.typeName
-
-  fn  = (@[name] or @other)
-  out = fn.apply(this, args)
-
-  if node.parenthesized then paren(out) else out
-# `transform()`
-# Perform a transformation on the node, if a transformation function is
-# available.
-
-#@+node:ekr.20161123085124.6: *9* transform: (args...) ->
-transform: (args...) ->
-  @transformer.transform.apply(@transformer, args)
-# `body()`
-# Works like `@build()`, and is used for code blocks. It cleans up the returned
-# code block by removing any extraneous spaces and such.
-
-#@+node:ekr.20161123085124.7: *9* body: (node, opts={}) ->
-body: (node, opts={}) ->
-  str = @build(node, opts)
-  str = blockTrim(str)
-  str = unshift(str)
-
-  if str.length > 0 then str else ""
-# ## The builders
-#
-# Each of these method are passed a Node, and is expected to return
-# a string representation of it CoffeeScript counterpart.
-#
-# These are invoked using the main entry point, `Builder#build()`.
-
-# `script`
-# This is the main entry point.
-
-#@+node:ekr.20161123085124.8: *9* 'script': (n, opts={}) ->
-'script': (n, opts={}) ->
-  c = new Code
-
-  # *Functions must always be declared first in a block.*
-  _.each n.functions,    (item) => c.add @build(item)
-  _.each n.nonfunctions, (item) => c.add @build(item)
-
-  c.toString()
-# `property_identifier`
-# A key in an object literal.
-
-#@+node:ekr.20161123085124.9: *9* 'property_identifier': (n) ->
-'property_identifier': (n) ->
-  str = n.value.toString()
-
-  # **Caveat:**
-  # *In object literals like `{ '#foo click': b }`, ensure that the key is
-  # quoted if need be.*
-
-  if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
-    str
-  else
-    strEscape str
-# `identifier`
-# Any object identifier like a variable name.
-
-#@+node:ekr.20161123085124.10: *9* 'identifier': (n) ->
-'identifier': (n) ->
-  if n.value is 'undefined'
-    '`undefined`'
-  else if n.property_accessor
-    n.value.toString()
-  else
-    unreserve n.value.toString()
-#@+node:ekr.20161123085124.11: *9* 'number': (n) ->
-'number': (n) ->
-  "#{n.src()}"
-#@+node:ekr.20161123085124.12: *9* 'id': (n) ->
-'id': (n) ->
-  if n.property_accessor
-    n
-  else
-    unreserve n
-# `id_param`
-# Function parameters. Belongs to `list`.
-
-#@+node:ekr.20161123085124.13: *9* 'id_param': (n) ->
-'id_param': (n) ->
-  if n.toString() in ['undefined']
-    "#{n}_"
-  else
-    @id n
-# `return`
-# A return statement. Has `n.value` of type `id`.
-
-#@+node:ekr.20161123085124.14: *9* 'return': (n) ->
-'return': (n) ->
-  if not n.value?
-    "return\n"
-
-  else
-    "return #{@build(n.value)}\n"
-# `;` (aka, statement)
-# A single statement.
-
-#@+node:ekr.20161123085124.15: *9* ';': (n) ->
-';': (n) ->
-  # **Caveat:**
-  # Some statements can be blank as some people are silly enough to use `;;`
-  # sometimes. They should be ignored.
-
-  unless n.expression?
-    ""
-
-  else if n.expression.typeName() == 'object_init'
-    src = @object_init(n.expression)
-    if n.parenthesized
-      src
-    else
-      "#{unshift(blockTrim(src))}\n"
-
-  else
-    @build(n.expression) + "\n"
-# `new` + `new_with_args`
-# For `new X` and `new X(y)` respctively.
-
-#@+node:ekr.20161123085124.16: *9* 'new': (n) -> "new #{@build n.left()}"
-'new': (n) -> "new #{@build n.left()}"
-#@+node:ekr.20161123085124.17: *9* 'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-# ### Unary operators
-
-#@+node:ekr.20161123085124.18: *9* 'unary_plus': (n) -> "+#{@build n.left()}"
-'unary_plus': (n) -> "+#{@build n.left()}"
-#@+node:ekr.20161123085124.19: *9* 'unary_minus': (n) -> "-#{@build n.left()}"
-'unary_minus': (n) -> "-#{@build n.left()}"
-# ### Keywords
-
-#@+node:ekr.20161123085124.20: *9* 'this': (n) -> 'this'
-'this': (n) -> 'this'
-#@+node:ekr.20161123085124.21: *9* 'null': (n) -> 'null'
-'null': (n) -> 'null'
-#@+node:ekr.20161123085124.22: *9* 'true': (n) -> 'true'
-'true': (n) -> 'true'
-#@+node:ekr.20161123085124.23: *9* 'false': (n) -> 'false'
-'false': (n) -> 'false'
-#@+node:ekr.20161123085124.24: *9* 'void': (n) -> 'undefined'
-'void': (n) -> 'undefined'
-#@+node:ekr.20161123085124.25: *9* 'debugger': (n) -> "debugger\n"
-'debugger': (n) -> "debugger\n"
-#@+node:ekr.20161123085124.26: *9* 'break': (n) -> "break\n"
-'break': (n) -> "break\n"
-#@+node:ekr.20161123085124.27: *9* 'continue': (n) -> "continue\n"
-'continue': (n) -> "continue\n"
-# ### Some simple operators
-
-#@+node:ekr.20161123085124.28: *9* '~': (n) -> "~#{@build n.left()}"
-'~': (n) -> "~#{@build n.left()}"
-#@+node:ekr.20161123085124.29: *9* 'typeof': (n) -> "typeof #{@build n.left()}"
-'typeof': (n) -> "typeof #{@build n.left()}"
-#@+node:ekr.20161123085124.30: *9* 'index': (n) ->
-'index': (n) ->
-  right = @build n.right()
-  if _.any(n.children, (child) -> child.typeName() == 'object_init' and child.children.length > 1)
-    right = "{#{right}}"
-  "#{@build n.left()}[#{right}]"
-#@+node:ekr.20161123085124.31: *9* 'throw': (n) -> "throw #{@build n.exception}"
-'throw': (n) -> "throw #{@build n.exception}"
-#@+node:ekr.20161123085124.32: *9* '!': (n) ->
-'!': (n) ->
-  target = n.left()
-  negations = 1
-  ++negations while (target.isA '!') and target = target.left()
-  if (negations & 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
-    target.negated = not target.negated
-    return @build target
-  "#{if negations & 1 then 'not ' else '!!'}#{@build target}"
-# ### Binary operators
-# All of these are rerouted to the `binary_operator` @builder.
-
-# TODO: make a function that generates these functions, invoked like so:
-#   in: binop 'in', 'of'
-#   '+': binop '+'
-#   and so on...
-
-#@+node:ekr.20161123085124.33: *9* in: (n) ->    @binary_operator n, 'of'
-in: (n) ->    @binary_operator n, 'of'
-#@+node:ekr.20161123085124.34: *9* '+': (n) ->   @binary_operator n, '+'
-'+': (n) ->   @binary_operator n, '+'
-#@+node:ekr.20161123085124.35: *9* '-': (n) ->   @binary_operator n, '-'
-'-': (n) ->   @binary_operator n, '-'
-#@+node:ekr.20161123085124.36: *9* '*': (n) ->   @binary_operator n, '*'
-'*': (n) ->   @binary_operator n, '*'
-#@+node:ekr.20161123085124.37: *9* '/': (n) ->   @binary_operator n, '/'
-'/': (n) ->   @binary_operator n, '/'
-#@+node:ekr.20161123085124.38: *9* '%': (n) ->   @binary_operator n, '%'
-'%': (n) ->   @binary_operator n, '%'
-#@+node:ekr.20161123085124.39: *9* '>': (n) ->   @binary_operator n, '>'
-'>': (n) ->   @binary_operator n, '>'
-#@+node:ekr.20161123085124.40: *9* '<': (n) ->   @binary_operator n, '<'
-'<': (n) ->   @binary_operator n, '<'
-#@+node:ekr.20161123085124.41: *9* '&': (n) ->   @binary_operator n, '&'
-'&': (n) ->   @binary_operator n, '&'
-#@+node:ekr.20161123085124.42: *9* '|': (n) ->   @binary_operator n, '|'
-'|': (n) ->   @binary_operator n, '|'
-#@+node:ekr.20161123085124.43: *9* '^': (n) ->   @binary_operator n, '^'
-'^': (n) ->   @binary_operator n, '^'
-#@+node:ekr.20161123085124.44: *9* '&&': (n) ->  @binary_operator n, 'and'
-'&&': (n) ->  @binary_operator n, 'and'
-#@+node:ekr.20161123085124.45: *9* '||': (n) ->  @binary_operator n, 'or'
-'||': (n) ->  @binary_operator n, 'or'
-#@+node:ekr.20161123085124.46: *9* '<<': (n) ->  @binary_operator n, '<<'
-'<<': (n) ->  @binary_operator n, '<<'
-#@+node:ekr.20161123085124.47: *9* '<=': (n) ->  @binary_operator n, '<='
-'<=': (n) ->  @binary_operator n, '<='
-#@+node:ekr.20161123085124.48: *9* '>>': (n) ->  @binary_operator n, '>>'
-'>>': (n) ->  @binary_operator n, '>>'
-#@+node:ekr.20161123085124.49: *9* '>=': (n) ->  @binary_operator n, '>='
-'>=': (n) ->  @binary_operator n, '>='
-#@+node:ekr.20161123085124.50: *9* '===': (n) -> @binary_operator n, 'is'
-'===': (n) -> @binary_operator n, 'is'
-#@+node:ekr.20161123085124.51: *9* '!==': (n) -> @binary_operator n, 'isnt'
-'!==': (n) -> @binary_operator n, 'isnt'
-#@+node:ekr.20161123085124.52: *9* '>>>': (n) ->  @binary_operator n, '>>>'
-'>>>': (n) ->  @binary_operator n, '>>>'
-#@+node:ekr.20161123085124.53: *9* instanceof: (n) -> @binary_operator n, 'instanceof'
-instanceof: (n) -> @binary_operator n, 'instanceof'
-#@+node:ekr.20161123085124.54: *9* '==': (n) ->
-'==': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'is'
-#@+node:ekr.20161123085124.55: *9* '!=': (n) ->
-'!=': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'isnt'
-#@+node:ekr.20161123085124.56: *9* 'binary_operator': do ->
-'binary_operator': do ->
-  INVERSIONS =
-    is: 'isnt'
-    in: 'not in'
-    of: 'not of'
-    instanceof: 'not instanceof'
-  INVERSIONS[v] = k for own k, v of INVERSIONS
-  (n, sign) ->
-    sign = INVERSIONS[sign] if n.negated
-    "#{@build n.left()} #{sign} #{@build n.right()}"
-# ### Increments and decrements
-# For `a++` and `--b`.
-
-#@+node:ekr.20161123085124.57: *9* '--': (n) -> @increment_decrement n, '--'
-'--': (n) -> @increment_decrement n, '--'
-#@+node:ekr.20161123085124.58: *9* '++': (n) -> @increment_decrement n, '++'
-'++': (n) -> @increment_decrement n, '++'
-#@+node:ekr.20161123085124.59: *9* 'increment_decrement': (n, sign) ->
-'increment_decrement': (n, sign) ->
-  if n.postfix
-    "#{@build n.left()}#{sign}"
-  else
-    "#{sign}#{@build n.left()}"
-# `=` (aka, assignment)
-# For `a = b` (but not `var a = b`: that's `var`).
-
-#@+node:ekr.20161123085124.60: *9* '=': (n) ->
-'=': (n) ->
-  sign = if n.assignOp?
-    Types[n.assignOp] + '='
-  else
-    '='
-
-  "#{@build n.left()} #{sign} #{@build n.right()}"
-# `,` (aka, comma)
-# For `a = 1, b = 2'
-
-#@+node:ekr.20161123085124.61: *9* ',': (n) ->
-',': (n) ->
-  list = _.map n.children, (item) => @build(item) + "\n"
-  list.join('')
-# `regexp`
-# Regular expressions.
-
-#@+node:ekr.20161123085124.62: *9* 'regexp': (n) ->
-'regexp': (n) ->
-  m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
-  value = m[1]
-  flag  = m[2]
-
-  # **Caveat:**
-  # *If it begins with `=` or a space, the CoffeeScript parser will choke if
-  # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
-
-  begins_with = value[0]
-
-  if begins_with in [' ', '=']
-    if flag.length > 0
-      "RegExp(#{strEscape value}, \"#{flag}\")"
-    else
-      "RegExp(#{strEscape value})"
-  else
-    "/#{value}/#{flag}"
-#@+node:ekr.20161123085124.63: *9* 'string': (n) ->
-'string': (n) ->
-  strEscape n.value
-# `call`
-# A Function call.
-# `n.left` is an `id`, and `n.right` is a `list`.
-
-#@+node:ekr.20161123085124.64: *9* 'call': (n) ->
-'call': (n) ->
-  if n.right().children.length == 0
-    "#{@build n.left()}()"
-  else
-    "#{@build n.left()}(#{@build n.right()})"
-# `call_statement`
-# A `call` that's on it's own line.
-
-#@+node:ekr.20161123085124.65: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  left = @build n.left()
-
-  # **Caveat:**
-  # *When calling in this way: `function () { ... }()`,
-  # ensure that there are parenthesis around the anon function
-  # (eg, `(-> ...)()`).*
-
-  left = paren(left)  if n.left().isA('function')
-
-  if n.right().children.length == 0
-    "#{left}()"
-  else
-    "#{left} #{@build n.right()}"
-# `list`
-# A parameter list.
-
-#@+node:ekr.20161123085124.66: *9* 'list': (n) ->
-'list': (n) ->
-  list = _.map(n.children, (item) =>
-    if n.children.length > 1
-      item.is_list_element = true
-    @build(item))
-
-  list.join(", ")
-#@+node:ekr.20161123085124.67: *9* 'delete': (n) ->
-'delete': (n) ->
-  ids = _.map(n.children, (el) => @build(el))
-  ids = ids.join(', ')
-  "delete #{ids}\n"
-# `.` (scope resolution?)
-# For instances such as `object.value`.
-
-#@+node:ekr.20161123085124.68: *9* '.': (n) ->
-'.': (n) ->
-  # **Caveat:**
-  # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
-
-  # **Caveat:**
-  # *If called as `x.prototype`, it should use double colons (`x::`).*
-
-  left  = @build n.left()
-  right_obj = n.right()
-  right_obj.property_accessor = true
-  right = @build right_obj
-
-  if n.isThis and n.isPrototype
-    "@::"
-  else if n.isThis
-    "@#{right}"
-  else if n.isPrototype
-    "#{left}::"
-  else if n.left().isPrototype
-    "#{left}#{right}"
-  else
-    "#{left}.#{right}"
-#@+node:ekr.20161123085124.69: *9* 'try': (n) ->
-'try': (n) ->
-  c = new Code
-  c.add 'try'
-  c.scope @body(n.tryBlock)
-
-  _.each n.catchClauses, (clause) =>
-    c.add @build(clause)
-
-  if n.finallyBlock?
-    c.add "finally"
-    c.scope @body(n.finallyBlock)
-
-  c
-#@+node:ekr.20161123085124.70: *9* 'catch': (n) ->
-'catch': (n) ->
-  body_ = @body(n.block)
-  return '' if trim(body_).length == 0
-
-  c = new Code
-
-  if n.varName?
-    c.add "catch #{n.varName}"
-  else
-    c.add 'catch'
-
-  c.scope @body(n.block)
-  c
-# `?` (ternary operator)
-# For `a ? b : c`. Note that these will always be parenthesized, as (I
-# believe) the order of operations in JS is different in CS.
-
-#@+node:ekr.20161123085124.71: *9* '?': (n) ->
-'?': (n) ->
-  "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
-#@+node:ekr.20161123085124.72: *9* 'for': (n) ->
-'for': (n) ->
-  c = new Code
-
-  if n.setup?
-    c.add "#{@build n.setup}\n"
-
-  if n.condition?
-    c.add "while #{@build n.condition}\n"
-  else
-    c.add "loop"
-
-  c.scope @body(n.body)
-  c.scope @body(n.update)  if n.update?
-  c
-#@+node:ekr.20161123085124.73: *9* 'for_in': (n) ->
-'for_in': (n) ->
-  c = new Code
-
-  c.add "for #{@build n.iterator} of #{@build n.object}"
-  c.scope @body(n.body)
-  c
-#@+node:ekr.20161123085124.74: *9* 'while': (n) ->
-'while': (n) ->
-  c = new Code
-
-  keyword   = if n.positive then "while" else "until"
-  body_     = @body(n.body)
-
-  # *Use `loop` whin something will go on forever (like `while (true)`).*
-  if truthy(n.condition)
-    statement = "loop"
-  else
-    statement = "#{keyword} #{@build n.condition}"
-
-  if isSingleLine(body_) and statement isnt "loop"
-    c.add "#{trim body_}  #{statement}\n"
-  else
-    c.add statement
-    c.scope body_
-  c
-#@+node:ekr.20161123085124.75: *9* 'do': (n) ->
-'do': (n) ->
-  c = new Code
-
-  c.add "loop"
-  c.scope @body(n.body)
-  c.scope "break unless #{@build n.condition}"  if n.condition?
-
-  c
-#@+node:ekr.20161123085124.76: *9* 'if': (n) ->
-'if': (n) ->
-  c = new Code
-
-  keyword = if n.positive then "if" else "unless"
-  body_   = @body(n.thenPart)
-  n.condition.parenthesized = false
-
-  # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
-  # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
-  if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
-    console.log n.thenPart
-    c.add "#{@build n.condition}\n"
-
-  else if isSingleLine(body_) and !n.elsePart?
-    c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
-
-  else
-    c.add "#{keyword} #{@build n.condition}"
-    c.scope @body(n.thenPart)
-
-    if n.elsePart?
-      if n.elsePart.typeName() == 'if'
-        c.add "else #{@build(n.elsePart).toString()}"
-      else
-        c.add "else\n"
-        c.scope @body(n.elsePart)
-
-  c
-#@+node:ekr.20161123085124.77: *9* 'switch': (n) ->
-'switch': (n) ->
-  c = new Code
-
-  c.add "switch #{@build n.discriminant}\n"
-
-  fall_through = false
-  _.each n.cases, (item) =>
-    if item.value == 'default'
-      c.scope "else"
-    else
-      if fall_through == true
-        c.add ", #{@build item.caseLabel}\n"
-      else
-        c.add "  when #{@build item.caseLabel}"
-        
-    if @body(item.statements).length == 0
-      fall_through = true
-    else
-      fall_through = false
-      c.add "\n"
-      c.scope @body(item.statements), 2
-
-    first = false
-
-  c
-#@+node:ekr.20161123085124.78: *9* 'existence_check': (n) ->
-'existence_check': (n) ->
-  "#{@build n.left()}?"
-#@+node:ekr.20161123085124.79: *9* 'array_init': (n) ->
-'array_init': (n) ->
-  if n.children.length == 0
-    "[]"
-  else
-    "[ #{@list n} ]"
-# `property_init`
-# Belongs to `object_init`;
-# left is a `identifier`, right can be anything.
-
-#@+node:ekr.20161123085124.80: *9* 'property_init': (n) ->
-'property_init': (n) ->
-  left = n.left()
-  right = n.right()
-  right.is_property_value = true
-  "#{@property_identifier left}: #{@build right}"
-# `object_init`
-# An object initializer.
-# Has many `property_init`.
-
-#@+node:ekr.20161123085124.81: *9* 'object_init': (n, options={}) ->
-'object_init': (n, options={}) ->
-  if n.children.length == 0
-    "{}"
-
-  else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
-    @build n.children[0]
-
-  else
-    list = _.map n.children, (item) => @build item
-
-    c = new Code
-    c.scope list.join("\n")
-    c = "{#{c}}"  if options.brackets?
-    c
-# `function`
-# A function. Can be an anonymous function (`function () { .. }`), or a named
-# function (`function name() { .. }`).
-
-#@+node:ekr.20161123085124.82: *9* 'function': (n) ->
-'function': (n) ->
-  c = new Code
-
-  params = _.map n.params, (str) =>
-    if str.constructor == String
-      @id_param str
-    else
-      @build str
-
-  if n.name
-    c.add "#{n.name} = "
-
-  if n.params.length > 0
-    c.add "(#{params.join ', '}) ->"
-  else
-    c.add "->"
-
-  body = @body(n.body)
-  if trim(body).length > 0
-    c.scope body
-  else
-    c.add "\n"
-
-  c
-#@+node:ekr.20161123085124.83: *9* 'var': (n) ->
-'var': (n) ->
-  list = _.map n.children, (item) =>
-    "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
-
-  _.compact(list).join("\n") + "\n"
-# ### Unsupported things
-#
-# Due to CoffeeScript limitations, the following things are not supported:
-#
-#  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
-#  * Break labels (`my_label: ...`)
-#  * Constants
-
-#@+node:ekr.20161123085124.84: *9* 'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-#@+node:ekr.20161123085124.85: *9* 'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-#@+node:ekr.20161123085124.86: *9* 'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-#@+node:ekr.20161123085124.87: *9* 'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-#@+node:ekr.20161123085124.88: *9* 'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-#@+node:ekr.20161123085124.89: *9* 'block': (args...) ->
-'block': (args...) ->
-  @script.apply @, args
-# `unsupported()`
-# Throws an unsupported error.
-#@+node:ekr.20161123085124.90: *9* 'unsupported': (node, message) ->
-'unsupported': (node, message) ->
-  throw new UnsupportedError("Unsupported: #{message}", node)
-# ## AST manipulation
-# Manipulation of the abstract syntax tree happens here. All these are done on
-# the `build()` step, done just before a node is passed onto `Builders`.
-
-#@+node:ekr.20161123085124.91: *8* class Transformer
-class Transformer
-  @others
-#@+node:ekr.20161123085124.92: *9* transform: (args...) ->
-transform: (args...) ->
-  node = args[0]
-  return  if node.transformed?
-  type = node.typeName()
-  fn = @[type]
-
-  if fn
-    fn.apply(this, args)
-    node.transformed = true
-#@+node:ekr.20161123085124.93: *9* 'script': (n) ->
-'script': (n) ->
-  n.functions    = []
-  n.nonfunctions = []
-
-  _.each n.children, (item) =>
-    if item.isA('function')
-      n.functions.push item
-    else
-      n.nonfunctions.push item
-
-  last = null
-
-  # *Statements don't need parens, unless they are consecutive object
-  # literals.*
-  _.each n.nonfunctions, (item) =>
-    if item.expression?
-      expr = item.expression
-
-      if last?.isA('object_init') and expr.isA('object_init')
-        item.parenthesized = true
-      else
-        item.parenthesized = false
-
-      last = expr
-#@+node:ekr.20161123085124.94: *9* '.': (n) ->
-'.': (n) ->
-  n.isThis      = n.left().isA('this')
-  n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
-#@+node:ekr.20161123085124.95: *9* ';': (n) ->
-';': (n) ->
-  if n.expression?
-    # *Statements don't need parens.*
-    n.expression.parenthesized = false
-
-    # *If the statement only has one function call (eg, `alert(2);`), the
-    # parentheses should be omitted (eg, `alert 2`).*
-    if n.expression.isA('call')
-      n.expression.type = Typenames['call_statement']
-      @call_statement n
-#@+node:ekr.20161123085124.96: *9* 'function': (n) ->
-'function': (n) ->
-  # *Unwrap the `return`s.*
-  @others
-#@+node:ekr.20161123085124.97: *10* n.body.walk last: true, (parent, node, list) ->
-n.body.walk last: true, (parent, node, list) ->
-  if node.isA('return') and node.value
-    # Hax
-    lastNode = if list
-      parent[list]
-    else
-      parent.children[parent.children.length-1]
-
-    if lastNode
-      lastNode.type = Typenames[';']
-      lastNode.expression = lastNode.value
-#@+node:ekr.20161123085124.98: *9* 'switch': (n) ->
-'switch': (n) ->
-  _.each n.cases, (item) =>
-    block = item.statements
-    ch    = block.children
-
-    # *CoffeeScript does not need `break` statements on `switch` blocks.*
-    delete ch[ch.length-1] if block.last()?.isA('break')
-#@+node:ekr.20161123085124.99: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  if n.children[1]
-    _.each n.children[1].children, (child, i) ->
-      if child.isA('function') and i != n.children[1].children.length-1
-        child.parenthesized = true
-#@+node:ekr.20161123085124.100: *9* 'return': (n) ->
-'return': (n) ->
-  # *Doing "return {x:2, y:3}" should parenthesize the return value.*
-  if n.value and n.value.isA('object_init') and n.value.children.length > 1
-    n.value.parenthesized = true
-#@+node:ekr.20161123085124.101: *9* 'block': (n) ->
-'block': (n) ->
-  @script n
-#@+node:ekr.20161123085124.102: *9* 'if': (n) ->
-'if': (n) ->
-  # *Account for `if(x) {} else { something }` which should be `something unless x`.*
-  if n.thenPart.children.length == 0 and n.elsePart?.children.length > 0
-    n.positive = false
-    n.thenPart = n.elsePart
-    delete n.elsePart
-
-  @inversible n
-#@+node:ekr.20161123085124.103: *9* 'while': (n) ->
-'while': (n) ->
-  # *A while with a blank body (`while(x){}`) should be accounted for.*
-  # *You can't have empty blocks, so put a `continue` in there. (#78)*
-  if n.body.children.length is 0
-    n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
-
-  @inversible n
-#@+node:ekr.20161123085124.104: *9* 'inversible': (n) ->
-'inversible': (n) ->
-  @transform n.condition
-  positive = if n.positive? then n.positive else true
-
-  # *Invert a '!='. (`if (x != y)` => `unless x is y`)*
-  if n.condition.isA('!=')
-    n.condition.type = Typenames['==']
-    n.positive = not positive
-
-  # *Invert a '!'. (`if (!x)` => `unless x`)*
-  else if n.condition.isA('!')
-    n.condition = n.condition.left()
-    n.positive = not positive
-
-  else
-    n.positive = positive
-#@+node:ekr.20161123085124.105: *9* '==': (n) ->
-'==': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['!']
-    n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
-#@+node:ekr.20161123085124.106: *9* '!=': (n) ->
-'!=': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['existence_check']
-    n.children = [n.left()]
-#@+node:ekr.20161123085124.107: *8* class UnsupportedError
-class UnsupportedError
-  @others
-#@+node:ekr.20161123085124.108: *9* constructor: (str, src) ->
-constructor: (str, src) ->
-  @message = str
-  @cursor  = src.start
-  @line    = src.lineno
-  @source  = src.tokenizer.source
-#@+node:ekr.20161123085124.109: *9* toString: -> @message
-toString: -> @message
-
-# ## Exports
-
-#@+node:ekr.20161123085600.1: *7* @@file c:/leo.repo/leo-editor/leo/test/coffeescript-1
-
-
-# The JavaScript to CoffeeScript compiler.
-# Common usage:
-#
-#
-#     var src = "var square = function(n) { return n * n };"
-#
-#     js2coffee = require('js2coffee');
-#     js2coffee.build(src);
-#     //=> "square = (n) -> n * n"
-
-# ## Requires
-#
-# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
-# engine written in JavaScript).
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-_ = @_ or require('underscore')
-
-{Types, Typenames, Node} = @NodeExt or require('./node_ext')
-
-{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
-  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
-
-# ## Main entry point
-# This is `require('js2coffee').build()`. It takes a JavaScript source
-# string as an argument, and it returns the CoffeeScript version.
-#
-# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
-#    returns a `Node` object of type `script`.
-#
-# 2. This node is now passed onto `Builder#build()`.
-
-@others
-@Js2coffee = exports =
-  version: '0.1.3'
-  build: buildCoffee
-  UnsupportedError: UnsupportedError
-
-module.exports = exports  if module?
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161123085600.2: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-
-  output = trim builder.build(scriptNode)
-  (rtrim line for line in output.split('\n')).join('\n')
-# ## Builder class
-# This is the main class that proccesses the AST and spits out streng.
-# See the `buildCoffee()` function above for info on how this is used.
-
-#@+node:ekr.20161123085600.3: *8* class Builder
-class Builder
-  @others
-#@+node:ekr.20161123085600.4: *9* constructor: ->
-constructor: ->
-  @transformer = new Transformer
-# `build()`
-# The main entry point.
-
-# This finds the appropriate @builder function for `node` based on it's type,
-# the passes the node onto that function.
-#
-# For instance, for a `function` node, it calls `@builders.function(node)`.
-# It defaults to `@builders.other` if it can't find a function for it.
-
-#@+node:ekr.20161123085600.5: *9* build: (args...) ->
-build: (args...) ->
-  node = args[0]
-  @transform node
-
-  name = 'other'
-  name = node.typeName()  if node != undefined and node.typeName
-
-  fn  = (@[name] or @other)
-  out = fn.apply(this, args)
-
-  if node.parenthesized then paren(out) else out
-# `transform()`
-# Perform a transformation on the node, if a transformation function is
-# available.
-
-#@+node:ekr.20161123085600.6: *9* transform: (args...) ->
-transform: (args...) ->
-  @transformer.transform.apply(@transformer, args)
-# `body()`
-# Works like `@build()`, and is used for code blocks. It cleans up the returned
-# code block by removing any extraneous spaces and such.
-
-#@+node:ekr.20161123085600.7: *9* body: (node, opts={}) ->
-body: (node, opts={}) ->
-  str = @build(node, opts)
-  str = blockTrim(str)
-  str = unshift(str)
-
-  if str.length > 0 then str else ""
-# ## The builders
-#
-# Each of these method are passed a Node, and is expected to return
-# a string representation of it CoffeeScript counterpart.
-#
-# These are invoked using the main entry point, `Builder#build()`.
-
-# `script`
-# This is the main entry point.
-
-#@+node:ekr.20161123085600.8: *9* 'script': (n, opts={}) ->
-'script': (n, opts={}) ->
-  c = new Code
-
-  # *Functions must always be declared first in a block.*
-  _.each n.functions,    (item) => c.add @build(item)
-  _.each n.nonfunctions, (item) => c.add @build(item)
-
-  c.toString()
-# `property_identifier`
-# A key in an object literal.
-
-#@+node:ekr.20161123085600.9: *9* 'property_identifier': (n) ->
-'property_identifier': (n) ->
-  str = n.value.toString()
-
-  # **Caveat:**
-  # *In object literals like `{ '#foo click': b }`, ensure that the key is
-  # quoted if need be.*
-
-  if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
-    str
-  else
-    strEscape str
-# `identifier`
-# Any object identifier like a variable name.
-
-#@+node:ekr.20161123085600.10: *9* 'identifier': (n) ->
-'identifier': (n) ->
-  if n.value is 'undefined'
-    '`undefined`'
-  else if n.property_accessor
-    n.value.toString()
-  else
-    unreserve n.value.toString()
-#@+node:ekr.20161123085600.11: *9* 'number': (n) ->
-'number': (n) ->
-  "#{n.src()}"
-#@+node:ekr.20161123085600.12: *9* 'id': (n) ->
-'id': (n) ->
-  if n.property_accessor
-    n
-  else
-    unreserve n
-# `id_param`
-# Function parameters. Belongs to `list`.
-
-#@+node:ekr.20161123085600.13: *9* 'id_param': (n) ->
-'id_param': (n) ->
-  if n.toString() in ['undefined']
-    "#{n}_"
-  else
-    @id n
-# `return`
-# A return statement. Has `n.value` of type `id`.
-
-#@+node:ekr.20161123085600.14: *9* 'return': (n) ->
-'return': (n) ->
-  if not n.value?
-    "return\n"
-
-  else
-    "return #{@build(n.value)}\n"
-# `;` (aka, statement)
-# A single statement.
-
-#@+node:ekr.20161123085600.15: *9* ';': (n) ->
-';': (n) ->
-  # **Caveat:**
-  # Some statements can be blank as some people are silly enough to use `;;`
-  # sometimes. They should be ignored.
-
-  unless n.expression?
-    ""
-
-  else if n.expression.typeName() == 'object_init'
-    src = @object_init(n.expression)
-    if n.parenthesized
-      src
-    else
-      "#{unshift(blockTrim(src))}\n"
-
-  else
-    @build(n.expression) + "\n"
-# `new` + `new_with_args`
-# For `new X` and `new X(y)` respctively.
-
-#@+node:ekr.20161123085600.16: *9* 'new': (n) -> "new #{@build n.left()}"
-'new': (n) -> "new #{@build n.left()}"
-#@+node:ekr.20161123085600.17: *9* 'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-# ### Unary operators
-
-#@+node:ekr.20161123085600.18: *9* 'unary_plus': (n) -> "+#{@build n.left()}"
-'unary_plus': (n) -> "+#{@build n.left()}"
-#@+node:ekr.20161123085600.19: *9* 'unary_minus': (n) -> "-#{@build n.left()}"
-'unary_minus': (n) -> "-#{@build n.left()}"
-# ### Keywords
-
-#@+node:ekr.20161123085600.20: *9* 'this': (n) -> 'this'
-'this': (n) -> 'this'
-#@+node:ekr.20161123085600.21: *9* 'null': (n) -> 'null'
-'null': (n) -> 'null'
-#@+node:ekr.20161123085600.22: *9* 'true': (n) -> 'true'
-'true': (n) -> 'true'
-#@+node:ekr.20161123085600.23: *9* 'false': (n) -> 'false'
-'false': (n) -> 'false'
-#@+node:ekr.20161123085600.24: *9* 'void': (n) -> 'undefined'
-'void': (n) -> 'undefined'
-#@+node:ekr.20161123085600.25: *9* 'debugger': (n) -> "debugger\n"
-'debugger': (n) -> "debugger\n"
-#@+node:ekr.20161123085600.26: *9* 'break': (n) -> "break\n"
-'break': (n) -> "break\n"
-#@+node:ekr.20161123085600.27: *9* 'continue': (n) -> "continue\n"
-'continue': (n) -> "continue\n"
-# ### Some simple operators
-
-#@+node:ekr.20161123085600.28: *9* '~': (n) -> "~#{@build n.left()}"
-'~': (n) -> "~#{@build n.left()}"
-#@+node:ekr.20161123085600.29: *9* 'typeof': (n) -> "typeof #{@build n.left()}"
-'typeof': (n) -> "typeof #{@build n.left()}"
-#@+node:ekr.20161123085600.30: *9* 'index': (n) ->
-'index': (n) ->
-  right = @build n.right()
-  if _.any(n.children, (child) -> child.typeName() == 'object_init' and child.children.length > 1)
-    right = "{#{right}}"
-  "#{@build n.left()}[#{right}]"
-#@+node:ekr.20161123085600.31: *9* 'throw': (n) -> "throw #{@build n.exception}"
-'throw': (n) -> "throw #{@build n.exception}"
-#@+node:ekr.20161123085600.32: *9* '!': (n) ->
-'!': (n) ->
-  target = n.left()
-  negations = 1
-  ++negations while (target.isA '!') and target = target.left()
-  if (negations & 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
-    target.negated = not target.negated
-    return @build target
-  "#{if negations & 1 then 'not ' else '!!'}#{@build target}"
-# ### Binary operators
-# All of these are rerouted to the `binary_operator` @builder.
-
-# TODO: make a function that generates these functions, invoked like so:
-#   in: binop 'in', 'of'
-#   '+': binop '+'
-#   and so on...
-
-#@+node:ekr.20161123085600.33: *9* in: (n) ->    @binary_operator n, 'of'
-in: (n) ->    @binary_operator n, 'of'
-#@+node:ekr.20161123085600.34: *9* '+': (n) ->   @binary_operator n, '+'
-'+': (n) ->   @binary_operator n, '+'
-#@+node:ekr.20161123085600.35: *9* '-': (n) ->   @binary_operator n, '-'
-'-': (n) ->   @binary_operator n, '-'
-#@+node:ekr.20161123085600.36: *9* '*': (n) ->   @binary_operator n, '*'
-'*': (n) ->   @binary_operator n, '*'
-#@+node:ekr.20161123085600.37: *9* '/': (n) ->   @binary_operator n, '/'
-'/': (n) ->   @binary_operator n, '/'
-#@+node:ekr.20161123085600.38: *9* '%': (n) ->   @binary_operator n, '%'
-'%': (n) ->   @binary_operator n, '%'
-#@+node:ekr.20161123085600.39: *9* '>': (n) ->   @binary_operator n, '>'
-'>': (n) ->   @binary_operator n, '>'
-#@+node:ekr.20161123085600.40: *9* '<': (n) ->   @binary_operator n, '<'
-'<': (n) ->   @binary_operator n, '<'
-#@+node:ekr.20161123085600.41: *9* '&': (n) ->   @binary_operator n, '&'
-'&': (n) ->   @binary_operator n, '&'
-#@+node:ekr.20161123085600.42: *9* '|': (n) ->   @binary_operator n, '|'
-'|': (n) ->   @binary_operator n, '|'
-#@+node:ekr.20161123085600.43: *9* '^': (n) ->   @binary_operator n, '^'
-'^': (n) ->   @binary_operator n, '^'
-#@+node:ekr.20161123085600.44: *9* '&&': (n) ->  @binary_operator n, 'and'
-'&&': (n) ->  @binary_operator n, 'and'
-#@+node:ekr.20161123085600.45: *9* '||': (n) ->  @binary_operator n, 'or'
-'||': (n) ->  @binary_operator n, 'or'
-#@+node:ekr.20161123085600.46: *9* '<<': (n) ->  @binary_operator n, '<<'
-'<<': (n) ->  @binary_operator n, '<<'
-#@+node:ekr.20161123085600.47: *9* '<=': (n) ->  @binary_operator n, '<='
-'<=': (n) ->  @binary_operator n, '<='
-#@+node:ekr.20161123085600.48: *9* '>>': (n) ->  @binary_operator n, '>>'
-'>>': (n) ->  @binary_operator n, '>>'
-#@+node:ekr.20161123085600.49: *9* '>=': (n) ->  @binary_operator n, '>='
-'>=': (n) ->  @binary_operator n, '>='
-#@+node:ekr.20161123085600.50: *9* '===': (n) -> @binary_operator n, 'is'
-'===': (n) -> @binary_operator n, 'is'
-#@+node:ekr.20161123085600.51: *9* '!==': (n) -> @binary_operator n, 'isnt'
-'!==': (n) -> @binary_operator n, 'isnt'
-#@+node:ekr.20161123085600.52: *9* '>>>': (n) ->  @binary_operator n, '>>>'
-'>>>': (n) ->  @binary_operator n, '>>>'
-#@+node:ekr.20161123085600.53: *9* instanceof: (n) -> @binary_operator n, 'instanceof'
-instanceof: (n) -> @binary_operator n, 'instanceof'
-#@+node:ekr.20161123085600.54: *9* '==': (n) ->
-'==': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'is'
-#@+node:ekr.20161123085600.55: *9* '!=': (n) ->
-'!=': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'isnt'
-#@+node:ekr.20161123085600.56: *9* 'binary_operator': do ->
-'binary_operator': do ->
-  INVERSIONS =
-    is: 'isnt'
-    in: 'not in'
-    of: 'not of'
-    instanceof: 'not instanceof'
-  INVERSIONS[v] = k for own k, v of INVERSIONS
-  (n, sign) ->
-    sign = INVERSIONS[sign] if n.negated
-    "#{@build n.left()} #{sign} #{@build n.right()}"
-# ### Increments and decrements
-# For `a++` and `--b`.
-
-#@+node:ekr.20161123085600.57: *9* '--': (n) -> @increment_decrement n, '--'
-'--': (n) -> @increment_decrement n, '--'
-#@+node:ekr.20161123085600.58: *9* '++': (n) -> @increment_decrement n, '++'
-'++': (n) -> @increment_decrement n, '++'
-#@+node:ekr.20161123085600.59: *9* 'increment_decrement': (n, sign) ->
-'increment_decrement': (n, sign) ->
-  if n.postfix
-    "#{@build n.left()}#{sign}"
-  else
-    "#{sign}#{@build n.left()}"
-# `=` (aka, assignment)
-# For `a = b` (but not `var a = b`: that's `var`).
-
-#@+node:ekr.20161123085600.60: *9* '=': (n) ->
-'=': (n) ->
-  sign = if n.assignOp?
-    Types[n.assignOp] + '='
-  else
-    '='
-
-  "#{@build n.left()} #{sign} #{@build n.right()}"
-# `,` (aka, comma)
-# For `a = 1, b = 2'
-
-#@+node:ekr.20161123085600.61: *9* ',': (n) ->
-',': (n) ->
-  list = _.map n.children, (item) => @build(item) + "\n"
-  list.join('')
-# `regexp`
-# Regular expressions.
-
-#@+node:ekr.20161123085600.62: *9* 'regexp': (n) ->
-'regexp': (n) ->
-  m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
-  value = m[1]
-  flag  = m[2]
-
-  # **Caveat:**
-  # *If it begins with `=` or a space, the CoffeeScript parser will choke if
-  # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
-
-  begins_with = value[0]
-
-  if begins_with in [' ', '=']
-    if flag.length > 0
-      "RegExp(#{strEscape value}, \"#{flag}\")"
-    else
-      "RegExp(#{strEscape value})"
-  else
-    "/#{value}/#{flag}"
-#@+node:ekr.20161123085600.63: *9* 'string': (n) ->
-'string': (n) ->
-  strEscape n.value
-# `call`
-# A Function call.
-# `n.left` is an `id`, and `n.right` is a `list`.
-
-#@+node:ekr.20161123085600.64: *9* 'call': (n) ->
-'call': (n) ->
-  if n.right().children.length == 0
-    "#{@build n.left()}()"
-  else
-    "#{@build n.left()}(#{@build n.right()})"
-# `call_statement`
-# A `call` that's on it's own line.
-
-#@+node:ekr.20161123085600.65: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  left = @build n.left()
-
-  # **Caveat:**
-  # *When calling in this way: `function () { ... }()`,
-  # ensure that there are parenthesis around the anon function
-  # (eg, `(-> ...)()`).*
-
-  left = paren(left)  if n.left().isA('function')
-
-  if n.right().children.length == 0
-    "#{left}()"
-  else
-    "#{left} #{@build n.right()}"
-# `list`
-# A parameter list.
-
-#@+node:ekr.20161123085600.66: *9* 'list': (n) ->
-'list': (n) ->
-  list = _.map(n.children, (item) =>
-    if n.children.length > 1
-      item.is_list_element = true
-    @build(item))
-
-  list.join(", ")
-#@+node:ekr.20161123085600.67: *9* 'delete': (n) ->
-'delete': (n) ->
-  ids = _.map(n.children, (el) => @build(el))
-  ids = ids.join(', ')
-  "delete #{ids}\n"
-# `.` (scope resolution?)
-# For instances such as `object.value`.
-
-#@+node:ekr.20161123085600.68: *9* '.': (n) ->
-'.': (n) ->
-  # **Caveat:**
-  # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
-
-  # **Caveat:**
-  # *If called as `x.prototype`, it should use double colons (`x::`).*
-
-  left  = @build n.left()
-  right_obj = n.right()
-  right_obj.property_accessor = true
-  right = @build right_obj
-
-  if n.isThis and n.isPrototype
-    "@::"
-  else if n.isThis
-    "@#{right}"
-  else if n.isPrototype
-    "#{left}::"
-  else if n.left().isPrototype
-    "#{left}#{right}"
-  else
-    "#{left}.#{right}"
-#@+node:ekr.20161123085600.69: *9* 'try': (n) ->
-'try': (n) ->
-  c = new Code
-  c.add 'try'
-  c.scope @body(n.tryBlock)
-
-  _.each n.catchClauses, (clause) =>
-    c.add @build(clause)
-
-  if n.finallyBlock?
-    c.add "finally"
-    c.scope @body(n.finallyBlock)
-
-  c
-#@+node:ekr.20161123085600.70: *9* 'catch': (n) ->
-'catch': (n) ->
-  body_ = @body(n.block)
-  return '' if trim(body_).length == 0
-
-  c = new Code
-
-  if n.varName?
-    c.add "catch #{n.varName}"
-  else
-    c.add 'catch'
-
-  c.scope @body(n.block)
-  c
-# `?` (ternary operator)
-# For `a ? b : c`. Note that these will always be parenthesized, as (I
-# believe) the order of operations in JS is different in CS.
-
-#@+node:ekr.20161123085600.71: *9* '?': (n) ->
-'?': (n) ->
-  "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
-#@+node:ekr.20161123085600.72: *9* 'for': (n) ->
-'for': (n) ->
-  c = new Code
-
-  if n.setup?
-    c.add "#{@build n.setup}\n"
-
-  if n.condition?
-    c.add "while #{@build n.condition}\n"
-  else
-    c.add "loop"
-
-  c.scope @body(n.body)
-  c.scope @body(n.update)  if n.update?
-  c
-#@+node:ekr.20161123085600.73: *9* 'for_in': (n) ->
-'for_in': (n) ->
-  c = new Code
-
-  c.add "for #{@build n.iterator} of #{@build n.object}"
-  c.scope @body(n.body)
-  c
-#@+node:ekr.20161123085600.74: *9* 'while': (n) ->
-'while': (n) ->
-  c = new Code
-
-  keyword   = if n.positive then "while" else "until"
-  body_     = @body(n.body)
-
-  # *Use `loop` whin something will go on forever (like `while (true)`).*
-  if truthy(n.condition)
-    statement = "loop"
-  else
-    statement = "#{keyword} #{@build n.condition}"
-
-  if isSingleLine(body_) and statement isnt "loop"
-    c.add "#{trim body_}  #{statement}\n"
-  else
-    c.add statement
-    c.scope body_
-  c
-#@+node:ekr.20161123085600.75: *9* 'do': (n) ->
-'do': (n) ->
-  c = new Code
-
-  c.add "loop"
-  c.scope @body(n.body)
-  c.scope "break unless #{@build n.condition}"  if n.condition?
-
-  c
-#@+node:ekr.20161123085600.76: *9* 'if': (n) ->
-'if': (n) ->
-  c = new Code
-
-  keyword = if n.positive then "if" else "unless"
-  body_   = @body(n.thenPart)
-  n.condition.parenthesized = false
-
-  # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
-  # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
-  if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
-    console.log n.thenPart
-    c.add "#{@build n.condition}\n"
-
-  else if isSingleLine(body_) and !n.elsePart?
-    c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
-
-  else
-    c.add "#{keyword} #{@build n.condition}"
-    c.scope @body(n.thenPart)
-
-    if n.elsePart?
-      if n.elsePart.typeName() == 'if'
-        c.add "else #{@build(n.elsePart).toString()}"
-      else
-        c.add "else\n"
-        c.scope @body(n.elsePart)
-
-  c
-#@+node:ekr.20161123085600.77: *9* 'switch': (n) ->
-'switch': (n) ->
-  c = new Code
-
-  c.add "switch #{@build n.discriminant}\n"
-
-  fall_through = false
-  _.each n.cases, (item) =>
-    if item.value == 'default'
-      c.scope "else"
-    else
-      if fall_through == true
-        c.add ", #{@build item.caseLabel}\n"
-      else
-        c.add "  when #{@build item.caseLabel}"
-        
-    if @body(item.statements).length == 0
-      fall_through = true
-    else
-      fall_through = false
-      c.add "\n"
-      c.scope @body(item.statements), 2
-
-    first = false
-
-  c
-#@+node:ekr.20161123085600.78: *9* 'existence_check': (n) ->
-'existence_check': (n) ->
-  "#{@build n.left()}?"
-#@+node:ekr.20161123085600.79: *9* 'array_init': (n) ->
-'array_init': (n) ->
-  if n.children.length == 0
-    "[]"
-  else
-    "[ #{@list n} ]"
-# `property_init`
-# Belongs to `object_init`;
-# left is a `identifier`, right can be anything.
-
-#@+node:ekr.20161123085600.80: *9* 'property_init': (n) ->
-'property_init': (n) ->
-  left = n.left()
-  right = n.right()
-  right.is_property_value = true
-  "#{@property_identifier left}: #{@build right}"
-# `object_init`
-# An object initializer.
-# Has many `property_init`.
-
-#@+node:ekr.20161123085600.81: *9* 'object_init': (n, options={}) ->
-'object_init': (n, options={}) ->
-  if n.children.length == 0
-    "{}"
-
-  else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
-    @build n.children[0]
-
-  else
-    list = _.map n.children, (item) => @build item
-
-    c = new Code
-    c.scope list.join("\n")
-    c = "{#{c}}"  if options.brackets?
-    c
-# `function`
-# A function. Can be an anonymous function (`function () { .. }`), or a named
-# function (`function name() { .. }`).
-
-#@+node:ekr.20161123085600.82: *9* 'function': (n) ->
-'function': (n) ->
-  c = new Code
-
-  params = _.map n.params, (str) =>
-    if str.constructor == String
-      @id_param str
-    else
-      @build str
-
-  if n.name
-    c.add "#{n.name} = "
-
-  if n.params.length > 0
-    c.add "(#{params.join ', '}) ->"
-  else
-    c.add "->"
-
-  body = @body(n.body)
-  if trim(body).length > 0
-    c.scope body
-  else
-    c.add "\n"
-
-  c
-#@+node:ekr.20161123085600.83: *9* 'var': (n) ->
-'var': (n) ->
-  list = _.map n.children, (item) =>
-    "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
-
-  _.compact(list).join("\n") + "\n"
-# ### Unsupported things
-#
-# Due to CoffeeScript limitations, the following things are not supported:
-#
-#  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
-#  * Break labels (`my_label: ...`)
-#  * Constants
-
-#@+node:ekr.20161123085600.84: *9* 'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-#@+node:ekr.20161123085600.85: *9* 'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-#@+node:ekr.20161123085600.86: *9* 'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-#@+node:ekr.20161123085600.87: *9* 'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-#@+node:ekr.20161123085600.88: *9* 'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-#@+node:ekr.20161123085600.89: *9* 'block': (args...) ->
-'block': (args...) ->
-  @script.apply @, args
-# `unsupported()`
-# Throws an unsupported error.
-#@+node:ekr.20161123085600.90: *9* 'unsupported': (node, message) ->
-'unsupported': (node, message) ->
-  throw new UnsupportedError("Unsupported: #{message}", node)
-# ## AST manipulation
-# Manipulation of the abstract syntax tree happens here. All these are done on
-# the `build()` step, done just before a node is passed onto `Builders`.
-
-#@+node:ekr.20161123085600.91: *8* class Transformer
-class Transformer
-  @others
-#@+node:ekr.20161123085600.92: *9* transform: (args...) ->
-transform: (args...) ->
-  node = args[0]
-  return  if node.transformed?
-  type = node.typeName()
-  fn = @[type]
-
-  if fn
-    fn.apply(this, args)
-    node.transformed = true
-#@+node:ekr.20161123085600.93: *9* 'script': (n) ->
-'script': (n) ->
-  n.functions    = []
-  n.nonfunctions = []
-
-  _.each n.children, (item) =>
-    if item.isA('function')
-      n.functions.push item
-    else
-      n.nonfunctions.push item
-
-  last = null
-
-  # *Statements don't need parens, unless they are consecutive object
-  # literals.*
-  _.each n.nonfunctions, (item) =>
-    if item.expression?
-      expr = item.expression
-
-      if last?.isA('object_init') and expr.isA('object_init')
-        item.parenthesized = true
-      else
-        item.parenthesized = false
-
-      last = expr
-#@+node:ekr.20161123085600.94: *9* '.': (n) ->
-'.': (n) ->
-  n.isThis      = n.left().isA('this')
-  n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
-#@+node:ekr.20161123085600.95: *9* ';': (n) ->
-';': (n) ->
-  if n.expression?
-    # *Statements don't need parens.*
-    n.expression.parenthesized = false
-
-    # *If the statement only has one function call (eg, `alert(2);`), the
-    # parentheses should be omitted (eg, `alert 2`).*
-    if n.expression.isA('call')
-      n.expression.type = Typenames['call_statement']
-      @call_statement n
-#@+node:ekr.20161123085600.96: *9* 'function': (n) ->
-'function': (n) ->
-  # *Unwrap the `return`s.*
-  @others
-#@+node:ekr.20161123085600.97: *10* n.body.walk last: true, (parent, node, list) ->
-n.body.walk last: true, (parent, node, list) ->
-  if node.isA('return') and node.value
-    # Hax
-    lastNode = if list
-      parent[list]
-    else
-      parent.children[parent.children.length-1]
-
-    if lastNode
-      lastNode.type = Typenames[';']
-      lastNode.expression = lastNode.value
-#@+node:ekr.20161123085600.98: *9* 'switch': (n) ->
-'switch': (n) ->
-  _.each n.cases, (item) =>
-    block = item.statements
-    ch    = block.children
-
-    # *CoffeeScript does not need `break` statements on `switch` blocks.*
-    delete ch[ch.length-1] if block.last()?.isA('break')
-#@+node:ekr.20161123085600.99: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  if n.children[1]
-    _.each n.children[1].children, (child, i) ->
-      if child.isA('function') and i != n.children[1].children.length-1
-        child.parenthesized = true
-#@+node:ekr.20161123085600.100: *9* 'return': (n) ->
-'return': (n) ->
-  # *Doing "return {x:2, y:3}" should parenthesize the return value.*
-  if n.value and n.value.isA('object_init') and n.value.children.length > 1
-    n.value.parenthesized = true
-#@+node:ekr.20161123085600.101: *9* 'block': (n) ->
-'block': (n) ->
-  @script n
-#@+node:ekr.20161123085600.102: *9* 'if': (n) ->
-'if': (n) ->
-  # *Account for `if(x) {} else { something }` which should be `something unless x`.*
-  if n.thenPart.children.length == 0 and n.elsePart?.children.length > 0
-    n.positive = false
-    n.thenPart = n.elsePart
-    delete n.elsePart
-
-  @inversible n
-#@+node:ekr.20161123085600.103: *9* 'while': (n) ->
-'while': (n) ->
-  # *A while with a blank body (`while(x){}`) should be accounted for.*
-  # *You can't have empty blocks, so put a `continue` in there. (#78)*
-  if n.body.children.length is 0
-    n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
-
-  @inversible n
-#@+node:ekr.20161123085600.104: *9* 'inversible': (n) ->
-'inversible': (n) ->
-  @transform n.condition
-  positive = if n.positive? then n.positive else true
-
-  # *Invert a '!='. (`if (x != y)` => `unless x is y`)*
-  if n.condition.isA('!=')
-    n.condition.type = Typenames['==']
-    n.positive = not positive
-
-  # *Invert a '!'. (`if (!x)` => `unless x`)*
-  else if n.condition.isA('!')
-    n.condition = n.condition.left()
-    n.positive = not positive
-
-  else
-    n.positive = positive
-#@+node:ekr.20161123085600.105: *9* '==': (n) ->
-'==': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['!']
-    n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
-#@+node:ekr.20161123085600.106: *9* '!=': (n) ->
-'!=': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['existence_check']
-    n.children = [n.left()]
-#@+node:ekr.20161123085600.107: *8* class UnsupportedError
-class UnsupportedError
-  @others
-#@+node:ekr.20161123085600.108: *9* constructor: (str, src) ->
-constructor: (str, src) ->
-  @message = str
-  @cursor  = src.start
-  @line    = src.lineno
-  @source  = src.tokenizer.source
-#@+node:ekr.20161123085600.109: *9* toString: -> @message
-toString: -> @message
-
-# ## Exports
-
-#@+node:ekr.20161123114539.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/coffeescript-1
-
-
-# The JavaScript to CoffeeScript compiler.
-# Common usage:
-#
-#
-#     var src = "var square = function(n) { return n * n };"
-#
-#     js2coffee = require('js2coffee');
-#     js2coffee.build(src);
-#     //=> "square = (n) -> n * n"
-
-# ## Requires
-#
-# Js2coffee relies on Narcissus's parser. (Narcissus is Mozilla's JavaScript
-# engine written in JavaScript).
-
-{parser} = @Narcissus or require('./narcissus_packed')
-
-_ = @_ or require('underscore')
-
-{Types, Typenames, Node} = @NodeExt or require('./node_ext')
-
-{Code, p, strEscape, unreserve, unshift, isSingleLine, trim, blockTrim,
-  ltrim, rtrim, strRepeat, paren, truthy} = @Js2coffeeHelpers or require('./helpers')
-
-# ## Main entry point
-# This is `require('js2coffee').build()`. It takes a JavaScript source
-# string as an argument, and it returns the CoffeeScript version.
-#
-# 1. Ask Narcissus to break it down into Nodes (`parser.parse`). This
-#    returns a `Node` object of type `script`.
-#
-# 2. This node is now passed onto `Builder#build()`.
-
-@others
-@Js2coffee = exports =
-  version: '0.1.3'
-  build: buildCoffee
-  UnsupportedError: UnsupportedError
-
-module.exports = exports  if module?
-@language coffeescript
-@tabwidth -4
-#@+node:ekr.20161123114539.22: *8* buildCoffee = (str) ->
-buildCoffee = (str) ->
-  str  = str.replace /\r/g, ''
-  str += "\n"
-
-  builder    = new Builder
-  scriptNode = parser.parse str
-
-  output = trim builder.build(scriptNode)
-  (rtrim line for line in output.split('\n')).join('\n')
-# ## Builder class
-# This is the main class that proccesses the AST and spits out streng.
-# See the `buildCoffee()` function above for info on how this is used.
-
-#@+node:ekr.20161123114539.23: *8* class Builder
-class Builder
-  @others
-#@+node:ekr.20161123114539.24: *9* constructor: ->
-constructor: ->
-  @transformer = new Transformer
-# `build()`
-# The main entry point.
-
-# This finds the appropriate @builder function for `node` based on it's type,
-# the passes the node onto that function.
-#
-# For instance, for a `function` node, it calls `@builders.function(node)`.
-# It defaults to `@builders.other` if it can't find a function for it.
-
-#@+node:ekr.20161123114539.25: *9* build: (args...) ->
-build: (args...) ->
-  node = args[0]
-  @transform node
-
-  name = 'other'
-  name = node.typeName()  if node != undefined and node.typeName
-
-  fn  = (@[name] or @other)
-  out = fn.apply(this, args)
-
-  if node.parenthesized then paren(out) else out
-# `transform()`
-# Perform a transformation on the node, if a transformation function is
-# available.
-
-#@+node:ekr.20161123114539.26: *9* transform: (args...) ->
-transform: (args...) ->
-  @transformer.transform.apply(@transformer, args)
-# `body()`
-# Works like `@build()`, and is used for code blocks. It cleans up the returned
-# code block by removing any extraneous spaces and such.
-
-#@+node:ekr.20161123114539.27: *9* body: (node, opts={}) ->
-body: (node, opts={}) ->
-  str = @build(node, opts)
-  str = blockTrim(str)
-  str = unshift(str)
-
-  if str.length > 0 then str else ""
-# ## The builders
-#
-# Each of these method are passed a Node, and is expected to return
-# a string representation of it CoffeeScript counterpart.
-#
-# These are invoked using the main entry point, `Builder#build()`.
-
-# `script`
-# This is the main entry point.
-
-#@+node:ekr.20161123114539.28: *9* 'script': (n, opts={}) ->
-'script': (n, opts={}) ->
-  c = new Code
-
-  # *Functions must always be declared first in a block.*
-  _.each n.functions,    (item) => c.add @build(item)
-  _.each n.nonfunctions, (item) => c.add @build(item)
-
-  c.toString()
-# `property_identifier`
-# A key in an object literal.
-
-#@+node:ekr.20161123114539.29: *9* 'property_identifier': (n) ->
-'property_identifier': (n) ->
-  str = n.value.toString()
-
-  # **Caveat:**
-  # *In object literals like `{ '#foo click': b }`, ensure that the key is
-  # quoted if need be.*
-
-  if str.match(/^([_\$a-z][_\$a-z0-9]*)$/i) or str.match(/^[0-9]+$/i)
-    str
-  else
-    strEscape str
-# `identifier`
-# Any object identifier like a variable name.
-
-#@+node:ekr.20161123114539.30: *9* 'identifier': (n) ->
-'identifier': (n) ->
-  if n.value is 'undefined'
-    '`undefined`'
-  else if n.property_accessor
-    n.value.toString()
-  else
-    unreserve n.value.toString()
-#@+node:ekr.20161123114539.31: *9* 'number': (n) ->
-'number': (n) ->
-  "#{n.src()}"
-#@+node:ekr.20161123114539.32: *9* 'id': (n) ->
-'id': (n) ->
-  if n.property_accessor
-    n
-  else
-    unreserve n
-# `id_param`
-# Function parameters. Belongs to `list`.
-
-#@+node:ekr.20161123114539.33: *9* 'id_param': (n) ->
-'id_param': (n) ->
-  if n.toString() in ['undefined']
-    "#{n}_"
-  else
-    @id n
-# `return`
-# A return statement. Has `n.value` of type `id`.
-
-#@+node:ekr.20161123114539.34: *9* 'return': (n) ->
-'return': (n) ->
-  if not n.value?
-    "return\n"
-
-  else
-    "return #{@build(n.value)}\n"
-# `;` (aka, statement)
-# A single statement.
-
-#@+node:ekr.20161123114539.35: *9* ';': (n) ->
-';': (n) ->
-  # **Caveat:**
-  # Some statements can be blank as some people are silly enough to use `;;`
-  # sometimes. They should be ignored.
-
-  unless n.expression?
-    ""
-
-  else if n.expression.typeName() == 'object_init'
-    src = @object_init(n.expression)
-    if n.parenthesized
-      src
-    else
-      "#{unshift(blockTrim(src))}\n"
-
-  else
-    @build(n.expression) + "\n"
-# `new` + `new_with_args`
-# For `new X` and `new X(y)` respctively.
-
-#@+node:ekr.20161123114539.36: *9* 'new': (n) -> "new #{@build n.left()}"
-'new': (n) -> "new #{@build n.left()}"
-#@+node:ekr.20161123114539.37: *9* 'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-'new_with_args': (n) -> "new #{@build n.left()}(#{@build n.right()})"
-# ### Unary operators
-
-#@+node:ekr.20161123114539.38: *9* 'unary_plus': (n) -> "+#{@build n.left()}"
-'unary_plus': (n) -> "+#{@build n.left()}"
-#@+node:ekr.20161123114539.39: *9* 'unary_minus': (n) -> "-#{@build n.left()}"
-'unary_minus': (n) -> "-#{@build n.left()}"
-# ### Keywords
-
-#@+node:ekr.20161123114539.40: *9* 'this': (n) -> 'this'
-'this': (n) -> 'this'
-#@+node:ekr.20161123114539.41: *9* 'null': (n) -> 'null'
-'null': (n) -> 'null'
-#@+node:ekr.20161123114539.42: *9* 'true': (n) -> 'true'
-'true': (n) -> 'true'
-#@+node:ekr.20161123114539.43: *9* 'false': (n) -> 'false'
-'false': (n) -> 'false'
-#@+node:ekr.20161123114539.44: *9* 'void': (n) -> 'undefined'
-'void': (n) -> 'undefined'
-#@+node:ekr.20161123114539.45: *9* 'debugger': (n) -> "debugger\n"
-'debugger': (n) -> "debugger\n"
-#@+node:ekr.20161123114539.46: *9* 'break': (n) -> "break\n"
-'break': (n) -> "break\n"
-#@+node:ekr.20161123114539.47: *9* 'continue': (n) -> "continue\n"
-'continue': (n) -> "continue\n"
-# ### Some simple operators
-
-#@+node:ekr.20161123114539.48: *9* '~': (n) -> "~#{@build n.left()}"
-'~': (n) -> "~#{@build n.left()}"
-#@+node:ekr.20161123114539.49: *9* 'typeof': (n) -> "typeof #{@build n.left()}"
-'typeof': (n) -> "typeof #{@build n.left()}"
-#@+node:ekr.20161123114539.50: *9* 'index': (n) ->
-'index': (n) ->
-  right = @build n.right()
-  if _.any(n.children, (child) -> child.typeName() == 'object_init' and child.children.length > 1)
-    right = "{#{right}}"
-  "#{@build n.left()}[#{right}]"
-#@+node:ekr.20161123114539.51: *9* 'throw': (n) -> "throw #{@build n.exception}"
-'throw': (n) -> "throw #{@build n.exception}"
-#@+node:ekr.20161123114539.52: *9* '!': (n) ->
-'!': (n) ->
-  target = n.left()
-  negations = 1
-  ++negations while (target.isA '!') and target = target.left()
-  if (negations & 1) and target.isA '==', '!=', '===', '!==', 'in', 'instanceof' # invertible binary operators
-    target.negated = not target.negated
-    return @build target
-  "#{if negations & 1 then 'not ' else '!!'}#{@build target}"
-# ### Binary operators
-# All of these are rerouted to the `binary_operator` @builder.
-
-# TODO: make a function that generates these functions, invoked like so:
-#   in: binop 'in', 'of'
-#   '+': binop '+'
-#   and so on...
-
-#@+node:ekr.20161123114539.53: *9* in: (n) ->    @binary_operator n, 'of'
-in: (n) ->    @binary_operator n, 'of'
-#@+node:ekr.20161123114539.54: *9* '+': (n) ->   @binary_operator n, '+'
-'+': (n) ->   @binary_operator n, '+'
-#@+node:ekr.20161123114539.55: *9* '-': (n) ->   @binary_operator n, '-'
-'-': (n) ->   @binary_operator n, '-'
-#@+node:ekr.20161123114539.56: *9* '*': (n) ->   @binary_operator n, '*'
-'*': (n) ->   @binary_operator n, '*'
-#@+node:ekr.20161123114539.57: *9* '/': (n) ->   @binary_operator n, '/'
-'/': (n) ->   @binary_operator n, '/'
-#@+node:ekr.20161123114539.58: *9* '%': (n) ->   @binary_operator n, '%'
-'%': (n) ->   @binary_operator n, '%'
-#@+node:ekr.20161123114539.59: *9* '>': (n) ->   @binary_operator n, '>'
-'>': (n) ->   @binary_operator n, '>'
-#@+node:ekr.20161123114539.60: *9* '<': (n) ->   @binary_operator n, '<'
-'<': (n) ->   @binary_operator n, '<'
-#@+node:ekr.20161123114539.61: *9* '&': (n) ->   @binary_operator n, '&'
-'&': (n) ->   @binary_operator n, '&'
-#@+node:ekr.20161123114539.62: *9* '|': (n) ->   @binary_operator n, '|'
-'|': (n) ->   @binary_operator n, '|'
-#@+node:ekr.20161123114539.63: *9* '^': (n) ->   @binary_operator n, '^'
-'^': (n) ->   @binary_operator n, '^'
-#@+node:ekr.20161123114539.64: *9* '&&': (n) ->  @binary_operator n, 'and'
-'&&': (n) ->  @binary_operator n, 'and'
-#@+node:ekr.20161123114539.65: *9* '||': (n) ->  @binary_operator n, 'or'
-'||': (n) ->  @binary_operator n, 'or'
-#@+node:ekr.20161123114539.66: *9* '<<': (n) ->  @binary_operator n, '<<'
-'<<': (n) ->  @binary_operator n, '<<'
-#@+node:ekr.20161123114539.67: *9* '<=': (n) ->  @binary_operator n, '<='
-'<=': (n) ->  @binary_operator n, '<='
-#@+node:ekr.20161123114539.68: *9* '>>': (n) ->  @binary_operator n, '>>'
-'>>': (n) ->  @binary_operator n, '>>'
-#@+node:ekr.20161123114539.69: *9* '>=': (n) ->  @binary_operator n, '>='
-'>=': (n) ->  @binary_operator n, '>='
-#@+node:ekr.20161123114539.70: *9* '===': (n) -> @binary_operator n, 'is'
-'===': (n) -> @binary_operator n, 'is'
-#@+node:ekr.20161123114539.71: *9* '!==': (n) -> @binary_operator n, 'isnt'
-'!==': (n) -> @binary_operator n, 'isnt'
-#@+node:ekr.20161123114539.72: *9* '>>>': (n) ->  @binary_operator n, '>>>'
-'>>>': (n) ->  @binary_operator n, '>>>'
-#@+node:ekr.20161123114539.73: *9* instanceof: (n) -> @binary_operator n, 'instanceof'
-instanceof: (n) -> @binary_operator n, 'instanceof'
-#@+node:ekr.20161123114539.74: *9* '==': (n) ->
-'==': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'is'
-#@+node:ekr.20161123114539.75: *9* '!=': (n) ->
-'!=': (n) ->
-  # TODO: throw warning
-  @binary_operator n, 'isnt'
-#@+node:ekr.20161123114539.76: *9* 'binary_operator': do ->
-'binary_operator': do ->
-  INVERSIONS =
-    is: 'isnt'
-    in: 'not in'
-    of: 'not of'
-    instanceof: 'not instanceof'
-  INVERSIONS[v] = k for own k, v of INVERSIONS
-  (n, sign) ->
-    sign = INVERSIONS[sign] if n.negated
-    "#{@build n.left()} #{sign} #{@build n.right()}"
-# ### Increments and decrements
-# For `a++` and `--b`.
-
-#@+node:ekr.20161123114539.77: *9* '--': (n) -> @increment_decrement n, '--'
-'--': (n) -> @increment_decrement n, '--'
-#@+node:ekr.20161123114539.78: *9* '++': (n) -> @increment_decrement n, '++'
-'++': (n) -> @increment_decrement n, '++'
-#@+node:ekr.20161123114539.79: *9* 'increment_decrement': (n, sign) ->
-'increment_decrement': (n, sign) ->
-  if n.postfix
-    "#{@build n.left()}#{sign}"
-  else
-    "#{sign}#{@build n.left()}"
-# `=` (aka, assignment)
-# For `a = b` (but not `var a = b`: that's `var`).
-
-#@+node:ekr.20161123114539.80: *9* '=': (n) ->
-'=': (n) ->
-  sign = if n.assignOp?
-    Types[n.assignOp] + '='
-  else
-    '='
-
-  "#{@build n.left()} #{sign} #{@build n.right()}"
-# `,` (aka, comma)
-# For `a = 1, b = 2'
-
-#@+node:ekr.20161123114539.81: *9* ',': (n) ->
-',': (n) ->
-  list = _.map n.children, (item) => @build(item) + "\n"
-  list.join('')
-# `regexp`
-# Regular expressions.
-
-#@+node:ekr.20161123114539.82: *9* 'regexp': (n) ->
-'regexp': (n) ->
-  m     = n.value.toString().match(/^\/(.*)\/([a-z]?)/)
-  value = m[1]
-  flag  = m[2]
-
-  # **Caveat:**
-  # *If it begins with `=` or a space, the CoffeeScript parser will choke if
-  # it's written as `/=/`. Hence, they are written as `new RegExp('=')`.*
-
-  begins_with = value[0]
-
-  if begins_with in [' ', '=']
-    if flag.length > 0
-      "RegExp(#{strEscape value}, \"#{flag}\")"
-    else
-      "RegExp(#{strEscape value})"
-  else
-    "/#{value}/#{flag}"
-#@+node:ekr.20161123114539.83: *9* 'string': (n) ->
-'string': (n) ->
-  strEscape n.value
-# `call`
-# A Function call.
-# `n.left` is an `id`, and `n.right` is a `list`.
-
-#@+node:ekr.20161123114539.84: *9* 'call': (n) ->
-'call': (n) ->
-  if n.right().children.length == 0
-    "#{@build n.left()}()"
-  else
-    "#{@build n.left()}(#{@build n.right()})"
-# `call_statement`
-# A `call` that's on it's own line.
-
-#@+node:ekr.20161123114539.85: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  left = @build n.left()
-
-  # **Caveat:**
-  # *When calling in this way: `function () { ... }()`,
-  # ensure that there are parenthesis around the anon function
-  # (eg, `(-> ...)()`).*
-
-  left = paren(left)  if n.left().isA('function')
-
-  if n.right().children.length == 0
-    "#{left}()"
-  else
-    "#{left} #{@build n.right()}"
-# `list`
-# A parameter list.
-
-#@+node:ekr.20161123114539.86: *9* 'list': (n) ->
-'list': (n) ->
-  list = _.map(n.children, (item) =>
-    if n.children.length > 1
-      item.is_list_element = true
-    @build(item))
-
-  list.join(", ")
-#@+node:ekr.20161123114539.87: *9* 'delete': (n) ->
-'delete': (n) ->
-  ids = _.map(n.children, (el) => @build(el))
-  ids = ids.join(', ')
-  "delete #{ids}\n"
-# `.` (scope resolution?)
-# For instances such as `object.value`.
-
-#@+node:ekr.20161123114539.88: *9* '.': (n) ->
-'.': (n) ->
-  # **Caveat:**
-  # *If called as `this.xxx`, it should use the at sign (`n.xxx`).*
-
-  # **Caveat:**
-  # *If called as `x.prototype`, it should use double colons (`x::`).*
-
-  left  = @build n.left()
-  right_obj = n.right()
-  right_obj.property_accessor = true
-  right = @build right_obj
-
-  if n.isThis and n.isPrototype
-    "@::"
-  else if n.isThis
-    "@#{right}"
-  else if n.isPrototype
-    "#{left}::"
-  else if n.left().isPrototype
-    "#{left}#{right}"
-  else
-    "#{left}.#{right}"
-#@+node:ekr.20161123114539.89: *9* 'try': (n) ->
-'try': (n) ->
-  c = new Code
-  c.add 'try'
-  c.scope @body(n.tryBlock)
-
-  _.each n.catchClauses, (clause) =>
-    c.add @build(clause)
-
-  if n.finallyBlock?
-    c.add "finally"
-    c.scope @body(n.finallyBlock)
-
-  c
-#@+node:ekr.20161123114539.90: *9* 'catch': (n) ->
-'catch': (n) ->
-  body_ = @body(n.block)
-  return '' if trim(body_).length == 0
-
-  c = new Code
-
-  if n.varName?
-    c.add "catch #{n.varName}"
-  else
-    c.add 'catch'
-
-  c.scope @body(n.block)
-  c
-# `?` (ternary operator)
-# For `a ? b : c`. Note that these will always be parenthesized, as (I
-# believe) the order of operations in JS is different in CS.
-
-#@+node:ekr.20161123114539.91: *9* '?': (n) ->
-'?': (n) ->
-  "(if #{@build n.left()} then #{@build n.children[1]} else #{@build n.children[2]})"
-#@+node:ekr.20161123114539.92: *9* 'for': (n) ->
-'for': (n) ->
-  c = new Code
-
-  if n.setup?
-    c.add "#{@build n.setup}\n"
-
-  if n.condition?
-    c.add "while #{@build n.condition}\n"
-  else
-    c.add "loop"
-
-  c.scope @body(n.body)
-  c.scope @body(n.update)  if n.update?
-  c
-#@+node:ekr.20161123114539.93: *9* 'for_in': (n) ->
-'for_in': (n) ->
-  c = new Code
-
-  c.add "for #{@build n.iterator} of #{@build n.object}"
-  c.scope @body(n.body)
-  c
-#@+node:ekr.20161123114539.94: *9* 'while': (n) ->
-'while': (n) ->
-  c = new Code
-
-  keyword   = if n.positive then "while" else "until"
-  body_     = @body(n.body)
-
-  # *Use `loop` whin something will go on forever (like `while (true)`).*
-  if truthy(n.condition)
-    statement = "loop"
-  else
-    statement = "#{keyword} #{@build n.condition}"
-
-  if isSingleLine(body_) and statement isnt "loop"
-    c.add "#{trim body_}  #{statement}\n"
-  else
-    c.add statement
-    c.scope body_
-  c
-#@+node:ekr.20161123114539.95: *9* 'do': (n) ->
-'do': (n) ->
-  c = new Code
-
-  c.add "loop"
-  c.scope @body(n.body)
-  c.scope "break unless #{@build n.condition}"  if n.condition?
-
-  c
-#@+node:ekr.20161123114539.96: *9* 'if': (n) ->
-'if': (n) ->
-  c = new Code
-
-  keyword = if n.positive then "if" else "unless"
-  body_   = @body(n.thenPart)
-  n.condition.parenthesized = false
-
-  # *Account for `if (xyz) {}`, which should be `xyz`. (#78)*
-  # *Note that `!xyz` still compiles to `xyz` because the `!` will not change anything.*
-  if n.thenPart.isA('block') and n.thenPart.children.length == 0 and !n.elsePart?
-    console.log n.thenPart
-    c.add "#{@build n.condition}\n"
-
-  else if isSingleLine(body_) and !n.elsePart?
-    c.add "#{trim body_}  #{keyword} #{@build n.condition}\n"
-
-  else
-    c.add "#{keyword} #{@build n.condition}"
-    c.scope @body(n.thenPart)
-
-    if n.elsePart?
-      if n.elsePart.typeName() == 'if'
-        c.add "else #{@build(n.elsePart).toString()}"
-      else
-        c.add "else\n"
-        c.scope @body(n.elsePart)
-
-  c
-#@+node:ekr.20161123114539.97: *9* 'switch': (n) ->
-'switch': (n) ->
-  c = new Code
-
-  c.add "switch #{@build n.discriminant}\n"
-
-  fall_through = false
-  _.each n.cases, (item) =>
-    if item.value == 'default'
-      c.scope "else"
-    else
-      if fall_through == true
-        c.add ", #{@build item.caseLabel}\n"
-      else
-        c.add "  when #{@build item.caseLabel}"
-        
-    if @body(item.statements).length == 0
-      fall_through = true
-    else
-      fall_through = false
-      c.add "\n"
-      c.scope @body(item.statements), 2
-
-    first = false
-
-  c
-#@+node:ekr.20161123114539.98: *9* 'existence_check': (n) ->
-'existence_check': (n) ->
-  "#{@build n.left()}?"
-#@+node:ekr.20161123114539.99: *9* 'array_init': (n) ->
-'array_init': (n) ->
-  if n.children.length == 0
-    "[]"
-  else
-    "[ #{@list n} ]"
-# `property_init`
-# Belongs to `object_init`;
-# left is a `identifier`, right can be anything.
-
-#@+node:ekr.20161123114539.100: *9* 'property_init': (n) ->
-'property_init': (n) ->
-  left = n.left()
-  right = n.right()
-  right.is_property_value = true
-  "#{@property_identifier left}: #{@build right}"
-# `object_init`
-# An object initializer.
-# Has many `property_init`.
-
-#@+node:ekr.20161123114539.101: *9* 'object_init': (n, options={}) ->
-'object_init': (n, options={}) ->
-  if n.children.length == 0
-    "{}"
-
-  else if n.children.length == 1 and not (n.is_property_value or n.is_list_element)
-    @build n.children[0]
-
-  else
-    list = _.map n.children, (item) => @build item
-
-    c = new Code
-    c.scope list.join("\n")
-    c = "{#{c}}"  if options.brackets?
-    c
-# `function`
-# A function. Can be an anonymous function (`function () { .. }`), or a named
-# function (`function name() { .. }`).
-
-#@+node:ekr.20161123114539.102: *9* 'function': (n) ->
-'function': (n) ->
-  c = new Code
-
-  params = _.map n.params, (str) =>
-    if str.constructor == String
-      @id_param str
-    else
-      @build str
-
-  if n.name
-    c.add "#{n.name} = "
-
-  if n.params.length > 0
-    c.add "(#{params.join ', '}) ->"
-  else
-    c.add "->"
-
-  body = @body(n.body)
-  if trim(body).length > 0
-    c.scope body
-  else
-    c.add "\n"
-
-  c
-#@+node:ekr.20161123114539.103: *9* 'var': (n) ->
-'var': (n) ->
-  list = _.map n.children, (item) =>
-    "#{unreserve item.value} = #{if item.initializer? then @build(item.initializer) else 'undefined'}"
-
-  _.compact(list).join("\n") + "\n"
-# ### Unsupported things
-#
-# Due to CoffeeScript limitations, the following things are not supported:
-#
-#  * New getter/setter syntax (`x.prototype = { get name() { ... } };`)
-#  * Break labels (`my_label: ...`)
-#  * Constants
-
-#@+node:ekr.20161123114539.104: *9* 'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-'other': (n) ->   @unsupported n, "#{n.typeName()} is not supported yet"
-#@+node:ekr.20161123114539.105: *9* 'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-'getter': (n) ->  @unsupported n, "getter syntax is not supported; use __defineGetter__"
-#@+node:ekr.20161123114539.106: *9* 'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-'setter': (n) ->  @unsupported n, "setter syntax is not supported; use __defineSetter__"
-#@+node:ekr.20161123114539.107: *9* 'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-'label': (n) ->   @unsupported n, "labels are not supported by CoffeeScript"
-#@+node:ekr.20161123114539.108: *9* 'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-'const': (n) ->   @unsupported n, "consts are not supported by CoffeeScript"
-#@+node:ekr.20161123114539.109: *9* 'block': (args...) ->
-'block': (args...) ->
-  @script.apply @, args
-# `unsupported()`
-# Throws an unsupported error.
-#@+node:ekr.20161123114539.110: *9* 'unsupported': (node, message) ->
-'unsupported': (node, message) ->
-  throw new UnsupportedError("Unsupported: #{message}", node)
-# ## AST manipulation
-# Manipulation of the abstract syntax tree happens here. All these are done on
-# the `build()` step, done just before a node is passed onto `Builders`.
-
-#@+node:ekr.20161123114539.111: *8* class Transformer
-class Transformer
-  @others
-#@+node:ekr.20161123114539.112: *9* transform: (args...) ->
-transform: (args...) ->
-  node = args[0]
-  return  if node.transformed?
-  type = node.typeName()
-  fn = @[type]
-
-  if fn
-    fn.apply(this, args)
-    node.transformed = true
-#@+node:ekr.20161123114539.113: *9* 'script': (n) ->
-'script': (n) ->
-  n.functions    = []
-  n.nonfunctions = []
-
-  _.each n.children, (item) =>
-    if item.isA('function')
-      n.functions.push item
-    else
-      n.nonfunctions.push item
-
-  last = null
-
-  # *Statements don't need parens, unless they are consecutive object
-  # literals.*
-  _.each n.nonfunctions, (item) =>
-    if item.expression?
-      expr = item.expression
-
-      if last?.isA('object_init') and expr.isA('object_init')
-        item.parenthesized = true
-      else
-        item.parenthesized = false
-
-      last = expr
-#@+node:ekr.20161123114539.114: *9* '.': (n) ->
-'.': (n) ->
-  n.isThis      = n.left().isA('this')
-  n.isPrototype = (n.right().isA('identifier') and n.right().value == 'prototype')
-#@+node:ekr.20161123114539.115: *9* ';': (n) ->
-';': (n) ->
-  if n.expression?
-    # *Statements don't need parens.*
-    n.expression.parenthesized = false
-
-    # *If the statement only has one function call (eg, `alert(2);`), the
-    # parentheses should be omitted (eg, `alert 2`).*
-    if n.expression.isA('call')
-      n.expression.type = Typenames['call_statement']
-      @call_statement n
-#@+node:ekr.20161123114539.116: *9* 'function': (n) ->
-'function': (n) ->
-  # *Unwrap the `return`s.*
-  @others
-#@+node:ekr.20161123114539.117: *10* n.body.walk last: true, (parent, node, list) ->
-n.body.walk last: true, (parent, node, list) ->
-  if node.isA('return') and node.value
-    # Hax
-    lastNode = if list
-      parent[list]
-    else
-      parent.children[parent.children.length-1]
-
-    if lastNode
-      lastNode.type = Typenames[';']
-      lastNode.expression = lastNode.value
-#@+node:ekr.20161123114539.118: *9* 'switch': (n) ->
-'switch': (n) ->
-  _.each n.cases, (item) =>
-    block = item.statements
-    ch    = block.children
-
-    # *CoffeeScript does not need `break` statements on `switch` blocks.*
-    delete ch[ch.length-1] if block.last()?.isA('break')
-#@+node:ekr.20161123114539.119: *9* 'call_statement': (n) ->
-'call_statement': (n) ->
-  if n.children[1]
-    _.each n.children[1].children, (child, i) ->
-      if child.isA('function') and i != n.children[1].children.length-1
-        child.parenthesized = true
-#@+node:ekr.20161123114539.120: *9* 'return': (n) ->
-'return': (n) ->
-  # *Doing "return {x:2, y:3}" should parenthesize the return value.*
-  if n.value and n.value.isA('object_init') and n.value.children.length > 1
-    n.value.parenthesized = true
-#@+node:ekr.20161123114539.121: *9* 'block': (n) ->
-'block': (n) ->
-  @script n
-#@+node:ekr.20161123114539.122: *9* 'if': (n) ->
-'if': (n) ->
-  # *Account for `if(x) {} else { something }` which should be `something unless x`.*
-  if n.thenPart.children.length == 0 and n.elsePart?.children.length > 0
-    n.positive = false
-    n.thenPart = n.elsePart
-    delete n.elsePart
-
-  @inversible n
-#@+node:ekr.20161123114539.123: *9* 'while': (n) ->
-'while': (n) ->
-  # *A while with a blank body (`while(x){}`) should be accounted for.*
-  # *You can't have empty blocks, so put a `continue` in there. (#78)*
-  if n.body.children.length is 0
-    n.body.children.push n.clone(type: Typenames['continue'], value: 'continue', children: [])
-
-  @inversible n
-#@+node:ekr.20161123114539.124: *9* 'inversible': (n) ->
-'inversible': (n) ->
-  @transform n.condition
-  positive = if n.positive? then n.positive else true
-
-  # *Invert a '!='. (`if (x != y)` => `unless x is y`)*
-  if n.condition.isA('!=')
-    n.condition.type = Typenames['==']
-    n.positive = not positive
-
-  # *Invert a '!'. (`if (!x)` => `unless x`)*
-  else if n.condition.isA('!')
-    n.condition = n.condition.left()
-    n.positive = not positive
-
-  else
-    n.positive = positive
-#@+node:ekr.20161123114539.125: *9* '==': (n) ->
-'==': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['!']
-    n.children = [n.clone(type: Typenames['existence_check'], children: [n.left()])]
-#@+node:ekr.20161123114539.126: *9* '!=': (n) ->
-'!=': (n) ->
-  if n.right().isA('null', 'void')
-    n.type     = Typenames['existence_check']
-    n.children = [n.left()]
-#@+node:ekr.20161123114539.127: *8* class UnsupportedError
-class UnsupportedError
-  @others
-#@+node:ekr.20161123114539.128: *9* constructor: (str, src) ->
-constructor: (str, src) ->
-  @message = str
-  @cursor  = src.start
-  @line    = src.lineno
-  @source  = src.tokenizer.source
-#@+node:ekr.20161123114539.129: *9* toString: -> @message
-toString: -> @message
-
-# ## Exports
-
 #@+node:ekr.20161109084732.1: *6* @test coffeescript-2
 s = r'''
 
@@ -16840,6 +13485,70 @@ finally:
 <title>Bodystring</title>
 </head>
 #@+node:ekr.20161123114540.21: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161123141750.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141750.11: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161123141750.12: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161123141750.13: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161123141958.127: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141958.128: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161123141958.129: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161123141958.130: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161123142149.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142149.11: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161123142149.12: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161123142149.13: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161123142212.18: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142212.19: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161123142212.20: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161123142212.21: *9* <body class="bodystring">
 <body class="bodystring">
 <div id='bodydisplay'></div>
 </body>
@@ -17493,6 +14202,342 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
 </body>
 </html>
+#@+node:ekr.20161123141750.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141750.15: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123141750.16: *9* <body>
+<body>
+    @others
+#@+node:ekr.20161123141750.17: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161123141750.18: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123141750.19: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161123141750.20: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+#@+node:ekr.20161123141750.21: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+#@+node:ekr.20161123141750.22: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161123141750.23: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161123141750.24: *17* <table id="4">
+<table id="4">
+    @others
+</table>	
+#@+node:ekr.20161123141750.25: *18* <tbody id="5">
+<tbody id="5">
+    @others
+</tbody>
+#@+node:ekr.20161123141750.26: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123141750.27: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161123141750.28: *21* <table id="6">
+<table id="6">
+    @others
+</table>
+#@+node:ekr.20161123141750.29: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+#@+node:ekr.20161123141750.30: *23* <tr>
+<tr>
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161123141750.31: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+<br />
+</td>
+#@+node:ekr.20161123141750.32: *13* <DIV class="webonly">
+<DIV class="webonly">
+<script src="/scripts/footer.js"></script>
+</DIV>
+#@+node:ekr.20161123141750.33: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
+#@+node:ekr.20161123141958.131: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141958.132: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123141958.133: *9* <body>
+<body>
+    @others
+#@+node:ekr.20161123141958.134: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161123141958.135: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123141958.136: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161123141958.137: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+#@+node:ekr.20161123141958.138: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+#@+node:ekr.20161123141958.139: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161123141958.140: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161123141958.141: *17* <table id="4">
+<table id="4">
+    @others
+</table>	
+#@+node:ekr.20161123141958.142: *18* <tbody id="5">
+<tbody id="5">
+    @others
+</tbody>
+#@+node:ekr.20161123141958.143: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123141958.144: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161123141958.145: *21* <table id="6">
+<table id="6">
+    @others
+</table>
+#@+node:ekr.20161123141958.146: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+#@+node:ekr.20161123141958.147: *23* <tr>
+<tr>
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161123141958.148: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+<br />
+</td>
+#@+node:ekr.20161123141958.149: *13* <DIV class="webonly">
+<DIV class="webonly">
+<script src="/scripts/footer.js"></script>
+</DIV>
+#@+node:ekr.20161123141958.150: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
+#@+node:ekr.20161123142149.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142149.15: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123142149.16: *9* <body>
+<body>
+    @others
+#@+node:ekr.20161123142149.17: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161123142149.18: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123142149.19: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161123142149.20: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+#@+node:ekr.20161123142149.21: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+#@+node:ekr.20161123142149.22: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161123142149.23: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161123142149.24: *17* <table id="4">
+<table id="4">
+    @others
+</table>	
+#@+node:ekr.20161123142149.25: *18* <tbody id="5">
+<tbody id="5">
+    @others
+</tbody>
+#@+node:ekr.20161123142149.26: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123142149.27: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161123142149.28: *21* <table id="6">
+<table id="6">
+    @others
+</table>
+#@+node:ekr.20161123142149.29: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+#@+node:ekr.20161123142149.30: *23* <tr>
+<tr>
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161123142149.31: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+<br />
+</td>
+#@+node:ekr.20161123142149.32: *13* <DIV class="webonly">
+<DIV class="webonly">
+<script src="/scripts/footer.js"></script>
+</DIV>
+#@+node:ekr.20161123142149.33: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
+#@+node:ekr.20161123142212.22: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142212.23: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123142212.24: *9* <body>
+<body>
+    @others
+#@+node:ekr.20161123142212.25: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161123142212.26: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123142212.27: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161123142212.28: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+#@+node:ekr.20161123142212.29: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+#@+node:ekr.20161123142212.30: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161123142212.31: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161123142212.32: *17* <table id="4">
+<table id="4">
+    @others
+</table>	
+#@+node:ekr.20161123142212.33: *18* <tbody id="5">
+<tbody id="5">
+    @others
+</tbody>
+#@+node:ekr.20161123142212.34: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161123142212.35: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161123142212.36: *21* <table id="6">
+<table id="6">
+    @others
+</table>
+#@+node:ekr.20161123142212.37: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+#@+node:ekr.20161123142212.38: *23* <tr>
+<tr>
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161123142212.39: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+<br />
+</td>
+#@+node:ekr.20161123142212.40: *13* <DIV class="webonly">
+<DIV class="webonly">
+<script src="/scripts/footer.js"></script>
+</DIV>
+#@+node:ekr.20161123142212.41: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
 #@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
 @language html
 
@@ -17728,6 +14773,90 @@ finally:
 <link id="L1">
     @others
 #@+node:ekr.20161123114541.15: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+<title>TITLE</title>
+</head>
+</html>
+#@+node:ekr.20161123141751.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141751.2: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123141751.3: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161123141751.4: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161123141751.5: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+<title>TITLE</title>
+</head>
+</html>
+#@+node:ekr.20161123141959.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123141959.16: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123141959.17: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161123141959.18: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161123141959.19: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+<title>TITLE</title>
+</head>
+</html>
+#@+node:ekr.20161123142149.53: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142149.54: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123142149.55: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161123142149.56: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161123142149.57: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+<title>TITLE</title>
+</head>
+</html>
+#@+node:ekr.20161123142212.61: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161123142212.62: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161123142212.63: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161123142212.64: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161123142212.65: *11* <link id="L2">
 <link id="L2">
 <link id="L3" />
 <link id='L4' />
@@ -18413,6 +15542,94 @@ sub test3 {
 sub test4 {
     s = tr///{/;
 }
+#@+node:ekr.20161123141752.8: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123141752.9: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161123142000.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142000.15: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161123142151.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142151.3: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161123142213.35: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142213.36: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -18667,6 +15884,94 @@ sub test4 {
 @language perl
 @tabwidth -4
 #@+node:ekr.20161123114542.17: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161123141752.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123141752.11: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161123142000.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142000.17: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161123142151.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142151.5: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161123142213.37: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161123142213.38: *8* sub test1
 sub test1 {
     s = /}/g;
 }
@@ -19012,6 +16317,78 @@ def index(self):
     return "Hello world!"
     
 #@+node:ekr.20161123114543.22: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161123141753.9: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161123141753.10: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161123141753.11: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161123141753.12: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161123142001.12: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161123142001.13: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161123142001.14: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161123142001.15: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161123142152.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161123142152.3: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161123142152.4: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161123142152.5: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161123142214.31: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161123142214.32: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161123142214.33: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161123142214.34: *9* abc
 @cmd('abc')
 def abc(self):
     return "abc"
