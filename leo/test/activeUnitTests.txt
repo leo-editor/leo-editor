@@ -12347,7 +12347,7 @@ try:
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    assert not root.isAncestorOf(p2), p2.h
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
     if 1:
         p.deleteAllChildren()
@@ -14865,25 +14865,28 @@ finally:
 </html>
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
-s = r'''
-; last modified 1 April 2001 by John Doe
+s = r'''; last modified 1 April 2001 by John Doe
 [owner]
 name=John Doe
 organization=Acme Widgets Inc.
 
+; [ not a section ]
+
 [database]
-server=192.0.2.62     ; use IP address in case network name resolution is not working
+server=192.0.2.62
+    ; use IP address
 port=143
 file = "payroll.dat"
 '''
 table = ('[owner]', '[database]')
 try:
     c.importCommands.iniUnitTest(p,s=s,showTree=True)
-    if 1:
-      p2 = c.p.firstChild().firstChild()
-      for h in table:
-          assert p2.h == h, (p2.h, h)
-          p2.moveToThreadNext()
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
     if 1:
         p.deleteAllChildren()

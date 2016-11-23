@@ -220,7 +220,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -273,9 +273,6 @@
 <v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
 <v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
 </v>
-</v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
-<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
@@ -837,7 +834,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20100803234640.5804"></v>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
+</v>
 <v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
@@ -1091,6 +1090,7 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20100803234640.5804"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1544,7 +1544,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">
+<t tx="ekr.20070417092935" str_leo_pos="9">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2656,25 +2656,28 @@ class FlagsEnum extends Enum {
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20100803234640.5804"></t>
-<t tx="ekr.20100803234640.5805">s = r'''
-; last modified 1 April 2001 by John Doe
+<t tx="ekr.20100803234640.5805">s = r'''; last modified 1 April 2001 by John Doe
 [owner]
 name=John Doe
 organization=Acme Widgets Inc.
 
+; [ not a section ]
+
 [database]
-server=192.0.2.62     ; use IP address in case network name resolution is not working
+server=192.0.2.62
+    ; use IP address
 port=143
 file = "payroll.dat"
 '''
 table = ('[owner]', '[database]')
 try:
     c.importCommands.iniUnitTest(p,s=s,showTree=True)
-    if 1:
-      p2 = c.p.firstChild().firstChild()
-      for h in table:
-          assert p2.h == h, (p2.h, h)
-          p2.moveToThreadNext()
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
     if 1:
         p.deleteAllChildren()
@@ -3537,7 +3540,7 @@ After subheader text
 
 c.importCommands.markdownUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -7908,7 +7911,7 @@ try:
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    assert not root.isAncestorOf(p2), p2.h
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
     if 1:
         p.deleteAllChildren()

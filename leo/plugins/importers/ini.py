@@ -2,10 +2,9 @@
 #@+node:ekr.20140723122936.18142: * @file importers/ini.py
 '''The @auto importer for .ini files.'''
 import re
-# import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
-Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
 class Ini_Importer(Importer):
@@ -17,67 +16,44 @@ class Ini_Importer(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'ini',
-            state_class = Ini_ScanState,
+            state_class = None,
             strict = False,
         )
 
     #@+others
-    #@+node:ekr.20161123112121.1: *3* ini.start_new_block
-    ini_at_others_flag = False
-
-    def start_new_block(self, line, new_state, prev_state, stack):
-        '''Create a child node and update the stack.'''
-        # Unlike the base class, all nodes are direct children of the root.
-        target=stack[-1]
-        target_p = self.root
-        if not self.ini_at_others_flag:
-            self.ini_at_others_flag = True
-            h = self.v2_gen_ref(line, target_p, target)
-        else:
-            h = line.strip()
-        child = self.v2_create_child_node(target_p, line, h)
-        stack.append(Target(child, new_state))
-    #@+node:ekr.20161123103554.1: *3* ini_i.starts_block
+    #@+node:ekr.20161123143008.1: *3* ini_i.v2_gen_lines & helpers
+    def v2_gen_lines(self, s, parent):
+        '''
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        '''
+        self.at_others_flag = False
+        p = self.root
+        self.inject_lines_ivar(p)
+        for line in g.splitLines(s):
+            if self.starts_block(line):
+                p = self.start_block(line)
+            else:
+                self.add_line(p, line)
+    #@+node:ekr.20161123103554.1: *4* ini_i.starts_block
     ini_pattern = re.compile(r'^\s*\[(.*)\]')
 
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, line):
         '''name if the line is [ a name ].'''
         m = self.ini_pattern.match(line)
         return bool(m and m.group(1).strip())
-    #@-others
-#@+node:ekr.20161123104303.1: ** class Ini_ScanState
-class Ini_ScanState:
-    '''A do-nothing class'''
-    
-    def __init__(self, d=None):
-        '''Ini_ScanState.__init__'''
-        if d:
-            self.context = d.get('context')
-        else:
-            self.context = ''
-            
-    def __repr__(self):
-        return 'Ini_ScanState context: %r' % self.context
-    
-    __str__ = __repr__
-        
-    #@+others
-    #@+node:ekr.20161123105058.3: *3* ini_state.update
-    def update(self, data):
-        '''
-        Ini_ScanState.update
-
-        Update the state using the 6-tuple returned by v2_scan_line.
-        Return i = data[1]
-        '''
-        context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # All ScanState classes must have a context ivar.
-        self.context = context
-        return i
-    #@+node:ekr.20161123112012.1: *3* ini_state.level
-    def level(self):
-        '''Ini_ScanState.level.'''
-        return 0
+    #@+node:ekr.20161123112121.1: *4* ini_i.start_block
+    def start_block(self, line):
+        '''Start a block consisting of a new child of self.root.'''
+        # Insert @others if needed.
+        if not self.at_others_flag:
+            self.at_others_flag = True
+            self.add_line(self.root, '@others\n')
+        # Create the new node.
+        return self.v2_create_child_node(
+            parent = self.root,
+            body = line,
+            headline = line.strip())
     #@-others
 #@-others
 importer_dict = {
