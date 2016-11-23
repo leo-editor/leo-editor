@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="50" left="798" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -258,11 +258,12 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161123085419.1"><vh>@button make-table</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="6"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -2938,5 +2939,16 @@ importer_dict = {
 </t>
 <t tx="ekr.20161122062926.9"># These can be overridden in subclasses.
 </t>
+<t tx="ekr.20161123085419.1">'''
+Create a table of expected headlines in a unit test.
+After running this, copy the table from the console.
+'''
+g.cls()
+# Proper escapes are tricky.
+table = [
+    '"%s",' % p.h.replace('\\', '\\\\').replace('"', '\\"')
+        for p in c.p.subtree()
+]
+print("table = (\n    %s\n)" % '\n    '.join(table))</t>
 </tnodes>
 </leo_file>

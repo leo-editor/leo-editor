@@ -586,7 +586,7 @@ class Importer(object):
         assert g.isString(headline), repr(headline)
         self.inject_lines_ivar(child)
         self.add_line(child, body)
-        child.h = headline
+        child.h = headline.strip()
         return child
     #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
     def v2_gen_ref(self, line, parent, target):

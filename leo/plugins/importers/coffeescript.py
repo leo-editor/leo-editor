@@ -150,7 +150,7 @@ class CS_Importer(Importer):
                 return True
         return False
      
-    #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers (revise)
+    #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers (test)
     def post_pass(self, parent):
         '''Massage the created nodes.'''
         trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
@@ -178,46 +178,54 @@ class CS_Importer(Importer):
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
                 g.printList(p.v._import_lines)
-    #@+node:ekr.20160505173347.1: *4* coffee_i.delete_trailing_lines
+    #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper
+    def move_trailing_lines(self, parent):
+        '''Move trailing lines into the following node.'''
+        prev_lines = []
+        ### last = None
+        for p in parent.subtree():
+            trailing_lines = self.delete_trailing_lines(p)
+            if prev_lines:
+                # g.trace('moving lines from', last.h, 'to', p.h)
+                ###  p.b = ''.join(prev_lines) + p.b
+                self.prepend_lines(p, prev_lines)
+            prev_lines = trailing_lines
+            ### last = p.copy()
+        if prev_lines:
+            # These should go after the @others lines in the parent.
+            ### lines = g.splitLines(parent.b)
+            lines = self.get_lines(parent)
+            for i, s in enumerate(lines):
+                if s.strip().startswith('@others'):
+                    lines = lines[:i+1] + prev_lines + lines[i+2:]
+                    ### parent.b = ''.join(lines)
+                    parent.set_lines(lines)
+                    break
+            else:
+                # Fall back.
+                ### last.b = last.b + ''.join(prev_lines)
+                self.set_lines(prev_lines)
+    #@+node:ekr.20160505173347.1: *5* coffee_i.delete_trailing_lines
     def delete_trailing_lines(self, p):
-        '''Delete the trailing lines of p.b and return them.'''
+        '''Delete the trailing lines of p and return them.'''
         body_lines, trailing_lines = [], []
-        for s in g.splitLines(p.b):
-            strip = s.strip()
-            if not strip or strip.startswith('#'):
+        ### for s in g.splitLines(p.b):
+        for s in self.get_lines(p):
+            ### strip = s.strip()
+            ### if not strip or strip.startswith('#'):
+            if self.is_ws_line(s):
                 trailing_lines.append(s)
             else:
                 body_lines.extend(trailing_lines)
                 body_lines.append(s)
                 trailing_lines = []
         # Clear trailing lines if they are all blank.
-        if all([not z.strip() for z in trailing_lines]):
+        ###if all([not z.strip() for z in trailing_lines]):
+        if all([z.isspace() for z in trailing_lines]):
             trailing_lines = []
-        p.b = ''.join(body_lines)
+        ### p.b = ''.join(body_lines)
+        self.set_lines(p, body_lines)
         return trailing_lines
-    #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines
-    def move_trailing_lines(self, parent):
-        '''Move trailing lines into the following node.'''
-        prev_lines = []
-        last = None
-        for p in parent.subtree():
-            trailing_lines = self.delete_trailing_lines(p)
-            if prev_lines:
-                # g.trace('moving lines from', last.h, 'to', p.h)
-                p.b = ''.join(prev_lines) + p.b
-            prev_lines = trailing_lines
-            last = p.copy()
-        if prev_lines:
-            # These should go after the @others lines in the parent.
-            lines = g.splitLines(parent.b)
-            for i, s in enumerate(lines):
-                if s.strip().startswith('@others'):
-                    lines = lines[:i+1] + prev_lines + lines[i+2:]
-                    parent.b = ''.join(lines)
-                    break
-            else:
-                # Fall back.
-                last.b = last.b + ''.join(prev_lines)
     #@+node:ekr.20160505180032.1: *4* coffee_i.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
