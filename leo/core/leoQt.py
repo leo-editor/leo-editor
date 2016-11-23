@@ -17,6 +17,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
     # QtDeclarative, Qsci, QString, QtSvg, QtWebKit, QtWebKitWidgets
     # printsupport
 import leo.core.leoGlobals as g
+import traceback
 strict = False
 trace = False
 fail = g.in_bridge
@@ -38,43 +39,50 @@ else:
             else:
                 fail = True
 # Complete the imports.
+
+QString = g.u
+QtConst = QtCore = QtGui = QtWidgets = QUrl = None
+QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
+phonon = uic = None
+qt_version = '<no version>'
+printsupport = None
+
 if fail:
     isQt5 = False
-    QString = g.u
-    Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
-    QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
-    phonon = uic = None
-    qt_version = '<no version>'
-    printsupport = None
+    Qt = None
 elif isQt5:
     try:
         from PyQt5 import QtCore
         from PyQt5 import QtGui
         from PyQt5 import QtWidgets
         from PyQt5.QtCore import QUrl
-        QtConst = QtCore.Qt
         printsupport = Qt
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
+        print(traceback.format_exc())
+        print("")
 else:
     try:
         from PyQt4 import QtCore
         from PyQt4 import QtGui
         from PyQt4.QtCore import QUrl
         assert QUrl # for pyflakes.
-        QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
+        print(traceback.format_exc())
+        print("")
+
+if QtCore:
+    QtConst = QtCore.Qt
+
 # Define qt_version
 if fail:
     pass
 else:
-    qt_version = QtCore.QT_VERSION_STR
-    if 0:
-        import leo.core.leoGlobals as g
-        isNewQt = g.CheckVersion(qt_version, '4.5.0')
+    if QtCore:
+        qt_version = QtCore.QT_VERSION_STR
 if trace:
     print('leoQt.py: isQt5: %s' % isQt5)
 # Define phonon,Qsci,QtSvg,QtWebKit,QtWebKitWidgets,uic.
