@@ -1507,6 +1507,12 @@ class LeoImportCommands(object):
     def markdownUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.md')
 
+    def orgUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.org')
+        
+    def otlUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.otl')
+
     def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.pas')
         

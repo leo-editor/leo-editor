@@ -186,7 +186,7 @@ class Importer(object):
         '''Importer.check'''
         trace = False and g.unitTesting
         trace_all = False
-        trace_lines = False
+        trace_lines = True
         trace_status = True
         c = self.c
         sfn = g.shortFileName(self.root.h)
@@ -205,34 +205,17 @@ class Importer(object):
             # Issue an error only if something *other than* lws is amiss.
             if trace and trace_status: g.trace(
                 '===== %s NOT OK cleaning LWS' % self.name)
+            if trace and trace_all:
+                self.trace_lines(s1, s2, parent)
             s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
             ok = s1 == s2
             if ok and not g.unitTesting:
                 print('indentation error: leading whitespace changed in:',
                     self.root.h)
         if not ok:
-            lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
-            n1, n2 = len(lines1), len(lines2)
-            if not g.unitTesting:
-                g.es('@auto failed:', sfn, color='red')
-            print('\n===== PERFECT IMPORT FAILED =====', sfn)
-            print('len(s1): %s len(s2): %s' % (n1, n2))
-            for i in range(min(n1, n2)):
-                line1, line2 = lines1[i], lines2[i]
-                if line1 != line2:
-                     print('first mismatched line: %s' % (i+1))
-                     print(repr(line1))
-                     print(repr(line2))
-                     break
-            else:
-                print('all common lines match')
+            self.show_failure(s1, s2, sfn)
         if trace and trace_all or (not ok and trace_lines):
-            print('===== s1: %s' % parent.h)
-            for i, s in enumerate(g.splitLines(s1)):
-                print('%3s %r' % (i+1, s))
-            g.trace('===== s2')
-            for i, s in enumerate(g.splitLines(s2)):
-                print('%3s %r' % (i+1, s))
+            self.trace_lines(s1, s2, parent)
         # Ensure that the unit tests fail when they should.
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -242,12 +225,6 @@ class Importer(object):
                 d['fail'] = g.callers()
                 # Used in a unit test.
                 c.importCommands.errors += 1
-        if 0: # This is wrong headed.
-            if not self.strict and not ok:
-                # Suppress the error if lws is the cause.
-                clean = self.strip_lws # strip_all, clean_blank_lines
-                ok = clean(s1) == clean(s2)
-        # g.trace('='*40, ok)
         return ok
     #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
     def clean_blank_lines(self, s):
@@ -257,6 +234,24 @@ class Importer(object):
                 for z in g.splitLines(s)
         ])
         return result
+    #@+node:ekr.20161123210716.1: *4* i.show_failure
+    def show_failure(self, s1, s2, sfn):
+        '''Print the failing lines.'''
+        if not g.unitTesting:
+            g.es('@auto failed:', sfn, color='red')
+        lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
+        n1, n2 = len(lines1), len(lines2)
+        print('\n===== PERFECT IMPORT FAILED =====', sfn)
+        print('len(s1): %s len(s2): %s' % (n1, n2))
+        for i in range(min(n1, n2)):
+            line1, line2 = lines1[i], lines2[i]
+            if line1 != line2:
+                 print('first mismatched line: %s' % (i+1))
+                 print(repr(line1))
+                 print(repr(line2))
+                 break
+        else:
+            print('all common lines match')
     #@+node:ekr.20161108131153.5: *4* i.strip_*
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
@@ -269,6 +264,15 @@ class Importer(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
+    #@+node:ekr.20161123210335.1: *4* i.trace_lines
+    def trace_lines(self, s1, s2, parent):
+        '''Show both s1 and s2.'''
+        print('===== s1: %s' % parent.h)
+        for i, s in enumerate(g.splitLines(s1)):
+            print('%3s %r' % (i+1, s))
+        print('===== s2')
+        for i, s in enumerate(g.splitLines(s2)):
+            print('%3s %r' % (i+1, s))
     #@+node:ekr.20161108131153.6: *4* i.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
