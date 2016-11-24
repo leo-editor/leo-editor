@@ -7,8 +7,7 @@
 @language rest
 @wrap
 
-- Post: it would be possible (better?) to use a script
-  instead of importer;; abbreviation.
+** Posts: what you missed by not following leo-editor
 
 * Aha: use separate windows to compare code.
   Seems much better than separate body panes.

@@ -259,6 +259,9 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161124133327.1"><vh>@button make-test</vh>
+<v t="ekr.20161124133327.2"><vh>&lt;&lt; define preamble &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2949,6 +2952,35 @@ importer_dict = {
     @others
 </t>
 <t tx="ekr.20161124034654.9"># These can be overridden in subclasses.
+</t>
+<t tx="ekr.20161124133327.1">'''Make an @test node for the importer whose name is given.'''
+name = 'javascript'
+d = g.app.permanentScriptDict
+tag = 'make_test_%s_n' % name
+n = d.get(tag, 0) + 1
+d [tag] = n
+d = {'n': n, 'name': name}
+&lt;&lt; define preamble &gt;&gt;
+p = c.lastTopLevel().insertAfter()
+p.b = preamble
+p.h = '@test %(name)s importer-%(n)s' % d
+c.redraw()
+c.selectPosition(p)
+c.bodyWantsFocusNow()
+c.frame.body.wrapper.setInsertPoint(len(p.b))
+</t>
+<t tx="ekr.20161124133327.2">preamble = '''\
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    import imp
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.%(name)s as %(name)s
+    imp.reload(linescanner)
+    imp.reload(%(name)s)
+# insert test for %(name)s here.
+''' % d
 </t>
 </tnodes>
 </leo_file>
