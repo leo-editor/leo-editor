@@ -185,7 +185,7 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''Importer.check'''
         trace = False and g.unitTesting
-        trace_all = False
+        trace_all = True
         trace_lines = True
         trace_status = True
         c = self.c
@@ -193,30 +193,43 @@ class Importer(object):
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
+        lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
+        if trace and trace_all:
+            g.trace('===== entry')
+            self.trace_lines(lines1, lines2, parent)
         if self.ws_error:
             if trace and trace_status: g.trace('===== ws_error: cleaning lws')
-            s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
+            ### s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
+            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
         else:
-            s1, s2 = self.clean_blank_lines(s1), self.clean_blank_lines(s2)
+            ### s1, s2 = self.clean_blank_lines(s1), self.clean_blank_lines(s2)
+            lines1, lines2 = self.clean_blank_lines(lines1), self.clean_blank_lines(lines2)
         # Forgive trailing whitespace problems in the last line:
         if True:
-            s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
-        ok = s1 == s2
+            # s1, s2 = s1.rstrip()+'\n', s2.rstrip()+'\n'
+            lines1, lines2 = self.clean_last_lines(lines1), self.clean_last_lines(lines2)
+        # ok = s1 == s2
+        ok = lines1 == lines2
         if not ok and not self.strict:
             # Issue an error only if something *other than* lws is amiss.
             if trace and trace_status: g.trace(
                 '===== %s NOT OK cleaning LWS' % self.name)
             if trace and trace_all:
                 self.trace_lines(s1, s2, parent)
-            s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
-            ok = s1 == s2
+            # s1, s2 = self.strip_lws(s1), self.strip_lws(s2)
+            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
+                # A bug strip_lws deleted blank lines!
+            # ok = s1 == s2
+            ok = lines1 == lines2
             if ok and not g.unitTesting:
                 print('indentation error: leading whitespace changed in:',
                     self.root.h)
         if not ok:
-            self.show_failure(s1, s2, sfn)
+            ### self.show_failure(s1, s2, sfn)
+            self.show_failure(lines1, lines2, sfn)
         if trace and trace_all or (not ok and trace_lines):
-            self.trace_lines(s1, s2, parent)
+            ### self.trace_lines(s1, s2, parent)
+            self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -232,19 +245,30 @@ class Importer(object):
             g.trace('EXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, sfn))
         return ok
     #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
-    def clean_blank_lines(self, s):
+    def clean_blank_lines(self, lines):
         '''Remove all blanks and tabs in all blank lines.'''
-        result = ''.join([
-            z if not z.isspace() else z.replace(' ','').replace('\t','')
-                for z in g.splitLines(s)
-        ])
-        return result
+        # result = ''.join([
+            # z if not z.isspace() else z.replace(' ','').replace('\t','')
+                # for z in g.splitLines(s)
+        # ])
+        # return result
+        return [self.lstrip_line(z) if z.isspace() else z for z in lines]
+
+
+        
+    #@+node:ekr.20161124030004.1: *4* i.clean_last_lines
+    def clean_last_lines(self, lines):
+        '''Remove blank lines from the end of lines.'''
+        while lines and lines[-1].isspace():
+            lines.pop()
+        return lines
     #@+node:ekr.20161123210716.1: *4* i.show_failure
-    def show_failure(self, s1, s2, sfn):
+    ###def show_failure(self, s1, s2, sfn):
+    def show_failure(self, lines1, lines2, sfn):
         '''Print the failing lines.'''
         if not g.unitTesting:
             g.es('@auto failed:', sfn, color='red')
-        lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
+        ### lines1, lines2 = g.splitLines(s1), g.splitlines(s2)
         n1, n2 = len(lines1), len(lines2)
         print('\n===== PERFECT IMPORT FAILED =====', sfn)
         print('len(s1): %s len(s2): %s' % (n1, n2))
@@ -258,25 +282,35 @@ class Importer(object):
         else:
             print('all common lines match')
     #@+node:ekr.20161108131153.5: *4* i.strip_*
-    def strip_all(self, s):
+    def lstrip_line(self, s):
+        assert s, g.callers()
+        return '\n' if s.isspace() else s.lstrip()
+
+    def strip_all(self, lines):
         '''Strip blank lines and leading whitespace from all lines of s.'''
-        return self.strip_lws(self.strip_blank_lines(s))
+        return self.strip_lws(self.strip_blank_lines(lines))
 
-    def strip_blank_lines(self, s):
+    def strip_blank_lines(self, lines):
         '''Strip all blank lines from s.'''
-        return ''.join([z for z in g.splitLines(s) if not z.isspace()])
-
-    def strip_lws(self, s):
+        ### return ''.join([z for z in g.splitLines(s) if not z.isspace()])
+        return [z for z in lines if not z.isspace()]
+        
+    def strip_lws(self, lines):
         '''Strip leading whitespace from all lines of s.'''
-        return ''.join([z.lstrip() for z in g.splitLines(s)])
+        ### return ''.join([z.lstrip() for z in g.splitLines(s)])
+        # WRONG: return [z.lstrip() for z in g.splitLines(s)]
+        return [self.lstrip_line(z) for z in lines]
+
+        
+        
     #@+node:ekr.20161123210335.1: *4* i.trace_lines
-    def trace_lines(self, s1, s2, parent):
+    def trace_lines(self, lines1, lines2, parent):
         '''Show both s1 and s2.'''
         print('===== s1: %s' % parent.h)
-        for i, s in enumerate(g.splitLines(s1)):
+        for i, s in enumerate(lines1): ###g.splitLines(s1)):
             print('%3s %r' % (i+1, s))
         print('===== s2')
-        for i, s in enumerate(g.splitLines(s2)):
+        for i, s in enumerate(lines2): ###g.splitLines(s2)):
             print('%3s %r' % (i+1, s))
     #@+node:ekr.20161108131153.6: *4* i.trial_write
     def trial_write(self):

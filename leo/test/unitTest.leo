@@ -227,8 +227,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
-expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558010000003d7106580b000000756e6465726c696e657331710758030000002d7e2e710875735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161123115047.1,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -291,10 +291,10 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -305,24 +305,24 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
 <v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh>
 <v t="ekr.20161122160952.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
@@ -389,6 +389,18 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161123142212.19"><vh>&lt;html&gt;</vh>
 <v t="ekr.20161123142212.20"><vh>&lt;head&gt;</vh></v>
 <v t="ekr.20161123142212.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161124031628.6"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161124031628.7"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161124031628.8"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161124031628.9"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161124032739.6"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161124032739.7"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161124032739.8"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161124032739.9"><vh>&lt;body class="bodystring"&gt;</vh></v>
 </v>
 </v>
 </v>
@@ -753,6 +765,78 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 </v>
 </v>
 </v>
+<v t="ekr.20161124031628.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161124031628.11"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161124031628.12"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161124031628.13"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161124031628.14"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161124031628.15"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161124031628.16"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161124031628.17"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161124031628.18"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161124031628.19"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161124031628.20"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161124031628.21"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161124031628.22"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161124031628.23"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161124031628.24"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161124031628.25"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161124031628.26"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124031628.27"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124031628.28"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124031628.29"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124032739.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line</vh>
+<v t="ekr.20161124032739.11"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161124032739.12"><vh>&lt;body&gt;</vh>
+<v t="ekr.20161124032739.13"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20161124032739.14"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161124032739.15"><vh>&lt;td width="619"&gt;</vh>
+<v t="ekr.20161124032739.16"><vh>&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;</vh>
+<v t="ekr.20161124032739.17"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20161124032739.18"><vh>&lt;tr&gt;</vh>
+<v t="ekr.20161124032739.19"><vh>&lt;td width="368"&gt;</vh>
+<v t="ekr.20161124032739.20"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20161124032739.21"><vh>&lt;tbody id="5"&gt;</vh>
+<v t="ekr.20161124032739.22"><vh>&lt;tr valign="top"&gt;</vh>
+<v t="ekr.20161124032739.23"><vh>&lt;td width="550"&gt;</vh>
+<v t="ekr.20161124032739.24"><vh>&lt;table id="6"&gt;</vh>
+<v t="ekr.20161124032739.25"><vh>&lt;tbody id="6"&gt;</vh>
+<v t="ekr.20161124032739.26"><vh>&lt;tr&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124032739.27"><vh>&lt;td width="100%" colspan="2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124032739.28"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161124032739.29"><vh>&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
@@ -760,93 +844,21 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh>
-<v t="ekr.20161123005110.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123005110.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123005110.3"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123005110.4"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123005110.5"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123005130.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123005130.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123005130.3"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123005130.4"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123005130.5"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123005136.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123005136.45"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123005136.46"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123005136.47"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123005136.48"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123012127.6"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123012127.7"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123012127.8"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123012127.9"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123012127.10"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123114541.11"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123114541.12"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123114541.13"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123114541.14"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123114541.15"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123141751.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123141751.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123141751.3"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123141751.4"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123141751.5"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123141959.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123141959.16"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123141959.17"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123141959.18"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123141959.19"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123142149.53"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123142149.54"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123142149.55"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123142149.56"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123142149.57"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161123142212.61"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161123142212.62"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123142212.63"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161123142212.64"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161123142212.65"><vh>&lt;link id="L2"&gt;</vh></v>
+<v t="ekr.20161124032739.49"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161124032739.50"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161124032739.51"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161124032739.52"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161124032739.53"><vh>&lt;link id="L2"&gt;</vh></v>
 </v>
 </v>
 </v>
 </v>
 </v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -854,7 +866,7 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -862,13 +874,13 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1"><vh>org tests</vh>
+<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
@@ -918,6 +930,12 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161123142213.35"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161123142213.36"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161124031630.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161124031630.6"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161124032741.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161124032741.6"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -965,14 +983,20 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161123142213.37"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161123142213.38"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161124031630.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161124031630.8"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161124032741.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161124032741.8"><vh>sub test1</vh></v>
 </v>
 </v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+</v>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -1038,6 +1062,18 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161123142214.34"><vh>abc</vh></v>
 </v>
 </v>
+<v t="ekr.20161124031631.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161124031631.8"><vh>class Index</vh>
+<v t="ekr.20161124031631.9"><vh>index</vh></v>
+<v t="ekr.20161124031631.10"><vh>abc</vh></v>
+</v>
+</v>
+<v t="ekr.20161124032742.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161124032742.8"><vh>class Index</vh>
+<v t="ekr.20161124032742.9"><vh>index</vh></v>
+<v t="ekr.20161124032742.10"><vh>abc</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
@@ -1064,22 +1100,22 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
@@ -1088,7 +1124,7 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
-<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -1102,7 +1138,8 @@ expanded="ekr.20100131171342.5592,ekr.20071113192611,ekr.20081111084046.2,"><vh>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161123202857.1"></v>
+<v t="ekr.20161123202857.1" a="E"></v>
+<v t="ekr.20111112103320.3893"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2962,7 +2999,7 @@ finally:
     if 1:
         p.deleteAllChildren()
 </t>
-<t tx="ekr.20111112103320.3893">s = '''\
+<t tx="ekr.20111112103320.3893">s = '''
 &lt;html&gt;
 &lt;head&gt;
     &lt;!-- oops: link elements terminated two different ways --&gt;
@@ -7339,52 +7376,6 @@ def index(self):
 def abc(self):
     return "abc"
 </t>
-<t tx="ekr.20161123005110.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123005110.2">&lt;html&gt;
-@others
-</t>
-<t tx="ekr.20161123005110.3">&lt;head&gt;
-    &lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123005110.4">&lt;link id="L1"&gt;
-@others
-</t>
-<t tx="ekr.20161123005110.5">    &lt;link id="L2"&gt;
-    &lt;link id="L3" /&gt;
-    &lt;link id='L4' /&gt;
-    
-    &lt;title&gt;TITLE&lt;/title&gt;
-    
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123005130.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123005130.2">&lt;html&gt;
-@others
-</t>
-<t tx="ekr.20161123005130.3">&lt;head&gt;
-    &lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123005130.4">&lt;link id="L1"&gt;
-@others
-</t>
-<t tx="ekr.20161123005130.5">    &lt;link id="L2"&gt;
-    &lt;link id="L3" /&gt;
-    &lt;link id='L4' /&gt;
-    
-    &lt;title&gt;TITLE&lt;/title&gt;
-    
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20161123005136.1">@others
 @language xml
 @tabwidth -4
@@ -7477,29 +7468,6 @@ def abc(self):
 <t tx="ekr.20161123005136.4">&lt;body class="bodystring"&gt;
 &lt;div id='bodydisplay'&gt;&lt;/div&gt;
 &lt;/body&gt;
-</t>
-<t tx="ekr.20161123005136.44">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123005136.45">&lt;html&gt;
-@others
-</t>
-<t tx="ekr.20161123005136.46">&lt;head&gt;
-    &lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123005136.47">&lt;link id="L1"&gt;
-@others
-</t>
-<t tx="ekr.20161123005136.48">    &lt;link id="L2"&gt;
-    &lt;link id="L3" /&gt;
-    &lt;link id='L4' /&gt;
-    
-    &lt;title&gt;TITLE&lt;/title&gt;
-    
-&lt;/head&gt;
-&lt;/html&gt;
 </t>
 <t tx="ekr.20161123005136.5">
 
@@ -7625,27 +7593,6 @@ def abc(self):
 <t tx="ekr.20161123012126.9">&lt;tr valign="top"&gt;
     @others
 &lt;/tr&gt;
-</t>
-<t tx="ekr.20161123012127.10">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123012127.6">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123012127.7">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123012127.8">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123012127.9">&lt;link id="L1"&gt;
-    @others
 </t>
 <t tx="ekr.20161123012354.10">#!/usr/bin/perl
 
@@ -7797,27 +7744,6 @@ print("table = (\n    %s\n)" % '\n    '.join(table))</t>
 </t>
 <t tx="ekr.20161123114540.41">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123114541.11">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123114541.12">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123114541.13">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123114541.14">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161123114541.15">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
 &lt;/html&gt;
 </t>
 <t tx="ekr.20161123114542.14">#!/usr/bin/perl
@@ -8018,27 +7944,6 @@ finally:
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20161123141751.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141751.2">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123141751.3">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123141751.4">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161123141751.5">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20161123141752.10">#!/usr/bin/perl
 
 @others
@@ -8199,27 +8104,6 @@ def abc(self):
 </t>
 <t tx="ekr.20161123141958.150">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123141959.15">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141959.16">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123141959.17">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123141959.18">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161123141959.19">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
 &lt;/html&gt;
 </t>
 <t tx="ekr.20161123142000.14">#!/usr/bin/perl
@@ -8384,27 +8268,6 @@ def abc(self):
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20161123142149.53">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142149.54">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123142149.55">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123142149.56">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161123142149.57">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20161123142151.2">#!/usr/bin/perl
 
 @others
@@ -8567,27 +8430,6 @@ def abc(self):
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20161123142212.61">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142212.62">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161123142212.63">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161123142212.64">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161123142212.65">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-&lt;title&gt;TITLE&lt;/title&gt;
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20161123142213.35">#!/usr/bin/perl
 
 @others
@@ -8710,6 +8552,373 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
+</t>
+<t tx="ekr.20161124031628.10">
+
+@others
+@language xml
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20161124031628.11">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161124031628.12">&lt;body&gt;
+    @others
+</t>
+<t tx="ekr.20161124031628.13">&lt;table id="0"&gt;
+    @others
+&lt;/table&gt;
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161124031628.14">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124031628.15">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124031628.16">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+</t>
+<t tx="ekr.20161124031628.17">&lt;table id="3"&gt;
+    @others
+&lt;/table&gt;
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+</t>
+<t tx="ekr.20161124031628.18">&lt;tr&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124031628.19">&lt;td width="368"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124031628.20">&lt;table id="4"&gt;
+    @others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161124031628.21">&lt;tbody id="5"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161124031628.22">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124031628.23">&lt;td width="550"&gt;
+    @others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161124031628.24">&lt;table id="6"&gt;
+    @others
+&lt;/table&gt;
+</t>
+<t tx="ekr.20161124031628.25">&lt;tbody id="6"&gt;
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161124031628.26">&lt;tr&gt;
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124031628.27">&lt;td width="100%" colspan="2"&gt;
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124031628.28">&lt;DIV class="webonly"&gt;
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161124031628.29">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161124031628.6">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161124031628.7">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161124031628.8">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161124031628.9">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161124031630.5">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161124031630.6">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161124031630.7">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161124031630.8">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161124031631.10">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161124031631.7">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161124031631.8">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161124031631.9">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161124032739.10">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032739.11">&lt;html&gt;
+
+    @others
+</t>
+<t tx="ekr.20161124032739.12">&lt;body&gt;
+
+    @others
+</t>
+<t tx="ekr.20161124032739.13">&lt;table id="0"&gt;
+    @others
+&lt;/table&gt;
+
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+</t>
+<t tx="ekr.20161124032739.14">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124032739.15">&lt;td width="619"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124032739.16">&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+    @others
+&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
+
+
+</t>
+<t tx="ekr.20161124032739.17">&lt;table id="3"&gt;
+    @others
+&lt;/table&gt;
+
+&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
+
+</t>
+<t tx="ekr.20161124032739.18">&lt;tr&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124032739.19">&lt;td width="368"&gt;
+    @others
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124032739.20">&lt;table id="4"&gt;
+
+    @others
+&lt;/table&gt;	
+</t>
+<t tx="ekr.20161124032739.21">&lt;tbody id="5"&gt;
+
+    @others
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20161124032739.22">&lt;tr valign="top"&gt;
+    @others
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124032739.23">&lt;td width="550"&gt;
+    @others
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+</t>
+<t tx="ekr.20161124032739.24">&lt;table id="6"&gt;
+
+    @others
+&lt;/table&gt;
+
+</t>
+<t tx="ekr.20161124032739.25">&lt;tbody id="6"&gt;
+    @others
+&lt;/tbody&gt;
+
+</t>
+<t tx="ekr.20161124032739.26">&lt;tr&gt;
+
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20161124032739.27">&lt;td width="100%" colspan="2"&gt;
+
+
+&lt;br /&gt;
+&lt;/td&gt;
+</t>
+<t tx="ekr.20161124032739.28">&lt;DIV class="webonly"&gt;
+
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+
+&lt;/DIV&gt;
+</t>
+<t tx="ekr.20161124032739.29">&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20161124032739.49">
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032739.50">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161124032739.51">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161124032739.52">&lt;link id="L1"&gt;
+    @others
+</t>
+<t tx="ekr.20161124032739.53">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+
+&lt;title&gt;TITLE&lt;/title&gt;
+
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161124032739.6">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032739.7">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161124032739.8">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161124032739.9">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161124032741.5">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032741.6">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161124032741.7">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032741.8">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161124032742.10">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161124032742.7">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161124032742.8">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161124032742.9">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
 </t>
 </tnodes>
 </leo_file>

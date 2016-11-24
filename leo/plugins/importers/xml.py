@@ -28,7 +28,7 @@ class Xml_Importer(Importer):
         self.stack = []
             # Stack of tags.
             # A closing tag decrements state.tag_level only if the top is an opening tag.
-    #@+node:ekr.20161121204918.1: *3* xml_i.add_tags (test)
+    #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
         trace = False
@@ -191,7 +191,7 @@ class Xml_Importer(Importer):
         result, w = [], self.tab_width
         indent = ' '*abs(w) if w < 0 else '\t'
         for s in self.get_lines(p):
-            ls = s.lstrip()
+            ls = '\n' if s.isspace() else s.lstrip()
             if ls.startswith('@others'):
                 if p == self.root:
                     result.append(ls)

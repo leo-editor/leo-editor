@@ -13552,6 +13552,38 @@ finally:
 <body class="bodystring">
 <div id='bodydisplay'></div>
 </body>
+#@+node:ekr.20161124031628.6: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161124031628.7: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161124031628.8: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161124031628.9: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161124032739.6: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161124032739.7: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161124032739.8: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161124032739.9: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
 @language html
     # Essential for the unit test.
@@ -14538,6 +14570,193 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
 </body>
 </html>
+#@+node:ekr.20161124031628.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+@ignore
+#@+node:ekr.20161124031628.11: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161124031628.12: *9* <body>
+<body>
+    @others
+#@+node:ekr.20161124031628.13: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161124031628.14: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161124031628.15: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161124031628.16: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+#@+node:ekr.20161124031628.17: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+#@+node:ekr.20161124031628.18: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161124031628.19: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161124031628.20: *17* <table id="4">
+<table id="4">
+    @others
+</table>	
+#@+node:ekr.20161124031628.21: *18* <tbody id="5">
+<tbody id="5">
+    @others
+</tbody>
+#@+node:ekr.20161124031628.22: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161124031628.23: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161124031628.24: *21* <table id="6">
+<table id="6">
+    @others
+</table>
+#@+node:ekr.20161124031628.25: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+#@+node:ekr.20161124031628.26: *23* <tr>
+<tr>
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161124031628.27: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+<br />
+</td>
+#@+node:ekr.20161124031628.28: *13* <DIV class="webonly">
+<DIV class="webonly">
+<script src="/scripts/footer.js"></script>
+</DIV>
+#@+node:ekr.20161124031628.29: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
+#@+node:ekr.20161124032739.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: multiple tags on a line
+
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161124032739.11: *8* <html>
+<html>
+
+    @others
+#@+node:ekr.20161124032739.12: *9* <body>
+<body>
+
+    @others
+#@+node:ekr.20161124032739.13: *10* <table id="0">
+<table id="0">
+    @others
+</table>
+
+<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+#@+node:ekr.20161124032739.14: *11* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161124032739.15: *12* <td width="619">
+<td width="619">
+    @others
+</td>
+#@+node:ekr.20161124032739.16: *13* <table id="2">	<tr valign="top">	<td width="377">
+<table id="2">	<tr valign="top">	<td width="377">
+    @others
+<!-- View Second part -->	</td>	</tr></table>										
+
+
+#@+node:ekr.20161124032739.17: *14* <table id="3">
+<table id="3">
+    @others
+</table>
+
+<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
+
+#@+node:ekr.20161124032739.18: *15* <tr>
+<tr>
+    @others
+</tr>
+#@+node:ekr.20161124032739.19: *16* <td width="368">
+<td width="368">
+    @others
+</td>
+#@+node:ekr.20161124032739.20: *17* <table id="4">
+<table id="4">
+
+    @others
+</table>	
+#@+node:ekr.20161124032739.21: *18* <tbody id="5">
+<tbody id="5">
+
+    @others
+</tbody>
+#@+node:ekr.20161124032739.22: *19* <tr valign="top">
+<tr valign="top">
+    @others
+</tr>
+#@+node:ekr.20161124032739.23: *20* <td width="550">
+<td width="550">
+    @others
+</td>
+</tr><tr>
+#@+node:ekr.20161124032739.24: *21* <table id="6">
+<table id="6">
+
+    @others
+</table>
+
+#@+node:ekr.20161124032739.25: *22* <tbody id="6">
+<tbody id="6">
+    @others
+</tbody>
+
+#@+node:ekr.20161124032739.26: *23* <tr>
+<tr>
+
+<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+</tr>
+#@+node:ekr.20161124032739.27: *20* <td width="100%" colspan="2">
+<td width="100%" colspan="2">
+
+
+<br />
+</td>
+#@+node:ekr.20161124032739.28: *13* <DIV class="webonly">
+<DIV class="webonly">
+
+<script src="/scripts/footer.js"></script>
+
+</DIV>
+#@+node:ekr.20161124032739.29: *10* <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+</body>
+</html>
+
 #@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
 @language html
 
@@ -14644,7 +14863,7 @@ finally:
     if 1:
         p.deleteAllChildren()
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
-s = '''\
+s = '''
 <html>
 <head>
     <!-- oops: link elements terminated two different ways -->
@@ -14668,199 +14887,28 @@ try:
 finally:
     if 0:
         p.deleteAllChildren()
-#@+node:ekr.20161123005110.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+#@+node:ekr.20161124032739.49: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+
 @others
 @language xml
 @tabwidth -4
-#@+node:ekr.20161123005110.2: *8* <html>
-<html>
-@others
-#@+node:ekr.20161123005110.3: *9* <head>
-<head>
-    <!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123005110.4: *10* <link id="L1">
-<link id="L1">
-@others
-#@+node:ekr.20161123005110.5: *11* <link id="L2">
-    <link id="L2">
-    <link id="L3" />
-    <link id='L4' />
-    
-    <title>TITLE</title>
-    
-</head>
-</html>
-#@+node:ekr.20161123005130.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123005130.2: *8* <html>
-<html>
-@others
-#@+node:ekr.20161123005130.3: *9* <head>
-<head>
-    <!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123005130.4: *10* <link id="L1">
-<link id="L1">
-@others
-#@+node:ekr.20161123005130.5: *11* <link id="L2">
-    <link id="L2">
-    <link id="L3" />
-    <link id='L4' />
-    
-    <title>TITLE</title>
-    
-</head>
-</html>
-#@+node:ekr.20161123005136.44: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123005136.45: *8* <html>
-<html>
-@others
-#@+node:ekr.20161123005136.46: *9* <head>
-<head>
-    <!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123005136.47: *10* <link id="L1">
-<link id="L1">
-@others
-#@+node:ekr.20161123005136.48: *11* <link id="L2">
-    <link id="L2">
-    <link id="L3" />
-    <link id='L4' />
-    
-    <title>TITLE</title>
-    
-</head>
-</html>
-#@+node:ekr.20161123012127.6: *7* @@file c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123012127.7: *8* <html>
+#@+node:ekr.20161124032739.50: *8* <html>
 <html>
     @others
-#@+node:ekr.20161123012127.8: *9* <head>
+#@+node:ekr.20161124032739.51: *9* <head>
 <head>
 <!-- oops: link elements terminated two different ways -->
     @others
-#@+node:ekr.20161123012127.9: *10* <link id="L1">
+#@+node:ekr.20161124032739.52: *10* <link id="L1">
 <link id="L1">
     @others
-#@+node:ekr.20161123012127.10: *11* <link id="L2">
+#@+node:ekr.20161124032739.53: *11* <link id="L2">
 <link id="L2">
 <link id="L3" />
 <link id='L4' />
+
 <title>TITLE</title>
-</head>
-</html>
-#@+node:ekr.20161123114541.11: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123114541.12: *8* <html>
-<html>
-    @others
-#@+node:ekr.20161123114541.13: *9* <head>
-<head>
-<!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123114541.14: *10* <link id="L1">
-<link id="L1">
-    @others
-#@+node:ekr.20161123114541.15: *11* <link id="L2">
-<link id="L2">
-<link id="L3" />
-<link id='L4' />
-<title>TITLE</title>
-</head>
-</html>
-#@+node:ekr.20161123141751.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123141751.2: *8* <html>
-<html>
-    @others
-#@+node:ekr.20161123141751.3: *9* <head>
-<head>
-<!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123141751.4: *10* <link id="L1">
-<link id="L1">
-    @others
-#@+node:ekr.20161123141751.5: *11* <link id="L2">
-<link id="L2">
-<link id="L3" />
-<link id='L4' />
-<title>TITLE</title>
-</head>
-</html>
-#@+node:ekr.20161123141959.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123141959.16: *8* <html>
-<html>
-    @others
-#@+node:ekr.20161123141959.17: *9* <head>
-<head>
-<!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123141959.18: *10* <link id="L1">
-<link id="L1">
-    @others
-#@+node:ekr.20161123141959.19: *11* <link id="L2">
-<link id="L2">
-<link id="L3" />
-<link id='L4' />
-<title>TITLE</title>
-</head>
-</html>
-#@+node:ekr.20161123142149.53: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123142149.54: *8* <html>
-<html>
-    @others
-#@+node:ekr.20161123142149.55: *9* <head>
-<head>
-<!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123142149.56: *10* <link id="L1">
-<link id="L1">
-    @others
-#@+node:ekr.20161123142149.57: *11* <link id="L2">
-<link id="L2">
-<link id="L3" />
-<link id='L4' />
-<title>TITLE</title>
-</head>
-</html>
-#@+node:ekr.20161123142212.61: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20161123142212.62: *8* <html>
-<html>
-    @others
-#@+node:ekr.20161123142212.63: *9* <head>
-<head>
-<!-- oops: link elements terminated two different ways -->
-    @others
-#@+node:ekr.20161123142212.64: *10* <link id="L1">
-<link id="L1">
-    @others
-#@+node:ekr.20161123142212.65: *11* <link id="L2">
-<link id="L2">
-<link id="L3" />
-<link id='L4' />
-<title>TITLE</title>
+
 </head>
 </html>
 #@+node:ekr.20100803234640.5804: *5* ini tests
@@ -15666,6 +15714,50 @@ sub test3 {
 sub test4 {
     s = tr///{/;
 }
+#@+node:ekr.20161124031630.5: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161124031630.6: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161124032741.5: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161124032741.6: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -16008,6 +16100,50 @@ sub test4 {
 @language perl
 @tabwidth -4
 #@+node:ekr.20161123142213.38: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161124031630.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161124031630.8: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161124032741.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161124032741.8: *8* sub test1
 sub test1 {
     s = /}/g;
 }
@@ -16425,6 +16561,42 @@ def index(self):
     return "Hello world!"
     
 #@+node:ekr.20161123142214.34: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161124031631.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161124031631.8: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161124031631.9: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161124031631.10: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161124032742.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161124032742.8: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161124032742.9: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161124032742.10: *9* abc
 @cmd('abc')
 def abc(self):
     return "abc"
