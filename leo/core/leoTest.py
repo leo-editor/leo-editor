@@ -20,6 +20,7 @@ import cProfile as profile
 # import pstats # A Python distro bug: can fail on Ubuntu.
 # import re
 import sys
+import time
 import timeit
 import tokenize
 import unittest
@@ -173,6 +174,7 @@ class GeneralTestCase(unittest.TestCase):
         tm = self
         c = tm.c
         p = tm.p.copy()
+        t1 = time.clock()
         script = g.getScript(c, p).strip()
         if self.setup_script:
             script = self.setup_script + '\n' + script
@@ -203,6 +205,10 @@ class GeneralTestCase(unittest.TestCase):
                 builtins.execfile(scriptFile, d)
         else:
             exec(script, d)
+        t2 = time.clock()
+        if t2 - t1 > 3.0:
+            print('')
+            g.trace('EXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h

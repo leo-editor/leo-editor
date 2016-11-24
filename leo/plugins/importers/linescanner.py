@@ -86,7 +86,7 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 import re
-# import time
+import time
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
@@ -189,6 +189,7 @@ class Importer(object):
         trace_lines = True
         trace_status = True
         c = self.c
+        t1 = time.clock()
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
@@ -225,6 +226,10 @@ class Importer(object):
                 d['fail'] = g.callers()
                 # Used in a unit test.
                 c.importCommands.errors += 1
+        t2 = time.clock()
+        if t2 - t1 > 0.1:
+            print('')
+            g.trace('EXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, sfn))
         return ok
     #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
     def clean_blank_lines(self, s):
