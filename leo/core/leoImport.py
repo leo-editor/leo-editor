@@ -1475,6 +1475,7 @@ class LeoImportCommands(object):
 
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
+
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
     def cUnitTest(self, p, fileName=None, s=None, showTree=False):
