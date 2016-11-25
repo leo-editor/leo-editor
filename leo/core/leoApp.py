@@ -82,7 +82,7 @@ class LeoApp(object):
     Ivars of this class are Leo's global variables."""
     #@+others
     #@+node:ekr.20150509193643.1: *3* app.Birth
-    #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain langauge dicts)
+    #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain language dicts)
     def __init__(self):
         '''
         Ctor for LeoApp class. These ivars are Leo's global vars.
@@ -462,6 +462,7 @@ class LeoApp(object):
             "mail"               : ">",
             "makefile"           : "#",
             "maple"              : "//",
+            "markdown"           : "", # EKR, 2016/11/25
             "matlab"             : "%", # EKR: 2011/10/21
             "md"                 : "<!-- -->", # PeckJ: 2013/02/08
             "ml"                 : "(* *)",

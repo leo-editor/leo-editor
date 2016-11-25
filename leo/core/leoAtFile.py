@@ -5197,6 +5197,7 @@ class AtFile(object):
             else: # Emergency!
                 # assert(0)
                 if not g.app.unitTesting:
+                    g.trace(repr(at.language), g.callers())
                     g.es_print("unknown language: using Python comment delimiters")
                     g.es_print("c.target_language:", c.target_language)
                     g.es_print('', 'delim1,delim2,delim3:', '', delim1, '', delim2, '', delim3)
