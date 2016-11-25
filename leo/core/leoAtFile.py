@@ -5165,11 +5165,13 @@ class AtFile(object):
         if lang_dict:
             delims = lang_dict.get('delims')
             at.language = lang_dict.get('language')
+            # g.trace('1', at.language, delims)
         else:
             # 2011/10/10:
             # No language directive.  Look for @<file> nodes.
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
             delims = g.set_delims_from_language(language)
+            # g.trace('2', repr(language), delims)
         at.encoding = d.get('encoding')
         at.explicitLineEnding = bool(lineending)
         at.output_newline = lineending or g.getOutputNewline(c=c)
@@ -5196,11 +5198,12 @@ class AtFile(object):
                 at.endSentinelComment = delim3
             else: # Emergency!
                 # assert(0)
-                if not g.app.unitTesting:
+                # 2016/11/25: Issue an error only if at.language has been set.
+                # This suppresses a message from the markdown importer.
+                if not g.app.unitTesting and at.language:
                     g.trace(repr(at.language), g.callers())
                     g.es_print("unknown language: using Python comment delimiters")
                     g.es_print("c.target_language:", c.target_language)
-                    g.es_print('', 'delim1,delim2,delim3:', '', delim1, '', delim2, '', delim3)
                 at.startSentinelComment = "#" # This should never happen!
                 at.endSentinelComment = ""
             # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
