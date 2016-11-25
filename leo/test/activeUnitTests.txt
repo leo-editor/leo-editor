@@ -16552,6 +16552,7 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 << define s >>
 
 try:
+    root = None
     c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
@@ -16574,8 +16575,10 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root.doDelete()
-        c.redraw()
+        root = p.firstChild().next()
+        if root:
+            root.doDelete()
+            c.redraw()
 #@+node:ekr.20160411034540.1: *6* << define s >> (md-import-test)
 s = '''\
 #Top
@@ -16626,8 +16629,10 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root.doDelete()
-        c.redraw()
+        root = p.firstChild().next()
+        if root:
+            root.doDelete()
+            c.redraw()
 #@+node:ekr.20160411044042.1: *6* << define s >> (md-import-test-rst-style)
 s = '''\
 Top
@@ -16664,6 +16669,8 @@ Section 3
 section 3, line 1
 
 '''
+#@+node:ekr.20161125033219.2: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+#@+node:ekr.20161125033645.2: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
 #@+node:ekr.20141111092038.12: *5* @test markdown
 s = '''
 

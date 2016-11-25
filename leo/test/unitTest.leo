@@ -228,7 +228,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -280,6 +280,8 @@
 </v>
 <v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
 <v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
+<v t="ekr.20161125033219.2"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh></v>
+<v t="ekr.20161125033645.2"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh></v>
 </v>
 </v>
 <v t="ekr.20161124041002.1"><vh>@edit unittest/at-auto-otl-line-number-test.py</vh></v>
@@ -441,7 +443,7 @@
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
+<v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
 <v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
@@ -704,7 +706,7 @@
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
 <v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
@@ -732,8 +734,9 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161123202857.1" a="E"></v>
+<v t="ekr.20161123202857.1"></v>
 <v t="ekr.20161124042011.1"><vh>*** Improve org/otl tests</vh></v>
+<v t="ekr.20160410152100.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1177,7 +1180,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="5">
+<t tx="ekr.20070417092935" str_leo_pos="12,2">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3597,6 +3600,7 @@ def spam(): # line 2
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
 
 try:
+    root = None
     c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
@@ -3619,8 +3623,10 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root.doDelete()
-        c.redraw()
+        root = p.firstChild().next()
+        if root:
+            root.doDelete()
+            c.redraw()
 </t>
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 
@@ -3647,8 +3653,10 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root.doDelete()
-        c.redraw()
+        root = p.firstChild().next()
+        if root:
+            root.doDelete()
+            c.redraw()
 </t>
 <t tx="ekr.20160411034540.1">s = '''\
 #Top
@@ -7459,16 +7467,24 @@ Warning: this node is ignored when writing this file.
 @language plain
 @tabwidth 4
 </t>
-<t tx="ekr.20161124051005.2">Sec 1.</t>
-<t tx="ekr.20161124051005.3">Sec 2.</t>
-<t tx="ekr.20161124051007.1">Sec 2-1</t>
-<t tx="ekr.20161124051007.2">Sect 2-1-1</t>
-<t tx="ekr.20161124051007.3">Sec 3</t>
-<t tx="ekr.20161124051007.4">Sec 3.1</t>
+<t tx="ekr.20161124051005.2">Sec 1.
+</t>
+<t tx="ekr.20161124051005.3">Sec 2.
+</t>
+<t tx="ekr.20161124051007.1">Sec 2-1
+</t>
+<t tx="ekr.20161124051007.2">Sect 2-1-1
+</t>
+<t tx="ekr.20161124051007.3">Sec 3
+</t>
+<t tx="ekr.20161124051007.4">Sec 3.1
+</t>
 <t tx="ekr.20161124051217.1">gnx: ekr.20161124050840.1
 unl: section 1
 gnx: ekr.20161124050840.2
 unl: section 2
 </t>
+<t tx="ekr.20161125033219.2"></t>
+<t tx="ekr.20161125033645.2"></t>
 </tnodes>
 </leo_file>
