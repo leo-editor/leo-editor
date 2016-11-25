@@ -153,6 +153,7 @@ class Importer(object):
         # State vars.
         self.errors = 0
         ic.errors = 0 # Required.
+        self.kill_check = False
         self.parse_body = False
         self.ws_error = False
         self.root = None
@@ -183,11 +184,16 @@ class Importer(object):
         p.v._import_lines = list(lines)
     #@+node:ekr.20161108131153.3: *3* i.check & helpers
     def check(self, unused_s, parent):
-        '''Importer.check'''
+        '''
+        True if perfect import checks pass.
+        Unit tests may set i.kill_check flag to disable these checks.
+        '''
         trace = False and g.unitTesting
         trace_all = True
         trace_lines = True
         trace_status = True
+        if self.kill_check:
+            return True
         c = self.c
         t1 = time.clock()
         sfn = g.shortFileName(self.root.h)
@@ -207,18 +213,15 @@ class Importer(object):
             lines1, lines2 = self.clean_last_lines(lines1), self.clean_last_lines(lines2)
         ok = lines1 == lines2
         if not ok and not self.strict:
+            if trace:
+                self.show_failure1(lines1, lines2, parent, trace_all, trace_status)
             # Issue an error only if something *other than* lws is amiss.
-            if trace and trace_status: g.trace(
-                '===== %s NOT OK cleaning LWS' % self.name)
-            if trace and trace_all:
-                self.trace_lines(s1, s2, parent)
             lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
             ok = lines1 == lines2
             if ok and not g.unitTesting:
-                print('indentation error: leading whitespace changed in:',
-                    self.root.h)
+                print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
-            self.show_failure(lines1, lines2, sfn)
+            self.show_failure2(lines1, lines2, sfn)
         if trace and trace_all or (not ok and trace_lines):
             self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
@@ -248,8 +251,15 @@ class Importer(object):
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
-    #@+node:ekr.20161123210716.1: *4* i.show_failure
-    def show_failure(self, lines1, lines2, sfn):
+    #@+node:ekr.20161125031613.1: *4* i.show_failure1
+    def show_failure1(self, lines1, lines2, parent, trace_all, trace_status):
+        '''Print traces when first checks fail.'''
+        if trace_status:
+            g.trace('===== %s NOT OK cleaning LWS' % self.name)
+        if trace_all:
+            self.trace_lines(lines1, lines2, parent)
+    #@+node:ekr.20161123210716.1: *4* i.show_failure2
+    def show_failure2(self, lines1, lines2, sfn):
         '''Print the failing lines.'''
         if not g.unitTesting:
             g.es('@auto failed:', sfn, color='red')
