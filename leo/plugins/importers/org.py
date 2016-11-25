@@ -53,11 +53,16 @@ class Org_Importer(Importer):
         place-holder nodes as necessary.
         '''
         assert level >= 0
+        # g.trace('=====', level, h)
+        n = level - len(self.parents)
         while level >= len(self.parents):
+            headline = h if n == 0  else 'placeholder'
+            # This works, but there is no way perfect import will pass the result.
+            n -= 1
             child = self.v2_create_child_node(
                 parent = self.parents[-1],
                 body = '',
-                headline = h,
+                headline = headline,
             )
             self.parents.append(child)
         return self.parents[level]
