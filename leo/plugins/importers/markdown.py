@@ -34,17 +34,16 @@ class Markdown_Importer(Importer):
         self.add_line(parent, '@others\n')
         self.stack = [parent]
         for i, line in enumerate(g.splitLines(s)):
-            # if trace and i == 18: g.pdb()
             kind, level, name = self.starts_section(line)
             if trace: g.trace('%2s kind: %4r, level: %4r name: %10r %r' % (
                 i+1, kind, level, name, line))
-            if i == 0 and not kind: ### kind != '#':
+            if i == 0 and not kind:
                 self.make_decls_node(line)
             elif self.is_underline(line):
                 self.do_underline(line)
-            elif kind: ###  == '#':
+            elif kind:
                 self.make_node(kind, level, line, name)
-            else: # Delay handling for kind in "-=":
+            else:
                 top = self.stack[-1]
                 self.add_line(top, line)
         warning = '\nWarning: this node is ignored when writing this file.\n\n'
@@ -64,16 +63,44 @@ class Markdown_Importer(Importer):
         trace = False and g.unitTesting
         assert not line.isspace(), repr(line)
         assert len(line.strip()) >= 4, repr(line)
-        assert line[0] in '-=', repr(line)
+        ch = line[0]
+        assert ch in '-=', repr(line)
         # Test top's *headline*, to see if it is underlinable.
-        top = self.stack[-1]
-        if trace: g.trace('top: %s' % top.h)
-        if top.h and top.h[0] == line[0] and 4 <= len(top.h) <= len(line):
-            # A valid underline for p.h. **Don't** add the line.
-            if trace: g.trace('Removing true underline', repr(line))
+        p = self.stack[-1]
+        if trace: g.trace('top: %s' % p.h)
+        prev_lines = self.get_lines(p)
+        if prev_lines:
+            if trace: g.trace('%s intervening lines' % len(prev_lines))
+            last = prev_lines[-1]
+        else:
+            last = p.h
+        # Now see whether there is a valid underline.
+        if self.is_underline(last):
+            # Can't underline an underline.
+            if trace: g.trace('Previous line is an underline', repr(line))
+            self.add_line(p, line)
+        elif last and p.h[0] == ch and 4 <= len(last) <= len(line):
+            if trace: g.trace('Removing explicit underline', repr(line))
+        elif last and 4 <= len(last) <= len(line):
+            # This *should* be a valid underline, but
+            # the previous headline does not reflect that fact.
+            # g.pdb()
+            if prev_lines:
+                if trace: g.trace('Creating new section', repr(line))
+                prev_lines.pop()
+                self.set_lines(p, prev_lines)
+                self.find_parent(level=len(self.stack), h = last)
+                    # This will cause unit tests to fail.
+                    # They should set g.app.suppressImportChecks = True
+                    
+            else:
+                p.h = ch + p.h
+                    # This will cause unit tests to fail.
+                    # They should set g.app.suppressImportChecks = True
+                if trace: g.trace('Removing implicit leading underline', repr(line))
         else:
             # Not a valid underline. **Do** add the line.
-            self.add_line(top, line)
+            self.add_line(p, line)
         
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):

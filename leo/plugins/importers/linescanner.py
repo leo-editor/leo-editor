@@ -191,7 +191,8 @@ class Importer(object):
         trace_lines = True
         trace_status = True
         if g.app.suppressImportChecks:
-            g.trace('===== skipping all checks', parent.h)
+            if trace and trace_status:
+                g.trace('===== skipping all checks', parent.h)
             g.app.suppressImportChecks = False
             return True
         c = self.c
