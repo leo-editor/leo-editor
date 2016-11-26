@@ -7753,7 +7753,7 @@ else:
             if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
         else:
             if trace: print('not found: %s' % n)
-            assert n == 7, n
+            assert n == 6, n
             break
 #@+node:ekr.20150626101643.1: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.

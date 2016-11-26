@@ -66,9 +66,17 @@ class Org_Importer(Importer):
             )
             self.parents.append(child)
         return self.parents[level]
-    #@+node:ekr.20161125221833.1: *3* org_i.delete_all_empty_nodes
-    def delete_all_empty_nodes(self, parent):
-        '''Override the base class so we *dont* delete empty nodes!'''
+    #@+node:ekr.20161126074103.1: *3* org_i.post_pass
+    def post_pass(self, parent):
+        '''
+        Optional Stage 2 of the importer pipeline, consisting of zero or more
+        substages. Each substage alters nodes in various ways.
+        
+        Subclasses may freely override this method, **provided** that all
+        substages use the API for setting body text. Changing p.b directly will
+        cause asserts to fail later in i.finish().
+        '''
+        # Do nothing!
     #@-others
 #@-others
 importer_dict = {

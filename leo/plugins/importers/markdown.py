@@ -168,7 +168,7 @@ class Markdown_Importer(Importer):
             # Not headline.strip()!
         if trace: g.trace(repr(child.h))
         return child
-    #@+node:ekr.20161125225349.1: *3* md_i.post_pass & helpers
+    #@+node:ekr.20161125225349.1: *3* md_i.post_pass
     def post_pass(self, parent):
         '''
         Optional Stage 2 of the importer pipeline, consisting of zero or more

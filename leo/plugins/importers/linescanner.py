@@ -242,9 +242,6 @@ class Importer(object):
     def clean_blank_lines(self, lines):
         '''Remove all blanks and tabs in all blank lines.'''
         return [self.lstrip_line(z) if z.isspace() else z for z in lines]
-
-
-        
     #@+node:ekr.20161124030004.1: *4* i.clean_last_lines
     def clean_last_lines(self, lines):
         '''Remove blank lines from the end of lines.'''
@@ -291,10 +288,11 @@ class Importer(object):
         return [z for z in lines if not z.isspace()]
         
     def strip_lws(self, lines):
-        '''Strip leading whitespace from all lines of s.'''
+        '''Strip leading whitespace from all lines.'''
         return [self.lstrip_line(z) for z in lines]
+        # This also works.
+        # return ['\n' if z.isspace() else z.lstrip() for z in lines].
 
-        
         
     #@+node:ekr.20161123210335.1: *4* i.trace_lines
     def trace_lines(self, lines1, lines2, parent):
