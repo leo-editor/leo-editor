@@ -73,6 +73,18 @@ TypeError: 'NoneType' object is not iterable
 @wrap
 @nosearch
 
+Post: status of TDD support.
+- Everything works except trying to reload leo.plugins.writers.markdown.
+- The general principle: instantiate everything that could change.
+
+* Why are both @@auto-md and @@auto-markdown being generated?
+
+Post: Simple importers: ini, otl, org, leo_rst?, markdown,
+- Don't need scanstate.  All override v2_gen_lines in similar ways.
+
+- org and otl handle overindent lines by inserting placeholder nodes.
+  The only way to test this is by setting g.app.suppressImportChecks ON.
+
 C Language:
 - Backtrack to find start of signature line!
   Some headlines are/were None None
@@ -82,6 +94,9 @@ Python:
 
 Testing: see child.
 Last:    see child.
+
+@language python
+
 
 @language python
 .. @+node:ekr.20161124051943.2: *4* Testing
