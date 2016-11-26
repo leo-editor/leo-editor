@@ -290,7 +290,7 @@ class Importer(object):
     def strip_lws(self, lines):
         '''Strip leading whitespace from all lines.'''
         return [self.lstrip_line(z) for z in lines]
-        # This also works.
+        # This also works, but I prefer the "extra" call to lstrip().
         # return ['\n' if z.isspace() else z.lstrip() for z in lines].
 
         
