@@ -31,5 +31,13 @@ class BaseWriter(object):
         # Like at.putSentinel.
         at.os('%s@+node:%s%s' % (delim, s, delim2))
         at.onl()
+    #@+node:ekr.20161125140611.1: ** basewriter.splitLines
+    def split_lines(self, s):
+        '''Exactly the same as g.splitLines(s).'''
+        if s:
+            return s.splitlines(True)
+                # This is a Python string function!
+        else:
+            return []
     #@-others
 #@-leo

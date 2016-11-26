@@ -1,223 +1,191 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140725190808.18066: * @file importers/markdown.py
-'''The @auto importer for markdown.'''
+'''The @auto importer for the markdown language.'''
+import re
 import leo.core.leoGlobals as g
-import leo.plugins.importers.basescanner as basescanner
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
 #@+others
-#@+node:ekr.20140725190808.18067: ** class MarkdownScanner
-class MarkdownScanner(basescanner.BaseScanner):
-    #@+others
-    #@+node:ekr.20140725190808.18068: *3* mds.__init__
+#@+node:ekr.20161124192050.2: ** class Markdown_Importer
+class Markdown_Importer(Importer):
+    '''The importer for the markdown lanuage.'''
+
     def __init__(self, importCommands, atAuto):
-        '''ctor for MarkdownScanner class.'''
+        '''Markdown_Importer.__init__'''
         # Init the base class.
-        basescanner.BaseScanner.__init__(self, importCommands,
-            atAuto=atAuto, language='md')
-        # Scanner overrides
-        self.atAutoSeparateNonDefNodes = False # Fix bug 66.
-        self.atAutoWarnsAboutLeadingWhitespace = True
-        self.blockDelim1 = self.blockDelim2 = None
-        self.classTags = []
-        self.escapeSectionRefs = False
-        self.functionTags = []
-        self.hasClasses = False
-        self.hasDecls = True # Fix bug 66.
-        self.ignoreBlankLines = True
-        self.isRst = False # Don't set this: it messes with underlining.
-        self.lineCommentDelim = None
-        self.outerBlockDelim1 = None
-        self.sigFailTokens = []
-        self.strict = False # Mismatches in leading whitespace are irrelevant.
-        # Ivars unique to markdown scanning & code generation.
-        self.lastParent = None # The previous parent.
-        self.lastSectionLevel = 0 # The section level of previous section.
-        self.sectionLevel = 0 # The section level of the just-parsed section.
-        self.underlineDict = {}
-            # Keys are names. Values are underlining styles.
-    #@+node:ekr.20140725190808.18069: *3* mds.adjustParent
-    def adjustParent(self, parent, headline):
-        '''Return the proper parent of the new node.'''
-        trace = False and not g.unitTesting
-        level, lastLevel = self.sectionLevel, self.lastSectionLevel
-        lastParent = self.lastParent
-        if trace: g.trace('**entry level: %s lastLevel: %s lastParent: %s' % (
-            level, lastLevel, lastParent and lastParent.h or '<none>'))
-        if self.lastParent:
-            if level <= lastLevel:
-                parent = lastParent.parent()
-                while level < lastLevel:
-                    level += 1
-                    parent = parent.parent()
-            else: # level > lastLevel.
-                level -= 1
-                parent = lastParent
-                while level > lastLevel:
-                    level -= 1
-                    h2 = 'placeholder' if level > 1 else 'declarations'
-                    body = ''
-                    parent = self.createFunctionNode(h2, body, parent)
-        else:
-            assert self.root
-            self.lastParent = self.root
-        if not parent:
-            parent = self.root
-        if trace: g.trace('level %s lastLevel %s %s returns %s' % (
-            level, lastLevel, headline, parent.h))
-        self.lastParent = parent.copy()
-        return parent.copy()
-    #@+node:ekr.20140725190808.18070: *3* mds.computeBody
-    def computeBody(self, s, start, sigStart, codeEnd):
-        '''Return the body of a section.'''
-        trace = False and not g.unitTesting
-        # Never indent any text; discard the entire signature.
-        body1 = ''
-        body2 = s[self.sigEnd: codeEnd]
-        body2 = g.removeLeadingBlankLines(body2)
-        # Don't warn about missing tail newlines: they will be added.
-        if trace:
-            # g.trace(s[start:sigStart])
-            g.trace('body: %s' % repr(body1 + body2), '\n', g.callers())
-        return body1, body2
-    #@+node:ekr.20141110223158.16: *3* mds.createDeclsNode
-    def createDeclsNode(self, parent, s):
-        '''Create a child node of parent containing s.'''
-        # Create the node for the decls.
-        headline = 'markdown declarations'
-        body = self.undentBody(s)
-        p = self.createHeadline(parent, body, headline)
-        # Remember that this node should not have its headline written.
-        d = self.underlineDict
-        d[headline] = None
-        return p
-    #@+node:ekr.20141110223158.15: *3* mds.endGen
-    def endGen(self, s):
-        '''Finish code generation.'''
-        p = self.root
-        # Add the warning to the root's body text.
-        warning = '\nWarning: this node is ignored when writing this file.\n'
-        self.root.b = p.b + warning
-        # Put the underlineDict in self.root.v.u
-        u = p.v.u
-        tag = 'markdown-import'
-        d = u.get(tag, {})
-        d['underline_dict'] = self.underlineDict
-        p.v.u[tag] = d
-    #@+node:ekr.20140725190808.18074: *3* mds.isUnderline
-    def isUnderline(self, s):
-        '''
-        Return 1 if s is all '=' characters.
-        Return 2 if s is all '-' characters.
-        Return 0 otherwise.
-        '''
-        if not s:
-            return 0
-        ch1 = s[0]
-        if ch1 not in '=-':
-            return 0 # Bug fix: 2016/04/11.
-        for ch in s:
-            if ch == '\n':
-                break
-            elif ch != ch1:
-                return 0
-        return 1 if ch1 == '=' else 2
-    #@+node:ekr.20140725190808.18075: *3* mds.startsComment/ID/String
-    # These do not affect parsing.
-
-    def startsComment(self, s, i):
-        return False
-
-    def startsID(self, s, i):
-        return False
-
-    def startsString(self, s, i):
-        return False
-    #@+node:ekr.20140725190808.18076: *3* mds.startsHelper
-    def startsHelper(self, s, i, kind, tags, tag=None):
-        '''
-        return True if s[i:] starts an markdown section.
-        Sets sigStart, sigEnd, sigId and codeEnd ivars.
-        '''
-        trace = False and not g.unitTesting
-        level, name, i = self.startsSection(s, i)
-        if level == 0:
-            if trace:
-                i2, j2 = g.getLine(s, i-1)
-                g.trace('==== False:', s[i2:j2].rstrip())
-            return False
-        self.lastSectionLevel = self.sectionLevel
-        self.sectionLevel = level
-        self.sigStart = g.find_line_start(s, i-1)
-        self.sigEnd = i
-        self.sigId = name
-        if trace:
-            i2, j2 = g.getLine(s, i-1)
-            g.trace('====  True:', s[i2:j2].rstrip())
-        i += 1
-        while i < len(s):
-            progress = i
-            i2, j2 = g.getLine(s, i)
-            level, name, j = self.startsSection(s, i2)
-            if trace: g.trace('---- body:', level, name, s[i2:j2].rstrip())
-            if level > 0:
-                break
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'md',
+            state_class = None, ### Markdown_ScanState,
+            strict = False,
+        )
+        self.underline_dict = {}
+        
+    #@+others
+    #@+node:ekr.20161124193148.1: *3* md_i.v2_gen_lines & helpers
+    def v2_gen_lines(self, s, parent):
+        '''Node generator for org mode.'''
+        trace = False and g.unitTesting
+        if not s or s.isspace():
+            return
+        self.inject_lines_ivar(parent)
+        # We may as well do this first.  See warning below.
+        self.add_line(parent, '@others\n')
+        self.stack = [parent]
+        for i, line in enumerate(g.splitLines(s)):
+            # if trace and i == 18: g.pdb()
+            kind, level, name = self.starts_section(line)
+            if trace: g.trace('%2s kind: %4r, level: %4r name: %10r %r' % (
+                i+1, kind, level, name, line))
+            if i == 0 and not kind:
+                self.make_decls_node(line)
+            elif self.is_underline(line):
+                assert not line.isspace(), repr(line)
+                pass
+            elif kind:
+                self.make_node(kind, level, line, name)
             else:
-                i = j
-            assert i > progress
-        self.codeEnd = i
-        if trace: g.trace('found %s...\n%s' % (
-            self.sigId, s[self.sigStart: self.codeEnd]))
-        return True
-    #@+node:ekr.20140725190808.18077: *3* mds.startsSection
-    def startsSection(self, s, i):
+                top = self.stack[-1]
+                self.add_line(top, line)
+        warning = '\nWarning: this node is ignored when writing this file.\n\n'
+        self.add_line(parent, warning)
+    #@+node:ekr.20161125182338.1: *4* md_i.clean_headline
+    def clean_headline(self, headline):
+        '''Unlike i.clean_headline, we DO NOT strip the headline!'''
+        return headline
+    #@+node:ekr.20161124193148.2: *4* md_i.find_parent
+    def find_parent(self, level, h):
         '''
-        Scan one or two lines looking for the start of a section.
-        Sections are an underlined name or a line starting with '#'s.
-        Return (level,name,i):
-            level: 0 for plain lines, n > 0 for section lines.
-            name: the section name or None.
-            i: the new i.
+        Return the parent at the indicated level, allocating
+        place-holder nodes as necessary.
         '''
-        trace = False and not g.unitTesting
-        i2, j2 = g.getLine(s, i)
-        line = s[i2: j2]
-        if trace: g.trace('LINE', repr(line))
-        level, name = 0, None
-        if line.startswith('#'):
-            # Found a section line.
-            kind = '#'
-            level = 0
-            while level < len(line) and line[level] == '#':
-                level += 1
-            name = line[level:].rstrip() # Retain leading ws.
-            if 0:
-                # This is almost impossible for perfect import to handle.
-                # It's certainly not worth the trouble.
-                # If the user want's to get rid of trailing hashes, that's their choice.
-                while name and name.endswith('#'):
-                    name = name[:-1]
-        else:
-            # Look ahead if the next line is an underline.
-            # Bug fix: 2016/04/11: don't set j2 here.
-            i3, j3 = g.getLine(s, j2+1)
-            line2 = s[i3: j3]
-            if trace: g.trace('TEST', repr(line2))
-            level2 = self.isUnderline(line2)
-            name = line.rstrip() if level2 > 0 else None
-            if name:
-                kind = {0: '#', 1: '=', 2: '-'}.get(level2)
-                level = level2
-                j2 = j3
-        # Update the kind dict.
-        if name:
-            d = self.underlineDict
-            d[name] = kind
-        if trace: g.trace(level, name, line.rstrip())
-        return level, name, j2
+        trace = False and g.unitTesting
+        assert level >= 0
+        if trace: g.trace('=====', level, len(self.stack), h)
+        while level < len(self.stack):
+            p = self.stack.pop()
+            if trace:
+                g.trace('POP', len(self.get_lines(p)), p.h)
+                self.print_list(self.get_lines(p))
+        top = self.stack[-1]
+        if trace: g.trace('TOP', top.h)
+        child = self.v2_create_child_node(
+            parent = top,
+            body = None,
+            headline = h, # Leave the headline alone
+        )
+        self.stack.append(child)
+        if trace: self.print_stack(self.stack)
+        return self.stack[level]
+    #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
+    def make_decls_node(self, line):
+        '''Make a decls node.'''
+        parent = self.stack[-1]
+        assert parent == self.root, repr(parent)
+        child = self.v2_create_child_node(
+            parent = self.stack[-1],
+            body = line,
+            headline = '!Declarations',
+        )
+        self.stack.append(child)
+    #@+node:ekr.20161125095217.1: *4* md_i.make_node
+    def make_node(self, kind, level, line, name):
+        '''
+        Create a new node.
+        New in Leo 5.5: the headline startswith '# for hash markup.
+        '''
+        assert kind in '#=-'
+        # top = self.stack[-1] # The previous block.
+        assert name # kind won't be '#' for empty names.
+        # The writer writes # by default, so just put name in the headline!
+        h = name if kind == '#' else kind + name
+        self.find_parent(level=level, h=h)
+        # else:
+            # # Get the section name from the previous node.
+            # assert top != self.root
+                # # We have already created some node.
+            # lines = self.get_lines(top)
+            # if lines:
+                # h = lines.pop()
+                # h = '\n' if h.isspace() else h.rstrip()
+                # self.set_lines(top, lines)
+                # self.find_parent(level=level, h=h)
+            # else:
+                # self.make_decls_node(line)
+    #@+node:ekr.20161125185030.1: *4* md_i.is_underline
+    md_underline_table = (
+        ('=', re.compile(r'^(=+)\s*$')),
+        ('-', re.compile(r'^(-+)\s*$')),
+    )
+
+    def is_underline(self, line):
+        '''True if the line consists only of underlines.'''
+        for kind, pattern in self.md_underline_table:
+            m = pattern.match(line)
+            if m and len(m.group(1)) >= 4:
+                return True
+        # g.trace('FAIL', repr(line))
+        return False
+    #@+node:ekr.20161124193301.1: *4* md_i.starts_section
+    md_pattern_table = (
+        ('#', re.compile(r'^(#+)(.*)$')),
+        ('=', re.compile(r'^(=)([^=].*)$')),
+        ('-', re.compile(r'^(-)([^-].*)$')),
+    )
+
+    def starts_section(self, line):
+        '''
+        Scan the line, looking for hashes or underlines.
+        return (kind, level, name)
+        '''
+        for kind, pattern in self.md_pattern_table:
+            m = pattern.match(line)
+            if m and kind == '#':
+                level = len(m.group(1))
+                name = m.group(2)
+                if name and level > 0:
+                    return kind, level, name
+            elif m:
+                level = 1 if kind == '=' else 2
+                name = m.group(2)
+                if name:
+                    return kind, level, name
+        return None, None, None
+    #@+node:ekr.20161125180532.1: *4* md_i.v2_create_child_node
+    def v2_create_child_node(self, parent, body, headline):
+        '''
+        Create a child node of parent.
+        Unlike i.v2_create_child_node, we DO NOT strip lws from the headline!
+        '''
+        trace = False and g.unitTesting
+        child = parent.insertAsLastChild()
+        self.inject_lines_ivar(child)
+        if body:
+            self.add_line(child, body)
+        assert g.isString(headline), repr(headline)
+        child.h = headline
+            # Not headline.strip()!
+        if trace: g.trace(repr(child.h))
+        return child
+    #@+node:ekr.20161125225349.1: *3* md_i.post_pass & helpers
+    def post_pass(self, parent):
+        '''
+        Optional Stage 2 of the importer pipeline, consisting of zero or more
+        substages. Each substage alters nodes in various ways.
+        
+        Subclasses may freely override this method, **provided** that all
+        substages use the API for setting body text. Changing p.b directly will
+        cause asserts to fail later in i.finish().
+        '''
+        # Do nothing!
     #@-others
 #@-others
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
-    'class': MarkdownScanner,
-    'extensions': ['.md',],
+    'class': Markdown_Importer,
+    'extensions': ['.md'],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

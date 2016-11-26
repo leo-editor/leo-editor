@@ -13584,6 +13584,54 @@ finally:
 <body class="bodystring">
 <div id='bodydisplay'></div>
 </body>
+#@+node:ekr.20161125214543.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125214543.2: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161125214543.3: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161125214543.4: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161125221901.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125221901.17: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161125221901.18: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161125221901.19: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
+#@+node:ekr.20161125225814.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125225814.2: *8* <html>
+<html>
+    @others
+</html>
+#@+node:ekr.20161125225814.3: *9* <head>
+<head>
+<title>Bodystring</title>
+</head>
+#@+node:ekr.20161125225814.4: *9* <body class="bodystring">
+<body class="bodystring">
+<div id='bodydisplay'></div>
+</body>
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
 @language html
     # Essential for the unit test.
@@ -13803,6 +13851,78 @@ finally:
 <link id="L1">
     @others
 #@+node:ekr.20161124032739.53: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+
+<title>TITLE</title>
+
+</head>
+</html>
+#@+node:ekr.20161125214543.44: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125214543.45: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161125214543.46: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161125214543.47: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161125214543.48: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+
+<title>TITLE</title>
+
+</head>
+</html>
+#@+node:ekr.20161125221901.59: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125221901.60: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161125221901.61: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161125221901.62: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161125221901.63: *11* <link id="L2">
+<link id="L2">
+<link id="L3" />
+<link id='L4' />
+
+<title>TITLE</title>
+
+</head>
+</html>
+#@+node:ekr.20161125225814.44: *7* @@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2
+
+@others
+@language xml
+@tabwidth -4
+#@+node:ekr.20161125225814.45: *8* <html>
+<html>
+    @others
+#@+node:ekr.20161125225814.46: *9* <head>
+<head>
+<!-- oops: link elements terminated two different ways -->
+    @others
+#@+node:ekr.20161125225814.47: *10* <link id="L1">
+<link id="L1">
+    @others
+#@+node:ekr.20161125225814.48: *11* <link id="L2">
 <link id="L2">
 <link id="L3" />
 <link id='L4' />
@@ -14216,6 +14336,63 @@ Sect 2-1-1
 #@+node:ekr.20161124051007.3: *8* Section 3
 Sec 3
 #@+node:ekr.20161124051007.4: *9* Section 3.1
+Sec 3.1
+#@+node:ekr.20161125214544.34: *7* @@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+#@+node:ekr.20161125214544.35: *8* Section 1
+Sec 1.
+#@+node:ekr.20161125214544.36: *8* Section 2
+Sec 2.
+#@+node:ekr.20161125214544.37: *9* Section 2-1
+Sec 2-1
+#@+node:ekr.20161125214544.38: *10* Section 2-1-1
+Sect 2-1-1
+#@+node:ekr.20161125214544.39: *8* Section 3
+Sec 3
+#@+node:ekr.20161125214544.40: *9* Section 3.1
+Sec 3.1
+#@+node:ekr.20161125221902.37: *7* @@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+#@+node:ekr.20161125221902.38: *8* Section 1
+Sec 1.
+#@+node:ekr.20161125221902.39: *8* Section 2
+Sec 2.
+#@+node:ekr.20161125221902.40: *9* Section 2-1
+Sec 2-1
+#@+node:ekr.20161125221902.41: *10* Section 2-1-1
+Sect 2-1-1
+#@+node:ekr.20161125221902.42: *8* Section 3
+Sec 3
+#@+node:ekr.20161125221902.43: *9* Section 3.1
+Sec 3.1
+#@+node:ekr.20161125225815.32: *7* @@auto-vim-outline c:/leo.repo/leo-editor/leo/test/otl-1
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+#@+node:ekr.20161125225815.33: *8* Section 1
+Sec 1.
+#@+node:ekr.20161125225815.34: *8* Section 2
+Sec 2.
+#@+node:ekr.20161125225815.35: *9* Section 2-1
+Sec 2-1
+#@+node:ekr.20161125225815.36: *10* Section 2-1-1
+Sect 2-1-1
+#@+node:ekr.20161125225815.37: *8* Section 3
+Sec 3
+#@+node:ekr.20161125225815.38: *9* Section 3.1
 Sec 3.1
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
@@ -14719,6 +14896,72 @@ sub test3 {
 sub test4 {
     s = tr///{/;
 }
+#@+node:ekr.20161125214545.8: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125214545.9: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161125221902.54: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125221902.55: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+#@+node:ekr.20161125225816.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125225816.3: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -15105,6 +15348,72 @@ sub test4 {
 @language perl
 @tabwidth -4
 #@+node:ekr.20161124032741.8: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161125214545.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125214545.11: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161125221903.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125221903.2: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161125225816.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161125225816.5: *8* sub test1
 sub test1 {
     s = /}/g;
 }
@@ -15558,6 +15867,60 @@ def index(self):
     return "Hello world!"
     
 #@+node:ekr.20161124032742.10: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161125214546.9: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161125214546.10: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161125214546.11: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161125214546.12: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161125221903.40: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161125221903.41: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161125221903.42: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161125221903.43: *9* abc
+@cmd('abc')
+def abc(self):
+    return "abc"
+#@+node:ekr.20161125225817.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/python decorator
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161125225817.4: *8* class Index
+class Index:
+    """docstring"""
+    @others
+#@+node:ekr.20161125225817.5: *9* index
+@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+#@+node:ekr.20161125225817.6: *9* abc
 @cmd('abc')
 def abc(self):
     return "abc"
@@ -16550,10 +16913,28 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>
-
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
 try:
-    root = None
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
+    ic.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
         (2, 'Section 1#'),
@@ -16564,7 +16945,7 @@ try:
         (2, 'Section 3'),
     )
     after = p.nodeAfterTree()
-    root = p.firstChild().next()
+    root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
@@ -16575,7 +16956,6 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root = p.firstChild().next()
         if root:
             root.doDelete()
             c.redraw()
@@ -16596,6 +16976,7 @@ section 2.1, line 1
 
 ####Section 2.1.1
 section 2.2.1 line 1
+The next section is empty. It must not be deleted.
 
 ###Section 2.2
 
@@ -16605,50 +16986,69 @@ Section 3, line 1
 '''
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
 << define s >>
-
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be True.
+    ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
     table = (
-        (1, 'Top'),
-        (2, 'Section 1'),
-        (2, 'Section 2'),
+        (1, '=Top'),
+        (2, '-Section 1'),
+        (2, '-Section 2'),
         (3, 'Section 2.1'),
         (4, 'Section 2.1.1'),
         (3, 'Section 2.2'),
-        (2, 'Section 3'),
+        (2, '-Section 3'),
     )
     after = p.nodeAfterTree()
-    root = p.firstChild().next()
+    root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
-    for n, h in table:
-        n2 = p.level() - root.level()
-        assert h == p.h, (h, p.h)
-        assert n == n2, (n, n2, p.h)
-        p.moveToThreadNext()
-    assert p == after, p.h
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, p.h
 finally:
     if 1:
-        root = p.firstChild().next()
         if root:
             root.doDelete()
             c.redraw()
-#@+node:ekr.20160411044042.1: *6* << define s >> (md-import-test-rst-style)
+#@+node:ekr.20161125230415.1: *6* << define s >> (md-import-test-rst-style)
 s = '''\
-Top
+=Top
 ====
 
 The top section
 
-Section 1
----------
+-Section 1
+----------
 
 section 1, line 1
 -- Not an underline
 selction 1, line 2
 
-Section 2
----------
+-Section 2
+----------
 
 section 2, line 1
 
@@ -16663,28 +17063,59 @@ section 2.2.1 line 1
 ###Section 2.2
 section 2.2, line 1.
 
-Section 3
----------
+-Section 3
+----------
 
 section 3, line 1
 
 '''
-#@+node:ekr.20161125033219.2: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
-#@+node:ekr.20161125033645.2: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
-#@+node:ekr.20141111092038.12: *5* @test markdown
-s = '''
-
-# Header
+#@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
+# insert test for markdown here.
+s = '''\
+Decl line.
+#Header
 
 After header text
 
-## Subheader
+##Subheader
 
 After subheader text
-
 '''
 
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
+table = ('!Declarations', 'Header', 'Subheader')
+try:
+    ic.markdownUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@auto-m'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\

@@ -1552,8 +1552,13 @@ class LeoImportCommands(object):
         trace = False
         c = self.c; h = p.h; old_root = p.copy()
         oldChanged = c.changed
+        # A hack.  Let unit tests set the kill-check flag first.
         d = g.app.unitTestDict
-        g.app.unitTestDict = {}
+        if d.get('kill-check'):
+            d = {'kill-check': True}
+        else:
+            d = {}
+        g.app.unitTestDict = d
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
@@ -1577,6 +1582,7 @@ class LeoImportCommands(object):
             c.setChanged(oldChanged)
         c.redraw(old_root)
         if g.app.unitTesting:
+            d['kill-check'] = False
             if not ok:
                 g.app.unitTestDict['fail'] = p.h
             assert ok, p.h

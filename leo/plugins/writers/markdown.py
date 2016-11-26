@@ -15,42 +15,33 @@ class MarkdownWriter(basewriter.BaseWriter):
     def write(self, root, forceSentinels=False):
         """Write all the *descendants* of an @auto-markdown node."""
         # Fix bug 66: errors inhibited read @auto foo.md.
-        # Get the underline dict from the importer.
-        self.trace = False
+        # New in Leo 5.5: headlines indicate markup
         self.root = root
-        d = root.v.u.get('markdown-import', {})
-        self.underlineDict = d.get('underline_dict', {})
         for p in root.subtree():
             if forceSentinels:
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             self.write_headline(p)
-            # Fix bug 66: use rstrip, **not** strip.
-            for s in p.b.rstrip().splitlines(False):
+            for s in self.split_lines(p.b):
                 if not g.isDirective(s):
-                    if self.trace: g.trace(s)
                     self.put(s)
-            # Always end with a newline.
-            self.put('\n')
         root.setVisited()
         return True
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
     def write_headline(self, p):
-        '''Write or skip the headline depending on the saved kind for this node.'''
-        name = p.h
-        d = self.underlineDict
-        # Use default markup for new nodes.
-        kind = d.get(name, '#')
+        '''
+        Write or skip the headline.
+        New in Leo 5.5: The headline indicates markup.
+        '''
         level = p.level() - self.root.level()
         assert level > 0, p.h
-        if kind is None:
-            if self.trace: g.trace('skip headline', p.h)
-        elif kind == '#':
-            self.put('%s%s' % (level * '#', p.h))
+        kind = p.h and p.h[0]
+        if kind == '!':
+            pass # The signal for a declaration node.
         elif kind in '=-':
             self.put(p.h)
-            self.put(kind * max(4, len(p.h)))
+            self.put(kind*max(4,len(p.h)))
         else:
-            g.trace('bad kind', repr(kind))
+            self.put('%s%s' % ('#'*level, p.h))
     #@-others
 #@-others
 writer_dict = {

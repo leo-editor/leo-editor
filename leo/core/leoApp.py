@@ -325,6 +325,7 @@ class LeoApp(object):
         self.runningAllUnitTests = False
             # True: we are running all unit tests (Only for local tests).
         self.suppressImportChecks = False
+            # Used only in basescanner.py
             # True: suppress importCommands.check
         self.unitTestDict = {}
             # For communication between unit tests and code.

@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.38" body_secondary_ratio="0.80">
-	<global_window_position top="82" left="482" height="958" width="999"/>
+	<global_window_position top="81" left="362" height="958" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -70,7 +70,7 @@
 <v t="ekr.20161123211442.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="edward.20160919054709.9"><vh>@gnxs</vh></v>
+<v t="ekr.20161125174248.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -228,7 +228,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657331711558030000002d7e2e7116580b000000756e6465726c696e657332711758010000003d711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"
+expanded="ekr.20160411033840.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -279,9 +280,7 @@
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
 </v>
 <v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
-<v t="ekr.20160411044042.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
-<v t="ekr.20161125033219.2"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh></v>
-<v t="ekr.20161125033645.2"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh></v>
+<v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
 </v>
 </v>
 <v t="ekr.20161124041002.1"><vh>@edit unittest/at-auto-otl-line-number-test.py</vh></v>
@@ -405,6 +404,24 @@
 <v t="ekr.20161124032739.9"><vh>&lt;body class="bodystring"&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20161125214543.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161125214543.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125214543.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161125214543.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161125221901.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161125221901.17"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125221901.18"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161125221901.19"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20161125225814.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
+<v t="ekr.20161125225814.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125225814.3"><vh>&lt;head&gt;</vh></v>
+<v t="ekr.20161125225814.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
@@ -418,6 +435,33 @@
 <v t="ekr.20161124032739.51"><vh>&lt;head&gt;</vh>
 <v t="ekr.20161124032739.52"><vh>&lt;link id="L1"&gt;</vh>
 <v t="ekr.20161124032739.53"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161125214543.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161125214543.45"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125214543.46"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161125214543.47"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161125214543.48"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161125221901.59"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161125221901.60"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125221901.61"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161125221901.62"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161125221901.63"><vh>&lt;link id="L2"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20161125225814.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
+<v t="ekr.20161125225814.45"><vh>&lt;html&gt;</vh>
+<v t="ekr.20161125225814.46"><vh>&lt;head&gt;</vh>
+<v t="ekr.20161125225814.47"><vh>&lt;link id="L1"&gt;</vh>
+<v t="ekr.20161125225814.48"><vh>&lt;link id="L2"&gt;</vh></v>
 </v>
 </v>
 </v>
@@ -469,6 +513,39 @@
 </v>
 <v t="ekr.20161124051007.3"><vh>Section 3</vh>
 <v t="ekr.20161124051007.4"><vh>Section 3.1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125214544.34"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
+<v t="ekr.20161125214544.35"><vh>Section 1</vh></v>
+<v t="ekr.20161125214544.36"><vh>Section 2</vh>
+<v t="ekr.20161125214544.37"><vh>Section 2-1</vh>
+<v t="ekr.20161125214544.38"><vh>Section 2-1-1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125214544.39"><vh>Section 3</vh>
+<v t="ekr.20161125214544.40"><vh>Section 3.1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125221902.37"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
+<v t="ekr.20161125221902.38"><vh>Section 1</vh></v>
+<v t="ekr.20161125221902.39"><vh>Section 2</vh>
+<v t="ekr.20161125221902.40"><vh>Section 2-1</vh>
+<v t="ekr.20161125221902.41"><vh>Section 2-1-1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125221902.42"><vh>Section 3</vh>
+<v t="ekr.20161125221902.43"><vh>Section 3.1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125225815.32"><vh>@@auto-vim-outline c:/leo.repo/leo-editor/leo/test/otl-1</vh>
+<v t="ekr.20161125225815.33"><vh>Section 1</vh></v>
+<v t="ekr.20161125225815.34"><vh>Section 2</vh>
+<v t="ekr.20161125225815.35"><vh>Section 2-1</vh>
+<v t="ekr.20161125225815.36"><vh>Section 2-1-1</vh></v>
+</v>
+</v>
+<v t="ekr.20161125225815.37"><vh>Section 3</vh>
+<v t="ekr.20161125225815.38"><vh>Section 3.1</vh></v>
 </v>
 </v>
 </v>
@@ -532,6 +609,15 @@
 <v t="ekr.20161124032741.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161124032741.6"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161125214545.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161125214545.9"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161125221902.54"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161125221902.55"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161125225816.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161125225816.3"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -584,6 +670,15 @@
 </v>
 <v t="ekr.20161124032741.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161124032741.8"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161125214545.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161125214545.11"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161125221903.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161125221903.2"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161125225816.4"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161125225816.5"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -670,6 +765,24 @@
 <v t="ekr.20161124032742.10"><vh>abc</vh></v>
 </v>
 </v>
+<v t="ekr.20161125214546.9"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161125214546.10"><vh>class Index</vh>
+<v t="ekr.20161125214546.11"><vh>index</vh></v>
+<v t="ekr.20161125214546.12"><vh>abc</vh></v>
+</v>
+</v>
+<v t="ekr.20161125221903.40"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161125221903.41"><vh>class Index</vh>
+<v t="ekr.20161125221903.42"><vh>index</vh></v>
+<v t="ekr.20161125221903.43"><vh>abc</vh></v>
+</v>
+</v>
+<v t="ekr.20161125225817.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
+<v t="ekr.20161125225817.4"><vh>class Index</vh>
+<v t="ekr.20161125225817.5"><vh>index</vh></v>
+<v t="ekr.20161125225817.6"><vh>abc</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
@@ -706,10 +819,10 @@
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
-<v t="ekr.20141111092038.12"><vh>@test markdown</vh></v>
+<v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
 </v>
 <v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
@@ -735,8 +848,8 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20161123202857.1"></v>
-<v t="ekr.20161124042011.1"><vh>*** Improve org/otl tests</vh></v>
-<v t="ekr.20160410152100.1" a="E"></v>
+<v t="ekr.20150626101842.1"></v>
+<v t="ekr.20160410152100.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -777,11 +890,6 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
-</t>
-<t tx="edward.20160919054709.9">gnx: edward.20160416174241.4
-unl: section 1
-gnx: edward.20160416174241.5
-unl: section 2
 </t>
 <t tx="edward.20160919054711.14">gnx: edward.20160416174241.19
 unl: section 1
@@ -1180,7 +1288,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12,2">
+<t tx="ekr.20070417092935" str_leo_pos="12">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3161,20 +3269,6 @@ The top chapter.
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141111092038.12">s = '''
-
-# Header
-
-After header text
-
-## Subheader
-
-After subheader text
-
-'''
-
-c.importCommands.markdownUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
@@ -3598,10 +3692,28 @@ def spam(): # line 2
     pass</t>
 <t tx="ekr.20160410152100.1"></t>
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
-
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
 try:
-    root = None
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be true.
+    ic.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
         (2, 'Section 1#'),
@@ -3612,7 +3724,7 @@ try:
         (2, 'Section 3'),
     )
     after = p.nodeAfterTree()
-    root = p.firstChild().next()
+    root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
     for n, h in table:
@@ -3623,37 +3735,55 @@ try:
     assert p == after, p.h
 finally:
     if 1:
-        root = p.firstChild().next()
         if root:
             root.doDelete()
             c.redraw()
 </t>
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
-
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
 try:
-    c.importCommands.markdownUnitTest(p,s=s,showTree=True) # Must be True.
+    ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
     table = (
-        (1, 'Top'),
-        (2, 'Section 1'),
-        (2, 'Section 2'),
+        (1, '=Top'),
+        (2, '-Section 1'),
+        (2, '-Section 2'),
         (3, 'Section 2.1'),
         (4, 'Section 2.1.1'),
         (3, 'Section 2.2'),
-        (2, 'Section 3'),
+        (2, '-Section 3'),
     )
     after = p.nodeAfterTree()
-    root = p.firstChild().next()
+    root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
-    for n, h in table:
-        n2 = p.level() - root.level()
-        assert h == p.h, (h, p.h)
-        assert n == n2, (n, n2, p.h)
-        p.moveToThreadNext()
-    assert p == after, p.h
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, p.h
 finally:
     if 1:
-        root = p.firstChild().next()
         if root:
             root.doDelete()
             c.redraw()
@@ -3674,47 +3804,12 @@ section 2.1, line 1
 
 ####Section 2.1.1
 section 2.2.1 line 1
+The next section is empty. It must not be deleted.
 
 ###Section 2.2
 
 ##Section 3
 Section 3, line 1
-
-'''
-</t>
-<t tx="ekr.20160411044042.1">s = '''\
-Top
-====
-
-The top section
-
-Section 1
----------
-
-section 1, line 1
--- Not an underline
-selction 1, line 2
-
-Section 2
----------
-
-section 2, line 1
-
-###Section 2.1
-
-section 2.1, line 1
-
-####Section 2.1.1
-
-section 2.2.1 line 1
-
-###Section 2.2
-section 2.2, line 1.
-
-Section 3
----------
-
-section 3, line 1
 
 '''
 </t>
@@ -7451,7 +7546,6 @@ finally:
     if 0:
         p.deleteAllChildren()
 </t>
-<t tx="ekr.20161124042011.1"># Include tests of filler nodes. (overindented nodes)</t>
 <t tx="ekr.20161124050904.1"></t>
 <t tx="ekr.20161124050904.2"></t>
 <t tx="ekr.20161124050904.3"></t>
@@ -7484,7 +7578,456 @@ unl: section 1
 gnx: ekr.20161124050840.2
 unl: section 2
 </t>
-<t tx="ekr.20161125033219.2"></t>
-<t tx="ekr.20161125033645.2"></t>
+<t tx="ekr.20161125134815.1">if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.markdown
+    import leo.plugins.writers.markdown
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.markdown)
+    imp.reload(leo.plugins.writers.markdown)
+    imp.reload(leoImport)
+    markdown = leo.plugins.importers.markdown
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
+# insert test for markdown here.
+s = '''\
+Decl line.
+#Header
+
+After header text
+
+##Subheader
+
+After subheader text
+'''
+
+table = ('!Declarations', 'Header', 'Subheader')
+try:
+    ic.markdownUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@auto-m'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+</t>
+<t tx="ekr.20161125174248.2">gnx: ekr.20161125174220.1
+unl: section 1
+gnx: ekr.20161125174220.2
+unl: section 2
+</t>
+<t tx="ekr.20161125214543.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125214543.2">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125214543.3">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161125214543.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161125214543.44">
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125214543.45">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161125214543.46">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161125214543.47">&lt;link id="L1"&gt;
+    @others
+</t>
+<t tx="ekr.20161125214543.48">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+
+&lt;title&gt;TITLE&lt;/title&gt;
+
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125214544.34">@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+</t>
+<t tx="ekr.20161125214544.35">Sec 1.
+</t>
+<t tx="ekr.20161125214544.36">Sec 2.
+</t>
+<t tx="ekr.20161125214544.37">Sec 2-1
+</t>
+<t tx="ekr.20161125214544.38">Sect 2-1-1
+</t>
+<t tx="ekr.20161125214544.39">Sec 3
+</t>
+<t tx="ekr.20161125214544.40">Sec 3.1
+</t>
+<t tx="ekr.20161125214545.10">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125214545.11">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161125214545.8">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125214545.9">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161125214546.10">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161125214546.11">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161125214546.12">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161125214546.9">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221901.16">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221901.17">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125221901.18">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161125221901.19">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161125221901.59">
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221901.60">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161125221901.61">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161125221901.62">&lt;link id="L1"&gt;
+    @others
+</t>
+<t tx="ekr.20161125221901.63">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+
+&lt;title&gt;TITLE&lt;/title&gt;
+
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125221902.37">@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+</t>
+<t tx="ekr.20161125221902.38">Sec 1.
+</t>
+<t tx="ekr.20161125221902.39">Sec 2.
+</t>
+<t tx="ekr.20161125221902.40">Sec 2-1
+</t>
+<t tx="ekr.20161125221902.41">Sect 2-1-1
+</t>
+<t tx="ekr.20161125221902.42">Sec 3
+</t>
+<t tx="ekr.20161125221902.43">Sec 3.1
+</t>
+<t tx="ekr.20161125221902.54">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221902.55">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161125221903.1">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221903.2">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161125221903.40">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161125221903.41">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161125221903.42">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161125221903.43">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161125225814.1">@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125225814.2">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125225814.3">&lt;head&gt;
+&lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20161125225814.4">&lt;body class="bodystring"&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20161125225814.44">
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20161125225814.45">&lt;html&gt;
+    @others
+</t>
+<t tx="ekr.20161125225814.46">&lt;head&gt;
+&lt;!-- oops: link elements terminated two different ways --&gt;
+    @others
+</t>
+<t tx="ekr.20161125225814.47">&lt;link id="L1"&gt;
+    @others
+</t>
+<t tx="ekr.20161125225814.48">&lt;link id="L2"&gt;
+&lt;link id="L3" /&gt;
+&lt;link id='L4' /&gt;
+
+&lt;title&gt;TITLE&lt;/title&gt;
+
+&lt;/head&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20161125225815.32">@others
+
+Warning: this node is ignored when writing this file.
+
+@language plain
+@tabwidth 4
+</t>
+<t tx="ekr.20161125225815.33">Sec 1.
+</t>
+<t tx="ekr.20161125225815.34">Sec 2.
+</t>
+<t tx="ekr.20161125225815.35">Sec 2-1
+</t>
+<t tx="ekr.20161125225815.36">Sect 2-1-1
+</t>
+<t tx="ekr.20161125225815.37">Sec 3
+</t>
+<t tx="ekr.20161125225815.38">Sec 3.1
+</t>
+<t tx="ekr.20161125225816.2">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125225816.3">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161125225816.4">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161125225816.5">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161125225817.3">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161125225817.4">class Index:
+    """docstring"""
+    @others
+</t>
+<t tx="ekr.20161125225817.5">@cherrypy.nocolor
+@cherrypy.expose
+def index(self):
+    return "Hello world!"
+    
+</t>
+<t tx="ekr.20161125225817.6">@cmd('abc')
+def abc(self):
+    return "abc"
+</t>
+<t tx="ekr.20161125230415.1">s = '''\
+=Top
+====
+
+The top section
+
+-Section 1
+----------
+
+section 1, line 1
+-- Not an underline
+selction 1, line 2
+
+-Section 2
+----------
+
+section 2, line 1
+
+###Section 2.1
+
+section 2.1, line 1
+
+####Section 2.1.1
+
+section 2.2.1 line 1
+
+###Section 2.2
+section 2.2, line 1.
+
+-Section 3
+----------
+
+section 3, line 1
+
+'''
+</t>
 </tnodes>
 </leo_file>

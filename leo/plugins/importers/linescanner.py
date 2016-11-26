@@ -153,7 +153,6 @@ class Importer(object):
         # State vars.
         self.errors = 0
         ic.errors = 0 # Required.
-        self.kill_check = False
         self.parse_body = False
         self.ws_error = False
         self.root = None
@@ -163,6 +162,8 @@ class Importer(object):
         '''Append the line s to p.v._import_lines.'''
         assert not p.b, repr(p.b)
         assert hasattr(p.v, '_import_lines'), repr(p)
+        assert s, g.callers()
+        assert g.isString(s), repr(s)
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -184,15 +185,14 @@ class Importer(object):
         p.v._import_lines = list(lines)
     #@+node:ekr.20161108131153.3: *3* i.check & helpers
     def check(self, unused_s, parent):
-        '''
-        True if perfect import checks pass.
-        Unit tests may set i.kill_check flag to disable these checks.
-        '''
+        '''True if perfect import checks pass.'''
         trace = False and g.unitTesting
         trace_all = True
         trace_lines = True
         trace_status = True
-        if self.kill_check:
+        if g.app.suppressImportChecks:
+            g.trace('===== skipping all checks', parent.h)
+            g.app.suppressImportChecks = False
             return True
         c = self.c
         t1 = time.clock()
@@ -614,14 +614,12 @@ class Importer(object):
     #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
     def v2_create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
-        trace = False and g.unitTesting
-        if trace: g.trace('\n\nREF: %s === in === %s\n%r\n' % (
-            headline, parent.h, body))
         child = parent.insertAsLastChild()
-        assert g.isString(body), repr(body)
-        assert g.isString(headline), repr(headline)
+        
         self.inject_lines_ivar(child)
-        self.add_line(child, body)
+        if body:
+            self.add_line(child, body)
+        assert g.isString(headline), repr(headline)
         child.h = headline.strip()
         return child
     #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
@@ -695,7 +693,7 @@ class Importer(object):
         # Subclasses may override as desired.
         # See perl_i.clean_nodes for an example.
         self.clean_nodes(parent)
-    #@+node:ekr.20161110130709.1: *6* i.delete_all_empty_nodes (test)
+    #@+node:ekr.20161110130709.1: *6* i.delete_all_empty_nodes
     def delete_all_empty_nodes(self, parent):
         '''
         Delete nodes consisting of nothing but whitespace.
@@ -787,11 +785,20 @@ class Importer(object):
         Update the body text of all nodes in parent's tree using the injected
         v._import_lines lists.
         '''
+        trace = False and g.unitTesting
         for p in parent.self_and_subtree():
             v = p.v
             # Make sure that no code in x.post_pass has mistakenly set p.b.
             assert not v._bodyString, repr(v._bodyString)
-            v._bodyString = ''.join(v._import_lines)
+            lines = v._import_lines
+            if lines:
+                if not lines[-1].endswith('\n'):
+                    if trace: g.trace('===== add newline', repr(lines[-1]), p.h)
+                    lines[-1] += '\n'
+            if trace:
+                g.trace('=====', repr(p.h))
+                self.print_lines(lines)
+            v._bodyString = ''.join(lines)
             delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.10: *4* i.run (entry point) & helpers
     def run(self, s, parent, parse_body=False, prepass=False):
@@ -1003,8 +1010,16 @@ class Importer(object):
     #@+node:ekr.20161109045619.1: *4* i.print_lines
     def print_lines(self, lines):
         '''Print lines for debugging.'''
+        print('[')
         for line in lines:
             print(repr(line))
+        print(']')
+
+    print_list = print_lines
+    #@+node:ekr.20161125174423.1: *4* i.print_stack
+    def print_stack(self, stack):
+        '''Print a stack of positions.'''
+        g.printList([p.h for p in stack])
     #@+node:ekr.20161108131153.21: *4* i.underindented_comment/line
     def underindented_comment(self, line):
         if self.at_auto_warns_about_leading_whitespace:

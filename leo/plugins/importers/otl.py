@@ -62,11 +62,14 @@ class Otl_Importer(Importer):
         while level >= len(self.parents):
             child = self.v2_create_child_node(
                 parent = self.parents[-1],
-                body = '',
+                body = None,
                 headline = h,
             )
             self.parents.append(child)
         return self.parents[level]
+    #@+node:ekr.20161125221742.1: *3* otl_i.delete_all_empty_nodes
+    def delete_all_empty_nodes(self, parent):
+        '''Override the base class so we *dont* delete empty nodes!'''
     #@-others
 #@-others
 importer_dict = {

@@ -61,11 +61,14 @@ class Org_Importer(Importer):
             n -= 1
             child = self.v2_create_child_node(
                 parent = self.parents[-1],
-                body = '',
+                body = None,
                 headline = headline,
             )
             self.parents.append(child)
         return self.parents[level]
+    #@+node:ekr.20161125221833.1: *3* org_i.delete_all_empty_nodes
+    def delete_all_empty_nodes(self, parent):
+        '''Override the base class so we *dont* delete empty nodes!'''
     #@-others
 #@-others
 importer_dict = {
