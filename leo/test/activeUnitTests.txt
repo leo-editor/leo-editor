@@ -16994,12 +16994,12 @@ if 0:
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.markdown
-    import leo.plugins.writers.markdown
+    # import leo.plugins.writers.markdown
     # Reload all.
     import imp
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.markdown)
-    imp.reload(leo.plugins.writers.markdown)
+    # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     ic = leoImport.LeoImportCommands(c)
@@ -17029,7 +17029,7 @@ try:
             p.moveToThreadNext()
         assert p == after, p.h
 finally:
-    if 1:
+    if 0:
         if root:
             root.doDelete()
             c.redraw()
@@ -17045,7 +17045,7 @@ The top section
 
 section 1, line 1
 -- Not an underline
-selction 1, line 2
+secttion 1, line 2
 
 -Section 2
 ----------
@@ -17069,6 +17069,114 @@ section 2.2, line 1.
 section 3, line 1
 
 '''
+#@+node:ekr.20161126102649.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161126102649.2: *7* =Top
+
+The top section
+
+#@+node:ekr.20161126102649.3: *8* -Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161126102649.4: *8* -Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161126102649.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161126102649.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161126102649.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161126102649.8: *8* -Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161126103111.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161126103111.2: *7* =Top
+
+The top section
+
+#@+node:ekr.20161126103111.3: *8* -Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161126103111.4: *8* -Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161126103111.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161126103111.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161126103111.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161126103111.8: *8* -Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161126103144.9: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161126103144.10: *7* =Top
+
+The top section
+
+#@+node:ekr.20161126103144.11: *8* -Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161126103144.12: *8* -Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161126103144.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161126103144.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161126103144.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161126103144.16: *8* -Section 3
+
+section 3, line 1
+
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...
@@ -17078,12 +17186,12 @@ if 0:
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.markdown
-    import leo.plugins.writers.markdown
+    # import leo.plugins.writers.markdown
     # Reload all.
     import imp
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.markdown)
-    imp.reload(leo.plugins.writers.markdown)
+    # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     ic = leoImport.LeoImportCommands(c)

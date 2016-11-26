@@ -228,7 +228,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735809000000302e362e31392e343071197d711a58090000006d795f706c7567696e711b580300000076616c711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -280,6 +280,42 @@
 </v>
 <v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
 <v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
+<v t="ekr.20161126102649.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161126102649.2"><vh>=Top</vh>
+<v t="ekr.20161126102649.3"><vh>-Section 1</vh></v>
+<v t="ekr.20161126102649.4"><vh>-Section 2</vh>
+<v t="ekr.20161126102649.5"><vh>Section 2.1</vh>
+<v t="ekr.20161126102649.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161126102649.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161126102649.8"><vh>-Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161126103111.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161126103111.2"><vh>=Top</vh>
+<v t="ekr.20161126103111.3"><vh>-Section 1</vh></v>
+<v t="ekr.20161126103111.4"><vh>-Section 2</vh>
+<v t="ekr.20161126103111.5"><vh>Section 2.1</vh>
+<v t="ekr.20161126103111.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161126103111.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161126103111.8"><vh>-Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161126103144.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161126103144.10"><vh>=Top</vh>
+<v t="ekr.20161126103144.11"><vh>-Section 1</vh></v>
+<v t="ekr.20161126103144.12"><vh>-Section 2</vh>
+<v t="ekr.20161126103144.13"><vh>Section 2.1</vh>
+<v t="ekr.20161126103144.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161126103144.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161126103144.16"><vh>-Section 3</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="ekr.20161124041002.1"><vh>@edit unittest/at-auto-otl-line-number-test.py</vh></v>
@@ -1287,7 +1323,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="12">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3268,7 +3304,7 @@ The top chapter.
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -3747,12 +3783,12 @@ if 0:
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.markdown
-    import leo.plugins.writers.markdown
+    # import leo.plugins.writers.markdown
     # Reload all.
     import imp
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.markdown)
-    imp.reload(leo.plugins.writers.markdown)
+    # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     ic = leoImport.LeoImportCommands(c)
@@ -3782,7 +3818,7 @@ try:
             p.moveToThreadNext()
         assert p == after, p.h
 finally:
-    if 1:
+    if 0:
         if root:
             root.doDelete()
             c.redraw()
@@ -7585,12 +7621,12 @@ unl: section 2
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
     import leo.plugins.importers.markdown
-    import leo.plugins.writers.markdown
+    # import leo.plugins.writers.markdown
     # Reload all.
     import imp
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.markdown)
-    imp.reload(leo.plugins.writers.markdown)
+    # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
     ic = leoImport.LeoImportCommands(c)
@@ -7998,7 +8034,7 @@ The top section
 
 section 1, line 1
 -- Not an underline
-selction 1, line 2
+secttion 1, line 2
 
 -Section 2
 ----------
@@ -8027,6 +8063,114 @@ section 3, line 1
 unl: section 1
 gnx: ekr.20161126085535.6
 unl: section 2
+</t>
+<t tx="ekr.20161126102649.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161126102649.2">
+The top section
+
+</t>
+<t tx="ekr.20161126102649.3">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161126102649.4">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161126102649.5">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161126102649.6">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161126102649.7">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161126102649.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161126103111.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161126103111.2">
+The top section
+
+</t>
+<t tx="ekr.20161126103111.3">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161126103111.4">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161126103111.5">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161126103111.6">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161126103111.7">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161126103111.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161126103144.10">
+The top section
+
+</t>
+<t tx="ekr.20161126103144.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161126103144.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161126103144.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161126103144.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161126103144.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161126103144.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161126103144.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
 </t>
 </tnodes>
 </leo_file>

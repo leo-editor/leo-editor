@@ -38,14 +38,13 @@ class Markdown_Importer(Importer):
             kind, level, name = self.starts_section(line)
             if trace: g.trace('%2s kind: %4r, level: %4r name: %10r %r' % (
                 i+1, kind, level, name, line))
-            if i == 0 and not kind:
+            if i == 0 and not kind: ### kind != '#':
                 self.make_decls_node(line)
             elif self.is_underline(line):
-                assert not line.isspace(), repr(line)
-                pass
-            elif kind:
+                self.do_underline(line)
+            elif kind: ###  == '#':
                 self.make_node(kind, level, line, name)
-            else:
+            else: # Delay handling for kind in "-=":
                 top = self.stack[-1]
                 self.add_line(top, line)
         warning = '\nWarning: this node is ignored when writing this file.\n\n'
@@ -54,6 +53,28 @@ class Markdown_Importer(Importer):
     def clean_headline(self, headline):
         '''Unlike i.clean_headline, we DO NOT strip the headline!'''
         return headline
+    #@+node:ekr.20161126094939.1: *4* md_i.do_underline
+    def do_underline(self, line):
+        '''
+        Handle a line that is all '=' or '-' characters,
+        possibly containing trailing whitespace.
+        
+        Add the line only if it is *not* a valid underline for top.h.
+        '''
+        trace = False and g.unitTesting
+        assert not line.isspace(), repr(line)
+        assert len(line.strip()) >= 4, repr(line)
+        assert line[0] in '-=', repr(line)
+        # Test top's *headline*, to see if it is underlinable.
+        top = self.stack[-1]
+        if trace: g.trace('top: %s' % top.h)
+        if top.h and top.h[0] == line[0] and 4 <= len(top.h) <= len(line):
+            # A valid underline for p.h. **Don't** add the line.
+            if trace: g.trace('Removing true underline', repr(line))
+        else:
+            # Not a valid underline. **Do** add the line.
+            self.add_line(top, line)
+        
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):
         '''
@@ -61,13 +82,15 @@ class Markdown_Importer(Importer):
         place-holder nodes as necessary.
         '''
         trace = False and g.unitTesting
+        trace_stack = False
         assert level >= 0
         if trace: g.trace('=====', level, len(self.stack), h)
         while level < len(self.stack):
             p = self.stack.pop()
             if trace:
                 g.trace('POP', len(self.get_lines(p)), p.h)
-                self.print_list(self.get_lines(p))
+                if trace and trace_stack:
+                    self.print_list(self.get_lines(p))
         top = self.stack[-1]
         if trace: g.trace('TOP', top.h)
         child = self.v2_create_child_node(
@@ -76,7 +99,7 @@ class Markdown_Importer(Importer):
             headline = h, # Leave the headline alone
         )
         self.stack.append(child)
-        if trace: self.print_stack(self.stack)
+        if trace and trace_stack: self.print_stack(self.stack)
         return self.stack[level]
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
     def make_decls_node(self, line):
