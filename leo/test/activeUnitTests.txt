@@ -13961,15 +13961,46 @@ finally:
 
 #@+node:ekr.20090529141856.4766: *5* Java tests
 #@+node:ekr.20090529141856.4767: *6* @test java interface test1
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.java
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.java)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    # x = markdown.Markdown_Importer(ic, atAuto=False)
+else:
+    ic = c.importCommands  
+
 s = '''\
 interface Bicycle {
     void changeCadence(int newValue);
     void changeGear(int newValue);
 }
 '''
-
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
+table = (
+    'interface Bicycle',
+)
+try:
+    ic.javaUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.endswith('java interface test1'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20090529141856.4768: *6* @test java interface test2
 s = '''\
 interface Bicycle {
