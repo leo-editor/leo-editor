@@ -40,6 +40,7 @@ class Ini_Importer(Importer):
 
     def starts_block(self, line):
         '''name if the line is [ a name ].'''
+        # pylint: disable=arguments-differ
         m = self.ini_pattern.match(line)
         return bool(m and m.group(1).strip())
     #@+node:ekr.20161123112121.1: *4* ini_i.start_block
