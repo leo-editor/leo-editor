@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.89">
-	<global_window_position top="127" left="381" height="958" width="999"/>
+	<global_window_position top="59" left="561" height="958" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -228,7 +228,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
+expanded="ekr.20161127120657.1,ekr.20161127120657.2,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -358,7 +359,14 @@
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
-<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
+<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh>
+<v t="ekr.20161127120657.1" a="E"><vh>@@file c:/leo.repo/leo-editor/leo/test/pascal-to-delphi interface</vh>
+<v t="ekr.20161127120657.2" a="E"><vh>interface</vh>
+<v t="ekr.20161127120657.3"><vh>procedure FormCreate</vh></v>
+<v t="ekr.20161127120657.4"><vh>procedure TForm1.FormCreate</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
@@ -428,6 +436,9 @@
 <v t="ekr.20161127043143.26"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161127043143.27"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161127102817.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161127102817.2"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -492,6 +503,9 @@
 </v>
 <v t="ekr.20161127043143.28"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161127043143.29"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161127102817.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161127102817.4"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -1015,7 +1029,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="9">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1388,7 +1402,7 @@ x:= 4;
 Y := x/2;
 end;
 
-end.
+end. // interface
 '''
 table = (
     'interface Bicycle',
@@ -1404,7 +1418,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
 
 </t>
@@ -7248,6 +7262,93 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
+</t>
+<t tx="ekr.20161127102817.1">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127102817.2">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161127102817.3">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127102817.4">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161127120657.1">
+unit Unit1;
+
+@others
+@language pascal
+@tabwidth -4
+</t>
+<t tx="ekr.20161127120657.2">interface
+
+uses
+Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
+Forms,
+Dialogs;
+
+type
+TForm1 = class(TForm)
+@others
+end.
+</t>
+<t tx="ekr.20161127120657.3">procedure FormCreate(Sender: TObject);
+private
+{ Private declarations }
+public
+{ Public declarations }
+end;
+
+var
+Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+</t>
+<t tx="ekr.20161127120657.4">procedure TForm1.FormCreate(Sender: TObject);
+var
+x,y: double;
+begin
+x:= 4;
+Y := x/2;
+end;
+
 </t>
 </tnodes>
 </leo_file>

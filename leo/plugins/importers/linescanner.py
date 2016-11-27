@@ -405,6 +405,53 @@ class Importer(object):
             table = self.get_new_table(context)
             self.cached_scan_tables[key] = table
             return table
+    #@+node:ekr.20161113052225.1: *4* i.scan_table
+    def scan_table(self, context, i, s, table):
+        '''
+        i.scan_table: Scan at position i of s with the give context and table.
+        May be overridden in subclasses, but most importers will use this code.
+        
+        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
+        '''
+        trace = False and g.unitTesting
+        if trace: g.trace('='*20, repr(context))
+        # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
+        for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
+            # pattern may be None in the general table,
+            # because not all languages have all comment delims.
+            if pattern and self.match(s, i, pattern):
+                assert kind in ('all', 'end', 'len', 'len+1'), kind
+                # Backslash patterns must match in all contexts!
+                if pattern.startswith('\\'):
+                    ok = True
+                    if trace: g.trace(
+                        '----- context: %r in_context: %r out_context: %r' % (
+                            context, in_context, out_context))
+                    new_context = out_context
+                elif context == '':
+                    ok = True
+                    new_context = out_context
+                else:
+                    ok = context == pattern
+                    new_context = in_context
+                if ok:
+                    assert new_context is not None, (pattern, repr(s))
+                    if trace: g.trace(
+                        '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
+                        'context: %5r new_context: %5r line: %r' % (
+                        i, s[i], kind, pattern, context, new_context, s))
+                    if kind == 'all':
+                        i = len(s)
+                    elif kind == 'len+1':
+                        i += (len(pattern) + 1)
+                    else:
+                        assert kind in ('end', 'len'), self.name
+                        i += len(pattern)
+                    bs_nl = pattern == '\\\n'
+                    return new_context, i, delta_c, delta_p, delta_s, bs_nl
+        # No match: stay in present state. All deltas are zero.
+        if trace: g.trace('NO MATCH: i: %s ch: %4r context: %5r line: %r' % (i, s[i], context, s))
+        return context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108170435.1: *4* i.v2_scan_line (generalized)
     def v2_scan_line(self, s, prev_state):
         '''
@@ -572,7 +619,7 @@ class Importer(object):
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161108160409.3: *6* i.end_block (sets_tail_p)
+    #@+node:ekr.20161108160409.3: *6* i.end_block
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
         p = stack[-1].p
@@ -919,52 +966,6 @@ class Importer(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
         return ''.join(result)
-    #@+node:ekr.20161113052225.1: *4* i.scan_table
-    def scan_table(self, context, i, s, table):
-        '''
-        i.scan_table: Scan at position i of s with the give context and table.
-        May be overridden in subclasses, but most importers will use this code.
-        
-        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        '''
-        trace = False and g.unitTesting
-        if trace: g.trace('='*20, repr(context))
-        # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
-        for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
-            # pattern may be None in the general table,
-            # because not all languages have all comment delims.
-            if pattern and self.match(s, i, pattern):
-                assert kind in ('all', 'len', 'len+1'), kind
-                # Backslash patterns must match in all contexts!
-                if pattern.startswith('\\'):
-                    ok = True
-                    if trace: g.trace(
-                        '----- context: %r in_context: %r out_context: %r' % (
-                            context, in_context, out_context))
-                    new_context = out_context
-                elif context == '':
-                    ok = True
-                    new_context = out_context
-                else:
-                    ok = context == pattern
-                    new_context = in_context
-                if ok:
-                    assert new_context is not None, (pattern, repr(s))
-                    if trace: g.trace(
-                        '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
-                        'context: %5r new_context: %5r line: %r' % (
-                        i, s[i], kind, pattern, context, new_context, s))
-                    if kind == 'all':
-                        i = len(s)
-                    elif kind == 'len+1':
-                        i += (len(pattern) + 1)
-                    else:
-                        i += len(pattern)
-                    bs_nl = pattern == '\\\n'
-                    return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        # No match: stay in present state. All deltas are zero.
-        if trace: g.trace('NO MATCH: i: %s ch: %4r context: %5r line: %r' % (i, s[i], context, s))
-        return context, i+1, 0, 0, 0, False
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
