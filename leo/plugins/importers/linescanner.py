@@ -582,13 +582,18 @@ class Importer(object):
             elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(line, new_state, prev_state, stack)
-            elif new_state.level() >= top.state.level():
-                # Comparing new_state against prev_state does not work for python.
+            elif self.ends_block(line, new_state, prev_state, stack):
+                tail_p = self.end_block(line, new_state, stack)
+            else:
                 p = tail_p or top.p
                 self.add_line(p, line)
-            else:
-                tail_p = self.end_block(line, new_state, stack)
             prev_state = new_state
+    #@+node:ekr.20161127102339.1: *6* i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line does not end the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
     #@+node:ekr.20161119130337.1: *6* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
