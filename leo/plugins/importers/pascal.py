@@ -22,6 +22,17 @@ class Pascal_Importer(Importer):
         )
         
     #@+others
+    #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
+    pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
+
+    def clean_headline(self, headline):
+        '''Return a cleaned up headline s.'''
+        m = self.pascal_clean_pattern.match(headline)
+        if m:
+            return '%s %s' % (m.group(1), m.group(2))
+        else:
+            return headline.strip()
+
     #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -57,6 +68,18 @@ class Pascal_Importer(Importer):
             # stack.append(stack[-1])
         # assert len(stack) > 1 # Fail on exit.
         # if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161127104208.1: *3* pascal_i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends a function or procedure.'''
+        trace = False and g.unitTesting
+        if prev_state.context:
+            if trace: g.trace('in context', repr(prev_state.context))
+            return False
+        else:
+            ls = line.lstrip()
+            val = g.match_word(ls, 0, 'end')
+            if trace and val: g.trace('  ', val, repr(line))
+            return val
     #@+node:ekr.20161127105609.1: *3* pascal_i.get_new_table
     #@@nobeautify
 
@@ -84,7 +107,7 @@ class Pascal_Importer(Importer):
             ('len',   '"',     '"',       '',       0,       0,       0),
             ('len',   "'",     "'",       '',       0,       0,       0),
             ('len',   block1,  block1,    context,  0,       0,       0),
-            ('end',   block2,  context,   '',       0,       0,       0),
+            ('end{',  block2,  context,   '',       0,       0,       0),
             # These interfere with comments.
             # ('len',   '{',     context,   context,  d(1),    0,       0),
             # ('len',   '}',     context,   context,  d(-1),   0,       0),
@@ -98,29 +121,6 @@ class Pascal_Importer(Importer):
             g.trace('created table for pascal state', repr(context))
             g.trace('comments', repr(comment), repr(block1), repr(block2))
         return table
-    #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
-    pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
-
-    def clean_headline(self, headline):
-        '''Return a cleaned up headline s.'''
-        m = self.pascal_clean_pattern.match(headline)
-        if m:
-            return '%s %s' % (m.group(1), m.group(2))
-        else:
-            return headline.strip()
-
-    #@+node:ekr.20161127104208.1: *3* pascal_i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends a function or procedure.'''
-        trace = False and g.unitTesting
-        if prev_state.context:
-            if trace: g.trace('in context', repr(prev_state.context))
-            return False
-        else:
-            ls = line.lstrip()
-            val = g.match_word(ls, 0, 'end')
-            if trace and val: g.trace('  ', val, repr(line))
-            return val
     #@+node:ekr.20161126182009.1: *3* pascal_i.starts_block
     pascal_pattern_table = (
         re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n'),

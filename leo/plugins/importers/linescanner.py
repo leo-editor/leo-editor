@@ -420,7 +420,8 @@ class Importer(object):
             # pattern may be None in the general table,
             # because not all languages have all comment delims.
             if pattern and self.match(s, i, pattern):
-                assert kind in ('all', 'end', 'len', 'len+1'), kind
+                if not kind.startswith('end'):
+                    assert kind in ('all', 'len', 'len+1'), kind
                 # Backslash patterns must match in all contexts!
                 if pattern.startswith('\\'):
                     ok = True
@@ -431,6 +432,10 @@ class Importer(object):
                 elif context == '':
                     ok = True
                     new_context = out_context
+                elif kind.startswith('end'):
+                    tail = kind[3:]
+                    ok = context == tail
+                    new_context = in_context
                 else:
                     ok = context == pattern
                     new_context = in_context
@@ -445,7 +450,7 @@ class Importer(object):
                     elif kind == 'len+1':
                         i += (len(pattern) + 1)
                     else:
-                        assert kind in ('end', 'len'), self.name
+                        assert kind.startswith('end') or kind == 'len', (kind, self.name)
                         i += len(pattern)
                     bs_nl = pattern == '\\\n'
                     return new_context, i, delta_c, delta_p, delta_s, bs_nl
