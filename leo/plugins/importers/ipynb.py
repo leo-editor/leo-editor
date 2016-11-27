@@ -136,7 +136,7 @@ class Import_IPYNB(object):
                 p.b = '' # Exporter will translate to 'null'
             else:
                 p.b = repr(val)
-    #@+node:ekr.20160412101537.7: *5* do_string
+    #@+node:ekr.20160412101537.7: *5* do_string (test-jup-import)
     def do_string(self, key, val):
 
         assert g.isString(val)
@@ -209,7 +209,7 @@ class Import_IPYNB(object):
             if val == (None, None):
                 g.trace('malformed header:', m.group(0))
         return val
-    #@+node:ekr.20160412101537.11: *6* do_markdown_cell (import)
+    #@+node:ekr.20160412101537.11: *6* do_markdown_cell (test-jup-import)
     def do_markdown_cell(self, p, s):
         '''Split the markdown cell p if it contains one or more html headers.'''
         trace = False and not g.unitTesting

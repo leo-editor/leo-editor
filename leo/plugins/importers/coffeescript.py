@@ -189,45 +189,35 @@ class CS_Importer(Importer):
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
                 # g.trace('moving lines from', last.h, 'to', p.h)
-                ###  p.b = ''.join(prev_lines) + p.b
                 self.prepend_lines(p, prev_lines)
             prev_lines = trailing_lines
             last = p.copy()
         if prev_lines:
             # These should go after the @others lines in the parent.
-            ### lines = g.splitLines(parent.b)
             lines = self.get_lines(parent)
             for i, s in enumerate(lines):
                 if s.strip().startswith('@others'):
                     lines = lines[:i+1] + prev_lines + lines[i+2:]
-                    ### parent.b = ''.join(lines)
                     self.set_lines(parent, lines)
                     break
             else:
                 # Fall back.
-                ### last.b = last.b + ''.join(prev_lines)
                 assert last, "move_trailing_lines"
                 self.set_lines(last, prev_lines)
     #@+node:ekr.20160505173347.1: *5* coffee_i.delete_trailing_lines
     def delete_trailing_lines(self, p):
         '''Delete the trailing lines of p and return them.'''
         body_lines, trailing_lines = [], []
-        ### for s in g.splitLines(p.b):
         for s in self.get_lines(p):
-            ### strip = s.strip()
-            ### if not strip or strip.startswith('#'):
-            
-            if s.isspace(): ### self.is_ws_line(s):
+            if s.isspace():
                 trailing_lines.append(s)
             else:
                 body_lines.extend(trailing_lines)
                 body_lines.append(s)
                 trailing_lines = []
         # Clear trailing lines if they are all blank.
-        ###if all([not z.strip() for z in trailing_lines]):
         if all([z.isspace() for z in trailing_lines]):
             trailing_lines = []
-        ### p.b = ''.join(body_lines)
         self.set_lines(p, body_lines)
         return trailing_lines
     #@+node:ekr.20160505180032.1: *4* coffee_i.undent_coffeescript_body
@@ -260,8 +250,6 @@ class CS_Importer(Importer):
             g.trace('-'*20)
             self.print_lines(g.splitLines(result))
         return result
-
-
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
