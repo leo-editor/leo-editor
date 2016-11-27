@@ -364,7 +364,7 @@ class Importer(object):
             return 0 if context else n
 
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-            
+        end = 'end%s' % (block1)
         table = [
             # in-ctx: the next context when the pattern matches the line *and* the context.
             # out-ctx:the next context when the pattern matches the line *outside* any context.
@@ -376,7 +376,8 @@ class Importer(object):
             ('len',   '"',     '"',       '',       0,       0,       0),
             ('len',   "'",     "'",       '',       0,       0,       0),
             ('len',   block1,  block1,    context,  0,       0,       0),
-            ('len',   block2,  context,   '',       0,       0,       0),
+            ### ('len',   block2,  context,   '',       0,       0,       0),
+            (end,     block2,  context,   '',       0,       0,       0) ,
             ('len',   '{',     context,   context,  d(1),    0,       0),
             ('len',   '}',     context,   context,  d(-1),   0,       0),
             ('len',   '(',     context,   context,  0,       d(1),    0),
@@ -434,7 +435,7 @@ class Importer(object):
                     new_context = out_context
                 elif kind.startswith('end'):
                     tail = kind[3:]
-                    ok = context == tail
+                    ok = tail and context == tail
                     new_context = in_context
                 else:
                     ok = context == pattern
@@ -740,8 +741,11 @@ class Importer(object):
         '''
         for p in parent.subtree():
             h = self.clean_headline(p.h)
-            assert h
-            if h != p.h: p.h = h
+            if h:
+                if h != p.h: p.h = h
+            else:
+                pass
+                # g.trace('empty headline', p, 'parent', parent.h)
     #@+node:ekr.20161110130157.1: *6* i.clean_all_nodes
     def clean_all_nodes(self, parent):
         '''Clean the nodes in parent's tree, in a language-dependent way.'''

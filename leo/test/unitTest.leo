@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.89">
+<globals body_outline_ratio="0.62" body_secondary_ratio="0.89">
 	<global_window_position top="55" left="481" height="958" width="828"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -228,8 +228,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73580a000000302e362e31372e352e31710d7d710e580a0000007273742d696d706f7274710f7d711028580b000000756e6465726c696e657331711158030000002d7e2e7112580b000000756e6465726c696e657332711358010000003d711475735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"
-expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161123115047.1,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735809000000302e362e31392e343071157d711658090000006d795f706c7567696e7117580300000076616c7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161123115047.1,ekr.20161108034116.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -358,7 +358,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
 <v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
@@ -438,6 +438,9 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161127171304.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161127171304.2"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161127173404.43"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161127173404.44"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -511,6 +514,9 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 </v>
 <v t="ekr.20161127171304.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161127171304.4"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161127173405.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161127173405.2"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -595,7 +601,6 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1034,7 +1039,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1494,7 +1499,24 @@ if sys.platform.lower().startswith('win'):
 
     c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
 </t>
-<t tx="ekr.20090529141856.4770">s = '''\
+<t tx="ekr.20090529141856.4770">if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.java
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.java)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
+s = '''\
 /**
  * Indicates the caller's authority to perform lifecycle operations on
  */
@@ -1510,10 +1532,22 @@ public final class AdminPermission extends BasicPermission
     }
 }
 '''
-
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
-
+table = (
+    ### Not ready.  Need to move def line into body.
+)
+try:
+    ic.javaUnitTest(p,s=s,showTree=True)
+    if 0: # Not ready
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20090529141856.4771">import sys
 
@@ -7387,6 +7421,50 @@ sub test4 {
 @tabwidth -4
 </t>
 <t tx="ekr.20161127171304.4">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161127173404.43">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127173404.44">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161127173405.1">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127173405.2">sub test1 {
     s = /}/g;
 }
 
