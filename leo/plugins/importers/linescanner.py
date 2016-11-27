@@ -605,8 +605,7 @@ class Importer(object):
         '''Print everything important in the v2_gen_lines loop.'''
         print('')
         print('===== %r' % g.toEncodedString(line))
-            # Can cause UnicodeEncodeErrors.
-        print('     top.p: %s' % top.p.h)
+        print('     top.p: %s' % g.toEncodedString(top.p.h))
         print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
         print('prev_state: %s' % prev_state)

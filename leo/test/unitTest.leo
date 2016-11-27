@@ -228,7 +228,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -425,6 +425,9 @@
 <v t="ekr.20161125225816.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
 <v t="ekr.20161125225816.3"><vh>sub test1</vh></v>
 </v>
+<v t="ekr.20161127043143.26"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
+<v t="ekr.20161127043143.27"><vh>sub test1</vh></v>
+</v>
 </v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
 <v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
@@ -486,6 +489,9 @@
 </v>
 <v t="ekr.20161125225816.4"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
 <v t="ekr.20161125225816.5"><vh>sub test1</vh></v>
+</v>
+<v t="ekr.20161127043143.28"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161127043143.29"><vh>sub test1</vh></v>
 </v>
 </v>
 </v>
@@ -1332,7 +1338,7 @@ c.importCommands.elispUnitTest(p,s=s,showTree=False)
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4734"></t>
-<t tx="ekr.20090529141856.4735">if 1:
+<t tx="ekr.20090529141856.4735">if 0:
     # The preamble...
     g.cls()
     if c.isChanged(): c.save()
@@ -1405,7 +1411,7 @@ finally:
 <t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
 </t>
 <t tx="ekr.20090529141856.4766"></t>
-<t tx="ekr.20090529141856.4767">if 1:
+<t tx="ekr.20090529141856.4767">if 0:
     # The preamble...
     g.cls()
     if c.isChanged(): c.save()
@@ -7198,6 +7204,50 @@ finally:
 unl: section 1
 gnx: ekr.20161126111959.5
 unl: section 2
+</t>
+<t tx="ekr.20161127043143.26">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127043143.27">sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
+</t>
+<t tx="ekr.20161127043143.28">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161127043143.29">sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
 </t>
 </tnodes>
 </leo_file>

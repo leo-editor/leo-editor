@@ -13609,7 +13609,7 @@ finally:
 
 #@+node:ekr.20090529141856.4766: *5* Java tests
 #@+node:ekr.20090529141856.4767: *6* @test java interface test1
-if 1:
+if 0:
     # The preamble...
     g.cls()
     if c.isChanged(): c.save()
@@ -13990,7 +13990,7 @@ finally:
         p.deleteAllChildren()
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
-if 1:
+if 0:
     # The preamble...
     g.cls()
     if c.isChanged(): c.save()
@@ -14587,6 +14587,28 @@ sub test3 {
 sub test4 {
     s = tr///{/;
 }
+#@+node:ekr.20161127043143.26: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161127043143.27: *8* sub test1
+sub test1 {
+    s = /{/g;
+}
+
+sub test2 {
+    s = m//{/;
+}
+
+sub test3 {
+    s = s///{/;
+}
+
+sub test4 {
+    s = tr///{/;
+}
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -15039,6 +15061,28 @@ sub test4 {
 @language perl
 @tabwidth -4
 #@+node:ekr.20161125225816.5: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+sub test2 {
+    s = m//}/;
+}
+
+sub test3 {
+    s = s///}/;
+}
+
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161127043143.28: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161127043143.29: *8* sub test1
 sub test1 {
     s = /}/g;
 }
