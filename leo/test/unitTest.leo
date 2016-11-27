@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.38" body_secondary_ratio="0.80">
-	<global_window_position top="91" left="181" height="958" width="999"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.89">
+	<global_window_position top="127" left="381" height="958" width="999"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -228,7 +228,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473580a000000302e362e31372e352e3171157d7116580a0000007273742d696d706f727471177d711828580b000000756e6465726c696e657332711958010000003d711a580b000000756e6465726c696e657331711b58030000002d7e2e711c7573752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -323,148 +323,14 @@
 </v>
 <v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
-<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh>
-<v t="ekr.20161122160952.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161122160952.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161122160952.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161122160952.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123001804.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123001804.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123001804.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123001804.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123004141.18"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123004141.19"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123004141.20"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123004141.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123004944.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123004944.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123004944.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123004944.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123005136.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123005136.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123005136.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123005136.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123012126.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123012126.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123012126.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123012126.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123114540.18"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123114540.19"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123114540.20"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123114540.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123141750.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123141750.11"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123141750.12"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123141750.13"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123141958.127"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123141958.128"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123141958.129"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123141958.130"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123142149.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123142149.11"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123142149.12"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123142149.13"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161123142212.18"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161123142212.19"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161123142212.20"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161123142212.21"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161124031628.6"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161124031628.7"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161124031628.8"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161124031628.9"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161124032739.6"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161124032739.7"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161124032739.8"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161124032739.9"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161125214543.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161125214543.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125214543.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161125214543.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161125221901.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161125221901.17"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125221901.18"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161125221901.19"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20161125225814.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: lowercase tags</vh>
-<v t="ekr.20161125225814.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125225814.3"><vh>&lt;head&gt;</vh></v>
-<v t="ekr.20161125225814.4"><vh>&lt;body class="bodystring"&gt;</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
-<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh>
-<v t="ekr.20161124032739.49"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161124032739.50"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161124032739.51"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161124032739.52"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161124032739.53"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161125214543.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161125214543.45"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125214543.46"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161125214543.47"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161125214543.48"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161125221901.59"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161125221901.60"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125221901.61"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161125221901.62"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161125221901.63"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161125225814.44"><vh>@@clean c:/leo.repo/leo-editor/leo/test/html: improperly terminated tags2</vh>
-<v t="ekr.20161125225814.45"><vh>&lt;html&gt;</vh>
-<v t="ekr.20161125225814.46"><vh>&lt;head&gt;</vh>
-<v t="ekr.20161125225814.47"><vh>&lt;link id="L1"&gt;</vh>
-<v t="ekr.20161125225814.48"><vh>&lt;link id="L2"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
 <v t="ekr.20100803234640.5804"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
@@ -489,64 +355,7 @@
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
 <v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
-<v t="ekr.20161124040933.2"><vh>@test otl-1</vh>
-<v t="ekr.20161124050904.1"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
-<v t="ekr.20161124050904.2"><vh></vh></v>
-<v t="ekr.20161124050904.3"><vh>Section 1</vh></v>
-<v t="ekr.20161124050904.4"><vh>Section 2</vh>
-<v t="ekr.20161124050926.1"><vh>Section 2-1</vh>
-<v t="ekr.20161124050927.1"><vh>Section 2-1-1</vh></v>
-</v>
-</v>
-<v t="ekr.20161124050927.2"><vh>Section 3</vh>
-<v t="ekr.20161124050927.3"><vh>Section 3.1</vh></v>
-</v>
-</v>
-<v t="ekr.20161124051005.1"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
-<v t="ekr.20161124051005.2"><vh>Section 1</vh></v>
-<v t="ekr.20161124051005.3"><vh>Section 2</vh>
-<v t="ekr.20161124051007.1"><vh>Section 2-1</vh>
-<v t="ekr.20161124051007.2"><vh>Section 2-1-1</vh></v>
-</v>
-</v>
-<v t="ekr.20161124051007.3"><vh>Section 3</vh>
-<v t="ekr.20161124051007.4"><vh>Section 3.1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125214544.34"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
-<v t="ekr.20161125214544.35"><vh>Section 1</vh></v>
-<v t="ekr.20161125214544.36"><vh>Section 2</vh>
-<v t="ekr.20161125214544.37"><vh>Section 2-1</vh>
-<v t="ekr.20161125214544.38"><vh>Section 2-1-1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125214544.39"><vh>Section 3</vh>
-<v t="ekr.20161125214544.40"><vh>Section 3.1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125221902.37"><vh>@@auto-otl c:/leo.repo/leo-editor/leo/test/otl-1</vh>
-<v t="ekr.20161125221902.38"><vh>Section 1</vh></v>
-<v t="ekr.20161125221902.39"><vh>Section 2</vh>
-<v t="ekr.20161125221902.40"><vh>Section 2-1</vh>
-<v t="ekr.20161125221902.41"><vh>Section 2-1-1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125221902.42"><vh>Section 3</vh>
-<v t="ekr.20161125221902.43"><vh>Section 3.1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125225815.32"><vh>@@auto-vim-outline c:/leo.repo/leo-editor/leo/test/otl-1</vh>
-<v t="ekr.20161125225815.33"><vh>Section 1</vh></v>
-<v t="ekr.20161125225815.34"><vh>Section 2</vh>
-<v t="ekr.20161125225815.35"><vh>Section 2-1</vh>
-<v t="ekr.20161125225815.36"><vh>Section 2-1-1</vh></v>
-</v>
-</v>
-<v t="ekr.20161125225815.37"><vh>Section 3</vh>
-<v t="ekr.20161125225815.38"><vh>Section 3.1</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
@@ -696,92 +505,7 @@
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh>
-<v t="ekr.20161121202537.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161121202537.3"><vh>class Index</vh>
-<v t="ekr.20161121202537.4"><vh>index</vh></v>
-<v t="ekr.20161121202537.5"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161122071256.12"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161122071256.13"><vh>class Index</vh>
-<v t="ekr.20161122071256.14"><vh>index</vh></v>
-<v t="ekr.20161122071256.15"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123004144.9"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123004144.10"><vh>class Index</vh>
-<v t="ekr.20161123004144.11"><vh>index</vh></v>
-<v t="ekr.20161123004144.12"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123004947.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123004947.2"><vh>class Index</vh>
-<v t="ekr.20161123004947.3"><vh>index</vh></v>
-<v t="ekr.20161123004947.4"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123114543.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123114543.20"><vh>class Index</vh>
-<v t="ekr.20161123114543.21"><vh>index</vh></v>
-<v t="ekr.20161123114543.22"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123141753.9"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123141753.10"><vh>class Index</vh>
-<v t="ekr.20161123141753.11"><vh>index</vh></v>
-<v t="ekr.20161123141753.12"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123142001.12"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123142001.13"><vh>class Index</vh>
-<v t="ekr.20161123142001.14"><vh>index</vh></v>
-<v t="ekr.20161123142001.15"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123142152.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123142152.3"><vh>class Index</vh>
-<v t="ekr.20161123142152.4"><vh>index</vh></v>
-<v t="ekr.20161123142152.5"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161123142214.31"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161123142214.32"><vh>class Index</vh>
-<v t="ekr.20161123142214.33"><vh>index</vh></v>
-<v t="ekr.20161123142214.34"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161124031631.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161124031631.8"><vh>class Index</vh>
-<v t="ekr.20161124031631.9"><vh>index</vh></v>
-<v t="ekr.20161124031631.10"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161124032742.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161124032742.8"><vh>class Index</vh>
-<v t="ekr.20161124032742.9"><vh>index</vh></v>
-<v t="ekr.20161124032742.10"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161125214546.9"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161125214546.10"><vh>class Index</vh>
-<v t="ekr.20161125214546.11"><vh>index</vh></v>
-<v t="ekr.20161125214546.12"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161125221903.40"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161125221903.41"><vh>class Index</vh>
-<v t="ekr.20161125221903.42"><vh>index</vh></v>
-<v t="ekr.20161125221903.43"><vh>abc</vh></v>
-</v>
-</v>
-<v t="ekr.20161125225817.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python decorator</vh>
-<v t="ekr.20161125225817.4"><vh>class Index</vh>
-<v t="ekr.20161125225817.5"><vh>index</vh></v>
-<v t="ekr.20161125225817.6"><vh>abc</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
@@ -846,7 +570,7 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"></v>
+<v t="ekr.20090529141856.4734"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1285,7 +1009,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="8">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1608,7 +1332,23 @@ c.importCommands.elispUnitTest(p,s=s,showTree=False)
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4734"></t>
-<t tx="ekr.20090529141856.4735">s = '''
+<t tx="ekr.20090529141856.4735">if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.pascal
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.pascal)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+s = '''
 unit Unit1;
 
 interface
@@ -1644,8 +1384,23 @@ end;
 
 end.
 '''
+table = (
+    'interface Bicycle',
+)
+try:
+    ic.pascalUnitTest(p,s=s,showTree=True)
+    if 0:
+        root = c.p.lastChild()
+        assert root.h.endswith('java interface test1'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
 
-c.importCommands.pascalUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
 </t>
@@ -1664,7 +1419,6 @@ c.importCommands.pascalUnitTest(p,s=s,showTree=False)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 
@@ -2520,7 +2274,7 @@ try:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
 </t>
 <t tx="ekr.20111029120441.3982">s = '''\
@@ -2753,7 +2507,7 @@ try:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
 </t>
 <t tx="ekr.20111115080347.3872"></t>
@@ -3297,7 +3051,7 @@ The top chapter.
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -6001,7 +5755,7 @@ try:
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
 </t>
 <t tx="ekr.20161115092708.1"># g.cls()
@@ -6526,24 +6280,6 @@ sub test4 {
     s = tr///}/;
 }
 </t>
-<t tx="ekr.20161121202537.2">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161121202537.3">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161121202537.4">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161121202537.5">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
 <t tx="ekr.20161122071255.14">#!/usr/bin/perl
 
 @others
@@ -6587,72 +6323,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161122071256.12">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161122071256.13">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161122071256.14">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161122071256.15">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161122160952.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161122160952.2">&lt;html&gt;
-@others
-</t>
-<t tx="ekr.20161122160952.3">&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161122160952.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123001804.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123001804.2">&lt;html&gt;
-@others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123001804.3">&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123001804.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20161123004141.18">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004141.19">&lt;html&gt;
-@others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123004141.20">&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123004141.21">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
 </t>
 <t tx="ekr.20161123004143.10">#!/usr/bin/perl
 
@@ -6698,40 +6368,6 @@ sub test4 {
     s = tr///{/;
 }
 </t>
-<t tx="ekr.20161123004144.10">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123004144.11">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123004144.12">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161123004144.9">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004944.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004944.2">&lt;html&gt;
-@others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123004944.3">&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123004944.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
 <t tx="ekr.20161123004945.33">#!/usr/bin/perl
 
 @others
@@ -6775,56 +6411,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161123004947.1">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004947.2">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123004947.3">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123004947.4">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161123005136.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123005136.2">&lt;html&gt;
-@others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123005136.3">&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123005136.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20161123012126.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123012126.2">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123012126.3">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123012126.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
 </t>
 <t tx="ekr.20161123012354.10">#!/usr/bin/perl
 
@@ -6878,22 +6464,6 @@ table = [
         for p in c.p.subtree()
 ]
 print("table = (\n    %s\n)" % '\n    '.join(table))</t>
-<t tx="ekr.20161123114540.18">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123114540.19">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123114540.20">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123114540.21">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
 <t tx="ekr.20161123114542.14">#!/usr/bin/perl
 
 @others
@@ -6938,24 +6508,6 @@ sub test4 {
     s = tr///}/;
 }
 </t>
-<t tx="ekr.20161123114543.19">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123114543.20">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123114543.21">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123114543.22">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -6991,22 +6543,6 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161123141750.10">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141750.11">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123141750.12">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123141750.13">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
 </t>
 <t tx="ekr.20161123141752.10">#!/usr/bin/perl
 
@@ -7052,40 +6588,6 @@ sub test4 {
     s = tr///{/;
 }
 </t>
-<t tx="ekr.20161123141753.10">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123141753.11">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123141753.12">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161123141753.9">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141958.127">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141958.128">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123141958.129">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123141958.130">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
 <t tx="ekr.20161123142000.14">#!/usr/bin/perl
 
 @others
@@ -7129,40 +6631,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161123142001.12">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142001.13">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123142001.14">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123142001.15">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161123142149.10">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142149.11">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123142149.12">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123142149.13">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
 </t>
 <t tx="ekr.20161123142151.2">#!/usr/bin/perl
 
@@ -7208,40 +6676,6 @@ sub test4 {
     s = tr///}/;
 }
 </t>
-<t tx="ekr.20161123142152.2">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142152.3">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123142152.4">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123142152.5">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161123142212.18">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142212.19">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161123142212.20">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161123142212.21">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
 <t tx="ekr.20161123142213.35">#!/usr/bin/perl
 
 @others
@@ -7285,24 +6719,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161123142214.31">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142214.32">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161123142214.33">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161123142214.34">@cmd('abc')
-def abc(self):
-    return "abc"
 </t>
 <t tx="ekr.20161123202857.1"></t>
 <t tx="ekr.20161123202924.1">s = '''\
@@ -7360,22 +6776,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20161124031628.6">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161124031628.7">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161124031628.8">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161124031628.9">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
 <t tx="ekr.20161124031630.5">#!/usr/bin/perl
 
 @others
@@ -7419,64 +6819,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161124031631.10">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161124031631.7">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161124031631.8">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161124031631.9">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161124032739.49">
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161124032739.50">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161124032739.51">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161124032739.52">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161124032739.53">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-
-&lt;title&gt;TITLE&lt;/title&gt;
-
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161124032739.6">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161124032739.7">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161124032739.8">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161124032739.9">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
 </t>
 <t tx="ekr.20161124032741.5">#!/usr/bin/perl
 
@@ -7522,24 +6864,6 @@ sub test4 {
     s = tr///}/;
 }
 </t>
-<t tx="ekr.20161124032742.10">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161124032742.7">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161124032742.8">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161124032742.9">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
 <t tx="ekr.20161124040933.1"></t>
 <t tx="ekr.20161124040933.2">@tabwidth 4 # Required
 s = '''\
@@ -7571,35 +6895,8 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161124050904.1"></t>
-<t tx="ekr.20161124050904.2"></t>
-<t tx="ekr.20161124050904.3"></t>
-<t tx="ekr.20161124050904.4"></t>
-<t tx="ekr.20161124050926.1"></t>
-<t tx="ekr.20161124050927.1"></t>
-<t tx="ekr.20161124050927.2"></t>
-<t tx="ekr.20161124050927.3"></t>
-<t tx="ekr.20161124051005.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language plain
-@tabwidth 4
-</t>
-<t tx="ekr.20161124051005.2">Sec 1.
-</t>
-<t tx="ekr.20161124051005.3">Sec 2.
-</t>
-<t tx="ekr.20161124051007.1">Sec 2-1
-</t>
-<t tx="ekr.20161124051007.2">Sect 2-1-1
-</t>
-<t tx="ekr.20161124051007.3">Sec 3
-</t>
-<t tx="ekr.20161124051007.4">Sec 3.1
 </t>
 <t tx="ekr.20161124051217.1">gnx: ekr.20161124050840.1
 unl: section 1
@@ -7663,65 +6960,6 @@ finally:
     if 1:
         p.deleteAllChildren()
 </t>
-<t tx="ekr.20161125214543.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125214543.2">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125214543.3">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161125214543.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20161125214543.44">
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125214543.45">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161125214543.46">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161125214543.47">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161125214543.48">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-
-&lt;title&gt;TITLE&lt;/title&gt;
-
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125214544.34">@others
-
-Warning: this node is ignored when writing this file.
-
-@language plain
-@tabwidth 4
-</t>
-<t tx="ekr.20161125214544.35">Sec 1.
-</t>
-<t tx="ekr.20161125214544.36">Sec 2.
-</t>
-<t tx="ekr.20161125214544.37">Sec 2-1
-</t>
-<t tx="ekr.20161125214544.38">Sect 2-1-1
-</t>
-<t tx="ekr.20161125214544.39">Sec 3
-</t>
-<t tx="ekr.20161125214544.40">Sec 3.1
-</t>
 <t tx="ekr.20161125214545.10">#!/usr/bin/perl
 
 @others
@@ -7765,83 +7003,6 @@ sub test3 {
 sub test4 {
     s = tr///{/;
 }
-</t>
-<t tx="ekr.20161125214546.10">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161125214546.11">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161125214546.12">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161125214546.9">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221901.16">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221901.17">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125221901.18">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161125221901.19">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20161125221901.59">
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221901.60">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161125221901.61">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161125221901.62">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161125221901.63">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-
-&lt;title&gt;TITLE&lt;/title&gt;
-
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125221902.37">@others
-
-Warning: this node is ignored when writing this file.
-
-@language plain
-@tabwidth 4
-</t>
-<t tx="ekr.20161125221902.38">Sec 1.
-</t>
-<t tx="ekr.20161125221902.39">Sec 2.
-</t>
-<t tx="ekr.20161125221902.40">Sec 2-1
-</t>
-<t tx="ekr.20161125221902.41">Sect 2-1-1
-</t>
-<t tx="ekr.20161125221902.42">Sec 3
-</t>
-<t tx="ekr.20161125221902.43">Sec 3.1
 </t>
 <t tx="ekr.20161125221902.54">#!/usr/bin/perl
 
@@ -7887,83 +7048,6 @@ sub test4 {
     s = tr///}/;
 }
 </t>
-<t tx="ekr.20161125221903.40">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221903.41">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161125221903.42">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161125221903.43">@cmd('abc')
-def abc(self):
-    return "abc"
-</t>
-<t tx="ekr.20161125225814.1">@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125225814.2">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125225814.3">&lt;head&gt;
-&lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-</t>
-<t tx="ekr.20161125225814.4">&lt;body class="bodystring"&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-</t>
-<t tx="ekr.20161125225814.44">
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20161125225814.45">&lt;html&gt;
-    @others
-</t>
-<t tx="ekr.20161125225814.46">&lt;head&gt;
-&lt;!-- oops: link elements terminated two different ways --&gt;
-    @others
-</t>
-<t tx="ekr.20161125225814.47">&lt;link id="L1"&gt;
-    @others
-</t>
-<t tx="ekr.20161125225814.48">&lt;link id="L2"&gt;
-&lt;link id="L3" /&gt;
-&lt;link id='L4' /&gt;
-
-&lt;title&gt;TITLE&lt;/title&gt;
-
-&lt;/head&gt;
-&lt;/html&gt;
-</t>
-<t tx="ekr.20161125225815.32">@others
-
-Warning: this node is ignored when writing this file.
-
-@language plain
-@tabwidth 4
-</t>
-<t tx="ekr.20161125225815.33">Sec 1.
-</t>
-<t tx="ekr.20161125225815.34">Sec 2.
-</t>
-<t tx="ekr.20161125225815.35">Sec 2-1
-</t>
-<t tx="ekr.20161125225815.36">Sect 2-1-1
-</t>
-<t tx="ekr.20161125225815.37">Sec 3
-</t>
-<t tx="ekr.20161125225815.38">Sec 3.1
-</t>
 <t tx="ekr.20161125225816.2">#!/usr/bin/perl
 
 @others
@@ -8007,24 +7091,6 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
-</t>
-<t tx="ekr.20161125225817.3">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20161125225817.4">class Index:
-    """docstring"""
-    @others
-</t>
-<t tx="ekr.20161125225817.5">@cherrypy.nocolor
-@cherrypy.expose
-def index(self):
-    return "Hello world!"
-    
-</t>
-<t tx="ekr.20161125225817.6">@cmd('abc')
-def abc(self):
-    return "abc"
 </t>
 <t tx="ekr.20161125230415.1">s = '''\
 =Top

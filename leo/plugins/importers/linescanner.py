@@ -604,7 +604,8 @@ class Importer(object):
     def trace_status(self, line, new_state, prev_state, stack, top):
         '''Print everything important in the v2_gen_lines loop.'''
         print('')
-        print('===== %r' % line)
+        print('===== %r' % g.toEncodedString(line))
+            # Can cause UnicodeEncodeErrors.
         print('     top.p: %s' % top.p.h)
         print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
