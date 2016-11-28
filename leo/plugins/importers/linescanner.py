@@ -362,29 +362,32 @@ class Importer(object):
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         
         def add_key(d, key, data):
-            assert not key in d, 'context: %r key: %r' % (context, key)
-            d [key] = data
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
 
         if context:
             d = {
-                # key    kind      pattern  ends?
-                '\\':   ('len+1',   '\\',    False),
-                '"':    ('len',     '"',     True),
-                "'":    ('len',     "'",     True),
+                # key    kind   pattern  ends?
+                '\\':   [('len+1', '\\', None),],
+                '"':    [('len', '"', context == '"'),],
+                "'":    [('len', "'", context == "'"),],
             }
             if block1 and block2:
                 add_key(d, block2[0], ('len', block1, True))
         else:
             # Not in any context.
             d = {
-                # key    kind       pattern new-ctx func
-                '\\':   ('len+1',   '\\',   '',     None),
-                '{':    ('len',     '{',    '',     self.add_curly),
-                '}':    ('len',     '}'     '',     self.sub_curly),
-                '(':    ('len',     '(',    '',     self.add_paren),
-                ')':    ('len',     ')',    '',     self.sub_paren),
-                '[':    ('len',     '[',    '',     self.add_square),
-                ']':    ('len',     ']',    '',     self.sub_square),
+                # key      kind pattern new-ctx func
+                '\\':   [('len+1', '\\', context, None),],
+                '"':    [('len', '"', '"', None),],
+                "'":    [('len', "'", "'", None),],
+                '{':    [('len', '{', context, self.add_curly),],
+                '}':    [('len', '}', context, self.sub_curly),],
+                '(':    [('len', '(', context, self.add_paren),],
+                ')':    [('len', ')', context, self.sub_paren),],
+                '[':    [('len', '[', context, self.add_square),],
+                ']':    [('len', ']', context, self.sub_square),],
             }
             if comment:
                 add_key(d, comment[0], ('all', comment, '', None))
@@ -462,16 +465,33 @@ class Importer(object):
         if trace: g.trace('='*20, repr(context))
         found = False
         self.delta_c = self.delta_p = self.delta_s = 0
-        data = d.get(s[i])
-        if data and context:
-            kind, pattern, ends = data
-            if self.match(s, i, pattern):
-                found = True
-                new_context = '' if ends else context
-        elif data:
-            kind, pattern, new_context, func = data
-            if self.match(s, i, pattern):
-                found = True
+        ch = s[i] # For traces.
+        aList = d.get(ch)
+        if aList and context:
+            # In context.
+            for data in aList:
+                kind, pattern, ends = data
+                if self.match(s, i, pattern):
+                    if trace: g.trace(data)
+                    if ends == None:
+                        found = True
+                        new_context = context
+                        break
+                    elif ends:
+                        found = True
+                        new_context = ''
+                        break
+                    else:
+                        pass # Ignore this match.
+        elif aList:
+            # Not in context.
+            for data in aList:
+                kind, pattern, new_context, func = data
+                if self.match(s, i, pattern):
+                    found = True
+                    if func:
+                        func()
+                    break
         if found:
             if kind == 'all':
                 i = len(s)
@@ -484,14 +504,14 @@ class Importer(object):
             if trace: g.trace(
                 '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
                 'context: %5r new_context: %5r line: %r' % (
-                    i, s[i], kind, pattern, context, new_context, s))
+                    i, ch, kind, pattern, context, new_context, s))
             return new_context, i, self.delta_c, self.delta_p, self.delta_s, bs_nl
         else:
             # No match: stay in present state. All deltas are zero.
             new_context = context
             if trace: g.trace(
                 'NO MATCH: i: %s ch: %4r context: %5r line: %r' % (
-                    i, s[i], context, s))
+                    i, ch, context, s))
         return new_context, i+1, 0, 0, 0, False
     #@+node:ekr.20161128040715.1: *5* i.delta helpers
     #@@nobeautify
@@ -612,11 +632,12 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         assert self.single_comment == '#', self.single_comment
-        trace_contexts = False
+        trace_contexts = True
         trace_states = True
         table = self.get_table(context='')
         contexts = self.all_contexts(table)
-        if trace_contexts: print('\ncontexts:'+' '.join([repr(z) for z in contexts]))
+        if trace and trace_contexts:
+            print('\ncontexts:'+' '.join([repr(z) for z in contexts]))
         for bunch in tests:
             assert bunch.line is not None
             line = bunch.line
@@ -628,10 +649,6 @@ class Importer(object):
                 prev_state.context = ctx_in
                 new_state = self.v2_scan_line(line, prev_state)
                 new_context = new_state.context
-                # if new_context != ctx_out:
-                    # g.trace('contexts', contexts)
-                    # g.trace('table...\n', table)
-                    # g.pdb()
                 if trace and trace_states: g.trace(
                     '\nprev: %s\n new: %s' % (prev_state, new_state))
                 assert new_context == ctx_out, (
@@ -646,7 +663,7 @@ class Importer(object):
                         '\nprev: %s\n new: %s' % (prev_state, new_state))
                     assert new_state.context == context, (
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
-                            line, context, new_context, prev_state, new_state))
+                            line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.Top level
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
@@ -1089,10 +1106,19 @@ class Importer(object):
         
         This is a support method for unit tests.
         '''
-        # Order must not matter, so sorting is ok.
         contexts = set()
-        for data in table:
-            contexts.add(data[2])
+        if new_scan:
+            d = table
+            for key in d:
+                aList = d.get(key)
+                for data in aList:
+                    if len(data) == 4:
+                        # It's an out-of-context entry.
+                        contexts.add(data[2])
+        else:
+            for data in table:
+                contexts.add(data[2])
+        # Order must not matter, so sorting is ok.
         return sorted(contexts)
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):

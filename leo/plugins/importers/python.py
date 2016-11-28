@@ -66,6 +66,65 @@ class Py_Importer(Importer):
         )
         if trace: g.trace('created table for python state', repr(context))
         return table
+    #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        trace = False and not g.unitTesting
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+        def add_key(d, key, data):
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        if context:
+            d = {
+                # key   kind    pattern ends?
+                '\\':   [('len+1', '\\',None),],
+                '"':[
+                        ('len', '"""',  context == '"""'),
+                        ('len', '"',    context == '"'),
+                    ],
+                "'":[
+                        ('len', "'''",  context == "'''"),
+                        ('len', "'",    context == "'"),
+                    ],
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  func
+                '\\': [('len+1','\\', context, None),],
+                '"':[
+                        # order matters.
+                        ('len', '"""',  '"""',  None),
+                        ('len', '"',    '"',    None),
+                    ],
+                "'":[
+                        # order matters.
+                        ('len', "'''",  "'''",  None),
+                        ('len', "'",    "'",    None),
+                    ],
+                '{':    [('len', '{', context, self.add_curly),],
+                '}':    [('len', '}', context, self.sub_curly),],
+                '(':    [('len', '(', context, self.add_paren),],
+                ')':    [('len', ')', context, self.sub_paren),],
+                '[':    [('len', '[', context, self.add_square),],
+                ']':    [('len', ']', context, self.sub_square),],
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+        return d
     #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.v2_gen_lines
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line (end_block)
     def add_underindented_line(self, line, new_state, stack):

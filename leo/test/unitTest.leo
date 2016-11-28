@@ -228,7 +228,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f746573747107580400000061626364710873580a000000302e362e31372e352e3171097d710a580a0000007273742d696d706f7274710b7d710c28580b000000756e6465726c696e657332710d58010000003d710e580b000000756e6465726c696e657331710f58030000002d7e2e711075735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d7114735808000000302e362e32372e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31382e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f7465737471135804000000616263647114735808000000302e362e31382e3771157d71165808000000616e6e6f7461746571177d7118735808000000302e362e32372e3771197d711a5808000000616e6e6f74617465711b7d711c73752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -318,8 +318,7 @@
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
-<v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
-<v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
+<v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
 <v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
@@ -608,6 +607,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4731"></v>
+<v t="ekr.20161115092708.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1046,7 +1046,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="10">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1331,58 +1331,6 @@ if sys.platform.lower().startswith('win'):
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
 </t>
 <t tx="ekr.20090529141856.4731"></t>
-<t tx="ekr.20090529141856.4732">if 0:
-    # The preamble...
-    g.cls()
-    if c.isChanged(): c.save()
-    # import leo
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.elisp
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.elisp)
-    imp.reload(leoImport)
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands
-
-s = '''\
-;;; a.el --- Test
-
-;; some other verbose comment
-;; some other verbose comment
-;; some other verbose comment
-
-(defun abc (a1 a2)
-  "Return blah blah."
-  (+ 1 2))
-
-(defun fgh (a1 a2)
-  "Return blah blah."
-  (- 1 2))
-
-;;; a.el ends here
-'''
-table = (
-    'defun abc',
-    'defun fgh',
-)
-try:
-    ic.elispUnitTest(p,s=s,showTree=True)
-    if 1:
-        root = c.p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-finally:
-    if 1:
-        p.deleteAllChildren()
-</t>
 <t tx="ekr.20090529141856.4733">if 0:
     # The preamble...
     g.cls()
@@ -1412,7 +1360,6 @@ s = '''\
 (defun cde (a b)
    (+ 1 2 3))
 '''
-
 
 table = (
     'defun abc',
@@ -5893,6 +5840,8 @@ finally:
 </t>
 <t tx="ekr.20161115092708.1"># g.cls()
 import leo.plugins.importers.python as python
+# import imp
+# imp.reload(python)
 &lt;&lt; define python tests &gt;&gt;
 importer = python.Py_Importer(c.importCommands, atAuto=True)
 importer.test_scan_state(tests, State=python.Python_ScanState)
@@ -5900,14 +5849,15 @@ importer.test_scan_state(tests, State=python.Python_ScanState)
 <t tx="ekr.20161115092708.2"># A list of dictionaries.
 if 0:
     tests = [
-        g.Bunch(line='s = "\\""', ctx=('', '')),
+        # g.Bunch(line='s = "\\""', ctx=('', '')),
+        g.Bunch(line='\\\n'),
     ]
 else:
     tests = [
         g.Bunch(line='\n'),
         g.Bunch(line='\\\n'),
-        g.Bunch(line='s = "\\""', ctx=('', '')),
-        g.Bunch(line="s = '\\''", ctx=('', '')),
+        g.Bunch(line='s = "\\""', ctx=('', '')), # empty string.
+        g.Bunch(line="s = '\\''", ctx=('', '')), # empty string.
         g.Bunch(line='# comment'),
         g.Bunch(line='  # comment'),
         g.Bunch(line='    # comment'),

@@ -13282,59 +13282,7 @@ finally:
     if 1:
         p.deleteAllChildren()
 #@+node:ekr.20090529141856.4731: *5* elisp tests
-#@+node:ekr.20090529141856.4732: *6* @test elisp functions
-if 0:
-    # The preamble...
-    g.cls()
-    if c.isChanged(): c.save()
-    # import leo
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.elisp
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.elisp)
-    imp.reload(leoImport)
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands
-
-s = '''\
-;;; a.el --- Test
-
-;; some other verbose comment
-;; some other verbose comment
-;; some other verbose comment
-
-(defun abc (a1 a2)
-  "Return blah blah."
-  (+ 1 2))
-
-(defun fgh (a1 a2)
-  "Return blah blah."
-  (- 1 2))
-
-;;; a.el ends here
-'''
-table = (
-    'defun abc',
-    'defun fgh',
-)
-try:
-    ic.elispUnitTest(p,s=s,showTree=True)
-    if 1:
-        root = c.p.lastChild()
-        assert root.h.startswith('@@'), root.h
-        p2 = root.firstChild()
-        for h in table:
-            assert p2.h == h, (p2.h, h)
-            p2.moveToThreadNext()
-        assert not root.isAncestorOf(p2), p2.h # Extra nodes
-finally:
-    if 1:
-        p.deleteAllChildren()
-#@+node:ekr.20090529141856.4733: *6* @test elisp 2
+#@+node:ekr.20090529141856.4733: *6* @test elisp
 if 0:
     # The preamble...
     g.cls()
@@ -13364,7 +13312,6 @@ s = '''\
 (defun cde (a b)
    (+ 1 2 3))
 '''
-
 
 table = (
     'defun abc',
@@ -13384,38 +13331,6 @@ finally:
     if 1:
         p.deleteAllChildren()
 
-#@+node:ekr.20161127190703.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp 2
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161127190703.2: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161127190703.3: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161127190723.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp 2
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161127190723.2: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161127190723.3: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -15530,6 +15445,8 @@ c.importCommands.phpUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
 # g.cls()
 import leo.plugins.importers.python as python
+# import imp
+# imp.reload(python)
 << define python tests >>
 importer = python.Py_Importer(c.importCommands, atAuto=True)
 importer.test_scan_state(tests, State=python.Python_ScanState)
@@ -15537,14 +15454,15 @@ importer.test_scan_state(tests, State=python.Python_ScanState)
 # A list of dictionaries.
 if 0:
     tests = [
-        g.Bunch(line='s = "\\""', ctx=('', '')),
+        # g.Bunch(line='s = "\\""', ctx=('', '')),
+        g.Bunch(line='\\\n'),
     ]
 else:
     tests = [
         g.Bunch(line='\n'),
         g.Bunch(line='\\\n'),
-        g.Bunch(line='s = "\\""', ctx=('', '')),
-        g.Bunch(line="s = '\\''", ctx=('', '')),
+        g.Bunch(line='s = "\\""', ctx=('', '')), # empty string.
+        g.Bunch(line="s = '\\''", ctx=('', '')), # empty string.
         g.Bunch(line='# comment'),
         g.Bunch(line='  # comment'),
         g.Bunch(line='    # comment'),
