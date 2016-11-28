@@ -19,7 +19,7 @@ class RstWriter(basewriter.BaseWriter):
     # def __init__(self,c):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
-    #@+node:ekr.20140726091031.18150: *3* rstw.underline_char (todo: check for root.uA)
+    #@+node:ekr.20140726091031.18150: *3* rstw.underline_char
     def underline_char(self, p, root_level):
         '''Return the underlining character for position p.'''
         underlines = '=+*^~"\'`-:><_'

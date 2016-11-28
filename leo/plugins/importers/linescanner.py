@@ -88,6 +88,7 @@ else:
 import re
 import time
 #@-<< linescanner imports >>
+new_scan = False # True: use scanning dictionaries.
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer(object):
@@ -349,7 +350,49 @@ class Importer(object):
         '''
         pass
     #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
-    #@+node:ekr.20161115075016.1: *4* i.get_new_table (generalized)
+    #@+node:ekr.20161128025508.1: *4* i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        trace = False and not g.unitTesting
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+        def add_key(d, key, data):
+            assert not key in d, 'context: %r key: %r' % (context, key)
+            d [key] = data
+
+        if context:
+            d = {
+                # key    kind      pattern  ends?
+                '\\':   ('len+1',   '\\',    False),
+                '"':    ('len',     '"',     True),
+                "'":    ('len',     "'",     True),
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind       pattern new-ctx func
+                '\\':   ('len+1',   '\\',   '',     None),
+                '{':    ('len',     '{',    '',     self.add_curly),
+                '}':    ('len',     '}'     '',     self.sub_curly),
+                '(':    ('len',     '(',    '',     self.add_paren),
+                ')':    ('len',     ')',    '',     self.sub_paren),
+                '[':    ('len',     '[',    '',     self.add_square),
+                ']':    ('len',     ']',    '',     self.sub_square),
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+        return d
+    #@+node:ekr.20161115075016.1: *4* i.get_new_table
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -403,15 +446,69 @@ class Importer(object):
         if table:
             return table
         else:
-            table = self.get_new_table(context)
+            if new_scan:
+                table = self.get_new_dict(context)
+            else:
+                table = self.get_new_table(context)
             self.cached_scan_tables[key] = table
             return table
+    #@+node:ekr.20161128025444.1: *4* i.scan_dict & delta helpers
+    def scan_dict(self, context, i, s, d):
+        '''
+        i.scan_dict: Scan at position i of s with the give context and dict.
+        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
+        '''
+        trace = False and g.unitTesting
+        if trace: g.trace('='*20, repr(context))
+        found = False
+        self.delta_c = self.delta_p = self.delta_s = 0
+        data = d.get(s[i])
+        if data and context:
+            kind, pattern, ends = data
+            if self.match(s, i, pattern):
+                found = True
+                new_context = '' if ends else context
+        elif data:
+            kind, pattern, new_context, func = data
+            if self.match(s, i, pattern):
+                found = True
+        if found:
+            if kind == 'all':
+                i = len(s)
+            elif kind == 'len+1':
+                i += (len(pattern) + 1)
+            else:
+                assert kind == 'len', (kind, self.name)
+                i += len(pattern)
+            bs_nl = pattern == '\\\n'
+            if trace: g.trace(
+                '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
+                'context: %5r new_context: %5r line: %r' % (
+                    i, s[i], kind, pattern, context, new_context, s))
+            return new_context, i, self.delta_c, self.delta_p, self.delta_s, bs_nl
+        else:
+            # No match: stay in present state. All deltas are zero.
+            new_context = context
+            if trace: g.trace(
+                'NO MATCH: i: %s ch: %4r context: %5r line: %r' % (
+                    i, s[i], context, s))
+        return new_context, i+1, 0, 0, 0, False
+    #@+node:ekr.20161128040715.1: *5* i.delta helpers
+    #@@nobeautify
+
+    # These are the functions in the scan dics called by i.scan_dict.
+    def add_curly(self): self.delta_c += 1
+    def sub_curly(self): self.delta_c -= 1
+
+    def add_paren(self): self.delta_p += 1
+    def sub_paren(self): self.delta_p -= 1
+
+    def add_square(self): self.delta_s += 1
+    def sub_square(self): self.delta_s -= 1
     #@+node:ekr.20161113052225.1: *4* i.scan_table
     def scan_table(self, context, i, s, table):
         '''
         i.scan_table: Scan at position i of s with the give context and table.
-        May be overridden in subclasses, but most importers will use this code.
-        
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
         trace = False and g.unitTesting
@@ -488,8 +585,12 @@ class Importer(object):
         while i < len(s):
             progress = i
             context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_table(context, i, s, table)
+            if new_scan:
+                table = self.get_table(context)
+                data = self.scan_dict(context, i, s, table)
+            else:
+                table = self.get_table(context)
+                data = self.scan_table(context, i, s, table)
             i = new_state.update(data)
             assert progress < i
         if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
