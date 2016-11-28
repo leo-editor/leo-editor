@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18141: * @file importers/elisp.py
 '''The @auto importer for the elisp language.'''
+import re
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 #@+others
@@ -20,28 +21,23 @@ class Elisp_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161127184128.4: *3* elisp.clean_headline
-    ###
-    # A more complex example, for the C language.
-    # def clean_headline(self, s):
-        # '''Return a cleaned up headline s.'''
-        # import re
-        # type1 = r'(static|extern)*'
-        # type2 = r'(void|int|float|double|char)*'
-        # class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
-        # pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
-        # m = re.match(class_pattern, s)
-        # if m:
-            # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            # return '%sclass %s' % (prefix1, m.group(2))
-        # m = re.match(pattern, s)
-        # if m:
-            # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            # prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
-            # h = m.group(3) or '<no c function name>'
-            # return '%s%s%s' % (prefix1, prefix2, h)
-        # else:
-            # return s
+    #@+node:ekr.20161127184128.4: *3* elisp_i.clean_headline
+    elisp_clean_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
+
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        m = self.elisp_clean_pattern.match(s)
+        if m and m.group(1):
+            return 'defun %s' % m.group(1)
+        else:
+            return s.strip()
+    #@+node:ekr.20161127185851.1: *3* elisp_i.starts_block
+    def starts_block(self, line, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        return (
+            new_state.level() > prev_state.level() and
+            self.elisp_clean_pattern.match(line)
+        )
     #@-others
 #@+node:ekr.20161127184128.6: ** class Elisp_ScanState
 class Elisp_ScanState:

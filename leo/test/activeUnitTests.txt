@@ -13318,8 +13318,8 @@ s = '''\
 ;;; a.el ends here
 '''
 table = (
-    '(defun abc (a1 a2)',
-    '(defun fgh (a1 a2)',
+    'defun abc',
+    'defun fgh',
 )
 try:
     ic.elispUnitTest(p,s=s,showTree=True)
@@ -13367,8 +13367,8 @@ s = '''\
 
 
 table = (
-    '(defun abc (a b)',
-    '(defun cde (a b)',
+    'defun abc',
+    'defun cde',
 )
 try:
     ic.elispUnitTest(p,s=s,showTree=True)
@@ -13384,6 +13384,38 @@ finally:
     if 1:
         p.deleteAllChildren()
 
+#@+node:ekr.20161127190703.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp 2
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161127190703.2: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161127190703.3: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
+#@+node:ekr.20161127190723.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp 2
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161127190723.2: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161127190723.3: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
