@@ -25,7 +25,7 @@ class Markdown_Importer(Importer):
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.v2_gen_lines & helpers
     def v2_gen_lines(self, s, parent):
-        '''Node generator for org mode.'''
+        '''Node generator for markdown importer.'''
         trace = False and g.unitTesting
         if not s or s.isspace():
             return
@@ -33,18 +33,25 @@ class Markdown_Importer(Importer):
         # We may as well do this first.  See warning below.
         self.add_line(parent, '@others\n')
         self.stack = [parent]
+        in_code = False
         for i, line in enumerate(g.splitLines(s)):
             kind, level, name = self.starts_section(line)
+            top = self.stack[-1]
             if trace: g.trace('%2s kind: %4r, level: %4r name: %10r %r' % (
                 i+1, kind, level, name, line))
             if i == 0 and not kind:
                 self.make_decls_node(line)
+            elif in_code:
+                if line.startswith("```"):
+                    in_code = False
+                self.add_line(top, line)
             elif self.is_underline(line):
                 self.do_underline(line)
             elif kind:
                 self.make_node(kind, level, line, name)
             else:
-                top = self.stack[-1]
+                if line.startswith("```"):
+                    in_code = True
                 self.add_line(top, line)
         warning = '\nWarning: this node is ignored when writing this file.\n\n'
         self.add_line(parent, warning)
@@ -220,21 +227,13 @@ class Markdown_Importer(Importer):
         return child
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass
     def post_pass(self, parent):
-        '''
-        Optional Stage 2 of the importer pipeline, consisting of zero or more
-        substages. Each substage alters nodes in various ways.
-        
-        Subclasses may freely override this method, **provided** that all
-        substages use the API for setting body text. Changing p.b directly will
-        cause asserts to fail later in i.finish().
-        '''
-        # Do nothing!
+        '''A do-nothing post-pass for markdown.'''
     #@-others
 #@-others
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
     'class': Markdown_Importer,
-    'extensions': ['.md'],
+    'extensions': ['.md', '.rmd'],
 }
 #@@language python
 #@@tabwidth -4
