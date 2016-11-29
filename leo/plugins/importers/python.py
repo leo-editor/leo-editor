@@ -101,16 +101,16 @@ class Py_Importer(Importer):
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\': [('len+1','\\', context, (0,0,0)),],
+                '\\': [('len+1','\\', context, None),],
                 '"':[
                         # order matters.
-                        ('len', '"""',  '"""', (0,0,0)),
-                        ('len', '"',    '"',   (0,0,0)),
+                        ('len', '"""',  '"""', None),
+                        ('len', '"',    '"',   None),
                     ],
                 "'":[
                         # order matters.
-                        ('len', "'''",  "'''", (0,0,0)),
-                        ('len', "'",    "'",   (0,0,0)),
+                        ('len', "'''",  "'''", None),
+                        ('len', "'",    "'",   None),
                     ],
                 '{':    [('len', '{', context, (1,0,0)),],
                 '}':    [('len', '}', context, (-1,0,0)),],
@@ -120,9 +120,9 @@ class Py_Importer(Importer):
                 ']':    [('len', ']', context, (0,0,-1)),],
             }
             if comment:
-                add_key(d, comment[0], ('all', comment, '', (0,0,0)))
+                add_key(d, comment[0], ('all', comment, '', None))
             if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, (0,0,0)))
+                add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.v2_gen_lines

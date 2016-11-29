@@ -350,7 +350,7 @@ class Importer(object):
         '''
         pass
     #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
-    #@+node:ekr.20161128190217.1: *4* i.to be retired
+    #@+node:ekr.20161128190217.1: *4* i. to be retired
     #@+node:ekr.20161115075016.1: *5* i.get_new_table
     #@@nobeautify
 
@@ -490,9 +490,9 @@ class Importer(object):
             # Not in any context.
             d = {
                 # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, (0,0,0)),],
-                '"':    [('len', '"', '"',     (0,0,0)),],
-                "'":    [('len', "'", "'",     (0,0,0)),],
+                '\\':[('len+1', '\\', context, None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
                 '{':    [('len', '{', context, (1,0,0)),],
                 '}':    [('len', '}', context, (-1,0,0)),],
                 '(':    [('len', '(', context, (0,1,0)),],
@@ -501,9 +501,9 @@ class Importer(object):
                 ']':    [('len', ']', context, (0,0,-1)),],
             }
             if comment:
-                add_key(d, comment[0], ('all', comment, '', (0,0,0)))
+                add_key(d, comment[0], ('all', comment, '', None))
             if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, (0,0,0)))
+                add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
@@ -567,46 +567,6 @@ class Importer(object):
                 'NO MATCH: i: %s ch: %r context: %r line: %r' % (
                     i, ch, context, s))
         return new_context, i+1, 0, 0, 0, False
-    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
-    def v2_scan_line(self, s, prev_state):
-        '''
-        A generalized scan-line method.
-        
-        SCAN STATE PROTOCOL:
-        
-        The Importer class should have a state_class ivar that references a
-        **state class**. This class probably should *not* be subclass of the
-        ScanState class, but it should observe the following protocol:
-        
-        1. The state class's ctor must have the following signature:
-            
-            def __init__(self, d)
-            
-        2. The state class must have an update method.
-        '''
-        trace = False and g.unitTesting
-        # This dict allows new data to be added without changing ScanState signatures.
-        d = {
-            'indent': self.get_int_lws(s),
-            'is_ws_line': self.is_ws_line(s),
-            'prev':prev_state,
-            's':s,
-        }
-        new_state = self.state_class(d)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            if new_scan:
-                data = self.scan_dict(context, i, s, table)
-            else:
-                data = self.scan_table(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
-        return new_state
-    #@+node:ekr.20161114025200.1: *3* i.Tests
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
         '''
@@ -655,6 +615,45 @@ class Importer(object):
                     assert new_state.context == context, (
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
+    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
+    def v2_scan_line(self, s, prev_state):
+        '''
+        A generalized scan-line method.
+        
+        SCAN STATE PROTOCOL:
+        
+        The Importer class should have a state_class ivar that references a
+        **state class**. This class probably should *not* be subclass of the
+        ScanState class, but it should observe the following protocol:
+        
+        1. The state class's ctor must have the following signature:
+            
+            def __init__(self, d)
+            
+        2. The state class must have an update method.
+        '''
+        trace = False and g.unitTesting
+        # This dict allows new data to be added without changing ScanState signatures.
+        d = {
+            'indent': self.get_int_lws(s),
+            'is_ws_line': self.is_ws_line(s),
+            'prev':prev_state,
+            's':s,
+        }
+        new_state = self.state_class(d)
+        i = 0
+        while i < len(s):
+            progress = i
+            context = new_state.context
+            table = self.get_table(context)
+            if new_scan:
+                data = self.scan_dict(context, i, s, table)
+            else:
+                data = self.scan_table(context, i, s, table)
+            i = new_state.update(data)
+            assert progress < i
+        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
+        return new_state
     #@+node:ekr.20161108165530.1: *3* i.Top level
     #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
