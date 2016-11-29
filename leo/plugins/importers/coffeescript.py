@@ -58,7 +58,7 @@ class CS_Importer(Importer):
         )
         if trace: g.trace('created table for coffescript state', repr(context))
         return table
-    #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict (TO DO)
+    #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict (test)
     #@@nobeautify
 
     def get_new_dict(self, context):
@@ -78,6 +78,7 @@ class CS_Importer(Importer):
             d = {
                 # key    kind   pattern  ends?
                 '\\':   [('len+1', '\\', None),],
+                '#':    [('len', '###',  context == '###'),],
                 '"':    [('len', '"',    context == '"'),],
                 "'":    [('len', "'",    context == "'"),],
             }
@@ -88,6 +89,7 @@ class CS_Importer(Importer):
             d = {
                 # key    kind pattern new-ctx  deltas
                 '\\':[('len+1', '\\', context, None),],
+                '#':    [('len','###','###',   None),], # Docstring
                 '"':    [('len', '"', '"',     None),],
                 "'":    [('len', "'", "'",     None),],
                 '{':    [('len', '{', context, (1,0,0)),],

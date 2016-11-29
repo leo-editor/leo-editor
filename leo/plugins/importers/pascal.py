@@ -80,7 +80,7 @@ class Pascal_Importer(Importer):
             val = g.match_word(ls, 0, 'end')
             if trace and val: g.trace('  ', val, repr(line))
             return val
-    #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict (TO DO)
+    #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
