@@ -88,7 +88,10 @@ else:
 import re
 import time
 #@-<< linescanner imports >>
-new_scan = False # True: use scanning dictionaries.
+#@+<< new_scan switch >>
+#@+node:ekr.20161129030422.1: ** << new_scan switch >>
+new_scan = True # True: use scanning dictionaries.
+#@-<< new_scan switch >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
 class Importer(object):
@@ -351,7 +354,7 @@ class Importer(object):
         pass
     #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
     #@+node:ekr.20161128190217.1: *4* i. to be retired
-    #@+node:ekr.20161115075016.1: *5* i.get_new_table
+    #@+node:ekr.20161115075016.1: *5* i.get_new_table (converted)
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -538,6 +541,11 @@ class Importer(object):
             # Not in context.
             for data in aList:
                 kind, pattern, new_context, deltas = data
+                # try:
+                    # kind, pattern, new_context, deltas = data
+                # except ValueError:
+                    # g.trace(data)
+                    # break
                 if self.match(s, i, pattern):
                     found = True
                     if deltas:

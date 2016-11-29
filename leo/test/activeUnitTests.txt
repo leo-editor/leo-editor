@@ -13331,6 +13331,38 @@ finally:
     if 0:
         p.deleteAllChildren()
 
+#@+node:ekr.20161129031547.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161129031547.2: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161129031547.3: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
+#@+node:ekr.20161129032938.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161129032938.8: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161129032938.9: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -14127,8 +14159,11 @@ if ($bar =~ /foo/){
 # Function call
 Hello();
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161103021621.1: *6* @test perlpod comment
 s = '''\
 #!/usr/bin/perl
@@ -14148,7 +14183,11 @@ sub Hello{
    print "Hello, World!\n";
 }
 '''
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161103021420.1: *6* @test perl multi-line string
 s = '''\
 #!/usr/bin/perl
@@ -14162,7 +14201,11 @@ sub World {
 
 world\n";
 '''
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161119031833.1: *6* @test perl regex-1
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -14188,585 +14231,28 @@ sub test4 {
     s = tr///{/;
 }
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=True)
-#@+node:ekr.20161119041435.17: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119041435.18: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161119042544.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119042544.3: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161119042817.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119042817.2: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161119051936.5: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119051936.6: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161119074649.11: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119074649.12: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161121202536.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161121202536.2: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161122071255.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161122071255.15: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123004143.8: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123004143.9: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123004945.33: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123004945.34: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123012354.8: *7* @@file c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123012354.9: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123114542.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123114542.15: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123141752.8: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123141752.9: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123142000.14: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142000.15: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123142151.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142151.3: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161123142213.35: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142213.36: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161124031630.5: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161124031630.6: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161124032741.5: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161124032741.6: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161125214545.8: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125214545.9: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161125221902.54: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125221902.55: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161125225816.2: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125225816.3: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127043143.26: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127043143.27: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127102817.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127102817.2: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127171120.36: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127171120.37: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127171304.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127171304.2: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127173404.43: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127173404.44: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-#@+node:ekr.20161127185311.32: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-1
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127185311.33: *8* sub test1
-sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
-# ('len',   'tr///', '/',       context,  0,       0,       0),
-# ('len',   's///',  '/',       context,  0,       0,       0),
-# ('len',   'm//',   '/',       context,  0,       0,       0),
-# ('len',   '/',     '/',       '',       0,       0,       0),
+if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.perl
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.perl)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 
 s = '''\
 #!/usr/bin/perl
@@ -14787,580 +14273,25 @@ sub test4 {
     s = tr///}/;
 }
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=True)
-#@+node:ekr.20161119041435.19: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119041435.20: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161119042544.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119042544.5: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161119042817.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119042817.4: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161119051936.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119051936.8: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161119074649.13: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161119074649.14: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161121202536.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161121202536.4: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161122071255.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161122071255.17: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123004143.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123004143.11: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123004946.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123004946.2: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123012354.10: *7* @@file c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123012354.11: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123114542.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123114542.17: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123141752.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123141752.11: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123142000.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142000.17: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123142151.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142151.5: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161123142213.37: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161123142213.38: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161124031630.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161124031630.8: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161124032741.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161124032741.8: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161125214545.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125214545.11: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161125221903.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125221903.2: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161125225816.4: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161125225816.5: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127043143.28: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127043143.29: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127102817.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127102817.4: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127171120.38: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127171120.39: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127171304.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127171304.4: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127173405.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127173405.2: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161127185311.34: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161127185311.35: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
+table = (
+    'sub test1',
+    'sub test2',
+    'sub test3',
+    'sub test4'
+)
+try:
+    ic.perlUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\

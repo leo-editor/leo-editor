@@ -80,7 +80,52 @@ class Pascal_Importer(Importer):
             val = g.match_word(ls, 0, 'end')
             if trace and val: g.trace('  ', val, repr(line))
             return val
-    #@+node:ekr.20161127105609.1: *3* pascal_i.get_new_table
+    #@+node:ekr.20161129024448.1: *3* pascal_i.get_new_dict (TO DO)
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        trace = False and g.unitTesting
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+        def add_key(d, key, data):
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        if context:
+            d = {
+                # key    kind   pattern  ends?
+                '\\':   [('len+1', '\\', None),],
+                '"':    [('len', '"',    context == '"'),],
+                "'":    [('len', "'",    context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+        return d
+    #@+node:ekr.20161127105609.1: *3* pascal_i.get_new_table (converted)
     #@@nobeautify
 
     def get_new_table(self, context):

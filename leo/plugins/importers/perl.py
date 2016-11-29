@@ -49,31 +49,60 @@ class Perl_Importer(Importer):
                         while lines and lines[-1].strip().startswith('#'):
                             next.b = lines.pop() + next.b
                         p.b = ''.join(lines)
-    #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
-    def skip_regex(self, s, i, pattern):
-        '''look ahead for a regex /'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(repr(s))
-        assert self.match(s, i, pattern)
-        i += len(pattern)
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                if ch == '\\':
-                    i += 2
-                elif ch == '/':
-                    i += 1
-                    break
-                else:
-                    i += 1
-                assert progress < i
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i
-    #@+node:ekr.20161113140420.1: *3* perl_i.get_new_table
+    #@+node:ekr.20161129024520.1: *3* perl_i.get_new_dict (test)
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        trace = False and g.unitTesting
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+        def add_key(d, key, data):
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        if context:
+            d = {
+                # key    kind   pattern  ends?
+                '\\':   [('len+1', '\\', None),],
+                '=':    [('len', '=cut', context == '='),],
+                '/':    [('len', '/',    context == '/'),],
+                '"':    [('len', '"',    context == '"'),],
+                "'":    [('len', "'",    context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None),],
+                '#':    [('all', '#', context, None),],
+                '=':    [('len', '=', context, None),],
+                't':    [('len', 'tr///', '/', None),],
+                's':    [('len', 's///',  '/', None),],
+                'm':    [('len', 'm//',   '/', None),],
+                '/':    [('len', '/',     '/', None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+        return d
+    #@+node:ekr.20161113140420.1: *3* perl_i.get_new_table (converted)
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -114,6 +143,30 @@ class Perl_Importer(Importer):
         )
         if trace: g.trace('created table for general state', (context))
         return table
+    #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
+    def skip_regex(self, s, i, pattern):
+        '''look ahead for a regex /'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(repr(s))
+        assert self.match(s, i, pattern)
+        i += len(pattern)
+        while i < len(s) and s[i] in ' \t':
+            i += 1
+        if i < len(s) and s[i] == '/':
+            i += 1
+            while i < len(s):
+                progress = i
+                ch = s[i]
+                if ch == '\\':
+                    i += 2
+                elif ch == '/':
+                    i += 1
+                    break
+                else:
+                    i += 1
+                assert progress < i
+        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
+        return i
     #@-others
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:

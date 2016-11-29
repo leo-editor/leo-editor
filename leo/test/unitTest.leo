@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.56" body_secondary_ratio="0.89">
+<globals body_outline_ratio="0.36" body_secondary_ratio="0.89">
 	<global_window_position top="55" left="481" height="958" width="828"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -11,31 +11,32 @@
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
-<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
-<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
-<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
-<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
-</v>
-<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
 <v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
+<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
-<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
-<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
-<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
-</v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
+</v>
+<v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
+<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
+<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
+</v>
+<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
+<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
+<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
 </v>
 <v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
 <v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
@@ -228,7 +229,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d710028580a000000302e362e31372e352e3171017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657331710558030000002d7e2e7106580b000000756e6465726c696e657332710758010000003d710875735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d710473580a000000302e362e31372e352e3171057d7106580a0000007273742d696d706f727471077d710828580b000000756e6465726c696e657332710958010000003d710a580b000000756e6465726c696e657331710b58030000002d7e2e710c75735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c7114735808000000302e362e31362e3371157d71165808000000616e6e6f7461746571177d7118735808000000302e362e31322e3971197d711a5809000000756e69745f74657374711b580400000061626364711c73752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161123115047.1,ekr.20161108034116.1,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
@@ -290,10 +292,10 @@
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -304,23 +306,32 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
-<v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4733"><vh>@test elisp</vh>
+<v t="ekr.20161129031547.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/elisp</vh>
+<v t="ekr.20161129031547.2"><vh>defun abc</vh></v>
+<v t="ekr.20161129031547.3"><vh>defun cde</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20161129032938.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
+<v t="ekr.20161129032938.8"><vh>defun abc</vh></v>
+<v t="ekr.20161129032938.9"><vh>defun cde</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -331,10 +342,10 @@
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -342,7 +353,7 @@
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -350,186 +361,28 @@
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1"><vh>org tests</vh>
+<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
 <v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
-<v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh>
-<v t="ekr.20161119041435.17"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161119041435.18"><vh>sub test1</vh></v>
+<v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
+<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
-<v t="ekr.20161119042544.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161119042544.3"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119042817.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161119042817.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119051936.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161119051936.6"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119074649.11"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161119074649.12"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161121202536.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161121202536.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161122071255.14"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161122071255.15"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123004143.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123004143.9"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123004945.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123004945.34"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123012354.8"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123012354.9"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123114542.14"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123114542.15"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123141752.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123141752.9"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142000.14"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123142000.15"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142151.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123142151.3"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142213.35"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161123142213.36"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161124031630.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161124031630.6"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161124032741.5"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161124032741.6"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125214545.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161125214545.9"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125221902.54"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161125221902.55"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125225816.2"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161125225816.3"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127043143.26"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127043143.27"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127102817.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127102817.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127171120.36"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127171120.37"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127171304.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127171304.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127173404.43"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127173404.44"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127185311.32"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-1</vh>
-<v t="ekr.20161127185311.33"><vh>sub test1</vh></v>
-</v>
-</v>
-<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
-<v t="ekr.20161119041435.19"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161119041435.20"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119042544.4"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161119042544.5"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119042817.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161119042817.4"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119051936.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161119051936.8"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161119074649.13"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161119074649.14"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161121202536.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161121202536.4"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161122071255.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161122071255.17"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123004143.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123004143.11"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123004946.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123004946.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123012354.10"><vh>@@file c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123012354.11"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123114542.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123114542.17"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123141752.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123141752.11"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142000.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123142000.17"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142151.4"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123142151.5"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161123142213.37"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161123142213.38"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161124031630.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161124031630.8"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161124032741.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161124032741.8"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125214545.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161125214545.11"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125221903.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161125221903.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161125225816.4"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161125225816.5"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127043143.28"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127043143.29"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127102817.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127102817.4"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127171120.38"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127171120.39"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127171304.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127171304.4"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127173405.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127173405.2"><vh>sub test1</vh></v>
-</v>
-<v t="ekr.20161127185311.34"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161127185311.35"><vh>sub test1</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -566,24 +419,24 @@
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
 <v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
 <v t="ekr.20161126111517.1"><vh>@test markdown importer-implicit section</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
@@ -592,7 +445,7 @@
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 </v>
-<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -606,7 +459,8 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"></v>
+<v t="ekr.20090529141856.4731" a="E"></v>
+<v t="ekr.20161103015908.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1045,7 +899,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3130,7 +2984,7 @@ The top chapter.
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657331710158030000002d7e2e7102580b000000756e6465726c696e657332710358010000003d7104752e"></t>
+<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -3750,8 +3604,11 @@ if ($bar =~ /foo/){
 # Function call
 Hello();
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20161103021420.1">s = '''\
 #!/usr/bin/perl
@@ -3765,7 +3622,11 @@ sub World {
 
 world\n";
 '''
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20161103021621.1">s = '''\
 #!/usr/bin/perl
@@ -3785,7 +3646,11 @@ sub Hello{
    print "Hello, World!\n";
 }
 '''
-c.importCommands.perlUnitTest(p,s=s,showTree=False)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20161103075725.1"># These fail with the NEW (strict) import tests and the OLD scanners.</t>
 <t tx="ekr.20161108034116.1"></t>
@@ -6068,13 +5933,28 @@ sub test4 {
     s = tr///{/;
 }
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=True)
+try:
+    c.importCommands.perlUnitTest(p,s=s,showTree=True)
+finally:
+    if 1:
+        p.deleteAllChildren()
 </t>
-<t tx="ekr.20161119032623.1"># ('len',   'tr///', '/',       context,  0,       0,       0),
-# ('len',   's///',  '/',       context,  0,       0,       0),
-# ('len',   'm//',   '/',       context,  0,       0,       0),
-# ('len',   '/',     '/',       '',       0,       0,       0),
+<t tx="ekr.20161119032623.1">if 0:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.perl
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.perl)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 
 s = '''\
 #!/usr/bin/perl
@@ -6095,448 +5975,25 @@ sub test4 {
     s = tr///}/;
 }
 '''
-
-c.importCommands.perlUnitTest(p,s=s,showTree=True)
-</t>
-<t tx="ekr.20161119041435.17">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119041435.18">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161119041435.19">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119041435.20">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161119042544.2">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119042544.3">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161119042544.4">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119042544.5">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161119042817.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119042817.2">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161119042817.3">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119042817.4">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161119051936.5">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119051936.6">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161119051936.7">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119051936.8">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161119074649.11">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119074649.12">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161119074649.13">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161119074649.14">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161121202536.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161121202536.2">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161121202536.3">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161121202536.4">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161122071255.14">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161122071255.15">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161122071255.16">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161122071255.17">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123004143.10">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004143.11">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123004143.8">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004143.9">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123004945.33">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004945.34">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123004946.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123004946.2">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123012354.10">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123012354.11">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123012354.8">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123012354.9">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
+table = (
+    'sub test1',
+    'sub test2',
+    'sub test3',
+    'sub test4'
+)
+try:
+    ic.perlUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
 </t>
 <t tx="ekr.20161123080832.1">'''Create a table of expected headlines in a unit test.'''
 g.cls()
@@ -6546,50 +6003,6 @@ table = [
         for p in c.p.subtree()
 ]
 print("table = (\n    %s\n)" % '\n    '.join(table))</t>
-<t tx="ekr.20161123114542.14">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123114542.15">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123114542.16">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123114542.17">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -6625,182 +6038,6 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161123141752.10">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141752.11">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123141752.8">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123141752.9">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123142000.14">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142000.15">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123142000.16">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142000.17">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123142151.2">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142151.3">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123142151.4">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142151.5">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161123142213.35">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142213.36">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161123142213.37">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161123142213.38">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
 </t>
 <t tx="ekr.20161123202857.1"></t>
 <t tx="ekr.20161123202924.1">s = '''\
@@ -6857,94 +6094,6 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
-</t>
-<t tx="ekr.20161124031630.5">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161124031630.6">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161124031630.7">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161124031630.8">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161124032741.5">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161124032741.6">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161124032741.7">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161124032741.8">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
 </t>
 <t tx="ekr.20161124040933.1"></t>
 <t tx="ekr.20161124040933.2">@tabwidth 4 # Required
@@ -7041,138 +6190,6 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161125214545.10">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125214545.11">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161125214545.8">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125214545.9">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161125221902.54">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221902.55">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161125221903.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125221903.2">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161125225816.2">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125225816.3">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161125225816.4">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161125225816.5">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
 </t>
 <t tx="ekr.20161125230415.1">s = '''\
 =Top
@@ -7281,226 +6298,6 @@ unl: section 1
 gnx: ekr.20161126111959.5
 unl: section 2
 </t>
-<t tx="ekr.20161127043143.26">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127043143.27">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161127043143.28">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127043143.29">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161127102817.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127102817.2">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161127102817.3">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127102817.4">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161127171120.36">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127171120.37">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161127171120.38">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127171120.39">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161127171304.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127171304.2">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161127171304.3">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127171304.4">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
-<t tx="ekr.20161127173404.43">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127173404.44">sub test1 {
-    s = /{/g;
-}
-
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
-</t>
-<t tx="ekr.20161127173405.1">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161127173405.2">sub test1 {
-    s = /}/g;
-}
-
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
-</t>
 <t tx="ekr.20161127181028.1">if 0:
     # The preamble...
     g.cls()
@@ -7553,49 +6350,38 @@ finally:
     if 1:
         p.deleteAllChildren()
 </t>
-<t tx="ekr.20161127185311.32">#!/usr/bin/perl
+<t tx="ekr.20161129030232.1"></t>
+<t tx="ekr.20161129031547.1">;;; comment
+;;; continue
+;;;
 
 @others
-@language perl
+@language lisp
 @tabwidth -4
 </t>
-<t tx="ekr.20161127185311.33">sub test1 {
-    s = /{/g;
-}
+<t tx="ekr.20161129031547.2">(defun abc (a b)
+   (+ 1 2 3))
 
-sub test2 {
-    s = m//{/;
-}
-
-sub test3 {
-    s = s///{/;
-}
-
-sub test4 {
-    s = tr///{/;
-}
+; comm
 </t>
-<t tx="ekr.20161127185311.34">#!/usr/bin/perl
+<t tx="ekr.20161129031547.3">(defun cde (a b)
+   (+ 1 2 3))
+</t>
+<t tx="ekr.20161129032938.7">;;; comment
+;;; continue
+;;;
 
 @others
-@language perl
+@language lisp
 @tabwidth -4
 </t>
-<t tx="ekr.20161127185311.35">sub test1 {
-    s = /}/g;
-}
+<t tx="ekr.20161129032938.8">(defun abc (a b)
+   (+ 1 2 3))
 
-sub test2 {
-    s = m//}/;
-}
-
-sub test3 {
-    s = s///}/;
-}
-
-sub test4 {
-    s = tr///}/;
-}
+; comm
+</t>
+<t tx="ekr.20161129032938.9">(defun cde (a b)
+   (+ 1 2 3))
 </t>
 </tnodes>
 </leo_file>

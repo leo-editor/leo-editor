@@ -34,7 +34,7 @@ class Py_Importer(Importer):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
-    #@+node:ekr.20161113082348.1: *3* py_i.get_new_table
+    #@+node:ekr.20161113082348.1: *3* py_i.get_new_table (converted)
     #@@nobeautify
 
     def get_new_table(self, context):
@@ -102,6 +102,7 @@ class Py_Importer(Importer):
             d = {
                 # key    kind pattern new-ctx  deltas
                 '\\': [('len+1','\\', context, None),],
+                '#':  [('all', '#',   context, None),],
                 '"':[
                         # order matters.
                         ('len', '"""',  '"""', None),
