@@ -74,7 +74,7 @@ class Py_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         '''
-        trace = False and not g.unitTesting
+        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         
         def add_key(d, key, data):
@@ -100,29 +100,29 @@ class Py_Importer(Importer):
         else:
             # Not in any context.
             d = {
-                # key    kind pattern new-ctx  func
-                '\\': [('len+1','\\', context, None),],
+                # key    kind pattern new-ctx  deltas
+                '\\': [('len+1','\\', context, (0,0,0)),],
                 '"':[
                         # order matters.
-                        ('len', '"""',  '"""',  None),
-                        ('len', '"',    '"',    None),
+                        ('len', '"""',  '"""', (0,0,0)),
+                        ('len', '"',    '"',   (0,0,0)),
                     ],
                 "'":[
                         # order matters.
-                        ('len', "'''",  "'''",  None),
-                        ('len', "'",    "'",    None),
+                        ('len', "'''",  "'''", (0,0,0)),
+                        ('len', "'",    "'",   (0,0,0)),
                     ],
-                '{':    [('len', '{', context, self.add_curly),],
-                '}':    [('len', '}', context, self.sub_curly),],
-                '(':    [('len', '(', context, self.add_paren),],
-                ')':    [('len', ')', context, self.sub_paren),],
-                '[':    [('len', '[', context, self.add_square),],
-                ']':    [('len', ']', context, self.sub_square),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
             }
             if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
+                add_key(d, comment[0], ('all', comment, '', (0,0,0)))
             if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
+                add_key(d, block1[0], ('len', block1, block1, (0,0,0)))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.v2_gen_lines

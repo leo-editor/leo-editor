@@ -13328,7 +13328,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
 
 #@+node:ekr.20111029112647.4099: *5* html tests
