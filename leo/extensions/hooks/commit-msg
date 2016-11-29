@@ -1,4 +1,4 @@
 #!/bin/sh
-TS=$(grep timestamp leo/core/commit_timestamp.json | sed 's/.*: "//; s/"//')
+TS=$(grep '\(timestamp\|date\)' leo/core/commit_timestamp.json | sed 's/.*: "//; s/"//')
 echo >> "$1"
 echo Leo build: $TS >> "$1"
