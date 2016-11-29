@@ -34,38 +34,6 @@ class Py_Importer(Importer):
                 return 'class %s' % m.group(1)
             else:
                 return s.strip()
-    #@+node:ekr.20161113082348.1: *3* py_i.get_new_table (converted)
-    #@@nobeautify
-
-    def get_new_table(self, context):
-        '''Return a new python state table for the given context.'''
-        trace = False and not g.unitTesting
-
-        def d(n):
-            return 0 if context else n
-
-        table = (
-            # in-ctx: the next context when the pattern matches the line *and* the context.
-            # out-ctx:the next context when the pattern matches the line *outside* any context.
-            # deltas: the change to the indicated counts.  Always zero when inside a context.
-
-            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-            ('len',   '"""',   '"""',     '',       0,       0,       0),
-            ('len',   "'''",   "'''",     '',       0,       0,       0),
-            ('all',   '#',     '',        '',       0,       0,       0),
-            ('len',   '"',     '"',       '',       0,       0,       0),
-            ('len',   "'",     "'",       '',       0,       0,       0),
-            ('len',   '\\\n',  context,   context,  0,       0,       0),
-            ('len+1', '\\',    context,   context,  0,       0,       0),
-            ('len',   '{',     context,   context,  d(1),    0,       0),
-            ('len',   '}',     context,   context,  d(-1),   0,       0),
-            ('len',   '(',     context,   context,  0,       d(1),    0),
-            ('len',   ')',     context,   context,  0,       d(-1),   0),
-            ('len',   '[',     context,   context,  0,       0,       d(1)),
-            ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        )
-        if trace: g.trace('created table for python state', repr(context))
-        return table
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 

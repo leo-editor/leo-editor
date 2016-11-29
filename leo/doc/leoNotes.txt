@@ -30337,6 +30337,191 @@ def __init__ (self,c):
     self.c = c
     # Warning: hook handlers must use keywords.get('c'), NOT self.c.
     <|ivars|>
+.. @+node:ekr.20161129035607.1: *3* Deleted: x.get_new_table
+.. @+node:ekr.20161129035607.2: *4* coffee_i.get_new_table (converted)
+@nobeautify
+
+def get_new_table(self, context):
+    '''Return a new coffeescript state table for the given context.'''
+    trace = False and not g.unitTesting
+
+    def d(n):
+        return 0 if context else n
+
+    table = (
+        # in-ctx: the next context when the pattern matches the line *and* the context.
+        # out-ctx:the next context when the pattern matches the line *outside* any context.
+        # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+        # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+        ('len',   '\\\n',  context,   context,  0,       0,       0),
+        ('len+1', '\\',    context,   context,  0,       0,       0),
+        # Coffeedoc-style docstring.
+        ('len',   '###',   '###',     '',       0,       0,       0),
+        ('all',   '#',     '',        '',       0,       0,       0),
+        ('len',   '"',     '"',       '',       0,       0,       0),
+        ('len',   "'",     "'",       '',       0,       0,       0),
+        ('len',   '{',     context,   context,  d(1),    0,       0),
+        ('len',   '}',     context,   context,  d(-1),   0,       0),
+        ('len',   '(',     context,   context,  0,       d(1),    0),
+        ('len',   ')',     context,   context,  0,       d(-1),   0),
+        ('len',   '[',     context,   context,  0,       0,       d(1)),
+        ('len',   ']',     context,   context,  0,       0,       d(-1)),
+    )
+    if trace: g.trace('created table for coffescript state', repr(context))
+    return table
+.. @+node:ekr.20161129035607.3: *4* pascal_i.get_new_table (converted)
+@nobeautify
+
+def get_new_table(self, context):
+    '''
+    Return a **general** state table for the given context.
+    
+    This will do for some languages. Subclasses may override...
+    '''
+    trace = False and g.unitTesting
+    
+    def d(n):
+        return 0 if context else n
+
+    comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+    table = [
+        # in-ctx: the next context when the pattern matches the line *and* the context.
+        # out-ctx:the next context when the pattern matches the line *outside* any context.
+        # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+        # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+        ('len+1', '\\',    context,   context,  0,       0,       0),
+        ('all',   '//',    '',        '',       0,       0,       0),
+        ('len',   '"',     '"',       '',       0,       0,       0),
+        ('len',   "'",     "'",       '',       0,       0,       0),
+        ('len',   block1,  block1,    context,  0,       0,       0),
+        ('end{',  block2,  context,   '',       0,       0,       0),
+        # These interfere with comments.
+        # ('len',   '{',     context,   context,  d(1),    0,       0),
+        # ('len',   '}',     context,   context,  d(-1),   0,       0),
+        # These are not needed.
+        # ('len',   '(',     context,   context,  0,       d(1),    0),
+        # ('len',   ')',     context,   context,  0,       d(-1),   0),
+        # ('len',   '[',     context,   context,  0,       0,       d(1)),
+        # ('len',   ']',     context,   context,  0,       0,       d(-1)),
+    ]
+    if trace:
+        g.trace('created table for pascal state', repr(context))
+        g.trace('comments', repr(comment), repr(block1), repr(block2))
+    return table
+.. @+node:ekr.20161129035607.4: *4* i.get_new_table (converted)
+@nobeautify
+
+def get_new_table(self, context):
+    '''
+    Return a **general** state table for the given context.
+    
+    This will do for some languages. Subclasses may override...
+    '''
+    trace = False and not g.unitTesting
+    
+    def d(n):
+        return 0 if context else n
+
+    comment, block1, block2 = self.single_comment, self.block1, self.block2
+    end = 'end%s' % (block1)
+    table = [
+        # in-ctx: the next context when the pattern matches the line *and* the context.
+        # out-ctx:the next context when the pattern matches the line *outside* any context.
+        # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+        # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+        ('len+1', '\\',    context,   context,  0,       0,       0),
+        ('all',   comment, '',        '',       0,       0,       0),
+        ('len',   '"',     '"',       '',       0,       0,       0),
+        ('len',   "'",     "'",       '',       0,       0,       0),
+        ('len',   block1,  block1,    context,  0,       0,       0),
+        ### ('len',   block2,  context,   '',       0,       0,       0),
+        (end,     block2,  context,   '',       0,       0,       0) ,
+        ('len',   '{',     context,   context,  d(1),    0,       0),
+        ('len',   '}',     context,   context,  d(-1),   0,       0),
+        ('len',   '(',     context,   context,  0,       d(1),    0),
+        ('len',   ')',     context,   context,  0,       d(-1),   0),
+        ('len',   '[',     context,   context,  0,       0,       d(1)),
+        ('len',   ']',     context,   context,  0,       0,       d(-1)),
+    ]
+    if trace: g.trace('created table for python state', repr(context))
+    return table
+.. @+node:ekr.20161129035607.5: *4* perl_i.get_new_table (converted)
+@nobeautify
+
+def get_new_table(self, context):
+    '''Return a new perl state table for the given context.'''
+    trace = False and not g.unitTesting
+    
+    def d(n):
+        return 0 if context else n
+
+    table = (
+        # in-ctx: the next context when the pattern matches the line *and* the context.
+        # out-ctx:the next context when the pattern matches the line *outside* any context.
+        # deltas: the change to the indicated counts.  Always zero when inside a context.
+        
+        ### To do:
+        # /whatever/
+        # m//whatever/
+        # s///whatever/
+        # tr///whatever/
+        
+        # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+        ('len+1', '\\',    context,   context,  0,       0,       0),
+        ('all',   '#',     '',        '',       0,       0,       0),
+        ('len',   '"',     '"',       '',       0,       0,       0),
+        ('len',   "'",     "'",       '',       0,       0,       0),
+        ('len',   '=',     '=cut',    context,  0,       0,       0),
+        ('len',   '=cut',  context,   '',       0,       0,       0),
+        ('len',   'tr///', '/',       context,  0,       0,       0),
+        ('len',   's///',  '/',       context,  0,       0,       0),
+        ('len',   'm//',   '/',       context,  0,       0,       0),
+        ('len',   '/',     '/',       '',       0,       0,       0),
+        ('len',   '{',     context,   context,  d(1),    0,       0),
+        ('len',   '}',     context,   context,  d(-1),   0,       0),
+        ('len',   '(',     context,   context,  0,       d(1),    0),
+        ('len',   ')',     context,   context,  0,       d(-1),   0),
+        ('len',   '[',     context,   context,  0,       0,       d(1)),
+        ('len',   ']',     context,   context,  0,       0,       d(-1)),
+    )
+    if trace: g.trace('created table for general state', (context))
+    return table
+.. @+node:ekr.20161129035607.6: *4* py_i.get_new_table (converted)
+@nobeautify
+
+def get_new_table(self, context):
+    '''Return a new python state table for the given context.'''
+    trace = False and not g.unitTesting
+
+    def d(n):
+        return 0 if context else n
+
+    table = (
+        # in-ctx: the next context when the pattern matches the line *and* the context.
+        # out-ctx:the next context when the pattern matches the line *outside* any context.
+        # deltas: the change to the indicated counts.  Always zero when inside a context.
+
+        # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
+        ('len',   '"""',   '"""',     '',       0,       0,       0),
+        ('len',   "'''",   "'''",     '',       0,       0,       0),
+        ('all',   '#',     '',        '',       0,       0,       0),
+        ('len',   '"',     '"',       '',       0,       0,       0),
+        ('len',   "'",     "'",       '',       0,       0,       0),
+        ('len',   '\\\n',  context,   context,  0,       0,       0),
+        ('len+1', '\\',    context,   context,  0,       0,       0),
+        ('len',   '{',     context,   context,  d(1),    0,       0),
+        ('len',   '}',     context,   context,  d(-1),   0,       0),
+        ('len',   '(',     context,   context,  0,       d(1),    0),
+        ('len',   ')',     context,   context,  0,       d(-1),   0),
+        ('len',   '[',     context,   context,  0,       0,       d(1)),
+        ('len',   ']',     context,   context,  0,       0,       d(-1)),
+    )
+    if trace: g.trace('created table for python state', repr(context))
+    return table
 .. @-all
 .. @@nosearch
 .. @-leo

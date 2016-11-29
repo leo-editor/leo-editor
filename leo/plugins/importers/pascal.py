@@ -125,47 +125,6 @@ class Pascal_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
-    #@+node:ekr.20161127105609.1: *3* pascal_i.get_new_table (converted)
-    #@@nobeautify
-
-    def get_new_table(self, context):
-        '''
-        Return a **general** state table for the given context.
-        
-        This will do for some languages. Subclasses may override...
-        '''
-        trace = False and g.unitTesting
-        
-        def d(n):
-            return 0 if context else n
-
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-            
-        table = [
-            # in-ctx: the next context when the pattern matches the line *and* the context.
-            # out-ctx:the next context when the pattern matches the line *outside* any context.
-            # deltas: the change to the indicated counts.  Always zero when inside a context.
-
-            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-            ('len+1', '\\',    context,   context,  0,       0,       0),
-            ('all',   '//',    '',        '',       0,       0,       0),
-            ('len',   '"',     '"',       '',       0,       0,       0),
-            ('len',   "'",     "'",       '',       0,       0,       0),
-            ('len',   block1,  block1,    context,  0,       0,       0),
-            ('end{',  block2,  context,   '',       0,       0,       0),
-            # These interfere with comments.
-            # ('len',   '{',     context,   context,  d(1),    0,       0),
-            # ('len',   '}',     context,   context,  d(-1),   0,       0),
-            # These are not needed.
-            # ('len',   '(',     context,   context,  0,       d(1),    0),
-            # ('len',   ')',     context,   context,  0,       d(-1),   0),
-            # ('len',   '[',     context,   context,  0,       0,       d(1)),
-            # ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        ]
-        if trace:
-            g.trace('created table for pascal state', repr(context))
-            g.trace('comments', repr(comment), repr(block1), repr(block2))
-        return table
     #@+node:ekr.20161126182009.1: *3* pascal_i.starts_block
     pascal_pattern_table = (
         re.compile(r'^(function|procedure)\s+([\w_.]+)\s*\((.*)\)\s*\;\s*\n'),

@@ -102,47 +102,6 @@ class Perl_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
-    #@+node:ekr.20161113140420.1: *3* perl_i.get_new_table (converted)
-    #@@nobeautify
-
-    def get_new_table(self, context):
-        '''Return a new perl state table for the given context.'''
-        trace = False and not g.unitTesting
-        
-        def d(n):
-            return 0 if context else n
-
-        table = (
-            # in-ctx: the next context when the pattern matches the line *and* the context.
-            # out-ctx:the next context when the pattern matches the line *outside* any context.
-            # deltas: the change to the indicated counts.  Always zero when inside a context.
-            
-            ### To do:
-            # /whatever/
-            # m//whatever/
-            # s///whatever/
-            # tr///whatever/
-            
-            # kind,   pattern, out-ctx,  in-ctx, delta{}, delta(), delta[]
-            ('len+1', '\\',    context,   context,  0,       0,       0),
-            ('all',   '#',     '',        '',       0,       0,       0),
-            ('len',   '"',     '"',       '',       0,       0,       0),
-            ('len',   "'",     "'",       '',       0,       0,       0),
-            ('len',   '=',     '=cut',    context,  0,       0,       0),
-            ('len',   '=cut',  context,   '',       0,       0,       0),
-            ('len',   'tr///', '/',       context,  0,       0,       0),
-            ('len',   's///',  '/',       context,  0,       0,       0),
-            ('len',   'm//',   '/',       context,  0,       0,       0),
-            ('len',   '/',     '/',       '',       0,       0,       0),
-            ('len',   '{',     context,   context,  d(1),    0,       0),
-            ('len',   '}',     context,   context,  d(-1),   0,       0),
-            ('len',   '(',     context,   context,  0,       d(1),    0),
-            ('len',   ')',     context,   context,  0,       d(-1),   0),
-            ('len',   '[',     context,   context,  0,       0,       d(1)),
-            ('len',   ']',     context,   context,  0,       0,       d(-1)),
-        )
-        if trace: g.trace('created table for general state', (context))
-        return table
     #@+node:ekr.20161027094537.12: *3* perl_i.skip_regex
     def skip_regex(self, s, i, pattern):
         '''look ahead for a regex /'''
