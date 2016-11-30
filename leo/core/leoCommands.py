@@ -6008,7 +6008,7 @@ class Commands(object):
             if c.import_error_nodes or c.ignored_at_file_nodes:
                 g.app.gui.dismiss_splash_screen()
             if c.import_error_nodes:
-                files = '\n'.join(sorted(c.import_error_nodes))
+                files = '\n'.join(sorted(set(c.import_error_nodes)))
                 if use_dialogs:
                     g.app.gui.runAskOkDialog(c,
                         title='Import errors',
@@ -6018,7 +6018,7 @@ class Commands(object):
                     g.es('import errors...', color='red')
                     g.es('\n'.join(sorted(files)), color='blue')
             if c.ignored_at_file_nodes:
-                files = '\n'.join(sorted(c.ignored_at_file_nodes))
+                files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
                 kind = 'read' if kind.startswith('read') else 'written'
                 if use_dialogs:
                     g.app.gui.runAskOkDialog(c,
