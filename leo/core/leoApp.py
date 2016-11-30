@@ -136,6 +136,8 @@ class LeoApp(object):
             # General purpose debugging count.
         self.debug_app = False
             # True: Enable debugging (of widgets)
+        self.debug_dict = {}
+            # For general use.
         self.debug_widgets = False
             # True: enable verbose tracing of widgets.
         self.debugSwitch = 0
