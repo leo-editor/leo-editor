@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.36" body_secondary_ratio="0.89">
-	<global_window_position top="55" left="481" height="958" width="828"/>
+<globals body_outline_ratio="0.39" body_secondary_ratio="0.71">
+	<global_window_position top="70" left="742" height="958" width="1173"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -62,7 +62,7 @@
 <v t="ekr.20161117164721.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="edward.20160919054711.14"><vh>@gnxs</vh></v>
+<v t="ekr.20161130061137.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
 <v t="ekr.20161124051217.1"><vh>@gnxs</vh></v>
@@ -94,6 +94,9 @@
 <v t="ekr.20161124021953.213"><vh>@data:#@auto</vh></v>
 <v t="ekr.20161124021953.214"><vh>@data:#@auto</vh>
 <v t="ekr.20161124021953.215"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161130053017.1"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
+<v t="ekr.20161130061836.1"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -201,7 +204,7 @@
 <v t="ekr.20110610122533.3407"><vh>@auto unittest/at-auto-unit-test.py</vh></v>
 <v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.py</vh></v>
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh></v>
-<v t="ekr.20150626093745.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
+<v t="ekr.20150626093745.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.txt</vh></v>
 <v t="ekr.20160403143048.1"><vh>@clean unittest/at-clean-line-number-test.c</vh>
 <v t="ekr.20160403143048.2"><vh>spam</vh></v>
 <v t="ekr.20160403150121.1"><vh>eggs</vh></v>
@@ -229,9 +232,10 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d711073580a000000302e362e31372e352e3171117d7112580a0000007273742d696d706f727471137d711428580b000000756e6465726c696e657332711558010000003d7116580b000000756e6465726c696e657331711758030000002d7e2e711875735808000000302e362e31362e3371197d711a5808000000616e6e6f74617465711b7d711c73752e"
-expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161123115047.1,ekr.20161108034116.1,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20100219080213.5365,ekr.20090529141856.4736,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20150626093745.1"></v>
+<v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
 <v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
@@ -284,6 +288,10 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
 </v>
 </v>
+<v t="ekr.20161130061808.1"><vh>Copies</vh>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20161130041921.1"><vh>COPY @auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
+</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
@@ -292,10 +300,10 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
@@ -306,20 +314,20 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh>
 <v t="ekr.20161129031547.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/elisp</vh>
 <v t="ekr.20161129031547.2"><vh>defun abc</vh></v>
@@ -329,9 +337,17 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161129032938.8"><vh>defun abc</vh></v>
 <v t="ekr.20161129032938.9"><vh>defun cde</vh></v>
 </v>
+<v t="ekr.20161130042450.118"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
+<v t="ekr.20161130042450.119"><vh>defun abc</vh></v>
+<v t="ekr.20161130042450.120"><vh>defun cde</vh></v>
+</v>
+<v t="ekr.20161130050703.131"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
+<v t="ekr.20161130050703.132"><vh>defun abc</vh></v>
+<v t="ekr.20161130050703.133"><vh>defun cde</vh></v>
 </v>
 </v>
-<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
+</v>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -342,10 +358,10 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
@@ -353,7 +369,7 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -361,13 +377,13 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
+<v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
 <v t="ekr.20161103015908.1"><vh>Perl tests</vh>
@@ -375,14 +391,35 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 <v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
-<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
+<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
+<v t="ekr.20161130042452.36"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161130042452.37"><vh>sub test1</vh></v>
+<v t="ekr.20161130042452.38"><vh>sub test2</vh></v>
+<v t="ekr.20161130042452.39"><vh>sub test3</vh></v>
+<v t="ekr.20161130042452.40"><vh>sub test4</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20161130050706.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161130050706.16"><vh>sub test1</vh></v>
+<v t="ekr.20161130050706.17"><vh>sub test2</vh></v>
+<v t="ekr.20161130050706.18"><vh>sub test3</vh></v>
+<v t="ekr.20161130050706.19"><vh>sub test4</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
+<v t="ekr.20161129222003.1"><vh>@test php here doc</vh>
+<v t="ekr.20161130042452.50"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161130042452.51"><vh>class foo</vh></v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20161130050706.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161130050706.30"><vh>class foo</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -419,37 +456,47 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
-<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1" a="E"><vh> Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"></v>
 <v t="ekr.20160411033840.1"></v>
 <v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
 <v t="ekr.20161126111517.1"><vh>@test markdown importer-implicit section</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh>@ignore Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
-<v t="ekr.20141111095646.11"><vh>@@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
+<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh>
+<v t="ekr.20161130042613.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/leo_rst</vh>
+<v t="ekr.20161130042613.2"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20161130042613.3"><vh>section 1</vh></v>
+<v t="ekr.20161130042613.4"><vh>section 2</vh></v>
 </v>
-<v t="ekr.20140724220921.5199" a="E"><vh> Tests of individual methods</vh>
+<v t="ekr.20161130050711.40"><vh>@@file c:/leo.repo/leo-editor/leo/test/leo_rst</vh>
+<v t="ekr.20161130050711.41"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20161130050711.42"><vh>section 1</vh></v>
+<v t="ekr.20161130050711.43"><vh>section 2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
-<v t="ekr.20161117165458.1"><vh>@test ic.RstScanner.removeBlankLinesTokens (rst)</vh></v>
 </v>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
@@ -459,8 +506,12 @@ expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.472
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"></v>
-<v t="ekr.20161103015908.1"></v>
+<v t="ekr.20161130061555.1"><vh>@ignore Failing unit tests</vh>
+<v t="ekr.20090529141856.4784"></v>
+<v t="ekr.20161130051657.1"><vh>@test ctext</vh>
+<v t="ekr.20161130061549.1"><vh>@file c:/leo.repo/leo-editor/leo/test/ctext</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -501,11 +552,6 @@ unl: cheese
 unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
-</t>
-<t tx="edward.20160919054711.14">gnx: edward.20160416174241.19
-unl: section 1
-gnx: edward.20160416174241.20
-unl: section 2
 </t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
@@ -2984,7 +3030,6 @@ The top chapter.
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140902101931.4478"></t>
-<t tx="ekr.20141111095646.11" rst-import="7d710028580b000000756e6465726c696e657332710158010000003d7102580b000000756e6465726c696e657331710358030000002d7e2e7104752e"></t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -5821,44 +5866,6 @@ unl: class class2--&gt;class2_method1
 gnx: ekr.20161117164659.14
 unl: class class2--&gt;class2_method2
 </t>
-<t tx="ekr.20161117165458.1"># Important: at present only the RstScanner sets ignoreBlankLines == True
-import leo.plugins.importers.leo_rst as leo_rst
-sc = leo_rst.RstScanner(importCommands=c.importCommands,atAuto=True)
-assert sc.ignoreBlankLines,'fail0'
-def strip(tokens):
-    '''Remove the line number item from all tokens.'''
-    return [(kind,val) for kind,val,n in tokens]
-table = (
-    ('a\n\nb',          'a\nb'),
-    ('a\n \t\nb',       'a\nb'),
-    ('a\n \n\t\n\n\nb', 'a\nb'),
-    ('a\nb\n',          'a\nb\n'),
-)
-for s,expected in table:
-    tokens = sc.tokenize(s)
-    s2 = ''.join([val for (kind,val,n) in tokens])
-    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
-        repr(s),repr(s2))
-    # A: Remove tokens for blank lines from tokens.
-    tokens2 = sc.removeBlankLinesTokens(tokens)
-    # B: Remove blank lines first, then tokenize.
-    lines = g.splitLines(s)
-    lines2 = [z for z in lines if z.strip()]
-    s2 = ''.join(lines2)
-    tokens3 = sc.tokenize(s2)
-    if 0:
-        for kind,val,n in tokens3:
-            print('%3s %7s %s' % (n,kind,repr(val)))
-    # A and B should give the same result: just like abstract algebra diagrams.
-    if 0:
-        if strip(tokens2) != strip(tokens3):
-            sc.compareTokens(tokens2,tokens3,trace=True)
-    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
-        strip(tokens3),strip(tokens2))
-    # C: Removing blank tokens from already-compressed tokens should have no effect.
-    tokens4 = sc.removeBlankLinesTokens(tokens3)
-    assert tokens4 == tokens3,'fail3'
-</t>
 <t tx="ekr.20161118144658.1">@tabwidth -2 # Required
 
 s = r'''
@@ -6382,6 +6389,293 @@ finally:
 </t>
 <t tx="ekr.20161129032938.9">(defun cde (a b)
    (+ 1 2 3))
+</t>
+<t tx="ekr.20161129104243.1">if 1:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst as leo_rst
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+# Notes:
+# All heading must be followed by an empty line.
+### g.app.suppressImportChecks = True
+s = '''\
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+section 1
++++++++++
+
+Sec 1.
+section 2
++++++++++
+
+Sec 2.
+'''
+
+table = (
+    '!Dummy chapter',
+    'section 1',
+    'section 2',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+</t>
+<t tx="ekr.20161129222003.1">s = '''\
+&lt;?php
+class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+'''
+
+c.importCommands.phpUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20161130041921.1">section 1
++++++++++
+
+Sec 1.
+section 2
++++++++++
+
+Sec 2.
+@language python
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20161130042450.118">;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+</t>
+<t tx="ekr.20161130042450.119">(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+</t>
+<t tx="ekr.20161130042450.120">(defun cde (a b)
+   (+ 1 2 3))
+</t>
+<t tx="ekr.20161130042452.36">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161130042452.37">sub test1 {
+    s = /}/g;
+}
+
+</t>
+<t tx="ekr.20161130042452.38">sub test2 {
+    s = m//}/;
+}
+
+</t>
+<t tx="ekr.20161130042452.39">sub test3 {
+    s = s///}/;
+}
+
+</t>
+<t tx="ekr.20161130042452.40">sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161130042452.50">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161130042452.51">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161130042613.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20161130042613.2">  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+</t>
+<t tx="ekr.20161130042613.3">
+Sec 1.
+</t>
+<t tx="ekr.20161130042613.4">
+Sec 2.
+</t>
+<t tx="ekr.20161130050703.131">;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+</t>
+<t tx="ekr.20161130050703.132">(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+</t>
+<t tx="ekr.20161130050703.133">(defun cde (a b)
+   (+ 1 2 3))
+</t>
+<t tx="ekr.20161130050706.15">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161130050706.16">sub test1 {
+    s = /}/g;
+}
+
+</t>
+<t tx="ekr.20161130050706.17">sub test2 {
+    s = m//}/;
+}
+
+</t>
+<t tx="ekr.20161130050706.18">sub test3 {
+    s = s///}/;
+}
+
+</t>
+<t tx="ekr.20161130050706.19">sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161130050706.29">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161130050706.30">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161130050711.40">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20161130050711.41">  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+</t>
+<t tx="ekr.20161130050711.42">
+Sec 1.
+</t>
+<t tx="ekr.20161130050711.43">
+Sec 2.
+</t>
+<t tx="ekr.20161130051657.1">s = '''\
+Leading text in root node of subtree
+
+Etc. etc.
+
+### A level one node ######################################################
+
+This would be the text in this level one node.
+
+And this.
+
+### Another level one node ################################################
+
+Another one
+
+#### A level 2 node #######################################################
+
+See what we did there - one more '#' - this is a subnode.
+'''
+ic = c.importCommands
+ic.ctextUnitTest(p,fileName='@auto-ctext test.txt',s=s,showTree=True)</t>
+<t tx="ekr.20161130053017.1">gnx: ekr.20161130052935.1
+</t>
+<t tx="ekr.20161130053149.1">Leading text in root node of subtree
+
+Etc. etc.
+
+### A level one node ######################################################
+
+This would be the text in this level one node.
+
+And this.
+
+### Another level one node ################################################
+
+Another one
+
+#### A level 2 node #######################################################
+
+See what we did there - one more '#' - this is a subnode.
+
+</t>
+<t tx="ekr.20161130061137.2">gnx: ekr.20161130061058.1
+unl: Chapter 1
+gnx: ekr.20161130061058.2
+unl: Chapter 1--&gt;section 1
+gnx: ekr.20161130061058.3
+unl: Chapter 1--&gt;section 2
+</t>
+<t tx="ekr.20161130061549.1"></t>
+<t tx="ekr.20161130061555.1"></t>
+<t tx="ekr.20161130061808.1"></t>
+<t tx="ekr.20161130061836.1">gnx: ekr.20161130061740.19
+unl: A level one node
+gnx: ekr.20161130061740.20
+unl: Another level one node
+gnx: ekr.20161130061740.21
+unl: Another level one node--&gt;A level 2 node
 </t>
 </tnodes>
 </leo_file>

@@ -147,52 +147,61 @@ class AtFile(object):
     #@+node:ekr.20140728040812.17990: *5* at.createWritersData & helper
     def createWritersData(self):
         '''Create the data structures describing writer plugins.'''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
+        trace = trace and 'createWritersData' not in g.app.debug_dict
+        if trace:
+            # Suppress multiple traces.
+            g.app.debug_dict['createWritersData'] = True
         at = self
-
-        def report(message, kind, folder, name):
-            if trace: g.trace('%7s: %5s %9s %s' % (
-                message, kind, folder, name))
-
         at.writersDispatchDict = {}
         at.atAutoWritersDict = {}
-        folder = 'writers'
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        seen = set()
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            path = g.os_path_finalize_join(plugins, folder)
-            if 1: # old code
-                pattern = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'writers', '*.py')
-                for fn in glob.glob(pattern):
-                    sfn = g.shortFileName(fn)
-                    if sfn != '__init__.py':
-                        try:
-                            # Important: use importlib to give imported modules their fully qualified names.
-                            m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
-                            at.parse_writer_dict(sfn, m)
-                        except Exception:
-                            g.es_exception()
-                            g.warning('can not import leo.plugins.writers.%s' % sfn)
-            else: # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-                pattern = g.os_path_finalize_join(path, '*.py')
-                for fn in glob.glob(pattern):
-                    sfn = g.shortFileName(fn)
-                    if g.os_path_exists(fn) and sfn != '__init__.py':
-                        moduleName = sfn[: -3]
-                        if moduleName:
-                            data = (folder, sfn)
-                            if data in seen:
-                                report('seen', kind, folder, sfn)
-                            else:
-                                m = g.importFromPath(moduleName, path) # Uses imp.
-                                if m:
-                                    seen.add(data)
-                                    at.parse_writer_dict(sfn, m)
-                                    report('loaded', kind, folder, m.__name__)
-                                else:
-                                    report('error', kind, folder, sfn)
-                    # else: report('skipped',kind,folder,sfn)
+            pattern = g.os_path_finalize_join(g.app.loadDir,
+                '..', 'plugins', 'writers', '*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if sfn != '__init__.py':
+                    try:
+                        # Important: use importlib to give imported modules their fully qualified names.
+                        m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
+                        at.parse_writer_dict(sfn, m)
+                    except Exception:
+                        g.es_exception()
+                        g.warning('can not import leo.plugins.writers.%s' % sfn)
+        if trace:
+            g.trace('at.writersDispatchDict')
+            g.printDict(at.writersDispatchDict)
+            g.trace('at.atAutoWritersDict')
+            g.printDict(at.atAutoWritersDict)
+        ### Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+            #
+            # def report(message, kind, folder, name):
+            # if trace: g.trace('%7s: %5s %9s %s' % (
+                # message, kind, folder, name))
+            #
+            # seen = set()
+            # folder = 'writers'
+            # pattern = g.os_path_finalize_join(path, '*.py')
+            # path = g.os_path_finalize_join(plugins, folder)
+            # for fn in glob.glob(pattern):
+                # sfn = g.shortFileName(fn)
+                # if g.os_path_exists(fn) and sfn != '__init__.py':
+                    # moduleName = sfn[: -3]
+                    # if moduleName:
+                        # data = (folder, sfn)
+                        # if data in seen:
+                            # report('seen', kind, folder, sfn)
+                        # else:
+                            # m = g.importFromPath(moduleName, path) # Uses imp.
+                            # if m:
+                                # seen.add(data)
+                                # at.parse_writer_dict(sfn, m)
+                                # report('loaded', kind, folder, m.__name__)
+                            # else:
+                                # report('error', kind, folder, sfn)
+                # # else: report('skipped',kind,folder,sfn)
     #@+node:ekr.20140728040812.17991: *6* at.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''
@@ -3243,7 +3252,7 @@ class AtFile(object):
         Write p, an @auto node.
         File indices *must* have already been assigned.
         '''
-        trace = False and not g.unitTesting
+        trace = False ### and g.unitTesting
         at, c = self, self.c
         root = p.copy()
         fileName = p.atAutoNodeName()
@@ -3314,8 +3323,10 @@ class AtFile(object):
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
     def writer_for_at_auto(self, root, forceSentinels=False):
         '''A factory returning a writer function for the given kind of @auto directive.'''
+        trace = False ### and g.unitTesting
         at = self
         d = at.atAutoWritersDict
+        # if trace: g.trace(g.shortFileName(root.h), '\n'+','.join(sorted(d)))
         for key in d.keys():
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
@@ -3323,22 +3334,35 @@ class AtFile(object):
                 def writer_for_at_auto_cb(root, forceSentinels):
                     # pylint: disable=cell-var-from-loop
                     try:
-                        return aClass(at.c).write(root, forceSentinels=forceSentinels)
+                        if trace: g.trace('    INSTANTIATE:', aClass)
+                        writer = aClass(at.c)
+                        s = writer.write(root, forceSentinels=forceSentinels)
+                        return s
                     except Exception:
                         g.es_exception()
                         return None
 
+                if trace:
+                    g.trace('    FOUND:', g.shortFileName(root.h), aClass)
+                    g.trace(g.callers())
                 return writer_for_at_auto_cb
+        if trace: g.trace('   NOT FOUND:', g.shortFileName(root.h))
         return None
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
     def writer_for_ext(self, ext, forceSentinels=False):
         '''A factory returning a writer function for the given file extension.'''
+        trace = False ### and not g.unitTesting
         at = self
-        aClass = at.writersDispatchDict.get(ext)
+        d = at.writersDispatchDict
+        aClass = d.get(ext)
+        # if trace: g.trace('ext', ext, 'aClass', repr(aClass), '\n'+','.join(sorted(d)))
         if aClass:
 
             def writer_for_ext_cb(root, forceSentinels):
                 try:
+                    if trace:
+                        g.trace('        FOUND:', g.shortFileName(root.h), aClass)
+                        g.trace(g.callers())
                     return aClass(at.c).write(root, forceSentinels=forceSentinels)
                 except Exception:
                     g.es_exception()
@@ -3346,6 +3370,7 @@ class AtFile(object):
 
             return writer_for_ext_cb
         else:
+            if trace: g.trace('       NOT FOUND:', 'ext:', repr(ext))
             return None
     #@+node:ekr.20080711093251.3: *5* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     @cmd('write-at-shadow-nodes')

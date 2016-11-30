@@ -28,7 +28,9 @@ class RstWriter(basewriter.BaseWriter):
     #@+node:ekr.20140726091031.18089: *3* rstw.write
     def write(self, root, forceSentinels=False):
         '''Write an @auto tree containing imported rST code.'''
+        trace = False
         root_level = root.level()
+        g.trace('='*20, root.h)
         for p in root.subtree():
             if forceSentinels:
                 self.put_node_sentinel(p, '.. ')
@@ -38,11 +40,20 @@ class RstWriter(basewriter.BaseWriter):
             # Fix #242: @auto-rst open/save error.
             n = max(4, len(g.toEncodedString(p.h, reportErrors=False)))
             self.put(ch * n)
-            # Fix bug 122: @auto-rst` should add an empty line after a heading.
-            self.put('\n')
-            # Put the body.
-            for s in p.b.splitlines(False):
-                self.put(s)
+            if 1: ### New code
+                lines = p.b.splitlines(False)
+                if trace: g.printList(lines)
+                if lines and lines[0].strip():
+                    self.put('')
+                # Put the body.
+                for s in lines:
+                    self.put(s)
+            else: ### Old code
+                # Fix bug 122: @auto-rst` should add an empty line after a heading.
+                self.put('\n')
+                # Put the body.
+                for s in p.b.splitlines(False):
+                    self.put(s)
         root.setVisited()
         return True
     #@-others

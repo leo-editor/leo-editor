@@ -13363,6 +13363,38 @@ finally:
 #@+node:ekr.20161129032938.9: *8* defun cde
 (defun cde (a b)
    (+ 1 2 3))
+#@+node:ekr.20161130042450.118: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161130042450.119: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161130042450.120: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
+#@+node:ekr.20161130050703.131: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161130050703.132: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161130050703.133: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -14292,6 +14324,56 @@ try:
 finally:
     if 0:
         p.deleteAllChildren()
+#@+node:ekr.20161130042452.36: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161130042452.37: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+#@+node:ekr.20161130042452.38: *8* sub test2
+sub test2 {
+    s = m//}/;
+}
+
+#@+node:ekr.20161130042452.39: *8* sub test3
+sub test3 {
+    s = s///}/;
+}
+
+#@+node:ekr.20161130042452.40: *8* sub test4
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161130050706.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161130050706.16: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+#@+node:ekr.20161130050706.17: *8* sub test2
+sub test2 {
+    s = m//}/;
+}
+
+#@+node:ekr.20161130050706.18: *8* sub test3
+sub test3 {
+    s = s///}/;
+}
+
+#@+node:ekr.20161130050706.19: *8* sub test4
+sub test4 {
+    s = tr///}/;
+}
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -14371,6 +14453,45 @@ class FlagsEnum extends Enum {
 '''
 
 c.importCommands.phpUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161129222003.1: *6* @test php here doc
+s = '''\
+<?php
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+'''
+
+c.importCommands.phpUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20161130042452.50: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161130042452.51: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161130050706.29: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161130050706.30: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
@@ -15858,7 +15979,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-#@+node:ekr.20090529141856.4784: *4*  Tests of @auto-rst
+#@+node:ekr.20090529141856.4784: *4* @ignore Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\
 .. toc
@@ -15903,7 +16024,6 @@ section 3.1.1, line 1
 '''
 
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20141111095646.11: *5* @@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -15998,6 +16118,101 @@ The top section.
 '''
 
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161129104243.1: *5* @test leo_rst
+if 1:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst as leo_rst
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+# Notes:
+# All heading must be followed by an empty line.
+### g.app.suppressImportChecks = True
+s = '''\
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+section 1
++++++++++
+
+Sec 1.
+section 2
++++++++++
+
+Sec 2.
+'''
+
+table = (
+    '!Dummy chapter',
+    'section 1',
+    'section 2',
+)
+try:
+    ic.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+#@+node:ekr.20161130042613.1: *6* @@file c:/leo.repo/leo-editor/leo/test/leo_rst
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+@ignore
+#@+node:ekr.20161130042613.2: *7* !Dummy chapter
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+#@+node:ekr.20161130042613.3: *7* section 1
+
+Sec 1.
+#@+node:ekr.20161130042613.4: *7* section 2
+
+Sec 2.
+#@+node:ekr.20161130050711.40: *6* @@file c:/leo.repo/leo-editor/leo/test/leo_rst
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+@ignore
+#@+node:ekr.20161130050711.41: *7* !Dummy chapter
+  #########
+Chapter 1
+  #########
+
+It was a dark and stormy night.
+#@+node:ekr.20161130050711.42: *7* section 1
+
+Sec 1.
+#@+node:ekr.20161130050711.43: *7* section 2
+
+Sec 2.
 #@+node:ekr.20140724220921.5199: *4*  Tests of individual methods
 #@+node:ekr.20111214100515.3921: *5* @@@test ic.createOutline: at-auto with lines that look like section references
 # Disabled: this now fails *regardless* of python.v2 switch
@@ -16551,44 +16766,6 @@ def default(self, typ: Type) -> Type:
         return self.default(typ.upper_bound)
     else:
         return AnyType()
-#@+node:ekr.20161117165458.1: *5* @test ic.RstScanner.removeBlankLinesTokens (rst)
-# Important: at present only the RstScanner sets ignoreBlankLines == True
-import leo.plugins.importers.leo_rst as leo_rst
-sc = leo_rst.RstScanner(importCommands=c.importCommands,atAuto=True)
-assert sc.ignoreBlankLines,'fail0'
-def strip(tokens):
-    '''Remove the line number item from all tokens.'''
-    return [(kind,val) for kind,val,n in tokens]
-table = (
-    ('a\n\nb',          'a\nb'),
-    ('a\n \t\nb',       'a\nb'),
-    ('a\n \n\t\n\n\nb', 'a\nb'),
-    ('a\nb\n',          'a\nb\n'),
-)
-for s,expected in table:
-    tokens = sc.tokenize(s)
-    s2 = ''.join([val for (kind,val,n) in tokens])
-    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
-        repr(s),repr(s2))
-    # A: Remove tokens for blank lines from tokens.
-    tokens2 = sc.removeBlankLinesTokens(tokens)
-    # B: Remove blank lines first, then tokenize.
-    lines = g.splitLines(s)
-    lines2 = [z for z in lines if z.strip()]
-    s2 = ''.join(lines2)
-    tokens3 = sc.tokenize(s2)
-    if 0:
-        for kind,val,n in tokens3:
-            print('%3s %7s %s' % (n,kind,repr(val)))
-    # A and B should give the same result: just like abstract algebra diagrams.
-    if 0:
-        if strip(tokens2) != strip(tokens3):
-            sc.compareTokens(tokens2,tokens3,trace=True)
-    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
-        strip(tokens3),strip(tokens2))
-    # C: Removing blank tokens from already-compressed tokens should have no effect.
-    tokens4 = sc.removeBlankLinesTokens(tokens3)
-    assert tokens4 == tokens3,'fail3'
 #@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
 d = g.app.extra_extension_dict
 

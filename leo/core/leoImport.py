@@ -1487,6 +1487,9 @@ class LeoImportCommands(object):
     def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
 
+    def ctextUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+
     def dartUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, atAuto=False, fileName=fileName, s=s, showTree=showTree, ext='.dart')
 

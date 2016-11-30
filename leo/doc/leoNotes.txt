@@ -28938,6 +28938,44 @@ openFileDialog
 test\\unittest\\perfectImport\\formatter.py
 .. @+node:ekr.20161117163434.1: *3* Old importers
 .. @+node:ekr.20161117164227.1: *4* Unit Tests for character-oriented scanners
+.. @+node:ekr.20161130051250.1: *5* @test ic.RstScanner.removeBlankLinesTokens (rst)
+# Important: at present only the RstScanner sets ignoreBlankLines == True
+import leo.plugins.importers.leo_rst as leo_rst
+sc = leo_rst.RstScanner(importCommands=c.importCommands,atAuto=True)
+assert sc.ignoreBlankLines,'fail0'
+def strip(tokens):
+    '''Remove the line number item from all tokens.'''
+    return [(kind,val) for kind,val,n in tokens]
+table = (
+    ('a\n\nb',          'a\nb'),
+    ('a\n \t\nb',       'a\nb'),
+    ('a\n \n\t\n\n\nb', 'a\nb'),
+    ('a\nb\n',          'a\nb\n'),
+)
+for s,expected in table:
+    tokens = sc.tokenize(s)
+    s2 = ''.join([val for (kind,val,n) in tokens])
+    assert s == s2,'fail1\nexpected:\n%s\ngot:\n%s' % (
+        repr(s),repr(s2))
+    # A: Remove tokens for blank lines from tokens.
+    tokens2 = sc.removeBlankLinesTokens(tokens)
+    # B: Remove blank lines first, then tokenize.
+    lines = g.splitLines(s)
+    lines2 = [z for z in lines if z.strip()]
+    s2 = ''.join(lines2)
+    tokens3 = sc.tokenize(s2)
+    if 0:
+        for kind,val,n in tokens3:
+            print('%3s %7s %s' % (n,kind,repr(val)))
+    # A and B should give the same result: just like abstract algebra diagrams.
+    if 0:
+        if strip(tokens2) != strip(tokens3):
+            sc.compareTokens(tokens2,tokens3,trace=True)
+    assert strip(tokens2) == strip(tokens3),'fail2\nexpected:\n%s\ngot:\n%s' % (
+        strip(tokens3),strip(tokens2))
+    # C: Removing blank tokens from already-compressed tokens should have no effect.
+    tokens4 = sc.removeBlankLinesTokens(tokens3)
+    assert tokens4 == tokens3,'fail3'
 .. @+node:ekr.20161117164227.2: *5* @test ic.BaseScanner.insertIgnoreDirective
 import leo.core.leoImport as leoImport
 import leo.plugins.importers.basescanner as basescanner
