@@ -11,9 +11,6 @@
 Leo's import infrastructure in `leoImport.py` instantiates the
 Importer instance and calls `i.run`, which calls `i.scan_lines`.
 
-The `Importer` class replaces the horribly complex BaseScanner class.
-It encapsulates *all* language-dependent knowledge.
-
 New importers copy entire lines from the input file to Leo nodes. This
 makes the new importers much less error prone than the legacy
 (character-by-character) importers.

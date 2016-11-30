@@ -69,7 +69,7 @@ class Import_IPYNB(object):
         if c and fn and not prepass:
             changed = c.isChanged()
             self.import_file(fn, parent)
-            # Similar to BaseScanner.run.
+            # Similar to Importer.run.
             parent.b = (
                 '@nocolor-node\n\n' +
                 'Note: This node\'s body text is ignored when writing this file.\n\n' +

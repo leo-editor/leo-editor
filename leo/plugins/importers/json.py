@@ -10,7 +10,7 @@ import leo.core.leoNodes as leoNodes
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner
 class JSON_Scanner:
     '''A class to read .json files.'''
-    # Not a subclass of BaseScannerClass.
+    # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
     def __init__(self, importCommands, atAuto,
