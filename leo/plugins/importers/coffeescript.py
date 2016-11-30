@@ -26,7 +26,7 @@ class CS_Importer(Importer):
         self.root = None
         self.tab_width = None
             # NOT the same as self.c.tabwidth.  Set in run().
-    #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict (test)
+    #@+node:ekr.20161129024357.1: *3* coffee_i.get_new_dict
     #@@nobeautify
 
     def get_new_dict(self, context):
