@@ -2,10 +2,13 @@
 #@+node:tbrown.20140801105909.47549: * @file importers/ctext.py
 #@@language python
 #@@tabwidth -4
-from leo.plugins.importers.basescanner import BaseScanner
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
 #@+others
-#@+node:tbrown.20140801105909.47551: ** class CTextScanner
-class CTextScanner(BaseScanner):
+#@+node:tbrown.20140801105909.47551: ** class CText_Importer
+class CText_Importer(Importer):
+    #@+<< ctext docstring >>
+    #@+node:ekr.20161130053507.1: *3* << ctext docstring >>
     """
     Read/Write simple text files with hierarchy embedded in headlines::
 
@@ -31,15 +34,30 @@ class CTextScanner(BaseScanner):
     are used in place of '#' for SQL and JavaScript.
 
     """
+    #@-<< ctext docstring >>
     #@+others
-    #@+node:tbrown.20140801105909.47552: *3* CTextScanner.write_lines
+    #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
+    def __init__(self, importCommands, atAuto):
+        '''Ctor for CoffeeScriptScanner class.'''
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'ctext',
+            state_class = None,
+            strict = False
+        )
+        self.fileType = importCommands.fileType
+    #@+node:tbrown.20140801105909.47552: *3* ctext_i.write_lines
     def write_lines(self, node, lines):
         """write the body lines to body normalizing whitespace"""
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
-    #@+node:tbrown.20140801105909.47553: *3* CTextScanner.run
+    #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
     def run(self, s, parent, parse_body=False, prepass=False):
-
+        '''Override Importer.run()'''
+        c = self.c
+        root = parent.copy()
+        changed = c.isChanged()
         cchar = '#'
         if self.fileType.lower() == '.tex':
             cchar = '%'
@@ -71,11 +89,15 @@ class CTextScanner(BaseScanner):
             else:
                 lines.append(line)
         self.write_lines(nd, lines)
+        # It's always useless for an an import to dirty the outline.
+        for p in root.self_and_subtree():
+            p.clearDirty()
+        c.setChanged(changed)
         return True
     #@-others
 #@-others
 importer_dict = {
     '@auto': ['@auto-ctext',],
-    'class': CTextScanner,
+    'class': CText_Importer, ### CTextScanner,
 }
 #@-leo
