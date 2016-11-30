@@ -42,10 +42,7 @@ class Rst_Importer(Importer):
         self.stack = [parent]
         skip = 0
         lines = g.splitLines(s)
-        # if trace: g.pdb()
         for i, line in enumerate(lines):
-            # ch = self.is_underline(line)
-            # level = self.ch_level(ch) if ch else 1
             if trace: g.trace('%2s %r' % (i+1, line))
             if skip > 0:
                 skip -= 1
