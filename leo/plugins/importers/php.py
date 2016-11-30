@@ -153,6 +153,49 @@ class Php_Importer(Importer):
                 'NO MATCH: i: %s ch: %r context: %r line: %r' % (
                     i, ch, context, s))
         return new_context, i+1, 0, 0, 0, False
+    #@+node:ekr.20161130044051.1: *3* php_i.skip_heredoc_string (not used)
+    # EKR: This is Dave Hein's heredoc code from the old PHP scanner.
+    # I have included it for reference in case heredoc problems arise.
+    #
+    # php_i.scan dict uses r'<<<\s*([\w_]+)' instead of the more complex pattern below.
+    # This is likely good enough. Importers can assume that code is well formed.
+
+    def skip_heredoc_string(self, s, i):
+        #@+<< skip_heredoc docstrig >>
+        #@+node:ekr.20161130044051.2: *4* << skip_heredoc docstrig >>
+        #@@nocolor-node
+        '''
+        08-SEP-2002 DTHEIN:  added function skip_heredoc_string
+        A heredoc string in PHP looks like:
+
+          <<<EOS
+          This is my string.
+          It is mine. I own it.
+          No one else has it.
+          EOS
+
+        It begins with <<< plus a token (naming same as PHP variable names).
+        It ends with the token on a line by itself (must start in first position.
+        '''
+        #@-<< skip_heredoc docstrig >>
+        j = i
+        assert(g.match(s, i, "<<<"))
+        # pylint: disable=anomalous-backslash-in-string
+        m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
+        if m is None:
+            i += 3
+            return i
+        # 14-SEP-2002 DTHEIN: needed to add \n to find word, not just string
+        delim = m.group(1) + '\n'
+        i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: look after \n, not before
+        n = len(s)
+        while i < n and not g.match(s, i, delim):
+            i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: move past \n
+        if i >= n:
+            g.scanError("Run on string: " + s[j: i])
+        elif g.match(s, i, delim):
+            i += len(delim)
+        return i
     #@-others
 #@+node:ekr.20161129213243.6: ** class Php_ScanState
 class Php_ScanState:
