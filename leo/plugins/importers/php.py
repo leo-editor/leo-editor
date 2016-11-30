@@ -1,100 +1,205 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18148: * @file importers/php.py
-'''The @auto importer for PHP.'''
+'''The @auto importer for the php language.'''
 import re
 import leo.core.leoGlobals as g
-import leo.plugins.importers.basescanner as basescanner
-import string
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
 #@+others
-#@+node:ekr.20140723122936.18083: ** class PhpScanner
-class PhpScanner(basescanner.BaseScanner):
-    #@+others
-    #@+node:ekr.20140723122936.18084: *3*  __init__(PhpScanner)
+#@+node:ekr.20161129213243.2: ** class Php_Importer
+class Php_Importer(Importer):
+    '''The importer for the php lanuage.'''
+
     def __init__(self, importCommands, atAuto):
+        '''Php_Importer.__init__'''
         # Init the base class.
-        basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='php')
-        # Set the parser delims.
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = '#'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.hasClasses = True # 2010/02/19
-        self.hasFunctions = True
-        self.functionTags = ['function']
-        # The valid characters in an id
-        self.chars = list(string.ascii_letters + string.digits)
-        extra = [chr(z) for z in range(127, 256)]
-        self.chars.extend(extra)
-    #@+node:ekr.20140723122936.18085: *3* isPurePHP
-    def isPurePHP(self, s):
-        '''Return True if the file begins with <?php and ends with ?>'''
-        s = s.strip()
-        return (
-            s.startswith('<?') and
-            s[2: 3] in ('P', 'p', '=', '\n', '\r', ' ', '\t') and
-            s.endswith('?>'))
-    #@+node:ekr.20161126161149.1: *3* skip_heredoc_string
-    def skip_heredoc_string(self, s, i):
-        #@+<< skip_heredoc docstrig >>
-        #@+node:ekr.20161126161323.1: *4* << skip_heredoc docstrig >>
-        #@@nocolor-node
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'php',
+            state_class = Php_ScanState,
+            strict = False,
+        )
+        self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
+        self.here_doc_target = None
+        
+    #@+others
+    #@+node:ekr.20161129213243.4: *3* php_i.clean_headline
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        return s.rstrip('{').strip()
+    #@+node:ekr.20161129213808.1: *3* php_i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
         '''
-        08-SEP-2002 DTHEIN:  added function skip_heredoc_string
-        A heredoc string in PHP looks like:
-
-          <<<EOS
-          This is my string.
-          It is mine. I own it.
-          No one else has it.
-          EOS
-
-        It begins with <<< plus a token (naming same as PHP variable names).
-        It ends with the token on a line by itself (must start in first position.
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
         '''
-        #@-<< skip_heredoc docstrig >>
-        j = i
-        assert(g.match(s, i, "<<<"))
-        # pylint: disable=anomalous-backslash-in-string
-        m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
-        if m is None:
-            i += 3
-            return i
-        # 14-SEP-2002 DTHEIN: needed to add \n to find word, not just string
-        delim = m.group(1) + '\n'
-        i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: look after \n, not before
-        n = len(s)
-        while i < n and not g.match(s, i, delim):
-            i = g.skip_line(s, i) # 14-SEP-2002 DTHEIN: move past \n
-        if i >= n:
-            g.scanError("Run on string: " + s[j: i])
-        elif g.match(s, i, delim):
-            i += len(delim)
-        return i
-    #@+node:ekr.20140723122936.18086: *3* Overrides
-    # Does not create @first/@last nodes
-    #@+node:ekr.20140723122936.18087: *4* startsString skipString
-    def startsString(self, s, i):
-        return g.match(s, i, '"') or g.match(s, i, "'") or g.match(s, i, '<<<')
+        trace = False and g.unitTesting
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+        
+        def add_key(d, key, data):
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
 
-    def skipString(self, s, i):
-        if g.match(s, i, '"') or g.match(s, i, "'"):
-            return g.skip_string(s, i)
+        if context:
+            d = {
+                # key    kind   pattern  ends?
+                '\\':   [('len+1', '\\', None),],
+                '"':    [('len', '"',    context == '"'),],
+                "'":    [('len', "'",    context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2[0], ('len', block1, True))
         else:
-            return g.skip_heredoc_string(s, i)
-    #@+node:ekr.20140723122936.18088: *4* getSigId
-    def getSigId(self, ids):
-        '''Return the signature's id.
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None),],
+                '<':    [('<<<', '<<<', '<<<', None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment[0], ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1[0], ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+        return d
+    #@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
+    def scan_dict(self, context, i, s, d):
+        '''
+        i.scan_dict: Scan at position i of s with the give context and dict.
+        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
+        '''
+        trace = False and g.unitTesting
+        trace_fail = False
+        if trace and trace_fail: g.trace('='*20, repr(context))
+        found = False
+        delta_c = delta_p = delta_s = 0
+        if self.here_doc_target:
+            assert i == 0, repr(i)
+            n = len(self.here_doc_target)
+            if self.here_doc_target.lower() == s[:n].lower():
+                self.here_doc_target = None
+                if trace: g.trace('   MATCH heredoc: %r' % s)
+                i = n
+                return '', i, 0, 0, 0, False
+            else:
+                if trace and trace_fail: g.trace('NO MATCH (heredoc): %r' % s)
+                # Skip the rest of the line
+                return '', len(s), 0, 0, 0, False
+        ch = s[i] # For traces.
+        aList = d.get(ch)
+        if aList and context:
+            # In context.
+            for data in aList:
+                kind, pattern, ends = data
+                if self.match(s, i, pattern):
+                    if ends == None:
+                        found = True
+                        new_context = context
+                        break
+                    elif ends:
+                        found = True
+                        new_context = ''
+                        break
+                    else:
+                        pass # Ignore this match.
+        elif aList:
+            # Not in context.
+            for data in aList:
+                kind, pattern, new_context, deltas = data
+                if self.match(s, i, pattern):
+                    found = True
+                    if deltas:
+                        delta_c, delta_p, delta_s = deltas
+                    break
+        if found:
+            if kind == 'all':
+                i = len(s)
+            elif kind == 'len+1':
+                i += (len(pattern) + 1)
+            elif kind == '<<<': # Special flag for here docs.
+                new_context = context # here_doc_target is a another kind of context.
+                m = self.here_doc_pattern.match(s[i:])
+                if m:
+                    i = len(s) # Skip the rest of the line.
+                    self.here_doc_target = '%s;' % m.group(1)
+                else:
+                    i += 3
+            else:
+                assert kind == 'len', (kind, self.name)
+                i += len(pattern)
+            bs_nl = pattern == '\\\n'
+            if trace:
+                g.trace(
+                    '   MATCH: i: %s ch: %r kind: %r pattern: %r '
+                    'context: %r new_context: %r line: %r' % (
+                        i, ch, kind, pattern, context, new_context, s))
+            return new_context, i, delta_c, delta_p, delta_s, bs_nl
+        else:
+            # No match: stay in present state. All deltas are zero.
+            new_context = context
+            if trace and trace_fail: g.trace(
+                'NO MATCH: i: %s ch: %r context: %r line: %r' % (
+                    i, ch, context, s))
+        return new_context, i+1, 0, 0, 0, False
+    #@-others
+#@+node:ekr.20161129213243.6: ** class Php_ScanState
+class Php_ScanState:
+    '''A class representing the state of the php line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''Php_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            self.curlies = 0
 
-        By default, this is the last id in the ids list.
+    def __repr__(self):
+        '''Php_ScanState.__repr__'''
+        return "Php_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
 
-        For Php, the first id is better.'''
-        return ids and ids[1]
+    __str__ = __repr__
+
+    #@+others
+    #@+node:ekr.20161129213243.7: *3* php_state.level
+    def level(self):
+        '''Php_ScanState.level.'''
+        return self.curlies
+
+    #@+node:ekr.20161129213243.8: *3* php_state.update
+    def update(self, data):
+        '''
+        Php_ScanState.update
+
+        Update the state using the 6-tuple returned by v2_scan_line.
+        Return i = data[1]
+        '''
+        context, i, delta_c, delta_p, delta_s, bs_nl = data
+        # All ScanState classes must have a context ivar.
+        self.context = context
+        self.curlies += delta_c  
+        return i
     #@-others
 #@-others
 importer_dict = {
-    'class': PhpScanner,
-    'extensions': ['.php',],
+    'class': Php_Importer,
+    'extensions': ['.php'],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo
