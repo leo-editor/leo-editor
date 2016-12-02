@@ -1,8 +1,49 @@
 #Overview
+This file documents Leo's importers.  You can view this file [on GitHub]([GitHub](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md).
 
-This is the overview.
+Leo's new importers are fundamentally simpler than the previous importers in the following ways:
 
-#Creating your State class
+- No messing with character indices.
+
+- Indentation is handled loosely, so that indentation is regularized.
+
+- No recursion or rescanning.
+
+All importers work by scanning each line exacly once.
+
+- No separate code generation.
+
+- The line-oriented API ensures that lines are always placed into nodes as a unit.
+
+- No parsing or deep understanding of any language is ever done.
+
+This is essential for javascript.
+#3 kinds of importers
+There are three general kinds of importers.
+
+1. Most languages with strings, comments, or other multi-line syntax constructs.
+
+2. Languages without strings, comments, etc.
+
+3. The json scanner. This importer uses the json dict. It scans no input lines.
+
+#The Importer class
+The base Importer class, in leo.plugins.importers.linescanner.py, defines default versions all code.
+
+The highlights:
+
+- i.run
+- i.gen_lines
+- i.scan_line
+- i.scan_dict
+
+Helpers:
+
+#The ScanState classes
+#The line-oriented API
+#The @button make-importer script
+#Indentation
+#The post pass
 #Code notes
 ##p.b is a huge performance bug
 
@@ -16,13 +57,13 @@ Last night I attempted to concatenate lines to a new lines list in the Target cl
 
 Some simple solution must be found. e660cd2 completely solves the problem:
 
-- `i.v2_gen_lines` injects `v._importer_lines` list into the root vnode using `i.inject_lines_ivar'.
+- `i.gen_lines` injects `v._importer_lines` list into the root vnode using `i.inject_lines_ivar'.
 
-- Similarly, `i.v2_create_child_node` calls `i.inject_lines_ivar' into each created node.
+- Similarly, `i.create_child_node` calls `i.inject_lines_ivar' into each created node.
 
 - Replace `p.b = p.b + s` by `self.add_line(p, s)`.
 
-- `i.v2_gen_lines` calls `self.finalize`, which does the following:
+- `i.gen_lines` calls `self.finalize`, which does the following:
 
 ```python
 for p in parent.self_and_subtree():
@@ -65,37 +106,11 @@ def set_lines(self, p, lines):
 The actual code uses `p.v._import_lines` explicitly rather than using the get_lines or set_lines methods. It's clearer, imo.
 
 #Notes about new importers
-##Design
-
-The typescript importer refutes that notion expressed in the middle-of-the-night post that nothing simpler than the state-scanner code can be imagined. There are at least four ways that the present code base can be simplified.
-
-For at least some languages, including python, rescanning may be significantly simpler than v2_gen_lines and its helpers. The scan method in importers.typescript.py is shockingly simple. importers.python.py may use very similar code.
-
-Explorations last night show that the coffeescript scanner depends very little on the base BaseScanner class. Indeed, the coffeescript scanner uses just a few of its utilities! So the coffeescript scanner could easily be adapted to the V2 scanner code in LineScanner.
-
-It should be possible to simplify the "cassette" at the top level of each importer in leo/plugins/importers. Rather than separating the Controller and Scanner classes, a single Controller class will suffice. The coffeescript importer already uses this approach. Unifying these classes should simplify both the code, the cassette interface, and the documentation.
-
-[Completed] A head-slapping moment. Put the LineScanner class and related stuff in a new file, linescanner.py. Doh! This will be a great aid in keeping the new and legacy code bases separate. Much less need for tests on gen_v2.
-
-Update: 4. didn't work the first time. I made too many changes at once. The way forward was to focus on goals, namely:
-
-Exactly one way of importing any file. This may vary from language to language. A single file, linescanner.py, containing all the supporting code. Unifying the various classes into a single Importer class. The eventual elimination of all switches.
-
-After reverting the code, a more incremental approach did work. The plan was to remove all switches from both basescanner.py and linescanner.py. That worked very well:
-
-basescanner.py now contains no V2 code.
-linescanner.py now contains only V2 code.
-The cassette interface to linescanner.py will be a single class: the Importer class.
-
-Next: I'll start converting the best code, which is probably the coffeescript importer. I'll make that work using only code in linescanner.py. Then I'll use that template to add new importers, one language at a time.
-
-Update: The coffeescript, javascript, perl, python and typescript importers have been fully converted. The Python importer presently uses the legacy code, based on a local switch in python.py. These conversions went much more easily than I expected.
-
 ##i.is_ws_line
 
 This is a one-line predicate that is crucial conceptually, and greatly clarifies the code in several places.
 
-It returns True if the line is either blank or contains nothing but leading whitespace followed by a single-line comment. v2_gen_lines must put such lines in the existing block, regardless of their indentation.
+It returns True if the line is either blank or contains nothing but leading whitespace followed by a single-line comment. gen_lines must put such lines in the existing block, regardless of their indentation.
 
 `i.undent` does not recognize the underindented line in the following (legal!) python program:
 ```python
@@ -122,7 +137,7 @@ The new Importer class now clearly is a pipeline:
 
 `i.run` calls `i.generate_nodes`, which explicitly calls three sub-passes:
 
-**Stage 1: i.v2_gen_lines**
+**Stage 1: i.gen_lines**
 
 Generates all nodes in a single, non-recursive pass
 
@@ -188,11 +203,11 @@ After the old importer classes are retired, almost all importers will be subclas
 
 ##Most scan_line methods are table-driven
 
-The new coffeescript.scanner is an example of the nifty new pattern. See `i.v2_scan_line` and its helpers, `i.get_new_table` and `i.scan_table`.
+The new coffeescript.scanner is an example of the nifty new pattern. See `i.scan_line` and its helpers, `i.get_new_table` and `i.scan_table`.
 
-Here is the revised `i.v2_scan_line`. It implicitly defines a protocol that all ScanState classes must follow:
+Here is the revised `i.scan_line`. It implicitly defines a protocol that all ScanState classes must follow:
 ```python
-def v2_scan_line(self, s, prev_state):
+def scan_line(self, s, prev_state):
     '''
     A generalized scan-line method.
 
@@ -313,7 +328,7 @@ The block associated with foo will consist only of the line {}, with an unhelpfu
 
 ##A subtle detail about comparisons.
 
-The python and coffeescript importers no longer override i.v2_gen_lines.
+The python and coffeescript importers no longer override i.gen_lines.
 
 There were some tradeoffs involved, discussed in the lengthy checkin log.
 
@@ -321,16 +336,16 @@ The rest of this post discusses something subtle about the new code. It took me 
 
 **About comparisons**
 
-Making the python importer work with the base `i.v2_gen_lines` was much harder than expected. After considerable work, I noticed a subtle difference the base `i.v2_gen_lines` and the python override, `py_i.v2_gen_lines`.
+Making the python importer work with the base `i.gen_lines` was much harder than expected. After considerable work, I noticed a subtle difference the base `i.gen_lines` and the python override, `py_i.gen_lines`.
 
-The override correctly tested the new state against the state at the top of the stack. The base `i.v2_gen_lines` dubiously tested the new state against the previous state. Changing `i.v2_gen_lines` so it too tests the new state against the top-of-stack state allowed everything to work.
+The override correctly tested the new state against the state at the top of the stack. The base `i.gen_lines` dubiously tested the new state against the previous state. Changing `i.gen_lines` so it too tests the new state against the top-of-stack state allowed everything to work.
 
 I suspected that the change was valid because all unit tests passed. However, it would have been wrong to leave it at that. Imo, it is crucial that the change be proven correct.
 
-Here is the code I am talking about, in `i.v2_gen_lines`:
+Here is the code I am talking about, in `i.gen_lines`:
 ```python
     for line in g.splitLines(s):
-        new_state = self.v2_scan_line(line, prev_state)
+        new_state = self.scan_line(line, prev_state)
         top = stack[-1]
         if self.is_ws_line(line):
             p = tail_p or top.p
