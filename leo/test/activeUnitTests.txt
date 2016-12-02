@@ -7820,7 +7820,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20150626093653.1: *6* @test find_file_line: @auto-rst
+#@+node:ekr.20150626093653.1: *6* @@@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -12073,26 +12073,6 @@ runner.compareHelper(lines1,lines2,i,strict=True)
 #@+node:ekr.20090529141856.4716: *4*  Tests of @auto
 @tabwidth -4
 @language python
-#@+node:ekr.20090529141856.4782: *5* @test checkTrialWrite
-@first # -*- coding: utf-8 -*-
-
-import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-import sys
-
-ic = c.importCommands
-runner = basescanner.BaseScanner(ic,atAuto=True,language='python')
-runner.root = p.copy()
-
-g.app.unitTestDict ['expectedMismatchLine'] = 0
-
-s1 = 'line Ä, 궯, 奠 end'
-s2 = 'line Ä, 궯, end'
-
-# Tracing checkTrialWrite causes a UnicodeDecodeError.
-ok = runner.checkTrialWrite(s1=s1,s2=s2)
-
-assert ok
 #@+node:ekr.20090529141856.4783: *5* @test collapse-all
 c.contractAllHeadlines()
 #@+node:ekr.20090529141856.4717: *5* C tests
@@ -13395,6 +13375,22 @@ finally:
 #@+node:ekr.20161130050703.133: *8* defun cde
 (defun cde (a b)
    (+ 1 2 3))
+#@+node:ekr.20161202053641.128: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161202053641.129: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161202053641.130: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -14374,6 +14370,31 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
+#@+node:ekr.20161202053644.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161202053644.8: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+#@+node:ekr.20161202053644.9: *8* sub test2
+sub test2 {
+    s = m//}/;
+}
+
+#@+node:ekr.20161202053644.10: *8* sub test3
+sub test3 {
+    s = s///}/;
+}
+
+#@+node:ekr.20161202053644.11: *8* sub test4
+sub test4 {
+    s = tr///}/;
+}
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -14485,6 +14506,19 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20161130050706.30: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161202053644.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161202053644.22: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.

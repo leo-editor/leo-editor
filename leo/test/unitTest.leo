@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161117164721.1"><vh>@gnxs</vh></v>
+<v t="ekr.20161202055041.23"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161130061137.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20161124051217.1"><vh>@gnxs</vh></v>
+<v t="ekr.20161202055041.37"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20161123211442.1"><vh>@gnxs</vh></v>
+<v t="ekr.20161202055041.30"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161126112045.1"><vh>@gnxs</vh></v>
+<v t="ekr.20161202055041.8"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -232,7 +232,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150626093745.1"></v>
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
@@ -288,10 +288,6 @@
 <v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
 </v>
 </v>
-<v t="ekr.20161130061808.1"><vh>Copies</vh>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
-<v t="ekr.20161130041921.1"><vh>COPY @auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
-</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh> Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
@@ -301,7 +297,6 @@
 </v>
 <v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
 <v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
-<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
@@ -344,6 +339,10 @@
 <v t="ekr.20161130050703.131"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
 <v t="ekr.20161130050703.132"><vh>defun abc</vh></v>
 <v t="ekr.20161130050703.133"><vh>defun cde</vh></v>
+</v>
+<v t="ekr.20161202053641.128"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
+<v t="ekr.20161202053641.129"><vh>defun abc</vh></v>
+<v t="ekr.20161202053641.130"><vh>defun cde</vh></v>
 </v>
 </v>
 </v>
@@ -404,6 +403,12 @@
 <v t="ekr.20161130050706.18"><vh>sub test3</vh></v>
 <v t="ekr.20161130050706.19"><vh>sub test4</vh></v>
 </v>
+<v t="ekr.20161202053644.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
+<v t="ekr.20161202053644.8"><vh>sub test1</vh></v>
+<v t="ekr.20161202053644.9"><vh>sub test2</vh></v>
+<v t="ekr.20161202053644.10"><vh>sub test3</vh></v>
+<v t="ekr.20161202053644.11"><vh>sub test4</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
@@ -416,6 +421,9 @@
 </v>
 <v t="ekr.20161130050706.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161130050706.30"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161202053644.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161202053644.22"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -507,10 +515,13 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20161130061555.1"><vh>@ignore Failing unit tests</vh>
-<v t="ekr.20090529141856.4784"></v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh>
-<v t="ekr.20161130061549.1"><vh>@file c:/leo.repo/leo-editor/leo/test/ctext</vh></v>
+<v t="ekr.20161130061808.1"><vh>Copies</vh>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20161130041921.1"><vh>COPY @auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
 </v>
+<v t="ekr.20090529141856.4784"></v>
+<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
+<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -945,7 +956,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1673,26 +1684,6 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 &lt;/html&gt;
 '''
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20090529141856.4782">@first # -*- coding: utf-8 -*-
-
-import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-import sys
-
-ic = c.importCommands
-runner = basescanner.BaseScanner(ic,atAuto=True,language='python')
-runner.root = p.copy()
-
-g.app.unitTestDict ['expectedMismatchLine'] = 0
-
-s1 = 'line Ä, 궯, 奠 end'
-s2 = 'line Ä, 궯, end'
-
-# Tracing checkTrialWrite causes a UnicodeDecodeError.
-ok = runner.checkTrialWrite(s1=s1,s2=s2)
-
-assert ok
 </t>
 <t tx="ekr.20090529141856.4783">c.contractAllHeadlines()
 </t>
@@ -3054,6 +3045,28 @@ c.importCommands.rstUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
 unl: at_auto_child
+</t>
+<t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    assert root.isAtAutoRstNode(), root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 9, n
+            break
 </t>
 <t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
 </t>
@@ -5853,19 +5866,6 @@ importer = linescanner.Importer(c.importCommands,
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 </t>
-<t tx="ekr.20161117164721.1">gnx: ekr.20161117164659.9
-unl: class class1
-gnx: ekr.20161117164659.10
-unl: class class1--&gt;class1_method1
-gnx: ekr.20161117164659.11
-unl: class class1--&gt;class1_method2
-gnx: ekr.20161117164659.12
-unl: class class2
-gnx: ekr.20161117164659.13
-unl: class class2--&gt;class2_method1
-gnx: ekr.20161117164659.14
-unl: class class2--&gt;class2_method2
-</t>
 <t tx="ekr.20161118144658.1">@tabwidth -2 # Required
 
 s = r'''
@@ -6079,11 +6079,6 @@ finally:
         p.deleteAllChildren()
 
 </t>
-<t tx="ekr.20161123211442.1">gnx: ekr.20161123211413.1
-unl: section 1
-gnx: ekr.20161123211413.2
-unl: section 2
-</t>
 <t tx="ekr.20161124021953.210">gnx: ekr.20090627070131.4975
 </t>
 <t tx="ekr.20161124021953.211">gnx: ekr.20090627070131.4975
@@ -6135,11 +6130,6 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161124051217.1">gnx: ekr.20161124050840.1
-unl: section 1
-gnx: ekr.20161124050840.2
-unl: section 2
 </t>
 <t tx="ekr.20161125134815.1">if 0:
     # The preamble...
@@ -6299,11 +6289,6 @@ finally:
         # Not needed: done in Importer.check
     if 1:
         p.deleteAllChildren()
-</t>
-<t tx="ekr.20161126112045.1">gnx: ekr.20161126111959.4
-unl: section 1
-gnx: ekr.20161126111959.5
-unl: section 2
 </t>
 <t tx="ekr.20161127181028.1">if 0:
     # The preamble...
@@ -6667,7 +6652,6 @@ unl: Chapter 1--&gt;section 1
 gnx: ekr.20161130061058.3
 unl: Chapter 1--&gt;section 2
 </t>
-<t tx="ekr.20161130061549.1"></t>
 <t tx="ekr.20161130061555.1"></t>
 <t tx="ekr.20161130061808.1"></t>
 <t tx="ekr.20161130061836.1">gnx: ekr.20161130061740.19
@@ -6676,6 +6660,88 @@ gnx: ekr.20161130061740.20
 unl: Another level one node
 gnx: ekr.20161130061740.21
 unl: Another level one node--&gt;A level 2 node
+</t>
+<t tx="ekr.20161202053641.128">;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+</t>
+<t tx="ekr.20161202053641.129">(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+</t>
+<t tx="ekr.20161202053641.130">(defun cde (a b)
+   (+ 1 2 3))
+</t>
+<t tx="ekr.20161202053644.10">sub test3 {
+    s = s///}/;
+}
+
+</t>
+<t tx="ekr.20161202053644.11">sub test4 {
+    s = tr///}/;
+}
+</t>
+<t tx="ekr.20161202053644.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161202053644.22">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161202053644.7">#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+</t>
+<t tx="ekr.20161202053644.8">sub test1 {
+    s = /}/g;
+}
+
+</t>
+<t tx="ekr.20161202053644.9">sub test2 {
+    s = m//}/;
+}
+
+</t>
+<t tx="ekr.20161202055041.23">gnx: ekr.20161202054847.9
+unl: class class1
+gnx: ekr.20161202054847.10
+unl: class class1--&gt;class1_method1
+gnx: ekr.20161202054847.11
+unl: class class1--&gt;class1_method2
+gnx: ekr.20161202054847.12
+unl: class class2
+gnx: ekr.20161202054847.13
+unl: class class2--&gt;class2_method1
+gnx: ekr.20161202054847.14
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20161202055041.30">gnx: ekr.20161202054847.15
+unl: section 1
+gnx: ekr.20161202054847.16
+unl: section 2
+</t>
+<t tx="ekr.20161202055041.37">gnx: ekr.20161202054847.17
+unl: section 1
+gnx: ekr.20161202054847.18
+unl: section 2
+</t>
+<t tx="ekr.20161202055041.8">gnx: ekr.20161202054847.5
+unl: section 1
+gnx: ekr.20161202054847.6
+unl: section 2
 </t>
 </tnodes>
 </leo_file>
