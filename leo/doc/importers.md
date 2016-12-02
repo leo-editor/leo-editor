@@ -1,44 +1,10 @@
 #Overview
-## Overview
 
 This is the overview.
 
-##Node 2
-### Node 2 header
-
-More
-
 #Creating your State class
-#Notes about new importers
-##Design
-### Design
-
-The typescript importer refutes that notion expressed in the middle-of-the-night post that nothing simpler than the state-scanner code can be imagined. There are at least four ways that the present code base can be simplified.
-
-For at least some languages, including python, rescanning may be significantly simpler than v2_gen_lines and its helpers. The scan method in importers.typescript.py is shockingly simple. importers.python.py may use very similar code.
-
-Explorations last night show that the coffeescript scanner depends very little on the base BaseScanner class. Indeed, the coffeescript scanner uses just a few of its utilities! So the coffeescript scanner could easily be adapted to the V2 scanner code in LineScanner.
-
-It should be possible to simplify the "cassette" at the top level of each importer in leo/plugins/importers. Rather than separating the Controller and Scanner classes, a single Controller class will suffice. The coffeescript importer already uses this approach. Unifying these classes should simplify both the code, the cassette interface, and the documentation.
-
-[Completed] A head-slapping moment. Put the LineScanner class and related stuff in a new file, linescanner.py. Doh! This will be a great aid in keeping the new and legacy code bases separate. Much less need for tests on gen_v2.
-
-Update: 4. didn't work the first time. I made too many changes at once. The way forward was to focus on goals, namely:
-
-Exactly one way of importing any file. This may vary from language to language. A single file, linescanner.py, containing all the supporting code. Unifying the various classes into a single Importer class. The eventual elimination of all switches.
-
-After reverting the code, a more incremental approach did work. The plan was to remove all switches from both basescanner.py and linescanner.py. That worked very well:
-
-basescanner.py now contains no V2 code.
-linescanner.py now contains only V2 code.
-The cassette interface to linescanner.py will be a single class: the Importer class.
-
-Next: I'll start converting the best code, which is probably the coffeescript importer. I'll make that work using only code in linescanner.py. Then I'll use that template to add new importers, one language at a time.
-
-Update: The coffeescript, javascript, perl, python and typescript importers have been fully converted. The Python importer presently uses the legacy code, based on a local switch in python.py. These conversions went much more easily than I expected.
-
+#Code notes
 ##p.b is a huge performance bug
-### p.b is a huge performance bug
 
 Fixed at e660cd2, as described below.
 
@@ -68,7 +34,6 @@ for p in parent.self_and_subtree():
 
 The assert was helpful initially.
 ##Importer API for setting body text
-### Importer API for setting body text
 
 As of 6dbeb6a, all code in stages 1, 2 and 3 must use the following API to change body text. It is easier, faster than setting p.b to strings. And it stresses the GC much less.
 ```python
@@ -99,8 +64,34 @@ def set_lines(self, p, lines):
 
 The actual code uses `p.v._import_lines` explicitly rather than using the get_lines or set_lines methods. It's clearer, imo.
 
+#Notes about new importers
+##Design
+
+The typescript importer refutes that notion expressed in the middle-of-the-night post that nothing simpler than the state-scanner code can be imagined. There are at least four ways that the present code base can be simplified.
+
+For at least some languages, including python, rescanning may be significantly simpler than v2_gen_lines and its helpers. The scan method in importers.typescript.py is shockingly simple. importers.python.py may use very similar code.
+
+Explorations last night show that the coffeescript scanner depends very little on the base BaseScanner class. Indeed, the coffeescript scanner uses just a few of its utilities! So the coffeescript scanner could easily be adapted to the V2 scanner code in LineScanner.
+
+It should be possible to simplify the "cassette" at the top level of each importer in leo/plugins/importers. Rather than separating the Controller and Scanner classes, a single Controller class will suffice. The coffeescript importer already uses this approach. Unifying these classes should simplify both the code, the cassette interface, and the documentation.
+
+[Completed] A head-slapping moment. Put the LineScanner class and related stuff in a new file, linescanner.py. Doh! This will be a great aid in keeping the new and legacy code bases separate. Much less need for tests on gen_v2.
+
+Update: 4. didn't work the first time. I made too many changes at once. The way forward was to focus on goals, namely:
+
+Exactly one way of importing any file. This may vary from language to language. A single file, linescanner.py, containing all the supporting code. Unifying the various classes into a single Importer class. The eventual elimination of all switches.
+
+After reverting the code, a more incremental approach did work. The plan was to remove all switches from both basescanner.py and linescanner.py. That worked very well:
+
+basescanner.py now contains no V2 code.
+linescanner.py now contains only V2 code.
+The cassette interface to linescanner.py will be a single class: the Importer class.
+
+Next: I'll start converting the best code, which is probably the coffeescript importer. I'll make that work using only code in linescanner.py. Then I'll use that template to add new importers, one language at a time.
+
+Update: The coffeescript, javascript, perl, python and typescript importers have been fully converted. The Python importer presently uses the legacy code, based on a local switch in python.py. These conversions went much more easily than I expected.
+
 ##i.is_ws_line
-### i.is_ws_line
 
 This is a one-line predicate that is crucial conceptually, and greatly clarifies the code in several places.
 
@@ -124,7 +115,6 @@ There is no way that `i.is_ws_line` can determine that is a valid is part of a d
 **Aha**: Indentation mostly doesn't matter in python!! Python blocks begin if and only if a line begins with class or def outside of any context (string, docstring or comment).
 
 ##The Importer class *is* a pipeline
-### The Importer class *is* a pipeline
 
 @tfer Tom's importer proposal, was the first to suggest that the importers be organized as a pipeline. At first, I dismissed that suggestion, but in fact Tom's suggestions have been marinating in the back of my mind ever since. Thank you, Tom! Leo's great new importers owe a lot to you.
 
@@ -179,17 +169,16 @@ def clean_headline(self, s):
 
 The Importer class is organized as pipeline:
 
-- Stage 1 creates the nodes.
+##- Stage 1 creates the nodes.
 
-- Stage 2 post-processes the nodes in several sub-stages.
+##- Stage 2 post-processes the nodes in several sub-stages.
 
-- Stage 3 finishes up in a language independent way.
+##- Stage 3 finishes up in a language independent way.
 
 Subclasses of the Importer class may further customize the importers by overriding severa short methods.
 
 
 ##Almost all importers will work the same way
-### Almost all importers will work the same way
 
 After the old importer classes are retired, almost all importers will be subclasses of the Importer class, except for the following:
 
@@ -198,7 +187,6 @@ After the old importer classes are retired, almost all importers will be subclas
 **ctext.py** The importer is very simple. It doesn't need to be a subclass of Importer.
 
 ##Most scan_line methods are table-driven
-### Most scan_line methods are table-driven
 
 The new coffeescript.scanner is an example of the nifty new pattern. See `i.v2_scan_line` and its helpers, `i.get_new_table` and `i.scan_table`.
 
@@ -241,7 +229,6 @@ def v2_scan_line(self, s, prev_state):
 The tables returned by `i.get_table` describe scanning much more clearly than the blah-blah-blah of code.
 
 ##Python *does* need to handle all kinds of brackets
-### Python *does* need to handle all kinds of brackets
 
 I'm not sure that the present python code can be made to work without understanding the nesting levels of parens, curly-brackets and square-brackets. Consider this code from @test python comment after dict assign:
 ```python
@@ -258,7 +245,6 @@ This is valid code, no matter what kind of indentation is used in the dict.
 To handle this, `i.scan_table` now keeps of brackets for all languages.
 
 ##i.scan_table
-### i.scan_table
 
 Note the hack for recognizing backslash. i.scan_table also adds a bs-nl flag to the returned 6-tuple. "bs-nl" can not be context!
 ```python
@@ -299,7 +285,6 @@ def scan_table(self, context, i, s, table):
 ```
 
 ##state.level()
-### state.level()
 
 ScanState classes all define a state.level() method that returns either an int or a tuple of ints. This allows comparisons such as the following for *all* languages:
 ```python
@@ -326,8 +311,7 @@ static void foo(bar)
 ```
 The block associated with foo will consist only of the line {}, with an unhelpful headline. The perfect import check will succeed, but the post-pass should move the int foo(bar) line into the next block. Theoretically, the post-pass should be aware of comments that intervene between the two lines given above, but in practice we can ignore such bizarre cases, because the file will still import correctly.
 
-##A subtle detail about comparisons
-### A subtle detail about comparisons.
+##A subtle detail about comparisons.
 
 The python and coffeescript importers no longer override i.v2_gen_lines.
 
