@@ -228,6 +228,14 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass
     def post_pass(self, parent):
         '''A do-nothing post-pass for markdown.'''
+    #@+node:ekr.20161202074507.1: *3* md_i.check
+    def check(self, unused_s, parent):
+        '''
+        A do-nothing perfect-import check for markdown.
+        We don't want to prevent writer.markdown from converting
+        all headlines to hashed sections.
+        '''
+        return True
     #@-others
 #@-others
 importer_dict = {

@@ -15,7 +15,7 @@ class MarkdownWriter(basewriter.BaseWriter):
     def write(self, root, forceSentinels=False):
         """Write all the *descendants* of an @auto-markdown node."""
         # Fix bug 66: errors inhibited read @auto foo.md.
-        # New in Leo 5.5: headlines indicate markup
+        # New in Leo 5.5: Skip !headlines. Convert all others to '#' sections.
         self.root = root
         for p in root.subtree():
             if forceSentinels:
@@ -26,20 +26,23 @@ class MarkdownWriter(basewriter.BaseWriter):
                     self.put(s)
         root.setVisited()
         return True
-    #@+node:ekr.20141110223158.20: *3* mdw.write_headline
+    #@+node:ekr.20141110223158.20: *3* mdw.write_headline (no longer used)
     def write_headline(self, p):
         '''
         Write or skip the headline.
-        New in Leo 5.5: The headline indicates markup.
+        
+        New in Leo 5.5: Always write '#' sections.
+        This will cause perfect import to fail.
+        The alternatives are much worse.
         '''
         level = p.level() - self.root.level()
         assert level > 0, p.h
         kind = p.h and p.h[0]
         if kind == '!':
             pass # The signal for a declaration node.
-        elif kind in '=-':
-            self.put(p.h)
-            self.put(kind*max(4,len(p.h)))
+        # elif kind in '=-':
+            # self.put(p.h)
+            # self.put(kind*max(4,len(p.h)))
         else:
             self.put('%s%s' % ('#'*level, p.h))
     #@-others
