@@ -48,8 +48,8 @@ class Xml_Importer(Importer):
             g.es_print(s)
         # Tell i.check to strip lws.
         self.ws_error = True
-    #@+node:ekr.20161122073505.1: *3* xml_i.v2_scan_line & helpers
-    def v2_scan_line(self, s, prev_state):
+    #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
+    def scan_line(self, s, prev_state):
         '''Update the xml scan state by scanning line s.'''
         trace = False
         context, tag_level = prev_state.context, prev_state.tag_level

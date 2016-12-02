@@ -19,7 +19,7 @@ class CS_Importer(Importer):
             atAuto = atAuto,
             language = 'coffeescript',
             state_class = CS_ScanState,
-                # Not used: This class overrides v2_scan_line.
+                # Not used: This class overrides i.scan_line.
             strict = True
         )
         self.errors = 0
@@ -73,7 +73,7 @@ class CS_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
-    #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.v2_gen_lines
+    #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.gen_lines
     #@+node:ekr.20161118134555.2: *4* coffee_i.add_underindented_line (Same as Python)
     def add_underindented_line(self, line, new_state, stack):
         '''
@@ -145,8 +145,8 @@ class CS_Importer(Importer):
         top = stack[-1]
         parent = top.p
         self.gen_refs = top.gen_refs
-        h = self.v2_gen_ref(line, parent, top)
-        child = self.v2_create_child_node(parent, line, h)
+        h = self.gen_ref(line, parent, top)
+        child = self.create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
     #@+node:ekr.20161118134555.7: *4* coffee_i.starts_block
     pattern_table = [
@@ -303,7 +303,7 @@ class CS_ScanState:
     #@+node:ekr.20161119052920.1: *3* cs_state.update
     def update(self, data):
         '''
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

@@ -103,7 +103,7 @@ class Importer(object):
         atAuto, # True when called from @auto logic.
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
-        state_class = None, # For v2_scan_line
+        state_class = None, # For i.scan_line
         strict = False,
     ):
         '''Importer.__init__.'''
@@ -530,7 +530,7 @@ class Importer(object):
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
         '''
-        Test x.v2_scan_line or i.general_scan_line.
+        Test x.scan_line or i.scan_line.
 
         `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
         
@@ -558,7 +558,7 @@ class Importer(object):
                 ctx_in, ctx_out = ctx
                 prev_state =  State()
                 prev_state.context = ctx_in
-                new_state = self.v2_scan_line(line, prev_state)
+                new_state = self.scan_line(line, prev_state)
                 new_context = new_state.context
                 if trace and trace_states: g.trace(
                     '\nprev: %s\n new: %s' % (prev_state, new_state))
@@ -569,14 +569,14 @@ class Importer(object):
                 for context in contexts:
                     prev_state =  State()
                     prev_state.context = context
-                    new_state = self.v2_scan_line(line, prev_state)
+                    new_state = self.scan_line(line, prev_state)
                     if trace and trace_states: g.trace(
                         '\nprev: %s\n new: %s' % (prev_state, new_state))
                     assert new_state.context == context, (
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
-    #@+node:ekr.20161108170435.1: *4* i.v2_scan_line
-    def v2_scan_line(self, s, prev_state):
+    #@+node:ekr.20161108170435.1: *4* i.scan_line
+    def scan_line(self, s, prev_state):
         '''
         A generalized scan-line method.
         
@@ -619,7 +619,7 @@ class Importer(object):
         '''
         # Stage 1: generate nodes.
         # After this stage, the p.v._import_lines list contains p's future body text.
-        self.v2_gen_lines(s, parent)
+        self.gen_lines(s, parent)
         #
         # Optional Stage 2, consisting of zero or more sub-stages.
         # Subclasses may freely override this method, **provided**
@@ -631,8 +631,8 @@ class Importer(object):
         #
         # Subclasses should never need to override this stage.
         self.finish(parent)
-    #@+node:ekr.20161108160409.1: *5* Stage 1: i.v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
+    #@+node:ekr.20161108160409.1: *5* Stage 1: i.gen_lines & helpers
+    def gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -644,7 +644,7 @@ class Importer(object):
         stack = [target, target]
         self.inject_lines_ivar(parent)
         for line in g.splitLines(s):
-            new_state = self.v2_scan_line(line, prev_state)
+            new_state = self.scan_line(line, prev_state)
             top = stack[-1]
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.is_ws_line(line):
@@ -716,9 +716,9 @@ class Importer(object):
             assert not new_state.in_context(), ('start_new_block', new_state)
         target=stack[-1]
         # Insert the reference in *this* node.
-        h = self.v2_gen_ref(line, target.p, target)
+        h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        child = self.v2_create_child_node(target.p, line, h)
+        child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         if trace:
             g.trace('=====', repr(line))
@@ -729,7 +729,7 @@ class Importer(object):
         return new_state.level() > prev_state.level()
     #@+node:ekr.20161119162451.1: *6* i.trace_status
     def trace_status(self, line, new_state, prev_state, stack, top):
-        '''Print everything important in the v2_gen_lines loop.'''
+        '''Print everything important in the i.gen_lines loop.'''
         print('')
         try:
             g.trace('===== %r' % line)
@@ -740,8 +740,8 @@ class Importer(object):
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
         g.printList(stack)
-    #@+node:ekr.20161108160409.7: *6* i.v2_create_child_node
-    def v2_create_child_node(self, parent, body, headline):
+    #@+node:ekr.20161108160409.7: *6* i.create_child_node
+    def create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
         child = parent.insertAsLastChild()
         self.inject_lines_ivar(child)
@@ -750,8 +750,8 @@ class Importer(object):
         assert g.isString(headline), repr(headline)
         child.h = headline.strip()
         return child
-    #@+node:ekr.20161108160409.8: *6* i.v2_gen_ref
-    def v2_gen_ref(self, line, parent, target):
+    #@+node:ekr.20161108160409.8: *6* i.gen_ref
+    def gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous
         #@+others
@@ -1291,7 +1291,7 @@ class ScanState:
     #@+node:ekr.20161118043530.1: *3* ScanState.update
     def update(self, data):
         '''
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

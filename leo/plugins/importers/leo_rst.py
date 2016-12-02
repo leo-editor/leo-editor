@@ -30,8 +30,8 @@ class Rst_Importer(Importer):
             # '#' is reserved for level 1.
         
     #@+others
-    #@+node:ekr.20161129040921.2: *3* rst_i.v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
+    #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
+    def gen_lines(self, s, parent):
         '''Node generator for markdown importer.'''
         trace = False and g.unitTesting
         if not s or s.isspace():
@@ -81,7 +81,7 @@ class Rst_Importer(Importer):
                     self.print_list(self.get_lines(p))
         top = self.stack[-1]
         if trace: g.trace('TOP', top.h)
-        child = self.v2_create_child_node(
+        child = self.create_child_node(
             parent = top,
             body = None,
             headline = h, # Leave the headline alone
@@ -141,7 +141,7 @@ class Rst_Importer(Importer):
         '''Make a decls node.'''
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
-        child = self.v2_create_child_node(
+        child = self.create_child_node(
             parent = self.stack[-1],
             body = None,
             headline = headline,
@@ -199,7 +199,7 @@ class Rst_ScanState:
         '''
         Rst_ScanState.update
 
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

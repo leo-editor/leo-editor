@@ -16906,7 +16906,7 @@ table = (
 for base, result, s in table:
     importer = js.JS_Importer(c.importCommands, atAuto=False)
     prev_state = js.JS_ScanState()
-    new_state = importer.v2_scan_line(s, prev_state)
+    new_state = importer.scan_line(s, prev_state)
     curlies, parens, context = result
     ok = (
         new_state.curlies == curlies and

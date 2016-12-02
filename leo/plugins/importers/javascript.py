@@ -19,8 +19,8 @@ class JS_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161105140842.5: *3* js_i.v2_scan_line & helper
-    def v2_scan_line(self, s, prev_state):
+    #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helper
+    def scan_line(self, s, prev_state):
         '''Update the scan state by scanning s.'''
         trace = False and not g.unitTesting
         context = prev_state.context
@@ -110,7 +110,7 @@ class JS_ScanState:
     def __init__(self, d=None):
         '''JS_ScanState ctor'''
         if d:
-            # d is *different* from the dict created by i.v2_scan_line.
+            # d is *different* from the dict created by i.scan_line.
             self.context = d.get('context')
             self.curlies = d.get('curlies')
             self.parens = d.get('parens')
@@ -133,7 +133,7 @@ class JS_ScanState:
     #@+node:ekr.20161119051049.1: *3* js_state.update
     def update(self, data):
         '''
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

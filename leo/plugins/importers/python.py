@@ -94,7 +94,7 @@ class Py_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
-    #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.v2_gen_lines
+    #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.gen_lines
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line (end_block)
     def add_underindented_line(self, line, new_state, stack):
         '''
@@ -205,8 +205,8 @@ class Py_Importer(Importer):
         top = stack[-1]
         parent = top.p
         self.gen_refs = top.gen_refs
-        h = self.v2_gen_ref(line, parent, top)
-        child = self.v2_create_child_node(parent, line, h)
+        h = self.gen_ref(line, parent, top)
+        child = self.create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
@@ -296,7 +296,7 @@ class Python_ScanState:
     #@+node:ekr.20161119042358.1: *3* py_state.update
     def update(self, data):
         '''
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

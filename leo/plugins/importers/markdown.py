@@ -23,8 +23,8 @@ class Markdown_Importer(Importer):
         self.underline_dict = {}
         
     #@+others
-    #@+node:ekr.20161124193148.1: *3* md_i.v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
+    #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
+    def gen_lines(self, s, parent):
         '''Node generator for markdown importer.'''
         trace = False and g.unitTesting
         if not s or s.isspace():
@@ -127,7 +127,7 @@ class Markdown_Importer(Importer):
                     self.print_list(self.get_lines(p))
         top = self.stack[-1]
         if trace: g.trace('TOP', top.h)
-        child = self.v2_create_child_node(
+        child = self.create_child_node(
             parent = top,
             body = None,
             headline = h, # Leave the headline alone
@@ -140,7 +140,7 @@ class Markdown_Importer(Importer):
         '''Make a decls node.'''
         parent = self.stack[-1]
         assert parent == self.root, repr(parent)
-        child = self.v2_create_child_node(
+        child = self.create_child_node(
             parent = self.stack[-1],
             body = line,
             headline = '!Declarations',
@@ -209,11 +209,11 @@ class Markdown_Importer(Importer):
                 if name:
                     return kind, level, name
         return None, None, None
-    #@+node:ekr.20161125180532.1: *4* md_i.v2_create_child_node
-    def v2_create_child_node(self, parent, body, headline):
+    #@+node:ekr.20161125180532.1: *4* md_i.create_child_node
+    def create_child_node(self, parent, body, headline):
         '''
         Create a child node of parent.
-        Unlike i.v2_create_child_node, we DO NOT strip lws from the headline!
+        Unlike i.create_child_node, we DO NOT strip lws from the headline!
         '''
         trace = False and g.unitTesting
         child = parent.insertAsLastChild()

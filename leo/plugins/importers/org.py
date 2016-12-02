@@ -22,10 +22,10 @@ class Org_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161123194634.1: *3* org_i.v2_gen_lines & helper
+    #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
     org_pattern = re.compile(r'^(\*+)(.*)$')
 
-    def v2_gen_lines(self, s, parent):
+    def gen_lines(self, s, parent):
         '''Node generator for org mode.'''
         self.inject_lines_ivar(parent)
         # We may as well do this first.  See warning below.
@@ -59,7 +59,7 @@ class Org_Importer(Importer):
             headline = h if n == 0  else 'placeholder'
             # This works, but there is no way perfect import will pass the result.
             n -= 1
-            child = self.v2_create_child_node(
+            child = self.create_child_node(
                 parent = self.parents[-1],
                 body = None,
                 headline = headline,

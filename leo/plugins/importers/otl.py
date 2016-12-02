@@ -22,12 +22,12 @@ class Otl_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161124035243.1: *3* otl_i.v2_gen_lines & helper
+    #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines & helper
     # Must match body pattern first.
     otl_body_pattern = re.compile(r'^: (.*)$')
     otl_pattern      = re.compile(r'^[ ]*(\t*)(.*)$')
 
-    def v2_gen_lines(self, s, parent):
+    def gen_lines(self, s, parent):
         '''Node generator for otl (vim-outline) mode.'''
         self.inject_lines_ivar(parent)
         # We may as well do this first.  See warning below.
@@ -60,7 +60,7 @@ class Otl_Importer(Importer):
         '''
         assert level >= 0
         while level >= len(self.parents):
-            child = self.v2_create_child_node(
+            child = self.create_child_node(
                 parent = self.parents[-1],
                 body = None,
                 headline = h,

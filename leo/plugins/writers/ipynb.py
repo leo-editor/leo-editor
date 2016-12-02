@@ -54,7 +54,7 @@ class Export_IPYNB(object):
     def write(self, root, forceSentinels=False):
         '''
         Export_IPYNB: entry point for @auto writes.
-        Signature must match signature of BaseScanner.write().
+        Signature must match signature of BaseWriter.write().
         '''
         at = self.at
         # fn = root.atAutoNodeName()

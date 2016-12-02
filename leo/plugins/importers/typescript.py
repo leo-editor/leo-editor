@@ -95,7 +95,7 @@ class TS_ScanState:
     #@+node:ekr.20161118072957.1: *3* ts_state.update
     def update(self, data):
         '''
-        Update the state using the 6-tuple returned by v2_scan_line.
+        Update the state using the 6-tuple returned by i.scan_line.
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data

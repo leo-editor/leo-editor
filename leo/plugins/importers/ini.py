@@ -21,8 +21,8 @@ class Ini_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161123143008.1: *3* ini_i.v2_gen_lines & helpers
-    def v2_gen_lines(self, s, parent):
+    #@+node:ekr.20161123143008.1: *3* ini_i.gen_lines & helpers
+    def gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
@@ -51,7 +51,7 @@ class Ini_Importer(Importer):
             self.at_others_flag = True
             self.add_line(self.root, '@others\n')
         # Create the new node.
-        return self.v2_create_child_node(
+        return self.create_child_node(
             parent = self.root,
             body = line,
             headline = line.strip())
