@@ -13391,6 +13391,38 @@ finally:
 #@+node:ekr.20161202053641.130: *8* defun cde
 (defun cde (a b)
    (+ 1 2 3))
+#@+node:ekr.20161202083953.71: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161202083953.72: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161202083953.73: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
+#@+node:ekr.20161202093502.118: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
+;;; comment
+;;; continue
+;;;
+
+@others
+@language lisp
+@tabwidth -4
+#@+node:ekr.20161202093502.119: *8* defun abc
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+#@+node:ekr.20161202093502.120: *8* defun cde
+(defun cde (a b)
+   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -14395,6 +14427,56 @@ sub test3 {
 sub test4 {
     s = tr///}/;
 }
+#@+node:ekr.20161202083955.43: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161202083955.44: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+#@+node:ekr.20161202083955.45: *8* sub test2
+sub test2 {
+    s = m//}/;
+}
+
+#@+node:ekr.20161202083955.46: *8* sub test3
+sub test3 {
+    s = s///}/;
+}
+
+#@+node:ekr.20161202083955.47: *8* sub test4
+sub test4 {
+    s = tr///}/;
+}
+#@+node:ekr.20161202093504.43: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
+#!/usr/bin/perl
+
+@others
+@language perl
+@tabwidth -4
+#@+node:ekr.20161202093504.44: *8* sub test1
+sub test1 {
+    s = /}/g;
+}
+
+#@+node:ekr.20161202093504.45: *8* sub test2
+sub test2 {
+    s = m//}/;
+}
+
+#@+node:ekr.20161202093504.46: *8* sub test3
+sub test3 {
+    s = s///}/;
+}
+
+#@+node:ekr.20161202093504.47: *8* sub test4
+sub test4 {
+    s = tr///}/;
+}
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -14519,6 +14601,32 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20161202053644.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161202083956.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161202083956.11: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161202093505.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161202093505.11: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.
@@ -15706,7 +15814,7 @@ try:
     ic.markdownUnitTest(p,s=s,showTree=True) # Must be true.
     table = (
         (1, 'Top'),
-        (2, 'Section 1#'),
+        (2, 'Section 1'),
         (2, 'Section 2'),
         (3, 'Section 2.1'),
         (4, 'Section 2.1.1'),
@@ -15724,7 +15832,7 @@ try:
         p.moveToThreadNext()
     assert p == after, p.h
 finally:
-    if 1:
+    if 0:
         if root:
             root.doDelete()
             c.redraw()
@@ -15733,7 +15841,7 @@ s = '''\
 #Top
 The top section
 
-##Section 1#
+##Section 1
 section 1, line 1
 section 1, line 2
 
@@ -15753,6 +15861,36 @@ The next section is empty. It must not be deleted.
 Section 3, line 1
 
 '''
+#@+node:ekr.20161202093709.1: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093709.2: *7* !Declarations
+#Top
+The top section
+
+#@+node:ekr.20161202093709.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161202093709.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161202093709.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161202093709.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161202093709.7: *9* Section 2.2
+
+#@+node:ekr.20161202093709.8: *8* Section 3
+Section 3, line 1
+
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
 << define s >>
 if 0:
@@ -15778,19 +15916,19 @@ else:
 try:
     ic.markdownUnitTest(p,s=s,showTree=True) # Must be True.
     table = (
-        (1, '=Top'),
-        (2, '-Section 1'),
-        (2, '-Section 2'),
+        (1, 'Top'),
+        (2, 'Section 1'),
+        (2, 'Section 2'),
         (3, 'Section 2.1'),
         (4, 'Section 2.1.1'),
         (3, 'Section 2.2'),
-        (2, '-Section 3'),
+        (2, 'Section 3'),
     )
     after = p.nodeAfterTree()
     root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
-    if 1:
+    if 0:
         for n, h in table:
             n2 = p.level() - root.level()
             assert h == p.h, (h, p.h)
@@ -15798,26 +15936,26 @@ try:
             p.moveToThreadNext()
         assert p == after, p.h
 finally:
-    if 1:
+    if 0:
         if root:
             root.doDelete()
             c.redraw()
 #@+node:ekr.20161125230415.1: *6* << define s >> (md-import-test-rst-style)
 s = '''\
-=Top
+Top
 ====
 
 The top section
 
--Section 1
-----------
+Section 1
+---------
 
 section 1, line 1
 -- Not an underline
 secttion 1, line 2
 
--Section 2
-----------
+Section 2
+---------
 
 section 2, line 1
 
@@ -15832,12 +15970,192 @@ section 2.2.1 line 1
 ###Section 2.2
 section 2.2, line 1.
 
--Section 3
-----------
+Section 3
+---------
 
 section 3, line 1
 
 '''
+#@+node:ekr.20161202093319.1: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093319.2: *7* Top
+
+The top section
+
+#@+node:ekr.20161202093319.3: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161202093319.4: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161202093319.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161202093319.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161202093319.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161202093319.8: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161202093322.9: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093322.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161202093322.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161202093322.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161202093322.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161202093322.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161202093322.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161202093322.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161202093409.1: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093409.2: *7* Top
+
+The top section
+
+#@+node:ekr.20161202093409.3: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161202093409.4: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161202093409.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161202093409.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161202093409.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161202093409.8: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161202093410.1: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093410.2: *7* Top
+
+The top section
+
+#@+node:ekr.20161202093410.3: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161202093410.4: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161202093410.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161202093410.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161202093410.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161202093410.8: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161202093509.22: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161202093509.23: *7* Top
+
+The top section
+
+#@+node:ekr.20161202093509.24: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161202093509.25: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161202093509.26: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161202093509.27: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161202093509.28: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161202093509.29: *8* Section 3
+
+section 3, line 1
+
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...

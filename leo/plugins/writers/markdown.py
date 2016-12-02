@@ -26,7 +26,7 @@ class MarkdownWriter(basewriter.BaseWriter):
                     self.put(s)
         root.setVisited()
         return True
-    #@+node:ekr.20141110223158.20: *3* mdw.write_headline (no longer used)
+    #@+node:ekr.20141110223158.20: *3* mdw.write_headline
     def write_headline(self, p):
         '''
         Write or skip the headline.

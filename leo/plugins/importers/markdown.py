@@ -34,81 +34,34 @@ class Markdown_Importer(Importer):
         self.add_line(parent, '@others\n')
         self.stack = [parent]
         in_code = False
-        for i, line in enumerate(g.splitLines(s)):
-            kind, level, name = self.starts_section(line)
+        lines = g.splitLines(s)
+        skip = 0
+        # if trace: g.pdb()
+        for i, line in enumerate(lines):
             top = self.stack[-1]
-            if trace: g.trace('%2s kind: %4r, level: %4r name: %10r %r' % (
-                i+1, kind, level, name, line))
-            if i == 0 and not kind:
+            level, name = self.is_hash(line)
+            if trace: g.trace('%2s skip: %s %r' % (i+1, skip, line))
+            if skip > 0:
+                skip -= 1
+            elif not in_code and self.lookahead_underline(i, lines):
+                level = 1 if lines[i+1].startswith('=') else 2
+                self.make_node(level, line)
+                skip = 1
+            elif not in_code and name:
+                self.make_node(level, name)
+            elif i == 0:
                 self.make_decls_node(line)
             elif in_code:
                 if line.startswith("```"):
                     in_code = False
                 self.add_line(top, line)
-            elif self.is_underline(line):
-                self.do_underline(line)
-            elif kind:
-                self.make_node(kind, level, line, name)
+            elif line.startswith("```"):
+                in_code = True
+                self.add_line(top, line)
             else:
-                if line.startswith("```"):
-                    in_code = True
                 self.add_line(top, line)
         warning = '\nWarning: this node is ignored when writing this file.\n\n'
         self.add_line(parent, warning)
-    #@+node:ekr.20161125182338.1: *4* md_i.clean_headline
-    def clean_headline(self, headline):
-        '''Unlike i.clean_headline, we DO NOT strip the headline!'''
-        return headline
-    #@+node:ekr.20161126094939.1: *4* md_i.do_underline
-    def do_underline(self, line):
-        '''
-        Handle a line that is all '=' or '-' characters,
-        possibly containing trailing whitespace.
-        
-        Add the line only if it is *not* a valid underline for top.h.
-        '''
-        trace = False and g.unitTesting
-        assert not line.isspace(), repr(line)
-        assert len(line.strip()) >= 4, repr(line)
-        ch = line[0]
-        assert ch in '-=', repr(line)
-        # Test top's *headline*, to see if it is underlinable.
-        p = self.stack[-1]
-        if trace: g.trace('top: %s' % p.h)
-        prev_lines = self.get_lines(p)
-        if prev_lines:
-            if trace: g.trace('%s intervening lines' % len(prev_lines))
-            last = prev_lines[-1]
-        else:
-            last = p.h
-        # Now see whether there is a valid underline.
-        if self.is_underline(last):
-            # Can't underline an underline.
-            if trace: g.trace('Previous line is an underline', repr(line))
-            self.add_line(p, line)
-        elif last and p.h[0] == ch and 4 <= len(last) <= len(line):
-            if trace: g.trace('Removing explicit underline', repr(line))
-        elif last and 4 <= len(last) <= len(line):
-            # This *should* be a valid underline, but
-            # the previous headline does not reflect that fact.
-            # g.pdb()
-            if prev_lines:
-                if trace: g.trace('Creating new section', repr(line))
-                prev_lines.pop()
-                self.set_lines(p, prev_lines)
-                self.find_parent(level=len(self.stack), h = last)
-                    # This will cause unit tests to fail.
-                    # They should set g.app.suppressImportChecks = True
-                    
-            else:
-                p.h = ch + p.h
-                    # This will cause unit tests to fail.
-                    # They should set g.app.suppressImportChecks = True
-                if trace: g.trace('Removing implicit leading underline', repr(line))
-        else:
-            # Not a valid underline. **Do** add the line.
-            self.add_line(p, line)
-        
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):
         '''
@@ -135,6 +88,48 @@ class Markdown_Importer(Importer):
         self.stack.append(child)
         if trace and trace_stack: self.print_stack(self.stack)
         return self.stack[level]
+    #@+node:ekr.20161202090722.1: *4* md_i.is_hash
+    md_hash_pattern = re.compile(r'^(#+)\s*(\w+)(.*)\n')
+
+    def is_hash(self, line):
+        '''
+        Return level, name if line is a hash section line.
+        else return None, None.
+        '''
+        m = self.md_hash_pattern.match(line)
+        if m:
+            level = len(m.group(1))
+            name = m.group(2) + m.group(3)
+            return level, name
+        else:
+            return None, None
+
+            
+    #@+node:ekr.20161202085119.1: *4* md_i.is_underline
+    md_pattern_table = (
+        re.compile(r'^(=+)\n'),
+        re.compile(r'^(-+)\n'),
+    )
+
+    def is_underline(self, line):
+        '''True if line is all '-' or '=' characters.'''
+
+        for pattern in self.md_pattern_table:
+            m = pattern.match(line)
+            if m and len(m.group(1)) >= 4:
+                return True
+        return False
+    #@+node:ekr.20161202085032.1: *4* md_i.lookahead_underline
+    def lookahead_underline(self, i, lines):
+        '''True if lines[i:i+1] form an underlined line.'''
+        if i + 1 < len(lines):
+            line0 = lines[i]
+            line1 = lines[i+1]
+            ch0 = self.is_underline(line0)
+            ch1 = self.is_underline(line1)
+            return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
+        else:
+            return False
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
     def make_decls_node(self, line):
         '''Make a decls node.'''
@@ -147,84 +142,9 @@ class Markdown_Importer(Importer):
         )
         self.stack.append(child)
     #@+node:ekr.20161125095217.1: *4* md_i.make_node
-    def make_node(self, kind, level, line, name):
-        '''
-        Create a new node.
-        New in Leo 5.5: the headline startswith '# for hash markup.
-        '''
-        assert kind in '#=-'
-        # top = self.stack[-1] # The previous block.
-        assert name # kind won't be '#' for empty names.
-        # The writer writes # by default, so just put name in the headline!
-        h = name if kind == '#' else kind + name
-        self.find_parent(level=level, h=h)
-        # else:
-            # # Get the section name from the previous node.
-            # assert top != self.root
-                # # We have already created some node.
-            # lines = self.get_lines(top)
-            # if lines:
-                # h = lines.pop()
-                # h = '\n' if h.isspace() else h.rstrip()
-                # self.set_lines(top, lines)
-                # self.find_parent(level=level, h=h)
-            # else:
-                # self.make_decls_node(line)
-    #@+node:ekr.20161125185030.1: *4* md_i.is_underline
-    md_underline_table = (
-        ('=', re.compile(r'^(=+)\s*$')),
-        ('-', re.compile(r'^(-+)\s*$')),
-    )
-
-    def is_underline(self, line):
-        '''True if the line consists only of underlines.'''
-        for kind, pattern in self.md_underline_table:
-            m = pattern.match(line)
-            if m and len(m.group(1)) >= 4:
-                return True
-        # g.trace('FAIL', repr(line))
-        return False
-    #@+node:ekr.20161124193301.1: *4* md_i.starts_section
-    md_pattern_table = (
-        ('#', re.compile(r'^(#+)(.*)$')),
-        ('=', re.compile(r'^(=)([^=].*)$')),
-        ('-', re.compile(r'^(-)([^-].*)$')),
-    )
-
-    def starts_section(self, line):
-        '''
-        Scan the line, looking for hashes or underlines.
-        return (kind, level, name)
-        '''
-        for kind, pattern in self.md_pattern_table:
-            m = pattern.match(line)
-            if m and kind == '#':
-                level = len(m.group(1))
-                name = m.group(2)
-                if name and level > 0:
-                    return kind, level, name
-            elif m:
-                level = 1 if kind == '=' else 2
-                name = m.group(2)
-                if name:
-                    return kind, level, name
-        return None, None, None
-    #@+node:ekr.20161125180532.1: *4* md_i.create_child_node
-    def create_child_node(self, parent, body, headline):
-        '''
-        Create a child node of parent.
-        Unlike i.create_child_node, we DO NOT strip lws from the headline!
-        '''
-        trace = False and g.unitTesting
-        child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
-        assert g.isString(headline), repr(headline)
-        child.h = headline
-            # Not headline.strip()!
-        if trace: g.trace(repr(child.h))
-        return child
+    def make_node(self, level, name):
+        '''Create a new node.'''
+        self.find_parent(level=level, h=name)
     #@+node:ekr.20161125225349.1: *3* md_i.post_pass
     def post_pass(self, parent):
         '''A do-nothing post-pass for markdown.'''
