@@ -1,6 +1,6 @@
 #Overview
 This file documents Leo's importers.
-You can view this file [on GitHub](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md).
+You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md).
 
 Leo's new importers are fundamentally simpler than the previous importers in the following ways:
 
