@@ -25,7 +25,7 @@ In general, a character-by-character scan of the input file is required to recog
     
 **Complication 2: multi-line patterns**
 
-Languages that *don't* have strings, comments, etc. typically *do* have structures whose syntax spans several lines.  Examples are ctext, markdown and reStructuredText. A [beautiful coding pattern](***) greatly simplifies these importers.
+Languages that *don't* have strings, comments, etc. typically *do* have structures whose syntax spans several lines.  Examples are ctext, markdown and reStructuredText. A [beautiful coding pattern](importers.md#recognizing-multi-line-patterns) greatly simplifies these importers.
 
 **Other importers**
 
