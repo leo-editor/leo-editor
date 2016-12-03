@@ -14,10 +14,12 @@ There are two sets of complications, almost mutually exclusive. These complicati
 
 Languages such a C, Javascript, HTML/XML, PHP and Python contain syntax constructs that must be handled correctly, because such constructs could contain text that *look* like they affect node structure, but don't.  For example, in python:
 
+```python
     '''
     def spam():
         pass
     '''
+```
     
 In general, a character-by-character scan of the input file is required to recognize such syntax *accurately*. Happily, python dictionaries greatly speed such scanning.
     
@@ -41,15 +43,15 @@ The old importers kept strict track of indentation.  This presereved indentation
 #The Importer class
 All but the simplest importers are subclasses of the Importer class, in leo.plugins.importers.linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
-**i.run** is the top-level driver code. It calls each stage of a **four-stage pipeline**. Few importers need to override it.
+**`i.run`** is the top-level driver code. It calls each stage of a **four-stage pipeline**. Few importers need to override it.
 
-State 1, **i.gen_lines**, generates nodes. Most importers override i.gen_lines; a few use i.gen_lines as it is.
+Stage 1, **`i.gen_lines`**, generates nodes. Most importers override `i.gen_lines`; a few use `i.gen_lines` as it is.
 
-Stage 2, **i.post_pass**, is an optional post-pass. When present, x.post_pass reassigns lines to new nodes. Several importers defining a do-nothing x.post_pass. Other importers perform only part default i.post_pass processing.
+Stage 2, **`i.post_pass`**, is an optional post-pass. When present, x.post_pass reassigns lines to new nodes. Several importers defining a do-nothing x.post_pass. Other importers perform only part default i.post_pass processing.
 
-Stage 3, **i.finish**, sets p.b of all generated nodes using the hidden v._import_lines machinery used in the line-oriented API. Manipulating p.b directly would be a huge performance bug. Importers should never have to override this final stage. 
+Stage 3, **`i.finish`**, sets `p.b` in all generated nodes using the hidden `v._import_lines` machinery used in the line-oriented API. Manipulating `p.b` directly would be a huge performance bug. Importers should never have to override this final stage. 
 
-Stage 4, **i.check**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
+Stage 4, **`i.check`**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
 
 The following sections discuss i.gen_lines and the line-oriented API. This API simplifies the code and eliminates a huge performance bug.
 ##i.gen lines & helpers
