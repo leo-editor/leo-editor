@@ -85,7 +85,7 @@ In stages 1 and 2,  **`i.add_line(p, s)`** and **`i.extend_lines(p, aList)`** ap
 
 In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all created nodes and then deletes all `v._import_lines` attributes.
 ##Indentation
-**Strict** languages are languages like python for which leading whitespace (lws) is particularly important.  The **`i.scrict`** ivar is True only for strict languages.
+**Strict** languages are languages like python for which leading whitespace (lws) is particularly important.
 
 Stage one never changes lws. However, stage one *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
 
@@ -137,7 +137,12 @@ where data is the 6-tuple returned from `i.scan_line`, namely:
 new_context is a context (a string), i is the scan index, the delta items are changes to the counts of curly brackets, parens and square brackets, and bs_nl is True if the lines ends in a backslash/newline.
 
 The ScanState.update method simply sets all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
-#*** \@button make-importer
+#Using @button make-importer
+This script appears in both scripts.leo and leoPlugins.leo. It can be run anywhere. To use this script, simply change the constants (strings) in the root `@button` node and then run the script.
+
+The script creates @@file node for the new importer. The file contains an importer class (a subclass of the base Importer class) and a stand-alone ScanState class. Search for ### for places that you may want to customize.
+
+Not all importers need a ScanState class.  In that case, just delete the ScanState class and set state_class = None when initing the base Importer class in the Importer subclass.
 #Notes
 ##*** Recognizing multi-line patterns
 ##Python must count brackets
