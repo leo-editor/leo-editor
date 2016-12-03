@@ -140,11 +140,45 @@ The ScanState.update method simply sets all appropriate ivars in the ScanState, 
 #Using @button make-importer
 This script appears in both scripts.leo and leoPlugins.leo. It can be run anywhere. To use this script, simply change the constants (strings) in the root `@button` node and then run the script.
 
-The script creates @@file node for the new importer. The file contains an importer class (a subclass of the base Importer class) and a stand-alone ScanState class. Search for ### for places that you may want to customize.
+The script creates an `@@file` node for the new importer. When you are ready, change `@@file` to `@file`. The file contains an importer class (a subclass of the base Importer class) and a stand-alone ScanState class. Search for `###` for places that you may want to customize.
 
 Not all importers need a ScanState class.  In that case, just delete the ScanState class and set state_class = None when initing the base Importer class in the Importer subclass.
 #Notes
-##*** Recognizing multi-line patterns
+##Recognizing multi-line patterns
+The new rst importer overrides `i.v2_gen_lines`.  Here is the interesting part:
+
+```python
+    skip = 0
+    lines = g.splitLines(s)
+    for i, line in enumerate(lines):
+        if trace: g.trace('%2s %r' % (i+1, line))
+        if skip > 0:
+            skip -= 1
+        elif self.is_lookahead_overline(i, lines):
+            level = self.ch_level(line[0])
+            self.make_node(level, lines[i+1])
+            skip = 2
+        elif self.is_lookahead_underline(i, lines):
+            level = self.ch_level(lines[i+1][0])
+            self.make_node(level, line)
+            skip = 1
+        elif i == 0:
+            p = self.make_dummy_node('!Dummy chapter')
+            self.add_line(p, line)
+        else:
+            p = self.stack[-1]
+            self.add_line(p, line)
+```
+
+The skip count is an innovation. It allows the enumerate loop to look ahead naturally. The `lookahead` methods scan, as their names imply, lines *after* the line returned by enumerate.
+
+The lookahead methods are simple pattern matchers.  When they match, it is easy for the main line code to deal with the match, using 1 or two following lines. The skip logic then ensures that the main line never looks at the lines a second time.
+
+**Summary**
+
+Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex.
+
+The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code.
 ##Python must count brackets
 The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
 
