@@ -79,7 +79,7 @@ Importers for langauges that have more complex syntax override `i.get_new_dict`.
 ##The line-oriented API
 The line-oriented API fixes a huge performance bug. Concatenating strings to p.b directly creates larger and larger strings. As a result, it is an `O(N**2)` algorithm. In contrast, concatenating strings to a list is an `O(N)` algorithm.
 
-In stage 1, **`i.create_child_node`** calls `i.inject_lines_ivar(p)` to init `p.v._import_lines`.
+In stage 1, **`i.create_child_node`** calls **`i.inject_lines_ivar(p)`** to init `p.v._import_lines`.
 
 In stages 1 and 2,  **`i.add_line(p, s)`** and **`i.extend_lines(p, aList)`** append one or more lines to `p.v._import_lines`.
 
