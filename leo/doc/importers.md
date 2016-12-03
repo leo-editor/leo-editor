@@ -89,22 +89,20 @@ ScanState classes are needed only for importers for languages containing strings
 
 It's clearer to define a custom ScanState level for each importer. Subclassing the base ScanState class in linescanner.py would be more confusing and more clumsy.
 
-ScanState classes are very short. The following sections define the interface between the ScanState classes and the Importer classes.
+ScanState classes are short and simple. The following sections define the interface between the ScanState classes and the Importer classes.
 ##ScanState.context
-The ScanState.context ivar is '' when the present scanning index ``i`` is outside any string, comment, etc. Otherwise, the context ivar is a copy of the string that starts the string, comment, etc. We say that the importer is **in a context** when the scanner is inside a string, comment or regex.
+The ScanState.context ivar is `''` (An empty string) when the present scanning index ``i`` is outside any string, comment, etc. Otherwise, the context ivar is a copy of the string that starts the string, comment, etc. We say that the importer is **in a context** when the scanner is inside a string, comment or regex.
 
-Context can generally be ignored for languages that only count brackets.  Examples are C and Javascript.  In that case, the counts at the *end* of the line are accurate, *regardless* of whether the line ends in a context.
-
-But importers that use patterns to discover block structure must take care that the pattern matches fail when the *previous* line ends in a context.  It's just that simple.
+Context can generally be ignored for languages that only count brackets.  Examples are C and Javascript.  In that case, the counts at the *end* of the line are accurate, *regardless* of whether the line ends in a context. In contrast, importers that use patterns to discover block structure must take care that the pattern matches fail when the *previous* line ends in a context.  It's just that simple.
 ##ScanState.level()
-All ScanState classes must define a state.level() method that returns either an int or a tuple of ints. This allows *all* importers to make the following comparison:
+Unless an importer completely overrides `i.gen_lines`, each ScanState classes must define a state.level() method. The level method must return either an int or a tuple of ints. This allows *all* importers to make the following comparison:
 
 ```python
 if new_state.level() > prev_state.level():
     # enter new block.
 ```
 
-Most states will use one or more bracket counts to define levels.  Others, like python, will use indentation counts.  Some states return 0 always.
+Most states will use one or more bracket counts to define levels.  Others, like python, will use indentation counts. Some states always return 0.
 ##ScanState protocols
 The following protocols are needed only when the importer uses the base i.scan_line method. In that case...
 
