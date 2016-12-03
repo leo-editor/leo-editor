@@ -1,6 +1,6 @@
 #The grand overview
 This file documents Leo's importers.
-You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md).
+You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). I'll focus on the big picture throughout. For details, consult the code.
 
 **The task**
 
@@ -32,38 +32,57 @@ Languages that *don't* have strings, comments, etc. typically *do* have structur
 Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with.
 
 Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
-#The new importers are better
-Leo's new importers are fundamentally simpler than the previous importers in the following ways:
+#The new importers vs the old
+Leo's new importers are fundamentally simpler than the old.
 
-- No messing with character indices.
+The old importers attempted to parse their languages *character-by-character*. Only whole lines can be assigned to nodes, so the importers had to adjust the results of the parse to line boundaries. This was an extremely complex process, filled with error-prone index adjustments.
 
-- Indentation is handled loosely, so that indentation is regularized.
+The new importers know *nothing* about parsing.  They only understand strings, comments, etc. In particular, the javascript importer knows nothing about javascript coding patterns or conventions.  It cares only about the net number of brackets and parentheses at the end of each line.
 
-- No recursion or rescanning.
+The old importers handled nested language constructs by recursively rescanning them.  The new importers handle each line of the input file exactly once, non-recursively, line by line.
 
-All importers work by scanning each line exacly once.
+The old importers kept strict track of indentation.  This presereved indentation, but required a complex code-generation infrastructure. The new importers handle indentation implicitly.  As a result, the new importers can *regularize* leading whitespace for most languages. Python requires that leading whitespace be preserved, but this too is done quite simply.
 
-- No separate code generation.
-
-- The line-oriented API ensures that lines are always placed into nodes as a unit.
-
-- No parsing or deep understanding of any language is ever done.
-
-This is essential for javascript.
 #The Importer class
-The base Importer class, in leo.plugins.importers.linescanner.py, defines default versions all code.
+All but the simplest importers are subclasses of the Importer class, in leo.plugins.importers.linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
-The highlights:
+The new importers use a **four-stage pipeline**:
 
-- i.run
-- i.gen_lines
-- i.scan_line
-- i.scan_dict
+**i.run** is the top-level driver code. calls each stage of the pipeline. Few importers need to override it.
 
-Helpers:
+The first stage, **i.gen_lines**, generates nodes. Most importers override i.gen_lines; a few use i.gen_lines as it is.
 
+The second stage, **i.post_pass**, is an optional post-pass. When present, x.post_pass reassigns lines to new nodes. Several importers defining a do-nothing x.post_pass. Other importers perform only part default i.post_pass processing.
+
+The third stage, **i.finish**, sets p.b of all generated nodes using the hidden v._import_lines machinery used in the [line-oriented API](***). Importers should never have to override this final stage.
+
+The fourth stage, **i.check**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
+##Stage 1: i.gen lines & helpers
+**i.gen_lines** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
+
+**i.scan_line** is an optional helper for importers having strings, comments, etc. It calls i.scan_dict for every character of a line, returning a ScanState object describing the state at the *end* of the line just scanned. Few (no?) importers override i.scan_line. Instead, subclasses override **i.update**, as described [later](***).
+
+**i.scan_dict** matches patterns against the character at position i of a line. Pattern matching is very fast because the code uses **scanning dictionaries**. Scanning dictionaries define the syntax of strings, comments, docstrings, etc.
+
+**i.get_new_dict** returns the scanning dictionary for a particular combination of context and language. Some importers can use i.get_new_dict as it is because this method understands the format of strings and uses the language's comment delimiters.
+
+Importers for langauges that have more complex syntax override i.get_new_dict. The PHP importer even overrides (hacks) i.scan_dict so that it can handle heredoc strings.
+
+**i.get_dict** caches scanning dicts.  It returns a cached table if available, calling i.new_dict only if the dictionary for a language/context pair is not already in the cache. Subclasses should never need to override i.get_dict.
+
+**Summary**
+
+- i.gen_lines is the first stage of the pipline.  Most importers override it; a few use i.gen_lines as it is.
+
+- Only importers that have strings, comments, etc. use (or override) i.scan_line or i.get_new_dict. In an emergency, importers can even override i.scan_dict.
+
+- i.get_dict caches scanning dictionaries. Importers should not override it.
+##Stage 2: i.post_pass
+##Stage 3: i.finalize
+##Stage 4: i.check
 #The ScanState classes
 #The line-oriented API
+The new importers use a line-oriented API that ensures that lines are always placed into nodes as a unit. This API also simplifies and clarifies the code. This API replaces *all* the old code generators.
 #The @button make-importer script
 #Indentation
 #The post pass
