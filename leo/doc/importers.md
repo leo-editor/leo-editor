@@ -8,9 +8,7 @@ Each importer allocates lines of input file to outline nodes, preserving the ord
 
 **Taxonomy of importers**
 
-There are two sets of complications, almost mutually exclusive. These complications naturally partition the importers into two groups.
-
-A third group of importers are either very simple, or completely idiosyncratic.  Aside from a short discussion below, this documentation will say nothing about this third group.  Consult the source code.
+There are two sets of complications, almost mutually exclusive. These complications naturally partition the importers into two groups. A third group of importers are either very simple, or completely idiosyncratic.  Aside from a short discussion below, this documentation will say nothing about this third group.  Consult the source code.
 
 **Complication 1: strings, comments & regex expressions**
 
@@ -29,9 +27,7 @@ Languages that *don't* have strings, comments, etc. typically *do* have structur
 
 **Other importers**
 
-Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with.
-
-Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
+Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with. Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
 #The new importers vs the old
 Leo's new importers are fundamentally simpler than the old.
 
@@ -78,6 +74,8 @@ Importers for langauges that have more complex syntax override i.get_new_dict. T
 - Scanning dictionaries (x.get_new_dict) define the syntax of a language. Only importers that have strings, comments, etc. use (or override) i.scan_line or i.get_new_dict. In an emergency, importers can even override i.scan_dict.
 
 - i.get_dict caches scanning dictionaries. Importers should never need to override it.
+
+
 ##The line-oriented API
 The line-oriented API fixes a huge performance bug.
 
