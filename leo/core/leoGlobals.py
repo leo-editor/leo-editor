@@ -5776,6 +5776,7 @@ def os_path_dirname(path):
 def os_path_exists(path):
     """Return True if path exists."""
     path = g.toUnicodeFileEncoding(path)
+    path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     return os.path.exists(path)
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression
 def os_path_expandExpression(s, **keys):
