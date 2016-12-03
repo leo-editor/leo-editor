@@ -85,76 +85,54 @@ In stages 1 and 2,  **`i.add_line(p, s)`** and **`i.extend_lines(p, aList)`** ap
 
 In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all created nodes and then deletes all `v._import_lines` attributes.
 #The ScanState classes
-##state_update & the scan_line protocol
+ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a manditory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
-The new coffeescript.scanner is an example of the nifty new pattern. See `i.scan_line` and its helpers, `i.get_new_table` and `i.scan_table`.
+It's clearer to define a custom ScanState level for each importer. Subclassing the base ScanState class in linescanner.py would be more confusing and more clumsy.
 
-Here is the revised `i.scan_line`. It implicitly defines a protocol that all ScanState classes must follow:
-```python
-def scan_line(self, s, prev_state):
-    '''
-    A generalized scan-line method.
+ScanState classes are very short. The following sections define the interface between the ScanState classes and the Importer classes.
+##ScanState.context
+The ScanState.context ivar is '' when the present scanning index ``i`` is outside any string, comment, etc. Otherwise, the context ivar is a copy of the string that starts the string, comment, etc. We say that the importer is **in a context** when the scanner is inside a string, comment or regex.
 
-    SCAN STATE PROTOCOL:
+Context can generally be ignored for languages that only count brackets.  Examples are C and Javascript.  In that case, the counts at the *end* of the line are accurate, *regardless* of whether the line ends in a context.
 
-    The Importer class should have a state_class ivar that references a
-    **state class**. This class probably should *not* be subclass of the
-    ScanState class, but it should observe the following protocol:
+But importers that use patterns to discover block structure must take care that the pattern matches fail when the *previous* line ends in a context.  It's just that simple.
+##ScanState.level()
+All ScanState classes must define a state.level() method that returns either an int or a tuple of ints. This allows *all* importers to make the following comparison:
 
-    1. The state class's ctor must have the following signature:
-
-        def __init__(self, d)
-
-    2. The state class must have an update method.
-    '''
-    # This dict allows new data to be added without changing ScanState signatures.
-    d = {
-        'indent': self.get_int_lws(s),
-        'is_ws_line': self.is_ws_line(s),
-        'prev':prev_state,
-        's':s,
-    }
-    new_state = self.state_class(d)
-    i = 0
-    while i < len(s):
-        progress = i
-        context = new_state.context
-        table = self.get_table(context)
-        data = self.scan_table(context, i, s, table)
-        i = new_state.update(data)
-        assert progress < i
-    return new_state
-```
-The tables returned by `i.get_table` describe scanning much more clearly than the blah-blah-blah of code.
-
-##state.level()
-ScanState classes all define a state.level() method that returns either an int or a tuple of ints. This allows comparisons such as the following for *all* languages:
 ```python
 if new_state.level() > prev_state.level():
     # enter new block.
 ```
 
-There are several special cases, however.
+Most states will use one or more bracket counts to define levels.  Others, like python, will use indentation counts.  Some states return 0 always.
+##ScanState protocols
+The following protocols are needed only when the importer uses the base i.scan_line method. In that case...
 
-**Pattern matching** Languages that use a regex pattern to determine whether a line starts a block must take care. x.starts_block must fail if prev_state.context is non-empty. In that case, the next line is in a comment or string. Here is a python example:
+1. The ScanState class must have a ctor with the following signature:
+
 ```python
-s = r'''
-def spam():
-    pass
-'''
+    def __init__(self, d):
 ```
 
-And similarly for coffeescript.
+When d is None, the ctor should init all ivars. Otherwise, d is a dict that tells how to init all ivars.
 
-**Missing function signature lines** At present, the C-language importer only counts curly brackets, but this can lead to a strange assignment of lines to block in cases such as:
-```c
-static void foo(bar)
-{}
+2. The state class must have an update method:
+
+```python
+    def update(self, data):
 ```
-The block associated with foo will consist only of the line {}, with an unhelpful headline. The perfect import check will succeed, but the post-pass should move the int foo(bar) line into the next block. Theoretically, the post-pass should be aware of comments that intervene between the two lines given above, but in practice we can ignore such bizarre cases, because the file will still import correctly.
 
+where data is the 6-tuple returned from `i.scan_line`, namely:
+
+```python
+    new_context, i, delta_c, delta_p, delta_s, bs_nl
+```
+
+new_context is a context (a string), i is the scan index, the delta items are changes to the counts of curly brackets, parens and square brackets, and bs_nl is True if the lines ends in a backslash/newline.
+
+The ScanState.update method simply sets all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
+#The @button make-importer script
 #Notes
-##The @button make-importer script
 ##Recognizing multi-line patterns
 ##Python must track brackets
 
