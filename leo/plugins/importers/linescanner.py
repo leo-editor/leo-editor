@@ -180,148 +180,6 @@ class Importer(object):
 
     def set_lines(self, p, lines):
         p.v._import_lines = list(lines)
-    #@+node:ekr.20161108131153.3: *3* i.check & helpers
-    def check(self, unused_s, parent):
-        '''True if perfect import checks pass.'''
-        trace = False and g.unitTesting
-        trace_all = True
-        trace_lines = True
-        trace_status = True
-        if g.app.suppressImportChecks:
-            if trace and trace_status:
-                g.trace('===== skipping all checks', parent.h)
-            g.app.suppressImportChecks = False
-            return True
-        c = self.c
-        t1 = time.clock()
-        sfn = g.shortFileName(self.root.h)
-        s1 = g.toUnicode(self.file_s, self.encoding)
-        s2 = self.trial_write()
-        lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
-        if trace and trace_all:
-            g.trace('===== entry')
-            self.trace_lines(lines1, lines2, parent)
-        if self.ws_error:
-            if trace and trace_status: g.trace('===== ws_error: cleaning lws')
-            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
-        else:
-            lines1, lines2 = self.clean_blank_lines(lines1), self.clean_blank_lines(lines2)
-        # Forgive trailing whitespace problems in the last line:
-        if True:
-            lines1, lines2 = self.clean_last_lines(lines1), self.clean_last_lines(lines2)
-        ok = lines1 == lines2
-        if not ok and not self.strict:
-            if trace:
-                self.show_failure1(lines1, lines2, parent, trace_all, trace_status)
-            # Issue an error only if something *other than* lws is amiss.
-            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
-            ok = lines1 == lines2
-            if ok and not g.unitTesting:
-                print('warning: leading whitespace changed in:', self.root.h)
-        if not ok:
-            self.show_failure2(lines1, lines2, sfn)
-        if trace and trace_all or (not ok and trace_lines):
-            self.trace_lines(lines1, lines2, parent)
-        # Ensure that the unit tests fail when they should.
-        # Unit tests do not generate errors unless the mismatch line does not match.
-        if g.app.unitTesting:
-            d = g.app.unitTestDict
-            d['result'] = ok
-            if not ok:
-                d['fail'] = g.callers()
-                # Used in a unit test.
-                c.importCommands.errors += 1
-        t2 = time.clock()
-        if t2 - t1 > 0.1:
-            print('')
-            g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
-        return ok
-    #@+node:ekr.20161108131153.4: *4* i.clean_blank_lines
-    def clean_blank_lines(self, lines):
-        '''Remove all blanks and tabs in all blank lines.'''
-        return [self.lstrip_line(z) if z.isspace() else z for z in lines]
-    #@+node:ekr.20161124030004.1: *4* i.clean_last_lines
-    def clean_last_lines(self, lines):
-        '''Remove blank lines from the end of lines.'''
-        while lines and lines[-1].isspace():
-            lines.pop()
-        return lines
-    #@+node:ekr.20161125031613.1: *4* i.show_failure1
-    def show_failure1(self, lines1, lines2, parent, trace_all, trace_status):
-        '''Print traces when first checks fail.'''
-        if trace_status:
-            g.trace('===== %s NOT OK cleaning LWS' % self.name)
-        if trace_all:
-            self.trace_lines(lines1, lines2, parent)
-    #@+node:ekr.20161123210716.1: *4* i.show_failure2
-    def show_failure2(self, lines1, lines2, sfn):
-        '''Print the failing lines.'''
-        if not g.unitTesting:
-            g.es('@auto failed:', sfn, color='red')
-        n1, n2 = len(lines1), len(lines2)
-        print('\n===== PERFECT IMPORT FAILED =====', sfn)
-        print('len(s1): %s len(s2): %s' % (n1, n2))
-        for i in range(min(n1, n2)):
-            line1, line2 = lines1[i], lines2[i]
-            if line1 != line2:
-                 print('first mismatched line: %s' % (i+1))
-                 print(repr(line1))
-                 print(repr(line2))
-                 break
-        else:
-            print('all common lines match')
-    #@+node:ekr.20161108131153.5: *4* i.strip_*
-    def lstrip_line(self, s):
-        '''Delete leading whitespace, *without* deleting the trailing newline!'''
-        # This fixes a major bug in strip_lws.
-        assert s, g.callers()
-        return '\n' if s.isspace() else s.lstrip()
-
-    def strip_all(self, lines):
-        '''Strip blank lines and leading whitespace from all lines of s.'''
-        return self.strip_lws(self.strip_blank_lines(lines))
-
-    def strip_blank_lines(self, lines):
-        '''Strip all blank lines from s.'''
-        return [z for z in lines if not z.isspace()]
-        
-    def strip_lws(self, lines):
-        '''Strip leading whitespace from all lines.'''
-        return [self.lstrip_line(z) for z in lines]
-        # This also works, but I prefer the "extra" call to lstrip().
-        # return ['\n' if z.isspace() else z.lstrip() for z in lines].
-
-        
-    #@+node:ekr.20161123210335.1: *4* i.trace_lines
-    def trace_lines(self, lines1, lines2, parent):
-        '''Show both s1 and s2.'''
-        print('===== s1: %s' % parent.h)
-        for i, s in enumerate(lines1):
-            print('%3s %r' % (i+1, s))
-        print('===== s2')
-        for i, s in enumerate(lines2):
-            print('%3s %r' % (i+1, s))
-    #@+node:ekr.20161108131153.6: *4* i.trial_write
-    def trial_write(self):
-        '''Return the trial write for self.root.'''
-        at = self.c.atFileCommands
-        if self.gen_refs:
-            # Alas, the *actual* @auto write code refuses to write section references!!
-            at.write(self.root,
-                    nosentinels=True,           # was False,
-                    perfectImportFlag=False,    # was True,
-                    scriptWrite=True,           # was False,
-                    thinFile=True,
-                    toString=True,
-                )
-        else:
-            at.writeOneAtAutoNode(
-                self.root,
-                toString=True,
-                force=True,
-                trialWrite=True,
-            )
-        return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108131153.7: *3* i.Overrides
     # These can be overridden in subclasses.
     #@+node:ekr.20161108131153.8: *4* i.adjust_parent
@@ -346,76 +204,6 @@ class Importer(object):
         '''
         pass
     #@+node:ekr.20161120022121.1: *3* i.Scanning & scan tables
-    #@+node:ekr.20161128190217.1: *4* i. to be retired
-    #@+node:ekr.20161113135037.1: *5* i.get_table
-    #@@nobeautify
-    cached_scan_tables = {}
-
-    def get_table(self, context):
-        '''
-        Return the state table for the given context.
-        
-        This method handles caching.  x.get_new_table returns the actual table.
-        '''
-        key = '%s.%s' % (self.name, context)
-            # Bug fix: must keep tables separate.
-        table = self.cached_scan_tables.get(key)
-        if table:
-            return table
-        else:
-            table = self.get_new_dict(context)
-            self.cached_scan_tables[key] = table
-            return table
-    #@+node:ekr.20161113052225.1: *5* i.scan_table
-    def scan_table(self, context, i, s, table):
-        '''
-        i.scan_table: Scan at position i of s with the give context and table.
-        Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
-        '''
-        trace = False and g.unitTesting
-        if trace: g.trace('='*20, repr(context))
-        # kind,   pattern, out-ctx,     in-ctx,     delta{}, delta(), delta[]
-        for kind, pattern, out_context, in_context, delta_c, delta_p, delta_s in table:
-            # pattern may be None in the general table,
-            # because not all languages have all comment delims.
-            if pattern and self.match(s, i, pattern):
-                if not kind.startswith('end'):
-                    assert kind in ('all', 'len', 'len+1'), kind
-                # Backslash patterns must match in all contexts!
-                if pattern.startswith('\\'):
-                    ok = True
-                    if trace: g.trace(
-                        '----- context: %r in_context: %r out_context: %r' % (
-                            context, in_context, out_context))
-                    new_context = out_context
-                elif context == '':
-                    ok = True
-                    new_context = out_context
-                elif kind.startswith('end'):
-                    tail = kind[3:]
-                    ok = tail and context == tail
-                    new_context = in_context
-                else:
-                    ok = context == pattern
-                    new_context = in_context
-                if ok:
-                    assert new_context is not None, (pattern, repr(s))
-                    if trace: g.trace(
-                        '   MATCH: i: %s ch: %4r kind: %5s pattern: %5r '
-                        'context: %5r new_context: %5r line: %r' % (
-                        i, s[i], kind, pattern, context, new_context, s))
-                    if kind == 'all':
-                        i = len(s)
-                    elif kind == 'len+1':
-                        i += (len(pattern) + 1)
-                    else:
-                        assert kind.startswith('end') or kind == 'len', (kind, self.name)
-                        i += len(pattern)
-                    bs_nl = pattern == '\\\n'
-                    return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        # No match: stay in present state. All deltas are zero.
-        if trace: g.trace('NO MATCH: i: %s ch: %4r context: %5r line: %r' % (i, s[i], context, s))
-        return context, i+1, 0, 0, 0, False
     #@+node:ekr.20161128025508.1: *4* i.get_new_dict
     #@@nobeautify
 
@@ -461,6 +249,25 @@ class Importer(object):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
+    #@+node:ekr.20161113135037.1: *4* i.get_table
+    #@@nobeautify
+    cached_scan_tables = {}
+
+    def get_table(self, context):
+        '''
+        Return the state table for the given context.
+        
+        This method handles caching.  x.get_new_table returns the actual table.
+        '''
+        key = '%s.%s' % (self.name, context)
+            # Bug fix: must keep tables separate.
+        table = self.cached_scan_tables.get(key)
+        if table:
+            return table
+        else:
+            table = self.get_new_dict(context)
+            self.cached_scan_tables[key] = table
+            return table
     #@+node:ekr.20161128025444.1: *4* i.scan_dict
     def scan_dict(self, context, i, s, d):
         '''
@@ -527,6 +334,42 @@ class Importer(object):
                 'NO MATCH: i: %s ch: %r context: %r line: %r' % (
                     i, ch, context, s))
         return new_context, i+1, 0, 0, 0, False
+    #@+node:ekr.20161108170435.1: *4* i.scan_line
+    def scan_line(self, s, prev_state):
+        '''
+        A generalized scan-line method.
+        
+        SCAN STATE PROTOCOL:
+        
+        The Importer class should have a state_class ivar that references a
+        **state class**. This class probably should *not* be subclass of the
+        ScanState class, but it should observe the following protocol:
+        
+        1. The state class's ctor must have the following signature:
+            
+            def __init__(self, d)
+            
+        2. The state class must have an update method.
+        '''
+        trace = False and g.unitTesting
+        # This dict allows new data to be added without changing ScanState signatures.
+        d = {
+            'indent': self.get_int_lws(s),
+            'is_ws_line': self.is_ws_line(s),
+            'prev':prev_state,
+            's':s,
+        }
+        new_state = self.state_class(d)
+        i = 0
+        while i < len(s):
+            progress = i
+            context = new_state.context
+            table = self.get_table(context)
+            data = self.scan_dict(context, i, s, table)
+            i = new_state.update(data)
+            assert progress < i
+        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
+        return new_state
     #@+node:ekr.20161114024119.1: *4* i.test_scan_state
     def test_scan_state(self, tests, State):
         '''
@@ -575,44 +418,128 @@ class Importer(object):
                     assert new_state.context == context, (
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
-    #@+node:ekr.20161108170435.1: *4* i.scan_line
-    def scan_line(self, s, prev_state):
-        '''
-        A generalized scan-line method.
-        
-        SCAN STATE PROTOCOL:
-        
-        The Importer class should have a state_class ivar that references a
-        **state class**. This class probably should *not* be subclass of the
-        ScanState class, but it should observe the following protocol:
-        
-        1. The state class's ctor must have the following signature:
-            
-            def __init__(self, d)
-            
-        2. The state class must have an update method.
-        '''
+    #@+node:ekr.20161108165530.1: *3* i.The pipeline
+    #@+node:ekr.20161108131153.10: *4* i.run (driver) & helpers
+    def run(self, s, parent, parse_body=False, prepass=False):
+        '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
-        # This dict allows new data to be added without changing ScanState signatures.
-        d = {
-            'indent': self.get_int_lws(s),
-            'is_ws_line': self.is_ws_line(s),
-            'prev':prev_state,
-            's':s,
-        }
-        new_state = self.state_class(d)
-        i = 0
-        while i < len(s):
-            progress = i
-            context = new_state.context
-            table = self.get_table(context)
-            data = self.scan_dict(context, i, s, table)
-            i = new_state.update(data)
-            assert progress < i
-        if trace: g.trace('\n\n%r\n\n%s\n' % (s, new_state))
-        return new_state
-    #@+node:ekr.20161108165530.1: *3* i.Top level
-    #@+node:ekr.20161111024447.1: *4* i.generate_nodes & helpers
+        if trace: g.trace('='*20, self.name)
+        if trace: g.trace('=' * 10, parent.h)
+        c = self.c
+        if prepass:
+            g.trace('(Importer) Can not happen, prepass is True')
+            return True, [] # Don't split any nodes.
+        self.root = root = parent.copy()
+        self.file_s = s
+        # Init the error/status info.
+        self.errors = 0
+        self.parse_body = parse_body
+        # Check for intermixed blanks and tabs.
+        self.tab_width = c.getTabWidth(p=root)
+        ws_ok = self.check_blanks_and_tabs(s) # Only issues warnings.
+        # Regularize leading whitespace
+        if not ws_ok:
+            s = self.regularize_whitespace(s)
+        # Generate the nodes, including directives and section references.
+        changed = c.isChanged()
+        # Completely generate all nodes.
+        self.generate_nodes(s, parent)
+        # Check the generated nodes.
+        # Return True if the result is equivalent to the original file.
+        ok = self.errors == 0 and self.check(s, parent)
+        g.app.unitTestDict['result'] = ok
+        # Insert an @ignore directive if there were any serious problems.
+        if not ok:
+            self.insert_ignore_directive(parent)
+        # It's always useless for an an import to dirty the outline.
+        for p in root.self_and_subtree():
+            p.clearDirty()
+        c.setChanged(changed)
+        if trace: g.trace('-' * 10, parent.h)
+        return ok
+    #@+node:ekr.20161108131153.11: *5* i.check_blanks_and_tabs
+    def check_blanks_and_tabs(self, lines):
+        '''Check for intermixed blank & tabs.'''
+        # Do a quick check for mixed leading tabs/blanks.
+        trace = False and not g.unitTesting
+        fn = g.shortFileName(self.root.h)
+        w = self.tab_width
+        blanks = tabs = 0
+        for s in g.splitLines(lines):
+            lws = self.get_str_lws(s)
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        # Make sure whitespace matches @tabwidth directive.
+        if w < 0:
+            ok = tabs == 0
+            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
+        elif w > 0:
+            ok = blanks == 0
+            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
+        if ok:
+            ok = blanks == 0 or tabs == 0
+            message = 'intermixed blanks and tabs in: %s' % (fn)
+        if ok:
+            if trace: g.trace('=====', len(lines), blanks, tabs)
+        else:
+            if g.unitTesting:
+                self.report(message)
+            else:
+                g.es_print(message)
+        return ok
+    #@+node:ekr.20161108131153.12: *5* i.insert_ignore_directive
+    def insert_ignore_directive(self, parent):
+        c = self.c
+        parent.b = parent.b.rstrip() + '\n@ignore\n'
+        if g.unitTesting:
+            g.app.unitTestDict['fail'] = g.callers()
+        elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+            g.warning('inserting @ignore')
+            c.import_error_nodes.append(parent.h)
+    #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
+    def regularize_whitespace(self, s):
+        '''
+        Regularize leading whitespace in s:
+        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
+        '''
+        trace = False and not g.unitTesting
+        trace_lines = False
+        kind = 'tabs' if self.tab_width > 0 else 'blanks'
+        kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
+        fn = g.shortFileName(self.root.h)
+        lines = g.splitLines(s)
+        count, result, tab_width = 0, [], self.tab_width
+        self.ws_error = False ### 2016/11/23
+        if tab_width < 0: # Convert tabs to blanks.
+            for n, line in enumerate(lines):
+                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
+                    # Use negative width.
+                if s != line:
+                    count += 1
+                    if trace and trace_lines:
+                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
+                result.append(s)
+        elif tab_width > 0: # Convert blanks to tabs.
+            for n, line in enumerate(lines):
+                s = g.optimizeLeadingWhitespace(line, abs(tab_width))
+                    # Use positive width.
+                if s != line:
+                    count += 1
+                    if trace and trace_lines:
+                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
+                result.append(s)
+        if count:
+            self.ws_error = True # A flag to check.
+            if not g.unitTesting:
+                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
+                # g.es_print('Perfect import test will ignoring leading whitespace.')
+                g.es_print('changed leading %s to %s in %s line%s in %s' % (
+                    kind2, kind, count, g.plural(count), fn))
+            if g.unitTesting: # Sets flag for unit tests.
+                self.report('changed %s lines' % count) 
+        return ''.join(result)
+    #@+node:ekr.20161111024447.1: *4* Stage 1: i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
         A three-stage pipeline to generate all imported nodes.
@@ -631,7 +558,7 @@ class Importer(object):
         #
         # Subclasses should never need to override this stage.
         self.finish(parent)
-    #@+node:ekr.20161108160409.1: *5* Stage 1: i.gen_lines & helpers
+    #@+node:ekr.20161108160409.1: *5* i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent, creating descendant
@@ -783,7 +710,7 @@ class Importer(object):
                 g.printList(parent.v._import_lines)
             self.add_line(parent,ref)
         return headline
-    #@+node:ekr.20161108131153.13: *5* Stage 2: i.post_pass & helpers
+    #@+node:ekr.20161108131153.13: *4* Stage 2: i.post_pass & helpers
     def post_pass(self, parent):
         '''
         Optional Stage 2 of the importer pipeline, consisting of zero or more
@@ -804,7 +731,7 @@ class Importer(object):
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
         
-    #@+node:ekr.20161110125940.1: *6* i.clean_all_headlines
+    #@+node:ekr.20161110125940.1: *5* i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
         Clean all headlines in parent's tree by calling the language-specific
@@ -817,14 +744,14 @@ class Importer(object):
             else:
                 pass
                 # g.trace('empty headline', p, 'parent', parent.h)
-    #@+node:ekr.20161110130157.1: *6* i.clean_all_nodes
+    #@+node:ekr.20161110130157.1: *5* i.clean_all_nodes
     def clean_all_nodes(self, parent):
         '''Clean the nodes in parent's tree, in a language-dependent way.'''
         # i.clean_nodes does nothing.
         # Subclasses may override as desired.
         # See perl_i.clean_nodes for an example.
         self.clean_nodes(parent)
-    #@+node:ekr.20161110130709.1: *6* i.delete_all_empty_nodes
+    #@+node:ekr.20161110130709.1: *5* i.delete_all_empty_nodes
     def delete_all_empty_nodes(self, parent):
         '''
         Delete nodes consisting of nothing but whitespace.
@@ -841,7 +768,7 @@ class Importer(object):
                     self.extend_lines(back, lines)
                     aList.append(p.copy())
         c.deletePositionsInList(aList)
-    #@+node:ekr.20161110131509.1: *6* i.promote_trailing_underindented_lines
+    #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         '''
         Promote all trailing underindent lines to the node's parent node,
@@ -877,7 +804,7 @@ class Importer(object):
                 self.set_lines(p, lines)
                 self.extend_lines(parent, reversed(tail))
                 
-    #@+node:ekr.20161110130337.1: *6* i.unindent_all_nodes
+    #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
         for p in parent.subtree():
@@ -887,7 +814,7 @@ class Importer(object):
                 self.clear_lines(p)
             else:
                 self.set_lines(p, self.undent(p))
-    #@+node:ekr.20161111023249.1: *5* Stage 3: i.finish & helpers
+    #@+node:ekr.20161111023249.1: *4* Stage 3: i.finish & helpers
     def finish(self, parent):
         '''
         Stage 3 (the last) stage of the importer pipeline.
@@ -899,7 +826,7 @@ class Importer(object):
         #
         # Finally, remove all v._import_list temporaries.
         self.finalize_ivars(parent)
-    #@+node:ekr.20161108160409.5: *6* i.add_root_directives
+    #@+node:ekr.20161108160409.5: *5* i.add_root_directives
     def add_root_directives(self, parent):
         '''Return the proper directives for the root node p.'''
         table = [
@@ -910,7 +837,7 @@ class Importer(object):
             pass
         else:
             self.extend_lines(parent, table)
-    #@+node:ekr.20161110042020.1: *6* i.finalize_ivars
+    #@+node:ekr.20161110042020.1: *5* i.finalize_ivars
     def finalize_ivars(self, parent):
         '''
         Update the body text of all nodes in parent's tree using the injected
@@ -931,126 +858,148 @@ class Importer(object):
                 self.print_lines(lines)
             v._bodyString = ''.join(lines)
             delattr(v, '_import_lines')
-    #@+node:ekr.20161108131153.10: *4* i.run (entry point) & helpers
-    def run(self, s, parent, parse_body=False, prepass=False):
-        '''The common top-level code for all scanners.'''
+    #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
+    def check(self, unused_s, parent):
+        '''True if perfect import checks pass.'''
         trace = False and g.unitTesting
-        if trace: g.trace('='*20, self.name)
-        if trace: g.trace('=' * 10, parent.h)
+        trace_all = True
+        trace_lines = True
+        trace_status = True
+        if g.app.suppressImportChecks:
+            if trace and trace_status:
+                g.trace('===== skipping all checks', parent.h)
+            g.app.suppressImportChecks = False
+            return True
         c = self.c
-        if prepass:
-            g.trace('(Importer) Can not happen, prepass is True')
-            return True, [] # Don't split any nodes.
-        self.root = root = parent.copy()
-        self.file_s = s
-        # Init the error/status info.
-        self.errors = 0
-        self.parse_body = parse_body
-        # Check for intermixed blanks and tabs.
-        self.tab_width = c.getTabWidth(p=root)
-        ws_ok = self.check_blanks_and_tabs(s) # Only issues warnings.
-        # Regularize leading whitespace
-        if not ws_ok:
-            s = self.regularize_whitespace(s)
-        # Generate the nodes, including directives and section references.
-        changed = c.isChanged()
-        # Completely generate all nodes.
-        self.generate_nodes(s, parent)
-        # Check the generated nodes.
-        # Return True if the result is equivalent to the original file.
-        ok = self.errors == 0 and self.check(s, parent)
-        g.app.unitTestDict['result'] = ok
-        # Insert an @ignore directive if there were any serious problems.
-        if not ok:
-            self.insert_ignore_directive(parent)
-        # It's always useless for an an import to dirty the outline.
-        for p in root.self_and_subtree():
-            p.clearDirty()
-        c.setChanged(changed)
-        if trace: g.trace('-' * 10, parent.h)
-        return ok
-    #@+node:ekr.20161108131153.11: *5* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines):
-        '''Check for intermixed blank & tabs.'''
-        # Do a quick check for mixed leading tabs/blanks.
-        trace = False and not g.unitTesting
-        fn = g.shortFileName(self.root.h)
-        w = self.tab_width
-        blanks = tabs = 0
-        for s in g.splitLines(lines):
-            lws = self.get_str_lws(s)
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        # Make sure whitespace matches @tabwidth directive.
-        if w < 0:
-            ok = tabs == 0
-            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
-        elif w > 0:
-            ok = blanks == 0
-            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
-        if ok:
-            ok = blanks == 0 or tabs == 0
-            message = 'intermixed blanks and tabs in: %s' % (fn)
-        if ok:
-            if trace: g.trace('=====', len(lines), blanks, tabs)
+        t1 = time.clock()
+        sfn = g.shortFileName(self.root.h)
+        s1 = g.toUnicode(self.file_s, self.encoding)
+        s2 = self.trial_write()
+        lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
+        if trace and trace_all:
+            g.trace('===== entry')
+            self.trace_lines(lines1, lines2, parent)
+        if self.ws_error:
+            if trace and trace_status: g.trace('===== ws_error: cleaning lws')
+            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
         else:
-            if g.unitTesting:
-                self.report(message)
-            else:
-                g.es_print(message)
+            lines1, lines2 = self.clean_blank_lines(lines1), self.clean_blank_lines(lines2)
+        # Forgive trailing whitespace problems in the last line:
+        if True:
+            lines1, lines2 = self.clean_last_lines(lines1), self.clean_last_lines(lines2)
+        ok = lines1 == lines2
+        if not ok and not self.strict:
+            if trace:
+                self.show_failure1(lines1, lines2, parent, trace_all, trace_status)
+            # Issue an error only if something *other than* lws is amiss.
+            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
+            ok = lines1 == lines2
+            if ok and not g.unitTesting:
+                print('warning: leading whitespace changed in:', self.root.h)
+        if not ok:
+            self.show_failure2(lines1, lines2, sfn)
+        if trace and trace_all or (not ok and trace_lines):
+            self.trace_lines(lines1, lines2, parent)
+        # Ensure that the unit tests fail when they should.
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if g.app.unitTesting:
+            d = g.app.unitTestDict
+            d['result'] = ok
+            if not ok:
+                d['fail'] = g.callers()
+                # Used in a unit test.
+                c.importCommands.errors += 1
+        t2 = time.clock()
+        if t2 - t1 > 0.1:
+            print('')
+            g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
         return ok
-    #@+node:ekr.20161108131153.12: *5* i.insert_ignore_directive
-    def insert_ignore_directive(self, parent):
-        c = self.c
-        parent.b = parent.b.rstrip() + '\n@ignore\n'
-        if g.unitTesting:
-            g.app.unitTestDict['fail'] = g.callers()
-        elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
-            g.warning('inserting @ignore')
-            c.import_error_nodes.append(parent.h)
-    #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
-    def regularize_whitespace(self, s):
-        '''
-        Regularize leading whitespace in s:
-        Convert tabs to blanks or vice versa depending on the @tabwidth in effect.
-        '''
-        trace = False and not g.unitTesting
-        trace_lines = False
-        kind = 'tabs' if self.tab_width > 0 else 'blanks'
-        kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
-        fn = g.shortFileName(self.root.h)
-        lines = g.splitLines(s)
-        count, result, tab_width = 0, [], self.tab_width
-        self.ws_error = False ### 2016/11/23
-        if tab_width < 0: # Convert tabs to blanks.
-            for n, line in enumerate(lines):
-                i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                s = g.computeLeadingWhitespace(w, -abs(tab_width)) + line[i:]
-                    # Use negative width.
-                if s != line:
-                    count += 1
-                    if trace and trace_lines:
-                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
-                result.append(s)
-        elif tab_width > 0: # Convert blanks to tabs.
-            for n, line in enumerate(lines):
-                s = g.optimizeLeadingWhitespace(line, abs(tab_width))
-                    # Use positive width.
-                if s != line:
-                    count += 1
-                    if trace and trace_lines:
-                        g.es_print('%s: %r\n%s: %r' % (n+1, line, n+1, s))
-                result.append(s)
-        if count:
-            self.ws_error = True # A flag to check.
-            if not g.unitTesting:
-                # g.es_print('Warning: Intermixed tabs and blanks in', fn)
-                # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es_print('changed leading %s to %s in %s line%s in %s' % (
-                    kind2, kind, count, g.plural(count), fn))
-            if g.unitTesting: # Sets flag for unit tests.
-                self.report('changed %s lines' % count) 
-        return ''.join(result)
+    #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
+    def clean_blank_lines(self, lines):
+        '''Remove all blanks and tabs in all blank lines.'''
+        return [self.lstrip_line(z) if z.isspace() else z for z in lines]
+    #@+node:ekr.20161124030004.1: *5* i.clean_last_lines
+    def clean_last_lines(self, lines):
+        '''Remove blank lines from the end of lines.'''
+        while lines and lines[-1].isspace():
+            lines.pop()
+        return lines
+    #@+node:ekr.20161125031613.1: *5* i.show_failure1
+    def show_failure1(self, lines1, lines2, parent, trace_all, trace_status):
+        '''Print traces when first checks fail.'''
+        if trace_status:
+            g.trace('===== %s NOT OK cleaning LWS' % self.name)
+        if trace_all:
+            self.trace_lines(lines1, lines2, parent)
+    #@+node:ekr.20161123210716.1: *5* i.show_failure2
+    def show_failure2(self, lines1, lines2, sfn):
+        '''Print the failing lines.'''
+        if not g.unitTesting:
+            g.es('@auto failed:', sfn, color='red')
+        n1, n2 = len(lines1), len(lines2)
+        print('\n===== PERFECT IMPORT FAILED =====', sfn)
+        print('len(s1): %s len(s2): %s' % (n1, n2))
+        for i in range(min(n1, n2)):
+            line1, line2 = lines1[i], lines2[i]
+            if line1 != line2:
+                 print('first mismatched line: %s' % (i+1))
+                 print(repr(line1))
+                 print(repr(line2))
+                 break
+        else:
+            print('all common lines match')
+    #@+node:ekr.20161108131153.5: *5* i.strip_*
+    def lstrip_line(self, s):
+        '''Delete leading whitespace, *without* deleting the trailing newline!'''
+        # This fixes a major bug in strip_lws.
+        assert s, g.callers()
+        return '\n' if s.isspace() else s.lstrip()
+
+    def strip_all(self, lines):
+        '''Strip blank lines and leading whitespace from all lines of s.'''
+        return self.strip_lws(self.strip_blank_lines(lines))
+
+    def strip_blank_lines(self, lines):
+        '''Strip all blank lines from s.'''
+        return [z for z in lines if not z.isspace()]
+        
+    def strip_lws(self, lines):
+        '''Strip leading whitespace from all lines.'''
+        return [self.lstrip_line(z) for z in lines]
+        # This also works, but I prefer the "extra" call to lstrip().
+        # return ['\n' if z.isspace() else z.lstrip() for z in lines].
+
+        
+    #@+node:ekr.20161123210335.1: *5* i.trace_lines
+    def trace_lines(self, lines1, lines2, parent):
+        '''Show both s1 and s2.'''
+        print('===== s1: %s' % parent.h)
+        for i, s in enumerate(lines1):
+            print('%3s %r' % (i+1, s))
+        print('===== s2')
+        for i, s in enumerate(lines2):
+            print('%3s %r' % (i+1, s))
+    #@+node:ekr.20161108131153.6: *5* i.trial_write
+    def trial_write(self):
+        '''Return the trial write for self.root.'''
+        at = self.c.atFileCommands
+        if self.gen_refs:
+            # Alas, the *actual* @auto write code refuses to write section references!!
+            at.write(self.root,
+                    nosentinels=True,           # was False,
+                    perfectImportFlag=False,    # was True,
+                    scriptWrite=True,           # was False,
+                    thinFile=True,
+                    toString=True,
+                )
+        else:
+            at.writeOneAtAutoNode(
+                self.root,
+                toString=True,
+                force=True,
+                trialWrite=True,
+            )
+        return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
     def all_contexts(self, table):
