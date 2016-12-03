@@ -1,3 +1,8 @@
+#Table of contents
+1. [The grand overview](#The grand overview)
+2. [The new importers vs. the old](#The new importers vs. the old)
+3. [The Importer class](#The Importer class)
+    1. [i.gen lines & helpers](##i.gen lines & helpers)
 #The grand overview
 This file documents Leo's importers.
 You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs are intended solely to help you read the code. For details, consult the code.
@@ -30,7 +35,7 @@ Languages that *don't* have strings, comments, etc. typically *do* have structur
 **Other importers**
 
 Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with. Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
-#The new importers vs the old
+#The new importers vs. the old
 Leo's new importers are fundamentally simpler than the old.
 
 The old importers attempted to parse their languages *character-by-character*. Only whole lines can be assigned to nodes, so the importers had to adjust the results of the parse to line boundaries. This was an extremely complex process, filled with error-prone index adjustments.
@@ -65,13 +70,13 @@ The following sections discuss `i.gen_lines`, the line-oriented API, and how imp
 
 **`i.get_new_dict`** returns the scanning dictionary for a particular combination of context and language. Some importers can use `i.get_new_dict` as it is because this method understands the format of strings and uses the language's comment delimiters.
 
-Importers for langauges that have more complex syntax override `i.get_new_dict`. The PHP importer even overrides (hacks) `i.scan_dict` so that it can handle heredoc strings.
+Importers for languages that have more complex syntax override `i.get_new_dict`. The PHP importer even overrides (hacks) `i.scan_dict` so that it can handle heredoc strings.
 
 **`i.get_dict`** caches scanning dicts.  It returns a cached table if available, calling `i.new_dict` only if the dictionary for a language/context pair is not already in the cache. Subclasses should never need to override `i.get_dict`.
 
 **Summary**
 
-- `i.gen_lines` is the first stage of the pipline.  Most importers override it. A few use `i.gen_lines` as it is.
+- `i.gen_lines` is the first stage of the pipeline.  Most importers override it. A few use `i.gen_lines` as it is.
 
 - Scanning dictionaries (`x.get_new_dict`) define the syntax of a language. Only importers that have strings, comments, etc. use (or override) `i.scan_line` or `i.get_new_dict`. In an emergency, importers can even override `i.scan_dict`.
 
@@ -97,7 +102,7 @@ Only stage 2 removes lws.  **`i.undent`** does this, using the following trick. 
 
 **Important**: The net effect of the code is to *regularize* indentation for non-strict languages. Source files for languages like xml, html and javascript can have *randomly indented* lines. There is surely no way to preserve random indentation in a Leonine way, and no *reason* to do so. Converting source code to a typical Leo outline improves the code markedly.
 #The ScanState classes
-ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a manditory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
+ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a mandatory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
 It's clearer to define a custom ScanState level for each importer. Subclassing the base ScanState class in linescanner.py would be more confusing and more clumsy.
 
