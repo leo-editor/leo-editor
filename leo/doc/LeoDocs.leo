@@ -1284,6 +1284,9 @@
 </v>
 <v t="ekr.20161120073024.1"></v>
 <v t="ekr.20161120073038.1"></v>
+<v t="ekr.20161203104343.1" a="M"><vh>Indentation</vh></v>
+<v t="ekr.20161202204002.9" a="M"><vh>*** \@button make-importer</vh></v>
+<v t="ekr.20161203081308.1" a="M"><vh>*** Recognizing multi-line patterns</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19400,6 +19403,16 @@ def markup(p, root):
         p.setDirty()
         c.setChanged(True)
         p.b = s
+</t>
+<t tx="ekr.20161202204002.9"></t>
+<t tx="ekr.20161203081308.1"></t>
+<t tx="ekr.20161203104343.1">**Strict** languages are languages like python for which leading whitespace (lws) is particularly important.  The **`i.scrict`** ivar is True only for strict languages.
+
+Stage one never changes lws. However, stage one *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
+
+Only stage 2 removes lws.  **`i.undent`** does this, using the following trick. In a round-about way (too complex and uninteresting to describe here), **`i.common_lws`** *ignores* blank lines and comments. So `i.undent` can remove maximum lws from all lines. By definition, *there won't be enough lws for underindented comments*, so `i.undent` prepends Leo's underindented escape string to such lines.
+
+**Important**: importers maintain no global indentation counts, even for python.  This works because `i.run` verifies that the lws in the python file is consistent with the present `@tabwidth`. As a result, the lws before `@others` and section references *will turn out to be correct*.  It's clever, and it's not obvious.
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

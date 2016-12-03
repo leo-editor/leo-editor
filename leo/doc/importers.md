@@ -1,6 +1,6 @@
 #The grand overview
 This file documents Leo's importers.
-You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs focus on the big picture. For details, consult the code.
+You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs are intended solely to help you read the code. For details, consult the code.
 
 **The task**
 
@@ -53,7 +53,7 @@ Stage 3, **`i.finish`**, sets `p.b` in all generated nodes using the hidden `v._
 
 Stage 4, **`i.check`**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
 
-The following sections discuss `i.gen_lines` and the line-oriented API. This API simplifies the code and eliminates a huge performance bug.
+The following sections discuss `i.gen_lines`, the line-oriented API, and how importers indent lines properly.
 ##i.gen lines & helpers
 **`i.gen_lines`** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
 
@@ -84,6 +84,14 @@ In stage 1, **`i.create_child_node`** calls **`i.inject_lines_ivar(p)`** to init
 In stages 1 and 2,  **`i.add_line(p, s)`** and **`i.extend_lines(p, aList)`** append one or more lines to `p.v._import_lines`.
 
 In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all created nodes and then deletes all `v._import_lines` attributes.
+##Indentation
+**Strict** languages are languages like python for which leading whitespace (lws) is particularly important.  The **`i.scrict`** ivar is True only for strict languages.
+
+Stage one never changes lws. However, stage one *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
+
+Only stage 2 removes lws.  **`i.undent`** does this, using the following trick. In a round-about way (too complex and uninteresting to describe here), **`i.common_lws`** *ignores* blank lines and comments. So `i.undent` can remove maximum lws from all lines. By definition, *there won't be enough lws for underindented comments*, so `i.undent` prepends Leo's underindented escape string to such lines.
+
+**Important**: importers maintain no global indentation counts, even for python.  This works because `i.run` verifies that the lws in the python file is consistent with the present `@tabwidth`. As a result, the lws before `@others` and section references *will turn out to be correct*.  It's clever, and it's not obvious.
 #The ScanState classes
 ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a manditory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
@@ -129,12 +137,12 @@ where data is the 6-tuple returned from `i.scan_line`, namely:
 new_context is a context (a string), i is the scan index, the delta items are changes to the counts of curly brackets, parens and square brackets, and bs_nl is True if the lines ends in a backslash/newline.
 
 The ScanState.update method simply sets all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
-#The @button make-importer script
+#*** \@button make-importer
 #Notes
-##Recognizing multi-line patterns
-##Python must track brackets
+##*** Recognizing multi-line patterns
+##Python must count brackets
+The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
 
-I'm not sure that the present python code can be made to work without understanding the nesting levels of parens, curly-brackets and square-brackets. Consider this code from @test python comment after dict assign:
 ```python
 s = '''\
 NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
@@ -146,5 +154,11 @@ tabLevels = 4
 
 This is valid code, no matter what kind of indentation is used in the dict.
 
-To handle this, `i.scan_table` now keeps of brackets for all languages.
+To handle this, `i.scan_dict` now keeps track of brackets for all languages.
+#Conclusion
+This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
+
+Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation!
+
+If you have questions about the code, please feel free to ask questions.  But do explore the code first. It's usually straightforward.
 
