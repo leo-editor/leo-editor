@@ -81,25 +81,15 @@ The line-oriented API fixes a huge performance bug.
 
 Concatenating strings to p.b directly creates larger and larger strings. As a result, it is an O(N**2) algorithm. In contrast, concatenating strings to a list is an O(N) algorithm.
 
-Last night I attempted to concatenate lines to a new lines list in the Target class. But this proved unexpectedly tricky. Instantly, the simplicity of the code was compromised. Worse, it didn't work ;-)
+Here are the highlights of the API:
 
-- `i.gen_lines` injects `v._importer_lines` list into the root vnode using `i.inject_lines_ivar'.
+**`i.create_child_node`** calls `i.inject_lines_ivar(p)' for each created node.
 
-- Similarly, `i.create_child_node` calls `i.inject_lines_ivar' into each created node.
+**`i.inject_lines_ivar(p)'** sets `v.import_lines = []`.
 
-- Replace `p.b = p.b + s` by `self.add_line(p, s)`.
+**`i.add_line(p, s)`** appends s to `p.v._import_lines`.
 
-- `i.gen_lines` calls `self.finalize`, which does the following:
-
-```python
-for p in parent.self_and_subtree():
-    v = p.v
-    assert not v._bodyString, repr(v._bodyString)
-    v._bodyString = ''.join(v._import_lines)
-    delattr(v, '_import_lines')
-```
-
-The assert was helpful initially.
+**`i.finalize`** converts `p.v._import_lines` to p.b for all created nodes.
 #The ScanState classes
 ##state_update & the scan_line protocol
 
