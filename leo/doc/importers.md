@@ -1,8 +1,8 @@
 #Table of contents
-1. [The grand overview](#The grand overview)
-2. [The new importers vs. the old](#The new importers vs. the old)
-3. [The Importer class](#The Importer class)
-    1. [i.gen lines & helpers](##i.gen lines & helpers)
+1. [The grand overview](importers.md#The grand overview)
+2. [The new importers vs. the old](importers.md#The new importers vs. the old)
+3. [The Importer class](importers.md#The Importer class)
+    1. [i.gen lines & helpers](importers.md#i.gen lines & helpers)
 #The grand overview
 This file documents Leo's importers.
 You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs are intended solely to help you read the code. For details, consult the code.
