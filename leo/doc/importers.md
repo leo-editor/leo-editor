@@ -57,7 +57,7 @@ The following sections discuss `i.gen_lines`, the line-oriented API, and how imp
 ##i.gen lines & helpers
 **`i.gen_lines`** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
 
-**`i.scan_line`** is an optional helper for importers having strings, comments, etc. It calls `i.scan_dict` for every character of a line, returning a `ScanState` object describing the state at the *end* of the line just scanned. Few (no?) importers override i.scan_line. Instead, subclasses override **`i.update`**, as described [later](***).
+**`i.scan_line`** is an optional helper for importers having strings, comments, etc. It calls `i.scan_dict` for every character of a line, returning a `ScanState` object describing the state at the *end* of the line just scanned. Few (no?) importers override i.scan_line. Instead, subclasses override **`i.update`**, as described [later](importers.md#scanstate-protocols).
 
 **`i.scan_dict`** matches patterns against the character at position `i` of a line. Pattern matching is very fast because the code uses **scanning dictionaries**. Scanning dictionaries define the syntax of strings, comments, docstrings, etc.
 
