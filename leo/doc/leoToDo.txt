@@ -68,15 +68,10 @@ Traceback (most recent call last):
   File "c:\leo.repo\leo-editor\leo\commands\abbrevCommands.py", line 229, in expandAbbrev
     i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
 TypeError: 'NoneType' object is not iterable
-.. @+node:ekr.20161202063904.1: *3* ----- To do for importers
+.. @+node:ekr.20161203173540.1: *3* ----- To do for importers
 @language rest
 @wrap
 @nosearch
-
-** When done, remove all v2_ prefixes!
-    
-Unit tests: Safely delete all but the last test:
-- Don't delete any nodes children that look like section references.
 
 C and Java:
 - Backtrack to find start of signature line!
@@ -85,45 +80,30 @@ C and Java:
 Python:
 - Rewrite python.findClass.
 
+Coffeescript:
+- Get move_trailing_lines working, or abandon it.
+
 Later:   see child.
 Testing: see child.
-Last:    see child.
 
 @language python
-.. @+node:ekr.20161202063904.2: *4* Testing
+.. @+node:ekr.20161203173540.2: *4* Testing
 @language rest
 @wrap
+
+Unit tests: Safely delete all but the last test:
+- Don't delete any nodes children that look like section references.
 
 - Add unit test for coffeescript, perl, and i.general_scan_line (i.get_table)
 - Add unit tests for failing coffeescript imports.
 * Unit tests for all ScanState classes.
     - unitTest.leo contains *only* @test importers.javascript.scan_line
     - There is an unfinished test for coffeescript in this file.
-.. @+node:ekr.20161202063904.3: *4* Last
-@language rest
-@wrap
-
-Scan ahead in i.scan_dict for comments and strings.
-- Investigate how to do this with regex's.
-    - Handle escapes.
-    - Make sure that the regex stops at the first delim.
-    - Unit tests for the regex.
-
-Coffeescript:
-- Get move_trailing_lines working, or abandon it.
-
+    
 Python:
 - Unit test for all of Leo's core files.
-.. @+node:ekr.20161202063904.4: *4* Post: kinds of importers
-@language rest
-@wrap
 
-Post: Simple importers: ini, otl, org, leo_rst?, markdown,
-- Don't need separate ScanState classes,
-  but we *do* need all the data in the 6-tuple.
-- The Importer class could define x.level(standard_state).
-  It would return 0 or 1 components of standard_state, or a tuple of components.
-- All override v2_gen_lines in similar ways.
+
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap

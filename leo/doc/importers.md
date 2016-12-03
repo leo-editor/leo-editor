@@ -39,11 +39,13 @@ The new importers know *nothing* about parsing.  They only understand strings, c
 
 The old importers handled nested language constructs by recursively rescanning them.  The new importers handle each line of the input file exactly once, non-recursively, line by line.
 
-The old importers kept strict track of indentation.  This presereved indentation, but required a complex code-generation infrastructure. The new importers handle indentation implicitly.  As a result, the new importers can *regularize* leading whitespace for most languages. Python requires that leading whitespace be preserved, but this too is done quite simply.
+The old importers kept strict track of indentation.  This preserved indentation, but required a complex code-generation infrastructure. The new importers handle indentation implicitly.  As a result, the new importers can *regularize* leading whitespace for most languages. Python requires that leading whitespace be preserved, but this too is done quite simply.
 #The Importer class
 All but the simplest importers are subclasses of the Importer class, in leo.plugins.importers.linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
-**`i.run`** is the top-level driver code. It calls each stage of a **four-stage pipeline**. Few importers need to override it.
+**`i.run`** is the top-level driver code. It calls each stage of a **five-stage pipeline**. Few importers will need to override `i.run`.
+
+Stage 0, **`i.check_blanks_and_tabs`, checks to see that leading whitespace appears consistently in all input lines, and are consistent with `@tabwidth`. If not, certain kinds of perfect-import checks must be disabled in stage 4...
 
 Stage 1, **`i.gen_lines`**, generates nodes. Most importers override `i.gen_lines`; a few use `i.gen_lines` as it is.
 
@@ -87,11 +89,13 @@ In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all cre
 ##Indentation
 **Strict** languages are languages like python for which leading whitespace (lws) is particularly important.
 
-Stage one never changes lws. However, stage one *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
+Stage 1 never changes lws. However, stage 1 *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
 
 Only stage 2 removes lws.  **`i.undent`** does this, using the following trick. In a round-about way (too complex and uninteresting to describe here), **`i.common_lws`** *ignores* blank lines and comments. So `i.undent` can remove maximum lws from all lines. By definition, *there won't be enough lws for underindented comments*, so `i.undent` prepends Leo's underindented escape string to such lines.
 
 **Important**: importers maintain no global indentation counts, even for python.  This works because `i.run` verifies that the lws in the python file is consistent with the present `@tabwidth`. As a result, the lws before `@others` and section references *will turn out to be correct*.  It's clever, and it's not obvious.
+
+**Important**: The net effect of the code is to *regularize* indentation for non-strict languages. Source files for languages like xml, html and javascript can have *randomly indented* lines. There is surely no way to preserve random indentation in a Leonine way, and no *reason* to do so. Converting source code to a typical Leo outline improves the code markedly.
 #The ScanState classes
 ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a manditory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
@@ -191,9 +195,17 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4
 ```
 
-This is valid code, no matter what kind of indentation is used in the dict.
+This is valid code, no matter what kind of indentation is used in the dict. As a result, `i.scan_dict` now keeps track of brackets for all languages.
+##Scanning strings and comments
+Is there some way to scan comments and strings quickly while using the line-oriented scanning code? Using a dedicated "quick string-scanning mode" might speed up the scan compared to calling i.scan_dict for every character.
 
-To handle this, `i.scan_dict` now keeps track of brackets for all languages.
+In fact, a dedicated scanner would hardly speed up the scan at all, because `i.scan_dict` is very fast. Worse, such a scheme would complicate `x.gen_lines`.
+
+Indeed, if `i.scan_dict` scanned the comment or string completely, it might return an index `i` that is *past* the line that `x.gen_lines` is handling.  Somehow, `x.gen_lines` would have to re-sync to the next complete line. That would be complex and slow.
+
+**Aha**: `i.scan_dict` doesn't need to scan strings and comments completely! It could just scan to the end of the present line, or the end of the string or comment, whichever comes first.
+
+This is a superb answer to the original question. It speeds up strings and comments almost as much as possible, while keeping `i` on the present line. But to repeat, there is not much reason actually to have `i.scan_table` go into "quick scan mode". Scanning is already fast enough.
 #Conclusion
 This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
 
