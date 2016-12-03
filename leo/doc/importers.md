@@ -41,17 +41,15 @@ The old importers kept strict track of indentation.  This presereved indentation
 #The Importer class
 All but the simplest importers are subclasses of the Importer class, in leo.plugins.importers.linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
-The new importers use a **four-stage pipeline**:
+**i.run** is the top-level driver code. It calls each stage of a **four-stage pipeline**. Few importers need to override it.
 
-**i.run** is the top-level driver code. calls each stage of the pipeline. Few importers need to override it.
+State 1, **i.gen_lines**, generates nodes. Most importers override i.gen_lines; a few use i.gen_lines as it is.
 
-The first stage, **i.gen_lines**, generates nodes. Most importers override i.gen_lines; a few use i.gen_lines as it is.
+Stage 2, **i.post_pass**, is an optional post-pass. When present, x.post_pass reassigns lines to new nodes. Several importers defining a do-nothing x.post_pass. Other importers perform only part default i.post_pass processing.
 
-The second stage, **i.post_pass**, is an optional post-pass. When present, x.post_pass reassigns lines to new nodes. Several importers defining a do-nothing x.post_pass. Other importers perform only part default i.post_pass processing.
+Stage 3, **i.finish**, sets p.b of all generated nodes using the hidden v._import_lines machinery used in the line-oriented API. Manipulating p.b directly would be a huge performance bug. Importers should never have to override this final stage. 
 
-The third stage, **i.finish**, sets p.b of all generated nodes using the hidden v._import_lines machinery used in the line-oriented API. Manipulating p.b directly would be a huge performance bug. Importers should never have to override this final stage. 
-
-The fourth stage, **i.check**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
+Stage 4, **i.check**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
 
 The following sections discuss i.gen_lines and the line-oriented API. This API simplifies the code and eliminates a huge performance bug.
 ##i.gen lines & helpers
