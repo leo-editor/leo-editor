@@ -53,27 +53,27 @@ Stage 3, **`i.finish`**, sets `p.b` in all generated nodes using the hidden `v._
 
 Stage 4, **`i.check`**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of i.check.
 
-The following sections discuss i.gen_lines and the line-oriented API. This API simplifies the code and eliminates a huge performance bug.
+The following sections discuss `i.gen_lines` and the line-oriented API. This API simplifies the code and eliminates a huge performance bug.
 ##i.gen lines & helpers
-**i.gen_lines** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
+**`i.gen_lines`** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
 
-**i.scan_line** is an optional helper for importers having strings, comments, etc. It calls i.scan_dict for every character of a line, returning a ScanState object describing the state at the *end* of the line just scanned. Few (no?) importers override i.scan_line. Instead, subclasses override **i.update**, as described [later](***).
+**`i.scan_line`** is an optional helper for importers having strings, comments, etc. It calls `i.scan_dict` for every character of a line, returning a `ScanState` object describing the state at the *end* of the line just scanned. Few (no?) importers override i.scan_line. Instead, subclasses override **`i.update`**, as described [later](***).
 
-**i.scan_dict** matches patterns against the character at position i of a line. Pattern matching is very fast because the code uses **scanning dictionaries**. Scanning dictionaries define the syntax of strings, comments, docstrings, etc.
+**`i.scan_dict`** matches patterns against the character at position `i` of a line. Pattern matching is very fast because the code uses **scanning dictionaries**. Scanning dictionaries define the syntax of strings, comments, docstrings, etc.
 
-**i.get_new_dict** returns the scanning dictionary for a particular combination of context and language. Some importers can use i.get_new_dict as it is because this method understands the format of strings and uses the language's comment delimiters.
+**`i.get_new_dict`** returns the scanning dictionary for a particular combination of context and language. Some importers can use i.get_new_dict as it is because this method understands the format of strings and uses the language's comment delimiters.
 
-Importers for langauges that have more complex syntax override i.get_new_dict. The PHP importer even overrides (hacks) i.scan_dict so that it can handle heredoc strings.
+Importers for langauges that have more complex syntax override `i.get_new_dict`. The PHP importer even overrides (hacks) `i.scan_dict` so that it can handle heredoc strings.
 
-**i.get_dict** caches scanning dicts.  It returns a cached table if available, calling i.new_dict only if the dictionary for a language/context pair is not already in the cache. Subclasses should never need to override i.get_dict.
+**`i.get_dict`** caches scanning dicts.  It returns a cached table if available, calling `i.new_dict` only if the dictionary for a language/context pair is not already in the cache. Subclasses should never need to override `i.get_dict`.
 
 **Summary**
 
-- i.gen_lines is the first stage of the pipline.  Most importers override it; a few use i.gen_lines as it is.
+- `i.gen_lines` is the first stage of the pipline.  Most importers override it. A few use `i.gen_lines` as it is.
 
-- Scanning dictionaries (x.get_new_dict) define the syntax of a language. Only importers that have strings, comments, etc. use (or override) i.scan_line or i.get_new_dict. In an emergency, importers can even override i.scan_dict.
+- Scanning dictionaries (`x.get_new_dict`) define the syntax of a language. Only importers that have strings, comments, etc. use (or override) `i.scan_line` or `i.get_new_dict`. In an emergency, importers can even override `i.scan_dict`.
 
-- i.get_dict caches scanning dictionaries. Importers should never need to override it.
+- `i.get_dict` caches scanning dictionaries. Importers should never need to override it.
 
 
 ##The line-oriented API
