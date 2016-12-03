@@ -81,15 +81,7 @@ The line-oriented API fixes a huge performance bug.
 
 Concatenating strings to p.b directly creates larger and larger strings. As a result, it is an O(N**2) algorithm. In contrast, concatenating strings to a list is an O(N) algorithm.
 
-Here are the highlights of the API:
-
-**`i.create_child_node`** calls `i.inject_lines_ivar(p)' for each created node.
-
-**`i.inject_lines_ivar(p)'** sets `v.import_lines = []`.
-
-**`i.add_line(p, s)`** appends s to `p.v._import_lines`.
-
-**`i.finalize`** converts `p.v._import_lines` to p.b for all created nodes.
+**`i.create_child_node`** calls `i.inject_lines_ivar(p)' for each created node. **`i.inject_lines_ivar(p)`** sets `p.v.import_lines = []`. **`i.add_line(p, s)`** appends s to `p.v._import_lines`. **`i.finalize`** converts `p.v._import_lines` to p.b for all created nodes.
 #The ScanState classes
 ##state_update & the scan_line protocol
 
