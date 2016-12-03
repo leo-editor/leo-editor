@@ -5754,6 +5754,7 @@ def windows():
 def os_path_abspath(path):
     """Convert a path to an absolute path."""
     path = g.toUnicodeFileEncoding(path)
+    path = path.replace('0x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = g.toUnicodeFileEncoding(path)
     return path
@@ -5820,6 +5821,7 @@ def os_path_finalize(path, **keys):
     if c: path = g.os_path_expandExpression(path, **keys)
     if expanduser:
         path = g.os_path_expanduser(path)
+    path = path.replace('0x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
     # calling os.path.realpath here would cause problems in some situations.
@@ -5888,6 +5890,7 @@ def os_path_join(*args, **keys):
     if trace: g.trace('3', path)
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
+    path = path.replace('0x00','') # Fix Pytyon 3 bug on Windows 10.
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path):
