@@ -1,7 +1,38 @@
-#Overview
+#The grand overview
 This file documents Leo's importers.
 You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md).
 
+**The task**
+
+Each importer allocates lines of input file to outline nodes, preserving the order of lines. The resulting outline structure should reflect the natural structure of the input file.
+
+**Taxonomy of importers**
+
+There are two sets of complications, almost mutually exclusive. These complications naturally partition the importers into two groups.
+
+A third group of importers are either very simple, or completely idiosyncratic.  Aside from a short discussion below, this documentation will say nothing about this third group.  Consult the source code.
+
+**Complication 1: strings, comments & regex expressions**
+
+Languages such a C, Javascript, HTML/XML, PHP and Python contain syntax constructs that must be handled correctly, because such constructs could contain text that *look* like they affect node structure, but don't.  For example, in python:
+
+    '''
+    def spam():
+        pass
+    '''
+    
+In general, a character-by-character scan of the input file is required to recognize such syntax *accurately*. Happily, python dictionaries greatly speed such scanning.
+    
+**Complication 2: multi-line patterns**
+
+Languages that *don't* have strings, comments, etc. typically *do* have structures whose syntax spans several lines.  Examples are ctext, markdown and reStructuredText. A [beautiful coding pattern](***) greatly simplifies these importers.
+
+**Other importers**
+
+Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with.
+
+Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
+#The new importers are better
 Leo's new importers are fundamentally simpler than the previous importers in the following ways:
 
 - No messing with character indices.
@@ -19,15 +50,6 @@ All importers work by scanning each line exacly once.
 - No parsing or deep understanding of any language is ever done.
 
 This is essential for javascript.
-#3 kinds of importers
-There are three general kinds of importers.
-
-1. Most languages with strings, comments, or other multi-line syntax constructs.
-
-2. Languages without strings, comments, etc.
-
-3. The json scanner. This importer uses the json dict. It scans no input lines.
-
 #The Importer class
 The base Importer class, in leo.plugins.importers.linescanner.py, defines default versions all code.
 
