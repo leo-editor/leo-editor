@@ -1,8 +1,21 @@
 #Table of contents
-1. [The grand overview](importers.md#The grand overview)
-2. [The new importers vs. the old](importers.md#The new importers vs. the old)
-3. [The Importer class](importers.md#The Importer class)
-    1. [i.gen lines & helpers](importers.md#i.gen lines & helpers)
+1. [The grand overview](importers.md#the-grand-overview)
+2. [The new importers vs. the old](importers.md#the-new-importers-vs-the-old)
+3. [The Importer class](importers.md#the-importer-class)
+    1. [i.gen lines & helpers](importers.md#igen-lines--helpers)
+    2. [The line-oriented API](importers.md#the-line-oriented-api)
+    3. [Indentation](importers.md#indentation)
+4. [The ScanState class](importers.md#the-scanstate-classes)
+    1. [ScanState.context](importers.md#scanstate-context)
+    2. [ScanState.level()](importers.md#scanstate-level)
+    3. [ScanState protocols](importers.md#scanstate-protocols)
+5. [Using @button make-importer](importers.md#using-button-make-importer)
+6. [Notes](importers.md#notes)
+    1. [Recognizing multi-line patterns](importers.md#recognizing-multi-line-patterns)
+    2. [The python importer must count brackets](importers.md#the-python-importer-must-count-brackets)
+    3. [Scanning strings and comments](importers.md#scanning-strings-and-comments)
+7. [Conclusion](importers.md#conclusion)
+
 #The grand overview
 This file documents Leo's importers.
 You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs are intended solely to help you read the code. For details, consult the code.
@@ -188,7 +201,7 @@ The lookahead methods are simple pattern matchers.  When they match, it is easy 
 Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex.
 
 The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code.
-##Python must count brackets
+##The python importer must count brackets
 The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
 
 ```python
