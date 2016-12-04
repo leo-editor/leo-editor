@@ -39,6 +39,7 @@ def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
     if inBrackets and self.flashMatchingBrackets:
         self.flashMatchingBracketsHelper(c, ch, i, p, w)
 .. @+node:ekr.20161024061357.1: ** 5.4.1 Features
+.. @+node:ekr.20161204064504.1: *3* Several new @button scripts, in scripts.leo
 .. @-all
 .. @@nosearch
 .. @@killbeautify
