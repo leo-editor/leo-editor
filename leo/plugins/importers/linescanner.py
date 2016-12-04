@@ -419,7 +419,7 @@ class Importer(object):
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
-    #@+node:ekr.20161108131153.10: *4* i.run (driver) & helpers
+    #@+node:ekr.20161108131153.10: *4* i.run (driver)
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
@@ -457,45 +457,6 @@ class Importer(object):
         c.setChanged(changed)
         if trace: g.trace('-' * 10, parent.h)
         return ok
-    #@+node:ekr.20161108131153.11: *5* i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines):
-        '''Check for intermixed blank & tabs.'''
-        # Do a quick check for mixed leading tabs/blanks.
-        trace = False and not g.unitTesting
-        fn = g.shortFileName(self.root.h)
-        w = self.tab_width
-        blanks = tabs = 0
-        for s in g.splitLines(lines):
-            lws = self.get_str_lws(s)
-            blanks += lws.count(' ')
-            tabs += lws.count('\t')
-        # Make sure whitespace matches @tabwidth directive.
-        if w < 0:
-            ok = tabs == 0
-            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
-        elif w > 0:
-            ok = blanks == 0
-            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
-        if ok:
-            ok = blanks == 0 or tabs == 0
-            message = 'intermixed blanks and tabs in: %s' % (fn)
-        if ok:
-            if trace: g.trace('=====', len(lines), blanks, tabs)
-        else:
-            if g.unitTesting:
-                self.report(message)
-            else:
-                g.es_print(message)
-        return ok
-    #@+node:ekr.20161108131153.12: *5* i.insert_ignore_directive
-    def insert_ignore_directive(self, parent):
-        c = self.c
-        parent.b = parent.b.rstrip() + '\n@ignore\n'
-        if g.unitTesting:
-            g.app.unitTestDict['fail'] = g.callers()
-        elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
-            g.warning('inserting @ignore')
-            c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161108131153.14: *5* i.regularize_whitespace
     def regularize_whitespace(self, s):
         '''
@@ -539,6 +500,36 @@ class Importer(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
         return ''.join(result)
+    #@+node:ekr.20161108131153.11: *4* State 0: i.check_blanks_and_tabs
+    def check_blanks_and_tabs(self, lines):
+        '''Check for intermixed blank & tabs.'''
+        # Do a quick check for mixed leading tabs/blanks.
+        trace = False and not g.unitTesting
+        fn = g.shortFileName(self.root.h)
+        w = self.tab_width
+        blanks = tabs = 0
+        for s in g.splitLines(lines):
+            lws = self.get_str_lws(s)
+            blanks += lws.count(' ')
+            tabs += lws.count('\t')
+        # Make sure whitespace matches @tabwidth directive.
+        if w < 0:
+            ok = tabs == 0
+            message = 'tabs found with @tabwidth %s in %s' % (w, fn)
+        elif w > 0:
+            ok = blanks == 0
+            message = 'blanks found with @tabwidth %s in %s' % (w, fn)
+        if ok:
+            ok = blanks == 0 or tabs == 0
+            message = 'intermixed blanks and tabs in: %s' % (fn)
+        if ok:
+            if trace: g.trace('=====', len(lines), blanks, tabs)
+        else:
+            if g.unitTesting:
+                self.report(message)
+            else:
+                g.es_print(message)
+        return ok
     #@+node:ekr.20161111024447.1: *4* Stage 1: i.generate_nodes & helpers
     def generate_nodes(self, s, parent):
         '''
@@ -1018,6 +1009,15 @@ class Importer(object):
                     contexts.add(data[2])
         # Order must not matter, so sorting is ok.
         return sorted(contexts)
+    #@+node:ekr.20161108131153.12: *4* i.insert_ignore_directive
+    def insert_ignore_directive(self, parent):
+        c = self.c
+        parent.b = parent.b.rstrip() + '\n@ignore\n'
+        if g.unitTesting:
+            g.app.unitTestDict['fail'] = g.callers()
+        elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+            g.warning('inserting @ignore')
+            c.import_error_nodes.append(parent.h)
     #@+node:ekr.20161108155143.4: *4* i.match
     def match(self, s, i, pattern):
         '''Return True if the pattern matches at s[i:]'''
