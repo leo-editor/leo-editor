@@ -183,10 +183,11 @@ class Py_Importer(Importer):
         m = self.decorator_pattern.match(line)
         return m and m.group(1) not in g.globalDirectiveList
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
-    def start_new_block(self, line, new_state, prev_state, stack):
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
         assert not prev_state.in_context(), prev_state
+        line = lines[i]
         top = stack[-1]
         prev_p = top.p.copy()
         if trace:

@@ -571,7 +571,7 @@ class Importer(object):
                 self.add_line(p, line)
             elif self.starts_block(line, new_state, prev_state):
                 tail_p = None
-                self.start_new_block(line, new_state, prev_state, stack)
+                self.start_new_block(i, lines, new_state, prev_state, stack)
             elif self.ends_block(line, new_state, prev_state, stack):
                 tail_p = self.end_block(line, new_state, stack)
             else:
@@ -628,11 +628,12 @@ class Importer(object):
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
-    def start_new_block(self, line, new_state, prev_state, stack):
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
+        line = lines[i]
         target=stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)

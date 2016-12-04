@@ -41,9 +41,10 @@ class C_Importer(Importer):
         else:
             return s
     #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
-    def start_new_block(self, line, new_state, prev_state, stack):
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
+        line = lines[i]
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         target=stack[-1]

@@ -124,10 +124,11 @@ class CS_Importer(Importer):
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
-    def start_new_block(self, line, new_state, prev_state, stack):
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
+        line = lines[i]
         top = stack[-1]
         if trace:
             g.trace('line', repr(line))
