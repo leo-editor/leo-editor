@@ -5,7 +5,7 @@
     1. [i.gen lines & helpers](importers.md#igen-lines--helpers)
     2. [The line-oriented API](importers.md#the-line-oriented-api)
     3. [Indentation](importers.md#indentation)
-4. [The ScanState class](importers.md#the-scanstate-classes)
+4. [The ScanState classes](importers.md#the-scanstate-classes)
     1. [ScanState.context](importers.md#scanstatecontext)
     2. [ScanState.level()](importers.md#scanstatelevel)
     3. [ScanState protocols](importers.md#scanstate-protocols)
@@ -47,7 +47,8 @@ Languages that *don't* have strings, comments, etc. typically *do* have structur
 
 **Other importers**
 
-Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with. Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't. 
+Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with. Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't.
+
 #The new importers vs. the old
 Leo's new importers are fundamentally simpler than the old.
 
@@ -58,6 +59,7 @@ The new importers know *nothing* about parsing.  They only understand strings, c
 The old importers handled nested language constructs by recursively rescanning them.  The new importers handle each line of the input file exactly once, non-recursively, line by line.
 
 The old importers kept strict track of indentation.  This preserved indentation, but required a complex code-generation infrastructure. The new importers handle indentation implicitly.  As a result, the new importers can *regularize* leading whitespace for most languages. Python requires that leading whitespace be preserved, but this too is done quite simply.
+
 #The Importer class
 All but the simplest importers are subclasses of the Importer class, in leo.plugins.importers.linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
@@ -74,6 +76,7 @@ Stage 3, **`i.finish`**, sets `p.b` in all generated nodes using the hidden `v._
 Stage 4, **`i.check`**, performs perfect import checks. The rst and markdown importers disable this check by defining do-nothing overrides of `i.check`.
 
 The following sections discuss `i.gen_lines`, the line-oriented API, and how importers indent lines properly.
+
 ##i.gen lines & helpers
 **`i.gen_lines`** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
 
@@ -95,7 +98,6 @@ Importers for languages that have more complex syntax override `i.get_new_dict`.
 
 - `i.get_dict` caches scanning dictionaries. Importers should never need to override it.
 
-
 ##The line-oriented API
 The line-oriented API fixes a huge performance bug. Concatenating strings to p.b directly creates larger and larger strings. As a result, it is an `O(N**2)` algorithm. In contrast, concatenating strings to a list is an `O(N)` algorithm.
 
@@ -104,6 +106,7 @@ In stage 1, **`i.create_child_node`** calls **`i.inject_lines_ivar(p)`** to init
 In stages 1 and 2,  **`i.add_line(p, s)`** and **`i.extend_lines(p, aList)`** append one or more lines to `p.v._import_lines`.
 
 In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all created nodes and then deletes all `v._import_lines` attributes.
+
 ##Indentation
 **Strict** languages are languages like python for which leading whitespace (lws) is particularly important.
 
@@ -114,16 +117,19 @@ Only stage 2 removes lws.  **`i.undent`** does this, using the following trick. 
 **Important**: importers maintain no global indentation counts, even for python.  This works because `i.run` verifies that the lws in the python file is consistent with the present `@tabwidth`. As a result, the lws before `@others` and section references *will turn out to be correct*.  It's clever, and it's not obvious.
 
 **Important**: The net effect of the code is to *regularize* indentation for non-strict languages. Source files for languages like xml, html and javascript can have *randomly indented* lines. There is surely no way to preserve random indentation in a Leonine way, and no *reason* to do so. Converting source code to a typical Leo outline improves the code markedly.
+
 #The ScanState classes
 ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a mandatory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
 It's clearer to define a custom ScanState level for each importer. Subclassing the base ScanState class in linescanner.py would be more confusing and more clumsy.
 
 ScanState classes are short and simple. The following sections define the interface between the ScanState classes and the Importer classes.
+
 ##ScanState.context
 The ScanState.context ivar is `''` (An empty string) when the present scanning index ``i`` is outside any string, comment, etc. Otherwise, the context ivar is a copy of the string that starts the string, comment, etc. We say that the importer is **in a context** when the scanner is inside a string, comment or regex.
 
 Context can generally be ignored for languages that only count brackets.  Examples are C and Javascript.  In that case, the counts at the *end* of the line are accurate, *regardless* of whether the line ends in a context. In contrast, importers that use patterns to discover block structure must take care that the pattern matches fail when the *previous* line ends in a context.  It's just that simple.
+
 ##ScanState.level()
 Unless an importer completely overrides `i.gen_lines`, each ScanState classes must define a state.level() method. The level method must return either an int or a tuple of ints. This allows *all* importers to make the following comparison:
 
@@ -133,6 +139,7 @@ if new_state.level() > prev_state.level():
 ```
 
 Most states will use one or more bracket counts to define levels.  Others, like python, will use indentation counts. Some states always return 0.
+
 ##ScanState protocols
 The following protocols are needed only when the importer uses the base `i.scan_line` method. In that case...
 
@@ -159,13 +166,17 @@ where data is the 6-tuple returned from `i.scan_line`, namely:
 new_context is a context (a string), i is the scan index, the delta items are changes to the counts of curly brackets, parens and square brackets, and bs_nl is True if the lines ends in a backslash/newline.
 
 The ScanState.update method simply sets all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
+
 #Using @button make-importer
 This script appears in both scripts.leo and leoPlugins.leo. It can be run anywhere. To use this script, simply change the constants (strings) in the root `@button` node and then run the script.
 
 The script creates an `@@file` node for the new importer. When you are ready, change `@@file` to `@file`. The file contains an importer class (a subclass of the base Importer class) and a stand-alone ScanState class. Search for `###` for places that you may want to customize.
 
 Not all importers need a ScanState class.  In that case, just delete the ScanState class and set state_class = None when initing the base Importer class in the Importer subclass.
+
 #Notes
+
+
 ##Recognizing multi-line patterns
 The new rst importer overrides `i.v2_gen_lines`.  Here is the interesting part:
 
@@ -201,6 +212,7 @@ The lookahead methods are simple pattern matchers.  When they match, it is easy 
 Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex.
 
 The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code.
+
 ##The python importer must count brackets
 The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
 
@@ -214,6 +226,7 @@ tabLevels = 4
 ```
 
 This is valid code, no matter what kind of indentation is used in the dict. As a result, `i.scan_dict` now keeps track of brackets for all languages.
+
 ##Scanning strings and comments
 Is there some way to scan comments and strings quickly while using the line-oriented scanning code? Using a dedicated "quick string-scanning mode" might speed up the scan compared to calling i.scan_dict for every character.
 
@@ -224,10 +237,23 @@ Indeed, if `i.scan_dict` scanned the comment or string completely, it might retu
 **Aha**: `i.scan_dict` doesn't need to scan strings and comments completely! It could just scan to the end of the present line, or the end of the string or comment, whichever comes first.
 
 This is a superb answer to the original question. It speeds up strings and comments almost as much as possible, while keeping `i` on the present line. But to repeat, there is not much reason actually to have `i.scan_table` go into "quick scan mode". Scanning is already fast enough.
+
 #Conclusion
-This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
-
-Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation!
-
-If you have questions about the code, please feel free to ask questions.  But do explore the code first. It's usually straightforward.
+1. [Table of contents](importers.md#table-of-contents)
+2. [The grand overview](importers.md#the-grand-overview)
+3. [The new importers vs. the old](importers.md#the-new-importers-vs-the-old)
+4. [The Importer class](importers.md#the-importer-class)
+    1. [i.gen lines & helpers](importers.md#igen-lines--helpers)
+    2. [The line-oriented API](importers.md#the-line-oriented-api)
+    3. [Indentation](importers.md#indentation)
+4. [The ScanState classes](importers.md#the-scanstate-classes)
+    5. [ScanState.context](importers.md#scanstatecontext)
+    6. [ScanState.level()](importers.md#scanstatelevel)
+    7. [ScanState protocols](importers.md#scanstate-protocols)
+8. [Using @button make-importer](importers.md#using-button-make-importer)
+9. [Notes](importers.md#notes)
+    10. [Recognizing multi-line patterns](importers.md#recognizing-multi-line-patterns)
+    11. [The python importer must count brackets](importers.md#the-python-importer-must-count-brackets)
+    12. [Scanning strings and comments](importers.md#scanning-strings-and-comments)
+13. [Conclusion](importers.md#conclusion)
 
