@@ -262,6 +262,11 @@
 <v t="ekr.20161124133327.1"><vh>@button make-test</vh>
 <v t="ekr.20161124133327.2"><vh>&lt;&lt; define preamble &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20161204063803.1"><vh>@button make-md-toc</vh>
+<v t="ekr.20161204063803.2"><vh>run</vh></v>
+<v t="ekr.20161204063803.3"><vh>mak_link</vh></v>
+<v t="ekr.20161204063803.4"><vh>make_toc</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -2981,6 +2986,69 @@ if 1:
     imp.reload(%(name)s)
 # insert test for %(name)s here.
 ''' % d
+</t>
+<t tx="ekr.20161204063803.1">'''Make a markdown table of contents from an @auto-md node.'''
+g.cls()
+if c.isChanged(): c.save()
+
+class Controller:
+    '''Controller class for @button md-toc.'''
+    @others
+    
+if 0:
+    h = '@auto-md importers.md'
+    p = g.findTopLevelNode(c, h)
+    assert p, h
+else:
+    p = c.p
+Controller().run(p)
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161204063803.2">def run(self, p):
+    '''The driver for @button md-toc.'''
+    if p.h.startswith('@auto-md '): #  or p.h.endswith('.md'):
+        last = c.lastTopLevel()
+        self.root = last.insertAfter()
+        self.root.h = 'Table of contents'
+        self.make_toc(p)
+    else:
+        print('must be an @auto-md node or an x.md node: %s' % p.h)
+</t>
+<t tx="ekr.20161204063803.3">def make_link(self, s):
+    '''Return the markdown link for s.'''
+    result = []
+    for ch in s.lower():
+        if ch in ' -':
+            result.append('-')
+        elif ch.isalnum():
+            result.append(ch)
+        else:
+            pass
+    return ''.join(result)</t>
+<t tx="ekr.20161204063803.4">def make_toc(self, p):
+    '''Create the toc in self.root.b.'''
+    result, stack = [], []
+    prefix = p.h.lstrip('@auto-md').strip()
+    for p in p.subtree():
+        level = p.level() - self.root.level()
+        assert level &gt; 0
+        if len(stack) &lt; level:
+            stack.append(1)
+        else:
+            stack = stack[:level]
+        n = stack[-1]
+        stack[-1] = n+1
+        indent = ' '*4*(level-1)
+        line = '%s%s. [%s](%s#%s)\n' % (
+            indent, n, p.h, prefix, self.make_link(p.h))
+        result.append(line)
+    if 0:
+        g.trace(p.h)
+        g.printList(result)
+    else:
+        self.root.b = ''.join(result)
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>

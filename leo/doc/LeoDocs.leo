@@ -123,8 +123,16 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
+<v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
+<v t="ekr.20161120075731.1"><vh>markup</vh></v>
+</v>
+<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
+<v t="ekr.20161204055040.1"><vh>@button make-md-toc</vh>
+<v t="ekr.20161204055436.1"><vh>run</vh></v>
+<v t="ekr.20161204060843.1"><vh>mak_link</vh></v>
+<v t="ekr.20161204055804.1"><vh>make_toc</vh></v>
+</v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20150313192232.12"><vh>Script: check all command names</vh></v>
@@ -1279,15 +1287,7 @@
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
 <v t="ekr.20150323102036.1"></v>
-<v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
-<v t="ekr.20161120075731.1"><vh>markup</vh></v>
-</v>
 <v t="ekr.20161120073038.1"></v>
-<v t="ekr.20161204055040.1"><vh>@button md-toc</vh>
-<v t="ekr.20161204055436.1"><vh>run</vh></v>
-<v t="ekr.20161204060843.1"><vh>mak_link</vh></v>
-<v t="ekr.20161204055804.1"><vh>make_toc</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19405,11 +19405,7 @@ def markup(p, root):
         c.setChanged(True)
         p.b = s
 </t>
-<t tx="ekr.20161204055040.1">'''
-Make a markdown table of contents from the selected outline.
-This should be an @auto-md node or an @&lt;file&gt; x.md node.
-'''
-@language python
+<t tx="ekr.20161204055040.1">'''Make a markdown table of contents an @auto-md node.'''
 g.cls()
 if c.isChanged(): c.save()
 
@@ -19424,6 +19420,8 @@ if 1:
 else:
     p = c.p
 Controller().run(p)
+@language python
+@tabwidth -4
 </t>
 <t tx="ekr.20161204055436.1">def run(self, p):
     '''The driver for @button md-toc.'''
