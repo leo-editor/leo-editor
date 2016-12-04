@@ -17,7 +17,7 @@ class Markdown_Importer(Importer):
             importCommands,
             atAuto = atAuto,
             language = 'md',
-            state_class = None, ### Markdown_ScanState,
+            state_class = None,
             strict = False,
         )
         self.underline_dict = {}
@@ -36,7 +36,6 @@ class Markdown_Importer(Importer):
         in_code = False
         lines = g.splitLines(s)
         skip = 0
-        # if trace: g.pdb()
         for i, line in enumerate(lines):
             top = self.stack[-1]
             level, name = self.is_hash(line)

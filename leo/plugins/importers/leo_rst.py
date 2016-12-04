@@ -30,10 +30,19 @@ class Rst_Importer(Importer):
             # '#' is reserved for level 1.
         
     #@+others
+    #@+node:ekr.20161204032455.1: *3* rst_i.check
+    def check(self, unused_s, parent):
+        '''
+        Suppress perfect-import checks for rST.
+
+        There is no reason to retain specic underlinings, nor is there any
+        reason to prevent the writer from inserting conditional newlines.
+        '''
+        return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''Node generator for markdown importer.'''
-        trace = False and g.unitTesting
+        trace = True and not g.unitTesting
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)

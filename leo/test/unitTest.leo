@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
-	<global_window_position top="70" left="742" height="958" width="1173"/>
+	<global_window_position top="60" left="698" height="958" width="1277"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -62,7 +62,7 @@
 <v t="ekr.20161202055041.23"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20161130061137.2"><vh>@gnxs</vh></v>
+<v t="ekr.20161204041257.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
 <v t="ekr.20161202055041.37"><vh>@gnxs</vh></v>
@@ -71,7 +71,7 @@
 <v t="ekr.20161202055041.30"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161202055041.8"><vh>@gnxs</vh></v>
+<v t="ekr.20161204044957.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -97,6 +97,9 @@
 </v>
 <v t="ekr.20161130053017.1"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
 <v t="ekr.20161130061836.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161204034537.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
+<v t="ekr.20161204045018.2"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -232,11 +235,11 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20150626093745.1"></v>
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20150626093745.1"></v>
+<v t="ekr.20161130041921.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
 <v t="ekr.20161027183259.1"><vh>Recent</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
 <v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
@@ -283,15 +286,17 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20161130061808.1"><vh>Copies</vh>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
-<v t="ekr.20090529141856.4684"><vh> Export tests</vh>
+<v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4698"><vh> Import tests</vh>
+<v t="ekr.20090529141856.4698"><vh>Import tests</vh>
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
-<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
@@ -309,45 +314,16 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
-<v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
-</v>
 <v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
+<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
+</v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
-<v t="ekr.20090529141856.4733"><vh>@test elisp</vh>
-<v t="ekr.20161129031547.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161129031547.2"><vh>defun abc</vh></v>
-<v t="ekr.20161129031547.3"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161129032938.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161129032938.8"><vh>defun abc</vh></v>
-<v t="ekr.20161129032938.9"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161130042450.118"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161130042450.119"><vh>defun abc</vh></v>
-<v t="ekr.20161130042450.120"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161130050703.131"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161130050703.132"><vh>defun abc</vh></v>
-<v t="ekr.20161130050703.133"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161202053641.128"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161202053641.129"><vh>defun abc</vh></v>
-<v t="ekr.20161202053641.130"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161202083953.71"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161202083953.72"><vh>defun abc</vh></v>
-<v t="ekr.20161202083953.73"><vh>defun cde</vh></v>
-</v>
-<v t="ekr.20161202093502.118"><vh>@@clean c:/leo.repo/leo-editor/leo/test/elisp</vh>
-<v t="ekr.20161202093502.119"><vh>defun abc</vh></v>
-<v t="ekr.20161202093502.120"><vh>defun cde</vh></v>
-</v>
-</v>
+<v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
 <v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
@@ -393,38 +369,7 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 <v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
-<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh>
-<v t="ekr.20161130042452.36"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161130042452.37"><vh>sub test1</vh></v>
-<v t="ekr.20161130042452.38"><vh>sub test2</vh></v>
-<v t="ekr.20161130042452.39"><vh>sub test3</vh></v>
-<v t="ekr.20161130042452.40"><vh>sub test4</vh></v>
-</v>
-<v t="ekr.20161130050706.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161130050706.16"><vh>sub test1</vh></v>
-<v t="ekr.20161130050706.17"><vh>sub test2</vh></v>
-<v t="ekr.20161130050706.18"><vh>sub test3</vh></v>
-<v t="ekr.20161130050706.19"><vh>sub test4</vh></v>
-</v>
-<v t="ekr.20161202053644.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161202053644.8"><vh>sub test1</vh></v>
-<v t="ekr.20161202053644.9"><vh>sub test2</vh></v>
-<v t="ekr.20161202053644.10"><vh>sub test3</vh></v>
-<v t="ekr.20161202053644.11"><vh>sub test4</vh></v>
-</v>
-<v t="ekr.20161202083955.43"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161202083955.44"><vh>sub test1</vh></v>
-<v t="ekr.20161202083955.45"><vh>sub test2</vh></v>
-<v t="ekr.20161202083955.46"><vh>sub test3</vh></v>
-<v t="ekr.20161202083955.47"><vh>sub test4</vh></v>
-</v>
-<v t="ekr.20161202093504.43"><vh>@@clean c:/leo.repo/leo-editor/leo/test/perl regex-2</vh>
-<v t="ekr.20161202093504.44"><vh>sub test1</vh></v>
-<v t="ekr.20161202093504.45"><vh>sub test2</vh></v>
-<v t="ekr.20161202093504.46"><vh>sub test3</vh></v>
-<v t="ekr.20161202093504.47"><vh>sub test4</vh></v>
-</v>
-</v>
+<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
 <v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
@@ -446,9 +391,73 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161202093505.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161202093505.11"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20161204034138.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204034138.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204035447.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204035447.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041306.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041306.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041354.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041354.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041426.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041426.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041641.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041641.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041720.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041720.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041755.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041755.30"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041842.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041842.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041902.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041902.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041920.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041920.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042116.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042116.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042155.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042155.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042301.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042301.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042714.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042714.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042739.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042739.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043013.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043013.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043028.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043028.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043342.40"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043342.41"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204045827.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204045827.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204045955.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204045955.22"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
 <v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
 </v>
@@ -484,6 +493,7 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -495,8 +505,8 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh> Tests of @auto-md</vh>
-<v t="ekr.20160410152100.2" a="E"><vh>@test md-import-test</vh>
+<v t="ekr.20160410152100.1"><vh>Tests of @auto-md</vh>
+<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
 <v t="ekr.20161202093709.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
 <v t="ekr.20161202093709.2"><vh>!Declarations</vh>
@@ -508,6 +518,186 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161202093709.7"><vh>Section 2.2</vh></v>
 </v>
 <v t="ekr.20161202093709.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034142.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204034142.20"><vh>Top</vh>
+<v t="ekr.20161204034142.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204034142.22"><vh>Section 2</vh>
+<v t="ekr.20161204034142.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204034142.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034142.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034142.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034207.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204034207.2"><vh>Top</vh>
+<v t="ekr.20161204034207.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204034207.4"><vh>Section 2</vh>
+<v t="ekr.20161204034207.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204034207.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034207.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034207.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204035451.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204035451.20"><vh>Top</vh>
+<v t="ekr.20161204035451.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204035451.22"><vh>Section 2</vh>
+<v t="ekr.20161204035451.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204035451.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204035451.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204035451.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041310.53"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041310.54"><vh>Top</vh>
+<v t="ekr.20161204041310.55"><vh>Section 1</vh></v>
+<v t="ekr.20161204041310.56"><vh>Section 2</vh>
+<v t="ekr.20161204041310.57"><vh>Section 2.1</vh>
+<v t="ekr.20161204041310.58"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041310.59"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041310.60"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041358.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041358.104"><vh>Top</vh>
+<v t="ekr.20161204041358.105"><vh>Section 1</vh></v>
+<v t="ekr.20161204041358.106"><vh>Section 2</vh>
+<v t="ekr.20161204041358.107"><vh>Section 2.1</vh>
+<v t="ekr.20161204041358.108"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041358.109"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041358.110"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041418.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041418.2"><vh>Top</vh>
+<v t="ekr.20161204041418.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041418.4"><vh>Section 2</vh>
+<v t="ekr.20161204041418.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041418.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041418.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041418.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041645.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041645.104"><vh>Top</vh>
+<v t="ekr.20161204041645.105"><vh>Section 1</vh></v>
+<v t="ekr.20161204041645.106"><vh>Section 2</vh>
+<v t="ekr.20161204041645.107"><vh>Section 2.1</vh>
+<v t="ekr.20161204041645.108"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041645.109"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041645.110"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041724.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041724.2"><vh>Top</vh>
+<v t="ekr.20161204041724.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041724.4"><vh>Section 2</vh>
+<v t="ekr.20161204041724.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041724.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041724.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041724.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041800.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041800.2"><vh>Top</vh>
+<v t="ekr.20161204041800.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041800.4"><vh>Section 2</vh>
+<v t="ekr.20161204041800.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041800.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041800.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041800.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042305.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042305.97"><vh>Top</vh>
+<v t="ekr.20161204042305.98"><vh>Section 1</vh></v>
+<v t="ekr.20161204042305.99"><vh>Section 2</vh>
+<v t="ekr.20161204042305.100"><vh>Section 2.1</vh>
+<v t="ekr.20161204042305.101"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042305.102"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042305.103"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042719.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042719.5"><vh>Top</vh>
+<v t="ekr.20161204042719.6"><vh>Section 1</vh></v>
+<v t="ekr.20161204042719.7"><vh>Section 2</vh>
+<v t="ekr.20161204042719.8"><vh>Section 2.1</vh>
+<v t="ekr.20161204042719.9"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042719.10"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042719.11"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042822.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042822.2"><vh>Top</vh>
+<v t="ekr.20161204042822.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204042822.4"><vh>Section 2</vh>
+<v t="ekr.20161204042822.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204042822.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042822.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042822.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043017.19"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043017.20"><vh>Top</vh>
+<v t="ekr.20161204043017.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204043017.22"><vh>Section 2</vh>
+<v t="ekr.20161204043017.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204043017.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043017.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043017.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043032.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043032.97"><vh>Top</vh>
+<v t="ekr.20161204043032.98"><vh>Section 1</vh></v>
+<v t="ekr.20161204043032.99"><vh>Section 2</vh>
+<v t="ekr.20161204043032.100"><vh>Section 2.1</vh>
+<v t="ekr.20161204043032.101"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043032.102"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043032.103"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043346.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043346.5"><vh>Top</vh>
+<v t="ekr.20161204043346.6"><vh>Section 1</vh></v>
+<v t="ekr.20161204043346.7"><vh>Section 2</vh>
+<v t="ekr.20161204043346.8"><vh>Section 2.1</vh>
+<v t="ekr.20161204043346.9"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043346.10"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043346.11"><vh>Section 3</vh></v>
 </v>
 </v>
 </v>
@@ -573,54 +763,229 @@ expanded="ekr.20160410152100.2,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161202093509.29"><vh>Section 3</vh></v>
 </v>
 </v>
+<v t="ekr.20161204034142.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204034142.28"><vh>Top</vh>
+<v t="ekr.20161204034142.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204034142.30"><vh>Section 2</vh>
+<v t="ekr.20161204034142.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204034142.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034142.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034142.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034207.9"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204034207.10"><vh>Top</vh>
+<v t="ekr.20161204034207.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204034207.12"><vh>Section 2</vh>
+<v t="ekr.20161204034207.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204034207.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034207.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034207.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204035451.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204035451.28"><vh>Top</vh>
+<v t="ekr.20161204035451.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204035451.30"><vh>Section 2</vh>
+<v t="ekr.20161204035451.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204035451.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204035451.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204035451.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041310.61"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041310.62"><vh>Top</vh>
+<v t="ekr.20161204041310.63"><vh>Section 1</vh></v>
+<v t="ekr.20161204041310.64"><vh>Section 2</vh>
+<v t="ekr.20161204041310.65"><vh>Section 2.1</vh>
+<v t="ekr.20161204041310.66"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041310.67"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041310.68"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041359.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041359.2"><vh>Top</vh>
+<v t="ekr.20161204041359.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041359.4"><vh>Section 2</vh>
+<v t="ekr.20161204041359.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041359.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041359.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041359.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041418.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041418.10"><vh>Top</vh>
+<v t="ekr.20161204041418.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041418.12"><vh>Section 2</vh>
+<v t="ekr.20161204041418.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041418.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041418.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041418.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041646.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041646.2"><vh>Top</vh>
+<v t="ekr.20161204041646.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041646.4"><vh>Section 2</vh>
+<v t="ekr.20161204041646.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041646.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041646.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041646.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041724.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041724.10"><vh>Top</vh>
+<v t="ekr.20161204041724.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041724.12"><vh>Section 2</vh>
+<v t="ekr.20161204041724.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041724.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041724.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041724.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041800.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041800.10"><vh>Top</vh>
+<v t="ekr.20161204041800.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041800.12"><vh>Section 2</vh>
+<v t="ekr.20161204041800.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041800.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041800.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041800.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042305.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042305.105"><vh>Top</vh>
+<v t="ekr.20161204042305.106"><vh>Section 1</vh></v>
+<v t="ekr.20161204042305.107"><vh>Section 2</vh>
+<v t="ekr.20161204042305.108"><vh>Section 2.1</vh>
+<v t="ekr.20161204042305.109"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042305.110"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042305.111"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042719.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042719.13"><vh>Top</vh>
+<v t="ekr.20161204042719.14"><vh>Section 1</vh></v>
+<v t="ekr.20161204042719.15"><vh>Section 2</vh>
+<v t="ekr.20161204042719.16"><vh>Section 2.1</vh>
+<v t="ekr.20161204042719.17"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042719.18"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042719.19"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042822.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042822.10"><vh>Top</vh>
+<v t="ekr.20161204042822.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204042822.12"><vh>Section 2</vh>
+<v t="ekr.20161204042822.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204042822.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042822.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042822.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043017.27"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043017.28"><vh>Top</vh>
+<v t="ekr.20161204043017.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204043017.30"><vh>Section 2</vh>
+<v t="ekr.20161204043017.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204043017.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043017.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043017.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043032.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043032.105"><vh>Top</vh>
+<v t="ekr.20161204043032.106"><vh>Section 1</vh></v>
+<v t="ekr.20161204043032.107"><vh>Section 2</vh>
+<v t="ekr.20161204043032.108"><vh>Section 2.1</vh>
+<v t="ekr.20161204043032.109"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043032.110"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043032.111"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043346.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043346.13"><vh>Top</vh>
+<v t="ekr.20161204043346.14"><vh>Section 1</vh></v>
+<v t="ekr.20161204043346.15"><vh>Section 2</vh>
+<v t="ekr.20161204043346.16"><vh>Section 2.1</vh>
+<v t="ekr.20161204043346.17"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043346.18"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043346.19"><vh>Section 3</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
 <v t="ekr.20161126111517.1"><vh>@test markdown importer-implicit section</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh>@ignore Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
-<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
+<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh>
+<v t="ekr.20161204050639.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple</vh>
+<v t="ekr.20161204050639.2"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20161204050639.3"><vh>Chapter</vh></v>
+</v>
+<v t="ekr.20161204051109.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple</vh>
+<v t="ekr.20161204051109.9"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20161204051109.10"><vh>Chapter</vh></v>
+</v>
+</v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
-<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh>
-<v t="ekr.20161130042613.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/leo_rst</vh>
-<v t="ekr.20161130042613.2"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20161130042613.3"><vh>section 1</vh></v>
-<v t="ekr.20161130042613.4"><vh>section 2</vh></v>
+<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
 </v>
-<v t="ekr.20161130050711.40"><vh>@@file c:/leo.repo/leo-editor/leo/test/leo_rst</vh>
-<v t="ekr.20161130050711.41"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20161130050711.42"><vh>section 1</vh></v>
-<v t="ekr.20161130050711.43"><vh>section 2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
 </v>
+<v t="ekr.20161204041557.1"><vh>All other tests</vh>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
 <v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
 <v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
+</v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161130061555.1"><vh>@ignore Failing unit tests</vh>
-<v t="ekr.20161130061808.1"><vh>Copies</vh>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
-<v t="ekr.20161130041921.1"><vh>COPY @auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
-</v>
-<v t="ekr.20090529141856.4784"></v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
+<v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
+<v t="ekr.20161130051657.1"><vh>@@@test ctext</vh></v>
 <v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
+<v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
-<v t="ekr.20160410152100.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1303,6 +1668,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20090529141856.4729">s = '''\
 namespace {
@@ -1326,6 +1692,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20090529141856.4730">import sys
 
@@ -1384,8 +1751,9 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
+        c.redraw()
 
 </t>
 <t tx="ekr.20090529141856.4734"></t>
@@ -1459,7 +1827,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-
+        c.redraw()
 </t>
 <t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
 </t>
@@ -1503,6 +1871,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20090529141856.4768">s = '''\
 interface Bicycle {
@@ -1575,6 +1944,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20090529141856.4771">import sys
 
@@ -1783,7 +2153,8 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 '''
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20090529141856.4783">c.contractAllHeadlines()
+<t tx="ekr.20090529141856.4783"># Not a real unit test.
+c.contractAllHeadlines()
 </t>
 <t tx="ekr.20090529141856.4784"></t>
 <t tx="ekr.20090529141856.4785">s = '''\
@@ -1827,8 +2198,28 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "top",
+    "section 1",
+    "section 2",
+    "section 2.1",
+    "section 3",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4786">s = '''\
 .. toc
@@ -1870,8 +2261,27 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "section 1",
+    "section 2",
+    "section 2.1",
+    "section 3",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4787">s = '''\
 .. toc
@@ -1881,8 +2291,23 @@ top
 
 The top section
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4788">s = '''\
 .. toc
@@ -1893,8 +2318,24 @@ top
 
 The top section
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4789">s = '''\
 .. toc
@@ -1907,21 +2348,24 @@ top
 
 The top section.
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20090529141856.4790">import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-ic = c.importCommands
-runner = basescanner.BaseScanner(ic,atAuto=True,language='python')
-i = 0
-lines1 = ['abc',]
-lines2 = ['xyz',]
-
-g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-runner.compareHelper(lines1,lines2,i,strict=True)
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4793">d = g.app.extra_extension_dict
 
@@ -2275,6 +2719,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
@@ -2344,6 +2789,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20111029120441.3982">s = '''\
 &lt;HTML&gt;
@@ -2394,6 +2840,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -2552,6 +2999,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20111112103320.3893">s = '''
 &lt;html&gt;
@@ -2577,6 +3025,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
@@ -3115,8 +3564,24 @@ Chapter
 
 The top chapter.
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "Chapter",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150208213643.12">def spam():
@@ -3148,7 +3613,7 @@ unl: at_auto_child
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = False
+    trace = True
     h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
     assert root
@@ -3156,7 +3621,9 @@ else:
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
         g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print('get_external_file_with_sentinels returns...')
+        # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        g.printList(g.splitLines(s))
     for n in range(20):
         p, offset, found = c.gotoCommands.find_file_line(n, p=root)
         if found:
@@ -3171,6 +3638,27 @@ else:
 <t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
 </t>
 <t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
+</t>
+<t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto unittest/at-auto-md-line-number-test.md'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 6, n
+            break
 </t>
 <t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
@@ -3605,10 +4093,10 @@ try:
         p.moveToThreadNext()
     assert p == after, p.h
 finally:
-    if 0:
+    if 1:
         if root:
             root.doDelete()
-            c.redraw()
+        c.redraw()
 </t>
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 if 0:
@@ -3646,7 +4134,7 @@ try:
     root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
-    if 0:
+    if 1:
         for n, h in table:
             n2 = p.level() - root.level()
             assert h == p.h, (h, p.h)
@@ -3654,10 +4142,10 @@ try:
             p.moveToThreadNext()
         assert p == after, p.h
 finally:
-    if 0:
+    if 1:
         if root:
             root.doDelete()
-            c.redraw()
+        c.redraw()
 </t>
 <t tx="ekr.20160411034540.1">s = '''\
 #Top
@@ -3765,6 +4253,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161103021420.1">s = '''\
 #!/usr/bin/perl
@@ -3783,6 +4272,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161103021621.1">s = '''\
 #!/usr/bin/perl
@@ -3807,6 +4297,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161103075725.1"># These fail with the NEW (strict) import tests and the OLD scanners.</t>
 <t tx="ekr.20161108034116.1"></t>
@@ -4659,6 +5150,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161109065940.1"># g.cls()
 import leo.plugins.importers.linescanner as linescanner
@@ -4729,6 +5221,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161112061406.1">class TypeJoinVisitor(TypeVisitor[Type]):
     """Implementation of the least upper bound algorithm.
@@ -5857,6 +6350,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161115092708.1"># g.cls()
 import leo.plugins.importers.python as python
@@ -6013,6 +6507,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161119031833.1"># ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -6043,6 +6538,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161119032623.1">if 0:
     # The preamble...
@@ -6097,8 +6593,9 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161123080832.1">'''Create a table of expected headlines in a unit test.'''
 g.cls()
@@ -6143,6 +6640,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161123202857.1"></t>
 <t tx="ekr.20161123202924.1">s = '''\
@@ -6175,6 +6673,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 
 </t>
 <t tx="ekr.20161124021953.210">gnx: ekr.20090627070131.4975
@@ -6228,6 +6727,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161125134815.1">if 0:
     # The preamble...
@@ -6285,6 +6785,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161125230415.1">s = '''\
 Top
@@ -6387,6 +6888,7 @@ finally:
         # Not needed: done in Importer.check
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161127181028.1">if 0:
     # The preamble...
@@ -6439,41 +6941,10 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161129030232.1"></t>
-<t tx="ekr.20161129031547.1">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161129031547.2">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161129031547.3">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161129032938.7">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161129032938.8">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161129032938.9">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161129104243.1">if 1:
+<t tx="ekr.20161129104243.1">if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -6508,7 +6979,6 @@ section 2
 
 Sec 2.
 '''
-
 table = (
     '!Dummy chapter',
     'section 1',
@@ -6525,8 +6995,9 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
+        c.redraw()
 </t>
 <t tx="ekr.20161129222003.1">s = '''\
 &lt;?php
@@ -6541,59 +7012,6 @@ EOT;
 
 c.importCommands.phpUnitTest(p,s=s,showTree=True)
 </t>
-<t tx="ekr.20161130041921.1">section 1
-+++++++++
-
-Sec 1.
-section 2
-+++++++++
-
-Sec 2.
-@language python
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20161130042450.118">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161130042450.119">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161130042450.120">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161130042452.36">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161130042452.37">sub test1 {
-    s = /}/g;
-}
-
-</t>
-<t tx="ekr.20161130042452.38">sub test2 {
-    s = m//}/;
-}
-
-</t>
-<t tx="ekr.20161130042452.39">sub test3 {
-    s = s///}/;
-}
-
-</t>
-<t tx="ekr.20161130042452.40">sub test4 {
-    s = tr///}/;
-}
-</t>
 <t tx="ekr.20161130042452.50">&lt;?php
 @others
 @language php
@@ -6607,67 +7025,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161130042613.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20161130042613.2">  #########
-Chapter 1
-  #########
-
-It was a dark and stormy night.
-</t>
-<t tx="ekr.20161130042613.3">
-Sec 1.
-</t>
-<t tx="ekr.20161130042613.4">
-Sec 2.
-</t>
-<t tx="ekr.20161130050703.131">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161130050703.132">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161130050703.133">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161130050706.15">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161130050706.16">sub test1 {
-    s = /}/g;
-}
-
-</t>
-<t tx="ekr.20161130050706.17">sub test2 {
-    s = m//}/;
-}
-
-</t>
-<t tx="ekr.20161130050706.18">sub test3 {
-    s = s///}/;
-}
-
-</t>
-<t tx="ekr.20161130050706.19">sub test4 {
-    s = tr///}/;
-}
-</t>
 <t tx="ekr.20161130050706.29">&lt;?php
 @others
 @language php
@@ -6680,26 +7037,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161130050711.40">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20161130050711.41">  #########
-Chapter 1
-  #########
-
-It was a dark and stormy night.
-</t>
-<t tx="ekr.20161130050711.42">
-Sec 1.
-</t>
-<t tx="ekr.20161130050711.43">
-Sec 2.
 </t>
 <t tx="ekr.20161130051657.1">s = '''\
 Leading text in root node of subtree
@@ -6743,14 +7080,6 @@ Another one
 See what we did there - one more '#' - this is a subnode.
 
 </t>
-<t tx="ekr.20161130061137.2">gnx: ekr.20161130061058.1
-unl: Chapter 1
-gnx: ekr.20161130061058.2
-unl: Chapter 1--&gt;section 1
-gnx: ekr.20161130061058.3
-unl: Chapter 1--&gt;section 2
-</t>
-<t tx="ekr.20161130061555.1"></t>
 <t tx="ekr.20161130061808.1"></t>
 <t tx="ekr.20161130061836.1">gnx: ekr.20161130061740.19
 unl: A level one node
@@ -6758,31 +7087,6 @@ gnx: ekr.20161130061740.20
 unl: Another level one node
 gnx: ekr.20161130061740.21
 unl: Another level one node--&gt;A level 2 node
-</t>
-<t tx="ekr.20161202053641.128">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161202053641.129">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161202053641.130">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161202053644.10">sub test3 {
-    s = s///}/;
-}
-
-</t>
-<t tx="ekr.20161202053644.11">sub test4 {
-    s = tr///}/;
-}
 </t>
 <t tx="ekr.20161202053644.21">&lt;?php
 @others
@@ -6796,22 +7100,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161202053644.7">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161202053644.8">sub test1 {
-    s = /}/g;
-}
-
-</t>
-<t tx="ekr.20161202053644.9">sub test2 {
-    s = m//}/;
-}
-
 </t>
 <t tx="ekr.20161202055041.23">gnx: ekr.20161202054847.9
 unl: class class1
@@ -6835,52 +7123,6 @@ unl: section 2
 unl: section 1
 gnx: ekr.20161202054847.18
 unl: section 2
-</t>
-<t tx="ekr.20161202055041.8">gnx: ekr.20161202054847.5
-unl: section 1
-gnx: ekr.20161202054847.6
-unl: section 2
-</t>
-<t tx="ekr.20161202083953.71">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161202083953.72">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161202083953.73">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161202083955.43">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161202083955.44">sub test1 {
-    s = /}/g;
-}
-
-</t>
-<t tx="ekr.20161202083955.45">sub test2 {
-    s = m//}/;
-}
-
-</t>
-<t tx="ekr.20161202083955.46">sub test3 {
-    s = s///}/;
-}
-
-</t>
-<t tx="ekr.20161202083955.47">sub test4 {
-    s = tr///}/;
-}
 </t>
 <t tx="ekr.20161202083956.10">&lt;?php
 @others
@@ -7039,47 +7281,6 @@ section 2.2.1 line 1
 section 3, line 1
 
 </t>
-<t tx="ekr.20161202093502.118">;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-</t>
-<t tx="ekr.20161202093502.119">(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-</t>
-<t tx="ekr.20161202093502.120">(defun cde (a b)
-   (+ 1 2 3))
-</t>
-<t tx="ekr.20161202093504.43">#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-</t>
-<t tx="ekr.20161202093504.44">sub test1 {
-    s = /}/g;
-}
-
-</t>
-<t tx="ekr.20161202093504.45">sub test2 {
-    s = m//}/;
-}
-
-</t>
-<t tx="ekr.20161202093504.46">sub test3 {
-    s = s///}/;
-}
-
-</t>
-<t tx="ekr.20161202093504.47">sub test4 {
-    s = tr///}/;
-}
-</t>
 <t tx="ekr.20161202093505.10">&lt;?php
 @others
 @language php
@@ -7158,6 +7359,1301 @@ The next section is empty. It must not be deleted.
 </t>
 <t tx="ekr.20161202093709.8">Section 3, line 1
 
+</t>
+<t tx="ekr.20161204034138.15">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204034138.16">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204034142.19">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204034142.20">The top section
+
+</t>
+<t tx="ekr.20161204034142.21">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204034142.22">section 2, line 1
+
+</t>
+<t tx="ekr.20161204034142.23">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204034142.24">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204034142.25">
+</t>
+<t tx="ekr.20161204034142.26">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204034142.27">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204034142.28">
+The top section
+
+</t>
+<t tx="ekr.20161204034142.29">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204034142.30">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204034142.31">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204034142.32">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204034142.33">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204034142.34">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204034207.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204034207.10">
+The top section
+
+</t>
+<t tx="ekr.20161204034207.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204034207.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204034207.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204034207.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204034207.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204034207.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204034207.2">The top section
+
+</t>
+<t tx="ekr.20161204034207.3">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204034207.4">section 2, line 1
+
+</t>
+<t tx="ekr.20161204034207.5">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204034207.6">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204034207.7">
+</t>
+<t tx="ekr.20161204034207.8">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204034207.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204034537.1">gnx: ekr.20161130041921.1
+</t>
+<t tx="ekr.20161204035447.20">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204035447.21">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204035451.19">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204035451.20">The top section
+
+</t>
+<t tx="ekr.20161204035451.21">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204035451.22">section 2, line 1
+
+</t>
+<t tx="ekr.20161204035451.23">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204035451.24">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204035451.25">
+</t>
+<t tx="ekr.20161204035451.26">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204035451.27">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204035451.28">
+The top section
+
+</t>
+<t tx="ekr.20161204035451.29">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204035451.30">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204035451.31">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204035451.32">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204035451.33">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204035451.34">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204040924.1"></t>
+<t tx="ekr.20161204041257.2"></t>
+<t tx="ekr.20161204041306.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041306.22">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041310.53">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041310.54">The top section
+
+</t>
+<t tx="ekr.20161204041310.55">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041310.56">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041310.57">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041310.58">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041310.59">
+</t>
+<t tx="ekr.20161204041310.60">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041310.61">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041310.62">
+The top section
+
+</t>
+<t tx="ekr.20161204041310.63">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041310.64">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041310.65">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041310.66">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041310.67">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041310.68">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041354.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041354.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041358.103">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041358.104">The top section
+
+</t>
+<t tx="ekr.20161204041358.105">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041358.106">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041358.107">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041358.108">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041358.109">
+</t>
+<t tx="ekr.20161204041358.110">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041359.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041359.2">
+The top section
+
+</t>
+<t tx="ekr.20161204041359.3">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041359.4">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041359.5">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041359.6">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041359.7">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041359.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041418.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041418.10">
+The top section
+
+</t>
+<t tx="ekr.20161204041418.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041418.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041418.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041418.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041418.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041418.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041418.2">The top section
+
+</t>
+<t tx="ekr.20161204041418.3">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041418.4">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041418.5">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041418.6">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041418.7">
+</t>
+<t tx="ekr.20161204041418.8">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041418.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041426.33">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041426.34">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041557.1"></t>
+<t tx="ekr.20161204041641.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041641.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041645.103">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041645.104">The top section
+
+</t>
+<t tx="ekr.20161204041645.105">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041645.106">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041645.107">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041645.108">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041645.109">
+</t>
+<t tx="ekr.20161204041645.110">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041646.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041646.2">
+The top section
+
+</t>
+<t tx="ekr.20161204041646.3">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041646.4">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041646.5">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041646.6">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041646.7">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041646.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041720.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041720.22">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041724.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041724.10">
+The top section
+
+</t>
+<t tx="ekr.20161204041724.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041724.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041724.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041724.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041724.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041724.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041724.2">The top section
+
+</t>
+<t tx="ekr.20161204041724.3">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041724.4">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041724.5">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041724.6">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041724.7">
+</t>
+<t tx="ekr.20161204041724.8">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041724.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041755.29">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041755.30">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041800.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041800.10">
+The top section
+
+</t>
+<t tx="ekr.20161204041800.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204041800.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204041800.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041800.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204041800.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204041800.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204041800.2">The top section
+
+</t>
+<t tx="ekr.20161204041800.3">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204041800.4">section 2, line 1
+
+</t>
+<t tx="ekr.20161204041800.5">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204041800.6">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204041800.7">
+</t>
+<t tx="ekr.20161204041800.8">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204041800.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041842.20">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041842.21">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041902.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041902.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204041920.33">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204041920.34">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042116.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042116.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042155.7">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042155.8">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042301.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042301.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042305.100">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042305.101">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204042305.102">
+</t>
+<t tx="ekr.20161204042305.103">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204042305.104">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042305.105">
+The top section
+
+</t>
+<t tx="ekr.20161204042305.106">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204042305.107">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204042305.108">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042305.109">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204042305.110">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204042305.111">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204042305.96">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042305.97">The top section
+
+</t>
+<t tx="ekr.20161204042305.98">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204042305.99">section 2, line 1
+
+</t>
+<t tx="ekr.20161204042714.33">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042714.34">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042719.10">
+</t>
+<t tx="ekr.20161204042719.11">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204042719.12">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042719.13">
+The top section
+
+</t>
+<t tx="ekr.20161204042719.14">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204042719.15">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204042719.16">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042719.17">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204042719.18">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204042719.19">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204042719.4">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042719.5">The top section
+
+</t>
+<t tx="ekr.20161204042719.6">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204042719.7">section 2, line 1
+
+</t>
+<t tx="ekr.20161204042719.8">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042719.9">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204042739.15">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042739.16">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204042822.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042822.10">
+The top section
+
+</t>
+<t tx="ekr.20161204042822.11">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204042822.12">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204042822.13">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042822.14">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204042822.15">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204042822.16">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204042822.2">The top section
+
+</t>
+<t tx="ekr.20161204042822.3">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204042822.4">section 2, line 1
+
+</t>
+<t tx="ekr.20161204042822.5">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204042822.6">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204042822.7">
+</t>
+<t tx="ekr.20161204042822.8">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204042822.9">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204042916.1">print('start python tests')
+</t>
+<t tx="ekr.20161204042938.1">print('end python tests')
+</t>
+<t tx="ekr.20161204043013.1">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043013.2">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204043017.19">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043017.20">The top section
+
+</t>
+<t tx="ekr.20161204043017.21">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204043017.22">section 2, line 1
+
+</t>
+<t tx="ekr.20161204043017.23">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043017.24">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204043017.25">
+</t>
+<t tx="ekr.20161204043017.26">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204043017.27">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043017.28">
+The top section
+
+</t>
+<t tx="ekr.20161204043017.29">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204043017.30">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204043017.31">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043017.32">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204043017.33">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204043017.34">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204043028.10">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043028.11">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204043032.100">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043032.101">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204043032.102">
+</t>
+<t tx="ekr.20161204043032.103">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204043032.104">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043032.105">
+The top section
+
+</t>
+<t tx="ekr.20161204043032.106">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204043032.107">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204043032.108">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043032.109">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204043032.110">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204043032.111">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204043032.96">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043032.97">The top section
+
+</t>
+<t tx="ekr.20161204043032.98">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204043032.99">section 2, line 1
+
+</t>
+<t tx="ekr.20161204043342.40">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043342.41">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204043346.10">
+</t>
+<t tx="ekr.20161204043346.11">Section 3, line 1
+
+</t>
+<t tx="ekr.20161204043346.12">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043346.13">
+The top section
+
+</t>
+<t tx="ekr.20161204043346.14">
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+</t>
+<t tx="ekr.20161204043346.15">
+section 2, line 1
+
+</t>
+<t tx="ekr.20161204043346.16">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043346.17">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20161204043346.18">section 2.2, line 1.
+
+</t>
+<t tx="ekr.20161204043346.19">
+section 3, line 1
+
+</t>
+<t tx="ekr.20161204043346.4">@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+</t>
+<t tx="ekr.20161204043346.5">The top section
+
+</t>
+<t tx="ekr.20161204043346.6">section 1, line 1
+section 1, line 2
+
+</t>
+<t tx="ekr.20161204043346.7">section 2, line 1
+
+</t>
+<t tx="ekr.20161204043346.8">section 2.1, line 1
+
+</t>
+<t tx="ekr.20161204043346.9">section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+</t>
+<t tx="ekr.20161204044957.9">gnx: ekr.20161204044844.2
+unl: section 1
+gnx: ekr.20161204044844.3
+unl: section 2
+</t>
+<t tx="ekr.20161204045018.2"></t>
+<t tx="ekr.20161204045827.15">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204045827.16">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204045955.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161204045955.22">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204050639.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20161204050639.2">.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+</t>
+<t tx="ekr.20161204050639.3">
+The top chapter.
+</t>
+<t tx="ekr.20161204051109.10">
+The top chapter.
+</t>
+<t tx="ekr.20161204051109.8">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20161204051109.9">.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
 </t>
 </tnodes>
 </leo_file>

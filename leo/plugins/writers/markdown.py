@@ -21,7 +21,10 @@ class MarkdownWriter(basewriter.BaseWriter):
             if forceSentinels:
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             self.write_headline(p)
-            for s in self.split_lines(p.b):
+            # Ensure that every section ends with exactly two newlines.
+            s = p.b.rstrip() + '\n\n'
+            lines = s.splitlines(False)
+            for s in lines:
                 if not g.isDirective(s):
                     self.put(s)
         root.setVisited()

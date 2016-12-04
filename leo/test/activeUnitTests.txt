@@ -7734,7 +7734,7 @@ finally:
 @language python
 def spam:
     pass
-#@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
+#@+node:ekr.20150626101920.1: *6* @@@test find_file_line: @auto-md
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7825,7 +7825,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = False
+    trace = True
     h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
     root = g.findNodeAnywhere(c, h)
     assert root
@@ -7833,7 +7833,9 @@ else:
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
         g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print('get_external_file_with_sentinels returns...')
+        # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        g.printList(g.splitLines(s))
     for n in range(20):
         p, offset, found = c.gotoCommands.find_file_line(n, p=root)
         if found:
@@ -12041,7 +12043,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 # print('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
-#@+node:ekr.20090529141856.4684: *4*  Export tests
+#@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4
 #@+node:ekr.20090529141856.4685: *5* @suite Export tests
@@ -12050,30 +12052,18 @@ g.app.unitTestDict['restoreSelectedNode']=False
 suite = c.testManager.makeImportExportSuite("exportTests",doImport=False)
 
 # g.app.scriptDict['suite'] = suite
-#@+node:ekr.20090529141856.4698: *4*  Import tests
+#@+node:ekr.20090529141856.4698: *4* Import tests
 #@+node:ekr.20090529141856.4699: *5* @suite Import tests
 # Create unit tests in g.app.scriptDict["suite"]
 
 suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 
 # g.app.scriptDict['suite'] = suite
-#@+node:ekr.20090529141856.4790: *4*  Test files
-import leo.core.leoImport as leoImport
-import leo.plugins.importers.basescanner as basescanner
-ic = c.importCommands
-runner = basescanner.BaseScanner(ic,atAuto=True,language='python')
-i = 0
-lines1 = ['abc',]
-lines2 = ['xyz',]
-
-g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-runner.compareHelper(lines1,lines2,i,strict=True)
-#@+node:ekr.20090529141856.4716: *4*  Tests of @auto
+#@+node:ekr.20090529141856.4716: *4* Tests of @auto
 @tabwidth -4
 @language python
 #@+node:ekr.20090529141856.4783: *5* @test collapse-all
+# Not a real unit test.
 c.contractAllHeadlines()
 #@+node:ekr.20090529141856.4717: *5* C tests
 #@+node:ekr.20090529141856.4718: *6* @test c class 1
@@ -12261,6 +12251,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4729: *6* @test c# namespace no indent
 s = '''\
 namespace {
@@ -12284,6 +12275,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4730: *6* @@test c# ref card
 import sys
 
@@ -12295,42 +12287,6 @@ if sys.platform.lower().startswith('win'):
     s = f.read()
     f.close()
     c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)
-#@+node:ekr.20161123115047.1: *5* dart tests
-#@+node:ekr.20161123120652.1: *6* @test dart hello world
-s = r'''
-var name = 'Bob';
-
-hello() {
-  print('Hello, World!');
-}
-
-// Define a function.
-printNumber(num aNumber) {
-  print('The number is $aNumber.'); // Print to console.
-}
-
-// This is where the app starts executing.
-void main() {
-  var number = 42; // Declare and initialize a variable.
-  printNumber(number); // Call a function.
-}
-'''
-table = (
-    'hello',
-    'printNumber',
-    'void main',
-)
-try:
-    c.importCommands.dartUnitTest(p,s=s,showTree=True)
-    root = c.p.firstChild()
-    p2 = root.firstChild()
-    for h in table:
-        assert p2.h == h, (p2.h, h)
-        p2.moveToThreadNext()
-    assert not root.isAncestorOf(p2), p2.h # Extra nodes
-finally:
-    if 1:
-        p.deleteAllChildren()
 #@+node:ekr.20161108034116.1: *5* coffeescript tests
 #@+node:ekr.20161108034138.1: *6* @test coffeescript-1
 @killcolor
@@ -13182,6 +13138,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161109084732.1: *6* @test coffeescript-2
 s = r'''
 
@@ -13211,6 +13168,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161118144658.1: *6* @test coffeescript-3
 @tabwidth -2 # Required
 
@@ -13261,6 +13219,44 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
+#@+node:ekr.20161123115047.1: *5* dart tests
+#@+node:ekr.20161123120652.1: *6* @test dart hello world
+s = r'''
+var name = 'Bob';
+
+hello() {
+  print('Hello, World!');
+}
+
+// Define a function.
+printNumber(num aNumber) {
+  print('The number is $aNumber.'); // Print to console.
+}
+
+// This is where the app starts executing.
+void main() {
+  var number = 42; // Declare and initialize a variable.
+  printNumber(number); // Call a function.
+}
+'''
+table = (
+    'hello',
+    'printNumber',
+    'void main',
+)
+try:
+    c.importCommands.dartUnitTest(p,s=s,showTree=True)
+    root = c.p.firstChild()
+    p2 = root.firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4731: *5* elisp tests
 #@+node:ekr.20090529141856.4733: *6* @test elisp
 if 0:
@@ -13308,121 +13304,10 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
+        c.redraw()
 
-#@+node:ekr.20161129031547.1: *7* @@file c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161129031547.2: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161129031547.3: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161129032938.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161129032938.8: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161129032938.9: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161130042450.118: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161130042450.119: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161130042450.120: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161130050703.131: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161130050703.132: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161130050703.133: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161202053641.128: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161202053641.129: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161202053641.130: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161202083953.71: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161202083953.72: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161202083953.73: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
-#@+node:ekr.20161202093502.118: *7* @@clean c:/leo.repo/leo-editor/leo/test/elisp
-;;; comment
-;;; continue
-;;;
-
-@others
-@language lisp
-@tabwidth -4
-#@+node:ekr.20161202093502.119: *8* defun abc
-(defun abc (a b)
-   (+ 1 2 3))
-
-; comm
-#@+node:ekr.20161202093502.120: *8* defun cde
-(defun cde (a b)
-   (+ 1 2 3))
 #@+node:ekr.20111029112647.4099: *5* html tests
 #@+node:ekr.20111107102431.3849: *6* @@test html whitespace bug
 # A good test, but we don't want this large a file included in the distro.
@@ -13480,6 +13365,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
 @language html
     # Essential for the unit test.
@@ -13599,6 +13485,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20111029120441.3982: *6* @test html: uppercase tags
 s = '''\
 <HTML>
@@ -13658,6 +13545,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
 s = '''
 <html>
@@ -13683,6 +13571,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
 s = r'''; last modified 1 April 2001 by John Doe
@@ -13710,6 +13599,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 
 #@+node:ekr.20090529141856.4766: *5* Java tests
 #@+node:ekr.20090529141856.4767: *6* @test java interface test1
@@ -13752,6 +13642,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4768: *6* @test java interface test2
 s = '''\
 interface Bicycle {
@@ -13824,6 +13715,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4771: *6* @@test AdminPermission.java
 import sys
 
@@ -14086,6 +13978,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20161124040933.2: *6* @test otl-1
@@ -14121,6 +14014,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20090529141856.4734: *5* Pascal tests
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 if 0:
@@ -14193,7 +14087,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-
+        c.redraw()
 #@+node:ekr.20161103015908.1: *5* Perl tests
 #@+node:ekr.20161103015940.1: *6* @test perl-1
 s = '''\
@@ -14224,6 +14118,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161103021621.1: *6* @test perlpod comment
 s = '''\
 #!/usr/bin/perl
@@ -14248,6 +14143,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161103021420.1: *6* @test perl multi-line string
 s = '''\
 #!/usr/bin/perl
@@ -14266,6 +14162,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161119031833.1: *6* @test perl regex-1
 # ('len',   'tr///', '/',       context,  0,       0,       0),
 # ('len',   's///',  '/',       context,  0,       0,       0),
@@ -14296,6 +14193,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 if 0:
     # The preamble...
@@ -14350,133 +14248,9 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
-#@+node:ekr.20161130042452.36: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161130042452.37: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-#@+node:ekr.20161130042452.38: *8* sub test2
-sub test2 {
-    s = m//}/;
-}
-
-#@+node:ekr.20161130042452.39: *8* sub test3
-sub test3 {
-    s = s///}/;
-}
-
-#@+node:ekr.20161130042452.40: *8* sub test4
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161130050706.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161130050706.16: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-#@+node:ekr.20161130050706.17: *8* sub test2
-sub test2 {
-    s = m//}/;
-}
-
-#@+node:ekr.20161130050706.18: *8* sub test3
-sub test3 {
-    s = s///}/;
-}
-
-#@+node:ekr.20161130050706.19: *8* sub test4
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161202053644.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161202053644.8: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-#@+node:ekr.20161202053644.9: *8* sub test2
-sub test2 {
-    s = m//}/;
-}
-
-#@+node:ekr.20161202053644.10: *8* sub test3
-sub test3 {
-    s = s///}/;
-}
-
-#@+node:ekr.20161202053644.11: *8* sub test4
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161202083955.43: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161202083955.44: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-#@+node:ekr.20161202083955.45: *8* sub test2
-sub test2 {
-    s = m//}/;
-}
-
-#@+node:ekr.20161202083955.46: *8* sub test3
-sub test3 {
-    s = s///}/;
-}
-
-#@+node:ekr.20161202083955.47: *8* sub test4
-sub test4 {
-    s = tr///}/;
-}
-#@+node:ekr.20161202093504.43: *7* @@clean c:/leo.repo/leo-editor/leo/test/perl regex-2
-#!/usr/bin/perl
-
-@others
-@language perl
-@tabwidth -4
-#@+node:ekr.20161202093504.44: *8* sub test1
-sub test1 {
-    s = /}/g;
-}
-
-#@+node:ekr.20161202093504.45: *8* sub test2
-sub test2 {
-    s = m//}/;
-}
-
-#@+node:ekr.20161202093504.46: *8* sub test3
-sub test3 {
-    s = s///}/;
-}
-
-#@+node:ekr.20161202093504.47: *8* sub test4
-sub test4 {
-    s = tr///}/;
-}
+        c.redraw()
 #@+node:ekr.20100219080213.5365: *5* PHP tests
 #@+node:ekr.20100219080213.5366: *6* @test php import class
 s = '''\
@@ -14634,8 +14408,283 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161204034138.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204034138.16: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204035447.20: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204035447.21: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041306.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041306.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041354.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041354.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041426.33: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041426.34: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041641.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041641.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041720.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041720.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041755.29: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041755.30: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041842.20: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041842.21: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041902.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041902.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204041920.33: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204041920.34: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204042116.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204042116.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204042155.7: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204042155.8: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204042301.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204042301.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204042714.33: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204042714.34: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204042739.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204042739.16: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204043013.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204043013.2: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204043028.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204043028.11: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204043342.40: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204043342.41: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204045827.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204045827.16: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161204045955.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161204045955.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
+#@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
+print('start python tests')
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
 # g.cls()
 import leo.plugins.importers.python as python
@@ -14801,6 +14850,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15698,6 +15748,8 @@ if __name__ == '__main__':
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
+print('end python tests')
 #@+node:ekr.20121011094154.3906: *5* TypeScript tests
 @language python
 #@+node:ekr.20121011094154.3911: *6* @test TypeScript class
@@ -15787,7 +15839,7 @@ s = '''\
 
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20160410152100.1: *4*  Tests of @auto-md
+#@+node:ekr.20160410152100.1: *4* Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>
 if 0:
@@ -15832,10 +15884,10 @@ try:
         p.moveToThreadNext()
     assert p == after, p.h
 finally:
-    if 0:
+    if 1:
         if root:
             root.doDelete()
-            c.redraw()
+        c.redraw()
 #@+node:ekr.20160411034540.1: *6* << define s >> (md-import-test)
 s = '''\
 #Top
@@ -15891,6 +15943,441 @@ The next section is empty. It must not be deleted.
 #@+node:ekr.20161202093709.8: *8* Section 3
 Section 3, line 1
 
+#@+node:ekr.20161204034142.19: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204034142.20: *7* Top
+The top section
+
+#@+node:ekr.20161204034142.21: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204034142.22: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204034142.23: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204034142.24: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204034142.25: *9* Section 2.2
+
+#@+node:ekr.20161204034142.26: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204034207.1: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204034207.2: *7* Top
+The top section
+
+#@+node:ekr.20161204034207.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204034207.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204034207.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204034207.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204034207.7: *9* Section 2.2
+
+#@+node:ekr.20161204034207.8: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204035451.19: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204035451.20: *7* Top
+The top section
+
+#@+node:ekr.20161204035451.21: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204035451.22: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204035451.23: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204035451.24: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204035451.25: *9* Section 2.2
+
+#@+node:ekr.20161204035451.26: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041310.53: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041310.54: *7* Top
+The top section
+
+#@+node:ekr.20161204041310.55: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041310.56: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041310.57: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041310.58: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041310.59: *9* Section 2.2
+
+#@+node:ekr.20161204041310.60: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041358.103: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041358.104: *7* Top
+The top section
+
+#@+node:ekr.20161204041358.105: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041358.106: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041358.107: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041358.108: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041358.109: *9* Section 2.2
+
+#@+node:ekr.20161204041358.110: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041418.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041418.2: *7* Top
+The top section
+
+#@+node:ekr.20161204041418.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041418.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041418.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041418.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041418.7: *9* Section 2.2
+
+#@+node:ekr.20161204041418.8: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041645.103: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041645.104: *7* Top
+The top section
+
+#@+node:ekr.20161204041645.105: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041645.106: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041645.107: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041645.108: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041645.109: *9* Section 2.2
+
+#@+node:ekr.20161204041645.110: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041724.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041724.2: *7* Top
+The top section
+
+#@+node:ekr.20161204041724.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041724.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041724.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041724.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041724.7: *9* Section 2.2
+
+#@+node:ekr.20161204041724.8: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204041800.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041800.2: *7* Top
+The top section
+
+#@+node:ekr.20161204041800.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204041800.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204041800.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204041800.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204041800.7: *9* Section 2.2
+
+#@+node:ekr.20161204041800.8: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204042305.96: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042305.97: *7* Top
+The top section
+
+#@+node:ekr.20161204042305.98: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204042305.99: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204042305.100: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204042305.101: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204042305.102: *9* Section 2.2
+
+#@+node:ekr.20161204042305.103: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204042719.4: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042719.5: *7* Top
+The top section
+
+#@+node:ekr.20161204042719.6: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204042719.7: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204042719.8: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204042719.9: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204042719.10: *9* Section 2.2
+
+#@+node:ekr.20161204042719.11: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204042822.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042822.2: *7* Top
+The top section
+
+#@+node:ekr.20161204042822.3: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204042822.4: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204042822.5: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204042822.6: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204042822.7: *9* Section 2.2
+
+#@+node:ekr.20161204042822.8: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204043017.19: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043017.20: *7* Top
+The top section
+
+#@+node:ekr.20161204043017.21: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204043017.22: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204043017.23: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204043017.24: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204043017.25: *9* Section 2.2
+
+#@+node:ekr.20161204043017.26: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204043032.96: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043032.97: *7* Top
+The top section
+
+#@+node:ekr.20161204043032.98: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204043032.99: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204043032.100: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204043032.101: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204043032.102: *9* Section 2.2
+
+#@+node:ekr.20161204043032.103: *8* Section 3
+Section 3, line 1
+
+#@+node:ekr.20161204043346.4: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043346.5: *7* Top
+The top section
+
+#@+node:ekr.20161204043346.6: *8* Section 1
+section 1, line 1
+section 1, line 2
+
+#@+node:ekr.20161204043346.7: *8* Section 2
+section 2, line 1
+
+#@+node:ekr.20161204043346.8: *9* Section 2.1
+section 2.1, line 1
+
+#@+node:ekr.20161204043346.9: *10* Section 2.1.1
+section 2.2.1 line 1
+The next section is empty. It must not be deleted.
+
+#@+node:ekr.20161204043346.10: *9* Section 2.2
+
+#@+node:ekr.20161204043346.11: *8* Section 3
+Section 3, line 1
+
 #@+node:ekr.20160411033840.1: *5* @test md-import-test-rst-style
 << define s >>
 if 0:
@@ -15928,7 +16415,7 @@ try:
     root = p.lastChild()
     assert root.h.startswith('@@auto-m'), root.h
     p = root.firstChild()
-    if 0:
+    if 1:
         for n, h in table:
             n2 = p.level() - root.level()
             assert h == p.h, (h, p.h)
@@ -15936,10 +16423,10 @@ try:
             p.moveToThreadNext()
         assert p == after, p.h
 finally:
-    if 0:
+    if 1:
         if root:
             root.doDelete()
-            c.redraw()
+        c.redraw()
 #@+node:ekr.20161125230415.1: *6* << define s >> (md-import-test-rst-style)
 s = '''\
 Top
@@ -16156,6 +16643,546 @@ section 2.2, line 1.
 
 section 3, line 1
 
+#@+node:ekr.20161204034142.27: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204034142.28: *7* Top
+
+The top section
+
+#@+node:ekr.20161204034142.29: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204034142.30: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204034142.31: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204034142.32: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204034142.33: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204034142.34: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204034207.9: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204034207.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161204034207.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204034207.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204034207.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204034207.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204034207.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204034207.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204035451.27: *6* @@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204035451.28: *7* Top
+
+The top section
+
+#@+node:ekr.20161204035451.29: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204035451.30: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204035451.31: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204035451.32: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204035451.33: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204035451.34: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041310.61: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041310.62: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041310.63: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041310.64: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041310.65: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041310.66: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041310.67: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041310.68: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041359.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041359.2: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041359.3: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041359.4: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041359.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041359.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041359.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041359.8: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041418.9: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041418.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041418.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041418.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041418.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041418.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041418.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041418.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041646.1: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041646.2: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041646.3: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041646.4: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041646.5: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041646.6: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041646.7: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041646.8: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041724.9: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041724.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041724.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041724.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041724.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041724.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041724.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041724.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204041800.9: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204041800.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161204041800.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204041800.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204041800.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204041800.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204041800.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204041800.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204042305.104: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042305.105: *7* Top
+
+The top section
+
+#@+node:ekr.20161204042305.106: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204042305.107: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204042305.108: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204042305.109: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204042305.110: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204042305.111: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204042719.12: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042719.13: *7* Top
+
+The top section
+
+#@+node:ekr.20161204042719.14: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204042719.15: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204042719.16: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204042719.17: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204042719.18: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204042719.19: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204042822.9: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204042822.10: *7* Top
+
+The top section
+
+#@+node:ekr.20161204042822.11: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204042822.12: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204042822.13: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204042822.14: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204042822.15: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204042822.16: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204043017.27: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043017.28: *7* Top
+
+The top section
+
+#@+node:ekr.20161204043017.29: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204043017.30: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204043017.31: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204043017.32: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204043017.33: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204043017.34: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204043032.104: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043032.105: *7* Top
+
+The top section
+
+#@+node:ekr.20161204043032.106: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204043032.107: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204043032.108: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204043032.109: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204043032.110: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204043032.111: *8* Section 3
+
+section 3, line 1
+
+#@+node:ekr.20161204043346.12: *6* @@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language md
+@tabwidth -4
+#@+node:ekr.20161204043346.13: *7* Top
+
+The top section
+
+#@+node:ekr.20161204043346.14: *8* Section 1
+
+section 1, line 1
+-- Not an underline
+secttion 1, line 2
+
+#@+node:ekr.20161204043346.15: *8* Section 2
+
+section 2, line 1
+
+#@+node:ekr.20161204043346.16: *9* Section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20161204043346.17: *10* Section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20161204043346.18: *9* Section 2.2
+section 2.2, line 1.
+
+#@+node:ekr.20161204043346.19: *8* Section 3
+
+section 3, line 1
+
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...
@@ -16213,6 +17240,7 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161126111517.1: *5* @test markdown importer-implicit section
 if 0:
     # The preamble...
@@ -16279,6 +17307,7 @@ finally:
         # Not needed: done in Importer.check
     if 1:
         p.deleteAllChildren()
+        c.redraw()
 #@+node:ekr.20161127181028.1: *5* @test markdown github syntax
 if 0:
     # The preamble...
@@ -16331,7 +17360,8 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-#@+node:ekr.20090529141856.4784: *4* @ignore Tests of @auto-rst
+        c.redraw()
+#@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 s = '''\
 .. toc
@@ -16374,8 +17404,28 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "top",
+    "section 1",
+    "section 2",
+    "section 2.1",
+    "section 3",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -16388,8 +17438,56 @@ Chapter
 
 The top chapter.
 '''
+table = (
+    "!Dummy chapter",
+    "Chapter",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20161204050639.1: *6* @@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple
+@others
 
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20161204050639.2: *7* !Dummy chapter
+.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+#@+node:ekr.20161204050639.3: *7* Chapter
+
+The top chapter.
+#@+node:ekr.20161204051109.8: *6* @@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20161204051109.9: *7* !Dummy chapter
+.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+#@+node:ekr.20161204051109.10: *7* Chapter
+
+The top chapter.
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 s = '''\
 .. toc
@@ -16431,8 +17529,27 @@ section 3.1.1
 
 section 3.1.1, line 1
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "section 1",
+    "section 2",
+    "section 2.1",
+    "section 3",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 s = '''\
 .. toc
@@ -16442,8 +17559,23 @@ top
 
 The top section
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
 s = '''\
 .. toc
@@ -16454,8 +17586,24 @@ top
 
 The top section
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20090529141856.4789: *5* @test rST import test: trailing whitespace
 s = '''\
 .. toc
@@ -16468,10 +17616,26 @@ top
 
 The top section.
 '''
-
-c.importCommands.rstUnitTest(p,s=s,showTree=False)
+table = (
+    "!Dummy chapter",
+    "top",
+)
+try:
+    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20161129104243.1: *5* @test leo_rst
-if 1:
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -16506,7 +17670,6 @@ section 2
 
 Sec 2.
 '''
-
 table = (
     '!Dummy chapter',
     'section 1',
@@ -16523,49 +17686,10 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
-#@+node:ekr.20161130042613.1: *6* @@file c:/leo.repo/leo-editor/leo/test/leo_rst
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-@ignore
-#@+node:ekr.20161130042613.2: *7* !Dummy chapter
-  #########
-Chapter 1
-  #########
-
-It was a dark and stormy night.
-#@+node:ekr.20161130042613.3: *7* section 1
-
-Sec 1.
-#@+node:ekr.20161130042613.4: *7* section 2
-
-Sec 2.
-#@+node:ekr.20161130050711.40: *6* @@file c:/leo.repo/leo-editor/leo/test/leo_rst
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-@ignore
-#@+node:ekr.20161130050711.41: *7* !Dummy chapter
-  #########
-Chapter 1
-  #########
-
-It was a dark and stormy night.
-#@+node:ekr.20161130050711.42: *7* section 1
-
-Sec 1.
-#@+node:ekr.20161130050711.43: *7* section 2
-
-Sec 2.
-#@+node:ekr.20140724220921.5199: *4*  Tests of individual methods
+        c.redraw()
+#@+node:ekr.20140724220921.5199: *4* Tests of individual methods
 #@+node:ekr.20111214100515.3921: *5* @@@test ic.createOutline: at-auto with lines that look like section references
 # Disabled: this now fails *regardless* of python.v2 switch
 
@@ -17118,7 +18242,8 @@ def default(self, typ: Type) -> Type:
         return self.default(typ.upper_bound)
     else:
         return AnyType()
-#@+node:ekr.20090529141856.4793: *4* @@test test imports for modes
+#@+node:ekr.20161204041557.1: *4* All other tests
+#@+node:ekr.20090529141856.4793: *5* @@test test imports for modes
 d = g.app.extra_extension_dict
 
 for ext in g.app.extension_dict.keys():
@@ -17141,7 +18266,7 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
-#@+node:ekr.20140723134017.4464: *4* @test @auto importers
+#@+node:ekr.20140723134017.4464: *5* @test @auto importers
 # This causes problems!
 import glob
 import importlib
@@ -17153,7 +18278,7 @@ for fn in glob.glob(pattern):
     sfn = g.shortFileName(fn)
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
-#@+node:ekr.20161109065940.1: *4* @test Importer.get_leading_indent
+#@+node:ekr.20161109065940.1: *5* @test Importer.get_leading_indent
 # g.cls()
 import leo.plugins.importers.linescanner as linescanner
 # import imp
@@ -17176,7 +18301,7 @@ for language in ('python', 'coffeescript'):
         lines = [line]
         n = importer.get_leading_indent(lines, 0)
         # print('%s %r' % (n, line))
-#@+node:ekr.20161117011147.1: *4* @test Importer.get_str_lws
+#@+node:ekr.20161117011147.1: *5* @test Importer.get_str_lws
 import leo.plugins.importers.linescanner as linescanner
 table = [
     ('', 'abc\n'),
@@ -17189,7 +18314,7 @@ importer = linescanner.Importer(c.importCommands,
     atAuto=True, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
-#@+node:ekr.20161109065949.1: *4* @test Importer.is_ws_line
+#@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
 # g.cls()
 import leo.plugins.importers.linescanner as linescanner
 # import imp
@@ -17207,7 +18332,7 @@ importer = linescanner.Importer(
 )
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
-#@+node:ekr.20161011052016.1: *4* @test importers.javascript.scan_line
+#@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
 import leo.plugins.importers.javascript as js
 table = (
     (None, (0, 0, '/*'),    r'/* abc'),

@@ -33023,6 +33023,19 @@ def continues_block(self):
 def starts_block(self):
     '''Return True if the just-scanned line starts an inner block.'''
     return not self.context and self.curlies > self.base_curlies
+.. @+node:ekr.20161204042607.1: *4* @test files
+import leo.core.leoImport as leoImport
+import leo.plugins.importers.basescanner as basescanner
+ic = c.importCommands
+runner = basescanner.BaseScanner(ic,atAuto=True,language='python')
+i = 0
+lines1 = ['abc',]
+lines2 = ['xyz',]
+
+g.app.unitTestDict ['expectedErrors'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+runner.compareHelper(lines1,lines2,i,strict=True)
 .. @-all
 .. @@nosearch
 .. @-leo
