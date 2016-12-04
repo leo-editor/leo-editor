@@ -1282,7 +1282,6 @@
 <v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
 <v t="ekr.20161120075731.1"><vh>markup</vh></v>
 </v>
-<v t="ekr.20161204062850.1"><vh>OLD Table of contents</vh></v>
 <v t="ekr.20161120073038.1"></v>
 <v t="ekr.20161204055040.1"><vh>@button md-toc</vh>
 <v t="ekr.20161204055436.1"><vh>run</vh></v>
@@ -19471,24 +19470,6 @@ Controller().run(p)
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161204062850.1">1. [The grand overview](importers.md#the-grand-overview)
-2. [The new importers vs. the old](importers.md#the-new-importers-vs-the-old)
-3. [The Importer class](importers.md#the-importer-class)
-    1. [i.gen lines &amp; helpers](importers.md#igen-lines--helpers)
-    2. [The line-oriented API](importers.md#the-line-oriented-api)
-    3. [Indentation](importers.md#indentation)
-4. [The ScanState class](importers.md#the-scanstate-classes)
-    1. [ScanState.context](importers.md#scanstatecontext)
-    2. [ScanState.level()](importers.md#scanstatelevel)
-    3. [ScanState protocols](importers.md#scanstate-protocols)
-5. [Using @button make-importer](importers.md#using-button-make-importer)
-6. [Notes](importers.md#notes)
-    1. [Recognizing multi-line patterns](importers.md#recognizing-multi-line-patterns)
-    2. [The python importer must count brackets](importers.md#the-python-importer-must-count-brackets)
-    3. [Scanning strings and comments](importers.md#scanning-strings-and-comments)
-7. [Conclusion](importers.md#conclusion)
-
-</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

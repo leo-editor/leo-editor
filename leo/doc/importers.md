@@ -239,21 +239,9 @@ Indeed, if `i.scan_dict` scanned the comment or string completely, it might retu
 This is a superb answer to the original question. It speeds up strings and comments almost as much as possible, while keeping `i` on the present line. But to repeat, there is not much reason actually to have `i.scan_table` go into "quick scan mode". Scanning is already fast enough.
 
 #Conclusion
-1. [Table of contents](importers.md#table-of-contents)
-2. [The grand overview](importers.md#the-grand-overview)
-3. [The new importers vs. the old](importers.md#the-new-importers-vs-the-old)
-4. [The Importer class](importers.md#the-importer-class)
-    1. [i.gen lines & helpers](importers.md#igen-lines--helpers)
-    2. [The line-oriented API](importers.md#the-line-oriented-api)
-    3. [Indentation](importers.md#indentation)
-4. [The ScanState classes](importers.md#the-scanstate-classes)
-    5. [ScanState.context](importers.md#scanstatecontext)
-    6. [ScanState.level()](importers.md#scanstatelevel)
-    7. [ScanState protocols](importers.md#scanstate-protocols)
-8. [Using @button make-importer](importers.md#using-button-make-importer)
-9. [Notes](importers.md#notes)
-    10. [Recognizing multi-line patterns](importers.md#recognizing-multi-line-patterns)
-    11. [The python importer must count brackets](importers.md#the-python-importer-must-count-brackets)
-    12. [Scanning strings and comments](importers.md#scanning-strings-and-comments)
-13. [Conclusion](importers.md#conclusion)
+This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
+ 
+Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation!
+
+If you have questions about the code, please feel free to ask questions.  But do explore the code first. It's usually straightforward.
 
