@@ -1,10 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file importers/c.py
 '''The @auto importer for the C language and other related languages.'''
-# import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
+Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
@@ -20,7 +21,7 @@ class C_Importer(Importer):
         )
         
     #@+others
-    #@+node:ekr.20161108232258.1: *3* c.clean_headline
+    #@+node:ekr.20161108232258.1: *3* c_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
         type1 = r'(static|extern)*'
@@ -39,6 +40,21 @@ class C_Importer(Importer):
             return '%s%s%s' % (prefix1, prefix2, h)
         else:
             return s
+    #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
+    def start_new_block(self, line, new_state, prev_state, stack):
+        '''Create a child node and update the stack.'''
+        trace = False and g.unitTesting
+        if hasattr(new_state, 'in_context'):
+            assert not new_state.in_context(), ('start_new_block', new_state)
+        target=stack[-1]
+        # Insert the reference in *this* node.
+        h = self.gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
+        if trace:
+            g.trace('=====', repr(line))
+            g.printList(stack)
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:

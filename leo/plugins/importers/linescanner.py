@@ -419,7 +419,7 @@ class Importer(object):
                         'FAIL2:\nline: %r\ncontext: %r new_context: %r\n%s\n%s' % (
                             line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
-    #@+node:ekr.20161108131153.10: *4* i.run (driver)
+    #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
     def run(self, s, parent, parse_body=False, prepass=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
@@ -500,6 +500,25 @@ class Importer(object):
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
         return ''.join(result)
+    #@+node:ekr.20161111024447.1: *5* i.generate_nodes
+    def generate_nodes(self, s, parent):
+        '''
+        A three-stage pipeline to generate all imported nodes.
+        '''
+        # Stage 1: generate nodes.
+        # After this stage, the p.v._import_lines list contains p's future body text.
+        self.gen_lines(s, parent)
+        #
+        # Optional Stage 2, consisting of zero or more sub-stages.
+        # Subclasses may freely override this method, **provided**
+        # that all substages use the API for setting body text.
+        # Changing p.b directly will cause asserts to fail in i.finish(). 
+        self.post_pass(parent)
+        #
+        # Stage 3: Put directives in the root node and set p.b for all nodes.
+        #
+        # Subclasses should never need to override this stage.
+        self.finish(parent)
     #@+node:ekr.20161108131153.11: *4* State 0: i.check_blanks_and_tabs
     def check_blanks_and_tabs(self, lines):
         '''Check for intermixed blank & tabs.'''
@@ -530,26 +549,7 @@ class Importer(object):
             else:
                 g.es_print(message)
         return ok
-    #@+node:ekr.20161111024447.1: *4* Stage 1: i.generate_nodes & helpers
-    def generate_nodes(self, s, parent):
-        '''
-        A three-stage pipeline to generate all imported nodes.
-        '''
-        # Stage 1: generate nodes.
-        # After this stage, the p.v._import_lines list contains p's future body text.
-        self.gen_lines(s, parent)
-        #
-        # Optional Stage 2, consisting of zero or more sub-stages.
-        # Subclasses may freely override this method, **provided**
-        # that all substages use the API for setting body text.
-        # Changing p.b directly will cause asserts to fail in i.finish(). 
-        self.post_pass(parent)
-        #
-        # Stage 3: Put directives in the root node and set p.b for all nodes.
-        #
-        # Subclasses should never need to override this stage.
-        self.finish(parent)
-    #@+node:ekr.20161108160409.1: *5* i.gen_lines & helpers
+    #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent, creating descendant
@@ -561,7 +561,8 @@ class Importer(object):
         target = Target(parent, prev_state)
         stack = [target, target]
         self.inject_lines_ivar(parent)
-        for line in g.splitLines(s):
+        lines = g.splitLines(s)
+        for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
@@ -577,13 +578,13 @@ class Importer(object):
                 p = tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
-    #@+node:ekr.20161127102339.1: *6* i.ends_block
+    #@+node:ekr.20161127102339.1: *5* i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
         '''True if line does not end the block.'''
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
         return new_state.level() < top.state.level()
-    #@+node:ekr.20161119130337.1: *6* i.cut_stack
+    #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and g.unitTesting
@@ -613,7 +614,7 @@ class Importer(object):
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
-    #@+node:ekr.20161108160409.3: *6* i.end_block
+    #@+node:ekr.20161108160409.3: *5* i.end_block
     def end_block(self, line, new_state, stack):
         # The block is ending. Add tail lines until the start of the next block.
         p = stack[-1].p
@@ -621,12 +622,12 @@ class Importer(object):
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
-    #@+node:ekr.20161110041440.1: *6* i.inject_lines_ivar
+    #@+node:ekr.20161110041440.1: *5* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         assert not p.v._bodyString, repr(p.v._bodyString)
         p.v._import_lines = []
-    #@+node:ekr.20161108160409.6: *6* i.start_new_block
+    #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, line, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
@@ -641,11 +642,11 @@ class Importer(object):
         if trace:
             g.trace('=====', repr(line))
             g.printList(stack)
-    #@+node:ekr.20161119124217.1: *6* i.starts_block
+    #@+node:ekr.20161119124217.1: *5* i.starts_block
     def starts_block(self, line, new_state, prev_state):
         '''True if the new state starts a block.'''
         return new_state.level() > prev_state.level()
-    #@+node:ekr.20161119162451.1: *6* i.trace_status
+    #@+node:ekr.20161119162451.1: *5* i.trace_status
     def trace_status(self, line, new_state, prev_state, stack, top):
         '''Print everything important in the i.gen_lines loop.'''
         print('')
@@ -658,7 +659,7 @@ class Importer(object):
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
         g.printList(stack)
-    #@+node:ekr.20161108160409.7: *6* i.create_child_node
+    #@+node:ekr.20161108160409.7: *5* i.create_child_node
     def create_child_node(self, parent, body, headline):
         '''Create a child node of parent.'''
         child = parent.insertAsLastChild()
@@ -668,7 +669,7 @@ class Importer(object):
         assert g.isString(headline), repr(headline)
         child.h = headline.strip()
         return child
-    #@+node:ekr.20161108160409.8: *6* i.gen_ref
+    #@+node:ekr.20161108160409.8: *5* i.gen_ref
     def gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous
@@ -721,7 +722,6 @@ class Importer(object):
         #
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
-        
     #@+node:ekr.20161110125940.1: *5* i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
