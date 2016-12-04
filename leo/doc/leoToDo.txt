@@ -7,6 +7,8 @@
 @language rest
 @wrap
 
+* Post: changing Leo to save my hands.
+
 ** Posts: what you missed by not following leo-editor
 
 * Aha: use separate windows to compare code.
