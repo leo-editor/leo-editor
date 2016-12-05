@@ -178,7 +178,7 @@ Not all importers need a ScanState class.  In that case, just delete the ScanSta
 
 
 ##Recognizing multi-line patterns
-`i.gen_lines` now supports skip counts, in the `skip` ivar.  These counts allow helpers scan following lines easily. Here is the code that does this:
+`i.gen_lines` now supports skip counts, in the `skip` ivar. Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex. The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code. The change to `i.gen_lines` is straightforward:
 
 ```python
     lines = g.splitLines(s)
@@ -202,12 +202,6 @@ Not all importers need a ScanState class.  In that case, just delete the ScanSta
             self.add_line(p, line)
         prev_state = new_state
 ```
-
-**Summary**
-
-Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex.
-
-The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code.
 
 ##The python importer must count brackets
 The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
