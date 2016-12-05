@@ -54,7 +54,7 @@ Leo's new importers are fundamentally simpler than the old.
 
 The old importers attempted to parse their languages *character-by-character*. Only whole lines can be assigned to nodes, so the importers had to adjust the results of the parse to line boundaries. This was an extremely complex process, filled with error-prone index adjustments.
 
-The new importers usually *nothing* about parsing.  They only understand strings, comments, etc. In particular, the javascript importer knows nothing about javascript coding patterns or conventions.  It cares only about the net number of brackets and parentheses at the end of each line. The python and java importers *do* attempt to parse class and function lines using regular expressions.
+The new importers usually know *nothing* about parsing.  They only understand strings, comments, etc. In particular, the javascript importer knows nothing about javascript coding patterns or conventions.  It cares only about the net number of brackets and parentheses at the end of each line. The python and java importers *do* attempt to parse class and function lines using regular expressions.
 
 The old importers handled nested language constructs by recursively rescanning them.  The new importers handle each line of the input file exactly once, non-recursively, line by line.
 
@@ -65,7 +65,7 @@ All but the simplest importers are subclasses of the Importer class, in leo/plug
 
 **`i.run`** is the top-level driver code. It calls each stage of a **five-stage pipeline**. Few importers will need to override `i.run`.
 
-Stage 0, **`i.check_blanks_and_tabs`, checks to see that leading whitespace appears consistently in all input lines, and are consistent with `@tabwidth`. If not, certain kinds of perfect-import checks must be disabled in stage 4...
+Stage 0, **`i.check_blanks_and_tabs`**, checks to see that leading whitespace appears consistently in all input lines, and are consistent with `@tabwidth`. If not, certain kinds of perfect-import checks must be disabled in stage 4...
 
 Stage 1, **`i.gen_lines`**, is the heart of the code. It generates nodes whose outline structure reflects the meaning of the sources. Some importers override `i.gen_lines`. Others use `i.gen_lines` as it is.
 
