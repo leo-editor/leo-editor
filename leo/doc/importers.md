@@ -178,34 +178,30 @@ Not all importers need a ScanState class.  In that case, just delete the ScanSta
 
 
 ##Recognizing multi-line patterns
-The new rst importer overrides `i.v2_gen_lines`.  Here is the interesting part:
+`i.gen_lines` now supports skip counts, in the `skip` ivar.  These counts allow helpers scan following lines easily. Here is the code that does this:
 
 ```python
-    skip = 0
     lines = g.splitLines(s)
+    self.skip = 0
     for i, line in enumerate(lines):
-        if trace: g.trace('%2s %r' % (i+1, line))
-        if skip > 0:
-            skip -= 1
-        elif self.is_lookahead_overline(i, lines):
-            level = self.ch_level(line[0])
-            self.make_node(level, lines[i+1])
-            skip = 2
-        elif self.is_lookahead_underline(i, lines):
-            level = self.ch_level(lines[i+1][0])
-            self.make_node(level, line)
-            skip = 1
-        elif i == 0:
-            p = self.make_dummy_node('!Dummy chapter')
+        new_state = self.scan_line(line, prev_state)
+        top = stack[-1]
+        if trace: self.trace_status(line, new_state, prev_state, stack, top)
+        if self.skip > 0:
+            self.skip -= 1
+        elif self.is_ws_line(line):
+            p = tail_p or top.p
             self.add_line(p, line)
+        elif self.starts_block(i, lines, new_state, prev_state):
+            tail_p = None
+            self.start_new_block(i, lines, new_state, prev_state, stack)
+        elif self.ends_block(line, new_state, prev_state, stack):
+            tail_p = self.end_block(line, new_state, stack)
         else:
-            p = self.stack[-1]
+            p = tail_p or top.p
             self.add_line(p, line)
+        prev_state = new_state
 ```
-
-The skip count is an innovation. It allows the enumerate loop to look ahead naturally. The `lookahead` methods scan, as their names imply, lines *after* the line returned by enumerate.
-
-The lookahead methods are simple pattern matchers.  When they match, it is easy for the main line code to deal with the match, using 1 or two following lines. The skip logic then ensures that the main line never looks at the lines a second time.
 
 **Summary**
 

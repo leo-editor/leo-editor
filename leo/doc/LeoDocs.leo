@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1288,6 +1288,7 @@
 <v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
 <v t="ekr.20150323102036.1"></v>
 <v t="ekr.20161120073038.1"></v>
+<v t="ekr.20161204064425.17"><vh>Recognizing multi-line patterns (***REVISE)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19468,7 +19469,43 @@ Controller().run(p)
         else:
             pass
     return ''.join(result)</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161204064425.17">The new rst importer overrides `i.v2_gen_lines`.  Here is the interesting part:
+
+```python
+    skip = 0
+    lines = g.splitLines(s)
+    for i, line in enumerate(lines):
+        if trace: g.trace('%2s %r' % (i+1, line))
+        if skip &gt; 0:
+            skip -= 1
+        elif self.is_lookahead_overline(i, lines):
+            level = self.ch_level(line[0])
+            self.make_node(level, lines[i+1])
+            skip = 2
+        elif self.is_lookahead_underline(i, lines):
+            level = self.ch_level(lines[i+1][0])
+            self.make_node(level, line)
+            skip = 1
+        elif i == 0:
+            p = self.make_dummy_node('!Dummy chapter')
+            self.add_line(p, line)
+        else:
+            p = self.stack[-1]
+            self.add_line(p, line)
+```
+
+The skip count is an innovation. It allows the enumerate loop to look ahead naturally. The `lookahead` methods scan, as their names imply, lines *after* the line returned by enumerate.
+
+The lookahead methods are simple pattern matchers.  When they match, it is easy for the main line code to deal with the match, using 1 or two following lines. The skip logic then ensures that the main line never looks at the lines a second time.
+
+**Summary**
+
+Skip counts allow pattern matching to be done naturally. Without them, pattern matching becomes much more complex.
+
+The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code.
+
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
