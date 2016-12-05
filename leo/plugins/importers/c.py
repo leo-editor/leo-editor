@@ -21,8 +21,16 @@ class C_Importer(Importer):
         )
         self.headline = None
     # Used in multiple methods.
-    c_types_list = '(bool|char|double|extern|float|int|register|static|void)'
+    c_keywords = (
+        '(break|case|continue|default|do|else|enum|for|goto|if|' +
+        'return|sizeof|struct|switch|while)'
+    )
+    c_types_list = (
+        '(auto|bool|char|const|double|extern|float|int|register|' +
+        'signed|short|static|typedef|union|unsigned|void|volatile)'
+    )
     c_types_pattern = re.compile(c_types_list)
+    c_keywords_pattern = re.compile(c_keywords)
 
     #@+others
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
@@ -117,10 +125,13 @@ class C_Importer(Importer):
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
         trace = False and g.unitTesting
-        if prev_state.context:
-            return False
         self.headline = None
         line = lines[i]
+        if prev_state.context:
+            return False
+        if self.c_keywords_pattern.match(line):
+            if trace: g.trace('KEYWORD', repr(line))
+            return False
         if not self.match_start_patterns(line):
             return False
         if trace: g.trace('MATCH', repr(line))
