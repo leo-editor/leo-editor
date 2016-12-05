@@ -75,7 +75,7 @@ def git_output(cmd):
 def get_version_from_git(short=True):
     trace = False
     try:
-        is_windows = sys.platform.startswith('win')
+        # is_windows = sys.platform.startswith('win')
         commit = git_output('git rev-parse HEAD')
         date = git_output('git show -s --format="%cD" '+commit)
         commit = g.toUnicode(commit)
