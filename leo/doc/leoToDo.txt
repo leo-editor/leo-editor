@@ -7,24 +7,17 @@
 @language rest
 @wrap
 
-* Post: changing Leo to save my hands.
-
 ** Posts: what you missed by not following leo-editor
-
-* Aha: use separate windows to compare code.
-  Seems much better than separate body panes.
 
 - Does pylint -a end properly??
 
-- Post: unit testing as you go along:
-    - Use imp.reload to get the latest version of your code.
+* Aha: use separate windows to compare code.
+  Seems much better than separate body panes.
 
 - Pylint --recent option.  Last hour? Last day?
 
 - Use regex in g.match.  Add g.match_any.
     pattern = '|'.join([r"\b%s\b" z for z in args])
-    
-Leo 5.5 final by Thanksgiving?
 
 - Encourage everyone to use issue tracker.
 
@@ -117,6 +110,13 @@ Requires 5.4 final
 .. @+node:ekr.20161024101901.1: ** ** Line numbers are not always accurate
 .. @+node:ekr.20161106074940.1: ** A new project? visualize massive git changes
 This is likely impossible, but git contains all history...
+.. @+node:ekr.20161205102034.1: ** A new project? Temp git modes
+The idea is to be able to define the dot easily.
+
+- Allow Leo to enter vim-mode temporarily.
+- Define the dot.
+- Leave vim-mode.
+- Use the dot.
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap
