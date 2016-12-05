@@ -147,7 +147,10 @@ class Py_Importer(Importer):
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161117060359.1: *4* python_i.move_decorators & helpers
     def move_decorators(self, new_p, prev_p):
-        '''Move decorators from the end of prev_p to the start of new_state.p'''
+        '''
+        Move decorators from the end of prev_p to the start of new_state.p.
+        These lines may be on the other side of @others.
+        '''
         if new_p.v == prev_p.v:
             return
         prev_lines = prev_p.v._import_lines
@@ -216,11 +219,12 @@ class Py_Importer(Importer):
     starts_pattern = re.compile(r'\s*(class|def)')
         # Matches lines that apparently starts a class or def.
 
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the line startswith class or def outside any context.'''
         if prev_state.in_context():
             return False
         else:
+            line = lines[i]
             return bool(self.starts_pattern.match(line))
     #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
     def findClass(self, p):

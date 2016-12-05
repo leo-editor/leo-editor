@@ -170,7 +170,7 @@ class Xml_Importer(Importer):
             g.printList(self.stack)
         return i, tag_level
     #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the line startswith an xml block'''
         return new_state.tag_level > prev_state.tag_level
     #@+node:ekr.20161121212858.1: *3* xml_i.is_ws_line

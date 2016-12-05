@@ -131,13 +131,14 @@ class Pascal_Importer(Importer):
         re.compile(r'^(interface)\s*\n')
     )
 
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the line starts a block.'''
         trace = False and g.unitTesting
         if prev_state.context:
             if trace: g.trace('in context', repr(prev_state.context))
             return False
         else:
+            line = lines[i]
             for pattern in self.pascal_pattern_table:
                 m = pattern.match(line)
                 if trace and m: g.trace('%5s %s' % (bool(m), repr(line)))

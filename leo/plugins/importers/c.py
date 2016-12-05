@@ -19,43 +19,133 @@ class C_Importer(Importer):
             language = 'c',
             state_class = C_ScanState,
         )
-        
+        self.headline = None
+    # Used in multiple methods.
+    c_types_list = '(bool|char|double|extern|float|int|register|static|void)'
+    c_types_pattern = re.compile(c_types_list)
+
     #@+others
-    #@+node:ekr.20161108232258.1: *3* c_i.clean_headline
-    def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
-        type1 = r'(static|extern)*'
-        type2 = r'(void|int|float|double|char)*'
-        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
-        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
-        m = re.match(class_pattern, s)
+    #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
+    c_name_pattern = re.compile(r'\s*([\w:]+)')
+
+    def match_name_patterns(self, line):
+        '''Set self.headline if the line defines a typedef name.'''
+        trace = False and g.unitTesting
+        if trace: g.trace(repr(line))
+        m = self.c_name_pattern.match(line)
         if m:
-            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            return '%sclass %s' % (prefix1, m.group(2))
-        m = re.match(pattern, s)
+            word = m.group(1)
+            if trace: g.trace('NAME', word)
+            if not self.c_types_pattern.match(word):
+                self.headline = word
+    #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
+    # Define patterns that can start a block        
+    c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
+    c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
+    c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (c_types_list))
+    c_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (c_types_list))
+
+    def match_start_patterns(self, line):
+        '''
+        True if line matches any block-starting pattern.
+        If true, set self.headline.
+        '''
+        trace = False and g.unitTesting
+        if trace: g.trace(repr(line))
+        m = self.c_extern_pattern.match(line)
         if m:
-            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
-            h = m.group(3) or '<no c function name>'
-            return '%s%s%s' % (prefix1, prefix2, h)
-        else:
-            return s
+            self.headline = line.strip()
+            if trace: g.trace('EXTERN', m)
+            return True
+        m = self.c_class_pattern.match(line)
+        if m:
+            prefix = m.group(1).strip() if m.group(1) else ''
+            self.headline = '%sclass %s' % (prefix, m.group(3))
+            self.headline = self.headline.strip()
+            if trace: g.trace('CLASS', m, self.headline)
+            return True
+        m = self.c_func_pattern.match(line)
+        if m:
+            if self.c_types_pattern.match(m.group(3)):
+                if trace: g.trace('TWO TYPES', m)
+                return True
+            else:
+                prefix = m.group(1).strip() if m.group(1) else ''
+                self.headline = '%s %s' % (prefix, m.group(3))
+                self.headline = self.headline.strip()
+                if trace: g.trace('FUNC', m, self.headline)
+                return True
+        m = self.c_typedef_pattern.match(line)
+        if m:
+            # Does not set self.headline.
+            if trace: g.trace('TYPEDEF', m)
+            return True
+        m = self.c_types_pattern.match(line)
+        if m:
+            if trace: g.trace('ONE TYPE', m)
+            return True
+        return False
     #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
+        trace_stack = False
         line = lines[i]
-        if hasattr(new_state, 'in_context'):
-            assert not new_state.in_context(), ('start_new_block', new_state)
-        target=stack[-1]
+        target = stack[-1]
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
+        if self.headline: h = self.headline
         child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
+        if trace: g.trace('=====', repr(line))
+        if trace and trace_stack: g.printList(stack)
+        # Add all additional lines of the signature.
+        skip = self.skip # Don't change the ivar!
+        while skip > 0:
+            skip -= 1
+            i += 1
+            assert i < len(lines), (i, len(lines))
+            line = lines[i]
+            if trace: g.trace('SCAN', 'name', self.headline, 'line', repr(line))
+            if not self.headline:
+                self.match_name_patterns(line)
+                if self.headline:
+                    child.h = '%s %s' % (child.h.strip(), self.headline)
+            self.add_line(child, lines[i])
+    #@+node:ekr.20161204155335.1: *3* c_i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        trace = False and g.unitTesting
+        if prev_state.context:
+            return False
+        self.headline = None
+        line = lines[i]
+        if not self.match_start_patterns(line):
+            return False
+        if trace: g.trace('MATCH', repr(line))
+        # Must not be a complete statement.
+        if line.find(';') > -1:
+            if trace: g.trace('STATEMENT', repr(line))
+            return False
+        # Scan ahead until an open { is seen. the skip count.
+        self.skip = 0
+        while self.skip < 10:
+            if new_state.level() > prev_state.level():
+                return True
+            if trace: g.trace('SKIP', repr(lines[i]))
+            self.skip += 1
+            i += 1
+            if i < len(lines):
+                line = lines[i]
+                prev_state = new_state
+                new_state = self.scan_line(line, prev_state)
+            else:
+                break
         if trace:
-            g.trace('=====', repr(line))
-            g.printList(stack)
+            g.trace('Run-on C function def')
+            g.printList(lines[i-self.skip:i])
+        return False
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
@@ -73,8 +163,7 @@ class C_ScanState:
 
     def __repr__(self):
         '''C_ScanState.__repr__'''
-        return 'C_ScanState context: %r curlies: %s' % (
-            self.context, self.curlies)
+        return 'C_ScanState context: %r curlies: %s' % (self.context, self.curlies)
 
     __str__ = __repr__
 
@@ -90,11 +179,9 @@ class C_ScanState:
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data
-        self.bs_nl = bs_nl
+        # self.bs_nl = bs_nl
         self.context = context
         self.curlies += delta_c  
-        # self.parens += delta_p
-        # self.squares += delta_s
         return i
 
     #@-others

@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
-	<global_window_position top="60" left="698" height="958" width="1277"/>
+	<global_window_position top="80" left="546" height="958" width="969"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -235,7 +235,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20090529141856.4721,ekr.20090529141856.4722,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626093745.1"></v>
@@ -301,10 +302,52 @@
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
-<v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
-<v t="ekr.20090529141856.4721"><vh>@test c test--comment follows arg list</vh></v>
-<v t="ekr.20090529141856.4722"><vh>@test c test--comment follows block delim</vh></v>
-<v t="ekr.20090529141856.4723"><vh>@test c test--intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4721" a="M"><vh>@test c comment follows arg list</vh>
+<v t="ekr.20161204154822.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204154822.2"><vh>{</vh></v>
+</v>
+<v t="ekr.20161204155214.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204155214.2"><vh>{</vh></v>
+</v>
+<v t="ekr.20161204181353.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204181353.2"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181353.3"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+<v t="ekr.20161204181420.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204181420.2"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181420.3"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+<v t="ekr.20161204181500.9"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204181500.10"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181500.11"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+<v t="ekr.20161204181542.9"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
+<v t="ekr.20161204181542.10"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181542.11"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4722" a="M"><vh>@test c comment follows block delim</vh>
+<v t="ekr.20161204181337.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
+<v t="ekr.20161204181337.2"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181337.3"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+<v t="ekr.20161204181500.12"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
+<v t="ekr.20161204181500.13"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181500.14"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+<v t="ekr.20161204181542.12"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
+<v t="ekr.20161204181542.13"><vh>void aaa::bbb::doit</vh>
+<v t="ekr.20161204181542.14"><vh>bool aaa::bbb::dothat</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4723"><vh>@test c intermixed blanks and tabs</vh></v>
 <v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
@@ -453,6 +496,12 @@
 </v>
 <v t="ekr.20161204045955.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161204045955.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204154852.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204154852.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204155218.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204155218.26"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -950,16 +999,7 @@
 </v>
 <v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
-<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh>
-<v t="ekr.20161204050639.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple</vh>
-<v t="ekr.20161204050639.2"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20161204050639.3"><vh>Chapter</vh></v>
-</v>
-<v t="ekr.20161204051109.8"><vh>@@clean c:/leo.repo/leo-editor/leo/test/rST import test: simple</vh>
-<v t="ekr.20161204051109.9"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20161204051109.10"><vh>Chapter</vh></v>
-</v>
-</v>
+<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
@@ -986,6 +1026,7 @@
 <v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
 <v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
+<v t="ekr.20090529141856.4717"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1419,7 +1460,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1484,7 +1525,19 @@ suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 @language python
 </t>
 <t tx="ekr.20090529141856.4717"></t>
-<t tx="ekr.20090529141856.4718">fileName = p.h
+<t tx="ekr.20090529141856.4718">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 class cTestClass1 {
@@ -1498,11 +1551,39 @@ class cTestClass1 {
     }
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'class cTestClass1',
+    'int foo',
+    'char bar',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4719">fileName = p.h
-
+<t tx="ekr.20090529141856.4719">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 class cTestClass1 {
 
@@ -1518,28 +1599,39 @@ class cTestClass1 {
     }
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'class cTestClass1',
+    'int foo',
+    'char bar',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4720">fileName = p.h
-
-s = '''\
-class cTestClass1 {
-
-    int foo (int a) {
-        a = 2 ;
-    }
-
-    char bar (float c) {
-        ;
-    }
-}
-'''
-
-c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20090529141856.4721">fileName = p.h
-
+<t tx="ekr.20090529141856.4721">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 s = '''\
 void
 aaa::bbb::doit
@@ -1559,11 +1651,38 @@ aaa::bbb::dothat
     return true;
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'void aaa::bbb::doit',
+    'bool aaa::bbb::dothat',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4722">fileName = p.h
-
+<t tx="ekr.20090529141856.4722">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 void
 aaa::bbb::doit
@@ -1583,11 +1702,38 @@ aaa::bbb::dothat
     return true;
 } //  &lt;---------------------problem
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'void aaa::bbb::doit',
+    'bool aaa::bbb::dothat',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4723">fileName = p.h
-
+<t tx="ekr.20090529141856.4723">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 s = '''
 void
 aaa::bbb::doit
@@ -1599,11 +1745,37 @@ aaa::bbb::doit
 }
 
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'aaa::bbb::doit',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 0:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4724">fileName = p.h
-
+<t tx="ekr.20090529141856.4724">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 static void
 ReleaseCharSet(cset)
@@ -1615,11 +1787,37 @@ ReleaseCharSet(cset)
     }
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'static void ReleaseCharSet',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4725">fileName = p.h
-
+<t tx="ekr.20090529141856.4725">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 Tcl_Obj *
 Tcl_NewLongObj(longValue)
@@ -1629,21 +1827,62 @@ Tcl_NewLongObj(longValue)
     return Tcl_DbNewLongObj(longValue, "unknown", 0);
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'Tcl_Obj * Tcl_NewLongObj',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4726">fileName = p.h
-
+<t tx="ekr.20090529141856.4726">if 1:
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.c
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.c)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
-extern  "C"
+extern "C"
 {
 #include "stuff.h"
 void    init(void);
 #include "that.h"
 }
 '''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
+table = (
+    'extern "C"',
+)
+try:
+    ic.cUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4727"></t>
 <t tx="ekr.20090529141856.4728">s = '''\
@@ -8623,37 +8862,203 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161204050639.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
+<t tx="ekr.20161204154822.1"></t>
+<t tx="ekr.20161204154822.2"></t>
+<t tx="ekr.20161204154852.10">&lt;?php
+@others
+@language php
 @tabwidth -4
 </t>
-<t tx="ekr.20161204050639.2">.. toc
-
-.. The section name contains trailing whitespace.
-
-=======
+<t tx="ekr.20161204154852.11">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
-<t tx="ekr.20161204050639.3">
-The top chapter.
-</t>
-<t tx="ekr.20161204051109.10">
-The top chapter.
-</t>
-<t tx="ekr.20161204051109.8">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
+<t tx="ekr.20161204155214.1"></t>
+<t tx="ekr.20161204155214.2"></t>
+<t tx="ekr.20161204155218.25">&lt;?php
+@others
+@language php
 @tabwidth -4
 </t>
-<t tx="ekr.20161204051109.9">.. toc
+<t tx="ekr.20161204155218.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161204181337.1">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181337.2">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
 
-.. The section name contains trailing whitespace.
+@others
+</t>
+<t tx="ekr.20161204181337.3">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) 
+{
+    return true;
+} //  &lt;---------------------problem
+</t>
+<t tx="ekr.20161204181353.1">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181353.2">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
 
-=======
+@others
+</t>
+<t tx="ekr.20161204181353.3">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+</t>
+<t tx="ekr.20161204181420.1">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181420.2">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+@others
+</t>
+<t tx="ekr.20161204181420.3">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+</t>
+<t tx="ekr.20161204181500.10">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+@others
+</t>
+<t tx="ekr.20161204181500.11">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+</t>
+<t tx="ekr.20161204181500.12">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181500.13">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+@others
+</t>
+<t tx="ekr.20161204181500.14">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) 
+{
+    return true;
+} //  &lt;---------------------problem
+</t>
+<t tx="ekr.20161204181500.9">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181542.10">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+@others
+</t>
+<t tx="ekr.20161204181542.11">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+</t>
+<t tx="ekr.20161204181542.12">@others
+@language c
+@tabwidth -4
+</t>
+<t tx="ekr.20161204181542.13">void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+@others
+</t>
+<t tx="ekr.20161204181542.14">bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) 
+{
+    return true;
+} //  &lt;---------------------problem
+</t>
+<t tx="ekr.20161204181542.9">@others
+@language c
+@tabwidth -4
 </t>
 </tnodes>
 </leo_file>

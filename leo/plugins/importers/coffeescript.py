@@ -156,10 +156,11 @@ class CS_Importer(Importer):
         re.compile(r'^\s*(.+)=(.*)->'),
     ]
 
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the line starts with the patterns above outside any context.'''
         if prev_state.in_context():
             return False
+        line = lines[i]
         for pattern in self.pattern_table:
             if pattern.match(line):
                 # g.trace('='*10, repr(line))

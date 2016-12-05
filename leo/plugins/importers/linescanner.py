@@ -151,6 +151,7 @@ class Importer(object):
         self.errors = 0
         ic.errors = 0 # Required.
         self.parse_body = False
+        self.skip = 0 # A skip count for x.gen_lines & its helpers.
         self.ws_error = False
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
@@ -215,7 +216,8 @@ class Importer(object):
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         
-        def add_key(d, key, data):
+        def add_key(d, pattern, data):
+            key = pattern[0]
             aList = d.get(key,[])
             aList.append(data)
             d[key] = aList
@@ -228,7 +230,8 @@ class Importer(object):
                 "'":    [('len', "'",    context == "'"),],
             }
             if block1 and block2:
-                add_key(d, block2[0], ('len', block1, True))
+                add_key(d, block2, ('len', block2, True))
+                    # Bug fix: 2016/12/04: the tuple contained block1, not block2.
         else:
             # Not in any context.
             d = {
@@ -244,10 +247,10 @@ class Importer(object):
                 ']':    [('len', ']', context, (0,0,-1)),],
             }
             if comment:
-                add_key(d, comment[0], ('all', comment, '', None))
+                add_key(d, comment, ('all', comment, '', None))
             if block1 and block2:
-                add_key(d, block1[0], ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
+                add_key(d, block1, ('len', block1, block1, None))
+        if trace: g.trace('created %s dict for %4r state ' % (self.name, context))
         return d
     #@+node:ekr.20161113135037.1: *4* i.get_table
     #@@nobeautify
@@ -562,14 +565,17 @@ class Importer(object):
         stack = [target, target]
         self.inject_lines_ivar(parent)
         lines = g.splitLines(s)
+        self.skip = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
-            if self.is_ws_line(line):
+            if self.skip > 0:
+                self.skip -= 1
+            elif self.is_ws_line(line):
                 p = tail_p or top.p
                 self.add_line(p, line)
-            elif self.starts_block(line, new_state, prev_state):
+            elif self.starts_block(i, lines, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(i, lines, new_state, prev_state, stack)
             elif self.ends_block(line, new_state, prev_state, stack):
@@ -644,7 +650,7 @@ class Importer(object):
             g.trace('=====', repr(line))
             g.printList(stack)
     #@+node:ekr.20161119124217.1: *5* i.starts_block
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
         return new_state.level() > prev_state.level()
     #@+node:ekr.20161119162451.1: *5* i.trace_status

@@ -32,8 +32,9 @@ class Elisp_Importer(Importer):
         else:
             return s.strip()
     #@+node:ekr.20161127185851.1: *3* elisp_i.starts_block
-    def starts_block(self, line, new_state, prev_state):
+    def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
+        line = lines[i]
         return self.elisp_clean_pattern.match(line)
     #@-others
 #@+node:ekr.20161127184128.6: ** class Elisp_ScanState
