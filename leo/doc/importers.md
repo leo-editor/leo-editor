@@ -231,7 +231,7 @@ This is a superb answer to the original question. It speeds up strings and comme
 #Conclusion
 This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
  
-Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation!
+Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation! Furthermore, when studying code for the first time, focus on seeing the shape of the outline. What files have many classes? What classes are complex?
 
 If you have questions about the code, please feel free to ask questions.  But do explore the code first. It's usually straightforward.
 
