@@ -15,6 +15,7 @@ On Ubuntu, the following alias runs this file::
 #@@language python
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
+from __future__ import print_function
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import shlex
@@ -27,6 +28,8 @@ import time
 #@+node:ekr.20140331201252.16859: ** main & helpers
 def main(files, verbose):
     '''Call run on all tables in tables_table.'''
+    n = len(files)
+    print('pylint: %s file%s' % (n, g.plural(n)))
     try:
         from pylint import lint
         assert lint
@@ -36,8 +39,9 @@ def main(files, verbose):
     t1 = time.time()
     for fn in files:
         run(fn, verbose)
+        if not verbose:
+            print('.',sep='', end='')
     t2 = time.time()
-    n = len(files)
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
 #@+node:ekr.20100221142603.5644: *3* run (pylint-leo.py)
 #@@nobeautify
