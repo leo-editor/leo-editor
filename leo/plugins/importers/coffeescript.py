@@ -175,7 +175,7 @@ class CS_Importer(Importer):
             g.trace('='*60)
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
-                g.printList(p.v._import_lines)
+                g.printList(self.get_lines(p))
         # ===== Generic: use base Importer methods =====
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
@@ -194,7 +194,7 @@ class CS_Importer(Importer):
             g.trace('-'*60)
             for p in parent.self_and_subtree():
                 print('***** %s' % p.h)
-                g.printList(p.v._import_lines)
+                g.printList(self.get_lines(p))
     #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper (not ready)
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''

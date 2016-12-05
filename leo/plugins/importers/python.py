@@ -153,8 +153,8 @@ class Py_Importer(Importer):
         '''
         if new_p.v == prev_p.v:
             return
-        prev_lines = prev_p.v._import_lines
-        new_lines = new_p.v._import_lines
+        prev_lines = self.get_lines(prev_p)
+        new_lines = self.get_lines(new_p)
         moved_lines = []
         if prev_lines and self.is_at_others(prev_lines[-1]):
             at_others_line = prev_lines.pop()
@@ -170,7 +170,7 @@ class Py_Importer(Importer):
         if at_others_line:
             prev_lines.append(at_others_line)
         if moved_lines:
-            new_p.v._import_lines = list(reversed(moved_lines)) + new_lines
+            self.set_lines(new_p, list(reversed(moved_lines)) + new_lines)
      
     #@+node:ekr.20161117080504.1: *5* def python_i.is_at_others/is_decorator
     at_others_pattern = re.compile(r'^\s*@others$')
@@ -226,33 +226,59 @@ class Py_Importer(Importer):
         else:
             line = lines[i]
             return bool(self.starts_pattern.match(line))
-    #@+node:ekr.20161119083054.1: *3* py_i.findClass (Rewrite)
+    #@+node:ekr.20161119083054.1: *3* py_i.findClass & helper
     def findClass(self, p):
         '''
         Return the index end of the class or def in a node, or -1.
         '''
-        ### To do: rewrite this class.
-        # pylint: disable=no-member
-            # The methods here are character-oriented methods that no longer exist.
-        s, i = p.b, 0
-        while i < len(s):
-            progress = i
-            if s[i] in (' ', '\t', '\n'):
-                i += 1
-            elif self.startsComment(s, i):
-                i = self.skipComment(s, i)
-            elif self.startsString(s, i):
-                i = self.skipString(s, i)
-            elif self.startsClass(s, i):
-                return 'class', self.sigStart, self.codeEnd
-            elif self.startsFunction(s, i):
-                return 'def', self.sigStart, self.codeEnd
-            elif self.startsId(s, i):
-                i = self.skipId(s, i)
+        trace = True and not g.unitTesting
+        prev_state = Python_ScanState()
+        lines = g.splitlines(p.b)
+        index = 0
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            if trace: g.trace(new_state)
+            if prev_state.in_context():
+                pass
             else:
-                i += 1
-            assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
+                m = self.starts_pattern.match(line)
+                if m:
+                    if trace: g.trace('FOUND', m.group(1))
+                    kind = m.group(1)
+                    end = self.skip_block(i, index, lines[i+1:], new_state)
+                    if end == -1:
+                        break
+                    else:
+                        return kind, index, end
+            prev_state = new_state
+            index += len(line)
         return None, -1, -1
+    #@+node:ekr.20161205052712.1: *4* py_i.skip_block
+    def skip_block(self, i, index, lines, prev_state):
+        '''Return the index of the end of the block at lines[i].'''
+        trace = True and not g.unitTesting
+        level = prev_state.level()
+        if trace: g.trace('===== level', level)
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            if trace: g.trace('new level', new_state.level(), 'line', line)
+            if (
+                not new_state.context and
+                not self.is_ws_line(line) and
+                new_state.level() < level
+            ):
+                return index
+            ###
+            # elif self.starts_block(i, lines, new_state, prev_state):
+                # return index
+            ### elif self.ends_block(line, new_state, prev_state, stack):
+            # elif new_state.level() < level:
+                # return index
+            # else:
+                # pass
+            prev_state = new_state
+            index += len(line)
+        return -1
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:

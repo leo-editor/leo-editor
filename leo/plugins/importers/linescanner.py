@@ -706,7 +706,7 @@ class Importer(object):
             if trace:
                 g.trace('%s indent_ws: %r line: %r parent: %s' % (
                 '*' * 20, indent_ws, line, parent.h))
-                g.printList(parent.v._import_lines)
+                g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return headline
     #@+node:ekr.20161108131153.13: *4* Stage 2: i.post_pass & helpers
