@@ -235,8 +235,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
-marks="ekr.20090529141856.4721,ekr.20090529141856.4722,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20090529141856.4723,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626093745.1"></v>
@@ -302,52 +302,9 @@ marks="ekr.20090529141856.4721,ekr.20090529141856.4722,"><vh>@file activeUnitTes
 <v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
-<v t="ekr.20090529141856.4721" a="M"><vh>@test c comment follows arg list</vh>
-<v t="ekr.20161204154822.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204154822.2"><vh>{</vh></v>
-</v>
-<v t="ekr.20161204155214.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204155214.2"><vh>{</vh></v>
-</v>
-<v t="ekr.20161204181353.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204181353.2"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181353.3"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-<v t="ekr.20161204181420.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204181420.2"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181420.3"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-<v t="ekr.20161204181500.9"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204181500.10"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181500.11"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-<v t="ekr.20161204181542.9"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows arg list</vh>
-<v t="ekr.20161204181542.10"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181542.11"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20090529141856.4722" a="M"><vh>@test c comment follows block delim</vh>
-<v t="ekr.20161204181337.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
-<v t="ekr.20161204181337.2"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181337.3"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-<v t="ekr.20161204181500.12"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
-<v t="ekr.20161204181500.13"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181500.14"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-<v t="ekr.20161204181542.12"><vh>@@file c:/leo.repo/leo-editor/leo/test/c comment follows block delim</vh>
-<v t="ekr.20161204181542.13"><vh>void aaa::bbb::doit</vh>
-<v t="ekr.20161204181542.14"><vh>bool aaa::bbb::dothat</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20090529141856.4723"><vh>@test c intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
+<v t="ekr.20090529141856.4722"><vh>@test c comment follows block delim</vh></v>
+<v t="ekr.20090529141856.4723" a="M"><vh>@test c intermixed blanks and tabs</vh></v>
 <v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
@@ -386,7 +343,13 @@ marks="ekr.20090529141856.4721,ekr.20090529141856.4722,"><vh>@file activeUnitTes
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
-<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh>
+<v t="ekr.20161204194355.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
+<v t="ekr.20161204194355.2"><vh></vh>
+<v t="ekr.20161204194355.3"><vh>{</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
@@ -1026,6 +989,7 @@ marks="ekr.20090529141856.4721,ekr.20090529141856.4722,"><vh>@file activeUnitTes
 <v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
 <v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
+<v t="ekr.20090529141856.4766"></v>
 <v t="ekr.20090529141856.4717"></v>
 </vnodes>
 <tnodes>
@@ -1460,7 +1424,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="14">
+<t tx="ekr.20070417092935" str_leo_pos="15">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1525,7 +1489,7 @@ suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 @language python
 </t>
 <t tx="ekr.20090529141856.4717"></t>
-<t tx="ekr.20090529141856.4718">if 1:
+<t tx="ekr.20090529141856.4718">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1558,7 +1522,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1567,11 +1531,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4719">if 1:
+<t tx="ekr.20090529141856.4719">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1606,7 +1570,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1615,11 +1579,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4721">if 1:
+<t tx="ekr.20090529141856.4721">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1657,7 +1621,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1666,11 +1630,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1: # Delete children 
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4722">if 1:
+<t tx="ekr.20090529141856.4722">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1708,7 +1672,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1717,11 +1681,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4723">if 1:
+<t tx="ekr.20090529141856.4723">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1746,11 +1710,11 @@ aaa::bbb::doit
 
 '''
 table = (
-    'aaa::bbb::doit',
+    'void aaa::bbb::doit',
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 0:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1759,11 +1723,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4724">if 1:
+<t tx="ekr.20090529141856.4724">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1792,7 +1756,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1801,11 +1765,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4725">if 1:
+<t tx="ekr.20090529141856.4725">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1832,7 +1796,7 @@ table = (
 )
 try:
     ic.cUnitTest(p,s=s,showTree=True)
-    if 1:
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -1841,11 +1805,11 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4726">if 1:
+<t tx="ekr.20090529141856.4726">if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -1880,7 +1844,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -2181,9 +2145,9 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 1:
+    if 0:
         p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4771">import sys
 
@@ -8862,8 +8826,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161204154822.1"></t>
-<t tx="ekr.20161204154822.2"></t>
 <t tx="ekr.20161204154852.10">&lt;?php
 @others
 @language php
@@ -8877,8 +8839,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161204155214.1"></t>
-<t tx="ekr.20161204155214.2"></t>
 <t tx="ekr.20161204155218.25">&lt;?php
 @others
 @language php
@@ -8892,173 +8852,26 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161204181337.1">@others
-@language c
+<t tx="ekr.20161204194355.1">/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+public final class AdminPermission extends BasicPermission
+@others
+@language java
 @tabwidth -4
 </t>
-<t tx="ekr.20161204181337.2">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181337.3">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) 
-{
-    return true;
-} //  &lt;---------------------problem
-</t>
-<t tx="ekr.20161204181353.1">@others
-@language c
-@tabwidth -4
-</t>
-<t tx="ekr.20161204181353.2">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181353.3">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) //  &lt;---------------------problem
-{
-    return true;
+<t tx="ekr.20161204194355.2">{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    public AdminPermission()
+    @others
 }
 </t>
-<t tx="ekr.20161204181420.1">@others
-@language c
-@tabwidth -4
-</t>
-<t tx="ekr.20161204181420.2">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
+<t tx="ekr.20161204194355.3">{
+    super("AdminPermission");
 }
-
-@others
-</t>
-<t tx="ekr.20161204181420.3">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) //  &lt;---------------------problem
-{
-    return true;
-}
-</t>
-<t tx="ekr.20161204181500.10">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181500.11">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) //  &lt;---------------------problem
-{
-    return true;
-}
-</t>
-<t tx="ekr.20161204181500.12">@others
-@language c
-@tabwidth -4
-</t>
-<t tx="ekr.20161204181500.13">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181500.14">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) 
-{
-    return true;
-} //  &lt;---------------------problem
-</t>
-<t tx="ekr.20161204181500.9">@others
-@language c
-@tabwidth -4
-</t>
-<t tx="ekr.20161204181542.10">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181542.11">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) //  &lt;---------------------problem
-{
-    return true;
-}
-</t>
-<t tx="ekr.20161204181542.12">@others
-@language c
-@tabwidth -4
-</t>
-<t tx="ekr.20161204181542.13">void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-@others
-</t>
-<t tx="ekr.20161204181542.14">bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) 
-{
-    return true;
-} //  &lt;---------------------problem
-</t>
-<t tx="ekr.20161204181542.9">@others
-@language c
-@tabwidth -4
 </t>
 </tnodes>
 </leo_file>

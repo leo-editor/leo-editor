@@ -104,7 +104,14 @@ class C_Importer(Importer):
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
         if self.headline: h = self.headline
-        child = self.create_child_node(target.p, line, h)
+        if new_state.level() > prev_state.level():
+            child = self.create_child_node(target.p, line, h)
+        else:
+            # We may not have seen the { yet, so adjust.
+            # Without this, the new block becomes a child of the preceding.
+            new_state = C_ScanState()
+            new_state.curlies = prev_state.curlies + 1
+            child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
         if trace: g.trace('=====', repr(line))
         if trace and trace_stack: g.printList(stack)
