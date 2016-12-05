@@ -235,8 +235,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20090529141856.4723,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626093745.1"></v>
@@ -340,18 +340,12 @@ marks="ekr.20090529141856.4723,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
 <v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090529141856.4770" a="M"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4773" a="M"><vh>@test from BundleException.java</vh></v>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
-<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
-<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh>
-<v t="ekr.20161204194355.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
-<v t="ekr.20161204194355.2"><vh></vh>
-<v t="ekr.20161204194355.3"><vh>{</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 </v>
 <v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
@@ -989,8 +983,8 @@ marks="ekr.20090529141856.4723,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
 <v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"></v>
 <v t="ekr.20090529141856.4717"></v>
+<v t="ekr.20090529141856.4766"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2035,8 +2029,7 @@ finally:
 <t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
 </t>
 <t tx="ekr.20090529141856.4766"></t>
-<t tx="ekr.20090529141856.4767">if 0:
-    # The preamble...
+<t tx="ekr.20090529141856.4767">if 0: # Preamble...
     g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -2098,8 +2091,7 @@ if sys.platform.lower().startswith('win'):
 
     c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
 </t>
-<t tx="ekr.20090529141856.4770">if 0:
-    # The preamble...
+<t tx="ekr.20090529141856.4770">if 1: # Preamble...
     g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -2132,11 +2124,12 @@ public final class AdminPermission extends BasicPermission
 }
 '''
 table = (
-    ### Not ready.  Need to move def line into body.
+    'public final class AdminPermission extends BasicPermission',
+    'public AdminPermission',
 )
 try:
     ic.javaUnitTest(p,s=s,showTree=True)
-    if 0: # Not ready
+    if 1: # Check structure
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
@@ -2145,7 +2138,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 0: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -2165,6 +2158,22 @@ if sys.platform.lower().startswith('win'):
 <t tx="ekr.20090529141856.4773">@language python
 @tabwidth 8
     # Must be in this node when run externally.
+    
+if 1: # Preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.java
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.java)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 /*
@@ -2215,9 +2224,24 @@ public class BundleException extends Exception {
 }
 
 '''
-
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
+table = (
+    'public class BundleException extends Exception',
+    'public BundleException',
+)
+try:
+    ic.javaUnitTest(p,s=s,showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0: # Delete children
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4774">@language python
 </t>
@@ -8851,27 +8875,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161204194355.1">/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-public final class AdminPermission extends BasicPermission
-@others
-@language java
-@tabwidth -4
-</t>
-<t tx="ekr.20161204194355.2">{
-    /**
-     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
-     */
-    public AdminPermission()
-    @others
-}
-</t>
-<t tx="ekr.20161204194355.3">{
-    super("AdminPermission");
-}
 </t>
 </tnodes>
 </leo_file>
