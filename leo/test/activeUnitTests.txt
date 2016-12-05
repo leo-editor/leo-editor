@@ -13826,8 +13826,8 @@ if sys.platform.lower().startswith('win'):
 
     c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
 #@+node:ekr.20090529141856.4770: *6* @test from AdminPermission.java
-if 1: # Preamble...
-    g.cls()
+if 0: # Preamble...
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13873,16 +13873,100 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0: # Delete children
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20161205044647.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205044647.2: *8* public final class AdminPermission extends BasicPermission
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new <tt>AdminPermission</tt> object.
+     */
+    @others
+}
+#@+node:ekr.20161205044647.3: *9* public AdminPermission()
+public AdminPermission()
+{
+    super("AdminPermission");
+}
+#@+node:ekr.20161205044930.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205044930.2: *8* public final class AdminPermission extends BasicPermission
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new <tt>AdminPermission</tt> object.
+     */
+    @others
+}
+#@+node:ekr.20161205044930.3: *9* public AdminPermission
+public AdminPermission()
+{
+    super("AdminPermission");
+}
+#@+node:ekr.20161205045048.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045048.2: *8* public final class AdminPermission extends BasicPermission
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new <tt>AdminPermission</tt> object.
+     */
+    @others
+}
+#@+node:ekr.20161205045048.3: *9* public AdminPermission
+public AdminPermission()
+{
+    super("AdminPermission");
+}
+#@+node:ekr.20161205045458.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045458.2: *8* public final class AdminPermission extends BasicPermission
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new <tt>AdminPermission</tt> object.
+     */
+    @others
+}
+#@+node:ekr.20161205045458.3: *9* public AdminPermission
+public AdminPermission()
+{
+    super("AdminPermission");
+}
 #@+node:ekr.20090529141856.4773: *6* @test from BundleException.java
 @language python
 @tabwidth 8
     # Must be in this node when run externally.
     
-if 1: # Preamble...
-    g.cls()
+if 0: # Preamble...
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13961,12 +14045,12 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0: # Delete children
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4767: *6* @test java interface test1
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13994,7 +14078,7 @@ try:
     ic.javaUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
-        assert root.h.endswith('java interface test1'), root.h
+        assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
         for i, h in enumerate(table):
             assert p2.h == h, (p2.h, h)
@@ -14003,17 +14087,92 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 #@+node:ekr.20090529141856.4768: *6* @test java interface test2
+if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.java
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.java)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
 s = '''\
 interface Bicycle {
 void changeCadence(int newValue);
 void changeGear(int newValue);
 }
 '''
-
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
+table = (
+    'interface Bicycle',
+)
+try:
+    ic.javaUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20161205045250.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045250.2: *8* interface Bicycle
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+#@+node:ekr.20161205045314.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045314.2: *8* interface Bicycle
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+#@+node:ekr.20161205045356.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045356.2: *8* interface Bicycle
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+#@+node:ekr.20161205045442.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045442.2: *8* interface Bicycle
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+#@+node:ekr.20161205045458.9: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
+@others
+@language java
+@tabwidth -4
+#@+node:ekr.20161205045458.10: *8* interface Bicycle
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
 #@+node:ekr.20090529141856.4774: *5* Javascript tests
 @language python
 #@+node:ekr.20090529141856.4775: *6* Problems

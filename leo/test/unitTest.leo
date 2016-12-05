@@ -62,7 +62,7 @@
 <v t="ekr.20161202055041.23"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20161204041257.2"><vh>@gnxs</vh></v>
+<v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
 <v t="ekr.20161202055041.37"><vh>@gnxs</vh></v>
@@ -96,10 +96,10 @@
 <v t="ekr.20161124021953.215"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20161130053017.1"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
-<v t="ekr.20161130061836.1"><vh>@gnxs</vh></v>
+<v t="ekr.20161205045751.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20161204034537.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20161204045018.2"><vh>@gnxs</vh></v>
+<v t="ekr.20161205045751.2"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -205,8 +205,10 @@
 <v t="ekr.20150626101842.1"><vh>@auto unittest/at-auto-md-line-number-test.md</vh></v>
 <v t="ekr.20090704085350.5056"><vh>@auto unittest/at-auto-test.py</vh></v>
 <v t="ekr.20110610122533.3407"><vh>@auto unittest/at-auto-unit-test.py</vh></v>
+<v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.py</vh></v>
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh></v>
+<v t="ekr.20161130041921.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
 <v t="ekr.20150626093745.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.txt</vh></v>
 <v t="ekr.20160403143048.1"><vh>@clean unittest/at-clean-line-number-test.c</vh>
 <v t="ekr.20160403143048.2"><vh>spam</vh></v>
@@ -235,13 +237,12 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
-<v t="ekr.20150626093745.1"></v>
-<v t="ekr.20161130041921.1"><vh>@auto-rst unittest/at-auto-rst-line-number-test.py</vh></v>
-<v t="ekr.20161027183259.1"><vh>Recent</vh>
+<v t="ekr.20161130061808.1"><vh>Copies</vh>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+</v>
+<v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
 <v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
 <v t="ekr.20150919073819.1"><vh>copy</vh></v>
@@ -286,9 +287,9 @@ marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20161130061808.1"><vh>Copies</vh>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20161130051657.1"><vh>@@@test ctext</vh></v>
+<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
+<v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -304,7 +305,7 @@ marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
 <v t="ekr.20090529141856.4722"><vh>@test c comment follows block delim</vh></v>
-<v t="ekr.20090529141856.4723" a="M"><vh>@test c intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4723"><vh>@test c intermixed blanks and tabs</vh></v>
 <v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
@@ -342,10 +343,47 @@ marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"
 <v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
-<v t="ekr.20090529141856.4770" a="M"><vh>@test from AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4773" a="M"><vh>@test from BundleException.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh>
+<v t="ekr.20161205044647.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
+<v t="ekr.20161205044647.2"><vh>public final class AdminPermission extends BasicPermission</vh>
+<v t="ekr.20161205044647.3"><vh>public AdminPermission()</vh></v>
+</v>
+</v>
+<v t="ekr.20161205044930.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
+<v t="ekr.20161205044930.2"><vh>public final class AdminPermission extends BasicPermission</vh>
+<v t="ekr.20161205044930.3"><vh>public AdminPermission</vh></v>
+</v>
+</v>
+<v t="ekr.20161205045048.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
+<v t="ekr.20161205045048.2"><vh>public final class AdminPermission extends BasicPermission</vh>
+<v t="ekr.20161205045048.3"><vh>public AdminPermission</vh></v>
+</v>
+</v>
+<v t="ekr.20161205045458.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java</vh>
+<v t="ekr.20161205045458.2"><vh>public final class AdminPermission extends BasicPermission</vh>
+<v t="ekr.20161205045458.3"><vh>public AdminPermission</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
-<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
+<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh>
+<v t="ekr.20161205045250.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/java interface test2</vh>
+<v t="ekr.20161205045250.2"><vh>interface Bicycle</vh></v>
+</v>
+<v t="ekr.20161205045314.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/java interface test2</vh>
+<v t="ekr.20161205045314.2"><vh>interface Bicycle</vh></v>
+</v>
+<v t="ekr.20161205045356.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/java interface test2</vh>
+<v t="ekr.20161205045356.2"><vh>interface Bicycle</vh></v>
+</v>
+<v t="ekr.20161205045442.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/java interface test2</vh>
+<v t="ekr.20161205045442.2"><vh>interface Bicycle</vh></v>
+</v>
+<v t="ekr.20161205045458.9"><vh>@@file c:/leo.repo/leo-editor/leo/test/java interface test2</vh>
+<v t="ekr.20161205045458.10"><vh>interface Bicycle</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
@@ -978,13 +1016,6 @@ marks="ekr.20090529141856.4723,ekr.20090529141856.4770,ekr.20090529141856.4773,"
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
-<v t="ekr.20161130051657.1"><vh>@@@test ctext</vh></v>
-<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
-</v>
-<v t="ekr.20090529141856.4717"></v>
-<v t="ekr.20090529141856.4766"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1418,7 +1449,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="15">
+<t tx="ekr.20070417092935" str_leo_pos="6">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2030,7 +2061,7 @@ finally:
 </t>
 <t tx="ekr.20090529141856.4766"></t>
 <t tx="ekr.20090529141856.4767">if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2058,7 +2089,7 @@ try:
     ic.javaUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
-        assert root.h.endswith('java interface test1'), root.h
+        assert root.h.startswith('@@'), root.h
         p2 = root.firstChild()
         for i, h in enumerate(table):
             assert p2.h == h, (p2.h, h)
@@ -2067,17 +2098,47 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
-<t tx="ekr.20090529141856.4768">s = '''\
+<t tx="ekr.20090529141856.4768">if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.java
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.java)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
+s = '''\
 interface Bicycle {
 void changeCadence(int newValue);
 void changeGear(int newValue);
 }
 '''
-
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
+table = (
+    'interface Bicycle',
+)
+try:
+    ic.javaUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for i, h in enumerate(table):
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4769">import sys
 
@@ -2091,8 +2152,8 @@ if sys.platform.lower().startswith('win'):
 
     c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
 </t>
-<t tx="ekr.20090529141856.4770">if 1: # Preamble...
-    g.cls()
+<t tx="ekr.20090529141856.4770">if 0: # Preamble...
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2138,7 +2199,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0: # Delete children
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -2159,8 +2220,8 @@ if sys.platform.lower().startswith('win'):
 @tabwidth 8
     # Must be in this node when run externally.
     
-if 1: # Preamble...
-    g.cls()
+if 0: # Preamble...
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2239,7 +2300,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0: # Delete children
+    if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -4450,7 +4511,6 @@ a = b &lt;&lt; c &gt;&gt; d
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
-<t tx="ekr.20161027183259.1"></t>
 <t tx="ekr.20161103015908.1"></t>
 <t tx="ekr.20161103015940.1">s = '''\
 #!/usr/bin/perl
@@ -7308,13 +7368,6 @@ See what we did there - one more '#' - this is a subnode.
 
 </t>
 <t tx="ekr.20161130061808.1"></t>
-<t tx="ekr.20161130061836.1">gnx: ekr.20161130061740.19
-unl: A level one node
-gnx: ekr.20161130061740.20
-unl: Another level one node
-gnx: ekr.20161130061740.21
-unl: Another level one node--&gt;A level 2 node
-</t>
 <t tx="ekr.20161202053644.21">&lt;?php
 @others
 @language php
@@ -7811,7 +7864,6 @@ section 3, line 1
 
 </t>
 <t tx="ekr.20161204040924.1"></t>
-<t tx="ekr.20161204041257.2"></t>
 <t tx="ekr.20161204041306.21">&lt;?php
 @others
 @language php
@@ -8823,7 +8875,6 @@ unl: section 1
 gnx: ekr.20161204044844.3
 unl: section 2
 </t>
-<t tx="ekr.20161204045018.2"></t>
 <t tx="ekr.20161204045827.15">&lt;?php
 @others
 @language php
@@ -8876,5 +8927,143 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20161205044647.1">/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205044647.2">public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    @others
+}
+</t>
+<t tx="ekr.20161205044647.3">public AdminPermission()
+{
+    super("AdminPermission");
+}
+</t>
+<t tx="ekr.20161205044930.1">/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205044930.2">public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    @others
+}
+</t>
+<t tx="ekr.20161205044930.3">public AdminPermission()
+{
+    super("AdminPermission");
+}
+</t>
+<t tx="ekr.20161205045048.1">/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045048.2">public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    @others
+}
+</t>
+<t tx="ekr.20161205045048.3">public AdminPermission()
+{
+    super("AdminPermission");
+}
+</t>
+<t tx="ekr.20161205045250.1">@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045250.2">interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+</t>
+<t tx="ekr.20161205045314.1">@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045314.2">interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+</t>
+<t tx="ekr.20161205045356.1">@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045356.2">interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+</t>
+<t tx="ekr.20161205045442.1">@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045442.2">interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+</t>
+<t tx="ekr.20161205045458.1">/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045458.10">interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+</t>
+<t tx="ekr.20161205045458.2">public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    @others
+}
+</t>
+<t tx="ekr.20161205045458.3">public AdminPermission()
+{
+    super("AdminPermission");
+}
+</t>
+<t tx="ekr.20161205045458.9">@others
+@language java
+@tabwidth -4
+</t>
+<t tx="ekr.20161205045751.1">gnx: ekr.20161205045639.17
+unl: A level one node
+gnx: ekr.20161205045639.18
+unl: Another level one node
+gnx: ekr.20161205045639.19
+unl: Another level one node--&gt;A level 2 node
+</t>
+<t tx="ekr.20161205045751.2"></t>
+<t tx="ekr.20161205045751.3"></t>
 </tnodes>
 </leo_file>
