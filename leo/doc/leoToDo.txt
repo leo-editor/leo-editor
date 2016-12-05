@@ -9,8 +9,6 @@
 
 ** Posts: what you missed by not following leo-editor
 
-- Does pylint -a end properly??
-
 * Aha: use separate windows to compare code.
   Seems much better than separate body panes.
 
