@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090717092906.12765: * @file leoVersion.py
+#@+node:tbrown.20161128214642.2: * @file leoVersion.py
 '''
 A module for computing version-related info.
 
@@ -24,6 +24,9 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version.
 #@-<< version dates >>
 import leo.core.leoGlobals as g
 import json
+import shlex
+import subprocess
+import sys
 testing = False
 static_date = 'October 22, 2016' # Emergency fallback.
 version = "5.4" # Always used.
@@ -37,9 +40,6 @@ def create_commit_timestamp_json(after=False):
     so get_version_from_git should always succeed.
     '''
     trace = False and not g.unitTesting
-    import shlex
-    import subprocess
-    import sys
     commit, date = get_version_from_git(short=False)
     if commit:
         base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
@@ -56,46 +56,36 @@ def create_commit_timestamp_json(after=False):
         f.flush()
         f.close()
         # Add commit_timestamp.json so it doesn't appear dirty.
-        p = subprocess.Popen(
-            shlex.split('git add leo/core/commit_timestamp.json'),
-            stdout=subprocess.PIPE,
-            # stderr=None if trace else subprocess.PIPE,
-                # subprocess.DEVNULL is Python 3 only.
-            shell=sys.platform.startswith('win'),
-        )
-        out, err = p.communicate()
+        out = git_output('git add leo/core/commit_timestamp.json')
         if trace: g.trace(out)
     else:
         g.trace('can not create commit_timestamp.json')
+#@+node:tbrown.20161128220334.1: ** git_output
+def git_output(cmd):
+    """return output from a git command"""
+    trace = False
+    return g.toUnicode(subprocess.Popen(
+        shlex.split(cmd),
+        stdout=subprocess.PIPE,
+        stderr=None if trace else subprocess.PIPE,
+            # subprocess.DEVNULL is Python 3 only.
+        shell=sys.platform.startswith('win'),
+    ).communicate()[0])
 #@+node:ekr.20161016063005.1: ** get_version_from_git
 def get_version_from_git(short=True):
     trace = False
-    import shlex
-    import re
-    import subprocess
-    import sys
     try:
         is_windows = sys.platform.startswith('win')
-        p = subprocess.Popen(
-            shlex.split('git log -1 --date=default-local'),
-            stdout=subprocess.PIPE,
-            stderr=None if trace else subprocess.PIPE,
-                # subprocess.DEVNULL is Python 3 only.
-            shell=is_windows,
-        )
-        out, err = p.communicate()
-        out = g.toUnicode(out)
-        if trace: g.trace(out)
-        m = re.search('commit (.*)\n', out)
-        commit = m.group(1).strip() if m else ''
+        commit = git_output('git rev-parse HEAD')
+        date = git_output('git show -s --format="%cD" '+commit)
+        commit = g.toUnicode(commit)
+        if trace: g.trace(commit)
         if commit and short:
             commit = commit[:8]
-        m = re.search('Date: (.*)\n', out)
-        date = m.group(1).strip() if m else ''
         if trace: g.trace(commit, date)
         return commit, date
     except Exception:
-        # We are using an official release.
+        # We are using a non .git release.
         # g.es_exception()
         return None, None
 #@+node:ekr.20161016063719.1: ** get_version_from_json
@@ -112,7 +102,7 @@ def get_version_from_json(short=True):
             # The legacy pre-commit bash file writes 'asctime' and 'timestamp' keys.
             date = d.get('date') or d.get('asctime')
             if commit and short:
-                commit = commit[:8]
+                commit = commit[:8 + (6 if commit.startswith('after ') else 0)]
             return commit, date
         except Exception:
             g.es_exception()
