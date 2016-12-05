@@ -39,7 +39,7 @@ def main(files, verbose):
     t1 = time.time()
     for fn in files:
         run(fn, verbose)
-        if not verbose:
+        if not verbose and sys.platform.startswith('win'):
             print('.',sep='', end='')
     t2 = time.time()
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
