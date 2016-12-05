@@ -64,13 +64,13 @@ def create_commit_timestamp_json(after=False):
 def git_output(cmd):
     """return output from a git command"""
     trace = False
-    return subprocess.Popen(
+    return g.toUnicode(subprocess.Popen(
         shlex.split(cmd),
         stdout=subprocess.PIPE,
         stderr=None if trace else subprocess.PIPE,
             # subprocess.DEVNULL is Python 3 only.
         shell=sys.platform.startswith('win'),
-    ).communicate()[0]
+    ).communicate()[0])
 #@+node:ekr.20161016063005.1: ** get_version_from_git
 def get_version_from_git(short=True):
     trace = False
