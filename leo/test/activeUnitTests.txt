@@ -7734,12 +7734,12 @@ finally:
 @language python
 def spam:
     pass
-#@+node:ekr.20150626101920.1: *6* @@@test find_file_line: @auto-md
+#@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = False
+    trace = True
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
     assert root
@@ -7820,7 +7820,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20150626093653.1: *6* @@@test find_file_line: @auto-rst
+#@+node:ekr.20150626093653.1: *6* @test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')

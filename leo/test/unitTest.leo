@@ -71,7 +71,7 @@
 <v t="ekr.20161202055041.30"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161204044957.9"><vh>@gnxs</vh></v>
+<v t="ekr.20161205195722.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -237,59 +237,11 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20150626093653.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130061808.1"><vh>Copies</vh>
 <v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
-</v>
-<v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
-<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
-<v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
-<v t="ekr.20150919073819.1"><vh>copy</vh></v>
-<v t="ekr.20140206132559.4560"><vh>before</vh>
-<v t="ekr.20161112061414.1"><vh>class aClass</vh>
-<v t="ekr.20161112061414.2"><vh>__init__</vh></v>
-<v t="ekr.20161112061414.3"><vh>spam</vh></v>
-</v>
-<v t="ekr.20161112061414.4"><vh>bClass = aClass</vh></v>
-</v>
-<v t="ekr.20140206132559.4564"><vh>expected</vh>
-<v t="ekr.20150919074321.1"><vh>class aClass</vh>
-<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074321.3"><vh>spam</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20150919074122.1"><vh>@@@test ic.parse-body mypy</vh>
-<v t="ekr.20150919074220.1"><vh>copy</vh></v>
-<v t="ekr.20150919074132.1"><vh>before</vh>
-<v t="ekr.20161112061406.1"><vh>class TypeJoinVisitor</vh></v>
-</v>
-<v t="ekr.20150919074154.1"><vh>expected</vh>
-<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
-<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
-<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
-<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
-<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
-<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
-<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
-<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
-<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
-<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
-<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
-<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
-<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
-<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
-<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
-<v t="ekr.20150919074211.16"><vh>join</vh></v>
-<v t="ekr.20150919074211.17"><vh>default</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20161130051657.1"><vh>@@@test ctext</vh></v>
-<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20150626101920.1"><vh>@@@test find_file_line: @auto-md</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1003,8 +955,48 @@
 </v>
 <v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
+<v t="ekr.20140206132559.4567"><vh>@@@test ic.parse-body</vh>
+<v t="ekr.20150919073819.1"><vh>copy</vh></v>
+<v t="ekr.20140206132559.4560"><vh>before</vh>
+<v t="ekr.20161112061414.1"><vh>class aClass</vh>
+<v t="ekr.20161112061414.2"><vh>__init__</vh></v>
+<v t="ekr.20161112061414.3"><vh>spam</vh></v>
+</v>
+<v t="ekr.20161112061414.4"><vh>bClass = aClass</vh></v>
+</v>
+<v t="ekr.20140206132559.4564"><vh>expected</vh>
+<v t="ekr.20150919074321.1"><vh>class aClass</vh>
+<v t="ekr.20150919074321.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074321.3"><vh>spam</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20150919074122.1"><vh>@@@test ic.parse-body mypy</vh>
+<v t="ekr.20150919074220.1"><vh>copy</vh></v>
+<v t="ekr.20150919074132.1"><vh>before</vh>
+<v t="ekr.20161112061406.1"><vh>class TypeJoinVisitor</vh></v>
+</v>
+<v t="ekr.20150919074154.1"><vh>expected</vh>
+<v t="ekr.20150919074211.1"><vh>class TypeJoinVisitor</vh>
+<v t="ekr.20150919074211.2"><vh>__init__</vh></v>
+<v t="ekr.20150919074211.3"><vh>visit_unbound_type</vh></v>
+<v t="ekr.20150919074211.4"><vh>visit_union_type</vh></v>
+<v t="ekr.20150919074211.5"><vh>visit_error_type</vh></v>
+<v t="ekr.20150919074211.6"><vh>visit_type_list</vh></v>
+<v t="ekr.20150919074211.7"><vh>visit_any</vh></v>
+<v t="ekr.20150919074211.8"><vh>visit_void</vh></v>
+<v t="ekr.20150919074211.9"><vh>visit_none_type</vh></v>
+<v t="ekr.20150919074211.10"><vh>visit_erased_type</vh></v>
+<v t="ekr.20150919074211.11"><vh>visit_type_var</vh></v>
+<v t="ekr.20150919074211.12"><vh>visit_instance</vh></v>
+<v t="ekr.20150919074211.13"><vh>visit_callable_type</vh></v>
+<v t="ekr.20150919074211.14"><vh>visit_overloaded</vh></v>
+<v t="ekr.20150919074211.15"><vh>visit_tuple_type</vh></v>
+<v t="ekr.20150919074211.16"><vh>join</vh></v>
+<v t="ekr.20150919074211.17"><vh>default</vh></v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20161204041557.1"><vh>All other tests</vh>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
@@ -1015,6 +1007,17 @@
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20161204040924.1" a="E"><vh>Failing unit tests</vh>
+<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
+</v>
+<v t="ekr.20161130051657.1" a="M"><vh>@test ctext</vh>
+<v t="ekr.20161205200332.1"><vh>@file c:/leo.repo/leo-editor/leo/test/ctext</vh></v>
+</v>
+<v t="ekr.20150626093653.1" a="M"><vh>@test find_file_line: @auto-rst</vh></v>
+<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1449,7 +1452,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="6">
+<t tx="ekr.20070417092935" str_leo_pos="9,0">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3931,7 +3934,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = False
+    trace = True
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
     assert root
@@ -7299,6 +7302,15 @@ EOT;
 
 c.importCommands.phpUnitTest(p,s=s,showTree=True)
 </t>
+<t tx="ekr.20161130041921.1">#section 1
+Sec 1.
+
+#section 2
+Sec 2.
+@language python
+@tabwidth -4
+@ignore
+</t>
 <t tx="ekr.20161130042452.50">&lt;?php
 @others
 @language php
@@ -8870,11 +8882,6 @@ section 1, line 2
 The next section is empty. It must not be deleted.
 
 </t>
-<t tx="ekr.20161204044957.9">gnx: ekr.20161204044844.2
-unl: section 1
-gnx: ekr.20161204044844.3
-unl: section 2
-</t>
 <t tx="ekr.20161204045827.15">&lt;?php
 @others
 @language php
@@ -9065,5 +9072,10 @@ unl: Another level one node--&gt;A level 2 node
 </t>
 <t tx="ekr.20161205045751.2"></t>
 <t tx="ekr.20161205045751.3"></t>
+<t tx="ekr.20161205195722.1">gnx: ekr.20161205143434.5
+unl: section 1
+gnx: ekr.20161205143434.6
+unl: section 2
+</t>
 </tnodes>
 </leo_file>
