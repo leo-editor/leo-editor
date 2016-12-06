@@ -1,119 +1,123 @@
-#<< what c2py does >>
-@
-c2py converts C or C++ text into python text. The conversion is not complete.
-Nevertheless, c2py eliminates much of the tedious text manipulation that would
-otherwise be required.
 
-The following is a list of the translations performed by convertCodeList:
 
-I.  Prepass
+import string
 
-These translations happen before removing all curly braces.
+# When using c2py as a script to translate entire files,\
+# use convertCFileToPython().
+# When using c2py within Leo, use convertCurrentTree().
 
-Suppose we are translating:
+# Please set user data in the < < specify user types > > section.
 
-    aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-    {
-        body
-    }
+# c2py converts C or C++ text into python text. The conversion is not complete.
+# Nevertheless, c2py eliminates much of the tedious text manipulation that would
+# otherwise be required.
+# 
+# The following is a list of the translations performed by convertCodeList:
+# 
+# I.  Prepass
+# 
+# These translations happen before removing all curly braces.
+# 
+# Suppose we are translating:
+# 
+#     aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
+#     {
+#         body
+#     }
+# 
+# 1. Translates the function prototype, i.e., translates:
+# 
+#     aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
+# to:
+#     def aMethod(v1,...vn):
+# 
+# As a special case, c2py translates:
+# 
+#     aTypeSpec aClass::aClass(t1 v1,...,tn vn)
+# to:
+#     aClass.__init__(t1 v1,...,tn vn)
+# 
+# Yes, I know, aClass.__init__ isn't proper Python, but retaining the class name is useful.
+# 
+# 2. Let t denote any member of typeList or classList.
+# 
+#     a) Removes all casts of the form (t) or (t*) or (t**), etc.
+#     b) Converts t x, t *x, t **x, etc. to x.
+#     c) Converts x = new t(...) to x = t(...)
+#     d) For all i in ivarsDict[aClass] converts this -> i to self.i
+#     e) For all i in ivarsDict[aClass] converts i to self.i
+# 
+# 3. Converts < < x > > = to @c.  This Leo-specific translation is not done when translating files.
+# 
+# II.  Main Pass
+# 
+# This pass does the following simple translations everywhere except in comments and strings.
+# 
+# Changes all -> to .
+# Changes all this.self to self (This corrects problems during the prepass.)
+# Removes all curly braces
+# Changes all #if to if
+# Changes all else if to elif
+# Changes all #else to else:
+# Changes all else to else:
+# Removes all #endif
+# Changes all && to and
+# Changes all || to or
+# Changes all TRUE to True
+# Changes all FALSE to False
+# Changes all NULL to None
+# Changes all this to self
+# Changes all @code to @c.  This Leo-specific translation is not done when translating files.
+# 
+# III.  Complex Pass
+# 
+# This pass attempts more complex translations.
+# 
+# Converts if ( x ) to if x:
+# Converts elif ( x ) to elif x:
+# Converts while ( x ) to while x:
+# Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
+# 
+# IV.  Final Pass
+# 
+# This pass completes the translation.
+# 
+# Removes all semicolons.
+# Removes @c if it starts the text.  This Leo-specific translation is not done when translating files.
+# Removes all blank lines.
+# Removes excess whitespace from all lines, leaving leading whitespace unchanged.
+# Replaces C/C++ comments by Python comments.
+# Removes trailing whitespace from all lines.
+# 
+# c2py is straightforward. The speed of c2py is unimportant. We don't care about
+# the memory used because we translate only small pieces of text at a time.
+# 
+# We can do body[i:j] = x, regardless of len(x). We can also do del body[i:j] to
+# delete characters.
+# 
+# We scan repeatedly through the text. Using many passes greatly simplifies the
+# code and does not slow down c2py significantly.
+# 
+# No scans are done within strings or comments. The idiom to handle such scans is
+# the following:
+# 
+# def someScan(body):
+#     i = 0
+#     while i < body(len):
+#         if isStringOrComment(body,i):
+#             i = skipStringOrComment(body,i)
+#         elif << found what we are looking for ? >> :
+#             << convert what we are looking for, setting i >>
+#         else: i += 1
+# 
+# That's about all there is to it.  The code was remarkably easy to write and seems clear to me.
+# Please change the following lists so they contain the types and classes
+# used by your program.
 
-1. Translates the function prototype, i.e., translates:
-
-    aTypeSpec aClass::aMethod(t1 v1,...,tn vn)
-to:
-    def aMethod(v1,...vn):
-
-As a special case, c2py translates:
-
-    aTypeSpec aClass::aClass(t1 v1,...,tn vn)
-to:
-    aClass.__init__(t1 v1,...,tn vn)
-
-Yes, I know, aClass.__init__ isn't proper Python, but retaining the class name is useful.
-
-2. Let t denote any member of typeList or classList.
-
-    a) Removes all casts of the form (t) or (t*) or (t**), etc.
-    b) Converts t x, t *x, t **x, etc. to x.
-    c) Converts x = new t(...) to x = t(...)
-    d) For all i in ivarsDict[aClass] converts this -> i to self.i
-    e) For all i in ivarsDict[aClass] converts i to self.i
-
-3. Converts < < x > > = to @c.  This Leo-specific translation is not done when translating files.
-
-II.  Main Pass
-
-This pass does the following simple translations everywhere except in comments and strings.
-
-Changes all -> to .
-Changes all this.self to self (This corrects problems during the prepass.)
-Removes all curly braces
-Changes all #if to if
-Changes all else if to elif
-Changes all #else to else:
-Changes all else to else:
-Removes all #endif
-Changes all && to and
-Changes all || to or
-Changes all TRUE to True
-Changes all FALSE to False
-Changes all NULL to None
-Changes all this to self
-Changes all @code to @c.  This Leo-specific translation is not done when translating files.
-
-III.  Complex Pass
-
-This pass attempts more complex translations.
-
-Converts if ( x ) to if x:
-Converts elif ( x ) to elif x:
-Converts while ( x ) to while x:
-Converts for ( x ; y ; z ) to for x SEMI y SEMI z:
-
-IV.  Final Pass
-
-This pass completes the translation.
-
-Removes all semicolons.
-Removes @c if it starts the text.  This Leo-specific translation is not done when translating files.
-Removes all blank lines.
-Removes excess whitespace from all lines, leaving leading whitespace unchanged.
-Replaces C/C++ comments by Python comments.
-Removes trailing whitespace from all lines.
-
-#<< theory of operation >>
-@ Strategy and Performance
-
-c2py is straightforward. The speed of c2py is unimportant. We don't care about
-the memory used because we translate only small pieces of text at a time.
-
-We can do body[i:j] = x, regardless of len(x). We can also do del body[i:j] to
-delete characters.
-
-We scan repeatedly through the text. Using many passes greatly simplifies the
-code and does not slow down c2py significantly.
-
-No scans are done within strings or comments. The idiom to handle such scans is
-the following:
-
-def someScan(body):
-    i = 0
-    while i < body(len):
-        if isStringOrComment(body,i):
-            i = skipStringOrComment(body,i)
-        elif << found what we are looking for ? >> :
-            << convert what we are looking for, setting i >>
-        else: i += 1
-
-That's about all there is to it.  The code was remarkably easy to write and seems clear to me.
-
-#<< specify user types >>
-@ Please change the following lists so they contain the types and classes used by your program.
-
-c2py removes all type definitions correctly; it converts
-    new aType(...)
-to
-    aType(...)
+# c2py removes all type definitions correctly; it converts
+    # new aType(...)
+# to
+    # aType(...)
 
 classList = [
     "vnode", "tnode", "Commands",
@@ -121,9 +125,11 @@ classList = [
 
 typeList = ["char", "void", "short", "long", "int", "double", "float"]
 
-@ Please change ivarsDict so it represents the instance variables (ivars) used by your program's classes.
+# Please change ivarsDict so it represents the instance variables (ivars)
+# used by your program's classes.
 
-ivarsDict is a dictionary used to translate ivar i of class c to self.i.  It also translates this->i to self.i.
+# ivarsDict is a dictionary used to translate ivar i of class c to self.i.
+# It also translates this->i to self.i.
 
 ivarsDict = {
     "atFile": [ "mCommands", "mErrors", "mStructureErrors",
@@ -148,8 +154,9 @@ ivarsDict = {
         "mMaxVnodeTag",
         "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
         "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode" ]}
-
-#<< define testData >>
+tabWidth = 4 # how many blanks in a tab.
+printFlag = False
+doLeoTranslations = True ; dontDoLeoTranslations = False
 testData = [ "\n@doc\n\
 This is a doc part: format, whilest, {};->.\n\
 <<\
@@ -196,8 +203,6 @@ void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
 {\n\
     mCommands -> pasteOutline();\n\
 }\n" ]
-
-#speedTest
 def speedTest(passes):
 
     import time
@@ -231,11 +236,6 @@ def speedTest(passes):
     print "speedTest done:"
     print "elapsed time:", time2-time1
     print "time/pass:", (time2-time1)/passes
-
-#leo1to2
-
-
-##leo1to2
 def leo1to2():
 
     import leo
@@ -243,8 +243,6 @@ def leo1to2():
     c=leoGlobals.top()
     v=c.currentVnode()
     convertLeo1to2(v,c)
-
-##convertLeo1to2
 def convertLeo1to2(v,c):
 
     after=v.nodeAfterTree()
@@ -257,8 +255,6 @@ def convertLeo1to2(v,c):
 
     c.Repaint() # for backward compatibility
     print "end of leo1to2"
-
-##convertStringLeo1to2
 def convertStringLeo1to2 (s):
 
     # print "convertStringLeo1to2:start\n", s
@@ -286,9 +282,9 @@ def convertStringLeo1to2 (s):
     global printFlag
     if printFlag: print "-----:\n", result
     return result
-
-##convertCodeList1to2
-@ We do _not_ replace @root by @file or insert @others as needed.  Inserting @others can be done easily enough by hand, and may take more global knowledge than we can reasonably expect to have.
+# We do _not_ replace @root by @file or insert @others as needed.
+# Inserting @others can be done easily enough by hand,
+# and may take more global knowledge than we can reasonably expect to have.
 
 def convertCodeList1to2(list):
 
@@ -297,14 +293,11 @@ def convertCodeList1to2(list):
     safeReplace(list, "@code", "@c")
     replaceSectionDefs(list)
     removeLeadingAtCode(list)
-
-#c2py entry points
 # We separate the processing into two parts,
 #
 # 1) a leo-aware driver that iterates over @file trees and
 # 2) a text-based part that processes one or more files or strings.
 
-##convertCurrentTree
 def convertCurrentTree():
 
     import c2py
@@ -313,8 +306,6 @@ def convertCurrentTree():
     c=leoGlobals.top()
     v = c.currentVnode()
     c2py.convertLeoTree(v,c)
-
-##convertLeoTree
 def convertLeoTree(v,c):
 
     after=v.nodeAfterTree()
@@ -326,8 +317,6 @@ def convertLeoTree(v,c):
         v=v.threadNext()
     c.Repaint() # for backward compatibility.
     print "end of c2py"
-
-##convertCFileToPython
 def convertCFileToPython(file):
 
     f=open(file, 'r')
@@ -339,8 +328,6 @@ def convertCFileToPython(file):
     s = convertCStringToPython(s, dontDoLeoTranslations )
     f.write(s)
     f.close()
-
-#convertCStringToPython & helpers (top level)
 def convertCStringToPython(s, leoFlag):
 
     # print "convertCStringToPython:start\n", s
@@ -376,8 +363,6 @@ def convertCStringToPython(s, leoFlag):
     global printFlag
     if printFlag: print "-----:\n", result
     return result
-
-##convertCodeList (main pattern function)
 def convertCodeList(list, firstPart, leoFlag):
     #first
     replace(list, "\r", None)
@@ -426,8 +411,6 @@ def convertCodeList(list, firstPart, leoFlag):
     replaceComments(list) # should follow all calls to safeReplace
     removeTrailingWs(list)
     safeReplace(list, "\t ", "\t") # happens when deleting declarations.
-
-##convertDocList
 def convertDocList(docList):
 
     # print "convertDocList:", docList
@@ -436,8 +419,6 @@ def convertDocList(docList):
         if match(docList, i, "\n"):
             i += 1
         docList[0:i] = list("@ ")
-
-##skipDocPart
 def skipDocPart(list, i):
 
     # print "skipDocPart", i
@@ -448,8 +429,6 @@ def skipDocPart(list, i):
             break
         else: i = skipPastLine(list, i)
     return i
-
-##skipCodePart
 def skipCodePart(codeList, i):
 
     # print "skipCodePart", i
@@ -468,11 +447,6 @@ def skipCodePart(codeList, i):
                 break
         else: i += 1
     return i
-
-#Scanning & Replacing...
-
-
-##convertLeadingBlanks
 def convertLeadingBlanks(list):
 
     global tabWidth
@@ -487,8 +461,6 @@ def convertLeadingBlanks(list):
                 i = i - tabWidth + 1
                 n = 0
         i = skipPastLine(list, i)
-
-##mungeAllFunctions
 def mungeAllFunctions(codeList):
     '''
     Scan for a '{' at the top level that is preceeded by ')'
@@ -520,8 +492,6 @@ def mungeAllFunctions(codeList):
             i = handlePossibleFunctionHeader(codeList,i,prevSemi,firstOpen)
             prevSemi = i ; firstOpen = None # restart the scan
         else: i += 1
-
-###handlePossibleFunctionHeader
 # converts function header lines from c++ format to python format.
 # That is, converts
 # x1..nn w::y ( t1 z1,..tn zn) {
@@ -577,8 +547,6 @@ def handlePossibleFunctionHeader(codeList, i, prevSemi, firstOpen):
         result.append(item)
     codeList[prevSemi:k] = result
     return k
-
-###massageFunctionArgs
 def massageFunctionArgs(args):
     global gClassName
     assert(args[0]=='(')
@@ -610,8 +578,6 @@ def massageFunctionArgs(args):
     result.append(':')
     # print "new args:", listToString(result)
     return result
-
-###massageFunctionHead (sets gClassName)
 def massageFunctionHead(head):
 
     # print "head:", listToString(head)
@@ -651,16 +617,12 @@ def massageFunctionHead(head):
     for item in result: finalResult.append(item)
     # print "new head:", listToString(finalResult)
     return finalResult
-
-###massageFunctionBody
 def massageFunctionBody(body):
 
     body = massageIvars(body)
     body = removeCasts(body)
     body = removeTypeNames(body)
     return body
-
-####massageIvars
 def massageIvars(body):
 
     if gClassName and ivarsDict.has_key(gClassName):
@@ -688,8 +650,6 @@ def massageIvars(body):
             else: i = j
         else: i += 1
     return body
-
-####removeCasts
 def removeCasts(body):
 
     i = 0
@@ -715,8 +675,6 @@ def removeCasts(body):
                         i = start
         else: i += 1
     return body
-
-####removeTypeNames
 # Do _not_ remove type names when preceeded by new.
 
 def removeTypeNames(body):
@@ -744,8 +702,6 @@ def removeTypeNames(body):
                 i = j
         else: i += 1
     return body
-
-##handleAllKeywords
 # converts if ( x ) to if x:
 # converts while ( x ) to while x:
 def handleAllKeywords(codeList):
@@ -763,8 +719,6 @@ def handleAllKeywords(codeList):
         else:
             i += 1
     # print "handAllKeywords2:", listToString(codeList)
-
-###handleKeyword
 def handleKeyword(codeList,i):
 
     isFor = False
@@ -794,18 +748,11 @@ def handleKeyword(codeList,i):
             j = j + 2
         return j
     return i
-
-##isX...
-
-
-###isWs and isWOrNl
 def isWs(c):
     return c == ' ' or c == '\t'
 
 def isWsOrNl(c):
     return c == ' ' or c == '\t' or c == '\n'
-
-###isSectionDef
 # returns the ending index if i points to < < x > > =
 def isSectionDef(list, i):
 
@@ -815,16 +762,9 @@ def isSectionDef(list, i):
         if match(list,i,">>="): return i+3
         else: i += 1
     return False
-
-###isStringOrComment
 def isStringOrComment(list, i):
 
     return match(list,i,"'") or match(list,i,'"') or match(list,i,"//") or match(list,i,"/*")
-
-##find... & match...
-
-
-###findInCode
 def findInCode(codeList, i, findStringOrList):
 
     findList = stringToList(findStringOrList)
@@ -836,8 +776,6 @@ def findInCode(codeList, i, findStringOrList):
             return i
         else: i += 1
     return -1
-
-###findInList
 def findInList(list, i, findStringOrList):
 
     findList = stringToList(findStringOrList)
@@ -846,8 +784,6 @@ def findInList(list, i, findStringOrList):
         if match(list, i, findList): return i
         else: i += 1
     return -1
-
-###match
 def match (codeList, i, findStringOrList):
     '''True if findList matches starting at codeList[i].'''
     findList = stringToList(findStringOrList)
@@ -861,8 +797,6 @@ def match (codeList, i, findStringOrList):
             if j == n:
                 return i+j
     return False
-
-###matchWord
 def matchWord (codeList, i, findStringOrList):
 
     j = match(codeList,i,findStringOrList)
@@ -873,11 +807,6 @@ def matchWord (codeList, i, findStringOrList):
     else:
         c = codeList[j]
         return not (c in string.letters or c in string.digits or c == '_')
-
-##remove...
-
-
-###removeAllCComments
 def removeAllCComments(list, delim):
 
     i = 0
@@ -894,8 +823,6 @@ def removeAllCComments(list, delim):
             del list[i:j]
         else:
             i += 1
-
-###removeAllCSentinels
 def removeAllCSentinels(list, delim):
 
     i = 0
@@ -914,8 +841,6 @@ def removeAllCSentinels(list, delim):
             del list[i:j]
         else:
             i = skipPastLine(list,i)
-
-###removeAllPythonComments
 def removeAllPythonComments(list, delim):
 
     i = 0
@@ -928,8 +853,6 @@ def removeAllPythonComments(list, delim):
             del list[i:j]
         else:
             i += 1
-
-###removeAllPythonSentinels
 def removeAllPythonSentinels(list, delim):
 
     i = 0
@@ -944,8 +867,6 @@ def removeAllPythonSentinels(list, delim):
             del list[i:j]
         else:
             i = skipPastLine(list,i)
-
-###removeAtRoot
 def removeAtRoot (codeList):
 
     i = skipWs(codeList, 0)
@@ -962,8 +883,6 @@ def removeAtRoot (codeList):
                 j = skipPastLine(codeList,i)
                 del codeList[i:j]
         else: i += 1
-
-###removeBlankLines
 def removeBlankLines(codeList):
 
     i = 0
@@ -976,8 +895,6 @@ def removeBlankLines(codeList):
         else:
             oldi = i
             i = skipPastLine(codeList,i)
-
-###removeExcessWs
 def removeExcessWs(codeList):
 
     i = 0
@@ -989,8 +906,6 @@ def removeExcessWs(codeList):
             i += 1
             i = removeExcessWsFromLine(codeList,i)
         else: i += 1
-
-####removeExessWsFromLine
 def removeExcessWsFromLine(codeList,i):
 
     assert(i==0 or codeList[i-1] == '\n')
@@ -1006,8 +921,6 @@ def removeExcessWsFromLine(codeList,i):
             i = k + 1 # make sure we don't go past a newline!
         else: i += 1
     return i
-
-###removeLeadingAtCode
 def removeLeadingAtCode(codeList):
 
     i = skipWsAndNl(codeList,0)
@@ -1017,8 +930,6 @@ def removeLeadingAtCode(codeList):
     elif matchWord(codeList,i,"@c"):
         i = skipWsAndNl(codeList,2)
         del codeList[0:i]
-
-###removeMatchingBrackets
 def removeMatchingBrackets(codeList, i):
 
     j = skipToMatchingBracket(codeList, i)
@@ -1032,8 +943,6 @@ def removeMatchingBrackets(codeList, i):
             return j - 1
         else: return j + 1
     else: return j
-
-###removeSemicolonsAtEndOfLines
 def removeSemicolonsAtEndOfLines(list):
 
     i = 0
@@ -1046,8 +955,6 @@ def removeSemicolonsAtEndOfLines(list):
                 del list[i]
             else: i += 1
         else: i += 1
-
-###removeTrailingWs
 def removeTrailingWs(list):
 
     i = 0
@@ -1061,11 +968,6 @@ def removeTrailingWs(list):
                 del list[j:i]
                 i = j
         else: i += 1
-
-##replace... & safeReplace
-
-
-###replace
 def replace(codeList, findString, changeString):
     '''
     Replaces all occurances of findString by changeString.
@@ -1081,8 +983,6 @@ def replace(codeList, findString, changeString):
             codeList[i:i+len(findList)] = changeList
             i += len(changeList)
         else: i += 1
-
-###replaceComments
 def replaceComments(codeList):
     '''For Leo we expect few block comments; doc parts are much more common.'''
     i = 0
@@ -1106,8 +1006,6 @@ def replaceComments(codeList):
         elif match(codeList, i, '"') or match(codeList, i, "'"):
             i = skipString(codeList,i)
         else: i += 1
-
-###replaceSectionDefs
 def replaceSectionDefs(codeList):
     '''Replace < < x > > = by @c (at the start of lines).'''
     i = 0
@@ -1122,8 +1020,6 @@ def replaceSectionDefs(codeList):
             j = isSectionDef(codeList,i)
             if j > i: codeList[i:j] = list("@c ")
         else: i += 1
-
-###safeReplace
 def safeReplace(codeList, findString, changeString):
     '''
     Replaces occurances of findString by changeString outside of C comments
@@ -1147,11 +1043,6 @@ def safeReplace(codeList, findString, changeString):
                 codeList[i:i+len(findList)] = changeList
                 i += len(changeList)
             else: i += 1
-
-##skip... & prev...
-
-
-###prevNonWsChar and prevNonWsOrNlChar
 def prevNonWsChar(list, i):
 
     i -= 1
@@ -1165,8 +1056,6 @@ def prevNonWsOrNlChar(list, i):
     while i >= 0 and isWsOrNl(list[i]):
         i -= 1
     return i
-
-###skipCBlockComment
 def skipCBlockComment(codeList, i):
 
     assert(match(codeList, i, "/*"))
@@ -1176,8 +1065,6 @@ def skipCBlockComment(codeList, i):
         if match(codeList, i, "*/"): return i + 2
         else: i += 1
     return i
-
-###skipPastLine
 def skipPastLine(codeList, i):
 
     while i < len(codeList) and codeList[i] != '\n':
@@ -1185,8 +1072,6 @@ def skipPastLine(codeList, i):
     if i < len(codeList) and codeList[i] == '\n':
         i += 1
     return i
-
-###skipPastWord
 def skipPastWord(list, i):
 
     assert(list[i] in string.letters or list[i]=='~')
@@ -1201,8 +1086,6 @@ def skipPastWord(list, i):
         list[i]=='_'):
         i += 1
     return i
-
-###skipString
 def skipString(codeList, i):
 
     delim = codeList[i] # handle either single or double-quoted strings
@@ -1214,8 +1097,6 @@ def skipString(codeList, i):
         elif codeList[i] == '\\': i += 2
         else: i += 1
     return i
-
-###skipStringOrComment
 def skipStringOrComment(list,i):
 
     if match(list,i,"'") or match(list,i,'"'):
@@ -1225,8 +1106,6 @@ def skipStringOrComment(list,i):
     elif match(list, i, "/*"):
         return skipCBlockComment(list,i)
     else: assert(0)
-
-###skipToMatchingBracket
 def skipToMatchingBracket(codeList, i):
 
     c = codeList[i]
@@ -1247,8 +1126,6 @@ def skipToMatchingBracket(codeList, i):
             i += 1 # skip the closing bracket.
         else: i += 1
     return i
-
-###skipWs and skipWsAndNl
 def skipWs(list, i):
 
     while i < len(list):
@@ -1266,11 +1143,6 @@ def skipWsAndNl(list, i):
             i += 1
         else: break
     return i
-
-##stringToList & listToString
-
-
-###stringToList
 def stringToList(string):
     '''
     converts a string to a list containing one item per character of the list.
@@ -1283,9 +1155,20 @@ def stringToList(string):
         return list(string)
     else:
         return []
-
-###listToString
 def listToString(list):
 
     return string.join(list,"")
 
+gClassName = "" # The class name for the present function.  Used to modify ivars.
+gIvars = [] # List of ivars to be converted to self.ivar
+
+def test():
+    global printFlag ; printFlag = True
+    for s in testData:
+        convertCStringToPython(s, doLeoTranslations)
+
+def go():
+    test()
+
+if __name__ == "__main__":
+    speedTest(2)
