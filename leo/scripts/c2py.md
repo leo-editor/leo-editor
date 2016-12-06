@@ -299,10 +299,10 @@ def convertCodeList1to2(list):
     removeLeadingAtCode(list)
 
 #c2py entry points
-@ We separate the processing into two parts,
-
-1) a leo-aware driver that iterates over @file trees and
-2) a text-based part that processes one or more files or strings.
+# We separate the processing into two parts,
+#
+# 1) a leo-aware driver that iterates over @file trees and
+# 2) a text-based part that processes one or more files or strings.
 
 ##convertCurrentTree
 def convertCurrentTree():
@@ -489,10 +489,11 @@ def convertLeadingBlanks(list):
         i = skipPastLine(list, i)
 
 ##mungeAllFunctions
-# We scan for a '{' at the top level that is preceeded by ')'
-# @code and < < x > > = have been replaced by @c
 def mungeAllFunctions(codeList):
-
+    '''
+    Scan for a '{' at the top level that is preceeded by ')'
+    @code and < < x > > = have been replaced by @c.
+    '''
     prevSemi = 0 # Previous semicolon: header contains all previous text
     i = 0
     firstOpen = None
@@ -847,10 +848,8 @@ def findInList(list, i, findStringOrList):
     return -1
 
 ###match
-# returns True if findList matches starting at codeList[i]
-
 def match (codeList, i, findStringOrList):
-
+    '''True if findList matches starting at codeList[i].'''
     findList = stringToList(findStringOrList)
     n = len(findList)
     j = 0
@@ -1067,10 +1066,11 @@ def removeTrailingWs(list):
 
 
 ###replace
-# Replaces all occurances of findString by changeString.
-# Deletes all occurances if change is None
 def replace(codeList, findString, changeString):
-
+    '''
+    Replaces all occurances of findString by changeString.
+    Deletes all occurances if change is None.
+    '''
     if len(findString)==0: return
     findList = stringToList(findString)
     changeList = stringToList(changeString)
@@ -1083,10 +1083,8 @@ def replace(codeList, findString, changeString):
         else: i += 1
 
 ###replaceComments
-# For Leo we expect few block comments; doc parts are much more common.
-
 def replaceComments(codeList):
-
+    '''For Leo we expect few block comments; doc parts are much more common.'''
     i = 0
     if match(codeList, i, "//"):
         codeList[0:2] = ['#']
@@ -1110,9 +1108,8 @@ def replaceComments(codeList):
         else: i += 1
 
 ###replaceSectionDefs
-# Replaces < < x > > = by @c (at the start of lines).
 def replaceSectionDefs(codeList):
-
+    '''Replace < < x > > = by @c (at the start of lines).'''
     i = 0
     j = isSectionDef(codeList,i)
     if j > 0: codeList[i:j] = list("@c ")
@@ -1127,10 +1124,11 @@ def replaceSectionDefs(codeList):
         else: i += 1
 
 ###safeReplace
-# Replaces occurances of findString by changeString outside of C comments and strings.
-# Deletes all occurances if change is None.
 def safeReplace(codeList, findString, changeString):
-
+    '''
+    Replaces occurances of findString by changeString outside of C comments
+    and strings. Deletes all occurances if change is None.
+    '''
     if len(findString)==0: return
     findList = stringToList(findString)
     changeList = stringToList(changeString)
@@ -1273,11 +1271,13 @@ def skipWsAndNl(list, i):
 
 
 ###stringToList
-# converts a string to a list containing one item per character of the list.
-# converts None to the empty string and leaves other types alone.
-
-# list(string) does not work on none.
 def stringToList(string):
+    '''
+    converts a string to a list containing one item per character of the list.
+    converts None to the empty string and leaves other types alone.
+
+    list(string) does not work on none.
+    '''
 
     if string:
         return list(string)
