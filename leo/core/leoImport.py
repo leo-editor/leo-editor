@@ -2771,8 +2771,8 @@ def headToPrevNode(event):
         import leo.plugins.importers.python as python
     except ImportError:
         return
-    scanner = python.PythonScanner(c.importCommands, atAuto=False)
-    kind, i, junk = scanner.findClass(p)
+    scanner = python.Py_Importer(c.importCommands, atAuto=False)
+    kind, i, junk = scanner.find_class(p)
     p2 = p.back()
     if p2 and kind in ('class', 'def') and i > 0:
         u = c.undoer; undoType = 'move-head-to-prev'
@@ -2850,8 +2850,8 @@ def tailToNextNode(event=None):
         import leo.plugins.importers.python as python
     except ImportError:
         return
-    scanner = python.PythonScanner(c.importCommands, atAuto=False)
-    kind, junk, j = scanner.findClass(p)
+    scanner = python.Py_Importer(c.importCommands, atAuto=False)
+    kind, junk, j = scanner.find_class(p)
     p2 = p.next()
     if p2 and kind in ('class', 'def') and j < len(p.b):
         u = c.undoer; undoType = 'move-tail-to-next'

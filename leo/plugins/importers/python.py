@@ -226,8 +226,8 @@ class Py_Importer(Importer):
         else:
             line = lines[i]
             return bool(self.starts_pattern.match(line))
-    #@+node:ekr.20161119083054.1: *3* py_i.findClass & helper
-    def findClass(self, p):
+    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
+    def find_class(self, p):
         '''
         Return the index end of the class or def in a node, or -1.
         '''
@@ -253,6 +253,8 @@ class Py_Importer(Importer):
             prev_state = new_state
             index += len(line)
         return None, -1, -1
+        
+    ### findClass = find_class
     #@+node:ekr.20161205052712.1: *4* py_i.skip_block
     def skip_block(self, i, index, lines, prev_state):
         '''Return the index of the end of the block at lines[i].'''
