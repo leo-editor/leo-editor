@@ -7739,7 +7739,7 @@ def spam:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = True
+    trace = False
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
     assert root
@@ -7753,7 +7753,7 @@ else:
             if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
         else:
             if trace: print('not found: %s' % n)
-            assert n == 6, n
+            assert n == 7, n
             break
 #@+node:ekr.20150626101643.1: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
@@ -7820,7 +7820,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20150626093653.1: *6* @test find_file_line: @auto-rst
+#@+node:ekr.20150626093653.1: *6* @@@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -13876,90 +13876,6 @@ finally:
     if 1: # Delete children
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20161205044647.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
-/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205044647.2: *8* public final class AdminPermission extends BasicPermission
-public final class AdminPermission extends BasicPermission
-{
-    /**
-     * Creates a new <tt>AdminPermission</tt> object.
-     */
-    @others
-}
-#@+node:ekr.20161205044647.3: *9* public AdminPermission()
-public AdminPermission()
-{
-    super("AdminPermission");
-}
-#@+node:ekr.20161205044930.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
-/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205044930.2: *8* public final class AdminPermission extends BasicPermission
-public final class AdminPermission extends BasicPermission
-{
-    /**
-     * Creates a new <tt>AdminPermission</tt> object.
-     */
-    @others
-}
-#@+node:ekr.20161205044930.3: *9* public AdminPermission
-public AdminPermission()
-{
-    super("AdminPermission");
-}
-#@+node:ekr.20161205045048.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
-/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045048.2: *8* public final class AdminPermission extends BasicPermission
-public final class AdminPermission extends BasicPermission
-{
-    /**
-     * Creates a new <tt>AdminPermission</tt> object.
-     */
-    @others
-}
-#@+node:ekr.20161205045048.3: *9* public AdminPermission
-public AdminPermission()
-{
-    super("AdminPermission");
-}
-#@+node:ekr.20161205045458.1: *7* @@file c:/leo.repo/leo-editor/leo/test/from AdminPermission.java
-/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045458.2: *8* public final class AdminPermission extends BasicPermission
-public final class AdminPermission extends BasicPermission
-{
-    /**
-     * Creates a new <tt>AdminPermission</tt> object.
-     */
-    @others
-}
-#@+node:ekr.20161205045458.3: *9* public AdminPermission
-public AdminPermission()
-{
-    super("AdminPermission");
-}
 #@+node:ekr.20090529141856.4773: *6* @test from BundleException.java
 @language python
 @tabwidth 8
@@ -14128,51 +14044,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20161205045250.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045250.2: *8* interface Bicycle
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
-#@+node:ekr.20161205045314.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045314.2: *8* interface Bicycle
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
-#@+node:ekr.20161205045356.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045356.2: *8* interface Bicycle
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
-#@+node:ekr.20161205045442.1: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045442.2: *8* interface Bicycle
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
-#@+node:ekr.20161205045458.9: *7* @@file c:/leo.repo/leo-editor/leo/test/java interface test2
-@others
-@language java
-@tabwidth -4
-#@+node:ekr.20161205045458.10: *8* interface Bicycle
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
 #@+node:ekr.20090529141856.4774: *5* Javascript tests
 @language python
 #@+node:ekr.20090529141856.4775: *6* Problems
@@ -15087,6 +14958,32 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20161204155218.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161206135449.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161206135449.11: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161206165824.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161206165824.11: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.
@@ -17776,6 +17673,20 @@ finally:
         c.redraw()
 #@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
+if 0: # Preamble
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 .. toc
 
@@ -17790,7 +17701,7 @@ section 1
 
 section 1, line 1
 --
-selction 1, line 2
+section 1, line 2
 
 section 2
 ---------
@@ -17818,15 +17729,18 @@ section 3.1.1
 section 3.1.1, line 1
 '''
 table = (
-    "!Dummy chapter",
-    "top",
-    "section 1",
-    "section 2",
-    "section 2.1",
-    "section 3",
+    '!Dummy chapter',
+    'top',
+    'section 1',
+    'section 2',
+    'section 2.1',
+    'section 2.1.1',
+    'section 3',
+    'placeholder',
+    'section 3.1.1',
 )
 try:
-    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    ic.rstUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
@@ -17870,6 +17784,20 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
+if 0: # Preamble
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 .. toc
 
@@ -17883,7 +17811,7 @@ section 1
 
 section 1, line 1
 --
-selction 1, line 2
+section 1, line 2
 
 section 2
 ---------
@@ -17911,14 +17839,18 @@ section 3.1.1
 section 3.1.1, line 1
 '''
 table = (
-    "!Dummy chapter",
-    "section 1",
-    "section 2",
-    "section 2.1",
-    "section 3",
+    '!Dummy chapter',
+    'top',
+    'section 1',
+    'section 2',
+    'section 2.1',
+    'section 2.1.1',
+    'section 3',
+    'placeholder',
+    'section 3.1.1',
 )
 try:
-    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    ic.rstUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
@@ -17932,6 +17864,20 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
+if 0: # Preamble
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 .. toc
 
@@ -17941,10 +17887,11 @@ top
 The top section
 '''
 table = (
-    "!Dummy chapter",
+    '!Dummy chapter',
+    'top',
 )
 try:
-    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    ic.rstUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h
@@ -17958,6 +17905,20 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
+if 0: # Preamble
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.leo_rst
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.leo_rst)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 .. toc
 
@@ -17972,7 +17933,7 @@ table = (
     "top",
 )
 try:
-    c.importCommands.rstUnitTest(p,s=s,showTree=True)
+    ic.rstUnitTest(p,s=s,showTree=True)
     if 1:
         root = c.p.lastChild()
         assert root.h.startswith('@@'), root.h

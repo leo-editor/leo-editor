@@ -9,6 +9,9 @@ This module must **not** be named rst, so as not to conflict with docutils.
 # pylint: disable=unused-import
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
+import leo.plugins.importers.leo_rst as rst_importer
+underlines = rst_importer.underlines
+    # Make *sure* that reader's underlines match the writer's.
 #@+others
 #@+node:ekr.20140726091031.18092: ** class RstWriter
 class RstWriter(basewriter.BaseWriter):
@@ -23,7 +26,7 @@ class RstWriter(basewriter.BaseWriter):
     def underline_char(self, p, root_level):
         '''Return the underlining character for position p.'''
         # OLD underlines = '=+*^~"\'`-:><_'
-        underlines = "!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+        # OLD underlines = "!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
         # '#' is reserved.
         i = p.level() - root_level
         return underlines[min(i, len(underlines) - 1)]

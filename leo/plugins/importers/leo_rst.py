@@ -8,6 +8,9 @@ This module must **not** be named rst, so as not to conflict with docutils.
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
+# Used by writers.leo_rst as well as in this file.
+underlines = "!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~#"
+    # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 #@+others
 #@+node:ekr.20161127192007.2: ** class Rst_Importer
 class Rst_Importer(Importer):
@@ -23,11 +26,6 @@ class Rst_Importer(Importer):
             state_class = Rst_ScanState,
             strict = False,
         )
-        # self.underlines = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-            # valid rst underlines.
-        self.underlines = '=+*^~"\'`-:><_'
-            # writers.leo_rst.py genenerates only these underlines.
-            # '#' is reserved for level 1.
         
     #@+others
     #@+node:ekr.20161204032455.1: *3* rst_i.check
@@ -42,7 +40,7 @@ class Rst_Importer(Importer):
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''Node generator for markdown importer.'''
-        trace = False and not g.unitTesting
+        trace = False and g.unitTesting
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
@@ -88,6 +86,18 @@ class Rst_Importer(Importer):
                 g.trace('POP', len(self.get_lines(p)), p.h)
                 if trace and trace_stack:
                     self.print_list(self.get_lines(p))
+        # Insert placeholders as necessary.
+        # This could happen in imported files not created by us.
+        while level > len(self.stack):
+            top = self.stack[-1]
+            if trace: g.trace('PLACE HOLDER', top.h)
+            child = self.create_child_node(
+                parent = top,
+                body = None,
+                headline = 'placeholder', 
+            )
+            self.stack.append(child)
+        # Create the desired node.
         top = self.stack[-1]
         if trace: g.trace('TOP', top.h)
         child = self.create_child_node(
@@ -125,7 +135,7 @@ class Rst_Importer(Importer):
             line1 = lines[i+1]
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
-            return not ch0 and ch1 and 4 <= len(line1) <= len(line0)
+            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1) 
         else:
             return False
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
@@ -135,7 +145,7 @@ class Rst_Importer(Importer):
         if trace: g.trace(repr(line))
         if line.isspace():
             return None
-        chars = self.underlines
+        chars = underlines
         if extra: chars = chars + extra
         ch1 = line[0]
         if ch1 not in chars:
@@ -167,7 +177,7 @@ class Rst_Importer(Importer):
 
     def ch_level(self, ch):
         '''Return the underlining level associated with ch.'''
-        assert ch == '#' or ch in self.underlines, (repr(ch), g.callers())
+        assert ch in underlines, (repr(ch), g.callers())
         d = self.rst_seen
         if ch in d:
             return d.get(ch)
