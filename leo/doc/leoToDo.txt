@@ -115,6 +115,21 @@ The idea is to be able to define the dot easily.
 - Define the dot.
 - Leave vim-mode.
 - Use the dot.
+.. @+node:ekr.20161207052323.1: ** Maybe: use x.reload
+Important core classes, including importer classes, could support a reload method, that would reload the file containing the class, and return a new instance of the class, ready to be used by unit tests. Something like this::
+
+    if 0: # Preamble...
+        g.cls()
+        if c.isChanged(): c.save()
+        ic = c.importCommands.reload()
+    else:
+        ic = c.importCommands
+
+The call to c.importCommands.reload() could return a new GeneralTestCase instance and this instance could set a reload flag.  The later call to ic.markdownUnitTest(p...) would then reload markdown and linescanner when the reload flag is set.
+
+But... leoTest.leo defines several other subclasses of unittest.TestCase besides GeneralTestCase.  So maybe we need variants of c.importCommands.reload to handle the other kinds of TestCase.
+
+I'm not in a hurry to do any of this, since the present importer cases work.  Still it's a good idea to keep these ideas in the back of our minds. This kind of simplification could be useful when creating other kinds of unit tests.
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap

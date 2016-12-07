@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -926,6 +926,7 @@
 <v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
 <v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
+<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
@@ -1267,27 +1268,12 @@
 </v>
 <v t="ekr.20160923163147.1"><vh>Settings</vh></v>
 </v>
-<v t="ekr.20161029072225.1"><vh>class IdleTimeManager</vh>
-<v t="ekr.20161029072225.2"><vh>itm.add_callback</vh></v>
-<v t="ekr.20161029072225.3"><vh>itm.on_idle</vh></v>
-<v t="ekr.20161029072225.4"><vh>itm.start</vh></v>
-</v>
-<v t="ekr.20161029072234.1"><vh>class BackgroundProcessManager</vh>
-<v t="ekr.20161029072234.2"><vh>&lt;&lt; BPL docstring&gt;&gt;</vh></v>
-<v t="ekr.20161029072234.3"><vh>class ProcessData</vh></v>
-<v t="ekr.20161029072234.4"><vh>bpm.check_process &amp; helpers</vh>
-<v t="ekr.20161029072234.5"><vh>bm.end</vh></v>
-<v t="ekr.20161029072234.6"><vh>bm.start_next</vh></v>
-</v>
-<v t="ekr.20161029072234.7"><vh>bpm.kill</vh></v>
-<v t="ekr.20161029072234.8"><vh>bpm.on_idle</vh></v>
-<v t="ekr.20161029072234.9"><vh>bpm.put_log</vh></v>
-<v t="ekr.20161029072234.10"><vh>bpm.start_process</vh></v>
-</v>
 <v t="ekr.20131015104133.16763"></v>
-<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
-<v t="ekr.20150323102036.1"></v>
-<v t="ekr.20161120073038.1"></v>
+<v t="ekr.20161207045325.1"><vh>To be documented</vh>
+<v t="ekr.20161207050138.1"><vh>Prefer list processing to string processing </vh></v>
+<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
+</v>
+<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19076,249 +19062,11 @@ Idle time::
 
 5. Better git hooks, written in Python.
 </t>
-<t tx="ekr.20161029072225.1">class IdleTimeManager(object):
-    '''
-    A singleton class to manage idle-time handling. This class handles all
-    details of running code at idle time, including running 'idle' hooks.
-    
-    Any code can call g.app.idleTimeManager.add_callback(callback) to cause
-    the callback to be called at idle time forever.
-    '''
-    
-    def __init__(self):
-        '''Ctor for IdleTimeManager class.'''
-        self.callback_list = []
-        self.timer = None
-        
-    @others
-</t>
-<t tx="ekr.20161029072225.2">def add_callback(self, callback, tag):
-    '''Add a callback to be called at every idle time.'''
-    self.callback_list.append(callback)
-</t>
-<t tx="ekr.20161029072225.3">on_idle_count = 0
-
-def on_idle(self, timer):
-    '''IdleTimeManager: Run all idle-time callbacks.'''
-    trace = False and not g.unitTesting
-    trace_hooks = True
-    if not g.app: return
-    if g.app.killed: return
-    self.on_idle_count += 1
-    # Handle the registered callbacks.
-    for callback in self.callback_list:
-        try:
-            callback()
-        except Exception:
-            g.es_exception()
-            g.es_print('removing callback: %s' % callback)
-            self.callback_list.remove(callback)
-    # Handle idle-time hooks.
-    g.app.pluginsController.on_idle()
-</t>
-<t tx="ekr.20161029072225.4">def start (self):
-    '''Start the idle-time timer.'''
-    self.timer = g.IdleTime(
-        self.on_idle,
-        delay=500,
-        tag='IdleTimeManager.on_idle')
-    if self.timer:
-        self.timer.start()
-</t>
-<t tx="ekr.20161029072234.1">class BackgroundProcessManager(object):
-    &lt;&lt; BPL docstring&gt;&gt;
-    
-    # Use self.put_log, not g.es or g.es_print!
-    
-    def __init__(self):
-        '''Ctor for the base BackgroundProcessManager class.'''
-        self.data = None
-            # a ProcessData instance.
-        self.process_queue = []
-            # List of g.Bunches.
-        self.pid = None
-            # The process id of the running process.
-        g.app.idleTimeManager.add_callback(
-            self.on_idle,
-            tag='BackgroundProcessManager')
-
-    @others
-</t>
-<t tx="ekr.20161029072234.10">def start_process(self, c, command, kind, fn=None):
-    '''Start or queue a process described by command and fn.'''
-    trace = False and not g.unitTesting
-    self.data = data = self.ProcessData(c, kind, fn)
-    if self.pid:
-        # A process is already active.  Add a new callback.
-        if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
-
-        def callback(data=data):
-            fn = data.fn
-            self.put_log(g.shortFileName(fn))
-            self.pid = subprocess.Popen(
-                command,
-                shell=False,
-                stderr=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-            )
-            if trace: self.put_log('===== Starting: %s for %s' % (
-                id(self.pid), g.shortFileName(fn)))
-
-        data.callback = callback
-        self.process_queue.append(data)
-    else:
-        # Start the process immediately.
-        self.put_log(g.shortFileName(fn))
-        self.pid = subprocess.Popen(
-            command,
-            shell=False,
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        )
-        if trace: self.put_log('===== Starting: %s for %s' % (
-            id(self.pid), g.shortFileName(fn)))
-</t>
-<t tx="ekr.20161029072234.2">'''
-@language rest
-@wrap
-
-The BackgroundProcessManager (BPM) class runs background processes,
-*without blocking Leo*. The BPM manages a queue of processes, and runs them
-*one at a time* so that their output remains separate.
-
-g.app.backgroundProcessManager is the singleton BPM.
-
-The BPM registers a handler with the IdleTimeManager that checks whether
-the presently running background process has completed. If so, the handler
-writes the process's output to the log and starts another background
-process in the queue.
-
-BPM.start_process(c, command, kind, fn=None) adds a process to the queue
-that will run the given command.
-
-BM.kill(kind=None) kills all process with the given kind. If kind is None
-or 'all', all processes are killed.
-
-You can add processes to the queue at any time. For example, you can rerun
-the 'pylint' command while a background process is running.
-
-The BackgroundProcessManager is completely safe: all of its code runs in
-the main process.
-
-**Running multiple processes simultaneously**
-
-Only one process at a time should be producing output. All processes that
-*do* produce output should be managed by the singleton BPM instance.
-
-To run processes that *don't* produce output, just call subprocess.Popen.
-You can run as many of these process as you like, without involving the BPM
-in any way.
-'''
-</t>
-<t tx="ekr.20161029072234.3">class ProcessData(object):
-    '''A class to hold data about running or queued processes.'''
-    
-    def __init__(self, c, kind, fn):
-        '''Ctor for the ProcessData class.'''
-        self.c = c
-        self.callback = None
-        self.fn = fn
-        self.kind = kind
-        
-    def __repr__(self):
-        return 'c: %s kind: %s callback: %s fn: %s' % (
-            self.c.shortFileName(),
-            self.kind,
-            id(self.callback) if self.callback else None,
-            self.fn,
-        )
-            
-    __str__ = __repr__
-</t>
-<t tx="ekr.20161029072234.4">def check_process(self):
-    '''Check the running process, and switch if necessary.'''
-    trace = False and not g.unitTesting
-    trace_inactive = False
-    trace_running = False
-    if self.pid or self.process_queue:
-        if self.pid.poll() is not None:
-            if trace: self.put_log('ending: %s' % id(self.pid))
-            self.end() # End this process.
-            self.start_next() # Start the next process.
-        elif trace and trace_running:
-            self.put_log('running: %s' % id(self.pid))
-    elif trace and trace_inactive:
-        self.put_log('%s inactive' % self.data.kind)
-</t>
-<t tx="ekr.20161029072234.5">def end(self):
-    '''End the present process.'''
-    # Send the output to the log.
-    for s in self.pid.stdout:
-        self.put_log(s)
-    # Terminate the process properly.
-    try:
-        self.pid.kill()
-    except OSError:
-        pass
-    self.pid = None
-</t>
-<t tx="ekr.20161029072234.6">def start_next(self):
-    '''The previous process has finished. Start the next one.'''
-    if self.process_queue:
-        self.data = self.process_queue.pop(0)
-        self.data.callback()
-    else:
-        self.put_log('%s finished' % self.data.kind)
-        self.data = None
-        self.pid = None
-</t>
-<t tx="ekr.20161029072234.7">def kill(self, kind=None):
-    '''Kill the presently running process, if any.'''
-    if kind is None:
-        kind = 'all'
-    if kind == 'all':
-        self.process_queue = []
-    else:
-        self.process_queue = [z for z in self.process_queue if z.kind != kind]
-    if self.pid and kind in ('all', self.data.kind):
-        self.put_log('killing %s process' % kind)
-        try:
-            self.pid.kill()
-        except OSError:
-            pass
-        self.pid = None
-    self.put_log('%s finished' % kind)
-</t>
-<t tx="ekr.20161029072234.8">def on_idle(self):
-    '''The idle-time callback for leo.commands.checkerCommands.'''
-    if self.process_queue or self.pid:
-        self.check_process()
-</t>
-<t tx="ekr.20161029072234.9">def put_log(self, s):
-    '''
-    Put a string to the originating log.
-    This is not what g.es_print does!
-    '''
-    if s.strip():
-        # Put the message to the originating log pane, if it still exists.
-        c = self.data.c
-        if c.exists:
-            c.frame.log.put(s)
-            print(s.rstrip())
-        else:
-            g.es_print(s.rstrip())
-</t>
 <t tx="ekr.20161029072351.1">@language rest
 
-g.app.backgroundProcessManager is the singleton instance of the
-BackgroundProcessManager class. This class runs background processes,
-*without blocking Leo*. The BPM manages a queue of processes, and runs
-them *one at a time* so that their output remains separate.
+g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
 
-BPM.start_process(c, command, kind, fn=None, shell=False) adds a
-process to the queue that will run the given command::
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
 
 @language python
 
@@ -19327,23 +19075,17 @@ process to the queue that will run the given command::
 
 @language rest
 
-BM.kill(kind=None) kills all process with the given kind. If kind is
-None or 'all', all processes are killed.
+BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
 
-You can add processes to the queue at any time. For example, you can
-rerun the 'pylint' command while a background process is running.
+You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
 
-The BackgroundProcessManager is completely safe: all of its code runs
-in the main process.
+The BackgroundProcessManager is completely safe: all of its code runs in the main process.
 
 **Running multiple processes simultaneously**
 
-Only one process at a time should be producing output. All processes
-that *do* produce output should be managed by the singleton BPM
-instance.
+Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
 
-To run processes that *don't* produce output, just call
-subprocess.Popen::
+To run processes that *don't* produce output, just call subprocess.Popen::
 
 @language python
 
@@ -19352,8 +19094,7 @@ subprocess.Popen::
 
 @language rest
 
-You can run as many of these process as you like, without involving
-the BPM in any way
+You can run as many of these process as you like, without involving the BPM in any way
 </t>
 <t tx="ekr.20161120073024.1">@language md
 
@@ -19468,7 +19209,121 @@ Controller().run(p)
         else:
             pass
     return ''.join(result)</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20161207045325.1"></t>
+<t tx="ekr.20161207050138.1">Using lists of (short) strings is fundamentally better than splitting and joining large strings.
+
+Because python "interns" strings, creating a new list of strings creates new strings only if those strings have never before been seen (in the present gc generation). The lists consist of short strings, so they are much more likely to be interned. This is important.
+
+Lists themselves are just lists of references to strings. For example, rearranging a list of strings never generates any new strings!
+
+Happily, using lists of strings usually simplifies the code, thanks to python's superb list comprehensions. If you don't grok comprehensions, you are missing one of python's most powerful and beautiful features.
+</t>
+<t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
+
+**Executive Summary**
+
+1. **Preamble** code in @test nodes calls imp.reload(x) to reload all modules x affected by the tests. 
+
+2. Calling imp.reload is not enough. Test code must create new instances of all classes being tested.
+
+**Example**
+
+Here is the beginning of @test elisp importer::
+
+    if 1: # Preamble
+        # The preamble...
+        g.cls()
+        if c.isChanged(): c.save()
+        # import leo
+        import leo.core.leoImport as leoImport
+        import leo.plugins.importers.linescanner as linescanner
+        import leo.plugins.importers.elisp
+        # Reload all.
+        import imp
+        imp.reload(leo.plugins.importers.linescanner)
+        imp.reload(leo.plugins.importers.elisp)
+        imp.reload(leoImport)
+        # instantiate the class
+        ic = leoImport.LeoImportCommands(c)
+    else: # Run the test in "production mode".
+        ic = c.importCommands
+    # run the test.
+    ic.elispUnitTest(p,s=s,showTree=True)
+
+**Using imp reload**
+
+As you can see, the test imports and reloads three modules. The test uses leoImport, so it too must be reloaded even though leoImport.py itself doesn't change.
+
+Calling imp.reload *is not enough*. imp.reload *doesn't change existing objects*. You must create (instantiate) a new object to test. That's what this line of the preamble does:
+
+    ic = leoImport.LeoImportCommands(c)
+
+That's all there is to it.
+
+**Summary**
+
+A **preamble** in each @test node makes it possible to re-run tests when without reloading Leo even when the code under test changes. Creating a preamble is an investment that quickly pays off.
+
+When creating several related unit tests, cutting and pasting the preamble from previous unit tests usually suffices. Fancy @button scripts that create preamble code are not required, but might be useful if you are creating lots of tests at once.
+</t>
+<t tx="ekr.20161207052511.1">Let's think of the Code Academy not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations.  They can even be cryptic.  This attitude arises from two principles:
+
+1. The less said, the better.
+2. Invite people to learn for themselves.
+
+**Puzzles for the Code Academy**
+
+1. Pick a real, worthy, programming task that you (the student) personally want/need to do in Leo.
+
+*This step is essential*! It is *useless* to try to learn in a vacuum.
+
+EKR's first python program was C2Py. scripts.leo contains the original version. Leo's c-to-python commands contained revised code.
+
+2. Overcome fear of crashes and mistakes.
+
+- Run Leo from a console.
+- Single-step through your code with g.pdb()
+- Deliberately put a crasher in your code and see what happens.
+
+The only way to hard crash Leo is to pass bad pointers to PyQt.  Python should catch all other problems.  If it doesn't, report a bug to the python people ;-)
+
+3. Discover how Leo's code works:
+
+- Where is Leo's source code? Hint: look for leoPy.leo in LeoDocs.leo.
+- Look at Leo's demote command.
+  - What are three ways of finding the demote command?
+  - How does demote change the outline?
+  - How does demote handle undo?
+- Study any other Leo command that relates to your project.
+- Use the cff command to find all definitions of x.
+- Use the cff command to find all uses of x.
+
+4. Start using Leo for real:
+
+- Add a new command using @button.
+- Create an external file containing your real-world project.
+  Execute it outside of Leo.
+- Write a Leo plugin.
+- Advanced: fix one of Leo's bugs.
+
+**Attitude**
+
+Students should always feel free to ask for help, but struggle teaches us the most. 
+
+It's about attitude. **It doesn't matter how long it takes to learn something**.
+
+In our culture, we value quickness. But that is a trap. The typical learning progression builds momentum:
+
+- Put 10 units of effort in, get 1 unit of results out
+- Put 1 in, get 1 out
+- Put 1 in, get 10 out
+
+There is no way to alter this sequence ;-) How many times have we given up just because things were not easy or clear at first?
+
+**That which we learn, we learn by doing**
+
+Reading about and thinking about are useful, but not nearly good enough.  That is why students must have a project that is important to them.  The project will put them into action.</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

@@ -1,6 +1,47 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
+.. @+node:ekr.20161207045908.1: ** 5.5 @button scripts
+.. @+node:ekr.20161207053432.1: *3* at-button make-importer
+Make a new @@file importers/x.py file.
+
+This button created most of Leo's new importers.
+.. @+node:ekr.20161207053551.1: *3* at-button make-md-heads
+Create markdown headers throughout the nearest .md outline.
+
+That is, prepend p.b[0] with markdown section markup, if appriate.
+.. @+node:ekr.20161207053316.1: *3* at-button make-md-toc
+Make a markdown table of contents from an @auto-md node.
+.. @+node:ekr.20161207045929.1: *3* at-button make-table
+Create a table of expected headlines in a unit test.
+
+To use this script, select the root of the tree containing the expected
+results. After running this, copy the table from the console.
+
+**Details**
+
+The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
+
+The outline of such tests is:
+
+s = r'''
+The input, maybe many lines.
+'''
+table = ( a list of expected headlines )
+try:
+    c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+    if 1: # Verify that the test produces the expected headlines.
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
+finally:
+    if 1: # clean up
+        p.deleteAllChildren()
+
+If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used the following, now in scripts.leo:
+.. @+node:ekr.20161207053353.1: *3* at-button make-test
+Make an @test node for the importer whose name is given.
 .. @+node:ekr.20161024061341.1: ** 5.5 Bugs
 .. @+node:ekr.20161024044100.1: *3* Fixed bug in bracket matching
 # A recent in doPlainChar change to handle #14 ruined bracket matching.
@@ -102,11 +143,47 @@ This is an important improvement.
 https://github.com/leo-editor/leo-editor/issues/328
 .. @+node:ekr.20161024093209.1: *3* <Alt-X>99 is the same as <Alt-G>99
 .. @+node:ekr.20161120164410.1: *3* Added four new generators
-c.all_roots, c.all_unique_roots
-p.nearest_roots, p.nearest_unique_roots (aka p.nearest)
+c.all_roots, c.all_unique_roots, p.nearest_roots, p.nearest_unique_roots (aka p.nearest)
 
 Useful for finding nodes on which to run commands.
+
+def nearest_roots(self, predicate=None):
+    '''
+    A generator yielding all the root positions "near" p1 = self that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+    
+    The search first proceeds up the p's tree. If a root is found, this
+    generator yields just that root.
+    
+    Otherwise, the generator yields all nodes in p.subtree() that satisfy
+    the predicate. Once a root is found, the generator skips its subtree.
+    '''
 .. @+node:ekr.20161121145504.1: *3* Allow script abbreviations in headlines
+.. @+node:ekr.20161207052112.1: *3* The markdown importer now regularizes sections
+Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
+
+tl;dr: Converting all sections to '#' markup is Leonine, simplest and best. Only existing .md files that Leo didn't write could be changed.  If such changes don't work for you, just insert @ignore yourself when git or diff reports differences.
+
+Imo, this change is fully justified:
+
+1. It is more Leonine.
+
+When creating and changing .md files from within Leo, @auto-md works much more smoothly.  Indeed, as I have just verified, converting an @nosent x.md file to @auto-md x.md "just works".
+
+There is absolutely no reason to use underlined sections when using Leo.  The headlines proclaim the section structure far better than flat text of any kind, whether ### section name or underlined section names.
+
+2. Perfect import check should not wag the dog.
+
+The markdown importer is one of the simplest of all.  The possibility of dropping data seems remote.  Requiring a typical perfect import check to pass would preclude regularizing section markup.  It's just that simple.
+
+Furthermore, the existing unit tests for the markup importer do check imported section structure, albeit imperfectly That should suffice for now. In the unlikely event that real problems are reported, these after-the-fact unit tests can be improved.
+
+**Summary**
+
+Importing markdown files containing underlined sections could only pass typical perfect import checks if existing underlining were somehow retained.  That's a bad idea.  Instead, Leo's markdown importer now implicitly converts all sections to '#' markup.  In essence, the markup disappears from the outline, to be automagically reinserted when Leo writes the outline.
+
+This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
