@@ -1,10 +1,9 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20161128214642.2: * @file leoVersion.py
-'''
-A module for computing version-related info.
-
-Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version.
-'''
+#@+node:ekr.20090717092906.12765: * @file leoVersion.py
+'''A module holding version-related info.'''
+trace = False
+import os
+import json
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node
@@ -20,106 +19,65 @@ Leo's core uses leoVersion.commit, leoVersion.date and leoVersion.version.
 # Leo 5.1 final: April 17, 2015.
 # Leo 5.2 final: March 18, 2016.
 # Leo 5.3 final: May 2, 2016.
-# Leo 5.4b1: October 17, 2016.
 #@-<< version dates >>
-import leo.core.leoGlobals as g
-import json
-import shlex
-import subprocess
-import sys
-testing = False
-static_date = 'October 22, 2016' # Emergency fallback.
-version = "5.4" # Always used.
-#@+others
-#@+node:ekr.20161017040256.1: ** create_commit_timestamp_json
-def create_commit_timestamp_json(after=False):
-    '''
-    Create leo/core/commit_timestamp.json.
-
-    This is called from @button make-leo in leoDist.leo,
-    so get_version_from_git should always succeed.
-    '''
-    trace = False and not g.unitTesting
-    commit, date = get_version_from_git(short=False)
-    if commit:
-        base = g.app.loadDir if g.app else g.os_path_dirname(__file__)
-        path = g.os_path_finalize_join(
-            base, '..', 'core', 'commit_timestamp.json')
-        f = open(path, 'w')
-        if after: commit = 'after ' + commit
-        d = {'date': date, 'hash': commit}
-        json.dump(d, f)
-        f.write('\n')
-        if trace:
-            g.trace()
-            g.print_dict(d)
-        f.flush()
-        f.close()
-        # Add commit_timestamp.json so it doesn't appear dirty.
-        out = git_output('git add leo/core/commit_timestamp.json')
-        if trace: g.trace(out)
-    else:
-        g.trace('can not create commit_timestamp.json')
-#@+node:tbrown.20161128220334.1: ** git_output
-def git_output(cmd):
-    """return output from a git command"""
-    trace = False
-    return g.toUnicode(subprocess.Popen(
-        shlex.split(cmd),
-        stdout=subprocess.PIPE,
-        stderr=None if trace else subprocess.PIPE,
-            # subprocess.DEVNULL is Python 3 only.
-        shell=sys.platform.startswith('win'),
-    ).communicate()[0])
-#@+node:ekr.20161016063005.1: ** get_version_from_git
-def get_version_from_git(short=True):
-    trace = False
-    try:
-        # is_windows = sys.platform.startswith('win')
-        commit = git_output('git rev-parse HEAD')
-        date = git_output('git show -s --format="%cD" '+commit)
-        commit = g.toUnicode(commit)
-        if trace: g.trace(commit)
-        if commit and short:
-            commit = commit[:8]
-        if trace: g.trace(commit, date)
-        return commit, date
-    except Exception:
-        # We are using a non .git release.
-        # g.es_exception()
-        return None, None
-#@+node:ekr.20161016063719.1: ** get_version_from_json
-def get_version_from_json(short=True):
-    '''Return the commit hash and date from leo/core/commit_timestamp.json.'''
-    trace = False
-    path = g.os_path_finalize_join(
-        g.app.loadDir, '..', 'core', 'commit_timestamp.json')
-    if g.os_path_exists(path):
+#@+<< about install hooks >>
+#@+node:ekr.20150409201910.1: ** << about install hooks >>
+#@@nocolor-node
+#@+at
+# 
+# Developers should copy commit-msg & pre-commit from leo/extentions/hooks to
+# leo-editor/.git/hooks.
+# 
+# These hooks cause Leo to update commit_timestamp.json automatically.
+# 
+# The install_hooks.py script copies these two files to leo-editor/.git/hooks.
+#@-<< about install hooks >>
+# get info from leo/core/commit_timestamp.json
+try:
+    leo_core_path = os.path.dirname(os.path.realpath(__file__))
+        # leoVersion.py is in leo/core
+    commit_path = os.path.join(leo_core_path, 'commit_timestamp.json')
+    commit_info = json.load(open(commit_path))
+    if trace:
+        print('commit_path: %s' % commit_path)
+        print('commit_info: %s' % commit_info)
+    commit_timestamp = commit_info['timestamp']
+    commit_asctime = commit_info['asctime']
+except Exception:
+    # Continue if commit_timestamp.json does not exist.
+    print('Warning: leo/core/commit_timestamp.json does not exist')
+    commit_timestamp = ''
+    commit_asctime = ''
+version = "5.4-b1" # Always used.
+# attempt to grab commit + branch info from git, else ignore it
+git_info = {}
+theDir = os.path.dirname(__file__)
+path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
+if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
+if os.path.exists(path):
+    s = open(path, 'r').read()
+    if s.startswith('ref'):
+        # on a proper branch
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+        path = os.path.join(theDir, '..', '..', '.git', pointer)
         try:
-            d = json.load(open(path))
-            if trace: g.trace(d)
-            commit = d.get('hash')
-            # The legacy pre-commit bash file writes 'asctime' and 'timestamp' keys.
-            date = d.get('date') or d.get('asctime')
-            if commit and short:
-                commit = commit[:8 + (6 if commit.startswith('after ') else 0)]
-            return commit, date
+            s = open(path, 'r').read().strip()[0: 12]
+            # shorten the hash to a unique shortname
+            # (12 characters should be enough until the end of time, for Leo...)
+            git_info['branch'] = branch
+            git_info['commit'] = s
         except Exception:
-            g.es_exception()
-            g.trace('Error decoding', path)
-            return None, None
+            branch = 'None'
+            s = s[0: 12]
     else:
-        g.trace('not found:', path)
-        return None, None
-#@-others
-if testing:
-    commit, date = None, None
-else:
-    commit, date = get_version_from_git(short=True)
-if not date:
-    commit, date = get_version_from_json(short=True)
-if not date:
-    date = static_date
+        branch = 'None'
+        s = s[0: 12]
+    git_info['branch'] = branch
+    git_info['commit'] = s
+build = commit_timestamp
+date = commit_asctime
 #@@language python
 #@@tabwidth -4
 #@-leo

@@ -946,32 +946,40 @@ class LeoApp(object):
     def computeSignon(self):
         app = self
         import leo.core.leoVersion as leoVersion
-        commit, date = leoVersion.commit, leoVersion.date
+        build, date = leoVersion.build, leoVersion.date
+        git_info = leoVersion.git_info
         guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
+                # v = os.sys.getwindowsversion()
+                # sysVersion += ', '.join([str(z) for z in v])
                 # peckj 20140416: determine true OS architecture
                 # the following code should return the proper architecture
                 # regardless of whether or not the python architecture matches
                 # the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
-                data = platform.win32_ver()
-                release, winbuild, sp, ptype = data
+                v = platform.win32_ver()
+                release, winbuild, sp, ptype = v
                 true_platform = os.environ['PROCESSOR_ARCHITECTURE']
                 try:
                     true_platform = os.environ['PROCESSOR_ARCHITEw6432']
                 except KeyError:
                     pass
-                sysVersion = 'Windows %s %s (build %s) %s' % (
-                    release, true_platform, winbuild, sp)
+                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, winbuild, sp)
             except Exception:
                 pass
+        else: sysVersion = sys.platform
+        branch = git_info.get('branch', None)
+        commit = git_info.get('commit', None)
+        if branch is None or commit is None:
+            app.signon1 = 'Not running from a git repo'
         else:
-            sysVersion = sys.platform
-        app.signon = 'Leo %s, %s' % (leoVer, date)
-        app.signon1 = 'Git commit: %s' % (commit) if commit else ''
+            app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
+                branch, commit)
+        app.signon = 'Leo %s, build %s, %s' % (
+            leoVer, build, date)
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
