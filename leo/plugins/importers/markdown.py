@@ -160,7 +160,7 @@ class Markdown_Importer(Importer):
 importer_dict = {
     '@auto': ['@auto-md', '@auto-markdown',],
     'class': Markdown_Importer,
-    'extensions': ['.md', '.rmd'],
+    'extensions': ['.md', '.rmd', '.Rmd',],
 }
 #@@language python
 #@@tabwidth -4
