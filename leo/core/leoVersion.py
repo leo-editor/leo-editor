@@ -48,7 +48,7 @@ except Exception:
     print('Warning: leo/core/commit_timestamp.json does not exist')
     commit_timestamp = ''
     commit_asctime = ''
-version = "5.4-b1" # Always used.
+version = "5.4" # Always used.
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
 theDir = os.path.dirname(__file__)

@@ -978,8 +978,11 @@ class LeoApp(object):
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
                 branch, commit)
-        app.signon = 'Leo %s, build %s, %s' % (
-            leoVer, build, date)
+        app.signon = 'Leo %s' % leoVer
+        if build:
+            app.signon += ', build '+build
+        if date:
+            app.signon += ', '+date
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
