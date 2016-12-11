@@ -18,3 +18,5 @@ stand_alone_globals.leo         export-ignore
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
+
+commit_timestamp.json merge=ours
