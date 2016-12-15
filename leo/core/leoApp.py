@@ -2147,6 +2147,8 @@ class LoadManager(object):
             help='enable ipython support')
         add('--gui',
             help='gui to use (qt/qttabs)')
+        add('--load-type', dest='load_type',
+            help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
             help='start maximized')
         add('--minimized', action='store_true',
@@ -2210,6 +2212,13 @@ class LoadManager(object):
             g.app.qt_use_tabs = True
         assert gui
         g.app.guiArgName = gui
+        # --load-type
+        load_type = options.load_type
+        if load_type:
+            load_type = load_type.lower()
+        else:
+            load_type = 'edit'
+        load_type = '@' + load_type
         # --ipython
         g.app.useIpython = options.use_ipython
         if trace: g.trace('g.app.useIpython', g.app.useIpython)
@@ -2286,6 +2295,7 @@ class LoadManager(object):
         windowFlag = script and script_path_w
         d = {
             'gui': gui,
+            'load_type': load_type,
             'screenshot_fn': screenshot_fn,
             'script': script,
             'select': select,
@@ -2766,14 +2776,14 @@ class LoadManager(object):
                 p = c.rootPosition()
             if not p: return None
         else:
-            # Create an @edit node.
-            s, e = g.readFileIntoString(fn)
-            if s is None: return None
+            # Create an @<file> node.
             p = c.rootPosition()
             if p:
-                p.setHeadString('@edit %s' % fn)
-                p.setBodyString(s)
+                load_type = self.options['load_type']
+                p.setHeadString('%s %s' % (load_type,fn))
+                c.refreshFromDisk()
                 c.selectPosition(p)
+                    
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
