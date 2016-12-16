@@ -88,7 +88,9 @@ class Markdown_Importer(Importer):
         if trace and trace_stack: self.print_stack(self.stack)
         return self.stack[level]
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
-    md_hash_pattern = re.compile(r'^(#+)\s*(\w+)(.*)\n')
+    # md_hash_pattern = re.compile(r'^(#+)\s*(\w+)(.*)\n')
+    md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
+        # 2016/12/16: Allow any non-blank after the hashes.
 
     def is_hash(self, line):
         '''
@@ -98,12 +100,14 @@ class Markdown_Importer(Importer):
         m = self.md_hash_pattern.match(line)
         if m:
             level = len(m.group(1))
-            name = m.group(2) + m.group(3)
-            return level, name
+            # name = m.group(2) + m.group(3)
+            name = m.group(2).strip()
+            if name:
+                return level, name
+            else:
+                return None, None
         else:
             return None, None
-
-            
     #@+node:ekr.20161202085119.1: *4* md_i.is_underline
     md_pattern_table = (
         re.compile(r'^(=+)\n'),
