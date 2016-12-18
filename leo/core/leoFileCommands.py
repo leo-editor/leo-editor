@@ -233,7 +233,7 @@ if sys.platform != 'cli':
         #@+node:ekr.20061004054323: *3* sax.processingInstruction (stylesheet)
         def processingInstruction(self, target, data):
             '''
-            sax: handle and xml processing instruction.
+            sax: handle an xml processing instruction.
             We expect the target to be 'xml-stylesheet'.
             '''
             trace = False and not g.unitTesting
