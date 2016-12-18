@@ -237,7 +237,8 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+expanded="ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20161123115047.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20121011094154.3906,ekr.20090529141856.4780,ekr.20160410152100.1,ekr.20090529141856.4784,ekr.20161204041557.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130061808.1"><vh>Copies</vh>
 <v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
@@ -249,9 +250,9 @@
 <v t="ekr.20090529141856.4698"><vh>Import tests</vh>
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh>Tests of @auto</vh>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
@@ -261,23 +262,23 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -288,10 +289,10 @@
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
@@ -299,7 +300,7 @@
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -307,23 +308,23 @@
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1"><vh>org tests</vh>
+<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 <v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
@@ -421,6 +422,9 @@
 <v t="ekr.20161216141227.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161216141227.2"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20161218104646.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161218104646.2"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -431,6 +435,20 @@
 <v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
 <v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh>
+<v t="ekr.20161218104314.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/python bug #346</vh>
+<v t="ekr.20161218104314.2"><vh>Declarations</vh>
+<v t="ekr.20161218104314.3"><vh>exec_</vh></v>
+</v>
+<v t="ekr.20161218104314.4"><vh>make_parser</vh></v>
+</v>
+<v t="ekr.20161218104646.16"><vh>@@clean c:/leo.repo/leo-editor/leo/test/python bug #346</vh>
+<v t="ekr.20161218104646.17"><vh>Declarations</vh>
+<v t="ekr.20161218104646.18"><vh>exec_</vh></v>
+</v>
+<v t="ekr.20161218104646.19"><vh>make_parser</vh></v>
+</v>
+</v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
@@ -462,17 +480,17 @@
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 <v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 </v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3906" a="E"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
 </v>
 </v>
-<v t="ekr.20160410152100.1"><vh>Tests of @auto-md</vh>
+<v t="ekr.20160410152100.1" a="E"><vh>Tests of @auto-md</vh>
 <v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
 <v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
 <v t="ekr.20161202093709.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
@@ -916,7 +934,7 @@
 <v t="ekr.20161216141315.1"><vh>@test markdown importer-@@-section-name</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh>Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
@@ -970,7 +988,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161204041557.1"><vh>All other tests</vh>
+<v t="ekr.20161204041557.1" a="E"><vh>All other tests</vh>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 <v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
@@ -993,7 +1011,7 @@
 <v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
 </v>
 <v t="ekr.20161130041921.1"></v>
-<v t="ekr.20160410152100.1"></v>
+<v t="ekr.20090529141856.4736"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -5730,7 +5748,22 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.11">@tabwidth -4
     # Required when running unit tests externally.
-
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 
 class test:
@@ -5750,11 +5783,47 @@ class test:
         strings = string.split(s,"\\n")
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+        (1, 'class test'),
+        (2, 'importFilesCommand'),
+        (2, 'convertMoreStringToOutlineAfter'),
+    )
+try:
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        root.doDelete()
+    c.redraw()
 </t>
 <t tx="ekr.20161115063144.12">@tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 
 s = '''\
 
@@ -5768,7 +5837,28 @@ class test:
         pass
 '''
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+        (1, 'class test'),
+        (2, 'spam'),
+        (2, 'foo'),
+    )
+try:
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        root.doDelete()
+    c.redraw()
 </t>
 <t tx="ekr.20161115063144.13">@tabwidth -4
     # Required when running unit tests externally.
@@ -6628,6 +6718,22 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.7">@tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
@@ -6636,19 +6742,73 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20161115063144.8">@tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 import leo.core.leoGlobals as g
 
 a = 3
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 </t>
 <t tx="ekr.20161115063144.9">@tabwidth -4
     # Required when running unit tests externally.
@@ -9096,6 +9256,157 @@ finally:
     if 1:
         p.deleteAllChildren()
         c.redraw()
+</t>
+<t tx="ekr.20161218103650.1">@tabwidth -4
+    # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+s = '''\
+import sys
+
+if sys.version_info[0] &gt;= 3:
+    exec_ = eval('exec')
+else:
+    def exec_(_code_, _globs_=None, _locs_=None):
+        """Execute code in a namespace."""
+        if _globs_ is None:
+            frame = sys._getframe(1)
+            _globs_ = frame.f_globals
+            if _locs_ is None:
+                _locs_ = frame.f_locals
+            del frame
+        elif _locs_ is None:
+            _locs_ = _globs_
+        exec("""exec _code_ in _globs_, _locs_""")
+
+def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+'''
+table = (
+    (1, 'Declarations'),
+    (2, 'exec_'),
+    (1, 'make_parser'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20161218104314.1">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161218104314.2">import sys
+
+if sys.version_info[0] &gt;= 3:
+    exec_ = eval('exec')
+else:
+    @others
+</t>
+<t tx="ekr.20161218104314.3">def exec_(_code_, _globs_=None, _locs_=None):
+    """Execute code in a namespace."""
+    if _globs_ is None:
+        frame = sys._getframe(1)
+        _globs_ = frame.f_globals
+        if _locs_ is None:
+            _locs_ = frame.f_locals
+        del frame
+    elif _locs_ is None:
+        _locs_ = _globs_
+    exec("""exec _code_ in _globs_, _locs_""")
+
+</t>
+<t tx="ekr.20161218104314.4">def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+</t>
+<t tx="ekr.20161218104646.1">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161218104646.16">@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20161218104646.17">import sys
+
+if sys.version_info[0] &gt;= 3:
+    exec_ = eval('exec')
+else:
+    @others
+</t>
+<t tx="ekr.20161218104646.18">def exec_(_code_, _globs_=None, _locs_=None):
+    """Execute code in a namespace."""
+    if _globs_ is None:
+        frame = sys._getframe(1)
+        _globs_ = frame.f_globals
+        if _locs_ is None:
+            _locs_ = frame.f_locals
+        del frame
+    elif _locs_ is None:
+        _locs_ = _globs_
+    exec("""exec _code_ in _globs_, _locs_""")
+
+</t>
+<t tx="ekr.20161218104646.19">def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+</t>
+<t tx="ekr.20161218104646.2">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
 </tnodes>
 </leo_file>

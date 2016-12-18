@@ -15004,6 +15004,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161218104646.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161218104646.2: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -15095,6 +15108,144 @@ foo()
 '''
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161218103650.1: *6* @test python bug #346
+@tabwidth -4
+    # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+s = '''\
+import sys
+
+if sys.version_info[0] >= 3:
+    exec_ = eval('exec')
+else:
+    def exec_(_code_, _globs_=None, _locs_=None):
+        """Execute code in a namespace."""
+        if _globs_ is None:
+            frame = sys._getframe(1)
+            _globs_ = frame.f_globals
+            if _locs_ is None:
+                _locs_ = frame.f_locals
+            del frame
+        elif _locs_ is None:
+            _locs_ = _globs_
+        exec("""exec _code_ in _globs_, _locs_""")
+
+def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+'''
+table = (
+    (1, 'Declarations'),
+    (2, 'exec_'),
+    (1, 'make_parser'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20161218104314.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python bug #346
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161218104314.2: *8* Declarations
+import sys
+
+if sys.version_info[0] >= 3:
+    exec_ = eval('exec')
+else:
+    @others
+#@+node:ekr.20161218104314.3: *9* exec_
+def exec_(_code_, _globs_=None, _locs_=None):
+    """Execute code in a namespace."""
+    if _globs_ is None:
+        frame = sys._getframe(1)
+        _globs_ = frame.f_globals
+        if _locs_ is None:
+            _locs_ = frame.f_locals
+        del frame
+    elif _locs_ is None:
+        _locs_ = _globs_
+    exec("""exec _code_ in _globs_, _locs_""")
+
+#@+node:ekr.20161218104314.4: *8* make_parser
+def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+#@+node:ekr.20161218104646.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/python bug #346
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161218104646.17: *8* Declarations
+import sys
+
+if sys.version_info[0] >= 3:
+    exec_ = eval('exec')
+else:
+    @others
+#@+node:ekr.20161218104646.18: *9* exec_
+def exec_(_code_, _globs_=None, _locs_=None):
+    """Execute code in a namespace."""
+    if _globs_ is None:
+        frame = sys._getframe(1)
+        _globs_ = frame.f_globals
+        if _locs_ is None:
+            _locs_ = frame.f_locals
+        del frame
+    elif _locs_ is None:
+        _locs_ = _globs_
+    exec("""exec _code_ in _globs_, _locs_""")
+
+#@+node:ekr.20161218104646.19: *8* make_parser
+def make_parser():
+
+    parser = argparse.ArgumentParser(
+        description="""Raster calcs. with GDAL.
+        The first --grid defines the projection, extent, cell size, and origin
+        for all calculations, all other grids are transformed and resampled
+        as needed to match.""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15122,6 +15273,22 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.7: *6* @test python comment after dict assign
 @tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
@@ -15130,19 +15297,73 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20161115063144.8: *6* @test python decls test 1
 @tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 
 s = '''\
 import leo.core.leoGlobals as g
 
 a = 3
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20161115063144.9: *6* @test python decorator
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15194,7 +15415,22 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.11: *6* @test python def test 1
 @tabwidth -4
     # Required when running unit tests externally.
-
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 
 class test:
@@ -15214,11 +15450,47 @@ class test:
         strings = string.split(s,"\\n")
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+        (1, 'class test'),
+        (2, 'importFilesCommand'),
+        (2, 'convertMoreStringToOutlineAfter'),
+    )
+try:
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        root.doDelete()
+    c.redraw()
 #@+node:ekr.20161115063144.12: *6* @test python def test 2
 @tabwidth -4
     # Required when running unit tests externally.
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
 
 s = '''\
 
@@ -15232,7 +15504,28 @@ class test:
         pass
 '''
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+        (1, 'class test'),
+        (2, 'spam'),
+        (2, 'foo'),
+    )
+try:
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        root.doDelete()
+    c.redraw()
 #@+node:ekr.20161115063144.13: *6* @test python docstring only
 @tabwidth -4
     # Required when running unit tests externally.

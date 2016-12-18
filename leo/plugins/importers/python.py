@@ -94,7 +94,49 @@ class Py_Importer(Importer):
                 add_key(d, block1[0], ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
-    #@+node:ekr.20161119161953.1: *3* py_i.Overrides for i.gen_lines
+    #@+node:ekr.20161119161953.1: *3* py_i.gen_lines & overrides
+    def gen_lines(self, s, parent):
+        '''
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        '''
+        trace = False and g.unitTesting
+        tail_p = None
+        prev_state = self.state_class()
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        self.inject_lines_ivar(parent)
+        ### if trace: g.pdb()
+        if 0:
+            # Add an unindented @others for the top-level node.
+            self.add_line(parent, '@others\n')
+            target.at_others_flag = True
+            target.ref_flag = True
+        lines = g.splitLines(s)
+        self.skip = 0
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            top = stack[-1]
+            if trace: self.trace_status(line, new_state, prev_state, stack, top)
+            if self.skip > 0:
+                self.skip -= 1
+            elif self.is_ws_line(line):
+                p = tail_p or top.p
+                self.add_line(p, line)
+            elif self.starts_block(i, lines, new_state, prev_state):
+                tail_p = None
+                self.start_new_block(i, lines, new_state, prev_state, stack)
+            elif self.ends_block(line, new_state, prev_state, stack):
+                tail_p = self.end_block(line, new_state, stack)
+            elif i == 0:
+                self.gen_ref(line, parent, target)
+                p = self.create_child_node(parent,
+                    body=line, headline='Declarations')
+                stack.append(Target(p, new_state))
+            else:
+                p = tail_p or top.p
+                self.add_line(p, line)
+            prev_state = new_state
     #@+node:ekr.20161116173901.1: *4* python_i.add_underindented_line (end_block)
     def add_underindented_line(self, line, new_state, stack):
         '''
