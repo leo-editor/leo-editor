@@ -52,30 +52,39 @@ version = "5.4" # Always used.
 # attempt to grab commit + branch info from git, else ignore it
 git_info = {}
 theDir = os.path.dirname(__file__)
-path = os.path.join(theDir, '..', '..', '.git', 'HEAD')
+git_dir = os.path.join(theDir, '..', '..', '.git')
+path = os.path.join(git_dir, 'HEAD')
 if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
-if os.path.exists(path):
-    s = open(path, 'r').read()
-    if s.startswith('ref'):
-        # on a proper branch
-        pointer = s.split()[1]
-        dirs = pointer.split('/')
-        branch = dirs[-1]
-        path = os.path.join(theDir, '..', '..', '.git', pointer)
-        try:
-            s = open(path, 'r').read().strip()[0: 12]
-            # shorten the hash to a unique shortname
-            # (12 characters should be enough until the end of time, for Leo...)
-            git_info['branch'] = branch
-            git_info['commit'] = s
-        except Exception:
+try:
+    if os.path.exists(path):
+        s = open(path, 'r').read()
+        if s.startswith('ref'):
+            # on a proper branch
+            pointer = s.split()[1]
+            dirs = pointer.split('/')
+            branch = dirs[-1]
+            path = os.path.join(git_dir, pointer)
+            try:
+                s = open(path, 'r').read().strip()[0: 12]
+                # shorten the hash to a unique shortname
+            except IOError:
+                try:
+                    path = os.path.join(git_dir, 'packed-refs')
+                    for line in open(path):
+                        if line.strip().endswith(' '+pointer):
+                            s = line.split()[0][0: 12]
+                            break
+                except IOError:
+                    branch = 'None'
+                    s = s[0: 12]
+        else:
             branch = 'None'
             s = s[0: 12]
-    else:
-        branch = 'None'
-        s = s[0: 12]
-    git_info['branch'] = branch
-    git_info['commit'] = s
+        git_info['branch'] = branch
+        git_info['commit'] = s
+except Exception as e:
+    # don't crash Leo, this info. not essential
+    print(e)
 build = commit_timestamp
 date = commit_asctime
 #@@language python
