@@ -99,6 +99,7 @@ class backlinkController(object):
         g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
+        self.updateTabInt()
     #@+node:tbrown.20091005145931.5227: *3* fixIDs
     def fixIDs(self, c):
 
@@ -135,6 +136,10 @@ class backlinkController(object):
         links = on.unknownAttributes['_bklnk']['links']
 
         for n,link in enumerate(links):
+
+            on.setDirty()
+            self.c.setChanged(True)
+
             if type_ == link[0] and to == link[1]:
                 del links[n]
                 v = self.vnode[to]
@@ -218,6 +223,9 @@ class backlinkController(object):
         """make a link"""
 
         self.vlink(from_.v, to.v, type_=type_)
+        from_.setDirty()
+        to.setDirty()
+        self.c.setChanged(True)
 
     #@+node:ekr.20090616105756.3950: *3* vlink
     def vlink(self, v0, v1, type_='directed'):
