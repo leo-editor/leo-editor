@@ -98,6 +98,6 @@ class CText_Importer(Importer):
 #@-others
 importer_dict = {
     '@auto': ['@auto-ctext',],
-    'class': CText_Importer, ### CTextScanner,
+    'class': CText_Importer,
 }
 #@-leo

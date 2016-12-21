@@ -473,7 +473,7 @@ class Importer(object):
         fn = g.shortFileName(self.root.h)
         lines = g.splitLines(s)
         count, result, tab_width = 0, [], self.tab_width
-        self.ws_error = False ### 2016/11/23
+        self.ws_error = False # 2016/11/23
         if tab_width < 0: # Convert tabs to blanks.
             for n, line in enumerate(lines):
                 i, w = g.skip_leading_ws_with_indent(line, 0, tab_width)

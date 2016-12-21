@@ -110,7 +110,6 @@ class Py_Importer(Importer):
         lines = g.splitLines(s)
         self.skip = 0
         first = True
-        # if trace: g.pdb()
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]

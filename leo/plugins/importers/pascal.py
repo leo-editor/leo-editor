@@ -43,31 +43,7 @@ class Pascal_Importer(Importer):
         # This underflow could happen as the result of extra 'end' statement in user code.
         if len(stack) > 1:
             stack.pop()
-        
-        ###
-        # assert len(stack) > 1 # Fail on entry.
-        # while stack:
-            # top_state = stack[-1].state
-            # if new_state.level() < top_state.level():
-                # if trace: g.trace('new_state < top_state', top_state)
-                # assert len(stack) > 1, stack # <
-                # stack.pop()
-            # elif top_state.level() == new_state.level():
-                # if trace: g.trace('new_state == top_state', top_state)
-                # assert len(stack) > 1, stack # ==
-                # # This is the only difference between i.cut_stack and python/cs.cut_stack
-                # # stack.pop()
-                # break
-            # else:
-                # # This happens often in valid Python programs.
-                # if trace: g.trace('new_state > top_state', top_state)
-                # break
-        # # Restore the guard entry if necessary.
-        # if len(stack) == 1:
-            # if trace: g.trace('RECOPY:', stack)
-            # stack.append(stack[-1])
-        # assert len(stack) > 1 # Fail on exit.
-        # if trace: g.trace('new target.p:', stack[-1].p.h)
+
     #@+node:ekr.20161127104208.1: *3* pascal_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
         '''True if line ends a function or procedure.'''
