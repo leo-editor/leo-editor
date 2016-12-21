@@ -342,7 +342,7 @@ class quickMove(object):
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
-    def __del__(self, c):
+    def __del__(self, c=None):
         # pylint: disable=unexpected-special-method-signature
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
