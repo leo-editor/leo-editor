@@ -75,6 +75,7 @@ need to do so.
 #@-<< linescanner docstring >>
 #@+<< linescanner imports >>
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>
+# pylint: disable=wrong-import-order
 import leo.core.leoGlobals as g
 if g.isPython3:
     import io
@@ -289,7 +290,7 @@ class Importer(object):
             for data in aList:
                 kind, pattern, ends = data
                 if self.match(s, i, pattern):
-                    if ends == None:
+                    if ends is None:
                         found = True
                         new_context = context
                         break
@@ -941,10 +942,10 @@ class Importer(object):
         for i in range(min(n1, n2)):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
-                 print('first mismatched line: %s' % (i+1))
-                 print(repr(line1))
-                 print(repr(line2))
-                 break
+                print('first mismatched line: %s' % (i+1))
+                print(repr(line1))
+                print(repr(line2))
+                break
         else:
             print('all common lines match')
     #@+node:ekr.20161108131153.5: *5* i.strip_*
