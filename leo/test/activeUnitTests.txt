@@ -15017,6 +15017,32 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161220185154.21: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161220185154.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161221062411.1: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161221062411.2: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -15111,7 +15137,7 @@ tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161218103650.1: *6* @test python bug #346
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
+if 1:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -15178,74 +15204,6 @@ finally:
     if 1:
         test_node.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20161218104314.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python bug #346
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20161218104314.2: *8* Declarations
-import sys
-
-if sys.version_info[0] >= 3:
-    exec_ = eval('exec')
-else:
-    @others
-#@+node:ekr.20161218104314.3: *9* exec_
-def exec_(_code_, _globs_=None, _locs_=None):
-    """Execute code in a namespace."""
-    if _globs_ is None:
-        frame = sys._getframe(1)
-        _globs_ = frame.f_globals
-        if _locs_ is None:
-            _locs_ = frame.f_locals
-        del frame
-    elif _locs_ is None:
-        _locs_ = _globs_
-    exec("""exec _code_ in _globs_, _locs_""")
-
-#@+node:ekr.20161218104314.4: *8* make_parser
-def make_parser():
-
-    parser = argparse.ArgumentParser(
-        description="""Raster calcs. with GDAL.
-        The first --grid defines the projection, extent, cell size, and origin
-        for all calculations, all other grids are transformed and resampled
-        as needed to match.""",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-)
-#@+node:ekr.20161218104646.16: *7* @@clean c:/leo.repo/leo-editor/leo/test/python bug #346
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20161218104646.17: *8* Declarations
-import sys
-
-if sys.version_info[0] >= 3:
-    exec_ = eval('exec')
-else:
-    @others
-#@+node:ekr.20161218104646.18: *9* exec_
-def exec_(_code_, _globs_=None, _locs_=None):
-    """Execute code in a namespace."""
-    if _globs_ is None:
-        frame = sys._getframe(1)
-        _globs_ = frame.f_globals
-        if _locs_ is None:
-            _locs_ = frame.f_locals
-        del frame
-    elif _locs_ is None:
-        _locs_ = _globs_
-    exec("""exec _code_ in _globs_, _locs_""")
-
-#@+node:ekr.20161218104646.19: *8* make_parser
-def make_parser():
-
-    parser = argparse.ArgumentParser(
-        description="""Raster calcs. with GDAL.
-        The first --grid defines the projection, extent, cell size, and origin
-        for all calculations, all other grids are transformed and resampled
-        as needed to match.""",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-)
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15398,7 +15356,22 @@ finally:
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.
-
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 class aClass:
     def outerDef(self):
@@ -15410,8 +15383,29 @@ class aClass:
 
         a = 3
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'class aClass'),
+    (2, 'outerDef'),
+    (3, 'pr'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20161115063144.11: *6* @test python def test 1
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15602,6 +15596,23 @@ class mainPages(mammalProviderBase):
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161117000902.1: *6* @test python leoImport.py (small)
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = r"""
 # -*- coding: utf-8 -*-
 import leo.core.leoGlobals as g
@@ -15658,8 +15669,338 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
+table = (
+    (1, 'Declarations'),
+    (2, "class LeoImportCommands"),
+    (2, "createOutline"),
+    (2, "dispatch"),
+    (2, "scanner_for_at_auto"),
+    (2, "scanner_for_at_auto_cb"),
+    (2, "if trace: g.trace('not found', p.h, sorted(d.keys()))"),
+    (2, "scanner_for_ext"),
+    (2, "scanner_for_ext_cb"),
+    (2, "else:"),
+    (2, "get_import_filename"),
+    (2, "init_import"),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 0:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 0:
+        test_node.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20161220185008.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python leoImport.py (small)
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+# -*- coding: utf-8 -*-
+@others
+@language python
+@tabwidth -4
+@ignore
+#@+node:ekr.20161220185008.2: *8* Declarations
+import leo.core.leoGlobals as g
+#@+node:ekr.20161220185008.3: *8* class LeoImportCommands
+class LeoImportCommands(object):
+    '''A class implementing all of Leo's import/export code.'''
+    @others
+#@+node:ekr.20161220185008.4: *9* createOutline
+def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    '''Create an outline by importing a file or string.'''
+
+#@+node:ekr.20161220185008.5: *9* dispatch
+def dispatch(self, ext, p):
+    '''Return the correct scanner function for p, an @auto node.'''
+    # Match the @auto type first, then the file extension.
+    return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+#@+node:ekr.20161220185008.6: *9* scanner_for_at_auto
+def scanner_for_at_auto(self, p):
+    '''A factory returning a scanner function for p, an @auto node.'''
+    d = self.atAutoDict
+    for key in d.keys():
+        aClass = d.get(key)
+        if aClass and g.match_word(p.h, 0, key):
+            if trace: g.trace('found', aClass.__name__)
+
+            @others
+#@+node:ekr.20161220185008.7: *10* scanner_for_at_auto_cb
+def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+if trace: g.trace('found', p.h)
+return scanner_for_at_auto_cb
+#@+node:ekr.20161220185008.8: *10* if trace: g.trace('not found', p.h, sorted(d.keys()))
+if trace: g.trace('not found', p.h, sorted(d.keys()))
+return None
+#@+node:ekr.20161220185008.9: *9* scanner_for_ext
+def scanner_for_ext(self, ext):
+    '''A factory returning a scanner function for the given file extension.'''
+    aClass = self.classDispatchDict.get(ext)
+    if aClass:
+
+        @others
+#@+node:ekr.20161220185008.10: *10* scanner_for_ext_cb
+def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+return scanner_for_ext_cb
+#@+node:ekr.20161220185008.11: *10* else:
+else:
+    return None
+#@+node:ekr.20161220185008.12: *9* get_import_filename
+def get_import_filename(self, fileName, parent):
+    '''Return the absolute path of the file and set .default_directory.'''
+
+#@+node:ekr.20161220185008.13: *9* init_import
+def init_import(self, atAuto, atShadow, ext, fileName, s):
+    '''Init ivars & vars for imports.'''
+#@+node:ekr.20161220185115.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python leoImport.py (small)
+
+# -*- coding: utf-8 -*-
+@others
+@language python
+@tabwidth -4
+@ignore
+#@+node:ekr.20161220185115.2: *8* Declarations
+import leo.core.leoGlobals as g
+#@+node:ekr.20161220185115.3: *8* class LeoImportCommands
+class LeoImportCommands(object):
+    '''A class implementing all of Leo's import/export code.'''
+    @others
+#@+node:ekr.20161220185115.4: *9* createOutline
+def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    '''Create an outline by importing a file or string.'''
+
+#@+node:ekr.20161220185115.5: *9* dispatch
+def dispatch(self, ext, p):
+    '''Return the correct scanner function for p, an @auto node.'''
+    # Match the @auto type first, then the file extension.
+    return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+#@+node:ekr.20161220185115.6: *9* scanner_for_at_auto
+def scanner_for_at_auto(self, p):
+    '''A factory returning a scanner function for p, an @auto node.'''
+    d = self.atAutoDict
+    for key in d.keys():
+        aClass = d.get(key)
+        if aClass and g.match_word(p.h, 0, key):
+            if trace: g.trace('found', aClass.__name__)
+
+            @others
+#@+node:ekr.20161220185115.7: *10* scanner_for_at_auto_cb
+def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+if trace: g.trace('found', p.h)
+return scanner_for_at_auto_cb
+#@+node:ekr.20161220185115.8: *10* if trace: g.trace('not found', p.h, sorted(d.keys()))
+if trace: g.trace('not found', p.h, sorted(d.keys()))
+return None
+#@+node:ekr.20161220185115.9: *9* scanner_for_ext
+def scanner_for_ext(self, ext):
+    '''A factory returning a scanner function for the given file extension.'''
+    aClass = self.classDispatchDict.get(ext)
+    if aClass:
+
+        @others
+#@+node:ekr.20161220185115.10: *10* scanner_for_ext_cb
+def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+return scanner_for_ext_cb
+#@+node:ekr.20161220185115.11: *10* else:
+else:
+    return None
+#@+node:ekr.20161220185115.12: *9* get_import_filename
+def get_import_filename(self, fileName, parent):
+    '''Return the absolute path of the file and set .default_directory.'''
+
+#@+node:ekr.20161220185115.13: *9* init_import
+def init_import(self, atAuto, atShadow, ext, fileName, s):
+    '''Init ivars & vars for imports.'''
+#@+node:ekr.20161220185158.13: *7* @@clean c:/leo.repo/leo-editor/leo/test/python leoImport.py (small)
+
+# -*- coding: utf-8 -*-
+@others
+@language python
+@tabwidth -4
+@ignore
+#@+node:ekr.20161220185158.14: *8* Declarations
+import leo.core.leoGlobals as g
+#@+node:ekr.20161220185158.15: *8* class LeoImportCommands
+class LeoImportCommands(object):
+    '''A class implementing all of Leo's import/export code.'''
+    @others
+#@+node:ekr.20161220185158.16: *9* createOutline
+def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    '''Create an outline by importing a file or string.'''
+
+#@+node:ekr.20161220185158.17: *9* dispatch
+def dispatch(self, ext, p):
+    '''Return the correct scanner function for p, an @auto node.'''
+    # Match the @auto type first, then the file extension.
+    return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+#@+node:ekr.20161220185158.18: *9* scanner_for_at_auto
+def scanner_for_at_auto(self, p):
+    '''A factory returning a scanner function for p, an @auto node.'''
+    d = self.atAutoDict
+    for key in d.keys():
+        aClass = d.get(key)
+        if aClass and g.match_word(p.h, 0, key):
+            if trace: g.trace('found', aClass.__name__)
+
+            @others
+#@+node:ekr.20161220185158.19: *10* scanner_for_at_auto_cb
+def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+if trace: g.trace('found', p.h)
+return scanner_for_at_auto_cb
+#@+node:ekr.20161220185158.20: *10* if trace: g.trace('not found', p.h, sorted(d.keys()))
+if trace: g.trace('not found', p.h, sorted(d.keys()))
+return None
+#@+node:ekr.20161220185158.21: *9* scanner_for_ext
+def scanner_for_ext(self, ext):
+    '''A factory returning a scanner function for the given file extension.'''
+    aClass = self.classDispatchDict.get(ext)
+    if aClass:
+
+        @others
+#@+node:ekr.20161220185158.22: *10* scanner_for_ext_cb
+def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+return scanner_for_ext_cb
+#@+node:ekr.20161220185158.23: *10* else:
+else:
+    return None
+#@+node:ekr.20161220185158.24: *9* get_import_filename
+def get_import_filename(self, fileName, parent):
+    '''Return the absolute path of the file and set .default_directory.'''
+
+#@+node:ekr.20161220185158.25: *9* init_import
+def init_import(self, atAuto, atShadow, ext, fileName, s):
+    '''Init ivars & vars for imports.'''
+#@+node:ekr.20161221062414.15: *7* @@clean c:/leo.repo/leo-editor/leo/test/python leoImport.py (small)
+
+# -*- coding: utf-8 -*-
+@others
+@language python
+@tabwidth -4
+@ignore
+#@+node:ekr.20161221062414.16: *8* Declarations
+import leo.core.leoGlobals as g
+#@+node:ekr.20161221062414.17: *8* class LeoImportCommands
+class LeoImportCommands(object):
+    '''A class implementing all of Leo's import/export code.'''
+    @others
+#@+node:ekr.20161221062414.18: *9* createOutline
+def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    '''Create an outline by importing a file or string.'''
+
+#@+node:ekr.20161221062414.19: *9* dispatch
+def dispatch(self, ext, p):
+    '''Return the correct scanner function for p, an @auto node.'''
+    # Match the @auto type first, then the file extension.
+    return self.scanner_for_at_auto(p) or self.scanner_for_ext(ext)
+#@+node:ekr.20161221062414.20: *9* scanner_for_at_auto
+def scanner_for_at_auto(self, p):
+    '''A factory returning a scanner function for p, an @auto node.'''
+    d = self.atAutoDict
+    for key in d.keys():
+        aClass = d.get(key)
+        if aClass and g.match_word(p.h, 0, key):
+            if trace: g.trace('found', aClass.__name__)
+
+            @others
+#@+node:ekr.20161221062414.21: *10* scanner_for_at_auto_cb
+def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+if trace: g.trace('found', p.h)
+return scanner_for_at_auto_cb
+#@+node:ekr.20161221062414.22: *10* if trace: g.trace('not found', p.h, sorted(d.keys()))
+if trace: g.trace('not found', p.h, sorted(d.keys()))
+return None
+#@+node:ekr.20161221062414.23: *9* scanner_for_ext
+def scanner_for_ext(self, ext):
+    '''A factory returning a scanner function for the given file extension.'''
+    aClass = self.classDispatchDict.get(ext)
+    if aClass:
+
+        @others
+#@+node:ekr.20161221062414.24: *10* scanner_for_ext_cb
+def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+    try:
+        scanner = aClass(importCommands=self, atAuto=atAuto)
+        return scanner.run(s, parent, prepass=prepass)
+    except Exception:
+        g.es_print('Exception running', aClass.__name__)
+        g.es_exception()
+        return None
+
+return scanner_for_ext_cb
+#@+node:ekr.20161221062414.25: *10* else:
+else:
+    return None
+#@+node:ekr.20161221062414.26: *9* get_import_filename
+def get_import_filename(self, fileName, parent):
+    '''Return the absolute path of the file and set .default_directory.'''
+
+#@+node:ekr.20161221062414.27: *9* init_import
+def init_import(self, atAuto, atShadow, ext, fileName, s):
+    '''Init ivars & vars for imports.'''
 #@+node:ekr.20161115063144.18: *6* @test python looks like section ref
 # ~/at-auto-test.py
 
@@ -15871,13 +16212,27 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.31: *6* @test python underindent method
 @tabwidth -4
     # Required when running unit tests externally.
-
+if 1:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 
 class emptyClass: 
 
     def spam():
-
         """docstring line 1
 under-indented docstring line"""
         pass
@@ -15885,8 +16240,29 @@ under-indented docstring line"""
 def followingDef(): # comment
     pass
 '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'class emptyClass'),
+    (2, 'spam'),
+    (1, 'followingDef'),
+)
+try:
+    test_node = p.copy()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+finally:
+    if 1:
+        test_node.deleteAllChildren()
+    c.redraw()
 #@+node:ekr.20161115063144.32: *6* @test python unindent in triple string does not end function
 @tabwidth -4
     # Required when running unit tests externally.
