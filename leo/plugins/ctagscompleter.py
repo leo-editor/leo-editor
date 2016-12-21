@@ -30,7 +30,7 @@ import leo.core.leoGlobals as g
 # pylint: disable=no-name-in-module
 from leo.core.leoQt import isQt5,QtCore,QtGui
 if isQt5:
-    from PyQt5.QtGui import QCompleter
+    from PyQt5.QtWidgets import QCompleter
 else:
     from PyQt4.QtGui import QCompleter
 import os
