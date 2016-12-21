@@ -15069,6 +15069,58 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161221080848.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161221080848.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161221091453.20: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161221091453.21: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161221091950.20: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161221091950.21: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161221092230.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161221092230.11: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -15078,10 +15130,6 @@ print('start python tests')
 import leo.plugins.importers.python as python
 # import imp
 # imp.reload(python)
-<< define python tests >>
-importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_ScanState)
-#@+node:ekr.20161115092708.2: *7* << define python tests >>
 # A list of dictionaries.
 if 0:
     tests = [
@@ -15107,6 +15155,8 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
+importer = python.Py_Importer(c.importCommands, atAuto=True)
+importer.test_scan_state(tests, State=python.Python_ScanState)
 #@+node:ekr.20161115063144.3: *6* @test python bad class test
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15163,7 +15213,7 @@ tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161218103650.1: *6* @test python bug #346
 @tabwidth -4
     # Required when running unit tests externally.
-if 1:
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -15208,7 +15258,7 @@ def make_parser():
 )
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
     (2, 'exec_'),
     (1, 'make_parser'),
 )
@@ -15282,7 +15332,7 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
 )
 try:
     test_node = p.copy()
@@ -15328,7 +15378,7 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
 )
 try:
     test_node = p.copy()
@@ -15639,7 +15689,7 @@ if 0:
 else:
     ic = c.importCommands
 
-s = r"""
+s = """\
 # -*- coding: utf-8 -*-
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
@@ -15695,17 +15745,16 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
+decls = g.angleBrackets('Declarations')
 table = (
-    (1, 'Declarations'),
-    (2, "class LeoImportCommands"),
+    (1, decls),
+    (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
-    (2, "scanner_for_at_auto_cb"),
-    (2, "if trace: g.trace('not found', p.h, sorted(d.keys()))"),
+    (3, "scanner_for_at_auto_cb"),
     (2, "scanner_for_ext"),
-    (2, "scanner_for_ext_cb"),
-    (2, "else:"),
+    (3, "scanner_for_ext_cb"),
     (2, "get_import_filename"),
     (2, "init_import"),
 )
@@ -15716,7 +15765,7 @@ try:
     root = p.lastChild()
     assert root.h.startswith('@@'), root.h
     p = root.firstChild()
-    if 0:
+    if 1:
         for n, h in table:
             n2 = p.level() - root.level()
             assert h == p.h, (h, p.h)
@@ -15724,7 +15773,7 @@ try:
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
 finally:
-    if 0:
+    if 1:
         test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.18: *6* @test python looks like section ref

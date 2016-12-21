@@ -558,7 +558,7 @@ class Importer(object):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False and g.unitTesting
+        trace = False # and g.unitTesting
         tail_p = None
         prev_state = self.state_class()
         target = Target(parent, prev_state)
@@ -634,7 +634,7 @@ class Importer(object):
         return tail_p
     #@+node:ekr.20161127102339.1: *5* i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line does not end the block.'''
+        '''True if line ends the block.'''
         # Comparing new_state against prev_state does not work for python.
         top = stack[-1]
         return new_state.level() < top.state.level()
@@ -801,7 +801,6 @@ class Importer(object):
                     parent = parent.parent()
                 self.set_lines(p, lines)
                 self.extend_lines(parent, reversed(tail))
-                
     #@+node:ekr.20161110130337.1: *5* i.unindent_all_nodes
     def unindent_all_nodes(self, parent):
         '''Unindent all nodes in parent's tree.'''
@@ -859,7 +858,7 @@ class Importer(object):
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
-        trace = False and g.unitTesting
+        trace = False # and g.unitTesting
         trace_all = True
         trace_lines = True
         trace_status = True
@@ -874,17 +873,19 @@ class Importer(object):
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
+        if self.strict:
+            # Ignore blank lines only.
+            # Adding nodes may add blank lines.
+            lines1 = self.strip_blank_lines(lines1)
+            lines2 = self.strip_blank_lines(lines2)
+        else:
+            # Ignore blank lines and leading whitespace.
+            # Importing may regularize whitespace, and that's good.
+            lines1 = self.strip_all(lines1)
+            lines2 = self.strip_all(lines2)
         if trace and trace_all:
             g.trace('===== entry')
             self.trace_lines(lines1, lines2, parent)
-        if self.ws_error:
-            if trace and trace_status: g.trace('===== ws_error: cleaning lws')
-            lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
-        else:
-            lines1, lines2 = self.clean_blank_lines(lines1), self.clean_blank_lines(lines2)
-        # Forgive trailing whitespace problems in the last line:
-        if True:
-            lines1, lines2 = self.clean_last_lines(lines1), self.clean_last_lines(lines2)
         ok = lines1 == lines2
         if not ok and not self.strict:
             if trace:

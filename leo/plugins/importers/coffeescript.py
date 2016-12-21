@@ -74,7 +74,7 @@ class CS_Importer(Importer):
         if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.gen_lines
-    #@+node:ekr.20161118134555.2: *4* coffee_i.add_underindented_line (Same as Python)
+    #@+node:ekr.20161118134555.2: *4* coffee_i.end_block
     def end_block(self, line, new_state, stack):
         '''
         Handle an unusual case: an underindented tail line.
@@ -92,9 +92,6 @@ class CS_Importer(Importer):
             top.gen_refs = True
         tail_p = None if self.gen_refs else top.p
         return tail_p
-
-    ### add_underindented_line = end_block
-
     #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''

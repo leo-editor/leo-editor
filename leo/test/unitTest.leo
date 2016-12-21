@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161221065139.3"><vh>@gnxs</vh></v>
+<v t="ekr.20161221092153.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20161221065137.10"><vh>@gnxs</vh></v>
+<v t="ekr.20161221092151.11"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20161221065137.3"><vh>@gnxs</vh></v>
+<v t="ekr.20161221092151.4"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161221065136.7"><vh>@gnxs</vh></v>
+<v t="ekr.20161221092150.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -116,6 +116,14 @@
 <v t="ekr.20161221065120.209"><vh>@data:#@auto</vh></v>
 <v t="ekr.20161221065120.210"><vh>@data:#@auto</vh>
 <v t="ekr.20161221065120.211"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161221092134.208"><vh>@data:#@auto</vh></v>
+<v t="ekr.20161221092134.209"><vh>@data:#@auto</vh>
+<v t="ekr.20161221092134.210"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161221092134.211"><vh>@data:#@auto</vh></v>
+<v t="ekr.20161221092134.212"><vh>@data:#@auto</vh>
+<v t="ekr.20161221092134.213"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -253,7 +261,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130061808.1"><vh>Copies</vh>
 <v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
@@ -452,13 +460,23 @@
 <v t="ekr.20161221065216.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161221065216.8"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20161221080848.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221080848.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221091453.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221091453.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221091950.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221091950.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221092230.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221092230.11"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh>
-<v t="ekr.20161115092708.2"><vh>&lt;&lt; define python tests &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
 <v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
 <v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
@@ -1017,16 +1035,12 @@
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
 </v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh>
-<v t="ekr.20161205200332.1"><vh>@@@file c:/leo.repo/leo-editor/leo/test/ctext</vh></v>
-<v t="ekr.20161206165855.1"><vh>@clean c:/leo.repo/leo-editor/leo/test/ctext</vh></v>
-</v>
+<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
 <v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
 <v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
 </v>
 <v t="ekr.20161130041921.1"></v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20161117000902.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -6829,7 +6843,7 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
 )
 try:
     test_node = p.copy()
@@ -6875,7 +6889,7 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
 )
 try:
     test_node = p.copy()
@@ -6931,11 +6945,7 @@ finally:
 import leo.plugins.importers.python as python
 # import imp
 # imp.reload(python)
-&lt;&lt; define python tests &gt;&gt;
-importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_ScanState)
-</t>
-<t tx="ekr.20161115092708.2"># A list of dictionaries.
+# A list of dictionaries.
 if 0:
     tests = [
         # g.Bunch(line='s = "\\""', ctx=('', '')),
@@ -6960,6 +6970,8 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
+importer = python.Py_Importer(c.importCommands, atAuto=True)
+importer.test_scan_state(tests, State=python.Python_ScanState)
 </t>
 <t tx="ekr.20161117000902.1">if 0:
     # The preamble...
@@ -6978,7 +6990,7 @@ else:
 else:
     ic = c.importCommands
 
-s = r"""
+s = """\
 # -*- coding: utf-8 -*-
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
@@ -7034,17 +7046,16 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
+decls = g.angleBrackets('Declarations')
 table = (
-    (1, 'Declarations'),
-    (2, "class LeoImportCommands"),
+    (1, decls),
+    (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
-    (2, "scanner_for_at_auto_cb"),
-    (2, "if trace: g.trace('not found', p.h, sorted(d.keys()))"),
+    (3, "scanner_for_at_auto_cb"),
     (2, "scanner_for_ext"),
-    (2, "scanner_for_ext_cb"),
-    (2, "else:"),
+    (3, "scanner_for_ext_cb"),
     (2, "get_import_filename"),
     (2, "init_import"),
 )
@@ -7055,7 +7066,7 @@ try:
     root = p.lastChild()
     assert root.h.startswith('@@'), root.h
     p = root.firstChild()
-    if 0:
+    if 1:
         for n, h in table:
             n2 = p.level() - root.level()
             assert h == p.h, (h, p.h)
@@ -7063,7 +7074,7 @@ try:
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
 finally:
-    if 0:
+    if 1:
         test_node.deleteAllChildren()
     c.redraw()
 </t>
@@ -9252,7 +9263,6 @@ unl: Another level one node--&gt;A level 2 node
 </t>
 <t tx="ekr.20161205045751.2"></t>
 <t tx="ekr.20161205045751.3"></t>
-<t tx="ekr.20161205200332.1"></t>
 <t tx="ekr.20161206135449.10">&lt;?php
 @others
 @language php
@@ -9279,7 +9289,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161206165855.1"></t>
 <t tx="ekr.20161216141227.1">&lt;?php
 @others
 @language php
@@ -9364,7 +9373,7 @@ finally:
 </t>
 <t tx="ekr.20161218103650.1">@tabwidth -4
     # Required when running unit tests externally.
-if 1:
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -9409,7 +9418,7 @@ def make_parser():
 )
 '''
 table = (
-    (1, 'Declarations'),
+    (1, g.angleBrackets('Declarations')),
     (2, 'exec_'),
     (1, 'make_parser'),
 )
@@ -9520,22 +9529,92 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20161221065136.7">gnx: ekr.20161202200225.5
+<t tx="ekr.20161221065216.7">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161221065216.8">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161221080848.25">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161221080848.26">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161221091453.20">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161221091453.21">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161221091950.20">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161221091950.21">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161221092134.208">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20161221092134.209">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20161221092134.210">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20161221092134.211">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20161221092134.212">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20161221092134.213">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20161221092150.9">gnx: ekr.20161202200225.5
 unl: section 1
 gnx: ekr.20161202200225.6
 unl: section 2
 </t>
-<t tx="ekr.20161221065137.10">gnx: ekr.20151009114144.15
+<t tx="ekr.20161221092151.11">gnx: ekr.20151009114144.15
 unl: section 1
 gnx: ekr.20151009114144.16
 unl: section 2
 </t>
-<t tx="ekr.20161221065137.3">gnx: ekr.20151009114144.13
+<t tx="ekr.20161221092151.4">gnx: ekr.20151009114144.13
 unl: section 1
 gnx: ekr.20151009114144.14
 unl: section 2
 </t>
-<t tx="ekr.20161221065139.3">gnx: ekr.20161202200225.7
+<t tx="ekr.20161221092153.5">gnx: ekr.20161202200225.7
 unl: class class1
 gnx: ekr.20161202200225.8
 unl: class class1--&gt;class1_method1
@@ -9548,12 +9627,12 @@ unl: class class2--&gt;class2_method1
 gnx: ekr.20161202200225.12
 unl: class class2--&gt;class2_method2
 </t>
-<t tx="ekr.20161221065216.7">&lt;?php
+<t tx="ekr.20161221092230.10">&lt;?php
 @others
 @language php
 @tabwidth -4
 </t>
-<t tx="ekr.20161221065216.8">class foo {
+<t tx="ekr.20161221092230.11">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar
