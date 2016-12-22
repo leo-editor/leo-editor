@@ -2763,7 +2763,7 @@ class ZimImportController(object):
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):
-    '''Move the code following a def to end of previous node.'''
+    '''Move the code preceding a def to end of previous node.'''
     c = event.get('c')
     if not c: return
     p = c.p
@@ -2842,7 +2842,7 @@ def parse_body_command(event):
 #@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
 @g.command('tail-to-next-node')
 def tailToNextNode(event=None):
-    '''Move the code following a def to end of previous node.'''
+    '''Move the code following a def to start of next node.'''
     c = event.get('c')
     if not c: return
     p = c.p

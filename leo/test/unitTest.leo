@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161221092153.5"><vh>@gnxs</vh></v>
+<v t="ekr.20161222123705.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20161221092151.11"><vh>@gnxs</vh></v>
+<v t="ekr.20161222123703.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20161221092151.4"><vh>@gnxs</vh></v>
+<v t="ekr.20161222123702.8"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161221092150.9"><vh>@gnxs</vh></v>
+<v t="ekr.20161222123702.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -124,6 +124,14 @@
 <v t="ekr.20161221092134.211"><vh>@data:#@auto</vh></v>
 <v t="ekr.20161221092134.212"><vh>@data:#@auto</vh>
 <v t="ekr.20161221092134.213"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161222123640.208"><vh>@data:#@auto</vh></v>
+<v t="ekr.20161222123640.209"><vh>@data:#@auto</vh>
+<v t="ekr.20161222123640.210"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20161222123640.211"><vh>@data:#@auto</vh></v>
+<v t="ekr.20161222123640.212"><vh>@data:#@auto</vh>
+<v t="ekr.20161222123640.213"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -261,7 +269,7 @@
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130061808.1"><vh>Copies</vh>
 <v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
@@ -472,15 +480,25 @@
 <v t="ekr.20161221092230.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20161221092230.11"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20161222122038.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222122038.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161222123534.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222123534.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161222123751.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222123751.4"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 <v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
 <v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
 <v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
@@ -504,13 +522,13 @@
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
 <v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
 <v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
 <v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
-<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -5794,6 +5812,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -5806,9 +5825,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.11">@tabwidth -4
@@ -5866,9 +5884,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    root.doDelete()
 finally:
-    if 1:
-        root.doDelete()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.12">@tabwidth -4
@@ -5920,9 +5937,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    root.doDelete()
 finally:
-    if 1:
-        root.doDelete()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.13">@tabwidth -4
@@ -6224,7 +6240,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.31">@tabwidth -4
     # Required when running unit tests externally.
-if 1:
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -6259,6 +6275,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -6271,9 +6288,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.32">@tabwidth -4
@@ -6754,6 +6770,23 @@ if __name__ == '__main__':
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.34"># Was unittest/at_auto-unit-test.py
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 class class1:
     def class1_method1():
@@ -6768,8 +6801,33 @@ class class2:
         pass
 # last line
 '''
+table = (
+    (1, 'class class1'),
+    (2, 'class1_method1'),
+    (2, 'class1_method2'),
+    (1, 'class class2'),
+    (2, 'class2_method1'),
+    (2, 'class2_method2'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
+finally:
+    c.redraw()
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.4">@tabwidth -4
     # Required when running unit tests externally.
@@ -6843,10 +6901,12 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -6859,9 +6919,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.8">@tabwidth -4
@@ -6889,10 +6948,12 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -6905,9 +6966,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161115063144.9">@tabwidth -4
@@ -6936,10 +6996,9 @@ try:
     abc = g.findNodeInTree(c,p, 'abc')
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20161115092708.1"># g.cls()
 import leo.plugins.importers.python as python
@@ -7046,9 +7105,9 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
-decls = g.angleBrackets('Declarations')
 table = (
-    (1, decls),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
     (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
@@ -7061,6 +7120,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -7073,9 +7133,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161117011147.1">import leo.plugins.importers.linescanner as linescanner
@@ -9418,12 +9477,14 @@ def make_parser():
 )
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
     (2, 'exec_'),
     (1, 'make_parser'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -9436,9 +9497,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20161218104646.1">&lt;?php
@@ -9599,22 +9659,151 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20161221092150.9">gnx: ekr.20161202200225.5
+<t tx="ekr.20161221092230.10">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161221092230.11">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161222064421.1"># From xo.py.
+if 1:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
+s = r'''#!/usr/bin/env python3
+
+import os
+import re
+
+def merge_value(v1, v2):
+    return v
+
+class MainDisplay(object):
+
+    def save_file(self):
+        """Write the file out to disk."""
+        with open(self.save_name, "w") as f:
+            for newline in newlines:
+                f.write(newline)
+
+# This line should be included at the end of the class node.
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+def retab(s, tabsize):
+    return ''.join(pieces)
+
+if __name__=="__main__":
+    main()
+'''
+table = (
+    # @auto does not allow section references.
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
+    (1, 'merge_value'),
+    (1, 'class MainDisplay'),
+    (2, 'save_file'),
+    (1, 'retab'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+</t>
+<t tx="ekr.20161222122038.3">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161222122038.4">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161222123534.3">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20161222123534.4">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20161222123640.208">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20161222123640.209">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20161222123640.210">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20161222123640.211">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20161222123640.212">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20161222123640.213">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20161222123702.1">gnx: ekr.20161202200225.5
 unl: section 1
 gnx: ekr.20161202200225.6
 unl: section 2
 </t>
-<t tx="ekr.20161221092151.11">gnx: ekr.20151009114144.15
-unl: section 1
-gnx: ekr.20151009114144.16
-unl: section 2
-</t>
-<t tx="ekr.20161221092151.4">gnx: ekr.20151009114144.13
+<t tx="ekr.20161222123702.8">gnx: ekr.20151009114144.13
 unl: section 1
 gnx: ekr.20151009114144.14
 unl: section 2
 </t>
-<t tx="ekr.20161221092153.5">gnx: ekr.20161202200225.7
+<t tx="ekr.20161222123703.5">gnx: ekr.20151009114144.15
+unl: section 1
+gnx: ekr.20151009114144.16
+unl: section 2
+</t>
+<t tx="ekr.20161222123705.3">gnx: ekr.20161202200225.7
 unl: class class1
 gnx: ekr.20161202200225.8
 unl: class class1--&gt;class1_method1
@@ -9627,12 +9816,12 @@ unl: class class2--&gt;class2_method1
 gnx: ekr.20161202200225.12
 unl: class class2--&gt;class2_method2
 </t>
-<t tx="ekr.20161221092230.10">&lt;?php
+<t tx="ekr.20161222123751.3">&lt;?php
 @others
 @language php
 @tabwidth -4
 </t>
-<t tx="ekr.20161221092230.11">class foo {
+<t tx="ekr.20161222123751.4">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar

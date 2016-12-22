@@ -7,7 +7,9 @@
 @language rest
 @wrap
 
-** Posts: what you missed by not following leo-editor
+* Rewrite scripting tutorial
+* Post: Looking over Edward's shoulder.
+* Posts: what you missed by not following leo-editor
 
 * Aha: use separate windows to compare code.
   Seems much better than separate body panes.

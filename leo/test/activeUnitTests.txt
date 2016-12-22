@@ -15121,8 +15121,49 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161222122038.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161222122038.4: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161222123534.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161222123534.4: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20161222123751.3: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161222123751.4: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
+#@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
+print('end python tests')
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
 print('start python tests')
 #@+node:ekr.20161115092708.1: *6* @test i.scan_state (for python)
@@ -15173,6 +15214,23 @@ def spam():
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *6* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
+if 0:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
 s = '''\
 class class1:
     def class1_method1():
@@ -15187,29 +15245,33 @@ class class2:
         pass
 # last line
 '''
+table = (
+    (1, 'class class1'),
+    (2, 'class1_method1'),
+    (2, 'class1_method2'),
+    (1, 'class class2'),
+    (2, 'class2_method1'),
+    (2, 'class2_method2'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
+finally:
+    c.redraw()
 
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161115063144.4: *6* @test python bug 603720
-@tabwidth -4
-    # Required when running unit tests externally.
-
-# Leo bug 603720
-# Within the docstring we must change '\' to '\\'
-s = '''\
-def foo():
-    s = \\
-"""#!/bin/bash
-cd /tmp
-ls"""
-    file('/tmp/script', 'w').write(s)
-
-class bar:
-    pass
-
-foo()
-'''
-
-tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161218103650.1: *6* @test python bug #346
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15258,12 +15320,14 @@ def make_parser():
 )
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
     (2, 'exec_'),
     (1, 'make_parser'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15276,10 +15340,30 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20161115063144.4: *6* @test python bug 603720
+@tabwidth -4
+    # Required when running unit tests externally.
+
+# Leo bug 603720
+# Within the docstring we must change '\' to '\\'
+s = '''\
+def foo():
+    s = \\
+"""#!/bin/bash
+cd /tmp
+ls"""
+    file('/tmp/script', 'w').write(s)
+
+class bar:
+    pass
+
+foo()
+'''
+
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15332,10 +15416,12 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15348,9 +15434,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.8: *6* @test python decls test 1
 @tabwidth -4
@@ -15378,10 +15463,12 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    (1, g.angleBrackets('Declarations')),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15394,9 +15481,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.9: *6* @test python decorator
 @tabwidth -4
@@ -15425,10 +15511,9 @@ try:
     abc = g.findNodeInTree(c,p, 'abc')
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15466,6 +15551,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15478,9 +15564,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.11: *6* @test python def test 1
 @tabwidth -4
@@ -15538,9 +15623,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    root.doDelete()
 finally:
-    if 1:
-        root.doDelete()
     c.redraw()
 #@+node:ekr.20161115063144.12: *6* @test python def test 2
 @tabwidth -4
@@ -15592,9 +15676,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    root.doDelete()
 finally:
-    if 1:
-        root.doDelete()
     c.redraw()
 #@+node:ekr.20161115063144.13: *6* @test python docstring only
 @tabwidth -4
@@ -15745,9 +15828,9 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
-decls = g.angleBrackets('Declarations')
 table = (
-    (1, decls),
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
     (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
@@ -15760,6 +15843,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15772,9 +15856,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.18: *6* @test python looks like section ref
 # ~/at-auto-test.py
@@ -15944,6 +16027,78 @@ class BaseScanner:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20161222064421.1: *6* @test python top-level later decl
+# From xo.py.
+if 1:
+    # The preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
+s = r'''#!/usr/bin/env python3
+
+import os
+import re
+
+def merge_value(v1, v2):
+    return v
+
+class MainDisplay(object):
+
+    def save_file(self):
+        """Write the file out to disk."""
+        with open(self.save_name, "w") as f:
+            for newline in newlines:
+                f.write(newline)
+
+# This line should be included at the end of the class node.
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+def retab(s, tabsize):
+    return ''.join(pieces)
+
+if __name__=="__main__":
+    main()
+'''
+table = (
+    # @auto does not allow section references.
+    # (1, g.angleBrackets('Declarations')),
+    (1, 'Declarations'),
+    (1, 'merge_value'),
+    (1, 'class MainDisplay'),
+    (2, 'save_file'),
+    (1, 'retab'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15987,7 +16142,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.31: *6* @test python underindent method
 @tabwidth -4
     # Required when running unit tests externally.
-if 1:
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -16022,6 +16177,7 @@ table = (
 )
 try:
     test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -16034,9 +16190,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
 finally:
-    if 1:
-        test_node.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161115063144.32: *6* @test python unindent in triple string does not end function
 @tabwidth -4
@@ -16515,8 +16670,6 @@ if __name__ == '__main__':
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
-print('end python tests')
 #@+node:ekr.20121011094154.3906: *5* TypeScript tests
 @language python
 #@+node:ekr.20121011094154.3911: *6* @test TypeScript class

@@ -727,6 +727,7 @@ class Importer(object):
         #
         # This sub-pass must follow unindent_all_nodes.
         self.promote_trailing_underindented_lines(parent)
+        self.promote_last_lines(parent)
         #
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
@@ -767,6 +768,9 @@ class Importer(object):
                     self.extend_lines(back, lines)
                     aList.append(p.copy())
         c.deletePositionsInList(aList)
+    #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''A placeholder for python_i.promote_last_lines.'''
     #@+node:ekr.20161110131509.1: *5* i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         '''

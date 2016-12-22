@@ -126,8 +126,10 @@ class Py_Importer(Importer):
                     self.add_line(p, line)
                 else:
                     first = False
-                    h = g.angleBrackets('Declarations')
-                    self.add_line(parent,h+'\n')
+                    # h = g.angleBrackets('Declarations')
+                    # self.add_line(parent,h+'\n')
+                    h = 'Declarations'
+                    self.gen_ref(line, parent, target)
                     p = self.create_child_node(parent, body=line, headline=h)
                     stack.append(Target(p, new_state))
             elif self.ends_block(line, new_state, prev_state, stack):
@@ -143,51 +145,11 @@ class Py_Importer(Importer):
         return lines and self.get_str_lws(lines[0]) or ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
-    #@+node:ekr.20161116173901.1: *4* python_i.end_block
-    def end_block(self, i, lines, new_state, prev_state, stack):
-        '''
-        Handle a line that terminates the previous class/def. The line is
-        neither a class/def line, and we are not in a multi-line token.
-        
-        Skip all lines that are at the same level as the class/def.
-        '''
-        # pylint: disable=arguments-differ
-        trace = False and g.unitTesting
-        top = stack[-1]
-        assert new_state.indent < top.state.indent, (
-            '\nnew: %s\ntop: %s' % (new_state, top.state))
-        assert self.skip == 0, self.skip
-        while i < len(lines):
-            progress = i
-            self.cut_stack(new_state, stack)
-            top = stack[-1]
-            # Add the line.
-            line = lines[i]
-            self.add_line(top.p, line)
-            # Move to the next line.
-            i += 1
-            prev_state = new_state
-            new_state = self.scan_line(line, prev_state)
-            if trace: self.trace_status(line, new_state, prev_state, stack, top)
-            if self.starts_block(i, lines, new_state, prev_state):
-                break
-            else:
-                self.skip += 1
-            assert progress < i, repr(line)
-        return top.p
-    #@+node:ekr.20161220073836.1: *4* python_i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
-        # Comparing new_state against prev_state does not work for python.
-        if self.is_ws_line(line) or prev_state.in_context():
-            return False
-        else:
-            top = stack[-1]
-            return new_state.level() < top.state.level()
     #@+node:ekr.20161116034633.2: *4* python_i.cut_stack
-    def cut_stack(self, new_state, stack):
+    def cut_stack(self, new_state, stack, append=False):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and g.unitTesting
+        # pylint: disable=arguments-differ
+        trace = False # and g.unitTesting
         if trace:
             g.trace(new_state)
             g.printList(stack)
@@ -201,7 +163,10 @@ class Py_Importer(Importer):
             elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
-                stack.pop()
+                if append:
+                    pass # Append line to the previous node.
+                else:
+                    stack.pop() # Create a new node.
                 break
             else:
                 # This happens often in valid Python programs.
@@ -213,6 +178,50 @@ class Py_Importer(Importer):
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20161116173901.1: *4* python_i.end_block
+    def end_block(self, i, lines, new_state, prev_state, stack):
+        '''
+        Handle a line that terminates the previous class/def. The line is
+        neither a class/def line, and we are not in a multi-line token.
+        
+        Skip all lines that are at the same level as the class/def.
+        '''
+        # pylint: disable=arguments-differ
+        trace = False # and g.unitTesting
+        top = stack[-1]
+        assert new_state.indent < top.state.indent, (
+            '\nnew: %s\ntop: %s' % (new_state, top.state))
+        assert self.skip == 0, self.skip
+        while i < len(lines):
+            progress = i
+            self.cut_stack(new_state, stack, append=True)
+            top = stack[-1]
+            # Add the line.
+            line = lines[i]
+            self.add_line(top.p, line)
+            # Move to the next line.
+            i += 1
+            if i >= len(lines):
+                break
+            prev_state = new_state
+            new_state = self.scan_line(line, prev_state)
+            if self.starts_block(i, lines, new_state, prev_state):
+                break
+            else:
+                self.skip += 1
+            assert progress < i, repr(line)
+        return top.p
+    #@+node:ekr.20161220073836.1: *4* python_i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        ### if self.is_ws_line(line) or prev_state.in_context():
+        if line.isspace() or prev_state.in_context():
+            return False
+        else:
+            # *Any* underindented non-blank line ends the class/def.
+            top = stack[-1]
+            return new_state.level() < top.state.level()
     #@+node:ekr.20161220064822.1: *4* python_i.gen_ref
     def gen_ref(self, line, parent, target):
         '''
@@ -221,7 +230,6 @@ class Py_Importer(Importer):
         #@-others
         '''
         trace = False # and g.unitTesting
-        
         if target.ref_flag:
             pass
         else:
@@ -260,7 +268,6 @@ class Py_Importer(Importer):
             prev_lines.append(at_others_line)
         if moved_lines:
             self.set_lines(new_p, list(reversed(moved_lines)) + new_lines)
-     
     #@+node:ekr.20161117080504.1: *5* def python_i.is_at_others/is_decorator
     at_others_pattern = re.compile(r'^\s*@others$')
 
@@ -274,6 +281,48 @@ class Py_Importer(Importer):
         '''True if line is a python decorator, not a Leo directive.'''
         m = self.decorator_pattern.match(line)
         return m and m.group(1) not in g.globalDirectiveList
+    #@+node:ekr.20161222123105.1: *4* python_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''python_i.promote_last_lines.'''
+        # last = parent.lastNode()
+        # g.trace(last and last.h or '<no last node>')
+    #@+node:ekr.20161222112801.1: *4* python_i.promote_trailing_underindented_lines
+    def promote_trailing_underindented_lines(self, parent):
+        '''
+        Promote all trailing underindent lines to the node's parent node,
+        deleting one tab's worth of indentation. Typically, this will remove
+        the underindent escape.
+        '''
+        trace = True
+        pattern = self.escape_pattern # A compiled regex pattern
+        for p in parent.subtree():
+            lines = self.get_lines(p)
+            tail = []
+            while lines:
+                line = lines[-1]
+                m = pattern.match(line)
+                if m:
+                    lines.pop()
+                    n_str = m.group(1)
+                    try:
+                        n = int(n_str)
+                    except ValueError:
+                        break
+                    if n == abs(self.tab_width):
+                        new_line = line[len(m.group(0)):]
+                        tail.append(new_line)
+                    else:
+                        g.trace('unexpected unindent value', n)
+                        break
+                else:
+                    break
+            if tail:
+                if trace:
+                    g.trace(parent.h)
+                    g.printList(reversed(tail))
+                parent = p.parent()
+                self.set_lines(p, lines)
+                self.extend_lines(parent, reversed(tail))
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -317,60 +366,57 @@ class Py_Importer(Importer):
             line = lines[i]
             return bool(self.starts_pattern.match(line))
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper (to do)
-    def find_class(self, p):
+    def find_class(self, parent):
         '''
-        Return the index end of the class or def in a node, or -1.
+        Find the start and end of a class/def in a node.
+        
+        Return (kind, i, j), where kind in (None, 'class', 'def')
         '''
         trace = True and not g.unitTesting
         prev_state = Python_ScanState()
-        lines = g.splitlines(p.b)
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        lines = g.splitlines(parent.b)
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
+            top = stack[-1]
             if trace: g.trace(new_state)
-            if prev_state.in_context():
-                pass
-            else:
-                m = self.starts_pattern.match(line)
-                if m:
-                    if trace: g.trace('FOUND', m.group(1))
-                    kind = m.group(1)
-                    end = self.skip_block(i, index, lines[i+1:], new_state)
-                    if end == -1:
-                        break
-                    else:
-                        return kind, index, end
+            if self.starts_block(i, lines, new_state, prev_state):
+                return self.skip_block(i, index, lines, new_state, stack)
             prev_state = new_state
             index += len(line)
         return None, -1, -1
-        
-    ### findClass = find_class
     #@+node:ekr.20161205052712.1: *4* py_i.skip_block
-    def skip_block(self, i, index, lines, prev_state):
-        '''Return the index of the end of the block at lines[i].'''
+    def skip_block(self, i, index, lines, prev_state, stack):
+        '''
+        Find the end of a class/def starting at index
+        on line i of lines.
+        
+        Return (kind, i, j), where kind in (None, 'class', 'def')
+        .'''
         trace = True and not g.unitTesting
-        level = prev_state.level()
-        if trace: g.trace('===== level', level)
-        for i, line in enumerate(lines):
-            new_state = self.scan_line(line, prev_state)
-            if trace: g.trace('new level', new_state.level(), 'line', line)
-            if (
-                not new_state.context and
-                not self.is_ws_line(line) and
-                new_state.level() < level
-            ):
-                return index
-            ###
-            # elif self.starts_block(i, lines, new_state, prev_state):
-                # return index
-            ### elif self.ends_block(line, new_state, prev_state, stack):
-            # elif new_state.level() < level:
-                # return index
-            # else:
-                # pass
-            prev_state = new_state
+        index1 = index
+        line = lines[i]
+        kind = 'class' if line.strip().startswith('class') else 'def'
+        i += 1
+        while i < len(lines):
+            progress = i
+            line = lines[i]
             index += len(line)
-        return -1
+            new_state = self.scan_line(line, prev_state)
+            top = stack[-1]
+            if trace: g.trace('new level', new_state.level(), 'line', line)
+            # Similar to self.ends_block.
+            if (not self.is_ws_line(line) and
+                not prev_state.in_context() and
+                new_state.level() <= top.state.level()
+            ):
+                return kind, index1, index
+            prev_state = new_state
+            i += 1
+            assert progress < i
+        return None, -1, -1
     #@-others
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
