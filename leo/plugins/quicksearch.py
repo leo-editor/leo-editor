@@ -80,10 +80,7 @@ from collections import OrderedDict
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets,isQt5
-
-app_base = QtWidgets if isQt5 else QtGui
-QApplication = app_base.QApplication
+from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
 
 from leo.core import leoNodes
     # Uses leoNodes.PosList.
@@ -297,9 +294,9 @@ class QuickSearchEventFilter(QtCore.QObject):
 
         return False
     #@-others
-#@+node:ville.20121223213319.3670: ** dumpfocus
+#@+node:ville.20121223213319.3670: ** dumpfocus (quicksearch.py)
 def dumpfocus():
-    f = QApplication.instance().focusWidget()
+    f = QtWidgets.QApplication.instance().focusWidget()
     g.es("Focus: " + f)
     print("Focus: " + f)
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
@@ -737,7 +734,7 @@ class QuickSearchController(object):
 
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
-        modifiers = QApplication.keyboardModifiers()
+        modifiers = QtWidgets.QApplication.keyboardModifiers()
         if modifiers == QtCore.Qt.ControlModifier:
             row = self.lw.row(it)
             init_indent = len(it.text()) - len(str(it.text()).lstrip())

@@ -127,33 +127,22 @@ class graphcanvasUI(QtWidgets.QWidget):
     def __init__(self, owner=None):
 
         self.owner = owner
-
-        # a = QtGui.QApplication([]) # argc, argv );
-
         QtWidgets.QWidget.__init__(self)
         uiPath = g.os_path_join(g.app.leoDir,
             'plugins', 'GraphCanvas', 'GraphCanvas.ui')
-
         # change directory for this to work
         old_dir = os.getcwd()
         try:
-
             os.chdir(g.os_path_join(g.computeLeoDir(), ".."))
-
             form_class, base_class = uic.loadUiType(uiPath)
             self.owner.c.frame.log.createTab('Graph', widget = self)
             self.UI = form_class()
             self.UI.setupUi(self)
-
         finally:
-
             os.chdir(old_dir)
-
         self.canvas = QtWidgets.QGraphicsScene()
-
         self.canvasView = GraphicsView(self.owner, self.canvas)
         self.canvasView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-
         self.UI.canvasFrame.addWidget(self.canvasView)
         self.canvasView.setSceneRect(0,0,300,300)
         self.canvasView.setRenderHints(QtGui.QPainter.Antialiasing)

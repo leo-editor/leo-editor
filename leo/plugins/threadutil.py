@@ -2,12 +2,14 @@
 #@+node:ekr.20121126095734.12418: * @file threadutil.py
 #@@language python
 #@@tabwidth -4
-
-from leo.core.leoQt import QtCore, QtGui
+#@+<< threadutils imports >>
+#@+node:ekr.20161223141850.1: ** << threadutils imports >>
+from leo.core.leoQt import QtCore, QtWidgets # QtGui, 
 import logging
 import time
 import leo.core.leoGlobals as g
 from collections import deque
+#@-<< threadutils imports >>
 if 1:
     log = None
 else:
@@ -79,8 +81,8 @@ def log_filedes(f, level):
 #@+node:ekr.20121126095734.12443: *3* main
 def main():
     # stupid test
-    a = QtGui.QApplication([])
-    b = QtGui.QPushButton("Say hello", None)
+    a = QtWidgets.QApplication([])
+    b = QtWidgets.QPushButton("Say hello", None)
     g.procs.add(['ls', '/tmp'])
     g.procs.add(['ls', '-la'])
     #a.setMainWidget(b)

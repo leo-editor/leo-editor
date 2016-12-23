@@ -1155,7 +1155,7 @@ class todoController(object):
             # pylint: disable = unpacking-non-sequence
             # this would be neat, but hasPendingEvents() always returns True
             # (google it), so check time has passed instead
-            # if QtGui.QApplication.instance().hasPendingEvents():
+            # if QtWidgets.QApplication.instance().hasPendingEvents():
             #     return  # not truely idle
             w, old_time = self._widget_to_style
             if time.time() - old_time > 0.2:

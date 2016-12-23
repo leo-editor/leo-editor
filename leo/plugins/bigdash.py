@@ -36,7 +36,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+<< imports >>
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets,QtWebKitWidgets
+from leo.core.leoQt import isQt5,QtCore,QtWidgets,QtWebKitWidgets # QtGui
 # This code no longer uses leo.plugins.leofts.
 try:
     # pylint: disable=no-name-in-module
@@ -549,8 +549,7 @@ class GnxCache(object):
 #@-others
 
 if __name__ == '__main__':
-    app_base = QtWidgets if isQt5 else QtGui
-    app = app_base.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     bd = GlobalSearch()
     sys.exit(app.exec_())
 

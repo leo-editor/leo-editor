@@ -10,7 +10,7 @@ alt-x stickynote to pop out current node as a note.
 #@-<< docstring >>
 # Disable Qt warnings.
 #@+<< imports >>
-#@+node:ekr.20100103100944.5391: ** << imports >>
+#@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
 import leo.core.leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
