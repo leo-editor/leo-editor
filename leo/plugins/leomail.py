@@ -49,6 +49,7 @@ import mailbox
 
 class MLStripper(HTMLParser):
     # pylint: disable=super-init-not-called
+    # pylint: disable=abstract-method
     def __init__(self):
         self.reset()
         self.fed = []
