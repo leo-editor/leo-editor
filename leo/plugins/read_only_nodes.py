@@ -65,13 +65,15 @@ else:
 import ftplib
 import os
 import sys
-import urllib
+# import urllib
 
 if g.isPython3:
     # pylint: disable=no-name-in-module
     import urllib.parse as urlparse
+    import urllib.request.urlopen as urlopen
 else:
     import urlparse
+    urlopen = urlparse.urlopen
 
 from formatter import AbstractFormatter, DumbWriter
 
@@ -294,17 +296,17 @@ def insert_read_only_node (c,p,name):
         )
         c.setHeadString(p,"@read-only %s" % name)
         c.redraw()
-    parse = urlparse.urlparse(name)
+    parse = urlparse(name)
     try:
         if parse[0] == 'ftp':
-            file = FTPurl(name)  # FTP URL
+            f = FTPurl(name)  # FTP URL
         elif parse[0] == 'http':
-            file = urllib.urlopen(name)  # HTTP URL
+            f = urlopen(name)  # HTTP URL
         else:
-            file = open(name,"r")  # local file
+            f = open(name,"r")  # local file
         g.es("..." + name)
-        new = file.read()
-        file.close()
+        new = f.read()
+        f.close()
     except IOError: # as msg:
         # g.es("error reading %s: %s" % (name, msg))
         # g.es("...not found: " + name)
