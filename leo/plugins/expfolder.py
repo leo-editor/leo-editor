@@ -52,6 +52,8 @@ def init():
     fileName = os.path.join(g.app.loadDir,"../","plugins","expfolder.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
+    # pylint: disable=no-member
+    # config.get returns a string.
     textexts.extend(config.get("Main", "TextExtensions").split())
     return True
 #@+node:ajones.20070122153625.2: ** on_icondclick
