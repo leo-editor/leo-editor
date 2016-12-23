@@ -620,6 +620,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated=lambda: view.setZoomFactor(0.8))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
+        # pylint:disable=no-member
         if isQt5:
             pass # not ready yet.
         else:
@@ -1553,7 +1554,9 @@ class ViewRenderedController(QtWidgets.QWidget):
             wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            w.setWordWrapMode(QtWidgets.QTextOption.WrapAtWordBoundaryOrAnywhere)
+            # pylint: disable=no-member
+            QTextOption = QtGui.QTextOption if isQt5 else QtWidgets.QTextOption
+            w.setWordWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
     #@+node:ekr.20140226074510.4222: *5* vr2.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         pc = self
