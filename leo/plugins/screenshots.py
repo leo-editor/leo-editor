@@ -326,7 +326,7 @@ try:
     got_pil = True
 except ImportError:
     got_pil = False
-from leo.core.leoQt import QtGui
+from leo.core.leoQt import isQt5, QtGui
 got_qt = QtGui is not None
 import shutil
 import subprocess
@@ -394,8 +394,13 @@ def make_screen_shot(path):
     This is a callback called from make_screen_shot in runLeo.py'''
     # g.trace('screenshots.py:',path)
     app = g.app.gui.qtApp
-    pix = QtGui.QPixmap
-    w = pix.grabWindow(app.activeWindow().winId())
+    # pylint: disable=no-member
+    if isQt5:
+        screen = QtGui.QScreen()
+        w = screen.grabWindow(app.activeWindow().winId())
+    else:
+        pix = QtGui.QPixmap
+        w = pix.grabWindow(app.activeWindow().winId())
     w.save(path, 'png')
 #@+node:ekr.20100908110845.5531: ** class ScreenShotController
 class ScreenShotController(object):
