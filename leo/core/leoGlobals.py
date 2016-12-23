@@ -6081,6 +6081,18 @@ def python_tokenize(s, line_numbers=True):
             result.append((kind, val),)
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
+#@+node:ekr.20161223090721.1: *3* g.exec_file
+def exec_file(path, d, script=None):
+    '''Simulate python's execfile statement for python 3.'''
+    # pylint: disable=no-member
+    # execfile does not exist in python 3.
+    if g.isPython3:
+        if script is None:
+            with open(path) as f:
+                script = f.read()
+        exec(compile(script, path, 'exec'), d)
+    else:
+        builtins.execfile(path, d)
 #@+node:ekr.20131016032805.16721: *3* g.execute_shell_commands
 def execute_shell_commands(commands, trace=False):
     '''

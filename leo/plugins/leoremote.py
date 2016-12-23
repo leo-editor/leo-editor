@@ -6,7 +6,8 @@
 
     NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
     the mod_http plug-in is intended to replace this module's functionality.
-    This module does not work in Python 3.x
+    
+    2016/12/23: Use g.exec_file, so this module *might* work with Python 3.
 
     Executing the leoserve-start command will cause Leo to to listen on a local
     socket for commands from other processes.
@@ -33,10 +34,6 @@ Example client::
 #@+node:ekr.20160519045636.1: ** << imports >> (leoremote.py)
 import leo.core.leoGlobals as g
 from leo.external import lproto
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
 import os
 import socket # For a test of its capabilities.
 import tempfile
@@ -67,25 +64,18 @@ def leoserv_start(event):
         # first run
         if 'pydict' not in ses:
             ses['pydict'] = {'g' : g }
-
         # print("run file",pth)
-        if g.isPython3:
-            g.trace('no python 3 support')
-            # exec(compile(script, scriptFile, 'exec'), d)
-        else:
-            builtins.execfile(pth, ses['pydict'])
+        d = ses['pydict']
+        g.exec_file(pth, d)
         # print("run done")
 
     lps.set_receiver(dispatch_script)
-
     # EKR: 2011/10/12
     if hasattr(socket,'AF_UNIX'):
         uniqid = 'leoserv-%d' % os.getpid()
     else:
         uniqid = '172.16.0.0',1
-
     lps.listen(uniqid)
-
     fullpath = lps.srv.fullServerName()
     socket_file = os.path.expanduser('~/.leo/leoserv_sockname')
     open(socket_file,'w').write(fullpath)
@@ -97,7 +87,7 @@ def run_remote_script(fname):
     # c and p are ambiguous for remote script
     print("rrs")
     d = {'g': g }
-    builtins.execfile(fname, d)
+    g.exec_file(fname, d)
 #@-others
 #@@language python
 #@@tabwidth -4
