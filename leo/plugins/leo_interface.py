@@ -4,10 +4,10 @@
 #@+node:ekr.20101112180523.5422: ** << docstring >>
 """ Allows the user to browse XML documents in Leo.
 
-This file implements an interface to XML generation,
+This plugin implements an interface to XML generation,
 so that the resulting file can be processed by leo.
 
-class file represents the whole leo file.
+class leo_file represents the whole leo file.
 class leo_node has a headline and body text.
 
 See the end of this file for a minimal example on
@@ -23,7 +23,9 @@ debug = False
 # Define globals
 vnode_count = 0
 if debug:
-    allvnodes = {file:None}
+    allvnodes = {
+        # leo_file:None, # Fixed a valid pylint complaint. file is not defined.
+    }
     vnode_count = 0
     vnode_stack = []
 #@@language python
