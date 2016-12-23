@@ -4593,6 +4593,14 @@ def isInt(obj):
         return isinstance(obj, int)
     else:
         return isinstance(obj, (int, builtins.long))
+#@+node:ekr.20161223082445.1: *5* g.isList
+def isList(s):
+    '''Return True if s is a list.'''
+    # pylint: disable=no-member
+    if g.isPython3:
+        return isinstance(s, list)
+    else:
+        return isinstance(s, types.ListTypes)
 #@+node:ekr.20160229070349.5: *5* g.isString
 def isString(s):
     '''Return True if s is any string, but not bytes.'''

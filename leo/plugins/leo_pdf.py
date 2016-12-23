@@ -273,8 +273,10 @@ if g.isPython3:
     import io
     StringIO = io.StringIO
 else:
+    # pylint: disable=no-member
     import StringIO
-import types
+    StringIO = StringIO.StringIO
+# import types
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions
@@ -617,7 +619,8 @@ if docutils:
                 self.styleSheet = visitor.styleSheet
                 self.encode = visitor.encode
             if reportlab:
-                out = StringIO.StringIO()
+                # out = StringIO.StringIO()
+                out = StringIO()
                 reportlab.platypus.SimpleDocTemplate(out,
                     pagesize=reportlab.lib.pagesizes.A4)
                 # The 'real' code is doc.build(story)
@@ -630,7 +633,8 @@ if docutils:
 
             if reportlab:
 
-                out = StringIO.StringIO()
+                # out = StringIO.StringIO()
+                out = StringIO()
 
                 doc = reportlab.platypus.SimpleDocTemplate(out,
                     pagesize=reportlab.lib.pagesizes.A4)
@@ -1030,7 +1034,7 @@ if docutils: # NOQA
                 # g.trace('attlist element:',repr(name),repr(value))
                 if value is None: # boolean attribute
                     parts.append(name.lower().strip())
-                elif isinstance(value,types.ListType):
+                elif g.isList(value):
                     values = [str(v) for v in value]
                     val = ' '.join(values).strip()
                     parts.append('%s="%s"' % (
