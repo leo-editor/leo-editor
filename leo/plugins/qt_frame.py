@@ -855,12 +855,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s):
+        # pylint: disable=no-member
         if isQt5:
             # QApplication.UnicodeUTF8 no longer exists.
             return QtWidgets.QApplication.translate('MainWindow', s, None)
         else:
             return QtWidgets.QApplication.translate(
-                'MainWindow', s, None, QtWidgets.QApplication.UnicodeUTF8)
+                'MainWindow',
+                s,
+                None,
+                QtWidgets.QApplication.UnicodeUTF8)
     #@+node:ekr.20110605121601.18179: *3* dw.Event handlers
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
     def closeEvent(self, event):
