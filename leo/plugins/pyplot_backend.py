@@ -109,6 +109,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
             # add text label to status bar
             self.statusbar_label = QtWidgets.QLabel()
             layout.addWidget(self.statusbar_label)
+            # pylint: disable=no-member
             if isQt5:
                 pass # The status bar doesn't work yet.
             else:
