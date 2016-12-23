@@ -615,7 +615,7 @@ class backlinkController(object):
 #@+node:ekr.20090616105756.3939: ** class backlinkQtUI
 if g.app.gui.guiName() == "qt":
 
-    from leo.core.leoQt import Qt,QtCore,QtGui,QtWidgets,uic
+    from leo.core.leoQt import Qt,QtGui,QtWidgets,uic
 
     class backlinkQtUI(QtWidgets.QWidget):
         #@+others
@@ -631,32 +631,16 @@ if g.app.gui.guiName() == "qt":
             self.UI.setupUi(self)
             u = self.UI
             o = self.owner
-            if 1: # Compatible with PyQt5
-                u.markBtn.clicked.connect(o.mark)
-                u.swapBtn.clicked.connect(o.swap)
-                u.linkBtn.clicked.connect(self.linkClicked)
-                u.rescanBtn.clicked.connect(o.loadLinksInt)
-                u.dirLeftBtn.clicked.connect(self.dirClicked)
-                u.dirRightBtn.clicked.connect( self.dirClicked)
-                u.linkList.itemClicked.connect(self.listClicked)
-                u.deleteBtn.stateChanged.connect(o.deleteSet)
-            else: # old code
-                self.connect(u.markBtn,
-                    QtCore.SIGNAL("clicked()"), o.mark)
-                self.connect(u.swapBtn,
-                    QtCore.SIGNAL("clicked()"), o.swap)
-                self.connect(u.linkBtn,
-                    QtCore.SIGNAL("clicked()"), self.linkClicked)
-                self.connect(u.rescanBtn,
-                    QtCore.SIGNAL("clicked()"), o.loadLinksInt)
-                self.connect(u.dirLeftBtn,
-                    QtCore.SIGNAL("clicked()"), self.dirClicked)
-                self.connect(u.dirRightBtn,
-                    QtCore.SIGNAL("clicked()"), self.dirClicked)
-                self.connect(u.linkList,
-                    QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
-                self.connect(u.deleteBtn,
-                    QtCore.SIGNAL("stateChanged(int)"), o.deleteSet)
+            # Compatible with PyQt5
+            u.markBtn.clicked.connect(o.mark)
+            u.swapBtn.clicked.connect(o.swap)
+            u.linkBtn.clicked.connect(self.linkClicked)
+            u.rescanBtn.clicked.connect(o.loadLinksInt)
+            u.dirLeftBtn.clicked.connect(self.dirClicked)
+            u.dirRightBtn.clicked.connect( self.dirClicked)
+            u.linkList.itemClicked.connect(self.listClicked)
+            u.deleteBtn.stateChanged.connect(o.deleteSet)
+            
         #@+node:ekr.20140920145803.17988: *3* dirClicked
         def dirClicked(self):
 
