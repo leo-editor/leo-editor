@@ -219,7 +219,7 @@ You will find this stylesheet in the node @data
 import random
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui # for LeoKeyEvents.
-from leo.core.leoQt import QtCore, QtGui
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< imports >>
 #@+at
 # To do:
@@ -307,7 +307,7 @@ class ScreenCastController(object):
         if parent:
             s = s.rstrip()
             if s and s[-1].isalpha(): s = s + '.'
-            w = QtGui.QPlainTextEdit(s, parent)
+            w = QtWidgets.QPlainTextEdit(s, parent)
             w.setObjectName('screencastcaption')
             m.widgets.append(w)
             w2 = m.pane_widget(pane)
@@ -431,7 +431,7 @@ class ScreenCastController(object):
         m = self
         parent = m.pane_widget(pane)
         if parent:
-            w = QtGui.QLabel('label', parent)
+            w = QtWidgets.QLabel('label', parent)
             fn = m.resolve_icon_fn(fn)
             if not fn: return None
             pixmap = QtGui.QPixmap(fn)
@@ -471,7 +471,7 @@ class ScreenCastController(object):
                 while parent:
                     g.trace('repaint', parent)
                     parent.repaint()
-                    if isinstance(parent, QtGui.QMenuBar):
+                    if isinstance(parent, QtWidgets.QMenuBar):
                         break
                     else:
                         parent = parent.parent()
