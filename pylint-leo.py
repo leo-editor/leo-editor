@@ -25,7 +25,7 @@ import subprocess
 import sys
 import time
 #@+others
-#@+node:ekr.20140331201252.16859: ** main & helpers
+#@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):
     '''Call run on all tables in tables_table.'''
     n = len(files)
@@ -43,7 +43,7 @@ def main(files, verbose):
             print('.',sep='', end='')
     t2 = time.time()
     print('%s file%s, time: %5.2f sec.' % (n, g.plural(n), t2-t1))
-#@+node:ekr.20100221142603.5644: *3* run (pylint-leo.py)
+#@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 #@@nobeautify
 
 def run(fn, verbose):
@@ -51,15 +51,19 @@ def run(fn, verbose):
     # theDir is empty for the -f option.
     from pylint import lint
     assert lint
-    # g.trace('(pylint-leo.py)', os.path.abspath(os.curdir))
-    # 2016/10/20: The old code only runs if os.curdir is the leo-editor folder.
-    if 1:
-        path = os.path.dirname(__file__)
-        rc_fn = os.path.abspath(os.path.join(path,'leo','test','pylint-leo-rc.txt'))
+    # Note: g.app does not exist.
+    base_dir = os.path.dirname(__file__)
+    home_dir = os.path.expanduser('~') if hasattr(os.path, 'expanduser') else ''
+    rc_fn = 'pylint-leo-rc.txt'
+    table = (
+        os.path.abspath(os.path.join(home_dir, '.leo', rc_fn)),
+        os.path.abspath(os.path.join(base_dir, 'leo', 'test', rc_fn)),
+    )
+    for rc_fn in table:
+        if os.path.exists(rc_fn):
+            break
     else:
-        rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
-    if not os.path.exists(rc_fn):
-        print('pylint-leo.py: rc file not found: %s' % (rc_fn))
+        print('pylint-leo.py: %s not found in leo/test or ~/.leo.' % (rc_fn))
         return
     if not os.path.exists(fn):
         print('pylint-leo.py: file not found: %s' % (fn))
@@ -90,7 +94,7 @@ def run(fn, verbose):
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()
         # Wait: Not waiting is confusing for the user.
-#@+node:ekr.20140526142452.17594: ** report_version
+#@+node:ekr.20140526142452.17594: ** report_version (pylint-leo.py)
 def report_version():
     try:
         from pylint import lint
@@ -99,7 +103,7 @@ def report_version():
         lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
     except ImportError:
         g.trace('can not import pylint')
-#@+node:ekr.20120307142211.9886: ** scanOptions
+#@+node:ekr.20120307142211.9886: ** scanOptions (pylint-leo.py)
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''
     global g_option_fn

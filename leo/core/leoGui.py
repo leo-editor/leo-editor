@@ -213,7 +213,7 @@ class LeoGui(object):
         # This may be overridden in subclasses.
         pass
     #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
-    # These definitions keeps pylint happy.
+    # These definitions keep pylint happy.
 
     def postPopupMenu(self, *args, **keys):
         pass
