@@ -12,7 +12,7 @@ import leo.core.leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtCore
+# from leo.core.leoQt import QtCore
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init
@@ -125,7 +125,8 @@ def rclick_path_importfile(c,p,menu):
         print("import files from",path)
 
     action = menu.addAction("Import files")
-    action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)
+    ### action.connect(action, QtCore.SIGNAL("triggered()"), importfiles_rclick_cb)
+    action.triggered.connect(importfiles_rclick_cb)
 
 def install_contextmenu_handlers():
     """ Install all the wanted handlers (menu creators) """
