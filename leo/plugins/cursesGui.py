@@ -8,6 +8,7 @@
 #@@c
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
+# pylint: disable=wrong-import-order
 import leo.core.leoGlobals as g
 import leo.core.leoChapters as leoChapters
 import leo.core.leoGui as leoGui
@@ -20,6 +21,9 @@ try:
 except ImportError:
     import __builtin__ as builtins # Python 2.
 import os
+if 1: # Limit the disable to this statement.
+    # pylint: disable=no-member
+    get_input = input if g.isPython3 else builtins.raw_input
 #@-<< imports >>
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
@@ -45,7 +49,6 @@ import os
 # Ideally, comments in the body go away as the "leoGUI interface" improves.
 # Written on a hundred-column terminal. :S
 #@-<< TODO >>
-get_input = input if g.isPython3 else builtins.raw_input
 #@+others
 #@+node:ekr.20150107090324.4: ** init
 def init():
@@ -122,7 +125,6 @@ class textGui(leoGui.LeoGui):
     #@+node:ekr.20150107090324.18: *3* text_run & helper
     def text_run(self):
         frame_idx = 0
-        get_input = input if g.isPython3 else builtins.raw_input
         while not self.killed:
             # Frames can come and go.
             if frame_idx > len(self.frames) - 1:
@@ -219,7 +221,6 @@ class TextFrame(leoFrame.LeoFrame):
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
         c = self.c; k = c.k; w = self.body.bodyCtrl
-        get_input = input if g.isPython3 else builtins.raw_input
         key = get_input('Keystroke > ')
         if not key: return
 
