@@ -213,16 +213,17 @@ class RSSController(object):
         return pos.v.h.startswith('@feed') and g.getUrlFromNode(pos)
     #@+node:peckj.20131002201824.11901: *4* parse_feed
     def parse_feed(self, feed):
-        c = self.c
 
+        c = self.c
         g.es("Parsing feed: %s" % feed.h, color='blue')
         feedurl = g.getUrlFromNode(feed)
+        # pylint: disable=no-member
+        # feedparser.parse *does* exist.
         data = feedparser.parse(feedurl)
         # check for bad feed
         if data.bozo == 1:
             g.es("Error: bad feed data.", color='red')
             return
-
         # grab config settings
         sort_newest_first = c.config.getBool('rss-sort-newest-first', default=True)
         body_format = c.config.getData('rss-body-format') or ['@url <link>','\\n','<title>','<date>','\\n','<summary>']
@@ -230,7 +231,6 @@ class RSSController(object):
         body_format = body_format.replace('\\n','')
         headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
-
         # process entries
         # pylint: disable=unnecessary-lambda
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
@@ -260,10 +260,6 @@ class RSSController(object):
                 self.add_entry_to_history(feed, entry)
 
         self.c.redraw_now()
-
-
-
-
     #@+node:peckj.20131011131135.5848: *4* grab_date_parsed
     def grab_date_parsed(self, entry):
         published = None
