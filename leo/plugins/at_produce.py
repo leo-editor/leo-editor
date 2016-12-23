@@ -117,7 +117,7 @@ def runList(c,aList):
     Run all commands in aList (in a separate thread).
     Do not do change Leo's outline in this thread!
     '''
-    # pylint: disable=deprecated-method
+    # pylint: disable=deprecated-method,no-member
     # popen3() is deprecated.
     f = open('produce.log', 'w+')
     try:
@@ -140,11 +140,9 @@ def runList(c,aList):
                 fe.close()
                 f.write('===============\n' )
         f.seek(0)
-        # s = f.read()
         f.read()
     finally:
         f.close()
-
 #@+node:ekr.20140920173002.17966: *3* timer_callback_helper
 def timer_callback_helper(c,t,timer):
     '''All drawing must be done in the main thread.'''
