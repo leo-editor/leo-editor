@@ -25,16 +25,21 @@ search.
 
 '''
 #@-<< docstring >>
+#@+<< ctagscompleter imports >>
+#@+node:ekr.20161223144720.1: ** << ctagscompleter imports >>
 import leo.core.leoGlobals as g
-
-# pylint: disable=no-name-in-module
-from leo.core.leoQt import isQt5,QtCore,QtGui
-if isQt5:
-    from PyQt5.QtWidgets import QCompleter
-else:
-    from PyQt4.QtGui import QCompleter
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+if 1:
+    # pylint: disable=no-name-in-module,no-member
+    if isQt5:
+        QCompleter = QtWidgets.QCompleter
+        QStringListModel = QtCore.QStringListModel
+    else:
+        QCompleter = QtGui.QCompleter
+        QStringListModel = QtWidgets.QStringListModel
 import os
 import re
+#@-<< ctagscompleter imports >>
 # Global variables
 controllers = {} # Keys are commanders, values are controllers.
 tagLines = []
@@ -143,7 +148,7 @@ class CtagsController(object):
         tc.select(tc.WordUnderCursor)
         prefix = tc.selectedText()
         hits = self.lookup(prefix)
-        model = QtGui.QStringListModel(hits)
+        model = QStringListModel(hits)
         cpl.setModel(model)
         cpl.setCompletionPrefix(prefix)
         cpl.complete()
@@ -243,8 +248,8 @@ class CtagsController(object):
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body)
-        cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
-
+        ### cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        cpl.activated.connect(completion_callback)
         # Connect key strokes to the popup.
         # self.popup = cpl.popup()
         # self.popup_filter = PopupEventFilter(c,self.popup) # Required

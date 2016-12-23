@@ -24,8 +24,15 @@ Instructions:
 #@+<< imports >>
 #@+node:ville.20091204224145.5358: ** << imports >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore,QtGui
-from QtGui import QCompleter
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+if 1:
+    # pylint: disable=no-name-in-module,no-member
+    if isQt5:
+        QCompleter = QtWidgets.QCompleter
+        QStringListModel = QtCore.QStringListModel
+    else:
+        QCompleter = QtGui.QCompleter
+        QStringListModel = QtWidgets.QStringListModel
 import leo.external.codewise as codewise
     # The code that interfaces with ctags.
     # It contains commands that can be run stand-alone,
@@ -234,7 +241,7 @@ class CodewiseController(object):
             s = self.get_word()
             hits = self.lookup(s)
 
-        model = QtGui.QStringListModel(hits)
+        model = QStringListModel(hits)
         cpl.setModel(model)
         cpl.setCompletionPrefix(prefix)
         cpl.complete()
@@ -342,7 +349,8 @@ class CodewiseController(object):
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body)
-        cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        ### cpl.connect(cpl,QtCore.SIGNAL("activated(QString)"),completion_callback)
+        cpl.activated.connect(completion_callback)
 
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
@@ -383,7 +391,7 @@ class CodewiseController(object):
 
         if 0:
             cpl = self.completer
-            model = QtGui.QStringListModel(hits)
+            model = QStringListModel(hits)
             cpl.setModel(model)
             cpl.setCompletionPrefix(prefix)
             cpl.complete()
