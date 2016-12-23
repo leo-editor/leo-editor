@@ -6,9 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from leo.core.leoQt import isQt5, QtCore, QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 QtGui = QtWidgets
 class Ui_LeoQuickSearchWidget(object):
+
     def setupUi(self, LeoQuickSearchWidget):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
         LeoQuickSearchWidget.resize(868, 572)
@@ -27,10 +28,14 @@ class Ui_LeoQuickSearchWidget(object):
         self.verticalLayout_2.addLayout(self.verticalLayout)
         self.retranslateUi(LeoQuickSearchWidget)
         QtCore.QMetaObject.connectSlotsByName(LeoQuickSearchWidget)
+
     def retranslateUi(self, LeoQuickSearchWidget):
+        # pylint: disable=no-member
         if isQt5:
             # QApplication.UnicodeUTF8 no longer exists.
-            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form", None))
+            LeoQuickSearchWidget.setWindowTitle(
+                QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Form", None))
         else:
-            LeoQuickSearchWidget.setWindowTitle(QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
+            LeoQuickSearchWidget.setWindowTitle(
+                QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
                 None, QtGui.QApplication.UnicodeUTF8))
