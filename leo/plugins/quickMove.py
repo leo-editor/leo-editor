@@ -155,7 +155,7 @@ from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":
     # for the right click context menu, and child items
-    from leo.core.leoQt import QtCore,QtGui,QtWidgets
+    from leo.core.leoQt import QtWidgets # QtCore,QtGui
     from leo.plugins.attrib_edit import ListDialog
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
@@ -220,7 +220,7 @@ class quickMove(object):
     def add_target(self, p):
         """add the current node as a target for global operations"""
 
-        name, ok = QtGui.QInputDialog.getText(None,"Target name","Target name",text=p.h)
+        name, ok = QtWidgets.QInputDialog.getText(None,"Target name","Target name",text=p.h)
         if not ok:
             return
 
@@ -378,9 +378,15 @@ class quickMove(object):
             pb.insertAction(pb.actions()[0], rc)  # insert at top
             b = None
             mb.has_parent = True
-            t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
-            if not g.u(pb.text()).endswith(g.u(t)):
-                pb.setText(pb.text()+t)
+            ### New code.
+            t = c.config.getString('mod_scripting_subtext') or ''
+            t2 = g.u(pb.text())
+            if not t.endswith(t):
+                pb.setText(t2+t)
+            # else:
+                # t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
+                # if not g.u(pb.text()).endswith(g.u(t)):
+                    # pb.setText(pb.text()+t)
         else:
             b = sc.createIconButton(
                 args=None,
@@ -543,7 +549,7 @@ class quickMove(object):
         as a target, to be triggered with quickmove_keyboard_action
         """
         c = self.c
-        menu = QtGui.QMenu(c.frame.top)
+        menu = QtWidgets.QMenu(c.frame.top)
 
         cmds = {}
 
@@ -624,7 +630,7 @@ class quickMove(object):
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
         ld.exec_()
 
-        if ld.result() == QtGui.QDialog.Rejected:
+        if ld.result() == QtWidgets.QDialog.Rejected:
             return
 
         for i in parents:
