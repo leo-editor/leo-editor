@@ -49,36 +49,24 @@ def createExportMenu (tag,keywords):
 #@+node:danr7.20060902083957.3: ** export_rtf
 def export_rtf( c ):
 
-    # g.es("Exporting...")
-
     # Get user preferences from INI file
     fileName = g.os_path_join(g.app.loadDir,"..","plugins","leo_to_rtf.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
     flagIgnoreFiles =  config.get("Main", "flagIgnoreFiles") == "Yes"
     flagJustHeadlines = config.get("Main", "flagJustHeadlines") == "Yes"
-    if 1: # New code. Prompt for the file name.
-        fileName = g.app.gui.runSaveFileDialog(c,
-            initialfile = c.mFileName+'.rtf',
-            title="Export to RTF",
-            filetypes=[("RTF files", "*.rtf")],
-            defaultextension=".rtf")
-        if fileName:
-            f=open(fileName, 'w')
-        else:
-            return
-    else: # Original code.
-        filePath = config.get("Main", "exportPath").strip() # "c:\\"
-        myFileName = c.frame.shortFileName()    # Get current outline filename
-        myFileName = myFileName[:-4]            # Remove .leo suffix
-        g.es(" Leo -> RTF started...",color="turquoise4")
-        # Open file for output
-        ### g.trace('filePath',filePath,'myFileName',myFileName)
-        f=open(filePath + myFileName + ".rtf", 'w')
-
+    # Prompt for the file name.
+    fileName = g.app.gui.runSaveFileDialog(c,
+        initialfile = c.mFileName+'.rtf',
+        title="Export to RTF",
+        filetypes=[("RTF files", "*.rtf")],
+        defaultextension=".rtf")
+    if fileName:
+        f=open(fileName, 'w')
+    else:
+        return
     # Write RTF header information
     f.write("{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}\n\n")
-
     # Write RTF list table that provides numbered list formatting
     #@+<< listtable >>
     #@+node:danr7.20060902085826: *3* << listtable >>
@@ -125,27 +113,25 @@ def export_rtf( c ):
 
     f.write("{\\*\\listoverridetable{\\listoverride\\listid127936308\\listoverridecount0\\ls1}}\n\n")
     #@-<< listtable >>
-
     # Write text formatting foundation
     f.write("\\viewkind4\\uc1\\pard\\f0\\fs20\n\n")
-
     # Create generic level header
     levelHeader = "\\pard \\ql \\fi-360\\ri0\\widctlpar\\jclisttab\\faauto\\ls1\\adjustright\\rin0\\itap0"
     myLevel = -1
-
     for p in c.all_positions():
         curLevel = p.level() + 1    # Store current level so method doesn't have to be called again
         if curLevel != myLevel:
             if myLevel != -1:
-                f.write("}")                 # If this is not the 1st level written, close the last before begin
-            levelIndent = str(720*curLevel) # Generate the pixel indent for the current level
-            f.write(levelHeader)            # Output the generic RTF level info
+                f.write("}")
+                    # If this is not the 1st level written, close the last before begin
+            levelIndent = str(720*curLevel)
+                # Generate the pixel indent for the current level
+            f.write(levelHeader)
+                # Output the generic RTF level info
             f.write("\\li" + levelIndent + "\\tx" + levelIndent + "\\ilvl" + str(curLevel-1) + "\\lin" + levelIndent)
             f.write("{")
-
         myLevel = curLevel
         myHeadline = p.h
-
         # Check if node is an @file and ignore if configured to
         if not (myHeadline[:5] == "@file" and flagIgnoreFiles):
             # Write headline with correct # of tabs for indentation
@@ -157,13 +143,10 @@ def export_rtf( c ):
                 myBody = p.b.encode( "utf-8" )
                 myBody = myBody.rstrip().rstrip("\n")
                 f.write(myBody + "\\par ")
-
     # Write final level close
     f.write("}")
-
     # Write RTF close
     f.write("}")
-
     # Close file
     f.close()
     g.es(" Leo -> RTF completed.",color="turquoise4")
