@@ -549,7 +549,8 @@ class GnxCache(object):
 #@-others
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app_base = QtWidgets if isQt5 else QtGui
+    app = app_base.QApplication(sys.argv)
     bd = GlobalSearch()
     sys.exit(app.exec_())
 
