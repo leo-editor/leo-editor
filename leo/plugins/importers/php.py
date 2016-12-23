@@ -104,7 +104,7 @@ class Php_Importer(Importer):
             for data in aList:
                 kind, pattern, ends = data
                 if self.match(s, i, pattern):
-                    if ends == None:
+                    if ends is None:
                         found = True
                         new_context = context
                         break
