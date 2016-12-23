@@ -633,7 +633,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
                 indent,
                 self.clean(name).strip()))
         if name.lower() in ['outline', 'head', 'body',]:
-            print
+            print('')
     #@+node:ekr.20060904134958.168: *5* attrsToString
     def attrsToString(self, attrs, sep='\n'):
         '''Convert the attributes to a string.
