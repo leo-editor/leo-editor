@@ -81,10 +81,9 @@ from collections import OrderedDict
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets,isQt5
-if isQt5:
-    QApplication = QtWidgets.QApplication
-else:
-    QApplication = QtGui.QApplication
+
+app_base = QtWidgets if isQt5 else QtGui
+QApplication = app_base.QApplication
 
 from leo.core import leoNodes
     # Uses leoNodes.PosList.
@@ -300,7 +299,7 @@ class QuickSearchEventFilter(QtCore.QObject):
     #@-others
 #@+node:ville.20121223213319.3670: ** dumpfocus
 def dumpfocus():
-    f = QtGui.QApplication.instance().focusWidget()
+    f = QApplication.instance().focusWidget()
     g.es("Focus: " + f)
     print("Focus: " + f)
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
@@ -328,24 +327,24 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
             self.setWindowTitle("Go anywhere")
             if 1:
                 self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
-            else:
-                self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("returnPressed()"),
-                    self.selectAndDismiss)
+            # else:
+                # self.connect(self.ui.lineEdit,
+                    # QtCore.SIGNAL("returnPressed()"),
+                    # self.selectAndDismiss)
             threadutil.later(self.ui.lineEdit.setFocus)
         else:
             if 1:
                 self.ui.lineEdit.returnPressed.connect(self.returnPressed)
-            else:
-                self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("returnPressed()"),
-                    self.returnPressed)
+            # else:
+                # self.connect(self.ui.lineEdit,
+                    # QtCore.SIGNAL("returnPressed()"),
+                    # self.returnPressed)
         if 1:
             self.ui.lineEdit.textChanged.connect(self.liveUpdate)
-        else:
-            self.connect(self.ui.lineEdit,
-                QtCore.SIGNAL("textChanged(QString)"),
-                self.liveUpdate)
+        # else:
+            # self.connect(self.ui.lineEdit,
+                # QtCore.SIGNAL("textChanged(QString)"),
+                # self.liveUpdate)
 
         self.ev_filter = QuickSearchEventFilter(c,w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
@@ -458,15 +457,13 @@ class QuickSearchController(object):
         #self.worker.set_output_f(dumper)
         self.worker.resultReady.connect(dumper)
         self.worker.start()
-
         if 1: # Compatible with PyQt5
             # we want both single-clicks and activations (press enter)
             w.itemActivated.connect(self.onActivated)
             w.itemPressed.connect(self.onSelectItem)
             w.currentItemChanged.connect(self.onSelectItem)
-        else:
-            pass
-            # # we want both single-clicks and activations (press enter)
+        # else:
+            # we want both single-clicks and activations (press enter)
             # w.connect(w,
                 # QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
                 # self.onActivated)
@@ -476,7 +473,6 @@ class QuickSearchController(object):
             # w.connect(w,
                 # QtCore.SIGNAL("currentItemChanged(QListWidgetItem*,QListWidgetItem *)"),
                 # self.onSelectItem)
-            # # Doesn't work.
     #@+node:ville.20121120225024.3636: *3* freeze
     def freeze(self, val = True):
         self.frozen = val
