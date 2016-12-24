@@ -864,7 +864,7 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
-        trace_all = True
+        trace_all = False
         trace_lines = True
         trace_status = True
         if g.app.suppressImportChecks:
