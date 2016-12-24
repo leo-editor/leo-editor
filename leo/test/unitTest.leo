@@ -276,23 +276,22 @@
 <v t="ekr.20070627082044.811"><vh>@thin unittest/batchTest.py</vh></v>
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016" a="E"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
-expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20161123115047.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161130061808.1"><vh>Copies</vh>
 <v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 </v>
-<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4698"><vh>Import tests</vh>
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4716" a="E"><vh>Tests of @auto</vh>
+<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
@@ -302,23 +301,23 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -329,10 +328,10 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
@@ -340,7 +339,7 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -348,23 +347,23 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
+<v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 <v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
-<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
@@ -503,7 +502,7 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
 <v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 <v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
@@ -516,6 +515,7 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
 <v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
 <v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
 <v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
 <v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
 <v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
@@ -1070,7 +1070,7 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 <v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
 </v>
 <v t="ekr.20161130041921.1"></v>
-<v t="ekr.20090529141856.4736" a="E"></v>
+<v t="ekr.20090529141856.4736"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -7008,7 +7008,8 @@ try:
     abc = g.findNodeInTree(c,p, 'abc')
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
-    p.deleteAllChildren()
+    if 1:
+        p.deleteAllChildren()
 finally:
     c.redraw()
 </t>
@@ -9871,6 +9872,140 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20161224101046.1">@tabwidth -4
+    # Required when running unit tests externally.
+if 0: # Preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+s = '''
+"""
+A PyQt "task launcher" for quick access to python scripts.
+
+Buttons to click to make working in Windows less unproductive.
+
+e.g. a button to move the current window to top or bottom half
+of screen, because Windows-Up / Windows-Down doesn't do that.
+Or quote the text on the clipboard properly, because Outlook
+can't do that.
+
+terrynbrown@gmail.com, 2016-12-23
+"""
+
+import sys
+import time
+from PyQt4 import QtGui, QtCore, Qt
+from PyQt4.QtCore import Qt as QtConst
+
+COMMANDS = []
+
+class Draggable(QtGui.QWidget):
+    def __init__(self, *args, **kwargs):
+        """__init__
+        """
+
+        QtGui.QWidget.__init__(self, *args, **kwargs)
+        # self.setMouseTracking(True)
+        self.offset = None
+        layout = QtGui.QHBoxLayout()
+        self.setLayout(layout)
+        layout.addItem(QtGui.QSpacerItem(15, 5))
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+    def mousePressEvent(self, event):
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        x=event.globalX()
+        y=event.globalY()
+        x_w = self.offset.x()
+        y_w = self.offset.y()
+        self.parent().move(x-x_w, y-y_w)
+
+def command(name):
+    def makebutton(function):
+        COMMANDS.append((name, function))
+        return function
+    return makebutton
+
+@command("Exit")
+def exit_():
+    exit()
+
+def main():
+
+    app = Qt.QApplication(sys.argv)
+
+    main = QtGui.QMainWindow(None,
+       # QtConst.CustomizeWindowHint  |
+       QtConst.FramelessWindowHint #  |
+       # QtConst.WindowCloseButtonHint
+    )
+
+    main.resize(800,16)
+    main.move(40,40)
+    mainwidj = Draggable()
+
+    for name, function in COMMANDS:
+        button = QtGui.QPushButton(name)
+        button.clicked.connect(function)
+        mainwidj.layout().addWidget(button)
+
+    main.setCentralWidget(mainwidj)
+    main.show()
+    app.exec_()
+
+if __name__ == '__main__':
+    main()
+'''
+table = (
+    (1, "Declarations"),
+    (1, "class Draggable"),
+    (2, "__init__"),
+    (2, "mousePressEvent"),
+    (2, "mouseMoveEvent"),
+    (1, "command"),
+    (2, "makebutton"),
+    (1, "exit_"),
+    (1, "main"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    target = g.findNodeInTree(c, root, 'exit_')
+    assert target
+    lines = g.splitLines(target.b)
+    assert lines[0] == '@command("Exit")\n', repr(lines[0])
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>

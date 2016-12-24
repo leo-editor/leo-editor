@@ -15524,7 +15524,142 @@ try:
     abc = g.findNodeInTree(c,p, 'abc')
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
-    p.deleteAllChildren()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20161224101046.1: *6* @test python decorator 2
+@tabwidth -4
+    # Required when running unit tests externally.
+if 0: # Preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+
+s = '''
+"""
+A PyQt "task launcher" for quick access to python scripts.
+
+Buttons to click to make working in Windows less unproductive.
+
+e.g. a button to move the current window to top or bottom half
+of screen, because Windows-Up / Windows-Down doesn't do that.
+Or quote the text on the clipboard properly, because Outlook
+can't do that.
+
+terrynbrown@gmail.com, 2016-12-23
+"""
+
+import sys
+import time
+from PyQt4 import QtGui, QtCore, Qt
+from PyQt4.QtCore import Qt as QtConst
+
+COMMANDS = []
+
+class Draggable(QtGui.QWidget):
+    def __init__(self, *args, **kwargs):
+        """__init__
+        """
+
+        QtGui.QWidget.__init__(self, *args, **kwargs)
+        # self.setMouseTracking(True)
+        self.offset = None
+        layout = QtGui.QHBoxLayout()
+        self.setLayout(layout)
+        layout.addItem(QtGui.QSpacerItem(15, 5))
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+    def mousePressEvent(self, event):
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        x=event.globalX()
+        y=event.globalY()
+        x_w = self.offset.x()
+        y_w = self.offset.y()
+        self.parent().move(x-x_w, y-y_w)
+
+def command(name):
+    def makebutton(function):
+        COMMANDS.append((name, function))
+        return function
+    return makebutton
+
+@command("Exit")
+def exit_():
+    exit()
+
+def main():
+
+    app = Qt.QApplication(sys.argv)
+
+    main = QtGui.QMainWindow(None,
+       # QtConst.CustomizeWindowHint  |
+       QtConst.FramelessWindowHint #  |
+       # QtConst.WindowCloseButtonHint
+    )
+
+    main.resize(800,16)
+    main.move(40,40)
+    mainwidj = Draggable()
+
+    for name, function in COMMANDS:
+        button = QtGui.QPushButton(name)
+        button.clicked.connect(function)
+        mainwidj.layout().addWidget(button)
+
+    main.setCentralWidget(mainwidj)
+    main.show()
+    app.exec_()
+
+if __name__ == '__main__':
+    main()
+'''
+table = (
+    (1, "Declarations"),
+    (1, "class Draggable"),
+    (2, "__init__"),
+    (2, "mousePressEvent"),
+    (2, "mouseMoveEvent"),
+    (1, "command"),
+    (2, "makebutton"),
+    (1, "exit_"),
+    (1, "main"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    target = g.findNodeInTree(c, root, 'exit_')
+    assert target
+    lines = g.splitLines(target.b)
+    assert lines[0] == '@command("Exit")\n', repr(lines[0])
+    if 1:
+        test_node.deleteAllChildren()
 finally:
     c.redraw()
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
