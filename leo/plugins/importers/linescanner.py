@@ -865,7 +865,7 @@ class Importer(object):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
         trace_all = False
-        trace_lines = True
+        trace_lines = False # Trace failures, regardless of trace.
         trace_status = True
         if g.app.suppressImportChecks:
             if trace and trace_status:
@@ -914,7 +914,7 @@ class Importer(object):
                 # Used in a unit test.
                 c.importCommands.errors += 1
         t2 = time.clock()
-        if t2 - t1 > 0.1:
+        if ok and t2 - t1 > 2.0:
             print('')
             g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
         return ok

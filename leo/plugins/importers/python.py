@@ -192,6 +192,7 @@ class Py_Importer(Importer):
         assert new_state.indent < top.state.indent, (
             '\nnew: %s\ntop: %s' % (new_state, top.state))
         assert self.skip == 0, self.skip
+        end_indent = new_state.indent
         while i < len(lines):
             progress = i
             self.cut_stack(new_state, stack, append=True)
@@ -206,10 +207,15 @@ class Py_Importer(Importer):
             prev_state = new_state
             new_state = self.scan_line(line, prev_state)
             if self.starts_block(i, lines, new_state, prev_state):
+                # g.trace('***',repr(lines[i]))
+                break
+            elif new_state.indent <= end_indent:
+                # g.trace('===',repr(lines[i]))
                 break
             else:
                 self.skip += 1
             assert progress < i, repr(line)
+        # g.pdb()
         return top.p
     #@+node:ekr.20161220073836.1: *4* python_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
@@ -230,10 +236,16 @@ class Py_Importer(Importer):
         #@-others
         '''
         trace = False # and g.unitTesting
+        indent_ws = self.get_str_lws(line)
+        lws = self.get_int_lws(line)
+        h = self.clean_headline(line) 
         if target.ref_flag:
-            pass
+            if 0: ### lws > target.state.indent:
+                # g.trace('='*20, lws, target.state.indent)
+                h = g.angleBrackets(' %s ' % h)
+                ref = '%s%s\n' % (indent_ws, h)
+                self.add_line(parent,ref)
         else:
-            indent_ws = self.get_str_lws(line)
             target.ref_flag = True
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
@@ -242,6 +254,7 @@ class Py_Importer(Importer):
                      indent_ws, line, parent.h))
                 g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
+        return h
     #@+node:ekr.20161117060359.1: *4* python_i.move_decorators & helpers
     def move_decorators(self, new_p, prev_p):
         '''
@@ -293,6 +306,7 @@ class Py_Importer(Importer):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
+        return ###
         trace = True
         pattern = self.escape_pattern # A compiled regex pattern
         for p in parent.subtree():
@@ -347,15 +361,15 @@ class Py_Importer(Importer):
         top = stack[-1]
         parent = top.p
         self.gen_refs = top.gen_refs
-        self.gen_ref(line, parent, top)
-        h = h = self.clean_headline(line) 
+        h = self.gen_ref(line, parent, top)
+        ### h = self.clean_headline(line) 
         child = self.create_child_node(parent, line, h)
         stack.append(Target(child, new_state))
         # Handle previous decorators.
         new_p = stack[-1].p.copy()
         self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161116040557.1: *4* python_i.starts_block
-    starts_pattern = re.compile(r'\s*(class|def)')
+    starts_pattern = re.compile(r'\s*(class|def)\s+')
         # Matches lines that apparently starts a class or def.
 
     def starts_block(self, i, lines, new_state, prev_state):
