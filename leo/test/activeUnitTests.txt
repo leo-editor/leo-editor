@@ -16243,10 +16243,44 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 1:
+    if 0:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20161224155151.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python top-level later decl
+#!/usr/bin/env python3
+
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20161224155151.2: *8* Declarations
+import os
+import re
+
+#@+node:ekr.20161224155151.3: *8* merge_value
+def merge_value(v1, v2):
+    return v
+
+#@+node:ekr.20161224155151.4: *8* class MainDisplay
+class MainDisplay(object):
+
+    @others
+# This line should be included at the end of the class node.
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+#@+node:ekr.20161224155151.5: *9* save_file
+def save_file(self):
+    """Write the file out to disk."""
+    with open(self.save_name, "w") as f:
+        for newline in newlines:
+            f.write(newline)
+
+#@+node:ekr.20161224155151.6: *8* retab
+def retab(s, tabsize):
+    return ''.join(pieces)
+
+if __name__=="__main__":
+    main()
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
