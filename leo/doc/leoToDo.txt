@@ -8,61 +8,34 @@
 @wrap
 
 * Rewrite scripting tutorial
-* Post: Looking over Edward's shoulder.
-* Posts: what you missed by not following leo-editor
-
+.. @+node:ekr.20161231072434.1: *3* Bugs
+- @auto bugs:
+    1. cancelling @auto write creates orphan nodes!
+    2. Cloned @auto nodes duplicates section references!
+    - See ekr.leo
+    
+- Bug: Refresh from disk can jump around the screen
+.. @+node:ekr.20161231072737.1: *3* Code
+- check pid logic in BPM.
+- p.b & p.h setters should check that s is a string.
+.. @+node:ekr.20161231072546.1: *3* Posts
 * Aha: use separate windows to compare code.
   Seems much better than separate body panes.
 
+- What you missed by not following leo-editor
+.. @+node:ekr.20161231072528.1: *3* Features
+- reload-abbreviations command.
+
+* Allow key unbinding.
+.. @+node:ekr.20161231072321.1: *3* Minor
 - Pylint --recent option.  Last hour? Last day?
 
 - Use regex in g.match.  Add g.match_any.
     pattern = '|'.join([r"\b%s\b" z for z in args])
 
-- Encourage everyone to use issue tracker.
-
-- A "looking over Edward's shoulder" video.
-
-- reload-abbreviations command.
-
-**** @auto bugs:
-    1. cancelling @auto write creates orphan nodes!
-    2. Cloned @auto nodes duplicates section references!
-    - See ekr.leo
-    
-**** Bug: Refresh from disk can jump around the screen
-
-**** Study notebook.py plugin.
-
-- check pid logic in BPM.
-- p.b & p.h setters should check that s is a string.
 - Create leoFind wrappers:
     - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
     - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
-
-- Use new importers for all languages.
-
-- Finish Homebrew installation: see child node.
-
-* Allow key unbinding.
-
-* Use code like search-finised code to highlight toggle commands.
-
-@language python
-.. @+node:ekr.20161124051851.1: *3* crash in autocomplete (with backspace key?)
-OK
-Traceback (most recent call last):
-  File "c:\leo.repo\leo-editor\leo\plugins\qt_events.py", line 126, in eventFilter
-    k.masterKeyHandler(event)
-  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 3347, in masterKeyHandler
-    k.handleUnboundKeys(event, char, stroke)
-  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 3612, in handleUnboundKeys
-    k.masterCommand(event=event, stroke=stroke)
-  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 3715, in masterCommand
-    expanded = c.abbrevCommands.expandAbbrev(event, stroke)
-  File "c:\leo.repo\leo-editor\leo\commands\abbrevCommands.py", line 229, in expandAbbrev
-    i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
-TypeError: 'NoneType' object is not iterable
 .. @+node:ekr.20161221063335.1: *3* -Importers
 @language rest
 @wrap
