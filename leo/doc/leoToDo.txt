@@ -17,18 +17,8 @@
 - Bug: Refresh from disk can jump around the screen
 .. @+node:ekr.20161231072737.1: *3* Code
 - check pid logic in BPM.
+
 - p.b & p.h setters should check that s is a string.
-.. @+node:ekr.20161231072546.1: *3* Posts
-* Aha: use separate windows to compare code.
-  Seems much better than separate body panes.
-
-- What you missed by not following leo-editor
-.. @+node:ekr.20161231072528.1: *3* Features
-- reload-abbreviations command.
-
-* Allow key unbinding.
-.. @+node:ekr.20161231072321.1: *3* Minor
-- Pylint --recent option.  Last hour? Last day?
 
 - Use regex in g.match.  Add g.match_any.
     pattern = '|'.join([r"\b%s\b" z for z in args])
@@ -36,7 +26,15 @@
 - Create leoFind wrappers:
     - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
     - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
-.. @+node:ekr.20161221063335.1: *3* -Importers
+.. @+node:ekr.20161231072528.1: *3* Features
+- reload-abbreviations command.
+
+* Allow key unbinding.
+
+- Pylint --recent option.  Last hour? Last day?
+
+
+.. @+node:ekr.20161221063335.1: *3* Importers
 @language rest
 @wrap
 @nosearch
@@ -47,6 +45,11 @@ Python:
 
 Coffeescript:
 - Get move_trailing_lines working, or abandon it.
+.. @+node:ekr.20161231072546.1: *3* Posts
+* Aha: use separate windows to compare code.
+  Seems much better than separate body panes.
+
+- What you missed by not following leo-editor
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap
