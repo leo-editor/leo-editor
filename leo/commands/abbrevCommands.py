@@ -496,7 +496,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not val:
             val, tag = self.abbrevs.get(word, (None, None))
         if val:
-            ### if trace and verbose: g.trace(repr(word), 'val', val, 'tag', tag)
             # Require a word match if the abbreviation is itself a word.
             if ch in ' \t\n': word = word.rstrip()
             if word.isalnum() and word[0].isalpha():
@@ -504,6 +503,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     return i, tag, word, val
                 else:
                     i -= 1
+                    return i, tag, word, val # 2016/12/31.
             else:
                 return i, tag, word, val
         else:
