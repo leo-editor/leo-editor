@@ -222,7 +222,8 @@ class Py_Importer(Importer):
             if self.starts_block(i, lines, new_state, prev_state, stack):
                 # g.trace('***',repr(lines[i]))
                 break
-            elif new_state.indent <= end_indent:
+            ### elif new_state.indent <= end_indent:
+            elif not self.is_ws_line(line) and new_state.indent <= end_indent:
                 # g.trace('===',repr(lines[i]))
                 break
             else:
@@ -430,6 +431,7 @@ class Py_Importer(Importer):
     def starts_block(self, i, lines, new_state, prev_state, stack):
         '''True if the line startswith class or def outside any context.'''
         # pylint: disable=arguments-differ
+        trace = False # and not g.unitTesting
         if prev_state.in_context():
             return False
         line = lines[i]
@@ -438,14 +440,18 @@ class Py_Importer(Importer):
             return False
         top = stack[-1]
         prev_indent = top.state.indent
-        # g.trace(prev_indent, new_state.indent, len(stack), repr(line))
         if top.kind == 'None' and new_state.indent > 0:
             # Underindented top-level class/def.
             return False
         elif top.kind == 'def' and new_state.indent > prev_indent:
             # class/def within a def.
             return False
+        elif top.at_others_flag and new_state.indent > prev_indent:
+            return False
         else:
+            if trace and new_state.indent > prev_indent:
+                g.trace(prev_indent, new_state.indent, repr(line))
+                g.trace('@others', top.at_others_flag)
             return True
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper (to do)
     def find_class(self, parent):

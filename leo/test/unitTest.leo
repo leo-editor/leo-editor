@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20161231115551.4"><vh>@gnxs</vh></v>
+<v t="ekr.20170101131801.10"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20161231115549.10"><vh>@gnxs</vh></v>
+<v t="ekr.20170101131800.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20161231115549.3"><vh>@gnxs</vh></v>
+<v t="ekr.20170101131759.10"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20161231115548.6"><vh>@gnxs</vh></v>
+<v t="ekr.20170101131759.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -151,6 +151,14 @@
 <v t="ekr.20161231115527.211"><vh>@data:#@auto</vh></v>
 <v t="ekr.20161231115527.212"><vh>@data:#@auto</vh>
 <v t="ekr.20161231115527.213"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170101131741.208"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170101131741.209"><vh>@data:#@auto</vh>
+<v t="ekr.20170101131741.210"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170101131741.211"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170101131741.212"><vh>@data:#@auto</vh>
+<v t="ekr.20170101131741.213"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -294,19 +302,20 @@
 <v t="ekr.20070627082044.811"><vh>@thin unittest/batchTest.py</vh></v>
 <v t="ekr.20070627082044.808"><vh>@thin unittest/errorTest.py</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20101220161557.6016" a="E"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20161123115047.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4698"><vh>Import tests</vh>
 <v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
+<v t="ekr.20090529141856.4716" a="E"><vh>Tests of @auto</vh>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4717" a="E"><vh>C tests</vh>
 <v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
 <v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
 <v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
@@ -316,23 +325,23 @@
 <v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4727" a="E"><vh>c# tests</vh>
 <v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034116.1" a="E"><vh>coffeescript tests</vh>
 <v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
 <v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
 <v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
 </v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123115047.1" a="E"><vh>dart tests</vh>
 <v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
 </v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4731" a="E"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -343,10 +352,10 @@
 <v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
 <v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
 </v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5804" a="E"><vh>ini tests</vh>
 <v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4766" a="E"><vh>Java tests</vh>
 <v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
 <v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
 <v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
@@ -354,7 +363,7 @@
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -362,23 +371,23 @@
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
-<v t="ekr.20161123202857.1"><vh>org tests</vh>
+<v t="ekr.20161123202857.1" a="E"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 </v>
-<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.1" a="E"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
 </v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4734" a="E"><vh>Pascal tests</vh>
 <v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015908.1" a="E"><vh>Perl tests</vh>
 <v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
 <v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
 <v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
 <v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
 <v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
 </v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5365" a="E"><vh>PHP tests</vh>
 <v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
 <v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
 <v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
@@ -521,9 +530,12 @@
 <v t="ekr.20170101085120.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20170101085120.26"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20170101131839.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170101131839.11"><vh>class foo</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+</v>
+<v t="ekr.20090529141856.4736" a="E"><vh>Python tests</vh>
 <v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
 <v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
 <v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
@@ -1097,173 +1109,137 @@
 <v t="ekr.20161228072352.1"><vh>bug-354-test declarations</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20090529141856.4736" a="E"></v>
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh>
-<v t="ekr.20170101124032.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/import all Leo's core files</vh>
-<v t="ekr.20170101124032.2"><vh>Declarations</vh></v>
-<v t="ekr.20170101124032.3"><vh>class PythonQSyntaxHighlighter</vh>
-<v t="ekr.20170101124032.4"><vh>__init__</vh></v>
-<v t="ekr.20170101124032.5"><vh>kill</vh></v>
-<v t="ekr.20170101124032.6"><vh>rehighlight</vh></v>
-<v t="ekr.20170101124032.7"><vh>rehighlightBlock</vh></v>
-<v t="ekr.20170101124032.8"><vh>rehighlight_helper</vh></v>
-<v t="ekr.20170101124032.9"><vh>currentBlock</vh></v>
-<v t="ekr.20170101124032.10"><vh>currentBlockUserData</vh></v>
-<v t="ekr.20170101124032.11"><vh>currentBlockState</vh></v>
-<v t="ekr.20170101124032.12"><vh>previousBlockState</vh></v>
-<v t="ekr.20170101124032.13"><vh>document</vh></v>
-<v t="ekr.20170101124032.14"><vh>format</vh></v>
-<v t="ekr.20170101124032.15"><vh>setCurrentBlockState</vh></v>
-<v t="ekr.20170101124032.16"><vh>setCurrentBlockUserData</vh></v>
-<v t="ekr.20170101124032.17"><vh>setDocument</vh></v>
-<v t="ekr.20170101124032.18"><vh>setFormat</vh></v>
-<v t="ekr.20170101124032.19"><vh>applyFormatChanges</vh></v>
-<v t="ekr.20170101124032.20"><vh>delayedRehighlight</vh></v>
-<v t="ekr.20170101124032.21"><vh>format_to_color</vh></v>
-<v t="ekr.20170101124032.22"><vh>highlightBlock</vh></v>
-<v t="ekr.20170101124032.23"><vh>idle_handler</vh></v>
-<v t="ekr.20170101124032.24"><vh>is_valid</vh></v>
-<v t="ekr.20170101124032.25"><vh>q_reformatBlocks</vh></v>
-<v t="ekr.20170101124032.26"><vh>reformat_blocks_helper</vh></v>
-<v t="ekr.20170101124032.27"><vh>reformatBlock</vh></v>
-<v t="ekr.20170101124032.28"><vh>reformatBlocks</vh></v>
+<v t="ekr.20170101131556.1"><vh>@@file leoFileCommands.py</vh>
+<v t="ekr.20170101131556.2"><vh>Declarations</vh></v>
+<v t="ekr.20170101131556.3"><vh>class BadLeoFile</vh>
+<v t="ekr.20170101131556.4"><vh>__init__</vh></v>
+<v t="ekr.20170101131556.5"><vh>__str__</vh></v>
 </v>
-<v t="ekr.20170101124032.29"><vh>class ColorizerMixin</vh>
-<v t="ekr.20170101124032.30"><vh>__init__</vh></v>
-<v t="ekr.20170101124032.31"><vh>colorize</vh></v>
-<v t="ekr.20170101124032.32"><vh>kill</vh></v>
-<v t="ekr.20170101124032.33"><vh>write_colorizer_cache</vh></v>
-<v t="ekr.20170101124032.34"><vh>findColorDirectives</vh></v>
-<v t="ekr.20170101124032.35"><vh>findLanguageDirectives</vh></v>
-<v t="ekr.20170101124032.36"><vh>isValidLanguage</vh></v>
-<v t="ekr.20170101124032.37"><vh>scanColorByPosition</vh></v>
-<v t="ekr.20170101124032.38"><vh>scanColorDirectives</vh></v>
-<v t="ekr.20170101124032.39"><vh>updateSyntaxColorer</vh></v>
-<v t="ekr.20170101124032.40"><vh>useSyntaxColoring</vh></v>
-</v>
-<v t="ekr.20170101124032.41"><vh>class JEditColorizer</vh>
-<v t="ekr.20170101124032.42"><vh>__init__</vh></v>
-<v t="ekr.20170101124032.43"><vh>defineLeoKeywordsDict</vh></v>
-<v t="ekr.20170101124032.44"><vh>defineDefaultColorsDict</vh></v>
-<v t="ekr.20170101124033.1"><vh>defineDefaultFontDict</vh></v>
-<v t="ekr.20170101124033.2"><vh>addImportedRules</vh></v>
-<v t="ekr.20170101124033.3"><vh>addLeoRules</vh></v>
-<v t="ekr.20170101124033.4"><vh>configure_hard_tab_width</vh></v>
-<v t="ekr.20170101124033.5"><vh>configure_tags</vh></v>
-<v t="ekr.20170101124033.6"><vh>configure_variable_tags</vh></v>
-<v t="ekr.20170101124033.7"><vh>init</vh></v>
-<v t="ekr.20170101124033.8"><vh>init_mode</vh></v>
-<v t="ekr.20170101124033.9"><vh>init_mode_from_module</vh></v>
-<v t="ekr.20170101124033.10"><vh>nameToRulesetName</vh></v>
-<v t="ekr.20170101124033.11"><vh>setKeywords</vh></v>
-<v t="ekr.20170101124033.12"><vh>setModeAttributes</vh></v>
-<v t="ekr.20170101124033.13"><vh>initModeFromBunch</vh></v>
-<v t="ekr.20170101124033.14"><vh>updateDelimsTables</vh></v>
-<v t="ekr.20170101124033.15"><vh>munge</vh></v>
-<v t="ekr.20170101124033.16"><vh>setFontFromConfig</vh></v>
-<v t="ekr.20170101124033.17"><vh>dump</vh></v>
-<v t="ekr.20170101124033.18"><vh>match_at_color</vh></v>
-<v t="ekr.20170101124033.19"><vh>match_at_language</vh></v>
-<v t="ekr.20170101124033.20"><vh>match_at_nocolor</vh></v>
-<v t="ekr.20170101124033.21"><vh>restartNoColor</vh></v>
-<v t="ekr.20170101124033.22"><vh>match_at_killcolor</vh></v>
-<v t="ekr.20170101124033.23"><vh>restartKillColor</vh></v>
-<v t="ekr.20170101124033.24"><vh>match_at_nocolor_node</vh></v>
-<v t="ekr.20170101124033.25"><vh>restartNoColorNode</vh></v>
-<v t="ekr.20170101124033.26"><vh>match_at_wrap</vh></v>
-<v t="ekr.20170101124033.27"><vh>match_blanks</vh></v>
-<v t="ekr.20170101124033.28"><vh>match_doc_part</vh></v>
-<v t="ekr.20170101124033.29"><vh>restartDocPart</vh></v>
-<v t="ekr.20170101124033.30"><vh>match_leo_keywords</vh></v>
-<v t="ekr.20170101124033.31"><vh>match_section_ref</vh></v>
-<v t="ekr.20170101124033.32"><vh>match_tabs</vh></v>
-<v t="ekr.20170101124033.33"><vh>match_any_url</vh></v>
-<v t="ekr.20170101124033.34"><vh>match_url_f</vh></v>
-<v t="ekr.20170101124033.35"><vh>match_url_g</vh></v>
-<v t="ekr.20170101124033.36"><vh>match_url_h</vh></v>
-<v t="ekr.20170101124033.37"><vh>match_url_m</vh></v>
-<v t="ekr.20170101124033.38"><vh>match_url_n</vh></v>
-<v t="ekr.20170101124033.39"><vh>match_url_p</vh></v>
-<v t="ekr.20170101124033.40"><vh>match_url_t</vh></v>
-<v t="ekr.20170101124033.41"><vh>match_url_w</vh></v>
-<v t="ekr.20170101124033.42"><vh>match_compiled_regexp</vh></v>
-<v t="ekr.20170101124033.43"><vh>match_compiled_regexp_helper</vh></v>
-<v t="ekr.20170101124033.44"><vh>match_eol_span</vh></v>
-<v t="ekr.20170101124033.45"><vh>match_eol_span_regexp</vh></v>
-<v t="ekr.20170101124033.46"><vh>match_keywords</vh></v>
-<v t="ekr.20170101124033.47"><vh>match_line</vh></v>
-<v t="ekr.20170101124033.48"><vh>match_mark_following</vh></v>
-<v t="ekr.20170101124033.49"><vh>getNextToken</vh></v>
-<v t="ekr.20170101124033.50"><vh>match_mark_previous</vh></v>
-<v t="ekr.20170101124033.51"><vh>match_regexp_helper</vh></v>
-<v t="ekr.20170101124033.52"><vh>match_seq</vh></v>
-<v t="ekr.20170101124033.53"><vh>match_seq_regexp</vh></v>
-<v t="ekr.20170101124033.54"><vh>match_span</vh></v>
-<v t="ekr.20170101124033.55"><vh>match_span_helper</vh></v>
-<v t="ekr.20170101124033.56"><vh>restart_match_span</vh></v>
-<v t="ekr.20170101124033.57"><vh>match_span_regexp</vh></v>
-<v t="ekr.20170101124033.58"><vh>match_word_and_regexp</vh></v>
-<v t="ekr.20170101124033.59"><vh>skip_line</vh></v>
-<v t="ekr.20170101124033.60"><vh>trace_match</vh></v>
-<v t="ekr.20170101124033.61"><vh>clearState</vh></v>
-<v t="ekr.20170101124033.62"><vh>computeState</vh></v>
-<v t="ekr.20170101124033.63"><vh>currentState</vh></v>
-<v t="ekr.20170101124033.64"><vh>prevState</vh></v>
-<v t="ekr.20170101124033.65"><vh>setRestart</vh></v>
-<v t="ekr.20170101124033.66"><vh>setState</vh></v>
-<v t="ekr.20170101124033.67"><vh>showState</vh></v>
-<v t="ekr.20170101124033.68"><vh>showCurrentState</vh></v>
-<v t="ekr.20170101124033.69"><vh>showPrevState</vh></v>
-<v t="ekr.20170101124033.70"><vh>stateNameToStateNumber</vh></v>
-<v t="ekr.20170101124033.71"><vh>colorRangeWithTag</vh></v>
-<v t="ekr.20170101124033.72"><vh>mainLoop</vh></v>
-<v t="ekr.20170101124033.73"><vh>restart</vh></v>
-<v t="ekr.20170101124033.74"><vh>recolor</vh></v>
-<v t="ekr.20170101124033.75"><vh>setTag</vh></v>
-</v>
-<v t="ekr.20170101124033.76"><vh>class LeoQtColorizer</vh>
-<v t="ekr.20170101124033.77"><vh>__init__</vh></v>
-<v t="ekr.20170101124033.78"><vh>colorize</vh></v>
-<v t="ekr.20170101124033.79"><vh>scanColorByPosition</vh></v>
-<v t="ekr.20170101124033.80"><vh>disable</vh></v>
-<v t="ekr.20170101124033.81"><vh>enable</vh></v>
-<v t="ekr.20170101124033.82"><vh>kill</vh></v>
-<v t="ekr.20170101124033.83"><vh>scanColorDirectives</vh></v>
-<v t="ekr.20170101124033.84"><vh>findLanguageDirectives</vh></v>
-<v t="ekr.20170101124033.85"><vh>isValidLanguage</vh></v>
-<v t="ekr.20170101124033.86"><vh>setHighlighter</vh></v>
-<v t="ekr.20170101124033.87"><vh>updateSyntaxColorer</vh></v>
-<v t="ekr.20170101124033.88"><vh>useSyntaxColoring</vh></v>
-<v t="ekr.20170101124033.89"><vh>findColorDirectives</vh></v>
-<v t="ekr.20170101124033.90"><vh>write_colorizer_cache</vh></v>
-<v t="ekr.20170101124033.91"><vh>class LeoQtSyntaxHighlighter</vh>
-<v t="ekr.20170101124033.92"><vh>__init__</vh></v>
-<v t="ekr.20170101124033.93"><vh>highlightBlock</vh></v>
-<v t="ekr.20170101124033.94"><vh>rehighlight</vh></v>
-<v t="ekr.20170101124033.95"><vh>rehighlight_with_cache</vh></v>
-</v>
-<v t="ekr.20170101124033.96"><vh>class NullScintillaLexer</vh>
-<v t="ekr.20170101124033.97"><vh>__init__</vh></v>
-<v t="ekr.20170101124033.98"><vh>description</vh></v>
-<v t="ekr.20170101124033.99"><vh>setStyling</vh></v>
-<v t="ekr.20170101124033.100"><vh>styleText</vh></v>
-<v t="ekr.20170101124033.101"><vh>configure_lexer</vh></v>
+<v t="ekr.20170101131556.6"><vh>class InvalidPaste</vh>
+<v t="ekr.20170101131556.7"><vh>class SaxContentHandler</vh>
+<v t="ekr.20170101131556.8"><vh>__init__</vh></v>
+<v t="ekr.20170101131556.9"><vh>endElementNS</vh></v>
+<v t="ekr.20170101131556.10"><vh>endDocument</vh></v>
+<v t="ekr.20170101131556.11"><vh>ignorableWhitespace</vh></v>
+<v t="ekr.20170101131556.12"><vh>skippedEntity</vh></v>
+<v t="ekr.20170101131556.13"><vh>startElementNS</vh></v>
+<v t="ekr.20170101131556.14"><vh>startDocument</vh></v>
+<v t="ekr.20170101131556.15"><vh>attrsToList</vh></v>
+<v t="ekr.20170101131556.16"><vh>error</vh></v>
+<v t="ekr.20170101131556.17"><vh>inElement</vh></v>
+<v t="ekr.20170101131556.18"><vh>printStartElement</vh></v>
+<v t="ekr.20170101131556.19"><vh>attrsToString</vh></v>
+<v t="ekr.20170101131556.20"><vh>clean</vh></v>
+<v t="ekr.20170101131556.21"><vh>characters</vh></v>
+<v t="ekr.20170101131556.22"><vh>endElement</vh></v>
+<v t="ekr.20170101131556.23"><vh>endTnode</vh></v>
+<v t="ekr.20170101131556.24"><vh>endVnode</vh></v>
+<v t="ekr.20170101131556.25"><vh>endVH</vh></v>
+<v t="ekr.20170101131556.26"><vh>getRootNode</vh></v>
+<v t="ekr.20170101131556.27"><vh>processingInstruction</vh></v>
+<v t="ekr.20170101131556.28"><vh>startElement</vh></v>
+<v t="ekr.20170101131556.29"><vh>getWindowPositionAttributes</vh></v>
+<v t="ekr.20170101131556.30"><vh>startGlobals</vh></v>
+<v t="ekr.20170101131556.31"><vh>startWinPos</vh></v>
+<v t="ekr.20170101131556.32"><vh>startLeoHeader</vh></v>
+<v t="ekr.20170101131556.33"><vh>startVH</vh></v>
+<v t="ekr.20170101131556.34"><vh>startVnodes</vh></v>
+<v t="ekr.20170101131556.35"><vh>startTnode</vh></v>
+<v t="ekr.20170101131556.36"><vh>tnodeAttributes</vh></v>
+<v t="ekr.20170101131556.37"><vh>startVnode</vh></v>
+<v t="ekr.20170101131556.38"><vh>vnodeAttributes</vh></v>
 </v>
 </v>
-<v t="ekr.20170101124033.102"><vh>class QScintillaColorizer</vh>
-<v t="ekr.20170101124033.103"><vh>__init__</vh></v>
-<v t="ekr.20170101124033.104"><vh>changeLexer</vh></v>
-<v t="ekr.20170101124033.105"><vh>configure_lexer</vh></v>
-<v t="ekr.20170101124033.106"><vh>colorize</vh></v>
-<v t="ekr.20170101124033.107"><vh>kill</vh></v>
-<v t="ekr.20170101124033.108"><vh>class PythonLexer</vh>
-<v t="ekr.20170101124033.109"><vh>__init__</vh></v>
-<v t="ekr.20170101124033.110"><vh>setStringsOverNewlineAllowed</vh></v>
-<v t="ekr.20170101124033.111"><vh>description</vh></v>
-<v t="ekr.20170101124033.112"><vh>setStyling</vh></v>
-<v t="ekr.20170101124033.113"><vh>styleText</vh></v>
-<v t="ekr.20170101124033.114"><vh>configure_lexer</vh></v>
-</v>
+<v t="ekr.20170101131556.39"><vh>class FileCommands</vh>
+<v t="ekr.20170101131556.40"><vh>cmd</vh></v>
+<v t="ekr.20170101131556.41"><vh>__init__</vh></v>
+<v t="ekr.20170101131556.42"><vh>initIvars</vh></v>
+<v t="ekr.20170101131556.43"><vh>checkLeoFile</vh></v>
+<v t="ekr.20170101131556.44"><vh>getLeoOutlineFromClipboard</vh></v>
+<v t="ekr.20170101131556.45"><vh>checkPaste</vh></v>
+<v t="ekr.20170101131556.46"><vh>getLeoFile</vh></v>
+<v t="ekr.20170101131556.47"><vh>getLeoFileHelper</vh></v>
+<v t="ekr.20170101131556.48"><vh>handleNodeConflicts</vh></v>
+<v t="ekr.20170101131556.49"><vh>propegateDirtyNodes</vh></v>
+<v t="ekr.20170101131556.50"><vh>readExternalFiles</vh></v>
+<v t="ekr.20170101131556.51"><vh>warnOnReadOnlyFiles</vh></v>
+<v t="ekr.20170101131556.52"><vh>readAtFileNodes</vh></v>
+<v t="ekr.20170101131556.53"><vh>openLeoFile</vh></v>
+<v t="ekr.20170101131556.54"><vh>readOutlineOnly</vh></v>
+<v t="ekr.20170101131556.55"><vh>canonicalTnodeIndex</vh></v>
+<v t="ekr.20170101131556.56"><vh>getDescendentAttributes</vh></v>
+<v t="ekr.20170101131556.57"><vh>getDescendentUnknownAttributes</vh></v>
+<v t="ekr.20170101131556.58"><vh>initReadIvars</vh></v>
+<v t="ekr.20170101131556.59"><vh>restoreDescendentAttributes</vh></v>
+<v t="ekr.20170101131556.60"><vh>cleanSaxInputString</vh></v>
+<v t="ekr.20170101131556.61"><vh>createSaxChildren</vh></v>
+<v t="ekr.20170101131556.62"><vh>createSaxVnode</vh></v>
+<v t="ekr.20170101131556.63"><vh>handleTnodeSaxAttributes</vh></v>
+<v t="ekr.20170101131556.64"><vh>handleVnodeSaxAttributes</vh></v>
+<v t="ekr.20170101131556.65"><vh>dumpSaxTree</vh></v>
+<v t="ekr.20170101131556.66"><vh>bytes_to_unicode</vh></v>
+<v t="ekr.20170101131556.67"><vh>getSaxUa</vh></v>
+<v t="ekr.20170101131556.68"><vh>parse_leo_file</vh></v>
+<v t="ekr.20170101131556.69"><vh>readSaxFile</vh></v>
+<v t="ekr.20170101131556.70"><vh>resolveTnodeLists</vh></v>
+<v t="ekr.20170101131556.71"><vh>resolveArchivedPosition</vh></v>
+<v t="ekr.20170101131556.72"><vh>setPositionsFromVnodes</vh></v>
+<v t="ekr.20170101131556.73"><vh>archivedPositionToPosition</vh></v>
+<v t="ekr.20170101131556.74"><vh>save</vh></v>
+<v t="ekr.20170101131556.75"><vh>saveAs</vh></v>
+<v t="ekr.20170101131556.76"><vh>saveTo</vh></v>
+<v t="ekr.20170101131556.77"><vh>putSavedMessage</vh></v>
+<v t="ekr.20170101131556.78"><vh>deleteFileWithMessage</vh></v>
+<v t="ekr.20170101131556.79"><vh>put</vh></v>
+<v t="ekr.20170101131556.80"><vh>put_dquote</vh></v>
+<v t="ekr.20170101131556.81"><vh>put_dquoted_bool</vh></v>
+<v t="ekr.20170101131556.82"><vh>put_flag</vh></v>
+<v t="ekr.20170101131556.83"><vh>put_in_dquotes</vh></v>
+<v t="ekr.20170101131556.84"><vh>put_nl</vh></v>
+<v t="ekr.20170101131556.85"><vh>put_tab</vh></v>
+<v t="ekr.20170101131556.86"><vh>put_tabs</vh></v>
+<v t="ekr.20170101131556.87"><vh>putClipboardHeader</vh></v>
+<v t="ekr.20170101131556.88"><vh>putLeoFile</vh></v>
+<v t="ekr.20170101131556.89"><vh>putFindSettings</vh></v>
+<v t="ekr.20170101131556.90"><vh>putGlobals</vh></v>
+<v t="ekr.20170101131556.91"><vh>putHeader</vh></v>
+<v t="ekr.20170101131556.92"><vh>putPostlog</vh></v>
+<v t="ekr.20170101131556.93"><vh>putPrefs</vh></v>
+<v t="ekr.20170101131556.94"><vh>putProlog</vh></v>
+<v t="ekr.20170101131556.95"><vh>putStyleSheetLine</vh></v>
+<v t="ekr.20170101131556.96"><vh>putTnode</vh></v>
+<v t="ekr.20170101131556.97"><vh>putTnodes</vh></v>
+<v t="ekr.20170101131556.98"><vh>putReferencedTnodes</vh></v>
+<v t="ekr.20170101131556.99"><vh>putVnode</vh></v>
+<v t="ekr.20170101131556.100"><vh>putVnodes</vh></v>
+<v t="ekr.20170101131556.101"><vh>putXMLLine</vh></v>
+<v t="ekr.20170101131556.102"><vh>putLeoOutline</vh></v>
+<v t="ekr.20170101131556.103"><vh>write_Leo_file</vh></v>
+<v t="ekr.20170101131556.104"><vh>isReadOnly</vh></v>
+<v t="ekr.20170101131556.105"><vh>writeAllAtFileNodesHelper</vh></v>
+<v t="ekr.20170101131556.106"><vh>writeToFileHelper</vh></v>
+<v t="ekr.20170101131556.107"><vh>createActualFile</vh></v>
+<v t="ekr.20170101131556.108"><vh>createBackupFile</vh></v>
+<v t="ekr.20170101131556.109"><vh>handleWriteLeoFileException</vh></v>
+<v t="ekr.20170101131556.110"><vh>writeToStringHelper</vh></v>
+<v t="ekr.20170101131556.111"><vh>writeZipFile</vh></v>
+<v t="ekr.20170101131556.112"><vh>writeAtFileNodes</vh></v>
+<v t="ekr.20170101131556.113"><vh>writeAtShadowNodes</vh></v>
+<v t="ekr.20170101131556.114"><vh>writeDirtyAtFileNodes</vh></v>
+<v t="ekr.20170101131556.115"><vh>writeDirtyAtShadowNodes</vh></v>
+<v t="ekr.20170101131556.116"><vh>writeMissingAtFileNodes</vh></v>
+<v t="ekr.20170101131556.117"><vh>writeOutlineOnly</vh></v>
+<v t="ekr.20170101131556.118"><vh>assignFileIndices</vh></v>
+<v t="ekr.20170101131556.119"><vh>createUaList</vh></v>
+<v t="ekr.20170101131556.120"><vh>pickle</vh></v>
+<v t="ekr.20170101131556.121"><vh>putDescendentAttributes</vh></v>
+<v t="ekr.20170101131556.122"><vh>putDescendentVnodeUas</vh></v>
+<v t="ekr.20170101131556.123"><vh>putUaHelper</vh></v>
+<v t="ekr.20170101131556.124"><vh>putUnknownAttributes</vh></v>
+<v t="ekr.20170101131556.125"><vh>setDefaultDirectoryForNewFiles</vh></v>
+<v t="ekr.20170101131556.126"><vh>updateFixedStatus</vh></v>
 </v>
 </v>
 </v>
@@ -10275,12 +10251,18 @@ try:
     # leoTangle contains section refs in @c sections.
     files = [z for z in files
         if not g.shortFileName(z).endswith('leoTangle.py')]
-    if 1: # Do just one file.
-        # 'leoColorizer.py'
-        # 'leoFileCommands.py'
-        # 'leoNodes.py'
-        files = [z for z in files
-            if g.shortFileName(z).endswith('leoColorizer.py')]
+    if 0: # Do only files in the table.
+        table = (
+            'leoColorizer.py',
+            'leoFileCommands.py',
+            'leoNodes.py',
+        )
+        result = []
+        for fn in files:
+            for z in table:
+                if g.shortFileName(fn).endswith(z):
+                    result.append(fn)
+        files = result
     test_node = p.copy()
     fails = []
     test_node.deleteAllChildren()
@@ -10295,7 +10277,7 @@ try:
         except AssertionError:
             print('FAIL: %6s %6s %s' % (len(s), len(s2), sfn))
             fails.append(sfn)
-            ### break ###
+            break ###
     if fails:
         print('%s failures' % (len(fails)))
         g.printList(sorted(fails))
@@ -10492,34 +10474,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20161231115548.6">gnx: ekr.20161202200225.5
-unl: section 1
-gnx: ekr.20161202200225.6
-unl: section 2
-</t>
-<t tx="ekr.20161231115549.10">gnx: ekr.20151009114144.15
-unl: section 1
-gnx: ekr.20151009114144.16
-unl: section 2
-</t>
-<t tx="ekr.20161231115549.3">gnx: ekr.20151009114144.13
-unl: section 1
-gnx: ekr.20151009114144.14
-unl: section 2
-</t>
-<t tx="ekr.20161231115551.4">gnx: ekr.20161202200225.7
-unl: class class1
-gnx: ekr.20161202200225.8
-unl: class class1--&gt;class1_method1
-gnx: ekr.20161202200225.9
-unl: class class1--&gt;class1_method2
-gnx: ekr.20161202200225.10
-unl: class class2
-gnx: ekr.20161202200225.11
-unl: class class2--&gt;class2_method1
-gnx: ekr.20161202200225.12
-unl: class class2--&gt;class2_method2
-</t>
 <t tx="ekr.20161231115630.10">&lt;?php
 @others
 @language php
@@ -10546,2895 +10500,2195 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170101124032.1"># -*- coding: utf-8 -*-
-@others
+<t tx="ekr.20170101131556.1">@others
 @language python
 @tabwidth -4
-@ignore
 </t>
-<t tx="ekr.20170101124032.10">def currentBlockUserData(self):
-    '''Returns the QTextBlockUserData object attached to the current text block.'''
-    return self.cb.userData() if self.is_valid(self.cb) else None
-</t>
-<t tx="ekr.20170101124032.11">def currentBlockState(self):
-    '''Returns the state of the current block or -1.'''
-    return self.cb.userState() if self.is_valid(self.cb) else - 1
+<t tx="ekr.20170101131556.10">def endDocument(self):
+    pass
 
 </t>
-<t tx="ekr.20170101124032.12">def previousBlockState(self):
-    '''Returns the end state previous text block or -1'''
-    if self.is_valid(self.cb):
-        previous = self.cb.previous()
-        return previous.userState() if self.is_valid(previous) else - 1
+<t tx="ekr.20170101131556.100">def putVnodes(self):
+    """Puts all &lt;v&gt; elements in the order in which they appear in the outline."""
+    c = self.c
+    c.clearAllVisited()
+    self.put("&lt;vnodes&gt;\n")
+    # Make only one copy for all calls.
+    self.currentPosition = c.p
+    self.rootPosition = c.rootPosition()
+    # self.topPosition     = c.topPosition()
+    self.vnodesDict = {}
+    if self.usingClipboard:
+        self.putVnode(self.currentPosition) # Write only current tree.
     else:
-        return -1
+        for p in c.rootPosition().self_and_siblings():
+            # New in Leo 4.4.2 b2 An optimization:
+            self.putVnode(p, isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
+    self.put("&lt;/vnodes&gt;\n")
 </t>
-<t tx="ekr.20170101124032.13">def document(self):
-    '''Returns the QTextDocument on which this syntax highlighter is installed.'''
-    return self.d
+<t tx="ekr.20170101131556.101">def putXMLLine(self):
+    '''Put the **properly encoded** &lt;?xml&gt; element.'''
+    # Use self.leo_file_encoding encoding.
+    self.put('%s"%s"%s\n' % (
+        g.app.prolog_prefix_string,
+        self.leo_file_encoding,
+        g.app.prolog_postfix_string))
 </t>
-<t tx="ekr.20170101124032.14">def format(self, pos):
-    '''Return the format at the given position in the current text block.'''
-    if 0 &lt;= pos &lt; len(self.formatChanges):
-        return self.formatChanges[pos]
+<t tx="ekr.20170101131556.102">def putLeoOutline(self):
+    '''
+    Return a string, *not unicode*, encoded with self.leo_file_encoding,
+    suitable for pasting to the clipboard.
+    '''
+    self.outputFile = g.FileLikeObject()
+    self.usingClipboard = True
+    self.putProlog()
+    self.putClipboardHeader()
+    self.putVnodes()
+    self.putTnodes()
+    self.putPostlog()
+    s = self.outputFile.getvalue()
+    self.outputFile = None
+    self.usingClipboard = False
+    return s
+</t>
+<t tx="ekr.20170101131556.103">def write_Leo_file(self, fileName, outlineOnlyFlag, toString=False, toOPML=False):
+    '''Write the .leo file.'''
+    c, fc = self.c, self
+    structure_errors = c.checkOutline()
+    if structure_errors:
+        g.error('Major structural errors! outline not written')
+        return False
+    if not outlineOnlyFlag or toOPML:
+        g.app.recentFilesManager.writeRecentFilesFile(c)
+        fc.writeAllAtFileNodesHelper() # Ignore any errors.
+    if fc.isReadOnly(fileName):
+        return False
+    try:
+        fc.putCount = 0
+        fc.toString = toString
+        if toString:
+            ok = fc.writeToStringHelper(fileName)
+        else:
+            ok = fc.writeToFileHelper(fileName, toOPML)
+    finally:
+        fc.outputFile = None
+        fc.toString = False
+    return ok
+
+write_LEO_file = write_Leo_file # For compatibility with old plugins.
+</t>
+<t tx="ekr.20170101131556.104">def isReadOnly(self, fileName):
+    # self.read_only is not valid for Save As and Save To commands.
+    if g.os_path_exists(fileName):
+        try:
+            if not os.access(fileName, os.W_OK):
+                g.error("can not write: read only:", fileName)
+                return True
+        except Exception:
+            pass # os.access() may not exist on all platforms.
+    return False
+</t>
+<t tx="ekr.20170101131556.105">def writeAllAtFileNodesHelper(self):
+    '''Write all @&lt;file&gt; nodes and set orphan bits.'''
+    c = self.c
+    try:
+        # 2010/01/19: Do *not* signal failure here.
+        # This allows Leo to quit properly.
+        c.atFileCommands.writeAll()
+        return True
+    except Exception:
+        # Work around bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+        g.es_error("exception writing external files")
+        g.es_exception()
+        g.es('Internal error writing one or more external files.', color='red')
+        g.es('Please report this error to:', color='blue')
+        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+        g.es('All changes will be lost unless you', color='red')
+        g.es('can save each changed file.', color='red')
+        return False
+</t>
+<t tx="ekr.20170101131556.106">def writeToFileHelper(self, fileName, toOPML):
+    c = self.c; toZip = c.isZipped
+    ok, backupName = self.createBackupFile(fileName)
+    if not ok: return False
+    fileName, theActualFile = self.createActualFile(fileName, toOPML, toZip)
+    if not theActualFile: return False
+    self.mFileName = fileName
+    self.outputFile = StringIO() # Always write to a string.
+    try:
+        if toOPML:
+            if hasattr(c, 'opmlController'):
+                c.opmlController.putToOPML(owner=self)
+            else:
+                # This is not likely ever to be called.
+                g.trace('leoOPML plugin not active.')
+        else:
+            self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s # 2010/01/19: always set this.
+        if toZip:
+            self.writeZipFile(s)
+        else:
+            if g.isPython3:
+                s = bytes(s, self.leo_file_encoding, 'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # raise AttributeError # To test handleWriteLeoFileException.
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName, 'backup')
+        return True
+    except Exception:
+        self.handleWriteLeoFileException(
+            fileName, backupName, theActualFile)
+        return False
+</t>
+<t tx="ekr.20170101131556.107">def createActualFile(self, fileName, toOPML, toZip):
+    if toZip:
+        self.toString = True
+        theActualFile = None
     else:
-        return QtGui.QTextCharFormat()
+        try:
+            # 2010/01/21: always write in binary mode.
+            theActualFile = open(fileName, 'wb')
+        except IOError:
+            g.es('can not open %s' % fileName)
+            g.es_exception()
+            theActualFile = None
+    return fileName, theActualFile
 </t>
-<t tx="ekr.20170101124032.15">def setCurrentBlockState(self, newState):
-    '''Sets the state of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserState(newState)
+<t tx="ekr.20170101131556.108">def createBackupFile(self, fileName):
+    '''
+        Create a closed backup file and copy the file to it,
+        but only if the original file exists.
+    '''
+    if g.os_path_exists(fileName):
+        fd, backupName = tempfile.mkstemp(text=False)
+        f = open(fileName, 'rb') # rb is essential.
+        s = f.read()
+        f.close()
+        try:
+            try:
+                os.write(fd, s)
+            finally:
+                os.close(fd)
+            ok = True
+        except Exception:
+            g.error('exception creating backup file')
+            g.es_exception()
+            ok, backupName = False, None
+        if not ok and self.read_only:
+            g.error("read only")
+    else:
+        ok, backupName = True, None
+    return ok, backupName
+</t>
+<t tx="ekr.20170101131556.109">def handleWriteLeoFileException(self, fileName, backupName, theActualFile):
+    c = self.c
+    g.es("exception writing:", fileName)
+    g.es_exception(full=True)
+    if theActualFile:
+        theActualFile.close()
+    # Delete fileName.
+    if fileName and g.os_path_exists(fileName):
+        self.deleteFileWithMessage(fileName, '')
+    # Rename backupName to fileName.
+    if backupName and g.os_path_exists(backupName):
+        g.es("restoring", fileName, "from", backupName)
+        # No need to create directories when restoring.
+        g.utils_rename(c, backupName, fileName)
+    else:
+        g.error('backup file does not exist!', repr(backupName))
+</t>
+<t tx="ekr.20170101131556.11">def ignorableWhitespace(self, unused_whitespace):
+    pass
 
 </t>
-<t tx="ekr.20170101124032.16">def setCurrentBlockUserData(self, data):
-    '''Set the user data of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserData(data)
+<t tx="ekr.20170101131556.110">def writeToStringHelper(self, fileName):
+    try:
+        self.mFileName = fileName
+        self.outputFile = StringIO()
+        self.putLeoFile()
+        s = self.outputFile.getvalue()
+        g.app.write_Leo_file_string = s
+        return True
+    except Exception:
+        g.es("exception writing:", fileName)
+        g.es_exception(full=True)
+        g.app.write_Leo_file_string = ''
+        return False
 </t>
-<t tx="ekr.20170101124032.17">def setDocument(self, parent):
-    '''Install self on the given QTextDocument.'''
-    d = self.d
-    if d:
-        d.contentsChange.disconnect()
-        cursor = QtGui.QTextCursor(d)
-        cursor.beginEditBlock()
-        blk = d.begin()
-        while self.is_valid(blk): # blk: QTextBlock
-            blk.layout().clearAdditionalFormats()
-            blk = blk.next()
-        cursor.endEditBlock()
-    self.d = d = parent.document()
-    assert isinstance(d, QtGui.QTextDocument), d
-    if d:
-        d.contentsChange.connect(self.q_reformatBlocks)
-        d.rehighlightPending = True
-            # Set d's pending flag.
-        QtCore.QTimer.singleShot(0, self.delayedRehighlight)
+<t tx="ekr.20170101131556.111">def writeZipFile(self, s):
+    # The name of the file in the archive.
+    contentsName = g.toEncodedString(
+        g.shortFileName(self.mFileName),
+        self.leo_file_encoding, reportErrors=True)
+    # The name of the archive itself.
+    fileName = g.toEncodedString(
+        self.mFileName,
+        self.leo_file_encoding, reportErrors=True)
+    # Write the archive.
+    theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
+    theFile.writestr(contentsName, s)
+    theFile.close()
 </t>
-<t tx="ekr.20170101124032.18">def setFormat(self, start, count, format):
-    '''Remember the requested formatting.'''
+<t tx="ekr.20170101131556.112">@cmd('write-at-file-nodes')
+def writeAtFileNodes(self, event=None):
+    '''Write all @file nodes in the selected outline.'''
+    c = self.c
+    c.init_error_dialogs()
+    c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+    c.raise_error_dialogs(kind='write')
+</t>
+<t tx="ekr.20170101131556.113">def writeAtShadowNodes(self, event=None):
+    '''Write all @file nodes in the selected outline.'''
+    c = self.c
+    c.init_error_dialogs()
+    c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+    c.raise_error_dialogs(kind='write')
+</t>
+<t tx="ekr.20170101131556.114">@cmd('write-dirty-at-file-nodes')
+def writeDirtyAtFileNodes(self, event=None):
+    '''Write all changed @file Nodes.'''
+    c = self.c
+    c.init_error_dialogs()
+    c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
+    c.raise_error_dialogs(kind='write')
+</t>
+<t tx="ekr.20170101131556.115">def writeDirtyAtShadowNodes(self, event=None):
+    '''Write all changed @shadow Nodes.'''
+    self.c.atFileCommands.writeDirtyAtShadowNodes()
+</t>
+<t tx="ekr.20170101131556.116">@cmd('write-missing-at-file-nodes')
+def writeMissingAtFileNodes(self, event=None):
+    '''Write all @file nodes for which the corresponding external file does not exist.'''
+    c = self.c
+    if c.p:
+        c.atFileCommands.writeMissing(c.p)
+</t>
+<t tx="ekr.20170101131556.117">@cmd('write-outline-only')
+def writeOutlineOnly(self, event=None):
+    '''Write the entire outline without writing any derived files.'''
+    c = self.c
+    c.endEditing()
+    self.write_Leo_file(self.mFileName, outlineOnlyFlag=True)
+    g.blue('done')
+</t>
+<t tx="ekr.20170101131556.118">def assignFileIndices(self):
+    """Assign a file index to all tnodes"""
+    pass # No longer needed: we assign indices as needed.
+# Indices are now immutable, so there is no longer any difference between these two routines.
+
+compactFileIndices = assignFileIndices
+</t>
+<t tx="ekr.20170101131556.119">def createUaList(self, aList):
+    '''Given aList of pairs (p,torv), return a list of pairs (torv,d)
+    where d contains all picklable items of torv.unknownAttributes.'''
+    result = []
+    for p, torv in aList:
+        if isinstance(torv.unknownAttributes, dict):
+            # Create a new dict containing only entries that can be pickled.
+            d = dict(torv.unknownAttributes) # Copy the dict.
+            for key in d:
+                # Just see if val can be pickled.  Suppress any error.
+                ok = self.pickle(torv=torv, val=d.get(key), tag=None)
+                if not ok:
+                    del d[key]
+                    g.warning("ignoring bad unknownAttributes key", key, "in", p.h)
+            if d:
+                result.append((torv, d),)
+        else:
+            g.warning("ignoring non-dictionary uA for", p)
+    return result
+</t>
+<t tx="ekr.20170101131556.12">def skippedEntity(self, name):
+    g.trace(name)
+
+</t>
+<t tx="ekr.20170101131556.120">def pickle(self, torv, val, tag):
+    '''Pickle val and return the hexlified result.'''
+    trace = False and g.unitTesting
+    try:
+        s = pickle.dumps(val, protocol=1)
+        s2 = binascii.hexlify(s)
+        s3 = g.ue(s2, 'utf-8')
+        if trace: g.trace('\n',
+            type(val), val, '\n', type(s), repr(s), '\n',
+            type(s2), s2, '\n', type(s3), s3)
+        field = ' %s="%s"' % (tag, s3)
+        return field
+    except pickle.PicklingError:
+        if tag: # The caller will print the error if tag is None.
+            g.warning("ignoring non-pickleable value", val, "in", torv)
+        return ''
+    except Exception:
+        g.error("fc.pickle: unexpected exception in", torv)
+        g.es_exception()
+        return ''
+</t>
+<t tx="ekr.20170101131556.121">def putDescendentAttributes(self, p):
+
+    # Create lists of all tnodes whose vnodes are marked or expanded.
+    marks = []; expanded = []
+    for p in p.subtree():
+        v = p.v
+        if p.isMarked() and p.v not in marks:
+            marks.append(v)
+        if p.hasChildren() and p.isExpanded() and v not in expanded:
+            expanded.append(v)
+    result = []
+    for theList, tag in ((marks, "marks"), (expanded, "expanded")):
+        if theList:
+            sList = []
+            for v in theList:
+                sList.append("%s," % v.fileIndex)
+            s = ''.join(sList)
+            # g.trace(tag,[str(p.h) for p in theList])
+            result.append('\n%s="%s"' % (tag, s))
+    return ''.join(result)
+</t>
+<t tx="ekr.20170101131556.122">def putDescendentVnodeUas(self, p):
+    '''Return the a uA field for descendent VNode attributes,
+    suitable for reconstituting uA's for anonymous vnodes.'''
+    trace = False
+    if trace: g.trace(p.h)
+    # Create aList of tuples (p,v) having a valid unknownAttributes dict.
+    # Create dictionary: keys are vnodes, values are corresonding archived positions.
+    pDict = {}; aList = []
+    for p2 in p.self_and_subtree():
+        if hasattr(p2.v, "unknownAttributes"):
+            aList.append((p2.copy(), p2.v),)
+            pDict[p2.v] = p2.archivedPosition(root_p=p)
+    # Create aList of pairs (v,d) where d contains only pickleable entries.
+    if aList: aList = self.createUaList(aList)
+    if not aList: return ''
+    # Create d, an enclosing dict to hold all the inner dicts.
+    d = {}
+    for v, d2 in aList:
+        aList2 = [str(z) for z in pDict.get(v)]
+        # g.trace(aList2)
+        key = '.'.join(aList2)
+        d[key] = d2
+    if trace: g.trace(p.h, g.dictToString(d))
+    # Pickle and hexlify d
+    return d and self.pickle(
+        torv=p.v, val=d, tag='descendentVnodeUnknownAttributes') or ''
+</t>
+<t tx="ekr.20170101131556.123">def putUaHelper(self, torv, key, val):
+    '''Put attribute whose name is key and value is val to the output stream.'''
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if key.startswith('str_'):
+        if g.isString(val) or g.isBytes(val):
+            val = g.toUnicode(val)
+            attr = ' %s="%s"' % (key, xml.sax.saxutils.escape(val))
+            return attr
+        else:
+            g.trace(type(val), repr(val))
+            g.warning("ignoring non-string attribute", key, "in", torv)
+            return ''
+    else:
+        return self.pickle(torv=torv, val=val, tag=key)
+</t>
+<t tx="ekr.20170101131556.124">def putUnknownAttributes(self, torv):
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+    attrDict = torv.unknownAttributes
+    if isinstance(attrDict, dict):
+        val = ''.join(
+            [self.putUaHelper(torv, key, val)
+                for key, val in attrDict.items()])
+        return val
+    else:
+        g.warning("ignoring non-dictionary unknownAttributes for", torv)
+        return ''
+</t>
+<t tx="ekr.20170101131556.125">def setDefaultDirectoryForNewFiles(self, fileName):
+    """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
+    c = self.c
+    if not c.openDirectory:
+        theDir = g.os_path_dirname(fileName)
+        if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
+            c.openDirectory = c.frame.openDirectory = theDir
+</t>
+<t tx="ekr.20170101131556.126">def updateFixedStatus(self):
+    c = self.c
+    p = c.config.findSettingsPosition('@bool fixedWindow')
+    if p:
+        import leo.core.leoConfig as leoConfig
+        parser = leoConfig.SettingsTreeParser(c)
+        kind, name, val = parser.parseHeadline(p.h)
+        if val and val.lower() in ('true', '1'):
+            val = True
+        else:
+            val = False
+        c.fixed = val
+    # g.trace('c.fixed',c.fixed)
+</t>
+<t tx="ekr.20170101131556.13">def startElementNS(self, unused_name, unused_qname, unused_attrs):
+    g.trace(unused_name)
+
+</t>
+<t tx="ekr.20170101131556.14">def startDocument(self):
+    pass
+</t>
+<t tx="ekr.20170101131556.15">def attrsToList(self, attrs):
+    '''Convert the attributes to a list of g.Bunches.
+
+    attrs: an Attributes item passed to startElement.'''
+    return [
+        g.Bunch(name=name, val=attrs.getValue(name))
+            for name in attrs.getNames()]
+</t>
+<t tx="ekr.20170101131556.16">def error(self, message):
+    g.pr('\n\nXML error: %s\n' % (message))
+    self.errors += 1
+</t>
+<t tx="ekr.20170101131556.17">def inElement(self, name):
+    return self.elementStack and name in self.elementStack
+</t>
+<t tx="ekr.20170101131556.18">def printStartElement(self, name, attrs):
+    indent = '\t' * self.level or ''
+    if attrs.getLength() &gt; 0:
+        g.pr('%s&lt;%s %s&gt;' % (
+            indent,
+            self.clean(name).strip(),
+            self.attrsToString(attrs, sep=' ')),
+            newline=False)
+    else:
+        g.pr('%s&lt;%s&gt;' % (
+            indent,
+            self.clean(name).strip()),
+            newline=False)
+    if name.lower() in ['v', 't', 'vnodes', 'tnodes',]:
+        g.pr('')
+</t>
+<t tx="ekr.20170101131556.19">def attrsToString(self, attrs, sep='\n'):
+    '''Convert the attributes to a string.
+
+    attrs: an Attributes item passed to startElement.
+
+    sep: the separator charater between attributes.'''
+    result = [
+        '%s="%s"' % (bunch.name, bunch.val)
+        for bunch in self.attrsToList(attrs)
+    ]
+    return sep.join(result)
+</t>
+<t tx="ekr.20170101131556.2">'''Classes relating to reading and writing .leo files.'''
+import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
+import binascii
+import difflib
+import time
+if g.isPython3:
+    import io # Python 3.x
+    StringIO = io.StringIO
+    BytesIO = io.BytesIO
+else:
+    import cStringIO # Python 2.x
+    StringIO = cStringIO.StringIO
+import os
+import pickle
+import string
+import sys
+import tempfile
+import zipfile
+try:
+    # IronPython has problems with this.
+    import xml.sax
+    import xml.sax.saxutils
+except Exception:
+    pass
+</t>
+<t tx="ekr.20170101131556.20">def clean(self, s):
+    return g.toEncodedString(s, "ascii")
+</t>
+<t tx="ekr.20170101131556.21">def characters(self, content):
+    '''Handle the characters element.'''
+    if content and not g.isUnicode(content):
+        g.trace('Non-unicode content', repr(content))
+        content = g.toUnicode(content)
+    content = content.replace('\r', '')
+    if not content:
+        return
+    elementName = (self.elementStack and self.elementStack[-1].lower() or
+        '&lt;no element name&gt;')
+    # if self.trace: g.trace(elementName,content.strip())
+    if elementName in ('t', 'vh'):
+        # if elementName == 'vh': g.trace(elementName,repr(content))
+        self.content.append(content)
+    elif content.strip():
+        g.pr('unexpected content:', elementName, repr(content))
+</t>
+<t tx="ekr.20170101131556.22">def endElement(self, name):
+    '''Handle the end of any xml element.'''
+    name = name.lower()
+    if name in self.printElements or 'all' in self.printElements:
+        indent = '\t' * (self.level - 1) or ''
+        g.pr('%s&lt;/%s&gt;' % (indent, self.clean(name).strip()))
+    data = self.dispatchDict.get(name)
+    if data is None:
+        if 1: g.trace('unknown end element', name)
+    else:
+        junk, func = data
+        if func:
+            func()
+    name2 = self.elementStack.pop()
+    assert name == name2
+    # if self.trace: g.trace('** pop',name2)
+</t>
+<t tx="ekr.20170101131556.23">def endTnode(self):
+    '''Handle the end of a &lt;tnode&gt; element.'''
+    trace = (False or self.trace) and not g.unitTesting
+    # trace = trace and self.fileName.endswith('clone-test.leo')
+    for sax_node in self.nodeList:
+        sax_node.bodyString = ''.join(self.content)
+        if trace: g.trace(repr(sax_node))
+    self.content = []
+</t>
+<t tx="ekr.20170101131556.24">def endVnode(self):
+    '''Handle the end of a &lt;vnode&gt; element.'''
+    self.level -= 1
+    self.node = self.nodeStack.pop()
+    # if self.trace: g.trace(repr(self.node))
+</t>
+<t tx="ekr.20170101131556.25">def endVH(self):
+    '''Handle the end of a &lt;vh&gt; element.'''
+    if self.node:
+        self.node.headString = ''.join(self.content)
+        # if self.trace: g.trace(repr(self.node))
+    self.content = []
+</t>
+<t tx="ekr.20170101131556.26">def getRootNode(self):
+    if self.trace:
+        g.trace()
+        self.rootNode.dump()
+        for child in self.rootNode.children:
+            child.dump()
+    return self.rootNode
+</t>
+<t tx="ekr.20170101131556.27">def processingInstruction(self, target, data):
+    '''
+    sax: handle an xml processing instruction.
+    We expect the target to be 'xml-stylesheet'.
+    '''
+    trace = False and not g.unitTesting
+    if target == 'xml-stylesheet':
+        # A strange hack.  Don't set this for settings files.
+        # This looks like a strange sax interaction.
+        sfn = (self.c.shortFileName() or '').strip().lower()
+        if sfn.endswith('leosettings.leo') or sfn.endswith('myleosettings.leo'):
+            pass
+        else:
+            self.c.frame.stylesheet = data
+            if trace: g.trace(self.c.shortFileName(), repr(data))
+        # g.warning('','%s: %s' % (target,data))
+    else:
+        g.trace(target, data)
+</t>
+<t tx="ekr.20170101131556.28">def startElement(self, name, attrs):
+    name = name.lower()
+    if name in self.printElements or 'all' in self.printElements:
+        self.printStartElement(name, attrs)
+    self.elementStack.append(name)
+    # if self.trace: g.trace('**push',name)
+    data = self.dispatchDict.get(name)
+    if data is None:
+        if 1: g.trace('unknown start element', name)
+    else:
+        func, junk = data
+        if func:
+            func(attrs)
+</t>
+<t tx="ekr.20170101131556.29">def getWindowPositionAttributes(self, attrs):
+    trace = False and not g.unitTesting
+    c = self.c
+    d = {}
+    windowSize = g.app.loadManager.options.get('windowSize')
+    if windowSize is not None:
+        h, w = windowSize # checked in LM.scanOption.
+        d['height'] = h
+        d['width'] = w
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name; val = bunch.val
+            if name in ('top', 'left'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 50 # A reasonable default.
+        if trace: g.trace(d)
+    elif g.enableDB and c.mFileName:
+        d = c.cacher.getCachedWindowPositionDict(c.mFileName)
+    if not d and c.fixed and c.fixedWindowPosition:
+        width, height, left, top = c.fixedWindowPosition
+        d = {'top': top, 'left': left, 'width': width, 'height': height}
+    if not d:
+        for bunch in self.attrsToList(attrs):
+            name = bunch.name; val = bunch.val
+            if name in ('top', 'left', 'width', 'height'):
+                try:
+                    d[name] = int(val)
+                except ValueError:
+                    d[name] = 100 # A reasonable default.
+            else:
+                g.trace(name, len(val))
+    if trace: g.trace(c.mFileName, d)
+    return d # Assigned to self.global_window_position
+</t>
+<t tx="ekr.20170101131556.3">class BadLeoFile(Exception):
+
+    @others
+</t>
+<t tx="ekr.20170101131556.30">def startGlobals(self, attrs):
+    trace = False and not g.unitTesting
+    c = self.c
+    if self.inClipboard:
+        return
+    if trace: g.trace(c.mFileName)
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        ratio, ratio2 = c.cacher.getCachedGlobalFileRatios()
+        if trace: g.trace(ratio, ratio2)
+        self.ratio, self.secondary_ratio = ratio, ratio2
+    else:
+        try:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name; val = bunch.val
+                if name == 'body_outline_ratio':
+                    self.ratio = float(val)
+                elif name == 'body_secondary_ratio':
+                    self.secondary_ratio = float(val)
+            if trace: g.trace('** not cached:', '%1.2f %1.2f' % (
+                self.ratio, self.secondary_ratio))
+        except Exception:
+            pass
+</t>
+<t tx="ekr.20170101131556.31">def startWinPos(self, attrs):
+    self.global_window_position = self.getWindowPositionAttributes(attrs)
+</t>
+<t tx="ekr.20170101131556.32">def startLeoHeader(self, unused_attrs):
+    self.tnxToListDict = {}
+</t>
+<t tx="ekr.20170101131556.33">def startVH(self, unused_attrs):
+    self.content = []
+</t>
+<t tx="ekr.20170101131556.34">def startVnodes(self, unused_attrs):
+    if self.inClipboard:
+        return # No need to do anything to the main window.
+    c = self.c; d = self.global_window_position
+    w = d.get('width', 700)
+    h = d.get('height', 500)
+    x = d.get('left', 50)
+    y = d.get('top', 50)
+    # g.trace(d,w,h,x,y)
+    # Redraw the window before writing into it.
+    # Honor --minimized, --maximized or --fullscreen.
+    # 2013/10/25: do set the geometry for minimized windows.
+    if g.app.start_minimized:
+        c.frame.setTopGeometry(w, h, x, y)
+    elif not g.app.start_maximized and not g.app.start_fullscreen:
+        c.frame.setTopGeometry(w, h, x, y)
+        c.frame.deiconify()
+        c.frame.lift()
+    # Causes window to appear.
+    if c.frame.top:
+        c.frame.resizePanesToRatio(self.ratio, self.secondary_ratio)
+    if not self.silent and not g.unitTesting:
+        g.es("reading:", self.fileName)
+</t>
+<t tx="ekr.20170101131556.35">def startTnode(self, attrs):
+    if not self.inElement('tnodes'):
+        self.error('&lt;t&gt; outside &lt;tnodes&gt;')
+    self.content = []
+    self.tnodeAttributes(attrs)
+</t>
+<t tx="ekr.20170101131556.36">def tnodeAttributes(self, attrs):
+    # The VNode must have a tx attribute to associate content
+    # with the proper node.
     trace = False and not g.unitTesting
     verbose = False
-    if start &gt;= 0:
-        r = QtGui.QTextLayout.FormatRange()
-        r.start, r.length, r.format = start, count, format
-        self.formats.append(r)
-        if trace and verbose: g.trace('%3s %3s %s %s' % (
-            start, count, self.format_to_color(format), self.cb.text()))
-    elif trace:
-        g.trace('bad start value', repr(start), g.callers())
-# Not used by Leo...
-# def setFormat(self,start,count,color):
-    # format = QTextCharFormat()
-    # format.setForeground(color)
-    # setFormat(start,count,format)
-# def setFormat(self,start,count,font):
-    # format = QTextCharFormat()
-    # format.setFont(font)
-    # self.setFormat(start,count,format)
-# These helpers are the main reason QSyntaxHighlighter exists.
-# Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
-</t>
-<t tx="ekr.20170101124032.19">def applyFormatChanges(self):
-    '''Apply self.formats to the current layout.'''
-    if self.formats:
-        layout = self.cb.layout()
-        layout.setAdditionalFormats(self.formats)
-        self.formats = []
-        self.d.markContentsDirty(self.cb.position(), self.cb.length())
-</t>
-<t tx="ekr.20170101124032.2">'''All colorizing code for Leo.'''
-python_qsh = True
-    # True use PythonQSyntaxHighlighter
-    # False use QSyntaxHighlighter
-import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
-import re
-import string
-import time
-</t>
-<t tx="ekr.20170101124032.20">def delayedRehighlight(self): # inline
-    '''Queued rehighlight.'''
-    # g.trace('=====',self.rehighlightPending)
-    if self.rehighlightPending:
-        self.rehighlightPending = False
-        self.rehighlight()
-</t>
-<t tx="ekr.20170101124032.21">def format_to_color(self, format):
-    '''Return the foreground color of the given character format.'''
-    return str(format.foreground().color().name())
-</t>
-<t tx="ekr.20170101124032.22">def highlightBlock(self, s):
-    g.trace('must be defined in subclasses.' '')
-</t>
-<t tx="ekr.20170101124032.23">def idle_handler(self, timer):
-    trace = False and not g.unitTesting
-    verbose = True
-    if not self.idle_active:
-        # Shortcut everything else.
-        return
-    c = self.c
-    if trace and verbose:
-        s = g.u(self.r_block.text()).lstrip()
-        g.trace('force: %5s s: %s' % (self.r_force, s[: 20]))
-    # This is defensive code.  Apparently it is never needed.
-    # This is the only place c is used, so the c argument to the ctor is optional.
-    if c:
-        if c.p == self.r_p:
-            self.reformat_blocks_helper()
-        elif trace:
-            self.idle_active = False
-            g.trace('node changed: old: %s new: %s' % (
-                self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
-</t>
-<t tx="ekr.20170101124032.24">def is_valid(self, obj):
-    return obj and obj.isValid()
-</t>
-<t tx="ekr.20170101124032.25">def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
-    if not self.inReformatBlocks:
-        # g.trace(from_,charsRemoved,charsAdded)
-        self.reformatBlocks(from_, charsRemoved, charsAdded)
-</t>
-<t tx="ekr.20170101124032.26">def reformat_blocks_helper(self):
-    '''The common code shared by reformatBlocks and idle_handler.'''
-    block = self.r_block
-    n, start = 0, False
-    while self.is_valid(block) and (block.position() &lt; self.r_end or self.r_force):
-        n += 1
-        if n &gt;= self.r_limit &gt; 0 and self.timer:
-            start = True
+    node = self.node
+    self.nodeList = []
+    val = None
+    # Step one: find the tx attribute
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name; val = bunch.val
+        if name == 'tx':
+            # 2010/02/03: This code formerly did something
+            # different when unit testing just to support a unit test.
+            # Hahaha.  The unit test *caused* the bug!
+            self.nodeList = self.tnxToListDict.get(val, [])
+            if trace and verbose: g.trace('tx', self.nodeList)
             break
-        else:
-            before_state = block.userState()
-            self.reformatBlock(block)
-            self.r_force = block.userState() != before_state
-            block = self.r_block = block.next()
-    self.formatChanges = []
-    self.idle_active = start
-    if self.timer and start:
-        self.timer.start()
-    elif self.timer:
-        self.timer.stop()
-        # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
-        # Fix bug 78: find-next match not always scrolled into view.
-        # https://github.com/leo-editor/leo-editor/issues/78
-        w = self.c.frame.body.wrapper
-        if g.app.allow_delayed_see and w:
-            w.seeInsertPoint()
-        g.app.allow_delayed_see = False
-</t>
-<t tx="ekr.20170101124032.27">def reformatBlock(self, block):
-    trace = False and not g.unitTesting
-    if self.is_valid(self.cb) and not isQt5:
-        g.trace('can not happen: called recursively')
-    else:
-        self.cb = block
-        self.formats = []
-        for i in range(block.length()):
-            r = QtGui.QTextLayout.FormatRange()
-            r.start, r.length, r.format = i, 1, QtGui.QTextCharFormat()
-            self.formats.append(r)
-        if trace: g.trace(str(block.text()))
-        self.highlightBlock(block.text())
-        self.applyFormatChanges()
-        self.cb = QtGui.QTextBlock()
-</t>
-<t tx="ekr.20170101124032.28">def reformatBlocks(self, from_, charsRemoved, charsAdded):
-    '''Main line: Reformat the lines in the indicated range.'''
-    self.rehighlightPending = False
-    block = self.d.findBlock(from_)
-    if not self.is_valid(block):
+    if not self.nodeList:
+        self.error('Bad leo file: no node for &lt;t tx=%s&gt;' % (val))
         return
-    # Set the ivars for reformat_blocks_helper.
-    adjust = 1 if charsRemoved &gt; 0 else 0
-    lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
-    if self.is_valid(lastBlock):
-        self.r_end = lastBlock.position() + lastBlock.length()
+    # Step two: find all the other attributes:
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name; val = bunch.val
+        if name != 'tx':
+            # Huge bug fix: 2009/7/1: was node == self.node.
+            for node in self.nodeList:
+                if trace: g.trace('%s %s=%s...' % (node, name, val[: 20]))
+                node.tnodeAttributes[name] = val
+    # if not self.nodeList:
+        # self.error('Bad leo file: no tx attribute for VNode')
+</t>
+<t tx="ekr.20170101131556.37">def startVnode(self, attrs):
+    if not self.inElement('vnodes'):
+        self.error('&lt;v&gt; outside &lt;vnodes&gt;')
+    if self.rootNode:
+        parent = self.node
     else:
-        self.r_end = self.d.blockCount()
-    self.r_block = block
-    self.r_p = self.c.p.copy()
-    self.r_force = False
-    # Delegate the colorizing to shared helper.
-    self.reformat_blocks_helper()
-</t>
-<t tx="ekr.20170101124032.29">class ColorizerMixin(object):
-    '''A mixin class for all c.frame.body.colorizer classes.'''
-
-    @others
-# This is c.frame.body.colorizer.highlighter.colorer
+        self.rootNode = parent = SaxNodeClass() # The dummy parent node.
+        parent.headString = 'dummyNode'
+    self.node = SaxNodeClass()
+    parent.children.append(self.node)
+    self.vnodeAttributes(attrs)
+    self.nodeStack.append(parent)
+    return parent
+# The native attributes of &lt;v&gt; elements are a, t, vtag, tnodeList,
+# marks, expanded and descendentTnodeUnknownAttributes.
 
 </t>
-<t tx="ekr.20170101124032.3">class PythonQSyntaxHighlighter(object):
-    '''
-    Python implementation of QtGui.QSyntaxHighlighter.
-
-    This allows incremental coloring of text at idle time, trading slower
-    overall speed for much faster response time.
-    '''
-    @others
-</t>
-<t tx="ekr.20170101124032.30">def __init__(self, c):
-    '''Ctor for ColorizerMixin class.'''
-    self.c = c
-
-</t>
-<t tx="ekr.20170101124032.31">def colorize(self, p, incremental=False, interruptable=True):
-    assert False, 'colorize must be defined in sublcasses'
-
-</t>
-<t tx="ekr.20170101124032.32">def kill(self):
-    '''Kill colorizing.'''
-    pass
-
-</t>
-<t tx="ekr.20170101124032.33">def write_colorizer_cache(self, p):
-    '''Write colorizing data for p for later use by rehighlight_with_cache.'''
-    pass
-color_directives_pat = re.compile(
-    # Order is important: put longest matches first.
-    r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
-    , re.MULTILINE)
-
-</t>
-<t tx="ekr.20170101124032.34">def findColorDirectives(self, p):
-    '''
-    Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
-
-    Return a dict containing pointers to the start of each directive.
-    '''
-    trace = False and not g.unitTesting
-    d = {}
-    anIter = self.color_directives_pat.finditer(p.b)
-    for m in anIter:
-        # Remove leading '@' for compatibility with
-        # functions in leoGlobals.py.
-        word = m.group(0)[1:]
-        d[word] = word
-    if trace: g.trace(d)
-    return d
-</t>
-<t tx="ekr.20170101124032.35">def findLanguageDirectives(self, p):
-    '''Scan p's body text for *valid* @language directives.
-
-    Return a list of languages.'''
-    # Speed not very important: called only for nodes containing @language directives.
-    trace = False and not g.unitTesting
-    aList = []
-    for s in g.splitLines(p.b):
-        if g.match_word(s, 0, '@language'):
-            i = len('@language')
-            i = g.skip_ws(s, i)
-            j = g.skip_id(s, i)
-            if j &gt; i:
-                word = s[i: j]
-                if self.isValidLanguage(word):
-                    aList.append(word)
-                else:
-                    if trace: g.trace('invalid', word)
-    if trace: g.trace(aList)
-    return aList
-</t>
-<t tx="ekr.20170101124032.36">def isValidLanguage(self, language):
-    fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
-    return g.os_path_exists(fn)
-</t>
-<t tx="ekr.20170101124032.37">def scanColorByPosition(self, p):
-    '''Scan p for color-related directives.'''
-    c = self.c
-    wrapper = c.frame.body.wrapper
-    i = wrapper.getInsertPoint()
-    s = wrapper.getAllText()
-    i1, i2 = g.getLine(s, i)
-    tag = '@language'
-    language = self.language
-    for s in g.splitLines(s[: i1]):
-        if s.startswith(tag):
-            language = s[len(tag):].strip()
-    return language
-</t>
-<t tx="ekr.20170101124032.38">def scanColorDirectives(self, p):
-    '''Set self.language based on the directives in p's tree.'''
-    trace = False and not g.unitTesting
-    c = self.c
-    if not c:
-        return None # self.c may be None for testing.
-    root = p.copy()
-    self.colorCacheFlag = False
-    self.language = None
-    self.rootMode = None # None, "code" or "doc"
-    for p in root.self_and_parents():
-        theDict = g.get_directives_dict(p)
-        # if trace: g.trace(p.h,theDict)
-        if p == root:
-            # The @colorcache directive is a per-node directive.
-            self.colorCacheFlag = 'colorcache' in theDict
-            # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
-        if 'language' in theDict:
-            s = theDict["language"]
-            aList = self.findLanguageDirectives(p)
-            # In the root node, we use the first (valid) @language directive,
-            # no matter how many @language directives the root node contains.
-            # In ancestor nodes, only unambiguous @language directives
-            # set self.language.
-            if p == root or len(aList) == 1:
-                self.languageList = list(set(aList))
-                self.language = aList and aList[0] or []
-                break
-        if 'root' in theDict and not self.rootMode:
-            s = theDict["root"]
-            if g.match_word(s, 0, "@root-code"):
-                self.rootMode = "code"
-            elif g.match_word(s, 0, "@root-doc"):
-                self.rootMode = "doc"
-            else:
-                doc = c.config.at_root_bodies_start_in_doc_mode
-                self.rootMode = "doc" if doc else "code"
-    # If no language, get the language from any @&lt;file&gt; node.
-    if self.language:
-        if trace: g.trace('found @language %s %s' % (self.language, self.languageList))
-        return self.language
-    #  Attempt to get the language from the nearest enclosing @&lt;file&gt; node.
-    self.language = g.getLanguageFromAncestorAtFileNode(root)
-    if not self.language:
-        if trace: g.trace('using default', c.target_language)
-        self.language = c.target_language
-    return self.language # For use by external routines.
-</t>
-<t tx="ekr.20170101124032.39">def updateSyntaxColorer(self, p):
-    '''Scan p.b for color directives.'''
-    trace = False and not g.unitTesting
-    # An important hack: shortcut everything if the first line is @killcolor.
-    if p.b.startswith('@killcolor'):
-        if trace: g.trace('@killcolor')
-        self.flag = False
-        return self.flag
-    else:
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        p = p.copy()
-        self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p) # Sets self.language
-    if trace: g.trace(self.flag, len(p.b), self.language, p.h, g.callers(5))
-    return self.flag
-</t>
-<t tx="ekr.20170101124032.4">def __init__(self, parent, c=None, delay=10, limit=50):
-    '''
-    Ctor for QSyntaxHighlighter class.
-    Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
-    '''
-    # g.trace('(PythonQSyntaxBrowser)', parent)
-    # Ivars corresponding to QSH ivars...
-    self.c = c # The commander.
-    self.cb = None # The current block: a QTextBlock.
-    self.d = None # The QTextDocument attached to this colorizers.
-    self.formats = [] # An array of QTextLayout.FormatRange objects.
-    self.inReformatBlocks = False
-    self.rehighlightPending = False
-    # Ivars for reformatBlocks and idle_handler...
-    self.idle_active = False # True if the idle_handler should colorize.
-    self.r_block = None # The block to be colorized.
-    self.r_end = None # The ultimate ending position.
-    self.r_delay = delay # The waiting time, in msec. for self.timer.
-    self.r_force = False # True if the next block must be recolored.
-    self.r_limit = limit # The max number of lines to color at one time.
-    self.timer = g.IdleTime(
-        handler=self.idle_handler,
-        delay=self.r_delay,
-        tag='pqsh.idle_handler')
-    # Attach the parent's QTextDocument and set self.d.
-    self.setDocument(parent)
-</t>
-<t tx="ekr.20170101124032.40">def useSyntaxColoring(self, p):
-    """Return True unless p is unambiguously under the control of @nocolor."""
-    trace = False and not g.unitTesting
-    if not p:
-        if trace: g.trace('no p', repr(p))
-        return False
-    p = p.copy()
-    first = True; kind = None; val = True
-    self.killColorFlag = False
-    for p in p.self_and_parents():
-        d = self.findColorDirectives(p)
-        color, no_color = 'color' in d, 'nocolor' in d
-        # An @nocolor-node in the first node disabled coloring.
-        if first and 'nocolor-node' in d:
-            kind = '@nocolor-node'
-            self.killColorFlag = True
-            val = False; break
-        # A killcolor anywhere disables coloring.
-        elif 'killcolor' in d:
-            kind = '@killcolor %s' % p.h
-            self.killColorFlag = True
-            val = False; break
-        # A color anywhere in the target enables coloring.
-        elif color and first:
-            kind = 'color %s' % p.h
-            val = True; break
-        # Otherwise, the @nocolor specification must be unambiguous.
-        elif no_color and not color:
-            kind = '@nocolor %s' % p.h
-            val = False; break
-        elif color and not no_color:
-            kind = '@color %s' % p.h
-            val = True; break
-        first = False
-    if trace: g.trace(val, kind)
-    return val
-</t>
-<t tx="ekr.20170101124032.41">class JEditColorizer(object):
-    '''
-    This class contains jEdit pattern matchers adapted
-    for use with QSyntaxHighlighter.
-    '''
-    # The aha behind the line-oriented jEdit colorizer is that we can define one or
-    # more *restarter* methods for each pattern matcher that could possibly match
-    # across line boundaries. I say "one or more" because we need a separate restarter
-    # method for all combinations of arguments that can be passed to the jEdit pattern
-    # matchers. In effect, these restarters are lambda bindings for the generic
-    # restarter methods.
-    # 
-    # In actuality, very few restarters are needed. For example, for Python, we need
-    # restarters for continued strings, and both flavors of continued triple-quoted
-    # strings. For python, these turn out to be three separate lambda bindings for
-    # restart_match_span.
-    # 
-    # When a jEdit pattern matcher partially succeeds, it creates the lambda binding
-    # for its restarter and calls setRestart to set the ending state of the present
-    # line to an integer representing the bound restarter. setRestart calls
-    # computeState to create a *string* representing the lambda binding of the
-    # restarter. setRestart then calls stateNameToStateNumber to convert that string
-    # to an integer state number that then gets passed to Qt's setCurrentBlockState.
-    # The string is useful for debugging; Qt only uses the corresponding number.
-    @others
-# This is c.frame.body.colorizer
-
-</t>
-<t tx="ekr.20170101124032.42">def __init__(self, c, colorizer, highlighter, wrapper):
-    '''Ctor for JEditColorizer class.'''
-    # Basic data...
-    self.c = c
-    self.colorizer = colorizer
-    self.highlighter = highlighter # a QSyntaxHighlighter
-    self.p = None
-    self.wrapper = wrapper
-    assert(wrapper == self.c.frame.body.wrapper)
-    # Used by recolor and helpers...
-    self.actualColorDict = {} # Used only by setTag.
-    self.defaultState = 'default-state:' # The name of the default state.
-    self.hyperCount = 0
-    self.lineCount = 0 # The number of lines recolored so far.
-    self.nextState = 1 # Dont use 0.
-    self.restartDict = {} # Keys are state numbers, values are restart functions.
-    self.stateDict = {} # Keys are state numbers, values state names.
-    self.stateNameDict = {} # Keys are state names, values are state numbers.
-    # Attributes dict ivars: defaults are as shown...
-    self.default = 'null'
-    self.digit_re = ''
-    self.escape = ''
-    self.highlight_digits = True
-    self.ignore_case = True
-    self.no_word_sep = ''
-    # Config settings...
-    self.showInvisibles = c.config.getBool("show_invisibles_by_default")
-    self.colorizer.showInvisibles = self.showInvisibles
-    # g.trace(self.showInvisibles)
-        # Also set in init().
-    self.underline_undefined = c.config.getBool("underline_undefined_section_names")
-    self.use_hyperlinks = c.config.getBool("use_hyperlinks")
-    # Debugging...
-    self.count = 0 # For unit testing.
-    self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
-    self.tagCount = 0
-    self.trace = False or c.config.getBool('trace_colorizer')
-    self.trace_leo_matches = False
-    self.trace_match_flag = False
-        # True: trace all matching methods.
-        # This isn't so useful now that colorRangeWithTag shows g.callers(2).
-    self.verbose = False
-    # Profiling...
-    self.recolorCount = 0 # Total calls to recolor
-    self.stateCount = 0 # Total calls to setCurrentState
-    self.totalChars = 0 # The total number of characters examined by recolor.
-    self.totalStates = 0
-    self.maxStateNumber = 0
-    self.totalKeywordsCalls = 0
-    self.totalLeoKeywordsCalls = 0
-    # Mode data...
-    self.defaultRulesList = []
-    self.importedRulesets = {}
-    self.prev = None # The previous token.
-    self.fonts = {} # Keys are config names.  Values are actual fonts.
-    self.keywords = {} # Keys are keywords, values are 0..5.
-    self.language_name = None # The name of the language for the current mode.
-    self.last_language = None # The language for which configuration tags are valid.
-    self.modes = {} # Keys are languages, values are modes.
-    self.mode = None # The mode object for the present language.
-    self.modeBunch = None # A bunch fully describing a mode.
-    self.modeStack = []
-    self.rulesDict = {}
-    # self.defineAndExtendForthWords()
-    self.word_chars = {} # Inited by init_keywords().
-    self.setFontFromConfig()
-    self.tags = [
-        # 8 Leo-specific tags.
-        "blank", # show_invisibles_space_color
-        "docpart",
-        "leokeyword",
-        "link",
-        "name",
-        "namebrackets",
-        "tab", # show_invisibles_space_color
-        "url",
-        # jEdit tags.
-        'comment1', 'comment2', 'comment3', 'comment4',
-        # default, # exists, but never generated.
-        'function',
-        'keyword1', 'keyword2', 'keyword3', 'keyword4',
-        'label', 'literal1', 'literal2', 'literal3', 'literal4',
-        'markup', 'operator',
-    ]
-    self.defineLeoKeywordsDict()
-    self.defineDefaultColorsDict()
-    self.defineDefaultFontDict()
-</t>
-<t tx="ekr.20170101124032.43">def defineLeoKeywordsDict(self):
-    self.leoKeywordsDict = {}
-    for key in g.globalDirectiveList:
-        self.leoKeywordsDict[key] = 'leokeyword'
-
-</t>
-<t tx="ekr.20170101124032.44">def defineDefaultColorsDict (self):
-
-    # These defaults are sure to exist.
-    self.default_colors_dict = {
-
-        # Used in Leo rules...
-
-        # tag name      :( option name,                  default color),
-        'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-        'docpart'       :('doc_part_color',              'red'),
-        'leokeyword'    :('leo_keyword_color',           'blue'),
-        'link'          :('section_name_color',          'red'),
-        'name'          :('undefined_section_name_color','red'),
-        'namebrackets'  :('section_name_brackets_color', 'blue'),
-        'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
-        'url'           :('url_color',                   'purple'),
-
-        # Used by the old colorizer: to be removed.
-
-        # 'bracketRange'   :('bracket_range_color',     'orange'), # Forth.
-        # 'comment'        :('comment_color',           'red'),
-        # 'cwebName'       :('cweb_section_name_color', 'red'),
-        # 'keyword'        :('keyword_color',           'blue'),
-        # 'latexBackground':('latex_background_color',  'white'),
-        # 'pp'             :('directive_color',         'blue'),
-        # 'string'         :('string_color',            '#00aa00'), # Used by IDLE.
-
-        # jEdit tags.
-        # tag name  :( option name,     default color),
-        'comment1'  :('comment1_color', 'red'),
-        'comment2'  :('comment2_color', 'red'),
-        'comment3'  :('comment3_color', 'red'),
-        'comment4'  :('comment4_color', 'red'),
-        'function'  :('function_color', 'black'),
-        'keyword1'  :('keyword1_color', 'blue'),
-        'keyword2'  :('keyword2_color', 'blue'),
-        'keyword3'  :('keyword3_color', 'blue'),
-        'keyword4'  :('keyword4_color', 'blue'),
-        'keyword5'  :('keyword5_color', 'blue'),
-        'label'     :('label_color',    'black'),
-        'literal1'  :('literal1_color', '#00aa00'),
-        'literal2'  :('literal2_color', '#00aa00'),
-        'literal3'  :('literal3_color', '#00aa00'),
-        'literal4'  :('literal4_color', '#00aa00'),
-        'markup'    :('markup_color',   'red'),
-        'null'      :('null_color',     None), #'black'),
-        'operator'  :('operator_color', 'black'), # 2014/09/17
-    }
-
-</t>
-<t tx="ekr.20170101124032.5">def kill(self):
-    '''Kill any queued coloring.'''
-    trace = False and not g.unitTesting
-    if self.idle_active:
-        if trace: g.trace('(PythonQSyntaxHighlighter)')
-        self.idle_active = False
-        if self.timer:
-            self.timer.stop()
-</t>
-<t tx="ekr.20170101124032.6">def rehighlight(self):
-    '''Color the whole document.'''
-    trace = False and not g.unitTesting
-    c, d = self.c, self.d
-    if d:
-        n = d.characterCount()
-        if 0 &lt; c.max_pre_loaded_body_chars &lt; n:
-            if trace: g.trace('big text: no color', c.p.h)
-        elif n &gt; 1000*10:
-
-            def rehightlight_callback(c=c, d=d, p=c.p, self=self):
-                if p == c.p:
-                    if trace: g.trace('=====', n, p.h)
-                    cursor = QtGui.QTextCursor(d)
-                    self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-                else:
-                    if trace: g.trace('node not selected', p.h)
-
-            QtCore.QTimer.singleShot(200, rehightlight_callback)
+<t tx="ekr.20170101131556.38">def vnodeAttributes(self, attrs):
+    node = self.node
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name; val = bunch.val
+        if name == 't':
+            aList = self.tnxToListDict.get(val, [])
+            aList.append(self.node)
+            self.tnxToListDict[val] = aList
+            node.tnx = str(val) # nodeIndices.toString returns a string.
         else:
-            if trace: g.trace(n)
-            cursor = QtGui.QTextCursor(d)
-            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+            node.attributes[name] = val
 </t>
-<t tx="ekr.20170101124032.7">def rehighlightBlock(self, block):
-    '''Reapplies the highlighting to the given QTextBlock block.'''
-    d = self.d
-    if d and self.is_valid(block) and block.document() == d:
-        self.rehighlightPending = d.rehighlightPending
-        cursor = QtGui.QTextCursor(block)
-        g.trace(g.u(block.text()))
-        self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
-        if self.rehighlightPending:
-            d.rehighlightPending = self.rehighlightPending
+<t tx="ekr.20170101131556.39">class FileCommands(object):
+    """A class creating the FileCommands subcommander."""
+    @others
 </t>
-<t tx="ekr.20170101124032.8">def rehighlight_helper(self, cursor, operation):
-        # QtGui.QTextCursor &amp;cursor
-        # QtGui.QTextCursor.MoveOperation operation
-    self.inReformatBlocks = True
+<t tx="ekr.20170101131556.4">def __init__(self, message):
+    self.message = message
+    Exception.__init__(self, message) # Init the base class.
+
+</t>
+<t tx="ekr.20170101131556.40">def cmd(name):
+    '''Command decorator for the FileCommands class.'''
+    # pylint: disable=no-self-argument
+    return g.new_cmd_decorator(name, ['c', 'fileCommands',])
+</t>
+<t tx="ekr.20170101131556.41">def __init__(self, c):
+    '''Ctor for FileCommands class.'''
+    # g.trace("__init__", "FileCommands.__init__")
+    self.c = c
+    self.frame = c.frame
+    self.nativeTnodeAttributes = ('tx',)
+    self.nativeVnodeAttributes = (
+        'a',
+        'descendentTnodeUnknownAttributes',
+        'descendentVnodeUnknownAttributes', # New in Leo 4.5.
+        'expanded', 'marks', 't', 'tnodeList',
+        # 'vtag',
+    )
+    self.initIvars()
+</t>
+<t tx="ekr.20170101131556.42">def initIvars(self):
+    '''Init ivars of the FileCommands class.'''
+    # General...
+    c = self.c
+    self.mFileName = ""
+    self.fileDate = -1
+    self.leo_file_encoding = c.config.new_leo_file_encoding
+        # The bin param doesn't exist in Python 2.3;
+        # the protocol param doesn't exist in earlier versions of Python.
+        # version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
+    # For reading...
+    self.checking = False # True: checking only: do *not* alter the outline.
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+    self.forbiddenTnodes = []
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.ratio = 0.5
+    self.currentVnode = None
+    self.rootVnode = None
+    # For writing...
+    self.read_only = False
+    self.rootPosition = None
+    self.outputFile = None
+    self.openDirectory = None
+    self.putCount = 0
+    self.toString = False
+    self.usingClipboard = False
+    self.currentPosition = None
+    # New in 3.12...
+    self.copiedTree = None
+    self.gnxDict = {}
+        # keys are gnx strings as returned by canonicalTnodeIndex.
+        # Values are vnodes.
+        # 2011/12/10: This dict is never re-inited.
+    self.vnodesDict = {}
+        # keys are gnx strings; values are ignored
+</t>
+<t tx="ekr.20170101131556.43">@cmd('check-leo-file')
+def checkLeoFile(self, event=None):
+    '''The check-leo-file command.'''
+    fc = self; c = fc.c; p = c.p
+    # Put the body (minus the @nocolor) into the file buffer.
+    s = p.b; tag = '@nocolor\n'
+    if s.startswith(tag): s = s[len(tag):]
+    # Do a trial read.
+    self.checking = True
+    self.initReadIvars()
+    c.loading = True # disable c.changed
     try:
-        cursor.beginEditBlock()
-        from_ = cursor.position()
-        cursor.movePosition(operation)
-        self.reformatBlocks(from_, 0, cursor.position() - from_)
-        cursor.endEditBlock()
+        try:
+            theFile = g.app.loadManager.openLeoOrZipFile(c.mFileName)
+            self.readSaxFile(
+                theFile, fileName='check-leo-file',
+                silent=False, inClipboard=False, reassignIndices=False)
+            g.blue('check-leo-file passed')
+        except Exception:
+            junk, message, junk = sys.exc_info()
+            # g.es_exception()
+            g.error('check-leo-file failed:', str(message))
     finally:
-        self.inReformatBlocks = False
+        self.checking = False
+        c.loading = False # reenable c.changed
 </t>
-<t tx="ekr.20170101124032.9">def currentBlock(self):
-    '''Returns the current text block.'''
-    return self.cb
-
-</t>
-<t tx="ekr.20170101124033.1">def defineDefaultFontDict (self):
-
-    self.default_font_dict = {
-
-        # Used in Leo rules...
-
-            # tag name      : option name
-            'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docpart'       :'doc_part_font',
-            'leokeyword'    :'leo_keyword_font',
-            'link'          :'section_name_font',
-            'name'          :'undefined_section_name_font',
-            'namebrackets'  :'section_name_brackets_font',
-            'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
-            'url'           : 'url_font',
-
-        # Used by old colorizer.
-
-            # 'bracketRange'   :'bracketRange_font', # Forth.
-            # 'comment'       :'comment_font',
-            # 'cwebName'      :'cweb_section_name_font',
-            # 'keyword'       :'keyword_font',
-            # 'latexBackground':'latex_background_font',
-            # 'pp'            :'directive_font',
-            # 'string'        :'string_font',
-
-         # jEdit tags.
-
-             # tag name     : option name
-            'comment1'      :'comment1_font',
-            'comment2'      :'comment2_font',
-            'comment3'      :'comment3_font',
-            'comment4'      :'comment4_font',
-            #'default'       :'default_font',
-            'function'      :'function_font',
-            'keyword1'      :'keyword1_font',
-            'keyword2'      :'keyword2_font',
-            'keyword3'      :'keyword3_font',
-            'keyword4'      :'keyword4_font',
-            'keyword5'      :'keyword5_font',
-            'label'         :'label_font',
-            'literal1'      :'literal1_font',
-            'literal2'      :'literal2_font',
-            'literal3'      :'literal3_font',
-            'literal4'      :'literal4_font',
-            'markup'        :'markup_font',
-            # 'nocolor' This tag is used, but never generates code.
-            'null'          :'null_font',
-            'operator'      :'operator_font',
-    }
-</t>
-<t tx="ekr.20170101124033.10">def nameToRulesetName(self, name):
-    '''
-    Compute language and rulesetName from name, which is either a language
-    name or a delegate name.
-    '''
-    if not name:
-        return ''
-    i = name.find('::')
-    if i == -1:
-        language = name
-        # New in Leo 5.0: allow delegated language names.
-        language = g.app.delegate_language_dict.get(language, language)
-        rulesetName = '%s_main' % (language)
-    else:
-        language = name[: i]
-        delegate = name[i + 2:]
-        rulesetName = self.munge('%s_%s' % (language, delegate))
-    # if rulesetName == 'php_main': rulesetName = 'php_php'
-    # g.trace(name,language,rulesetName)
-    return language, rulesetName
-</t>
-<t tx="ekr.20170101124033.100">def styleText(self, start, end):
-    '''Style the text from start to end.'''
-    # g.trace('(NullScintillaLexer)',start,end)
-
-</t>
-<t tx="ekr.20170101124033.101">def configure_lexer(self):
-    '''Configure the QScintilla lexer.'''
-    # c = self.leo_c
-    lexer = self
-    # To do: use c.config setting.
-    # pylint: disable=no-member
-    font = QtGui.QFont("DejaVu Sans Mono", 14)
-    lexer.setFont(font)
-</t>
-<t tx="ekr.20170101124033.102">class QScintillaColorizer(ColorizerMixin):
-    '''A colorizer for a QsciScintilla widget.'''
-    @others
-# Stuck: regardless of class: there seems to be no way to force a recolor.
-if Qsci:
-
-</t>
-<t tx="ekr.20170101124033.103">def __init__(self, c, widget):
-    '''Ctor for QScintillaColorizer. widget is a '''
-    # g.trace('QScintillaColorizer)',widget)
-    ColorizerMixin.__init__(self, c)
-        # init the base class.
-    self.changingText = False
-    self.count = 0 # For unit testing.
-    self.colorCacheFlag = False
-    self.enabled = c.config.getBool('use_syntax_coloring')
-    self.error = False # Set if there is an error in jeditColorizer.recolor
-    self.flag = True # Per-node enable/disable flag.
-    self.full_recolor_count = 0 # For unit testing.
-    self.language = 'python' # set by scanColorDirectives.
-    self.languageList = [] # List of color directives in the node the determines it.
-    self.lexer = None # Set in changeLexer.
-    self.oldLanguageList = []
-    self.showInvisibles = False
-    widget.leo_colorizer = self
-    # Define/configure various lexers.
-    if Qsci:
-        self.lexersDict = {
-            'python': Qsci.QsciLexerPython(parent=c.frame.body.wrapper.widget),
-            # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
-        }
-        self.nullLexer = NullScintillaLexer(c)
-    else:
-        self.lexersDict = {}
-        self.nullLexer = None
-    lexer = self.lexersDict.get('python')
-    self.configure_lexer(lexer)
-</t>
-<t tx="ekr.20170101124033.104">def changeLexer(self, language):
-    '''Set the lexer for the given language.'''
-    c = self.c
-    wrapper = c.frame.body.wrapper
-    w = wrapper.widget # A Qsci.QsciSintilla object.
-    self.lexer = self.lexersDict.get(language, self.nullLexer)
-    w.setLexer(self.lexer)
-    # g.trace(language,self.lexer)
-</t>
-<t tx="ekr.20170101124033.105">def configure_lexer(self, lexer):
-    '''Configure the QScintilla lexer.'''
-    # return # Try to use  USERPROFILE:SciTEUser.properties
-
-    def oops(s):
-        g.trace('bad @data qt-scintilla-styles:', s)
-    # A small font size, to be magnified.
-
-    c = self.c
-    qcolor, qfont = QtGui.QColor, QtGui.QFont
-    # font = qfont("Courier New",8,qfont.Bold)
-    font = qfont("DejaVu Sans Mono", 14)
-    lexer.setFont(font)
-    lexer.setEolFill(False, -1)
-    lexer.setStringsOverNewlineAllowed(False)
-    table = None
-    aList = c.config.getData('qt-scintilla-styles')
-    if aList:
-        aList = [s.split(',') for s in aList]
-        table = []
-        for z in aList:
-            if len(z) == 2:
-                color, style = z
-                table.append((color.strip(), style.strip()),)
-            else: oops('entry: %s' % z)
-        # g.trace('@data ** qt-scintilla-styles',table)
-    if not table:
-        # g.trace('using default color table')
-        black = '#000000'
-        leo_green = '#00aa00'
-        # See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
-        # for list of selector names.
-        table = (
-            # EKR's personal settings: they are reasonable defaults.
-            (black, 'ClassName'),
-            ('#CD2626', 'Comment'), # Firebrick3
-            (leo_green, 'Decorator'),
-            (leo_green, 'DoubleQuotedString'),
-            (black, 'FunctionMethodName'),
-            ('blue', 'Keyword'),
-            (black, 'Number'),
-            (leo_green, 'SingleQuotedString'), # Leo green.
-            (leo_green, 'TripleSingleQuotedString'),
-            (leo_green, 'TripleDoubleQuotedString'),
-            (leo_green, 'UnclosedString'),
-            # End of line where string is not closed
-            # style.python.13=fore:#000000,$(font.monospace),back:#E0C0E0,eolfilled
-        )
-    for color, style in table:
-        if hasattr(lexer, style):
-            style_number = getattr(lexer, style)
-            try:
-                # g.trace(color,style)
-                lexer.setColor(qcolor(color), style_number)
-            except Exception:
-                oops('bad color: %s' % color)
-        else: oops('bad style name: %s' % style)
-</t>
-<t tx="ekr.20170101124033.106">def colorize(self, p, incremental=False, interruptable=True):
-    '''The main Scintilla colorizer entry point.'''
+<t tx="ekr.20170101131556.44">def getLeoOutlineFromClipboard(self, s, reassignIndices=True, tempOutline=False):
+    '''Read a Leo outline from string s in clipboard format.'''
     trace = False and not g.unitTesting
-    self.count += 1 # For unit testing.
-    if not incremental:
-        self.full_recolor_count += 1
-    if p.b.startswith('@killcolor'):
-        if trace: g.trace('kill: @killcolor')
-        self.kill()
-    else:
-        self.updateSyntaxColorer(p)
-            # sets self.flag and self.language and self.languageList.
-        if trace: g.trace(self.language)
-        self.changeLexer(self.language)
-    return "ok" # For unit testing.
-</t>
-<t tx="ekr.20170101124033.107">def kill(self):
-    '''Kill coloring for this node.'''
-    self.changeLexer(language=None)
-</t>
-<t tx="ekr.20170101124033.108">class PythonLexer(Qsci.QsciLexerCustom):
-    '''A subclass of the Python lexer that colorizers section references.'''
-
-    @others
-</t>
-<t tx="ekr.20170101124033.109">def __init__(self, parent=None):
-    '''Ctor for PythonLexer class.'''
-    Qsci.QsciLexerCustom.__init__(self, parent)
-        # Init the base class.
-    self.lexer = None
-    self.parent = parent
-    self.tag = '(PythonLexer)'
-
-</t>
-<t tx="ekr.20170101124033.11">def setKeywords(self):
-    '''Initialize the keywords for the present language.
-
-     Set self.word_chars ivar to string.letters + string.digits
-     plus any other character appearing in any keyword.
-     '''
-    # Add any new user keywords to leoKeywordsDict.
-    d = self.keywordsDict
-    keys = list(d.keys())
-    for s in g.globalDirectiveList:
-        key = '@' + s
-        if key not in keys:
-            d[key] = 'leokeyword'
-    # Create a temporary chars list.  It will be converted to a dict later.
-    chars = [g.toUnicode(ch) for ch in (string.ascii_letters + string.digits)]
-    for key in list(d.keys()):
-        for ch in key:
-            if ch not in chars:
-                chars.append(g.toUnicode(ch))
-    # jEdit2Py now does this check, so this isn't really needed.
-    # But it is needed for forth.py.
-    for ch in (' ', '\t'):
-        if ch in chars:
-            # g.es_print('removing %s from word_chars' % (repr(ch)))
-            chars.remove(ch)
-    # g.trace(self.colorizer.language,[str(z) for z in chars])
-    # Convert chars to a dict for faster access.
-    self.word_chars = {}
-    for z in chars:
-        self.word_chars[z] = z
-    # g.trace(sorted(self.word_chars.keys()))
-</t>
-<t tx="ekr.20170101124033.110">def setStringsOverNewlineAllowed(self, aBool):
-    pass
-
-</t>
-<t tx="ekr.20170101124033.111">def description(self, style):
-    return self.tag
-
-</t>
-<t tx="ekr.20170101124033.112">def setStyling(self, length, style):
-    g.trace(self.tag, length, style)
-
-</t>
-<t tx="ekr.20170101124033.113">def styleText(self, start, end):
-    '''Style the text from start to end.'''
-    g.trace(self.tag, start, end)
-    self.lexer = Qsci.QsciLexerPython(parent=self.parent)
-    self.lexer.setStringsOverNewlineAllowed(True)
-    # self.lexer.styleText(start,end)
-
-</t>
-<t tx="ekr.20170101124033.114">def configure_lexer(self):
-    '''Configure the QScintilla lexer.'''
-    lexer = self
-    # To do: use c.config setting.
-    # pylint: disable=no-member
-    font = QtGui.QFont("DejaVu Sans Mono", 14)
-    lexer.setFont(font)
-</t>
-<t tx="ekr.20170101124033.12">def setModeAttributes(self):
-    '''Set the ivars from self.attributesDict,
-    converting 'true'/'false' to True and False.'''
-    d = self.attributesDict
-    aList = (
-        ('default', 'null'),
-        ('digit_re', ''),
-        ('escape', ''), # New in Leo 4.4.2.
-        ('highlight_digits', True),
-        ('ignore_case', True),
-        ('no_word_sep', ''),
-    )
-    # g.trace(d)
-    for key, default in aList:
-        val = d.get(key, default)
-        if val in ('true', 'True'): val = True
-        if val in ('false', 'False'): val = False
-        setattr(self, key, val)
-        # g.trace(key,val)
-</t>
-<t tx="ekr.20170101124033.13">def initModeFromBunch(self, bunch):
-    self.modeBunch = bunch
-    self.attributesDict = bunch.attributesDict
-    self.setModeAttributes()
-    self.defaultColor = bunch.defaultColor
-    self.keywordsDict = bunch.keywordsDict
-    self.colorizer.language = bunch.language
-    self.mode = bunch.mode
-    self.properties = bunch.properties
-    self.rulesDict = bunch.rulesDict
-    self.rulesetName = bunch.rulesetName
-    self.word_chars = bunch.word_chars # 2011/05/21
-</t>
-<t tx="ekr.20170101124033.14">def updateDelimsTables(self):
-    '''Update g.app.language_delims_dict if no entry for the language exists.'''
-    d = self.properties
-    lineComment = d.get('lineComment')
-    startComment = d.get('commentStart')
-    endComment = d.get('commentEnd')
-    if lineComment and startComment and endComment:
-        delims = '%s %s %s' % (lineComment, startComment, endComment)
-    elif startComment and endComment:
-        delims = '%s %s' % (startComment, endComment)
-    elif lineComment:
-        delims = '%s' % lineComment
-    else:
-        delims = None
-    if delims:
-        d = g.app.language_delims_dict
-        if not d.get(self.colorizer.language):
-            d[self.colorizer.language] = delims
-            # g.trace(self.colorizer.language,'delims:',repr(delims))
-</t>
-<t tx="ekr.20170101124033.15">def munge(self, s):
-    '''Munge a mode name so that it is a valid python id.'''
-    valid = string.ascii_letters + string.digits + '_'
-    return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-</t>
-<t tx="ekr.20170101124033.16">def setFontFromConfig(self):
+    verbose = False
     c = self.c
-    self.bold_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.italic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.bolditalic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.color_tags_list = []
-# 
-# The following jEdit matcher methods return the length of the matched text if the
-# match succeeds, and zero otherwise. In most cases, these methods colorize all
-# the matched text.
-# 
-# The following arguments affect matching:
-# 
-# - at_line_start         True: sequence must start the line.
-# - at_whitespace_end     True: sequence must be first non-whitespace text of the line.
-# - at_word_start         True: sequence must start a word.
-# - hash_char             The first character that must match in a regular expression.
-# - no_escape:            True: ignore an 'end' string if it is preceded by
-#                         the ruleset's escape character.
-# - no_line_break         True: the match will not succeed across line breaks.
-# - no_word_break:        True: the match will not cross word breaks.
-# 
-# The following arguments affect coloring when a match succeeds:
-# 
-# - delegate              A ruleset name. The matched text will be colored recursively
-#                         by the indicated ruleset.
-# - exclude_match         If True, the actual text that matched will not be colored.
-# - kind                  The color tag to be applied to colored text.
-</t>
-<t tx="ekr.20170101124033.17">def dump(self, s):
-    if s.find('\n') == -1:
-        return s
+    current = c.p
+    if not current:
+        g.trace('no c.p')
+        return None
+    if trace: g.trace('reassign', reassignIndices, 'temp', tempOutline)
+    check = not reassignIndices
+    self.initReadIvars()
+    # Save the hidden root's children.
+    children = c.hiddenRootNode.children
+    # 2011/12/12: save and clear gnxDict.
+    # This ensures that new indices will be used for all nodes.
+    if reassignIndices or tempOutline:
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
     else:
-        return '\n' + s + '\n'
-</t>
-<t tx="ekr.20170101124033.18">def match_at_color(self, s, i):
-    if self.trace_leo_matches: g.trace()
-    seq = '@color'
-    # Only matches at start of line.
-    if i != 0: return 0
-    if g.match_word(s, i, seq):
-        self.colorizer.flag = True # Enable coloring.
-        j = i + len(seq)
-        self.colorRangeWithTag(s, i, j, 'leokeyword')
-        self.clearState()
-        return j - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.19">def match_at_language(self, s, i):
-    '''Match Leo's @language directive.'''
-    trace = (False or self.trace_leo_matches) and not g.unitTesting
-    if trace: g.trace(i, repr(s))
-    seq = '@language'
-    # Only matches at start of line.
-    if i != 0: return 0
-    if g.match_word(s, i, seq):
-        j = i + len(seq)
-        j = g.skip_ws(s, j)
-        k = g.skip_c_id(s, j)
-        name = s[j: k]
-        ok = self.init_mode(name)
-        if trace: g.trace(ok, name, self.language_name)
-        if ok:
-            self.colorRangeWithTag(s, i, k, 'leokeyword')
-        self.clearState()
-        return k - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.2">def addImportedRules(self, mode, rulesDict, rulesetName):
-    '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
-    if self.importedRulesets.get(rulesetName):
-        return
-    else:
-        self.importedRulesets[rulesetName] = True
-    names = hasattr(mode, 'importDict') and mode.importDict.get(rulesetName, []) or []
-    for name in names:
-        savedBunch = self.modeBunch
-        ok = self.init_mode(name)
-        if ok:
-            rulesDict2 = self.rulesDict
-            for key in rulesDict2.keys():
-                aList = self.rulesDict.get(key, [])
-                aList2 = rulesDict2.get(key)
-                if aList2:
-                    # Don't add the standard rules again.
-                    rules = [z for z in aList2 if z not in aList]
-                    if rules:
-                        # g.trace([z.__name__ for z in rules])
-                        aList.extend(rules)
-                        self.rulesDict[key] = aList
-        # g.trace('***** added rules for %s from %s' % (name,rulesetName))
-        self.initModeFromBunch(savedBunch)
-</t>
-<t tx="ekr.20170101124033.20">def match_at_nocolor(self, s, i):
-    if self.trace_leo_matches: g.trace(i, repr(s))
-    # Only matches at start of line.
-    if i == 0 and not g.match(s, i, '@nocolor-') and g.match_word(s, i, '@nocolor'):
-        self.setRestart(self.restartNoColor)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.21">def restartNoColor(self, s):
-    if self.trace_leo_matches: g.trace(repr(s))
-    if g.match_word(s, 0, '@color'):
-        self.clearState()
-    else:
-        self.setRestart(self.restartNoColor)
-    return len(s) # Always match everything.
-</t>
-<t tx="ekr.20170101124033.22">def match_at_killcolor(self, s, i):
-    if self.trace_leo_matches: g.trace(i, repr(s))
-    # Only matches at start of line.
-    if i != 0 and s[i - 1] != '\n':
-        return 0
-    tag = '@killcolor'
-    if g.match_word(s, i, tag):
-        self.setRestart(self.restartKillColor)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.23">def restartKillColor(self, s):
-    self.setRestart(self.restartKillColor)
-    return len(s) + 1
-</t>
-<t tx="ekr.20170101124033.24">def match_at_nocolor_node(self, s, i):
-    if self.trace_leo_matches: g.trace()
-    # Only matches at start of line.
-    if i != 0 and s[i - 1] != '\n':
-        return 0
-    tag = '@nocolor-node'
-    if g.match_word(s, i, tag):
-        self.setRestart(self.restartNoColorNode)
-        return len(s) # Match everything.
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.25">def restartNoColorNode(self, s):
-    self.setRestart(self.restartNoColorNode)
-    return len(s) + 1
-</t>
-<t tx="ekr.20170101124033.26">def match_at_wrap(self, s, i):
-    '''Match Leo's @wrap directive.'''
-    c = self.c
-    trace = (False or self.trace_leo_matches) and not g.unitTesting
-    if trace: g.trace(i, repr(s))
-    # Only matches at start of line.
-    seq = '@wrap'
-    if i == 0 and g.match_word(s, i, seq):
-        j = i + len(seq)
-        k = g.skip_ws(s, j)
-        self.colorRangeWithTag(s, i, k, 'leokeyword')
-        self.clearState()
-        c.frame.setWrap(c.p, force=True)
-        return k - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.27">def match_blanks(self, s, i):
-    if 1: # Use Qt code to show invisibles.
-        return 0
-    else: # Old code...
-        if not self.showInvisibles:
-            return 0
-        j = i; n = len(s)
-        while j &lt; n and s[j] == ' ':
-            j += 1
-        if j &gt; i:
-            self.colorRangeWithTag(s, i, j, 'blank')
-            return j - i
-        else:
-            return 0
-</t>
-<t tx="ekr.20170101124033.28">def match_doc_part(self, s, i):
-    '''
-    Colorize Leo's @ and @ doc constructs.
-    Matches only at the start of the line.
-    '''
-    if i != 0:
-        return 0
-    elif g.match_word(s, i, '@doc'):
-        j = i + 4
-    elif g.match(s, i, '@') and (i + 1 &gt;= len(s) or s[i + 1] in (' ', '\t', '\n')):
-        j = i + 1
-    else:
-        return 0
-    self.colorRangeWithTag(s, i, j, 'leokeyword')
-    self.colorRangeWithTag(s, j, len(s), 'docpart')
-    self.setRestart(self.restartDocPart)
-    return len(s)
-</t>
-<t tx="ekr.20170101124033.29">def restartDocPart(self, s):
-    '''
-    Restarter for @ and @ contructs.
-    Continue until an @c, @code or @language at the start of the line.
-    '''
-    for tag in ('@c', '@code', '@language'):
-        if g.match_word(s, 0, tag):
-            if tag == '@language':
-                return self.match_at_language(s, 0)
-            else:
-                j = len(tag)
-                self.colorRangeWithTag(s, 0, j, 'leokeyword') # 'docpart')
-                self.clearState()
-                return j
-    self.setRestart(self.restartDocPart)
-    self.colorRangeWithTag(s, 0, len(s), 'docpart')
-    return len(s)
-</t>
-<t tx="ekr.20170101124033.3">def addLeoRules(self, theDict):
-    '''Put Leo-specific rules to theList.'''
-    # pylint: disable=no-member
-    # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
-    table = (
-        # Rules added at front are added in **reverse** order.
-        ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
-            # Debatable: Leo keywords override langauge keywords.
-        ('@', self.match_at_color, True),
-        ('@', self.match_at_killcolor, True),
-        ('@', self.match_at_language, True), # 2011/01/17
-        ('@', self.match_at_nocolor, True),
-        ('@', self.match_at_nocolor_node, True),
-        ('@', self.match_at_wrap, True), # 2015/06/22
-        ('@', self.match_doc_part, True),
-        ('f', self.match_url_f, True),
-        ('g', self.match_url_g, True),
-        ('h', self.match_url_h, True),
-        ('m', self.match_url_m, True),
-        ('n', self.match_url_n, True),
-        ('p', self.match_url_p, True),
-        ('t', self.match_url_t, True),
-        ('w', self.match_url_w, True),
-        ('&lt;', self.match_section_ref, True), # Called **first**.
-        # Rules added at back are added in normal order.
-        (' ', self.match_blanks, False),
-        ('\t', self.match_tabs, False),
-    )
-    for ch, rule, atFront, in table:
-        # Replace the bound method by an unbound method.
-        if g.isPython3:
-            rule = rule.__func__
-        else:
-            rule = rule.im_func
-        # g.trace(rule)
-        theList = theDict.get(ch, [])
-        if rule not in theList:
-            if atFront:
-                theList.insert(0, rule)
-            else:
-                theList.append(rule)
-            theDict[ch] = theList
-    # g.trace(g.listToString(theDict.get('@')))
-</t>
-<t tx="ekr.20170101124033.30">def match_leo_keywords(self, s, i):
-    '''Succeed if s[i:] is a Leo keyword.'''
-    # g.trace(i,g.get_line(s,i))
-    self.totalLeoKeywordsCalls += 1
-    if s[i] != '@':
-        return 0
-    # fail if something besides whitespace precedes the word on the line.
-    i2 = i - 1
-    while i2 &gt;= 0:
-        ch = s[i2]
-        if ch == '\n':
-            break
-        elif ch in (' ', '\t'):
-            i2 -= 1
-        else:
-            # g.trace('not a word 1',repr(ch))
-            return 0
-    # Get the word as quickly as possible.
-    j = i + 1
-    while j &lt; len(s) and s[j] in self.word_chars:
-        j += 1
-    word = s[i + 1: j] # entries in leoKeywordsDict do not start with '@'.
-    if j &lt; len(s) and s[j] not in (' ', '\t', '\n'):
-        # g.trace('not a word 2',repr(word))
-        return 0 # Fail, but allow a rescan, as in objective_c.
-    if self.leoKeywordsDict.get(word):
-        kind = 'leokeyword'
-        self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
-        result = j - i + 1 # Bug fix: skip the last character.
-        self.trace_match(kind, s, i, j)
-        # g.trace('*** match',repr(s))
-        return result
-    else:
-        # 2010/10/20: also check the keywords dict here.
-        # This allows for objective_c keywords starting with '@'
-        # This will not slow down Leo, because it is called
-        # for things that look like Leo directives.
-        word = '@' + word
-        kind = self.keywordsDict.get(word)
-        if kind:
-            self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
-            self.trace_match(kind, s, i, j)
-            # g.trace('found',word)
-            return j - i
-        else:
-            # g.trace('fail',repr(word),repr(self.word_chars))
-            return -(j - i + 1) # An important optimization.
-</t>
-<t tx="ekr.20170101124033.31">def match_section_ref(self, s, i):
-    if self.trace_leo_matches: g.trace()
-    c = self.c; p = c.p
-    if not g.match(s, i, '&lt;&lt;'):
-        return 0
-    k = g.find_on_line(s, i + 2, '&gt;&gt;')
-    if k == -1:
-        return 0
-    else:
-        j = k + 2
-        self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
-        ref = g.findReference(c, s[i: j], p)
-        if ref:
-            if self.use_hyperlinks:
-                # Set the bindings to VNode callbacks.
-                tagName = "hyper" + str(self.hyperCount)
-                self.hyperCount += 1
-                ref.tagName = tagName
-            else:
-                self.colorRangeWithTag(s, i + 2, k, 'link')
-        else:
-            self.colorRangeWithTag(s, i + 2, k, 'name')
-        self.colorRangeWithTag(s, k, j, 'namebrackets')
-        return j - i
-</t>
-<t tx="ekr.20170101124033.32">def match_tabs(self, s, i):
-    if 1: # Use Qt code to show invisibles.
-        return 0
-    else: # Old code...
-        if not self.showInvisibles:
-            return 0
-        if self.trace_leo_matches: g.trace()
-        j = i; n = len(s)
-        while j &lt; n and s[j] == '\t':
-            j += 1
-        if j &gt; i:
-            self.colorRangeWithTag(s, i, j, 'tab')
-            return j - i
-        else:
-            return 0
-# Fix bug 893230: URL coloring does not work for many Internet protocols.
-# Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
-url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
-url_regex_g = re.compile(r"""gopher://[^\s'"]+[\w=/]""")
-url_regex_h = re.compile(r"""(http|https)://[^\s'"]+[\w=/]""")
-url_regex_m = re.compile(r"""mailto://[^\s'"]+[\w=/]""")
-url_regex_n = re.compile(r"""(news|nntp)://[^\s'"]+[\w=/]""")
-url_regex_p = re.compile(r"""prospero://[^\s'"]+[\w=/]""")
-url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
-url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
-kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-# url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
-url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
-
-</t>
-<t tx="ekr.20170101124033.33">def match_any_url(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex)
-
-</t>
-<t tx="ekr.20170101124033.34">def match_url_f(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_f)
-
-</t>
-<t tx="ekr.20170101124033.35">def match_url_g(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_g)
-
-</t>
-<t tx="ekr.20170101124033.36">def match_url_h(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_h)
-
-</t>
-<t tx="ekr.20170101124033.37">def match_url_m(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_m)
-
-</t>
-<t tx="ekr.20170101124033.38">def match_url_n(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_n)
-
-</t>
-<t tx="ekr.20170101124033.39">def match_url_p(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_p)
-
-</t>
-<t tx="ekr.20170101124033.4">def configure_hard_tab_width(self):
-    '''Set the width of a hard tab.
-    The stated default is 40, but apparently it must be set explicitly.
-    '''
-    trace = False and not g.unitTesting
-    c, wrapper = self.c, self.wrapper
-    # For some reason, the size is not accurate.
-    font = wrapper.widget.currentFont()
-    info = QtGui.QFontInfo(font)
-    size = info.pointSizeF()
-    pixels_per_point = 1.0 # 0.9
-    hard_tab_width = abs(int(pixels_per_point * size * c.tab_width))
-    if trace: g.trace(
-        'family', font.family(), 'point size', size,
-        'tab_width', c.tab_width,
-        'hard_tab_width', hard_tab_width)
-    wrapper.widget.setTabStopWidth(hard_tab_width)
-</t>
-<t tx="ekr.20170101124033.40">def match_url_t(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_t)
-
-</t>
-<t tx="ekr.20170101124033.41">def match_url_w(self, s, i):
-    return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_w)
-</t>
-<t tx="ekr.20170101124033.42">def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
-    '''Succeed if the compiled regular expression regexp matches at s[i:].'''
-    if self.verbose: g.trace(g.callers(1), i, repr(s[i: i + 20]), 'regexp', regexp)
-    # if at_line_start and i != 0 and s[i-1] != '\n': return 0
-    # if at_whitespace_end and i != g.skip_ws(s,0): return 0
-    # if at_word_start and i &gt; 0 and s[i-1] in self.word_chars: return 0
-    n = self.match_compiled_regexp_helper(s, i, regexp)
-    if n &gt; 0:
-        j = i + n
-        assert(j - i == n)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        return j - i
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.43">def match_compiled_regexp_helper(self, s, i, regex):
-    '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
-    # Match succeeds or fails more quickly than search.
-    self.match_obj = mo = regex.match(s, i) # re_obj.search(s,i)
-    if mo is None:
-        return 0
-    start, end = mo.start(), mo.end()
-    if start != i:
-        return 0
-    # if trace:
-        # g.trace('pattern',pattern)
-        # g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
-        # g.trace('groups',mo.groups())
-    return end - start
-</t>
-<t tx="ekr.20170101124033.44">def match_eol_span(self, s, i,
-    kind=None, seq='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False
-):
-    '''Succeed if seq matches s[i:]'''
-    if self.verbose: g.trace(g.callers(1), i, repr(s[i: i + 20]))
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    if at_word_start and i + len(seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
-        return 0
-    if g.match(s, i, seq):
-        j = len(s)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        # g.trace(s[i:j])
-        return j # (was j-1) With a delegate, this could clear state.
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.45">def match_eol_span_regexp(self, s, i,
-    kind='', regexp='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False
-):
-    '''Succeed if the regular expression regex matches s[i:].'''
-    if self.verbose: g.trace(g.callers(1), i, repr(s[i: i + 20]))
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    n = self.match_regexp_helper(s, i, regexp)
-    if n &gt; 0:
-        j = len(s)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        return j - i
-    else:
-        return 0
-# def match_everything (self,s,i,kind=None,delegate='',exclude_match=False):
-    # '''Match the entire rest of the string.'''
-    # j = len(s)
-    # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
-    # return j
-# This is a time-critical method.
-
-</t>
-<t tx="ekr.20170101124033.46">def match_keywords(self, s, i):
-    '''
-    Succeed if s[i:] is a keyword.
-    Returning -len(word) for failure greatly reduces the number of times this
-    method is called.
-    '''
-    trace = False and not g.unitTesting
-    traceFail = True
-    self.totalKeywordsCalls += 1
-    # g.trace(i,repr(s[i:]))
-    # We must be at the start of a word.
-    if i &gt; 0 and s[i - 1] in self.word_chars:
-        # if trace: g.trace('not at word start',s[i-1])
-        return 0
-    # Get the word as quickly as possible.
-    j = i; n = len(s)
-    chars = self.word_chars
-    # 2013/11/04: A kludge just for Haskell:
-    if self.language_name == 'haskell':
-        chars["'"] = "'"
-    while j &lt; n and s[j] in chars:
-        j += 1
-    word = s[i: j]
-    if not word:
-        g.trace('can not happen', repr(s[i: max(j, i + 1)]), repr(s[i: i + 10]), g.callers())
-        return 0
-    if self.ignore_case: word = word.lower()
-    kind = self.keywordsDict.get(word)
-    if kind:
-        self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
-        result = j - i
-        if trace: g.trace('success', word, kind, result)
-        self.trace_match(kind, s, i, j)
-        return result
-    else:
-        if trace and traceFail: g.trace('fail', word, kind)
-        return -len(word) # An important new optimization.
-</t>
-<t tx="ekr.20170101124033.47">def match_line(self, s, i, kind=None, delegate='', exclude_match=False):
-    '''Match the rest of the line.'''
-    j = g.skip_to_end_of_line(s, i)
-    self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-    return j - i
-</t>
-<t tx="ekr.20170101124033.48">def match_mark_following(self, s, i,
-    kind='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Succeed if s[i:] matches pattern.'''
-    if not self.allow_mark_prev: return 0
-    # g.trace(g.callers(1),i,repr(s[i:i+20]))
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    if at_word_start and i + len(pattern) + 1 &lt; len(s) and s[i + len(pattern)] in self.word_chars:
-        return 0 # 7/5/2008
-    if g.match(s, i, pattern):
-        j = i + len(pattern)
-        # self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
-        k = self.getNextToken(s, j)
-        # 2011/05/31: Do not match *anything* unless there is a token following.
-        if k &gt; j:
-            self.colorRangeWithTag(s, i, j, kind, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, k, kind, exclude_match=False)
-            j = k
-            self.prev = (i, j, kind)
-            self.trace_match(kind, s, i, j)
-            return j - i
-        else:
-            return 0
-    else:
-        return 0
-</t>
-<t tx="ekr.20170101124033.49">def getNextToken(self, s, i):
-    '''Return the index of the end of the next token for match_mark_following.
-
-    The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
-    show that token means a word, as defined by word_chars.'''
-    # 2011/05/31: Might we extend the concept of token?
-    # If s[i] is not a word char, should we return just it?
-    while i &lt; len(s) and s[i] in self.word_chars:
-        i += 1
-    # 2011/05/31: was i+1
-    return min(len(s), i)
-</t>
-<t tx="ekr.20170101124033.5">def configure_tags(self):
-    '''Configure all tags.'''
-    trace = False and not g.unitTesting
-    traceColors = True
-    traceFonts = False
-    c = self.c
-    wrapper = self.wrapper
-    isQt = g.app.gui.guiName().startswith('qt')
-    if trace: g.trace(self.colorizer.language)
-    if wrapper and hasattr(wrapper, 'start_tag_configure'):
-        wrapper.start_tag_configure()
-    # Get the default body font.
-    defaultBodyfont = self.fonts.get('default_body_font')
-    if not defaultBodyfont:
-        defaultBodyfont = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.fonts['default_body_font'] = defaultBodyfont
-    # Configure fonts.
-    if trace and traceFonts: g.trace('*' * 10, 'configuring fonts')
-    keys = list(self.default_font_dict.keys()); keys.sort()
-    for key in keys:
-        option_name = self.default_font_dict[key]
-        # First, look for the language-specific setting, then the general setting.
-        for name in ('%s_%s' % (self.colorizer.language, option_name), (option_name)):
-            if trace and traceFonts: g.trace(name)
-            font = self.fonts.get(name)
-            if font:
-                if trace and traceFonts:
-                    g.trace('**found', name, id(font))
-                wrapper.tag_configure(key, font=font)
-                break
-            else:
-                family = c.config.get(name + '_family', 'family')
-                size = c.config.get(name + '_size', 'size')
-                slant = c.config.get(name + '_slant', 'slant')
-                weight = c.config.get(name + '_weight', 'weight')
-                if family or slant or weight or size:
-                    family = family or g.app.config.defaultFontFamily
-                    size = size or c.config.defaultBodyFontSize
-                    slant = slant or 'roman'
-                    weight = weight or 'normal'
-                    font = g.app.gui.getFontFromParams(family, size, slant, weight)
-                    # Save a reference to the font so it 'sticks'.
-                    self.fonts[key] = font
-                    if trace and traceFonts:
-                        g.trace('**found', key, name, family, size, slant, weight, id(font))
-                    wrapper.tag_configure(key, font=font)
-                    break
-        else: # Neither the general setting nor the language-specific setting exists.
-            if list(self.fonts.keys()): # Restore the default font.
-                if trace and traceFonts:
-                    g.trace('default', key, font)
-                self.fonts[key] = font # 2010/02/19: Essential
-                wrapper.tag_configure(key, font=defaultBodyfont)
-            else:
-                if trace and traceFonts:
-                    g.trace('no fonts')
-        if isQt and key == 'url' and font:
-            font.setUnderline(True) # 2011/03/04
-    keys = sorted(self.default_colors_dict.keys())
-    for name in keys:
-        # if name == 'operator': g.pdb()
-        option_name, default_color = self.default_colors_dict[name]
-        color = (
-            c.config.getColor('%s_%s' % (self.colorizer.language, option_name)) or
-            c.config.getColor(option_name) or
-            default_color)
-        if trace and traceColors: g.trace(option_name, color)
-        # Must use foreground, not fg.
-        try:
-            wrapper.tag_configure(name, foreground=color)
-        except Exception: # Recover after a user error.
-            g.es_exception()
-            wrapper.tag_configure(name, foreground=default_color)
-    # underline=var doesn't seem to work.
-    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-        wrapper.tag_configure("link", underline=1) # defined
-        wrapper.tag_configure("name", underline=0) # undefined
-    else:
-        wrapper.tag_configure("link", underline=0)
-        if self.underline_undefined:
-            wrapper.tag_configure("name", underline=1)
-        else:
-            wrapper.tag_configure("name", underline=0)
-    self.configure_variable_tags()
+        # All pasted nodes should already have unique gnx's.
+        ni = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            ni.check_gnx(c, v.fileIndex, v)
+    self.usingClipboard = True
     try:
-        wrapper.end_tag_configure()
-    except AttributeError:
-        pass
-</t>
-<t tx="ekr.20170101124033.50">def match_mark_previous(self, s, i,
-    kind='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Return the length of a matched SEQ or 0 if no match.
-
-    'at_line_start':    True: sequence must start the line.
-    'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
-    'at_word_start':    True: sequence must start a word.'''
-    # This match was causing most of the syntax-color problems.
-    return 0 # 2009/6/23
-</t>
-<t tx="ekr.20170101124033.51">def match_regexp_helper(self, s, i, pattern):
-    '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
-    trace = False and not g.unitTesting
-    if trace: g.trace('%-10s %-20s %s' % (
-        self.colorizer.language, pattern, s)) # g.callers(1)
-    try:
-        flags = re.MULTILINE
-        if self.ignore_case: flags |= re.IGNORECASE
-        re_obj = re.compile(pattern, flags)
-    except Exception:
-        # Do not call g.es here!
-        g.trace('Invalid regular expression: %s' % (pattern))
-        return 0
-    # Match succeeds or fails more quickly than search.
-    self.match_obj = mo = re_obj.match(s, i) # re_obj.search(s,i)
-    if mo is None:
-        return 0
+        # This encoding must match the encoding used in putLeoOutline.
+        s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+        if trace and verbose: g.trace(s)
+        # readSaxFile modifies the hidden root.
+        v = self.readSaxFile(
+            theFile=None, fileName='&lt;clipboard&gt;',
+            silent=True, # don't tell about stylesheet elements.
+            inClipboard=True, reassignIndices=reassignIndices, s=s)
+        if not v:
+            return g.es("the clipboard is not valid ", color="blue")
+    finally:
+        self.usingClipboard = False
+    # Restore the hidden root's children
+    c.hiddenRootNode.children = children
+    # Unlink v from the hidden root.
+    v.parents.remove(c.hiddenRootNode)
+    p = leoNodes.Position(v)
+    # Important: we must not adjust links when linking v
+    # into the outline.  The read code has already done that.
+    if current.hasChildren() and current.isExpanded():
+        # What does checkPaste do??
+        if check and not self.checkPaste(current, p):
+            return None
+        p._linkAsNthChild(current, 0, adjust=False)
     else:
-        start, end = mo.start(), mo.end()
-        if start != i: # Bug fix 2007-12-18: no match at i
-            return 0
-        if trace:
-            g.trace('pattern', pattern)
-            g.trace('match: %d, %d, %s' % (start, end, repr(s[start: end])))
-            g.trace('groups', mo.groups())
-        return end - start
-</t>
-<t tx="ekr.20170101124033.52">def match_seq(self, s, i,
-    kind='', seq='',
-    at_line_start=False,
-    at_whitespace_end=False,
-    at_word_start=False,
-    delegate=''
-):
-    '''Succeed if s[:] mathces seq.'''
-    if at_line_start and i != 0 and s[i - 1] != '\n':
-        j = i
-    elif at_whitespace_end and i != g.skip_ws(s, 0):
-        j = i
-    elif at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: # 7/5/2008
-        j = i
-    if at_word_start and i + len(seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
-        j = i # 7/5/2008
-    elif g.match(s, i, seq):
-        j = i + len(seq)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-    else:
-        j = i
-    return j - i
-</t>
-<t tx="ekr.20170101124033.53">def match_seq_regexp(self, s, i,
-    kind='', regexp='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate=''
-):
-    '''Succeed if the regular expression regexp matches at s[i:].'''
-    if self.verbose: g.trace(g.callers(1), i, repr(s[i: i + 20]), 'regexp', regexp)
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0
-    n = self.match_regexp_helper(s, i, regexp)
-    j = i + n
-    assert(j - i == n)
-    self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-    self.prev = (i, j, kind)
-    self.trace_match(kind, s, i, j)
-    return j - i
-</t>
-<t tx="ekr.20170101124033.54">def match_span(self, s, i,
-    kind='', begin='', end='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False,
-    no_escape=False, no_line_break=False, no_word_break=False
-):
-    '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
-    trace = False and not g.unitTesting
-    if i &gt;= len(s): return 0
-    # g.trace(begin,end,no_escape,no_line_break,no_word_break)
-    if at_line_start and i != 0 and s[i - 1] != '\n':
-        j = i
-    elif at_whitespace_end and i != g.skip_ws(s, 0):
-        j = i
-    elif at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
-        j = i
-    elif at_word_start and i + len(begin) + 1 &lt; len(s) and s[i + len(begin)] in self.word_chars:
-        j = i
-    elif not g.match(s, i, begin):
-        j = i
-    else:
-        # We have matched the start of the span.
-        j = self.match_span_helper(s, i + len(begin), end,
-            no_escape, no_line_break, no_word_break=no_word_break)
-        # g.trace('** helper returns',j,len(s))
-        if j == -1:
-            j = i # A real failure.
-        else:
-            # A match
-            i2 = i + len(begin); j2 = j + len(end)
-            if delegate:
-                self.colorRangeWithTag(s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                self.colorRangeWithTag(s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-            else:
-                self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-            j = j2
-            self.prev = (i, j, kind)
-    self.trace_match(kind, s, i, j)
-    if j &gt; len(s):
-        j = len(s) + 1
+        if check and not self.checkPaste(current.parent(), p):
+            return None
+        p._linkAfter(current, adjust=False)
+    if tempOutline:
+        self.gnxDict = oldGnxDict
+    elif reassignIndices:
+        self.gnxDict = oldGnxDict
+        ni = g.app.nodeIndices
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            index = ni.getNewIndex(v)
+            if g.trace_gnxDict: g.trace(c.shortFileName(), '**restoring**', index, v)
+    if trace and verbose:
+        g.trace('**** dumping outline...')
+        c.dumpOutline()
+    c.selectPosition(p)
+    self.initReadIvars()
+    return p
 
-        def boundRestartMatchSpan(s):
-            # Note: bindings are frozen by this def.
-            return self.restart_match_span(s,
-                # Positional args, in alpha order
-                delegate, end, exclude_match, kind,
-                no_escape, no_line_break, no_word_break)
-
-        self.setRestart(boundRestartMatchSpan,
-            # These must be keyword args.
-            delegate=delegate, end=end,
-            exclude_match=exclude_match,
-            kind=kind,
-            no_escape=no_escape,
-            no_line_break=no_line_break,
-            no_word_break=no_word_break)
-        if trace: g.trace('***Continuing', kind, i, j, len(s), s[i: j])
-    elif j != i:
-        if trace: g.trace('***Ending', kind, i, j, s[i: j])
-        self.clearState()
-    return j - i # Correct, whatever j is.
+getLeoOutline = getLeoOutlineFromClipboard # for compatibility
 </t>
-<t tx="ekr.20170101124033.55">def match_span_helper(self, s, i, pattern, no_escape, no_line_break, no_word_break):
-    '''
-    Return n &gt;= 0 if s[i] ends with a non-escaped 'end' string.
-    '''
-    esc = self.escape
-    while 1:
-        j = s.find(pattern, i)
-        # g.trace(no_line_break,j,len(s))
-        if j == -1:
-            # Match to end of text if not found and no_line_break is False
-            if no_line_break:
-                return -1
-            else:
-                return len(s) + 1
-        elif no_word_break and j &gt; 0 and s[j - 1] in self.word_chars:
-            return -1 # New in Leo 4.5.
-        elif no_line_break and '\n' in s[i: j]:
-            return -1
-        elif esc and not no_escape:
-            # Only an odd number of escapes is a 'real' escape.
-            escapes = 0; k = 1
-            while j - k &gt;= 0 and s[j - k] == esc:
-                escapes += 1; k += 1
-            if (escapes % 2) == 1:
-                assert s[j - 1] == esc
-                i += 1 # 2013/08/26: just advance past the *one* escaped character.
-                # g.trace('escapes',escapes,repr(s[i:]))
-            else:
-                return j
-        else:
-            return j
-</t>
-<t tx="ekr.20170101124033.56">def restart_match_span(self, s,
-    delegate, end, exclude_match, kind,
-    no_escape, no_line_break, no_word_break
-):
-    '''Remain in this state until 'end' is seen.'''
-    trace = False and not g.unitTesting
-    i = 0
-    j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
-    if j == -1:
-        j2 = len(s) + 1
-    elif j &gt; len(s):
-        j2 = j
-    else:
-        j2 = j + len(end)
-    if delegate:
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-        self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-    else: # avoid having to merge ranges in addTagsToList.
-        self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-    j = j2
-    self.trace_match(kind, s, i, j)
-    if j &gt; len(s):
-
-        def boundRestartMatchSpan(s):
-            return self.restart_match_span(s,
-                # Positional args, in alpha order
-                delegate, end, exclude_match, kind,
-                no_escape, no_line_break, no_word_break)
-
-        self.setRestart(boundRestartMatchSpan,
-            # These must be keywords args.
-            delegate=delegate, end=end, kind=kind,
-            no_escape=no_escape,
-            no_line_break=no_line_break,
-            no_word_break=no_word_break)
-        if trace: g.trace('***Re-continuing', i, j, len(s), s)
-    else:
-        if trace: g.trace('***ending', i, j, len(s), s)
-        self.clearState()
-    return j # Return the new i, *not* the length of the match.
-</t>
-<t tx="ekr.20170101124033.57">def match_span_regexp(self, s, i,
-    kind='', begin='', end='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    delegate='', exclude_match=False,
-    no_escape=False, no_line_break=False, no_word_break=False,
-):
-    '''Succeed if s[i:] starts with 'begin' (a regular expression) and
-    contains a following 'end'.
-    '''
-    if self.verbose: g.trace('begin', repr(begin), 'end', repr(end), self.dump(s[i:]))
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
-    if at_word_start and i + len(begin) + 1 &lt; len(s) and s[i + len(begin)] in self.word_chars:
-        return 0 # 7/5/2008
-    n = self.match_regexp_helper(s, i, begin)
-    # We may have to allow $n here, in which case we must use a regex object?
-    if n &gt; 0:
-        j = i + n
-        j2 = s.find(end, j)
-        if j2 == -1: return 0
-        if self.escape and not no_escape:
-            # Only an odd number of escapes is a 'real' escape.
-            escapes = 0; k = 1
-            while j - k &gt;= 0 and s[j - k] == self.escape:
-                escapes += 1; k += 1
-            if (escapes % 2) == 1:
-                # An escaped end **aborts the entire match**:
-                # there is no way to 'restart' the regex.
-                return 0
-        i2 = j2 - len(end)
-        if delegate:
-            self.colorRangeWithTag(s, i, j, kind, delegate=None, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, i2, kind, delegate=delegate, exclude_match=False)
-            self.colorRangeWithTag(s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
-        else: # avoid having to merge ranges in addTagsToList.
-            self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j2)
-        return j2 - i
-    else: return 0
-</t>
-<t tx="ekr.20170101124033.58">def match_word_and_regexp(self, s, i,
-    kind1='', word='',
-    kind2='', pattern='',
-    at_line_start=False, at_whitespace_end=False, at_word_start=False,
-    exclude_match=False
-):
-    '''Succeed if s[i:] matches pattern.'''
-    if not self.allow_mark_prev: return 0
-    if (False or self.verbose): g.trace(i, repr(s[i: i + 20]))
-    if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-    if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars: return 0
-    if at_word_start and i + len(word) + 1 &lt; len(s) and s[i + len(word)] in self.word_chars:
-        j = i
-    if not g.match(s, i, word):
-        return 0
-    j = i + len(word)
-    n = self.match_regexp_helper(s, j, pattern)
-    if n == 0:
-        return 0
-    self.colorRangeWithTag(s, i, j, kind1, exclude_match=exclude_match)
-    k = j + n
-    self.colorRangeWithTag(s, j, k, kind2, exclude_match=False)
-    self.prev = (j, k, kind2)
-    self.trace_match(kind1, s, i, j)
-    self.trace_match(kind2, s, j, k)
-    return k - i
-</t>
-<t tx="ekr.20170101124033.59">def skip_line(self, s, i):
-    if self.escape:
-        escape = self.escape + '\n'
-        n = len(escape)
-        while i &lt; len(s):
-            j = g.skip_line(s, i)
-            if not g.match(s, j - n, escape):
-                return j
-            # g.trace('escape',s[i:j])
-            i = j
-        return i
-    else:
-        return g.skip_line(s, i)
-            # Include the newline so we don't get a flash at the end of the line.
-</t>
-<t tx="ekr.20170101124033.6">def configure_variable_tags(self):
-    c = self.c
-    wrapper = self.wrapper
-    for name, option_name, default_color in (
-        # ("blank", "show_invisibles_space_background_color", "Gray90"),
-        # ("tab", "show_invisibles_tab_background_color", "Gray80"),
-        ("elide", None, "yellow"),
-    ):
-        if self.showInvisibles:
-            color = option_name and c.config.getColor(option_name) or default_color
-        else:
-            option_name, default_color = self.default_colors_dict.get(name, (None, None),)
-            color = option_name and c.config.getColor(option_name) or ''
-        try:
-            wrapper.tag_configure(name, background=color)
-        except Exception: # A user error.
-            wrapper.tag_configure(name, background=default_color)
-    # Special case:
-    if not self.showInvisibles:
-        wrapper.tag_configure("elide", elide="1")
-</t>
-<t tx="ekr.20170101124033.60">def trace_match(self, kind, s, i, j):
-    if j != i and self.trace_match_flag:
-        g.trace(kind, i, j, g.callers(2), self.dump(s[i: j]))
-</t>
-<t tx="ekr.20170101124033.61">def clearState(self):
-    self.setState(-1)
-</t>
-<t tx="ekr.20170101124033.62">def computeState(self, f, keys):
-    '''Compute the state name associated with f and all the keys.
-
-    Return a unique int n representing that state.'''
-    # Abbreviate arg names.
-    d = {
-        'delegate': 'del:',
-        'end': 'end',
-        'at_line_start': 'line-start',
-        'at_whitespace_end': 'ws-end',
-        'exclude_match': 'exc-match',
-        'no_escape': 'no-esc',
-        'no_line_break': 'no-brk',
-        'no_word_break': 'no-word-brk',
-    }
-    result = [
-        f.__name__,
-        self.colorizer.language,
-        self.rulesetName]
-    for key in keys:
-        keyVal = keys.get(key)
-        val = d.get(key)
-        if val is None:
-            val = keys.get(key)
-            result.append('%s=%s' % (key, val))
-        elif keyVal is True:
-            result.append('%s' % val)
-        elif keyVal is False:
-            pass
-        elif keyVal not in (None, ''):
-            result.append('%s=%s' % (key, keyVal))
-    state = ';'.join(result)
-    n = self.stateNameToStateNumber(f, state)
-    return n
-</t>
-<t tx="ekr.20170101124033.63">def currentState(self):
-    return self.highlighter.currentBlockState()
-
-</t>
-<t tx="ekr.20170101124033.64">def prevState(self):
-    return self.highlighter.previousBlockState()
-</t>
-<t tx="ekr.20170101124033.65">def setRestart(self, f, **keys):
-    n = self.computeState(f, keys)
-    self.setState(n)
-</t>
-<t tx="ekr.20170101124033.66">def setState(self, n):
-    trace = False and not g.unitTesting
-    self.highlighter.setCurrentBlockState(n)
-    if trace:
-        stateName = self.showState(n)
-        g.trace(stateName, g.callers(4))
-</t>
-<t tx="ekr.20170101124033.67">def showState(self, n):
-    if n == -1:
-        return 'default-state'
-    else:
-        return self.stateDict.get(n, '&lt;no state&gt;')
-
-</t>
-<t tx="ekr.20170101124033.68">def showCurrentState(self):
-    n = self.currentState()
-    return self.showState(n)
-
-</t>
-<t tx="ekr.20170101124033.69">def showPrevState(self):
-    n = self.prevState()
-    return self.showState(n)
-</t>
-<t tx="ekr.20170101124033.7">def init(self, p, s):
-    '''Init the colorizer.'''
-    trace = False and not g.unitTesting
-    if p: self.p = p.copy()
-    self.all_s = s or ''
-    if trace: g.trace('=' * 20, self.colorizer.language)
-    # State info.
-    self.all_s = s
-    self.global_i, self.global_j = 0, 0
-    self.global_offset = 0
-    self.lineCount = 0
-    # These *must* be recomputed.
-    self.nextState = 1 # Dont use 0.
-    self.stateDict = {}
-    self.stateNameDict = {}
-    self.restartDict = {}
-    self.init_mode(self.colorizer.language)
-    self.clearState()
-    self.showInvisibles = self.colorizer.showInvisibles
-        # The show/hide-invisible commands changes this.
-    # Used by matchers.
-    self.prev = None
-    if self.last_language != self.colorizer.language:
-        # Must be done to support per-language @font/@color settings.
-        self.configure_tags()
-        self.last_language = self.colorizer.language
-    self.configure_hard_tab_width() # 2011/10/04
-</t>
-<t tx="ekr.20170101124033.70">def stateNameToStateNumber(self, f, stateName):
-    # stateDict:     Keys are state numbers, values state names.
-    # stateNameDict: Keys are state names, values are state numbers.
-    # restartDict:   Keys are state numbers, values are restart functions
-    n = self.stateNameDict.get(stateName)
-    if n is None:
-        n = self.nextState
-        self.stateNameDict[stateName] = n
-        self.stateDict[n] = stateName
-        self.restartDict[n] = f
-        self.nextState += 1
-        # g.trace('========',n,stateName)
-    return n
-</t>
-<t tx="ekr.20170101124033.71">def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
-    '''Actually colorize the selected range.
-
-    This is called whenever a pattern matcher succeed.'''
-    trace = False and not g.unitTesting
-        # A superb trace: enable this first to see what gets colored.
-    # Pattern matcher may set the .flag ivar.
-    if self.colorizer.killColorFlag or not self.colorizer.flag:
-        if trace: g.trace('disabled')
-        return
-    if delegate:
-        if trace:
-            s2 = repr(s[i: j]) if len(repr(s[i: j])) &lt;= 20 else repr(s[i: i + 17 - 2] + '...')
-            g.trace('%25s %3s %3s %-20s %s' % (
-                ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
-        # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
-        self.modeStack.append(self.modeBunch)
-        self.init_mode(delegate)
-        while 0 &lt;= i &lt; j and i &lt; len(s):
-            progress = i
-            assert j &gt;= 0, j
-            for f in self.rulesDict.get(s[i], []):
-                n = f(self, s, i)
-                if n is None:
-                    g.trace('Can not happen: delegate matcher returns None')
-                elif n &gt; 0:
-                    # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
-                    i += n; break
-            else:
-                # New in Leo 4.6: Use the default chars for everything else.
-                # New in Leo 4.8 devel: use the *delegate's* default characters if possible.
-                default_tag = self.attributesDict.get('default')
-                # g.trace(default_tag)
-                self.setTag(default_tag or tag, s, i, i + 1)
-                i += 1
-            assert i &gt; progress
-        bunch = self.modeStack.pop()
-        self.initModeFromBunch(bunch)
-    elif not exclude_match:
-        if trace:
-            s2 = repr(s[i: j]) if len(repr(s[i: j])) &lt;= 20 else repr(s[i: i + 17 - 2] + '...')
-            g.trace('%25s %3s %3s %-20s %s' % (
-                ('%s.%s' % (self.language_name, tag)), i, j, s2, g.callers(2)))
-        self.setTag(tag, s, i, j)
-    if tag != 'url':
-        # Allow URL's *everywhere*.
-        j = min(j, len(s))
-        while i &lt; j:
-            if s[i].lower() in 'fh': # file|ftp|http|https
-                n = self.match_any_url(s, i)
-                i += max(1, n)
-            else:
-                i += 1
-</t>
-<t tx="ekr.20170101124033.72">def mainLoop(self, n, s):
-    '''Colorize a *single* line s, starting in state n.'''
-    trace = False and not g.unitTesting
-    traceMatch = True
-    traceFail = True
-    traceState = True
-    traceEndState = True
-    if trace:
-        if traceState:
-            g.trace('%s %-30s' % (self.language_name,
-                '** start: %s' % self.showState(n)), repr(s))
-        else:
-            g.trace(self.language_name, repr(s)) # Called from recolor.
-    i = 0
-    if n &gt; -1:
-        i = self.restart(n, s, trace and traceMatch)
-    if i == 0:
-        self.setState(self.prevState())
-    if False and trace:
-        aList = self.rulesDict.get('&lt;')
-        for f in aList:
-            g.trace(f.__name__)
-    while i &lt; len(s):
-        progress = i
-        functions = self.rulesDict.get(s[i], [])
-        for f in functions:
-            n = f(self, s, i)
-            if n is None:
-                g.trace('Can not happen: n is None', repr(f))
-                break
-            elif n &gt; 0: # Success.
-                if trace and traceMatch and f.__name__ != 'match_blanks':
-                    g.trace('%-30s' % ('   match: %s' % (f.__name__,)),
-                        repr(s[i: i + n]))
-                # The match has already been colored.
-                i += n
-                break # Stop searching the functions.
-            elif n &lt; 0: # Fail and skip n chars.
-                if trace and traceFail:
-                    g.trace('fail: n: %s %-30s %s' % (
-                        n, f.__name__, repr(s[i: i + n])))
-                i += -n
-                break # Stop searching the functions.
-            else: # Fail. Try the next function.
-                pass # Do not break or change i!
-        else:
-            i += 1
-        assert i &gt; progress
-    # Don't even *think* about clearing state here.
-    # We remain in the starting state unless a match happens.
-    if trace and traceEndState:
-        g.trace('%-30s' % ('** end:   %s' % self.showCurrentState()), repr(s))
-</t>
-<t tx="ekr.20170101124033.73">def restart(self, n, s, traceMatch):
-    f = self.restartDict.get(n)
-    if f:
-        i = f(s)
-        fname = f.__name__
-        if traceMatch:
-            if i &gt; 0:
-                g.trace('** restart match', fname, s[: i])
-            else:
-                g.trace('** restart fail', fname, s)
-    else:
-        g.trace('**** no restart f')
-        i = 0
-    return i
-</t>
-<t tx="ekr.20170101124033.74">def recolor(self, s):
-    '''
-    Recolor a *single* line, s.
-    Qt calls this method repeatedly to colorizer all the text.
-    '''
-    trace = False and not g.unitTesting
-    traceCallers = False; traceLine = True
-    traceState = False; traceReturns = False
-    # Update the counts.
-    self.recolorCount += 1
-    if self.colorizer.changingText:
-        if trace and traceReturns: g.trace('changingText')
-        return
-    if not self.colorizer.flag:
-        if trace and traceReturns: g.trace('not flag')
-        return
-    self.lineCount += 1
-    # Get the previous state.
-    self.totalChars += len(s)
-    n = self.prevState() # The state at the end of the previous line.
-    if trace:
-        if traceLine and traceState:
-            g.trace('%3s %2s %s %s' % (self.lineCount, n, self.showState(n), repr(s)))
-        elif traceLine:
-            g.trace('%3s %2s %s' % (self.lineCount, n, repr(s)))
-        if traceCallers:
-            # Called from colorize:rehightlight,highlightBlock
-            g.trace(g.callers())
-    if s.strip() or self.showInvisibles:
-        self.mainLoop(n, s)
-    else:
-        self.setState(n) # Required
-</t>
-<t tx="ekr.20170101124033.75">def setTag(self, tag, s, i, j):
-    '''Set the tag in the highlighter.'''
-    trace = False and not g.unitTesting
-    if i == j:
-        if trace: g.trace('empty range')
-        return
-    wrapper = self.wrapper # A QTextEditWrapper
-    tag = tag.lower() # 2011/10/28
-    colorName = wrapper.configDict.get(tag)
-    # Munge the color name.
-    if not colorName:
-        if trace: g.trace('no color for %s' % tag)
-        return
-    if colorName[-1].isdigit() and colorName[0] != '#':
-        colorName = colorName[: -1]
-    # Get the actual color.
-    color = self.actualColorDict.get(colorName)
-    if not color:
-        color = QtGui.QColor(colorName)
-        if color.isValid():
-            self.actualColorDict[colorName] = color
-        else:
-            return g.trace('unknown color name', colorName, g.callers())
-    underline = wrapper.configUnderlineDict.get(tag)
-    format = QtGui.QTextCharFormat()
-    font = self.fonts.get(tag)
-    if font:
-        format.setFont(font)
-    if trace:
-        self.tagCount += 1
-        g.trace(
-            '%3s %3s %3s %9s %7s' % (i, j, len(s), font and id(font) or '&lt;no font&gt;', colorName),
-            '%-10s %-25s' % (tag, s[i: j]), g.callers(2))
-    if tag in ('blank', 'tab'):
-        if tag == 'tab' or colorName == 'black':
-            format.setFontUnderline(True)
-        if colorName != 'black':
-            format.setBackground(color)
-    elif underline:
-        format.setForeground(color)
-        format.setFontUnderline(True)
-    else:
-        format.setForeground(color)
-    self.highlighter.setFormat(i, j - i, format)
-</t>
-<t tx="ekr.20170101124033.76">class LeoQtColorizer(object):
-    '''An adaptor class that interfaces Leo's core to two class:
-
-    1. a subclass of QSyntaxHighlighter,
-
-    2. the JEditColorizer class that contains the
-       pattern-matchin code from the threading colorizer plugin.'''
-    @others
-# This is c.frame.body.colorizer.highlighter
-# Careful: we may be running from the bridge.
-if QtGui:
-    if python_qsh:
-        base_highlighter = PythonQSyntaxHighlighter
-    else:
-        base_highlighter = QtGui.QSyntaxHighlighter
-
-if Qsci:
-
-# This is c.frame.body.colorizer
-
-</t>
-<t tx="ekr.20170101124033.77">def __init__(self, c, widget):
-    '''Ctor for LeoQtColorizer class.'''
-    # g.trace('(LeoQtColorizer)',widget)
-    self.c = c
-    self.widget = widget
-    # Step 1: create the ivars.
-    self.changingText = False
-    self.count = 0 # For unit testing.
-    self.colorCacheFlag = False
-    self.enabled = c.config.getBool('use_syntax_coloring')
-    self.error = False # Set if there is an error in jeditColorizer.recolor
-    self.flag = True # Per-node enable/disable flag.
-    self.full_recolor_count = 0 # For unit testing.
-    self.killColorFlag = False
-    self.language = 'python' # set by scanColorDirectives.
-    self.languageList = [] # List of color directives in the node the determines it.
-    # self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
-        # No longer needed now that coloring is continued in the background.
-    self.oldLanguageList = []
-    self.oldV = None
-    self.showInvisibles = False
-    # Step 2: create the highlighter.
-    if isinstance(widget, QtWidgets.QTextEdit):
-        self.highlighter = LeoQtSyntaxHighlighter(c, widget, colorizer=self)
-        self.colorer = self.highlighter.colorer
-    else:
-        # No coloring for Scintilla
-        self.highlighter = None
-        self.colorer = None
-    widget.leo_colorizer = self
-    # Step 3: finish enabling.
-    if self.enabled:
-        self.enabled = hasattr(self.highlighter, 'currentBlock')
-</t>
-<t tx="ekr.20170101124033.78">def colorize(self, p, incremental=False, interruptable=True):
-    '''The main colorizer entry point.'''
-    trace = False and not g.unitTesting
-    verbose = True
-    self.count += 1 # For unit testing.
-    if not incremental:
-        self.full_recolor_count += 1
-    s = p.b
-    if not s.strip():
-        if trace: g.trace('no body', p.h)
-        self.kill()
-        return
-    if s.startswith('@killcolor'):
-        if trace: g.trace('@killcolor')
-        self.kill()
-        return
-    elif self.enabled:
-        oldFlag = self.flag
-        self.updateSyntaxColorer(p)
-            # sets self.flag and self.language and self.languageList.
-        if trace and verbose:
-            g.trace('old: %s, new: %s, %s' % (
-                self.oldLanguageList, self.languageList, repr(p.h)))
-        # fullRecolor is True if we can not do an incremental recolor.
-        fullRecolor = (
-            oldFlag != self.flag or
-            self.oldV != p.v or
-            self.oldLanguageList != self.languageList or
-            not incremental
-        )
-        # 2012/03/09: Determine the present language from the insertion
-        # point if there are more than one @language directives in effect
-        # and we are about to do an incremental recolor.
-        if len(self.languageList) &gt; 0 and not fullRecolor:
-            language = self.scanColorByPosition(p) # May reset self.language
-            if language != self.colorer.language_name:
-                if trace: g.trace('** must rescan', self.c.frame.title, language)
-                fullRecolor = True
-                self.language = language
-        if fullRecolor:
-            if trace: g.trace('** calling rehighlight', g.callers())
-            self.oldLanguageList = self.languageList[:]
-            self.oldV = p.v
-            self.highlighter.rehighlight(p)
-    return "ok" # For unit testing.
-</t>
-<t tx="ekr.20170101124033.79">def scanColorByPosition(self, p):
-    c = self.c
-    wrapper = c.frame.body.wrapper
-    i = wrapper.getInsertPoint()
-    s = wrapper.getAllText()
-    i1, i2 = g.getLine(s, i)
-    tag = '@language'
-    language = self.language
-    for s in g.splitLines(s[: i1]):
-        if s.startswith(tag):
-            language = s[len(tag):].strip()
-    return language
-</t>
-<t tx="ekr.20170101124033.8">def init_mode(self, name):
-    '''Name may be a language name or a delegate name.'''
-    trace = False and not g.unitTesting
-    if not name: return False
-    language, rulesetName = self.nameToRulesetName(name)
-    bunch = self.modes.get(rulesetName)
-    if bunch:
-        if bunch.language == 'unknown-language':
-            if trace: g.trace('found unknown language')
-            return False
-        else:
-            if trace: g.trace('found', language, rulesetName)
-            self.initModeFromBunch(bunch)
-            self.language_name = language # 2011/05/30
-            return True
-    else:
-        if trace: g.trace(language, rulesetName)
-        # Bug fix: 2008/2/10: Don't try to import a non-existent language.
-        path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        fn = g.os_path_join(path, '%s.py' % (language))
-        if g.os_path_exists(fn):
-            mode = g.importFromPath(moduleName=language, path=path)
-            if trace: g.trace(mode)
-        else:
-            mode = None
-        return self.init_mode_from_module(name, mode)
-</t>
-<t tx="ekr.20170101124033.80">def disable(self, p):
-    g.trace(g.callers(4))
-    if self.enabled:
-        self.flag = False
-        self.enabled = False
-        self.highlighter.rehighlight(p) # Do a full recolor (to black)
-
-</t>
-<t tx="ekr.20170101124033.81">def enable(self, p):
-    g.trace(g.callers(4))
-    if not self.enabled:
-        self.enabled = True
-        self.flag = True
-        # Do a full recolor, but only if we aren't changing nodes.
-        if self.c.currentPosition() == p:
-            self.highlighter.rehighlight(p)
-</t>
-<t tx="ekr.20170101124033.82">def kill(self): # c.frame.body.colorizer.kill
-    '''Kill any queue colorizing.'''
-    if self.highlighter and hasattr(self.highlighter, 'kill'):
-        self.highlighter.kill()
-</t>
-<t tx="ekr.20170101124033.83">def scanColorDirectives(self, p):
-    '''Set self.language based on the directives in p's tree.'''
-    trace = False and not g.unitTesting
-    c = self.c
-    if c is None: return None # self.c may be None for testing.
-    root = p.copy()
-    self.colorCacheFlag = False
-    self.language = None
-    self.rootMode = None # None, "code" or "doc"
-    for p in root.self_and_parents():
-        theDict = g.get_directives_dict(p)
-        # if trace: g.trace(p.h,theDict)
-        # The @colorcache directive is a per-node directive.
-        if p == root:
-            self.colorCacheFlag = 'colorcache' in theDict
-            # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
-        if 'language' in theDict:
-            s = theDict["language"]
-            aList = self.findLanguageDirectives(p)
-            # In the root node, we use the first (valid) @language directive,
-            # no matter how many @language directives the root node contains.
-            # In ancestor nodes, only unambiguous @language directives
-            # set self.language.
-            if p == root or len(aList) == 1:
-                self.languageList = list(set(aList))
-                self.language = aList and aList[0] or []
-                break
-        if 'root' in theDict and not self.rootMode:
-            s = theDict["root"]
-            if g.match_word(s, 0, "@root-code"):
-                self.rootMode = "code"
-            elif g.match_word(s, 0, "@root-doc"):
-                self.rootMode = "doc"
-            else:
-                doc = c.config.at_root_bodies_start_in_doc_mode
-                self.rootMode = "doc" if doc else "code"
-    # 2011/05/28: If no language, get the language from any @&lt;file&gt; node.
-    if self.language:
-        if trace: g.trace('found @language %s %s' % (self.language, self.languageList))
-        return self.language
-    #  Attempt to get the language from the nearest enclosing @&lt;file&gt; node.
-    self.language = g.getLanguageFromAncestorAtFileNode(root)
-    if not self.language:
-        if trace: g.trace('using default', c.target_language)
-        self.language = c.target_language
-    return self.language # For use by external routines.
-</t>
-<t tx="ekr.20170101124033.84">def findLanguageDirectives(self, p):
-    '''Scan p's body text for *valid* @language directives.
-
-    Return a list of languages.'''
-    # Speed not very important: called only for nodes containing @language directives.
-    trace = False and not g.unitTesting
-    aList = []
-    for s in g.splitLines(p.b):
-        if g.match_word(s, 0, '@language'):
-            i = len('@language')
-            i = g.skip_ws(s, i)
-            j = g.skip_id(s, i)
-            if j &gt; i:
-                word = s[i: j]
-                if self.isValidLanguage(word):
-                    aList.append(word)
-                else:
-                    if trace: g.trace('invalid', word)
-    if trace: g.trace(aList)
-    return aList
-</t>
-<t tx="ekr.20170101124033.85">def isValidLanguage(self, language):
-    fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
-    return g.os_path_exists(fn)
-# Called *only* from LeoTree.setBodyTextAfterSelect
-
-</t>
-<t tx="ekr.20170101124033.86">def setHighlighter(self, p):
-    if self.enabled:
-        self.flag = self.updateSyntaxColorer(p)
-        return self.flag
-</t>
-<t tx="ekr.20170101124033.87">def updateSyntaxColorer(self, p):
-    '''Scan p.b for color directives.'''
-    trace = False and not g.unitTesting
-    # An important hack: shortcut everything if the first line is @killcolor.
-    if p.b.startswith('@killcolor'):
-        if trace: g.trace('@killcolor')
-        self.flag = False
-        return self.flag
-    else:
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        p = p.copy()
-        self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p) # Sets self.language
-    if trace: g.trace(self.flag, len(p.b), self.language, p.h, g.callers(5))
-    return self.flag
-</t>
-<t tx="ekr.20170101124033.88">def useSyntaxColoring(self, p):
-    """Return True unless p is unambiguously under the control of @nocolor."""
-    trace = False and not g.unitTesting
-    if not p:
-        if trace: g.trace('no p', repr(p))
-        return False
-    p = p.copy()
-    first = True; kind = None; val = True
-    self.killColorFlag = False
-    for p in p.self_and_parents():
-        d = self.findColorDirectives(p)
-        color, no_color = 'color' in d, 'nocolor' in d
-        # An @nocolor-node in the first node disabled coloring.
-        if first and 'nocolor-node' in d:
-            kind = '@nocolor-node'
-            self.killColorFlag = True
-            val = False; break
-        # A killcolor anywhere disables coloring.
-        elif 'killcolor' in d:
-            kind = '@killcolor %s' % p.h
-            self.killColorFlag = True
-            val = False; break
-        # A color anywhere in the target enables coloring.
-        elif color and first:
-            kind = 'color %s' % p.h
-            val = True; break
-        # Otherwise, the @nocolor specification must be unambiguous.
-        elif no_color and not color:
-            kind = '@nocolor %s' % p.h
-            val = False; break
-        elif color and not no_color:
-            kind = '@color %s' % p.h
-            val = True; break
-        first = False
-    if trace: g.trace(val, kind)
-    return val
-color_directives_pat = re.compile(
-    # Order is important: put longest matches first.
-    r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
-    , re.MULTILINE)
-
-</t>
-<t tx="ekr.20170101124033.89">def findColorDirectives(self, p):
-    '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
-
-    Return a dict containing pointers to the start of each directive.'''
-    trace = False and not g.unitTesting
-    d = {}
-    anIter = self.color_directives_pat.finditer(p.b)
-    for m in anIter:
-        # Remove leading '@' for compatibility with
-        # functions in leoGlobals.py.
-        word = m.group(0)[1:]
-        d[word] = word
-    if trace: g.trace(d)
-    return d
-# Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
-
-</t>
-<t tx="ekr.20170101124033.9">def init_mode_from_module(self, name, mode):
-    '''Name may be a language name or a delegate name.
-       Mode is a python module or class containing all
-       coloring rule attributes for the mode.
-    '''
-    trace = False and not g.unitTesting
-    language, rulesetName = self.nameToRulesetName(name)
-    if mode:
-        # A hack to give modes/forth.py access to c.
-        if hasattr(mode, 'pre_init_mode'):
-            mode.pre_init_mode(self.c)
-    else:
-        # Create a dummy bunch to limit recursion.
-        self.modes[rulesetName] = self.modeBunch = g.Bunch(
-            attributesDict={},
-            defaultColor=None,
-            keywordsDict={},
-            language='unknown-language',
-            mode=mode,
-            properties={},
-            rulesDict={},
-            rulesetName=rulesetName,
-            word_chars=self.word_chars, # 2011/05/21
-        )
-        if trace: g.trace('***** No colorizer file: %s.py' % language)
-        self.rulesetName = rulesetName
-        self.language_name = 'unknown-language'
-        return False
-    self.colorizer.language = language
-    self.rulesetName = rulesetName
-    self.properties = hasattr(mode, 'properties') and mode.properties or {}
-    self.keywordsDict = hasattr(mode, 'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName, {}) or {}
-    self.setKeywords()
-    self.attributesDict = hasattr(mode, 'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
-    # if trace: g.trace(rulesetName,self.attributesDict)
-    self.setModeAttributes()
-    self.rulesDict = hasattr(mode, 'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
-    # if trace: g.trace(self.rulesDict)
-    self.addLeoRules(self.rulesDict)
-    self.defaultColor = 'null'
-    self.mode = mode
-    self.modes[rulesetName] = self.modeBunch = g.Bunch(
-        attributesDict=self.attributesDict,
-        defaultColor=self.defaultColor,
-        keywordsDict=self.keywordsDict,
-        language=self.colorizer.language,
-        mode=self.mode,
-        properties=self.properties,
-        rulesDict=self.rulesDict,
-        rulesetName=self.rulesetName,
-        word_chars=self.word_chars, # 2011/05/21
-    )
-    # Do this after 'officially' initing the mode, to limit recursion.
-    self.addImportedRules(mode, self.rulesDict, rulesetName)
-    self.updateDelimsTables()
-    initialDelegate = self.properties.get('initialModeDelegate')
-    if initialDelegate:
-        if trace: g.trace('initialDelegate', initialDelegate)
-        # Replace the original mode by the delegate mode.
-        self.init_mode(initialDelegate)
-        language2, rulesetName2 = self.nameToRulesetName(initialDelegate)
-        self.modes[rulesetName] = self.modes.get(rulesetName2)
-        self.language_name = language2 # 2011/05/30
-    else:
-        self.language_name = language # 2011/05/30
+<t tx="ekr.20170101131556.45">def checkPaste(self, parent, p):
+    '''Return True if p may be pasted as a child of parent.'''
+    if not parent: return True
+    parents = [z.copy() for z in parent.self_and_parents()]
+    for p in p.self_and_subtree():
+        for z in parents:
+            # g.trace(p.h,id(p.v),id(z.v))
+            if p.v == z.v:
+                g.warning('Invalid paste: nodes may not descend from themselves')
+                return False
     return True
 </t>
-<t tx="ekr.20170101124033.90">def write_colorizer_cache(self, p):
+<t tx="ekr.20170101131556.46">def getLeoFile(self,
+    theFile,
+    fileName,
+    readAtFileNodesFlag=True,
+    silent=False,
+    checkOpenFiles=True,
+):
     '''
-    Write colorizing data for p for later use by rehighlight_with_cache.
-    Called from the node selection logic only if an @colorcache directive is in effect.
+        Read a .leo file.
+        The caller should follow this with a call to c.redraw().
     '''
-    trace = False and not g.unitTesting
-    if not p: return
-    c = self.c
-    widget = c.frame.body.widget # a subclass of QTextBrowser
-    doc = widget.document()
-    if trace:
-        t1 = time.time()
-    aList = []
-    for i in range(doc.blockCount()):
-        b = doc.findBlockByNumber(i)
-        s = g.u(b.text())
-        layout = b.layout()
-        ranges = list(layout.additionalFormats()) # A list of FormatRange objects.
-        if ranges:
-            aList.append(g.bunch(i=i, ranges=ranges, s=s))
-            # Apparently not necessary.
-                # ranges2 = []
-                # for r in ranges:
-                    # # Hold the format in memory by copying it.
-                    # r.format = QtGui.QTextCharFormat(r.format)
-                    # ranges2.append(r)
-                # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
-    p.v.colorCache = g.bunch(aList=aList, n=doc.blockCount(), v=p.v)
-    if trace:
-        g.trace('%2.3f sec len(aList): %s v: %s' % (
-            time.time() - t1, len(aList), c.p.v.h,))
-</t>
-<t tx="ekr.20170101124033.91">class LeoQtSyntaxHighlighter(base_highlighter):
-    '''A subclass of QSyntaxHighlighter that overrides
-    the highlightBlock and rehighlight methods.
+    fc, c = self, self.c
+    t1 = time.time()
+    c.setChanged(False) # May be set when reading @file nodes.
+    fc.warnOnReadOnlyFiles(fileName)
+    fc.checking = False
+    fc.mFileName = c.mFileName
+    fc.initReadIvars()
+    recoveryNode = None
+    try:
+        c.loading = True # disable c.changed
+        if not silent and checkOpenFiles:
+            # Don't check for open file when reverting.
+            g.app.checkForOpenFile(c, fileName)
+        ok = fc.getLeoFileHelper(theFile, fileName, silent)
+            # Read the .leo file and create the outline.
+        if ok:
+            fc.resolveTnodeLists()
+                # Do this before reading external files.
+            c.setFileTimeStamp(fileName)
+            if readAtFileNodesFlag:
+                # Redraw before reading the @file nodes so the screen isn't blank.
+                # This is important for big files like LeoPy.leo.
+                c.redraw()
+                recoveryNode = fc.readExternalFiles(fileName)
+    finally:
+        if g.app.debug: g.trace('=====',
+            recoveryNode and recoveryNode.h,
+            c.p and c.p.h)
+        p = recoveryNode or c.p or c.lastTopLevel()
+            # lastTopLevel is a better fallback, imo.
+        # New in Leo 5.3. Delay the second redraw until idle time.
+        # This causes a slight flash, but corrects a hangnail.
 
-    All actual syntax coloring is done in the jeditColorer class.'''
-    @others
-</t>
-<t tx="ekr.20170101124033.92">def __init__(self, c, widget, colorizer):
-    '''ctor for LeoQtSyntaxHighlighter class.'''
-    self.c = c
-    self.widget = widget # widget is a LeoQTextBrowser.
-    # print('LeoQtSyntaxHighlighter.__init__',widget,self.setDocument)
-    # Not all versions of Qt have the crucial currentBlock method.
-    self.hasCurrentBlock = hasattr(self, 'currentBlock')
-    # Init the base class.
-    self.colorizer = colorizer
-    self.colorer = JEditColorizer(c,
-        colorizer=colorizer,
-        highlighter=self,
-        wrapper=c.frame.body.wrapper)
-    # Create the highligter after the colorizer &amp; colorer.
-    if python_qsh:
-        # The c argument is now optional.
-        # If present, it allows an extra safety check in PQSH.idle_handler.
-        PythonQSyntaxHighlighter.__init__(self, parent=widget, c=c)
-    else:
-        QtGui.QSyntaxHighlighter.__init__(self, widget)
-</t>
-<t tx="ekr.20170101124033.93">def highlightBlock(self, s):
-    """ Called by QSyntaxHiglighter """
-    trace = False and not g.unitTesting
-    if self.hasCurrentBlock and not self.colorizer.killColorFlag:
-        # pylint: disable=undefined-variable, no-member
-        # builtins.unicode.
-        if g.isPython3:
-            s = str(s)
+        def handler(timer, c=c, p=c.p):
+            c.initialFocusHelper()
+            c.redraw(p)
+            c.k.showStateAndMode()
+            c.outerUpdate()
+            timer.stop()
+
+        timer = g.IdleTime(handler, delay=0, tag='getLeoFile')
+        if timer:
+            timer.start()
         else:
-            s = builtins.unicode(s)
-        self.colorer.recolor(s)
-        v = self.c.p.v
-        if hasattr(v, 'colorCache') and v.colorCache and not self.colorizer.changingText:
-            if trace: g.trace('clearing cache', g.callers())
-            self.c.p.v.colorCache = None # Kill the color caching.
+            # Defensive code:
+            c.selectPosition(p)
+            c.initialFocusHelper()
+            c.k.showStateAndMode()
+            c.outerUpdate()
+
+        c.checkOutline()
+            # Must be called *after* ni.end_holding.
+        c.loading = False
+            # reenable c.changed
+        theFile.close()
+            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
+            # Leo holding directory/file handles after file close?
+    if c.changed:
+        fc.propegateDirtyNodes()
+    c.setChanged(c.changed) # Refresh the changed marker.
+    fc.initReadIvars()
+    t2 = time.time()
+    g.es('read outline in %2.2f seconds' % (t2 - t1))
+    return ok, c.frame.ratio
 </t>
-<t tx="ekr.20170101124033.94">def rehighlight(self, p):
-    '''Override base rehighlight method'''
-    # pylint: disable=arguments-differ
-    trace = False and not g.unitTesting
+<t tx="ekr.20170101131556.47">def getLeoFileHelper(self, theFile, fileName, silent):
+    '''Read the .leo file and create the outline.'''
+    c, fc = self.c, self
+    try:
+        ok = True
+        v = fc.readSaxFile(
+            theFile,
+            fileName,
+            silent,
+            inClipboard=False,
+            reassignIndices=False,
+        )
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            fc.rootVnode = v
+        else:
+            v = leoNodes.VNode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.Position(v)
+            p._linkAsRoot(oldRoot=None)
+            fc.rootVnode = v
+            # c.setRootPosition()
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+    return ok
+</t>
+<t tx="ekr.20170101131556.48">def handleNodeConflicts(self):
+    '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
     c = self.c
-    # if trace: g.trace(c.shortFileName(),p and p.h,g.callers(20))
-    if not p.b.strip():
-        if trace: g.trace('no body', c.shortFileName(), p and p.h)
+    if not c.nodeConflictList:
         return
-    tree = c.frame.tree
-    self.widget = c.frame.body.widget
-    if trace:
-        t1 = time.time()
-    # Call the base class method, but *only*
-    # if the crucial 'currentBlock' method exists.
-    n = self.colorer.recolorCount
-    if self.colorizer.enabled and self.hasCurrentBlock:
-        # Lock out onTextChanged.
-        old_selecting = tree.selecting
-        try:
-            tree.selecting = True
-            if (
-                self.colorizer.colorCacheFlag and
-                hasattr(p.v, 'colorCache') and
-                p.v.colorCache and
-                not g.unitTesting
-            ):
-                # Should be no need to init the colorizer.
-                self.rehighlight_with_cache(p.v.colorCache)
-            else:
-                self.colorer.init(p, p.b)
-                base_highlighter.rehighlight(self)
-        finally:
-            tree.selecting = old_selecting
-    if trace:
-        g.trace('(LeoQtSyntaxHighlighter) recolors: %4s %2.3f sec' % (
-            self.colorer.recolorCount - n, time.time() - t1))
+    if not c.make_node_conflicts_node:
+        g.es_print('suppressed node conflicts', color='red')
+        return
+    # Find the last top-level node.
+    sib = c.rootPosition()
+    while sib.hasNext():
+        sib.moveToNext()
+    # Create the 'Recovered Nodes' node.
+    root = sib.insertAfter()
+    root.setHeadString('Recovered Nodes')
+    root.expand()
+    # For each conflict, create one child and two grandchildren.
+    for bunch in c.nodeConflictList:
+        tag = bunch.get('tag') or ''
+        gnx = bunch.get('gnx') or ''
+        fn = bunch.get('fileName') or ''
+        b1, h1 = bunch.get('b_old'), bunch.get('h_old')
+        b2, h2 = bunch.get('b_new'), bunch.get('h_new')
+        child = root.insertAsLastChild()
+        h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
+        child.setHeadString(h)
+        # child.setBodyString('%s %s' % (tag,gnx))
+        line1 = '%s %s\nDiff...\n' % (tag, gnx)
+        d = difflib.Differ().compare(g.splitLines(b2), g.splitLines(b1))
+        # d = difflib.unified_diff(g.splitLines(b2),g.splitLines(b1))
+        diffLines = [z for z in d]
+        lines = [line1]
+        lines.extend(diffLines)
+        # There is less need to show trailing newlines because
+        # we don't report changes involving only trailing newlines.
+        child.setBodyString(''.join(lines)) # .replace('\n','\\n\n'))
+        n1 = child.insertAsNthChild(0)
+        n2 = child.insertAsNthChild(1)
+        n1.setHeadString('old:' + h1)
+        n1.setBodyString(b1)
+        n2.setHeadString('new:' + h2)
+        n2.setBodyString(b2)
+    return root
 </t>
-<t tx="ekr.20170101124033.95">def rehighlight_with_cache(self, bunch):
-    '''
-    Rehighlight the block from bunch, without calling QSH.rehighlight.
+<t tx="ekr.20170101131556.49">def propegateDirtyNodes(self):
+    fc = self; c = fc.c
+    aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+    for p in aList:
+        p.setAllAncestorAtFileNodesDirty()
+</t>
+<t tx="ekr.20170101131556.5">def __str__(self):
+    return "Bad Leo File:" + self.message
 
-    - bunch.aList: a list of bunch2 objects.
-    - bunch.n: a block (line) number.
-    - bunch.v: the VNode.
-        - bunch2.i: the index of the block.
-        - bunch2.s: the contents of the block.
-        - bunch2.ranges: a list of QTextLayout.FormatRange objects.
-    '''
-    trace = False and not g.unitTesting
-    widget = self.c.frame.body.widget # a subclass of QTextEdit.
-    doc = widget.document()
-    if bunch.n != doc.blockCount():
-        return g.trace('bad block count: expected %s got %s' % (
-            bunch.n, doc.blockCount()))
-    if trace:
-        t1 = time.time()
-    for i, bunch2 in enumerate(bunch.aList):
-        b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
-        layout = b.layout() # a QTextLayout.
-        if bunch2.s == g.u(b.text()):
-            layout.setAdditionalFormats(bunch2.ranges)
-        else:
-            return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
-                i, bunch2.s, g.u(b.text())))
-    if trace:
-        g.trace('%2.3f sec' % (time.time() - t1))
 </t>
-<t tx="ekr.20170101124033.96">class NullScintillaLexer(Qsci.QsciLexerCustom):
-    '''A do-nothing colorizer for Scintilla.'''
+<t tx="ekr.20170101131556.50">def readExternalFiles(self, fileName):
+    '''Read all external files.'''
+    c, fc = self.c, self
+    c.atFileCommands.readAll(c.rootVnode(), partialFlag=False)
+    recoveryNode = fc.handleNodeConflicts()
+    # Do this after reading external files.
+    # The descendent nodes won't exist unless we have read
+    # the @thin nodes!
+    fc.restoreDescendentAttributes()
+    fc.setPositionsFromVnodes()
+    return recoveryNode
+</t>
+<t tx="ekr.20170101131556.51">def warnOnReadOnlyFiles(self, fileName):
+    # os.access may not exist on all platforms.
+    try:
+        self.read_only = not os.access(fileName, os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+    if self.read_only and not g.unitTesting:
+        g.error("read only:", fileName)
+</t>
+<t tx="ekr.20170101131556.52">def readAtFileNodes(self):
+    c = self.c; p = c.p
+    c.endEditing()
+    c.atFileCommands.readAll(p, partialFlag=True)
+    c.redraw()
+    # Force an update of the body pane.
+    c.setBodyString(p, p.b)
+    c.frame.body.onBodyChanged(undoType=None)
+</t>
+<t tx="ekr.20170101131556.53">def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
+    '''Open a Leo file.'''
+    c, frame = self.c, self.c.frame
+    # Set c.openDirectory
+    theDir = g.os_path_dirname(fileName)
+    if theDir:
+        c.openDirectory = c.frame.openDirectory = theDir
+    # Get the file.
+    ok, ratio = self.getLeoFile(
+        theFile, fileName,
+        readAtFileNodesFlag=readAtFileNodesFlag,
+        silent=silent,
+    )
+    if ok:
+        frame.resizePanesToRatio(ratio, frame.secondary_ratio)
+    return ok
+</t>
+<t tx="ekr.20170101131556.54">def readOutlineOnly(self, theFile, fileName):
+    c = self.c
+    # The most natural default directory is the directory containing the .leo file
+    # that we are about to open. If the user has specified the "Default Directory"
+    # preference that will over-ride what we are about to set.
+    theDir = g.os_path_dirname(fileName)
+    if len(theDir) &gt; 0:
+        c.openDirectory = c.frame.openDirectory = theDir
+    ok, ratio = self.getLeoFile(theFile, fileName, readAtFileNodesFlag=False)
+    c.redraw()
+    c.frame.deiconify()
+    junk, junk, secondary_ratio = self.frame.initialRatios()
+    c.frame.resizePanesToRatio(ratio, secondary_ratio)
+    return ok
+# Methods common to both the sax and non-sax code.
+</t>
+<t tx="ekr.20170101131556.55">def canonicalTnodeIndex(self, index):
+    """Convert Tnnn to nnn, leaving gnx's unchanged."""
+    # index might be Tnnn, nnn, or gnx.
+    if index is None:
+        g.trace('Can not happen: index is None')
+        return None
+    junk, theTime, junk = g.app.nodeIndices.scanGnx(index, 0)
+    if theTime is None: # A pre-4.1 file index.
+        if index[0] == "T":
+            index = index[1:]
+    return index
+</t>
+<t tx="ekr.20170101131556.56">def getDescendentAttributes(self, s, tag=""):
+    '''s is a list of gnx's, separated by commas from a &lt;v&gt; or &lt;t&gt; element.
+    Parses s into a list.
+
+    This is used to record marked and expanded nodes.
+    '''
+    gnxs = s.split(',')
+    result = [gnx for gnx in gnxs if len(gnx) &gt; 0]
+    # g.trace(tag,result)
+    return result
+# Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
+# New in Leo 4.5: @thin &amp; @shadow vnodes have descendentVnodeUnknownAttributes field.
+
+</t>
+<t tx="ekr.20170101131556.57">def getDescendentUnknownAttributes(self, s, v=None):
+    '''Unhexlify and unpickle t/v.descendentUnknownAttribute field.'''
+    try:
+        # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
+        s = g.toEncodedString(s) # 2011/02/22
+        bin = binascii.unhexlify(s)
+            # Throws a TypeError if val is not a hex string.
+        val = pickle.loads(bin)
+        return val
+    except Exception:
+        g.es_exception()
+        g.trace('Can not unpickle', type(s), v and v.h, s[: 40])
+        return None
+</t>
+<t tx="ekr.20170101131556.58">def initReadIvars(self):
+    self.descendentTnodeUaDictList = []
+    self.descendentVnodeUaDictList = []
+    self.descendentExpandedList = []
+    self.descendentMarksList = []
+        # 2011/12/10: never re-init this dict.
+        # self.gnxDict = {}
+        # g.trace('*** clearing gnxDict',g.callers())
+    self.c.nodeConflictList = [] # 2010/01/05
+    self.c.nodeConflictFileName = None # 2010/01/05
+</t>
+<t tx="ekr.20170101131556.59">def restoreDescendentAttributes(self):
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c
+    for resultDict in self.descendentTnodeUaDictList:
+        if trace and verbose: g.trace('t.dict', resultDict)
+        for gnx in resultDict:
+            tref = self.canonicalTnodeIndex(gnx)
+            v = self.gnxDict.get(tref)
+            if v:
+                v.unknownAttributes = resultDict[gnx]
+                v._p_changed = 1
+            elif verbose:
+                g.error(
+                    'restoreDescendantAttributes: '
+                    'can not find VNode (duA): gnx = %s' % (gnx))
+    # New in Leo 4.5: keys are archivedPositions, values are attributes.
+    for root_v, resultDict in self.descendentVnodeUaDictList:
+        if trace and verbose: g.trace('v.dict', resultDict)
+        for key in resultDict:
+            v = self.resolveArchivedPosition(key, root_v)
+            if v:
+                v.unknownAttributes = resultDict[key]
+                v._p_changed = 1
+            elif verbose:
+                g.error(
+                    'restoreDescendantAttributes: '
+                    'can not find VNode (duA): archivedPosition: %s, root_v: %s' % (
+                        key, root_v))
+    marks = {}; expanded = {}
+    for gnx in self.descendentExpandedList:
+        tref = self.canonicalTnodeIndex(gnx)
+        v = self.gnxDict.get(gnx)
+        if v:
+            expanded[v] = v
+            # if trace: g.trace('expanded',v)
+        elif verbose:
+            g.error(
+                'restoreDescendantAttributes: '
+                'can not find VNode (expanded): gnx = %s, tref: %s' % (gnx, tref))
+    for gnx in self.descendentMarksList:
+        tref = self.canonicalTnodeIndex(gnx)
+        v = self.gnxDict.get(gnx)
+        if v: marks[v] = v
+        elif verbose:
+            g.error(
+                'restoreDescendantAttributes: '
+                'can not find VNode (marks): gnx = %s tref: %s' % (gnx, tref))
+    if marks or expanded:
+        # g.trace('marks',len(marks),'expanded',len(expanded))
+        for p in c.all_unique_positions():
+            if marks.get(p.v):
+                p.v.initMarkedBit()
+                    # This was the problem: was p.setMark.
+                    # There was a big performance bug in the mark hook in the Node Navigator plugin.
+            if expanded.get(p.v):
+                p.expand()
+                # if trace: g.trace('expand',p.h)
+</t>
+<t tx="ekr.20170101131556.6">class InvalidPaste(Exception):
+    pass
+if sys.platform != 'cli':
 
     @others
+if sys.platform != 'cli':
+
+    class SaxNodeClass:
+        '''A class representing one &lt;v&gt; element.
+
+        Use getters to access the attributes, properties and rules of this mode.
+        '''
+        def __init__(self):
+            self.attributes = {}
+            self.bodyString = ''
+            self.headString = ''
+            self.children = []
+            self.tnodeAttributes = {}
+            self.tnodeList = []
+            self.tnx = None
+        def __str__(self):
+            return '&lt;v:%s %s %s&gt;' % (id(self), self.headString, len(self.bodyString))
+
+        __repr__ = __str__
+        def dump(self):
+            g.pr('\nnode: %s tnx: %s len(body): %d %s' % (
+                id(self), self.tnx, len(self.bodyString), self.headString))
+            g.pr('children:', g.listToString(self.children))
+            g.pr('attrs:', list(self.attributes.values()))
 </t>
-<t tx="ekr.20170101124033.97">def __init__(self, c, parent=None):
-    Qsci.QsciLexerCustom.__init__(self, parent)
-        # Init the pase class
-    self.leo_c = c
-    self.configure_lexer()
+<t tx="ekr.20170101131556.60">def cleanSaxInputString(self, s):
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+    # pylint: disable=no-member
+    # Class 'str' has no 'maketrans' member
+    if g.isPython3:
+        flatten = bytes(flatten, 'utf-8')
+        pad = bytes(pad, 'utf-8')
+        transtable = bytes.maketrans(flatten, pad)
+    else:
+        transtable = string.maketrans(flatten, pad)
+    return s.translate(transtable)
+# for i in range(32): print i,repr(chr(i))
+</t>
+<t tx="ekr.20170101131556.61">def createSaxChildren(self, sax_node, parent_v):
+    '''Create vnodes for all children in sax_node.children.'''
+    trace = False and not g.unitTesting
+    children = []
+    for sax_child in sax_node.children:
+        tnx = sax_child.tnx
+        v = self.gnxDict.get(tnx)
+        if v: # A clone.
+            if trace: g.trace('**clone', tnx, v.gnx, v)
+            v = self.createSaxVnode(sax_child, parent_v, v=v)
+        else:
+            v = self.createSaxVnode(sax_child, parent_v)
+            self.createSaxChildren(sax_child, v)
+        children.append(v)
+    parent_v.children = children
+    for child in children:
+        child.parents.append(parent_v)
+        if trace: g.trace(
+            '*** added parent', parent_v, 'to', child,
+            'len(child.parents)', len(child.parents))
+    return children
+</t>
+<t tx="ekr.20170101131556.62">def createSaxVnode(self, sax_node, parent_v, v=None):
+    '''Create a vnode, or use an existing vnode.'''
+    c, at = self.c, self.c.atFileCommands
+    trace = True and not g.unitTesting
+        # and self.mFileName and sax_node.headString == 'clone-test'
+        # and not g.app.openingSettingsFile)
+    trace_update, verbose = False, False
+    h = sax_node.headString
+    b = sax_node.bodyString
+    # trace = trace and v and v.gnx == "vitalije.20150316130845.1"
+    if v:
+        # The body of the later node overrides the earlier.
+        # Don't set t.h: h is always empty.
+        if v.b == b:
+            # if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
+            if trace and verbose: g.trace(
+                '***no update\nold: %s\nnew: %s' % (v.b, b))
+        else:
+            if trace and trace_update: g.trace(
+                '***update\nold: %s\nnew: %s' % (v.b, b))
+            v.setBodyString(b)
+            at.bodySetInited(v)
+    else:
+        # Fix bug 158: Corrupt .leo files cause Leo to hang.
+        # Part 1: must explicitly test against None: tnx could be 0.
+        if sax_node.tnx is not None:
+            # Important: this should retain compatibility with old .leo files.
+            gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
+        else:
+            # Part 2: Do *not* call ni.getNewIndex here: v is None!
+            # Instead, let the VNode ctor below allocate the gnx.
+            gnx = None
+        # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
+        v = leoNodes.VNode(context=c, gnx=gnx)
+        v.setBodyString(b)
+        at.bodySetInited(v)
+        v.setHeadString(h)
+    if g.trace_gnxDict: g.trace(c.shortFileName(), gnx, v)
+    if trace and verbose: g.trace(
+        'tnx', '%-22s' % (gnx), 'v', id(v),
+        'len(body)', '%-4d' % (len(b)), h)
+    self.handleVnodeSaxAttributes(sax_node, v)
+    self.handleTnodeSaxAttributes(sax_node, v)
+    return v
+</t>
+<t tx="ekr.20170101131556.63">def handleTnodeSaxAttributes(self, sax_node, v):
+    trace = False and not g.unitTesting
+    d = sax_node.tnodeAttributes
+    if trace and d: g.trace(sax_node, list(d.keys()))
+    aDict = {}
+    for key in d:
+        val = g.toUnicode(d.get(key)) # 2011/02/22
+        val2 = self.getSaxUa(key, val)
+        # g.trace(key,val,val2)
+        aDict[key] = val2
+    if aDict:
+        if trace: g.trace('uA', v, list(aDict.keys()))
+        v.unknownAttributes = aDict
+# The native attributes of &lt;v&gt; elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
 
 </t>
-<t tx="ekr.20170101124033.98">def description(self, style):
-    return 'NullScintillaLexer'
+<t tx="ekr.20170101131556.64">def handleVnodeSaxAttributes(self, sax_node, v):
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+    s = d.get('a')
+    if s:
+        if trace and 'E' in s: g.trace('expand', v)
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.red('handleVnodeSaxAttributes: setting currentVnode',v)
+            self.currentVnode = v
+    s = d.get('tnodeList', '')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnodeList will be resolved later.
+        if trace: g.trace('found tnodeList', v.headString(), tnodeList)
+        v.tempTnodeList = tnodeList
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s:
+        aDict = self.getDescendentUnknownAttributes(s, v=v)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s:
+        aDict = self.getDescendentUnknownAttributes(s, v=v)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v, aDict),)
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s, tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s, tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***', key, d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key, val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+</t>
+<t tx="ekr.20170101131556.65">def dumpSaxTree(self, root, dummy):
+    if not root:
+        g.pr('dumpSaxTree: empty tree')
+        return
+    if not dummy:
+        root.dump()
+    for child in root.children:
+        self.dumpSaxTree(child, dummy=False)
+</t>
+<t tx="ekr.20170101131556.66">def bytes_to_unicode(self, ob):
+    """recursively convert bytes objects in strings / lists / dicts to str
+    objects, thanks to TNT
+    http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
+
+    Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
+    """
+    # pylint: disable=unidiomatic-typecheck
+    # This is simpler than using isinstance.
+    t = type(ob)
+    if t in (list, tuple):
+        l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
+        l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i
+            for i in l]
+        ro = tuple(l) if t is tuple else l
+    elif t is dict:
+        byte_keys = [i for i in ob if type(i) is bytes]
+        for bk in byte_keys:
+            v = ob[bk]
+            del(ob[bk])
+            ob[str(bk, 'utf-8')] = v
+        for k in ob:
+            if type(ob[k]) is bytes:
+                ob[k] = str(ob[k], 'utf-8')
+            elif type(ob[k]) in (list, tuple, dict):
+                ob[k] = self.bytes_to_unicode(ob[k])
+        ro = ob
+    elif t is bytes: # TNB added this clause
+        ro = str(ob, 'utf-8')
+    else:
+        ro = ob
+    return ro
+</t>
+<t tx="ekr.20170101131556.67">def getSaxUa(self, attr, val, kind=None): # Kind is for unit testing.
+    """Parse an unknown attribute in a &lt;v&gt; or &lt;t&gt; element.
+    The unknown tag has been pickled and hexlify'd.
+    """
+    try:
+        # val = str(val)
+        val = g.toEncodedString(val) # 2011/02/22.
+    except Exception:
+        g.es_print('unexpected exception converting hexlified string to string')
+        g.es_exception()
+        return None
+    # New in 4.3: leave string attributes starting with 'str_' alone.
+    if attr.startswith('str_'):
+        if g.isString(val) or g.isBytes(val):
+            return g.toUnicode(val)
+    # New in 4.3: convert attributes starting with 'b64_' using the base64 conversion.
+    if 0: # Not ready yet.
+        if attr.startswith('b64_'):
+            try: pass
+            except Exception: pass
+    try:
+        binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
+    except Exception:
+        # Python 2.x throws TypeError
+        # Python 3.x throws binascii.Error
+        # Assume that Leo 4.1 wrote the attribute.
+        if g.unitTesting:
+            assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
+        else:
+            g.trace('can not unhexlify %s=%s' % (attr, val))
+        return val
+    try:
+        # No change needed to support protocols.
+        val2 = pickle.loads(binString)
+        # g.trace('v.3 val:',val2)
+        return val2
+    except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
+        try:
+            # for python 2.7 in python 3.4
+            # pylint: disable=unexpected-keyword-arg
+            val2 = pickle.loads(binString, encoding='bytes')
+            val2 = self.bytes_to_unicode(val2)
+            return val2
+        except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
+            g.trace('can not unpickle %s=%s' % (attr, val))
+            return val
+</t>
+<t tx="ekr.20170101131556.68">def parse_leo_file(self, theFile, inputFileName, silent, inClipboard, s=None):
+    c = self.c
+    try:
+        if g.isPython3:
+            if theFile:
+                # Use the open binary file, opened by the caller.
+                s = theFile.read() # isinstance(s, bytes)
+                s = self.cleanSaxInputString(s)
+                theFile = BytesIO(s)
+            else:
+                s = str(s, encoding='utf-8')
+                s = self.cleanSaxInputString(s)
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges, 1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes, 1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the &lt;?xml&gt; element.
+        # It's very hard to do anything meaningful wih an exception.
+        handler = SaxContentHandler(c, inputFileName, silent, inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except Exception:
+        g.error('error parsing', inputFileName)
+        g.es_exception()
+        sax_node = None
+    return sax_node
+</t>
+<t tx="ekr.20170101131556.69">def readSaxFile(self, theFile, fileName, silent, inClipboard, reassignIndices, s=None):
+    '''Read the entire .leo file using the sax parser.'''
+    dump = False and not g.unitTesting
+    fc = self; c = fc.c
+    # Pass one: create the intermediate nodes.
+    saxRoot = fc.parse_leo_file(theFile, fileName,
+        silent=silent, inClipboard=inClipboard, s=s)
+    if dump: fc.dumpSaxTree(saxRoot, dummy=True)
+    # Pass two: create the tree of vnodes from the intermediate nodes.
+    if saxRoot:
+        parent_v = c.hiddenRootNode
+        children = fc.createSaxChildren(saxRoot, parent_v)
+        assert c.hiddenRootNode.children == children
+        v = children and children[0] or None
+        return v
+    else:
+        return None
+</t>
+<t tx="ekr.20170101131556.7">class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
+    '''A sax content handler class that reads Leo files.'''
+    @others
+</t>
+<t tx="ekr.20170101131556.70">def resolveTnodeLists(self):
+    '''
+    Called *before* reading external files.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    for p in c.all_unique_positions():
+        if hasattr(p.v, 'tempTnodeList'):
+            # g.trace(p.v.headString())
+            result = []
+            for tnx in p.v.tempTnodeList:
+                index = self.canonicalTnodeIndex(tnx)
+                # new gnxs:
+                index = g.toUnicode(index)
+                v = self.gnxDict.get(index)
+                if v:
+                    if trace: g.trace(tnx, v)
+                    result.append(v)
+                else:
+                    g.trace('*** No VNode for %s' % tnx)
+            if result:
+                p.v.tnodeList = result
+                # g.trace('*** tnodeList for',p.h,result)
+            delattr(p.v, 'tempTnodeList')
+</t>
+<t tx="ekr.20170101131556.71">def resolveArchivedPosition(self, archivedPosition, root_v):
+    '''Return a VNode corresponding to the archived position relative to root node root_v.'''
+
+    def oops(message):
+        if not g.app.unitTesting:
+            g.error('bad archived position: %s' % (message))
+
+    try:
+        aList = [int(z) for z in archivedPosition.split('.')]
+        aList.reverse()
+    except Exception:
+        return oops('"%s"' % archivedPosition)
+    if not aList:
+        return oops('empty')
+    last_v = root_v
+    n = aList.pop()
+    if n != 0:
+        return oops('root index="%s"' % n)
+    while aList:
+        n = aList.pop()
+        children = last_v.children
+        if n &lt; len(children):
+            last_v = children[n]
+        else:
+            return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
+    return last_v
+</t>
+<t tx="ekr.20170101131556.72">def setPositionsFromVnodes(self):
+    trace = False and not g.unitTesting
+    c, root = self.c, self.c.rootPosition()
+    current, str_pos = None, None
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        str_pos = c.cacher.getCachedStringPosition()
+        if trace: g.trace('cached str_pos', str_pos)
+    if not str_pos:
+        d = root.v.u
+        if trace: g.trace(d)
+        if d: str_pos = d.get('str_leo_pos')
+        if trace: g.trace('p.v.u', str_pos)
+    if str_pos:
+        current = self.archivedPositionToPosition(str_pos)
+        if trace: g.trace(current and current.h)
+    elif trace:
+        g.trace('no str_pos!')
+    c.setCurrentPosition(current or c.rootPosition())
+</t>
+<t tx="ekr.20170101131556.73">def archivedPositionToPosition(self, s):
+    trace = True and not g.unitTesting
+    c = self.c
+    s = g.toUnicode(s) # 2011/02/25
+    aList = s.split(',')
+    try:
+        aList = [int(z) for z in aList]
+    except Exception:
+        if trace: g.trace('not all ints:', aList)
+        aList = None
+    if not aList: return None
+    p = c.rootPosition(); level = 0
+    while level &lt; len(aList):
+        i = aList[level]
+        while i &gt; 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
+                return None
+        level += 1
+        if level &lt; len(aList):
+            p.moveToFirstChild()
+            # g.trace('level',level,'index',aList[level],p.h)
+    return p
+</t>
+<t tx="ekr.20170101131556.74">def save(self, fileName, silent=False):
+    c = self.c; v = c.currentVnode()
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1", c=c, p=v, v=v, fileName=fileName)
+    if ok is None:
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName, changeName=True)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName, False) # outlineOnlyFlag
+        if ok:
+            if not silent:
+                self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+        c.redraw_after_icons_changed()
+    g.doHook("save2", c=c, p=v, v=v, fileName=fileName)
+    return ok
+</t>
+<t tx="ekr.20170101131556.75">def saveAs(self, fileName):
+    c = self.c; p = c.p
+    if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName, changeName=True)
+        # Disable path-changed messages in writeAllHelper.
+        c.ignoreChangedPaths = True
+        try:
+            if self.write_Leo_file(fileName, outlineOnlyFlag=False):
+                c.setChanged(False) # Clears all dirty bits.
+                self.putSavedMessage(fileName)
+        finally:
+            c.ignoreChangedPaths = True
+        c.redraw_after_icons_changed()
+    g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+</t>
+<t tx="ekr.20170101131556.76">def saveTo(self, fileName):
+    c = self.c; p = c.p
+    if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        c.cacher.save(fileName, changeName=False)
+        # Disable path-changed messages in writeAllHelper.
+        c.ignoreChangedPaths = True
+        try:
+            self.write_Leo_file(fileName, outlineOnlyFlag=False)
+        finally:
+            c.ignoreChangedPaths = False
+        self.putSavedMessage(fileName)
+        c.redraw_after_icons_changed()
+    g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+</t>
+<t tx="ekr.20170101131556.77">def putSavedMessage(self, fileName):
+    c = self.c
+    zipMark = '[zipped] ' if c.isZipped else ''
+    g.es("saved:", "%s%s" % (zipMark, g.shortFileName(fileName)))
+</t>
+<t tx="ekr.20170101131556.78">def deleteFileWithMessage(self, fileName, unused_kind):
+    try:
+        os.remove(fileName)
+    except Exception:
+        if self.read_only:
+            g.error("read only")
+        if not g.unitTesting:
+            g.error("exception deleting backup file:", fileName)
+            g.es_exception(full=False)
+        return False
+</t>
+<t tx="ekr.20170101131556.79">def put(self, s):
+    '''Put string s to self.outputFile. All output eventually comes here.'''
+    # Improved code: self.outputFile (a cStringIO object) always exists.
+    if s:
+        # if g.unitTesting: g.trace(g.callers(1),repr(s))
+        self.putCount += 1
+        if not g.isPython3:
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+        self.outputFile.write(s)
+</t>
+<t tx="ekr.20170101131556.8">def __init__(self, c, fileName, silent, inClipboard):
+    '''Ctor for SaxContentHandler class.'''
+    self.c = c
+    self.fileName = fileName
+    self.silent = silent
+    self.inClipboard = inClipboard
+    out = sys.stdout if sys.stdout else g.fileLikeObject()
+        # Fix the exceedingly strange problem with Python 3.x and pythonw.exe.
+        # The sax ctor throws an exception in Python 3.x if sys.stdout is None.
+        # The workaround is use a disposable output stream in that case.
+    xml.sax.saxutils.XMLGenerator.__init__(self, out=out)
+        # Init the base class.
+
+    # There is no need for an 'end' method if all info is carried in attributes.
+    self.dispatchDict = {
+        'change_string':               (None,None),
+        'find_panel_settings':         (None,None),
+        'find_string':                 (None,None),
+        'globals':                     (self.startGlobals,None),
+        'global_log_window_position':  (None,None), # The position of the log window is no longer used.
+        'global_window_position':      (self.startWinPos,None),
+        'leo_file':                    (None,None),
+        'leo_header':                  (self.startLeoHeader,None),
+        'preferences':                 (None,None),
+        't':                           (self.startTnode,self.endTnode),
+        'tnodes':                      (None,None),
+        'v':                           (self.startVnode,self.endVnode),
+        'vh':                          (self.startVH,self.endVH),
+        'vnodes':                      (self.startVnodes,None), # Causes window to appear.
+    }
+    self.printElements = [] # 'all', 'v'
+    # Global attributes of the .leo file...
+    # self.body_outline_ratio = '0.5'
+    self.global_window_position = {}
+    self.encoding = 'utf-8'
+    # Semantics...
+    self.content = None
+    self.elementStack = []
+    self.errors = 0
+    self.tnxToListDict = {}
+        # Keys are tnx's (strings)
+        # Values are *lists* of SaxNodeClass objects.
+    self.level = 0
+    self.node = None
+    self.nodeList = [] # List of SaxNodeClass objects with the present VNode.
+    self.nodeStack = []
+    self.ratio = self.secondary_ratio = 0.5
+    self.rootNode = None # a sax node.
+    self.trace = False # True and g.unitTesting
+</t>
+<t tx="ekr.20170101131556.80">def put_dquote(self):
+    self.put('"')
+</t>
+<t tx="ekr.20170101131556.81">def put_dquoted_bool(self, b):
+    if b: self.put('"1"')
+    else: self.put('"0"')
+</t>
+<t tx="ekr.20170101131556.82">def put_flag(self, a, b):
+    if a:
+        self.put(" "); self.put(b); self.put('="1"')
+</t>
+<t tx="ekr.20170101131556.83">def put_in_dquotes(self, a):
+    self.put('"')
+    if a: self.put(a) # will always be True if we use backquotes.
+    else: self.put('0')
+    self.put('"')
+</t>
+<t tx="ekr.20170101131556.84">def put_nl(self):
+    self.put("\n")
+</t>
+<t tx="ekr.20170101131556.85">def put_tab(self):
+    self.put("\t")
+</t>
+<t tx="ekr.20170101131556.86">def put_tabs(self, n):
+    while n &gt; 0:
+        self.put("\t")
+        n -= 1
+</t>
+<t tx="ekr.20170101131556.87">def putClipboardHeader(self):
+    # Put the minimum header for sax.
+    self.put('&lt;leo_header file_format="2"/&gt;\n')
+</t>
+<t tx="ekr.20170101131556.88">def putLeoFile(self):
+    self.updateFixedStatus()
+    self.putProlog()
+    self.putHeader()
+    self.putGlobals()
+    self.putPrefs()
+    self.putFindSettings()
+    #start = g.getTime()
+    self.putVnodes()
+    #start = g.printDiffTime("vnodes ",start)
+    self.putTnodes()
+    #start = g.printDiffTime("tnodes ",start)
+    self.putPostlog()
+</t>
+<t tx="ekr.20170101131556.89">def putFindSettings(self):
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("&lt;find_panel_settings/&gt;")
+    self.put_nl()
+# Changed for Leo 4.0.
 
 </t>
-<t tx="ekr.20170101124033.99">def setStyling(self, length, style):
-    g.trace('(NullScintillaLexer)', length, style)
+<t tx="ekr.20170101131556.9">def endElementNS(self, unused_name, unused_qname):
+    g.trace(unused_name)
 
+</t>
+<t tx="ekr.20170101131556.90">def putGlobals(self):
+    trace = False and not g.unitTesting
+    c = self.c
+    use_db = g.enableDB and c.mFileName
+    if use_db:
+        if trace: g.trace(c.mFileName)
+        c.cacher.setCachedGlobalsElement(c.mFileName)
+    # Always put positions, to trigger sax methods.
+    self.put("&lt;globals")
+    self.put(" body_outline_ratio=")
+    self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+        c.frame.ratio))
+    self.put(" body_secondary_ratio=")
+    self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+        c.frame.secondary_ratio))
+    if trace: g.trace('fixed or use_db', c.fixed or use_db,
+        '%1.2f %1.2f' % (c.frame.ratio, c.frame.secondary_ratio))
+    self.put("&gt;"); self.put_nl()
+    # New in Leo 4.5: support fixed .leo files.
+    if c.fixed or use_db:
+        width, height, left, top = 700, 500, 50, 50
+            # Put fixed, immutable, reasonable defaults.
+            # Leo 4.5 and later will ignore these when reading.
+            # These should be reasonable defaults so that the
+            # file will be opened properly by older versions
+            # of Leo that do not support fixed .leo files.
+    else:
+        width, height, left, top = c.frame.get_window_info()
+    # g.trace(width,height,left,top)
+    self.put_tab()
+    self.put("&lt;global_window_position")
+    self.put(" top="); self.put_in_dquotes(str(top))
+    self.put(" left="); self.put_in_dquotes(str(left))
+    self.put(" height="); self.put_in_dquotes(str(height))
+    self.put(" width="); self.put_in_dquotes(str(width))
+    self.put("/&gt;"); self.put_nl()
+    top = left = height = width = 0 # no longer used
+    self.put_tab()
+    self.put("&lt;global_log_window_position")
+    self.put(" top="); self.put_in_dquotes(str(top))
+    self.put(" left="); self.put_in_dquotes(str(left))
+    self.put(" height="); self.put_in_dquotes(str(height))
+    self.put(" width="); self.put_in_dquotes(str(width))
+    self.put("/&gt;"); self.put_nl()
+    self.put("&lt;/globals&gt;"); self.put_nl()
+</t>
+<t tx="ekr.20170101131556.91">def putHeader(self):
+    tnodes = 0; clone_windows = 0 # Always zero in Leo2.
+    if 1: # For compatibility with versions before Leo 4.5.
+        self.put("&lt;leo_header")
+        self.put(" file_format="); self.put_in_dquotes("2")
+        self.put(" tnodes="); self.put_in_dquotes(str(tnodes))
+        self.put(" max_tnode_index="); self.put_in_dquotes(str(0))
+        self.put(" clone_windows="); self.put_in_dquotes(str(clone_windows))
+        self.put("/&gt;"); self.put_nl()
+    else:
+        self.put('&lt;leo_header file_format="2"/&gt;\n')
+</t>
+<t tx="ekr.20170101131556.92">def putPostlog(self):
+    self.put("&lt;/leo_file&gt;"); self.put_nl()
+</t>
+<t tx="ekr.20170101131556.93">def putPrefs(self):
+    # New in 4.3:  These settings never get written to the .leo file.
+    self.put("&lt;preferences/&gt;")
+    self.put_nl()
+</t>
+<t tx="ekr.20170101131556.94">def putProlog(self):
+    '''Put the prolog of the xml file.'''
+    tag = 'http://leoeditor.com/namespaces/leo-python-editor/1.1'
+    self.putXMLLine()
+    # Put "created by Leo" line.
+    self.put('&lt;!-- Created by Leo: http://leoeditor.com/leo_toc.html --&gt;')
+    self.put_nl()
+    self.putStyleSheetLine()
+    # Put the namespace
+    self.put('&lt;leo_file xmlns:leo="%s" &gt;' % tag)
+    self.put_nl()
+</t>
+<t tx="ekr.20170101131556.95">def putStyleSheetLine(self):
+    '''
+    Put the xml stylesheet line.
+
+    Leo 5.3:
+    - Use only the stylesheet setting, ignoreing c.frame.stylesheet.
+    - Write no stylesheet element if there is no setting.
+
+    The old way made it almost impossible to delete stylesheet element.
+    '''
+    trace = False and not g.unitTesting
+    c = self.c
+    sheet = (c.config.getString('stylesheet') or '').strip()
+    # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
+    # sheet = sheet or sheet2
+    if sheet:
+        s = '&lt;?xml-stylesheet %s ?&gt;' % sheet
+        if trace: g.trace(c.shortFileName(), s)
+        self.put(s)
+        self.put_nl()
+</t>
+<t tx="ekr.20170101131556.96">def putTnode(self, v):
+    # Call put just once.
+    gnx = v.fileIndex
+    ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
+    b = v.b
+    body = xml.sax.saxutils.escape(b) if b else ''
+    self.put('&lt;t tx="%s"%s&gt;%s&lt;/t&gt;\n' % (gnx, ua, body))
+</t>
+<t tx="ekr.20170101131556.97">def putTnodes(self):
+    """Puts all tnodes as required for copy or save commands"""
+    self.put("&lt;tnodes&gt;\n")
+    self.putReferencedTnodes()
+    self.put("&lt;/tnodes&gt;\n")
+</t>
+<t tx="ekr.20170101131556.98">def putReferencedTnodes(self):
+    '''Put all referenced tnodes.'''
+    c = self.c
+    if self.usingClipboard: # write the current tree.
+        theIter = c.p.self_and_subtree()
+    else: # write everything
+        theIter = c.all_unique_positions()
+    # Populate tnodes
+    tnodes = {}
+    for p in theIter:
+        # Make *sure* the file index has the proper form.
+        # pylint: disable=unbalanced-tuple-unpacking
+        index = p.v.fileIndex
+        tnodes[index] = p.v
+    # Put all tnodes in index order.
+    for index in sorted(tnodes):
+        # g.trace(index)
+        v = tnodes.get(index)
+        if v:
+            # Write only those tnodes whose vnodes were written.
+            # **Note**: @&lt;file&gt; trees are not written unless they contain clones.
+            if v.isWriteBit():
+                self.putTnode(v)
+        else:
+            g.trace('can not happen: no VNode for', repr(index))
+            # This prevents the file from being written.
+            raise BadLeoFile('no VNode for %s' % repr(index))
+</t>
+<t tx="ekr.20170101131556.99">def putVnode(self, p, isIgnore=False):
+    """Write a &lt;v&gt; element corresponding to a VNode."""
+    fc = self; c = fc.c; v = p.v
+    isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+    isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
+        # 2010/09/02: @edit nodes must not have children.
+        # If they do, the entire tree is written to the outline.
+    isFile = p.isAtFileNode()
+    isShadow = p.isAtShadowFileNode()
+    isThin = p.isAtThinFileNode()
+    isOrphan = p.isOrphan()
+    if not isIgnore:
+        isIgnore = p.isAtIgnoreNode()
+    # 2010/10/22: force writes of orphan @edit, @auto and @shadow trees.
+    if isIgnore: forceWrite = True # Always write full @ignore trees.
+    elif isAuto: forceWrite = isOrphan # Force write of orphan @auto trees.
+    elif isEdit: forceWrite = isOrphan # Force write of orphan @edit trees.
+    elif isFile: forceWrite = isOrphan # Force write of orphan @file trees.
+    elif isShadow: forceWrite = isOrphan # Force write of @shadow trees.
+    elif isThin: forceWrite = isOrphan # Force write of  orphan @thin trees.
+    else: forceWrite = True # Write all other @&lt;file&gt; trees.
+    gnx = v.fileIndex
+    if forceWrite or self.usingClipboard:
+        v.setWriteBit() # 4.2: Indicate we wrote the body text.
+    attrs = []
+    # These string catenations are benign because they rarely happen.
+    attr = ""
+    # New in Leo 4.5: support fixed .leo files.
+    if not c.fixed:
+        if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+            attr += "E"
+        if v.isMarked(): attr += "M"
+        # if v.isOrphan(): attr += "O"
+            # New in Leo 5.2: never write the orphan bit.
+            # It's useless in all cases.
+        if attr:
+            attrs.append(' a="%s"' % attr)
+    # Put the archived *current* position in the *root* positions &lt;v&gt; element.
+    if p == self.rootPosition:
+        aList = [str(z) for z in self.currentPosition.archivedPosition()]
+        d = v.u
+        str_pos = ','.join(aList)
+        if d.get('str_leo_pos'):
+            del d['str_leo_pos']
+        # Don't write the current position if we can cache it.
+        if g.enableDB and c.mFileName:
+            c.cacher.setCachedStringPosition(str_pos)
+        elif c.fixed:
+            pass
+        else:
+            d['str_leo_pos'] = str_pos
+        v.u = d
+    elif hasattr(v, "unknownAttributes"):
+        d = v.unknownAttributes
+        if d and not c.fixed and d.get('str_leo_pos'):
+            # g.trace("clearing str_leo_pos",v)
+            del d['str_leo_pos']
+            v.unknownAttributes = d
+    # v.unknownAttributes are now put in &lt;t&gt; elements.
+    if p.hasChildren() and not forceWrite and not self.usingClipboard:
+        # We put the entire tree when using the clipboard, so no need for this.
+        if not isAuto: # Bug fix: 2008/8/7.
+            attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
+            attrs.append(self.putDescendentAttributes(p))
+    attrs = ''.join(attrs)
+    v_head = '&lt;v t="%s"%s&gt;' % (gnx, attrs)
+    if gnx in fc.vnodesDict:
+        fc.put(v_head + '&lt;/v&gt;\n')
+    else:
+        fc.vnodesDict[gnx] = True
+        v_head += '&lt;vh&gt;%s&lt;/vh&gt;' % (xml.sax.saxutils.escape(p.v.headString() or ''))
+        # New in 4.2: don't write child nodes of @file-thin trees
+        # (except when writing to clipboard)
+        if p.hasChildren() and (forceWrite or self.usingClipboard):
+            fc.put('%s\n' % v_head)
+            # This optimization eliminates all "recursive" copies.
+            p.moveToFirstChild()
+            while 1:
+                fc.putVnode(p, isIgnore)
+                if p.hasNext(): p.moveToNext()
+                else: break
+            p.moveToParent() # Restore p in the caller.
+            fc.put('&lt;/v&gt;\n')
+        else:
+            fc.put('%s&lt;/v&gt;\n' % v_head) # Call put only once.
+</t>
+<t tx="ekr.20170101131741.208">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170101131741.209">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170101131741.210">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20170101131741.211">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170101131741.212">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170101131741.213">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20170101131759.10">gnx: ekr.20151009114144.13
+unl: section 1
+gnx: ekr.20151009114144.14
+unl: section 2
+</t>
+<t tx="ekr.20170101131759.3">gnx: ekr.20161202200225.5
+unl: section 1
+gnx: ekr.20161202200225.6
+unl: section 2
+</t>
+<t tx="ekr.20170101131800.5">gnx: ekr.20151009114144.15
+unl: section 1
+gnx: ekr.20151009114144.16
+unl: section 2
+</t>
+<t tx="ekr.20170101131801.10">gnx: ekr.20161202200225.7
+unl: class class1
+gnx: ekr.20161202200225.8
+unl: class class1--&gt;class1_method1
+gnx: ekr.20161202200225.9
+unl: class class1--&gt;class1_method2
+gnx: ekr.20161202200225.10
+unl: class class2
+gnx: ekr.20161202200225.11
+unl: class class2--&gt;class2_method1
+gnx: ekr.20161202200225.12
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20170101131839.10">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170101131839.11">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
 </tnodes>
 </leo_file>
