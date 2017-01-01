@@ -25,17 +25,14 @@ def init ():
     return ok
 #@+node:ville.20120604212857.4231: ** onCreate
 def onCreate (tag, keys):
-
+    '''notebook.py onCreate'''
     global controllers
-
     c = keys.get('c')
-    if not c: return
-
-    h = c.hash()
-
-    nb = controllers.get(h)
-    if not nb:
-        controllers [h] = NbController(c)
+    if c:
+        h = c.hash()
+        nb = controllers.get(h)
+        if not nb:
+            controllers [h] = NbController(c)
 #@+node:ville.20120604212857.4227: ** class ModelWrapper
 class ModelWrapper(object):
     #@+others
@@ -109,11 +106,9 @@ class NbController(object):
         self.mw.model.clear()
         for p in self.c.all_positions():
             self.addNode(p)
-
     #@+node:ville.20120604212857.4240: *3* add_subtree
     def add_subtree(self,pos):
         self.mw.model.clear()
-
         for p in pos.self_and_subtree():
             self.addNode(p)
 
@@ -121,12 +116,16 @@ class NbController(object):
     def addNode(self, p, styling=None):
         if styling is None: styling = {}
         v = p.v
-        d = {"h" : v.h, "b" : v.b, "gnx" : v.gnx, "level" : p.level()}
+        d = {
+            "h" : v.h,
+            "b" : v.b,
+            "gnx" : v.gnx,
+            "level" : p.level(),
+        }
         d.update(styling)
         self.gnxcache[v.gnx] = v
         si = self.mw.mkitem(d )
         self.mw.model.appendRow(si)
-
     #@-others
 #@-others
 #@-leo

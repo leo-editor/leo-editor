@@ -15173,6 +15173,32 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20161231115630.10: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20161231115630.11: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170101085120.25: *7* @@clean c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170101085120.26: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -15211,6 +15237,87 @@ else:
     ]
 importer = python.Py_Importer(c.importCommands, atAuto=True)
 importer.test_scan_state(tests, State=python.Python_ScanState)
+#@+node:ekr.20161224145026.1: *6* @test leoApp fail
+if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands
+    
+s = '''
+def isValidPython(self):
+    if sys.platform == 'cli':
+        return True
+    minimum_python_version = '2.6'
+    message = """\
+Leo requires Python %s or higher.
+You may download Python from
+http://python.org/download/
+""" % minimum_python_version
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
+        ok = g.CheckVersion(version, minimum_python_version)
+        if not ok:
+            print(message)
+            try:
+                # g.app.gui does not exist yet.
+                import Tkinter as Tk
+                class EmergencyDialog(object):
+                    def run(self):
+                        """Run the modal emergency dialog."""
+                        self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+                        self.top.lift()
+                        self.top.grab_set() # Make the dialog a modal dialog.
+                        self.root.wait_window(self.top)
+                d = EmergencyDialog(
+                    title='Python Version Error',
+                    message=message)
+                d.run()
+            except Exception:
+                pass
+        return ok
+    except Exception:
+        print("isValidPython: unexpected exception: g.CheckVersion")
+        traceback.print_exc()
+        return 0
+def loadLocalFile(self, fn, gui, old_c):
+    trace = (False or g.trace_startup) and not g.unitTesting
+'''
+table = (
+    (1, 'isValidPython'),
+    (2, 'class EmergencyDialog'),
+    (3, 'run'),
+    (1, 'loadLocalFile'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161115063144.3: *6* @test python bad class test
 @tabwidth -4
     # Required when running unit tests externally.
@@ -15223,13 +15330,11 @@ def spam():
     pass
 '''
 
-
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *6* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
-if 0:
-    # The preamble...
-    # g.cls()
+if 0: # Preamble...
+    g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15281,15 +15386,15 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    test_node.deleteAllChildren()
+    if 1:
+        test_node.deleteAllChildren()
 finally:
     c.redraw()
 
 #@+node:ekr.20161218103650.1: *6* @test python bug #346
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15333,9 +15438,8 @@ def make_parser():
 )
 '''
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
-    (2, 'exec_'),
+    # (1, 'if sys.version_info[0] >= 3:'),
     (1, 'make_parser'),
 )
 try:
@@ -15353,7 +15457,60 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20161228070933.1: *6* @test python bug #354
+if 1: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+s = """
+if isPython3:
+    def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
+        return s
+
+    def ue(s, encoding):
+        return s if g.isUnicode(s) else str(s, encoding)
+else:
+    def u(s):
+        '''Return s, converted to unicode from Qt widgets.'''
+        return builtins.unicode(s) # Suppress pyflakes complaint.
+
+    def ue(s, encoding):
+        return builtins.unicode(s, encoding)
+"""
+table = (
+    # (1, 'if isPython3:'),
+    (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
     test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
 finally:
     c.redraw()
 #@+node:ekr.20161115063144.4: *6* @test python bug 603720
@@ -15404,8 +15561,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.7: *6* @test python comment after dict assign
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15453,8 +15609,7 @@ finally:
 #@+node:ekr.20161115063144.8: *6* @test python decls test 1
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15638,6 +15793,7 @@ table = (
     (2, "makebutton"),
     (1, "exit_"),
     (1, "main"),
+    # (1, "if __name__ == '__main__':"),
 )
 try:
     test_node = p.copy()
@@ -15665,8 +15821,7 @@ finally:
 #@+node:ekr.20161115063144.10: *6* @test python def inside def
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15718,8 +15873,7 @@ finally:
 #@+node:ekr.20161115063144.11: *6* @test python def test 1
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15759,6 +15913,8 @@ table = (
         (2, 'convertMoreStringToOutlineAfter'),
     )
 try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15771,14 +15927,14 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    root.doDelete()
+    if 1:
+        root.doDelete()
 finally:
     c.redraw()
 #@+node:ekr.20161115063144.12: *6* @test python def test 2
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -15812,6 +15968,8 @@ table = (
         (2, 'foo'),
     )
 try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
     ic.pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
@@ -15824,7 +15982,8 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    root.doDelete()
+    if 1:
+        test_node.deleteAllChildren()
 finally:
     c.redraw()
 #@+node:ekr.20161115063144.13: *6* @test python docstring only
@@ -15864,7 +16023,21 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.16: *6* @test python indent decls
 @tabwidth -4
     # Required when running unit tests externally.
-
+if 1: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 s = '''\
 
 class mammalProviderBase(object):
@@ -15900,11 +16073,35 @@ class mainPages(mammalProviderBase):
             return ELE('base', href=self.params['/BASE/']+'main/')
         return ans
 ''' 
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+table = (
+    (1, 'class mammalProviderBase'),
+    (2, '__init__'),
+    (2, 'provide'),
+    (2, 'imagePath'),
+    (1, 'class mainPages'),
+    (2, 'provide'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161117000902.1: *6* @test python leoImport.py (small)
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -16108,7 +16305,21 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.24: *6* @test python overindented def 3
 @tabwidth -4
     # Required when running unit tests externally.
-
+if 1: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    # import leo
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
 # This caused PyParse.py not to be imported properly.
 s = r'''
 import re
@@ -16121,8 +16332,30 @@ for ch in "({[":
 class testClass1:
     pass
 '''
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
+table = (
+    (1, 'Declarations'),
+    # (1, "if 0: # Causes the 'overindent'"),
+    (1, 'class testClass1'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161115063144.25: *6* @test python string test: extra indent
 @tabwidth -4
     # Required when running unit tests externally.
@@ -16177,8 +16410,7 @@ class BaseScanner:
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161222064421.1: *6* @test python top-level later decl
 # From xo.py.
-if 1:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -16227,6 +16459,7 @@ table = (
     (1, 'class MainDisplay'),
     (2, 'save_file'),
     (1, 'retab'),
+    # (1, 'if __name__=="__main__":'),
 )
 try:
     test_node = p.copy()
@@ -16243,44 +16476,10 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    if 0:
+    if 1:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20161224155151.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python top-level later decl
-#!/usr/bin/env python3
-
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20161224155151.2: *8* Declarations
-import os
-import re
-
-#@+node:ekr.20161224155151.3: *8* merge_value
-def merge_value(v1, v2):
-    return v
-
-#@+node:ekr.20161224155151.4: *8* class MainDisplay
-class MainDisplay(object):
-
-    @others
-# This line should be included at the end of the class node.
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-#@+node:ekr.20161224155151.5: *9* save_file
-def save_file(self):
-    """Write the file out to disk."""
-    with open(self.save_name, "w") as f:
-        for newline in newlines:
-            f.write(newline)
-
-#@+node:ekr.20161224155151.6: *8* retab
-def retab(s, tabsize):
-    return ''.join(pieces)
-
-if __name__=="__main__":
-    main()
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
@@ -16324,8 +16523,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.31: *6* @test python underindent method
 @tabwidth -4
     # Required when running unit tests externally.
-if 0:
-    # The preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
