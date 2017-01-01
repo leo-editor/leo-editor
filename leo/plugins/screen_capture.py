@@ -92,7 +92,9 @@ class Recorder(object):
         
         # pylint: disable=no-member
         if isQt5:
-            pm = QtGui.QScreen.grabWindow(self.winId)
+            # screen = QtGui.QtGuiApplication.primaryScreen()
+            screen = g.app.gui.qtApp.primaryScreen()
+            pm = screen.grabWindow(self.winId)
         else:
             pm = QtGui.QPixmap.grabWindow(self.winId)
 
