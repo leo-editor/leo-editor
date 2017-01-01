@@ -28,31 +28,24 @@ except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
 
-# py--lint: disable=no-name-in-module
-
-from leo.core.leoQt import isQt5, QString, QtCore, QtGui, QtWidgets # Qt
-if 1:
-    Qt = QtCore
-    # Widgets
-    QAction = QtWidgets.QAction
-    QMenu = QtWidgets.QMenu
-    QPlainTextEdit = QtWidgets.QPlainTextEdit
-    QTextEdit = QtWidgets.QTextEdit
-    # Other gui elements.
-    QFont = QtGui.QFont
-    QIcon = QtGui.QIcon
-    QTextBlockFormat = QtGui.QTextBlockFormat
-    QTextCharFormat = QtGui.QTextCharFormat
-    QTextCursor = QtGui.QTextCursor
-    QTextListFormat = QtGui.QTextListFormat
-    QTimer = QtCore.QTimer
-    QVariant = QtCore.QVariant
-# else:
-    # from PyQt4.QtCore import (QSize,QVariant, Qt,SIGNAL,QTimer,QString)
-    # from PyQt4.QtGui import (
-        # QAction,QFont,QIcon,QMenu,QTextCursor,
-        # QTextCharFormat,QTextBlockFormat,
-        # QTextListFormat,QTextEdit,QPlainTextEdit)
+# pylint: disable=no-name-in-module
+from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets # isQt5, 
+Qt = QtCore.Qt
+# Widgets
+QAction = QtWidgets.QAction
+QMenu = QtWidgets.QMenu
+QPlainTextEdit = QtWidgets.QPlainTextEdit
+QTextEdit = QtWidgets.QTextEdit
+# Other gui elements.
+QFont = QtGui.QFont
+QIcon = QtGui.QIcon
+QSize = QtCore.QSize
+QTextBlockFormat = QtGui.QTextBlockFormat
+QTextCharFormat = QtGui.QTextCharFormat
+QTextCursor = QtGui.QTextCursor
+QTextListFormat = QtGui.QTextListFormat
+QTimer = QtCore.QTimer
+QVariant = QtCore.QVariant
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100103100944.5392: ** styling
@@ -191,32 +184,21 @@ class notetextedit(QTextEdit):
         super(notetextedit, self).__init__(parent)
 
         self.save = save
-
         self.setLineWrapMode(QTextEdit.WidgetWidth)
         self.setTabChangesFocus(True)
-        if isQt5:
-            pass
-            ### self.setVerticalScrollBarPolicy(self.ScrollBarAsNeeded)
-            ### self.setHorizontalScrollBarPolicy(self.ScrollBarAlwaysOff)
-        else:
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setMinimumWidth(300)
-
         self.setMouseTracking(True)
-
         font = QFont()
         font.setPointSize(10)
         font.setFamily("helvetica")
         document = self.document()
         document.setDefaultFont(font)
-
         self.font = font
-
-        document.setDefaultStyleSheet("pre{margin-top:0px; margin-bottom:0px} li{margin-top:0px; margin-bottom:0px}")
-
+        document.setDefaultStyleSheet(
+            "pre{margin-top:0px; margin-bottom:0px} li{margin-top:0px; margin-bottom:0px}")
         QTimer.singleShot(0, get_markdown)
-
     #@+node:ekr.20100103100944.5398: *3* focusOutEvent
     def focusOutEvent__(self, event):
         #print "focus out"
@@ -519,11 +501,8 @@ class notetextedit(QTextEdit):
         #print "mouseMoveEvent"
         pos = event.pos()
         anch = self.anchorAt(pos)
-        if isQt5:
-            pass ###
-        else:
-            self.viewport().setCursor(
-                Qt.PointingHandCursor if anch else Qt.IBeamCursor)
+        self.viewport().setCursor(
+            Qt.PointingHandCursor if anch else Qt.IBeamCursor)
         QTextEdit.mouseMoveEvent(self, event) #? recursion
 
     #@+node:ekr.20100103100944.5417: *3* mouseReleaseEvent
