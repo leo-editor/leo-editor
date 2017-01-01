@@ -1,14 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161029103517.1: * @file importers/python.py
 '''The new, line-based, @auto importer for Python.'''
-OLD = False
 # pylint: disable=no-name-in-module
 # basescanner does not exist now.
 import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
-if OLD:
-    import leo.plugins.importers.basescanner as basescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others
@@ -121,16 +118,6 @@ class Py_Importer(Importer):
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
-            ### Not good enough.
-            # elif self.is_top_if(line, new_state, prev_state, stack):
-                # first = False
-                # p = self.create_child_node(parent, body=line, headline=line)
-                # self.gen_ref(line, parent, target)
-                # stack.append(PythonTarget(p, new_state))
-                # self.skip_top_if(i, lines, new_state, prev_state, stack)
-                # # End the 'if' node.
-                # stack.pop()
-                # tail_p = p
             elif self.starts_block(i, lines, new_state, prev_state, stack):
                 first = False
                 tail_p = None
@@ -220,22 +207,17 @@ class Py_Importer(Importer):
             prev_state = new_state
             new_state = self.scan_line(line, prev_state)
             if self.starts_block(i, lines, new_state, prev_state, stack):
-                # g.trace('***',repr(lines[i]))
                 break
-            ### elif new_state.indent <= end_indent:
             elif not self.is_ws_line(line) and new_state.indent <= end_indent:
-                # g.trace('===',repr(lines[i]))
                 break
             else:
                 self.skip += 1
             assert progress < i, repr(line)
-        # g.pdb()
         return top.p
     #@+node:ekr.20161220073836.1: *4* python_i.ends_block
     def ends_block(self, line, new_state, prev_state, stack):
         '''True if line ends the block.'''
         # Comparing new_state against prev_state does not work for python.
-        ### if self.is_ws_line(line) or prev_state.in_context():
         if line.isspace() or prev_state.in_context():
             return False
         else:
@@ -253,14 +235,6 @@ class Py_Importer(Importer):
         indent_ws = self.get_str_lws(line)
         lws = self.get_int_lws(line)
         h = self.clean_headline(line) 
-        # if target.ref_flag:
-            # if 0: ### lws > target.state.indent:
-                # # g.trace('='*20, lws, target.state.indent)
-                # h = g.angleBrackets(' %s ' % h)
-                # ref = '%s%s\n' % (indent_ws, h)
-                # self.add_line(parent,ref)
-        # else:
-            # target.ref_flag = True
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
@@ -270,46 +244,6 @@ class Py_Importer(Importer):
                 g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return h
-    #@+node:ekr.20161231151527.1: *4* python_i.is_top_if
-    ### if_pattern = re.compile(r'if\s+')
-    if_pattern = re.compile(r'\s*if\s+.*:\s*\n')
-        # Don't skip one-line if statements.
-        
-    def is_top_if(self, line, new_state, prev_state, stack):
-        '''True if the line startswith class or def outside any context.'''
-        if prev_state.in_context():
-            return False
-        else:
-            return bool(self.if_pattern.match(line))
-    #@+node:ekr.20161231151556.1: *4* python_i.skip_top_if
-    else_pattern = re.compile(r'(else:|elif\s+)')
-
-    def skip_top_if(self, i, lines, new_state, prev_state, stack):
-        '''Skip all lines of the if statement.'''
-        trace = False # and g.unitTesting
-        ### assert new_state.indent == 0, new_state
-        target_indent = new_state.indent
-        top = stack[-1]
-        i += 1
-        while i < len(lines):
-            progress = i
-            line = lines[i]
-            prev_state = new_state
-            new_state = self.scan_line(line, prev_state)
-            if (
-                not prev_state.in_context() and
-                ### new_state.indent == 0 and
-                new_state.indent <= target_indent and
-                not self.is_ws_line(line) and
-                not self.else_pattern.match(line)
-            ):
-                # A top-level line that isn't an else statement.
-                break
-            else:
-                self.add_line(top.p, line)
-                self.skip += 1
-                i += 1
-            assert progress < i, (i, repr(line))
     #@+node:ekr.20161117060359.1: *4* python_i.move_decorators & helpers
     def move_decorators(self, new_p, prev_p):
         '''
@@ -361,7 +295,6 @@ class Py_Importer(Importer):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        ### return ###
         trace = True
         pattern = self.escape_pattern # A compiled regex pattern
         for p in parent.subtree():
@@ -565,238 +498,6 @@ class Python_ScanState:
         return i
 
     #@-others
-#@+node:ekr.20161222115136.1: ** class PythonScanner (BaseScanner)
-if OLD:
-    class PythonScanner(basescanner.BaseScanner):
-        #@+others
-        #@+node:ekr.20161222115136.2: *3*  __init__ (PythonScanner)
-        def __init__(self, importCommands, atAuto):
-            # Init the base class.
-            # g.trace('old python scanner')
-            basescanner.BaseScanner.__init__(self, importCommands, atAuto=atAuto, language='python')
-            # Set the parser delims.
-            self.lineCommentDelim = '#'
-            self.classTags = ['class',]
-            self.functionTags = ['def',]
-            self.ignoreBlankLines = True
-            self.blockDelim1 = self.blockDelim2 = None
-                # Suppress the check for the block delim.
-                # The check is done in skipSigTail.
-            self.strict = True
-        #@+node:ekr.20161222115136.3: *3* adjustDefStart (PythonScanner)
-        def adjustDefStart(self, s, i):
-            '''A hook to allow the Python importer to adjust the
-            start of a class or function to include decorators.
-            '''
-            # Invariant: i does not change.
-            # Invariant: start is the present return value.
-            try:
-                assert s[i] != '\n'
-                start = j = g.find_line_start(s, i) if i > 0 else 0
-                # g.trace('entry',j,i,repr(s[j:i+10]))
-                assert j == 0 or s[j - 1] == '\n'
-                while j > 0:
-                    progress = j
-                    j1 = j = g.find_line_start(s, j - 2)
-                    # g.trace('line',repr(s[j:progress]))
-                    j = g.skip_ws(s, j)
-                    if not g.match(s, j, '@'):
-                        break
-                    k = g.skip_id(s, j + 1)
-                    word = s[j: k]
-                    # Leo directives halt the scan.
-                    if word and word in g.globalDirectiveList:
-                        break
-                    # A decorator.
-                    start = j = j1
-                    assert j < progress
-                # g.trace('**returns %s, %s' % (repr(s[start:i]),repr(s[i:i+20])))
-                return start
-            except AssertionError:
-                g.es_exception()
-                return i
-        #@+node:ekr.20161222115136.4: *3* extendSignature
-        def extendSignature(self, s, i):
-            '''Extend the text to be added to the class node following the signature.
-
-            The text *must* end with a newline.'''
-            # Add a docstring to the class node,
-            # And everything on the line following it
-            j = g.skip_ws_and_nl(s, i)
-            if g.match(s, j, '"""') or g.match(s, j, "'''"):
-                j = g.skip_python_string(s, j)
-                if j < len(s): # No scanning error.
-                    # Return the docstring only if nothing but whitespace follows.
-                    j = g.skip_ws(s, j)
-                    if g.is_nl(s, j):
-                        return j + 1
-            return i
-        #@+node:ekr.20161222115136.5: *3* findClass (PythonScanner)
-        def findClass(self, p):
-            '''Return the index end of the class or def in a node, or -1.'''
-            s, i = p.b, 0
-            while i < len(s):
-                progress = i
-                if s[i] in (' ', '\t', '\n'):
-                    i += 1
-                elif self.startsComment(s, i):
-                    i = self.skipComment(s, i)
-                elif self.startsString(s, i):
-                    i = self.skipString(s, i)
-                elif self.startsClass(s, i):
-                    return 'class', self.sigStart, self.codeEnd
-                elif self.startsFunction(s, i):
-                    return 'def', self.sigStart, self.codeEnd
-                elif self.startsId(s, i):
-                    i = self.skipId(s, i)
-                else:
-                    i += 1
-                assert progress < i, 'i: %d, ch: %s' % (i, repr(s[i]))
-            return None, -1, -1
-        #@+node:ekr.20161222115136.6: *3* skipCodeBlock (PythonScanner) & helpers
-        def skipCodeBlock(self, s, i, kind):
-            trace = False; verbose = True
-            # if trace: g.trace('***',g.callers())
-            startIndent = self.startSigIndent
-            if trace: g.trace('startIndent', startIndent)
-            assert startIndent is not None
-            i = start = g.skip_ws_and_nl(s, i)
-            parenCount = 0
-            underIndentedStart = None # The start of trailing underindented blank or comment lines.
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                if g.is_nl(s, i):
-                    if trace and verbose: g.trace(g.get_line(s, i))
-                    backslashNewline = (i > 0 and g.match(s, i - 1, '\\\n'))
-                    if backslashNewline:
-                        # An underindented line, including docstring,
-                        # does not end the code block.
-                        i += 1 # 2010/11/01
-                    else:
-                        i = g.skip_nl(s, i)
-                        j = g.skip_ws(s, i)
-                        if g.is_nl(s, j):
-                            pass # We have already made progress.
-                        else:
-                            i, underIndentedStart, breakFlag = self.pythonNewlineHelper(
-                                s, i, parenCount, startIndent, underIndentedStart)
-                            if breakFlag: break
-                elif ch == '#':
-                    i = g.skip_to_end_of_line(s, i)
-                elif ch == '"' or ch == '\'':
-                    i = g.skip_python_string(s, i)
-                elif ch in '[{(':
-                    i += 1; parenCount += 1
-                    # g.trace('ch',ch,parenCount)
-                elif ch in ']})':
-                    i += 1; parenCount -= 1
-                    # g.trace('ch',ch,parenCount)
-                else: i += 1
-                assert(progress < i)
-            # The actual end of the block.
-            if underIndentedStart is not None:
-                i = underIndentedStart
-                if trace: g.trace('***backtracking to underindent range')
-                if trace: g.trace(g.get_line(s, i))
-            if 0 < i < len(s) and not g.match(s, i - 1, '\n'):
-                g.trace('Can not happen: Python block does not end in a newline.')
-                g.trace(g.get_line(s, i))
-                return i, False
-            # 2010/02/19: Include all following material
-            # until the next 'def' or 'class'
-            i = self.skipToTheNextClassOrFunction(s, i, startIndent)
-            if (trace or self.trace) and s[start: i].strip():
-                g.trace('%s returns\n' % (kind) + s[start: i])
-            return i, True
-        #@+node:ekr.20161222115136.7: *4* pythonNewlineHelper
-        def pythonNewlineHelper(self, s, i, parenCount, startIndent, underIndentedStart):
-            trace = False
-            breakFlag = False
-            j, indent = g.skip_leading_ws_with_indent(s, i, self.tab_width)
-            if trace: g.trace(
-                'startIndent', startIndent, 'indent', indent, 'parenCount', parenCount,
-                'line', repr(g.get_line(s, j)))
-            if indent <= startIndent and parenCount == 0:
-                # An underindented line: it ends the block *unless*
-                # it is a blank or comment line or (2008/9/1) the end of a triple-quoted string.
-                if g.match(s, j, '#'):
-                    if trace: g.trace('underindent: comment')
-                    if underIndentedStart is None: underIndentedStart = i
-                    i = j
-                elif g.match(s, j, '\n'):
-                    if trace: g.trace('underindent: blank line')
-                    # Blank lines never start the range of underindented lines.
-                    i = j
-                else:
-                    if trace: g.trace('underindent: end of block')
-                    breakFlag = True # The actual end of the block.
-            else:
-                if underIndentedStart and g.match(s, j, '\n'):
-                    # Add the blank line to the underindented range.
-                    if trace: g.trace('properly indented blank line extends underindent range')
-                elif underIndentedStart and g.match(s, j, '#'):
-                    # Add the (properly indented!) comment line to the underindented range.
-                    if trace: g.trace('properly indented comment line extends underindent range')
-                elif underIndentedStart is None:
-                    pass
-                else:
-                    # A properly indented non-comment line.
-                    # Give a message for all underindented comments in underindented range.
-                    if trace: g.trace('properly indented line generates underindent errors')
-                    s2 = s[underIndentedStart: i]
-                    lines = g.splitlines(s2)
-                    for line in lines:
-                        if line.strip():
-                            junk, indent = g.skip_leading_ws_with_indent(line, 0, self.tab_width)
-                            if indent <= startIndent:
-                                if j not in self.errorLines: # No error yet given.
-                                    self.errorLines.append(j)
-                                    self.underindentedComment(line)
-                    underIndentedStart = None
-            if trace: g.trace('breakFlag', breakFlag, 'returns', i, 'underIndentedStart', underIndentedStart)
-            return i, underIndentedStart, breakFlag
-        #@+node:ekr.20161222115136.8: *4* skipToTheNextClassOrFunction (New in 4.8)
-        def skipToTheNextClassOrFunction(self, s, i, lastIndent):
-            '''Skip to the next python def or class.
-            Return the original i if nothing more is found.
-            This allows the "if __name__ == '__main__' hack
-            to appear at the top level.'''
-            return i # A rewrite is needed.
-        #@+node:ekr.20161222115136.9: *3* skipSigTail
-        # This must be overridden in order to handle newlines properly.
-
-        def skipSigTail(self, s, i, kind):
-            '''Skip from the end of the arg list to the start of the block.'''
-            if 1: # New code
-                while i < len(s):
-                    ch = s[i]
-                    if ch == ':':
-                        return i, True
-                    elif ch == '\n':
-                        return i, False
-                    elif self.startsComment(s, i):
-                        i = self.skipComment(s, i)
-                    else:
-                        i += 1
-                return i, False
-            else: # old code
-                while i < len(s):
-                    ch = s[i]
-                    if ch == '\n':
-                        break
-                    elif ch in (' ', '\t',):
-                        i += 1
-                    elif self.startsComment(s, i):
-                        i = self.skipComment(s, i)
-                    else:
-                        break
-                return i, g.match(s, i, ':')
-        #@+node:ekr.20161222115136.10: *3* skipString
-        def skipString(self, s, i):
-            # Returns len(s) on unterminated string.
-            return g.skip_python_string(s, i, verbose=False)
-        #@-others
 #@+node:ekr.20161231131831.1: ** class PythonTarget
 class PythonTarget:
     '''
@@ -809,25 +510,19 @@ class PythonTarget:
         self.at_others_flag = False
             # True: @others has been generated for this target.
         self.kind = 'None' # in ('None', 'class', 'def')
-        self.gen_refs = False
-            # Can be forced True.
         self.p = p
-        self.ref_flag = False
-            # True: @others or section reference should be generated.
-            # It's always True when gen_refs is True.
         self.state = state
 
     def __repr__(self):
-        return 'PyTarget: %s class/def: %s @others: %s refs: %s p: %s' % (
+        return 'PyTarget: %s kind: %s @others: %s p: %s' % (
             self.state,
             self.kind,
             int(self.at_others_flag),
-            int(self.gen_refs),
             g.shortFileName(self.p.h),
         )
 #@-others
 importer_dict = {
-    'class': PythonScanner if OLD else Py_Importer,
+    'class': Py_Importer,
     'extensions': ['.py', '.pyw', '.pyi'],
         # mypy uses .pyi extension.
 }
