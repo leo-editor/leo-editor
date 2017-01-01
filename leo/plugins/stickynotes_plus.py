@@ -28,7 +28,6 @@ except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
 
-# pylint: disable=no-name-in-module
 from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets # isQt5, 
 Qt = QtCore.Qt
 # Widgets
