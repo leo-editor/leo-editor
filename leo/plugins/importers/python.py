@@ -2,6 +2,8 @@
 #@+node:ekr.20161029103517.1: * @file importers/python.py
 '''The new, line-based, @auto importer for Python.'''
 OLD = False
+# pylint: disable=no-name-in-module
+# basescanner does not exist now.
 import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
@@ -119,15 +121,16 @@ class Py_Importer(Importer):
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
-            elif self.is_top_if(line, new_state, prev_state, stack):
-                first = False
-                p = self.create_child_node(parent, body=line, headline=line)
-                self.gen_ref(line, parent, target)
-                stack.append(PythonTarget(p, new_state))
-                self.skip_top_if(i, lines, new_state, prev_state, stack)
-                # End the 'if' node.
-                stack.pop()
-                tail_p = p
+            ### Not good enough.
+            # elif self.is_top_if(line, new_state, prev_state, stack):
+                # first = False
+                # p = self.create_child_node(parent, body=line, headline=line)
+                # self.gen_ref(line, parent, target)
+                # stack.append(PythonTarget(p, new_state))
+                # self.skip_top_if(i, lines, new_state, prev_state, stack)
+                # # End the 'if' node.
+                # stack.pop()
+                # tail_p = p
             elif self.starts_block(i, lines, new_state, prev_state, stack):
                 first = False
                 tail_p = None
@@ -249,14 +252,15 @@ class Py_Importer(Importer):
         indent_ws = self.get_str_lws(line)
         lws = self.get_int_lws(line)
         h = self.clean_headline(line) 
-        if target.ref_flag:
-            if 0: ### lws > target.state.indent:
-                # g.trace('='*20, lws, target.state.indent)
-                h = g.angleBrackets(' %s ' % h)
-                ref = '%s%s\n' % (indent_ws, h)
-                self.add_line(parent,ref)
-        else:
-            target.ref_flag = True
+        # if target.ref_flag:
+            # if 0: ### lws > target.state.indent:
+                # # g.trace('='*20, lws, target.state.indent)
+                # h = g.angleBrackets(' %s ' % h)
+                # ref = '%s%s\n' % (indent_ws, h)
+                # self.add_line(parent,ref)
+        # else:
+            # target.ref_flag = True
+        if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
             if trace:
@@ -272,7 +276,6 @@ class Py_Importer(Importer):
         
     def is_top_if(self, line, new_state, prev_state, stack):
         '''True if the line startswith class or def outside any context.'''
-        return False ### Not a good idea, it seems.
         if prev_state.in_context():
             return False
         else:
@@ -357,7 +360,7 @@ class Py_Importer(Importer):
         deleting one tab's worth of indentation. Typically, this will remove
         the underindent escape.
         '''
-        return ###
+        ### return ###
         trace = True
         pattern = self.escape_pattern # A compiled regex pattern
         for p in parent.subtree():
@@ -411,8 +414,8 @@ class Py_Importer(Importer):
         # Create the child.
         top = stack[-1]
         parent = top.p
-        self.gen_refs = top.gen_refs
-        h = self.gen_ref(line, parent, top)
+        self.gen_ref(line, parent, top)
+        h = self.clean_headline(line) 
         child = self.create_child_node(parent, line, h)
         target = PythonTarget(child, new_state)
         target.kind = 'class' if h.startswith('class') else 'def'
@@ -436,9 +439,11 @@ class Py_Importer(Importer):
         top = stack[-1]
         prev_indent = top.state.indent
         # g.trace(prev_indent, new_state.indent, len(stack), repr(line))
-        # g.printList(stack)
-        if new_state.indent > 0 and top.kind == 'None':
-            # A special case: underindented top-level class/def.
+        if top.kind == 'None' and new_state.indent > 0:
+            # Underindented top-level class/def.
+            return False
+        elif top.kind == 'def' and new_state.indent > prev_indent:
+            # class/def within a def.
             return False
         else:
             return True

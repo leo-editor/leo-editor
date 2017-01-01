@@ -15295,8 +15295,8 @@ def loadLocalFile(self, fn, gui, old_c):
 '''
 table = (
     (1, 'isValidPython'),
-    (2, 'class EmergencyDialog'),
-    (3, 'run'),
+    # (2, 'class EmergencyDialog'),
+    # (3, 'run'),
     (1, 'loadLocalFile'),
 )
 try:
@@ -15790,7 +15790,7 @@ table = (
     (2, "mousePressEvent"),
     (2, "mouseMoveEvent"),
     (1, "command"),
-    (2, "makebutton"),
+    # (2, "makebutton"),
     (1, "exit_"),
     (1, "main"),
     # (1, "if __name__ == '__main__':"),
@@ -15850,7 +15850,7 @@ class aClass:
 table = (
     (1, 'class aClass'),
     (2, 'outerDef'),
-    (3, 'pr'),
+    # (3, 'pr'),
 )
 try:
     test_node = p.copy()
@@ -16180,9 +16180,9 @@ table = (
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
-    (3, "scanner_for_at_auto_cb"),
+    # (3, "scanner_for_at_auto_cb"),
     (2, "scanner_for_ext"),
-    (3, "scanner_for_ext_cb"),
+    # (3, "scanner_for_ext_cb"),
     (2, "get_import_filename"),
     (2, "init_import"),
 )
