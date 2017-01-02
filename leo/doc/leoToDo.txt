@@ -8,7 +8,6 @@
 @wrap
 
 * Rewrite scripting tutorial
-* Script to insert type comments per pep 484.
 .. @+node:ekr.20161231072434.1: *3* Bugs
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!
