@@ -8,6 +8,8 @@
 @wrap
 
 * Rewrite scripting tutorial
+* Leo and Jupyter notebooks.
+* Mention viewrendered plugin in tutorials.
 .. @+node:ekr.20161231072434.1: *3* Bugs
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!

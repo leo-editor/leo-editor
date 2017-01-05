@@ -630,11 +630,12 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         if trace:
             g.trace(g.app.gui.get_focus())
+        # Fix #270: Vim keys don't always work after double Alt+Tab.
+        # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
+        if c.exists and c.vimCommands and not self.active and not g.app.killed: 
+            c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
-        # Fix #270: Vim keys don't always work after double Alt+Tab.
-        if c.exists and not g.app.killed and c.vimCommands:
-            c.vimCommands.on_activate()
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:
