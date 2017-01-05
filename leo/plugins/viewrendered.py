@@ -195,7 +195,6 @@ import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
-# docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
 try:
     import docutils
     import docutils.core
@@ -216,7 +215,7 @@ else:
     got_docutils = False
 if trace:
     print('viewrendered.py: got_docutils: %s' % got_docutils)
-## markdown support, non-vital
+# markdown support, non-vital
 try:
     from markdown import markdown
     got_markdown = True
@@ -225,6 +224,14 @@ except ImportError:
 import os
 if trace:
     print('viewrendered.py: got_markdown: %s' % got_markdown)
+# nbformat (@jupyter) support, non-vital.
+try:
+    import nbformat
+    from nbconvert import HTMLExporter
+    from traitlets.config import Config
+    from urllib.request import urlopen
+except ImportError:
+    nbformat = None
 #@-<< imports >>
 #@+<< define stylesheets >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheets >>
@@ -514,6 +521,7 @@ if QtWidgets: # NOQA
                 'html': pc.update_html,
                 'graphics-script': pc.update_graphics_script,
                 'image': pc.update_image,
+                'jupyter': pc.update_jupyter,
                 'markdown': pc.update_md,
                 'md': pc.update_md,
                 'movie': pc.update_movie,
@@ -795,6 +803,43 @@ if QtWidgets: # NOQA
             w.setReadOnly(False)
             w.setHtml(template)
             w.setReadOnly(True)
+        #@+node:ekr.20170105124347.1: *4* vr.update_jupyter
+        update_jupyter_count = 0
+
+        def update_jupyter(self, s, keywords):
+            '''Update @jupyter node in the vr pane.'''
+            pc = self
+            c = pc.c
+            if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                # g.trace('===== instantiating QWebView')
+                w = QtWebKitWidgets.QWebView()
+                n = c.config.getInt('qweb_view_font_size')
+                if n:
+                    settings = w.settings()
+                    settings.setFontSize(settings.DefaultFontSize, n)
+                pc.embed_widget(w)
+                assert(w == pc.w)
+            else:
+                w = pc.w
+            url = g.getUrlFromNode(c.p)
+            if url and nbformat:
+                s = urlopen(url).read().decode()
+                try:
+                    nb = nbformat.reads(s, as_version=4)
+                    e = HTMLExporter()
+                    (s, junk_resources) = e.from_notebook_node(nb)
+                except nbformat.reader.NotJSONError:
+                    # Assume the result is html.
+                    pass
+            elif url:
+                s = 'can not import nbformt: %r' % url
+            else:
+                s = g.u('')
+            if isQt5:
+                w.hide() # This forces a proper update.
+            w.setHtml(s)
+            w.show()
+            c.bodyWantsFocusNow()
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
@@ -1072,6 +1117,12 @@ if QtWidgets: # NOQA
                 def handleClick(url, w=w):
                     event = g.Bunch(c=c, w=w)
                     g.openUrlOnClick(event, url=url)
+                    
+                # if self.w and hasattr(self.w, 'anchorClicked'):
+                    # try:
+                        # self.w.anchorClicked.disconnect()
+                    # except Exception:
+                        # g.es_exception()
 
                 w.anchorClicked.connect(handleClick)
                 w.setOpenLinks(False)
