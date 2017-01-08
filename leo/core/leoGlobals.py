@@ -4736,6 +4736,11 @@ else:
         # Use builtins to suppress pyflakes complaint.
         # pylint: disable=no-member, undefined-variable
         return builtins.unicode(s, encoding) 
+#@+node:ekr.20170108034643.1: *4* g.ustr (pyzo)
+def ustr(s):
+    '''Define the pyzo ustr function.'''
+    # pylint: disable=no-member
+    return str(s) if isPython3 else g.builtins.unicode(s)
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
