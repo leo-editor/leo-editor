@@ -126,6 +126,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             # Store info for indentation guides
             # amount of tabs or spaces
             bd.indentation = len(leadingWhitespace)
+    #@+node:ekr.20170108091854.1: *3* rehighlight
+    def rehighlight(self, p=None):
+        QtGui.QSyntaxHighlighter.rehighlight(self)
     #@-others
 #@-others
 #@@language python

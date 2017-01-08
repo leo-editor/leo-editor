@@ -6,16 +6,18 @@
 #@+node:ekr.20170108044517.1: ** << base imports >>
 import leo.core.leoGlobals as g
 ustr = g.ustr
-# import sys
 # from .qt import QtGui,QtCore, QtWidgets
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-# Qt = QtCore.Qt
+from leo.core.leoQt import QtGui, QtWidgets, isQt5 # QtCore, 
+# from QtCore import pyqtSignal as Signal
+if isQt5:
+    from PyQt5.QtCore import pyqtSignal as Signal
+else:
+    from PyQt4.QtCore import pyqtSignal as Signal
 from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
 from .misc import callLater # , ustr
 from .manager import Manager
 from .highlighter import Highlighter
-# from .style import StyleFormat, StyleElementDescription
-from .style import StyleElementDescription
+from .style import StyleElementDescription # StyleFormat, 
 #@-<< base imports >>
 #@+others
 #@+node:ekr.20170108045413.3: ** class CodeEditorBase
@@ -24,8 +26,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
     by the extensions.
     
     """
-    # pylint: disable=no-member
-        # Signal is defined.
     
     # Style element for default text and editor background
     _styleElements = [('Editor.text', 'The style of the default text. ' + 
@@ -33,56 +33,51 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                         'fore:#000,back:#fff',)]
     
     # Signal emitted after style has changed
-    styleChanged = QtCore.Signal()
+    styleChanged = Signal() ### QtCore.Signal()
     
     # Signal emitted after font (or font size) has changed
-    fontChanged = QtCore.Signal()
+    fontChanged = Signal() ### QtCore.Signal()
     
     # Signal to indicate a change in breakpoints. Only emitted if the
     # appropriate extension is in use
-    breakPointsChanged = QtCore.Signal(object)
+    breakPointsChanged = Signal(object) ### QtCore.Signal(object)
     
     #@+others
     #@+node:ekr.20170108045413.4: *3* __init__
     def __init__(self,*args, **kwds):
         super(CodeEditorBase, self).__init__(*args)
-        
         # Set font (always monospace)
         self.__zoom = 0
         self.setFont()
-        
         # Create highlighter class 
         self.__highlighter = Highlighter(self, self.document())
-        
+        self.leo_highlighter = self.__highlighter
         # Set some document options
         option = self.document().defaultTextOption()
-        option.setFlags(    option.flags() | option.IncludeTrailingSpaces |
-                            option.AddSpaceForLineAndParagraphSeparators )
+        option.setFlags(
+            option.flags() |
+            option.IncludeTrailingSpaces |
+            option.AddSpaceForLineAndParagraphSeparators
+        )
         self.document().setDefaultTextOption(option)
-        
         # When the cursor position changes, invoke an update, so that
         # the hihghlighting etc will work
         self.cursorPositionChanged.connect(self.viewport().update) 
-        
         # Init styles to default values
         self.__style = {}
         for element in self.getStyleElementDescriptions():
             self.__style[element.key] = element.defaultFormat
-        
-        # Connext style update
+        # Connect style update
         self.styleChanged.connect(self.__afterSetStyle)
         self.__styleChangedPending = False
-        
         # Init margins
         self._leftmargins = []
-        
         # Init options now. 
         # NOTE TO PEOPLE DEVELOPING EXTENSIONS:
         # If an extension has an __init__ in which it first calls the 
         # super().__init__, this __initOptions() function will be called, 
         # while the extension's init is not yet finished.        
         self.__initOptions(kwds)
-        
         # Define colors from Solarized theme
         # NOTE TO PEOPLE WANTING CUSTOM COLORS: ignore this and check the
         # commented lines near the bottom of this method.
@@ -102,7 +97,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         blue    = "#268bd2"
         cyan    = "#2aa198"
         green   = "#859900"
-        
         if True: # Light vs dark
             #back1, back2, back3 = base3, base2, base1 # real solarised
             back1, back2, back3 = "#fff", base2, base1 # crispier
@@ -110,10 +104,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         else:
             back1, back2, back3 = base03, base02, base01
             fore1, fore2, fore3, fore4 = base0, base1, base2, base3
-        
         test_numbers  = 90 + 0000 + 1
         # todo: proper testing of syntax style
-        
         # Define style using "Solarized" colors
         S  = {}
         S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
@@ -168,20 +160,18 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         self.__highlighter = highlighterClass(self, self.document())
        
     ## Options
-    #@+node:ekr.20170108045413.6: *3* __getOptionSetters
+    #@+node:ekr.20170108092633.1: *3* Option setters/getters
+    #@+node:ekr.20170108045413.6: *4* __getOptionSetters
     def __getOptionSetters(self):
         """ Get a dict that maps (lowercase) option names to the setter
         methods.
         """
-        
         # Get all names that can be options
         allNames = set(dir(self))
         nativeNames = set(dir(QtWidgets.QPlainTextEdit))
         names = allNames.difference(nativeNames)
-        
         # Init dict of setter members
         setters = {}
-        
         for name in names:
             # Get name without set
             if name.lower().startswith('set'):
@@ -207,10 +197,10 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             member_get.__dict__[DEFAULT_OPTION_NAME] = defaultValue
             # Add to list
             setters[name.lower()] = member_set
-        
         # Done
+        g.printDict(setters)
         return setters
-    #@+node:ekr.20170108045413.7: *3* __setOptions
+    #@+node:ekr.20170108045413.7: *4* __setOptions
     def __setOptions(self, setters, options):
         """ Sets the options, given the list-of-tuples methods and an
         options dict.
@@ -236,19 +226,16 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # Check if invalid keys were given
         if invalidKeys:
             print("Warning, invalid options given: " + ', '.join(invalidKeys))
-    #@+node:ekr.20170108045413.8: *3* __initOptions
+    #@+node:ekr.20170108045413.8: *4* __initOptions
     def __initOptions(self, options=None):
         """ Init the options with their default values.
         Also applies the docstrings of one to the other.
         """
-        
         # Make options an empty dict if not given
         if not options:
             options = {}
-        
         # Get setters
         setters = self.__getOptionSetters()
-        
         # Set default value
         for member_set in setters.values():
             defaultVal = member_set.__dict__[DEFAULT_OPTION_NAME]
@@ -257,11 +244,10 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                     member_set(defaultVal)
                 except Exception as why:
                     print('Error initing option ', member_set.__name__)
-        
         # Also set using given opions?
         if options:
             self.__setOptions(setters, options)
-    #@+node:ekr.20170108045413.9: *3* setOptions
+    #@+node:ekr.20170108045413.9: *4* setOptions
     def setOptions(self, options=None, **kwargs):
         """ setOptions(options=None, **kwargs)
         
@@ -291,7 +277,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
 
 
     ## Font
-    #@+node:ekr.20170108045413.10: *3* setFont
+    #@+node:ekr.20170108092733.1: *3* Font settings
+    #@+node:ekr.20170108045413.10: *4* setFont
     def setFont(self, font=None):
         """ setFont(font=None)
         
@@ -332,7 +319,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         QtWidgets.QPlainTextEdit.setFont(self, font)
         self.fontChanged.emit()
         return font
-    #@+node:ekr.20170108045413.11: *3* setZoom
+    #@+node:ekr.20170108045413.11: *4* setZoom
     def setZoom(self, zoom):
         """ setZoom(zoom)
         
@@ -350,10 +337,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         self.setFont(self.fontInfo().family())
         # Return zoom
         return self.__zoom
-
-
-    ## Syntax / styling
-    #@+node:ekr.20170108045413.12: *3* getStyleElementDescriptions
+    #@+node:ekr.20170108092658.1: *3* Syntax styling
+    #@+node:ekr.20170108045413.12: *4* getStyleElementDescriptions
     @classmethod
     def getStyleElementDescriptions(cls):
         """ getStyleElementDescriptions()
@@ -395,7 +380,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         # Done
         return list(elements2.values())
-    #@+node:ekr.20170108045413.13: *3* getStyleElementFormat
+    #@+node:ekr.20170108045413.13: *4* getStyleElementFormat
     def getStyleElementFormat(self, name):
         """ getStyleElementFormat(name)
         
@@ -409,7 +394,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             return self.__style[key]
         except KeyError:
             raise KeyError('Not a known style element name: "%s".' % name)
-    #@+node:ekr.20170108045413.14: *3* setStyle
+    #@+node:ekr.20170108045413.14: *4* setStyle
     def setStyle(self, style=None, **kwargs):
         """ setStyle(style=None, **kwargs)
         
@@ -439,8 +424,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                     'editor.indentationGuides':'#f88' })
         
         """
-        
         # Combine user input
+        g.trace('style', style)
         D = {}
         if style:
             for key in style:
@@ -452,7 +437,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         # List of given invalid style element names
         invalidKeys = []
-        
         # Set style elements
         for key in D:
             normKey = key.replace(' ', '').lower()
@@ -461,12 +445,10 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                 self.__style[normKey].update(D[key])
             else:
                 invalidKeys.append(key)
-        
         # Give warning for invalid keys
         if invalidKeys:
-            print("Warning, invalid style names given: " + 
-                                                    ','.join(invalidKeys))
-        
+            print("Warning, invalid style names given: \n" + 
+                '\n'.join(sorted(invalidKeys)))
         # Notify that style changed, adopt a lazy approach to make loading
         # quicker.
         if self.isVisible():
@@ -474,64 +456,59 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             self.__styleChangedPending = False
         else:
             self.__styleChangedPending = True
-    #@+node:ekr.20170108045413.15: *3* showEvent
+    #@+node:ekr.20170108045413.15: *4* showEvent
     def showEvent(self, event):
         super(CodeEditorBase, self).showEvent(event)
         # Does the style need updating?
         if self.__styleChangedPending:
             callLater(self.styleChanged.emit)
             self.__styleChangedPending = False
-    #@+node:ekr.20170108045413.16: *3* __afterSetStyle
+    #@+node:ekr.20170108045413.16: *4* __afterSetStyle
     def __afterSetStyle(self):
         """ _afterSetStyle()
         
-        Method to call after the style has been set.
-        
+        Callback after the style has been set.
         """
-        
         # Set text style using editor style sheet
         format = self.getStyleElementFormat('editor.text')
         ss = 'QPlainTextEdit{ color:%s; background-color:%s; }' %  (
-                            format['fore'], format['back'])
+            format['fore'], format['back'])
         self.setStyleSheet(ss)
-        
         # Make sure the style is applied
         self.viewport().update()
-        
         # Re-highlight
         callLater(self.__highlighter.rehighlight)
-
-
-    ## Some basic options
-    #@+node:ekr.20170108045413.17: *3* indentWidth
+    #@+node:ekr.20170108092857.1: *3* Basic options
+    #@+node:ekr.20170108045413.17: *4* indentWidth
     @ce_option(4)
     def indentWidth(self):
         """ Get the width of a tab character, and also the amount of spaces
         to use for indentation when indentUsingSpaces() is True.
         """
         return self.__indentWidth
-    #@+node:ekr.20170108045413.18: *3* setIndentWidth
+    #@+node:ekr.20170108045413.18: *4* setIndentWidth
     def setIndentWidth(self, value):
         value = int(value)
         if value<=0:
             raise ValueError("indentWidth must be >0")
         self.__indentWidth = value
         self.setTabStopWidth(self.fontMetrics().width('i'*self.__indentWidth))
-    #@+node:ekr.20170108045413.19: *3* indentUsingSpaces
+    #@+node:ekr.20170108045413.19: *4* indentUsingSpaces
     @ce_option(False)
     def indentUsingSpaces(self):
         """Get whether to use spaces (if True) or tabs (if False) to indent
         when the tab key is pressed
         """
         return self.__indentUsingSpaces
-    #@+node:ekr.20170108045413.20: *3* setIndentUsingSpaces
+    #@+node:ekr.20170108045413.20: *4* setIndentUsingSpaces
     def setIndentUsingSpaces(self, value):
         self.__indentUsingSpaces = bool(value)
         self.__highlighter.rehighlight()
      
 
     ## Misc
-    #@+node:ekr.20170108045413.21: *3* gotoLine
+    #@+node:ekr.20170108092912.1: *3* Misc
+    #@+node:ekr.20170108045413.21: *4* gotoLine
     def gotoLine(self, lineNumber):
         """ gotoLine(lineNumber)
         
@@ -540,7 +517,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         return self.gotoBlock(lineNumber-1)
-    #@+node:ekr.20170108045413.22: *3* gotoBlock
+    #@+node:ekr.20170108045413.22: *4* gotoBlock
     def gotoBlock(self, blockNumber):
         """ gotoBlock(blockNumber)
         
@@ -548,7 +525,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         (first block is number 0) and show that line.
         
         """
-        # Two implementatios. I know that the latter works, so lets
+        # Two implementations. I know that the latter works, so lets
         # just use that.
         
         cursor = self.textCursor()
@@ -569,7 +546,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         cursorRect = self.cursorRect(cursor)
         if cursorRect.top() < margin or cursorRect.bottom() + margin > self.height():
             self.centerCursor()
-    #@+node:ekr.20170108045413.23: *3* doForSelectedBlocks
+    #@+node:ekr.20170108045413.23: *4* doForSelectedBlocks
     def doForSelectedBlocks(self, function):
         """ doForSelectedBlocks(function)
         
@@ -612,7 +589,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                 editCursor.movePosition(editCursor.NextBlock)
         finally:
             editCursor.endEditBlock()
-    #@+node:ekr.20170108045413.24: *3* doForVisibleBlocks
+    #@+node:ekr.20170108045413.24: *4* doForVisibleBlocks
     def doForVisibleBlocks(self, function):
         """ doForVisibleBlocks(function)
         
@@ -640,7 +617,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             if not cursor.block().next().isValid():
                 break #Reached end of the text
             cursor.movePosition(cursor.NextBlock)
-    #@+node:ekr.20170108045413.25: *3* indentBlock
+    #@+node:ekr.20170108045413.25: *4* indentBlock
     def indentBlock(self, cursor, amount=1):
         """ indentBlock(cursor, amount=1)
         
@@ -672,7 +649,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             # Convert indentation to number of tabs, and add one
             indent = (indent // self.indentWidth()) + amount
             cursor.insertText('\t' * max(indent,0))
-    #@+node:ekr.20170108045413.26: *3* dedentBlock
+    #@+node:ekr.20170108045413.26: *4* dedentBlock
     def dedentBlock(self, cursor):
         """ dedentBlock(cursor)
         
@@ -683,7 +660,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         self.indentBlock(cursor, amount = -1)
-    #@+node:ekr.20170108045413.27: *3* indentSelection
+    #@+node:ekr.20170108045413.27: *4* indentSelection
     def indentSelection(self):
         """ indentSelection()
         
@@ -695,7 +672,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         self.doForSelectedBlocks(self.indentBlock)
-    #@+node:ekr.20170108045413.28: *3* dedentSelection
+    #@+node:ekr.20170108045413.28: *4* dedentSelection
     def dedentSelection(self):
         """ dedentSelection()
         
@@ -707,7 +684,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         self.doForSelectedBlocks(self.dedentBlock)
-    #@+node:ekr.20170108045413.29: *3* justifyText
+    #@+node:ekr.20170108045413.29: *4* justifyText
     def justifyText(self, linewidth=70):
         """ justifyText(linewidth=70)
         """
@@ -732,14 +709,14 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # Update the selection
         #self.setTextCursor(cursor) for testing
         cursor.insertText(newText)
-    #@+node:ekr.20170108045413.30: *3* addLeftMargin
+    #@+node:ekr.20170108045413.30: *4* addLeftMargin
     def addLeftMargin(self, des, func):
         """ Add a margin to the left. Specify a description for the margin,
         and a function to get that margin. For internal use.
         """
         assert des is not None
         self._leftmargins.append((des, func))
-    #@+node:ekr.20170108045413.31: *3* getLeftMargin
+    #@+node:ekr.20170108045413.31: *4* getLeftMargin
     def getLeftMargin(self, des=None):
         """ Get the left margin, relative to the given description (which
         should be the same as given to addLeftMargin). If des is omitted 
@@ -751,7 +728,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                 break
             margin += func()
         return margin
-    #@+node:ekr.20170108045413.32: *3* updateMargins
+    #@+node:ekr.20170108045413.32: *4* updateMargins
     def updateMargins(self):
         """ Force the margins to be recalculated and set the viewport 
         accordingly.
