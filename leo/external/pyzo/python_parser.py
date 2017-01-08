@@ -2,6 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170107213100.1: * @file ../external/pyzo/python_parser.py
 #@@first
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171945.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< python_parser imports >>
 #@+node:ekr.20170107220823.1: ** << python_parser imports >>
 import leo.core.leoGlobals as g

@@ -3,6 +3,13 @@
 #@+node:ekr.20170108162404.1: * @file ../external/pyzo/leo_test.py
 #@@first
 '''Prototype test code for integrating pyzo into Leo.'''
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171806.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< pyzo/leo_test.py imports >>
 #@+node:ekr.20170108162537.1: ** << pyzo/leo_test.py imports >>
 import leo.core.leoGlobals as g

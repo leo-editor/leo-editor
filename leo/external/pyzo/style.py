@@ -2,6 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170107214315.1: * @file ../external/pyzo/style.py
 #@@first
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171955.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 from leo.core.leoQt import QtCore, QtGui
 Qt = QtCore.Qt
 #@+others
@@ -128,20 +135,15 @@ class StyleFormat:
         Update this style format with the given format.
         
         """
-        
         # Reset buffered values
         self._resetProperties()
-        
         # Make a string, so we update the format with the given one
         if isinstance(format, StyleFormat):
             format = str(format)
-        
         # Split on ',' and ',', ignore spaces
         styleParts = [p for p in
-                        format.replace('=',':').replace(';',',').split(',')]
-        
+            format.replace('=',':').replace(';',',').split(',')]
         for stylePart in styleParts:
-            
             # Make sure it consists of identifier and value pair
             # e.g. fore:#xxx, bold:yes, underline:no
             if not ':' in stylePart:
@@ -149,10 +151,8 @@ class StyleFormat:
                     stylePart = 'foreandback:' + stylePart
                 else:
                     stylePart += ':yes'
-            
             # Get key value and strip and make lowecase
             key, _, val = [i.strip().lower() for i in stylePart.partition(':')]
-            
             # Store in parts
             if key == 'foreandback':
                 self._parts['fore'] = val
@@ -160,26 +160,20 @@ class StyleFormat:
             elif key:
                 self._parts[key] = val
 
-    ## Properties
-    #@+node:ekr.20170107214321.18: *3* _getValueSafe
+    #@+node:ekr.20170108171245.1: *3* properties & helper
+    #@+node:ekr.20170107214321.18: *4* _getValueSafe
     def _getValueSafe(self, key):
         try:
             return self._parts[key]
         except KeyError:
             return 'no'
-    #@+node:ekr.20170107214321.19: *3* fore
-    @property
-    def fore(self):
-        if self._fore is None:
-            self._fore = QtGui.QColor(self._parts['fore'])
-        return self._fore
-    #@+node:ekr.20170107214321.20: *3* back
+    #@+node:ekr.20170107214321.20: *4* back
     @property
     def back(self):
         if self._back is None:
             self._back = QtGui.QColor(self._parts['back'])
         return self._back
-    #@+node:ekr.20170107214321.21: *3* bold
+    #@+node:ekr.20170107214321.21: *4* bold
     @property
     def bold(self):
         if self._bold is None:
@@ -188,7 +182,13 @@ class StyleFormat:
             else:
                 self._bold = False
         return self._bold
-    #@+node:ekr.20170107214321.22: *3* italic
+    #@+node:ekr.20170107214321.19: *4* fore
+    @property
+    def fore(self):
+        if self._fore is None:
+            self._fore = QtGui.QColor(self._parts['fore'])
+        return self._fore
+    #@+node:ekr.20170107214321.22: *4* italic
     @property
     def italic(self):
         if self._italic is None:
@@ -197,21 +197,7 @@ class StyleFormat:
             else:
                 self._italic = False
         return self._italic
-    #@+node:ekr.20170107214321.23: *3* underline
-    @property
-    def underline(self):
-        if self._underline is None:
-            val = self._getValueSafe('underline')
-            if val in ['yes', 'true']:
-                self._underline = QtGui.QTextCharFormat.SingleUnderline
-            elif val in ['dotted', 'dots', 'dotline']: 
-                self._underline = QtGui.QTextCharFormat.DotLine
-            elif val in ['wave']: 
-                self._underline = QtGui.QTextCharFormat.WaveUnderline
-            else:
-                self._underline = QtGui.QTextCharFormat.NoUnderline
-        return self._underline
-    #@+node:ekr.20170107214321.24: *3* linestyle
+    #@+node:ekr.20170107214321.24: *4* linestyle
     @property
     def linestyle(self):
         if self._linestyle is None:
@@ -225,7 +211,7 @@ class StyleFormat:
             else:
                 self._linestyle = Qt.SolidLine # default to solid
         return self._linestyle
-    #@+node:ekr.20170107214321.25: *3* textCharFormat
+    #@+node:ekr.20170107214321.25: *4* textCharFormat
     @property
     def textCharFormat(self):
         if self._textCharFormat is None:
@@ -237,6 +223,20 @@ class StyleFormat:
             if self.italic:
                 self._textCharFormat.setFontItalic(True)
         return self._textCharFormat
+    #@+node:ekr.20170107214321.23: *4* underline
+    @property
+    def underline(self):
+        if self._underline is None:
+            val = self._getValueSafe('underline')
+            if val in ['yes', 'true']:
+                self._underline = QtGui.QTextCharFormat.SingleUnderline
+            elif val in ['dotted', 'dots', 'dotline']: 
+                self._underline = QtGui.QTextCharFormat.DotLine
+            elif val in ['wave']: 
+                self._underline = QtGui.QTextCharFormat.WaveUnderline
+            else:
+                self._underline = QtGui.QTextCharFormat.NoUnderline
+        return self._underline
     #@-others
 #@-others
 #@@language python

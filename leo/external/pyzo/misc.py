@@ -1,6 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170108050440.1: * @file ../external/pyzo/misc.py
 # -*- coding: utf-8 -*-
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171929.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< misc.py imports >>
 #@+node:ekr.20170108050440.2: ** << misc.py imports >>
 # import sys

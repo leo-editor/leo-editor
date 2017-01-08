@@ -1,13 +1,20 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170108051712.1: * @file ../external/pyzo/manager.py
+#@@first
 """ Module manager
 
 This module contains a static class that can be used for some
 management tasks.
 
 """
-
-# -*- coding: utf-8 -*-
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171926.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< manager.py imports >>
 #@+node:ekr.20170108051856.1: ** << manager.py imports >>
 # import leo.core.leoGlobals as g

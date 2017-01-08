@@ -1,14 +1,21 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170108044304.1: * @file ../external/pyzo/base.py
+#@@first
 """The base code editor class."""
-# -*- coding: utf-8 -*-
-#@+<< base imports >>
-#@+node:ekr.20170108044517.1: ** << base imports >>
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171834.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
+#@+<< base.py imports >>
+#@+node:ekr.20170108044517.1: ** << base.py imports >>
 import leo.core.leoGlobals as g
 ustr = g.ustr
-# from .qt import QtGui,QtCore, QtWidgets
-from leo.core.leoQt import QtGui, QtWidgets, isQt5 # QtCore, 
-# from QtCore import pyqtSignal as Signal
+# from .qt import QtGui, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, isQt5
 if isQt5:
     from PyQt5.QtCore import pyqtSignal as Signal
 else:
@@ -18,7 +25,7 @@ from .misc import callLater # , ustr
 from .manager import Manager
 from .highlighter import Highlighter
 from .style import StyleElementDescription # StyleFormat, 
-#@-<< base imports >>
+#@-<< base.py imports >>
 #@+others
 #@+node:ekr.20170108045413.3: ** class CodeEditorBase
 class CodeEditorBase(QtWidgets.QPlainTextEdit):
@@ -26,21 +33,23 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
     by the extensions.
     
     """
-    
     # Style element for default text and editor background
-    _styleElements = [('Editor.text', 'The style of the default text. ' + 
-                        'One can set the background color here.',
-                        'fore:#000,back:#fff',)]
-    
+    _styleElements = [
+        ('Editor.text',
+         'The style of the default text. ' + 
+         'One can set the background color here.',
+         'fore:#000,back:#fff',
+        )
+    ]
     # Signal emitted after style has changed
-    styleChanged = Signal() ### QtCore.Signal()
+    styleChanged = Signal()
     
     # Signal emitted after font (or font size) has changed
-    fontChanged = Signal() ### QtCore.Signal()
+    fontChanged = Signal()
     
     # Signal to indicate a change in breakpoints. Only emitted if the
     # appropriate extension is in use
-    breakPointsChanged = Signal(object) ### QtCore.Signal(object)
+    breakPointsChanged = Signal(object)
     
     #@+others
     #@+node:ekr.20170108045413.4: *3* __init__
@@ -425,7 +434,9 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         # Combine user input
-        g.trace('style', style)
+        g.trace('=====', g.callers())
+        g.trace('style', '\n'+'\n'.join(sorted(style.keys())))
+        g.trace('__style', repr(self.__style))
         D = {}
         if style:
             for key in style:
@@ -434,7 +445,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             for key in kwargs:
                 key2 = key.replace('_', '.')
                 D[key2] = kwargs[key]
-        
         # List of given invalid style element names
         invalidKeys = []
         # Set style elements

@@ -2,6 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170107220425.1: * @file ../external/pyzo/parsers.py
 #@@first
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171939.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 import sys
 from .tokens import Token, TextToken
 #@+others

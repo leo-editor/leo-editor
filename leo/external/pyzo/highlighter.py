@@ -2,6 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170107211202.1: * @file ../external/pyzo/highlighter.py
 #@@first
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171824.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< highlighter imports >>
 #@+node:ekr.20170107222425.1: ** << highlighter imports >>
 from leo.core.leoQt import QtCore, QtGui

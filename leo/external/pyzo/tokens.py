@@ -2,6 +2,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170107212657.1: * @file ../external/pyzo/tokens.py
 #@@first
+#@+<< pyzo copyright >>
+#@+node:ekr.20170108171959.1: ** << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+#@-<< pyzo copyright >>
 #@+<< tokens imports >>
 #@+node:ekr.20170107220236.1: **   << tokens imports >>
 import leo.core.leoGlobals as g
