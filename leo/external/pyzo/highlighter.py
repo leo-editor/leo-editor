@@ -5,11 +5,8 @@
 #@+<< highlighter imports >>
 #@+node:ekr.20170107222425.1: ** << highlighter imports >>
 from leo.core.leoQt import QtCore, QtGui
-Qt = QtCore.Qt
 import leo.core.leoGlobals as g
-if 1:
-    # pylint: disable=no-member
-    ustr = str if g.isPython3 else g.builtins.unicode
+ustr = g.ustr
 from .parsers import BlockState
 #@-<< highlighter imports >>
 #@+others
@@ -60,13 +57,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         check out the indentation.
         
         """
-        
         # Make sure this is a Unicode Python string
         line = ustr(line)
-        
         # Get previous state
         previousState = self.previousBlockState()
-        
         # Get parser
         parser = None
         if hasattr(self._codeEditor, 'parser'):
