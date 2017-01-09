@@ -69,7 +69,10 @@ def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
                 while ins-1 > 0 and g.isWordChar(s[ins-1]):
                     n += 1
                     ins -= 1
-                oldSel = (ins, ins)
+                sins = ins  # start of insert, to collect trailing whitespace
+                while sins > 0 and s[sins-1] in (' \t'):
+                    sins -= 1
+                oldSel = (sins, ins)
                 self.insertNewlineHelper(w, oldSel, undoType=None)
                 ins = w.getInsertPoint()
                 ins += (n+1)
