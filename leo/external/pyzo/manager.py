@@ -95,7 +95,7 @@ class Manager:
 
     
     #@+others
-    #@+node:ekr.20170108051712.4: *3* _collectParsers
+    #@+node:ekr.20170108051712.4: *3* manager._collectParsers
     @classmethod
     def _collectParsers(cls):
         """ _collectParsers()
@@ -181,7 +181,7 @@ class Manager:
             print('Warning: no parser known by the name "%s".'%parserName)
             print('I know these: ', cls._parserInstances.keys())
             return parsers.Parser() #Default dummy parser
-    #@+node:ekr.20170108051712.7: *3* getStyleElementDescriptionsForAllParsers
+    #@+node:ekr.20170108051712.7: *3* manager.getStyleElementDescriptionsForAllParsers
     @classmethod
     def getStyleElementDescriptionsForAllParsers(cls):
         """ getStyleElementDescriptionsForAllParsers()

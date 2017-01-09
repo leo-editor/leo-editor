@@ -52,7 +52,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
     breakPointsChanged = Signal(object)
     
     #@+others
-    #@+node:ekr.20170108045413.4: *3* __init__
+    #@+node:ekr.20170108045413.4: *3* __init__ (sets solarized colors)
     def __init__(self,*args, **kwds):
         super(CodeEditorBase, self).__init__(*args)
         # Set font (always monospace)
@@ -163,14 +163,13 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             #         S["Editor.Line numbers"] = "back: light grey, fore: black"
         
         # Apply style
-        self.setStyle(S)
+        # g.trace('(CodeEditorBase)','*'*20) ; g.printDict(S)
+        self.setStyle(S, force=True) # EKR
     #@+node:ekr.20170108045413.5: *3* _setHighlighter
     def _setHighlighter(self, highlighterClass):
         self.__highlighter = highlighterClass(self, self.document())
-       
-    ## Options
     #@+node:ekr.20170108092633.1: *3* Option setters/getters
-    #@+node:ekr.20170108045413.6: *4* __getOptionSetters
+    #@+node:ekr.20170108045413.6: *4* ed.__getOptionSetters
     def __getOptionSetters(self):
         """ Get a dict that maps (lowercase) option names to the setter
         methods.
@@ -207,17 +206,18 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             # Add to list
             setters[name.lower()] = member_set
         # Done
-        g.printDict(setters)
+        g.trace()
+        # g.printDict(setters)
+        g.printList(['%20s:%s' % (z, setters.get(z).__name__)
+            for z in sorted(setters)])
         return setters
-    #@+node:ekr.20170108045413.7: *4* __setOptions
+    #@+node:ekr.20170108045413.7: *4* ed.__setOptions
     def __setOptions(self, setters, options):
         """ Sets the options, given the list-of-tuples methods and an
         options dict.
         """
-        
         # List of invalid keys
         invalidKeys = []
-        
         # Set options
         for key1 in options:
             key2 = key1.lower()
@@ -231,7 +231,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                 fun(val)
             else:
                 invalidKeys.append(key1)
-        
         # Check if invalid keys were given
         if invalidKeys:
             print("Warning, invalid options given: " + ', '.join(invalidKeys))
@@ -256,7 +255,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # Also set using given opions?
         if options:
             self.__setOptions(setters, options)
-    #@+node:ekr.20170108045413.9: *4* setOptions
+    #@+node:ekr.20170108045413.9: *4* ed.setOptions
     def setOptions(self, options=None, **kwargs):
         """ setOptions(options=None, **kwargs)
         
@@ -268,7 +267,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         option's setter or getter name.
         
         """
-        
         # Process options
         if options:
             D = {}            
@@ -277,15 +275,10 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             D.update(kwargs)
         else:
             D = kwargs
-        
         # Get setters
         setters = self.__getOptionSetters()
-        
         # Go
         self.__setOptions(setters, D)
-
-
-    ## Font
     #@+node:ekr.20170108092733.1: *3* Font settings
     #@+node:ekr.20170108045413.10: *4* setFont
     def setFont(self, font=None):
@@ -295,9 +288,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         Qt will select the best matching monospace font.
         
         """
-        
         defaultFont = Manager.defaultFont()
-        
         # Get font object
         if font is None:
             font = defaultFont
@@ -307,23 +298,18 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             font = QtGui.QFont(font)
         else:
             raise ValueError("setFont accepts None, QFont or string.")
-        
         # Hint Qt that it should be monospace
         font.setStyleHint(font.TypeWriter, font.PreferDefault)
-        
         # Get family, fall back to default if qt could not produce monospace
         fontInfo = QtGui.QFontInfo(font)
         if fontInfo.fixedPitch():
             family = fontInfo.family() 
         else:
             family = defaultFont.family()
-        
         # Get size: default size + zoom
         size = defaultFont.pointSize() + self.__zoom
-        
         # Create font instance
         font = QtGui.QFont(family, size)
-        
         # Set, emit and return
         QtWidgets.QPlainTextEdit.setFont(self, font)
         self.fontChanged.emit()
@@ -356,8 +342,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         instances used by this class. This includes the descriptions for
         the syntax highlighting of all parsers.
         
-        """ 
-        
+        """
+        # g.trace('-'*20, g.callers())
         # Collect members by walking the class bases
         elements = []
         def collectElements(cls, iter=1):
@@ -372,7 +358,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             for c in cls.__bases__:
                 collectElements(c, iter+1)
         collectElements(cls)
-        
         # Make style element descriptions
         # (Use a dict to ensure there are no duplicate keys)
         elements2 = {}
@@ -386,10 +371,10 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
                 print('Warning: invalid element: ' + repr(element))
             # Store using the name as a key to prevent duplicates
             elements2[element.key] = element
-        
         # Done
+        # g.trace() ; g.printList(list(elements2.values()))
         return list(elements2.values())
-    #@+node:ekr.20170108045413.13: *4* getStyleElementFormat
+    #@+node:ekr.20170108045413.13: *4* ed.getStyleElementFormat
     def getStyleElementFormat(self, name):
         """ getStyleElementFormat(name)
         
@@ -403,8 +388,8 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             return self.__style[key]
         except KeyError:
             raise KeyError('Not a known style element name: "%s".' % name)
-    #@+node:ekr.20170108045413.14: *4* setStyle
-    def setStyle(self, style=None, **kwargs):
+    #@+node:ekr.20170108045413.14: *4* ed.setStyle
+    def setStyle(self, style=None, force=False, **kwargs):
         """ setStyle(style=None, **kwargs)
         
         Updates the formatting per style element. 
@@ -434,9 +419,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         # Combine user input
-        g.trace('=====', g.callers())
-        g.trace('style', '\n'+'\n'.join(sorted(style.keys())))
-        g.trace('__style', repr(self.__style))
+        g.trace('=====', 'force', force, '\n', g.callers())
         D = {}
         if style:
             for key in style:
@@ -450,11 +433,14 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # Set style elements
         for key in D:
             normKey = key.replace(' ', '').lower()
-            if normKey in self.__style:
+            if force:
+                self.__style[normKey] = D[key]
+            elif normKey in self.__style:
                 #self.__style[normKey] = StyleFormat(D[key])
                 self.__style[normKey].update(D[key])
             else:
                 invalidKeys.append(key)
+        g.trace('len(self.style.keys()):', len(self.__style.keys()))
         # Give warning for invalid keys
         if invalidKeys:
             print("Warning, invalid style names given: \n" + 

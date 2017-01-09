@@ -66,16 +66,15 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         """
         # Make sure this is a Unicode Python string
         line = ustr(line)
+        g.trace(hasattr(self._codeEditor, 'parser'), repr(line))
         # Get previous state
         previousState = self.previousBlockState()
         # Get parser
         parser = None
         if hasattr(self._codeEditor, 'parser'):
             parser = self._codeEditor.parser()
-        
         # Get function to get format
         nameToFormat = self._codeEditor.getStyleElementFormat
-        
         fullLineFormat = None
         tokens = []
         if parser:
@@ -94,23 +93,22 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                         #print(repr(nameToFormat(token.name)))
                         continue
                     # Set format
+                    g.trace(token.name,charFormat)
                     self.setFormat(token.start,token.end-token.start,charFormat)
                     # Is this a cell?
-                    if (fullLineFormat is None) and styleFormat._parts.get('underline','') == 'full':
+                    if (
+                        (fullLineFormat is None) and
+                        styleFormat._parts.get('underline','') == 'full'
+                    ):
                         fullLineFormat = styleFormat
-        
         # Get user data
         bd = self.getCurrentBlockUserData()
-        
         # Store token list for future use (e.g. brace matching)
         bd.tokens = tokens
-        
         # Handle underlines
         bd.fullUnderlineFormat = fullLineFormat
-        
         # Get the indentation setting of the editors
         indentUsingSpaces = self._codeEditor.indentUsingSpaces()
-        
         leadingWhitespace=line[:len(line)-len(line.lstrip())]
         if '\t' in leadingWhitespace and ' ' in leadingWhitespace:
             #Mixed whitespace
@@ -120,8 +118,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             format.setUnderlineColor(QtCore.Qt.red)
             format.setToolTip('Mixed tabs and spaces')
             self.setFormat(0,len(leadingWhitespace),format)
-        elif ('\t' in leadingWhitespace and indentUsingSpaces) or \
-            (' ' in leadingWhitespace and not indentUsingSpaces):
+        elif (
+            ('\t' in leadingWhitespace and indentUsingSpaces) or
+            (' ' in leadingWhitespace and not indentUsingSpaces)
+        ):
             #Whitespace differs from document setting
             bd.indentation = 0
             format=QtGui.QTextCharFormat()
@@ -133,8 +133,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             # Store info for indentation guides
             # amount of tabs or spaces
             bd.indentation = len(leadingWhitespace)
-    #@+node:ekr.20170108091854.1: *3* rehighlight
+    #@+node:ekr.20170108091854.1: *3* rehighlight (new)
     def rehighlight(self, p=None):
+        '''Leo override, allowing the 'p' keyword arg.'''
         QtGui.QSyntaxHighlighter.rehighlight(self)
     #@-others
 #@-others
