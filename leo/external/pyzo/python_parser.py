@@ -125,7 +125,7 @@ class PythonParser(Parser):
             state = self._idsState
             self._idsState = 0
             return state
-    #@+node:ekr.20170107213124.7: *3* parseLine
+    #@+node:ekr.20170107213124.7: *3* py.parseLine
     def parseLine(self, line, previousState=0):
         """ parseLine(line, previousState=0)
         
@@ -133,12 +133,10 @@ class PythonParser(Parser):
         previousstate is the state of the previous block, and is used
         to handle line continuation and multiline strings.
         
-        """ 
+        """
         line = text_type(line)
-        
         # Init
         pos = 0 # Position following the previous match
-        
         # identifierState and previousstate values:
         # 0: nothing special
         # 1: multiline comment single qoutes
@@ -152,7 +150,6 @@ class PythonParser(Parser):
             self._identifierState({3:'def',4:'class'}[previousState])
         else:
             self._identifierState(None)
-        
         if previousState in [1,2]:
             token = MultilineStringToken(line, 0, 0)
             token._style = ['', "'''", '"""'][previousState]
@@ -163,11 +160,8 @@ class PythonParser(Parser):
                 if isinstance(token, BlockState):
                     return 
             pos = token.end
-        
-        
         # Enter the main loop that iterates over the tokens and skips strings
         while True:
-            
             # Get next tokens
             tokens = self._findNextToken(line, pos)
             if not tokens:
@@ -175,7 +169,6 @@ class PythonParser(Parser):
             elif isinstance(tokens[-1], StringToken):
                 moreTokens = self._findEndOfString(line, tokens[-1])
                 tokens = tokens[:-1] + moreTokens
-            
             # Process tokens
             for token in tokens:
                 yield token

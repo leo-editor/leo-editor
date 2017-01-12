@@ -17,7 +17,7 @@ management tasks.
 #@-<< pyzo copyright >>
 #@+<< manager.py imports >>
 #@+node:ekr.20170108051856.1: ** << manager.py imports >>
-# import leo.core.leoGlobals as g
+import leo.core.leoGlobals as g
 import os
 import sys
 # from .qt import QtGui, QtCore, QtWidgets
@@ -149,6 +149,7 @@ class Manager:
         
         # Store
         cls._parserInstances = parserInstances
+        g.printList(parserInstances)
     #@+node:ekr.20170108051712.5: *3* getParserNames
     @classmethod
     def getParserNames(cls):
@@ -275,21 +276,18 @@ class Manager:
         object. 
         
         """
-
         # Get font family 
         f = QtGui.QFont(cls._defaultFontFamily)
         f.setStyleHint(f.TypeWriter, f.PreferDefault)
         fi = QtGui.QFontInfo(f)
         family = fi.family()
-        
         # Get the font size
-        size = 9
+        size = 12 ### EKR
         if sys.platform.startswith('darwin'):
             # Account for Qt font size difference
             # http://qt-project.org/forums/viewthread/27201
             # Win/linux use 96 ppi, OS X uses 72 -> 133% ratio
             size = int(size*1.33333+0.4999)
-        
         # Done
         return QtGui.QFont(family, size)
     #@-others

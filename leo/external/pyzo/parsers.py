@@ -9,6 +9,7 @@
 # Pyzo is distributed under the terms of the (new) BSD License.
 # The full license can be found in 'license.txt'.
 #@-<< pyzo copyright >>
+import leo.core.leoGlobals as g
 import sys
 from .tokens import Token, TextToken
 #@+others
@@ -56,7 +57,7 @@ class Parser(object):
     
     
     #@+others
-    #@+node:ekr.20170107212231.8: *3* parseLine
+    #@+node:ekr.20170107212231.8: *3* p.parseLine
     def parseLine(self, line, previousState=0):
         """ parseLine(line, previousState=0)
         
@@ -71,7 +72,7 @@ class Parser(object):
         next block.
         
         """
-        
+        g.trace('(Parser)')
         yield TextToken(line,0,len(line))
 
     #@+node:ekr.20170107212231.9: *3* name

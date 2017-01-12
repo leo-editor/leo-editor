@@ -34,13 +34,13 @@ class BlockData(QtGui.QTextBlockUserData):
 #@+node:ekr.20170107211216.5: ** class Highlighter
 class Highlighter(QtGui.QSyntaxHighlighter):
     #@+others
-    #@+node:ekr.20170107211216.6: *3* __init__
-    def __init__(self,codeEditor,*args):
-        QtGui.QSyntaxHighlighter.__init__(self,*args)
-        
-        # Store reference to editor
+    #@+node:ekr.20170107211216.6: *3* h.__init__
+    def __init__(self, codeEditor, *args):
+        # Set these *before* initing the base class.
         self._codeEditor = codeEditor
-    #@+node:ekr.20170107211216.7: *3* getCurrentBlockUserData
+        QtGui.QSyntaxHighlighter.__init__(self,*args)
+            # Generates call to rehighlight.
+    #@+node:ekr.20170107211216.7: *3* h.getCurrentBlockUserData
     def getCurrentBlockUserData(self):
         """ getCurrentBlockUserData()
         
@@ -52,7 +52,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             bd = BlockData()
             self.setCurrentBlockUserData(bd)
         return bd
-    #@+node:ekr.20170107211216.8: *3* highlightBlock
+    #@+node:ekr.20170107211216.8: *3* h.highlightBlock
     def highlightBlock(self, line): 
         """ highlightBlock(line)
         
@@ -64,15 +64,17 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         check out the indentation.
         
         """
+        trace = False and not g.unitTesting
         # Make sure this is a Unicode Python string
         line = ustr(line)
-        g.trace(hasattr(self._codeEditor, 'parser'), repr(line))
         # Get previous state
         previousState = self.previousBlockState()
         # Get parser
-        parser = None
         if hasattr(self._codeEditor, 'parser'):
             parser = self._codeEditor.parser()
+        else:
+            return ###
+        # if trace: g.trace(repr(line))
         # Get function to get format
         nameToFormat = self._codeEditor.getStyleElementFormat
         fullLineFormat = None
@@ -80,23 +82,27 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         if parser:
             self.setCurrentBlockState(0)
             tokens = list(parser.parseLine(line, previousState))
+            # g.trace(len(tokens), 'tokens', tokens)
             for token in tokens :
                 # Handle block state
                 if isinstance(token, BlockState):
                     self.setCurrentBlockState(token.state)
+                    if trace: g.trace('block state')
                 else:
                     # Get format
                     try:
                         styleFormat = nameToFormat(token.name)
                         charFormat = styleFormat.textCharFormat
                     except KeyError:
-                        #print(repr(nameToFormat(token.name)))
+                        g.trace('key error:', token.name)
                         continue
                     # Set format
-                    g.trace(token.name,charFormat)
+                    # if trace: g.trace(token.name,charFormat)
                     self.setFormat(token.start,token.end-token.start,charFormat)
                     # Is this a cell?
-                    if (
+                    if 1:
+                        fullLineFormat = styleFormat
+                    elif (
                         (fullLineFormat is None) and
                         styleFormat._parts.get('underline','') == 'full'
                     ):
@@ -108,9 +114,11 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         # Handle underlines
         bd.fullUnderlineFormat = fullLineFormat
         # Get the indentation setting of the editors
-        indentUsingSpaces = self._codeEditor.indentUsingSpaces()
+        indentUsingSpaces = True ### self._codeEditor.indentUsingSpaces()
         leadingWhitespace=line[:len(line)-len(line.lstrip())]
-        if '\t' in leadingWhitespace and ' ' in leadingWhitespace:
+        if 1:
+            bd.indentation = len(leadingWhitespace)
+        elif '\t' in leadingWhitespace and ' ' in leadingWhitespace:
             #Mixed whitespace
             bd.indentation = 0
             format=QtGui.QTextCharFormat()
@@ -133,10 +141,12 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             # Store info for indentation guides
             # amount of tabs or spaces
             bd.indentation = len(leadingWhitespace)
-    #@+node:ekr.20170108091854.1: *3* rehighlight (new)
-    def rehighlight(self, p=None):
-        '''Leo override, allowing the 'p' keyword arg.'''
-        QtGui.QSyntaxHighlighter.rehighlight(self)
+    #@+node:ekr.20170108091854.1: *3* h.rehighlight (new)
+    if 1:
+        def rehighlight(self, p=None):
+            '''Leo override, allowing the 'p' keyword arg.'''
+            g.trace('(pyzo)', p and p.h)
+            QtGui.QSyntaxHighlighter.rehighlight(self)
     #@-others
 #@-others
 #@@language python

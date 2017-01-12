@@ -24,7 +24,7 @@ class StyleElementDescription:
     """
     
     #@+others
-    #@+node:ekr.20170107214321.4: *3* __init__
+    #@+node:ekr.20170107214321.4: *3* sf.__init__
     def __init__(self, name, description, defaultFormat):
         self._name = name
         self._description = description
@@ -90,11 +90,11 @@ class StyleFormat:
     """
     
     #@+others
-    #@+node:ekr.20170107214321.11: *3* __init__
+    #@+node:ekr.20170107214321.11: *3* sf.__init__
     def __init__(self, format=''):
         self._parts = {}
         self.update(format)
-    #@+node:ekr.20170107214321.12: *3* _resetProperties
+    #@+node:ekr.20170107214321.12: *3* sf._resetProperties
     def _resetProperties(self):
         self._fore = None
         self._back = None
@@ -103,7 +103,7 @@ class StyleFormat:
         self._underline = None
         self._linestyle = None
         self._textCharFormat = None
-    #@+node:ekr.20170107214321.13: *3* __str__
+    #@+node:ekr.20170107214321.13: *3* sf.__str__
     def __str__(self):
         """ Get a (cleaned up) string representation of this style format. 
         """
@@ -111,16 +111,16 @@ class StyleFormat:
         for key in self._parts:
             parts.append('%s:%s' % (key, self._parts[key]))
         return ', '.join(parts)
-    #@+node:ekr.20170107214321.14: *3* __repr__
+    #@+node:ekr.20170107214321.14: *3* sf.__repr__
     def __repr__(self):
         return '<StyleFormat "%s">' % str(self)
-    #@+node:ekr.20170107214321.15: *3* __getitem__
+    #@+node:ekr.20170107214321.15: *3* sf.__getitem__
     def __getitem__(self, key):
         try:
             return self._parts[key]
         except KeyError:
             raise KeyError('Invalid part key for style format.')
-    #@+node:ekr.20170107214321.16: *3* __iter__
+    #@+node:ekr.20170107214321.16: *3* sf.__iter__
     def __iter__(self):
         """ Yields a series of tuples (key, val).
         """
@@ -128,7 +128,7 @@ class StyleFormat:
         for key in self._parts:
             parts.append( (key, self._parts[key]) )
         return parts.__iter__()
-    #@+node:ekr.20170107214321.17: *3* update
+    #@+node:ekr.20170107214321.17: *3* sf.update
     def update(self, format):
         """ update(format)
         
@@ -159,7 +159,6 @@ class StyleFormat:
                 self._parts['back'] = val
             elif key:
                 self._parts[key] = val
-
     #@+node:ekr.20170108171245.1: *3* properties & helper
     #@+node:ekr.20170107214321.18: *4* _getValueSafe
     def _getValueSafe(self, key):

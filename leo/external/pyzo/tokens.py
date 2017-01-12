@@ -65,7 +65,7 @@ class Token(object):
             nameParts.append( language[0].upper() + language[1:] )
         nameParts.append( self.__class__.__name__[:-5].lower() )
         return '.'.join(nameParts)
-    #@+node:ekr.20170107212709.10: *3* getDefaultStyleFormat
+    #@+node:ekr.20170107212709.10: *3* tok.getDefaultStyleFormat
     def getDefaultStyleFormat(self):
         elements = []
         def collect(cls):

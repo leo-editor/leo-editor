@@ -24,7 +24,7 @@ from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
 from .misc import callLater # , ustr
 from .manager import Manager
 from .highlighter import Highlighter
-from .style import StyleElementDescription # StyleFormat, 
+from .style import StyleElementDescription, StyleFormat
 #@-<< base.py imports >>
 #@+others
 #@+node:ekr.20170108045413.3: ** class CodeEditorBase
@@ -52,7 +52,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
     breakPointsChanged = Signal(object)
     
     #@+others
-    #@+node:ekr.20170108045413.4: *3* __init__ (sets solarized colors)
+    #@+node:ekr.20170108045413.4: *3* ed.__init__ (sets solarized colors)
     def __init__(self,*args, **kwds):
         super(CodeEditorBase, self).__init__(*args)
         # Set font (always monospace)
@@ -60,7 +60,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         self.setFont()
         # Create highlighter class 
         self.__highlighter = Highlighter(self, self.document())
-        self.leo_highlighter = self.__highlighter
         # Set some document options
         option = self.document().defaultTextOption()
         option.setFlags(
@@ -73,9 +72,9 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # the hihghlighting etc will work
         self.cursorPositionChanged.connect(self.viewport().update) 
         # Init styles to default values
-        self.__style = {}
+        self.leo_style = {}
         for element in self.getStyleElementDescriptions():
-            self.__style[element.key] = element.defaultFormat
+            self.leo_style[element.key] = element.defaultFormat
         # Connect style update
         self.styleChanged.connect(self.__afterSetStyle)
         self.__styleChangedPending = False
@@ -118,12 +117,17 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         # Define style using "Solarized" colors
         S  = {}
         S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
+        S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
+            ### Added: ekr
         S['Syntax.identifier'] = "fore:%s, bold:no, italic:no, underline:no" % fore1
         S["Syntax.nonidentifier"] = "fore:%s, bold:no, italic:no, underline:no" % fore2
         S["Syntax.keyword"] = "fore:%s, bold:yes, italic:no, underline:no" % fore2
         #
         S["Syntax.functionname"] = "fore:%s, bold:yes, italic:no, underline:no" % fore3
         S["Syntax.classname"] = "fore:%s, bold:yes, italic:no, underline:no" % orange
+        # EKR
+        S["Syntax.openparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
+        S["Syntax.closeparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
         #
         S["Syntax.string"] = "fore:%s, bold:no, italic:no, underline:no" % violet
         S["Syntax.unterminatedstring"] = "fore:%s, bold:no, italic:no, underline:dotted" % violet
@@ -132,6 +136,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         S["Syntax.number"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
         S["Syntax.comment"] ="fore:%s, bold:no, italic:no, underline:no" % yellow
         S["Syntax.todocomment"] = "fore:%s, bold:no, italic:yes, underline:no" % magenta
+        
         S["Syntax.python.cellcomment"] = "fore:%s, bold:yes, italic:no, underline:full" % yellow
         #
         S["Editor.Long line indicator"] = "linestyle:solid, fore:%s" % back2
@@ -206,10 +211,11 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             # Add to list
             setters[name.lower()] = member_set
         # Done
-        g.trace()
-        # g.printDict(setters)
-        g.printList(['%20s:%s' % (z, setters.get(z).__name__)
-            for z in sorted(setters)])
+        if 0: ###
+            g.trace()
+            # g.printDict(setters)
+            g.printList(['%20s:%s' % (z, setters.get(z).__name__)
+                for z in sorted(setters)])
         return setters
     #@+node:ekr.20170108045413.7: *4* ed.__setOptions
     def __setOptions(self, setters, options):
@@ -383,11 +389,12 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         the use of spaces.
         
         """
-        key = name.replace(' ','').lower()
+        normKey = name.replace(' ','').lower()
         try:
-            return self.__style[key]
+            return self.leo_style[normKey]
         except KeyError:
-            raise KeyError('Not a known style element name: "%s".' % name)
+            g.trace(normKey)
+            raise KeyError('Not a known style element name: "%s".' % normKey)
     #@+node:ekr.20170108045413.14: *4* ed.setStyle
     def setStyle(self, style=None, force=False, **kwargs):
         """ setStyle(style=None, **kwargs)
@@ -419,35 +426,40 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         
         """
         # Combine user input
-        g.trace('=====', 'force', force, '\n', g.callers())
+        # def normkey(key):
+            # return key.replace(' ', '').lower()
+        g.trace('=====', 'force', force) #, '\n', g.callers())
         D = {}
         if style:
             for key in style:
-                D[key] = style[key]
+                normKey = key.replace(' ', '').lower()
+                # g.trace(key, '->', normKey)
+                ### D[key] = style[key]
+                D[normKey] = style[key]
         if True:
             for key in kwargs:
                 key2 = key.replace('_', '.')
                 D[key2] = kwargs[key]
         # List of given invalid style element names
         invalidKeys = []
+        # g.printList(sorted(D.keys()))
         # Set style elements
         for key in D:
             normKey = key.replace(' ', '').lower()
             if force:
-                self.__style[normKey] = D[key]
-            elif normKey in self.__style:
-                #self.__style[normKey] = StyleFormat(D[key])
-                self.__style[normKey].update(D[key])
+                self.leo_style[normKey] = StyleFormat(format=D[normKey])
+            elif normKey in self.leo_style:
+                ### self.leo_style[normKey].update(D[key])
+                self.leo_style[normKey].update(D[normKey]) # EKR
             else:
                 invalidKeys.append(key)
-        g.trace('len(self.style.keys()):', len(self.__style.keys()))
         # Give warning for invalid keys
         if invalidKeys:
             print("Warning, invalid style names given: \n" + 
                 '\n'.join(sorted(invalidKeys)))
         # Notify that style changed, adopt a lazy approach to make loading
         # quicker.
-        if self.isVisible():
+        if True: ### self.isVisible(): ###
             callLater(self.styleChanged.emit)
             self.__styleChangedPending = False
         else:
@@ -500,9 +512,6 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
     def setIndentUsingSpaces(self, value):
         self.__indentUsingSpaces = bool(value)
         self.__highlighter.rehighlight()
-     
-
-    ## Misc
     #@+node:ekr.20170108092912.1: *3* Misc
     #@+node:ekr.20170108045413.21: *4* gotoLine
     def gotoLine(self, lineNumber):
