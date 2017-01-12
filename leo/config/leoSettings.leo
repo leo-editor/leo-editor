@@ -648,6 +648,10 @@
 </v>
 </v>
 </v>
+<v t="tbnorth.20170111153412.1"><vh>Editing</vh>
+<v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
+<v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
+</v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
@@ -11952,6 +11956,16 @@ Default False.</t>
 be added as a child of the receiving node, set this to
 False to not expand the receiving node, keeping a list of
 recipient nodes conveniently compact for additional drops.</t>
+<t tx="tbnorth.20170111153412.1"></t>
+<t tx="tbnorth.20170111153417.1">Automatically wrap text (insert newline) when typing exceeds this column.
+
+Toggle on/off with `justify-toggle-auto` command, off initially unless
+`autojustify-on-at-start` is True.
+</t>
+<t tx="tbnorth.20170111153430.1">Turn text wrapping (newling insertion) on by default.
+
+See `@int autojustify`
+</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to

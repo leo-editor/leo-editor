@@ -1897,6 +1897,20 @@ class Commands(object):
         body.wrapper.setFocus()
         c.recolor()
         return dirtyVnodeList
+    #@+node:tbnorth.20170111151835.1: *6* justify-toggle-auto
+    @cmd("justify-toggle-auto")
+    def justify_toggle_auto(self, event=None):
+        c = self
+        if c.editCommands.autojustify == 0:
+            c.editCommands.autojustify = abs(c.config.getInt("autojustify") or 0)
+            if c.editCommands.autojustify:
+                g.es("Autojustify on, @int autojustify == %s" %
+                c.editCommands.autojustify)
+            else:
+                g.es("Set @int autojustify in @settings")
+        else:
+            c.editCommands.autojustify = 0
+            g.es("Autojustify off")
     #@+node:ekr.20031218072017.2885: *5* Edit Headline submenu
     #@+node:ekr.20031218072017.2886: *6* c.editHeadline
     @cmd('edit-headline')
