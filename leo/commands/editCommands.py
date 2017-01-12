@@ -43,7 +43,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Settings...
         cf = c.config
         self.autocompleteBrackets = cf.getBool('autocomplete-brackets')
-        self.autojustify = abs(cf.getInt('auto-justify') or 0)
+        if cf.getBool('auto-justify-on-at-start'):
+            self.autojustify = abs(cf.getInt('auto-justify') or 0)
+        else:
+            self.autojustify = 0
         self.bracketsFlashBg = cf.getColor('flash-brackets-background-color')
         self.bracketsFlashCount = cf.getInt('flash-brackets-count')
         self.bracketsFlashDelay = cf.getInt('flash-brackets-delay')
