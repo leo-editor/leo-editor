@@ -126,6 +126,8 @@ class PythonParser(Parser):
             self._idsState = 0
             return state
     #@+node:ekr.20170107213124.7: *3* py.parseLine
+    n_parse = 0
+
     def parseLine(self, line, previousState=0):
         """ parseLine(line, previousState=0)
         
@@ -134,6 +136,7 @@ class PythonParser(Parser):
         to handle line continuation and multiline strings.
         
         """
+        self.n_parse += 1
         line = text_type(line)
         # Init
         pos = 0 # Position following the previous match

@@ -15,6 +15,7 @@ from leo.core.leoQt import QtCore, QtGui
 import leo.core.leoGlobals as g
 ustr = g.ustr
 from .parsers import BlockState
+from .style import StyleFormat # New.
 #@-<< highlighter imports >>
 #@+others
 #@+node:ekr.20170107211216.3: ** class BlockData
@@ -31,28 +32,131 @@ class BlockData(QtGui.QTextBlockUserData):
     #@-others
 # The highlighter should be part of the base class, because 
 # some extensions rely on them (e.g. the indent guuides).
-#@+node:ekr.20170107211216.5: ** class Highlighter
-class Highlighter(QtGui.QSyntaxHighlighter):
+#@+node:ekr.20170107211216.5: ** class PyzoHighlighter
+class PyzoHighlighter(QtGui.QSyntaxHighlighter):
     #@+others
-    #@+node:ekr.20170107211216.6: *3* h.__init__
-    def __init__(self, codeEditor, *args):
-        # Set these *before* initing the base class.
-        self._codeEditor = codeEditor
-        QtGui.QSyntaxHighlighter.__init__(self,*args)
-            # Generates call to rehighlight.
+    #@+node:ekr.20170107211216.6: *3* h.__init__ & helpers
+    if 1:
+        # Don't use codeEditor at all.
+        # This requires another way of initing settings.
+        def __init__(self, parser, *args):
+            # Set these *before* initing the base class.
+            # self._codeEditor = codeEditor
+            self.parser = parser
+            self.colorer = None
+                # To disable some code in qtew.setAllText.
+            d = self.defineStyles()
+            self.initStyles(d)
+            assert self.style_d
+            QtGui.QSyntaxHighlighter.__init__(self, *args)
+                # Generates call to rehighlight.
+            
+    else:
+        def __init__(self, codeEditor, *args):
+            # Set these *before* initing the base class.
+            self._codeEditor = codeEditor
+            QtGui.QSyntaxHighlighter.__init__(self,*args)
+                # Generates call to rehighlight.
+    #@+node:ekr.20170112103148.1: *4* h.define_styles (new)
+    def defineStyles(self):
+        '''Set self.style_format_d.'''
+        base03  = "#002b36"
+        base02  = "#073642"
+        base01  = "#586e75"
+        base00  = "#657b83"
+        base0   = "#839496"
+        base1   = "#93a1a1"
+        base2   = "#eee8d5"
+        base3   = "#fdf6e3"
+        yellow  = "#b58900"
+        orange  = "#cb4b16"
+        red     = "#dc322f"
+        magenta = "#d33682"
+        violet  = "#6c71c4"
+        blue    = "#268bd2"
+        cyan    = "#2aa198"
+        green   = "#859900"
+        light = True
+        if light: # Light background.
+            #back1, back2, back3 = base3, base2, base1 # real solarised
+            back1, back2, back3 = "#fff", base2, base1 # crispier
+            fore1, fore2, fore3, fore4 = base00, base01, base02, base03
+        else:
+            back1, back2, back3 = base03, base02, base01
+            fore1, fore2, fore3, fore4 = base0, base1, base2, base3
+        S = {}
+        plain     = "fore:%s, bold:no,  italic:no,  underline:no"
+        bold      = "fore:%s, bold:yes, italic:no,  underline:no"
+        dotted    = "fore:%s, bold:no,  italic:no,  underline:dotted"
+        italic    = "fore:%s, bold:no,  italic:yes, underline:no"
+        solid     = "linestyle:solid, fore:%s"
+        underline = "fore:%s, bold:yes, italic:no,  underline:full"
+        S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
+        S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
+            ### Added: ekr
+        S['Syntax.identifier'] = plain % fore1
+        S["Syntax.nonidentifier"] = plain % fore2
+        S["Syntax.keyword"] = bold % fore2
+        #
+        S["Syntax.functionname"] = bold % fore3
+        S["Syntax.classname"] = bold % orange
+        # EKR
+        S["Syntax.openparen"] = plain % cyan
+        S["Syntax.closeparen"] = plain % cyan
+        #
+        S["Syntax.string"] = plain % violet
+        S["Syntax.unterminatedstring"] = dotted % violet
+        S["Syntax.python.multilinestring"] = plain % blue
+        #
+        S["Syntax.number"] = plain % cyan
+        S["Syntax.comment"] = plain % yellow
+        S["Syntax.todocomment"] = italic % magenta
+        S["Syntax.python.cellcomment"] = underline % yellow
+        #
+        S["Editor.Long line indicator"] = solid % back2
+        S["Editor.Highlight current line"] = "back:%s" % back2
+        S["Editor.Indentation guides"] = solid % back2
+        S["Editor.Line numbers"] = "back:%s, fore:%s" % (back2, back3)
+        # Normalize all keys.
+        d = {}
+        for key in S:
+            normKey = key.replace(' ', '').lower()
+            d[normKey] = S.get(key)
+        return d
+    #@+node:ekr.20170112101149.4: *4* h.initStyles (new)
+
+
+    def initStyles(self, d):
+
+        # Set style elements. Keys have already been normalized.
+        self.style_d = {}
+        for key in d:
+            self.style_d[key] = StyleFormat(format=d[key])
+        # Notify that style changed.
+        # adopt a lazy approach to make loading quicker.
+        if False: ### self.isVisible(): ###
+            callLater(self.styleChanged.emit)
+            self.__styleChangedPending = False
+        else:
+            self.__styleChangedPending = True
     #@+node:ekr.20170107211216.7: *3* h.getCurrentBlockUserData
+    n_block_data = 0
+
     def getCurrentBlockUserData(self):
         """ getCurrentBlockUserData()
         
         Gets the BlockData object. Creates one if necesary.
         
         """
+        self.n_block_data += 1
         bd = self.currentBlockUserData()
         if not isinstance(bd, BlockData):
             bd = BlockData()
             self.setCurrentBlockUserData(bd)
         return bd
     #@+node:ekr.20170107211216.8: *3* h.highlightBlock
+    n_calls = 0
+
     def highlightBlock(self, line): 
         """ highlightBlock(line)
         
@@ -65,18 +169,13 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         
         """
         trace = False and not g.unitTesting
+        self.n_calls += 1
         # Make sure this is a Unicode Python string
         line = ustr(line)
         # Get previous state
         previousState = self.previousBlockState()
         # Get parser
-        if hasattr(self._codeEditor, 'parser'):
-            parser = self._codeEditor.parser()
-        else:
-            return ###
-        # if trace: g.trace(repr(line))
-        # Get function to get format
-        nameToFormat = self._codeEditor.getStyleElementFormat
+        parser = self.parser
         fullLineFormat = None
         tokens = []
         if parser:
@@ -90,11 +189,12 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                     if trace: g.trace('block state')
                 else:
                     # Get format
-                    try:
-                        styleFormat = nameToFormat(token.name)
+                    normKey = token.name.replace(' ', '').lower()
+                    styleFormat = self.style_d.get(normKey)
+                    if styleFormat:
                         charFormat = styleFormat.textCharFormat
-                    except KeyError:
-                        g.trace('key error:', token.name)
+                    else:
+                        g.trace('no format', repr(token.name))
                         continue
                     # Set format
                     # if trace: g.trace(token.name,charFormat)
@@ -142,11 +242,18 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             # amount of tabs or spaces
             bd.indentation = len(leadingWhitespace)
     #@+node:ekr.20170108091854.1: *3* h.rehighlight (new)
-    if 1:
-        def rehighlight(self, p=None):
-            '''Leo override, allowing the 'p' keyword arg.'''
-            g.trace('(pyzo)', p and p.h)
-            QtGui.QSyntaxHighlighter.rehighlight(self)
+    def rehighlight(self, p=None):
+        '''Leo override, allowing the 'p' keyword arg.'''
+        trace = False and not g.unitTesting
+        self.n_calls = self.n_block_data = 0
+        self.parser.n_parse = 0
+        QtGui.QSyntaxHighlighter.rehighlight(self)
+        if trace:
+            g.trace('(pyzo)',
+                self.n_calls,
+                self.n_block_data,
+                self.parser.n_parse,
+                p and p.h)
     #@-others
 #@-others
 #@@language python

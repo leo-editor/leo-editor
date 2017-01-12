@@ -23,7 +23,7 @@ else:
 from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
 from .misc import callLater # , ustr
 from .manager import Manager
-from .highlighter import Highlighter
+from .highlighter import PyzoHighlighter ### Highlighter
 from .style import StyleElementDescription, StyleFormat
 #@-<< base.py imports >>
 #@+others
@@ -59,7 +59,7 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
         self.__zoom = 0
         self.setFont()
         # Create highlighter class 
-        self.__highlighter = Highlighter(self, self.document())
+        self.__highlighter = PyzoHighlighter(self, self.document())
         # Set some document options
         option = self.document().defaultTextOption()
         option.setFlags(

@@ -128,7 +128,8 @@ class QTextMixin(object):
         if 1: # This works, and is probably better.
             # Set a hook for the old jEdit colorer.
             colorer = c.frame.body.colorizer.highlighter.colorer
-            colorer.initFlag = True
+            if colorer:
+                colorer.initFlag = True
         else:
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
@@ -1277,7 +1278,8 @@ class QTextEditWrapper(QTextMixin):
         if i > j: i, j = j, i
         if trace: g.trace(i, j)
         # Set a hook for the colorer.
-        colorer.initFlag = True
+        if colorer:
+            colorer.initFlag = True
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1398,7 +1400,8 @@ class QTextEditWrapper(QTextMixin):
         colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
         # Set a hook for the colorer.
-        colorer.initFlag = True
+        if colorer:
+            colorer.initFlag = True
         i = self.toPythonIndex(i)
         cursor = w.textCursor()
         try:
@@ -1544,12 +1547,14 @@ class QTextEditWrapper(QTextMixin):
         highlighter = colorizer.highlighter
         # Be careful: Scintilla doesn't have a colorer.
         colorer = highlighter and highlighter.colorer
-        if colorer: colorer.initFlag = True
+        if colorer:
+            colorer.initFlag = True
         try:
             if trace and trace_time:
                 t1 = time.time()
             self.changingText = True # Disable onTextChanged.
-            colorizer.changingText = True # Disable colorizer.
+            if colorer:
+                colorizer.changingText = True # Disable colorizer.
             # g.trace('read/write text')
             w.setReadOnly(False)
             w.setPlainText(s)

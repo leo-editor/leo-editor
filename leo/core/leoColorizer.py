@@ -3,8 +3,13 @@
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
 #@@first
 '''All colorizing code for Leo.'''
+#@+<< define pyzo switch >>
+#@+node:ekr.20170112091527.1: ** << define pyzo switch >>
 pyzo = False
-    # True: use pyzo.Highlighter
+    # True: Use pyzo colorer.
+    # False: Use Leo's legacy colorers.
+#@-<< define pyzo switch >>
+    # True: use PyzoHighlighter.
 python_qsh = True
     # True use PythonQSyntaxHighlighter
     # False use QSyntaxHighlighter
@@ -2500,35 +2505,20 @@ class LeoQtColorizer(object):
     def setHighlighter(self, p):
 
         if pyzo:
+            trace = False and not g.unitTesting
             c = self.c
-            if not self.pyzo_highlighter:
-                g.trace('===== new highlighter')
-                import leo.external.pyzo.base as base
+            if self.pyzo_highlighter:
+                self.pyzo_highlighter.rehighlight(p=p)
+            else:
+                if trace: g.trace('===== new highlighter')
                 import leo.external.pyzo.highlighter as highlighter
                 import leo.external.pyzo.python_parser as python_parser
-                
-                class LeoCodeEditor(base.CodeEditorBase):
-        
-                    def __init__(self, parser):
-                        # Must set _parser ivar before initing the base class.
-                        self._parser = parser
-                        base.CodeEditorBase.__init__(self)
-                
-                    def parser(self):
-                        return self._parser
 
                 parser = python_parser.PythonParser()
-                codeEditor = LeoCodeEditor(parser)
-                    # For access to editor.getStyleElementFormat
                 widget = c.frame.body.wrapper.widget
-                h = highlighter.Highlighter(codeEditor, widget)
-                h.colorer = g.NullObject()
-                    # Disable code in Leo's core.
+                h = highlighter.PyzoHighlighter(parser, widget)
                 c.frame.body.colorizer.highlighter = h
                 self.pyzo_highlighter = h
-            else:
-                h = self.pyzo_highlighter
-                h.rehighlight(p=p)
         elif self.enabled:
             self.flag = self.updateSyntaxColorer(p)
             return self.flag

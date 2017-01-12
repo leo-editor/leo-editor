@@ -1701,7 +1701,7 @@ class LeoTree(object):
             select = True
         if select:
             self.revertHeadline = p.h
-            if 0: ### Expensive!!!
+            if 1: # Expensive!!!
                 c.frame.setWrap(p)
             if 0:
                 btc = c.bigTextController

@@ -65,6 +65,7 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* LeoQtEventFilter.eventFilter
     def eventFilter(self, obj, event):
+        # g.trace(obj, event)
         trace = False and not g.unitTesting
         verbose = False
         traceEvent = True # True: call self.traceEvent.
@@ -542,6 +543,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # E1101:9240,0:Class 'QEvent' has no 'CloseSoftwareInputPanel' member
         # E1101:9267,0:Class 'QEvent' has no 'RequestSoftwareInputPanel' member
         if not g.app.debug_app: return
+        verbose = False
         c = self.c
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
@@ -574,6 +576,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.MouseButtonRelease: 'mouse-button-release', # 3
             e.MouseButtonDblClick: 'mouse-button-double-click', # 4
             e.MouseMove: 'mouse-move', # 5
+            e.MouseTrackingChange: 'mouse-tracking-change', # 105
             e.Paint: 'paint', # 12
             e.PaletteChange: 'palette-change', # 39
             e.ParentChange: 'parent-change', # 21
@@ -619,7 +622,7 @@ class LeoQtEventFilter(QtCore.QObject):
             c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
         )
         w = QtWidgets.QApplication.focusWidget()
-        if g.app.debug_widgets: # verbose:
+        if verbose or g.app.debug_widgets:
             for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
                 t = d.get(et)
                 if t: break
