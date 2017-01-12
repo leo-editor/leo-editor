@@ -3,6 +3,8 @@
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
 #@@first
 '''All colorizing code for Leo.'''
+pyzo = False
+    # True: use pyzo.Highlighter
 python_qsh = True
     # True use PythonQSyntaxHighlighter
     # False use QSyntaxHighlighter
@@ -86,7 +88,7 @@ class PythonQSyntaxHighlighter(object):
 
                 QtCore.QTimer.singleShot(200, rehightlight_callback)
             else:
-                if trace: g.trace(n)
+                if trace: g.trace('(pqsh)', n)
                 cursor = QtGui.QTextCursor(d)
                 self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
     #@+node:ekr.20140825132752.18568: *4* pqsh.rehighlightBlock (not used)
@@ -347,6 +349,8 @@ class ColorizerMixin(object):
 
         Return a dict containing pointers to the start of each directive.
         '''
+        if pyzo:
+            return {} ###
         trace = False and not g.unitTesting
         d = {}
         anIter = self.color_directives_pat.finditer(p.b)
@@ -362,6 +366,7 @@ class ColorizerMixin(object):
         '''Scan p's body text for *valid* @language directives.
 
         Return a list of languages.'''
+        if pyzo: return [] ###
         # Speed not very important: called only for nodes containing @language directives.
         trace = False and not g.unitTesting
         aList = []
@@ -385,6 +390,8 @@ class ColorizerMixin(object):
     #@+node:ekr.20140906081909.18711: *3* cm.scanColorByPosition
     def scanColorByPosition(self, p):
         '''Scan p for color-related directives.'''
+        if pyzo:
+            return self.language
         c = self.c
         wrapper = c.frame.body.wrapper
         i = wrapper.getInsertPoint()
@@ -399,6 +406,7 @@ class ColorizerMixin(object):
     #@+node:ekr.20140906081909.18697: *3* cm.scanColorDirectives
     def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
+        if pyzo: return None
         trace = False and not g.unitTesting
         c = self.c
         if not c:
@@ -447,6 +455,7 @@ class ColorizerMixin(object):
     #@+node:ekr.20140906081909.18704: *3* cm.updateSyntaxColorer
     def updateSyntaxColorer(self, p):
         '''Scan p.b for color directives.'''
+        if pyzo: return None
         trace = False and not g.unitTesting
         # An important hack: shortcut everything if the first line is @killcolor.
         if p.b.startswith('@killcolor'):
@@ -463,6 +472,7 @@ class ColorizerMixin(object):
     #@+node:ekr.20140906081909.18714: *3* cm.useSyntaxColoring
     def useSyntaxColoring(self, p):
         """Return True unless p is unambiguously under the control of @nocolor."""
+        if pyzo: return True
         trace = False and not g.unitTesting
         if not p:
             if trace: g.trace('no p', repr(p))
@@ -535,6 +545,8 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18572: *4* __init__ (JEditColorizer)
     def __init__(self, c, colorizer, highlighter, wrapper):
         '''Ctor for JEditColorizer class.'''
+        if pyzo:
+            return
         # Basic data...
         self.c = c
         self.colorizer = colorizer
@@ -2117,16 +2129,17 @@ class JEditColorizer(object):
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
         trace = False and not g.unitTesting
-        traceMatch = True
-        traceFail = True
-        traceState = True
-        traceEndState = True
+        traceMatch = False
+        traceFail = False
+        traceState = False
+        traceEndState = False
         if trace:
             if traceState:
                 g.trace('%s %-30s' % (self.language_name,
                     '** start: %s' % self.showState(n)), repr(s))
             else:
-                g.trace(self.language_name, repr(s)) # Called from recolor.
+                g.trace(self.language_name, repr(s))
+                    # Called from recolor.
         i = 0
         if n > -1:
             i = self.restart(n, s, trace and traceMatch)
@@ -2190,6 +2203,8 @@ class JEditColorizer(object):
         trace = False and not g.unitTesting
         traceCallers = False; traceLine = True
         traceState = False; traceReturns = False
+        if pyzo:
+            return ###
         # Update the counts.
         self.recolorCount += 1
         if self.colorizer.changingText:
@@ -2294,7 +2309,10 @@ class LeoQtColorizer(object):
         self.oldV = None
         self.showInvisibles = False
         # Step 2: create the highlighter.
-        if isinstance(widget, QtWidgets.QTextEdit):
+        if pyzo: ###
+            self.highlighter = None
+            self.colorer = None
+        elif isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoQtSyntaxHighlighter(c, widget, colorizer=self)
             self.colorer = self.highlighter.colorer
         else:
@@ -2308,6 +2326,8 @@ class LeoQtColorizer(object):
     #@+node:ekr.20110605121601.18553: *3* colorize (LeoQtColorizer) & helper
     def colorize(self, p, incremental=False, interruptable=True):
         '''The main colorizer entry point.'''
+        if pyzo:
+            return
         trace = False and not g.unitTesting
         verbose = True
         self.count += 1 # For unit testing.
@@ -2346,7 +2366,9 @@ class LeoQtColorizer(object):
                     fullRecolor = True
                     self.language = language
             if fullRecolor:
-                if trace: g.trace('** calling rehighlight', g.callers())
+                if trace: g.trace(
+                    '** calling rehighlight',
+                    self.highlighter, g.callers())
                 self.oldLanguageList = self.languageList[:]
                 self.oldV = p.v
                 self.highlighter.rehighlight(p)
@@ -2383,12 +2405,16 @@ class LeoQtColorizer(object):
     #@+node:ekr.20140827112712.18468: *3* kill (LeoQtColorizer)
     def kill(self): # c.frame.body.colorizer.kill
         '''Kill any queue colorizing.'''
+        if pyzo:
+            return ###
         if self.highlighter and hasattr(self.highlighter, 'kill'):
             self.highlighter.kill()
     #@+node:ekr.20110605121601.18556: *3* scanColorDirectives (LeoQtColorizer) & helper
     def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
         trace = False and not g.unitTesting
+        if pyzo:
+            return ###
         c = self.c
         if c is None: return None # self.c may be None for testing.
         root = p.copy()
@@ -2466,17 +2492,52 @@ class LeoQtColorizer(object):
     def isValidLanguage(self, language):
         fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
         return g.os_path_exists(fn)
-    #@+node:ekr.20110605121601.18561: *3* setHighlighter
+    #@+node:ekr.20110605121601.18561: *3* setHighlighter ***
     # Called *only* from LeoTree.setBodyTextAfterSelect
 
+    pyzo_highlighter = None
+
     def setHighlighter(self, p):
-        if self.enabled:
+
+        if pyzo:
+            c = self.c
+            if not self.pyzo_highlighter:
+                g.trace('===== new highlighter')
+                import leo.external.pyzo.base as base
+                import leo.external.pyzo.highlighter as highlighter
+                import leo.external.pyzo.python_parser as python_parser
+                
+                class LeoCodeEditor(base.CodeEditorBase):
+        
+                    def __init__(self, parser):
+                        # Must set _parser ivar before initing the base class.
+                        self._parser = parser
+                        base.CodeEditorBase.__init__(self)
+                
+                    def parser(self):
+                        return self._parser
+
+                parser = python_parser.PythonParser()
+                codeEditor = LeoCodeEditor(parser)
+                    # For access to editor.getStyleElementFormat
+                widget = c.frame.body.wrapper.widget
+                h = highlighter.Highlighter(codeEditor, widget)
+                h.colorer = g.NullObject()
+                    # Disable code in Leo's core.
+                c.frame.body.colorizer.highlighter = h
+                self.pyzo_highlighter = h
+            else:
+                h = self.pyzo_highlighter
+                h.rehighlight(p=p)
+        elif self.enabled:
             self.flag = self.updateSyntaxColorer(p)
             return self.flag
     #@+node:ekr.20110605121601.18562: *3* updateSyntaxColorer (LeoQtColorizer)
     def updateSyntaxColorer(self, p):
         '''Scan p.b for color directives.'''
         trace = False and not g.unitTesting
+        if pyzo:
+            return ###
         # An important hack: shortcut everything if the first line is @killcolor.
         if p.b.startswith('@killcolor'):
             if trace: g.trace('@killcolor')
@@ -2493,6 +2554,8 @@ class LeoQtColorizer(object):
     def useSyntaxColoring(self, p):
         """Return True unless p is unambiguously under the control of @nocolor."""
         trace = False and not g.unitTesting
+        if pyzo: ###
+            return True
         if not p:
             if trace: g.trace('no p', repr(p))
             return False
@@ -2555,6 +2618,8 @@ class LeoQtColorizer(object):
         Called from the node selection logic only if an @colorcache directive is in effect.
         '''
         trace = False and not g.unitTesting
+        if pyzo:
+            return ###
         if not p: return
         c = self.c
         widget = c.frame.body.widget # a subclass of QTextBrowser

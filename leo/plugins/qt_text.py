@@ -1536,7 +1536,7 @@ class QTextEditWrapper(QTextMixin):
     def setAllText(self, s, h=None):
         '''Set the text of body pane.'''
         trace = False and not g.unitTesting
-        trace_time = True and not g.unitTesting
+        trace_time = True
         c, w = self.c, self.widget
         if h is None: h = c.p and c.p.h or '<no p>'
         if trace and not trace_time: g.trace(len(s), h)

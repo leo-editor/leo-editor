@@ -1597,7 +1597,7 @@ class LeoTree(object):
             c.frame.tree.afterSelectHint(p, old_p)
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:outer', delta_t))
         return val # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
@@ -1606,12 +1606,13 @@ class LeoTree(object):
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
         '''
-        traceTime = False and not g.unitTesting
+        traceTime = True and not g.unitTesting
         if traceTime:
             t1 = time.time()
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
+            
             return
         c = self.c
         if not c.frame.body.wrapper:
@@ -1631,7 +1632,7 @@ class LeoTree(object):
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:total', delta_t))
     #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
     if 0:
@@ -1670,7 +1671,7 @@ class LeoTree(object):
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
     #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
     def stop_colorizer(self, old_p):
@@ -1700,21 +1701,22 @@ class LeoTree(object):
             select = True
         if select:
             self.revertHeadline = p.h
-            c.frame.setWrap(p)
-            # w = c.frame.body.wrapper.widget
-            btc = c.bigTextController
-            if btc:
-                if btc.should_add_buttons(old_p, p):
-                    btc.add_buttons(old_p, p)
-                elif btc.should_go_away(p):
-                    btc.go_away()
+            if 0: ### Expensive!!!
+                c.frame.setWrap(p)
+            if 0:
+                btc = c.bigTextController
+                if btc:
+                    if btc.should_add_buttons(old_p, p):
+                        btc.add_buttons(old_p, p)
+                    elif btc.should_go_away(p):
+                        btc.go_away()
             self.set_body_text_after_select(p, old_p, traceTime)
             c.nodeHistory.update(p)
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ***
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
         trace = False and not g.unitTesting
@@ -1748,12 +1750,13 @@ class LeoTree(object):
                 print('  part2: setAllText %4.2f sec' % (t3-t2))
             # Part 3: colorize.
             # We can't call c.recolor_now here.
-            colorizer = c.frame.body.colorizer
-            if hasattr(colorizer, 'setHighlighter'):
-                if colorizer.setHighlighter(p):
+            if 1: ###
+                colorizer = c.frame.body.colorizer
+                if hasattr(colorizer, 'setHighlighter'):
+                    if colorizer.setHighlighter(p):
+                        self.frame.body.recolor(p)
+                else:
                     self.frame.body.recolor(p)
-            else:
-                self.frame.body.recolor(p)
         if trace and trace_time:
             t4 = time.time()
             print('  part3: colorize   %4.2f sec' % (t4-t3))
@@ -1779,7 +1782,7 @@ class LeoTree(object):
         c.undoer.onSelect(old_p, p)
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select2', delta_t))
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p, traceTime):
@@ -1790,7 +1793,7 @@ class LeoTree(object):
             # Was in setBodyTextAfterSelect
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:scroll', delta_t))
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
     def set_status_line(self, p, traceTime=False):
@@ -1807,7 +1810,7 @@ class LeoTree(object):
         c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
         if traceTime:
             delta_t = time.time() - t1
-            if False or delta_t > 0.1:
+            if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:status', delta_t))
     #@+node:ekr.20031218072017.3718: *3* oops
     def oops(self):
