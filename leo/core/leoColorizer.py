@@ -17,7 +17,7 @@ pyzo = False
 #@+<< imports >>
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5, Qsci, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore,
 try:
     import builtins # Python 3
 except ImportError:
