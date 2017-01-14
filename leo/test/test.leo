@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.65">
-	<global_window_position top="72" left="253" height="950" width="1297"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.65">
+	<global_window_position top="62" left="503" height="749" width="788"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -892,6 +892,8 @@
 <v t="ekr.20160930220358.1"><vh>mathjax-test</vh></v>
 <v t="ekr.20160930062725.1"><vh>mathjax-test2</vh></v>
 </v>
+<v t="ekr.20170112161234.1"><vh>@edit c:/leo.repo/leo-editor/leo/core/leoApp.py</vh></v>
+<v t="ekr.20170112175025.1"><vh>after</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1192,7 +1194,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8142,7 +8144,7 @@ Section
 - Bullet list
 - Another item
 - Third item.</t>
-<t tx="ekr.20160401061847.2" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
+<t tx="ekr.20160401061847.2" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058050000006c696e6b7371045d710558010000007871064b00752e">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
@@ -8957,7 +8959,7 @@ code::
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
     return line,</t>
-<t tx="ekr.20160929143541.6" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
+<t tx="ekr.20160929143541.6" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058050000006c696e6b7371045d710558010000007871064b00752e">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
@@ -9531,5 +9533,6 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 &lt;/html&gt;
 </t>
 <t tx="ekr.20160930220426.1"></t>
+<t tx="ekr.20170112175025.1"></t>
 </tnodes>
 </leo_file>

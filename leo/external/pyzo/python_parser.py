@@ -127,6 +127,7 @@ class PythonParser(Parser):
             return state
     #@+node:ekr.20170107213124.7: *3* py.parseLine
     n_parse = 0
+    n_tokens = 0
 
     def parseLine(self, line, previousState=0):
         """ parseLine(line, previousState=0)

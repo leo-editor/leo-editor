@@ -32,16 +32,17 @@ class LeoCodeEditor(base.CodeEditorBase):
 
     def parser(self):
         return self._parser
-#@+node:ekr.20170108162637.1: ** main
-def main(c):
-    '''main test code.'''
-    codeEditor = LeoCodeEditor()
-    h = codeEditor.leo_highlighter
-        # widget = c.frame.body.wrapper.widget
-        # h = highlighter.Highlighter(codeEditor, widget)
-    h.colorer = g.NullObject()
-        # Disable code in Leo's core.
-    c.frame.body.colorizer.highlighter = h
+#@+node:ekr.20170108162637.1: ** leo_test.main (not used)
+if 0:
+    def main(c):
+        '''main test code.'''
+        codeEditor = LeoCodeEditor()
+        h = codeEditor.leo_highlighter
+            # widget = c.frame.body.wrapper.widget
+            # h = highlighter.Highlighter(codeEditor, widget)
+        h.colorer = g.NullObject()
+            # Disable code in Leo's core.
+        c.frame.body.colorizer.highlighter = h
 #@-others
 #@@language python
 #@@tabwidth -4

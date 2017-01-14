@@ -1606,7 +1606,7 @@ class LeoTree(object):
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
         '''
-        traceTime = True and not g.unitTesting
+        traceTime = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         if not p:
@@ -1701,7 +1701,7 @@ class LeoTree(object):
             select = True
         if select:
             self.revertHeadline = p.h
-            if 1: # Expensive!!!
+            if 1: # Not that expensive
                 c.frame.setWrap(p)
             if 0:
                 btc = c.bigTextController
@@ -1729,38 +1729,52 @@ class LeoTree(object):
         s = p.v.b # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        if trace: g.trace('=====', len(s), p.h)
+        # if trace: g.trace('=====', len(s), p.h)
         if trace and trace_time:
             t2 = time.time()
-            print('  part1: getAllText %4.2f sec' % (t2-t1))
+            if t2-t1 > 0.1:
+                print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
             if trace and trace_pass: g.trace('*pass', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text.
         # w.setAllText destroys all color tags, so do a full recolor.
-        if 0 < c.max_pre_loaded_body_chars < len(s):
+        if leoColorizer.pyzo:
+            w.setAllText(s, h = p.h)
+            if trace and trace_time:
+                t3 = time.time()
+                if t3-t2 > 0.1:
+                    print('  part2: setAllText %4.2f sec' % (t3-t2))
+            # Part 3: colorize.
+            # We can't call c.recolor_now here.
+            colorizer = c.frame.body.colorizer
+            colorizer.setHighlighter(p)
+        elif False: ### 0 < c.max_pre_loaded_body_chars < len(s):
             # Don't load the text if not wanted.
             if trace and trace_time:
                 t3 = time.time()
-                print('  part2: setAllText %4.2f sec' % (t3-t2))
+                if t3-t2 > 0.1:
+                    print('  part2: setAllText %4.2f sec' % (t3-t2))
         else:
             w.setAllText(s, h = p.h)
             if trace and trace_time:
                 t3 = time.time()
-                print('  part2: setAllText %4.2f sec' % (t3-t2))
+                if t3-t2 > 0.1:
+                    print('  part2: setAllText %4.2f sec' % (t3-t2))
             # Part 3: colorize.
             # We can't call c.recolor_now here.
-            if 1: ###
-                colorizer = c.frame.body.colorizer
-                if hasattr(colorizer, 'setHighlighter'):
-                    if colorizer.setHighlighter(p):
-                        self.frame.body.recolor(p)
-                else:
+            colorizer = c.frame.body.colorizer
+            if hasattr(colorizer, 'setHighlighter'):
+                if colorizer.setHighlighter(p):
                     self.frame.body.recolor(p)
+            else:
+                self.frame.body.recolor(p)
         if trace and trace_time:
             t4 = time.time()
-            print('  part3: colorize   %4.2f sec' % (t4-t3))
-            print('  total:            %4.2f sec' % (t4-t1))
+            if t4-t3 > 0.1:
+                print('  part3: colorize   %4.2f sec' % (t4-t3))
+            if t4-t1 > 0.1:
+                print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position

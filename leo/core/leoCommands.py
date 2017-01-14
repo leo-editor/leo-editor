@@ -2172,7 +2172,12 @@ class Commands(object):
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
+        trace = True and not g.unitTesting
         c, p, u = self, self.p, self.undoer
+        if trace:
+            highlighter = c.frame.body.colorizer.highlighter
+            g.trace(highlighter.n_calls)
+        trace_time = False and not g.unitTesting
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:
@@ -2208,10 +2213,23 @@ class Commands(object):
             g.warning('not an @<file> node:\n%s' % (p.h))
             redraw_flag = False
         if redraw_flag:
+            if trace: g.trace('after read')
             u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
-            c.redraw()
+            t1 = time.clock()
+            if 0: ### New code.
+                import leo.core.leoColorizer as leoColorizer
+                if leoColorizer.pyzo:
+                    ### c.recolor_now() ### New...
+                    colorizer = c.frame.body.colorizer
+                    colorizer.setHighlighter(p)
+            if 1: ### Previous.  Removed for testing only.
+                c.redraw()
+            t2 = time.clock()
+            if trace:
+                g.trace(highlighter.n_calls)
+                g.trace('%5.2f sec' % (t2-t1))
     #@+node:ekr.20031218072017.2834: *6* c.save & helper
     @cmd('save-file')
     def save(self, event=None, fileName=None):
@@ -5662,7 +5680,7 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
         if trace:
-            g.trace(g.callers())
+            g.trace(p2 and p2.h)
             # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)
         if setFocus: c.treeFocusHelper()
     # Compatibility with old scripts
@@ -5722,8 +5740,9 @@ class Commands(object):
         if not p:
             p = c.p
         # g.trace('incremental',incremental,p and p.h,g.callers())
-        c.frame.body.colorizer.colorize(p,
-            incremental=incremental, interruptable=interruptable)
+        if c.frame.body.colorizer:
+            c.frame.body.colorizer.colorize(p,
+                incremental=incremental, interruptable=interruptable)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self

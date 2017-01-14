@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20170112111823.1"><vh>@gnxs</vh></v>
+<v t="ekr.20170114055218.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20170112111821.7"><vh>@gnxs</vh></v>
+<v t="ekr.20170114055217.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20170112111820.12"><vh>@gnxs</vh></v>
+<v t="ekr.20170114055216.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20170112111820.5"><vh>@gnxs</vh></v>
+<v t="ekr.20170114055216.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -199,6 +199,22 @@
 <v t="ekr.20170112111807.4"><vh>@data:#@auto</vh></v>
 <v t="ekr.20170112111807.5"><vh>@data:#@auto</vh>
 <v t="ekr.20170112111807.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170113162522.206"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170113162522.207"><vh>@data:#@auto</vh>
+<v t="ekr.20170113162522.208"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170113162522.209"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170113162522.210"><vh>@data:#@auto</vh>
+<v t="ekr.20170113162522.211"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170114055202.208"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170114055202.209"><vh>@data:#@auto</vh>
+<v t="ekr.20170114055202.210"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170114055202.211"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170114055202.212"><vh>@data:#@auto</vh>
+<v t="ekr.20170114055202.213"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -346,7 +362,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -586,6 +602,12 @@
 </v>
 <v t="ekr.20170112111900.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20170112111900.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170113162613.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170113162613.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170114055256.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170114055256.4"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -10582,22 +10604,84 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20170112111820.12">gnx: ekr.20151009114144.13
-unl: section 1
-gnx: ekr.20151009114144.14
-unl: section 2
+<t tx="ekr.20170112111900.10">&lt;?php
+@others
+@language php
+@tabwidth -4
 </t>
-<t tx="ekr.20170112111820.5">gnx: ekr.20161202200225.5
+<t tx="ekr.20170112111900.11">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170113162522.206">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170113162522.207">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170113162522.208">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20170113162522.209">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170113162522.210">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170113162522.211">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20170113162613.7">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170113162613.8">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170114055202.208">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170114055202.209">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170114055202.210">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20170114055202.211">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170114055202.212">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170114055202.213">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20170114055216.2">gnx: ekr.20161202200225.5
 unl: section 1
 gnx: ekr.20161202200225.6
 unl: section 2
 </t>
-<t tx="ekr.20170112111821.7">gnx: ekr.20151009114144.15
+<t tx="ekr.20170114055216.9">gnx: ekr.20151009114144.13
+unl: section 1
+gnx: ekr.20151009114144.14
+unl: section 2
+</t>
+<t tx="ekr.20170114055217.5">gnx: ekr.20151009114144.15
 unl: section 1
 gnx: ekr.20151009114144.16
 unl: section 2
 </t>
-<t tx="ekr.20170112111823.1">gnx: ekr.20161202200225.7
+<t tx="ekr.20170114055218.9">gnx: ekr.20161202200225.7
 unl: class class1
 gnx: ekr.20161202200225.8
 unl: class class1--&gt;class1_method1
@@ -10610,12 +10694,12 @@ unl: class class2--&gt;class2_method1
 gnx: ekr.20161202200225.12
 unl: class class2--&gt;class2_method2
 </t>
-<t tx="ekr.20170112111900.10">&lt;?php
+<t tx="ekr.20170114055256.3">&lt;?php
 @others
 @language php
 @tabwidth -4
 </t>
-<t tx="ekr.20170112111900.11">class foo {
+<t tx="ekr.20170114055256.4">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar

@@ -450,7 +450,7 @@ if QtWidgets:
     class LeoQTextBrowser(QtWidgets.QTextBrowser):
         '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
         #@+others
-        #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
+        #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor (** no longer instantiates leo_h)
         def __init__(self, parent, c, wrapper):
             '''ctor for LeoQTextBrowser class.'''
             # g.trace('(LeoQTextBrowser)',c.shortFileName(),parent,wrapper)
@@ -469,9 +469,10 @@ if QtWidgets:
             self.leo_vsb = vsb = self.verticalScrollBar()
             vsb.valueChanged.connect(self.onSliderChanged)
             # Signal that the widget can accept delayed-load buttons.
-            self.leo_load_button = None
-            self.leo_paste_button = None
-            self.leo_big_text = None
+            if 0: ### To be removed
+                self.leo_load_button = None
+                self.leo_paste_button = None
+                self.leo_big_text = None
             # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
             # For QCompleter
             self.leo_q_completer = None

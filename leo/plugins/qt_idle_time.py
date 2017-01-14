@@ -51,7 +51,7 @@ class IdleTime(object):
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
     def __init__(self, handler, delay=500, tag=None):
         '''ctor for IdleTime class.'''
-        # g.trace('(IdleTime)', tag)
+        # g.trace('===== (IdleTime)', tag)
         # For use by handlers...
         self.count = 0
             # The number of times handler has been called.
@@ -90,7 +90,7 @@ class IdleTime(object):
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
     def at_idle_time(self):
         '''Call self.handler not more than once every self.delay msec.'''
-        # g.trace(self.tag)
+        # g.trace('(IdleTime)', self.tag)
         if g.app.killed:
             self.stop()
         elif self.enabled:
@@ -111,6 +111,7 @@ class IdleTime(object):
         try:
             self.count += 1
             self.time = time.time()
+            # g.trace(self.handler.__name__)
             self.handler(self)
         except Exception:
             g.es_exception()

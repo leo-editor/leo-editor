@@ -16,6 +16,7 @@ import leo.core.leoGlobals as g
 ustr = g.ustr
 from .parsers import BlockState
 from .style import StyleFormat # New.
+import re
 #@-<< highlighter imports >>
 #@+others
 #@+node:ekr.20170107211216.3: ** class BlockData
@@ -35,28 +36,21 @@ class BlockData(QtGui.QTextBlockUserData):
 #@+node:ekr.20170107211216.5: ** class PyzoHighlighter
 class PyzoHighlighter(QtGui.QSyntaxHighlighter):
     #@+others
-    #@+node:ekr.20170107211216.6: *3* h.__init__ & helpers
-    if 1:
-        # Don't use codeEditor at all.
-        # This requires another way of initing settings.
-        def __init__(self, parser, *args):
-            # Set these *before* initing the base class.
-            # self._codeEditor = codeEditor
-            self.parser = parser
-            self.colorer = None
-                # To disable some code in qtew.setAllText.
-            d = self.defineStyles()
-            self.initStyles(d)
-            assert self.style_d
-            QtGui.QSyntaxHighlighter.__init__(self, *args)
-                # Generates call to rehighlight.
-            
-    else:
-        def __init__(self, codeEditor, *args):
-            # Set these *before* initing the base class.
-            self._codeEditor = codeEditor
-            QtGui.QSyntaxHighlighter.__init__(self,*args)
-                # Generates call to rehighlight.
+    #@+node:ekr.20170107211216.6: *3* pyzo_h.__init__ & helpers
+
+    # Don't use codeEditor at all.
+
+    def __init__(self, parser, *args):
+        # Set these *before* initing the base class.
+        # self._codeEditor = codeEditor
+        self.parser = parser
+        self.colorer = None
+            # To disable some code in qtew.setAllText.
+        d = self.defineStyles()
+        self.initStyles(d)
+        assert self.style_d
+        QtGui.QSyntaxHighlighter.__init__(self, *args)
+            # Generates call to rehighlight.
     #@+node:ekr.20170112103148.1: *4* h.define_styles (new)
     def defineStyles(self):
         '''Set self.style_format_d.'''
@@ -139,7 +133,7 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
             self.__styleChangedPending = False
         else:
             self.__styleChangedPending = True
-    #@+node:ekr.20170107211216.7: *3* h.getCurrentBlockUserData
+    #@+node:ekr.20170107211216.7: *3* pyzo_h.getCurrentBlockUserData
     n_block_data = 0
 
     def getCurrentBlockUserData(self):
@@ -154,8 +148,10 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
             bd = BlockData()
             self.setCurrentBlockUserData(bd)
         return bd
-    #@+node:ekr.20170107211216.8: *3* h.highlightBlock
+    #@+node:ekr.20170107211216.8: *3* pyzo_h.highlightBlock
     n_calls = 0
+    n_tokens = 0
+    lws_pattern = re.compile(r'(\s*)')
 
     def highlightBlock(self, line): 
         """ highlightBlock(line)
@@ -181,6 +177,7 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
         if parser:
             self.setCurrentBlockState(0)
             tokens = list(parser.parseLine(line, previousState))
+            self.n_tokens += len(tokens)
             # g.trace(len(tokens), 'tokens', tokens)
             for token in tokens :
                 # Handle block state
@@ -192,21 +189,13 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
                     normKey = token.name.replace(' ', '').lower()
                     styleFormat = self.style_d.get(normKey)
                     if styleFormat:
+                        # Set format
+                        # if trace: g.trace(token.name,charFormat)
                         charFormat = styleFormat.textCharFormat
+                        self.setFormat(token.start,token.end-token.start,charFormat)
+                        fullLineFormat = styleFormat
                     else:
                         g.trace('no format', repr(token.name))
-                        continue
-                    # Set format
-                    # if trace: g.trace(token.name,charFormat)
-                    self.setFormat(token.start,token.end-token.start,charFormat)
-                    # Is this a cell?
-                    if 1:
-                        fullLineFormat = styleFormat
-                    elif (
-                        (fullLineFormat is None) and
-                        styleFormat._parts.get('underline','') == 'full'
-                    ):
-                        fullLineFormat = styleFormat
         # Get user data
         bd = self.getCurrentBlockUserData()
         # Store token list for future use (e.g. brace matching)
@@ -215,7 +204,9 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
         bd.fullUnderlineFormat = fullLineFormat
         # Get the indentation setting of the editors
         indentUsingSpaces = True ### self._codeEditor.indentUsingSpaces()
-        leadingWhitespace=line[:len(line)-len(line.lstrip())]
+        ### leadingWhitespace=line[:len(line)-len(line.lstrip())]
+        m = self.lws_pattern.match(line)
+        leadingWhitespace = m and m.group(1) or ''
         if 1:
             bd.indentation = len(leadingWhitespace)
         elif '\t' in leadingWhitespace and ' ' in leadingWhitespace:
@@ -230,7 +221,7 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
             ('\t' in leadingWhitespace and indentUsingSpaces) or
             (' ' in leadingWhitespace and not indentUsingSpaces)
         ):
-            #Whitespace differs from document setting
+            # Whitespace differs from document setting
             bd.indentation = 0
             format=QtGui.QTextCharFormat()
             format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
@@ -241,18 +232,23 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
             # Store info for indentation guides
             # amount of tabs or spaces
             bd.indentation = len(leadingWhitespace)
-    #@+node:ekr.20170108091854.1: *3* h.rehighlight (new)
+    #@+node:ekr.20170108091854.1: *3* pyzo_h.rehighlight (new)
     def rehighlight(self, p=None):
         '''Leo override, allowing the 'p' keyword arg.'''
-        trace = False and not g.unitTesting
-        self.n_calls = self.n_block_data = 0
+        trace = True and not g.unitTesting # and p and len(p.b) > 1000
+        self.n_calls = self.n_block_data = self.n_tokens = 0
         self.parser.n_parse = 0
+        if trace:
+            g.trace('(pyzo) =====', p and p.h) ###, g.callers())
+            if p:
+                g.trace(p.v.context.frame.body.widget.document().blockCount())
         QtGui.QSyntaxHighlighter.rehighlight(self)
         if trace:
-            g.trace('(pyzo)',
+            g.trace('(pyzo_h) -----',
                 self.n_calls,
                 self.n_block_data,
                 self.parser.n_parse,
+                self.n_tokens,
                 p and p.h)
     #@-others
 #@-others
