@@ -2348,7 +2348,7 @@ class LeoQtColorizer(object):
         if 0: ### For now: take our chances...
             if self.enabled:
                 self.enabled = hasattr(self.highlighter, 'currentBlock')
-    #@+node:ekr.20110605121601.18553: *3* colorizer.colorize & helper (** calls slow rehighlight)
+    #@+node:ekr.20110605121601.18553: *3* *** colorizer.colorize & helper (slow rehighlight)
     def colorize(self, p, incremental=False, interruptable=True):
         '''The main colorizer entry point.'''
         trace = False and not g.unitTesting
@@ -2448,7 +2448,7 @@ class LeoQtColorizer(object):
             return ### 
         if self.highlighter and hasattr(self.highlighter, 'kill'):
             self.highlighter.kill()
-    #@+node:ekr.20110605121601.18561: *3* colorizer.setHighlighter ***
+    #@+node:ekr.20110605121601.18561: *3* *** colorizer.setHighlighter
     # Called *only* from LeoTree.setBodyTextAfterSelect
 
     pyzo_highlighter = None

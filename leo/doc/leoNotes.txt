@@ -32137,6 +32137,49 @@ def skipSigTail(self, s, i, kind):
 def skipString(self, s, i):
     # Returns len(s) on unterminated string.
     return g.skip_python_string(s, i, verbose=False)
+.. @+node:ekr.20170108162404.1: *3* COPY ../external/pyzo/leo_test.py
+@first # -*- coding: utf-8 -*-
+'''Prototype test code for integrating pyzo into Leo.'''
+<< pyzo copyright >>
+<< pyzo/leo_test.py imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171806.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170108162537.1: *4* << pyzo/leo_test.py imports >>
+import leo.core.leoGlobals as g
+import imp
+import leo.external.pyzo.base as base
+# import leo.external.pyzo.highlighter as highlighter
+import leo.external.pyzo.python_parser as python_parser
+imp.reload(base)
+# imp.reload(highlighter)
+imp.reload(python_parser)
+.. @+node:ekr.20170108162608.1: *4* class LeoCodeEditor
+class LeoCodeEditor(base.CodeEditorBase):
+
+    def __init__(self):
+        # Must set _parser ivar before initing the base class.
+        self._parser = python_parser.Parser()
+        base.CodeEditorBase.__init__(self)
+
+    def parser(self):
+        return self._parser
+.. @+node:ekr.20170108162637.1: *4* leo_test.main (not used)
+if 0:
+    def main(c):
+        '''main test code.'''
+        codeEditor = LeoCodeEditor()
+        h = codeEditor.leo_highlighter
+            # widget = c.frame.body.wrapper.widget
+            # h = highlighter.Highlighter(codeEditor, widget)
+        h.colorer = g.NullObject()
+            # Disable code in Leo's core.
+        c.frame.body.colorizer.highlighter = h
 .. @-all
 .. @@nosearch
 .. @-leo

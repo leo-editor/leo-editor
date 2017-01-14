@@ -1716,7 +1716,7 @@ class LeoTree(object):
             delta_t = time.time() - t1
             if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
-    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select ***
+    #@+node:ekr.20090608081524.6109: *6* *** LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
         trace = False and not g.unitTesting
