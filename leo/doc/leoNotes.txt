@@ -32180,6 +32180,341 @@ if 0:
         h.colorer = g.NullObject()
             # Disable code in Leo's core.
         c.frame.body.colorizer.highlighter = h
+.. @+node:ekr.20140825132752.18554: *3* << class PythonQSyntaxHighlighter >>
+class PythonQSyntaxHighlighter(object):
+    '''
+    Python implementation of QtGui.QSyntaxHighlighter.
+
+    This allows incremental coloring of text at idle time, trading slower
+    overall speed for much faster response time.
+    '''
+    @others
+.. @+node:ekr.20140825132752.18561: *4* pqsh.Birth & death
+def __init__(self, parent, c=None, delay=10, limit=50):
+    '''
+    Ctor for QSyntaxHighlighter class.
+    Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
+    '''
+    # g.trace('(PythonQSyntaxBrowser)', parent)
+    # Ivars corresponding to QSH ivars...
+    self.c = c # The commander.
+    self.cb = None # The current block: a QTextBlock.
+    self.d = None # The QTextDocument attached to this colorizers.
+    self.formats = [] # An array of QTextLayout.FormatRange objects.
+    self.inReformatBlocks = False
+    self.rehighlightPending = False
+    # Ivars for reformatBlocks and idle_handler...
+    self.idle_active = False # True if the idle_handler should colorize.
+    self.r_block = None # The block to be colorized.
+    self.r_end = None # The ultimate ending position.
+    self.r_delay = delay # The waiting time, in msec. for self.timer.
+    self.r_force = False # True if the next block must be recolored.
+    self.r_limit = limit # The max number of lines to color at one time.
+    self.timer = g.IdleTime(
+        handler=self.idle_handler,
+        delay=self.r_delay,
+        tag='pqsh.idle_handler')
+    # Attach the parent's QTextDocument and set self.d.
+    self.setDocument(parent)
+.. @+node:ekr.20140825132752.18588: *4* pqsh.Entry points
+.. @+node:ekr.20140827112712.18469: *5* pqsh.kill
+def kill(self):
+    '''Kill any queued coloring.'''
+    trace = False and not g.unitTesting
+    if self.idle_active:
+        if trace: g.trace('(PythonQSyntaxHighlighter)')
+        self.idle_active = False
+        if self.timer:
+            self.timer.stop()
+.. @+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
+def rehighlight(self):
+    '''Color the whole document.'''
+    trace = False and not g.unitTesting
+    c, d = self.c, self.d
+    if d:
+        n = d.characterCount()
+        if 0 < c.max_pre_loaded_body_chars < n:
+            if trace: g.trace('big text: no color', c.p.h)
+        elif n > 1000*10:
+
+            def rehightlight_callback(c=c, d=d, p=c.p, self=self):
+                if p == c.p:
+                    if trace: g.trace('=====', n, p.h)
+                    cursor = QtGui.QTextCursor(d)
+                    self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+                else:
+                    if trace: g.trace('node not selected', p.h)
+
+            QtCore.QTimer.singleShot(200, rehightlight_callback)
+        else:
+            if trace: g.trace('(pqsh)', n)
+            cursor = QtGui.QTextCursor(d)
+            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+.. @+node:ekr.20140825132752.18568: *5* pqsh.rehighlightBlock (not used)
+def rehighlightBlock(self, block):
+    '''Reapplies the highlighting to the given QTextBlock block.'''
+    d = self.d
+    if d and self.is_valid(block) and block.document() == d:
+        self.rehighlightPending = d.rehighlightPending
+        cursor = QtGui.QTextCursor(block)
+        g.trace(g.u(block.text()))
+        self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
+        if self.rehighlightPending:
+            d.rehighlightPending = self.rehighlightPending
+.. @+node:ekr.20140825132752.18591: *5* pqsh.rehighlight_helper
+def rehighlight_helper(self, cursor, operation):
+        # QtGui.QTextCursor &cursor
+        # QtGui.QTextCursor.MoveOperation operation
+    self.inReformatBlocks = True
+    try:
+        cursor.beginEditBlock()
+        from_ = cursor.position()
+        cursor.movePosition(operation)
+        self.reformatBlocks(from_, 0, cursor.position() - from_)
+        cursor.endEditBlock()
+    finally:
+        self.inReformatBlocks = False
+.. @+node:ekr.20140825132752.18590: *4* pqsh.Getters & Setters
+.. @+node:ekr.20140825132752.18582: *5* pqsh.currentBlock & currentBlockUserData
+def currentBlock(self):
+    '''Returns the current text block.'''
+    return self.cb
+
+def currentBlockUserData(self):
+    '''Returns the QTextBlockUserData object attached to the current text block.'''
+    return self.cb.userData() if self.is_valid(self.cb) else None
+.. @+node:ekr.20140825132752.18580: *5* pqsh.currentBlockState & previousBlockState
+def currentBlockState(self):
+    '''Returns the state of the current block or -1.'''
+    return self.cb.userState() if self.is_valid(self.cb) else - 1
+
+def previousBlockState(self):
+    '''Returns the end state previous text block or -1'''
+    if self.is_valid(self.cb):
+        previous = self.cb.previous()
+        return previous.userState() if self.is_valid(previous) else - 1
+    else:
+        return -1
+.. @+node:ekr.20140825132752.18565: *5* pqsh.document
+def document(self):
+    '''Returns the QTextDocument on which this syntax highlighter is installed.'''
+    return self.d
+.. @+node:ekr.20140825132752.18575: *5* pqsh.format
+def format(self, pos):
+    '''Return the format at the given position in the current text block.'''
+    if 0 <= pos < len(self.formatChanges):
+        return self.formatChanges[pos]
+    else:
+        return QtGui.QTextCharFormat()
+.. @+node:ekr.20140825132752.18576: *5* pqsh.setCurrentBlockState & setCurrentBlockUserData
+def setCurrentBlockState(self, newState):
+    '''Sets the state of the current text block.'''
+    if self.is_valid(self.cb):
+        self.cb.setUserState(newState)
+
+def setCurrentBlockUserData(self, data):
+    '''Set the user data of the current text block.'''
+    if self.is_valid(self.cb):
+        self.cb.setUserData(data)
+.. @+node:ekr.20140825132752.18564: *5* pqsh.setDocument
+def setDocument(self, parent):
+    '''Install self on the given QTextDocument.'''
+    d = self.d
+    if d:
+        d.contentsChange.disconnect()
+        cursor = QtGui.QTextCursor(d)
+        cursor.beginEditBlock()
+        blk = d.begin()
+        while self.is_valid(blk): # blk: QTextBlock
+            blk.layout().clearAdditionalFormats()
+            blk = blk.next()
+        cursor.endEditBlock()
+    self.d = d = parent.document()
+    assert isinstance(d, QtGui.QTextDocument), d
+    if d:
+        d.contentsChange.connect(self.q_reformatBlocks)
+        d.rehighlightPending = True
+            # Set d's pending flag.
+        QtCore.QTimer.singleShot(0, self.delayedRehighlight)
+.. @+node:ekr.20140825132752.18584: *5* pqsh.setFormat (start,count,format)
+def setFormat(self, start, count, format):
+    '''Remember the requested formatting.'''
+    trace = False and not g.unitTesting
+    verbose = False
+    if start >= 0:
+        r = QtGui.QTextLayout.FormatRange()
+        r.start, r.length, r.format = start, count, format
+        self.formats.append(r)
+        if trace and verbose: g.trace('%3s %3s %s %s' % (
+            start, count, self.format_to_color(format), self.cb.text()))
+    elif trace:
+        g.trace('bad start value', repr(start), g.callers())
+# Not used by Leo...
+# def setFormat(self,start,count,color):
+    # format = QTextCharFormat()
+    # format.setForeground(color)
+    # setFormat(start,count,format)
+# def setFormat(self,start,count,font):
+    # format = QTextCharFormat()
+    # format.setFont(font)
+    # self.setFormat(start,count,format)
+.. @+node:ekr.20140825132752.18589: *4* pqsh.Helpers
+# These helpers are the main reason QSyntaxHighlighter exists.
+# Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
+.. @+node:ekr.20140825132752.18557: *5* pqsh.applyFormatChanges
+def applyFormatChanges(self):
+    '''Apply self.formats to the current layout.'''
+    if self.formats:
+        layout = self.cb.layout()
+        layout.setAdditionalFormats(self.formats)
+        self.formats = []
+        self.d.markContentsDirty(self.cb.position(), self.cb.length())
+.. @+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight
+def delayedRehighlight(self): # inline
+    '''Queued rehighlight.'''
+    # g.trace('=====',self.rehighlightPending)
+    if self.rehighlightPending:
+        self.rehighlightPending = False
+        self.rehighlight()
+.. @+node:ekr.20140826120657.18649: *5* pqsh.format_to_color
+def format_to_color(self, format):
+    '''Return the foreground color of the given character format.'''
+    return str(format.foreground().color().name())
+.. @+node:ekr.20140826120657.18650: *5* pqsh.highlightBlock
+def highlightBlock(self, s):
+    g.trace('must be defined in subclasses.' '')
+.. @+node:ekr.20140827063632.18569: *5* pqsh.idle_handler
+def idle_handler(self, timer):
+    trace = False and not g.unitTesting
+    verbose = True
+    if not self.idle_active:
+        # Shortcut everything else.
+        return
+    c = self.c
+    if trace and verbose:
+        s = g.u(self.r_block.text()).lstrip()
+        g.trace('force: %5s s: %s' % (self.r_force, s[: 20]))
+    # This is defensive code.  Apparently it is never needed.
+    # This is the only place c is used, so the c argument to the ctor is optional.
+    if c:
+        if c.p == self.r_p:
+            self.reformat_blocks_helper()
+        elif trace:
+            self.idle_active = False
+            g.trace('node changed: old: %s new: %s' % (
+                self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
+.. @+node:ekr.20140826120657.18648: *5* pqsh.is_valid
+def is_valid(self, obj):
+    return obj and obj.isValid()
+.. @+node:ekr.20140825132752.18558: *5* pqsh.q_reformatBlocks
+def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
+    if not self.inReformatBlocks:
+        # g.trace(from_,charsRemoved,charsAdded)
+        self.reformatBlocks(from_, charsRemoved, charsAdded)
+.. @+node:ekr.20140827074435.18570: *5* pqsh.reformat_blocks_helper
+def reformat_blocks_helper(self):
+    '''The common code shared by reformatBlocks and idle_handler.'''
+    block = self.r_block
+    n, start = 0, False
+    while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
+        n += 1
+        if n >= self.r_limit > 0 and self.timer:
+            start = True
+            break
+        else:
+            before_state = block.userState()
+            self.reformatBlock(block)
+            self.r_force = block.userState() != before_state
+            block = self.r_block = block.next()
+    self.formatChanges = []
+    self.idle_active = start
+    if self.timer and start:
+        self.timer.start()
+    elif self.timer:
+        self.timer.stop()
+        # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
+        # Fix bug 78: find-next match not always scrolled into view.
+        # https://github.com/leo-editor/leo-editor/issues/78
+        w = self.c.frame.body.wrapper
+        if g.app.allow_delayed_see and w:
+            w.seeInsertPoint()
+        g.app.allow_delayed_see = False
+.. @+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
+def reformatBlock(self, block):
+    trace = False and not g.unitTesting
+    if self.is_valid(self.cb) and not isQt5:
+        g.trace('can not happen: called recursively')
+    else:
+        self.cb = block
+        self.formats = []
+        for i in range(block.length()):
+            r = QtGui.QTextLayout.FormatRange()
+            r.start, r.length, r.format = i, 1, QtGui.QTextCharFormat()
+            self.formats.append(r)
+        if trace: g.trace(str(block.text()))
+        self.highlightBlock(block.text())
+        self.applyFormatChanges()
+        self.cb = QtGui.QTextBlock()
+.. @+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks (main line)
+def reformatBlocks(self, from_, charsRemoved, charsAdded):
+    '''Main line: Reformat the lines in the indicated range.'''
+    self.rehighlightPending = False
+    block = self.d.findBlock(from_)
+    if not self.is_valid(block):
+        return
+    # Set the ivars for reformat_blocks_helper.
+    adjust = 1 if charsRemoved > 0 else 0
+    lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
+    if self.is_valid(lastBlock):
+        self.r_end = lastBlock.position() + lastBlock.length()
+    else:
+        self.r_end = self.d.blockCount()
+    self.r_block = block
+    self.r_p = self.c.p.copy()
+    self.r_force = False
+    # Delegate the colorizing to shared helper.
+    self.reformat_blocks_helper()
+.. @+node:ekr.20121003051050.10201: *3* leoh.rehighlight_with_cache (no longer used)
+if 0: ### From leo_h.rehighlight:
+    if False and ( ### No longer used.
+            self.colorizer.colorCacheFlag and
+            hasattr(p.v, 'colorCache') and
+            p.v.colorCache and
+            not g.unitTesting
+        ):
+            # Should be no need to init the colorizer.
+            self.rehighlight_with_cache(p.v.colorCache)
+
+
+def rehighlight_with_cache(self, bunch):
+    '''
+    Rehighlight the block from bunch, without calling QSH.rehighlight.
+
+    - bunch.aList: a list of bunch2 objects.
+    - bunch.n: a block (line) number.
+    - bunch.v: the VNode.
+        - bunch2.i: the index of the block.
+        - bunch2.s: the contents of the block.
+        - bunch2.ranges: a list of QTextLayout.FormatRange objects.
+    '''
+    trace = False and not g.unitTesting
+    widget = self.c.frame.body.widget # a subclass of QTextEdit.
+    doc = widget.document()
+    if bunch.n != doc.blockCount():
+        return g.trace('bad block count: expected %s got %s' % (
+            bunch.n, doc.blockCount()))
+    if trace:
+        t1 = time.time()
+    for i, bunch2 in enumerate(bunch.aList):
+        b = doc.findBlockByNumber(bunch2.i) # a QTextBlock
+        layout = b.layout() # a QTextLayout.
+        if bunch2.s == g.u(b.text()):
+            layout.setAdditionalFormats(bunch2.ranges)
+        else:
+            return g.trace('bad line: i: %s\nexpected %s\ngot     %s' % (
+                i, bunch2.s, g.u(b.text())))
+    if trace:
+        g.trace('%2.3f sec' % (time.time() - t1))
 .. @-all
 .. @@nosearch
 .. @-leo
