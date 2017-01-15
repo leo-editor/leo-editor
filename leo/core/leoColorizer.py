@@ -2046,9 +2046,11 @@ class LeoQtColorizer(object):
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter, 'currentBlock')
-    #@+node:ekr.20110605121601.18553: *3* colorizer.colorize & helper
+    #@+node:ekr.20110605121601.18553: *3* colorizer.colorize & helper (*** Remove???)
     def colorize(self, p, incremental=False, interruptable=True):
         '''The main colorizer entry point.'''
+        ### This method is no longer used!
+        g.trace("=====", g.callers())
         trace = False and not g.unitTesting
         verbose = True
         c = self.c
