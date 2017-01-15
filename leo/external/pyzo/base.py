@@ -464,14 +464,14 @@ class CodeEditorBase(QtWidgets.QPlainTextEdit):
             self.__styleChangedPending = False
         else:
             self.__styleChangedPending = True
-    #@+node:ekr.20170108045413.15: *4* showEvent
+    #@+node:ekr.20170108045413.15: *4* ed.showEvent
     def showEvent(self, event):
         super(CodeEditorBase, self).showEvent(event)
         # Does the style need updating?
         if self.__styleChangedPending:
             callLater(self.styleChanged.emit)
             self.__styleChangedPending = False
-    #@+node:ekr.20170108045413.16: *4* __afterSetStyle
+    #@+node:ekr.20170108045413.16: *4* ed.__afterSetStyle
     def __afterSetStyle(self):
         """ _afterSetStyle()
         

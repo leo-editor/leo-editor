@@ -238,10 +238,7 @@ class PyzoHighlighter(QtGui.QSyntaxHighlighter):
         trace = True and not g.unitTesting # and p and len(p.b) > 1000
         self.n_calls = self.n_block_data = self.n_tokens = 0
         self.parser.n_parse = 0
-        if trace:
-            g.trace('(pyzo) =====', p and p.h) ###, g.callers())
-            if p:
-                g.trace(p.v.context.frame.body.widget.document().blockCount())
+        if trace: g.trace('(pyzo) =====', p and p.h)
         QtGui.QSyntaxHighlighter.rehighlight(self)
         if trace:
             g.trace('(pyzo_h) -----',
