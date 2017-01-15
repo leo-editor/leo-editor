@@ -1693,12 +1693,6 @@ class LeoTree(object):
         if colorizer:
             if hasattr(colorizer, 'kill'):
                 colorizer.kill()
-            ###
-            # if (hasattr(colorizer, 'colorCacheFlag') and
-                # colorizer.colorCacheFlag and
-                # hasattr(colorizer, 'write_colorizer_cache')
-            # ):
-                # colorizer.write_colorizer_cache(old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self, old_p, p, traceTime):
         '''Select the new node, part 1.'''

@@ -38,9 +38,6 @@ class ColorizerMixin(object):
         '''Kill colorizing.'''
         pass
 
-    # def write_colorizer_cache(self, p):
-        # '''Write colorizing data for p for later use by rehighlight_with_cache.'''
-        # pass
     #@+others
     #@+node:ekr.20140906081909.18715: *3* cm.findColorDirectives
     color_directives_pat = re.compile(
@@ -54,9 +51,6 @@ class ColorizerMixin(object):
 
         Return a dict containing pointers to the start of each directive.
         '''
-        if pyzo:
-            g.trace('=====', g.callers())
-            return {} ###
         trace = False and not g.unitTesting
         d = {}
         anIter = self.color_directives_pat.finditer(p.b)
@@ -72,9 +66,6 @@ class ColorizerMixin(object):
         '''Scan p's body text for *valid* @language directives.
 
         Return a list of languages.'''
-        if pyzo:
-            g.trace('=====', g.callers())
-            return [] ###
         # Speed not very important: called only for nodes containing @language directives.
         trace = False and not g.unitTesting
         aList = []
@@ -2044,7 +2035,6 @@ class LeoQtColorizer(object):
         self.colorer = None
              # No colorer for Pyzo or Scintilla
         if isinstance(widget, QtWidgets.QTextEdit):
-            ### Restore old init code
             self.highlighter = LeoHighlighter(c, 
                 colorizer = self,
                 document = widget.document(),
@@ -2150,9 +2140,6 @@ class LeoQtColorizer(object):
     #@+node:ekr.20140827112712.18468: *3* colorizer.kill (to be deleted)
     def kill(self): # c.frame.body.colorizer.kill
         '''Kill any queue colorizing.'''
-        if pyzo: 
-            # Can be called by the auto-completer.
-            return ### 
         if self.highlighter and hasattr(self.highlighter, 'kill'):
             self.highlighter.kill()
     #@+node:ekr.20110605121601.18561: *3* colorizer.setHighlighter
@@ -2162,7 +2149,7 @@ class LeoQtColorizer(object):
     leo_highlighter = None
 
     def setHighlighter(self, p):
-
+        '''Init the pyzo highlighter, or recolor.'''
         trace = False and not g.unitTesting
         c = self.c
         assert pyzo, g.callers()
@@ -2186,32 +2173,10 @@ class LeoQtColorizer(object):
             h = highlighter.PyzoHighlighter(parser, document)
             self.highlighter = h
             self.pyzo_highlighter = h
-        
-        ### All this is now done in colorizer.init.
-        # elif self.leo_highlighter:
-            # assert False, g.callers()
-            # if self.enabled:
-                # self.flag = self.updateSyntaxColorer(p)
-                # document.markContentsDirty(0, len(p.b))
-                # if trace: g.trace('doc', id(document))
-                # return self.flag
-            # else:
-                # if trace: g.trace('********** disabled')
-                # return False
-        # else:
-            # assert False, self
-            # ### Now done in ctor.
-            # # if trace: g.trace('===== new leo_h')
-            # # colorizer = self
-            # # h = LeoHighlighter(c, colorizer, document)
-            # # self.highlighter = h
-            # # self.leo_highlighter = h
-            # # return True
     #@+node:ekr.20110605121601.18562: *3* colorizer.updateSyntaxColorer & helpers
     def updateSyntaxColorer(self, p):
         '''Scan for color directives in p and its ancestors.'''
         trace = False and not g.unitTesting
-        ### if s is None: s = p.b
         # An important hack: shortcut everything if the first line is @killcolor.
         if p.b.startswith('@killcolor'):
             if trace: g.trace('@killcolor')
@@ -2385,8 +2350,6 @@ elif QtGui:
             self.c = c
             self.n_calls = 0
             assert isinstance(document, QtGui.QTextDocument), document
-            # Not all versions of Qt have the crucial currentBlock method.
-            ### self.hasCurrentBlock = hasattr(self, 'currentBlock')
             # Init the base class.
             self.colorizer = colorizer
             self.colorer = JEditColorizer(c,
@@ -2394,7 +2357,6 @@ elif QtGui:
                 highlighter=self,
                 wrapper=c.frame.body.wrapper)
             colorizer.colorer = self.colorer
-                ### New: was done in colorizer.ctor
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
         #@+node:ekr.20110605121601.18568: *3* leo_h.rehighlight
