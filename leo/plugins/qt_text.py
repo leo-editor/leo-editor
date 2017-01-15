@@ -359,7 +359,7 @@ class QLineEditWrapper(QTextMixin):
         '''QHeadlineWrapper.'''
         pass
     #@+node:ekr.20110605121601.18125: *4* qlew.setAllText
-    def setAllText(self, s, h=None):
+    def setAllText(self, s):
         '''Set all text of a Qt headline widget.'''
         if self.check():
             w = self.widget
@@ -1154,7 +1154,7 @@ class QScintillaWrapper(QTextMixin):
         row, col = g.convertPythonIndexToRowCol(s, i)
         w.ensureLineVisible(row)
     #@+node:ekr.20110605121601.18113: *4* qsciw.setAllText
-    def setAllText(self, s, h=None):
+    def setAllText(self, s):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w, Qsci.QsciScintilla), w
@@ -1537,12 +1537,11 @@ class QTextEditWrapper(QTextMixin):
         if trace: g.trace(self.getInsertPoint())
         self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
-    def setAllText(self, s, h=None): ### h no longer used.
+    def setAllText(self, s):
         '''Set the text of body pane.'''
         trace = False and not g.unitTesting
         trace_time = True
         c, w = self.c, self.widget
-        ### if h is None: h = c.p and c.p.h or '<no p>'
         h = c.p and c.p.h or '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
         colorizer = c.frame.body.colorizer

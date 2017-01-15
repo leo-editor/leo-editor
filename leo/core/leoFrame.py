@@ -195,7 +195,7 @@ class WrapperAPI(object):
 
     def selectAllText(self, insert=None): pass
 
-    def setAllText(self, s, h=None): pass
+    def setAllText(self, s): pass
 
     def setFocus(self): pass # Required: sets the focus to wrapper.widget.
 
@@ -1748,7 +1748,7 @@ class LeoTree(object):
         c.setCurrentPosition(p)
             ### New, highly experimental
         colorizer.init(p, s) # init *first*.
-        w.setAllText(s, h = p.h)
+        w.setAllText(s)
         if trace and trace_time:
             t3 = time.time()
             if t3-t2 > 0.1:
@@ -2484,7 +2484,7 @@ class StringTextWrapper(object):
         '''StringTextWrapper.'''
         self.setSelectionRange(0, 'end', insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
-    def setAllText(self, s, h=None):
+    def setAllText(self, s):
         '''StringTextWrapper.'''
         self.s = s
         i = len(self.s)
