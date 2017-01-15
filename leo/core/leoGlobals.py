@@ -2337,7 +2337,7 @@ g_noweb_root = re.compile(
     '<' + '<' + '*' + '>' + '>' + '=',
     re.MULTILINE)
 
-def get_directives_dict(p, root=None, s=None):
+def get_directives_dict(p, root=None):
     """
     Scan p for @directives found in globalDirectiveList.
 
@@ -2354,8 +2354,7 @@ def get_directives_dict(p, root=None, s=None):
     pat = g.compute_directives_re()
     directives_pat = re.compile(pat, re.MULTILINE)
     # The headline has higher precedence because it is more visible.
-    body_s = p.b if s is None else s
-    for kind, s in (('head', p.h), ('body', body_s)):
+    for kind, s in (('head', p.h), ('body', p.b)):
         anIter = directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
@@ -2382,7 +2381,7 @@ def get_directives_dict(p, root=None, s=None):
                 d['@path_in_body'] = p.h
                 if trace: g.trace('@path in body', p.h)
     if root:
-        anIter = g_noweb_root.finditer(body_s)
+        anIter = g_noweb_root.finditer(p.b)
         for m in anIter:
             if root_node:
                 d["root"] = 0 # value not immportant

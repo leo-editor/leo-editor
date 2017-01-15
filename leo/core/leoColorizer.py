@@ -2144,7 +2144,7 @@ class LeoQtColorizer(object):
         '''Init the colorizer using p, p's ancestors and s instead of p.b.'''
         # g.trace('(colorizer)', p and p.h)
         if p:
-            self.updateSyntaxColorer(p, s=s)
+            self.updateSyntaxColorer(p)
                 # Must be called before colorer.init().
             self.colorer.init(p, s)
     #@+node:ekr.20140827112712.18468: *3* colorizer.kill (to be deleted)
@@ -2208,27 +2208,24 @@ class LeoQtColorizer(object):
             # # self.leo_highlighter = h
             # # return True
     #@+node:ekr.20110605121601.18562: *3* colorizer.updateSyntaxColorer & helpers
-    def updateSyntaxColorer(self, p, s=None):
-        '''
-        Scan for color directives in p and its ancestors.
-        If s is given, use it instead of p.b.
-        '''
+    def updateSyntaxColorer(self, p):
+        '''Scan for color directives in p and its ancestors.'''
         trace = False and not g.unitTesting
-        if s is None: s = p.b
+        ### if s is None: s = p.b
         # An important hack: shortcut everything if the first line is @killcolor.
-        if s.startswith('@killcolor'):
+        if p.b.startswith('@killcolor'):
             if trace: g.trace('@killcolor')
             self.flag = False
             return self.flag
         else:
             # self.flag is True unless an unambiguous @nocolor is seen.
             p = p.copy()
-            self.flag = self.useSyntaxColoring(p, s=s)
-            self.scanColorDirectives(p, s=s) # Sets self.language
+            self.flag = self.useSyntaxColoring(p)
+            self.scanColorDirectives(p) # Sets self.language
         if trace: g.trace(self.flag, self.language, p.h)
         return self.flag
     #@+node:ekr.20110605121601.18556: *4* colorizer.scanColorDirectives & helper
-    def scanColorDirectives(self, p, s=None):
+    def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
         trace = False and not g.unitTesting
         c = self.c
@@ -2309,7 +2306,7 @@ class LeoQtColorizer(object):
         fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
         return g.os_path_exists(fn)
     #@+node:ekr.20110605121601.18563: *4* colorizer.useSyntaxColoring & helper
-    def useSyntaxColoring(self, p, s=None):
+    def useSyntaxColoring(self, p):
         """Return True unless p is unambiguously under the control of @nocolor."""
         trace = False and not g.unitTesting
         if pyzo:

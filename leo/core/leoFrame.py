@@ -1732,17 +1732,16 @@ class LeoTree(object):
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         trace_pass = False # Trace early return.
         trace_time = (True or traceTime)
         if trace_time: t1 = time.time()
-        # Always do this.  Otherwise there can be problems with trailing newlines.
         c = self.c
+        colorizer = c.frame.body.colorizer
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        # if trace: g.trace('=====', len(s), p.h)
         if trace and trace_time:
             t2 = time.time()
             if t2-t1 > 0.1:
@@ -1751,40 +1750,13 @@ class LeoTree(object):
             if trace and trace_pass:
                 g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
-        # Part 2: set the new text.
-        colorizer = c.frame.body.colorizer
-        colorizer.init(p, s) ### New: init *before* setting all text.
+        # Part 2: set the new text **and** recolor.
+        colorizer.init(p, s) # init *first*.
         w.setAllText(s, h = p.h)
         if trace and trace_time:
             t3 = time.time()
-            delta_t = t3-t2
-            if delta_t > 0.1:
-                print('  part2: setAllText %4.2f sec' % delta_t)
-        # Part 3: recolor: Do NOT call c.recolor_now here.
-        # w.setAllText destroys all color tags, so do a full recolor.
-        if 0: ### Needed???
-            colorizer.colorize(p) ### New code.
-        if 0:
-            colorizer = c.frame.body.colorizer
-            if w.widget:
-                from leo.core.leoQt import QtWidgets ###
-                if leoColorizer.pyzo:
-                    colorizer.setHighlighter(p)
-                elif isinstance(w.widget, QtWidgets.QTextEdit):
-                    ### New code: the highlighter is already connected.
-                    assert colorizer.highlighter, colorizer
-                    assert colorizer.colorer, colorizer
-                    colorizer.updateSyntaxColorer(p)
-                        # Must be called before colorer.init().
-                    colorizer.colorer.init(p, s) ### New code.
-                    colorizer.colorize(p) ### New code.
-                else: g.trace('unknown widget', w.widget)
-            ### Old code
-            # elif hasattr(colorizer, 'setHighlighter'):
-                # if colorizer.setHighlighter(p):
-                    # self.frame.body.recolor(p)
-            # else:
-                # self.frame.body.recolor(p)
+            if t3-t2 > 0.1:
+                print('  part2: setAllText %4.2f sec' % (t3-t2))
         if trace and trace_time:
             t4 = time.time()
             if t4-t3 > 0.1:
