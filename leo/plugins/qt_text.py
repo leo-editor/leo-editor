@@ -1559,9 +1559,6 @@ class QTextEditWrapper(QTextMixin):
             # g.trace('read/write text')
             w.setReadOnly(False)
             w.setPlainText(s)
-            # w.update()
-                # 2014/08/30: w.update does not ensure that all text is loaded
-                # before the user starts editing it!
             if trace and trace_time:
                 delta_t = time.time() - t1
                 g.trace('%4.2f sec. %6s chars %s' % (delta_t, len(s), h))

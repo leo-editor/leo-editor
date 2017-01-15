@@ -69,7 +69,7 @@ class ColorizerAPI(object):
 
     def useSyntaxColoring(self, p): return True
 
-    def write_colorizer_cache(self, p): pass
+    # def write_colorizer_cache(self, p): pass
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
 class StatusLineAPI(object):
     '''The required API for c.frame.statusLine.'''
@@ -274,6 +274,18 @@ class LeoBody(object):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p, incremental=False):
+        
+        trace = False and not g.unitTesting
+        from leo.core.leoQt import QtWidgets
+        assert self.widget and self.widget.document()
+        assert isinstance(self.widget, QtWidgets.QTextEdit)
+        if incremental:
+            if trace: g.trace('***** incremental', incremental, p and p.h)
+        else:
+            if trace: g.trace('(body)',
+                id(self.widget.document()),
+                id(self.widget),
+                p and p.h)
         self.c.requestRecolorFlag = True
         self.c.incrementalRecolorFlag = incremental
 
@@ -1673,7 +1685,7 @@ class LeoTree(object):
             delta_t = time.time() - t1
             if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
-    #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer
+    #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer (to be removed)
     def stop_colorizer(self, old_p):
         '''Stop colorizing the present node.'''
         c = self.c
@@ -1681,11 +1693,12 @@ class LeoTree(object):
         if colorizer:
             if hasattr(colorizer, 'kill'):
                 colorizer.kill()
-            if (hasattr(colorizer, 'colorCacheFlag') and
-                colorizer.colorCacheFlag and
-                hasattr(colorizer, 'write_colorizer_cache')
-            ):
-                colorizer.write_colorizer_cache(old_p)
+            ###
+            # if (hasattr(colorizer, 'colorCacheFlag') and
+                # colorizer.colorCacheFlag and
+                # hasattr(colorizer, 'write_colorizer_cache')
+            # ):
+                # colorizer.write_colorizer_cache(old_p)
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self, old_p, p, traceTime):
         '''Select the new node, part 1.'''
@@ -1716,11 +1729,11 @@ class LeoTree(object):
             delta_t = time.time() - t1
             if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
-    #@+node:ekr.20090608081524.6109: *6* *** LeoTree.set_body_text_after_select
+    #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
         trace = False and not g.unitTesting
-        trace_pass = False
+        trace_pass = False # Trace early return.
         trace_time = (True or traceTime)
         if trace_time: t1 = time.time()
         # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -1735,44 +1748,43 @@ class LeoTree(object):
             if t2-t1 > 0.1:
                 print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
-            if trace and trace_pass: g.trace('*pass', len(s), p.h, old_p.h)
+            if trace and trace_pass:
+                g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text.
+        w.setAllText(s, h = p.h)
+        if trace and trace_time:
+            t3 = time.time()
+            delta_t = t3-t2
+            if delta_t > 0.1:
+                print('  part2: setAllText %4.2f sec' % delta_t)
+        # Part 3: recolor: Do NOT call c.recolor_now here.
         # w.setAllText destroys all color tags, so do a full recolor.
-        if leoColorizer.pyzo:
-            w.setAllText(s, h = p.h)
-            if trace and trace_time:
-                t3 = time.time()
-                if t3-t2 > 0.1:
-                    print('  part2: setAllText %4.2f sec' % (t3-t2))
-            # Part 3: colorize.
-            # We can't call c.recolor_now here.
-            colorizer = c.frame.body.colorizer
-            colorizer.setHighlighter(p)
-        elif False: ### 0 < c.max_pre_loaded_body_chars < len(s):
-            # Don't load the text if not wanted.
-            if trace and trace_time:
-                t3 = time.time()
-                if t3-t2 > 0.1:
-                    print('  part2: setAllText %4.2f sec' % (t3-t2))
-        else:
-            w.setAllText(s, h = p.h)
-            if trace and trace_time:
-                t3 = time.time()
-                if t3-t2 > 0.1:
-                    print('  part2: setAllText %4.2f sec' % (t3-t2))
-            # Part 3: colorize.
-            # We can't call c.recolor_now here.
-            colorizer = c.frame.body.colorizer
-            if hasattr(colorizer, 'setHighlighter'):
-                if colorizer.setHighlighter(p):
-                    self.frame.body.recolor(p)
-            else:
-                self.frame.body.recolor(p)
+        colorizer = c.frame.body.colorizer
+        if w.widget:
+            from leo.core.leoQt import QtWidgets ###
+            if leoColorizer.pyzo:
+                colorizer.setHighlighter(p)
+            elif isinstance(w.widget, QtWidgets.QTextEdit):
+                ### New code: the highlighter is already connected.
+                assert colorizer.highlighter, colorizer
+                assert colorizer.colorer, colorizer
+                colorizer.updateSyntaxColorer(p)
+                    # Must be called before colorer.init().
+                colorizer.colorer.init(p, s) ### New code.
+                colorizer.colorize(p) ### New code.
+            else: g.trace('unknown widget', w.widget)
+            ### Old code
+            # elif hasattr(colorizer, 'setHighlighter'):
+                # if colorizer.setHighlighter(p):
+                    # self.frame.body.recolor(p)
+            # else:
+                # self.frame.body.recolor(p)
         if trace and trace_time:
             t4 = time.time()
             if t4-t3 > 0.1:
                 print('  part3: colorize   %4.2f sec' % (t4-t3))
+                print('n_calls', c.frame.body.colorizer.highlighter.n_calls)
             if t4-t1 > 0.1:
                 print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.
@@ -1977,7 +1989,8 @@ class NullColorizer(leoColorizer.ColorizerMixin):
 
     def showInvisibles(self): pass
 
-    def write_colorizer_cache(self, p): pass
+    # def write_colorizer_cache(self, p): pass
+
     # External unit tests require the standard (ColorizerMixin) methods for these:
         # def scanColorDirectives(self,p): pass
         # def updateSyntaxColorer (self,p): pass
