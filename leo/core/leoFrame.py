@@ -1752,6 +1752,8 @@ class LeoTree(object):
                 g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text.
+        colorizer = c.frame.body.colorizer
+        colorizer.init(p, s) ### New: init *before* setting all text.
         w.setAllText(s, h = p.h)
         if trace and trace_time:
             t3 = time.time()
@@ -1760,20 +1762,23 @@ class LeoTree(object):
                 print('  part2: setAllText %4.2f sec' % delta_t)
         # Part 3: recolor: Do NOT call c.recolor_now here.
         # w.setAllText destroys all color tags, so do a full recolor.
-        colorizer = c.frame.body.colorizer
-        if w.widget:
-            from leo.core.leoQt import QtWidgets ###
-            if leoColorizer.pyzo:
-                colorizer.setHighlighter(p)
-            elif isinstance(w.widget, QtWidgets.QTextEdit):
-                ### New code: the highlighter is already connected.
-                assert colorizer.highlighter, colorizer
-                assert colorizer.colorer, colorizer
-                colorizer.updateSyntaxColorer(p)
-                    # Must be called before colorer.init().
-                colorizer.colorer.init(p, s) ### New code.
-                colorizer.colorize(p) ### New code.
-            else: g.trace('unknown widget', w.widget)
+        if 0: ### Needed???
+            colorizer.colorize(p) ### New code.
+        if 0:
+            colorizer = c.frame.body.colorizer
+            if w.widget:
+                from leo.core.leoQt import QtWidgets ###
+                if leoColorizer.pyzo:
+                    colorizer.setHighlighter(p)
+                elif isinstance(w.widget, QtWidgets.QTextEdit):
+                    ### New code: the highlighter is already connected.
+                    assert colorizer.highlighter, colorizer
+                    assert colorizer.colorer, colorizer
+                    colorizer.updateSyntaxColorer(p)
+                        # Must be called before colorer.init().
+                    colorizer.colorer.init(p, s) ### New code.
+                    colorizer.colorize(p) ### New code.
+                else: g.trace('unknown widget', w.widget)
             ### Old code
             # elif hasattr(colorizer, 'setHighlighter'):
                 # if colorizer.setHighlighter(p):
@@ -1965,7 +1970,7 @@ class NullColorizer(leoColorizer.ColorizerMixin):
     but does support methods
     '''
     #@+others
-    #@+node:ekr.20031218072017.2219: *3* __init__ (NullColorizer)
+    #@+node:ekr.20031218072017.2219: *3* NullColorizer.__init__
     def __init__(self, c):
         '''NullColorizer'''
         leoColorizer.ColorizerMixin.__init__(self, c)
@@ -1974,7 +1979,7 @@ class NullColorizer(leoColorizer.ColorizerMixin):
         self.enabled = False
         self.full_recolor_count = 0
         self.highlighter = None
-    #@+node:ekr.20031218072017.2220: *3* entry points
+    #@+node:ekr.20031218072017.2220: *3* NullColorizer.Entry points
     def colorize(self, p, incremental=False, interruptable=True):
         self.count += 1 # Used by unit tests.
         return 'ok' # Used by unit tests.
@@ -1982,6 +1987,8 @@ class NullColorizer(leoColorizer.ColorizerMixin):
     def disable(self): pass
 
     def enable(self): pass
+
+    def init(self, p, s): pass
 
     def kill(self): pass
 

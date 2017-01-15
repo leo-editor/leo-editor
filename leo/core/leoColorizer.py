@@ -662,10 +662,10 @@ else:
             Old: called from leo_h.rehighlight.
             New: called from colorizer.colorize
             '''
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             if p: self.p = p.copy()
             self.all_s = s or ''
-            if trace: g.trace(self.colorizer.language, p.h)
+            if trace: g.trace('(jEdit)', self.colorizer.language, p.h)
             # State info.
             self.all_s = s
             self.global_i, self.global_j = 0, 0
@@ -2139,7 +2139,15 @@ class LeoQtColorizer(object):
             # Do a full recolor, but only if we aren't changing nodes.
             if self.c.currentPosition() == p:
                 self.highlighter.rehighlight(p)
-    #@+node:ekr.20140827112712.18468: *3* colorizer.kill
+    #@+node:ekr.20170115041807.1: *3* colorizer.init (new)
+    def init (self, p, s):
+        '''Init the colorizer using p, p's ancestors and s instead of p.b.'''
+        # g.trace('(colorizer)', p and p.h)
+        if p:
+            self.updateSyntaxColorer(p, s=s)
+                # Must be called before colorer.init().
+            self.colorer.init(p, s)
+    #@+node:ekr.20140827112712.18468: *3* colorizer.kill (to be deleted)
     def kill(self): # c.frame.body.colorizer.kill
         '''Kill any queue colorizing.'''
         if pyzo: 
@@ -2157,6 +2165,7 @@ class LeoQtColorizer(object):
 
         trace = False and not g.unitTesting
         c = self.c
+        assert pyzo, g.callers()
         widget = c.frame.body.widget # The body pane widget
         if not widget:
             g.trace('no widget')
@@ -2164,41 +2173,64 @@ class LeoQtColorizer(object):
         document = widget.document()
         if trace: g.trace('doc', id(document), 'w', id(widget), p and p.h)
         assert c.frame.body.colorizer == self, repr(c.frame.body.colorizer)
-        if pyzo:
-            if self.pyzo_highlighter:
-                # Do NOT call rehighlight here!
-                # That would be a huge performance bug.
-                document.markContentsDirty(0, len(p.b))
-            else:
-                if trace: g.trace('===== new pyzo_h')
-                import leo.external.pyzo.highlighter as highlighter
-                import leo.external.pyzo.python_parser as python_parser
-                parser = python_parser.PythonParser()
-                h = highlighter.PyzoHighlighter(parser, document)
-                self.highlighter = h
-                self.pyzo_highlighter = h
-        elif self.leo_highlighter:
-            if self.enabled:
-                self.flag = self.updateSyntaxColorer(p)
-                document.markContentsDirty(0, len(p.b))
-                if trace: g.trace('doc', id(document))
-                return self.flag
-            else:
-                if trace: g.trace('********** disabled')
-                return False
+        if self.pyzo_highlighter:
+            # Do NOT call rehighlight here!
+            # That would be a huge performance bug.
+            document.markContentsDirty(0, len(p.b))
         else:
-            assert False, self
-            ### Now done in ctor.
-            # if trace: g.trace('===== new leo_h')
-            # colorizer = self
-            # h = LeoHighlighter(c, colorizer, document)
-            # self.highlighter = h
-            # self.leo_highlighter = h
-            # return True
-    #@+node:ekr.20110605121601.18556: *3* colorizer.scanColorDirectives & helper
-    def scanColorDirectives(self, p):
+            # Instantiate the parser and highlighter.
+            if trace: g.trace('===== new pyzo_h')
+            import leo.external.pyzo.highlighter as highlighter
+            import leo.external.pyzo.python_parser as python_parser
+            parser = python_parser.PythonParser()
+            h = highlighter.PyzoHighlighter(parser, document)
+            self.highlighter = h
+            self.pyzo_highlighter = h
+        
+        ### All this is now done in colorizer.init.
+        # elif self.leo_highlighter:
+            # assert False, g.callers()
+            # if self.enabled:
+                # self.flag = self.updateSyntaxColorer(p)
+                # document.markContentsDirty(0, len(p.b))
+                # if trace: g.trace('doc', id(document))
+                # return self.flag
+            # else:
+                # if trace: g.trace('********** disabled')
+                # return False
+        # else:
+            # assert False, self
+            # ### Now done in ctor.
+            # # if trace: g.trace('===== new leo_h')
+            # # colorizer = self
+            # # h = LeoHighlighter(c, colorizer, document)
+            # # self.highlighter = h
+            # # self.leo_highlighter = h
+            # # return True
+    #@+node:ekr.20110605121601.18562: *3* colorizer.updateSyntaxColorer & helpers
+    def updateSyntaxColorer(self, p, s=None):
+        '''
+        Scan for color directives in p and its ancestors.
+        If s is given, use it instead of p.b.
+        '''
+        trace = False and not g.unitTesting
+        if s is None: s = p.b
+        # An important hack: shortcut everything if the first line is @killcolor.
+        if s.startswith('@killcolor'):
+            if trace: g.trace('@killcolor')
+            self.flag = False
+            return self.flag
+        else:
+            # self.flag is True unless an unambiguous @nocolor is seen.
+            p = p.copy()
+            self.flag = self.useSyntaxColoring(p, s=s)
+            self.scanColorDirectives(p, s=s) # Sets self.language
+        if trace: g.trace(self.flag, self.language, p.h)
+        return self.flag
+    #@+node:ekr.20110605121601.18556: *4* colorizer.scanColorDirectives & helper
+    def scanColorDirectives(self, p, s=None):
         '''Set self.language based on the directives in p's tree.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         if c is None: return None # self.c may be None for testing.
         root = p.copy()
@@ -2209,14 +2241,14 @@ class LeoQtColorizer(object):
             theDict = g.get_directives_dict(p)
             # if trace: g.trace(p.h,theDict)
             #@+<< Test for @colorcache >>
-            #@+node:ekr.20121003152523.10126: *4* << Test for @colorcache >>
+            #@+node:ekr.20121003152523.10126: *5* << Test for @colorcache >>
             # The @colorcache directive is a per-node directive.
             if p == root:
                 self.colorCacheFlag = 'colorcache' in theDict
                 # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
             #@-<< Test for @colorcache >>
             #@+<< Test for @language >>
-            #@+node:ekr.20110605121601.18557: *4* << Test for @language >>
+            #@+node:ekr.20110605121601.18557: *5* << Test for @language >>
             if 'language' in theDict:
                 s = theDict["language"]
                 aList = self.findLanguageDirectives(p)
@@ -2230,7 +2262,7 @@ class LeoQtColorizer(object):
                     break
             #@-<< Test for @language >>
             #@+<< Test for @root, @root-doc or @root-code >>
-            #@+node:ekr.20110605121601.18558: *4* << Test for @root, @root-doc or @root-code >>
+            #@+node:ekr.20110605121601.18558: *5* << Test for @root, @root-doc or @root-code >>
             if 'root' in theDict and not self.rootMode:
                 s = theDict["root"]
                 if g.match_word(s, 0, "@root-code"):
@@ -2251,7 +2283,7 @@ class LeoQtColorizer(object):
             if trace: g.trace('using default', c.target_language)
             self.language = c.target_language
         return self.language # For use by external routines.
-    #@+node:ekr.20110605121601.18559: *4* findLanguageDirectives
+    #@+node:ekr.20110605121601.18559: *5* findLanguageDirectives
     def findLanguageDirectives(self, p):
         '''Scan p's body text for *valid* @language directives.
 
@@ -2272,28 +2304,12 @@ class LeoQtColorizer(object):
                         if trace: g.trace('invalid', word)
         if trace: g.trace(aList)
         return aList
-    #@+node:ekr.20110605121601.18560: *4* isValidLanguage
+    #@+node:ekr.20110605121601.18560: *5* isValidLanguage
     def isValidLanguage(self, language):
         fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
         return g.os_path_exists(fn)
-    #@+node:ekr.20110605121601.18562: *3* colorizer.updateSyntaxColorer
-    def updateSyntaxColorer(self, p):
-        '''Scan p.b for color directives.'''
-        trace = True and not g.unitTesting
-        # An important hack: shortcut everything if the first line is @killcolor.
-        if p.b.startswith('@killcolor'):
-            if trace: g.trace('@killcolor')
-            self.flag = False
-            return self.flag
-        else:
-            # self.flag is True unless an unambiguous @nocolor is seen.
-            p = p.copy()
-            self.flag = self.useSyntaxColoring(p)
-            self.scanColorDirectives(p) # Sets self.language
-        if trace: g.trace(self.flag, self.language, p.h)
-        return self.flag
-    #@+node:ekr.20110605121601.18563: *3* colorizer.useSyntaxColoring & helper
-    def useSyntaxColoring(self, p):
+    #@+node:ekr.20110605121601.18563: *4* colorizer.useSyntaxColoring & helper
+    def useSyntaxColoring(self, p, s=None):
         """Return True unless p is unambiguously under the control of @nocolor."""
         trace = False and not g.unitTesting
         if pyzo:
@@ -2332,7 +2348,7 @@ class LeoQtColorizer(object):
             first = False
         if trace: g.trace(val, kind)
         return val
-    #@+node:ekr.20110605121601.18564: *4* findColorDirectives
+    #@+node:ekr.20110605121601.18564: *5* findColorDirectives
     color_directives_pat = re.compile(
         # Order is important: put longest matches first.
         r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
@@ -2396,12 +2412,12 @@ elif QtGui:
             '''
             # pylint: disable=arguments-differ
             trace = True ### and not g.unitTesting
-            if trace: g.trace(p and p.h, g.callers())
+            if trace: g.trace('=====', p and p.h, g.callers())
             if not hasattr(self, 'currentBlock'):
                 if self.no_method_message:
                     self.no_method_message = False
                     g.trace('===== QSyntaxHighlighter has no currentBlock method')
-                    return
+                return
             c = self.c
             if not p.b.strip():
                 if trace: g.trace('no body', p and p.h)
