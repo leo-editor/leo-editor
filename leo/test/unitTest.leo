@@ -59,19 +59,19 @@
 <v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20170114080005.9"><vh>@gnxs</vh></v>
+<v t="ekr.20170114200515.5"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20170114080004.5"><vh>@gnxs</vh></v>
+<v t="ekr.20170114200514.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20170114080003.10"><vh>@gnxs</vh></v>
+<v t="ekr.20170114200513.7"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20170114080003.3"><vh>@gnxs</vh></v>
+<v t="ekr.20170114200512.9"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
@@ -224,6 +224,14 @@
 <v t="ekr.20170114075949.212"><vh>@data:#@auto</vh>
 <v t="ekr.20170114075949.213"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20170114200459.415"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170114200459.416"><vh>@data:#@auto</vh>
+<v t="ekr.20170114200459.417"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170114200500.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170114200500.2"><vh>@data:#@auto</vh>
+<v t="ekr.20170114200500.3"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
@@ -370,7 +378,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016" a="E"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr.20090529141856.4717,ekr.20090529141856.4727,ekr.20161108034116.1,ekr.20161123115047.1,ekr.20090529141856.4731,ekr.20111029112647.4099,ekr.20100803234640.5804,ekr.20090529141856.4766,ekr.20090529141856.4774,ekr.20161123202857.1,ekr.20161124040933.1,ekr.20090529141856.4734,ekr.20161103015908.1,ekr.20100219080213.5365,ekr.20090529141856.4736,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682" a="E"><vh>leoImport</vh>
@@ -620,6 +628,9 @@ expanded="ekr.20071113194858,ekr.20090529141856.4682,ekr.20090529141856.4716,ekr
 </v>
 <v t="ekr.20170114080041.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20170114080041.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170114200550.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170114200550.4"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -10709,22 +10720,53 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20170114080003.10">gnx: ekr.20151009114144.13
-unl: section 1
-gnx: ekr.20151009114144.14
-unl: section 2
+<t tx="ekr.20170114080041.1">&lt;?php
+@others
+@language php
+@tabwidth -4
 </t>
-<t tx="ekr.20170114080003.3">gnx: ekr.20161202200225.5
+<t tx="ekr.20170114080041.2">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170114200459.415">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170114200459.416">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170114200459.417">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20170114200500.1">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170114200500.2">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170114200500.3">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
+</t>
+<t tx="ekr.20170114200512.9">gnx: ekr.20161202200225.5
 unl: section 1
 gnx: ekr.20161202200225.6
 unl: section 2
 </t>
-<t tx="ekr.20170114080004.5">gnx: ekr.20151009114144.15
+<t tx="ekr.20170114200513.7">gnx: ekr.20151009114144.13
+unl: section 1
+gnx: ekr.20151009114144.14
+unl: section 2
+</t>
+<t tx="ekr.20170114200514.1">gnx: ekr.20151009114144.15
 unl: section 1
 gnx: ekr.20151009114144.16
 unl: section 2
 </t>
-<t tx="ekr.20170114080005.9">gnx: ekr.20161202200225.7
+<t tx="ekr.20170114200515.5">gnx: ekr.20161202200225.7
 unl: class class1
 gnx: ekr.20161202200225.8
 unl: class class1--&gt;class1_method1
@@ -10737,12 +10779,12 @@ unl: class class2--&gt;class2_method1
 gnx: ekr.20161202200225.12
 unl: class class2--&gt;class2_method2
 </t>
-<t tx="ekr.20170114080041.1">&lt;?php
+<t tx="ekr.20170114200550.3">&lt;?php
 @others
 @language php
 @tabwidth -4
 </t>
-<t tx="ekr.20170114080041.2">class foo {
+<t tx="ekr.20170114200550.4">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar

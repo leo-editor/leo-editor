@@ -32475,7 +32475,7 @@ def reformatBlocks(self, from_, charsRemoved, charsAdded):
     # Delegate the colorizing to shared helper.
     self.reformat_blocks_helper()
 .. @+node:ekr.20121003051050.10201: *3* leoh.rehighlight_with_cache (no longer used)
-if 0: ### From leo_h.rehighlight:
+if 0: # From leo_h.rehighlight:
     if False and ( ### No longer used.
             self.colorizer.colorCacheFlag and
             hasattr(p.v, 'colorCache') and
@@ -32484,6 +32484,13 @@ if 0: ### From leo_h.rehighlight:
         ):
             # Should be no need to init the colorizer.
             self.rehighlight_with_cache(p.v.colorCache)
+            
+if 0: # From leo_h.highlightBlock
+    v = self.c.p.v
+    if hasattr(v, 'colorCache') and v.colorCache and not self.colorizer.changingText:
+        if trace: g.trace('clearing cache', g.callers())
+        self.c.p.v.colorCache = None # Kill the color caching.
+
 
 
 def rehighlight_with_cache(self, bunch):
@@ -32515,6 +32522,43 @@ def rehighlight_with_cache(self, bunch):
                 i, bunch2.s, g.u(b.text())))
     if trace:
         g.trace('%2.3f sec' % (time.time() - t1))
+.. @+node:ekr.20121003051050.10198: *3* colorizer.write_colorizer_cache
+# Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
+
+def write_colorizer_cache(self, p):
+    '''
+    Write colorizing data for p for later use by rehighlight_with_cache.
+    Called from the node selection logic only if an @colorcache directive is in effect.
+    '''
+    trace = False and not g.unitTesting
+    if pyzo:
+        g.trace('=====', g.callers())
+        return ###
+    if not p: return
+    c = self.c
+    widget = c.frame.body.widget # a subclass of QTextBrowser
+    doc = widget.document()
+    if trace:
+        t1 = time.time()
+    aList = []
+    for i in range(doc.blockCount()):
+        b = doc.findBlockByNumber(i)
+        s = g.u(b.text())
+        layout = b.layout()
+        ranges = list(layout.additionalFormats()) # A list of FormatRange objects.
+        if ranges:
+            aList.append(g.bunch(i=i, ranges=ranges, s=s))
+            # Apparently not necessary.
+                # ranges2 = []
+                # for r in ranges:
+                    # # Hold the format in memory by copying it.
+                    # r.format = QtGui.QTextCharFormat(r.format)
+                    # ranges2.append(r)
+                # aList.append(g.bunch(i=i,ranges=ranges2,s=s))
+    p.v.colorCache = g.bunch(aList=aList, n=doc.blockCount(), v=p.v)
+    if trace:
+        g.trace('%2.3f sec len(aList): %s v: %s' % (
+            time.time() - t1, len(aList), c.p.v.h,))
 .. @-all
 .. @@nosearch
 .. @-leo
