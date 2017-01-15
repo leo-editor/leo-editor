@@ -15592,7 +15592,7 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20161228070933.1: *6* @test python bug #354
-if 1: # Preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -15604,6 +15604,8 @@ if 1: # Preamble...
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
     ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
 s = """
 if isPython3:
     def u(s):
@@ -16153,7 +16155,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.16: *6* @test python indent decls
 @tabwidth -4
     # Required when running unit tests externally.
-if 1: # Preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo
@@ -16435,7 +16437,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.24: *6* @test python overindented def 3
 @tabwidth -4
     # Required when running unit tests externally.
-if 1: # Preamble...
+if 0: # Preamble...
     # g.cls()
     if c.isChanged(): c.save()
     # import leo

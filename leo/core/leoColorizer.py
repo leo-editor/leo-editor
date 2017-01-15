@@ -1151,6 +1151,8 @@ else:
             else:
                 j = k + 2
                 self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
+                # g.trace('ref %r %s' % (s[i: j], p.h))
+                # g.trace(g.callers(6))
                 ref = g.findReference(c, s[i: j], p)
                 if ref:
                     if self.use_hyperlinks:

@@ -1537,12 +1537,13 @@ class QTextEditWrapper(QTextMixin):
         if trace: g.trace(self.getInsertPoint())
         self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
-    def setAllText(self, s, h=None):
+    def setAllText(self, s, h=None): ### h no longer used.
         '''Set the text of body pane.'''
         trace = False and not g.unitTesting
         trace_time = True
         c, w = self.c, self.widget
-        if h is None: h = c.p and c.p.h or '<no p>'
+        ### if h is None: h = c.p and c.p.h or '<no p>'
+        h = c.p and c.p.h or '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter

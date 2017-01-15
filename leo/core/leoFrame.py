@@ -1745,6 +1745,8 @@ class LeoTree(object):
                 g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text **and** recolor.
+        c.setCurrentPosition(p)
+            ### New, highly experimental
         colorizer.init(p, s) # init *first*.
         w.setAllText(s, h = p.h)
         if trace and trace_time:
@@ -1766,7 +1768,8 @@ class LeoTree(object):
         if traceTime:
             t1 = time.time()
         c = self.c
-        c.setCurrentPosition(p)
+        ### c.setCurrentPosition(p)
+            # This is now done in set_body_text_after_select.
         c.frame.scanForTabWidth(p)
             #GS I believe this should also get into the select1 hook
         use_chapters = c.config.getBool('use_chapters')
