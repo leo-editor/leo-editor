@@ -32137,50 +32137,8 @@ def skipSigTail(self, s, i, kind):
 def skipString(self, s, i):
     # Returns len(s) on unterminated string.
     return g.skip_python_string(s, i, verbose=False)
-.. @+node:ekr.20170108162404.1: *3* COPY ../external/pyzo/leo_test.py
-@first # -*- coding: utf-8 -*-
-'''Prototype test code for integrating pyzo into Leo.'''
-<< pyzo copyright >>
-<< pyzo/leo_test.py imports >>
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171806.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170108162537.1: *4* << pyzo/leo_test.py imports >>
-import leo.core.leoGlobals as g
-import imp
-import leo.external.pyzo.base as base
-# import leo.external.pyzo.highlighter as highlighter
-import leo.external.pyzo.python_parser as python_parser
-imp.reload(base)
-# imp.reload(highlighter)
-imp.reload(python_parser)
-.. @+node:ekr.20170108162608.1: *4* class LeoCodeEditor
-class LeoCodeEditor(base.CodeEditorBase):
-
-    def __init__(self):
-        # Must set _parser ivar before initing the base class.
-        self._parser = python_parser.Parser()
-        base.CodeEditorBase.__init__(self)
-
-    def parser(self):
-        return self._parser
-.. @+node:ekr.20170108162637.1: *4* leo_test.main (not used)
-if 0:
-    def main(c):
-        '''main test code.'''
-        codeEditor = LeoCodeEditor()
-        h = codeEditor.leo_highlighter
-            # widget = c.frame.body.wrapper.widget
-            # h = highlighter.Highlighter(codeEditor, widget)
-        h.colorer = g.NullObject()
-            # Disable code in Leo's core.
-        c.frame.body.colorizer.highlighter = h
-.. @+node:ekr.20140825132752.18554: *3* << class PythonQSyntaxHighlighter >>
+.. @+node:ekr.20170116050723.1: *3* Syntax coloring...
+.. @+node:ekr.20140825132752.18554: *4* << class PythonQSyntaxHighlighter >>
 class PythonQSyntaxHighlighter(object):
     '''
     Python implementation of QtGui.QSyntaxHighlighter.
@@ -32189,7 +32147,7 @@ class PythonQSyntaxHighlighter(object):
     overall speed for much faster response time.
     '''
     @others
-.. @+node:ekr.20140825132752.18561: *4* pqsh.Birth & death
+.. @+node:ekr.20140825132752.18561: *5* pqsh.Birth & death
 def __init__(self, parent, c=None, delay=10, limit=50):
     '''
     Ctor for QSyntaxHighlighter class.
@@ -32216,8 +32174,8 @@ def __init__(self, parent, c=None, delay=10, limit=50):
         tag='pqsh.idle_handler')
     # Attach the parent's QTextDocument and set self.d.
     self.setDocument(parent)
-.. @+node:ekr.20140825132752.18588: *4* pqsh.Entry points
-.. @+node:ekr.20140827112712.18469: *5* pqsh.kill
+.. @+node:ekr.20140825132752.18588: *5* pqsh.Entry points
+.. @+node:ekr.20140827112712.18469: *6* pqsh.kill
 def kill(self):
     '''Kill any queued coloring.'''
     trace = False and not g.unitTesting
@@ -32226,7 +32184,7 @@ def kill(self):
         self.idle_active = False
         if self.timer:
             self.timer.stop()
-.. @+node:ekr.20140825132752.18566: *5* pqsh.rehighlight
+.. @+node:ekr.20140825132752.18566: *6* pqsh.rehighlight
 def rehighlight(self):
     '''Color the whole document.'''
     trace = False and not g.unitTesting
@@ -32250,7 +32208,7 @@ def rehighlight(self):
             if trace: g.trace('(pqsh)', n)
             cursor = QtGui.QTextCursor(d)
             self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-.. @+node:ekr.20140825132752.18568: *5* pqsh.rehighlightBlock (not used)
+.. @+node:ekr.20140825132752.18568: *6* pqsh.rehighlightBlock (not used)
 def rehighlightBlock(self, block):
     '''Reapplies the highlighting to the given QTextBlock block.'''
     d = self.d
@@ -32261,7 +32219,7 @@ def rehighlightBlock(self, block):
         self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
         if self.rehighlightPending:
             d.rehighlightPending = self.rehighlightPending
-.. @+node:ekr.20140825132752.18591: *5* pqsh.rehighlight_helper
+.. @+node:ekr.20140825132752.18591: *6* pqsh.rehighlight_helper
 def rehighlight_helper(self, cursor, operation):
         # QtGui.QTextCursor &cursor
         # QtGui.QTextCursor.MoveOperation operation
@@ -32274,8 +32232,8 @@ def rehighlight_helper(self, cursor, operation):
         cursor.endEditBlock()
     finally:
         self.inReformatBlocks = False
-.. @+node:ekr.20140825132752.18590: *4* pqsh.Getters & Setters
-.. @+node:ekr.20140825132752.18582: *5* pqsh.currentBlock & currentBlockUserData
+.. @+node:ekr.20140825132752.18590: *5* pqsh.Getters & Setters
+.. @+node:ekr.20140825132752.18582: *6* pqsh.currentBlock & currentBlockUserData
 def currentBlock(self):
     '''Returns the current text block.'''
     return self.cb
@@ -32283,7 +32241,7 @@ def currentBlock(self):
 def currentBlockUserData(self):
     '''Returns the QTextBlockUserData object attached to the current text block.'''
     return self.cb.userData() if self.is_valid(self.cb) else None
-.. @+node:ekr.20140825132752.18580: *5* pqsh.currentBlockState & previousBlockState
+.. @+node:ekr.20140825132752.18580: *6* pqsh.currentBlockState & previousBlockState
 def currentBlockState(self):
     '''Returns the state of the current block or -1.'''
     return self.cb.userState() if self.is_valid(self.cb) else - 1
@@ -32295,18 +32253,18 @@ def previousBlockState(self):
         return previous.userState() if self.is_valid(previous) else - 1
     else:
         return -1
-.. @+node:ekr.20140825132752.18565: *5* pqsh.document
+.. @+node:ekr.20140825132752.18565: *6* pqsh.document
 def document(self):
     '''Returns the QTextDocument on which this syntax highlighter is installed.'''
     return self.d
-.. @+node:ekr.20140825132752.18575: *5* pqsh.format
+.. @+node:ekr.20140825132752.18575: *6* pqsh.format
 def format(self, pos):
     '''Return the format at the given position in the current text block.'''
     if 0 <= pos < len(self.formatChanges):
         return self.formatChanges[pos]
     else:
         return QtGui.QTextCharFormat()
-.. @+node:ekr.20140825132752.18576: *5* pqsh.setCurrentBlockState & setCurrentBlockUserData
+.. @+node:ekr.20140825132752.18576: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
 def setCurrentBlockState(self, newState):
     '''Sets the state of the current text block.'''
     if self.is_valid(self.cb):
@@ -32316,7 +32274,7 @@ def setCurrentBlockUserData(self, data):
     '''Set the user data of the current text block.'''
     if self.is_valid(self.cb):
         self.cb.setUserData(data)
-.. @+node:ekr.20140825132752.18564: *5* pqsh.setDocument
+.. @+node:ekr.20140825132752.18564: *6* pqsh.setDocument
 def setDocument(self, parent):
     '''Install self on the given QTextDocument.'''
     d = self.d
@@ -32336,7 +32294,7 @@ def setDocument(self, parent):
         d.rehighlightPending = True
             # Set d's pending flag.
         QtCore.QTimer.singleShot(0, self.delayedRehighlight)
-.. @+node:ekr.20140825132752.18584: *5* pqsh.setFormat (start,count,format)
+.. @+node:ekr.20140825132752.18584: *6* pqsh.setFormat (start,count,format)
 def setFormat(self, start, count, format):
     '''Remember the requested formatting.'''
     trace = False and not g.unitTesting
@@ -32358,10 +32316,10 @@ def setFormat(self, start, count, format):
     # format = QTextCharFormat()
     # format.setFont(font)
     # self.setFormat(start,count,format)
-.. @+node:ekr.20140825132752.18589: *4* pqsh.Helpers
+.. @+node:ekr.20140825132752.18589: *5* pqsh.Helpers
 # These helpers are the main reason QSyntaxHighlighter exists.
 # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
-.. @+node:ekr.20140825132752.18557: *5* pqsh.applyFormatChanges
+.. @+node:ekr.20140825132752.18557: *6* pqsh.applyFormatChanges
 def applyFormatChanges(self):
     '''Apply self.formats to the current layout.'''
     if self.formats:
@@ -32369,21 +32327,21 @@ def applyFormatChanges(self):
         layout.setAdditionalFormats(self.formats)
         self.formats = []
         self.d.markContentsDirty(self.cb.position(), self.cb.length())
-.. @+node:ekr.20140825132752.18592: *5* pqsh.delayedRehighlight
+.. @+node:ekr.20140825132752.18592: *6* pqsh.delayedRehighlight
 def delayedRehighlight(self): # inline
     '''Queued rehighlight.'''
     # g.trace('=====',self.rehighlightPending)
     if self.rehighlightPending:
         self.rehighlightPending = False
         self.rehighlight()
-.. @+node:ekr.20140826120657.18649: *5* pqsh.format_to_color
+.. @+node:ekr.20140826120657.18649: *6* pqsh.format_to_color
 def format_to_color(self, format):
     '''Return the foreground color of the given character format.'''
     return str(format.foreground().color().name())
-.. @+node:ekr.20140826120657.18650: *5* pqsh.highlightBlock
+.. @+node:ekr.20140826120657.18650: *6* pqsh.highlightBlock
 def highlightBlock(self, s):
     g.trace('must be defined in subclasses.' '')
-.. @+node:ekr.20140827063632.18569: *5* pqsh.idle_handler
+.. @+node:ekr.20140827063632.18569: *6* pqsh.idle_handler
 def idle_handler(self, timer):
     trace = False and not g.unitTesting
     verbose = True
@@ -32403,15 +32361,15 @@ def idle_handler(self, timer):
             self.idle_active = False
             g.trace('node changed: old: %s new: %s' % (
                 self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
-.. @+node:ekr.20140826120657.18648: *5* pqsh.is_valid
+.. @+node:ekr.20140826120657.18648: *6* pqsh.is_valid
 def is_valid(self, obj):
     return obj and obj.isValid()
-.. @+node:ekr.20140825132752.18558: *5* pqsh.q_reformatBlocks
+.. @+node:ekr.20140825132752.18558: *6* pqsh.q_reformatBlocks
 def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
     if not self.inReformatBlocks:
         # g.trace(from_,charsRemoved,charsAdded)
         self.reformatBlocks(from_, charsRemoved, charsAdded)
-.. @+node:ekr.20140827074435.18570: *5* pqsh.reformat_blocks_helper
+.. @+node:ekr.20140827074435.18570: *6* pqsh.reformat_blocks_helper
 def reformat_blocks_helper(self):
     '''The common code shared by reformatBlocks and idle_handler.'''
     block = self.r_block
@@ -32439,7 +32397,7 @@ def reformat_blocks_helper(self):
         if g.app.allow_delayed_see and w:
             w.seeInsertPoint()
         g.app.allow_delayed_see = False
-.. @+node:ekr.20140825132752.18560: *5* pqsh.reformatBlock
+.. @+node:ekr.20140825132752.18560: *6* pqsh.reformatBlock
 def reformatBlock(self, block):
     trace = False and not g.unitTesting
     if self.is_valid(self.cb) and not isQt5:
@@ -32455,7 +32413,7 @@ def reformatBlock(self, block):
         self.highlightBlock(block.text())
         self.applyFormatChanges()
         self.cb = QtGui.QTextBlock()
-.. @+node:ekr.20140825132752.18559: *5* pqsh.reformatBlocks (main line)
+.. @+node:ekr.20140825132752.18559: *6* pqsh.reformatBlocks (main line)
 def reformatBlocks(self, from_, charsRemoved, charsAdded):
     '''Main line: Reformat the lines in the indicated range.'''
     self.rehighlightPending = False
@@ -32474,7 +32432,7 @@ def reformatBlocks(self, from_, charsRemoved, charsAdded):
     self.r_force = False
     # Delegate the colorizing to shared helper.
     self.reformat_blocks_helper()
-.. @+node:ekr.20121003051050.10201: *3* leoh.rehighlight_with_cache (no longer used)
+.. @+node:ekr.20121003051050.10201: *4* leoh.rehighlight_with_cache (no longer used)
 if 0: # From leo_h.rehighlight:
     if False and ( ### No longer used.
             self.colorizer.colorCacheFlag and
@@ -32522,7 +32480,7 @@ def rehighlight_with_cache(self, bunch):
                 i, bunch2.s, g.u(b.text())))
     if trace:
         g.trace('%2.3f sec' % (time.time() - t1))
-.. @+node:ekr.20121003051050.10198: *3* colorizer.write_colorizer_cache
+.. @+node:ekr.20121003051050.10198: *4* colorizer.write_colorizer_cache
 # Used info from qt/src/gui/text/qsyntaxhighlighter.cpp
 
 def write_colorizer_cache(self, p):
@@ -32559,6 +32517,37 @@ def write_colorizer_cache(self, p):
     if trace:
         g.trace('%2.3f sec len(aList): %s v: %s' % (
             time.time() - t1, len(aList), c.p.v.h,))
+.. @+node:ekr.20110605121601.18561: *4* colorizer.setHighlighter (pzyo only)
+# Called *only* from LeoTree.setBodyTextAfterSelect
+
+pyzo_highlighter = None
+leo_highlighter = None
+
+def setHighlighter(self, p):
+    '''Init the pyzo highlighter, or recolor.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    assert pyzo, g.callers()
+    widget = c.frame.body.widget # The body pane widget
+    if not widget:
+        g.trace('no widget')
+        return False
+    document = widget.document()
+    if trace: g.trace('doc', id(document), 'w', id(widget), p and p.h)
+    assert c.frame.body.colorizer == self, repr(c.frame.body.colorizer)
+    if self.pyzo_highlighter:
+        # Do NOT call rehighlight here!
+        # That would be a huge performance bug.
+        document.markContentsDirty(0, len(p.b))
+    else:
+        # Instantiate the parser and highlighter.
+        if trace: g.trace('===== new pyzo_h')
+        import leo.external.pyzo.highlighter as highlighter
+        import leo.external.pyzo.python_parser as python_parser
+        parser = python_parser.PythonParser()
+        h = highlighter.PyzoHighlighter(parser, document)
+        self.highlighter = h
+        self.pyzo_highlighter = h
 .. @-all
 .. @@nosearch
 .. @-leo

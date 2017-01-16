@@ -2218,14 +2218,7 @@ class Commands(object):
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
             t1 = time.clock()
-            if 0: ### New code.
-                import leo.core.leoColorizer as leoColorizer
-                if leoColorizer.pyzo:
-                    ### c.recolor_now() ### New...
-                    colorizer = c.frame.body.colorizer
-                    colorizer.setHighlighter(p)
-            if 1: ### Previous.  Removed for testing only.
-                c.redraw()
+            c.redraw()
             t2 = time.clock()
             if trace:
                 g.trace(highlighter.n_calls)
