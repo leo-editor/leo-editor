@@ -1726,7 +1726,7 @@ class LeoTree(object):
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_pass = False # Trace early return.
         trace_time = (True or traceTime)
         if trace_time: t1 = time.time()
