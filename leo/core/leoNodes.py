@@ -2503,9 +2503,8 @@ class VNodeBase(object):
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s):
         v = self
-        # g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
-            # v.h, len(v._bodyString),len(s),g.callers(5),
-            # v._bodyString,s))
+        # if not g.isUnicode(s):
+            # g.trace('converting to unicode', type(s), repr(s), g.callers())
         v._bodyString = g.toUnicode(s, reportErrors=True)
 
     def setHeadString(self, s):

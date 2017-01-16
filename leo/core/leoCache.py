@@ -145,8 +145,8 @@ class Cacher(object):
         h, b, gnx, children = aList
         if h is not None:
             v = parent_v
-            v._headString = h
-            v._bodyString = b
+            v._headString = g.toUnicode(h) # 2017/01/16
+            v._bodyString = g.toUnicode(b) # 2017/01/16
         for z in children:
             h, b, gnx, grandChildren = z
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
