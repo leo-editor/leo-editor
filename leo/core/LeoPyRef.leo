@@ -11,6 +11,13 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
+<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
+<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
+<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
+<v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20160122104332.1"><vh>Buttons</vh>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
 <v t="ekr.20150508063538.1"><vh>create_d</vh></v>
@@ -32,17 +39,9 @@
 </v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
-<v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
-<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
 </v>
-<v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
-<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
-<v t="ekr.20140919093158.17876"><vh>@int max-pre-loaded-body-chars = 0</vh></v>
-<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
-<v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
 <v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
@@ -62,36 +61,6 @@
 </v>
 <v t="ekr.20150604130353.1"><vh>@data:@auto test/unit_tests.py</vh>
 <v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
-</v>
-</v>
-<v t="ekr.20140923085942.17943"><vh>Recent scripts</vh>
-<v t="ekr.20140905060158.18560"><vh>Script: change body.x to body.wrapper.x</vh>
-<v t="ekr.20140905060158.18561"><vh>test</vh></v>
-</v>
-<v t="ekr.20140918124632.19450"><vh>Script: print Qt color names</vh></v>
-<v t="ekr.20160315161104.1"><vh>@test rt</vh>
-<v t="ekr.20160315163533.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20160316065700.1"><vh>@@file ../test/report_test.py</vh>
-<v t="ekr.20160316065936.1"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20160316070146.1"><vh>class TestClass</vh>
-<v t="ekr.20160316070255.1"><vh>if_tests</vh></v>
-<v t="ekr.20160316070709.1"><vh>comprehension_tests</vh></v>
-<v t="ekr.20160316081359.1"><vh>try_tests</vh></v>
-</v>
-</v>
-<v t="ekr.20160316100329.1"><vh>@@button py2cs</vh>
-<v t="ekr.20160316100524.1"><vh>cmd</vh></v>
-<v t="ekr.20160316091923.1"><vh>ccc.python-to-coffeescript</vh>
-<v t="ekr.20160316092837.1"><vh>class Python_To_Coffeescript_Adapter</vh>
-<v t="ekr.20160316112717.1"><vh>py2cs.ctor</vh></v>
-<v t="ekr.20160316093019.1"><vh>py2cs.main</vh></v>
-<v t="ekr.20160316094011.7"><vh>py2cs.finalize</vh></v>
-<v t="ekr.20160316094011.8"><vh>py2cs.to_coffeescript</vh></v>
-<v t="ekr.20160316094011.9"><vh>py2cs.run</vh></v>
-<v t="ekr.20160316141812.1"><vh>py2cs.strip_sentinels</vh></v>
-</v>
-</v>
 </v>
 </v>
 </v>
@@ -137,7 +106,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3071017d71022858090000007374725f6d74696d657103580d000000313331393439323330312e3532710458090000007374725f6374696d657105580c000000313331393439313330362e30710658090000007374725f6174696d657107580d000000313331393534393339302e38397108755805000000302e332e3171097d710a2858090000007374725f6d74696d65710b580d000000313331393436373033382e3235710c58090000007374725f6374696d65710d580c000000313331393436303438332e30710e58090000007374725f6174696d65710f580c000000313332303432323637302e397110755805000000302e332e3571117d71122858090000007374725f6d74696d657113580c000000313331393634313131372e39711458090000007374725f6374696d657115580c000000313331393633383634382e30711658090000007374725f6174696d657117580d000000313331393634313435352e39377118755805000000302e332e3271197d711a2858090000007374725f6d74696d65711b580d000000313331393436373035302e3438711c58090000007374725f6374696d65711d580c000000313331393436303438332e30711e58090000007374725f6174696d65711f580d000000313331393436373035302e34387120755805000000302e332e3471217d71222858090000007374725f6d74696d657123580d000000313331393634313038352e3038712458090000007374725f6374696d657125580c000000313331393633383634382e30712658090000007374725f6174696d657127580c000000313331393634353330362e327128755805000000302e332e3371297d712a2858090000007374725f6d74696d65712b580d000000313332303432323639302e3534712c58090000007374725f6374696d65712d580c000000313331393436303438332e30712e58090000007374725f6174696d65712f580d000000313332303433343235372e3336713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6d74696d657103580d000000313331393436373033382e3235710458090000007374725f6374696d657105580c000000313331393436303438332e30710658090000007374725f6174696d657107580c000000313332303432323637302e397108755805000000302e332e3471097d710a2858090000007374725f6d74696d65710b580d000000313331393634313038352e3038710c58090000007374725f6374696d65710d580c000000313331393633383634382e30710e58090000007374725f6174696d65710f580c000000313331393634353330362e327110755805000000302e332e3571117d71122858090000007374725f6d74696d657113580c000000313331393634313131372e39711458090000007374725f6374696d657115580c000000313331393633383634382e30711658090000007374725f6174696d657117580d000000313331393634313435352e39377118755805000000302e332e3071197d711a2858090000007374725f6d74696d65711b580d000000313331393439323330312e3532711c58090000007374725f6374696d65711d580c000000313331393439313330362e30711e58090000007374725f6174696d65711f580d000000313331393534393339302e38397120755805000000302e332e3271217d71222858090000007374725f6d74696d657123580d000000313331393436373035302e3438712458090000007374725f6374696d657125580c000000313331393436303438332e30712658090000007374725f6174696d657127580d000000313331393436373035302e34387128755805000000302e332e3371297d712a2858090000007374725f6d74696d65712b580d000000313332303432323639302e3534712c58090000007374725f6374696d65712d580c000000313331393436303438332e30712e58090000007374725f6174696d65712f580d000000313332303433343235372e3336713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -255,7 +224,7 @@ expanded="ekr.20170108045413.3,"><vh>@file ../external/pyzo/base.py</vh></v>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b0058050000006c696e6b7371025d710358010000007971044b00580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358010000007971044b0058050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -459,68 +428,13 @@ Leo uses a model/view/controller architecture.
 @c
 </t>
 <t tx="ekr.20140902155015.18674"></t>
-<t tx="ekr.20140905060158.18560">'''
-A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
-
-It is *not undoable* to save massive amounts of memory.
-Please run on an already-saved .leo file, and take all other reasonable precautions.
-
-If replace is False, it will just report the changes to be made.
-'''
-import leo.core.leoFrame as leoFrame
-replace = False
-aList = sorted([z for z in dir(leoFrame.WrapperAPI) if not z.startswith('__')])
-nodes = 0
-for p in c.all_unique_positions():
-    s = p.b
-    nodes += 1
-    found = False
-    for target in aList:
-        i = 0
-        pattern = 'body.' + target
-        while True:
-            i = s.find(pattern,i)
-            if i == -1:
-                break
-            if g.match_word(s,i,pattern):
-                if not found:
-                    print('In node: %s' % p.h)
-                    found = True
-                i1,i2 = g.getLine(s,i)
-                if replace:
-                    j = i + len('body.')
-                    s = s[:j] + 'wrapper.' + s[j:]
-                    print(s[i1:i2+len('wrapper.')].rstrip())
-                    i += len('wrapper.') + len(pattern)
-                else:
-                    print(s[i1:i2].rstrip())
-                    i += len(pattern)
-            else:
-                i += len(pattern)
-    if found and replace:
-        p.b = s
-print('searched %s nodes' % nodes)
-</t>
-<t tx="ekr.20140905060158.18561">a = c.frame.body.getInsertPoint()
-
-aBody.getInsertPoint()
-
-if 1:
-    c.frame.body.setInsertPoint(0)</t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20140918124632.19450"># This script prints the list of known Qt names. Qt seems to ignore case.
-from leo.core.leoQt import QtGui
-aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
-print('\n'.join(aList))
-</t>
-<t tx="ekr.20140919093158.17876"></t>
 <t tx="ekr.20140920064112.17946"></t>
-<t tx="ekr.20140923085942.17943"></t>
 <t tx="ekr.20150304125314.4">@tabwidth -2
 @killbeautify
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -1688,73 +1602,6 @@ prefix_lines:
 [General Patterns]
 </t>
 <t tx="ekr.20160226082945.1"></t>
-<t tx="ekr.20160315161104.1">&lt;&lt; imports &gt;&gt;
-g.cls()
-if c.isChanged(): c.save()
-@others
-path = g.os_path_finalize_join(g.app.loadDir,
-    '..', 'test', 'report_test.py') # 'leoAst.py')
-assert g.os_path_exists(path), path
-fn = g.shortFileName(path)
-source = open(path, 'r').read()
-node = ast.parse(source, filename=fn, mode='exec')
-s = HTMLReportTraverser(debug=True).main(fn, node)
-out_fn = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 
-    'HTMLReportTraverser_test.html')
-open(out_fn, 'w').write(s)
-# print('%s %s' % (len(s), out_fn))
-os.startfile(out_fn)
-# os.system('ed ' + out_fn)</t>
-<t tx="ekr.20160315163533.1">import leo.core.leoAst as leoAst
-import ast
-import os
-import xml.sax.saxutils as saxutils
-import textwrap
-# Needed only for the script version
-AstFullTraverser = leoAst.AstFullTraverser</t>
-<t tx="ekr.20160316065700.1">'''Test file for HTMLReportTraverser class.'''
-&lt;&lt; includes &gt;&gt;
-@others
-
-</t>
-<t tx="ekr.20160316065936.1">import ast
-import xml.sax.saxutils as saxutils
-import leo.core.leoGlobals as g</t>
-<t tx="ekr.20160316070146.1">class TestClass(object):
-    '''A class exercising important cases in the HTMLReportTraverser code.'''
-    @others</t>
-<t tx="ekr.20160316070255.1">def if_tests(self, a, b):
-    '''Test if statements, especially 'elif' vs. 'else if'.'''
-    if a and b:
-        rt.gen("&lt;div class='%s' %s&gt;" % (full_class_name, extra))
-    elif a:
-        rt.gen("&lt;div class='%s'&gt;" % (full_class_name))
-    else:
-        assert not extra
-        rt.gen("&lt;div&gt;")
-    if a:
-        print('a')
-    else: # elif is not correct here.
-        if b:
-            print(b)
-        print(c)</t>
-<t tx="ekr.20160316070709.1">def comprehension_tests(self):
-    '''Test comprehensions'''
-    for i, aList in enumerate(self.line_tokens):
-        print('hi')
-    return [z for z in aList if self.token_kind(z) == 'string']
-</t>
-<t tx="ekr.20160316081359.1">def try_tests(self):
-    '''Test try/except/finally'''
-    try:
-        for z in node.optional_vars:
-            vars_list.append(self.visit(z))
-    except TypeError:
-        vars_list.append(self.visit(node.optional_vars))
-    finally:
-        print('ooops')
-        raise
-    </t>
 <t tx="ekr.20160316091152.1">@language rest
 @wrap
 
@@ -1868,133 +1715,6 @@ http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a
 
 Edward K. Ream  
 February 20 to 25, 2016
-</t>
-<t tx="ekr.20160316091923.1">@cmd('python-to-coffeescript')
-def python2coffeescript(self, event):
-    '''
-    Converts python text to coffeescript text. The conversion is not
-    perfect, but it eliminates a lot of tedious text manipulation.
-    '''
-    @others
-    c = self.c
-    Python_To_Coffeescript_Adapter(c).main()
-    c.bodyWantsFocus()
-</t>
-<t tx="ekr.20160316092837.1">class Python_To_Coffeescript_Adapter(object):
-    '''An interface class between Leo and leo/external/py2cs.py.'''
-    @others
-</t>
-<t tx="ekr.20160316093019.1">def main(self):
-    '''Main line for Python_To_CoffeeScript class.'''
-    if self.py2cs:
-        self.run()
-    else:
-        g.es_print('can not load py2cs.py')
-</t>
-<t tx="ekr.20160316094011.7">def finalize(self, fn):
-    '''Finalize and regularize a filename.'''
-    return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
-</t>
-<t tx="ekr.20160316094011.8">def to_coffeescript(self, p):
-    '''Convert the @&lt;file&gt; node at p to a .coffee file.'''
-    assert p.isAnyAtFileNode()
-    c = self.c
-    fn = p.anyAtFileNodeName()
-    if not fn.endswith('.py'):
-        g.es_print('not a python file', fn)
-        return
-    abs_fn = g.fullPath(c, p)
-    if not g.os_path_exists(abs_fn):
-        g.es_print('not found', abs_fn)
-        return
-    if g.os_path_exists(self.output_directory):
-        base_fn = g.os_path_basename(fn)
-        out_fn = g.os_path_finalize_join(self.output_directory, base_fn)
-    else:
-        g.es_print('not found', self.output_directory)
-        return
-    out_fn = out_fn[:-3] + '.coffee'
-    out_fn = g.os_path_normpath(out_fn)
-    s = open(abs_fn).read()
-    # s = self.strip_sentinels(s)
-    if 0:
-        for z in g.splitLines(s)[:20]:
-            print(z.rstrip())
-    x = self.py2cs.MakeCoffeeScriptController()
-    # copy ivars and run.
-    x.enable_unit_tests = False
-    x.files = [abs_fn,]
-    x.output_directory = self.output_directory
-    x.overwrite = self.overwrite
-    x.make_coffeescript_file(abs_fn, s=s)
-</t>
-<t tx="ekr.20160316094011.9">def run(self):
-    '''Create .coffee files for all @&lt;file&gt; nodes in p's tree.'''
-    p = c.p
-    if p.isAnyAtFileNode():
-        self.to_coffeescript(p)
-        return
-    # First, look down tree.
-    after, p2 = p.nodeAfterTree(), p.firstChild()
-    found = False
-    while p2 and p != after:
-        if p2.isAnyAtFileNode():
-            self.to_coffeescript(p2)
-            p2.moveToNext()
-            found = True
-        else:
-            p2.moveToThreadNext()
-    if not found:
-        # Look up the tree.
-        for p2 in p.parents():
-            if p2.isAnyAtFileNode():
-                self.to_coffeescript(p2)
-                return
-    g.es_print('no files found in tree:', p.h)
-</t>
-<t tx="ekr.20160316100329.1">from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-# h = '@file ../commands/convertCommands.py'
-# p = g.findNodeAnywhere(c, h)
-old_p = c.p
-try:
-    # c.selectPosition(p)
-    # assert p, h
-    @others
-    class Dummy:
-        def __init__(self, c):
-            self.c = c
-    python2coffeescript(self=Dummy(c), event=None)
-finally:
-    pass
-    # c.selectPosition(old_p)
-</t>
-<t tx="ekr.20160316100524.1">def cmd(name):
-    '''Command decorator for the ConvertCommandsClass class.'''
-    return g.new_cmd_decorator(name, ['c', 'convertCommands',])
-</t>
-<t tx="ekr.20160316112717.1">def __init__(self,c):
-    '''Ctor for Python_To_Coffeescript_Adapter class.'''
-    self.c = c
-    self.files = []
-    self.output_directory = self.finalize(
-        c.config.getString('py2cs-output-directory'))
-    # self.output_fn = None
-    self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
-    # Connect to the external module.
-    self.py2cs = g.importExtension(
-        'py2cs',
-        pluginName=None,
-        verbose=False,
-        required=False,
-    )
-</t>
-<t tx="ekr.20160316141812.1">def strip_sentinels(self, s):
-    '''
-    Strip s of all sentinel lines.
-    This may be dubious because it destroys outline structure.
-    '''
-    delims = ['#', None, None]
-    return ''.join([z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
 </t>
 <t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
 unl: qt_quicksearch declarations

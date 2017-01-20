@@ -274,6 +274,10 @@
 <v t="ekr.20161204063803.4"><vh>make_toc</vh></v>
 </v>
 </v>
+<v t="ekr.20170120110948.2"><vh>Script: change body.x to body.wrapper.x</vh>
+<v t="ekr.20170120110948.3"><vh>test</vh></v>
+</v>
+<v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3228,5 +3232,58 @@ from traitlets.config import Config
 from nbconvert import HTMLExporter
 from urllib.request import urlopen</t>
 <t tx="ekr.20170120110015.1"></t>
+<t tx="ekr.20170120110948.2">'''
+A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
+
+It is *not undoable* to save massive amounts of memory.
+Please run on an already-saved .leo file, and take all other reasonable precautions.
+
+If replace is False, it will just report the changes to be made.
+'''
+import leo.core.leoFrame as leoFrame
+replace = False
+aList = sorted([z for z in dir(leoFrame.WrapperAPI) if not z.startswith('__')])
+nodes = 0
+for p in c.all_unique_positions():
+    s = p.b
+    nodes += 1
+    found = False
+    for target in aList:
+        i = 0
+        pattern = 'body.' + target
+        while True:
+            i = s.find(pattern,i)
+            if i == -1:
+                break
+            if g.match_word(s,i,pattern):
+                if not found:
+                    print('In node: %s' % p.h)
+                    found = True
+                i1,i2 = g.getLine(s,i)
+                if replace:
+                    j = i + len('body.')
+                    s = s[:j] + 'wrapper.' + s[j:]
+                    print(s[i1:i2+len('wrapper.')].rstrip())
+                    i += len('wrapper.') + len(pattern)
+                else:
+                    print(s[i1:i2].rstrip())
+                    i += len(pattern)
+            else:
+                i += len(pattern)
+    if found and replace:
+        p.b = s
+print('searched %s nodes' % nodes)
+</t>
+<t tx="ekr.20170120110948.3">a = c.frame.body.getInsertPoint()
+
+aBody.getInsertPoint()
+
+if 1:
+    c.frame.body.setInsertPoint(0)</t>
+<t tx="ekr.20170120110948.4"># This script prints the list of known Qt names. Qt seems to ignore case.
+from leo.core.leoQt import QtGui
+aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
+print('\n'.join(aList))
+</t>
 </tnodes>
 </leo_file>

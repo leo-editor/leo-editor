@@ -3,94 +3,22 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170120110411.1: ** ** create real Qt Styles in colorizer
-.. @+node:ekr.20161027202809.1: ** ** To do next
+.. @+node:ekr.20161027202809.1: ** * To do first
 @language rest
 @wrap
 
 * Rewrite scripting tutorial
 * Leo and Jupyter notebooks.
 * Mention viewrendered plugin in tutorials.
-.. @+node:ekr.20161231072434.1: *3* Bugs
+- Create real Qt Styles in colorizer.
+- Brew install Leo?
+.. @+node:ekr.20161231072434.1: *3* Bugs: to do first
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!
     2. Cloned @auto nodes duplicates section references!
     - See ekr.leo
     
 - Bug: Refresh from disk can jump around the screen
-.. @+node:ekr.20161231072737.1: *3* Code
-- check pid logic in BPM.
-
-- p.b & p.h setters should check that s is a string.
-
-- Use regex in g.match.  Add g.match_any.
-    pattern = '|'.join([r"\b%s\b" z for z in args])
-
-- Create leoFind wrappers:
-    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
-    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
-.. @+node:ekr.20161231072528.1: *3* Features
-- reload-abbreviations command.
-
-* Allow key unbinding.
-
-- Pylint --recent option.  Last hour? Last day?
-
-
-.. @+node:ekr.20161221063335.1: *3* Importers
-@language rest
-@wrap
-@nosearch
-
-Python:
-- Unit test for all of Leo's core files.
-- Rewrite python.findClass.
-
-Coffeescript:
-- Get move_trailing_lines working, or abandon it.
-.. @+node:ekr.20161231072546.1: *3* Posts
-* Aha: use separate windows to compare code.
-  Seems much better than separate body panes.
-
-- What you missed by not following leo-editor
-.. @+node:ekr.20161124051851.1: *3* crash in autocomplete (with backspace key?)
-.. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
-@language rest
-@wrap
-
-#106: brew install Leo on MacOS
-https://github.com/leo-editor/leo-editor/issues/106
-Requires 5.4 final
-
-.. @+node:ekr.20161024101901.1: ** ** Line numbers are not always accurate
-.. @+node:ekr.20161106074940.1: ** A new project? visualize massive git changes
-This is likely impossible, but git contains all history...
-.. @+node:ekr.20161205102034.1: ** A new project? Temp git modes
-The idea is to be able to define the dot easily.
-
-- Allow Leo to enter vim-mode temporarily.
-- Define the dot.
-- Leave vim-mode.
-- Use the dot.
-.. @+node:ekr.20161207052323.1: ** Maybe: use x.reload
-Important core classes, including importer classes, could support a reload method, that would reload the file containing the class, and return a new instance of the class, ready to be used by unit tests. Something like this::
-
-    if 0: # Preamble...
-        g.cls()
-        if c.isChanged(): c.save()
-        ic = c.importCommands.reload()
-    else:
-        ic = c.importCommands
-
-The call to c.importCommands.reload() could return a new GeneralTestCase instance and this instance could set a reload flag.  The later call to ic.markdownUnitTest(p...) would then reload markdown and linescanner when the reload flag is set.
-
-But... leoTest.leo defines several other subclasses of unittest.TestCase besides GeneralTestCase.  So maybe we need variants of c.importCommands.reload to handle the other kinds of TestCase.
-
-I'm not in a hurry to do any of this, since the present importer cases work.  Still it's a good idea to keep these ideas in the back of our minds. This kind of simplification could be useful when creating other kinds of unit tests.
-.. @+node:ekr.20160918102738.1: ** To do: 5.5
-@language rest
-@wrap
-.. @+node:ekr.20161024093313.1: *3* Can executing a script twice quickly hang Leo?
 .. @+node:ekr.20161016052019.1: *3* Fix real pylint3 problems in plugins
     
 ************* Module leo.plugins.at_produce
@@ -144,22 +72,52 @@ E:220,15: Module 'feedparser' has no 'parse' member (no-member)
 
 ************* Module leo.plugins.word_export
 E:140,16: Instance of 'object' has no 'strip' member (no-member)
-.. @+node:ekr.20161021131134.1: *3* #325: Simplify the organization of commands
-https://github.com/leo-editor/leo-editor/issues/325
+.. @+node:ekr.20161221063335.1: *3* Importers
+@language rest
+@wrap
+@nosearch
 
-** Start with the code in the Notes section.
-.. @+node:ekr.20161019020710.1: *3* Improve pylint
-- enable more pylint checks
-- pylint command should ensure that the leo directory is on the path.
-  At present, Leo seems to need sitecustomize.py.
-.. @+node:ekr.20160707063917.1: *3* Create PR for pyflakes work
-.. @+node:ekr.20160707063933.1: *3* Create PR for mypy path work
+Python:
+- Unit test for all of Leo's core files.
+- Rewrite python.findClass.
+
+Coffeescript:
+- Get move_trailing_lines working, or abandon it.
+.. @+node:ekr.20161231072546.1: *3* Posts
+* Aha: use separate windows to compare code.
+  Seems much better than separate body panes.
+
+- What you missed by not following leo-editor
+.. @+node:ekr.20170120111812.1: *3* Recent projects
+.. @+node:ekr.20170120111812.2: *4* re #327: unbind a stroke
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/327
+
+# Not the same as binding it to do-nothing!
+
+k.getPaneBinding uses only k.masterBindingsDict, so this dict is likely what must be cleared.
+
+k.masterBindingsDict: Keys are scope names (2). Values are interior masterBindingDicts (3)
+
+(2) Scope names are 'all','text',etc.
+(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+
+So to clear an entry in k.masterBindingsDict, all inner dicts must be scanned.
+
+@language python
+.. @+node:ekr.20170120111812.258: *4* re: beautify-node hangs
+# line 294: compare_ast **sometimes** gets into an unbounded loop.
+.. @+node:ekr.20170120111812.307: *4* re: problems with goto line number
+.. @+node:ekr.20160918102738.1: ** To do: 5.5
+@language rest
+@wrap
 .. @+node:ekr.20160318112838.1: *3* 5.5 Enhancements
 @language rest
 @wrap
 
 Some of these may not happen.
-.. @+node:ekr.20160506101850.1: *4* Apply mypy to Leo
 .. @+node:ekr.20160318113006.1: *4* API's for icons, attributes & windows
 Must be easy to use.
 
@@ -488,6 +446,55 @@ The so-called Easter-Egg interface creates new panes from the gui.
 A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
+.. @+node:ekr.20161231072528.1: *3* Maybe
+- reload-abbreviations command.
+
+* Allow key unbinding.
+
+- Pylint --recent option.  Last hour? Last day?
+
+
+.. @+node:ekr.20170120111812.474: *4* Maybe: Diff using Leo
+https://groups.google.com/forum/#!topic/leo-editor/ZKP-X2kCc9s
+.. @+node:ekr.20161231072737.1: *4* Maybe: improve code
+- check pid logic in BPM.
+
+- p.b & p.h setters should check that s is a string.
+
+- Use regex in g.match.  Add g.match_any.
+    pattern = '|'.join([r"\b%s\b" z for z in args])
+
+- Create leoFind wrappers:
+    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
+    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
+.. @+node:ekr.20161019020710.1: *4* Maybe: Improve pylint
+- enable more pylint checks
+- pylint command should ensure that the leo directory is on the path.
+  At present, Leo seems to need sitecustomize.py.
+.. @+node:ekr.20161205102034.1: *4* Maybe: Temp vim modes
+The idea is to be able to define the dot easily.
+
+- Allow Leo to enter vim-mode temporarily.
+- Define the dot.
+- Leave vim-mode.
+- Use the dot.
+.. @+node:ekr.20161207052323.1: *4* Maybe: use x.reload
+Important core classes, including importer classes, could support a reload method, that would reload the file containing the class, and return a new instance of the class, ready to be used by unit tests. Something like this::
+
+    if 0: # Preamble...
+        g.cls()
+        if c.isChanged(): c.save()
+        ic = c.importCommands.reload()
+    else:
+        ic = c.importCommands
+
+The call to c.importCommands.reload() could return a new GeneralTestCase instance and this instance could set a reload flag.  The later call to ic.markdownUnitTest(p...) would then reload markdown and linescanner when the reload flag is set.
+
+But... leoTest.leo defines several other subclasses of unittest.TestCase besides GeneralTestCase.  So maybe we need variants of c.importCommands.reload to handle the other kinds of TestCase.
+
+I'm not in a hurry to do any of this, since the present importer cases work.  Still it's a good idea to keep these ideas in the back of our minds. This kind of simplification could be useful when creating other kinds of unit tests.
+.. @+node:ekr.20161106074940.1: *4* Maybe: Visualize massive git changes
+This is likely impossible, but git contains all history...
 .. @+node:ekr.20120516140545.9987: ** Wishlist: no due date
 @language rest
 @wrap
