@@ -386,7 +386,7 @@ class Py_Importer(Importer):
                 g.trace(prev_indent, new_state.indent, repr(line))
                 g.trace('@others', top.at_others_flag)
             return True
-    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper (to do)
+    #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
         '''
         Find the start and end of a class/def in a node.
