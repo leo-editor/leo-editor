@@ -12,7 +12,7 @@
 * Mention viewrendered plugin in tutorials.
 - Create real Qt Styles in colorizer.
 - Brew install Leo?
-.. @+node:ekr.20161231072434.1: *3* Bugs: to do first
+.. @+node:ekr.20161231072434.1: ** Bugs
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!
     2. Cloned @auto nodes duplicates section references!
@@ -23,8 +23,8 @@
 - Problems with Alt-G: goto-global-line.
 
 - Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20160404213305.1: *4* 4 Import problems
-.. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
+.. @+node:ekr.20160404213305.1: *3* 4 Import problems
+.. @+node:ekr.20130806072439.20380: *4* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
 When I use auto-rst import rst file, sometimes, the author write extra
@@ -151,13 +151,13 @@ It says I need a extra "="...
 
 I have attached this file, for someone has interest to reproduce the error.
 
-.. @+node:ekr.20111010162047.15678: *5* Fix bug: Imports to @file should put @first/@last directives in root node
+.. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *6* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *5* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -165,13 +165,13 @@ def spam():
     pass
     
 # This is the last line.
-.. @+node:ekr.20120327163022.9744: *5* Fix bug: The @auto script *must* put @first nodes in root node
+.. @+node:ekr.20120327163022.9744: *4* Fix bug: The @auto script *must* put @first nodes in root node
 Also the import commands.
 
 Especially:
     - Shebang line.
     - Python encoding line.
-.. @+node:ekr.20130806072439.20485: *5* Whitespace when importing java file using @auto
+.. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
 Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
 From: Eoin <eoinmccarthy@fastmail.fm>
 
@@ -232,6 +232,19 @@ There is no easy way to do this at present, but it's probably reasonable to disa
 non-strict languages.
 
 Please file a wishlist bug for this.  Thanks.
+.. @+node:ekr.20170120114702.1: *3* #327 Allow key unbinding
+https://github.com/leo-editor/leo-editor/issues/327
+
+# Not the same as binding it to do-nothing!
+
+k.getPaneBinding uses only k.masterBindingsDict, so this dict is likely what must be cleared.
+
+k.masterBindingsDict: Keys are scope names (2). Values are interior masterBindingDicts (3)
+
+(2) Scope names are 'all','text',etc.
+(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+
+So to clear an entry in k.masterBindingsDict, all inner dicts must be scanned.
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 
@@ -243,7 +256,6 @@ Registers subcommander
 - Use # to prevent headlines from being included.
 - Use some, but not all, rst3 settings.
 - Try markdown first.
-.. @+node:ekr.20170120114702.1: *3* Allow key unbinding
 .. @+node:ekr.20160318113006.1: *3* API's for icons, attributes & windows
 Must be easy to use.
 

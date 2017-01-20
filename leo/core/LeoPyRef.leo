@@ -65,7 +65,7 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d710228580b0000006c696e65594f666673657471034b005808000000616e6e6f7461746571047d710528580a000000707269736574646174657106580a000000323031352d30352d3237710758080000007072696f7269747971084d0f277575732e"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20031218072017.329" descendentVnodeUnknownAttributes="7d71005805000000302e312e3071017d7102285808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031352d30352d3237710775580b0000006c696e65594f666673657471084b0075732e"><vh>@file ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="ekr.20100120072650.6088"><vh>Projects</vh>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
@@ -106,7 +106,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6d74696d657103580d000000313331393436373033382e3235710458090000007374725f6374696d657105580c000000313331393436303438332e30710658090000007374725f6174696d657107580c000000313332303432323637302e397108755805000000302e332e3471097d710a2858090000007374725f6d74696d65710b580d000000313331393634313038352e3038710c58090000007374725f6374696d65710d580c000000313331393633383634382e30710e58090000007374725f6174696d65710f580c000000313331393634353330362e327110755805000000302e332e3571117d71122858090000007374725f6d74696d657113580c000000313331393634313131372e39711458090000007374725f6374696d657115580c000000313331393633383634382e30711658090000007374725f6174696d657117580d000000313331393634313435352e39377118755805000000302e332e3071197d711a2858090000007374725f6d74696d65711b580d000000313331393439323330312e3532711c58090000007374725f6374696d65711d580c000000313331393439313330362e30711e58090000007374725f6174696d65711f580d000000313331393534393339302e38397120755805000000302e332e3271217d71222858090000007374725f6d74696d657123580d000000313331393436373035302e3438712458090000007374725f6374696d657125580c000000313331393436303438332e30712658090000007374725f6174696d657127580d000000313331393436373035302e34387128755805000000302e332e3371297d712a2858090000007374725f6d74696d65712b580d000000313332303432323639302e3534712c58090000007374725f6374696d65712d580c000000313331393436303438332e30712e58090000007374725f6174696d65712f580d000000313332303433343235372e3336713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3271017d71022858090000007374725f6d74696d657103580d000000313331393436373035302e3438710458090000007374725f6174696d657105580d000000313331393436373035302e3438710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3371097d710a2858090000007374725f6d74696d65710b580d000000313332303432323639302e3534710c58090000007374725f6174696d65710d580d000000313332303433343235372e3336710e58090000007374725f6374696d65710f580c000000313331393436303438332e307110755805000000302e332e3071117d71122858090000007374725f6d74696d657113580d000000313331393439323330312e3532711458090000007374725f6174696d657115580d000000313331393534393339302e3839711658090000007374725f6374696d657117580c000000313331393439313330362e307118755805000000302e332e3171197d711a2858090000007374725f6d74696d65711b580d000000313331393436373033382e3235711c58090000007374725f6174696d65711d580c000000313332303432323637302e39711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3471217d71222858090000007374725f6d74696d657123580d000000313331393634313038352e3038712458090000007374725f6174696d657125580c000000313331393634353330362e32712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3571297d712a2858090000007374725f6d74696d65712b580c000000313331393634313131372e39712c58090000007374725f6174696d65712d580d000000313331393634313435352e3937712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -161,11 +161,7 @@
 </v>
 <v t="ekr.20170107222248.1"><vh>Pyzo</vh>
 <v t="ekr.20170107211202.1"><vh>@file ../external/pyzo/highlighter.py</vh></v>
-<v t="ekr.20170108045413.1"><vh>@@clean base.py</vh>
-<v t="ekr.20170108045413.2"><vh>Declarations</vh></v>
-</v>
-<v t="ekr.20170108044304.1"
-expanded="ekr.20170108045413.3,"><vh>@file ../external/pyzo/base.py</vh></v>
+<v t="ekr.20170108044304.1"><vh>@file ../external/pyzo/base.py</vh></v>
 <v t="ekr.20170108050440.1"><vh>@file ../external/pyzo/misc.py</vh></v>
 <v t="ekr.20170107220425.1"><vh>@file ../external/pyzo/parsers.py</vh></v>
 <v t="ekr.20170107213100.1"><vh>@file ../external/pyzo/python_parser.py</vh></v>
@@ -224,7 +220,7 @@ expanded="ekr.20170108045413.3,"><vh>@file ../external/pyzo/base.py</vh></v>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040519090151.2"></t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358010000007971044b0058050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058050000006c696e6b7371025d710358010000007871044b00580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python
 </t>
@@ -1737,120 +1733,5 @@ unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
 <t tx="ekr.20160425070345.2"></t>
 <t tx="ekr.20170107222248.1"></t>
-<t tx="ekr.20170108045413.1">"""
-The base code editor class.
-
-
-"""
-
-# -*- coding: utf-8 -*-
-# Copyright (C) 2013, the codeeditor development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20170108045413.2">"""
-WRITING EXTENSIONS FOR THE CODE EDITOR
-
-The Code Editor extension mechanism works solely based on inheritance.
-Extensions can override event handlers (e.g. paintEvent, keyPressEvent). Their
-default behaviour should be to call their super() event handler. This way,
-events propagate through the extensions following Python's method resolution
-order (http://www.python.org/download/releases/2.3/mro/).
-
-A 'fancy' code editor with extensions is created like:
-
-class FancyEditor( Extension1, Extension2, ... CodeEditorBase):
-    pass
-
-The order of the extensions does usually matter! If multiple Extensions process
-the same key press, the first one has the first chance to consume it.
-
-OVERRIDING __init__
-
-An extensions' __init__ method (if required) should look like this:
-class Extension:
-    def __init__(self, *args, extensionParam1 = 1, extensionParam2 = 3, **kwds):
-        super().__init__(*args, **kwds)
-        some_extension_init_stuff()
-        
-Note the following points:
- - All parameters have default values
- - The use of *args passes all non-named arguments to its super(), which
-   will therefore end up at the QPlainTextEdit constructor. As a consequence,
-   the parameters of the exentsion can only be specified as named arguments
- - The use of **kwds ensures that parametes that are not defined by this 
-   extension, are passed to the next extension(s) in line.
- - The call to super().__init__ is the first thing to do, this ensures that at
-   least the CodeEditorBase and QPlainTextEdit, of which the CodeEditorBase is
-   derived, are initialized when the initialization of the extension is done
-
-OVERRIDING keyPressEvent
-
-When overriding keyPressEvent, the extension has several options when an event
-arrives:
- - Ignore the event
-     In this case, call super().keyPressEvent(event) for other extensions or the
-     CodeEditorBase to process the event
- - Consume the event
-     In order to prevent other next extensions or the CodeEditorBase to react
-     on the event, return without calling the super().keyPressEvent
- - Do something based on the event, and do not let the event propagate
-     In this case, do whatever action is defined by the extension, and do not
-     call the super().keyPressEvent
- - Do something based on the event, and let the event propagate
-     In this case, do whatever action is defined by the extension, and do call
-     the super().keyEvent
-
-In any case, the keyPressEvent should not return a value (i.e., return None).
-Furthermore, an extension may also want to perform some action *after* the
-event has been processed by the next extensions and the CodeEditorBase. In this
-case, perform that action after calling super().keyPressEvent
-
-OVERRIDING paintEvent
-
-Then overriding the paintEvent, the extension may want to paint either behind or
-in front of the CodeEditorBase text. In order to paint behind the text, first
-perform the painting, and then call super().paintEvent. In order to paint in
-front of the text, first call super().paintEvent, then perform the painting.
-
-As a result, the total paint order is as follows for the example of the
-FancyEditor defined above:
-- First the extensions that draw behind the text (i.e. paint before calling
-  super().paintEvent, in the order Extension1, Extension2, ...
-- then the CodeEditorBase, with the text
-- then the extensions that draw in front of the text (i.e. call 
-  super().paintEvent before painting), in the order ..., Extension2, Extension1
-  
-OVERRIDING OTHER EVENT HANDLERS
-
-When overriding other event handlers, be sure to call the super()'s event
-handler; either before or after your own actions, as appropriate
-
-OTHER ISSUES
-
-In order to avoid namespace clashes among the extensions, take the following
-into account:
- - Private members should start with __ to make ensure no clashes will occur
- - Public members / methods should have names that clearly indicate which
-   extension they belong to (e.g. not cancel but autocompleteCancel)
- - Arguments of the __init__ method should also have clearly destictive names
-
-"""
-
-import sys
-from .qt import QtGui,QtCore, QtWidgets
-Qt = QtCore.Qt
-
-from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
-from .misc import callLater, ustr
-from .manager import Manager
-from .highlighter import Highlighter
-from .style import StyleFormat, StyleElementDescription
-</t>
 </tnodes>
 </leo_file>
