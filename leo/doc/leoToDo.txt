@@ -18,98 +18,11 @@
     2. Cloned @auto nodes duplicates section references!
     - See ekr.leo
     
-- Bug: Refresh from disk can jump around the screen
-.. @+node:ekr.20161016052019.1: *3* Fix real pylint3 problems in plugins
-    
-************* Module leo.plugins.at_produce
-E:129,30: Module 'os' has no 'popen3' member (no-member)
+- Bug: Refresh from disk can jump around the screen.
 
-************* Module leo.plugins.cursesGui
-E: 48,38: Module 'builtins' has no 'raw_input' member (no-member)
-E:125,46: Module 'builtins' has no 'raw_input' member (no-member)
-E:218,46: Module 'builtins' has no 'raw_input' member (no-member)
+- Problems with Alt-G: goto-global-line.
 
-
-************* Module leo.plugins.expfolder
-E: 55,20: Instance of 'object' has no 'split' member (no-member)
-
-************* Module leo.plugins.leoOPML
-W:636,12: Statement seems to have no effect (pointless-statement)
-
-************* Module leo.plugins.leo_interface
-E: 26,17: Undefined variable 'file' (undefined-variable)
-
-************* Module leo.plugins.leo_pdf
-E:620,22: Class 'StringIO' has no 'StringIO' member (no-member)
-E:633,22: Class 'StringIO' has no 'StringIO' member (no-member)
-E:1033,38: Module 'types' has no 'ListType' member (no-member)
-
-************* Module leo.plugins.leo_to_rtf
-E: 71,19: Instance of 'object' has no 'strip' member (no-member)
-
-************* Module leo.plugins.leomail
-W: 50, 0: Method 'error' is abstract in class 'ParserBase' but is not overridden (abstract-method)
-
-************* Module leo.plugins.leofeeds
-W: 68, 0: Method 'error' is abstract in class 'ParserBase' but is not overridden (abstract-method)
-E: 94, 8: Module 'feedparser' has no 'parse' member (no-member)
-
-************* Module leo.plugins.leoremote
-E: 76,12: Module 'builtins' has no 'execfile' member (no-member)
-E:100, 4: Module 'builtins' has no 'execfile' member (no-member)
-
-************* Module leo.plugins.quickMove
-E:381,16: Module 'PyQt4.QtCore' has no 'QString' member (no-member)
-
-************* Module leo.plugins.read_only_nodes
-E:302,19: Module 'urllib' has no 'urlopen' member (no-member)
-
-************* Module leo.plugins.richtext
-E: 71, 4: No name 'unquote' in module 'urllib' (no-name-in-module)
-
-************* Module leo.plugins.rss
-E:220,15: Module 'feedparser' has no 'parse' member (no-member)
-
-************* Module leo.plugins.word_export
-E:140,16: Instance of 'object' has no 'strip' member (no-member)
-.. @+node:ekr.20161221063335.1: *3* Importers
-@language rest
-@wrap
-@nosearch
-
-Python:
-- Unit test for all of Leo's core files.
-- Rewrite python.findClass.
-
-Coffeescript:
-- Get move_trailing_lines working, or abandon it.
-.. @+node:ekr.20161231072546.1: *3* Posts
-* Aha: use separate windows to compare code.
-  Seems much better than separate body panes.
-
-- What you missed by not following leo-editor
-.. @+node:ekr.20170120111812.1: *3* Recent projects
-.. @+node:ekr.20170120111812.2: *4* re #327: unbind a stroke
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/327
-
-# Not the same as binding it to do-nothing!
-
-k.getPaneBinding uses only k.masterBindingsDict, so this dict is likely what must be cleared.
-
-k.masterBindingsDict: Keys are scope names (2). Values are interior masterBindingDicts (3)
-
-(2) Scope names are 'all','text',etc.
-(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
-
-So to clear an entry in k.masterBindingsDict, all inner dicts must be scanned.
-
-@language python
-.. @+node:ekr.20170120111812.258: *4* re: beautify-node hangs
-# line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20170120111812.307: *4* re: problems with goto line number
+- Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
 .. @+node:ekr.20160918102738.1: ** To do: 5.5
 @language rest
 @wrap
