@@ -187,7 +187,6 @@ class Py_Importer(Importer):
         Skip all lines that are at the same level as the class/def.
         '''
         # pylint: disable=arguments-differ
-        trace = False # and g.unitTesting
         top = stack[-1]
         assert new_state.indent < top.state.indent, (
             '\nnew: %s\ntop: %s' % (new_state, top.state))
@@ -233,7 +232,7 @@ class Py_Importer(Importer):
         '''
         trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        lws = self.get_int_lws(line)
+        ### lws = self.get_int_lws(line)
         h = self.clean_headline(line) 
         if not target.at_others_flag:
             target.at_others_flag = True
@@ -401,7 +400,7 @@ class Py_Importer(Importer):
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            top = stack[-1]
+            ### top = stack[-1]
             if trace: g.trace(new_state)
             if self.starts_block(i, lines, new_state, prev_state):
                 return self.skip_block(i, index, lines, new_state, stack)
