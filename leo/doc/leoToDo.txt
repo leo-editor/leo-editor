@@ -3,6 +3,7 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20170120110411.1: ** ** create real Qt Styles in colorizer
 .. @+node:ekr.20161027202809.1: ** ** To do next
 @language rest
 @wrap
@@ -52,6 +53,7 @@ Coffeescript:
   Seems much better than separate body panes.
 
 - What you missed by not following leo-editor
+.. @+node:ekr.20161124051851.1: *3* crash in autocomplete (with backspace key?)
 .. @+node:ekr.20161019024731.1: ** ** Brew Install Leo
 @language rest
 @wrap

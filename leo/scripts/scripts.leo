@@ -225,7 +225,10 @@
 <v t="ekr.20161023044018.1"><vh>Script: find all calls to commander methods</vh></v>
 <v t="ekr.20161023110341.1"><vh>Script: find all external calls to commander</vh></v>
 </v>
+<v t="ekr.20170120105953.1"><vh>import-ipynb</vh>
+<v t="ekr.20170120105953.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20170120110015.1"><vh>@ignore importer scripts</vh>
 <v t="ekr.20161031130627.1"><vh>@@button pep8 @key=Ctrl-5</vh>
 <v t="ekr.20161031130627.2"><vh>class Pep8</vh>
 <v t="ekr.20161031130627.3"><vh>change_all &amp; helpers</vh>
@@ -269,6 +272,8 @@
 <v t="ekr.20161204063803.2"><vh>run</vh></v>
 <v t="ekr.20161204063803.3"><vh>mak_link</vh></v>
 <v t="ekr.20161204063803.4"><vh>make_toc</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3203,5 +3208,25 @@ unl: Scanning &amp; Replacing...--&gt;stringToList &amp; listToString--&gt;strin
 gnx: ekr.20161206070323.71
 unl: Scanning &amp; Replacing...--&gt;stringToList &amp; listToString--&gt;listToString
 </t>
+<t tx="ekr.20170120105953.1">g.cls()
+import nbformat
+from traitlets.config import Config
+from nbconvert import HTMLExporter
+from urllib.request import urlopen
+url = 'http://jakevdp.github.com/downloads/notebooks/XKCD_plots.ipynb'
+s = urlopen(url).read().decode()
+nb = nbformat.reads(s, as_version=4)
+e = HTMLExporter()
+(body, resources) = e.from_notebook_node(nb)
+p = c.p.insertAfter()
+p.h = '@html'
+p.b = body
+c.selectPosition(p)
+c.redraw()</t>
+<t tx="ekr.20170120105953.2">import nbformat
+from traitlets.config import Config
+from nbconvert import HTMLExporter
+from urllib.request import urlopen</t>
+<t tx="ekr.20170120110015.1"></t>
 </tnodes>
 </leo_file>

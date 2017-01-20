@@ -2135,7 +2135,7 @@ class LeoQtColorizer(object):
             self.scanColorDirectives(p) # Sets self.language
         if trace: g.trace(self.flag, self.language, p.h)
         return self.flag
-    #@+node:ekr.20110605121601.18556: *4* colorizer.scanColorDirectives & helper
+    #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (LeoQtColorizer) & helper
     def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
         trace = False and not g.unitTesting
