@@ -398,7 +398,6 @@ class PickleShareDB(object):
                         zlib.decompress(fileobj.read()))
                 except ValueError:
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
-                    print(v)
                     return None
                 return val
             else:
@@ -409,7 +408,7 @@ class PickleShareDB(object):
                 try:
                     # use Python 2's highest protocol, 2, if possible
                     data = pickle.dumps(val, 2)
-                except:
+                except Exception:
                     # but use best available if that doesn't work (unlikely)
                     data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
                 compressed = zlib.compress(data)
