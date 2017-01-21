@@ -10,13 +10,10 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.c = kwargs['c']
         self.lep = kwargs['lep']
         p = kwargs.get('p', self.c.p)
-
         for arg in 'c', 'p', 'lep':
             if arg in kwargs:
                 del kwargs[arg]
         QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
-
-        self.gnx = p.gnx
     def new_position(self, p):
         """new_position - update for new position
 

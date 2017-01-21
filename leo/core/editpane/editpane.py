@@ -27,12 +27,13 @@ class LeoEditPane(QtWidgets.QWidget):
         show_control = kwargs.get('show_control', True)
         recurse = kwargs.get('recurse', False)
         split = kwargs.get('split', False)
-
         for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'split':
             if arg in kwargs:
                 del kwargs[arg]
 
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
+
+        self.gnx = p.gnx
 
         self._build_layout(
             mode=mode,
@@ -41,6 +42,11 @@ class LeoEditPane(QtWidgets.QWidget):
             recurse=recurse,
         )
 
+        self.handlers = [
+            ('select1', self._before_select),
+            ('select2', self._after_select),
+            ('bodykey2', self._after_body_key),
+        ]
         self._register_handlers()
 
         self.track   = self.cb_track.isChecked()
@@ -55,7 +61,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.view_frame.layout().addWidget(self.view_widget)
 
         self.new_position(p)
-    def _add_checkbox(self, text, state_changed, checked=True, enabled=True):
+    def _add_checkbox(self, text, state_changed, tooltip, checked=True, enabled=True):
         """
         _add_checkbox - helper to add a checkbox
 
@@ -70,6 +76,7 @@ class LeoEditPane(QtWidgets.QWidget):
         cbox.setChecked(checked)
         cbox.setEnabled(enabled)
         cbox.stateChanged.connect(state_changed)
+        cbox.setToolTip(tooltip)
         self.control.layout().addItem(QtWidgets.QSpacerItem(20, 0))
         return cbox
 
@@ -82,6 +89,22 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setContentsMargins(0, 0, 0, 0)
         w.layout().setSpacing(0)
         return w
+    def _after_body_key(self, tag, keywords):
+        """_after_select - after Leo selects another node
+
+        :param str tag: handler name ("bodykey2")
+        :param dict keywords: c, p, etc.
+        :return: None
+        """
+
+        c = keywords['c']
+        if c != self.c:
+            return None
+
+        if self.update:
+            self.new_position(keywords['p'])
+
+        return None
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node
 
@@ -96,7 +119,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("after select")
 
-        self.new_position(keywords['new_p'])
+        if self.track:
+            self.new_position(keywords['new_p'])
 
         return None
     def _before_select(self, tag, keywords):
@@ -115,12 +139,19 @@ class LeoEditPane(QtWidgets.QWidget):
 
         return None
 
+    def _find_gnx_node(self, gnx):
+        '''Return the first position having the given gnx.'''
+        for p in self.c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        g.es("Edit/View pane couldn't find node")
+        return None
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
         """
         DBG("\nregister handlers")
-        g.registerHandler('select1', self._before_select)
-        g.registerHandler('select2', self._after_select)
+        for hook, handler in self.handlers:
+            g.registerHandler(hook, handler)
 
     def _build_layout(self, mode='edit', show_head=True, show_control=True, split=False, recurse=False):
         """build_layout - build layout
@@ -137,11 +168,16 @@ class LeoEditPane(QtWidgets.QWidget):
         # controls
         self.control = self._add_frame()
         # checkboxes
-        self.cb_track = self._add_checkbox("Track", self.change_track)
-        self.cb_update = self._add_checkbox("Update", self.change_update)
-        self.cb_edit = self._add_checkbox("Edit", self.change_edit)
-        self.cb_split = self._add_checkbox("Split", self.change_split, checked=split)
-        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, checked=recurse)
+        self.cb_track = self._add_checkbox("Track", self.change_track,
+            "Track the node selected in the tree")
+        self.cb_edit = self._add_checkbox("Edit", self.change_edit,
+            "Toggle edit / view mode")
+        self.cb_split = self._add_checkbox("Split", self.change_split, 
+            "Split edit and view", checked=split)
+        self.cb_update = self._add_checkbox("Update", self.change_update,
+            "Update view to match changed node")
+        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, 
+            "Recursive view", checked=recurse)
         # render now
         self.btn_render = QtWidgets.QPushButton("Render", self)
         self.control.layout().addWidget(self.btn_render)
@@ -190,20 +226,27 @@ class LeoEditPane(QtWidgets.QWidget):
         self.track = bool(state)
     def change_update(self, state):
         self.update = bool(state)
+        if self.update:
+            p = self._find_gnx_node(self.gnx)
+            if p is not None:
+                self.new_position(p)
     def close(self):
         """close - clean up
         """
         do_close = QtWidgets.QWidget.close(self)
         if do_close:
             DBG("unregister handlers\n")
-            g.unregisterHandler('select1', self._before_select)
-            g.unregisterHandler('select2', self._after_select)
+            for hook, handler in self.handlers:
+                g.unregisterHandler(hook, handler)
         return do_close
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
         :param position p: the new position
         """
+        if not self.track:
+            return
+        self.gnx = p.gnx
 
         if self.edit or self.split:
             self.new_position_edit(p)
