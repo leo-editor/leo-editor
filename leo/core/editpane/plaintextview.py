@@ -8,9 +8,10 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
     def __init__(self, *args, **kwargs):
         """set up"""
         self.c = kwargs['c']
+        self.lep = kwargs['lep']
         p = kwargs.get('p', self.c.p)
 
-        for arg in 'c', 'p':
+        for arg in 'c', 'p', 'lep':
             if arg in kwargs:
                 del kwargs[arg]
         QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
@@ -21,5 +22,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
 
         :param Leo position p: new position
         """
-        print(p)
-        self.setText(p.b)
+        if self.lep.recurse:
+            self.setText(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
+        else:
+            self.setText(p.b)

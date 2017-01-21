@@ -25,14 +25,21 @@ class LeoEditPane(QtWidgets.QWidget):
         mode = kwargs.get('mode', 'edit')
         show_head = kwargs.get('show_head', True)
         show_control = kwargs.get('show_control', True)
+        recurse = kwargs.get('recurse', False)
+        split = kwargs.get('split', False)
 
-        for arg in 'c', 'p', 'show_head', 'show_control', 'mode':
+        for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'split':
             if arg in kwargs:
                 del kwargs[arg]
 
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
 
-        self._build_layout(mode=mode, show_head=show_head, show_control=show_control)
+        self._build_layout(
+            mode=mode,
+            show_head=show_head,
+            show_control=show_control,
+            recurse=recurse,
+        )
 
         self._register_handlers()
 
@@ -44,7 +51,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         reload(plaintextview)
         self.edit_widget = None
-        self.view_widget = plaintextview.LEP_PlainTextView(self, c=self.c)
+        self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
         self.view_frame.layout().addWidget(self.view_widget)
 
         self.new_position(p)
@@ -89,6 +96,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("after select")
 
+        self.new_position(keywords['new_p'])
+
         return None
     def _before_select(self, tag, keywords):
         """_before_select - before Leo selects another node
@@ -113,7 +122,7 @@ class LeoEditPane(QtWidgets.QWidget):
         g.registerHandler('select1', self._before_select)
         g.registerHandler('select2', self._after_select)
 
-    def _build_layout(self, mode='edit', show_head=True, show_control=True):
+    def _build_layout(self, mode='edit', show_head=True, show_control=True, split=False, recurse=False):
         """build_layout - build layout
         """
         self.setLayout(QtWidgets.QVBoxLayout())
@@ -131,8 +140,8 @@ class LeoEditPane(QtWidgets.QWidget):
         self.cb_track = self._add_checkbox("Track", self.change_track)
         self.cb_update = self._add_checkbox("Update", self.change_update)
         self.cb_edit = self._add_checkbox("Edit", self.change_edit)
-        self.cb_split = self._add_checkbox("Split", self.change_split, checked=False)
-        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse)
+        self.cb_split = self._add_checkbox("Split", self.change_split, checked=split)
+        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, checked=recurse)
         # render now
         self.btn_render = QtWidgets.QPushButton("Render", self)
         self.control.layout().addWidget(self.btn_render)
@@ -170,6 +179,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.edit = bool(state)
     def change_recurse(self, state):
         self.recurse = bool(state)
+        self.state_changed()
     def change_split(self, state):
         self.split = bool(state)
         # always edit if split
@@ -219,3 +229,8 @@ class LeoEditPane(QtWidgets.QWidget):
         pass
 
 
+    def state_changed(self):
+        """state_changed - control state has changed
+        """
+
+        self.new_position(self.c.p)
