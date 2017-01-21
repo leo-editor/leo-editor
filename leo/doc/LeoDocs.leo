@@ -3366,7 +3366,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 'save1'                        yes     before any Save command             c,p,v,fileName
 'save2'                                after  any Save command             c,p,v,fileName
 'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
-'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,new_v
+'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,old_v
 'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
 'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
 'set-mark'                             when a mark is set                  c,p,v
