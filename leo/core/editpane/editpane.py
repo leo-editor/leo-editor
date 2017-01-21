@@ -1,6 +1,10 @@
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
+from leo.core.editpane import plaintextview
+
+if g.isPython3:
+    from importlib import reload
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -29,6 +33,7 @@ class LeoEditPane(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
 
         self._build_layout(mode=mode, show_head=show_head, show_control=show_control)
+
         self._register_handlers()
 
         self.track   = self.cb_track.isChecked()
@@ -36,6 +41,11 @@ class LeoEditPane(QtWidgets.QWidget):
         self.edit    = self.cb_edit.isChecked()
         self.split   = self.cb_split.isChecked()
         self.recurse = self.cb_recurse.isChecked()
+
+        reload(plaintextview)
+        self.edit_widget = None
+        self.view_widget = plaintextview.LEP_PlainTextView(self, c=self.c)
+        self.view_frame.layout().addWidget(self.view_widget)
 
         self.new_position(p)
     def _add_checkbox(self, text, state_changed, checked=True, enabled=True):
@@ -49,12 +59,22 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: QCheckBox
         """
         cbox = QtWidgets.QCheckBox(text, self)
-        self.control_layout.addWidget(cbox)
+        self.control.layout().addWidget(cbox)
         cbox.setChecked(checked)
         cbox.setEnabled(enabled)
         cbox.stateChanged.connect(state_changed)
+        self.control.layout().addItem(QtWidgets.QSpacerItem(20, 0))
         return cbox
 
+    def _add_frame(self):
+        """_add_frame - add a widget with a layout as a hiding target"""
+        w = QtWidgets.QWidget(self)
+        self.layout().addWidget(w)
+        w.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        w.setLayout(QtWidgets.QHBoxLayout())
+        w.layout().setContentsMargins(0, 0, 0, 0)
+        w.layout().setSpacing(0)
+        return w
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node
 
@@ -96,20 +116,17 @@ class LeoEditPane(QtWidgets.QWidget):
     def _build_layout(self, mode='edit', show_head=True, show_control=True):
         """build_layout - build layout
         """
-        self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
-        self.setLayout(self.layout)
+        self.setLayout(QtWidgets.QVBoxLayout())
+        self.layout().setContentsMargins(0, 0, 0, 0)
+        self.layout().setSpacing(0)
 
         # header
-        self.header_layout = QtWidgets.QHBoxLayout()
-        self.layout.addLayout(self.header_layout)
-        self.header = QtWidgets.QLineEdit(self)
-        self.header_layout.addWidget(self.header)
+        self.header = self._add_frame()
+        self.line_edit = QtWidgets.QLineEdit(self)
+        self.header.layout().addWidget(self.line_edit)
 
         # controls
-        self.control_layout = QtWidgets.QHBoxLayout()
-        self.layout.addLayout(self.control_layout)
+        self.control = self._add_frame()
         # checkboxes
         self.cb_track = self._add_checkbox("Track", self.change_track)
         self.cb_update = self._add_checkbox("Update", self.change_update)
@@ -118,25 +135,36 @@ class LeoEditPane(QtWidgets.QWidget):
         self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse)
         # render now
         self.btn_render = QtWidgets.QPushButton("Render", self)
-        self.control_layout.addWidget(self.btn_render)
+        self.control.layout().addWidget(self.btn_render)
         self.btn_render.clicked.connect(self.render)
         # menu
         self.control_menu_button = QtWidgets.QPushButton(u"More\u2026", self)
-        self.control_layout.addWidget(self.control_menu_button)
+        self.control.layout().addWidget(self.control_menu_button)
         # padding
-        self.control_layout.addItem(
+        self.control.layout().addItem(
             QtWidgets.QSpacerItem(0, 0, hPolicy=QtWidgets.QSizePolicy.Expanding))
 
         # content
         self.splitter = QtWidgets.QSplitter(self)
-        self.layout.addWidget(self.splitter)
-        self.editor = QtWidgets.QTextEdit(self)
-        self.splitter.addWidget(self.editor)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.layout().addWidget(self.splitter)
+        self.edit_frame = self._add_frame()
+        self.splitter.addWidget(self.edit_frame)
+        self.view_frame = self._add_frame()
+        self.splitter.addWidget(self.view_frame)
+
+        if mode not in ('edit', 'split'):
+            self.edit_frame.hide()
+            self.cb_edit.setChecked(False)
+        else:  # avoid hiding both parts
+            if mode not in ('view', 'split'):
+                self.view_frame.hide()
+                self.cb_edit.setChecked(False)
 
         self.show()
 
         # debug
-        self.header.setText("test")
+        self.line_edit.setText("test")
 
     def change_edit(self, state):
         self.edit = bool(state)
@@ -177,14 +205,16 @@ class LeoEditPane(QtWidgets.QWidget):
         :param position p: the new position
         """
 
-        pass
+        DBG("new edit position")
     def new_position_view(self, p):
         """new_position_view - update viewer for new position
 
         :param position p: the new position
         """
 
-        pass
+        DBG("new view position")
+        self.view_widget.new_position(p)
+
     def render(self, checked):
         pass
 
