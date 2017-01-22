@@ -19,7 +19,11 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
 
         :param Leo position p: new position
         """
+        h = self.horizontalScrollBar().value()
+        v = self.verticalScrollBar().value()
         if self.lep.recurse:
             self.setText(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
         else:
             self.setText(p.b)
+        self.horizontalScrollBar().setValue(h)
+        self.verticalScrollBar().setValue(v)

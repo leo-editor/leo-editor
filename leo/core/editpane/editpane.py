@@ -90,7 +90,11 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setSpacing(0)
         return w
     def _after_body_key(self, tag, keywords):
-        """_after_select - after Leo selects another node
+        """_after_body_key - after Leo selects another node
+
+        FIXME: although class EditCommandsClass-->insert & delete...-->selfInsertCommand()
+        implies that bodykey2 should fire after all keys, it doesn't seem to fire after
+        \n, backspace, delete etc., so the viewer gets out of date for those keys
 
         :param str tag: handler name ("bodykey2")
         :param dict keywords: c, p, etc.
@@ -100,6 +104,8 @@ class LeoEditPane(QtWidgets.QWidget):
         c = keywords['c']
         if c != self.c:
             return None
+
+        DBG("after body key")
 
         if self.update:
             self.new_position(keywords['p'])
