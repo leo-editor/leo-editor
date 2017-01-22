@@ -224,6 +224,9 @@ class LeoEditPane(QtWidgets.QWidget):
             self.cb_edit.setChecked(True)
     def change_track(self, state):
         self.track = bool(state)
+        if self.track:
+            p = self.c.p
+            self.new_position(p)
     def change_update(self, state):
         self.update = bool(state)
         if self.update:
@@ -242,11 +245,14 @@ class LeoEditPane(QtWidgets.QWidget):
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
+        ALSO CALLED for updates, when not really a new position
+
         :param position p: the new position
         """
-        if not self.track:
-            return
-        self.gnx = p.gnx
+        if self.track:
+            self.gnx = p.gnx
+        else:
+            p = self._find_gnx_node(self.gnx)
 
         if self.edit or self.split:
             self.new_position_edit(p)
