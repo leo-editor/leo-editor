@@ -72,6 +72,7 @@ if g.isPython3:
     import urllib.parse as urlparse
     import urllib.request.urlopen as urlopen
 else:
+    # pylint: disable=no-name-in-module,no-member
     import urlparse
     urlopen = urlparse.urlopen
 
