@@ -228,7 +228,7 @@ if trace:
 try:
     import nbformat
     from nbconvert import HTMLExporter
-    from traitlets.config import Config
+    # from traitlets.config import Config
     from urllib.request import urlopen
 except ImportError:
     nbformat = None
