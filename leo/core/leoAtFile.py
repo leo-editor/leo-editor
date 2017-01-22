@@ -12,6 +12,7 @@ import leo.core.leoNodes as leoNodes
 import glob
 import importlib
 import os
+import re
 import sys
 import time
 #@-<< imports >>
@@ -4361,7 +4362,7 @@ class AtFile(object):
             g.trace("unexpected exception")
             g.es_exception()
             if suppress: raise
-    #@+node:ekr.20080712150045.3: *5* closeStringFile
+    #@+node:ekr.20080712150045.3: *5* at.closeStringFile
     def closeStringFile(self, theFile):
         at = self
         if theFile:
@@ -4376,7 +4377,7 @@ class AtFile(object):
             return s
         else:
             return None
-    #@+node:ekr.20041005105605.135: *5* closeWriteFile
+    #@+node:ekr.20041005105605.135: *5* at.closeWriteFile
     # 4.0: Don't use newline-pending logic.
 
     def closeWriteFile(self):
@@ -4392,7 +4393,7 @@ class AtFile(object):
             return at.stringOutput
         else:
             return None
-    #@+node:ekr.20041005105605.197: *5* compareFiles
+    #@+node:ekr.20041005105605.197: *5* at.compareFiles
     def compareFiles(self, path1, path2, ignoreLineEndings, ignoreBlankLines=False):
         """Compare two text files."""
         trace = False and not g.unitTesting
@@ -4429,7 +4430,11 @@ class AtFile(object):
             equal = s1 == s2
         if trace: g.trace('equal', equal)
         return equal
-    #@+node:ekr.20041005105605.198: *5* directiveKind4 (write logic, changed)
+    #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic, changed)
+    at_directive_kind_pattern = re.compile(r'^\s*@(\w+)\s+')
+        # Excludes constructs such as @encoding.setter or @encoding(whatever)
+        # But must allow constructs such as @language python.
+
     def directiveKind4(self, s, i):
         """Return the kind of at-directive or noDirective."""
         trace = False and not g.unitTesting
@@ -4465,10 +4470,14 @@ class AtFile(object):
             if g.match_word(s, i, name):
                 return directive
         # New in Leo 4.4.3: add support for add_directives plugin.
-        n = len(name)
-        for name in g.globalDirectiveList:
-            if g.match_word(s, i + 1, name) and not g.match(s, i + n, '.'):
+        if 0:
+            m = self.at_directive_kind_pattern.match(s)
+            if m and m.group(1) in g.globalDirectiveList:
                 return at.miscDirective
+        else:
+            for name in g.globalDirectiveList:
+                if g.match_word(s, i + 1, name) and not g.match(s, i + len(name), '.'):
+                    return at.miscDirective
         return at.noDirective
     #@+node:ekr.20041005105605.199: *5* at.findSectionName
     def findSectionName(self, s, i):
@@ -4533,7 +4542,7 @@ class AtFile(object):
         return at.outputFile
     #@+node:ekr.20041005105605.201: *5* at.os and allies
     # Note:  self.outputFile may be either a FileLikeObject or a real file.
-    #@+node:ekr.20041005105605.202: *6* oblank, oblanks & otabs
+    #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
     def oblank(self):
         self.os(' ')
 
@@ -4542,7 +4551,7 @@ class AtFile(object):
 
     def otabs(self, n):
         self.os('\t' * abs(n))
-    #@+node:ekr.20041005105605.203: *6* onl & onl_sent
+    #@+node:ekr.20041005105605.203: *6* at.onl & onl_sent
     def onl(self):
         """Write a newline to the output stream."""
         self.os('\n') # not self.output_newline
@@ -4551,7 +4560,7 @@ class AtFile(object):
         """Write a newline to the output stream, provided we are outputting sentinels."""
         if self.sentinels:
             self.onl()
-    #@+node:ekr.20041005105605.204: *6* os
+    #@+node:ekr.20041005105605.204: *6* at.os
     def os(self, s):
         """Write a string to the output stream.
 
@@ -4574,7 +4583,7 @@ class AtFile(object):
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
-    #@+node:ekr.20041005105605.205: *5* outputStringWithLineEndings
+    #@+node:ekr.20041005105605.205: *5* at.outputStringWithLineEndings
     # Write the string s as-is except that we replace '\n' with the proper line ending.
 
     def outputStringWithLineEndings(self, s):
@@ -4584,7 +4593,7 @@ class AtFile(object):
             s = g.ue(s, at.encoding)
         s = s.replace('\n', at.output_newline)
         self.os(s)
-    #@+node:ekr.20050506090446.1: *5* putAtFirstLines
+    #@+node:ekr.20050506090446.1: *5* at.putAtFirstLines
     def putAtFirstLines(self, s):
         '''Write any @firstlines from string s.
         These lines are converted to @verbatim lines,
@@ -4600,7 +4609,7 @@ class AtFile(object):
             line = s[j: i]
             at.os(line); at.onl()
             i = g.skip_nl(s, i)
-    #@+node:ekr.20050506090955: *5* putAtLastLines
+    #@+node:ekr.20050506090955: *5* at.putAtLastLines
     def putAtLastLines(self, s):
         '''Write any @last lines from string s.
         These lines are converted to @verbatim lines,
@@ -4621,7 +4630,7 @@ class AtFile(object):
             if g.match(line, 0, tag):
                 i = len(tag); i = g.skip_ws(line, i)
                 at.os(line[i:])
-    #@+node:ekr.20071117152308: *5* putBuffered
+    #@+node:ekr.20071117152308: *5* at.putBuffered
     def putBuffered(self, s):
         '''Put s, converting all tabs to blanks as necessary.'''
         if not s: return
@@ -4642,7 +4651,7 @@ class AtFile(object):
                 result.append(''.join(line2))
             s = '\n'.join(result)
         self.os(s)
-    #@+node:ekr.20041005105605.206: *5* putDirective  (handles @delims,@comment,@language) 4.x
+    #@+node:ekr.20041005105605.206: *5* at.putDirective  (handles @delims,@comment,@language) 4.x
     #@+at It is important for PHP and other situations that \@first
     # and \@last directives get translated to verbatim lines that
     # do _not_ include what follows the @first & @last directives.
@@ -4729,7 +4738,7 @@ class AtFile(object):
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
         return i
-    #@+node:ekr.20041005105605.210: *5* putIndent
+    #@+node:ekr.20041005105605.210: *5* at.putIndent
     def putIndent(self, n, s=''):
         """Put tabs and spaces corresponding to n spaces,
         assuming that we are at the start of a line.
@@ -4749,7 +4758,7 @@ class AtFile(object):
                 self.oblanks(r)
             else:
                 self.oblanks(n)
-    #@+node:ekr.20041005105605.211: *5* putInitialComment
+    #@+node:ekr.20041005105605.211: *5* at.putInitialComment
     def putInitialComment(self):
         c = self.c
         s2 = c.config.output_initial_comment
@@ -4917,7 +4926,7 @@ class AtFile(object):
                     if p.isAtIgnoreNode():
                         at.writeError("@ignore node: " + p.h)
                     p.moveToThreadNext()
-    #@+node:ekr.20041005105605.217: *5* writeError
+    #@+node:ekr.20041005105605.217: *5* at.writeError
     def writeError(self, message=None):
         '''Issue an error while writing an @<file> node.'''
         at = self
@@ -4926,7 +4935,7 @@ class AtFile(object):
         at.error(message)
         at.root.setDirty()
         at.root.setOrphan()
-    #@+node:ekr.20041005105605.218: *5* writeException
+    #@+node:ekr.20041005105605.218: *5* at.writeException
     def writeException(self, root=None):
         at = self
         g.error("exception writing:", at.targetFileName)
