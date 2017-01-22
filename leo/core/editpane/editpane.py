@@ -151,6 +151,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
     def _find_gnx_node(self, gnx):
         '''Return the first position having the given gnx.'''
+        if self.c.p.gnx == gnx:
+            return self.c.p
         for p in self.c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
@@ -245,7 +247,7 @@ class LeoEditPane(QtWidgets.QWidget):
     def change_update(self, state):
         self.update = bool(state)
         if self.update:
-            p = self._find_gnx_node(self.gnx)
+            p = self.get_position()
             if p is not None:
                 self.new_position(p)
     def close(self):
@@ -257,6 +259,9 @@ class LeoEditPane(QtWidgets.QWidget):
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
         return do_close
+    def get_position(self):
+        """get_position - get current position"""
+        return self._find_gnx_node(self.gnx)
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
@@ -265,7 +270,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.track:
             self.gnx = p.gnx
         else:
-            p = self._find_gnx_node(self.gnx)
+            p = self.get_position()
 
         if self.edit or self.split:
             self.new_position_edit(p)
@@ -289,6 +294,10 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("new view position")
         self.view_widget.new_position(p)
 
+    def text_changed(self):
+        """text_changed - node text changed by this LEP's editor"""
+        if not self.edit or self.split:
+            self.update_position_view(self.get_position())
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
@@ -297,7 +306,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.track:
             self.gnx = p.gnx
         else:
-            p = self._find_gnx_node(self.gnx)
+            p = self.get_position()
 
         if self.edit or self.split:
             self.update_position_edit(p)

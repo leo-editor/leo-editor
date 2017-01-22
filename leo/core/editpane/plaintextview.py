@@ -14,6 +14,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
             if arg in kwargs:
                 del kwargs[arg]
         QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
+        self.setStyleSheet("* {background: #998; color: #222; }")
     def new_position(self, p):
         """new_position - update for new position
 
