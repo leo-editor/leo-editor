@@ -12,6 +12,64 @@
 * Mention viewrendered plugin in tutorials.
 - Create real Qt Styles in colorizer.
 - Brew install Leo?
+.. @+node:ekr.20170122010350.1: ** Fossil videos & ideas
+​Richard Hipp, Fossil and SQLite author, makes that distinction and about
+the "pile of files" database (like the .git folder) instead of the single
+file approach[2]. There is a lot of querying capabilities of the last one,
+as you can see on [4]
+
+[2] https://www.youtube.com/watch?v=8y_ABXwYtuc
+[3] https://www.youtube.com/watch?v=ghtpJnrdgbo
+[4] http://fossil-scm.org/index.html/doc/trunk/www/webpage-ex.md
+
+
+If the emphasis is on node versioning, there's this:
+
+https://groups.google.com/d/msg/leo-editor/LIUGtgP8T_s/oSQD4RQGeogJ
+
+===== Offray
+
+Some years ago I proposed something for Leo, combining two technologies: fossil and Yaml[1], for the same reasons exposed here: fossil a as easier, self contained technology for working with files and Yaml as a diff friendly format to express graphs (trees with clones). At that time the idea didn't advance, but I explored it in Grafoscopio using STON[2] instead of Yaml. Now I have a diff and human friendly format for Grafoscopio notebooks, that can express graphs. For example, the interactive notebook about Panama Papers at [3] is shown in a fossil repository at [4] and a diff with a previous version is on [5].
+
+[1] http://markmail.org/search/?q=leo-editor%20offray%20yaml%20fossil#query:leo-editor%20offray%20yaml%20fossil+page:1+mid:t7xlg7mt5hqnldkn+state:results
+[2] https://github.com/svenvc/ston/blob/master/ston-paper.md
+[3] http://mutabit.com/offray/blog/en/entry/panama-papers-1
+[4] http://mutabit.com/repos.fossil/panama-papers/artifact/cbfe8929edf64212
+[5] http://mutabit.com/repos.fossil/panama-papers/fdiff?sbs=1&v1=255e79b046584a36&v2=cbfe8929edf64212
+
+Some notes about my thesis that are in Leo have conflicts created by xml +
+dropbox, that made the XML unreadable from Leo again, as you can see in
+this fossil repo at [6]. I will try to fix the file to make it loadable
+again in Leo.
+
+[6] http://mutabit.com/repos.fossil/doctorado-offray/dir?ci=ab8052282f0847de&name=Tesis
+
+This shows how XML is really a big weakness for Leo and other programs and
+that other simpler approaches for a diff/human friendly format and
+technologies for storing complex documents and enabling collaborative
+projects are available, as the Grafoscopio prototypes shown, but,
+unfortunately, XML and git have monopolized the developer's imagination.
+But maybe now we can rethink some core assumptions about technologies and
+formats behind Leo.
+
+I would try something like this:
+
+- Storing a simple Leo tree as a Yaml tree, including clones and see how
+  far can we push the format, for example, when interaction with external
+  files is represented in that tree (@file, @clean @auto).
+  
+- Storing Leo and these external files in a single .fossil repository and
+  explore if having this technology as a simple backed for storing files
+  and their history makes easier to work with the changes in such external
+  files. At least in my preliminary explorations, having fossil compiled
+  with JSON support[7][8] has enabled to query, from Grafoscopio, the
+  fossil repository with a simple interface (I have not made any POST
+  experiment yet). Anyway, I could imagine a single .fossil file that makes
+  Leo store a tree and related files, so if any of them changes, the
+  changes are compared against the repository to ease collaboration.
+
+[7] http://fossil.wanderinghorse.net/repos/fwiki/index.cgi/wiki/README
+[8] https://docs.google.com/document/d/1fXViveNhDbiXgCuE7QDXQOKeFzf2qNUkBEgiUvoqFN4/view
 .. @+node:ekr.20161231072434.1: ** Bugs
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!
