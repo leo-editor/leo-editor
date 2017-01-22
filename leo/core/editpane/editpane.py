@@ -233,7 +233,9 @@ class LeoEditPane(QtWidgets.QWidget):
         # always edit if split
         self.cb_edit.setEnabled(not state)
         if self.split:
-            self.cb_edit.setChecked(True)
+            self.edit = True
+        else:
+            self.edit = self.cb_edit.isChecked()
         self.state_changed()
     def change_track(self, state):
         self.track = bool(state)
