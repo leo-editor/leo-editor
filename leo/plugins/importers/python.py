@@ -4,6 +4,8 @@
 # py--lint: disable=no-name-in-module
 # basescanner does not exist now.
 NEW = False
+    # True: Use new python scanner.
+    # False: Use legacy python scanner, and BaseScanner class.
 import re
 import leo.core.leoGlobals as g
 if NEW:
@@ -11,7 +13,6 @@ if NEW:
     Importer = linescanner.Importer
     Target = linescanner.Target
 else:
-    # Lots of unit tests fail with this, so going back does not seem possible.
     import leo.plugins.importers.basescanner as basescanner
     BaseScanner = basescanner.BaseScanner
     
