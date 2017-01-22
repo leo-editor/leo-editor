@@ -108,7 +108,7 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("after body key")
 
         if self.update:
-            self.new_position(keywords['p'])
+            self.update_position()
 
         return None
     def _after_select(self, tag, keywords):
@@ -251,8 +251,6 @@ class LeoEditPane(QtWidgets.QWidget):
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
-        ALSO CALLED for updates, when not really a new position
-
         :param position p: the new position
         """
         if self.track:
@@ -280,6 +278,36 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("new view position")
         self.view_widget.new_position(p)
 
+    def update_position(self, p):
+        """update_position - update editor and view for current Leo position
+
+        :param position p: the new position
+        """
+        if self.track:
+            self.gnx = p.gnx
+        else:
+            p = self._find_gnx_node(self.gnx)
+
+        if self.edit or self.split:
+            self.update_position_edit(p)
+        if not self.edit or self.split:
+            self.update_position_view(p)
+    def update_position_edit(self, p):
+        """update_position_edit - update editor for current position
+
+        :param position p: the current position
+        """
+
+        DBG("update edit position")
+    def update_position_view(self, p):
+        """update_position_view - update viewer for current position
+
+        :param position p: the current position
+        """
+
+        DBG("update view position")
+        self.view_widget.update_position(p)
+
     def render(self, checked):
         pass
 
@@ -288,4 +316,4 @@ class LeoEditPane(QtWidgets.QWidget):
         """state_changed - control state has changed
         """
 
-        self.new_position(self.c.p)
+        self.update_position(self.c.p)
