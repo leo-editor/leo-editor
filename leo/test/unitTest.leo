@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.65">
 	<global_window_position top="54" left="600" height="941" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1219,6 +1219,7 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20170122024838.1"><vh>New python tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1652,7 +1653,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="11">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -6024,11 +6025,19 @@ class test:
         strings = string.split(s,"\\n")
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
-table = (
-        (1, 'class test'),
-        (2, 'importFilesCommand'),
-        (2, 'convertMoreStringToOutlineAfter'),
-    )
+if 1: ### Old importer.
+    table = (
+            (1, 'class test'),
+            (2, 'importFilesCommand'),
+            (2, '# Used by paste logic.'), ### Strange.
+            (2, 'convertMoreStringToOutlineAfter'),
+        )
+else:
+    table = (
+            (1, 'class test'),
+            (2, 'importFilesCommand'),
+            (2, 'convertMoreStringToOutlineAfter'),
+        )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6078,12 +6087,19 @@ class test:
     def foo(a):
         pass
 '''
-
-table = (
+if 1: ### New importer.
+    table = (
         (1, 'class test'),
         (2, 'spam'),
+        (2, '# Used by paste logic.'),
         (2, 'foo'),
     )
+else:
+    table = (
+            (1, 'class test'),
+            (2, 'spam'),
+            (2, 'foo'),
+        )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6345,11 +6361,16 @@ for ch in "({[":
 class testClass1:
     pass
 '''
-table = (
-    (1, 'Declarations'),
-    # (1, "if 0: # Causes the 'overindent'"),
-    (1, 'class testClass1'),
-)
+if 1: ### New importer.
+    table = (
+        (1, 'python overindented def 3 declarations'),
+        (1, 'class testClass1'),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+        (1, 'class testClass1'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7135,10 +7156,15 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
-table = (
-    # (1, g.angleBrackets('Declarations')),
-    (1, 'Declarations'),
-)
+if 1: ### Old importers
+    table = (
+        (1, 'python comment after dict assign declarations'),
+    )
+else:
+    table = (
+        # (1, g.angleBrackets('Declarations')),
+        (1, 'Declarations'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7181,10 +7207,14 @@ import leo.core.leoGlobals as g
 
 a = 3
 '''
-table = (
-    # (1, g.angleBrackets('Declarations')),
-    (1, 'Declarations'),
-)
+if 1: ### Old importers.
+    table = (
+        (1, 'python decls test 1 declarations'),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7264,8 +7294,11 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
-importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_ScanState)
+if hasattr(python, 'Py_Importer'):
+    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer.test_scan_state(tests, State=python.Python_ScanState)
+else:
+    self.skipTest('Skipping test for new python importer')
 </t>
 <t tx="ekr.20161117000902.1">if 0: # Preamble...
     # g.cls()
@@ -7339,19 +7372,28 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
-table = (
-    # (1, g.angleBrackets('Declarations')),
-    (1, 'Declarations'),
-    (1, "class LeoImportCommands"),
-    (2, "createOutline"),
-    (2, "dispatch"),
-    (2, "scanner_for_at_auto"),
-    # (3, "scanner_for_at_auto_cb"),
-    (2, "scanner_for_ext"),
-    # (3, "scanner_for_ext_cb"),
-    (2, "get_import_filename"),
-    (2, "init_import"),
-)
+if 1: ### New importer.
+    table = (
+        (1, 'python leoImport declarations'),
+        (1, "class LeoImportCommands"),
+        (2, "createOutline"),
+        (2, "dispatch"),
+        (2, "scanner_for_at_auto"),
+        (2, "scanner_for_ext"),
+        (2, "get_import_filename"),
+        (2, "init_import"),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+        (1, "class LeoImportCommands"),
+        (2, "createOutline"),
+        (2, "dispatch"),
+        (2, "scanner_for_at_auto"),
+        (2, "scanner_for_ext"),
+        (2, "get_import_filename"),
+        (2, "init_import"),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -9708,11 +9750,16 @@ def make_parser():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 '''
-table = (
-    (1, 'Declarations'),
-    # (1, 'if sys.version_info[0] &gt;= 3:'),
-    (1, 'make_parser'),
-)
+if 1: ### Old importers
+    table = (
+        (1, 'python bug #346 declarations'),
+        (1, 'make_parser'),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+        (1, 'make_parser'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -9946,16 +9993,23 @@ def retab(s, tabsize):
 if __name__=="__main__":
     main()
 '''
-table = (
-    # @auto does not allow section references.
-    # (1, g.angleBrackets('Declarations')),
-    (1, 'Declarations'),
-    (1, 'merge_value'),
-    (1, 'class MainDisplay'),
-    (2, 'save_file'),
-    (1, 'retab'),
-    # (1, 'if __name__=="__main__":'),
-)
+if 1: ### Old importers
+    table = (
+        (1, 'python top-level later decl declarations'),
+        (1, 'merge_value'),
+        (1, 'class MainDisplay'),
+        (2, 'save_file'),
+        (1, '# This line should be included at the end of the class node.'),
+        (1, 'retab'),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+        (1, 'merge_value'),
+        (1, 'class MainDisplay'),
+        (2, 'save_file'),
+        (1, 'retab'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10163,18 +10217,32 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-table = (
-    (1, "Declarations"),
-    (1, "class Draggable"),
-    (2, "__init__"),
-    (2, "mousePressEvent"),
-    (2, "mouseMoveEvent"),
-    (1, "command"),
-    # (2, "makebutton"),
-    (1, "exit_"),
-    (1, "main"),
-    # (1, "if __name__ == '__main__':"),
-)
+if 1: ### Old importer.
+    table = (
+        (1, "python decorator 2 declarations"),
+        (1, "class Draggable"),
+        (2, "__init__"),
+        (2, "mousePressEvent"),
+        (2, "mouseMoveEvent"),
+        (1, "command"),
+        # (2, "makebutton"),
+        (1, "exit_"),
+        (1, "main"),
+        # (1, "if __name__ == '__main__':"),
+    )
+else:
+    table = (
+        (1, "Declarations"),
+        (1, "class Draggable"),
+        (2, "__init__"),
+        (2, "mousePressEvent"),
+        (2, "mouseMoveEvent"),
+        (1, "command"),
+        # (2, "makebutton"),
+        (1, "exit_"),
+        (1, "main"),
+        # (1, "if __name__ == '__main__':"),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10373,10 +10441,14 @@ else:
     def ue(s, encoding):
         return builtins.unicode(s, encoding)
 """
-table = (
-    # (1, 'if isPython3:'),
-    (1, 'Declarations'),
-)
+if 1: ### Old importers
+    table = (
+        (1, 'python bug #354 declarations'),
+    )
+else:
+    table = (
+        (1, 'Declarations'),
+    )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10835,5 +10907,6 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20170122024838.1"></t>
 </tnodes>
 </leo_file>
