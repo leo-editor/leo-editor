@@ -1,6 +1,7 @@
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
+from leo.core.editpane import plaintextedit
 from leo.core.editpane import plaintextview
 
 if g.isPython3:
@@ -26,8 +27,8 @@ class LeoEditPane(QtWidgets.QWidget):
         show_head = kwargs.get('show_head', True)
         show_control = kwargs.get('show_control', True)
         recurse = kwargs.get('recurse', False)
-        split = kwargs.get('split', False)
-        for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'split':
+        update = kwargs.get('update', False)
+        for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'update':
             if arg in kwargs:
                 del kwargs[arg]
 
@@ -39,6 +40,7 @@ class LeoEditPane(QtWidgets.QWidget):
             mode=mode,
             show_head=show_head,
             show_control=show_control,
+            update=update,
             recurse=recurse,
         )
 
@@ -55,9 +57,11 @@ class LeoEditPane(QtWidgets.QWidget):
         self.split   = self.cb_split.isChecked()
         self.recurse = self.cb_recurse.isChecked()
 
+        reload(plaintextedit)
         reload(plaintextview)
-        self.edit_widget = None
+        self.edit_widget = plaintextedit.LEP_PlainTextEdit(lep=self, c=self.c)
         self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
+        self.edit_frame.layout().addWidget(self.edit_widget)
         self.view_frame.layout().addWidget(self.view_widget)
 
         self.new_position(p)
@@ -108,7 +112,7 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("after body key")
 
         if self.update:
-            self.update_position()
+            self.update_position(keywords['p'])
 
         return None
     def _after_select(self, tag, keywords):
@@ -159,7 +163,7 @@ class LeoEditPane(QtWidgets.QWidget):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
-    def _build_layout(self, mode='edit', show_head=True, show_control=True, split=False, recurse=False):
+    def _build_layout(self, mode='edit', show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
         self.setLayout(QtWidgets.QVBoxLayout())
@@ -177,9 +181,9 @@ class LeoEditPane(QtWidgets.QWidget):
         self.cb_track = self._add_checkbox("Track", self.change_track,
             "Track the node selected in the tree")
         self.cb_edit = self._add_checkbox("Edit", self.change_edit,
-            "Toggle edit / view mode")
+            "Toggle edit / view mode", checked=mode != 'view')
         self.cb_split = self._add_checkbox("Split", self.change_split, 
-            "Split edit and view", checked=split)
+            "Split edit and view", checked=mode == 'split')
         self.cb_update = self._add_checkbox("Update", self.change_update,
             "Update view to match changed node")
         self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, 
@@ -206,11 +210,9 @@ class LeoEditPane(QtWidgets.QWidget):
 
         if mode not in ('edit', 'split'):
             self.edit_frame.hide()
-            self.cb_edit.setChecked(False)
         else:  # avoid hiding both parts
             if mode not in ('view', 'split'):
                 self.view_frame.hide()
-                self.cb_edit.setChecked(False)
 
         self.show()
 
@@ -269,6 +271,8 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         DBG("new edit position")
+        self.edit_widget.new_position(p)
+
     def new_position_view(self, p):
         """new_position_view - update viewer for new position
 
@@ -299,6 +303,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         DBG("update edit position")
+        self.edit_widget.update_position(p)
     def update_position_view(self, p):
         """update_position_view - update viewer for current position
 
