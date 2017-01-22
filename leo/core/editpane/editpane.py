@@ -221,6 +221,10 @@ class LeoEditPane(QtWidgets.QWidget):
 
     def change_edit(self, state):
         self.edit = bool(state)
+        if not self.edit:
+            self.split = False
+            self.cb_split.setChecked(False)
+        self.state_changed()
     def change_recurse(self, state):
         self.recurse = bool(state)
         self.state_changed()
@@ -228,8 +232,9 @@ class LeoEditPane(QtWidgets.QWidget):
         self.split = bool(state)
         # always edit if split
         self.cb_edit.setEnabled(not state)
-        if state:
+        if self.split:
             self.cb_edit.setChecked(True)
+        self.state_changed()
     def change_track(self, state):
         self.track = bool(state)
         if self.track:
@@ -321,4 +326,12 @@ class LeoEditPane(QtWidgets.QWidget):
         """state_changed - control state has changed
         """
 
+        if self.edit or self.split:
+            self.edit_frame.show()
+            if not self.split:
+                self.view_frame.hide()
+        if not self.edit or self.split:
+            self.view_frame.show()
+            if not self.split:
+                self.edit_frame.hide()
         self.update_position(self.c.p)
