@@ -529,7 +529,7 @@ class PythonTarget:
             int(self.at_others_flag),
             g.shortFileName(self.p.h),
         )
-#@+node:ekr.20170122022937.1: ** class PythonScanner (OLD)
+#@+node:ekr.20170122022937.1: ** class PythonScanner (Legacy)
 if not NEW:
     
     class PythonScanner(basescanner.BaseScanner):

@@ -1,6 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140727075002.18109: * @file importers/basescanner.py
-'''Legacy (character-oriented) importers. Will eventually disappear'''
+'''
+Base classes for legacy (character-oriented) importers.
+
+No importers presently use this file. It exists solely for
+regression testing.
+'''
 #@+<< basescanner imports >>
 #@+node:ekr.20161027163734.1: ** << basescanner imports >>
 import leo.core.leoGlobals as g
