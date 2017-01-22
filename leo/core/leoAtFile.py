@@ -4429,7 +4429,7 @@ class AtFile(object):
             equal = s1 == s2
         if trace: g.trace('equal', equal)
         return equal
-    #@+node:ekr.20041005105605.198: *5* directiveKind4 (write logic)
+    #@+node:ekr.20041005105605.198: *5* directiveKind4 (write logic, changed)
     def directiveKind4(self, s, i):
         """Return the kind of at-directive or noDirective."""
         trace = False and not g.unitTesting
@@ -4465,8 +4465,9 @@ class AtFile(object):
             if g.match_word(s, i, name):
                 return directive
         # New in Leo 4.4.3: add support for add_directives plugin.
+        n = len(name)
         for name in g.globalDirectiveList:
-            if g.match_word(s, i + 1, name):
+            if g.match_word(s, i + 1, name) and not g.match(s, i + n, '.'):
                 return at.miscDirective
         return at.noDirective
     #@+node:ekr.20041005105605.199: *5* at.findSectionName

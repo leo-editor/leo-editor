@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1234,6 +1234,14 @@
 <v t="ekr.20170122032242.1"></v>
 <v t="ekr.20170122033034.1"></v>
 <v t="ekr.20170122034948.1"><vh>@test python bug #347</vh></v>
+<v t="ekr.20170122091151.1"><vh>@test pyzo-core</vh>
+<v t="ekr.20170122091622.1" a="E"><vh>@@file c:/leo.repo/leo-editor/leo/test/pyzo-core</vh>
+<v t="ekr.20170122091622.2" a="E"><vh>class PyzoEditor</vh>
+<v t="ekr.20170122091622.3"><vh>encoding</vh></v>
+<v t="ekr.20170122091622.4"><vh>encoding</vh></v>
+</v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -12549,6 +12557,93 @@ ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 
 if __name__=="__main__":
     main()
+</t>
+<t tx="ekr.20170122091151.1">if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
+s = '''
+class PyzoEditor(BaseTextCtrl):
+
+    @property
+    def encoding(self):
+        """ Encoding used to convert the text of this file to bytes.
+        """
+        return self._encoding
+    
+    @encoding.setter
+    def encoding(self, value):
+        # Test given value, correct name if it exists
+        try:
+            c = codecs.lookup(value)
+            value = c.name
+        except Exception:
+            value = codecs.lookup('UTF-8').name
+
+'''
+# import leo.plugins.importers.python as py
+# if hasattr(py, 'NEW') and py.NEW:
+table = (
+    (1, "class PyzoEditor"),
+    (2, "encoding"),
+    (2, "encoding"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+</t>
+<t tx="ekr.20170122091622.1">
+@others
+@language python
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20170122091622.2">class PyzoEditor(BaseTextCtrl):
+
+    @others
+</t>
+<t tx="ekr.20170122091622.3">@property
+def encoding(self):
+    """ Encoding used to convert the text of this file to bytes.
+    """
+    return self._encoding
+
+</t>
+<t tx="ekr.20170122091622.4">@encoding.setter
+def encoding(self, value):
+    # Test given value, correct name if it exists
+    try:
+        c = codecs.lookup(value)
+        value = c.name
+    except Exception:
+        value = codecs.lookup('UTF-8').name
+
 </t>
 </tnodes>
 </leo_file>

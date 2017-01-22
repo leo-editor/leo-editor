@@ -2212,7 +2212,7 @@ class RecursiveImportController(object):
             nl = '\n' if s.endswith('\n') else '\n\n'
             p2.b = p2.b + nl + s
             p.doDelete(p2)
-    #@+node:ekr.20130823083943.12603: *4* move_decorator_lines
+    #@+node:ekr.20130823083943.12603: *4* move_decorator_lines (RecursiveImportController)
     def move_decorator_lines(self, p):
         '''Move trailing decorator lines to the next node.'''
         trace = False and not g.unitTesting
