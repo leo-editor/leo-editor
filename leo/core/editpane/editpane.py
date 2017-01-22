@@ -96,9 +96,11 @@ class LeoEditPane(QtWidgets.QWidget):
     def _after_body_key(self, tag, keywords):
         """_after_body_key - after Leo selects another node
 
-        FIXME: although class EditCommandsClass-->insert & delete...-->selfInsertCommand()
-        implies that bodykey2 should fire after all keys, it doesn't seem to fire after
-        \n, backspace, delete etc., so the viewer gets out of date for those keys
+        FIXME: although class EditCommandsClass-->insert &
+        delete...-->selfInsertCommand() implies that bodykey2 should fire
+        after all keys, it doesn't seem to fire after \n, backspace, delete
+        etc., so the viewer gets out of date for those keys. The simplest
+        fix would be a new bodychanged2 hook.
 
         :param str tag: handler name ("bodykey2")
         :param dict keywords: c, p, etc.

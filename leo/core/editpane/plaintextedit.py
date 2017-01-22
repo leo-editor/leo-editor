@@ -36,10 +36,13 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
 
     def text_changed(self):
         """text_changed - text editor text changed"""
-        DBG("text changed")
-        p = self.lep.get_position()
-        p.b = self.toPlainText()
-        self.lep.text_changed()
+        if QtWidgets.QApplication.focusWidget() == self:
+            DBG("text changed, focused")
+            p = self.lep.get_position()
+            p.b = self.toPlainText()
+            self.lep.text_changed()
+        else:
+            DBG("text changed, NOT focused")
     def new_position(self, p):
         """new_position - update for new position
 
