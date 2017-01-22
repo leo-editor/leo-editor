@@ -22,6 +22,9 @@ class LeoEditPane(QtWidgets.QWidget):
         :param outline c: outline to bind to
         """
         self.c = kwargs['c']
+        if not hasattr(self.c, '_LEPs'):
+            self.c._LEPs = []
+        self.c._LEPs.append(self)
         p = kwargs.get('p', self.c.p)
         mode = kwargs.get('mode', 'edit')
         show_head = kwargs.get('show_head', True)
@@ -257,6 +260,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         do_close = QtWidgets.QWidget.close(self)
         if do_close:
+            self.c._LEPs.remove(self)
             DBG("unregister handlers\n")
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
@@ -298,8 +302,14 @@ class LeoEditPane(QtWidgets.QWidget):
 
     def text_changed(self):
         """text_changed - node text changed by this LEP's editor"""
-        if not self.edit or self.split:
-            self.update_position_view(self.get_position())
+        for lep in self.c._LEPs:
+            if lep.update:
+                if lep.edit_widget.focused:
+                    # don't update the edit part, would be infinite loop
+                    if not lep.edit or lep.split:
+                        lep.update_position_view(lep.get_position())
+                else:
+                    lep.update_position(lep.get_position())
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 

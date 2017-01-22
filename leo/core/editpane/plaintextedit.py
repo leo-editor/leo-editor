@@ -21,19 +21,27 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
                   if k not in ('c', 'p', 'lep')}
         QtWidgets.QTextEdit.__init__(self, *args, **kwargs)
         self.textChanged.connect(self.text_changed)
+        self.focused = None
+
+    def focusInEvent (self, event):
+        QtWidgets.QTextEdit.focusInEvent(self, event)
+        self.focused = True
+        DBG("focusin()")
+        self.update_position(self.lep.get_position())
 
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
+        self.focused = False
         DBG("focusout()")
         p = self.lep.get_position()
         p.b = self.toPlainText()
         self.lep.c.redraw()
+    def new_position(self, p):
+        """new_position - update for new position
 
-    def focusInEvent (self, event):
-        QtWidgets.QTextEdit.focusInEvent(self, event)
-        DBG("focusin()")
-        self.update_position(self.lep.get_position())
-
+        :param Leo position p: new position
+        """
+        self.setText(p.b)
     def text_changed(self):
         """text_changed - text editor text changed"""
         if QtWidgets.QApplication.focusWidget() == self:
@@ -43,12 +51,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
             self.lep.text_changed()
         else:
             DBG("text changed, NOT focused")
-    def new_position(self, p):
-        """new_position - update for new position
-
-        :param Leo position p: new position
-        """
-        self.setText(p.b)
     def update_position(self, p):
         """update_position - update for current position
 
