@@ -3,7 +3,7 @@
 '''The new, line-based, @auto importer for Python.'''
 # py--lint: disable=no-name-in-module
 # basescanner does not exist now.
-NEW = False
+NEW = True
     # True: Use new python scanner.
     # False: Use legacy python scanner, and BaseScanner class.
 import re

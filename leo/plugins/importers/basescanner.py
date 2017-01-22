@@ -1289,7 +1289,7 @@ class BaseScanner(object):
             line_number += s[j: i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
-    #@+node:ekr.20170122015158.1: *3* IC.check & helpers
+    #@+node:ekr.20170122015158.1: *3* BaseScanner.check & helpers (New)
     def check(self, unused_s, parent):
         '''ImportController.check'''
         trace = False and not g.unitTesting
@@ -1339,7 +1339,7 @@ class BaseScanner(object):
                 clean = self.strip_lws # strip_all, clean_blank_lines
                 ok = clean(s1) == clean(s2)
         return ok
-    #@+node:ekr.20170122015158.2: *4* IC.clean_blank_lines
+    #@+node:ekr.20170122015158.2: *4* BaseScanner.clean_blank_lines
     def clean_blank_lines(self, s):
         '''Remove all blanks and tabs in all blank lines.'''
         result = ''.join([
@@ -1347,7 +1347,7 @@ class BaseScanner(object):
                 for z in g.splitLines(s)
         ])
         return result
-    #@+node:ekr.20170122015158.3: *4* IC.strip_*
+    #@+node:ekr.20170122015158.3: *4* BaseScanner.strip_*
     def strip_all(self, s):
         '''Strip blank lines and leading whitespace from all lines of s.'''
         return self.strip_lws(self.strip_blank_lines(s))
@@ -1359,7 +1359,7 @@ class BaseScanner(object):
     def strip_lws(self, s):
         '''Strip leading whitespace from all lines of s.'''
         return ''.join([z.lstrip() for z in g.splitLines(s)])
-    #@+node:ekr.20170122015158.4: *4* IC.trial_write
+    #@+node:ekr.20170122015158.4: *4* BaseScanner.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
