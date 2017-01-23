@@ -1936,18 +1936,18 @@ class KeyHandlerClass(object):
             'upcase-word',
             # KeyHandlerCommandsClass
             # 'auto-complete',
-            'negative-argument',
-            'number-command',
-            'number-command-0',
-            'number-command-1',
-            'number-command-2',
-            'number-command-3',
-            'number-command-4',
-            'number-command-5',
-            'number-command-6',
-            'number-command-7',
-            'number-command-8',
-            'universal-argument',
+                # 'negative-argument',
+                # 'number-command',
+                # 'number-command-0',
+                # 'number-command-1',
+                # 'number-command-2',
+                # 'number-command-3',
+                # 'number-command-4',
+                # 'number-command-5',
+                # 'number-command-6',
+                # 'number-command-7',
+                # 'number-command-8',
+                # 'universal-argument',
             # KillBufferCommandsClass
             'backward-kill-word',
             'kill-line',
@@ -2672,99 +2672,10 @@ class KeyHandlerClass(object):
                 # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
     #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
-    #@+node:ekr.20061031131434.115: *4* k.digitArgument & universalArgument
-    @cmd('universal-argument')
-    def universalArgument(self, event):
-        '''Prompt for a universal argument.'''
-        k = self
-        k.setLabelBlue('Universal Argument: ')
-        k.universalDispatcher(event)
-
-    @cmd('digit-argument')
-    def digitArgument(self, event):
-        '''Prompt for a digit argument.'''
-        k = self
-        k.setLabelBlue('Digit Argument: ')
-        k.universalDispatcher(event)
     #@+node:ekr.20070613133500: *4* k.menuCommandKey
     def menuCommandKey(self, event=None):
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.117: *4* k.negativeArgument (redo?)
-    @cmd('negative-argument')
-    def negativeArgument(self, event):
-        '''Prompt for a negative digit argument.'''
-        g.trace('not ready yet')
-        # k = self ; state = k.getState('neg-arg')
-        # if state == 0:
-            # k.setLabelBlue('Negative Argument: ')
-            # k.setState('neg-arg',1,k.negativeArgument)
-        # else:
-            # k.clearState()
-            # k.resetLabel()
-            # func = k.negArgFunctions.get(k.stroke)
-            # if func:
-                # func(event)
-    #@+node:ekr.20061031131434.118: *4* k.numberCommand
-    @cmd('number-command')
-    def numberCommand(self, event, stroke, number):
-        '''Enter a number prefix for commands.'''
-        k = self; c = self.c
-        k.stroke = stroke
-        w = event and event.widget
-        k.universalDispatcher(event)
-        g.app.gui.event_generate(c, chr(number), chr(number), w)
-        return
-
-    @cmd('number-command-0')
-    def numberCommand0(self, event):
-        '''Execute command number 0.'''
-        return self.numberCommand(event, None, 0)
-
-    @cmd('number-command-1')
-    def numberCommand1(self, event):
-        '''Execute command number 1.'''
-        return self.numberCommand(event, None, 1)
-
-    @cmd('number-command-2')
-    def numberCommand2(self, event):
-        '''Execute command number 2.'''
-        return self.numberCommand(event, None, 2)
-
-    @cmd('number-command-3')
-    def numberCommand3(self, event):
-        '''Execute command number 3.'''
-        return self.numberCommand(event, None, 3)
-
-    @cmd('number-command-4')
-    def numberCommand4(self, event):
-        '''Execute command number 4.'''
-        return self.numberCommand(event, None, 4)
-
-    @cmd('number-command-5')
-    def numberCommand5(self, event):
-        '''Execute command number 5.'''
-        return self.numberCommand(event, None, 5)
-
-    @cmd('number-command-6')
-    def numberCommand6(self, event):
-        '''Execute command number 6.'''
-        return self.numberCommand(event, None, 6)
-
-    @cmd('number-command-7')
-    def numberCommand7(self, event):
-        '''Execute command number 7.'''
-        return self.numberCommand(event, None, 7)
-
-    @cmd('number-command-8')
-    def numberCommand8(self, event):
-        '''Execute command number 8.'''
-        return self.numberCommand(event, None, 8)
-
-    @cmd('number-command-9')
-    def numberCommand9(self, event):
-        '''Execute command number 9.'''
-        return self.numberCommand(event, None, 9)
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
     @cmd('print-bindings')
     def printBindings(self, event=None):

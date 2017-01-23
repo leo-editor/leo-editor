@@ -20009,6 +20009,129 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
+.. @+node:ekr.20170123152147.1: *3* Commands and menus
+.. @+node:ekr.20170123152205.1: *4* Commands
+.. @+node:ekr.20150514063305.90: *5* advertizedUndo
+@cmd('advertised-undo')
+def advertizedUndo(self, event):
+    '''Undo the previous command.'''
+    self.c.undoer.undo()
+.. @+node:ekr.20061031131434.115: *5* k.digitArgument & universalArgument
+@cmd('universal-argument')
+def universalArgument(self, event):
+    '''Prompt for a universal argument.'''
+    k = self
+    k.setLabelBlue('Universal Argument: ')
+    k.universalDispatcher(event)
+
+@cmd('digit-argument')
+def digitArgument(self, event):
+    '''Prompt for a digit argument.'''
+    k = self
+    k.setLabelBlue('Digit Argument: ')
+    k.universalDispatcher(event)
+.. @+node:ekr.20061031131434.117: *5* k.negativeArgument (redo?)
+@cmd('negative-argument')
+def negativeArgument(self, event):
+    '''Prompt for a negative digit argument.'''
+    g.trace('not ready yet')
+    # k = self ; state = k.getState('neg-arg')
+    # if state == 0:
+        # k.setLabelBlue('Negative Argument: ')
+        # k.setState('neg-arg',1,k.negativeArgument)
+    # else:
+        # k.clearState()
+        # k.resetLabel()
+        # func = k.negArgFunctions.get(k.stroke)
+        # if func:
+            # func(event)
+.. @+node:ekr.20061031131434.118: *5* k.numberCommand
+@cmd('number-command')
+def numberCommand(self, event, stroke, number):
+    '''Enter a number prefix for commands.'''
+    k = self; c = self.c
+    k.stroke = stroke
+    w = event and event.widget
+    k.universalDispatcher(event)
+    g.app.gui.event_generate(c, chr(number), chr(number), w)
+    return
+
+@cmd('number-command-0')
+def numberCommand0(self, event):
+    '''Execute command number 0.'''
+    return self.numberCommand(event, None, 0)
+
+@cmd('number-command-1')
+def numberCommand1(self, event):
+    '''Execute command number 1.'''
+    return self.numberCommand(event, None, 1)
+
+@cmd('number-command-2')
+def numberCommand2(self, event):
+    '''Execute command number 2.'''
+    return self.numberCommand(event, None, 2)
+
+@cmd('number-command-3')
+def numberCommand3(self, event):
+    '''Execute command number 3.'''
+    return self.numberCommand(event, None, 3)
+
+@cmd('number-command-4')
+def numberCommand4(self, event):
+    '''Execute command number 4.'''
+    return self.numberCommand(event, None, 4)
+
+@cmd('number-command-5')
+def numberCommand5(self, event):
+    '''Execute command number 5.'''
+    return self.numberCommand(event, None, 5)
+
+@cmd('number-command-6')
+def numberCommand6(self, event):
+    '''Execute command number 6.'''
+    return self.numberCommand(event, None, 6)
+
+@cmd('number-command-7')
+def numberCommand7(self, event):
+    '''Execute command number 7.'''
+    return self.numberCommand(event, None, 7)
+
+@cmd('number-command-8')
+def numberCommand8(self, event):
+    '''Execute command number 8.'''
+    return self.numberCommand(event, None, 8)
+
+@cmd('number-command-9')
+def numberCommand9(self, event):
+    '''Execute command number 9.'''
+    return self.numberCommand(event, None, 9)
+.. @+node:ekr.20170123145319.1: *4* Menus
+.. @+node:ekr.20170123145324.1: *5* Unused Chapters menu
+.. @+node:ekr.20170123145324.2: *6* @item chapter-&clone-node-to
+.. @+node:ekr.20170123145324.3: *6* @item chapter-c&opy-node-to
+.. @+node:ekr.20170123145324.4: *6* @item chapter-c&reate
+.. @+node:ekr.20170123145324.5: *6* @item chapter-&move-node-to
+.. @+node:ekr.20170123145324.6: *6* @item chapter-&remove
+.. @+node:ekr.20170123144320.1: *5* Unused abbrev Menu
+.. @+node:ekr.20170123144320.2: *6* @item &toggle-abbrev-mode
+.. @+node:ekr.20170123144320.3: *6* @item -
+.. @+node:ekr.20170123144320.4: *6* @item abbrev-&read
+.. @+node:ekr.20170123144320.5: *6* @item abbrev-&write
+.. @+node:ekr.20170123144320.6: *6* @item -
+.. @+node:ekr.20170123144320.7: *6* @item abbrev-&add-global
+.. @+node:ekr.20170123144320.8: *6* @item abbrev-&inverse-add-global
+.. @+node:ekr.20170123145642.1: *5* Unused Macros Menu
+.. @+node:ekr.20170123145629.1: *6* @menu &Macros
+.. @+node:ekr.20170123145629.2: *7* @item macro-start-&recording
+.. @+node:ekr.20170123145629.3: *7* @item macro-&end-recording
+.. @+node:ekr.20170123145629.4: *7* @item macro-&name-last
+.. @+node:ekr.20170123145629.5: *7* @item -
+.. @+node:ekr.20170123145629.6: *7* @item macro-&call
+.. @+node:ekr.20170123145629.7: *7* @item macro-call-&last
+.. @+node:ekr.20170123145629.8: *7* @item -
+.. @+node:ekr.20170123145629.9: *7* @item macro-&load-&all
+.. @+node:ekr.20170123145629.10: *7* @item macro-&print-all
+.. @+node:ekr.20170123145629.11: *7* @item macro-&save-all
 .. @+node:ekr.20150514040144.1: *3* COPY ../commands/macroCommands.py
 @first # -*- coding: utf-8 -*-
 '''Leo's macros commands.'''
@@ -25544,33 +25667,6 @@ def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
-.. @+node:ekr.20170123145319.1: *3* Menus
-.. @+node:ekr.20170123145324.1: *4* Unused Chapters menu
-.. @+node:ekr.20170123145324.2: *5* @item chapter-&clone-node-to
-.. @+node:ekr.20170123145324.3: *5* @item chapter-c&opy-node-to
-.. @+node:ekr.20170123145324.4: *5* @item chapter-c&reate
-.. @+node:ekr.20170123145324.5: *5* @item chapter-&move-node-to
-.. @+node:ekr.20170123145324.6: *5* @item chapter-&remove
-.. @+node:ekr.20170123144320.1: *4* Unused abbrev Menu
-.. @+node:ekr.20170123144320.2: *5* @item &toggle-abbrev-mode
-.. @+node:ekr.20170123144320.3: *5* @item -
-.. @+node:ekr.20170123144320.4: *5* @item abbrev-&read
-.. @+node:ekr.20170123144320.5: *5* @item abbrev-&write
-.. @+node:ekr.20170123144320.6: *5* @item -
-.. @+node:ekr.20170123144320.7: *5* @item abbrev-&add-global
-.. @+node:ekr.20170123144320.8: *5* @item abbrev-&inverse-add-global
-.. @+node:ekr.20170123145642.1: *4* Unused Macros Menu
-.. @+node:ekr.20170123145629.1: *5* @menu &Macros
-.. @+node:ekr.20170123145629.2: *6* @item macro-start-&recording
-.. @+node:ekr.20170123145629.3: *6* @item macro-&end-recording
-.. @+node:ekr.20170123145629.4: *6* @item macro-&name-last
-.. @+node:ekr.20170123145629.5: *6* @item -
-.. @+node:ekr.20170123145629.6: *6* @item macro-&call
-.. @+node:ekr.20170123145629.7: *6* @item macro-call-&last
-.. @+node:ekr.20170123145629.8: *6* @item -
-.. @+node:ekr.20170123145629.9: *6* @item macro-&load-&all
-.. @+node:ekr.20170123145629.10: *6* @item macro-&print-all
-.. @+node:ekr.20170123145629.11: *6* @item macro-&save-all
 .. @+node:ekr.20161018111818.1: *3* OLD @nosent ../extensions/hooks/pre-commit.py
 #!/usr/bin/env python
 

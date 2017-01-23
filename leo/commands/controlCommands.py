@@ -25,11 +25,6 @@ class ControlCommandsClass(BaseEditCommandsClass):
         self.c = c
 
     #@+others
-    #@+node:ekr.20150514063305.90: *3* advertizedUndo
-    @cmd('advertised-undo')
-    def advertizedUndo(self, event):
-        '''Undo the previous command.'''
-        self.c.undoer.undo()
     #@+node:ekr.20150514063305.91: *3* executeSubprocess (improved)
     def executeSubprocess(self, event, command):
         '''Execute a command in a separate process.'''
