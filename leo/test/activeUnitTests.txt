@@ -28077,6 +28077,10 @@ print('\nEnd of plugins unit tests')
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print('%s: %s' % (p.h,tree.redrawCount))
+#@+node:ekr.20170123053430.1: ** @test print calls to jedit.setTag
+if 0:
+    print('calls to jedit.setTag: %s' %
+        c.frame.body.colorizer.highlighter.colorer.n_setTag)
 #@+node:ekr.20081111150402.11: ** @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

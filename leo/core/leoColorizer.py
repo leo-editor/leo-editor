@@ -267,6 +267,7 @@ class JEditColorizer(object):
         # Debugging...
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
+        self.n_setTag = 0
         self.tagCount = 0
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
@@ -1927,11 +1928,20 @@ class JEditColorizer(object):
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
         trace = False and not g.unitTesting
+        trace_all = True
+        self.n_setTag += 1
         if i == j:
             if trace: g.trace('empty range')
             return
+        if trace and trace_all:
+            g.trace('%7s %s' % (tag, s[i:j]))
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
+        # Caching might cause problems. It does not materially affect speed.
+            # format = wrapper.formatDict.get(tag)
+            # if format:
+                # self.highlighter.setFormat(i, j - i, format)
+                # return
         colorName = wrapper.configDict.get(tag)
         # Munge the color name.
         if not colorName:
@@ -1953,10 +1963,10 @@ class JEditColorizer(object):
         if font:
             format.setFont(font)
         if trace:
-            self.tagCount += 1
             g.trace(
-                '%3s %3s %3s %9s %7s' % (i, j, len(s), font and id(font) or '<no font>', colorName),
-                '%-10s %-25s' % (tag, s[i: j]), g.callers(2))
+                '===== %3s %3s %3s %9s %7s' % (
+                    i, j, len(s), font and id(font) or '<no font>', colorName),
+                '%-10s %-25s' % (tag, s[i: j]))
         if tag in ('blank', 'tab'):
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
@@ -1967,6 +1977,9 @@ class JEditColorizer(object):
             format.setFontUnderline(True)
         else:
             format.setForeground(color)
+        self.tagCount += 1
+        # Caching causes problems.
+        # wrapper.formatDict [tag] = format
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
@@ -2327,7 +2340,7 @@ if QtGui:
             self.widget = c.frame.body.widget
             if trace:
                 t1 = time.clock()
-            n = self.colorer.recolorCount
+            # n = self.colorer.recolorCount
             if self.colorizer.enabled:
                 # Lock out onTextChanged.
                 old_selecting = tree.selecting
