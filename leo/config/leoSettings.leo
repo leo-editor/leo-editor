@@ -1283,14 +1283,7 @@
 </v>
 <v t="ekr.20131213135427.22049"><vh>@menu &amp;Cmds</vh>
 <v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbrev</vh>
-<v t="ekr.20131213135427.22051"><vh>@item &amp;toggle-abbrev-mode</vh></v>
-<v t="ekr.20131213135427.22052"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
-<v t="ekr.20131213135427.22054"><vh>@item abbrev-&amp;read</vh></v>
-<v t="ekr.20131213135427.22055"><vh>@item abbrev-&amp;write</vh></v>
-<v t="ekr.20131213135427.22056"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22057"><vh>@item abbrev-&amp;add-global</vh></v>
-<v t="ekr.20131213135427.22058"><vh>@item abbrev-&amp;inverse-add-global</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Body Editors</vh>
@@ -6844,14 +6837,7 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22048"></t>
 <t tx="ekr.20131213135427.22049"></t>
 <t tx="ekr.20131213135427.22050"></t>
-<t tx="ekr.20131213135427.22051"></t>
-<t tx="ekr.20131213135427.22052"></t>
 <t tx="ekr.20131213135427.22053"></t>
-<t tx="ekr.20131213135427.22054"></t>
-<t tx="ekr.20131213135427.22055"></t>
-<t tx="ekr.20131213135427.22056"></t>
-<t tx="ekr.20131213135427.22057"></t>
-<t tx="ekr.20131213135427.22058"></t>
 <t tx="ekr.20131213135427.22059"></t>
 <t tx="ekr.20131213135427.22060"></t>
 <t tx="ekr.20131213135427.22061"></t>
