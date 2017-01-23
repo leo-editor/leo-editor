@@ -23,6 +23,7 @@ class QTextMixin(object):
         self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.configUnderlineDict = {} # Keys are tags, values are True
+        # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
         self.useScintilla = False # This is used!
         self.virtualInsertPoint = None
         if c:
