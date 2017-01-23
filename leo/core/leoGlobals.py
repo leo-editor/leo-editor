@@ -6203,7 +6203,7 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
-        s = g.extractExecutableString(s)
+        s = g.extractExecutableString(c, p, s)
         if s.strip():
             # This causes too many special cases.
             # if not g.unitTesting and forceEncoding:
@@ -6225,22 +6225,40 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
         script = ''
     return script
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(s):
+def extractExecutableString(c, p, s):
     '''
     Return s suitable for execution:
         
     - Remove all @language rest and @language md/markdown parts.
-    - Give an error and return an empty string if multiple executable languages are found.
+    - Give an error and truncate if multiple executable languages are found.
     '''
     # https://github.com/leo-editor/leo-editor/issues/371
-    
-    # Set present language.
+    def set_skipping(language):
+        return language in ('rest', 'md', 'markdown')
 
-    # g.scanAtCommentAndAtLanguageDirectives(aList)
-    ### exec_language = None
+    language = g.scanForAtLanguage(c, p)
+    assert language, p and p.h
+    pattern = re.compile(r'\s*@language\s+(\w+)')
+    skipping = set_skipping(language)
+    prev_language = None if skipping else language
     result = []
     for line in g.splitLines(s):
-        result.append(line)
+        m = pattern.match(line)
+        if m: # Found an @language directive.
+            language = m.group(1)
+            skipping = set_skipping(language)
+            if skipping:
+                pass
+            elif prev_language and language == prev_language:
+                pass
+            elif prev_language:
+                g.error('can not execute multiple languages')
+                g.es('ignoring @language %s and all following lines' % language)
+                break
+            else:
+                prev_language = language
+        if not skipping:
+            result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c, p, script, script1):
