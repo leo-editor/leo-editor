@@ -1292,12 +1292,8 @@
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
 <v t="ekr.20131213135427.22072"><vh>@menu &amp;Chapters</vh>
-<v t="ekr.20131213135427.22073"><vh>@item chapter-&amp;clone-node-to</vh></v>
-<v t="ekr.20131213135427.22074"><vh>@item chapter-c&amp;opy-node-to</vh></v>
-<v t="ekr.20131213135427.22075"><vh>@item chapter-c&amp;reate</vh></v>
-<v t="ekr.20131213135427.22076"><vh>@item chapter-&amp;move-node-to</vh></v>
-<v t="ekr.20131213135427.22077"><vh>@item chapter-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22078"><vh>@item chapter-&amp;select</vh></v>
+<v t="ekr.20170123145248.1"><vh>@item chapter-select-&amp;main</vh></v>
 </v>
 <v t="ekr.20131213135427.22079"><vh>@menu Cursor/Selection</vh>
 <v t="ekr.20131213135427.22080"><vh>@menu Cursor &amp;Back</vh>
@@ -6852,11 +6848,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22070"></t>
 <t tx="ekr.20131213135427.22071"></t>
 <t tx="ekr.20131213135427.22072"></t>
-<t tx="ekr.20131213135427.22073"></t>
-<t tx="ekr.20131213135427.22074"></t>
-<t tx="ekr.20131213135427.22075"></t>
-<t tx="ekr.20131213135427.22076"></t>
-<t tx="ekr.20131213135427.22077"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
 <t tx="ekr.20131213135427.22080"></t>
@@ -11846,6 +11837,7 @@ Put notes about each version here.
     _values = c.abbrev_subst_env['cap_name'] = x.capitalize()
     return x.lower()
 </t>
+<t tx="ekr.20170123145248.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

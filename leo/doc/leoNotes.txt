@@ -25294,6 +25294,21 @@ def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
+.. @+node:ekr.20170123145319.1: *3* Menus
+.. @+node:ekr.20170123145324.1: *4* Unused Chapters menu
+.. @+node:ekr.20170123145324.2: *5* @item chapter-&clone-node-to
+.. @+node:ekr.20170123145324.3: *5* @item chapter-c&opy-node-to
+.. @+node:ekr.20170123145324.4: *5* @item chapter-c&reate
+.. @+node:ekr.20170123145324.5: *5* @item chapter-&move-node-to
+.. @+node:ekr.20170123145324.6: *5* @item chapter-&remove
+.. @+node:ekr.20170123144320.1: *4* Unused abbrev Menu
+.. @+node:ekr.20170123144320.2: *5* @item &toggle-abbrev-mode
+.. @+node:ekr.20170123144320.3: *5* @item -
+.. @+node:ekr.20170123144320.4: *5* @item abbrev-&read
+.. @+node:ekr.20170123144320.5: *5* @item abbrev-&write
+.. @+node:ekr.20170123144320.6: *5* @item -
+.. @+node:ekr.20170123144320.7: *5* @item abbrev-&add-global
+.. @+node:ekr.20170123144320.8: *5* @item abbrev-&inverse-add-global
 .. @+node:ekr.20161018111818.1: *3* OLD @nosent ../extensions/hooks/pre-commit.py
 #!/usr/bin/env python
 
@@ -32809,14 +32824,6 @@ def setHighlighter(self, p):
         h = highlighter.PyzoHighlighter(parser, document)
         self.highlighter = h
         self.pyzo_highlighter = h
-.. @+node:ekr.20170123144320.1: *3* Unused Menu for abbrev commands
-.. @+node:ekr.20170123144320.2: *4* @item &toggle-abbrev-mode
-.. @+node:ekr.20170123144320.3: *4* @item -
-.. @+node:ekr.20170123144320.4: *4* @item abbrev-&read
-.. @+node:ekr.20170123144320.5: *4* @item abbrev-&write
-.. @+node:ekr.20170123144320.6: *4* @item -
-.. @+node:ekr.20170123144320.7: *4* @item abbrev-&add-global
-.. @+node:ekr.20170123144320.8: *4* @item abbrev-&inverse-add-global
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
 @first # -*- coding: utf-8 -*-
