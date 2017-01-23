@@ -31,7 +31,7 @@ class LeoEditPane(QtWidgets.QWidget):
         show_head = kwargs.get('show_head', True)
         show_control = kwargs.get('show_control', True)
         recurse = kwargs.get('recurse', False)
-        update = kwargs.get('update', False)
+        update = kwargs.get('update', True)
         for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'update':
             if arg in kwargs:
                 del kwargs[arg]
@@ -148,6 +148,12 @@ class LeoEditPane(QtWidgets.QWidget):
         c = keywords['c']
         if c != self.c:
             return None
+
+        # currently nothing to do here, focusOut in widget takes care
+        # of any text updates
+
+        # BUT keyboard driven position change might need some action here
+        # BUT then again, textChanged in widget is probably sufficient
 
         DBG("before select")
 
@@ -351,7 +357,6 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("update view position")
         if self.mode != 'edit':
             self.view_widget.update_position(p)
-
     def render(self, checked):
         pass
 
