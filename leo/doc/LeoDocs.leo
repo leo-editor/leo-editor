@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1092,6 +1092,43 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20170123090814.1"><vh>What's new in Leo 5.5</vh>
+<v t="ekr.20170123090841.2"><vh>Highlights</vh>
+<v t="ekr.20170123090841.3"><vh>Optionally run pyflakes when saving files</vh></v>
+<v t="ekr.20170123090841.4"><vh>Fixed huge performance bug in syntax coloring</vh></v>
+<v t="ekr.20170123090841.5"><vh>The pylint command now runs in a separate process</vh></v>
+</v>
+<v t="ekr.20170123090841.6"><vh>@button scripts</vh>
+<v t="ekr.20170123090841.7"><vh>at-button make-importer</vh></v>
+<v t="ekr.20170123090841.8"><vh>at-button make-md-heads</vh></v>
+<v t="ekr.20170123090841.9"><vh>at-button make-md-toc</vh></v>
+<v t="ekr.20170123090841.10"><vh>at-button make-table</vh></v>
+<v t="ekr.20170123090841.11"><vh>at-button make-test</vh></v>
+</v>
+<v t="ekr.20170123090841.12"><vh>Bugs</vh>
+<v t="ekr.20170123090841.13"><vh>Fixed bug in bracket matching</vh>
+<v t="ekr.20170123090841.14"><vh>doPlainChar</vh></v>
+</v>
+<v t="ekr.20170123090841.15"><vh>Fixed date in About Leo dialog</vh></v>
+<v t="ekr.20170123090841.16"><vh>Fixed crash after ! in tab completion</vh></v>
+<v t="ekr.20170123090841.17"><vh>Fixed attribute error in To_Python.go</vh></v>
+<v t="ekr.20170123090841.18"><vh>Completed #325 Simplify the organization of commands</vh></v>
+<v t="ekr.20170123090841.19"><vh>Fixed crasher in ac.insert_string</vh></v>
+<v t="ekr.20170123090841.20"><vh>crash in autocomplete (with backspace key?)</vh></v>
+<v t="ekr.20170123090841.21"><vh>Fixed #348 (CDATA errors)</vh></v>
+</v>
+<v t="ekr.20170123090841.22"><vh>Code</vh>
+<v t="ekr.20170123090841.23"><vh>Added four new generators</vh></v>
+<v t="ekr.20170123090841.24"><vh>Created singleton BackgroundProcessManager</vh></v>
+<v t="ekr.20170123090841.25"><vh>Integrated idle-hook processing into the IdleTimeManager</vh></v>
+</v>
+<v t="ekr.20170123090841.26"><vh>Features</vh>
+<v t="ekr.20170123090841.27"><vh>You can open leoDist.leo from the File menu</vh></v>
+<v t="ekr.20170123090841.28"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
+<v t="ekr.20170123090841.29"><vh>Allow script abbreviations in headlines</vh></v>
+<v t="ekr.20170123090841.30"><vh>The markdown importer now regularizes sections</vh></v>
+</v>
+</v>
 <v t="ekr.20161014053105.1"><vh>What's new in Leo 5.4</vh>
 <v t="ekr.20161014053127.1"><vh>Highlights</vh></v>
 <v t="ekr.20161014053707.1"><vh>Commands</vh></v>
@@ -1209,65 +1246,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161014053105.1"></v>
-<v t="ekr.20160923133132.1"><vh>Leo 5.4 release notes</vh>
-<v t="ekr.20161021163518.1"><vh> Changes since 5.4 b1</vh></v>
-<v t="ekr.20160923133117.3"><vh>Bugs fixed</vh>
-<v t="ekr.20160923133117.4"><vh>Fixed #241: QMimeData object error</vh></v>
-<v t="ekr.20161014034431.151"><vh>Fixed #262: Improve performance of check_for_changed_external_files</vh></v>
-<v t="ekr.20160923133117.23"><vh>Fixed #270: Vim keys don't always work after double Alt+Tab</vh></v>
-<v t="ekr.20160923133117.38"><vh>Fixed #272: optionally delay syntax coloring</vh></v>
-<v t="ekr.20160923133117.104"><vh>Fixed #275: clone-marked/copy-marked/move-marked</vh></v>
-<v t="ekr.20160923133117.129"><vh>Fixed #286: @rst-preformat directive is formatted into headline</vh></v>
-<v t="ekr.20161014034431.28"><vh>Fixed #289: Leo crashes with unusual combination of @clean and .leo file</vh></v>
-<v t="ekr.20160923133117.130"><vh>Fixed #291: mod_autosave.py does not always save...</vh></v>
-<v t="ekr.20160923133117.142"><vh>Fixed #292: find-all commands collapse outline</vh></v>
-<v t="ekr.20160923133117.143"><vh>Fixed #295: Enhancement request: after-headline-edit hook</vh></v>
-<v t="ekr.20160923133117.159"><vh>Fixed #301: Log window doesn't get line separators</vh></v>
-<v t="ekr.20160923133117.168"><vh>Fixed #302: revert to saved doesn't reset external file change monitoring</vh></v>
-<v t="ekr.20161014034431.3"><vh>Fixed #304: QtWebEngine warnings with Qt5</vh></v>
-<v t="ekr.20161014034431.161"><vh>Fixed #313: vim-open-node opens file instead of just node</vh></v>
-<v t="ekr.20161015065750.1"><vh>Fixed #323: &lt;Alt-x&gt;help-tab shows too much at first</vh></v>
-<v t="ekr.20161020061721.1"><vh>Fixed .nsi installer bug</vh></v>
-<v t="ekr.20160923133117.175"><vh>Fixed bug in ac.get_summary_list</vh></v>
-<v t="ekr.20160923133117.176"><vh>Fixed expand-to-level bug</vh></v>
-<v t="ekr.20161014034431.114"><vh>Fixed major bug involving Leo's generators</vh></v>
-<v t="ekr.20160923133117.245"><vh>Fixed timing stats for pylint-leo on Linux</vh></v>
-<v t="ekr.20160923133117.178"><vh>Investigated #273: Qt Bug involving large text nodes</vh></v>
-</v>
-<v t="ekr.20160923133117.179"><vh>Code</vh>
-<v t="ekr.20160923133117.203"><vh>Fixed compare_ast bug</vh></v>
-<v t="ekr.20161014034431.158"><vh>Leo now catches exceptions in *all* commands</vh></v>
-<v t="ekr.20160923133117.206"><vh>Moved class defs out of @file nodes</vh></v>
-<v t="ekr.20160923133117.299"><vh>pylint command appends leo directory to sys.path</vh></v>
-<v t="ekr.20160923133117.208"><vh>Removed useUI switch</vh></v>
-</v>
-<v t="ekr.20160923163139.1"><vh>Commands</vh></v>
-<v t="ekr.20161014041653.1"><vh>Enhancements</vh>
-<v t="ekr.20161014153350.1"><vh>#254: Fast marking </vh></v>
-<v t="ekr.20161014054754.1"><vh>#272: optionally delay syntax coloring</vh></v>
-<v t="ekr.20160923133117.233"><vh>#275: Improved clone-marked/copy-marked/move-marked</vh></v>
-<v t="ekr.20160923133117.238"><vh>#285: Added Windows installer for file associations</vh></v>
-<v t="ekr.20161015060224.14"><vh>#318: add vr2 commands and settings to vr</vh></v>
-<v t="ekr.20161014034431.145"><vh>#321: allow section references in imported code</vh></v>
-<v t="ekr.20161014052138.1"><vh>Added dialog when creating myLeoSettings.leo automatically</vh></v>
-<v t="ekr.20160923133117.239"><vh>Added support for meta key on MacOS</vh></v>
-<v t="ekr.20161014153551.1"><vh>Allow plain keys in headlines</vh></v>
-<v t="ekr.20160923133117.242"><vh>Leo now colorizes basestring, @staticmethod &amp; @classmethod</vh></v>
-<v t="ekr.20161020061627.1"><vh>The pylint command writes to the log pane</vh></v>
-<v t="ekr.20161015070136.1"><vh>Won't do #283: Show global line number in lower left status bar</vh></v>
-</v>
-<v t="ekr.20160923163122.1"><vh>Importers</vh>
-<v t="ekr.20160923133117.210"><vh>#032: Added freemind and mindjet imports</vh></v>
-<v t="ekr.20160923133117.211"><vh>#225: Added support for @auto x.json</vh></v>
-<v t="ekr.20160923133117.234"><vh>#278: Created coffeescript importer</vh></v>
-</v>
-<v t="ekr.20161014123411.1"><vh>Plugins</vh>
-<v t="ekr.20161014123414.1"><vh>Improved mod_http plugin</vh></v>
-<v t="ekr.20161014124318.1"><vh>The viewrendered plugin supports @pyplot nodes</vh></v>
-</v>
-<v t="ekr.20160923163147.1"><vh>Settings</vh></v>
-</v>
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20161207045325.1"><vh>To be documented</vh>
 <v t="ekr.20161207050138.1"><vh>Prefer list processing to string processing </vh></v>
@@ -1275,6 +1253,44 @@
 </v>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
+<v t="ekr.20170123090814.1"></v>
+<v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
+<v t="ekr.20170123090348.1"><vh>Most important features</vh>
+<v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
+<v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
+<v t="ekr.20170123084609.26"><vh>The pylint command now runs in a separate process</vh></v>
+</v>
+<v t="ekr.20170123084609.2"><vh>@button scripts</vh>
+<v t="ekr.20170123084609.3"><vh>at-button make-importer</vh></v>
+<v t="ekr.20170123084609.4"><vh>at-button make-md-heads</vh></v>
+<v t="ekr.20170123084609.5"><vh>at-button make-md-toc</vh></v>
+<v t="ekr.20170123084609.6"><vh>at-button make-table</vh></v>
+<v t="ekr.20170123084609.7"><vh>at-button make-test</vh></v>
+</v>
+<v t="ekr.20170123084609.8"><vh>Bugs</vh>
+<v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh>
+<v t="ekr.20170123084609.10"><vh>doPlainChar</vh></v>
+</v>
+<v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
+<v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
+<v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
+<v t="ekr.20170123084609.14"><vh>Completed #325 Simplify the organization of commands</vh></v>
+<v t="ekr.20170123084609.15"><vh>Fixed crasher in ac.insert_string</vh></v>
+<v t="ekr.20170123084609.16"><vh>crash in autocomplete (with backspace key?)</vh></v>
+<v t="ekr.20170123084609.17"><vh>Fixed #348 (CDATA errors)</vh></v>
+</v>
+<v t="ekr.20170123084609.18"><vh>Code</vh>
+<v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
+<v t="ekr.20170123084609.20"><vh>Created singleton BackgroundProcessManager</vh></v>
+<v t="ekr.20170123084609.19"><vh>Integrated idle-hook processing into the IdleTimeManager</vh></v>
+</v>
+<v t="ekr.20170123084609.22"><vh>5.5 Features</vh>
+<v t="ekr.20170123084609.25"><vh>You can open leoDist.leo from the File menu</vh></v>
+<v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
+<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
+<v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18555,274 +18571,11 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     cfam    clone-find-marked 
     cffm    clone-find-flattened-marked
 </t>
-<t tx="ekr.20160923133117.104">https://github.com/leo-editor/leo-editor/issues/275
-
-- Improved clone-marked-nodes and move-marked-nodes.
-- Added copy-marked nodes.
-
-These commands work as follows:
-
-- They create an organizer node after c.p.
-  (That's not always possible for move-marked-nodes,
-  in which case the organizer node becomes the last top-level node).
-
-- They find all marked nodes, regardless of chapter, and leave
-  the presently selected chapter selected, if possible.
-
-**Note**: The move-marked-nodes command is no longer undoable.
-- The docstring suggests using clone-marked-nodes, followed by copy/paste.
-- Moved the undo/redo methods to the attic.
-- Modified @test move-marked-nodes so it doesn't check undo/redo.
-
-Added the following new helper methods:
-
-p.copyWithNewVnodes: calls v.copyTree.
-v.copyTree: a clearer version of p.copyTreeFromSelfTo.
-</t>
-<t tx="ekr.20160923133117.129">https://github.com/leo-editor/leo-editor/issues/286
-
-The fix was to add '@pre-format' to lists in writeHeadlineHelper and initHeadlineCommands.
-
-These nodes have been tagged with #286.
-</t>
-<t tx="ekr.20160923133117.130">https://github.com/leo-editor/leo-editor/issues/291
-</t>
-<t tx="ekr.20160923133117.142">https://github.com/leo-editor/leo-editor/issues/292
-
-The new code temporarily sets c.sparse_find to False.
-</t>
-<t tx="ekr.20160923133117.143">https://github.com/leo-editor/leo-editor/issues/295
-</t>
-<t tx="ekr.20160923133117.159"></t>
-<t tx="ekr.20160923133117.168">https://github.com/leo-editor/leo-editor/issues/302
-
-It seems revert to saved, which reloads the whole outline, does not reset the external file change monitoring (timestamps?) so that editing and saving an
-@&lt;file&gt; after the revert triggers spurious warnings about the file being
-modified externally.
-</t>
-<t tx="ekr.20160923133117.175">This bug only shows up when using Python 3, because of different rules for scopes in comprehensions.
-</t>
-<t tx="ekr.20160923133117.176"></t>
-<t tx="ekr.20160923133117.178">Only minor improvements were made.
-
-The ultimate source of the delay when selecting large text is *not* syntax coloring,
-but instead the call to self.old_w.setPlainText(self.p.b) in btw.create_widgets.
-
-Experiments show loading "dummy" text in btw.create_widgets can lead to data loss.
-There are too many paths through the selection logic to attempt to "recover"
-from the failure to load the body widget initially.
-
-Obviously, data loss is a much bigger problem than slow load times.
-I am going to declare this issue not to be solvable.
-</t>
-<t tx="ekr.20160923133117.179"></t>
-<t tx="ekr.20160923133117.203"></t>
-<t tx="ekr.20160923133117.206">And into subsidiary trees.
-</t>
-<t tx="ekr.20160923133117.208">It hasn't been active for a long, long time.
-</t>
-<t tx="ekr.20160923133117.210">https://github.com/leo-editor/leo-editor/issues/32
-
-The code:
-https://github.com/leo-editor/snippets/tree/master/issue_attach/32
-
-There are two ways to access these commands:
-
-1. Using the general import-files command, via the minibuffer or the File:Import File menu.  This opens a dialog that picks the proper importer **based on the file's extension**.  mm.html files get the FreeMind importer. .csv files get the MindJet importer.
-
-2. If these conventions don't suit you, you can use specific import-free-mind-files or import-mind-jet-files commands. These open a dialog in which the specific extension is pre-selected, but you can pick any file as usual.  In particular, it's possible to use the MindJet importer to open .ipynb files, which have .csv format.
-
-In general, if you pick an invalid file, the importers will fail gracefully.
-</t>
-<t tx="ekr.20160923133117.211">https://github.com/leo-editor/leo-editor/issues/225</t>
-<t tx="ekr.20160923133117.23">call c.vimCommands.quit()
-</t>
-<t tx="ekr.20160923133117.233">https://github.com/leo-editor/leo-editor/issues/275
-
-- Improved clone-marked-nodes and move-marked-nodes.
-- Added copy-marked nodes.
-
-Note: The move-marked-nodes command is no longer undoable.
-The docstring suggests using clone-marked-nodes, followed by copy/paste.
-
-These commands work as follows:
-
-- They create an organizer node after c.p.
-  (That's not always possible for move-marked-nodes,
-  in which case the organizer node becomes the last top-level node).
-
-- They find all marked nodes, regardless of chapter, and leave
-  the presently selected chapter selected, if possible.
-</t>
-<t tx="ekr.20160923133117.234">https://github.com/leo-editor/leo-editor/issues/278
-</t>
-<t tx="ekr.20160923133117.238">https://github.com/leo-editor/leo-editor/issues/285
-
-You can find it here: https://sourceforge.net/projects/leo/files/Leo/5.3-final/.
-
-This is useful for people who install Leo using git, or any other way except using the full Windows installer.  It creates file associations and (optionally) a desktop icon.
-
-The installer prompts for both the already-installed Leo installation folder (leo-editor for those using git) and a top-level Python directory. Necessary for auto-launching Leo. It also asks whether you want to open Leo in a console.  On my system, pythonw.exe doesn't work for Anaconda3, so a "yes" is required.  I'll probably back-port some of these features to the full installer.
-</t>
-<t tx="ekr.20160923133117.239">Changed LeoQtEventFilter.toStroke and LeoQtEventFilter.qtMods.</t>
-<t tx="ekr.20160923133117.242"></t>
-<t tx="ekr.20160923133117.245">Used time.time() instead of time.clock()
-</t>
-<t tx="ekr.20160923133117.299">This allows the pylint command to work without any sitecustomize.py file.
-</t>
-<t tx="ekr.20160923133117.3"></t>
-<t tx="ekr.20160923133117.38">https://github.com/leo-editor/leo-editor/issues/272
-
-Syntax coloring happens *initially* at idle-time.
-pqsh.setDocument queues pqsh.delayedRehighlight to run at idle time.
-
-Most of the time is spent in LeoTree.set_body_text_after_select.
-There is probably not much that can be done about that.
-</t>
-<t tx="ekr.20160923133117.4">See https://gitlab.com/pteam/pteam-qtbase/commit/74a20b77a67ec4d5a8be0f59302075d34151dc05
-
-Created new LeoQtGui.setClipboardSelection method, which at present does nothing for PyQt5.
-This appears to be the only way to avoid the following message:
-    
-    "Data set on unsupported clipboard mode. QMimeData object will be deleted."
-</t>
-<t tx="ekr.20160923133132.1">Leo 5.4-final   October 22, 2016
-
-[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
-
-Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
-
-Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
-
-**The highlights of Leo 5.4**
-
-- Added clone-find commands, a new way to use Leo.
-- The clone-find and tag-all-children commands unify clones and tags.
-- The new pyflakes and flake8 make it possible to check files from within Leo.
-- Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer.
-- Imported files can optionally contain section references.
-- The viewrendered plugin supports @pyplot nodes.
-- Improved the mod_http plugin.
-- @chapter trees need no longer be children of @chapters nodes.
-- All known bugs have been fixed.
-
-**Links**
-
-- [Leo's home page](http://leoeditor.com)
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
-- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20160923163122.1"></t>
-<t tx="ekr.20160923163139.1">Added these commands:
-
-- The **extremely important** clone-find commands:
-
-    - clone-find-all (cfa)
-    - clone-find-all-flattened (cfaf)
-    - clone-find-all-flattened-marked (cffm)
-    - clone-find-all-marked (cfam)
-    - clone-find-parents
-    - clone-find-tag (cft)
-
-- copy-marked
-- diff-marked-nodes
-- flake8
-- import-MORE-files
-- import-tabbed-files
-- pyflakes
-- tag-children
-
-Improved the clone-marked/copy-marked/move-marked commands.
-
-Removed all static abbrev commands.
-Removed all chapter-* commands except the chapter-select and chapter-select-main commands.
-</t>
-<t tx="ekr.20160923163147.1">Added the following settings:
-
-- @bool allow_section_references_in_at_auto
-  https://github.com/leo-editor/leo-editor/issues/321
-  
-- @bool js_importer_clean_lws
-
-- @bool outline_pane_has_initial_focus = True
-  https://groups.google.com/forum/#!topic/leo-editor/q1XKe4mnW9I
-  
-- @bool plain-key-outline-search
-
-- @bool show-iconbar
-  https://github.com/leo-editor/leo-editor/issues/266
-
-- @int autojustify
-  https://github.com/leo-editor/leo-editor/issues/14
-</t>
-<t tx="ekr.20161014034431.114">Fixed a bug in all of Leo's generators that return positions, and added unit tests for the same.
-   
-All of Leo's generator now yield p.copy() instead of p. This makes the generators much more robust.
-   
-It is **amazing** that these bugs did not cause more damage. They will bite whenever a script modifies any position returned by a generator.
-   
-Example 1: Previously, the following failed in mysterious ways.  p.v became None unexpectedly::
-   
-    for p in c.all_positions():
-        for p in p.children():
-            whatever
-   
-Example 2: Previously, this failed badly::
-   
-    list(g.all_positions()]
-   
-In fact, p.v will be None in all items of the list!
-   
-**Important**: the "extra" calls to p.copy() don't matter: In most cases, Python's garbage collector will immediate collect the generated positions.
-
-Anyway, there is no real alternative. Copying positions eliminates the possibility for subtle bugs.</t>
-<t tx="ekr.20161014034431.145">- Completed #321: allow section references in imported code.
-- Added support for @bool allow_section_references_in_at_auto, default False.
-- The javascript plugin now generates section references if and only if this setting is True.
-- changed &lt;&lt; handle line at s[i] &gt;&gt; in at.getBody accordingly.
-- Block.undent now handles leading tabs, using c.tab_width.
-- Disabled a unit tests that assumes that section references are not valid in @auto.
-</t>
-<t tx="ekr.20161014034431.151">https://github.com/leo-editor/leo-editor/issues/262
-
-Changed efc.on_idle &amp; helpers.</t>
-<t tx="ekr.20161014034431.158">The fix was to catch all exceptions in g.new_cmd_decorator and LeoKeys.callAltXFunction.</t>
-<t tx="ekr.20161014034431.161">https://github.com/leo-editor/leo-editor/issues/313
-
-- efc.update_open_with_node now sets the node and commander dirty if
-  @bool open_with_save_on_update = False
-  
-- Simplified the interfaces to the following by changing d arg by ext arg:
-  efc.create_temp_file, efc.clean_file_name, efc.legacy_file_name
-  It's an important simplification.
-</t>
-<t tx="ekr.20161014034431.28">https://github.com/leo-editor/leo-editor/issues/289
-
-The fix was to at.putRefLine and its helpers.</t>
-<t tx="ekr.20161014034431.3">https://github.com/leo-editor/leo-editor/issues/304
-
-http://doc.qt.io/qt-5/qquickwebengineprofile.html
-
-The QtWebEngine warnings are given in LeoQtGui.runMainLoop in the call to:
-    
-    sys.exit(self.qtApp.exec_())
-
-</t>
-<t tx="ekr.20161014041653.1"></t>
 <t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard::
 
     g.app.gui.replaceClipboardWith('hi')
     print(g.app.gui.getTextFromClipboard())
 </t>
-<t tx="ekr.20161014052138.1">The new code is in c.createMyLeoSettings.</t>
 <t tx="ekr.20161014053105.1"></t>
 <t tx="ekr.20161014053127.1">New Commands
 
@@ -18890,59 +18643,6 @@ Removed all chapter-* commands except the chapter-select and chapter-select-main
 - @int autojustify
 - @int qweb_view_font_size
 </t>
-<t tx="ekr.20161014054754.1">https://github.com/leo-editor/leo-editor/issues/272
-</t>
-<t tx="ekr.20161014123411.1"></t>
-<t tx="ekr.20161014123414.1">**Look and feel**
-
-The plugin now renders Leo outlines almost exactly as they appear in Leo.
-
-**Custom .css**
-
-The default .css is in @data http_stylesheet defined in leoSettings.leo. You should put your own overrides in @data user_http_stylesheet, in myLeoSettings.leo.
-
-The html generated by the server contains both stylesheets as inline &lt;style&gt; elements, with the user_http_stylesheet contents last.  Thus, @data user_http_stylesheet **adds** to @data http_stylesheet.
-
-**Custom javascript**
-
-If you define @data mod_http script in myLeoSettings.leo, the contents of this node **replaces** the default javascript defined in @data mod_http script in leoSettings.leo.  I don't expect people to use this setting often, but it was useful during development.
-
-**Improved html**
-
-&lt;node&gt; elements carry structure. &lt;headline&gt; elements carry headlines.  This allows headlines to have borders as usual.  I experimented with putting all data in &lt;node&gt; elements, but borders would include all visible children.  The summary page now contains complete html, including &lt;!DOCTYPE&gt; and &lt;meta&gt; elements.</t>
-<t tx="ekr.20161014124318.1">.. _`pyplot`: http://matplotlib.org/users/pyplot_tutorial.html
-.. _`matplotlib`: http://matplotlib.org/index.html
-.. _`Jupyter notebook`: http://jupyter.org/
-
-`pyplot`_ is the python interface to `matplotlib`_.  @pyplot gives Leo most of the capabilities of the `Jupyter notebook`_.
-
-@pyplot nodes are assumed to contain pyplot scripts. The plugin imports the following automatically, so scripts don't have to::
-  
-    import matplotlib
-    import matplotlib.pyplot as plt
-    import numpy as np
-    import matplotlib.animation as animation
-
-The viewrendered pane handles MathJax well, with some glitches: 
-
-- Leo renders MathJax significantly better when using PyQt5.
-- The MathJax fonts are tiny.  This setting can be used to increase the font size::
-
-    @int qweb_view_font_size = 30
-</t>
-<t tx="ekr.20161014153350.1">https://github.com/leo-editor/leo-editor/issues/254</t>
-<t tx="ekr.20161014153551.1">
-1. Leo now allows plain keys to be bound to commands when focus is in the outline.  For example, the following satisfies #254:
-
-mark ! tree = space
-
-2. All other unbound keys search the outline (visible nodes only) when focus is in the outline.  After a lot of experimenting, the code simply looks for the next headline containing the typed character, wrapping around endlessly. Case is ignored for lowercase letters, but is significant if you type an uppercase letter.
-
-3. Leo now honors the following initially:
-
-@bool outline_pane_has_initial_focus = True
-
-This is what we are all likely to want now that searching headlines works.</t>
 <t tx="ekr.20161014160238.1">Leo uses constants and functions defined in leoGlobals.py to ensure that Leo's code works on both Python 2.7+ and Python 3.x.
 
 - g.isPython3: True if Leo is running Python 3.x.  False otherwise.
@@ -18977,25 +18677,6 @@ Similarly, use g.ue to convert Qt bytes to unicode. Here is an example from LM.o
 Actually, the above code is dubious, because it will break if the mode of the open command changes.
 
 **Note**: Leo's code sometimes does s = g.u('aString'), but this isn't needed since Python 2.7 which supports unicode literals.</t>
-<t tx="ekr.20161015060224.14">https://github.com/leo-editor/leo-editor/issues/318
-</t>
-<t tx="ekr.20161015065750.1">https://github.com/leo-editor/leo-editor/issues/323
-
-Previously, &lt;Alt-x&gt;help&lt;tab&gt;c&lt;tab&gt; resulted in help-for-abbreviations.
-
-Rewrote ga.do_back_space and changed ga.do_tab and ga.do_back_space.</t>
-<t tx="ekr.20161015070136.1">https://github.com/leo-editor/leo-editor/issues/283
-
-tagged with global_file_numbers
-
-This would take too long.</t>
-<t tx="ekr.20161020061627.1">This is one of those small things that makes a big difference.
-
-Previously, the command wrote only to the console window.  Now it writes both to the console and to the log pane.  You check the results without having to bring the console into view, which is much more convenient if several console windows are open.
-</t>
-<t tx="ekr.20161020061721.1">The old code failed to find 64-bit Python installations in the registry.
-
-The new code checks both the 32-bit and 64-bit registries.</t>
 <t tx="ekr.20161020064204.1">``flake8``
     Run flake8 on all nodes of the selected tree, or the first ancestor @&lt;file&gt; node.
 ``pyflakes``
@@ -19057,24 +18738,6 @@ Idle time::
     print-style-sheet
     show-colors
     show-find-options</t>
-<t tx="ekr.20161021163518.1">**User-visible changes**
-
-- The pylint and pyflakes commands now write to Leo's log window, as well as the console.
-
-- Added @bool run-pyflakes-on-write. When True (default is False), Leo runs pyflakes when saving any changed file.
-
-- Eliminated all the buffer-*, register-* and 'how-many' commands.
-
-**Code changes**
-
-- Leo's code gets arguments from the minibuffer using k.get1arg and k.getNextArg.
-
-- Deprecated g.execute_shell_commands and g.run_pylint.
-
-- Moved checker commands from leoApp.py to commands/checkerCommands.py.
-
-5. Better git hooks, written in Python.
-</t>
 <t tx="ekr.20161029072351.1">@language rest
 
 g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
@@ -19337,7 +19000,422 @@ There is no way to alter this sequence ;-) How many times have we given up just 
 
 Reading about and thinking about are useful, but not nearly good enough.  That is why students must have a project that is important to them.  The project will put them into action.</t>
 <t tx="ekr.20161216132929.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170123084609.10">def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
+    c, p = self.c, self.c.p
+    isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+    i, j = oldSel
+    if i &gt; j: i, j = j, i
+    # Use raw insert/delete to retain the coloring.
+    if i != j: w.delete(i, j)
+    elif action == 'overwrite': w.delete(i)
+    if isPlain:
+        ins = w.getInsertPoint()
+        if self.autojustify &gt; 0 and not inBrackets:
+            # Support #14: auto-justify body text.
+            s = w.getAllText()
+            i = g.skip_to_start_of_line(s, ins)
+            i, j = g.getLine(s, i)
+            # Only insert a newline at the end of a line.
+            if j - i &gt;= self.autojustify and (ins &gt;= len(s) or s[ins] == '\n'):
+                # Find the start of the word.
+                n = 0
+                ins -= 1
+                while ins-1 &gt; 0 and g.isWordChar(s[ins-1]):
+                    n += 1
+                    ins -= 1
+                sins = ins  # start of insert, to collect trailing whitespace
+                while sins &gt; 0 and s[sins-1] in (' \t'):
+                    sins -= 1
+                oldSel = (sins, ins)
+                self.insertNewlineHelper(w, oldSel, undoType=None)
+                ins = w.getInsertPoint()
+                ins += (n+1)
+        w.insert(ins, ch)
+        w.setInsertPoint(ins + 1)
+    else:
+        g.app.gui.insertKeyEvent(event, i)
+    if inBrackets and self.flashMatchingBrackets:
+        self.flashMatchingBracketsHelper(c, ch, i, p, w)
+</t>
+<t tx="ekr.20170123084609.11"></t>
+<t tx="ekr.20170123084609.12"> File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 414, in auto_completer_state_handler
+    kind), color='red')
+TypeError: putStatusLine() got an unexpected keyword argument 'color'
+</t>
+<t tx="ekr.20170123084609.13"></t>
+<t tx="ekr.20170123084609.14">https://github.com/leo-editor/leo-editor/issues/325
+</t>
+<t tx="ekr.20170123084609.15">Relaced several assert by returns if the assert isn't satisfied.
+
+I thought I was doing ctrl-h
+
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoGlobals.py", line 1711, in wrapper
+    func(self, event=event)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 266, in showCalltips
+    self.calltip()
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 452, in calltip
+    self.calltip_fail(prefix)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 460, in calltip_fail
+    self.insert_string('(')
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 861, in insert_string
+    i = w.getInsertPoint()
+AttributeError: 'LeoQtTree' object has no attribute 'getInsertPoint'
+</t>
+<t tx="ekr.20170123084609.16"></t>
+<t tx="ekr.20170123084609.17">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/348
+XML CDATA Sections not preserved on round-trip save
+
+@language python
+</t>
+<t tx="ekr.20170123084609.18"></t>
+<t tx="ekr.20170123084609.19">Integrated idle-hook processing into the IdleTimeManager:
+
+leoApp.py:
+- ITM.on_idle now handles idle-hooks.
+- Removed g.app.idle_timer.
+- 'idle' hooks called if and only if g.app.idle_time_hooks_enabled is True.
+- Only one timer is ever started by Leo: g.app.idle_time_manager_timer.
+- Removed call to g.enableIdleTimeHook in at the end of LM.doPostPluginsInit.
+  It is not needed: g.app.idle_time_hooks_enabled is True initially.
+- The enable/disable/toggle-idle-time-events commands now just set g.app.idle_time_hooks_enabled.
+
+leoGlobals.py:
+- g.enable/disableIdleTimeHook now just set g.app.idle_time_hooks_enabled.
+  They remain for compatibility only.
+- g.idleTimeHookHandler is now a stub. It just prints a warning.
+  The original has been moved to the attic (leoNotes.txt).
+</t>
+<t tx="ekr.20170123084609.2"></t>
+<t tx="ekr.20170123084609.20">Fixed all recently discussed problems with background processing:
+
+- Renamed BackgroundManager to BackgroundProcessManager.
+- Created singleton BPM instance, g.app.backgroundProcessManager.
+- The BPM now maintains a queue of g.Bunch's describing each process.
+- The BPM sends output to the originating log pane if possible.
+- The 'pylint' and 'pylint-kill' commands now use the BPM.
+</t>
+<t tx="ekr.20170123084609.22"></t>
+<t tx="ekr.20170123084609.24"></t>
+<t tx="ekr.20170123084609.25"></t>
+<t tx="ekr.20170123084609.26">Leo no longer hangs waiting for this command to finish.
+https://github.com/leo-editor/leo-editor/issues/328
+</t>
+<t tx="ekr.20170123084609.27"></t>
+<t tx="ekr.20170123084609.28">c.all_roots, c.all_unique_roots, p.nearest_roots, p.nearest_unique_roots (aka p.nearest)
+
+Useful for finding nodes on which to run commands.
+
+def nearest_roots(self, predicate=None):
+    '''
+    A generator yielding all the root positions "near" p1 = self that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+    
+    The search first proceeds up the p's tree. If a root is found, this
+    generator yields just that root.
+    
+    Otherwise, the generator yields all nodes in p.subtree() that satisfy
+    the predicate. Once a root is found, the generator skips its subtree.
+    '''
+</t>
+<t tx="ekr.20170123084609.29"></t>
+<t tx="ekr.20170123084609.3">Make a new @@file importers/x.py file.
+
+This button created most of Leo's new importers.
+</t>
+<t tx="ekr.20170123084609.30">Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
+
+tl;dr: Converting all sections to '#' markup is Leonine, simplest and best. Only existing .md files that Leo didn't write could be changed.  If such changes don't work for you, just insert @ignore yourself when git or diff reports differences.
+
+Imo, this change is fully justified:
+
+1. It is more Leonine.
+
+When creating and changing .md files from within Leo, @auto-md works much more smoothly.  Indeed, as I have just verified, converting an @nosent x.md file to @auto-md x.md "just works".
+
+There is absolutely no reason to use underlined sections when using Leo.  The headlines proclaim the section structure far better than flat text of any kind, whether ### section name or underlined section names.
+
+2. Perfect import check should not wag the dog.
+
+The markdown importer is one of the simplest of all.  The possibility of dropping data seems remote.  Requiring a typical perfect import check to pass would preclude regularizing section markup.  It's just that simple.
+
+Furthermore, the existing unit tests for the markup importer do check imported section structure, albeit imperfectly That should suffice for now. In the unlikely event that real problems are reported, these after-the-fact unit tests can be improved.
+
+**Summary**
+
+Importing markdown files containing underlined sections could only pass typical perfect import checks if existing underlining were somehow retained.  That's a bad idea.  Instead, Leo's markdown importer now implicitly converts all sections to '#' markup.  In essence, the markup disappears from the outline, to be automagically reinserted when Leo writes the outline.
+
+This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
+</t>
+<t tx="ekr.20170123084609.4">Create markdown headers throughout the nearest .md outline.
+
+That is, prepend p.b[0] with markdown section markup, if appriate.
+</t>
+<t tx="ekr.20170123084609.5">Make a markdown table of contents from an @auto-md node.
+</t>
+<t tx="ekr.20170123084609.6">Create a table of expected headlines in a unit test.
+
+To use this script, select the root of the tree containing the expected
+results. After running this, copy the table from the console.
+
+**Details**
+
+The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
+
+The outline of such tests is:
+
+s = r'''
+The input, maybe many lines.
+'''
+table = ( a list of expected headlines )
+try:
+    c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+    if 1: # Verify that the test produces the expected headlines.
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
+finally:
+    if 1: # clean up
+        p.deleteAllChildren()
+
+If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used the following, now in scripts.leo:
+</t>
+<t tx="ekr.20170123084609.7">Make an @test node for the importer whose name is given.
+</t>
+<t tx="ekr.20170123084609.8"></t>
+<t tx="ekr.20170123084609.9"># A recent in doPlainChar change to handle #14 ruined bracket matching.
+</t>
+<t tx="ekr.20170123084701.1">As a result, the horrible (big text) hack is no longer needed.
+</t>
+<t tx="ekr.20170123085934.1">Leo 5.5b1 January 30, 2017
+
+[Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+
+**The highlights of Leo 5.5**
+
+- A massive speedup of syntax coloring.
+  The "big-text" hack is no longer needed.
+- Pylint now runs in a separate process.
+- Pyflakes can optionally check each file as it is written.
+
+**Links**
+
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20170123090348.1"></t>
+<t tx="ekr.20170123090814.1"></t>
+<t tx="ekr.20170123090841.10">Create a table of expected headlines in a unit test.
+
+To use this script, select the root of the tree containing the expected
+results. After running this, copy the table from the console.
+
+**Details**
+
+The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
+
+The outline of such tests is:
+
+s = r'''
+The input, maybe many lines.
+'''
+table = ( a list of expected headlines )
+try:
+    c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
+    if 1: # Verify that the test produces the expected headlines.
+      p2 = c.p.firstChild().firstChild()
+      for h in table:
+          assert p2.h == h, (p2.h, h)
+          p2.moveToThreadNext()
+finally:
+    if 1: # clean up
+        p.deleteAllChildren()
+
+If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used the following, now in scripts.leo:
+</t>
+<t tx="ekr.20170123090841.11">Make an @test node for the importer whose name is given.
+</t>
+<t tx="ekr.20170123090841.12"></t>
+<t tx="ekr.20170123090841.13"># A recent in doPlainChar change to handle #14 ruined bracket matching.
+</t>
+<t tx="ekr.20170123090841.14">def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
+    c, p = self.c, self.c.p
+    isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+    i, j = oldSel
+    if i &gt; j: i, j = j, i
+    # Use raw insert/delete to retain the coloring.
+    if i != j: w.delete(i, j)
+    elif action == 'overwrite': w.delete(i)
+    if isPlain:
+        ins = w.getInsertPoint()
+        if self.autojustify &gt; 0 and not inBrackets:
+            # Support #14: auto-justify body text.
+            s = w.getAllText()
+            i = g.skip_to_start_of_line(s, ins)
+            i, j = g.getLine(s, i)
+            # Only insert a newline at the end of a line.
+            if j - i &gt;= self.autojustify and (ins &gt;= len(s) or s[ins] == '\n'):
+                # Find the start of the word.
+                n = 0
+                ins -= 1
+                while ins-1 &gt; 0 and g.isWordChar(s[ins-1]):
+                    n += 1
+                    ins -= 1
+                sins = ins  # start of insert, to collect trailing whitespace
+                while sins &gt; 0 and s[sins-1] in (' \t'):
+                    sins -= 1
+                oldSel = (sins, ins)
+                self.insertNewlineHelper(w, oldSel, undoType=None)
+                ins = w.getInsertPoint()
+                ins += (n+1)
+        w.insert(ins, ch)
+        w.setInsertPoint(ins + 1)
+    else:
+        g.app.gui.insertKeyEvent(event, i)
+    if inBrackets and self.flashMatchingBrackets:
+        self.flashMatchingBracketsHelper(c, ch, i, p, w)
+</t>
+<t tx="ekr.20170123090841.15"></t>
+<t tx="ekr.20170123090841.16"> File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 414, in auto_completer_state_handler
+    kind), color='red')
+TypeError: putStatusLine() got an unexpected keyword argument 'color'
+</t>
+<t tx="ekr.20170123090841.17"></t>
+<t tx="ekr.20170123090841.18">https://github.com/leo-editor/leo-editor/issues/325
+</t>
+<t tx="ekr.20170123090841.19">Relaced several assert by returns if the assert isn't satisfied.
+
+I thought I was doing ctrl-h
+
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoGlobals.py", line 1711, in wrapper
+    func(self, event=event)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 266, in showCalltips
+    self.calltip()
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 452, in calltip
+    self.calltip_fail(prefix)
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 460, in calltip_fail
+    self.insert_string('(')
+  File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 861, in insert_string
+    i = w.getInsertPoint()
+AttributeError: 'LeoQtTree' object has no attribute 'getInsertPoint'
+</t>
+<t tx="ekr.20170123090841.2"></t>
+<t tx="ekr.20170123090841.20"></t>
+<t tx="ekr.20170123090841.21">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/348
+XML CDATA Sections not preserved on round-trip save
+
+@language python
+</t>
+<t tx="ekr.20170123090841.22"></t>
+<t tx="ekr.20170123090841.23">c.all_roots, c.all_unique_roots, p.nearest_roots, p.nearest_unique_roots (aka p.nearest)
+
+Useful for finding nodes on which to run commands.
+
+def nearest_roots(self, predicate=None):
+    '''
+    A generator yielding all the root positions "near" p1 = self that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+    
+    The search first proceeds up the p's tree. If a root is found, this
+    generator yields just that root.
+    
+    Otherwise, the generator yields all nodes in p.subtree() that satisfy
+    the predicate. Once a root is found, the generator skips its subtree.
+    '''
+</t>
+<t tx="ekr.20170123090841.24">Fixed all recently discussed problems with background processing:
+
+- Renamed BackgroundManager to BackgroundProcessManager.
+- Created singleton BPM instance, g.app.backgroundProcessManager.
+- The BPM now maintains a queue of g.Bunch's describing each process.
+- The BPM sends output to the originating log pane if possible.
+- The 'pylint' and 'pylint-kill' commands now use the BPM.
+</t>
+<t tx="ekr.20170123090841.25">Integrated idle-hook processing into the IdleTimeManager:
+
+leoApp.py:
+- ITM.on_idle now handles idle-hooks.
+- Removed g.app.idle_timer.
+- 'idle' hooks called if and only if g.app.idle_time_hooks_enabled is True.
+- Only one timer is ever started by Leo: g.app.idle_time_manager_timer.
+- Removed call to g.enableIdleTimeHook in at the end of LM.doPostPluginsInit.
+  It is not needed: g.app.idle_time_hooks_enabled is True initially.
+- The enable/disable/toggle-idle-time-events commands now just set g.app.idle_time_hooks_enabled.
+
+leoGlobals.py:
+- g.enable/disableIdleTimeHook now just set g.app.idle_time_hooks_enabled.
+  They remain for compatibility only.
+- g.idleTimeHookHandler is now a stub. It just prints a warning.
+  The original has been moved to the attic (leoNotes.txt).
+</t>
+<t tx="ekr.20170123090841.26"></t>
+<t tx="ekr.20170123090841.27"></t>
+<t tx="ekr.20170123090841.28"></t>
+<t tx="ekr.20170123090841.29"></t>
+<t tx="ekr.20170123090841.3"></t>
+<t tx="ekr.20170123090841.30">Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
+
+tl;dr: Converting all sections to '#' markup is Leonine, simplest and best. Only existing .md files that Leo didn't write could be changed.  If such changes don't work for you, just insert @ignore yourself when git or diff reports differences.
+
+Imo, this change is fully justified:
+
+1. It is more Leonine.
+
+When creating and changing .md files from within Leo, @auto-md works much more smoothly.  Indeed, as I have just verified, converting an @nosent x.md file to @auto-md x.md "just works".
+
+There is absolutely no reason to use underlined sections when using Leo.  The headlines proclaim the section structure far better than flat text of any kind, whether ### section name or underlined section names.
+
+2. Perfect import check should not wag the dog.
+
+The markdown importer is one of the simplest of all.  The possibility of dropping data seems remote.  Requiring a typical perfect import check to pass would preclude regularizing section markup.  It's just that simple.
+
+Furthermore, the existing unit tests for the markup importer do check imported section structure, albeit imperfectly That should suffice for now. In the unlikely event that real problems are reported, these after-the-fact unit tests can be improved.
+
+**Summary**
+
+Importing markdown files containing underlined sections could only pass typical perfect import checks if existing underlining were somehow retained.  That's a bad idea.  Instead, Leo's markdown importer now implicitly converts all sections to '#' markup.  In essence, the markup disappears from the outline, to be automagically reinserted when Leo writes the outline.
+
+This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
+</t>
+<t tx="ekr.20170123090841.4">As a result, the horrible (big text) hack is no longer needed.
+</t>
+<t tx="ekr.20170123090841.5">Leo no longer hangs waiting for this command to finish.
+https://github.com/leo-editor/leo-editor/issues/328
+</t>
+<t tx="ekr.20170123090841.6"></t>
+<t tx="ekr.20170123090841.7">Make a new @@file importers/x.py file.
+
+This button created most of Leo's new importers.
+</t>
+<t tx="ekr.20170123090841.8">Create markdown headers throughout the nearest .md outline.
+
+That is, prepend p.b[0] with markdown section markup, if appriate.
+</t>
+<t tx="ekr.20170123090841.9">Make a markdown table of contents from an @auto-md node.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
