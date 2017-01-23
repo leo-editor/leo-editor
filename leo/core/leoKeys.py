@@ -1422,8 +1422,8 @@ class GetArg(object):
         state = k.getState('getArg')
         c.check_event(event)
         # Remember these events also.
-        if c.macroCommands.recordingMacro and state > 0:
-            c.macroCommands.startRecordingMacro(event)
+        ### if c.macroCommands.recordingMacro and state > 0:
+        ###    c.macroCommands.startRecordingMacro(event)
         char = event and event.char or ''
         if state > 0:
             k.setLossage(char, stroke)
@@ -2513,16 +2513,17 @@ class KeyHandlerClass(object):
         verbose = False
         try:
             k = self; c = k.c
-            recording = c.macroCommands.recordingMacro
+            ### recording = c.macroCommands.recordingMacro
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event and event.char or ''
             stroke = event and event.stroke or None
             if trace:
-                g.trace('recording', recording, 'state', state, char)
-            if recording:
-                c.macroCommands.startRecordingMacro(event)
+                g.trace('state', state, char) ### 'recording', recording, 
+            ###
+            # if recording:
+                # c.macroCommands.startRecordingMacro(event)
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
@@ -3318,11 +3319,15 @@ class KeyHandlerClass(object):
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             if hasattr(c, 'screenCastController') and c.screenCastController:
                 c.screenCastController.quit()
-            if c.macroCommands.recordingMacro:
-                c.macroCommands.endMacro()
-            else:
+            if 1:
                 k.masterCommand(commandName='keyboard-quit',
-                    event=event, func=k.keyboardQuit, stroke=stroke)
+                        event=event, func=k.keyboardQuit, stroke=stroke)
+            else: ###
+                if c.macroCommands.recordingMacro:
+                    c.macroCommands.endMacro()
+                else:
+                    k.masterCommand(commandName='keyboard-quit',
+                        event=event, func=k.keyboardQuit, stroke=stroke)
             return
         # Always handle modes regardless of vim.
         if k.inState():
@@ -3695,9 +3700,9 @@ class KeyHandlerClass(object):
         if inserted:
             k.setLossage(ch, stroke)
         # We *must not* interfere with the global state in the macro class.
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.startRecordingMacro(event)
-            # 2011/06/06: Show the key, if possible.
+        ###
+        # if c.macroCommands.recordingMacro:
+        #    c.macroCommands.startRecordingMacro(event)
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
@@ -4732,14 +4737,15 @@ class KeyHandlerClass(object):
                     k.masterKeyHandler(event)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU(self, event, stroke):
-        k = self; c = k.c
+        k = self
+        ### c = k.c
         ch = event and event.char or ''
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
         if ch == '(':
             k.clearState()
             k.resetLabel()
-            c.macroCommands.startKbdMacro(event)
-            c.macroCommands.callLastKeyboardMacro(event)
+            ### c.macroCommands.startKbdMacro(event)
+            ### c.macroCommands.callLastKeyboardMacro(event)
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo(object):

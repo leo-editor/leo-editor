@@ -171,7 +171,7 @@ cmd_instance_dict = {
     'LeoApp':                   ['g', 'app'],
     'LeoFind':                  ['c', 'findCommands'],
     'LeoImportCommands':        ['c', 'importCommands'],
-    'MacroCommandsClass':       ['c', 'macroCommands'],
+    # 'MacroCommandsClass':       ['c', 'macroCommands'],
     'PrintingController':       ['c', 'printingController'],
     'RectangleCommandsClass':   ['c', 'rectangleCommands'],
     'RstCommands':              ['c', 'rstCommands'],

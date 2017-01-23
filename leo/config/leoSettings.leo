@@ -1386,18 +1386,6 @@
 <v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
 </v>
-<v t="ekr.20131213135427.22183"><vh>@menu &amp;Macros</vh>
-<v t="ekr.20131213135427.22184"><vh>@item macro-start-&amp;recording</vh></v>
-<v t="ekr.20131213135427.22185"><vh>@item macro-&amp;end-recording</vh></v>
-<v t="ekr.20131213135427.22186"><vh>@item macro-&amp;name-last</vh></v>
-<v t="ekr.20131213135427.22187"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22188"><vh>@item macro-&amp;call</vh></v>
-<v t="ekr.20131213135427.22189"><vh>@item macro-call-&amp;last</vh></v>
-<v t="ekr.20131213135427.22190"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22191"><vh>@item macro-&amp;load-&amp;all</vh></v>
-<v t="ekr.20131213135427.22192"><vh>@item macro-&amp;print-all</vh></v>
-<v t="ekr.20131213135427.22193"><vh>@item macro-&amp;save-all</vh></v>
-</v>
 <v t="ekr.20131213135427.22194"><vh>@menu Minibuffer</vh>
 <v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
 <v t="ekr.20131213135427.22196"><vh>@item keyboard-&amp;quit</vh></v>
@@ -6937,17 +6925,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22180"></t>
 <t tx="ekr.20131213135427.22181"></t>
 <t tx="ekr.20131213135427.22182"></t>
-<t tx="ekr.20131213135427.22183"></t>
-<t tx="ekr.20131213135427.22184"></t>
-<t tx="ekr.20131213135427.22185"></t>
-<t tx="ekr.20131213135427.22186"></t>
-<t tx="ekr.20131213135427.22187"></t>
-<t tx="ekr.20131213135427.22188"></t>
-<t tx="ekr.20131213135427.22189"></t>
-<t tx="ekr.20131213135427.22190"></t>
-<t tx="ekr.20131213135427.22191"></t>
-<t tx="ekr.20131213135427.22192"></t>
-<t tx="ekr.20131213135427.22193"></t>
 <t tx="ekr.20131213135427.22194"></t>
 <t tx="ekr.20131213135427.22195"></t>
 <t tx="ekr.20131213135427.22196"></t>
