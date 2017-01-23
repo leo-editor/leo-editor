@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -6122,20 +6122,11 @@ class test:
         strings = string.split(s,"\\n")
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-            (1, 'class test'),
-            (2, 'importFilesCommand'),
-            (2, 'convertMoreStringToOutlineAfter'),
-        )
-else:
-    table = (
-            (1, 'class test'),
-            (2, 'importFilesCommand'),
-            (2, '# Used by paste logic.'), ### Strange.
-            (2, 'convertMoreStringToOutlineAfter'),
-        )
+table = (
+    (1, 'class test'),
+    (2, 'importFilesCommand'),
+    (2, 'convertMoreStringToOutlineAfter'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6185,20 +6176,11 @@ class test:
     def foo(a):
         pass
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-            (1, 'class test'),
-            (2, 'spam'),
-            (2, 'foo'),
-        )
-else:
-    table = (
-        (1, 'class test'),
-        (2, 'spam'),
-        (2, '# Used by paste logic.'),
-        (2, 'foo'),
-    )
+table = (
+    (1, 'class test'),
+    (2, 'spam'),
+    (2, 'foo'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6460,17 +6442,10 @@ for ch in "({[":
 class testClass1:
     pass
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-        (1, 'class testClass1'),
-    )
-else:
-    table = (
-        (1, 'python overindented def 3 declarations'),
-        (1, 'class testClass1'),
-    )
+table = (
+    (1, 'Declarations'),
+    (1, 'class testClass1'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7256,15 +7231,9 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-    )
-else:
-    table = (
-        (1, 'python comment after dict assign declarations'),
-    )
+table = (
+    (1, 'Declarations'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7307,15 +7276,9 @@ import leo.core.leoGlobals as g
 
 a = 3
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-    )
-else:
-    table = (
-        (1, 'python decls test 1 declarations'),
-    )
+table = (
+    (1, 'Declarations'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -7473,29 +7436,16 @@ class LeoImportCommands(object):
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-        (1, "class LeoImportCommands"),
-        (2, "createOutline"),
-        (2, "dispatch"),
-        (2, "scanner_for_at_auto"),
-        (2, "scanner_for_ext"),
-        (2, "get_import_filename"),
-        (2, "init_import"),
-    )
-else:
-    table = (
-        (1, 'python leoImport declarations'),
-        (1, "class LeoImportCommands"),
-        (2, "createOutline"),
-        (2, "dispatch"),
-        (2, "scanner_for_at_auto"),
-        (2, "scanner_for_ext"),
-        (2, "get_import_filename"),
-        (2, "init_import"),
-    )
+table = (
+    (1, 'Declarations'),
+    (1, "class LeoImportCommands"),
+    (2, "createOutline"),
+    (2, "dispatch"),
+    (2, "scanner_for_at_auto"),
+    (2, "scanner_for_ext"),
+    (2, "get_import_filename"),
+    (2, "init_import"),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -9856,17 +9806,10 @@ def make_parser():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-        (1, 'make_parser'),
-    )
-else:
-    table = (
-        (1, 'python bug #346 declarations'),
-        (1, 'make_parser'),
-    )
+table = (
+    (1, 'Declarations'),
+    (1, 'make_parser'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10100,24 +10043,13 @@ def retab(s, tabsize):
 if __name__=="__main__":
     main()
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-        (1, 'merge_value'),
-        (1, 'class MainDisplay'),
-        (2, 'save_file'),
-        (1, 'retab'),
-    )
-else:
-    table = (
-        (1, 'python top-level later decl declarations'),
-        (1, 'merge_value'),
-        (1, 'class MainDisplay'),
-        (2, 'save_file'),
-        (1, '# This line should be included at the end of the class node.'),
-        (1, 'retab'),
-    )
+table = (
+    (1, 'Declarations'),
+    (1, 'merge_value'),
+    (1, 'class MainDisplay'),
+    (2, 'save_file'),
+    (1, 'retab'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10325,29 +10257,16 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, "Declarations"),
-        (1, "class Draggable"),
-        (2, "__init__"),
-        (2, "mousePressEvent"),
-        (2, "mouseMoveEvent"),
-        (1, "command"),
-        (1, "exit_"),
-        (1, "main"),
-    )
-else:
-    table = (
-        (1, "python decorator 2 declarations"),
-        (1, "class Draggable"),
-        (2, "__init__"),
-        (2, "mousePressEvent"),
-        (2, "mouseMoveEvent"),
-        (1, "command"),
-        (1, "exit_"),
-        (1, "main"),
-    )
+table = (
+    (1, "Declarations"),
+    (1, "class Draggable"),
+    (2, "__init__"),
+    (2, "mousePressEvent"),
+    (2, "mouseMoveEvent"),
+    (1, "command"),
+    (1, "exit_"),
+    (1, "main"),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -10546,15 +10465,9 @@ else:
     def ue(s, encoding):
         return builtins.unicode(s, encoding)
 """
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-    )
-else:
-    table = (
-        (1, 'python bug #354 declarations'),
-    )
+table = (
+    (1, 'Declarations'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -11036,19 +10949,11 @@ s = """
 def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, 'Declarations'),
-            # Poor, but passes perfect import.
-        (1, 'make_map'),
-    )
-else:
-    table = (
-        (1, 'python bug #360 declarations'),
-            # Poor, but passes perfect import.
-        (1, 'make_map'),
-    )
+table = (
+    (1, 'Declarations'),
+        # Poor, but passes perfect import.
+    (1, 'make_map'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -11343,36 +11248,18 @@ def main():
 if __name__ == '__main__':
     main()
 '''
-import leo.plugins.importers.python as py
-if hasattr(py, 'NEW') and py.NEW:
-    table = (
-        (1, "Declarations"),
-        (1, "class AttrDict"),
-        (2, "__init__"),
-        # (1, "FIELDS = [  # fields in outout table"),
-        (1, "make_parser"),
-        (1, "get_options"),
-        (1, "get_aggregate"),
-        (1, "proc_file"),
-        (1, "get_answers"),
-        (1, "get_table_rows"),
-        (1, "main"),
-    )
-else:
-    table = (
-        (1, "python bug #357 declarations"),
-        (1, "class AttrDict"),
-        (2, "__init__"),
-        (1, "FIELDS = [  # fields in outout table"),
-        (1, "make_parser"),
-        (1, "get_options"),
-        (1, "get_aggregate"),
-        (1, "proc_file"),
-        (1, "get_answers"),
-        (1, "get_table_rows"),
-        (1, "main"),
-    )
-
+table = (
+    (1, "Declarations"),
+    (1, "class AttrDict"),
+    (2, "__init__"),
+    (1, "make_parser"),
+    (1, "get_options"),
+    (1, "get_aggregate"),
+    (1, "proc_file"),
+    (1, "get_answers"),
+    (1, "get_table_rows"),
+    (1, "main"),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
