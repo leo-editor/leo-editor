@@ -196,9 +196,9 @@ class LeoEditPane(QtWidgets.QWidget):
         self.control.layout().addWidget(btn)
         btn.setContextMenuPolicy(QtConst.CustomContextMenu)
         btn.customContextMenuRequested.connect(  # right click
-            lambda pnt, btn=btn: self.mode_menu(btn.pos()))
+            lambda pnt: self.mode_menu())
         btn.clicked.connect(  # or left click
-            lambda checked, btnsky=btn: self.mode_menu(btn.pos()))
+            lambda checked: self.mode_menu())
 
         # render now button
         self.btn_render = QtWidgets.QPushButton("Render", self)
@@ -258,7 +258,7 @@ class LeoEditPane(QtWidgets.QWidget):
     def get_position(self):
         """get_position - get current position"""
         return self._find_gnx_node(self.gnx)
-    def mode_menu(self, pos):
+    def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
 
@@ -268,7 +268,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 self.set_mode(mode)
             act.triggered.connect(cb)
             menu.addAction(act)
-        menu.exec_(self.btn_mode.mapToGlobal(pos))
+        menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
@@ -351,7 +351,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         """
         self.mode = mode
-        self.btn_mode.setText("%s\u25BE" % mode.title())
+        self.btn_mode.setText(u"%s\u25BE" % mode.title())
         self.state_changed()
     def state_changed(self):
         """state_changed - control state has changed
