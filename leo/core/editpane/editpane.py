@@ -21,12 +21,13 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param outline c: outline to bind to
         """
+        DBG("__init__ LEP")
         self.c = kwargs['c']
         if not hasattr(self.c, '_LEPs'):
             self.c._LEPs = []
         self.c._LEPs.append(self)
         p = kwargs.get('p', self.c.p)
-        mode = kwargs.get('mode', 'edit')
+        self.mode = kwargs.get('mode', 'edit')
         show_head = kwargs.get('show_head', True)
         show_control = kwargs.get('show_control', True)
         recurse = kwargs.get('recurse', False)
@@ -40,7 +41,6 @@ class LeoEditPane(QtWidgets.QWidget):
         self.gnx = p.gnx
 
         self._build_layout(
-            mode=mode,
             show_head=show_head,
             show_control=show_control,
             update=update,
@@ -56,8 +56,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.track   = self.cb_track.isChecked()
         self.update  = self.cb_update.isChecked()
-        self.edit    = self.cb_edit.isChecked()
-        self.split   = self.cb_split.isChecked()
         self.recurse = self.cb_recurse.isChecked()
 
         reload(plaintextedit)
@@ -67,6 +65,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.edit_frame.layout().addWidget(self.edit_widget)
         self.view_frame.layout().addWidget(self.view_widget)
 
+        self.set_mode(self.mode)
         self.new_position(p)
     def _add_checkbox(self, text, state_changed, tooltip, checked=True, enabled=True):
         """
@@ -170,9 +169,10 @@ class LeoEditPane(QtWidgets.QWidget):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
-    def _build_layout(self, mode='edit', show_head=True, show_control=True, update=True, recurse=False):
+    def _build_layout(self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
+        DBG("build layout")
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setSpacing(0)
@@ -187,20 +187,25 @@ class LeoEditPane(QtWidgets.QWidget):
         # checkboxes
         self.cb_track = self._add_checkbox("Track", self.change_track,
             "Track the node selected in the tree")
-        self.cb_edit = self._add_checkbox("Edit", self.change_edit,
-            "Toggle edit / view mode", checked=mode != 'view')
-        self.cb_split = self._add_checkbox("Split", self.change_split, 
-            "Split edit and view", checked=mode == 'split')
         self.cb_update = self._add_checkbox("Update", self.change_update,
             "Update view to match changed node")
         self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, 
             "Recursive view", checked=recurse)
-        # render now
+        # mode menu
+        btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
+        self.control.layout().addWidget(btn)
+        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+        btn.customContextMenuRequested.connect(  # right click
+            lambda pnt, btn=btn: self.mode_menu(btn.pos()))
+        btn.clicked.connect(  # or left click
+            lambda checked, btnsky=btn: self.mode_menu(btn.pos()))
+
+        # render now button
         self.btn_render = QtWidgets.QPushButton("Render", self)
         self.control.layout().addWidget(self.btn_render)
         self.btn_render.clicked.connect(self.render)
-        # menu
-        self.control_menu_button = QtWidgets.QPushButton(u"More\u2026", self)
+        # misc. menu
+        self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
         self.control.layout().addWidget(self.control_menu_button)
         # padding
         self.control.layout().addItem(
@@ -215,34 +220,19 @@ class LeoEditPane(QtWidgets.QWidget):
         self.view_frame = self._add_frame()
         self.splitter.addWidget(self.view_frame)
 
-        if mode not in ('edit', 'split'):
-            self.edit_frame.hide()
-        else:  # avoid hiding both parts
-            if mode not in ('view', 'split'):
-                self.view_frame.hide()
+        #X if self.mode not in ('edit', 'split'):
+        #X     self.edit_frame.hide()
+        #X else:  # avoid hiding both parts
+        #X     if self.mode not in ('view', 'split'):
+        #X         self.view_frame.hide()
 
         self.show()
 
         # debug
         self.line_edit.setText("test")
 
-    def change_edit(self, state):
-        self.edit = bool(state)
-        if not self.edit:
-            self.split = False
-            self.cb_split.setChecked(False)
-        self.state_changed()
     def change_recurse(self, state):
         self.recurse = bool(state)
-        self.state_changed()
-    def change_split(self, state):
-        self.split = bool(state)
-        # always edit if split
-        self.cb_edit.setEnabled(not state)
-        if self.split:
-            self.edit = True
-        else:
-            self.edit = self.cb_edit.isChecked()
         self.state_changed()
     def change_track(self, state):
         self.track = bool(state)
@@ -268,6 +258,17 @@ class LeoEditPane(QtWidgets.QWidget):
     def get_position(self):
         """get_position - get current position"""
         return self._find_gnx_node(self.gnx)
+    def mode_menu(self, pos):
+        """build menu on Action button"""
+        menu = QtWidgets.QMenu()
+
+        for mode in 'edit', 'view', 'split':
+            act = QtWidgets.QAction(mode.title(), self)
+            def cb(checked, self=self, mode=mode):
+                self.set_mode(mode)
+            act.triggered.connect(cb)
+            menu.addAction(act)
+        menu.exec_(self.btn_mode.mapToGlobal(pos))
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
@@ -278,9 +279,9 @@ class LeoEditPane(QtWidgets.QWidget):
         else:
             p = self.get_position()
 
-        if self.edit or self.split:
+        if self.mode != 'view':
             self.new_position_edit(p)
-        if not self.edit or self.split:
+        if self.mode != 'edit':
             self.new_position_view(p)
     def new_position_edit(self, p):
         """new_position_edit - update editor for new position
@@ -296,20 +297,18 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param position p: the new position
         """
-
         DBG("new view position")
         self.view_widget.new_position(p)
 
     def text_changed(self):
         """text_changed - node text changed by this LEP's editor"""
         for lep in self.c._LEPs:
-            if lep.update:
-                if lep.edit_widget.focused:
-                    # don't update the edit part, would be infinite loop
-                    if not lep.edit or lep.split:
-                        lep.update_position_view(lep.get_position())
-                else:
-                    lep.update_position(lep.get_position())
+            if lep == self:
+                if self.update and self.mode != 'edit':
+                    # don't update the edit part, could be infinite loop
+                    self.update_position_view(lep.get_position())
+            else:
+                lep.update_position(lep.get_position())
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
@@ -320,9 +319,9 @@ class LeoEditPane(QtWidgets.QWidget):
         else:
             p = self.get_position()
 
-        if self.edit or self.split:
+        if self.mode != 'view':
             self.update_position_edit(p)
-        if not self.edit or self.split:
+        if self.mode != 'edit':
             self.update_position_view(p)
     def update_position_edit(self, p):
         """update_position_edit - update editor for current position
@@ -345,16 +344,27 @@ class LeoEditPane(QtWidgets.QWidget):
         pass
 
 
+    def set_mode(self, mode):
+        """set_mode - change mode edit / view / split
+
+        :param str mode: mode to change to
+
+        """
+        self.mode = mode
+        self.btn_mode.setText("%s\u25BE" % mode.title())
+        self.state_changed()
     def state_changed(self):
         """state_changed - control state has changed
         """
 
-        if self.edit or self.split:
+        if self.mode == 'edit':
             self.edit_frame.show()
-            if not self.split:
-                self.view_frame.hide()
-        if not self.edit or self.split:
+            self.view_frame.hide()
+        elif self.mode == 'view':
+            self.edit_frame.hide()
             self.view_frame.show()
-            if not self.split:
-                self.edit_frame.hide()
+        else:
+           self.edit_frame.show()
+           self.view_frame.show()
+
         self.update_position(self.c.p)
