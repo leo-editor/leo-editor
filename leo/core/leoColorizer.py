@@ -2324,7 +2324,7 @@ if QtGui:
             It appears that this method is seldom (never?) called!
             '''
             # pylint: disable=arguments-differ
-            trace = True ### and not g.unitTesting
+            trace = True # and not g.unitTesting
             if trace: g.trace('=====', p and p.h, g.callers())
             if not hasattr(self, 'currentBlock'):
                 if self.no_method_message:

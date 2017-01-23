@@ -176,7 +176,7 @@ class AtFile(object):
             g.printDict(at.writersDispatchDict)
             g.trace('at.atAutoWritersDict')
             g.printDict(at.atAutoWritersDict)
-        ### Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+        # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
             #
             # def report(message, kind, folder, name):
             # if trace: g.trace('%7s: %5s %9s %s' % (
@@ -3325,7 +3325,7 @@ class AtFile(object):
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
     def writer_for_at_auto(self, root, forceSentinels=False):
         '''A factory returning a writer function for the given kind of @auto directive.'''
-        trace = False ### and g.unitTesting
+        trace = False # and g.unitTesting
         at = self
         d = at.atAutoWritersDict
         # if trace: g.trace(g.shortFileName(root.h), '\n'+','.join(sorted(d)))
@@ -3353,7 +3353,7 @@ class AtFile(object):
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
     def writer_for_ext(self, ext, forceSentinels=False):
         '''A factory returning a writer function for the given file extension.'''
-        trace = False ### and not g.unitTesting
+        trace = False # and not g.unitTesting
         at = self
         d = at.writersDispatchDict
         aClass = d.get(ext)

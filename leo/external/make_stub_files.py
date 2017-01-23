@@ -1810,8 +1810,6 @@ class StandAloneMakeStubFile(object):
             '(*)': ['Call', 'Tuple',],
             '[*]': ['List', 'Subscript',],
             '{*}': ['???',],
-            ### 'and': 'BoolOp',
-            ### 'or':  'BoolOp',
         }
         for op in (
             '+', '-', '*', '/', '%', '**', '<<',
