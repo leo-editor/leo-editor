@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.34" body_secondary_ratio="0.81">
+<globals body_outline_ratio="0.55" body_secondary_ratio="0.81">
 	<global_window_position top="54" left="600" height="941" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -347,7 +347,7 @@
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.py</vh></v>
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh></v>
-<v t="ekr.20161130041921.1"><vh>@@@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
+<v t="ekr.20161130041921.1"><vh>@@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161228071435.1"><vh>@nosent c:\test\bug-354-test.py</vh>
 <v t="ekr.20161228071822.1"><vh>&lt;&lt; u:1 &gt;&gt;</vh></v>
 <v t="ekr.20161228071836.1"><vh>&lt;&lt; ue:1 &gt;&gt;</vh></v>
@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1216,23 +1216,25 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
-<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
-</v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
-<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20161130041921.1"></v>
 <v t="ekr.20161228071915.1"><vh>@@auto c:\test\bug-354-test.py</vh>
 <v t="ekr.20161228072352.1"><vh>bug-354-test declarations</vh></v>
 </v>
+<v t="ekr.20150626093653.1"><vh>@@test find_file_line: @auto-rst</vh></v>
+<v t="ekr.20160403143643.1"><vh>@@test find_file_line: @clean-c</vh></v>
+<v t="ekr.20160403143655.1"><vh>@@test find_file_line: @clean-python</vh></v>
+<v t="ekr.20160403143048.1"></v>
+<v t="ekr.20160403143130.1"></v>
+<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
+<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
+</v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20170122164330.1"><vh>@test g.isDirective</vh></v>
-<v t="ekr.20170122165737.1"><vh>@test at.directiveKind4</vh></v>
-<v t="ekr.20140218045755.4348"><vh>@test p.nosentinels</vh></v>
+<v t="ekr.20170122183902.1"><vh>New directives tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1666,7 +1668,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="13">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -4073,20 +4075,6 @@ var c3 = (function () {
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20140218045755.4348">@language python
-@tabwidth -4
-
-def not_a_sentinel(x):
-    pass
-@not_a_sentinel
-def spam():
-    pass
-
-# s1 = ''.join([z for z in g.splitLines(p.b) if not z.startswith('@language')])
-s1 = ''.join(g.splitLines(p.b)[2:])
-s2 = p.nosentinels   
-assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
-</t>
 <t tx="ekr.20140218122321.4349">@language html
 
 s = '''
@@ -4599,8 +4587,7 @@ def __init__(self, s: Type) -&gt; None:
 @others
 // last line: line 6
 </t>
-<t tx="ekr.20160403143048.2">@nocolor-node
-def spam(): // line 2
+<t tx="ekr.20160403143048.2">def spam(): // line 2
     pass
 </t>
 <t tx="ekr.20160403143130.1">@language python
@@ -4621,10 +4608,93 @@ unl: spam
 gnx: ekr.20160403142841.11
 unl: eggs
 </t>
+<t tx="ekr.20160403143643.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    g.printList(lines)
+    stripped_lines = [z for z in lines if not z.startswith('//@')]
+    g.printList(stripped_lines)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '// before @others // line 1'),
+        (2, 8,  'def spam(): // line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): // line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '// last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
+</t>
+<t tx="ekr.20160403143655.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    stripped_lines = [z for z in lines if not z.startswith('#@')]
+    if trace:
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+        # print('')
+        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '# Before @others: line 1'),
+        (2, 8,  'def spam(): # line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): # line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '# Last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
+</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
-    pass</t>
-<t tx="ekr.20160403150216.1">@nocolor-node
-def spam(): # line 2
+    pass
+</t>
+<t tx="ekr.20160403150216.1">def spam(): # line 2
     pass
 </t>
 <t tx="ekr.20160403150222.1">def eggs(): # line 4
@@ -8564,7 +8634,8 @@ section 2.2.1 line 1
 section 3, line 1
 
 </t>
-<t tx="ekr.20161204040924.1"></t>
+<t tx="ekr.20161204040924.1"># Alt-G works.  The tests themselves are erroneous.
+</t>
 <t tx="ekr.20161204041306.21">&lt;?php
 @others
 @language php
@@ -11356,30 +11427,6 @@ ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 if __name__=="__main__":
     main()
 </t>
-<t tx="ekr.20170122164330.1">table = (
-    (True, '@others'),
-    (True, '    @others'),
-    (True, '@encoding'),
-    (False, '@encoding.setter'),
-    (False, '@encoding("abc")'),
-    (False, 'encoding = "abc"'),
-)
-for expected, s in table:
-    result = g.isDirective(s)
-    assert expected == bool(result), (repr(result), repr(s))
-</t>
-<t tx="ekr.20170122165737.1">at = c.atFileCommands
-table = (
-    (at.othersDirective, '@others'),
-    (at.othersDirective, '    @others'),
-    (at.miscDirective,   '@encoding'),
-    (at.noDirective,     '@encoding.setter'),
-    (at.noDirective,     '@encoding("abc")'),
-    (at.noDirective,     'encoding = "abc"'),
-)
-for expected, s in table:
-    result = at.directiveKind4(s, 0)
-    assert expected == result, (expected, result, repr(s))
-</t>
+<t tx="ekr.20170122183902.1"></t>
 </tnodes>
 </leo_file>

@@ -4431,9 +4431,9 @@ class AtFile(object):
         if trace: g.trace('equal', equal)
         return equal
     #@+node:ekr.20041005105605.198: *5* at.directiveKind4 (write logic, changed)
-    at_directive_kind_pattern = re.compile(r'^\s*@(\w+)\s+')
-        # Excludes constructs such as @encoding.setter or @encoding(whatever)
-        # But must allow constructs such as @language python.
+    # These patterns exclude constructs such as @encoding.setter or @encoding(whatever)
+    # However, they must allow @language python, @nocolor-node, etc.
+    at_directive_kind_pattern = re.compile(r'\s*@([\w-]+)\s*')
 
     def directiveKind4(self, s, i):
         """Return the kind of at-directive or noDirective."""
@@ -4470,10 +4470,15 @@ class AtFile(object):
             if g.match_word(s, i, name):
                 return directive
         # New in Leo 4.4.3: add support for add_directives plugin.
-        if 0:
-            m = self.at_directive_kind_pattern.match(s)
-            if m and m.group(1) in g.globalDirectiveList:
-                return at.miscDirective
+        if 1:
+            s2 = s[i:]
+            m = self.at_directive_kind_pattern.match(s2)
+            if m:
+                s3 = s2[m.end(1):]
+                if s3 and s3[0] in ".(":
+                    return at.noDirective
+                else:
+                    return at.miscDirective
         else:
             for name in g.globalDirectiveList:
                 if g.match_word(s, i + 1, name) and not g.match(s, i + len(name), '.'):

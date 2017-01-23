@@ -1540,6 +1540,22 @@ for s,i,expected in table:
     result = at.directiveKind4(s,i)
     assert result == expected, '%d %s result: %s expected: %s' % (
         i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+#@+node:ekr.20170123035753.1: *4* @test at.directiveKind4 (new)
+at = c.atFileCommands
+table = (
+    (at.othersDirective, '@others'),
+    (at.othersDirective, '@others\n'),
+    (at.othersDirective, '    @others'),
+    (at.miscDirective,   '@tabwidth -4'),
+    (at.miscDirective,   '@tabwidth -4\n'),
+    (at.miscDirective,   '@encoding'),
+    (at.noDirective,     '@encoding.setter'),
+    (at.noDirective,     '@encoding("abc")'),
+    (at.noDirective,     'encoding = "abc"'),
+)
+for expected, s in table:
+    result = at.directiveKind4(s, 0)
+    assert expected == result, (expected, result, repr(s))
 #@+node:ekr.20100225094004.5385: *4* @test at.isFileLike
 s1 = '''
 #@verbatim
@@ -7820,7 +7836,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20150626093653.1: *6* @@@test find_file_line: @auto-rst
+#@+node:ekr.20150626093653.1: *6* @@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7844,7 +7860,7 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 9, n
             break
-#@+node:ekr.20160403143643.1: *6* @test find_file_line: @clean-c
+#@+node:ekr.20160403143643.1: *6* @@test find_file_line: @clean-c
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7856,7 +7872,9 @@ else:
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     lines = g.splitLines(s)
+    g.printList(lines)
     stripped_lines = [z for z in lines if not z.startswith('//@')]
+    g.printList(stripped_lines)
     if trace:
         g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
@@ -7884,7 +7902,7 @@ else:
     i = len(table)
     p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
     assert not found
-#@+node:ekr.20160403143655.1: *6* @test find_file_line: @clean-python
+#@+node:ekr.20160403143655.1: *6* @@test find_file_line: @clean-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -11385,7 +11403,7 @@ assert d.get('pagewidth') == 120
 @tabwidth -8
 @pagewidth 72
 @encoding utf-8
-@path: anError # @path ends with ':'.
+# @path: anError # @path ends with ':'.
 
 # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
 
@@ -11472,6 +11490,21 @@ assert g.importModule('codewise',verbose=False)
     # Top-level .py file.
 assert g.importModule('rope',verbose=False)
     # In a folder.
+#@+node:ekr.20170122164330.1: *4* @test g.isDirective
+# Do not try to reload g.
+table = (
+    (True, '@language python\n'),
+    (True, '@tabwidth -4 #test\n'),
+    (True, '@others\n'),
+    (True, '    @others\n'),
+    (True, '@encoding\n'),
+    (False, '@encoding.setter\n'),
+    (False, '@encoding("abc")\n'),
+    (False, 'encoding = "abc"\n'),
+)
+for expected, s in table:
+    result = g.isDirective(s)
+    assert expected == bool(result), (expected, bool(result), repr(s))
 #@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
@@ -21280,8 +21313,7 @@ def not_a_sentinel(x):
 def spam():
     pass
 
-# s1 = ''.join([z for z in g.splitLines(p.b) if not z.startswith('@language')])
-s1 = ''.join(g.splitLines(p.b)[2:])
+s1 = ''.join(g.splitLines(p.b) [2:])
 s2 = p.nosentinels   
 assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 #@+node:ekr.20040802071519: *4* @test p.setBodyString

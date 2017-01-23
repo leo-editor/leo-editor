@@ -2472,15 +2472,23 @@ def getOutputNewline(c=None, name=None):
     if g.isPython3:
         s = str(s)
     return s
-#@+node:ekr.20131230090121.16528: *3* g.isDirective (Changed)
-g_is_directive_pattern = re.compile(r'^\s*@(\w+)\s*$')
-    # Excludes constructs such as @encoding.setter or @encoding(whatever)
+#@+node:ekr.20131230090121.16528: *3* g.isDirective
+# This pattern excludes @encoding.setter or @encoding(whatever)
+# It must allow @language python, @nocolor-node, etc.
+g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
 
 def isDirective(s):
-    '''Return True if s startswith a directive.'''
-    if 0:
+    '''Return True if s starts with a directive.'''
+    if 1:
         m = g_is_directive_pattern.match(s)
-        return m and m.group(1) in g.globalDirectiveList
+        if m:
+            s2 = s[m.end(1):]
+            if s2 and s2[0] in ".(":
+                return False
+            else:
+                return m.group(1) in g.globalDirectiveList
+        else:
+            return False
     elif s and s[0] == '@':
         i = g.skip_ws(s, 1)
         j = g.skip_c_id(s, i)
