@@ -1433,7 +1433,7 @@ class Commands(object):
         block comments for languages like html that lack
         single-line comments.
 
-        @bool indent_added_comments
+        #@@bool indent_added_comments
 
         If True (the default), inserts opening comment
         delimiters just before the first non-whitespace
@@ -2173,11 +2173,11 @@ class Commands(object):
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
         trace = True and not g.unitTesting
+        # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
             highlighter = c.frame.body.colorizer.highlighter
             g.trace(highlighter.n_calls)
-        trace_time = False and not g.unitTesting
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:

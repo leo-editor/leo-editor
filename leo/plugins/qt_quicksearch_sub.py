@@ -3,7 +3,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui, 
 QtGui = QtWidgets
 
 class Ui_LeoQuickSearchWidget(object):
