@@ -2473,29 +2473,22 @@ def getOutputNewline(c=None, name=None):
         s = str(s)
     return s
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
-# This pattern excludes @encoding.setter or @encoding(whatever)
+# This pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
 g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
 
 def isDirective(s):
     '''Return True if s starts with a directive.'''
-    if 1:
-        m = g_is_directive_pattern.match(s)
-        if m:
-            s2 = s[m.end(1):]
-            if s2 and s2[0] in ".(":
-                return False
-            else:
-                return m.group(1) in g.globalDirectiveList
-        else:
+    m = g_is_directive_pattern.match(s)
+    if m:
+        s2 = s[m.end(1):]
+        if s2 and s2[0] in ".(":
             return False
-    elif s and s[0] == '@':
-        i = g.skip_ws(s, 1)
-        j = g.skip_c_id(s, i)
-        ### return s[i:j] in g.globalDirectiveList 
-        return s[i:j] in g.globalDirectiveList and not g.match(s, j, '.')
+        else:
+            return bool(m.group(1) in g.globalDirectiveList)
     else:
         return False
+   
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     '''

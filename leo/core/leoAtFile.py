@@ -4470,19 +4470,16 @@ class AtFile(object):
             if g.match_word(s, i, name):
                 return directive
         # New in Leo 4.4.3: add support for add_directives plugin.
-        if 1:
-            s2 = s[i:]
-            m = self.at_directive_kind_pattern.match(s2)
-            if m:
-                s3 = s2[m.end(1):]
-                if s3 and s3[0] in ".(":
-                    return at.noDirective
-                else:
-                    return at.miscDirective
-        else:
-            for name in g.globalDirectiveList:
-                if g.match_word(s, i + 1, name) and not g.match(s, i + len(name), '.'):
-                    return at.miscDirective
+        # 2017/01/23: Use regex to properly distinguish between Leo directives
+        # and python decorators.
+        s2 = s[i:]
+        m = self.at_directive_kind_pattern.match(s2)
+        if m:
+            s3 = s2[m.end(1):]
+            if s3 and s3[0] in ".(":
+                return at.noDirective
+            else:
+                return at.miscDirective
         return at.noDirective
     #@+node:ekr.20041005105605.199: *5* at.findSectionName
     def findSectionName(self, s, i):
