@@ -2044,7 +2044,6 @@
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
@@ -10084,11 +10083,6 @@ like vim.
 To enable vim emulation, place a copy this "@keys Vim bindings" node and
 its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 </t>
-<t tx="ekr.20140829172618.19886">The maximum number of characters that will be automatically load into the body text.
-If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons.
-Clicking the 'load' button will load the body text and remove the buttons.
-
-A value of zero disables this feature.</t>
 <t tx="ekr.20140912072521.19153"></t>
 <t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
 <t tx="ekr.20140912072521.19160">/*
