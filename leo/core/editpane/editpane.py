@@ -279,26 +279,32 @@ class LeoEditPane(QtWidgets.QWidget):
         else:
             p = self.get_position()
 
-        if self.mode != 'view':
-            self.new_position_edit(p)
-        if self.mode != 'edit':
-            self.new_position_view(p)
+        self.new_position_edit(p)
+        self.new_position_view(p)
     def new_position_edit(self, p):
         """new_position_edit - update editor for new position
+
+        WARNING: unlike new_position() this uses p without regard
+                 for self.track
 
         :param position p: the new position
         """
 
         DBG("new edit position")
-        self.edit_widget.new_position(p)
+        if self.mode != 'view':
+            self.edit_widget.new_position(p)
 
     def new_position_view(self, p):
         """new_position_view - update viewer for new position
 
+        WARNING: unlike new_position() this uses p without regard
+                 for self.track
+
         :param position p: the new position
         """
         DBG("new view position")
-        self.view_widget.new_position(p)
+        if self.mode != 'edit':
+            self.view_widget.new_position(p)
 
     def text_changed(self):
         """text_changed - node text changed by this LEP's editor"""
@@ -319,26 +325,32 @@ class LeoEditPane(QtWidgets.QWidget):
         else:
             p = self.get_position()
 
-        if self.mode != 'view':
-            self.update_position_edit(p)
-        if self.mode != 'edit':
-            self.update_position_view(p)
+        self.update_position_edit(p)
+        self.update_position_view(p)
     def update_position_edit(self, p):
         """update_position_edit - update editor for current position
 
-        :param position p: the current position
+        WARNING: unlike update_position() this uses p without regard
+                 for self.track
+
+        :param position p: the position to update to
         """
 
         DBG("update edit position")
-        self.edit_widget.update_position(p)
+        if self.mode != 'view':
+            self.edit_widget.update_position(p)
     def update_position_view(self, p):
         """update_position_view - update viewer for current position
 
-        :param position p: the current position
+        WARNING: unlike update_position() this uses p without regard
+                 for self.track
+
+        :param position p: the position to update to
         """
 
         DBG("update view position")
-        self.view_widget.update_position(p)
+        if self.mode != 'edit':
+            self.view_widget.update_position(p)
 
     def render(self, checked):
         pass
