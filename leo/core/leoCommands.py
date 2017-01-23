@@ -326,10 +326,11 @@ class Commands(object):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
         else:
             self.styleSheetManager = None
-        if hasattr(g.app.gui, 'bigTextControllerClass'):
-            self.bigTextController = g.app.gui.bigTextControllerClass(c)
-        else:
-            self.bigTextController = None
+        ###
+        # if hasattr(g.app.gui, 'bigTextControllerClass'):
+            # self.bigTextController = g.app.gui.bigTextControllerClass(c)
+        # else:
+            # self.bigTextController = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings):
         '''Init the settings *before* initing the objects.'''

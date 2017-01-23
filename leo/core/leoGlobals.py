@@ -6181,7 +6181,7 @@ def findTopLevelNode(c, headline):
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
-#@+node:EKR.20040614071102.1: *3* g.getScript
+#@+node:EKR.20040614071102.1: *3* g.getScript & helper
 def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinels=True):
     '''
     Return the expansion of the selected text of node p.
@@ -6203,6 +6203,7 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
+        s = g.extractExecutableString(s)
         if s.strip():
             # This causes too many special cases.
             # if not g.unitTesting and forceEncoding:
@@ -6223,6 +6224,24 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
         g.es_exception()
         script = ''
     return script
+#@+node:ekr.20170123074946.1: *4* g.extractExecutableString
+def extractExecutableString(s):
+    '''
+    Return s suitable for execution:
+        
+    - Remove all @language rest and @language md/markdown parts.
+    - Give an error and return an empty string if multiple executable languages are found.
+    '''
+    # https://github.com/leo-editor/leo-editor/issues/371
+    
+    # Set present language.
+
+    # g.scanAtCommentAndAtLanguageDirectives(aList)
+    ### exec_language = None
+    result = []
+    for line in g.splitLines(s):
+        result.append(line)
+    return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")

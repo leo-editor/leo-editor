@@ -9,7 +9,7 @@ import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
-import leo.plugins.qt_big_text as qt_big_text
+### import leo.plugins.qt_big_text as qt_big_text
 import leo.plugins.qt_events as qt_events
 import leo.plugins.qt_frame as qt_frame
 import leo.plugins.qt_idle_time as qt_idle_time
@@ -51,7 +51,7 @@ class LeoQtGui(leoGui.LeoGui):
         leoGui.LeoGui.__init__(self, 'qt')
              # Initialize the base class.
         self.qtApp = QtWidgets.QApplication(sys.argv)
-        self.bigTextControllerClass = qt_big_text.BigTextController
+        ### self.bigTextControllerClass = qt_big_text.BigTextController
         self.bodyTextWidget = qt_text.QTextMixin
         self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
