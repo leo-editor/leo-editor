@@ -19221,6 +19221,8 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 #@+node:ekr.20161127181028.1: *5* @test markdown github syntax
+@first # -*- coding: utf-8 -*-
+    # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
     g.cls()
