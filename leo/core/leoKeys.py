@@ -2942,11 +2942,11 @@ class KeyHandlerClass(object):
                 k.showStateAndMode()
                 
         k.get1Arg and k.getNextArg are a convenience methods. They simply passes
-        its arguments to the get_arg method of the singleton GetArg instance. This
+        their arguments to the get_arg method of the singleton GetArg instance. This
         docstring describes k.get1arg and k.getNextArg as if they were the
         corresponding methods of the GetArg class.
 
-        k.get1Arg state machine. Logically, states as tuples (kind, n, handler)
+        k.get1Arg is a state machine. Logically, states are tuples (kind, n, handler)
         though they aren't represented that way. When the state machine in the
         GetArg class is active, the kind is 'getArg'.  This constant has special
         meaning to Leo's key-handling code.
@@ -2955,9 +2955,9 @@ class KeyHandlerClass(object):
 
         event:              The event passed to the command.
 
-        handler=None,       An executable. When the user completes the
-                            argument by typing <Return> (or sometimes <tab>)
-                            k.get1arg calls handler(event)
+        handler=None,       An executable. k.get1arg calls handler(event)
+                            when the user completes the argument by typing
+                            <Return> or (sometimes) <tab>.
 
         tabList=[]:         A list of possible completions.
 

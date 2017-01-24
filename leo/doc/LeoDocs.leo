@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1252,15 +1252,19 @@
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 </v>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
+<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
 <v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
-<v t="ekr.20170123084609.26"><vh>The pylint command now runs in a separate process</vh></v>
-<v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
+<v t="ekr.20170124034150.1"><vh>Greatly improved javascript and perl importers</vh></v>
 <v t="ekr.20170124014606.1"><vh>#371: execute-script supports multiple @languages direcitves</vh></v>
+<v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
+<v t="ekr.20170123084609.26"><vh>#328: The pylint command now runs in the background</vh></v>
+<v t="ekr.20170124024347.1"><vh>#311: Simplified Leo's argument logic</vh></v>
 </v>
 <v t="ekr.20170123084609.8"><vh>Bugs</vh>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh>
@@ -1277,24 +1281,26 @@
 </v>
 <v t="ekr.20170123084609.18"><vh>Code</vh>
 <v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
-<v t="ekr.20170123084609.20"><vh>Created singleton BackgroundProcessManager</vh></v>
-<v t="ekr.20170123084609.19"><vh>Integrated idle-hook processing into the IdleTimeManager</vh></v>
+<v t="ekr.20170123084609.20"><vh>Added BackgroundProcessManager class</vh></v>
+<v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
-<v t="ekr.20170123084609.25"><vh>You can open leoDist.leo from the File menu</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
 <v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
 <v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
+<v t="ekr.20170123084609.25"><vh>You can open leoDist.leo from the File menu</vh></v>
 </v>
 <v t="ekr.20170123084609.2"><vh>Scripts</vh>
-<v t="ekr.20170123084609.3"><vh>at-button make-importer</vh></v>
-<v t="ekr.20170123084609.4"><vh>at-button make-md-heads</vh></v>
-<v t="ekr.20170123084609.5"><vh>at-button make-md-toc</vh></v>
-<v t="ekr.20170123084609.6"><vh>at-button make-table</vh></v>
-<v t="ekr.20170123084609.7"><vh>at-button make-test</vh></v>
+<v t="ekr.20170123084609.3"><vh>\@button make-importer</vh></v>
+<v t="ekr.20170123084609.4"><vh>\@button make-md-heads</vh></v>
+<v t="ekr.20170123084609.5"><vh>\@button make-md-toc</vh></v>
+<v t="ekr.20170123084609.6"><vh>\@button make-table</vh></v>
+<v t="ekr.20170123084609.7"><vh>\@button make-test</vh></v>
 </v>
 </v>
+<v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
+<v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19072,7 +19078,19 @@ AttributeError: 'LeoQtTree' object has no attribute 'getInsertPoint'
 XML CDATA Sections not preserved on round-trip save
 </t>
 <t tx="ekr.20170123084609.18"></t>
-<t tx="ekr.20170123084609.19">Integrated idle-hook processing into the IdleTimeManager:
+<t tx="ekr.20170123084609.19">https://groups.google.com/d/msg/leo-editor/hJWv-nL-9s0/2QbaGBgtBQAJ
+
+leoApp.py now contains the IdleTimeManager (ITM) class, with a singleton instance, g.app.idleTimeManager. This class handles all details of running code at idle time, including running 'idle' hooks.
+
+The new encapsulation has simplified code all over Leo:
+
+- ITM ivars replace several LeoApp ivars.
+- LM.load now calls g.app.idleTimeManager.start() to start idle-time processing, leaving all the details to the ITM class.
+- The g.idle time functions in leoGlobals.py now simply set g.app.idle_time_hooks_enabled.
+  This is the only other remaining LeoApp ivar pertaining to idle-time processing.
+- To schedule code for running at idle time, code calls g.app.idleTimeManager.add_callback(callback).
+
+**Details**
 
 leoApp.py:
 - ITM.on_idle now handles idle-hooks.
@@ -19089,14 +19107,18 @@ leoGlobals.py:
 - g.idleTimeHookHandler is now a stub. It just prints a warning.
   The original has been moved to the attic (leoNotes.txt).
 </t>
-<t tx="ekr.20170123084609.2"></t>
-<t tx="ekr.20170123084609.20">Fixed all recently discussed problems with background processing:
+<t tx="ekr.20170123084609.2">All these scripts may be found in scripts.leo.</t>
+<t tx="ekr.20170123084609.20">https://groups.google.com/d/msg/leo-editor/kmj7wQq7qTk/5U9hSTswBQAJ
 
-- Renamed BackgroundManager to BackgroundProcessManager.
-- Created singleton BPM instance, g.app.backgroundProcessManager.
-- The BPM now maintains a queue of g.Bunch's describing each process.
-- The BPM sends output to the originating log pane if possible.
-- The 'pylint' and 'pylint-kill' commands now use the BPM.
+The singleton g.app.backgroundProcessManager instance of the BackgroundProcessManager (BPM) class handles all details of running separate processes in the background without blocking Leo.
+
+The BPM manages a queue of background processes, and runs them one after another in the background.  It registers a handler with the IdleTimeManager that checks to see if the presently running background process has completed.  If so, it writes its output to the log and starts another background process in the queue.
+
+Because only one background process from the queue is ever running, the background processes can write their output to Leo's log without the output becoming intermixed.
+
+You can kill all processes by calling BPM.kill(). That's what kill-pylint does.  You can add processes to the queue at any time.  For example, you can rerun the pylint command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs in the main process.
 </t>
 <t tx="ekr.20170123084609.22"></t>
 <t tx="ekr.20170123084609.24"></t>
@@ -19126,8 +19148,12 @@ def nearest_roots(self, predicate=None):
 <t tx="ekr.20170123084609.3">Make a new @@file importers/x.py file.
 
 This button created most of Leo's new importers.
+
+https://groups.google.com/d/msg/leo-editor/n88M258SyJg/D7IMQW9ZCgAJ
 </t>
-<t tx="ekr.20170123084609.30">Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
+<t tx="ekr.20170123084609.30">https://groups.google.com/d/msg/leo-editor/8moMUEOOgWA/HE0cl-aADQAJ
+
+Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
 
 tl;dr: Converting all sections to '#' markup is Leonine, simplest and best. Only existing .md files that Leo didn't write could be changed.  If such changes don't work for you, just insert @ignore yourself when git or diff reports differences.
 
@@ -19151,7 +19177,13 @@ Importing markdown files containing underlined sections could only pass typical 
 
 This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
 </t>
-<t tx="ekr.20170123084609.4">Create markdown headers throughout the nearest .md outline.
+<t tx="ekr.20170123084609.4">https://groups.google.com/d/msg/leo-editor/R7Hjtrp6puE/mxNirzjeCQAJ
+
+Create markdown headers throughout the nearest .md outline.
+
+This is useful when creating stand-alone .md files. I used it to create
+https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md
+
 
 That is, prepend p.b[0] with markdown section markup, if appriate.
 </t>
@@ -19167,6 +19199,7 @@ results. After running this, copy the table from the console.
 The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
 
 The outline of such tests is:
+@language python
 
 s = r'''
 The input, maybe many lines.
@@ -19182,8 +19215,25 @@ try:
 finally:
     if 1: # clean up
         p.deleteAllChildren()
+        
+@language rest
+If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used @button make-table, now also in scripts.leo:
+@language python
 
-If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used the following, now in scripts.leo:
+'''
+Create a table of expected headlines in a unit test.
+
+To use this script, select the root of the tree containing the expected
+results. After running this, copy the table from the console.
+'''
+g.cls()
+# Proper escapes are tricky.
+table = [
+    '"%s",' % p.h.replace('\\', '\\\\').replace('"', '\\"')
+        for p in c.p.subtree()
+]
+print("table = (\n    %s\n)" % '\n    '.join(table))
+
 </t>
 <t tx="ekr.20170123084609.7">Make an @test node for the importer whose name is given.
 </t>
@@ -19202,11 +19252,14 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.5**
 
-- A massive speedup of syntax coloring.
+- Syntax coloring is 20x faster than before.
   The "big-text" hack is no longer needed.
 - All of Leo's importers have been rewritten and simplified.
-- Pylint now runs in a separate process.
+- New perl and javascript importers.
+- Pylint now runs in the background.
 - Pyflakes can optionally check each file as it is written.
+- Greatly simplified argument-handling for interactive commands.
+- Documented how to do Test-Driven Development in Leo.
 
 **Links**
 
@@ -19470,7 +19523,136 @@ https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md
 
 New, line-oriented scanning code in leo/importers/linescanner.py replaces
 old, character-oriented, code in leo/importers/basescanner.py.
+
+The xml and html importers now *regularize* whitespace. xml and html are outliers because they have neither explicit brackets nor strict indentation rules.
 </t>
+<t tx="ekr.20170124024347.1">https://github.com/leo-editor/leo-editor/issues/311
+
+Here is the docstring for `k.get1Arg`, which also discusses `k.getNextArg`:
+
+k.get1Arg: Handle the next character the user types when accumulating a user argument from the minibuffer. Ctrl-G will abort this processing at any time.
+
+Commands should use k.get1Arg to get the first minibuffer argument and k.getNextArg to get all other arguments.
+
+Before going into the many details, let's look at some examples. This code will work in any class having a 'c' ivar bound to a commander.
+    
+**Example 1**: get one argument from the user:
+    
+    @cmd('my-command')
+    def myCommand(self, event):
+        k = self.c.k
+        k.setLabelBlue('prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+            
+    def myCommand1(self, event):
+        k = self.c.k
+        # k.arg contains the argument.
+        # Finish the command.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        
+**Example 2**: get two arguments from the user:
+    
+    @cmd('my-command')
+    def myCommand(self, event):
+        k = self.c.k
+        k.setLabelBlue('first prompt: ')
+        k.get1Arg(event, handler=self.myCommand1)
+            
+    def myCommand1(self, event):
+        k = self.c.k
+        self.arg1 = k.arg
+        k.setLabelBlue('second prompt: ')
+        k.getNextArg(handler=self.myCommand2)
+        
+    def myCommand2(self, event):
+        k = self.c.k
+        # k.arg contains second argument.
+        # Finish the command, using self.arg1 and k.arg.
+        ...
+        # Reset the minibuffer.
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        
+k.get1Arg and k.getNextArg are a convenience methods. They simply pass their arguments to the get_arg method of the singleton GetArg instance. This docstring describes k.get1arg and k.getNextArg as if they were the corresponding methods of the GetArg class.
+
+k.get1Arg is a state machine. Logically, states are tuples (kind, n, handler) though they aren't represented that way. When the state machine in the GetArg class is active, the kind is 'getArg'. This constant has special meaning to Leo's key-handling code.
+
+The arguments to k.get1Arg are as follows:
+
+event:              The event passed to the command.
+
+handler=None,       An executable. k.get1arg calls handler(event)
+                    when the user completes the argument by typing
+                    &lt;Return&gt; or (sometimes) &lt;tab&gt;.
+
+tabList=[]:         A list of possible completions.
+
+completion=True:    True if completions are enabled.
+
+oneCharacter=False: True if k.arg should be a single character.
+
+stroke=None:        The incoming key stroke.
+
+useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
+                    False allows sort-lines, for example, to show the selection range.
+</t>
+<t tx="ekr.20170124030628.1"></t>
+<t tx="ekr.20170124031347.1">@language rest
+Test-driven development is easy in Leo.  Just start each unit test with a custom preamble.
+
+For example, the unit tests for Leo's otl importer starts with:
+@language python
+
+    g.cls()
+    if c.isChanged(): c.save()
+    import imp
+    import leo.plugins.importers.otl as otl
+    imp.reload(otl)
+    x = otl.Otl_Importer(c.importCommands, atAuto=False)
+
+@language rest
+With this preamble, I can run the tests after changing the otl plugin without reloading leoPlugins.leo. The following code tests a regex used by the importer:
+@language python
+
+    pattern = x.otl_pattern
+    print(pattern)
+    table = (
+        'body line',
+        '\tline 1',
+        '  \tlevel 2',
+    )
+    for line in table:
+        m = pattern.match(line)
+        print('%20r ==&gt; (%r)(%r)' % (
+            line, m and m.group(1), m and m.group(2)))
+
+@language rest
+Using this @test node, I can modify the regex and see the results instantly. This saved about 20+ seconds per coding iteration, a gigantic win. </t>
+<t tx="ekr.20170124032638.1">Previously, i.check was string-oriented.  It passed strings to all its helpers.  Each helper then immediately called g.splitLines to convert the string to a list, created a result list, and then returned ''.join(result).
+
+This is crazy. Besides being clumsy, the code creates large numbers of large strings.  The gc will have to recycle them all!
+
+Now, i.check splits lines once, on entry, and thereafter does all checking using lists of lines. This is much faster, and stresses the gc much less.
+
+Because python "interns" strings, creating a new list of strings creates new strings only if those strings have never before been seen (in the present gc generation). The lists consist of short strings, so they are much more likely to be interned.
+
+Lists themselves are just lists of references to strings. For example, rearranging a list of strings never generates any new strings!
+
+In short, using lists of (short) strings is fundamentally better than splitting and joining large strings. Furthermore, using lists of strings usually simplifies the code, thanks to python's superb list comprehensions. If you don't grok comprehensions, you are missing one of python's most powerful and beautiful features.
+
+Adapted from a discussion here: https://groups.google.com/d/msg/leo-editor/YGmXbd2-Xpo/vjfR_MkMCwAJ</t>
+<t tx="ekr.20170124034150.1">https://groups.google.com/d/msg/leo-editor/RDi2jffWjzI/K-mh4H5QBQAJ
+
+https://github.com/leo-editor/leo-editor/issues/332
+
+The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
+</t>
+<t tx="ekr.20170124041304.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
