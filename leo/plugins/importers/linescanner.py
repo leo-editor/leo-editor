@@ -858,7 +858,9 @@ class Importer(object):
             if trace:
                 g.trace('=====', repr(p.h))
                 self.print_lines(lines)
-            v._bodyString = ''.join(lines)
+            v._bodyString = g.toUnicode(''.join(lines), reportErrors=True)
+                # Bug fix: 2017/01/24: must convert to unicode!
+                # This was the source of the internal error in the p.b getter.
             delattr(v, '_import_lines')
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
