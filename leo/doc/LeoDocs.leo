@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1256,16 +1256,11 @@
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
-<v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
+<v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
 <v t="ekr.20170123084609.26"><vh>The pylint command now runs in a separate process</vh></v>
-</v>
-<v t="ekr.20170123084609.2"><vh>@button scripts</vh>
-<v t="ekr.20170123084609.3"><vh>at-button make-importer</vh></v>
-<v t="ekr.20170123084609.4"><vh>at-button make-md-heads</vh></v>
-<v t="ekr.20170123084609.5"><vh>at-button make-md-toc</vh></v>
-<v t="ekr.20170123084609.6"><vh>at-button make-table</vh></v>
-<v t="ekr.20170123084609.7"><vh>at-button make-test</vh></v>
+<v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
+<v t="ekr.20170124014606.1"><vh>#371: execute-script supports multiple @languages direcitves</vh></v>
 </v>
 <v t="ekr.20170123084609.8"><vh>Bugs</vh>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh>
@@ -1278,18 +1273,26 @@
 <v t="ekr.20170123084609.15"><vh>Fixed crasher in ac.insert_string</vh></v>
 <v t="ekr.20170123084609.16"><vh>crash in autocomplete (with backspace key?)</vh></v>
 <v t="ekr.20170123084609.17"><vh>Fixed #348 (CDATA errors)</vh></v>
+<v t="ekr.20170124015707.1"><vh>Fixed #374: Leo can confuse directives with decorators</vh></v>
 </v>
 <v t="ekr.20170123084609.18"><vh>Code</vh>
 <v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
 <v t="ekr.20170123084609.20"><vh>Created singleton BackgroundProcessManager</vh></v>
 <v t="ekr.20170123084609.19"><vh>Integrated idle-hook processing into the IdleTimeManager</vh></v>
 </v>
-<v t="ekr.20170123084609.22"><vh>5.5 Features</vh>
-<v t="ekr.20170123152852.1"><vh>Removed many never-used commands</vh></v>
+<v t="ekr.20170123084609.22"><vh>Features</vh>
+<v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
 <v t="ekr.20170123084609.25"><vh>You can open leoDist.leo from the File menu</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
 <v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
 <v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
+</v>
+<v t="ekr.20170123084609.2"><vh>Scripts</vh>
+<v t="ekr.20170123084609.3"><vh>at-button make-importer</vh></v>
+<v t="ekr.20170123084609.4"><vh>at-button make-md-heads</vh></v>
+<v t="ekr.20170123084609.5"><vh>at-button make-md-toc</vh></v>
+<v t="ekr.20170123084609.6"><vh>at-button make-table</vh></v>
+<v t="ekr.20170123084609.7"><vh>at-button make-test</vh></v>
 </v>
 </v>
 </vnodes>
@@ -19064,13 +19067,8 @@ Traceback (most recent call last):
 AttributeError: 'LeoQtTree' object has no attribute 'getInsertPoint'
 </t>
 <t tx="ekr.20170123084609.16"></t>
-<t tx="ekr.20170123084609.17">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/348
+<t tx="ekr.20170123084609.17">https://github.com/leo-editor/leo-editor/issues/348
 XML CDATA Sections not preserved on round-trip save
-
-@language python
 </t>
 <t tx="ekr.20170123084609.18"></t>
 <t tx="ekr.20170123084609.19">Integrated idle-hook processing into the IdleTimeManager:
@@ -19191,7 +19189,7 @@ If the test produces a large outline, it would be unbearable to create the table
 <t tx="ekr.20170123084609.8"></t>
 <t tx="ekr.20170123084609.9"># A recent in doPlainChar change to handle #14 ruined bracket matching.
 </t>
-<t tx="ekr.20170123084701.1">As a result, the horrible (big text) hack is no longer needed.
+<t tx="ekr.20170123084701.1">As a result, the horrible big text hack is no longer needed.
 </t>
 <t tx="ekr.20170123085934.1">Leo 5.5b1 January 30, 2017
 
@@ -19205,6 +19203,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - A massive speedup of syntax coloring.
   The "big-text" hack is no longer needed.
+- All of Leo's importers have been rewritten and simplified.
 - Pylint now runs in a separate process.
 - Pyflakes can optionally check each file as it is written.
 
@@ -19416,23 +19415,16 @@ That is, prepend p.b[0] with markdown section markup, if appriate.
 </t>
 <t tx="ekr.20170123090841.9">Make a markdown table of contents from an @auto-md node.
 </t>
-<t tx="ekr.20170123152852.1">@language rest
-@wrap
+<t tx="ekr.20170123152852.1">https://github.com/leo-editor/leo-editor/issues/379
 
-[x] Abbreviation commands: abbrev-kill-all and abbrev-list remain.
-    https://groups.google.com/d/msg/leo-editor/NSx72sczL3M/agsfknZFAgAJ
-    
-[x] Chapter commands
+- Removed all abbrev-* commands except abbrev-kill-all and abbrev-list.
+
+- Removed all chapter-* commands except chapter-select and chapter-select-main.
     https://groups.google.com/d/msg/leo-editor/-mv2x_6TAdM/Bgntt7b9AgAJ
     
-[x] Macro commands
-    https://groups.google.com/d/msg/leo-editor/udsN3yvJzgk/ZhZoA6qSCQAJ
-    To do: remove all these commands
-    
-[x] Obscure commands
-    https://groups.google.com/d/msg/leo-editor/n4-Eb4WZ8u0/nPdfl1qSCQAJ
-    To do: remove all these:
+- Removed all macro-* commands.
 
+- Removed the following commands:
     advertised-undo
     digit-argument
     negative-argument
@@ -19442,11 +19434,38 @@ That is, prepend p.b[0] with markdown section markup, if appriate.
     number-command-9
     universal-argument
     
-[x] Buffer commands
-    https://groups.google.com/d/msg/leo-editor/RkBM9pfmFzs/4B6g2reqBwAJ
-    
-[x] Register commands
-    https://groups.google.com/d/msg/leo-editor/VF62K4QHHDk/mXD9fDjdBwAJ
+*Note*: Leo 5.4 previously removed all buffer-* and register-* commands.
+</t>
+<t tx="ekr.20170124014606.1">https://github.com/leo-editor/leo-editor/issues/371
+
+For example, execute-script will work on the following node:
+
+    @language rest
+    Comments...
+    @language python
+    print('hi')
+    @language md
+    More comments...
+    @language python
+    print('abc')
+
+@language rest
+The new g.extractExecutableString function removes all lines that are in
+the range of @language rest/md/markdown. It truncates the script, with a
+warning, if it sees two "executable" @language directives, such as C and
+Python.
+
+*Note*: Even if a node contains multiple executable languages, the user can
+select a range of lines to execute. All will be well, provided the selected
+text contains at most one executable language.
+</t>
+<t tx="ekr.20170124015707.1">https://github.com/leo-editor/leo-editor/issues/374
+This caused problems in the importers.</t>
+<t tx="ekr.20170124020217.1">https://github.com/leo-editor/leo-editor/issues/334
+This was a large project.  See the issue tracker for extensive notes.
+
+New, line-oriented scanning code in leo/importers/linescanner.py replaces
+old, character-oriented, code in leo/importers/basescanner.py.
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
