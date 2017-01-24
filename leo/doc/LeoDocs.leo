@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1098,7 +1098,7 @@
 <v t="ekr.20170123090841.4"><vh>Fixed huge performance bug in syntax coloring</vh></v>
 <v t="ekr.20170123090841.5"><vh>The pylint command now runs in a separate process</vh></v>
 </v>
-<v t="ekr.20170123090841.6"><vh>@button scripts</vh>
+<v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh>
 <v t="ekr.20170123090841.7"><vh>at-button make-importer</vh></v>
 <v t="ekr.20170123090841.8"><vh>at-button make-md-heads</vh></v>
 <v t="ekr.20170123090841.9"><vh>at-button make-md-toc</vh></v>
@@ -18837,10 +18837,11 @@ class Controller:
 if 1:
     h = '@auto-md importers.md'
     p = g.findTopLevelNode(c, h)
-    assert p, h
+    g.es_print('not found at top level:', h)
 else:
     p = c.p
-Controller().run(p)
+if p:
+    Controller().run(p)
 @language python
 @tabwidth -4
 </t>
@@ -19463,6 +19464,9 @@ text contains at most one executable language.
 This caused problems in the importers.</t>
 <t tx="ekr.20170124020217.1">https://github.com/leo-editor/leo-editor/issues/334
 This was a large project.  See the issue tracker for extensive notes.
+
+Full documentation is here:
+https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md
 
 New, line-oriented scanning code in leo/importers/linescanner.py replaces
 old, character-oriented, code in leo/importers/basescanner.py.
