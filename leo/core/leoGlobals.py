@@ -6232,6 +6232,8 @@ def extractExecutableString(c, p, s):
     - Remove all @language rest and @language md/markdown parts.
     - Give an error and truncate if multiple executable languages are found.
     '''
+    return s ### Emergency fix.
+
     # https://github.com/leo-editor/leo-editor/issues/371
     def set_skipping(language):
         return language in ('rest', 'md', 'markdown')

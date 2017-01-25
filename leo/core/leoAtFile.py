@@ -4475,6 +4475,9 @@ class AtFile(object):
         s2 = s[i:]
         m = self.at_directive_kind_pattern.match(s2)
         if m:
+            word = m.group(1)
+            if word not in g.globalDirectiveList:
+                return at.noDirective
             s3 = s2[m.end(1):]
             if s3 and s3[0] in ".(":
                 return at.noDirective
