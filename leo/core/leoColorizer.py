@@ -1711,7 +1711,7 @@ class JEditColorizer(object):
             self.colorizer.language,
         ]
         if not self.rulesetName.endswith('_main'):
-            result.append[self.rulesetName]
+            result.append(self.rulesetName)
         for key in keys:
             keyVal = keys.get(key)
             val = d.get(key)
@@ -1887,7 +1887,7 @@ class JEditColorizer(object):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if not self.colorizer.flag:
             if trace: g.trace('not flag')
             return
