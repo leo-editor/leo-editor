@@ -929,7 +929,6 @@ class JEditColorizer(object):
             n = self.setRestart(self.restartColor)
             self.setState(n)
                 # Enables coloring of *this* line.
-            g.trace('=====', self.inColorState())
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
                 # Now required. Sets state.
             return len('@color')
