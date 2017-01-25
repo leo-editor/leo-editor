@@ -243,7 +243,9 @@ class JEditColorizer(object):
         assert(wrapper == self.c.frame.body.wrapper)
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
-        self.defaultState = 'default-state:' # The name of the default state.
+        ### self.defaultState = 'default-state:' # The name of the default state.
+        self.defaultLanguage = None
+        self.flag = None # The initial coloring state.
         self.hyperCount = 0
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
@@ -1569,10 +1571,13 @@ class JEditColorizer(object):
         else:
             j2 = j + len(end)
         if delegate:
-            self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j, kind,
+                delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, j, j2, kind,
+                delegate=None, exclude_match=exclude_match)
         else: # avoid having to merge ranges in addTagsToList.
-            self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j2, kind,
+                delegate=None, exclude_match=exclude_match)
         j = j2
         self.trace_match(kind, s, i, j)
         if j > len(s):
@@ -1720,17 +1725,23 @@ class JEditColorizer(object):
                 pass
             elif keyVal not in (None, ''):
                 result.append('%s=%s' % (key, keyVal))
-        state = ';'.join(result)
+        state = ';'.join(result).lower()
         table = (
             ('kind=', ''),
             ('literal', 'lit'),
+            ('markdown', 'md'),
             ('python', 'py'),
+            ('restart', '@'),
         )
         for pattern, s in table:
             state = state.replace(pattern, s)
         n = self.stateNameToStateNumber(f, state)
         return n
     #@+node:ekr.20110605121601.18632: *4* jedit.getters & setters
+    def currentBlockNumber(self):
+        block = self.highlighter.currentBlock()
+        return block.blockNumber() if block and block.isValid() else -1
+
     def currentState(self):
         return self.highlighter.currentBlockState()
 
@@ -1743,6 +1754,8 @@ class JEditColorizer(object):
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
+        return n
+
     #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrent/PrevState
     def showState(self, n):
         state = self.stateDict.get(n, 'no-state')
@@ -1857,22 +1870,6 @@ class JEditColorizer(object):
             assert i > progress
         # Don't even *think* about changing state here.
         # if trace: g.trace('----- %30s %r' % (self.showCurrentState(), s))
-    #@+node:ekr.20110605121601.18639: *4* jedit.restart (no longer used)
-    def restart(self, n, s, traceMatch):
-        assert False, g.callers()
-        f = self.restartDict.get(n)
-        if f:
-            i = f(s)
-            fname = f.__name__
-            if traceMatch:
-                if i > 0:
-                    g.trace('** restart match', fname, s[: i])
-                else:
-                    g.trace('** restart fail', fname, s)
-        else:
-            g.trace('**** no restart f')
-            i = 0
-        return i
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor (entry, good trace)
     def recolor(self, s):
         '''
@@ -1882,9 +1879,15 @@ class JEditColorizer(object):
         trace = True and not g.unitTesting
         self.recolorCount += 1
         # *Always* copy the state. mainLoop may change it.
+        block_n = self.currentBlockNumber()
         n = self.prevState()
+        if trace: g.trace('%25s %-5s %-3s %r' % (
+            self.showState(n), self.colorizer.flag, block_n, s))
+        if block_n is 0: ### and not self.colorizer.flag:
+            self.defaultLanguage = self.colorizer.language
+            self.flag = self.colorizer.flag
+            n = self.setRestart(self.restartNoColor)
         self.setState(n)
-        if trace: g.trace('%30s  %r' % (self.showState(n), s))
         # Always color the line, even if colorizing is disabled.
         if not s.isspace():
             self.mainLoop(n, s)
@@ -2101,7 +2104,7 @@ class LeoQtColorizer(object):
         '''Scan for color directives in p and its ancestors.'''
         trace = False and not g.unitTesting
         # An important hack: shortcut everything if the first line is @killcolor.
-        if p.b.startswith('@killcolor'):
+        if False and p.b.startswith('@killcolor'):
             if trace: g.trace('@killcolor')
             self.flag = False
             return self.flag
@@ -2203,7 +2206,8 @@ class LeoQtColorizer(object):
         p = p.copy()
         first = True; kind = None; val = True
         self.killColorFlag = False
-        for p in p.self_and_parents():
+        ### for p in p.self_and_parents():
+        for p in p.parents():
             d = self.findColorDirectives(p)
             color, no_color = 'color' in d, 'nocolor' in d
             # An @nocolor-node in the first node disabled coloring.
