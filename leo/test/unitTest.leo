@@ -386,7 +386,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20071113145804.8,ekr.20170123035753.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1234,6 +1235,10 @@
 </v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20170125085544.1"><vh>at.directive4 tests</vh>
+<v t="ekr.20071113145804.8" a="M"><vh>@test at.directiveKind4</vh></v>
+<v t="ekr.20170123035753.1" a="M"><vh>@test at.directiveKind4 (new)</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1667,7 +1672,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -1697,6 +1702,33 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113145804.8">at=c.atFileCommands
+table = [
+    ('@=',0,at.noDirective),
+    ('@',0,at.atDirective),
+    ('@ ',0,at.atDirective),
+    ('@\t',0,at.atDirective),
+    ('@\n',0,at.atDirective),
+    ('@all',0,at.allDirective),
+    ('    @all',4,at.allDirective),
+    ("@c",0,at.cDirective),
+    ("@code",0,at.codeDirective),
+    ("@doc",0,at.docDirective),
+    ("@end_raw",0,at.endRawDirective),
+    ('@others',0,at.othersDirective),
+    ('    @others',4,at.othersDirective),
+    ("@raw",0,at.rawDirective),
+]
+for name in g.globalDirectiveList:
+    # Note: entries in g.globalDirectiveList do not start with '@'
+    if name not in ('all','c','code','doc','end_raw','others','raw',):
+        table.append(('@' + name,0,at.miscDirective),)
+
+for s,i,expected in table:
+    result = at.directiveKind4(s,i)
+    assert result == expected, '%d %s result: %s expected: %s' % (
+        i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -11315,5 +11347,23 @@ ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
 if __name__=="__main__":
     main()
 </t>
+<t tx="ekr.20170123035753.1">at = c.atFileCommands
+table = (
+    (at.othersDirective, '@others'),
+    (at.othersDirective, '@others\n'),
+    (at.othersDirective, '    @others'),
+    (at.miscDirective,   '@tabwidth -4'),
+    (at.miscDirective,   '@tabwidth -4\n'),
+    (at.miscDirective,   '@encoding'),
+    (at.noDirective,     '@encoding.setter'),
+    (at.noDirective,     '@encoding("abc")'),
+    (at.noDirective,     'encoding = "abc"'),
+    (at.noDirective,     '@directive'), # A crucial new test.
+)
+for expected, s in table:
+    result = at.directiveKind4(s, 0)
+    assert expected == result, (expected, result, repr(s))
+</t>
+<t tx="ekr.20170125085544.1"></t>
 </tnodes>
 </leo_file>

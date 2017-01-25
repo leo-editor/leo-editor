@@ -1552,6 +1552,7 @@ table = (
     (at.noDirective,     '@encoding.setter'),
     (at.noDirective,     '@encoding("abc")'),
     (at.noDirective,     'encoding = "abc"'),
+    (at.noDirective,     '@directive'), # A crucial new test.
 )
 for expected, s in table:
     result = at.directiveKind4(s, 0)
