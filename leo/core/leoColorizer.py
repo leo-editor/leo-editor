@@ -1690,7 +1690,7 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18630: *4* jedit.clearState
     def clearState(self):
         self.setState(-1)
-    #@+node:ekr.20110605121601.18631: *4* jedit.computeState
+    #@+node:ekr.20110605121601.18631: *4* jedit.computeState (To be simplified)
     def computeState(self, f, keys):
         '''Compute the state name associated with f and all the keys.
 
@@ -1725,13 +1725,13 @@ class JEditColorizer(object):
         state = ';'.join(result)
         n = self.stateNameToStateNumber(f, state)
         return n
-    #@+node:ekr.20110605121601.18632: *4* jedit.currentState and prevState
+    #@+node:ekr.20110605121601.18632: *4* jedit.getters & setters
     def currentState(self):
         return self.highlighter.currentBlockState()
 
     def prevState(self):
         return self.highlighter.previousBlockState()
-    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
+    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart & setLanguage
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
@@ -1742,7 +1742,7 @@ class JEditColorizer(object):
         if trace:
             stateName = self.showState(n)
             g.trace(stateName, g.callers(4))
-    #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrentState
+    #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrent/PrevState
     def showState(self, n):
         if n == -1:
             return 'default-state'
@@ -1824,7 +1824,7 @@ class JEditColorizer(object):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop & restart
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
         trace = False and not g.unitTesting
