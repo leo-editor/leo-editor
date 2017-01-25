@@ -260,7 +260,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.track:
             p = self.c.p
             self.new_position(p)
-        self.track = one_shot
+        self.track = bool(state)
     def change_update(self, state, one_shot=False):
         self.update = one_shot or bool(state)
         if self.update:
@@ -278,6 +278,10 @@ class LeoEditPane(QtWidgets.QWidget):
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
         return do_close
+    def edit_widget_focus(self):
+        """edit_widget_focus - edit widget got focus"""
+        if self.goto:
+            self.goto_node()
     def get_position(self):
         """get_position - get current position"""
         return self._find_gnx_node(self.gnx)

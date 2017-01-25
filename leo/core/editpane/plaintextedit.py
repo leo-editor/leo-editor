@@ -27,6 +27,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         self.focused = True
         DBG("focusin()")
+        self.lep.edit_widget_focus()
         self.update_position(self.lep.get_position())
 
     def focusOutEvent (self, event):
