@@ -922,17 +922,37 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
     def match_at_color(self, s, i):
         if self.trace_leo_matches: g.trace()
-        seq = '@color'
         # Only matches at start of line.
-        if i != 0: return 0
-        if g.match_word(s, i, seq):
+        if i == 0 and g.match_word(s, 0, '@color'):
             self.colorizer.flag = True # Enable coloring.
-            j = i + len(seq)
-            self.colorRangeWithTag(s, i, j, 'leokeyword')
-            self.clearState()
-            return j - i
+                ### Has no effect.
+            n = self.setRestart(self.restartColor)
+            self.setState(n)
+                # Enables coloring of *this* line.
+            g.trace('=====', self.inColorState())
+            self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+                # Now required. Sets state.
+            return len('@color')
         else:
             return 0
+    #@+node:ekr.20170125140113.1: *6* restartColor
+    def restartColor(self, s):
+        '''Change all lines up to the next color directive.'''
+        # if self.trace_leo_matches: g.trace(repr(s))
+        if g.match_word(s, 0, '@killcolor'):
+            self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+            self.setRestart(self.restartKillColor)
+            return -len(s) # Continue to suppress coloring.
+        elif g.match_word(s, 0, '@nocolor-node'):
+            self.setRestart(self.restartNoColorNode)
+            return -len(s) # Continue to suppress coloring.
+        elif g.match_word(s, 0, '@nocolor'):
+            self.setRestart(self.restartNoColor)
+            return -len(s) # Continue to suppress coloring.
+        else:
+            n = self.setRestart(self.restartColor)
+            self.setState(n) # Enables coloring of *this* line.
+            return 0 # Allow colorizing!
     #@+node:ekr.20110605121601.18594: *5* jedit.match_at_language
     def match_at_language(self, s, i):
         '''Match Leo's @language directive.'''
@@ -967,18 +987,18 @@ class JEditColorizer(object):
     def restartNoColor(self, s):
         if self.trace_leo_matches: g.trace(repr(s))
         if g.match_word(s, 0, '@color'):
-            self.clearState()
+            n = self.setRestart(self.restartColor)
+            self.setState(n) # Enables coloring of *this* line.
+            self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+            return len('@color')
         else:
             self.setRestart(self.restartNoColor)
-        return len(s) # Always match everything.
+            return len(s) # Match everything.
     #@+node:ekr.20110605121601.18597: *5* jedit.match_at_killcolor & restarter
     def match_at_killcolor(self, s, i):
-        if self.trace_leo_matches: g.trace(i, repr(s))
+        # if self.trace_leo_matches: g.trace(i, repr(s))
         # Only matches at start of line.
-        if i != 0 and s[i - 1] != '\n':
-            return 0
-        tag = '@killcolor'
-        if g.match_word(s, i, tag):
+        if i == 0 and g.match_word(s, i, '@killcolor'):
             self.setRestart(self.restartKillColor)
             return len(s) # Match everything.
         else:
@@ -989,12 +1009,9 @@ class JEditColorizer(object):
         return len(s) + 1
     #@+node:ekr.20110605121601.18599: *5* jedit.match_at_nocolor_node & restarter
     def match_at_nocolor_node(self, s, i):
-        if self.trace_leo_matches: g.trace()
+        # if self.trace_leo_matches: g.trace()
         # Only matches at start of line.
-        if i != 0 and s[i - 1] != '\n':
-            return 0
-        tag = '@nocolor-node'
-        if g.match_word(s, i, tag):
+        if i == 0 and g.match_word(s, i, '@nocolor-node'):
             self.setRestart(self.restartNoColorNode)
             return len(s) # Match everything.
         else:
@@ -1750,6 +1767,19 @@ class JEditColorizer(object):
 
     def setState(self, n):
         self.highlighter.setCurrentBlockState(n)
+    #@+node:ekr.20170125141148.1: *4* jedit.inColorState
+    def inColorState(self):
+        '''True if the *current* state is not disabed.'''
+        n = self.currentState()
+        state = self.stateDict.get(n, 'no-state')
+        enabled = (
+            not state.endswith('@nocolor') and
+            not state.endswith('@nocolor-node') and
+            not state.endswith('@killcolor'))
+        # g.trace(enabled, state)
+        return enabled
+
+      
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart & setLanguage
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
@@ -1789,13 +1819,15 @@ class JEditColorizer(object):
         This is called whenever a pattern matcher succeed.'''
         trace = False and not g.unitTesting
             # A superb trace: enable this first to see what gets colored.
-        # Pattern matcher may set the .flag ivar.
-        if self.colorizer.killColorFlag or not self.colorizer.flag:
-            if trace: g.trace('disabled')
+        if not self.inColorState():
+            # Do *not* check x.flag here. It won't work.
             return
         if delegate:
             if trace:
-                s2 = repr(s[i: j]) if len(repr(s[i: j])) <= 20 else repr(s[i: i + 17 - 2] + '...')
+                if len(repr(s[i: j])) <= 20:
+                    s2 = repr(s[i: j])
+                else:
+                    s2 = repr(s[i: i + 17 - 2] + '...')
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
             # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
@@ -1876,7 +1908,7 @@ class JEditColorizer(object):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.recolorCount += 1
         # *Always* copy the state. mainLoop may change it.
         block_n = self.currentBlockNumber()
