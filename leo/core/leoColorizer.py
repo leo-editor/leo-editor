@@ -1883,10 +1883,11 @@ class JEditColorizer(object):
         n = self.prevState()
         if trace: g.trace('%25s %-5s %-3s %r' % (
             self.showState(n), self.colorizer.flag, block_n, s))
-        if block_n is 0: ### and not self.colorizer.flag:
+        if block_n is 0:
             self.defaultLanguage = self.colorizer.language
             self.flag = self.colorizer.flag
-            n = self.setRestart(self.restartNoColor)
+            if not self.flag:
+                n = self.setRestart(self.restartNoColor)
         self.setState(n)
         # Always color the line, even if colorizing is disabled.
         if not s.isspace():
