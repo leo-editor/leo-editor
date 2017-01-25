@@ -1429,7 +1429,7 @@ class Commands(object):
         block comments for languages like html that lack
         single-line comments.
 
-        #@@bool indent_added_comments
+        @bool indent_added_comments
 
         If True (the default), inserts opening comment
         delimiters just before the first non-whitespace
