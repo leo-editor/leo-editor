@@ -1690,7 +1690,7 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18630: *4* jedit.clearState
     def clearState(self):
         self.setState(-1)
-    #@+node:ekr.20110605121601.18631: *4* jedit.computeState (To be simplified)
+    #@+node:ekr.20110605121601.18631: *4* jedit.computeState
     def computeState(self, f, keys):
         '''Compute the state name associated with f and all the keys.
 
@@ -1830,13 +1830,10 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         f = self.restartDict.get(n)
         i = f(s) if f else 0
-        ### Now done in caller.
-        # if i == 0:
-            # self.setState(self.prevState())
-        if trace: g.trace('===== %30s %r' % (self.showCurrentState(), s))
+        # if trace: g.trace('===== %30s %r' % (self.showCurrentState(), s))
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
@@ -1847,13 +1844,13 @@ class JEditColorizer(object):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0: # Success.
-                    if trace and f.__name__ != 'match_blanks':
-                        g.trace('match: %s %r' % (f.__name__, s[i:i+n]))
+                    # if trace and f.__name__ != 'match_blanks':
+                        # g.trace('match: %s %r' % (f.__name__, s[i:i+n]))
                     # The match has already been colored.
                     i += n
                     break
                 elif n < 0: # Total failure.
-                    if trace: g.trace('fail:  %s %r' % (f.__name__, s[i:i-n]))
+                    # if trace: g.trace('fail:  %s %r' % (f.__name__, s[i:i-n]))
                     i += -n
                     break
                 else:
@@ -1862,9 +1859,8 @@ class JEditColorizer(object):
             else:
                 i += 1
             assert i > progress
-        # Don't even *think* about clearing state here.
-        # We remain in the starting state unless a match happens.
-        if trace: g.trace('----- %30s %r' % (self.showCurrentState(), s))
+        # Don't even *think* about changing state here.
+        # if trace: g.trace('----- %30s %r' % (self.showCurrentState(), s))
     #@+node:ekr.20110605121601.18639: *4* jedit.restart (no longer used)
     def restart(self, n, s, traceMatch):
         assert False, g.callers()
