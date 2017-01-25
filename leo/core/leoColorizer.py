@@ -245,7 +245,6 @@ class JEditColorizer(object):
         self.actualColorDict = {} # Used only by setTag.
         self.defaultState = 'default-state:' # The name of the default state.
         self.hyperCount = 0
-        self.lineCount = 0 # The number of lines recolored so far.
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
         self.stateDict = {} # Keys are state numbers, values state names.
@@ -278,7 +277,6 @@ class JEditColorizer(object):
         # Profiling...
         self.recolorCount = 0 # Total calls to recolor
         self.stateCount = 0 # Total calls to setCurrentState
-        self.totalChars = 0 # The total number of characters examined by recolor.
         self.totalStates = 0
         self.maxStateNumber = 0
         self.totalKeywordsCalls = 0
@@ -644,7 +642,6 @@ class JEditColorizer(object):
         self.all_s = s
         self.global_i, self.global_j = 0, 0
         self.global_offset = 0
-        self.lineCount = 0
         # These *must* be recomputed.
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
@@ -1504,14 +1501,14 @@ class JEditColorizer(object):
         if j > len(s):
             j = len(s) + 1
 
-            def reSpan(s):
+            def span(s):
                 # Note: bindings are frozen by this def.
                 return self.restart_match_span(s,
                     # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(reSpan,
+            self.setRestart(span,
                 # These must be keyword args.
                 delegate=delegate, end=end,
                 exclude_match=exclude_match,
@@ -1580,13 +1577,13 @@ class JEditColorizer(object):
         self.trace_match(kind, s, i, j)
         if j > len(s):
 
-            def reSpan(s):
+            def span(s):
                 return self.restart_match_span(s,
                     # Positional args, in alpha order
                     delegate, end, exclude_match, kind,
                     no_escape, no_line_break, no_word_break)
 
-            self.setRestart(reSpan,
+            self.setRestart(span,
                 # These must be keywords args.
                 delegate=delegate, end=end, kind=kind,
                 no_escape=no_escape,
@@ -1706,13 +1703,12 @@ class JEditColorizer(object):
             'no_line_break': '!lbrk',
             'no_word_break': '!lbrk',
         }
-        result = [
-            f.__name__,
-            self.colorizer.language,
-        ]
+        result = [self.colorizer.language]
         if not self.rulesetName.endswith('_main'):
             result.append(self.rulesetName)
-        for key in keys:
+        if f:
+            result.append(f.__name__)
+        for key in sorted(keys):
             keyVal = keys.get(key)
             val = d.get(key)
             if val is None:
@@ -1728,6 +1724,7 @@ class JEditColorizer(object):
         table = (
             ('kind=', ''),
             ('literal', 'lit'),
+            ('python', 'py'),
         )
         for pattern, s in table:
             state = state.replace(pattern, s)
@@ -1748,8 +1745,7 @@ class JEditColorizer(object):
         self.setState(n)
     #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrent/PrevState
     def showState(self, n):
-        state = self.stateDict.get(n, 'default-state')
-        assert state, g.callers()
+        state = self.stateDict.get(n, 'no-state')
         return '%2s:%s' % (n, state)
 
     def showCurrentState(self):
@@ -1877,25 +1873,20 @@ class JEditColorizer(object):
             g.trace('**** no restart f')
             i = 0
         return i
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor (entry)
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor (entry, good trace)
     def recolor(self, s):
         '''
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
-        trace = False and not g.unitTesting
-        if not self.colorizer.flag:
-            if trace: g.trace('not flag')
-            return
+        trace = True and not g.unitTesting
         self.recolorCount += 1
-        self.lineCount += 1
-        self.totalChars += len(s)
-        # Copy the state. This is required for all lines.
+        # *Always* copy the state. mainLoop may change it.
         n = self.prevState()
         self.setState(n)
-        if trace: g.trace('%30s %r' % (self.showState(n), s))
-        if s.strip() or self.showInvisibles:
-            self.setState(n)
+        if trace: g.trace('%30s  %r' % (self.showState(n), s))
+        # Always color the line, even if colorizing is disabled.
+        if not s.isspace():
             self.mainLoop(n, s)
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
