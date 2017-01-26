@@ -633,7 +633,7 @@ class JEditColorizer(object):
         if p: self.p = p.copy()
         if trace: g.trace('(jEdit)', self.colorizer.language, p.h)
         # These *must* be recomputed.
-        self.initialStateNumber = self.setInitialStateNumber() ###
+        self.initialStateNumber = self.setInitialStateNumber()
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
         self.stateNameDict = {}
@@ -1619,7 +1619,7 @@ class JEditColorizer(object):
             if trace: g.trace('***Re-continuing', i, j, len(s), s)
         else:
             if trace: g.trace('***ending', i, j, len(s), s)
-            ### self.clearState()
+            self.clearState()
         return j # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(self, s, i,
@@ -2176,16 +2176,10 @@ class LeoQtColorizer(object):
     def updateSyntaxColorer(self, p):
         '''Scan for color directives in p and its ancestors.'''
         trace = False and not g.unitTesting
-        # An important hack: shortcut everything if the first line is @killcolor.
-        if False and p.b.startswith('@killcolor'):
-            if trace: g.trace('@killcolor')
-            self.flag = False
-            return self.flag
-        else:
-            # self.flag is True unless an unambiguous @nocolor is seen.
-            p = p.copy()
-            self.flag = self.useSyntaxColoring(p)
-            self.scanColorDirectives(p) # Sets self.language
+        p = p.copy()
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p) # Sets self.language
         if trace: g.trace(self.flag, self.language, p.h)
         return self.flag
     #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (LeoQtColorizer) & helper
@@ -2279,7 +2273,6 @@ class LeoQtColorizer(object):
         p = p.copy()
         first = True; kind = None; val = True
         self.killColorFlag = False
-        ### for p in p.self_and_parents():
         for p in p.parents():
             d = self.findColorDirectives(p)
             color, no_color = 'color' in d, 'nocolor' in d
