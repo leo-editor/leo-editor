@@ -1283,14 +1283,7 @@
 </v>
 <v t="ekr.20131213135427.22049"><vh>@menu &amp;Cmds</vh>
 <v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbrev</vh>
-<v t="ekr.20131213135427.22051"><vh>@item &amp;toggle-abbrev-mode</vh></v>
-<v t="ekr.20131213135427.22052"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
-<v t="ekr.20131213135427.22054"><vh>@item abbrev-&amp;read</vh></v>
-<v t="ekr.20131213135427.22055"><vh>@item abbrev-&amp;write</vh></v>
-<v t="ekr.20131213135427.22056"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22057"><vh>@item abbrev-&amp;add-global</vh></v>
-<v t="ekr.20131213135427.22058"><vh>@item abbrev-&amp;inverse-add-global</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Body Editors</vh>
@@ -1299,12 +1292,8 @@
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
 <v t="ekr.20131213135427.22072"><vh>@menu &amp;Chapters</vh>
-<v t="ekr.20131213135427.22073"><vh>@item chapter-&amp;clone-node-to</vh></v>
-<v t="ekr.20131213135427.22074"><vh>@item chapter-c&amp;opy-node-to</vh></v>
-<v t="ekr.20131213135427.22075"><vh>@item chapter-c&amp;reate</vh></v>
-<v t="ekr.20131213135427.22076"><vh>@item chapter-&amp;move-node-to</vh></v>
-<v t="ekr.20131213135427.22077"><vh>@item chapter-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22078"><vh>@item chapter-&amp;select</vh></v>
+<v t="ekr.20170123145248.1"><vh>@item chapter-select-&amp;main</vh></v>
 </v>
 <v t="ekr.20131213135427.22079"><vh>@menu Cursor/Selection</vh>
 <v t="ekr.20131213135427.22080"><vh>@menu Cursor &amp;Back</vh>
@@ -1396,18 +1385,6 @@
 <v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
 <v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
-</v>
-<v t="ekr.20131213135427.22183"><vh>@menu &amp;Macros</vh>
-<v t="ekr.20131213135427.22184"><vh>@item macro-start-&amp;recording</vh></v>
-<v t="ekr.20131213135427.22185"><vh>@item macro-&amp;end-recording</vh></v>
-<v t="ekr.20131213135427.22186"><vh>@item macro-&amp;name-last</vh></v>
-<v t="ekr.20131213135427.22187"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22188"><vh>@item macro-&amp;call</vh></v>
-<v t="ekr.20131213135427.22189"><vh>@item macro-call-&amp;last</vh></v>
-<v t="ekr.20131213135427.22190"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22191"><vh>@item macro-&amp;load-&amp;all</vh></v>
-<v t="ekr.20131213135427.22192"><vh>@item macro-&amp;print-all</vh></v>
-<v t="ekr.20131213135427.22193"><vh>@item macro-&amp;save-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu Minibuffer</vh>
 <v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
@@ -2044,7 +2021,6 @@
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
@@ -4215,9 +4191,9 @@ toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w
 toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
-negative-argument       = None      # Alt-minus conflicts with contract-all.
+# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
-universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+# universal-argument    = Alt-u   # Usually Ctrl-u, conflicts with move-outline-up.
 
 
 
@@ -6845,14 +6821,7 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22048"></t>
 <t tx="ekr.20131213135427.22049"></t>
 <t tx="ekr.20131213135427.22050"></t>
-<t tx="ekr.20131213135427.22051"></t>
-<t tx="ekr.20131213135427.22052"></t>
 <t tx="ekr.20131213135427.22053"></t>
-<t tx="ekr.20131213135427.22054"></t>
-<t tx="ekr.20131213135427.22055"></t>
-<t tx="ekr.20131213135427.22056"></t>
-<t tx="ekr.20131213135427.22057"></t>
-<t tx="ekr.20131213135427.22058"></t>
 <t tx="ekr.20131213135427.22059"></t>
 <t tx="ekr.20131213135427.22060"></t>
 <t tx="ekr.20131213135427.22061"></t>
@@ -6867,11 +6836,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22070"></t>
 <t tx="ekr.20131213135427.22071"></t>
 <t tx="ekr.20131213135427.22072"></t>
-<t tx="ekr.20131213135427.22073"></t>
-<t tx="ekr.20131213135427.22074"></t>
-<t tx="ekr.20131213135427.22075"></t>
-<t tx="ekr.20131213135427.22076"></t>
-<t tx="ekr.20131213135427.22077"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
 <t tx="ekr.20131213135427.22080"></t>
@@ -6961,17 +6925,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22180"></t>
 <t tx="ekr.20131213135427.22181"></t>
 <t tx="ekr.20131213135427.22182"></t>
-<t tx="ekr.20131213135427.22183"></t>
-<t tx="ekr.20131213135427.22184"></t>
-<t tx="ekr.20131213135427.22185"></t>
-<t tx="ekr.20131213135427.22186"></t>
-<t tx="ekr.20131213135427.22187"></t>
-<t tx="ekr.20131213135427.22188"></t>
-<t tx="ekr.20131213135427.22189"></t>
-<t tx="ekr.20131213135427.22190"></t>
-<t tx="ekr.20131213135427.22191"></t>
-<t tx="ekr.20131213135427.22192"></t>
-<t tx="ekr.20131213135427.22193"></t>
 <t tx="ekr.20131213135427.22194"></t>
 <t tx="ekr.20131213135427.22195"></t>
 <t tx="ekr.20131213135427.22196"></t>
@@ -7148,7 +7101,7 @@ abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
 abbrev-kill-all                     = None
-advertised-undo                     = Ctrl-underscore
+# advertised-undo                   = Ctrl-underscore
 auto-complete                       = None
 back-char                           = Ctrl-b
 back-char-extend-selection          = None
@@ -7204,7 +7157,7 @@ delete-indentation                  = Alt-asciicircum
 delete-node                         = Shift-Ctrl-BkSp
 delete-spaces                       = Alt-backslash
 demote                              = Ctrl-}
-digit-argument                      = None
+# digit-argument                    = None
 directory-make                      = None
 directory-remove                    = None
 downcase-region                     = None
@@ -7338,22 +7291,22 @@ move-outline-left               = None         # Removed Ctrl-L: no point if oth
 move-outline-right              = None         # Ctrl-R conflicts with search-backward.
 move-outline-up                 = None         # Ctrl-U confllicts with universal-argument.
 move-past-close                 = Alt-parenright
-negative-argument               = Alt-minus
+# negative-argument             = Alt-minus
 new                             = None         # Ctrl-n conflicts with next-line.
 newline-and-indent              = Ctrl-j
 next-line                       = Ctrl-n
 next-line-extend-selection      = None
-number-command                  = None
-number-command-0                = Alt-0
-number-command-1                = Alt-1
-number-command-2                = Alt-2
-number-command-3                = Alt-3
-number-command-4                = Alt-4
-number-command-5                = Alt-5
-number-command-6                = Alt-6
-number-command-7                = Alt-7
-number-command-8                = Alt-8
-number-command-9                = Alt-9 
+# number-command                  = None
+# number-command-0                = Alt-0
+# number-command-1                = Alt-1
+# number-command-2                = Alt-2
+# number-command-3                = Alt-3
+# number-command-4                = Alt-4
+# number-command-5                = Alt-5
+# number-command-6                = Alt-6
+# number-command-7                = Alt-7
+# number-command-8                = Alt-8
+# number-command-9                = Alt-9 
 open-leoDocs-leo                = None
 open-leoDist-leo                = None
 open-leoPlugins-leo             = None
@@ -7460,7 +7413,7 @@ transpose-lines                 = None
 transpose-words                 = Alt-t
 undo                            = None         # Ctrl-Z conflicts with suspend.
 unindent-region                 = None
-universal-argument              = Ctrl-u
+# universal-argument            = Ctrl-u
 unmark-all                      = None         # Alt-U: conflicts with upcase-word.
 untabify                        = None
 untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
@@ -7810,22 +7763,22 @@ move-outline-up                     = None
 move-past-close                     = None
 move-past-close-extend-selection    = None
 </t>
-<t tx="ekr.20140721165014.19157">negative-argument                   = None
+<t tx="ekr.20140721165014.19157"># negative-argument                   = None
 new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
-number-command                      = None
-number-command-0                    = None
-number-command-1                    = None
-number-command-2                    = None
-number-command-3                    = None
-number-command-4                    = None
-number-command-5                    = None
-number-command-6                    = None
-number-command-7                    = None
-number-command-8                    = None
-number-command-9                    = None
+# number-command                    = None
+# number-command-0                  = None
+# number-command-1                  = None
+# number-command-2                  = None
+# number-command-3                  = None
+# number-command-4                  = None
+# number-command-5                  = None
+# number-command-6                  = None
+# number-command-7                  = None
+# number-command-8                  = None
+# number-command-9                  = None
 # number-to-register                = None
 # open-compare-window               = None
 # open-find-dialog                  = None
@@ -7971,7 +7924,7 @@ transpose-words                     = None
 undo                                = None
 unformat-paragraph                  = None
 unindent-region                     = None
-universal-argument                  = None
+# universal-argument                  = None
 unmark-all                          = None
 untabify                            = None
 untangle                            = None
@@ -10084,11 +10037,6 @@ like vim.
 To enable vim emulation, place a copy this "@keys Vim bindings" node and
 its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 </t>
-<t tx="ekr.20140829172618.19886">The maximum number of characters that will be automatically load into the body text.
-If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons.
-Clicking the 'load' button will load the body text and remove the buttons.
-
-A value of zero disables this feature.</t>
 <t tx="ekr.20140912072521.19153"></t>
 <t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
 <t tx="ekr.20140912072521.19160">/*
@@ -11683,9 +11631,9 @@ push-to-ipython         = None
 ###
 do-nothing              = Meta-o
 full-command            = Meta-Shift-x
-negative-argument       = None      # Alt-minus conflicts with contract-all.
+# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = None # Ctrl-P
-universal-argument      = Meta-u     # Usually Ctrl-u, conflicts with move-outline-up.
+# universal-argument    = Meta-u     # Usually Ctrl-u, conflicts with move-outline-up.
 
 ###
 
@@ -11866,6 +11814,7 @@ Put notes about each version here.
     _values = c.abbrev_subst_env['cap_name'] = x.capitalize()
     return x.lower()
 </t>
+<t tx="ekr.20170123145248.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

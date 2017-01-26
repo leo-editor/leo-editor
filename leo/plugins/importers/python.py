@@ -1,8 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161029103517.1: * @file importers/python.py
 '''The new, line-based, @auto importer for Python.'''
-# pylint: disable=no-name-in-module
-# basescanner does not exist now.
+# Legacy version of this file is in the attic.
 import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner

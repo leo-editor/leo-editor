@@ -272,7 +272,7 @@ class Commands(object):
         import leo.commands.helpCommands as helpCommands
         import leo.commands.keyCommands as keyCommands
         import leo.commands.killBufferCommands as killBufferCommands
-        import leo.commands.macroCommands as macroCommands
+        ### import leo.commands.macroCommands as macroCommands
         import leo.commands.rectangleCommands as rectangleCommands
         import leo.commands.spellCommands as spellCommands
         # Other subcommanders.
@@ -313,7 +313,7 @@ class Commands(object):
         self.helpCommands       = helpCommands.HelpCommandsClass(c)
         self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
-        self.macroCommands      = macroCommands.MacroCommandsClass(c)
+        ### self.macroCommands      = macroCommands.MacroCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
         # Other objects
@@ -326,10 +326,6 @@ class Commands(object):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
         else:
             self.styleSheetManager = None
-        if hasattr(g.app.gui, 'bigTextControllerClass'):
-            self.bigTextController = g.app.gui.bigTextControllerClass(c)
-        else:
-            self.bigTextController = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings):
         '''Init the settings *before* initing the objects.'''
@@ -2173,11 +2169,11 @@ class Commands(object):
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
         trace = True and not g.unitTesting
+        # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
             highlighter = c.frame.body.colorizer.highlighter
             g.trace(highlighter.n_calls)
-        trace_time = False and not g.unitTesting
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:

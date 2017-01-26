@@ -267,6 +267,7 @@ class JEditColorizer(object):
         # Debugging...
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
+        self.n_setTag = 0
         self.tagCount = 0
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
@@ -1689,7 +1690,7 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18630: *4* jedit.clearState
     def clearState(self):
         self.setState(-1)
-    #@+node:ekr.20110605121601.18631: *4* jedit.computeState
+    #@+node:ekr.20110605121601.18631: *4* jedit.computeState (To be simplified)
     def computeState(self, f, keys):
         '''Compute the state name associated with f and all the keys.
 
@@ -1724,13 +1725,13 @@ class JEditColorizer(object):
         state = ';'.join(result)
         n = self.stateNameToStateNumber(f, state)
         return n
-    #@+node:ekr.20110605121601.18632: *4* jedit.currentState and prevState
+    #@+node:ekr.20110605121601.18632: *4* jedit.getters & setters
     def currentState(self):
         return self.highlighter.currentBlockState()
 
     def prevState(self):
         return self.highlighter.previousBlockState()
-    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
+    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart & setLanguage
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
@@ -1741,7 +1742,7 @@ class JEditColorizer(object):
         if trace:
             stateName = self.showState(n)
             g.trace(stateName, g.callers(4))
-    #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrentState
+    #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrent/PrevState
     def showState(self, n):
         if n == -1:
             return 'default-state'
@@ -1823,7 +1824,7 @@ class JEditColorizer(object):
                     i += max(1, n)
                 else:
                     i += 1
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop & restart
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
         trace = False and not g.unitTesting
@@ -1927,11 +1928,20 @@ class JEditColorizer(object):
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
         trace = False and not g.unitTesting
+        trace_all = True
+        self.n_setTag += 1
         if i == j:
             if trace: g.trace('empty range')
             return
+        if trace and trace_all:
+            g.trace('%7s %s' % (tag, s[i:j]))
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
+        # Caching might cause problems. It does not materially affect speed.
+            # format = wrapper.formatDict.get(tag)
+            # if format:
+                # self.highlighter.setFormat(i, j - i, format)
+                # return
         colorName = wrapper.configDict.get(tag)
         # Munge the color name.
         if not colorName:
@@ -1953,10 +1963,10 @@ class JEditColorizer(object):
         if font:
             format.setFont(font)
         if trace:
-            self.tagCount += 1
             g.trace(
-                '%3s %3s %3s %9s %7s' % (i, j, len(s), font and id(font) or '<no font>', colorName),
-                '%-10s %-25s' % (tag, s[i: j]), g.callers(2))
+                '===== %3s %3s %3s %9s %7s' % (
+                    i, j, len(s), font and id(font) or '<no font>', colorName),
+                '%-10s %-25s' % (tag, s[i: j]))
         if tag in ('blank', 'tab'):
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
@@ -1967,6 +1977,9 @@ class JEditColorizer(object):
             format.setFontUnderline(True)
         else:
             format.setForeground(color)
+        self.tagCount += 1
+        # Caching causes problems.
+        # wrapper.formatDict [tag] = format
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
@@ -2311,7 +2324,7 @@ if QtGui:
             It appears that this method is seldom (never?) called!
             '''
             # pylint: disable=arguments-differ
-            trace = True ### and not g.unitTesting
+            trace = True # and not g.unitTesting
             if trace: g.trace('=====', p and p.h, g.callers())
             if not hasattr(self, 'currentBlock'):
                 if self.no_method_message:
@@ -2327,7 +2340,7 @@ if QtGui:
             self.widget = c.frame.body.widget
             if trace:
                 t1 = time.clock()
-            n = self.colorer.recolorCount
+            # n = self.colorer.recolorCount
             if self.colorizer.enabled:
                 # Lock out onTextChanged.
                 old_selecting = tree.selecting

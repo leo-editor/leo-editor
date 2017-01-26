@@ -114,7 +114,7 @@ def beautifyPythonTree(event):
                 pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
 #@+node:ekr.20150531042746.1: *3* munging leo directives
-#@+node:ekr.20150529084212.1: *4* comment_leo_lines
+#@+node:ekr.20150529084212.1: *4* comment_leo_lines (leoBeautifier.py)
 def comment_leo_lines(p):
     '''Replace lines with Leonine syntax with special comments.'''
     # Choose the comment string so it appears nowhere in s.

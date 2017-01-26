@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.56" body_secondary_ratio="0.81">
 	<global_window_position top="54" left="600" height="941" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -347,7 +347,7 @@
 <v t="ekr.20161130052935.1"><vh>@auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.py</vh></v>
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh></v>
-<v t="ekr.20161130041921.1"><vh>@@@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
+<v t="ekr.20161130041921.1"><vh>@@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
 <v t="ekr.20161228071435.1"><vh>@nosent c:\test\bug-354-test.py</vh>
 <v t="ekr.20161228071822.1"><vh>&lt;&lt; u:1 &gt;&gt;</vh></v>
 <v t="ekr.20161228071836.1"><vh>&lt;&lt; ue:1 &gt;&gt;</vh></v>
@@ -386,7 +386,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20071113145804.8,ekr.20170123035753.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -653,6 +654,8 @@
 <v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
 <v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
 <v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
+<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
+<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
@@ -678,7 +681,16 @@
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
+<v t="ekr.20170122040158.23"><vh>@@file c:/leo.repo/leo-editor/leo/test/python top-level later decl</vh>
+<v t="ekr.20170122040158.24"><vh>Declarations</vh></v>
+<v t="ekr.20170122040158.25"><vh>merge_value</vh></v>
+<v t="ekr.20170122040158.26"><vh>class MainDisplay</vh>
+<v t="ekr.20170122040158.27"><vh>save_file</vh></v>
+</v>
+<v t="ekr.20170122040158.28"><vh>retab</vh></v>
+</v>
+</v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
@@ -1205,20 +1217,28 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
-<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
-</v>
-<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
-<v t="ekr.20150626093653.1"><vh>@@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
 <v t="ekr.20161130041921.1"></v>
 <v t="ekr.20161228071915.1"><vh>@@auto c:\test\bug-354-test.py</vh>
 <v t="ekr.20161228072352.1"><vh>bug-354-test declarations</vh></v>
 </v>
+<v t="ekr.20150626093653.1"><vh>@@test find_file_line: @auto-rst</vh></v>
+<v t="ekr.20160403143643.1"><vh>@@test find_file_line: @clean-c</vh></v>
+<v t="ekr.20160403143655.1"><vh>@@test find_file_line: @clean-python</vh></v>
+<v t="ekr.20160403143048.1"></v>
+<v t="ekr.20160403143130.1"></v>
+<v t="ekr.20161130051657.1"><vh>@test ctext</vh></v>
+<v t="ekr.20150626101920.1"><vh>@test find_file_line: @auto-md</vh></v>
+<v t="ekr.20161130053149.1"><vh>COPY @auto-ctext unittest/at-auto-ctext-test.txt</vh></v>
+<v t="ekr.20161103075725.1"><vh>Python failing tests: parse-body</vh>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
+</v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20170125085544.1"><vh>at.directive4 tests</vh>
+<v t="ekr.20071113145804.8" a="M"><vh>@test at.directiveKind4</vh></v>
+<v t="ekr.20170123035753.1" a="M"><vh>@test at.directiveKind4 (new)</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1682,6 +1702,33 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113145804.8">at=c.atFileCommands
+table = [
+    ('@=',0,at.noDirective),
+    ('@',0,at.atDirective),
+    ('@ ',0,at.atDirective),
+    ('@\t',0,at.atDirective),
+    ('@\n',0,at.atDirective),
+    ('@all',0,at.allDirective),
+    ('    @all',4,at.allDirective),
+    ("@c",0,at.cDirective),
+    ("@code",0,at.codeDirective),
+    ("@doc",0,at.docDirective),
+    ("@end_raw",0,at.endRawDirective),
+    ('@others',0,at.othersDirective),
+    ('    @others',4,at.othersDirective),
+    ("@raw",0,at.rawDirective),
+]
+for name in g.globalDirectiveList:
+    # Note: entries in g.globalDirectiveList do not start with '@'
+    if name not in ('all','c','code','doc','end_raw','others','raw',):
+        table.append(('@' + name,0,at.miscDirective),)
+
+for s,i,expected in table:
+    result = at.directiveKind4(s,i)
+    assert result == expected, '%d %s result: %s expected: %s' % (
+        i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -4571,8 +4618,7 @@ def __init__(self, s: Type) -&gt; None:
 @others
 // last line: line 6
 </t>
-<t tx="ekr.20160403143048.2">@nocolor-node
-def spam(): // line 2
+<t tx="ekr.20160403143048.2">def spam(): // line 2
     pass
 </t>
 <t tx="ekr.20160403143130.1">@language python
@@ -4593,10 +4639,93 @@ unl: spam
 gnx: ekr.20160403142841.11
 unl: eggs
 </t>
+<t tx="ekr.20160403143643.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.c'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    g.printList(lines)
+    stripped_lines = [z for z in lines if not z.startswith('//@')]
+    g.printList(stripped_lines)
+    if trace:
+        g.cls()
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '// before @others // line 1'),
+        (2, 8,  'def spam(): // line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): // line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '// last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
+</t>
+<t tx="ekr.20160403143655.1"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    root = p.parent().parent()
+    h = '@clean unittest/at-clean-line-number-test.py'
+    target = g.findNodeAnywhere(c, h)
+    assert target, 'no target'
+    s = c.gotoCommands.get_external_file_with_sentinels(target)
+    lines = g.splitLines(s)
+    stripped_lines = [z for z in lines if not z.startswith('#@')]
+    if trace:
+        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+        # print('')
+        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
+    table = (
+        # n is the 1-based offset
+        (3, 4,  '# Before @others: line 1'),
+        (2, 8,  'def spam(): # line 2'),
+        (3, 9,  '    pass'),
+        (1, 11, 'def eggs(): # line 4'),
+        (2, 12, '    pass'),
+        (5, 14, '# Last line: line 6'),
+    )
+    for i, data in enumerate(table):
+        expected_offset, target_offset, expected_line = data
+        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+        assert expected_offset == offset, (
+            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
+        expected_line = expected_line.rstrip()
+        got_line = stripped_lines[i].rstrip()
+        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
+            i, expected_line, got_line)
+        got_line2 = lines[target_offset].rstrip()
+        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
+            i, expected_line, got_line)
+    i = len(table)
+    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    assert not found
+</t>
 <t tx="ekr.20160403150121.1">def eggs(): // line 4
-    pass</t>
-<t tx="ekr.20160403150216.1">@nocolor-node
-def spam(): # line 2
+    pass
+</t>
+<t tx="ekr.20160403150216.1">def spam(): # line 2
     pass
 </t>
 <t tx="ekr.20160403150222.1">def eggs(): # line 4
@@ -6025,10 +6154,10 @@ class test:
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
 table = (
-        (1, 'class test'),
-        (2, 'importFilesCommand'),
-        (2, 'convertMoreStringToOutlineAfter'),
-    )
+    (1, 'class test'),
+    (2, 'importFilesCommand'),
+    (2, 'convertMoreStringToOutlineAfter'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6078,12 +6207,11 @@ class test:
     def foo(a):
         pass
 '''
-
 table = (
-        (1, 'class test'),
-        (2, 'spam'),
-        (2, 'foo'),
-    )
+    (1, 'class test'),
+    (2, 'spam'),
+    (2, 'foo'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -6347,7 +6475,6 @@ class testClass1:
 '''
 table = (
     (1, 'Declarations'),
-    # (1, "if 0: # Causes the 'overindent'"),
     (1, 'class testClass1'),
 )
 try:
@@ -7136,7 +7263,6 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
 )
 try:
@@ -7182,7 +7308,6 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
 )
 try:
@@ -7264,8 +7389,11 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
-importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_ScanState)
+if hasattr(python, 'Py_Importer'):
+    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer.test_scan_state(tests, State=python.Python_ScanState)
+else:
+    self.skipTest('Skipping test for new python importer')
 </t>
 <t tx="ekr.20161117000902.1">if 0: # Preamble...
     # g.cls()
@@ -7340,15 +7468,12 @@ class LeoImportCommands(object):
         '''Init ivars &amp; vars for imports.'''
 """
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
     (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
-    # (3, "scanner_for_at_auto_cb"),
     (2, "scanner_for_ext"),
-    # (3, "scanner_for_ext_cb"),
     (2, "get_import_filename"),
     (2, "init_import"),
 )
@@ -7527,7 +7652,10 @@ finally:
 g.cls()
 # Proper escapes are tricky.
 table = [
-    '"%s",' % p.h.replace('\\', '\\\\').replace('"', '\\"')
+    '(%s, "%s"),' % (
+        p.level()-c.p.level(),
+        p.h.replace('\\', '\\\\').replace('"', '\\"'),
+    )
         for p in c.p.subtree()
 ]
 print("table = (\n    %s\n)" % '\n    '.join(table))</t>
@@ -7816,7 +7944,9 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20161127181028.1">if 0:
+<t tx="ekr.20161127181028.1">@first # -*- coding: utf-8 -*-
+    # Required (Python 2 only) because test contains ```.
+if 0:
     # The preamble...
     g.cls()
     if c.isChanged(): c.save()
@@ -8487,7 +8617,8 @@ section 2.2.1 line 1
 section 3, line 1
 
 </t>
-<t tx="ekr.20161204040924.1"></t>
+<t tx="ekr.20161204040924.1"># Alt-G works.  The tests themselves are erroneous.
+</t>
 <t tx="ekr.20161204041306.21">&lt;?php
 @others
 @language php
@@ -9710,7 +9841,6 @@ def make_parser():
 '''
 table = (
     (1, 'Declarations'),
-    # (1, 'if sys.version_info[0] &gt;= 3:'),
     (1, 'make_parser'),
 )
 try:
@@ -9947,14 +10077,11 @@ if __name__=="__main__":
     main()
 '''
 table = (
-    # @auto does not allow section references.
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
     (1, 'merge_value'),
     (1, 'class MainDisplay'),
     (2, 'save_file'),
     (1, 'retab'),
-    # (1, 'if __name__=="__main__":'),
 )
 try:
     test_node = p.copy()
@@ -10170,10 +10297,8 @@ table = (
     (2, "mousePressEvent"),
     (2, "mouseMoveEvent"),
     (1, "command"),
-    # (2, "makebutton"),
     (1, "exit_"),
     (1, "main"),
-    # (1, "if __name__ == '__main__':"),
 )
 try:
     test_node = p.copy()
@@ -10374,7 +10499,6 @@ else:
         return builtins.unicode(s, encoding)
 """
 table = (
-    # (1, 'if isPython3:'),
     (1, 'Declarations'),
 )
 try:
@@ -10835,5 +10959,411 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20170122032242.1">if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
+s = """
+@base_task(
+    targets=['img/who_map.png', 'img/who_map.pdf'],
+    file_dep=[data_path('phyto')],
+    task_dep=['load_data'],
+)
+def make_map():
+    '''make_map - plot the Thompson / Bartsh / WHO map'''
+"""
+table = (
+    (1, 'Declarations'),
+        # Poor, but passes perfect import.
+    (1, 'make_map'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+</t>
+<t tx="ekr.20170122033034.1">if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
+s = '''
+"""
+sheet_stats.py - report column stats for spreadsheets
+
+requires openpyxl and numpy
+
+Terry N. Brown, terrynbrown@gmail.com, Fri Dec 16 13:20:47 2016
+2016-12-26 Henry Helgen added average, variance, standard deviation,
+                        coefficient of variation to output
+2016-12-23 Henry Helgen updated to Python 3.5 syntax including print() and
+                        writer = csv.writer(open(opt.output, 'w', newline=''))
+"""
+
+import csv
+import argparse
+import glob
+import multiprocessing
+import os
+import sys
+from collections import namedtuple
+from math import sqrt, isnan
+NAN = float('NAN')
+
+from openpyxl import load_workbook
+
+PYTHON_2 = sys.version_info[0] &lt; 3
+if not PYTHON_2:
+    unicode = str
+
+class AttrDict(dict):
+    """allow d.attr instead of d['attr']
+    http://stackoverflow.com/a/14620633
+    """
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+FIELDS = [  # fields in outout table
+    'file', 'field', 'n', 'blank', 'bad', 'min', 'max', 'mean', 'std',
+    'sum', 'sumsq', 'variance', 'coefvar'
+]
+def make_parser():
+    """build an argparse.ArgumentParser, don't call this directly,
+       call get_options() instead.
+    """
+    parser = argparse.ArgumentParser(
+        description="""Report column stats for spreadsheets""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('files', type=str, nargs='+',
+        help="Files to process, '*' patterns expanded."
+    )
+
+    required_named = parser.add_argument_group('required named arguments')
+
+    required_named.add_argument("--output",
+        help="Path to .csv file for output, will be overwritten",
+        metavar='FILE'
+    )
+
+    return parser
+
+def get_options(args=None):
+    """
+    get_options - use argparse to parse args, and return a
+    argparse.Namespace, possibly with some changes / expansions /
+    validatations.
+
+    Client code should call this method with args as per sys.argv[1:],
+    rather than calling make_parser() directly.
+
+    :param [str] args: arguments to parse
+    :return: options with modifications / validations
+    :rtype: argparse.Namespace
+    """
+    opt = make_parser().parse_args(args)
+
+    # modifications / validations go here
+
+    if not opt.output:
+        print("No --output supplied")
+        exit(10)
+
+    return opt
+
+def get_aggregate(psumsqn, psumn, pcountn):
+    """
+    get_aggregate - compute mean, variance, standard deviation,
+    coefficient of variation This function is used instead of
+    numpy.mean, numpy.var, numpy.std since the sum, sumsq, and count are
+    available when the function is called. It avoids an extra pass
+    through the list.
+
+    # note pcountn means the full list n,  not a sample n - 1
+
+    :param sum of squares, sum, count
+    :return: a tuple of floats mean, variance, standard deviation, coefficient of variation
+    """
+
+    Agg = namedtuple("Agg", "mean variance std coefvar")
+
+    # validate inputs check for count == 0
+    if pcountn == 0:
+        result = Agg(NAN, NAN, NAN, NAN)
+    else:
+
+        mean = psumn / pcountn # mean
+
+        # compute variance from sum squared without knowing mean while summing
+        variance = (psumsqn - (psumn * psumn) / pcountn ) / pcountn
+
+        #compute standard deviation
+        if variance &lt; 0:
+            std = NAN
+        else:
+            std = sqrt(variance)
+
+        # compute coefficient of variation
+        if mean == 0:
+            coefvar = NAN
+        else:
+            coefvar = std / mean
+
+        result = Agg(mean, variance, std, coefvar)
+
+    return result
+
+
+def proc_file(filepath):
+    """
+    proc_file - process one .xlsx file
+
+    :param str filepath: path to file
+    :return: list of lists, rows of info. as expected in main()
+    """
+
+    print(filepath)
+
+    # get the first sheet
+    book = load_workbook(filename=filepath, read_only=True)
+    sheets = book.get_sheet_names()
+    sheet = book[sheets[0]]
+    row_source = sheet.rows
+    row0 = next(row_source)
+    # get field names from the first row
+    fields = [i.value for i in row0]
+
+    data = {
+        'filepath': filepath,
+        'fields': {field:AttrDict({f:0 for f in FIELDS}) for field in fields}
+    }
+
+    for field in fields:
+        # init. mins/maxs with invalid value for later calc.
+        data['fields'][field].update(dict(
+            min=NAN,
+            max=NAN,
+            field=field,
+            file=filepath,
+        ))
+
+    rows = 0
+    for row in row_source:
+
+        if rows % 1000 == 0:  # feedback every 1000 rows
+            print(rows)
+            # Much cleaner to exit by creating a file called "STOP" in the
+            # local directory than to try and use Ctrl-C, when using
+            # multiprocessing.  Save time by checking only every 1000 rows.
+            if os.path.exists("STOP"):
+                return
+
+        rows += 1
+
+        for cell_n, cell in enumerate(row):
+            d = data['fields'][fields[cell_n]]
+            if cell.value is None or unicode(cell.value).strip() == '':
+                d.blank += 1
+            else:
+                try:
+                    x = float(cell.value)
+                    d.sum += x
+                    d.sumsq += x*x
+                    d.n += 1
+                    # min is x if no value seen yet, else min(prev-min, x)
+                    if isnan(d.min):
+                        d.min = x
+                    else:
+                        d.min = min(d.min, x)
+                    # as for min
+                    if isnan(d.max):
+                        d.max = x
+                    else:
+                        d.max = max(d.max, x)
+                except ValueError:
+                    d.bad += 1
+
+    assert sum(d.n+d.blank+d.bad for d in data['fields'].values()) == rows * len(fields)
+
+    # compute the derived values
+    for field in data['fields']:
+        d = data['fields'][field]
+        d.update(get_aggregate(d.sumsq, d.sum, d.n)._asdict().items())
+
+    return data
+def get_answers(opt=None, **kwargs):
+    """get_answers - process files
+
+    :param argparse.Namespace opt: options
+    :return: list of answers from proc_file
+    """
+
+    if opt is None:  # API call rather than command line
+        opt = type("opt", (), kwargs)
+
+    # pass filenames through glob() to expand "2017_*.xlsx" etc.
+    files = []
+    for filepath in opt.files:
+        files.extend(glob.glob(filepath))
+
+    # create a pool of processors
+    pool = multiprocessing.Pool(multiprocessing.cpu_count()-1)
+
+    # process file list with processor pool
+    return pool.map(proc_file, files)
+def get_table_rows(answers):
+    """get_table_rows - generator - convert get_answers() output to table format
+
+    :param list answers: output from get_answers()
+    :return: list of rows suitable for csv.writer
+    """
+    yield FIELDS
+    for answer in answers:
+        for field in answer['fields']:
+            row = [answer['fields'][field][k] for k in FIELDS]
+            if PYTHON_2:
+                yield [unicode(col).encode('utf-8') for col in row]
+            else:
+                yield row
+
+def main():
+    """main() - when invoked directly"""
+    opt = get_options()
+
+    # csv.writer does its own EOL handling,
+    # see https://docs.python.org/3/library/csv.html#csv.reader
+    if PYTHON_2:
+        output = open(opt.output, 'wb')
+    else:
+        output = open(opt.output, 'w', newline='')
+
+    with output as out:
+        writer = csv.writer(out)
+        for row in get_table_rows(get_answers(opt)):
+            writer.writerow(row)
+
+if __name__ == '__main__':
+    main()
+'''
+table = (
+    (1, "Declarations"),
+    (1, "class AttrDict"),
+    (2, "__init__"),
+    (1, "make_parser"),
+    (1, "get_options"),
+    (1, "get_aggregate"),
+    (1, "proc_file"),
+    (1, "get_answers"),
+    (1, "get_table_rows"),
+    (1, "main"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+</t>
+<t tx="ekr.20170122040158.23">#!/usr/bin/env python3
+
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20170122040158.24">import os
+import re
+
+</t>
+<t tx="ekr.20170122040158.25">def merge_value(v1, v2):
+    return v
+
+</t>
+<t tx="ekr.20170122040158.26">class MainDisplay(object):
+
+    @others
+# This line should be included at the end of the class node.
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+</t>
+<t tx="ekr.20170122040158.27">def save_file(self):
+    """Write the file out to disk."""
+    with open(self.save_name, "w") as f:
+        for newline in newlines:
+            f.write(newline)
+
+</t>
+<t tx="ekr.20170122040158.28">def retab(s, tabsize):
+    return ''.join(pieces)
+
+if __name__=="__main__":
+    main()
+</t>
+<t tx="ekr.20170123035753.1">at = c.atFileCommands
+table = (
+    (at.othersDirective, '@others'),
+    (at.othersDirective, '@others\n'),
+    (at.othersDirective, '    @others'),
+    (at.miscDirective,   '@tabwidth -4'),
+    (at.miscDirective,   '@tabwidth -4\n'),
+    (at.miscDirective,   '@encoding'),
+    (at.noDirective,     '@encoding.setter'),
+    (at.noDirective,     '@encoding("abc")'),
+    (at.noDirective,     'encoding = "abc"'),
+    (at.noDirective,     '@directive'), # A crucial new test.
+)
+for expected, s in table:
+    result = at.directiveKind4(s, 0)
+    assert expected == result, (expected, result, repr(s))
+</t>
+<t tx="ekr.20170125085544.1"></t>
 </tnodes>
 </leo_file>

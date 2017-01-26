@@ -172,8 +172,8 @@ class PersistenceDataController(object):
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
     '''
-    A class to handle persistence in **foreign files**, files created by @auto,
-    @org-mode or @vim-outline node.
+    A class to handle persistence in **foreign files**, that is,
+    files created by @auto, @org-mode or @vim-outline node.
 
     All required data are held in nodes having the following structure::
 

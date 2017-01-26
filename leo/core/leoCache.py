@@ -226,8 +226,14 @@ class Cacher(object):
         if not c:
             return g.internalError('no commander')
         key = self.fileKey(c.mFileName, self.globals_tag)
-        ratio = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
-        ratio2 = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
+        try:
+            ratio = float(self.db.get('body_outline_ratio_%s' % (key), '0.5'))
+        except TypeError:
+            ratio = 0.5
+        try:
+            ratio2 = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
+        except TypeError:
+            ratio2 = 0.5
         if trace:
             g.trace('  %s %1.2f %1.2f' % (c.shortFileName(), ratio, ratio2))
         return ratio, ratio2

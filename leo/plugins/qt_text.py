@@ -23,6 +23,7 @@ class QTextMixin(object):
         self.permanent = True # False if selecting the minibuffer will make the widget go away.
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.configUnderlineDict = {} # Keys are tags, values are True
+        # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
         self.useScintilla = False # This is used!
         self.virtualInsertPoint = None
         if c:
@@ -468,12 +469,6 @@ if QtWidgets:
             # This event handler is the easy way to keep track of the vertical scroll position.
             self.leo_vsb = vsb = self.verticalScrollBar()
             vsb.valueChanged.connect(self.onSliderChanged)
-            # Signal that the widget can accept delayed-load buttons.
-            if 0: ### To be removed
-                self.leo_load_button = None
-                self.leo_paste_button = None
-                self.leo_big_text = None
-            # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
             # For QCompleter
             self.leo_q_completer = None
             self.leo_options = None

@@ -51,6 +51,7 @@ except ImportError:
 import os
 import sys
 #@-<< imports >>
+index_error_given = False
 #@+others
 #@+node:ville.20120225144051.3580: ** top-level functions
 #@+node:ekr.20140920041848.17924: *3* global-search command (bigdash.py)
@@ -71,12 +72,6 @@ def global_search_f(event):
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
-    # if ok:
-        # try:
-            # QtWebKitWidgets.QWebView(None)
-        # except AttributeError:
-            # print('bigdash.py: QWebView must be installed')
-            # ok = False
     if ok:
         g.app._global_search = GlobalSearch()
         g.plugin_signon(__name__)
@@ -410,17 +405,13 @@ if QtCore:
 #@+node:ekr.20140920041848.17939: ** class LeoFts
 class LeoFts(object):
     #@+others
-    #@+node:ekr.20140920041848.17940: *3* __init__
+    #@+node:ekr.20140920041848.17940: *3* fts.__init__
     def __init__(self,gnxcache,idx_dir):
         '''Ctor for LeoFts class (bigdash.py)'''
         self.gnxcache = gnxcache
         self.idx_dir = idx_dir
-        if not os.path.exists(idx_dir):
-            os.mkdir(idx_dir)
-            self.create()
-        else:
-            self.ix = open_dir(idx_dir)
-    #@+node:ekr.20140920041848.17941: *3* schema
+        self.ix = self.open_index(idx_dir)
+    #@+node:ekr.20140920041848.17941: *3* fts.schema
     def schema(self):
 
         my_analyzer = RegexTokenizer("[a-zA-Z_]+") | LowercaseFilter() | StopFilter()
@@ -432,12 +423,12 @@ class LeoFts(object):
             parent=ID(stored=True),
             doc=ID(stored=True))
         return schema
-    #@+node:ekr.20140920041848.17942: *3* create
+    #@+node:ekr.20140920041848.17942: *3* fts.create
     def create(self):
 
         schema = self.schema()
         self.ix = create_in(self.idx_dir, schema)
-    #@+node:ekr.20140920041848.17943: *3* index_nodes (bigdash.py)
+    #@+node:ekr.20140920041848.17943: *3* fts.index_nodes
     def index_nodes(self,c):
         writer = self.ix.writer()
         doc = c.mFileName
@@ -454,20 +445,53 @@ class LeoFts(object):
                 doc=doc)
         writer.commit()
         self.gnxcache.clear()
-    #@+node:ekr.20140920041848.17944: *3* drop_document
+    #@+node:ekr.20140920041848.17944: *3* fts.drop_document
     def drop_document(self, docfile):
         writer = self.ix.writer()
         g.es_print("Drop index: %s" % g.shortFileName(docfile))
         writer.delete_by_term("doc", docfile)
         writer.commit()
-    #@+node:ekr.20140920041848.17945: *3* statistics
+    #@+node:ekr.20170124095047.1: *3* fts.open_index
+    def open_index(self, idx_dir):
+        global index_error_given
+        if os.path.exists(idx_dir):
+            try:
+                return open_dir(idx_dir)
+            except ValueError:
+                if not index_error_given:
+                    index_error_given = True
+                    g.es_print('bigdash.py: exception in whoosh.open_dir')
+                    g.es_print('please remove this directory:', g.os_path_normpath(idx_dir))
+                return None
+                # Doesn't work: open_dir apparently leaves resources open,
+                # so shutil.rmtree(idx_dir) fails.
+                    # g.es_print('re-creating', repr(idx_dir))
+                    # try:
+                        # import shutil
+                        # shutil.rmtree(idx_dir)
+                        # os.mkdir(idx_dir)
+                        # self.create()
+                        # return open_dir(idx_dir)
+                    # except Exception as why:
+                        # g.es_print(why)
+                        # return None 
+        else:
+            try:
+                os.mkdir(idx_dir)
+                self.create()
+                return open_dir(idx_dir)
+            except Exception:
+                g.es_exception()
+                return None
+            
+    #@+node:ekr.20140920041848.17945: *3* fts.statistics
     def statistics(self):
         r = {}
         with self.ix.searcher() as s:
             r['documents'] = list(s.lexicon("doc"))
         # print("stats: %s" % r)
         return r
-    #@+node:ekr.20140920041848.17946: *3* search
+    #@+node:ekr.20140920041848.17946: *3* fts.search
     def search(self, searchstring, limit=30):
 
         res = []
@@ -491,7 +515,7 @@ class LeoFts(object):
                     rr['f'] = False
                 res.append(rr)
         return res
-    #@+node:ekr.20140920041848.17947: *3* close
+    #@+node:ekr.20140920041848.17947: *3* fts.close
     def close(self):
         self.ix.close()
     #@-others

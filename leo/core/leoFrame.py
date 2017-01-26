@@ -1676,9 +1676,6 @@ class LeoTree(object):
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
             self.stop_colorizer(old_p)
-            btc = self.c.bigTextController
-            if btc and btc.active_flag:
-                btc.go_away()
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
@@ -1708,15 +1705,8 @@ class LeoTree(object):
             select = True
         if select:
             self.revertHeadline = p.h
-            if 1: # Not that expensive
-                c.frame.setWrap(p)
-            if 0:
-                btc = c.bigTextController
-                if btc:
-                    if btc.should_add_buttons(old_p, p):
-                        btc.add_buttons(old_p, p)
-                    elif btc.should_go_away(p):
-                        btc.go_away()
+            # Not that expensive
+            c.frame.setWrap(p)
             self.set_body_text_after_select(p, old_p, traceTime)
             c.nodeHistory.update(p)
         if traceTime:
@@ -1746,7 +1736,6 @@ class LeoTree(object):
             return
         # Part 2: set the new text **and** recolor.
         c.setCurrentPosition(p)
-            ### New, highly experimental
         colorizer.init(p, s) # init *first*.
         w.setAllText(s)
         if trace and trace_time:
@@ -1768,7 +1757,7 @@ class LeoTree(object):
         if traceTime:
             t1 = time.time()
         c = self.c
-        ### c.setCurrentPosition(p)
+        # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
         c.frame.scanForTabWidth(p)
             #GS I believe this should also get into the select1 hook

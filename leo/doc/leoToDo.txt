@@ -3,15 +3,64 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20161027202809.1: ** * To do first
-@language rest
-@wrap
+.. @+node:ekr.20170122010350.1: ** Fossil videos & ideas
+​Richard Hipp, Fossil and SQLite author, makes that distinction and about
+the "pile of files" database (like the .git folder) instead of the single
+file approach[2]. There is a lot of querying capabilities of the last one,
+as you can see on [4]
 
-* Rewrite scripting tutorial
-* Leo and Jupyter notebooks.
-* Mention viewrendered plugin in tutorials.
-- Create real Qt Styles in colorizer.
-- Brew install Leo?
+[2] https://www.youtube.com/watch?v=8y_ABXwYtuc
+[3] https://www.youtube.com/watch?v=ghtpJnrdgbo
+[4] http://fossil-scm.org/index.html/doc/trunk/www/webpage-ex.md
+
+
+If the emphasis is on node versioning, there's this:
+
+https://groups.google.com/d/msg/leo-editor/LIUGtgP8T_s/oSQD4RQGeogJ
+
+===== Offray
+
+Some years ago I proposed something for Leo, combining two technologies: fossil and Yaml[1], for the same reasons exposed here: fossil a as easier, self contained technology for working with files and Yaml as a diff friendly format to express graphs (trees with clones). At that time the idea didn't advance, but I explored it in Grafoscopio using STON[2] instead of Yaml. Now I have a diff and human friendly format for Grafoscopio notebooks, that can express graphs. For example, the interactive notebook about Panama Papers at [3] is shown in a fossil repository at [4] and a diff with a previous version is on [5].
+
+[1] http://markmail.org/search/?q=leo-editor%20offray%20yaml%20fossil#query:leo-editor%20offray%20yaml%20fossil+page:1+mid:t7xlg7mt5hqnldkn+state:results
+[2] https://github.com/svenvc/ston/blob/master/ston-paper.md
+[3] http://mutabit.com/offray/blog/en/entry/panama-papers-1
+[4] http://mutabit.com/repos.fossil/panama-papers/artifact/cbfe8929edf64212
+[5] http://mutabit.com/repos.fossil/panama-papers/fdiff?sbs=1&v1=255e79b046584a36&v2=cbfe8929edf64212
+
+Some notes about my thesis that are in Leo have conflicts created by xml +
+dropbox, that made the XML unreadable from Leo again, as you can see in
+this fossil repo at [6]. I will try to fix the file to make it loadable
+again in Leo.
+
+[6] http://mutabit.com/repos.fossil/doctorado-offray/dir?ci=ab8052282f0847de&name=Tesis
+
+This shows how XML is really a big weakness for Leo and other programs and
+that other simpler approaches for a diff/human friendly format and
+technologies for storing complex documents and enabling collaborative
+projects are available, as the Grafoscopio prototypes shown, but,
+unfortunately, XML and git have monopolized the developer's imagination.
+But maybe now we can rethink some core assumptions about technologies and
+formats behind Leo.
+
+I would try something like this:
+
+- Storing a simple Leo tree as a Yaml tree, including clones and see how
+  far can we push the format, for example, when interaction with external
+  files is represented in that tree (@file, @clean @auto).
+  
+- Storing Leo and these external files in a single .fossil repository and
+  explore if having this technology as a simple backed for storing files
+  and their history makes easier to work with the changes in such external
+  files. At least in my preliminary explorations, having fossil compiled
+  with JSON support[7][8] has enabled to query, from Grafoscopio, the
+  fossil repository with a simple interface (I have not made any POST
+  experiment yet). Anyway, I could imagine a single .fossil file that makes
+  Leo store a tree and related files, so if any of them changes, the
+  changes are compared against the repository to ease collaboration.
+
+[7] http://fossil.wanderinghorse.net/repos/fwiki/index.cgi/wiki/README
+[8] https://docs.google.com/document/d/1fXViveNhDbiXgCuE7QDXQOKeFzf2qNUkBEgiUvoqFN4/view
 .. @+node:ekr.20161231072434.1: ** Bugs
 - @auto bugs:
     1. cancelling @auto write creates orphan nodes!
@@ -23,141 +72,13 @@
 - Problems with Alt-G: goto-global-line.
 
 - Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20160404213305.1: *3* 4 Import problems
-.. @+node:ekr.20130806072439.20380: *4* auto-rst error? need more robust?
-From: HaveF <iamaplayer@gmail.com>
-
-When I use auto-rst import rst file, sometimes, the author write extra
-characters which aren't harm, but the leo says it is a error...like this
-one:
-
-reading: @auto-rst README
-
-Error: @auto did not import @auto-rst README perfectly
-The clean-all-lines command may help fix whitespace problems
-first mismatched line: 20 (original) = 20 (imported)
-
-Original file...
-
-  18 u'how the learning experiment went.\\n'
-  19 u'Step 1: Create the dataset\\n'
-  20 u'----------------------------\\n'
-  21 u'From this directory, run\\n'
-  22 u'python make_dataset.py\\n'
-
-Imported file...
-
-  18 u'how the learning experiment went.\\n'
-  19 u'Step 1: Create the dataset\\n'
-  20 u'--------------------------\\n'
-  21 u'From this directory, run\\n'
-  22 u'python make_dataset.py\\n'
-
-inserting @ignore
-
-errors inhibited read @auto
-D:\\OpenCourses\\ufldl\\ref\\pylearn2\\pylearn2\\scripts\\tutorials\\grbm_smd\\README
-
-reading entire file into @auto node.
-
-reading: @edit README
-
-finished
-
-The problem is the line 20 has two extra '-', when I remove it manually,
-the import works.
-
-Do you have a better idea to do this than do it manually?
-
-===== From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sat, 18 May 2013 16:50:12 +0800
-HaveF <iamaplayer@gmail.com> wrote:
-
-> Original file...
-> 
->   18 u'how the learning experiment went.\\n'
->   19 u'Step 1: Create the dataset\\n'
->   20 u'----------------------------\\n'
->   21 u'From this directory, run\\n'
->   22 u'python make_dataset.py\\n'
-
-At first I thought that the rst was invalid, but the docs. say
-  The underline/overline must be at 
-  least as long as the title text. 
-http://docutils.sourceforge.net/docs/user/rst/quickref.html#section-structure
-so I guess it's not.  But leo has nowhere to store the length of the
-underlining.  Also, this is related to the issue where Leo changes the
-underline characters used, e.g. = -> - and * -> # etc.
-
-I think the easiest solution is going to be to do the import and just
-remove the @ignore afterwards, checking that there are no changes that
-matter.  Perhaps the wording of the @ignore message could make it
-clearer that the import may not have failed, but just needs checking.
-
-===== HaveF <iamaplayer@gmail.com>
-
-
-But in fact, the @auto-rst load this rst file like @auto, no @ignore node 
-at all.
-
-My import procedure is like this:
-1. make a node name:
-@auto-rst models.txt
-2. right click it, and select "refresh from disk"
-
-
-And I just find another problem...
-If the rst file like this:
-
-MLP
-===
-
-It also occurs error:
-
-reading: @auto-rst models.txt
-
-Error: @auto did not import @auto-rst models.txt perfectly
-The clean-all-lines command may help fix whitespace problems
-first mismatched line: 10 (original) = 10 (imported)
-
-Original file...
-
-   8 u'    :members:\\n'
-   9 u'MLP\\n'
-  10 u'===\\n'
-  11 u'.. automodule:: pylearn2.models.mlp\\n'
-  12 u'    :members:\\n'
-
-Imported file...
-
-   8 u'    :members:\\n'
-   9 u'MLP\\n'
-  10 u'====\\n'
-  11 u'.. automodule:: pylearn2.models.mlp\\n'
-  12 u'    :members:\\n'
-
-inserting @ignore
-
-errors inhibited read @auto D:\\OpenCourses\\ufldl\\ref\\pylearn2\\doc\\library\\models.txt
-
-reading entire file into @auto node.
-
-reading: @edit models.txt
-
-finished
-
-It says I need a extra "="...
-
-I have attached this file, for someone has interest to reproduce the error.
-
-.. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
+.. @+node:ekr.20111010162047.15678: ** ?? Imports should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *5* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *3* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -165,86 +86,13 @@ def spam():
     pass
     
 # This is the last line.
-.. @+node:ekr.20120327163022.9744: *4* Fix bug: The @auto script *must* put @first nodes in root node
-Also the import commands.
+.. @+node:ekr.20161027202809.1: ** Important
+@language rest
+@wrap
 
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20130806072439.20485: *4* Whitespace when importing java file using @auto
-Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I'm using @auto to import java files into my Leo project. I'm then cloning 
-various methods as sub-nodes of new feature nodes. 
-It's helping keep my development focussed - and is useful to look back and 
-see what parts of the codebase I've worked on for each feature. 
-
-However, the whitespace in the Java files isn't completely regular. In 
-particular, debug logging is always placed in column 1 - regardless of the 
-surrounding indentation. 
-Other people are also working on these files, so I'd rather not mess with 
-the established convention. 
-
-As things stand, when Leo imports a file its outputting a bunch of error 
-messages:
-* error: underindented line. Extra leading whitespace will be added
-* warning: intermixed blanks and tabs
-
-The creation of the auto node goes fine - though the final result has an 
-@ignore directive in its root node. 
-When working, I just take the @ignore away and clone the methods I want to 
-work on. 
-The problem is when I close the Leo file and re-open it later on, the same 
-errors occur during the building of the auto node and the previous cloned 
-information is lost. 
-To restart work on a feature, I need to reclone the appropriate nodes. Not 
-a showstopper, but not ideal. 
-
-I tried adjusting the info in the JavaScanner class in the core 
-leoImport.py file as follows:
-
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = None
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.classTags = ['class','interface']
-        self.functionTags = []
-        self.sigFailTokens = [';','='] # Just like c.
-        self.strict=False
-
-I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
-compiled to bytecode seems to be ok.
-
-I was hoping the the setting of self.strict = False would allow the parsing 
-to ignore the whitespace and indentation issues. 
-I'm still getting the same errors though. 
-
-Any help appreciated. I'm using Leo 4.10-final. 
-
-===== EKR
-
-There is no easy way to do this at present, but it's probably reasonable to disable errors (and not add @ignore) for underindented comments for
-non-strict languages.
-
-Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20170120114702.1: *3* #327 Allow key unbinding
-https://github.com/leo-editor/leo-editor/issues/327
-
-# Not the same as binding it to do-nothing!
-
-k.getPaneBinding uses only k.masterBindingsDict, so this dict is likely what must be cleared.
-
-k.masterBindingsDict: Keys are scope names (2). Values are interior masterBindingDicts (3)
-
-(2) Scope names are 'all','text',etc.
-(3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
-
-So to clear an entry in k.masterBindingsDict, all inner dicts must be scanned.
+* Rewrite scripting tutorial
+* Leo and Jupyter notebooks.
+* Mention viewrendered plugin in tutorials.
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 
