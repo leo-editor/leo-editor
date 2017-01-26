@@ -1711,7 +1711,15 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18629: *3*  jedit.State methods
     #@+node:ekr.20110605121601.18630: *4* jedit.clearState
     def clearState(self):
-        self.setState(-1)
+        '''
+        Create a *language-specific* default state.
+        This properly forces a full recoloring when @language changes.
+        '''
+        state = self.colorizer.language or 'no-language'
+        state = state.replace('python','py').replace('markdown','md')
+        n = self.stateNameToStateNumber(None, state)
+        self.setState(n)
+        return n
     #@+node:ekr.20110605121601.18631: *4* jedit.computeState
     def computeState(self, f, keys):
         '''Compute the state name associated with f and all the keys.
@@ -1917,7 +1925,9 @@ class JEditColorizer(object):
             self.showState(n), self.colorizer.flag, block_n, s))
         if block_n == 0:
             self.defaultLanguage = self.colorizer.language
-            if not self.colorizer.flag:
+            if self.colorizer.flag and n == -1:
+                n = self.clearState()
+            elif not self.colorizer.flag:
                 n = self.setRestart(self.restartNoColor)
         self.setState(n)
         # Always color the line, even if colorizing is disabled.
