@@ -27,7 +27,6 @@ class ColorizerMixin(object):
     def colorize(self, p, incremental=False, interruptable=True):
         assert False, 'colorize must be defined in sublcasses'
 
-    ### To be removed.
     def kill(self):
         '''Kill colorizing.'''
         pass
@@ -914,11 +913,8 @@ class JEditColorizer(object):
         if self.trace_leo_matches: g.trace()
         # Only matches at start of line.
         if i == 0 and g.match_word(s, 0, '@color'):
-            self.colorizer.flag = True # Enable coloring.
-                ### Has no effect.
             n = self.setRestart(self.restartColor)
-            self.setState(n)
-                # Enables coloring of *this* line.
+            self.setState(n) # Enable coloring of *this* line.
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
                 # Now required. Sets state.
             return len('@color')
