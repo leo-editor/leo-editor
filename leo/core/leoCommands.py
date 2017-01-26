@@ -2168,7 +2168,7 @@ class Commands(object):
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
