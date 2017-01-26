@@ -5648,10 +5648,16 @@ class Commands(object):
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
     def requestRecolor(self):
         c = self
-        # g.trace(g.callers(4))
         c.requestRecolorFlag = True
 
     recolor = requestRecolor
+
+    @cmd('recolor')
+    def recolorCommand(self, event=None):
+        c = self
+        # Setting all text appears to be the only way.
+        c.frame.body.wrapper.setAllText(c.p.b)
+        
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
