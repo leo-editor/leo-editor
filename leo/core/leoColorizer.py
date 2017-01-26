@@ -1956,8 +1956,8 @@ class JEditColorizer(object):
         if not g.app.unitTesting:
         
             def recolorAtIdleTime(timer, c=c, self=self):
-                g.trace(self.n_recolor_later)
-                self.n_recolor_later += 1
+                g.trace(self.n_recolorLater)
+                self.n_recolorLater += 1
                 c.recolorCommand()
                 timer.stop()
             
