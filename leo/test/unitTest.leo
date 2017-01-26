@@ -386,7 +386,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+expanded="ekr.20090615053403.4877,ekr.20090615053403.4879,ekr.20090615053403.4881,ekr.20090615053403.4883,ekr.20090615053403.4885,ekr.20090615053403.4887,ekr.20110521073115.3486,ekr.20090615053403.4890,ekr.20090615053403.4892,ekr.20090615053403.4894,ekr.20090615053403.4896,ekr.20090615053403.4898,ekr.20090615053403.4900,ekr.20090615053403.4902,ekr.20090615053403.4904,ekr.20090615053403.4906,ekr.20101020123501.6005,ekr.20090615053403.4908,ekr.20090615053403.4910,ekr.20090615053403.4912,ekr.20090615053403.4914,ekr.20090615053403.4925,ekr.20090615053403.4927,ekr.20090615053403.4929,ekr.20090615053403.4931,ekr.20090615053403.4933,ekr.20090615053403.4935,ekr.20110529215703.3494,ekr.20090615053403.4937,ekr.20090615053403.4939,ekr.20090615053403.4941,ekr.20090615053403.4945,ekr.20090615053403.4947,ekr.20090615053403.4949,ekr.20090615053403.4955,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -1235,69 +1236,69 @@
 </v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20090615053403.4876"><vh>leoColor</vh>
-<v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
+<v t="ekr.20090615053403.4877" a="E"><vh>@test @comment after @language plain</vh>
 <v t="ekr.20090615053403.4878"><vh>plain code</vh></v>
 </v>
-<v t="ekr.20090615053403.4879"><vh>@test colorizer Actionscript</vh>
+<v t="ekr.20090615053403.4879" a="E"><vh>@test colorizer Actionscript</vh>
 <v t="ekr.20090615053403.4880"><vh>actionscript test</vh></v>
 </v>
-<v t="ekr.20090615053403.4881"><vh>@test colorizer C</vh>
+<v t="ekr.20090615053403.4881" a="E"><vh>@test colorizer C</vh>
 <v t="ekr.20090615053403.4882"><vh>c code</vh></v>
 </v>
-<v t="ekr.20090615053403.4883"><vh>@test colorizer C#</vh>
+<v t="ekr.20090615053403.4883" a="E"><vh>@test colorizer C#</vh>
 <v t="ekr.20090615053403.4884"><vh>c# code</vh></v>
 </v>
-<v t="ekr.20090615053403.4885"><vh>@test colorizer css</vh>
+<v t="ekr.20090615053403.4885" a="E"><vh>@test colorizer css</vh>
 <v t="ekr.20090615053403.4886"><vh>css</vh></v>
 </v>
-<v t="ekr.20090615053403.4887"><vh>@test colorizer CWEB</vh>
+<v t="ekr.20090615053403.4887" a="E"><vh>@test colorizer CWEB</vh>
 <v t="ekr.20090615053403.4888"><vh>CWEB</vh>
 <v t="ekr.20090615053403.4889"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20110521073115.3486"><vh>@test colorizer cython</vh>
+<v t="ekr.20110521073115.3486" a="E"><vh>@test colorizer cython</vh>
 <v t="ekr.20110521073115.3490"><vh>cython</vh></v>
 </v>
-<v t="ekr.20090615053403.4890"><vh>@test colorizer elisp</vh>
+<v t="ekr.20090615053403.4890" a="E"><vh>@test colorizer elisp</vh>
 <v t="ekr.20090615053403.4891"><vh>elisp</vh></v>
 </v>
-<v t="ekr.20090615053403.4892"><vh>@test colorizer erlang</vh>
+<v t="ekr.20090615053403.4892" a="E"><vh>@test colorizer erlang</vh>
 <v t="ekr.20090615053403.4893"><vh>erlang</vh></v>
 </v>
-<v t="ekr.20090615053403.4894"><vh>@test colorizer forth</vh>
+<v t="ekr.20090615053403.4894" a="E"><vh>@test colorizer forth</vh>
 <v t="ekr.20090615053403.4895"><vh>forth</vh></v>
 </v>
-<v t="ekr.20090615053403.4896"><vh>@test colorizer HTML string bug</vh>
+<v t="ekr.20090615053403.4896" a="E"><vh>@test colorizer HTML string bug</vh>
 <v t="ekr.20090615053403.4897"><vh>html</vh></v>
 </v>
-<v t="ekr.20090615053403.4898"><vh>@test colorizer HTML1</vh>
+<v t="ekr.20090615053403.4898" a="E"><vh>@test colorizer HTML1</vh>
 <v t="ekr.20090615053403.4899"><vh>html</vh></v>
 </v>
-<v t="ekr.20090615053403.4900"><vh>@test colorizer HTML2</vh>
+<v t="ekr.20090615053403.4900" a="E"><vh>@test colorizer HTML2</vh>
 <v t="ekr.20090615053403.4901"><vh>html</vh></v>
 </v>
-<v t="ekr.20090615053403.4902"><vh>@test colorizer Java</vh>
+<v t="ekr.20090615053403.4902" a="E"><vh>@test colorizer Java</vh>
 <v t="ekr.20090615053403.4903"><vh>html</vh></v>
 </v>
-<v t="ekr.20090615053403.4904"><vh>@test colorizer LaTex</vh>
+<v t="ekr.20090615053403.4904" a="E"><vh>@test colorizer LaTex</vh>
 <v t="ekr.20090615053403.4905"><vh>LaTex</vh></v>
 </v>
-<v t="ekr.20090615053403.4906"><vh>@test colorizer lisp</vh>
+<v t="ekr.20090615053403.4906" a="E"><vh>@test colorizer lisp</vh>
 <v t="ekr.20090615053403.4907"><vh>lisp</vh></v>
 </v>
-<v t="ekr.20101020123501.6005"><vh>@test colorizer objective-c</vh>
+<v t="ekr.20101020123501.6005" a="E"><vh>@test colorizer objective-c</vh>
 <v t="ekr.20101020123501.6006"><vh>objective-c</vh></v>
 </v>
-<v t="ekr.20090615053403.4908"><vh>@test colorizer perl</vh>
+<v t="ekr.20090615053403.4908" a="E"><vh>@test colorizer perl</vh>
 <v t="ekr.20090615053403.4909"><vh>perl</vh></v>
 </v>
-<v t="ekr.20090615053403.4910"><vh>@test colorizer PHP</vh>
+<v t="ekr.20090615053403.4910" a="E"><vh>@test colorizer PHP</vh>
 <v t="ekr.20090615053403.4911"><vh>PHP</vh></v>
 </v>
-<v t="ekr.20090615053403.4912"><vh>@test colorizer plsql</vh>
+<v t="ekr.20090615053403.4912" a="E"><vh>@test colorizer plsql</vh>
 <v t="ekr.20090615053403.4913"><vh>plsql</vh></v>
 </v>
-<v t="ekr.20090615053403.4914"><vh>@test colorizer python.xml (jEdit)</vh>
+<v t="ekr.20090615053403.4914" a="E"><vh>@test colorizer python.xml (jEdit)</vh>
 <v t="ekr.20090615053403.4915"><vh>python.xml</vh>
 <v t="ekr.20090615053403.4916"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
 <v t="ekr.20090615053403.4917"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
@@ -1311,46 +1312,46 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090615053403.4925"><vh>@test colorizer Python1</vh>
+<v t="ekr.20090615053403.4925" a="E"><vh>@test colorizer Python1</vh>
 <v t="ekr.20090615053403.4926"><vh>python</vh></v>
 </v>
-<v t="ekr.20090615053403.4927"><vh>@test colorizer Python2</vh>
+<v t="ekr.20090615053403.4927" a="E"><vh>@test colorizer Python2</vh>
 <v t="ekr.20090615053403.4928"><vh>python</vh></v>
 </v>
-<v t="ekr.20090615053403.4929"><vh>@test colorizer r</vh>
+<v t="ekr.20090615053403.4929" a="E"><vh>@test colorizer r</vh>
 <v t="ekr.20090615053403.4930"><vh>r</vh></v>
 </v>
-<v t="ekr.20090615053403.4931"><vh>@test colorizer rapidq</vh>
+<v t="ekr.20090615053403.4931" a="E"><vh>@test colorizer rapidq</vh>
 <v t="ekr.20090615053403.4932"><vh>rapidq</vh></v>
 </v>
-<v t="ekr.20090615053403.4933"><vh>@test colorizer Rebol</vh>
+<v t="ekr.20090615053403.4933" a="E"><vh>@test colorizer Rebol</vh>
 <v t="ekr.20090615053403.4934"><vh>Rebol</vh></v>
 </v>
-<v t="ekr.20090615053403.4935"><vh>@test colorizer rest</vh>
+<v t="ekr.20090615053403.4935" a="E"><vh>@test colorizer rest</vh>
 <v t="ekr.20090615053403.4936"><vh>rest</vh></v>
 </v>
-<v t="ekr.20110529215703.3494"><vh>@test colorizer scala</vh>
+<v t="ekr.20110529215703.3494" a="E"><vh>@test colorizer scala</vh>
 <v t="ekr.20110529215703.3495"><vh>scala</vh></v>
 </v>
-<v t="ekr.20090615053403.4937"><vh>@test colorizer shell</vh>
+<v t="ekr.20090615053403.4937" a="E"><vh>@test colorizer shell</vh>
 <v t="ekr.20090615053403.4938"><vh>shell</vh></v>
 </v>
-<v t="ekr.20090615053403.4939"><vh>@test colorizer shellscript</vh>
+<v t="ekr.20090615053403.4939" a="E"><vh>@test colorizer shellscript</vh>
 <v t="ekr.20090615053403.4940"><vh>shellscript</vh></v>
 </v>
-<v t="ekr.20090615053403.4941"><vh>@test colorizer tex.xml (jEdit)</vh>
+<v t="ekr.20090615053403.4941" a="E"><vh>@test colorizer tex.xml (jEdit)</vh>
 <v t="ekr.20090615053403.4942"><vh>tex.xml</vh>
 <v t="ekr.20090615053403.4943"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
 <v t="ekr.20090615053403.4944"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20090615053403.4945"><vh>@test colorizer wikiTest1</vh>
+<v t="ekr.20090615053403.4945" a="E"><vh>@test colorizer wikiTest1</vh>
 <v t="ekr.20090615053403.4946"><vh>wiki</vh></v>
 </v>
-<v t="ekr.20090615053403.4947"><vh>@test colorizer wikiTest2</vh>
+<v t="ekr.20090615053403.4947" a="E"><vh>@test colorizer wikiTest2</vh>
 <v t="ekr.20090615053403.4948"><vh>wiki</vh></v>
 </v>
-<v t="ekr.20090615053403.4949"><vh>@test colorizer wikiTest3</vh>
+<v t="ekr.20090615053403.4949" a="E"><vh>@test colorizer wikiTest3</vh>
 <v t="ekr.20090615053403.4950"><vh>wiki</vh></v>
 </v>
 <v t="ekr.20090615053403.4951"><vh>@test leoColor.doNowebSecRef</vh>
@@ -1358,7 +1359,7 @@
 </v>
 <v t="ekr.20090615053403.4953"><vh>@test python keywords (new colorizer)</vh></v>
 <v t="ekr.20090615053403.4954"><vh>@test scanColorDirectives</vh></v>
-<v t="ekr.20090615053403.4955"><vh>@test vbscript</vh>
+<v t="ekr.20090615053403.4955" a="E"><vh>@test vbscript</vh>
 <v t="ekr.20090615053403.4956"><vh>vbscript</vh></v>
 </v>
 <v t="ekr.20090615053403.4957"><vh>@test zz restore the screen</vh></v>
@@ -1796,7 +1797,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
