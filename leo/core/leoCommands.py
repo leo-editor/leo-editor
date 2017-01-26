@@ -5654,10 +5654,14 @@ class Commands(object):
 
     @cmd('recolor')
     def recolorCommand(self, event=None):
+        '''Force a full recolor.'''
         c = self
+        wrapper = c.frame.body.wrapper
         # Setting all text appears to be the only way.
-        c.frame.body.wrapper.setAllText(c.p.b)
-        
+        i, j = wrapper.getSelectionRange()
+        ins = wrapper.getInsertPoint()
+        wrapper.setAllText(c.p.b)
+        wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):

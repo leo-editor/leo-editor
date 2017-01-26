@@ -949,27 +949,13 @@ class JEditColorizer(object):
             k = g.skip_c_id(s, j)
             name = s[j: k]
             ok = self.init_mode(name)
-            # g.trace(ok, name, self.language_name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
                 if name != old_name:
-                    # Recolor everything to the next @language directive.
-                    # g.trace(self.language_name, '=>', name)
-                    self.setRestart(self.restartAtLanguage)
+                    self.recolorLater()
             return k - i
         else:
             return 0
-    #@+node:ekr.20170126112843.1: *6* jedit.restartAtLanguage
-    def restartAtLanguage(self, s):
-        '''Change all lines up to the next @language directive.'''
-        if self.trace_leo_matches: g.trace(repr(s))
-        if g.match_word(s, 0, '@language'):
-            self.colorRangeWithTag(s, 0, len('@language'), 'leokeyword')
-            return len('@language')
-        else:
-            n = self.setRestart(self.restartAtLanguage)
-            self.setState(n) # Enables coloring of *this* line.
-            return 0 # Allow colorizing!
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
     def match_at_nocolor(self, s, i):
         if self.trace_leo_matches: g.trace(i, repr(s))
@@ -1718,9 +1704,10 @@ class JEditColorizer(object):
         return n
     #@+node:ekr.20110605121601.18631: *4* jedit.computeState
     def computeState(self, f, keys):
-        '''Compute the state name associated with f and all the keys.
-
-        Return a unique int n representing that state.'''
+        '''
+        Compute the state name associated with f and all the keys.
+        Return a unique int n representing that state.
+        '''
         # Abbreviate arg names.
         d = {
             'delegate': '=>',
@@ -1772,26 +1759,26 @@ class JEditColorizer(object):
 
     def setState(self, n):
         self.highlighter.setCurrentBlockState(n)
+        return n
     #@+node:ekr.20170125141148.1: *4* jedit.inColorState
     def inColorState(self):
-        '''True if the *current* state is not disabed.'''
+        '''True if the *current* state is enabled.'''
         n = self.currentState()
         state = self.stateDict.get(n, 'no-state')
         enabled = (
             not state.endswith('@nocolor') and
             not state.endswith('@nocolor-node') and
             not state.endswith('@killcolor'))
-        # g.trace(enabled, state)
         return enabled
 
       
-    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart & setLanguage
+    #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
         return n
 
-    #@+node:ekr.20110605121601.18635: *4* jedit.showState & showCurrent/PrevState
+    #@+node:ekr.20110605121601.18635: *4* jedit.show...
     def showState(self, n):
         state = self.stateDict.get(n, 'no-state')
         return '%2s:%s' % (n, state)
@@ -1915,10 +1902,10 @@ class JEditColorizer(object):
         n = self.prevState()
         if block_n == 0:
             n = self.initBlock0(n)
+        n = self.setState(n) # Required.
         if trace: g.trace('%25s %-3s %r' % (self.showState(n), block_n, s))
-        self.setState(n) # Required.
         # Always color the line, even if colorizing is disabled.
-        if not s.isspace():
+        if s:
             self.mainLoop(n, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0 (self, n):
@@ -1942,6 +1929,8 @@ class JEditColorizer(object):
         state = self.languageTag(self.colorizer.language or 'no-language')
         n = self.stateNameToStateNumber(None, state)
         self.initialStateNumber = n
+        self.blankStateNumber = self.stateNameToStateNumber(None,state+';blank')
+        # g.trace(self.blankStateNumber)
         return n
     #@+node:ekr.20170126103925.1: *4* jedit.languageTag
     def languageTag(self, name):
@@ -1957,6 +1946,24 @@ class JEditColorizer(object):
         for pattern, s in table:
             name = name.replace(pattern, s)
         return name
+    #@+node:ekr.20170126162735.1: *3* jedit.recolorLater
+    def recolorLater(self):
+        '''Queue up recoloring at idle time.'''
+        c = self.c
+        
+        if not g.app.unitTesting:
+        
+            def recolorAtIdleTime(timer, c=c):
+                g.trace()
+                c.recolorCommand()
+                timer.stop()
+            
+            timer = g.IdleTime(
+                handler=recolorAtIdleTime,
+                delay=0,
+                tag='recolorLater',
+            )
+            if timer: timer.start()
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
