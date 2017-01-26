@@ -569,16 +569,15 @@ class JEditColorizer(object):
                 if list(self.fonts.keys()): # Restore the default font.
                     if trace and traceFonts:
                         g.trace('default', key, font)
-                    self.fonts[key] = font # 2010/02/19: Essential
+                    self.fonts[key] = font # Essential
                     wrapper.tag_configure(key, font=defaultBodyfont)
                 else:
                     if trace and traceFonts:
                         g.trace('no fonts')
             if isQt and key == 'url' and font:
-                font.setUnderline(True) # 2011/03/04
+                font.setUnderline(True)
         keys = sorted(self.default_colors_dict.keys())
         for name in keys:
-            # if name == 'operator': g.pdb()
             option_name, default_color = self.default_colors_dict[name]
             color = (
                 c.config.getColor('%s_%s' % (self.colorizer.language, option_name)) or
@@ -1482,6 +1481,7 @@ class JEditColorizer(object):
     ):
         '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
         trace = False and not g.unitTesting
+        dots = False # A flag that we are using dots as a continuation.
         if i >= len(s): return 0
         # g.trace(begin,end,no_escape,no_line_break,no_word_break)
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -1502,6 +1502,12 @@ class JEditColorizer(object):
             if j == -1:
                 j = i # A real failure.
             else:
+                # A hack to handle continued strings. Should work for most languages.
+                # Prepend "dots" to the kind, as a flag to setTag.
+                dots = j > len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+                if dots:
+                    kind = 'dots'+kind
+                    if trace: g.trace('underline', kind, repr(s[i:j]))
                 # A match
                 i2 = i + len(begin); j2 = j + len(end)
                 if delegate:
@@ -1513,7 +1519,8 @@ class JEditColorizer(object):
                 j = j2
                 self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
-        if j > len(s):
+        # New in Leo 5.5: don't recolor everything after continued strings.
+        if j > len(s) and not dots:
             j = len(s) + 1
 
             def span(s):
@@ -1817,6 +1824,7 @@ class JEditColorizer(object):
             # A superb trace: enable this first to see what gets colored.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
+            if trace: g.trace('not in color state')
             return
         if delegate:
             if trace:
@@ -1867,31 +1875,27 @@ class JEditColorizer(object):
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
-        # trace = False and not g.unitTesting
         f = self.restartDict.get(n)
         i = f(s) if f else 0
         # if trace: g.trace('===== %30s %r' % (self.showCurrentState(), s))
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
-            # if trace: g.printList(functions)
+            # g.printList(functions)
             for f in functions:
                 n = f(self, s, i)
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
-                elif n > 0: # Success.
-                    # if trace and f.__name__ != 'match_blanks':
-                        # g.trace('match: %s %r' % (f.__name__, s[i:i+n]))
-                    # The match has already been colored.
+                elif n > 0: # Success. The match has already been colored.
+                    # if f.__name__ != 'match_blanks': g.trace(f.__name__, repr(s[i:i+n]))
                     i += n
                     break
                 elif n < 0: # Total failure.
-                    # if trace: g.trace('fail:  %s %r' % (f.__name__, s[i:i-n]))
+                    # g.trace('%s %r' % (f.__name__, s[i:i-n]))
                     i += -n
                     break
-                else:
-                    # Partial failure: Do not break or change i!
+                else: # Partial failure: Do not break or change i!
                     pass 
             else:
                 i += 1
@@ -1932,11 +1936,11 @@ class JEditColorizer(object):
             g.trace('%7s %s' % (tag, s[i:j]))
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
-        # Caching might cause problems. It does not materially affect speed.
-            # format = wrapper.formatDict.get(tag)
-            # if format:
-                # self.highlighter.setFormat(i, j - i, format)
-                # return
+        # A hack to allow continuation dots on any tag.
+        dots = tag.startswith('dots')
+        if dots:
+            tag = tag[len('dots'):]
+            if trace: g.trace('dotted tag:', tag)
         colorName = wrapper.configDict.get(tag)
         # Munge the color name.
         if not colorName:
@@ -1969,12 +1973,15 @@ class JEditColorizer(object):
                 format.setBackground(color)
         elif underline:
             format.setForeground(color)
+            format.setUnderlineStyle(format.SingleUnderline)
             format.setFontUnderline(True)
+        elif dots:
+            format.setForeground(color)
+            format.setUnderlineStyle(format.DotLine)
         else:
             format.setForeground(color)
+            format.setUnderlineStyle(format.NoUnderline)
         self.tagCount += 1
-        # Caching causes problems.
-        # wrapper.formatDict [tag] = format
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18551: ** class LeoQtColorizer
