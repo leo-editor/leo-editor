@@ -243,9 +243,7 @@ class JEditColorizer(object):
         assert(wrapper == self.c.frame.body.wrapper)
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
-        ### self.defaultState = 'default-state:' # The name of the default state.
         self.defaultLanguage = None
-        self.flag = None # The initial coloring state.
         self.hyperCount = 0
         self.nextState = 1 # Dont use 0.
         self.restartDict = {} # Keys are state numbers, values are restart functions.
@@ -969,7 +967,6 @@ class JEditColorizer(object):
             if trace: g.trace(ok, name, self.language_name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
-            self.clearState()
             return k - i
         else:
             return 0
@@ -1031,7 +1028,7 @@ class JEditColorizer(object):
             j = i + len(seq)
             k = g.skip_ws(s, j)
             self.colorRangeWithTag(s, i, k, 'leokeyword')
-            self.clearState()
+            ### self.clearState()
             c.frame.setWrap(c.p, force=True)
             return k - i
         else:
@@ -1914,10 +1911,9 @@ class JEditColorizer(object):
         n = self.prevState()
         if trace: g.trace('%25s %-5s %-3s %r' % (
             self.showState(n), self.colorizer.flag, block_n, s))
-        if block_n is 0:
+        if block_n == 0:
             self.defaultLanguage = self.colorizer.language
-            self.flag = self.colorizer.flag
-            if not self.flag:
+            if not self.colorizer.flag:
                 n = self.setRestart(self.restartNoColor)
         self.setState(n)
         # Always color the line, even if colorizing is disabled.
