@@ -1032,7 +1032,6 @@ class JEditColorizer(object):
             j = i + len(seq)
             k = g.skip_ws(s, j)
             self.colorRangeWithTag(s, i, k, 'leokeyword')
-            ### self.clearState()
             c.frame.setWrap(c.p, force=True)
             return k - i
         else:
@@ -1083,6 +1082,8 @@ class JEditColorizer(object):
                 else:
                     j = len(tag)
                     self.colorRangeWithTag(s, 0, j, 'leokeyword') # 'docpart')
+                    # This call to clearState is essential, but it interferes
+                    # with full recoloring when @language changes.
                     self.clearState()
                     return j
         self.setRestart(self.restartDocPart)
@@ -1543,7 +1544,6 @@ class JEditColorizer(object):
             if trace: g.trace('***Continuing', kind, i, j, len(s), s[i: j])
         elif j != i:
             if trace: g.trace('***Ending', kind, i, j, s[i: j])
-            self.clearState()
         return j - i # Correct, whatever j is.
     #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper
     def match_span_helper(self, s, i, pattern, no_escape, no_line_break, no_word_break):
@@ -1619,7 +1619,7 @@ class JEditColorizer(object):
             if trace: g.trace('***Re-continuing', i, j, len(s), s)
         else:
             if trace: g.trace('***ending', i, j, len(s), s)
-            self.clearState()
+            ### self.clearState()
         return j # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(self, s, i,
@@ -1907,7 +1907,6 @@ class JEditColorizer(object):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
-        # if trace: g.trace('----- %30s %r' % (self.showCurrentState(), s))
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers (entry, good trace)
     def recolor(self, s):
         '''
@@ -2366,7 +2365,7 @@ if QtGui:
             It appears that this method is seldom (never?) called!
             '''
             # pylint: disable=arguments-differ
-            trace = True # and not g.unitTesting
+            trace = False # and not g.unitTesting
             if trace: g.trace('=====', p and p.h, g.callers())
             if not hasattr(self, 'currentBlock'):
                 if self.no_method_message:
