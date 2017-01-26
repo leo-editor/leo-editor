@@ -1947,14 +1947,17 @@ class JEditColorizer(object):
             name = name.replace(pattern, s)
         return name
     #@+node:ekr.20170126162735.1: *3* jedit.recolorLater
+    n_recolorLater = 0
+
     def recolorLater(self):
         '''Queue up recoloring at idle time.'''
         c = self.c
         
         if not g.app.unitTesting:
         
-            def recolorAtIdleTime(timer, c=c):
-                g.trace()
+            def recolorAtIdleTime(timer, c=c, self=self):
+                g.trace(self.n_recolor_later)
+                self.n_recolor_later += 1
                 c.recolorCommand()
                 timer.stop()
             
