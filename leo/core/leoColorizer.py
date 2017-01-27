@@ -935,10 +935,13 @@ class JEditColorizer(object):
             k = g.skip_c_id(s, j)
             name = s[j: k]
             ok = self.init_mode(name)
+            # g.trace(ok, name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
                 if name != old_name:
-                    self.recolorLater()
+                    # Solves the recoloring problem!
+                    n = self.setInitialStateNumber()
+                    self.setState(n)
             return k - i
         else:
             return 0
@@ -1932,28 +1935,6 @@ class JEditColorizer(object):
         for pattern, s in table:
             name = name.replace(pattern, s)
         return name
-    #@+node:ekr.20170126162735.1: *3* jedit.recolorLater
-    n_recolorLater = 0
-
-    def recolorLater(self):
-        '''Queue up recoloring at idle time.'''
-        c = self.c
-        
-        # This can fail on both python 2 and 3.
-        if False and g.isPython3 and not g.app.unitTesting:
-        
-            def recolorAtIdleTime(timer, c=c, self=self):
-                g.trace(self.n_recolorLater)
-                self.n_recolorLater += 1
-                c.recolorCommand()
-                timer.stop()
-            
-            timer = g.IdleTime(
-                handler=recolorAtIdleTime,
-                delay=0,
-                tag='recolorLater',
-            )
-            if timer: timer.start()
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''

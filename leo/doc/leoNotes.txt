@@ -18263,6 +18263,2027 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
+.. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
+.. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
+@first # -*- coding: utf-8 -*-
+<< pyzo copyright >>
+<< highlighter imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171824.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170107222425.1: *4* << highlighter imports >>
+from leo.core.leoQt import QtCore, QtGui
+import leo.core.leoGlobals as g
+ustr = g.ustr
+from .parsers import BlockState
+from .style import StyleFormat # New.
+import re
+.. @+node:ekr.20170107211216.3: *4* class BlockData
+class BlockData(QtGui.QTextBlockUserData):
+    """ Class to represent the data for a block.
+    """
+    @others
+# The highlighter should be part of the base class, because 
+# some extensions rely on them (e.g. the indent guuides).
+.. @+node:ekr.20170107211216.4: *5* __init__
+def __init__(self):
+    QtGui.QTextBlockUserData.__init__(self)
+    self.indentation = None
+    self.fullUnderlineFormat = None
+    self.tokens = []
+.. @+node:ekr.20170107211216.5: *4* class PyzoHighlighter
+class PyzoHighlighter(QtGui.QSyntaxHighlighter):
+    @others
+.. @+node:ekr.20170107211216.6: *5* pyzo_h.__init__ & helpers
+
+# Don't use codeEditor at all.
+
+def __init__(self, parser, *args):
+    # Set these *before* initing the base class.
+    # self._codeEditor = codeEditor
+    self.parser = parser
+    self.colorer = None
+        # To disable some code in qtew.setAllText.
+    d = self.defineStyles()
+    self.initStyles(d)
+    assert self.style_d
+    QtGui.QSyntaxHighlighter.__init__(self, *args)
+        # Generates call to rehighlight.
+.. @+node:ekr.20170112103148.1: *6* h.define_styles (new)
+def defineStyles(self):
+    '''Set self.style_format_d.'''
+    base03  = "#002b36"
+    base02  = "#073642"
+    base01  = "#586e75"
+    base00  = "#657b83"
+    base0   = "#839496"
+    base1   = "#93a1a1"
+    base2   = "#eee8d5"
+    base3   = "#fdf6e3"
+    yellow  = "#b58900"
+    orange  = "#cb4b16"
+    red     = "#dc322f"
+    magenta = "#d33682"
+    violet  = "#6c71c4"
+    blue    = "#268bd2"
+    cyan    = "#2aa198"
+    green   = "#859900"
+    light = True
+    if light: # Light background.
+        #back1, back2, back3 = base3, base2, base1 # real solarised
+        back1, back2, back3 = "#fff", base2, base1 # crispier
+        fore1, fore2, fore3, fore4 = base00, base01, base02, base03
+    else:
+        back1, back2, back3 = base03, base02, base01
+        fore1, fore2, fore3, fore4 = base0, base1, base2, base3
+    S = {}
+    plain     = "fore:%s, bold:no,  italic:no,  underline:no"
+    bold      = "fore:%s, bold:yes, italic:no,  underline:no"
+    dotted    = "fore:%s, bold:no,  italic:no,  underline:dotted"
+    italic    = "fore:%s, bold:no,  italic:yes, underline:no"
+    solid     = "linestyle:solid, fore:%s"
+    underline = "fore:%s, bold:yes, italic:no,  underline:full"
+    S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
+    S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
+        ### Added: ekr
+    S['Syntax.identifier'] = plain % fore1
+    S["Syntax.nonidentifier"] = plain % fore2
+    S["Syntax.keyword"] = bold % fore2
+    #
+    S["Syntax.functionname"] = bold % fore3
+    S["Syntax.classname"] = bold % orange
+    # EKR
+    S["Syntax.openparen"] = plain % cyan
+    S["Syntax.closeparen"] = plain % cyan
+    #
+    S["Syntax.string"] = plain % violet
+    S["Syntax.unterminatedstring"] = dotted % violet
+    S["Syntax.python.multilinestring"] = plain % blue
+    #
+    S["Syntax.number"] = plain % cyan
+    S["Syntax.comment"] = plain % yellow
+    S["Syntax.todocomment"] = italic % magenta
+    S["Syntax.python.cellcomment"] = underline % yellow
+    #
+    S["Editor.Long line indicator"] = solid % back2
+    S["Editor.Highlight current line"] = "back:%s" % back2
+    S["Editor.Indentation guides"] = solid % back2
+    S["Editor.Line numbers"] = "back:%s, fore:%s" % (back2, back3)
+    # Normalize all keys.
+    d = {}
+    for key in S:
+        normKey = key.replace(' ', '').lower()
+        d[normKey] = S.get(key)
+    return d
+.. @+node:ekr.20170112101149.4: *6* h.initStyles (new)
+
+
+def initStyles(self, d):
+
+    # Set style elements. Keys have already been normalized.
+    self.style_d = {}
+    for key in d:
+        self.style_d[key] = StyleFormat(format=d[key])
+    # Notify that style changed.
+    # adopt a lazy approach to make loading quicker.
+    if False: ### self.isVisible(): ###
+        callLater(self.styleChanged.emit)
+        self.__styleChangedPending = False
+    else:
+        self.__styleChangedPending = True
+.. @+node:ekr.20170107211216.7: *5* pyzo_h.getCurrentBlockUserData
+n_block_data = 0
+
+def getCurrentBlockUserData(self):
+    """ getCurrentBlockUserData()
+    
+    Gets the BlockData object. Creates one if necesary.
+    
+    """
+    self.n_block_data += 1
+    bd = self.currentBlockUserData()
+    if not isinstance(bd, BlockData):
+        bd = BlockData()
+        self.setCurrentBlockUserData(bd)
+    return bd
+.. @+node:ekr.20170107211216.8: *5* pyzo_h.highlightBlock
+n_calls = 0
+n_tokens = 0
+lws_pattern = re.compile(r'(\s*)')
+
+def highlightBlock(self, line): 
+    """ highlightBlock(line)
+    
+    This method is automatically called when a line must be 
+    re-highlighted.
+    
+    If the code editor has an active parser. This method will use
+    it to perform syntax highlighting. If not, it will only 
+    check out the indentation.
+    
+    """
+    trace = False and not g.unitTesting
+    self.n_calls += 1
+    # Make sure this is a Unicode Python string
+    line = ustr(line)
+    # Get previous state
+    previousState = self.previousBlockState()
+    # Get parser
+    parser = self.parser
+    fullLineFormat = None
+    tokens = []
+    if parser:
+        self.setCurrentBlockState(0)
+        tokens = list(parser.parseLine(line, previousState))
+        self.n_tokens += len(tokens)
+        # g.trace(len(tokens), 'tokens', tokens)
+        for token in tokens :
+            # Handle block state
+            if isinstance(token, BlockState):
+                self.setCurrentBlockState(token.state)
+                if trace: g.trace('block state')
+            else:
+                # Get format
+                normKey = token.name.replace(' ', '').lower()
+                styleFormat = self.style_d.get(normKey)
+                if styleFormat:
+                    # Set format
+                    # if trace: g.trace(token.name,charFormat)
+                    charFormat = styleFormat.textCharFormat
+                    self.setFormat(token.start,token.end-token.start,charFormat)
+                    fullLineFormat = styleFormat
+                else:
+                    g.trace('no format', repr(token.name))
+    # Get user data
+    bd = self.getCurrentBlockUserData()
+    # Store token list for future use (e.g. brace matching)
+    bd.tokens = tokens
+    # Handle underlines
+    bd.fullUnderlineFormat = fullLineFormat
+    # Get the indentation setting of the editors
+    indentUsingSpaces = True ### self._codeEditor.indentUsingSpaces()
+    ### leadingWhitespace=line[:len(line)-len(line.lstrip())]
+    m = self.lws_pattern.match(line)
+    leadingWhitespace = m and m.group(1) or ''
+    if 1:
+        bd.indentation = len(leadingWhitespace)
+    elif '\t' in leadingWhitespace and ' ' in leadingWhitespace:
+        #Mixed whitespace
+        bd.indentation = 0
+        format=QtGui.QTextCharFormat()
+        format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
+        format.setUnderlineColor(QtCore.Qt.red)
+        format.setToolTip('Mixed tabs and spaces')
+        self.setFormat(0,len(leadingWhitespace),format)
+    elif (
+        ('\t' in leadingWhitespace and indentUsingSpaces) or
+        (' ' in leadingWhitespace and not indentUsingSpaces)
+    ):
+        # Whitespace differs from document setting
+        bd.indentation = 0
+        format=QtGui.QTextCharFormat()
+        format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
+        format.setUnderlineColor(QtCore.Qt.blue)
+        format.setToolTip('Whitespace differs from document setting')
+        self.setFormat(0,len(leadingWhitespace),format)
+    else:
+        # Store info for indentation guides
+        # amount of tabs or spaces
+        bd.indentation = len(leadingWhitespace)
+.. @+node:ekr.20170108091854.1: *5* pyzo_h.rehighlight (new)
+def rehighlight(self, p=None):
+    '''Leo override, allowing the 'p' keyword arg.'''
+    trace = True and not g.unitTesting # and p and len(p.b) > 1000
+    self.n_calls = self.n_block_data = self.n_tokens = 0
+    self.parser.n_parse = 0
+    if trace: g.trace('(pyzo) =====', p and p.h)
+    QtGui.QSyntaxHighlighter.rehighlight(self)
+    if trace:
+        g.trace('(pyzo_h) -----',
+            self.n_calls,
+            self.n_block_data,
+            self.parser.n_parse,
+            self.n_tokens,
+            p and p.h)
+.. @+node:ekr.20170108044304.1: *3* COPY ../external/pyzo/base.py
+@first # -*- coding: utf-8 -*-
+"""The base code editor class."""
+<< pyzo copyright >>
+<< base.py imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171834.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170108044517.1: *4* << base.py imports >>
+import leo.core.leoGlobals as g
+ustr = g.ustr
+# from .qt import QtGui, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, isQt5
+if isQt5:
+    from PyQt5.QtCore import pyqtSignal as Signal
+else:
+    from PyQt4.QtCore import pyqtSignal as Signal
+from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
+from .misc import callLater # , ustr
+from .manager import Manager
+from .highlighter import PyzoHighlighter ### Highlighter
+from .style import StyleElementDescription, StyleFormat
+.. @+node:ekr.20170108045413.3: *4* class CodeEditorBase
+class CodeEditorBase(QtWidgets.QPlainTextEdit):
+    """ The base code editor class. Implements some basic features required
+    by the extensions.
+    
+    """
+    # Style element for default text and editor background
+    _styleElements = [
+        ('Editor.text',
+         'The style of the default text. ' + 
+         'One can set the background color here.',
+         'fore:#000,back:#fff',
+        )
+    ]
+    # Signal emitted after style has changed
+    styleChanged = Signal()
+    
+    # Signal emitted after font (or font size) has changed
+    fontChanged = Signal()
+    
+    # Signal to indicate a change in breakpoints. Only emitted if the
+    # appropriate extension is in use
+    breakPointsChanged = Signal(object)
+    
+    @others
+.. @+node:ekr.20170108045413.4: *5* ed.__init__ (sets solarized colors)
+def __init__(self,*args, **kwds):
+    super(CodeEditorBase, self).__init__(*args)
+    # Set font (always monospace)
+    self.__zoom = 0
+    self.setFont()
+    # Create highlighter class 
+    self.__highlighter = PyzoHighlighter(self, self.document())
+    # Set some document options
+    option = self.document().defaultTextOption()
+    option.setFlags(
+        option.flags() |
+        option.IncludeTrailingSpaces |
+        option.AddSpaceForLineAndParagraphSeparators
+    )
+    self.document().setDefaultTextOption(option)
+    # When the cursor position changes, invoke an update, so that
+    # the hihghlighting etc will work
+    self.cursorPositionChanged.connect(self.viewport().update) 
+    # Init styles to default values
+    self.leo_style = {}
+    for element in self.getStyleElementDescriptions():
+        self.leo_style[element.key] = element.defaultFormat
+    # Connect style update
+    self.styleChanged.connect(self.__afterSetStyle)
+    self.__styleChangedPending = False
+    # Init margins
+    self._leftmargins = []
+    # Init options now. 
+    # NOTE TO PEOPLE DEVELOPING EXTENSIONS:
+    # If an extension has an __init__ in which it first calls the 
+    # super().__init__, this __initOptions() function will be called, 
+    # while the extension's init is not yet finished.        
+    self.__initOptions(kwds)
+    # Define colors from Solarized theme
+    # NOTE TO PEOPLE WANTING CUSTOM COLORS: ignore this and check the
+    # commented lines near the bottom of this method.
+    base03  = "#002b36"
+    base02  = "#073642"
+    base01  = "#586e75"
+    base00  = "#657b83"
+    base0   = "#839496"
+    base1   = "#93a1a1"
+    base2   = "#eee8d5"
+    base3   = "#fdf6e3"
+    yellow  = "#b58900"
+    orange  = "#cb4b16"
+    red     = "#dc322f"
+    magenta = "#d33682"
+    violet  = "#6c71c4"
+    blue    = "#268bd2"
+    cyan    = "#2aa198"
+    green   = "#859900"
+    if True: # Light vs dark
+        #back1, back2, back3 = base3, base2, base1 # real solarised
+        back1, back2, back3 = "#fff", base2, base1 # crispier
+        fore1, fore2, fore3, fore4 = base00, base01, base02, base03
+    else:
+        back1, back2, back3 = base03, base02, base01
+        fore1, fore2, fore3, fore4 = base0, base1, base2, base3
+    test_numbers  = 90 + 0000 + 1
+    # todo: proper testing of syntax style
+    # Define style using "Solarized" colors
+    S  = {}
+    S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
+    S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
+        ### Added: ekr
+    S['Syntax.identifier'] = "fore:%s, bold:no, italic:no, underline:no" % fore1
+    S["Syntax.nonidentifier"] = "fore:%s, bold:no, italic:no, underline:no" % fore2
+    S["Syntax.keyword"] = "fore:%s, bold:yes, italic:no, underline:no" % fore2
+    #
+    S["Syntax.functionname"] = "fore:%s, bold:yes, italic:no, underline:no" % fore3
+    S["Syntax.classname"] = "fore:%s, bold:yes, italic:no, underline:no" % orange
+    # EKR
+    S["Syntax.openparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
+    S["Syntax.closeparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
+    #
+    S["Syntax.string"] = "fore:%s, bold:no, italic:no, underline:no" % violet
+    S["Syntax.unterminatedstring"] = "fore:%s, bold:no, italic:no, underline:dotted" % violet
+    S["Syntax.python.multilinestring"] = "fore:%s, bold:no, italic:no, underline:no" % blue
+    #
+    S["Syntax.number"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
+    S["Syntax.comment"] ="fore:%s, bold:no, italic:no, underline:no" % yellow
+    S["Syntax.todocomment"] = "fore:%s, bold:no, italic:yes, underline:no" % magenta
+    
+    S["Syntax.python.cellcomment"] = "fore:%s, bold:yes, italic:no, underline:full" % yellow
+    #
+    S["Editor.Long line indicator"] = "linestyle:solid, fore:%s" % back2
+    S["Editor.Highlight current line"] = "back:%s" % back2
+    S["Editor.Indentation guides"] = "linestyle:solid, fore:%s" % back2
+    S["Editor.Line numbers"] = "back:%s, fore:%s" % (back2, back3)
+    
+    # Define style using html color names. All 140 legal HTML colour
+    # names can be used (in addition to HEX codes). A full list of
+    # recognized colour names is available e.g. here
+    # http://www.html-color-names.com/color-chart.php
+        #         S  = {}
+        #         S["Editor.text"] = "back: white, fore: black"
+        #         S['Syntax.identifier'] = "fore: black, bold:no, italic:no, underline:no"
+        #         S["Syntax.nonidentifier"] = "fore: blue, bold:no, italic:no, underline:no"
+        #         S["Syntax.keyword"] = "fore: blue, bold:yes, italic:no, underline:no"
+        #         S["Syntax.functionname"] = "fore: black, bold:yes, italic:no, underline:no"
+        #         S["Syntax.classname"] = "fore: magenta, bold:yes, italic:no, underline:no"
+        #         S["Syntax.string"] = "fore: red, bold:no, italic:no, underline:no"
+        #         S["Syntax.unterminatedstring"] = "fore: red, bold:no, italic:no, underline:dotted"
+        #         S["Syntax.python.multilinestring"] = "fore: red, bold:no, italic:no, underline:no"
+        #         S["Syntax.number"] = "fore: dark orange, bold:no, italic:no, underline:no"
+        #         S["Syntax.comment"] ="fore: green, bold:no, italic:yes, underline:no"
+        #         S["Syntax.todocomment"] = "fore: magenta, bold:no, italic:yes, underline:no"
+        #         S["Syntax.python.cellcomment"] = "fore: green, bold:yes, italic:no, underline:full"
+        #         S["Editor.Long line indicator"] = "linestyle:solid, fore: dark grey"
+        #         S["Editor.Highlight current line"] = "back: light grey"
+        #         S["Editor.Indentation guides"] = "linestyle:solid, fore: light grey"
+        #         S["Editor.Line numbers"] = "back: light grey, fore: black"
+    
+    # Apply style
+    # g.trace('(CodeEditorBase)','*'*20) ; g.printDict(S)
+    self.setStyle(S, force=True) # EKR
+.. @+node:ekr.20170108045413.5: *5* _setHighlighter
+def _setHighlighter(self, highlighterClass):
+    self.__highlighter = highlighterClass(self, self.document())
+.. @+node:ekr.20170108092633.1: *5* Option setters/getters
+.. @+node:ekr.20170108045413.6: *6* ed.__getOptionSetters
+def __getOptionSetters(self):
+    """ Get a dict that maps (lowercase) option names to the setter
+    methods.
+    """
+    # Get all names that can be options
+    allNames = set(dir(self))
+    nativeNames = set(dir(QtWidgets.QPlainTextEdit))
+    names = allNames.difference(nativeNames)
+    # Init dict of setter members
+    setters = {}
+    for name in names:
+        # Get name without set
+        if name.lower().startswith('set'):
+            name = name[3:]
+        # Get setter and getter name
+        name_set = 'set' + name[0].upper() + name[1:]
+        name_get = name[0].lower() + name[1:]
+        # Check if both present
+        if not (name_set in names and name_get in names):
+            continue
+        # Get members
+        member_set = getattr(self, name_set)
+        member_get = getattr(self, name_get)
+        # Check if option decorator was used and get default value
+        for member in [member_set, member_get]:
+            if hasattr(member, DEFAULT_OPTION_NAME):
+                defaultValue = member.__dict__[DEFAULT_OPTION_NAME]
+                break
+        else:
+            continue
+        # Set default on both
+        member_set.__dict__[DEFAULT_OPTION_NAME] = defaultValue
+        member_get.__dict__[DEFAULT_OPTION_NAME] = defaultValue
+        # Add to list
+        setters[name.lower()] = member_set
+    # Done
+    if 0: ###
+        g.trace()
+        # g.printDict(setters)
+        g.printList(['%20s:%s' % (z, setters.get(z).__name__)
+            for z in sorted(setters)])
+    return setters
+.. @+node:ekr.20170108045413.7: *6* ed.__setOptions
+def __setOptions(self, setters, options):
+    """ Sets the options, given the list-of-tuples methods and an
+    options dict.
+    """
+    # List of invalid keys
+    invalidKeys = []
+    # Set options
+    for key1 in options:
+        key2 = key1.lower()
+        # Allow using the setter name
+        if key2.startswith('set'):
+            key2 = key2[3:]
+        # Check if exists. If so, call!
+        if key2 in setters:
+            fun = setters[key2]
+            val = options[key1]
+            fun(val)
+        else:
+            invalidKeys.append(key1)
+    # Check if invalid keys were given
+    if invalidKeys:
+        print("Warning, invalid options given: " + ', '.join(invalidKeys))
+.. @+node:ekr.20170108045413.8: *6* __initOptions
+def __initOptions(self, options=None):
+    """ Init the options with their default values.
+    Also applies the docstrings of one to the other.
+    """
+    # Make options an empty dict if not given
+    if not options:
+        options = {}
+    # Get setters
+    setters = self.__getOptionSetters()
+    # Set default value
+    for member_set in setters.values():
+        defaultVal = member_set.__dict__[DEFAULT_OPTION_NAME]
+        if defaultVal != DEFAULT_OPTION_NONE:
+            try:
+                member_set(defaultVal)
+            except Exception as why:
+                print('Error initing option ', member_set.__name__)
+    # Also set using given opions?
+    if options:
+        self.__setOptions(setters, options)
+.. @+node:ekr.20170108045413.9: *6* ed.setOptions
+def setOptions(self, options=None, **kwargs):
+    """ setOptions(options=None, **kwargs)
+    
+    Set the code editor options (e.g. highlightCurrentLine) using
+    a dict-like object, or using keyword arguments (options given
+    in the latter overrule opions in the first).
+    
+    The keys in the dict are case insensitive and one can use the
+    option's setter or getter name.
+    
+    """
+    # Process options
+    if options:
+        D = {}            
+        for key in options:
+            D[key] = options[key]
+        D.update(kwargs)
+    else:
+        D = kwargs
+    # Get setters
+    setters = self.__getOptionSetters()
+    # Go
+    self.__setOptions(setters, D)
+.. @+node:ekr.20170108092733.1: *5* Font settings
+.. @+node:ekr.20170108045413.10: *6* setFont
+def setFont(self, font=None):
+    """ setFont(font=None)
+    
+    Set the font for the editor. Should be a monospace font. If not,
+    Qt will select the best matching monospace font.
+    
+    """
+    defaultFont = Manager.defaultFont()
+    # Get font object
+    if font is None:
+        font = defaultFont
+    elif isinstance(font, QtGui.QFont):
+        pass
+    elif isinstance(font, str):
+        font = QtGui.QFont(font)
+    else:
+        raise ValueError("setFont accepts None, QFont or string.")
+    # Hint Qt that it should be monospace
+    font.setStyleHint(font.TypeWriter, font.PreferDefault)
+    # Get family, fall back to default if qt could not produce monospace
+    fontInfo = QtGui.QFontInfo(font)
+    if fontInfo.fixedPitch():
+        family = fontInfo.family() 
+    else:
+        family = defaultFont.family()
+    # Get size: default size + zoom
+    size = defaultFont.pointSize() + self.__zoom
+    # Create font instance
+    font = QtGui.QFont(family, size)
+    # Set, emit and return
+    QtWidgets.QPlainTextEdit.setFont(self, font)
+    self.fontChanged.emit()
+    return font
+.. @+node:ekr.20170108045413.11: *6* setZoom
+def setZoom(self, zoom):
+    """ setZoom(zoom)
+    
+    Set the zooming of the document. The font size is always the default
+    font size + the zoom factor.
+    
+    The final zoom is returned, this may not be the same as the given
+    zoom factor if the given factor is too small.
+    
+    """
+    # Set zoom (limit such that final pointSize >= 1)
+    size = Manager.defaultFont().pointSize()
+    self.__zoom = int(max(1-size,zoom))
+    # Set font
+    self.setFont(self.fontInfo().family())
+    # Return zoom
+    return self.__zoom
+.. @+node:ekr.20170108092658.1: *5* Syntax styling
+.. @+node:ekr.20170108045413.12: *6* getStyleElementDescriptions
+@classmethod
+def getStyleElementDescriptions(cls):
+    """ getStyleElementDescriptions()
+    
+    This classmethod returns a list of the StyleElementDescription 
+    instances used by this class. This includes the descriptions for
+    the syntax highlighting of all parsers.
+    
+    """
+    # g.trace('-'*20, g.callers())
+    # Collect members by walking the class bases
+    elements = []
+    def collectElements(cls, iter=1):
+        # Valid class?
+        if cls is object or cls is QtWidgets.QPlainTextEdit:
+            return
+        # Check members
+        if hasattr(cls, '_styleElements'):
+            for element in cls._styleElements:
+                elements.append(element)
+        # Recurse
+        for c in cls.__bases__:
+            collectElements(c, iter+1)
+    collectElements(cls)
+    # Make style element descriptions
+    # (Use a dict to ensure there are no duplicate keys)
+    elements2 = {}
+    for element in elements:
+        # Check
+        if isinstance(element, StyleElementDescription):
+            pass
+        elif isinstance(element, tuple):
+            element = StyleElementDescription(*element)
+        else:
+            print('Warning: invalid element: ' + repr(element))
+        # Store using the name as a key to prevent duplicates
+        elements2[element.key] = element
+    # Done
+    # g.trace() ; g.printList(list(elements2.values()))
+    return list(elements2.values())
+.. @+node:ekr.20170108045413.13: *6* ed.getStyleElementFormat
+def getStyleElementFormat(self, name):
+    """ getStyleElementFormat(name)
+    
+    Get the style format for the style element corresponding with
+    the given name. The name is case insensitive and invariant to
+    the use of spaces.
+    
+    """
+    normKey = name.replace(' ','').lower()
+    try:
+        return self.leo_style[normKey]
+    except KeyError:
+        g.trace(normKey)
+        raise KeyError('Not a known style element name: "%s".' % normKey)
+.. @+node:ekr.20170108045413.14: *6* ed.setStyle
+def setStyle(self, style=None, force=False, **kwargs):
+    """ setStyle(style=None, **kwargs)
+    
+    Updates the formatting per style element. 
+    
+    The style consists of a dictionary that maps style names to
+    style formats. The style names are case insensitive and invariant 
+    to the use of spaces.
+    
+    For convenience, keyword arguments may also be used. In this case,
+    underscores are interpreted as dots.
+    
+    This function can also be called without arguments to force the 
+    editor to restyle (and rehighlight) itself.
+    
+    Use getStyleElementDescriptions() to get information about the
+    available styles and their default values.
+    
+    Examples
+    --------
+    # To make the classname in underline, but keep the color and boldness:
+    setStyle(syntax_classname='underline') 
+    # To set all values for function names:
+    setStyle(syntax_functionname='#883,bold:no,italic:no') 
+    # To set line number and indent guides colors
+    setStyle({  'editor.LineNumbers':'fore:#000,back:#777', 
+                'editor.indentationGuides':'#f88' })
+    
+    """
+    # Combine user input
+    # def normkey(key):
+        # return key.replace(' ', '').lower()
+    g.trace('=====', 'force', force) #, '\n', g.callers())
+    D = {}
+    if style:
+        for key in style:
+            normKey = key.replace(' ', '').lower()
+            # g.trace(key, '->', normKey)
+            ### D[key] = style[key]
+            D[normKey] = style[key]
+    if True:
+        for key in kwargs:
+            key2 = key.replace('_', '.')
+            D[key2] = kwargs[key]
+    # List of given invalid style element names
+    invalidKeys = []
+    # g.printList(sorted(D.keys()))
+    # Set style elements
+    for key in D:
+        normKey = key.replace(' ', '').lower()
+        if force:
+            self.leo_style[normKey] = StyleFormat(format=D[normKey])
+        elif normKey in self.leo_style:
+            ### self.leo_style[normKey].update(D[key])
+            self.leo_style[normKey].update(D[normKey]) # EKR
+        else:
+            invalidKeys.append(key)
+    # Give warning for invalid keys
+    if invalidKeys:
+        print("Warning, invalid style names given: \n" + 
+            '\n'.join(sorted(invalidKeys)))
+    # Notify that style changed, adopt a lazy approach to make loading
+    # quicker.
+    if True: ### self.isVisible(): ###
+        callLater(self.styleChanged.emit)
+        self.__styleChangedPending = False
+    else:
+        self.__styleChangedPending = True
+.. @+node:ekr.20170108045413.15: *6* ed.showEvent
+def showEvent(self, event):
+    super(CodeEditorBase, self).showEvent(event)
+    # Does the style need updating?
+    if self.__styleChangedPending:
+        callLater(self.styleChanged.emit)
+        self.__styleChangedPending = False
+.. @+node:ekr.20170108045413.16: *6* ed.__afterSetStyle
+def __afterSetStyle(self):
+    """ _afterSetStyle()
+    
+    Callback after the style has been set.
+    """
+    # Set text style using editor style sheet
+    format = self.getStyleElementFormat('editor.text')
+    ss = 'QPlainTextEdit{ color:%s; background-color:%s; }' %  (
+        format['fore'], format['back'])
+    self.setStyleSheet(ss)
+    # Make sure the style is applied
+    self.viewport().update()
+    # Re-highlight
+    callLater(self.__highlighter.rehighlight)
+.. @+node:ekr.20170108092857.1: *5* Basic options
+.. @+node:ekr.20170108045413.17: *6* indentWidth
+@ce_option(4)
+def indentWidth(self):
+    """ Get the width of a tab character, and also the amount of spaces
+    to use for indentation when indentUsingSpaces() is True.
+    """
+    return self.__indentWidth
+.. @+node:ekr.20170108045413.18: *6* setIndentWidth
+def setIndentWidth(self, value):
+    value = int(value)
+    if value<=0:
+        raise ValueError("indentWidth must be >0")
+    self.__indentWidth = value
+    self.setTabStopWidth(self.fontMetrics().width('i'*self.__indentWidth))
+.. @+node:ekr.20170108045413.19: *6* indentUsingSpaces
+@ce_option(False)
+def indentUsingSpaces(self):
+    """Get whether to use spaces (if True) or tabs (if False) to indent
+    when the tab key is pressed
+    """
+    return self.__indentUsingSpaces
+.. @+node:ekr.20170108045413.20: *6* setIndentUsingSpaces
+def setIndentUsingSpaces(self, value):
+    self.__indentUsingSpaces = bool(value)
+    self.__highlighter.rehighlight()
+.. @+node:ekr.20170108092912.1: *5* Misc
+.. @+node:ekr.20170108045413.21: *6* gotoLine
+def gotoLine(self, lineNumber):
+    """ gotoLine(lineNumber)
+    
+    Move the cursor to the block given by the line number 
+    (first line is number 1) and show that line.
+    
+    """
+    return self.gotoBlock(lineNumber-1)
+.. @+node:ekr.20170108045413.22: *6* gotoBlock
+def gotoBlock(self, blockNumber):
+    """ gotoBlock(blockNumber)
+    
+    Move the cursor to the block given by the block number 
+    (first block is number 0) and show that line.
+    
+    """
+    # Two implementations. I know that the latter works, so lets
+    # just use that.
+    
+    cursor = self.textCursor()
+    #block = self.document().findBlockByNumber( blockNumber )
+    #cursor.setPosition(block.position())
+    cursor.movePosition(cursor.Start) # move to begin of the document
+    cursor.movePosition(cursor.NextBlock,n=blockNumber) # n blocks down
+    
+    try:
+        self.setTextCursor(cursor)
+    except Exception:
+        pass # File is smaller then the caller thought
+
+    # TODO make this user configurable (setting relativeMargin to anything above
+    # 0.5 will cause cursor to center on each move)
+    relativeMargin = 0.2    # 20% margin on both sides of the window
+    margin = self.height() * relativeMargin
+    cursorRect = self.cursorRect(cursor)
+    if cursorRect.top() < margin or cursorRect.bottom() + margin > self.height():
+        self.centerCursor()
+.. @+node:ekr.20170108045413.23: *6* doForSelectedBlocks
+def doForSelectedBlocks(self, function):
+    """ doForSelectedBlocks(function)
+    
+    Call the given function(cursor) for all blocks in the current selection
+    A block is considered to be in the current selection if a part of it is in
+    the current selection 
+    
+    The supplied cursor will be located at the beginning of each block. This
+    cursor may be modified by the function as required
+    
+    """
+    
+    #Note: a 'TextCursor' does not represent the actual on-screen cursor, so
+    #movements do not move the on-screen cursor
+    
+    #Note 2: when the text is changed, the cursor and selection start/end
+    #positions of all cursors are updated accordingly, so the screenCursor
+    #stays in place even if characters are inserted at the editCursor
+    
+    screenCursor = self.textCursor() #For maintaining which region is selected
+    editCursor = self.textCursor()   #For inserting the comment marks
+
+    #Use beginEditBlock / endEditBlock to make this one undo/redo operation
+    editCursor.beginEditBlock()
+    
+    try:
+        editCursor.setPosition(screenCursor.selectionStart())
+        editCursor.movePosition(editCursor.StartOfBlock)
+        # < :if selection end is at beginning of the block, don't include that
+        #one, except when the selectionStart is same as selectionEnd
+        while editCursor.position()<screenCursor.selectionEnd() or \
+                editCursor.position()<=screenCursor.selectionStart(): 
+            #Create a copy of the editCursor and call the user-supplied function
+            editCursorCopy = QtGui.QTextCursor(editCursor)
+            function(editCursorCopy)
+            
+            #Move to the next block
+            if not editCursor.block().next().isValid():
+                break #We reached the end of the document
+            editCursor.movePosition(editCursor.NextBlock)
+    finally:
+        editCursor.endEditBlock()
+.. @+node:ekr.20170108045413.24: *6* doForVisibleBlocks
+def doForVisibleBlocks(self, function):
+    """ doForVisibleBlocks(function)
+    
+    Call the given function(cursor) for all blocks that are currently
+    visible. This is used by several appearence extensions that
+    paint per block.
+    
+    The supplied cursor will be located at the beginning of each block. This
+    cursor may be modified by the function as required
+    
+    """
+
+    # Start cursor at top line.
+    cursor = self.cursorForPosition(QtCore.QPoint(0,0))
+    cursor.movePosition(cursor.StartOfBlock)
+
+    while True:            
+        # Call the function with a copy of the cursor
+        function(QtGui.QTextCursor(cursor))
+        
+        # Go to the next block (or not if we are done)
+        y = self.cursorRect(cursor).bottom() 
+        if y > self.height():
+            break #Reached end of the repaint area
+        if not cursor.block().next().isValid():
+            break #Reached end of the text
+        cursor.movePosition(cursor.NextBlock)
+.. @+node:ekr.20170108045413.25: *6* indentBlock
+def indentBlock(self, cursor, amount=1):
+    """ indentBlock(cursor, amount=1)
+    
+    Indent the block given by cursor.
+    
+    The cursor specified is used to do the indentation; it is positioned
+    at the beginning of the first non-whitespace position after completion
+    May be overridden to customize indentation.
+    
+    """
+    text = ustr(cursor.block().text())
+    leadingWhitespace = text[:len(text)-len(text.lstrip())]
+    
+    #Select the leading whitespace
+    cursor.movePosition(cursor.StartOfBlock)
+    cursor.movePosition(cursor.Right,cursor.KeepAnchor,len(leadingWhitespace))
+    
+    #Compute the new indentation length, expanding any existing tabs
+    indent = len(leadingWhitespace.expandtabs(self.indentWidth()))
+    if self.indentUsingSpaces():            
+        # Determine correction, so we can round to multiples of indentation
+        correction = indent % self.indentWidth()
+        if correction and amount<0:
+            correction = - (self.indentWidth() - correction) # Flip
+        # Add the indentation tabs
+        indent += (self.indentWidth() * amount) - correction
+        cursor.insertText(' '*max(indent,0))
+    else:
+        # Convert indentation to number of tabs, and add one
+        indent = (indent // self.indentWidth()) + amount
+        cursor.insertText('\t' * max(indent,0))
+.. @+node:ekr.20170108045413.26: *6* dedentBlock
+def dedentBlock(self, cursor):
+    """ dedentBlock(cursor)
+    
+    Dedent the block given by cursor.
+    
+    Calls indentBlock with amount = -1.
+    May be overridden to customize indentation.
+    
+    """
+    self.indentBlock(cursor, amount = -1)
+.. @+node:ekr.20170108045413.27: *6* indentSelection
+def indentSelection(self):
+    """ indentSelection()
+    
+    Called when the current line/selection is to be indented.
+    Calls indentLine(cursor) for each line in the selection.
+    May be overridden to customize indentation.
+    
+    See also doForSelectedBlocks and indentBlock.
+    
+    """
+    self.doForSelectedBlocks(self.indentBlock)
+.. @+node:ekr.20170108045413.28: *6* dedentSelection
+def dedentSelection(self):
+    """ dedentSelection()
+    
+    Called when the current line/selection is to be dedented.
+    Calls dedentLine(cursor) for each line in the selection.
+    May be overridden to customize indentation.
+    
+    See also doForSelectedBlocks and dedentBlock.
+    
+    """
+    self.doForSelectedBlocks(self.dedentBlock)
+.. @+node:ekr.20170108045413.29: *6* justifyText
+def justifyText(self, linewidth=70):
+    """ justifyText(linewidth=70)
+    """
+    from .textutils import TextReshaper
+    
+    # Get cursor
+    cursor = self.textCursor()
+    
+    # Make selection include whole lines
+    pos1, pos2 = cursor.position(), cursor.anchor()
+    pos1, pos2 = min(pos1, pos2), max(pos1, pos2)
+    cursor.setPosition(pos1, cursor.MoveAnchor)
+    cursor.movePosition(cursor.StartOfBlock, cursor.MoveAnchor)
+    cursor.setPosition(pos2, cursor.KeepAnchor)
+    cursor.movePosition(cursor.EndOfBlock, cursor.KeepAnchor)
+    
+    # Use reshaper to create replacement text
+    reshaper = TextReshaper(linewidth)
+    reshaper.pushText(cursor.selectedText())
+    newText = reshaper.popText()
+    
+    # Update the selection
+    #self.setTextCursor(cursor) for testing
+    cursor.insertText(newText)
+.. @+node:ekr.20170108045413.30: *6* addLeftMargin
+def addLeftMargin(self, des, func):
+    """ Add a margin to the left. Specify a description for the margin,
+    and a function to get that margin. For internal use.
+    """
+    assert des is not None
+    self._leftmargins.append((des, func))
+.. @+node:ekr.20170108045413.31: *6* getLeftMargin
+def getLeftMargin(self, des=None):
+    """ Get the left margin, relative to the given description (which
+    should be the same as given to addLeftMargin). If des is omitted 
+    or None, the full left margin is returned.
+    """
+    margin = 0
+    for d, func in self._leftmargins:
+        if d == des:
+            break
+        margin += func()
+    return margin
+.. @+node:ekr.20170108045413.32: *6* updateMargins
+def updateMargins(self):
+    """ Force the margins to be recalculated and set the viewport 
+    accordingly.
+    """
+    leftmargin = self.getLeftMargin()
+    self.setViewportMargins(leftmargin , 0, 0, 0)
+.. @+node:ekr.20170108050440.1: *3* COPY ../external/pyzo/misc.py
+# -*- coding: utf-8 -*-
+<< pyzo copyright >>
+<< misc.py imports >>
+DEFAULT_OPTION_NAME = '_ce_default_value'
+DEFAULT_OPTION_NONE = '_+_just some absurd value_+_'
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171929.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170108050440.2: *4* << misc.py imports >>
+# import sys
+import leo.core.leoGlobals as g
+ustr = g.ustr
+bstr = bytes if g.isPython3 else str
+# from .qt import QtGui, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets # QtGui, 
+if g.isPython3:
+    from queue import Queue, Empty
+else:
+    from Queue import Queue, Empty
+###
+# # Set Python version and get some names
+# PYTHON_VERSION = sys.version_info[0]
+# if PYTHON_VERSION < 3:
+    # ustr = unicode
+    # bstr = str
+    # from Queue import Queue, Empty
+# else:
+    # ustr = str
+    # bstr = bytes
+    # from queue import Queue, Empty
+.. @+node:ekr.20170108050440.3: *4* ce_option
+def ce_option(arg1):
+    """ Decorator for properties of the code editor. 
+    
+    It should be used on the setter function, with its default value
+    as an argument. The default value is then  stored on the function
+    object. 
+    
+    At the end of the initialization, the base codeeditor class will 
+    check all members and (by using the default-value-attribute as a
+    flag) select the ones that are options. These are then set to
+    their default values.
+    
+    Similarly this information is used by the setOptions method to
+    know which members are "options".
+    
+    """
+    
+    # If the decorator is used without arguments, arg1 is the function
+    # being decorated. If arguments are used, arg1 is the argument, and
+    # we should return a callable that is then used as a decorator.
+    
+    # Create decorator function.
+    def decorator_fun(f):
+        f.__dict__[DEFAULT_OPTION_NAME] = default
+        return f
+    
+    # Handle
+    default = DEFAULT_OPTION_NONE
+    if hasattr(arg1, '__call__'):
+        return decorator_fun(arg1)
+    else:
+        default = arg1
+        return decorator_fun
+.. @+node:ekr.20170108050440.4: *4* class _CallbackEventHandler
+class _CallbackEventHandler(QtCore.QObject):
+    """ Helper class to provide the callLater function. 
+    """
+    
+    @others
+.. @+node:ekr.20170108050440.5: *5* __init__
+def __init__(self):
+    QtCore.QObject.__init__(self)
+    self.queue = Queue()
+.. @+node:ekr.20170108050440.6: *5* customEvent
+def customEvent(self, event):
+    while True:
+        try:
+            callback, args = self.queue.get_nowait()
+        except Empty:
+            break
+        try:
+            callback(*args)
+        except Exception as why:
+            print('callback failed: {}:\n{}'.format(callback, why))
+.. @+node:ekr.20170108050440.7: *5* postEventWithCallback
+def postEventWithCallback(self, callback, *args):
+    self.queue.put((callback, args))
+    QtWidgets.qApp.postEvent(self, QtCore.QEvent(QtCore.QEvent.User))
+.. @+node:ekr.20170108050440.8: *4* callLater
+def callLater(callback, *args):
+    """ callLater(callback, *args)
+    
+    Post a callback to be called in the main thread. 
+    
+    """
+    _callbackEventHandler.postEventWithCallback(callback, *args)
+    
+# Create callback event handler instance and insert function in Pyzo namespace
+_callbackEventHandler = _CallbackEventHandler()   
+.. @+node:ekr.20170107220425.1: *3* COPY ../external/pyzo/parsers.py
+@first # -*- coding: utf-8 -*-
+<< pyzo copyright >>
+import leo.core.leoGlobals as g
+import sys
+from .tokens import Token, TextToken
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171939.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170107212231.3: *4* class BlockState
+class BlockState(object):
+    """ BlockState(state=0, info=None)
+    
+    The blockstate object should be used by parsers to
+    return the block state of the processed line. 
+    
+    This would typically be the last item to be yielded, but this
+    it may also be yielded befor the last yielded token. One can even
+    yield multiple of these items, in which case the last one considered
+    valid.
+    
+    """
+    isToken = False
+    @others
+# Base parser class (needs to be defined before importing parser modules)
+.. @+node:ekr.20170107212231.4: *5* __init__
+def __init__(self, state=0, info=None):
+    self._state = int(state)
+    self._info = info
+.. @+node:ekr.20170107212231.5: *5* state
+@property
+def state(self):
+    """ The integer value representing the block state.
+    """
+    return self._state
+.. @+node:ekr.20170107212231.6: *5* info
+@property
+def info(self):
+    """ Get the information corresponding to the block.
+    """
+    return self._info
+.. @+node:ekr.20170107212231.7: *4* class Parser
+class Parser(object):
+    """ Base parser class. 
+    All parsers should inherit from this class.
+    This base class generates a 'TextToken' for each line
+    """
+    _extensions = []
+    _keywords = []
+    
+    
+    @others
+    
+###
+## Import parsers statically
+# We could load the parser dynamically from the source files in the 
+# directory, but this takes quite some effort to get righ when apps 
+# are frozen. This is doable (I do it in Visvis) but it requires the
+# user to specify the parser modules by hand when freezing an app.
+#
+# In summary: it takes a lot of trouble, which can be avoided by just
+# listing all parsers here.
+
+# from . import (     python_parser, 
+                    # cython_parser,
+                    # c_parser,
+                                # )
+.. @+node:ekr.20170107212231.8: *5* p.parseLine
+def parseLine(self, line, previousState=0):
+    """ parseLine(line, previousState=0)
+    
+    The method that should be implemented by the parser. The 
+    previousState argument can be used to determine how
+    the previous block ended (e.g. for multiline comments). It
+    is an integer, the meaning of which is only known to the
+    specific parser. 
+    
+    This method should yield token instances. The last token can
+    be a BlockState to specify the previousState for the 
+    next block.
+    
+    """
+    g.trace('(Parser)')
+    yield TextToken(line,0,len(line))
+
+.. @+node:ekr.20170107212231.9: *5* name
+def name(self):
+    """ name()
+    
+    Get the name of the parser.
+    
+    """
+    name = self.__class__.__name__.lower()
+    if name.endswith('parser'):
+        name = name[:-6]
+    return name
+.. @+node:ekr.20170107212231.10: *5* __repr__
+def __repr__(self):
+    """ String representation of the parser. 
+    """
+    return '<Parser for "%s">' % self.name()
+.. @+node:ekr.20170107212231.11: *5* keywords
+def keywords(self):
+    """ keywords()
+    
+    Get a list of keywords valid for this parser.
+    
+    """
+    return [k for k in self._keywords]
+.. @+node:ekr.20170107212231.12: *5* filenameExtensions
+def filenameExtensions(self):
+    """ filenameExtensions()
+    
+    Get a list of filename extensions for which this parser
+    is appropriate.
+    
+    """
+    return ['.'+e.lstrip('.').lower() for e in self._extensions]
+.. @+node:ekr.20170107212231.13: *5* getStyleElementDescriptions
+### def getStyleElementDescriptions(cls):
+def getStyleElementDescriptions(self):
+    """ getStyleElementDescriptions()
+    
+    This method returns a list of the StyleElementDescription 
+    instances used by this parser. 
+    
+    """
+    descriptions = {}
+    for token in self.getUsedTokens():
+        descriptions[token.description.key] = token.description
+    
+    return list(descriptions.values())
+.. @+node:ekr.20170107212231.14: *5* getUsedTokens
+def getUsedTokens(self):
+    """ getUsedTokens()
+    
+    Get a a list of token instances used by this parser.
+    
+    """
+    # Get module object of the parser
+    try:
+        mod = sys.modules[self.__module__]
+    except KeyError:
+        return []
+    # Get token classes from module
+    tokenClasses = []
+    for name in mod.__dict__:
+        member = mod.__dict__[name]
+        if (isinstance(member, type) and 
+            issubclass(member, Token)
+        ):
+            if member is not Token:
+                tokenClasses.append(member) 
+    # Return as instances
+    return [t() for t in tokenClasses]
+.. @+node:ekr.20170107212231.15: *5* _isTodoItem
+def _isTodoItem(self, text):
+    """ _isTodoItem(text)
+    
+    Get whether the given text (which should be a comment) represents
+    a todo item. Todo items start with "todo", "2do" or "fixme", 
+    optionally with a colon at the end.
+    
+    """
+    # Get first word
+    word = text.lstrip().split(' ',1)[0].rstrip(':')
+    # Test
+    if word.lower() in ['todo', '2do', 'fixme']:
+        return True
+    else:
+        return False
+.. @+node:ekr.20170107213100.1: *3* COPY ../external/pyzo/python_parser.py
+@first # -*- coding: utf-8 -*-
+<< pyzo copyright >>
+<< python_parser imports >>
+<< python_parser keywords >>
+@others
+# if __name__=='__main__':
+    # main()
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171945.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170107220823.1: *4* << python_parser imports >>
+import leo.core.leoGlobals as g
+if 1:
+    # pylint: disable=no-member
+    ustr = str if g.isPython3 else g.builtins.unicode
+    text_type = str if g.isPython3 else g.builtins.unicode
+import re
+from .parsers import Parser, BlockState
+from .tokens import ALPHANUM
+# Import tokens in module namespace
+from .tokens import (CommentToken, StringToken, 
+    UnterminatedStringToken, IdentifierToken, NonIdentifierToken,
+    KeywordToken, NumberToken, FunctionNameToken, ClassNameToken,
+    TodoCommentToken, OpenParenToken, CloseParenToken)
+.. @+node:ekr.20170107213124.2: *4* << python_parser keywords >>
+# Source: import keyword; keyword.kwlist (Python 2.6.6)
+python2Keywords = set([
+    'and', 'as', 'assert', 'break', 'class', 'continue', 
+    'def', 'del', 'elif', 'else', 'except', 'exec', 'finally', 'for', 
+    'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'not', 'or', 
+    'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield'])
+
+# Source: import keyword; keyword.kwlist (Python 3.1.2)
+python3Keywords = set([
+    'False', 'None', 'True', 'and', 'as', 'assert', 'break', 
+    'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
+    'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 
+    'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 
+    'with', 'yield'])
+
+# Merge the two sets to get a general Python keyword list        
+pythonKeywords = python2Keywords | python3Keywords
+.. @+node:ekr.20170107213124.3: *4* class MultilineStringToken (StringToken)
+class MultilineStringToken(StringToken):
+    """ Characters representing a multi-line string. """
+    defaultStyle = 'fore:#7F0000'
+.. @+node:ekr.20170107213124.4: *4* class CellCommentToken (CommentToken)
+class CellCommentToken(CommentToken):
+    """ Characters representing a cell separator comment: "##". """
+    defaultStyle = 'bold:yes, underline:yes'
+
+
+# This regexp is used to find special stuff, such as comments, numbers and
+# strings.
+# pylint: disable=anomalous-backslash-in-string
+tokenProg = re.compile(
+    '#|' +						# Comment or
+    '([' + ALPHANUM + '_]+)|' +	# Identifiers/numbers (group 1) or
+    '(' +  						# Begin of string group (group 2)
+    '([bB]|[uU])?' +			# Possibly bytes or unicode (py2.x)
+    '[rR]?' +					# Possibly a raw string
+    '("""|\'\'\'|"|\')' +		# String start (triple qoutes first, group 4)
+    ')|' +						# End of string group
+    '(\(|\[|\{)|' +             # Opening parenthesis (gr 5)
+    '(\)|\]|\})'                # Closing parenthesis (gr 6)
+    )	
+
+
+#For a given type of string ( ', " , ''' , """ ),get  the RegExp
+#program that matches the end. (^|[^\\]) means: start of the line
+#or something that is not \ (since \ is supposed to escape the following
+#quote) (\\\\)* means: any number of two slashes \\ since each slash will
+#escape the next one
+endProgs = {
+    "'": re.compile(r"(^|[^\\])(\\\\)*'"),
+    '"': re.compile(r'(^|[^\\])(\\\\)*"'),
+    "'''": re.compile(r"(^|[^\\])(\\\\)*'''"),
+    '"""': re.compile(r'(^|[^\\])(\\\\)*"""')
+    }
+.. @+node:ekr.20170107213124.5: *4* class PythonParser(Parser)
+class PythonParser(Parser):
+    """ Parser for Python in general (2.x or 3.x).
+    """
+    _extensions = ['.py' , '.pyw']
+    #The list of keywords is overridden by the Python2/3 specific parsers
+    _keywords = pythonKeywords 
+    
+    
+    @others
+.. @+node:ekr.20170107213124.6: *5* _identifierState
+def _identifierState(self, identifier=None):
+    """ Given an identifier returs the identifier state:
+    3 means the current identifier can be a function.
+    4 means the current identifier can be a class.
+    0 otherwise.
+    
+    This method enables storing the state during the line,
+    and helps the Cython parser to reuse the Python parser's code.
+    """
+    if identifier is None:
+        # Explicit get/reset
+        try:
+            # pylint: disable=access-member-before-definition
+            state = self._idsState
+        except Exception:
+            state = 0
+        self._idsState = 0
+        return state
+    elif identifier == 'def':
+        # Set function state
+        self._idsState = 3
+        return 3
+    elif identifier == 'class':
+        # Set class state
+        self._idsState = 4
+        return 4
+    else:
+        # This one can be func or class, next one can't
+        state = self._idsState
+        self._idsState = 0
+        return state
+.. @+node:ekr.20170107213124.7: *5* py.parseLine
+n_parse = 0
+n_tokens = 0
+
+def parseLine(self, line, previousState=0):
+    """ parseLine(line, previousState=0)
+    
+    Parse a line of Python code, yielding tokens.
+    previousstate is the state of the previous block, and is used
+    to handle line continuation and multiline strings.
+    
+    """
+    self.n_parse += 1
+    line = text_type(line)
+    # Init
+    pos = 0 # Position following the previous match
+    # identifierState and previousstate values:
+    # 0: nothing special
+    # 1: multiline comment single qoutes
+    # 2: multiline comment double quotes
+    # 3: a def keyword
+    # 4: a class keyword
+    
+    #Handle line continuation after def or class
+    #identifierState is 3 or 4 if the previous identifier was 3 or 4
+    if previousState == 3 or previousState == 4: 
+        self._identifierState({3:'def',4:'class'}[previousState])
+    else:
+        self._identifierState(None)
+    if previousState in [1,2]:
+        token = MultilineStringToken(line, 0, 0)
+        token._style = ['', "'''", '"""'][previousState]
+        tokens = self._findEndOfString(line, token)
+        # Process tokens
+        for token in tokens:
+            yield token
+            if isinstance(token, BlockState):
+                return 
+        pos = token.end
+    # Enter the main loop that iterates over the tokens and skips strings
+    while True:
+        # Get next tokens
+        tokens = self._findNextToken(line, pos)
+        if not tokens:
+            return
+        elif isinstance(tokens[-1], StringToken):
+            moreTokens = self._findEndOfString(line, tokens[-1])
+            tokens = tokens[:-1] + moreTokens
+        # Process tokens
+        for token in tokens:
+            yield token
+            if isinstance(token, BlockState):
+                return 
+        pos = token.end
+.. @+node:ekr.20170107213124.8: *5* _findEndOfString
+def _findEndOfString(self, line, token):
+    """ _findEndOfString(line, token)
+    
+    Find the end of a string. Returns (token, endToken). The first 
+    is the given token or a replacement (UnterminatedStringToken).
+    The latter is None, or the BlockState. If given, the line is
+    finished.
+    
+    """
+    
+    # Set state
+    self._identifierState(None)
+    
+    # Find the matching end in the rest of the line
+    # Do not use the start parameter of search, since ^ does not work then
+    style = token._style
+    endMatch = endProgs[style].search(line[token.end:])
+    
+    if endMatch:
+        # The string does end on this line
+        tokenArgs = line, token.start, token.end + endMatch.end()
+        if style in ['"""', "'''"]:
+            token = MultilineStringToken(*tokenArgs)
+        else:
+            token.end = token.end + endMatch.end()
+        return [token]
+    else:
+        # The string does not end on this line
+        tokenArgs = line, token.start, token.end + len(line)
+        if style == "'''":
+            return [MultilineStringToken(*tokenArgs), BlockState(1)]
+        elif style == '"""':
+            return [MultilineStringToken(*tokenArgs), BlockState(2)]
+        else:
+            return [UnterminatedStringToken(*tokenArgs)]
+.. @+node:ekr.20170107213124.9: *5* _findNextToken
+def _findNextToken(self, line, pos):
+    """ _findNextToken(line, pos):
+    
+    Returns a token or None if no new tokens can be found.
+    
+    """
+    
+    # Init tokens, if pos too large, were done
+    if pos > len(line):
+        return None
+    tokens = []
+    
+    # Find the start of the next string or comment
+    match = tokenProg.search(line, pos)
+    
+    # Process the Non-Identifier between pos and match.start() 
+    # or end of line
+    nonIdentifierEnd = match.start() if match else len(line)
+    
+    # Return the Non-Identifier token if non-null
+    # todo: here it goes wrong (allow returning more than one token?)
+    token = NonIdentifierToken(line,pos,nonIdentifierEnd)
+    strippedNonIdentifier = ustr(token).strip()
+    if token:
+        tokens.append(token)
+    
+    # Do checks for line continuation and identifierState
+    # Is the last non-whitespace a line-continuation character?
+    if strippedNonIdentifier.endswith('\\'):
+        lineContinuation = True
+        # If there are non-whitespace characters after def or class,
+        # cancel the identifierState
+        if strippedNonIdentifier != '\\':
+            self._identifierState(None)
+    else:
+        lineContinuation = False
+        # If there are non-whitespace characters after def or class,
+        # cancel the identifierState
+        if strippedNonIdentifier != '':
+            self._identifierState(None)
+    
+    # If no match, we are done processing the line
+    if not match:
+        if lineContinuation:
+            tokens.append( BlockState(self._identifierState()) )
+        return tokens
+    
+    # The rest is to establish what identifier we are dealing with
+    
+    # Comment
+    if match.group() == '#':
+        matchStart = match.start()
+        if not line[:matchStart].strip() and (
+               line[matchStart:].startswith('##') or 
+               line[matchStart:].startswith('#%%') or 
+               line[matchStart:].startswith('# %%')):
+            tokens.append( CellCommentToken(line,matchStart,len(line)) )
+        elif self._isTodoItem(line[matchStart+1:]):
+            tokens.append( TodoCommentToken(line,matchStart,len(line)) )
+        else:
+            tokens.append( CommentToken(line,matchStart,len(line)) )
+        if lineContinuation:
+            tokens.append( BlockState(self._identifierState()) )
+        return tokens
+    
+    # If there are non-whitespace characters after def or class,
+    # cancel the identifierState (this time, also if there is just a \
+    # since apparently it was not on the end of a line)
+    if strippedNonIdentifier != '':
+        self._identifierState(None)
+    
+    # Identifier ("a word or number") Find out whether it is a key word
+    if match.group(1) is not None:
+        identifier = match.group(1)
+        tokenArgs = line, match.start(), match.end()
+        
+        # Set identifier state 
+        identifierState = self._identifierState(identifier)
+        
+        if identifier in self._keywords:
+            tokens.append( KeywordToken(*tokenArgs) )
+        elif identifier[0] in '0123456789':
+            self._identifierState(None)
+            tokens.append( NumberToken(*tokenArgs) )
+        else:
+            if (identifierState==3 and
+                    line[match.end():].lstrip().startswith('(') ):
+                tokens.append( FunctionNameToken(*tokenArgs) )
+            elif identifierState==4:
+                tokens.append( ClassNameToken(*tokenArgs) )
+            else:
+                tokens.append( IdentifierToken(*tokenArgs) )
+    
+    elif match.group(2) is not None :
+        # We have matched a string-start
+        # Find the string style ( ' or " or ''' or """)
+        token = StringToken(line, match.start(), match.end())
+        token._style = match.group(4) # The style is in match group 4
+        tokens.append( token )
+    elif match.group(5) is not None :
+        token = OpenParenToken(line, match.start(), match.end())
+        token._style = match.group(5)
+        tokens.append(token)
+    elif match.group(6) is not None :
+        token = CloseParenToken(line, match.start(), match.end())
+        token._style = match.group(6) 
+        tokens.append(token)
+    # Done
+    return tokens
+.. @+node:ekr.20170107213124.10: *4* class Python2Parser(Parser)
+class Python2Parser(PythonParser):
+    """ Parser for Python 2.x code.
+    """
+     # The application should choose whether to set the Py 2 specific parser
+    _extensions = []
+    _keywords = python2Keywords
+.. @+node:ekr.20170107213124.11: *4* class Python3Parser(Parser)
+class Python3Parser(PythonParser):
+    """ Parser for Python 3.x code.
+    """
+    # The application should choose whether to set the Py 3 specific parser
+    _extensions = []
+    _keywords = python3Keywords
+.. @+node:ekr.20170107222650.1: *4* main
+def main():
+    pass # tokenizeLine is undefined.
+    # print(list(tokenizeLine('this is "String" #Comment')))
+    # print(list(tokenizeLine('this is "String\' #Comment')))
+    # print(list(tokenizeLine('this is "String\' #Commen"t')))
+    # print(list(tokenizeLine(r'this "test\""')))
+    # import random
+    # stimulus=''
+    # expect=[]
+    # for i in range(10):
+        # #Create a string with lots of ' and "
+        # s=''.join("'\"\\ab#"[random.randint(0,5)] for i in range(10)  )
+        # stimulus+=repr(s)
+        # expect.append('S:'+repr(s))
+        # stimulus+='test'
+        # expect.append('I:test')
+    # result=list(tokenizeLine(stimulus))
+    # print (stimulus)
+    # print (expect)
+    # print (result)
+    # assert repr(result) == repr(expect)
+.. @+node:ekr.20170107214315.1: *3* COPY ../external/pyzo/style.py
+@first # -*- coding: utf-8 -*-
+<< pyzo copyright >>
+from leo.core.leoQt import QtCore, QtGui
+Qt = QtCore.Qt
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171955.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170107214321.3: *4* class StyleElementDescription
+class StyleElementDescription:
+    """ StyleElementDescription(name, defaultFormat, description)
+    
+    Describes a style element by its name, default format, and description.
+    
+    A style description is a simple placeholder for something
+    that can be styled.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170107214321.4: *5* sf.__init__
+def __init__(self, name, description, defaultFormat):
+    self._name = name
+    self._description = description
+    self._defaultFormat = StyleFormat(defaultFormat)
+.. @+node:ekr.20170107214321.5: *5* __repr__
+def __repr__(self):
+    return '<"%s": "%s">' % (self.name, self.defaultFormat)
+.. @+node:ekr.20170107214321.6: *5* name
+@property
+def name(self):
+    return self._name
+.. @+node:ekr.20170107214321.7: *5* key
+@property
+def key(self):
+    return self._name.replace(' ', '').lower()
+.. @+node:ekr.20170107214321.8: *5* description
+@property
+def description(self):
+    return self._description
+.. @+node:ekr.20170107214321.9: *5* defaultFormat
+@property
+def defaultFormat(self):
+    return self._defaultFormat
+.. @+node:ekr.20170107214321.10: *4* class StyleFormat
+class StyleFormat:
+    """ StyleFormat(format='')
+    
+    Represents the style format for a specific style element.
+    A "style" is a dictionary that maps names (of style elements) 
+    to StyleFormat instances.
+    
+    The given format can be a string or another StyleFormat instance.
+    Style formats can be combined using their update() method. 
+    
+    A style format consists of multiple parts, where each "part" consists
+    of a key and a value. The keys can be anything, depending
+    on what kind of thing is being styled. The value can be obtained using
+    the index operator (e.g. styleFomat['fore'])
+    
+    For a few special keys, properties are defined that return the Qt object
+    corresponding to the value. These values are also buffered to enable
+    fast access. These keys are:
+      * fore: (QColor) the foreground color
+      * back: (QColor) the background color
+      * bold: (bool) whether the text should be bold
+      * italic: (bool) whether the text should be in italic
+      * underline: (int) whether an underline should be used (and which one)
+      * linestyle: (int) what line style to use (e.g. for indent guides)
+      * textCharFOrmat: (QTextCharFormat) for the syntax styles
+    
+    The format neglects spaces and case. Parts are separated by commas 
+    or semicolons. If only a key is given it's value is interpreted
+    as 'yes'. If only a color is given, its key is interpreted as 'fore' 
+    and back. Colors should be given using the '#' hex formatting.
+    
+    An example format string: 'fore:#334, bold, underline:dotLine'
+    
+    By calling str(styleFormatInstance) the string representing of the 
+    format can be obtained. By iterating over the instance, a series 
+    of key-value pairs is obtained.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170107214321.11: *5* sf.__init__
+def __init__(self, format=''):
+    self._parts = {}
+    self.update(format)
+.. @+node:ekr.20170107214321.12: *5* sf._resetProperties
+def _resetProperties(self):
+    self._fore = None
+    self._back = None
+    self._bold = None
+    self._italic = None
+    self._underline = None
+    self._linestyle = None
+    self._textCharFormat = None
+.. @+node:ekr.20170107214321.13: *5* sf.__str__
+def __str__(self):
+    """ Get a (cleaned up) string representation of this style format. 
+    """
+    parts = []
+    for key in self._parts:
+        parts.append('%s:%s' % (key, self._parts[key]))
+    return ', '.join(parts)
+.. @+node:ekr.20170107214321.14: *5* sf.__repr__
+def __repr__(self):
+    return '<StyleFormat "%s">' % str(self)
+.. @+node:ekr.20170107214321.15: *5* sf.__getitem__
+def __getitem__(self, key):
+    try:
+        return self._parts[key]
+    except KeyError:
+        raise KeyError('Invalid part key for style format.')
+.. @+node:ekr.20170107214321.16: *5* sf.__iter__
+def __iter__(self):
+    """ Yields a series of tuples (key, val).
+    """
+    parts = []
+    for key in self._parts:
+        parts.append( (key, self._parts[key]) )
+    return parts.__iter__()
+.. @+node:ekr.20170107214321.17: *5* sf.update
+def update(self, format):
+    """ update(format)
+    
+    Update this style format with the given format.
+    
+    """
+    # Reset buffered values
+    self._resetProperties()
+    # Make a string, so we update the format with the given one
+    if isinstance(format, StyleFormat):
+        format = str(format)
+    # Split on ',' and ',', ignore spaces
+    styleParts = [p for p in
+        format.replace('=',':').replace(';',',').split(',')]
+    for stylePart in styleParts:
+        # Make sure it consists of identifier and value pair
+        # e.g. fore:#xxx, bold:yes, underline:no
+        if not ':' in stylePart:
+            if stylePart.startswith('#'):
+                stylePart = 'foreandback:' + stylePart
+            else:
+                stylePart += ':yes'
+        # Get key value and strip and make lowecase
+        key, _, val = [i.strip().lower() for i in stylePart.partition(':')]
+        # Store in parts
+        if key == 'foreandback':
+            self._parts['fore'] = val
+            self._parts['back'] = val
+        elif key:
+            self._parts[key] = val
+.. @+node:ekr.20170108171245.1: *5* properties & helper
+.. @+node:ekr.20170107214321.18: *6* _getValueSafe
+def _getValueSafe(self, key):
+    try:
+        return self._parts[key]
+    except KeyError:
+        return 'no'
+.. @+node:ekr.20170107214321.20: *6* back
+@property
+def back(self):
+    if self._back is None:
+        self._back = QtGui.QColor(self._parts['back'])
+    return self._back
+.. @+node:ekr.20170107214321.21: *6* bold
+@property
+def bold(self):
+    if self._bold is None:
+        if self._getValueSafe('bold') in ['yes', 'true']:
+            self._bold = True
+        else:
+            self._bold = False
+    return self._bold
+.. @+node:ekr.20170107214321.19: *6* fore
+@property
+def fore(self):
+    if self._fore is None:
+        self._fore = QtGui.QColor(self._parts['fore'])
+    return self._fore
+.. @+node:ekr.20170107214321.22: *6* italic
+@property
+def italic(self):
+    if self._italic is None:
+        if self._getValueSafe('italic') in ['yes', 'true']:
+            self._italic = True
+        else:
+            self._italic = False
+    return self._italic
+.. @+node:ekr.20170107214321.24: *6* linestyle
+@property
+def linestyle(self):
+    if self._linestyle is None:
+        val = self._getValueSafe('linestyle')
+        if val in ['yes', 'true']:
+            self._linestyle = Qt.SolidLine
+        elif val in ['dotted', 'dot', 'dots', 'dotline']: 
+            self._linestyle = Qt.DotLine
+        elif val in ['dashed', 'dash', 'dashes', 'dashline']: 
+            self._linestyle = Qt.DashLine
+        else:
+            self._linestyle = Qt.SolidLine # default to solid
+    return self._linestyle
+.. @+node:ekr.20170107214321.25: *6* textCharFormat
+@property
+def textCharFormat(self):
+    if self._textCharFormat is None:
+        self._textCharFormat = tcf = QtGui.QTextCharFormat()
+        self._textCharFormat.setForeground(self.fore)
+        self._textCharFormat.setUnderlineStyle(self.underline)
+        if self.bold:
+            self._textCharFormat.setFontWeight(QtGui.QFont.Bold)
+        if self.italic:
+            self._textCharFormat.setFontItalic(True)
+    return self._textCharFormat
+.. @+node:ekr.20170107214321.23: *6* underline
+@property
+def underline(self):
+    if self._underline is None:
+        val = self._getValueSafe('underline')
+        if val in ['yes', 'true']:
+            self._underline = QtGui.QTextCharFormat.SingleUnderline
+        elif val in ['dotted', 'dots', 'dotline']: 
+            self._underline = QtGui.QTextCharFormat.DotLine
+        elif val in ['wave']: 
+            self._underline = QtGui.QTextCharFormat.WaveUnderline
+        else:
+            self._underline = QtGui.QTextCharFormat.NoUnderline
+    return self._underline
+.. @+node:ekr.20170107212657.1: *3* COPY ../external/pyzo/tokens.py
+@first # -*- coding: utf-8 -*-
+<< pyzo copyright >>
+<< tokens imports >>
+ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170108171959.1: *4* << pyzo copyright >>
+# Copyright (C) 2016, the Pyzo development team
+#
+# Pyzo is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170107220236.1: *4*   << tokens imports >>
+import leo.core.leoGlobals as g
+if 1:
+    # pylint: disable=no-member
+    ustr = str if g.isPython3 else g.builtins.unicode
+from .style import StyleFormat, StyleElementDescription
+.. @+node:ekr.20170107212709.3: *4*  class Token
+class Token(object):
+    """ Token(line, start, end)
+    
+    Base token class.
+    
+    A token is a group of characters representing "something".
+    What is represented, is specified by the subclass.
+    
+    Each token class should have a docstring describing the meaning
+    of the characters it is applied to.
+    
+    """ 
+    defaultStyle = 'fore:#000, bold:no, underline:no, italic:no'
+    isToken = True # For the BlockState object, which is also returned by the parsers, this is False
+    @others
+.. @+node:ekr.20170107212709.4: *5* __init__
+def __init__(self, line='', start=0, end=0):
+    self.line = ustr(line)
+    self.start = start
+    self.end = end
+    self._name = self._getName()
+.. @+node:ekr.20170107212709.5: *5* __str__
+def __str__(self):  # on 2.x we use __unicode__
+    return self.line[self.start:self.end]
+.. @+node:ekr.20170107212709.6: *5* __unicode__
+def __unicode__(self):  # for py 2.x
+    return self.line[self.start:self.end]
+.. @+node:ekr.20170107212709.7: *5* __repr__
+def __repr__(self):
+    return repr('%s:%s' % (self.name, self))
+.. @+node:ekr.20170107212709.8: *5* __len__
+def __len__(self):
+    # Defining a length also gives a Token a boolean value: True if there
+    # are any characters (len!=0) and False if there are none
+    return self.end - self.start
+.. @+node:ekr.20170107212709.9: *5* _getName
+def _getName(self):
+    """ Get the name of this token. """
+    nameParts = ['Syntax']
+    if '_parser' in self.__module__:
+        language = self.__module__.split('_')[0]
+        language = language.split('.')[-1]
+        nameParts.append( language[0].upper() + language[1:] )
+    nameParts.append( self.__class__.__name__[:-5].lower() )
+    return '.'.join(nameParts)
+.. @+node:ekr.20170107212709.10: *5* tok.getDefaultStyleFormat
+def getDefaultStyleFormat(self):
+    elements = []
+    def collect(cls):
+        if hasattr(cls, 'defaultStyle'):
+            elements.append(cls.defaultStyle)
+            for c in cls.__bases__:
+                collect(c)
+    collect(self.__class__)
+    se = StyleFormat()
+    for e in reversed(elements):
+        se.update(e)
+    return se
+.. @+node:ekr.20170107212709.11: *5* name
+@property
+def name(self):
+    """ The name of this token. Used to identify it and attach a style.
+    """
+    return self._name
+.. @+node:ekr.20170107212709.12: *5* description
+@property
+def description(self):
+    """ description()
+    
+    Returns a StyleElementDescription instance that describes the
+    style element that this token represents.
+    
+    """
+    format = self.getDefaultStyleFormat()
+    des = 'syntax: ' + self.__doc__
+    return StyleElementDescription(self.name, des, str(format))
+.. @+node:ekr.20170107212709.13: *4* class CommentToken & subclasses
+class CommentToken(Token):
+    """ Characters representing a comment in the code. """
+    defaultStyle = 'fore:#007F00'
+.. @+node:ekr.20170107212709.14: *5* class TodoCommentToken
+class TodoCommentToken(CommentToken):
+    """ Characters representing a comment in the code. """
+    defaultStyle = 'fore:#E00,italic'
+.. @+node:ekr.20170107212709.24: *4* class ParenthesisToken & subclasses
+class ParenthesisToken(Token) :
+    """ Parenthesis (and square and curly brackets). """
+    defaultStyle = ''
+.. @+node:ekr.20170107212709.25: *5* class OpenParenToken
+class OpenParenToken(ParenthesisToken) :
+    """ Opening parenthesis (and square and curly brackets). """
+    defaultStyle = ''
+.. @+node:ekr.20170107212709.26: *5* class CloseParenToken
+class CloseParenToken(ParenthesisToken) :
+    """ Closing parenthesis (and square and curly brackets). """
+    defaultStyle = ''
+.. @+node:ekr.20170107212709.15: *4* class StringToken & subclasses
+class StringToken(Token):
+    """ Characters representing a textual string in the code. """
+    defaultStyle = 'fore:#7F007F'
+.. @+node:ekr.20170107212709.16: *5* class UnterminatedStringToken
+class UnterminatedStringToken(StringToken):
+    """ Characters belonging to an unterminated string. """
+    defaultStyle = 'underline:dotted'
+
+# todo: request from user: whitespace token
+.. @+node:ekr.20170107212709.17: *4* class TextToken & subclasses
+class TextToken(Token):
+    """ Anything that is not a string or comment. """ 
+    defaultStyle = 'fore:#000'
+.. @+node:ekr.20170107212709.18: *5* class IdentifierToken & subclasses
+class IdentifierToken(TextToken):
+    """ Characters representing normal text (i.e. words). """ 
+    defaultStyle = ''
+.. @+node:ekr.20170107212709.23: *6* class ClassNameToken
+class ClassNameToken(IdentifierToken):
+    """ Characters represening the name of a class. """
+    defaultStyle = 'fore:#0000FF, bold:yes'
+.. @+node:ekr.20170107212709.22: *6* class FunctionNameToken
+class FunctionNameToken(IdentifierToken):
+    """ Characters represening the name of a function. """
+    defaultStyle = 'fore:#007F7F, bold:yes'
+.. @+node:ekr.20170107212709.20: *6* class KeywordToken
+class KeywordToken(IdentifierToken):
+    """ A keyword is a word with a special meaning to the language. """
+    defaultStyle = 'fore:#00007F, bold:yes'
+.. @+node:ekr.20170107212709.19: *6* class NonIdentifierToken
+class NonIdentifierToken(TextToken):
+    """ Not a word (operators, whitespace, etc.). """
+    defaultStyle = ''
+.. @+node:ekr.20170107212709.21: *6* class NumberToken
+class NumberToken(IdentifierToken):
+    """ Characters represening a number. """
+    defaultStyle = 'fore:#007F7F'
 .. @+node:ekr.20150527092615.1: ** Unused code: do not delete
 @language python
 @ignore
@@ -32770,301 +34791,6 @@ def run(theDir,fn,silent,rpython=False):
     '+Function::__init__',
     '+Module::__init__',
 .. @+node:ekr.20170116050723.1: *3* Syntax coloring...
-.. @+node:ekr.20170123041525.1: *4* Old classes
-.. @+node:ekr.20140825132752.18554: *5* class PythonQSyntaxHighlighter
-class PythonQSyntaxHighlighter(object):
-    '''
-    Python implementation of QtGui.QSyntaxHighlighter.
-
-    This allows incremental coloring of text at idle time, trading slower
-    overall speed for much faster response time.
-    '''
-    @others
-.. @+node:ekr.20140825132752.18561: *6* pqsh.Birth & death
-def __init__(self, parent, c=None, delay=10, limit=50):
-    '''
-    Ctor for QSyntaxHighlighter class.
-    Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
-    '''
-    # g.trace('(PythonQSyntaxBrowser)', parent)
-    # Ivars corresponding to QSH ivars...
-    self.c = c # The commander.
-    self.cb = None # The current block: a QTextBlock.
-    self.d = None # The QTextDocument attached to this colorizers.
-    self.formats = [] # An array of QTextLayout.FormatRange objects.
-    self.inReformatBlocks = False
-    self.rehighlightPending = False
-    # Ivars for reformatBlocks and idle_handler...
-    self.idle_active = False # True if the idle_handler should colorize.
-    self.r_block = None # The block to be colorized.
-    self.r_end = None # The ultimate ending position.
-    self.r_delay = delay # The waiting time, in msec. for self.timer.
-    self.r_force = False # True if the next block must be recolored.
-    self.r_limit = limit # The max number of lines to color at one time.
-    self.timer = g.IdleTime(
-        handler=self.idle_handler,
-        delay=self.r_delay,
-        tag='pqsh.idle_handler')
-    # Attach the parent's QTextDocument and set self.d.
-    self.setDocument(parent)
-.. @+node:ekr.20140825132752.18588: *6* pqsh.Entry points
-.. @+node:ekr.20140827112712.18469: *7* pqsh.kill
-def kill(self):
-    '''Kill any queued coloring.'''
-    trace = False and not g.unitTesting
-    if self.idle_active:
-        if trace: g.trace('(PythonQSyntaxHighlighter)')
-        self.idle_active = False
-        if self.timer:
-            self.timer.stop()
-.. @+node:ekr.20140825132752.18566: *7* pqsh.rehighlight
-def rehighlight(self):
-    '''Color the whole document.'''
-    trace = False and not g.unitTesting
-    c, d = self.c, self.d
-    if d:
-        n = d.characterCount()
-        if 0 < c.max_pre_loaded_body_chars < n:
-            if trace: g.trace('big text: no color', c.p.h)
-        elif n > 1000*10:
-
-            def rehightlight_callback(c=c, d=d, p=c.p, self=self):
-                if p == c.p:
-                    if trace: g.trace('=====', n, p.h)
-                    cursor = QtGui.QTextCursor(d)
-                    self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-                else:
-                    if trace: g.trace('node not selected', p.h)
-
-            QtCore.QTimer.singleShot(200, rehightlight_callback)
-        else:
-            if trace: g.trace('(pqsh)', n)
-            cursor = QtGui.QTextCursor(d)
-            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
-.. @+node:ekr.20140825132752.18568: *7* pqsh.rehighlightBlock (not used)
-def rehighlightBlock(self, block):
-    '''Reapplies the highlighting to the given QTextBlock block.'''
-    d = self.d
-    if d and self.is_valid(block) and block.document() == d:
-        self.rehighlightPending = d.rehighlightPending
-        cursor = QtGui.QTextCursor(block)
-        g.trace(g.u(block.text()))
-        self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
-        if self.rehighlightPending:
-            d.rehighlightPending = self.rehighlightPending
-.. @+node:ekr.20140825132752.18591: *7* pqsh.rehighlight_helper
-def rehighlight_helper(self, cursor, operation):
-        # QtGui.QTextCursor &cursor
-        # QtGui.QTextCursor.MoveOperation operation
-    self.inReformatBlocks = True
-    try:
-        cursor.beginEditBlock()
-        from_ = cursor.position()
-        cursor.movePosition(operation)
-        self.reformatBlocks(from_, 0, cursor.position() - from_)
-        cursor.endEditBlock()
-    finally:
-        self.inReformatBlocks = False
-.. @+node:ekr.20140825132752.18590: *6* pqsh.Getters & Setters
-.. @+node:ekr.20140825132752.18582: *7* pqsh.currentBlock & currentBlockUserData
-def currentBlock(self):
-    '''Returns the current text block.'''
-    return self.cb
-
-def currentBlockUserData(self):
-    '''Returns the QTextBlockUserData object attached to the current text block.'''
-    return self.cb.userData() if self.is_valid(self.cb) else None
-.. @+node:ekr.20140825132752.18580: *7* pqsh.currentBlockState & previousBlockState
-def currentBlockState(self):
-    '''Returns the state of the current block or -1.'''
-    return self.cb.userState() if self.is_valid(self.cb) else - 1
-
-def previousBlockState(self):
-    '''Returns the end state previous text block or -1'''
-    if self.is_valid(self.cb):
-        previous = self.cb.previous()
-        return previous.userState() if self.is_valid(previous) else - 1
-    else:
-        return -1
-.. @+node:ekr.20140825132752.18565: *7* pqsh.document
-def document(self):
-    '''Returns the QTextDocument on which this syntax highlighter is installed.'''
-    return self.d
-.. @+node:ekr.20140825132752.18575: *7* pqsh.format
-def format(self, pos):
-    '''Return the format at the given position in the current text block.'''
-    if 0 <= pos < len(self.formatChanges):
-        return self.formatChanges[pos]
-    else:
-        return QtGui.QTextCharFormat()
-.. @+node:ekr.20140825132752.18576: *7* pqsh.setCurrentBlockState & setCurrentBlockUserData
-def setCurrentBlockState(self, newState):
-    '''Sets the state of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserState(newState)
-
-def setCurrentBlockUserData(self, data):
-    '''Set the user data of the current text block.'''
-    if self.is_valid(self.cb):
-        self.cb.setUserData(data)
-.. @+node:ekr.20140825132752.18564: *7* pqsh.setDocument
-def setDocument(self, parent):
-    '''Install self on the given QTextDocument.'''
-    d = self.d
-    if d:
-        d.contentsChange.disconnect()
-        cursor = QtGui.QTextCursor(d)
-        cursor.beginEditBlock()
-        blk = d.begin()
-        while self.is_valid(blk): # blk: QTextBlock
-            blk.layout().clearAdditionalFormats()
-            blk = blk.next()
-        cursor.endEditBlock()
-    self.d = d = parent.document()
-    assert isinstance(d, QtGui.QTextDocument), d
-    if d:
-        d.contentsChange.connect(self.q_reformatBlocks)
-        d.rehighlightPending = True
-            # Set d's pending flag.
-        QtCore.QTimer.singleShot(0, self.delayedRehighlight)
-.. @+node:ekr.20140825132752.18584: *7* pqsh.setFormat (start,count,format)
-def setFormat(self, start, count, format):
-    '''Remember the requested formatting.'''
-    trace = False and not g.unitTesting
-    verbose = False
-    if start >= 0:
-        r = QtGui.QTextLayout.FormatRange()
-        r.start, r.length, r.format = start, count, format
-        self.formats.append(r)
-        if trace and verbose: g.trace('%3s %3s %s %s' % (
-            start, count, self.format_to_color(format), self.cb.text()))
-    elif trace:
-        g.trace('bad start value', repr(start), g.callers())
-# Not used by Leo...
-# def setFormat(self,start,count,color):
-    # format = QTextCharFormat()
-    # format.setForeground(color)
-    # setFormat(start,count,format)
-# def setFormat(self,start,count,font):
-    # format = QTextCharFormat()
-    # format.setFont(font)
-    # self.setFormat(start,count,format)
-.. @+node:ekr.20140825132752.18589: *6* pqsh.Helpers
-# These helpers are the main reason QSyntaxHighlighter exists.
-# Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
-.. @+node:ekr.20140825132752.18557: *7* pqsh.applyFormatChanges
-def applyFormatChanges(self):
-    '''Apply self.formats to the current layout.'''
-    if self.formats:
-        layout = self.cb.layout()
-        layout.setAdditionalFormats(self.formats)
-        self.formats = []
-        self.d.markContentsDirty(self.cb.position(), self.cb.length())
-.. @+node:ekr.20140825132752.18592: *7* pqsh.delayedRehighlight
-def delayedRehighlight(self): # inline
-    '''Queued rehighlight.'''
-    # g.trace('=====',self.rehighlightPending)
-    if self.rehighlightPending:
-        self.rehighlightPending = False
-        self.rehighlight()
-.. @+node:ekr.20140826120657.18649: *7* pqsh.format_to_color
-def format_to_color(self, format):
-    '''Return the foreground color of the given character format.'''
-    return str(format.foreground().color().name())
-.. @+node:ekr.20140826120657.18650: *7* pqsh.highlightBlock
-def highlightBlock(self, s):
-    g.trace('must be defined in subclasses.' '')
-.. @+node:ekr.20140827063632.18569: *7* pqsh.idle_handler
-def idle_handler(self, timer):
-    trace = False and not g.unitTesting
-    verbose = True
-    if not self.idle_active:
-        # Shortcut everything else.
-        return
-    c = self.c
-    if trace and verbose:
-        s = g.u(self.r_block.text()).lstrip()
-        g.trace('force: %5s s: %s' % (self.r_force, s[: 20]))
-    # This is defensive code.  Apparently it is never needed.
-    # This is the only place c is used, so the c argument to the ctor is optional.
-    if c:
-        if c.p == self.r_p:
-            self.reformat_blocks_helper()
-        elif trace:
-            self.idle_active = False
-            g.trace('node changed: old: %s new: %s' % (
-                self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
-.. @+node:ekr.20140826120657.18648: *7* pqsh.is_valid
-def is_valid(self, obj):
-    return obj and obj.isValid()
-.. @+node:ekr.20140825132752.18558: *7* pqsh.q_reformatBlocks
-def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
-    if not self.inReformatBlocks:
-        # g.trace(from_,charsRemoved,charsAdded)
-        self.reformatBlocks(from_, charsRemoved, charsAdded)
-.. @+node:ekr.20140827074435.18570: *7* pqsh.reformat_blocks_helper
-def reformat_blocks_helper(self):
-    '''The common code shared by reformatBlocks and idle_handler.'''
-    block = self.r_block
-    n, start = 0, False
-    while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
-        n += 1
-        if n >= self.r_limit > 0 and self.timer:
-            start = True
-            break
-        else:
-            before_state = block.userState()
-            self.reformatBlock(block)
-            self.r_force = block.userState() != before_state
-            block = self.r_block = block.next()
-    self.formatChanges = []
-    self.idle_active = start
-    if self.timer and start:
-        self.timer.start()
-    elif self.timer:
-        self.timer.stop()
-        # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
-        # Fix bug 78: find-next match not always scrolled into view.
-        # https://github.com/leo-editor/leo-editor/issues/78
-        w = self.c.frame.body.wrapper
-        if g.app.allow_delayed_see and w:
-            w.seeInsertPoint()
-        g.app.allow_delayed_see = False
-.. @+node:ekr.20140825132752.18560: *7* pqsh.reformatBlock
-def reformatBlock(self, block):
-    trace = False and not g.unitTesting
-    if self.is_valid(self.cb) and not isQt5:
-        g.trace('can not happen: called recursively')
-    else:
-        self.cb = block
-        self.formats = []
-        for i in range(block.length()):
-            r = QtGui.QTextLayout.FormatRange()
-            r.start, r.length, r.format = i, 1, QtGui.QTextCharFormat()
-            self.formats.append(r)
-        if trace: g.trace(str(block.text()))
-        self.highlightBlock(block.text())
-        self.applyFormatChanges()
-        self.cb = QtGui.QTextBlock()
-.. @+node:ekr.20140825132752.18559: *7* pqsh.reformatBlocks (main line)
-def reformatBlocks(self, from_, charsRemoved, charsAdded):
-    '''Main line: Reformat the lines in the indicated range.'''
-    self.rehighlightPending = False
-    block = self.d.findBlock(from_)
-    if not self.is_valid(block):
-        return
-    # Set the ivars for reformat_blocks_helper.
-    adjust = 1 if charsRemoved > 0 else 0
-    lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
-    if self.is_valid(lastBlock):
-        self.r_end = lastBlock.position() + lastBlock.length()
-    else:
-        self.r_end = self.d.blockCount()
-    self.r_block = block
-    self.r_p = self.c.p.copy()
-    self.r_force = False
-    # Delegate the colorizing to shared helper.
-    self.reformat_blocks_helper()
 .. @+node:ekr.20170123041550.1: *4* Caching
 .. @+node:ekr.20121003051050.10201: *5* leoh.rehighlight_with_cache (no longer used)
 if 0: # From leo_h.rehighlight:
@@ -33151,6 +34877,118 @@ def write_colorizer_cache(self, p):
     if trace:
         g.trace('%2.3f sec len(aList): %s v: %s' % (
             time.time() - t1, len(aList), c.p.v.h,))
+.. @+node:ekr.20170127044821.1: *4* Entries
+@nosearch
+.. @+node:ekr.20140906081909.18711: *5* cm.scanColorByPosition (no longer used)
+def scanColorByPosition(self, p):
+    '''Scan p for color-related directives.'''
+    c = self.c
+    wrapper = c.frame.body.wrapper
+    i = wrapper.getInsertPoint()
+    s = wrapper.getAllText()
+    i1, i2 = g.getLine(s, i)
+    tag = '@language'
+    language = self.language
+    for s in g.splitLines(s[: i1]):
+        if s.startswith(tag):
+            language = s[len(tag):].strip()
+    return language
+.. @+node:ekr.20110605121601.18554: *5* colorizer.enable/disable (not used)
+def disable(self, p):
+    g.trace(g.callers(4))
+    if self.enabled:
+        self.flag = False
+        self.enabled = False
+        self.highlighter.rehighlight(p) # Do a full recolor (to black)
+
+def enable(self, p):
+    g.trace(g.callers(4))
+    if not self.enabled:
+        self.enabled = True
+        self.flag = True
+        # Do a full recolor, but only if we aren't changing nodes.
+        if self.c.currentPosition() == p:
+            self.highlighter.rehighlight(p)
+.. @+node:ekr.20120309075544.9888: *5* colorizer.scanColorByPosition (no longer used)
+def scanColorByPosition(self, p):
+    c = self.c
+    wrapper = c.frame.body.wrapper
+    i = wrapper.getInsertPoint()
+    s = wrapper.getAllText()
+    i1, i2 = g.getLine(s, i)
+    tag = '@language'
+    language = self.language
+    for s in g.splitLines(s[: i1]):
+        if s.startswith(tag):
+            language = s[len(tag):].strip()
+    return language
+.. @+node:ekr.20170127053938.1: *5* COPY colorizer.colorize (original)
+def colorize(self, p, incremental=False, interruptable=True):
+    '''
+    Python 2: This is the main LeoQtColorizer entry point.
+              leo_h.rehighlight *is* called.
+    Python 3: LeoQtColorizer.init does all the work(!)
+              leo_h.rehighlight is never called(!)
+    '''
+    # This method is called only with Python 2.
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c
+    self.count += 1 # For unit testing.
+    if not incremental:
+        self.full_recolor_count += 1
+    s = p.b
+    if not s.strip():
+        if trace: g.trace('no body', p.h)
+        ### self.kill()
+        return
+    if s.startswith('@killcolor'):
+        if trace: g.trace('@killcolor')
+        ### self.kill()
+        return
+    elif self.enabled:
+        oldFlag = self.flag
+        self.updateSyntaxColorer(p)
+            # sets self.flag and self.language and self.languageList.
+        if trace and verbose:
+            g.trace('old: %s, new: %s, %s' % (
+                self.oldLanguageList, self.languageList, repr(p.h)))
+        # fullRecolor is True if we can not do an incremental recolor.
+        fullRecolor = (
+            oldFlag != self.flag or
+            self.oldV != p.v or
+            self.oldLanguageList != self.languageList or
+            not incremental
+        )
+        # 2012/03/09: Determine the present language from the insertion
+        # point if there are more than one @language directives in effect
+        # and we are about to do an incremental recolor.
+        if len(self.languageList) > 0 and not fullRecolor:
+            language = self.scanColorByPosition(p) # May reset self.language
+            if language != self.colorer.language_name:
+                if trace: g.trace('** must rescan', self.c.frame.title, language)
+                fullRecolor = True
+                self.language = language
+        if fullRecolor:
+            if trace: g.trace(
+                '** calling rehighlight',
+                self.highlighter, g.callers())
+            self.oldLanguageList = self.languageList[:]
+            self.oldV = p.v
+            if trace: g.trace(p and p.h)
+            # Do NOT call rehighlight here.
+            # That causes a *huge* slowdown.
+            doc = c.frame.body.widget.document()
+            doc.markContentsDirty(0, len(p.b))
+    return "ok" # For unit testing.
+.. @+node:ekr.20140829172618.18476: *5* LeoTree.stop_colorizer (to be removed)
+def stop_colorizer(self, old_p):
+    '''Stop colorizing the present node.'''
+    c = self.c
+    colorizer = c.frame.body.colorizer
+    if colorizer:
+        if hasattr(colorizer, 'kill'):
+            colorizer.kill()
 .. @+node:ekr.20110605121601.18561: *4* colorizer.setHighlighter (pzyo only)
 # Called *only* from LeoTree.setBodyTextAfterSelect
 
@@ -33182,2027 +35020,322 @@ def setHighlighter(self, p):
         h = highlighter.PyzoHighlighter(parser, document)
         self.highlighter = h
         self.pyzo_highlighter = h
-.. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
-.. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
-@first # -*- coding: utf-8 -*-
-<< pyzo copyright >>
-<< highlighter imports >>
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171824.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170107222425.1: *4* << highlighter imports >>
-from leo.core.leoQt import QtCore, QtGui
-import leo.core.leoGlobals as g
-ustr = g.ustr
-from .parsers import BlockState
-from .style import StyleFormat # New.
-import re
-.. @+node:ekr.20170107211216.3: *4* class BlockData
-class BlockData(QtGui.QTextBlockUserData):
-    """ Class to represent the data for a block.
-    """
-    @others
-# The highlighter should be part of the base class, because 
-# some extensions rely on them (e.g. the indent guuides).
-.. @+node:ekr.20170107211216.4: *5* __init__
-def __init__(self):
-    QtGui.QTextBlockUserData.__init__(self)
-    self.indentation = None
-    self.fullUnderlineFormat = None
-    self.tokens = []
-.. @+node:ekr.20170107211216.5: *4* class PyzoHighlighter
-class PyzoHighlighter(QtGui.QSyntaxHighlighter):
-    @others
-.. @+node:ekr.20170107211216.6: *5* pyzo_h.__init__ & helpers
+.. @+node:ekr.20170126162735.1: *4* jedit.recolorLater
+n_recolorLater = 0
 
-# Don't use codeEditor at all.
-
-def __init__(self, parser, *args):
-    # Set these *before* initing the base class.
-    # self._codeEditor = codeEditor
-    self.parser = parser
-    self.colorer = None
-        # To disable some code in qtew.setAllText.
-    d = self.defineStyles()
-    self.initStyles(d)
-    assert self.style_d
-    QtGui.QSyntaxHighlighter.__init__(self, *args)
-        # Generates call to rehighlight.
-.. @+node:ekr.20170112103148.1: *6* h.define_styles (new)
-def defineStyles(self):
-    '''Set self.style_format_d.'''
-    base03  = "#002b36"
-    base02  = "#073642"
-    base01  = "#586e75"
-    base00  = "#657b83"
-    base0   = "#839496"
-    base1   = "#93a1a1"
-    base2   = "#eee8d5"
-    base3   = "#fdf6e3"
-    yellow  = "#b58900"
-    orange  = "#cb4b16"
-    red     = "#dc322f"
-    magenta = "#d33682"
-    violet  = "#6c71c4"
-    blue    = "#268bd2"
-    cyan    = "#2aa198"
-    green   = "#859900"
-    light = True
-    if light: # Light background.
-        #back1, back2, back3 = base3, base2, base1 # real solarised
-        back1, back2, back3 = "#fff", base2, base1 # crispier
-        fore1, fore2, fore3, fore4 = base00, base01, base02, base03
-    else:
-        back1, back2, back3 = base03, base02, base01
-        fore1, fore2, fore3, fore4 = base0, base1, base2, base3
-    S = {}
-    plain     = "fore:%s, bold:no,  italic:no,  underline:no"
-    bold      = "fore:%s, bold:yes, italic:no,  underline:no"
-    dotted    = "fore:%s, bold:no,  italic:no,  underline:dotted"
-    italic    = "fore:%s, bold:no,  italic:yes, underline:no"
-    solid     = "linestyle:solid, fore:%s"
-    underline = "fore:%s, bold:yes, italic:no,  underline:full"
-    S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
-    S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
-        ### Added: ekr
-    S['Syntax.identifier'] = plain % fore1
-    S["Syntax.nonidentifier"] = plain % fore2
-    S["Syntax.keyword"] = bold % fore2
-    #
-    S["Syntax.functionname"] = bold % fore3
-    S["Syntax.classname"] = bold % orange
-    # EKR
-    S["Syntax.openparen"] = plain % cyan
-    S["Syntax.closeparen"] = plain % cyan
-    #
-    S["Syntax.string"] = plain % violet
-    S["Syntax.unterminatedstring"] = dotted % violet
-    S["Syntax.python.multilinestring"] = plain % blue
-    #
-    S["Syntax.number"] = plain % cyan
-    S["Syntax.comment"] = plain % yellow
-    S["Syntax.todocomment"] = italic % magenta
-    S["Syntax.python.cellcomment"] = underline % yellow
-    #
-    S["Editor.Long line indicator"] = solid % back2
-    S["Editor.Highlight current line"] = "back:%s" % back2
-    S["Editor.Indentation guides"] = solid % back2
-    S["Editor.Line numbers"] = "back:%s, fore:%s" % (back2, back3)
-    # Normalize all keys.
-    d = {}
-    for key in S:
-        normKey = key.replace(' ', '').lower()
-        d[normKey] = S.get(key)
-    return d
-.. @+node:ekr.20170112101149.4: *6* h.initStyles (new)
-
-
-def initStyles(self, d):
-
-    # Set style elements. Keys have already been normalized.
-    self.style_d = {}
-    for key in d:
-        self.style_d[key] = StyleFormat(format=d[key])
-    # Notify that style changed.
-    # adopt a lazy approach to make loading quicker.
-    if False: ### self.isVisible(): ###
-        callLater(self.styleChanged.emit)
-        self.__styleChangedPending = False
-    else:
-        self.__styleChangedPending = True
-.. @+node:ekr.20170107211216.7: *5* pyzo_h.getCurrentBlockUserData
-n_block_data = 0
-
-def getCurrentBlockUserData(self):
-    """ getCurrentBlockUserData()
+def recolorLater(self):
+    '''Queue up recoloring at idle time.'''
+    c = self.c
     
-    Gets the BlockData object. Creates one if necesary.
+    # This can fail on both python 2 and 3.
+    if False and g.isPython3 and not g.app.unitTesting:
     
-    """
-    self.n_block_data += 1
-    bd = self.currentBlockUserData()
-    if not isinstance(bd, BlockData):
-        bd = BlockData()
-        self.setCurrentBlockUserData(bd)
-    return bd
-.. @+node:ekr.20170107211216.8: *5* pyzo_h.highlightBlock
-n_calls = 0
-n_tokens = 0
-lws_pattern = re.compile(r'(\s*)')
-
-def highlightBlock(self, line): 
-    """ highlightBlock(line)
-    
-    This method is automatically called when a line must be 
-    re-highlighted.
-    
-    If the code editor has an active parser. This method will use
-    it to perform syntax highlighting. If not, it will only 
-    check out the indentation.
-    
-    """
-    trace = False and not g.unitTesting
-    self.n_calls += 1
-    # Make sure this is a Unicode Python string
-    line = ustr(line)
-    # Get previous state
-    previousState = self.previousBlockState()
-    # Get parser
-    parser = self.parser
-    fullLineFormat = None
-    tokens = []
-    if parser:
-        self.setCurrentBlockState(0)
-        tokens = list(parser.parseLine(line, previousState))
-        self.n_tokens += len(tokens)
-        # g.trace(len(tokens), 'tokens', tokens)
-        for token in tokens :
-            # Handle block state
-            if isinstance(token, BlockState):
-                self.setCurrentBlockState(token.state)
-                if trace: g.trace('block state')
-            else:
-                # Get format
-                normKey = token.name.replace(' ', '').lower()
-                styleFormat = self.style_d.get(normKey)
-                if styleFormat:
-                    # Set format
-                    # if trace: g.trace(token.name,charFormat)
-                    charFormat = styleFormat.textCharFormat
-                    self.setFormat(token.start,token.end-token.start,charFormat)
-                    fullLineFormat = styleFormat
-                else:
-                    g.trace('no format', repr(token.name))
-    # Get user data
-    bd = self.getCurrentBlockUserData()
-    # Store token list for future use (e.g. brace matching)
-    bd.tokens = tokens
-    # Handle underlines
-    bd.fullUnderlineFormat = fullLineFormat
-    # Get the indentation setting of the editors
-    indentUsingSpaces = True ### self._codeEditor.indentUsingSpaces()
-    ### leadingWhitespace=line[:len(line)-len(line.lstrip())]
-    m = self.lws_pattern.match(line)
-    leadingWhitespace = m and m.group(1) or ''
-    if 1:
-        bd.indentation = len(leadingWhitespace)
-    elif '\t' in leadingWhitespace and ' ' in leadingWhitespace:
-        #Mixed whitespace
-        bd.indentation = 0
-        format=QtGui.QTextCharFormat()
-        format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
-        format.setUnderlineColor(QtCore.Qt.red)
-        format.setToolTip('Mixed tabs and spaces')
-        self.setFormat(0,len(leadingWhitespace),format)
-    elif (
-        ('\t' in leadingWhitespace and indentUsingSpaces) or
-        (' ' in leadingWhitespace and not indentUsingSpaces)
-    ):
-        # Whitespace differs from document setting
-        bd.indentation = 0
-        format=QtGui.QTextCharFormat()
-        format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
-        format.setUnderlineColor(QtCore.Qt.blue)
-        format.setToolTip('Whitespace differs from document setting')
-        self.setFormat(0,len(leadingWhitespace),format)
-    else:
-        # Store info for indentation guides
-        # amount of tabs or spaces
-        bd.indentation = len(leadingWhitespace)
-.. @+node:ekr.20170108091854.1: *5* pyzo_h.rehighlight (new)
-def rehighlight(self, p=None):
-    '''Leo override, allowing the 'p' keyword arg.'''
-    trace = True and not g.unitTesting # and p and len(p.b) > 1000
-    self.n_calls = self.n_block_data = self.n_tokens = 0
-    self.parser.n_parse = 0
-    if trace: g.trace('(pyzo) =====', p and p.h)
-    QtGui.QSyntaxHighlighter.rehighlight(self)
-    if trace:
-        g.trace('(pyzo_h) -----',
-            self.n_calls,
-            self.n_block_data,
-            self.parser.n_parse,
-            self.n_tokens,
-            p and p.h)
-.. @+node:ekr.20170108044304.1: *3* COPY ../external/pyzo/base.py
-@first # -*- coding: utf-8 -*-
-"""The base code editor class."""
-<< pyzo copyright >>
-<< base.py imports >>
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171834.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170108044517.1: *4* << base.py imports >>
-import leo.core.leoGlobals as g
-ustr = g.ustr
-# from .qt import QtGui, QtCore, QtWidgets
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, isQt5
-if isQt5:
-    from PyQt5.QtCore import pyqtSignal as Signal
-else:
-    from PyQt4.QtCore import pyqtSignal as Signal
-from .misc import DEFAULT_OPTION_NAME, DEFAULT_OPTION_NONE, ce_option
-from .misc import callLater # , ustr
-from .manager import Manager
-from .highlighter import PyzoHighlighter ### Highlighter
-from .style import StyleElementDescription, StyleFormat
-.. @+node:ekr.20170108045413.3: *4* class CodeEditorBase
-class CodeEditorBase(QtWidgets.QPlainTextEdit):
-    """ The base code editor class. Implements some basic features required
-    by the extensions.
-    
-    """
-    # Style element for default text and editor background
-    _styleElements = [
-        ('Editor.text',
-         'The style of the default text. ' + 
-         'One can set the background color here.',
-         'fore:#000,back:#fff',
+        def recolorAtIdleTime(timer, c=c, self=self):
+            g.trace(self.n_recolorLater)
+            self.n_recolorLater += 1
+            c.recolorCommand()
+            timer.stop()
+        
+        timer = g.IdleTime(
+            handler=recolorAtIdleTime,
+            delay=0,
+            tag='recolorLater',
         )
-    ]
-    # Signal emitted after style has changed
-    styleChanged = Signal()
-    
-    # Signal emitted after font (or font size) has changed
-    fontChanged = Signal()
-    
-    # Signal to indicate a change in breakpoints. Only emitted if the
-    # appropriate extension is in use
-    breakPointsChanged = Signal(object)
-    
+        if timer: timer.start()
+.. @+node:ekr.20140825132752.18554: *4* class PythonQSyntaxHighlighter
+class PythonQSyntaxHighlighter(object):
+    '''
+    Python implementation of QtGui.QSyntaxHighlighter.
+
+    This allows incremental coloring of text at idle time, trading slower
+    overall speed for much faster response time.
+    '''
     @others
-.. @+node:ekr.20170108045413.4: *5* ed.__init__ (sets solarized colors)
-def __init__(self,*args, **kwds):
-    super(CodeEditorBase, self).__init__(*args)
-    # Set font (always monospace)
-    self.__zoom = 0
-    self.setFont()
-    # Create highlighter class 
-    self.__highlighter = PyzoHighlighter(self, self.document())
-    # Set some document options
-    option = self.document().defaultTextOption()
-    option.setFlags(
-        option.flags() |
-        option.IncludeTrailingSpaces |
-        option.AddSpaceForLineAndParagraphSeparators
-    )
-    self.document().setDefaultTextOption(option)
-    # When the cursor position changes, invoke an update, so that
-    # the hihghlighting etc will work
-    self.cursorPositionChanged.connect(self.viewport().update) 
-    # Init styles to default values
-    self.leo_style = {}
-    for element in self.getStyleElementDescriptions():
-        self.leo_style[element.key] = element.defaultFormat
-    # Connect style update
-    self.styleChanged.connect(self.__afterSetStyle)
-    self.__styleChangedPending = False
-    # Init margins
-    self._leftmargins = []
-    # Init options now. 
-    # NOTE TO PEOPLE DEVELOPING EXTENSIONS:
-    # If an extension has an __init__ in which it first calls the 
-    # super().__init__, this __initOptions() function will be called, 
-    # while the extension's init is not yet finished.        
-    self.__initOptions(kwds)
-    # Define colors from Solarized theme
-    # NOTE TO PEOPLE WANTING CUSTOM COLORS: ignore this and check the
-    # commented lines near the bottom of this method.
-    base03  = "#002b36"
-    base02  = "#073642"
-    base01  = "#586e75"
-    base00  = "#657b83"
-    base0   = "#839496"
-    base1   = "#93a1a1"
-    base2   = "#eee8d5"
-    base3   = "#fdf6e3"
-    yellow  = "#b58900"
-    orange  = "#cb4b16"
-    red     = "#dc322f"
-    magenta = "#d33682"
-    violet  = "#6c71c4"
-    blue    = "#268bd2"
-    cyan    = "#2aa198"
-    green   = "#859900"
-    if True: # Light vs dark
-        #back1, back2, back3 = base3, base2, base1 # real solarised
-        back1, back2, back3 = "#fff", base2, base1 # crispier
-        fore1, fore2, fore3, fore4 = base00, base01, base02, base03
-    else:
-        back1, back2, back3 = base03, base02, base01
-        fore1, fore2, fore3, fore4 = base0, base1, base2, base3
-    test_numbers  = 90 + 0000 + 1
-    # todo: proper testing of syntax style
-    # Define style using "Solarized" colors
-    S  = {}
-    S["Editor.text"] = "back:%s, fore:%s" % (back1, fore1)
-    S["Syntax.text"] = "back:%s, fore:%s" % (back1, fore1)
-        ### Added: ekr
-    S['Syntax.identifier'] = "fore:%s, bold:no, italic:no, underline:no" % fore1
-    S["Syntax.nonidentifier"] = "fore:%s, bold:no, italic:no, underline:no" % fore2
-    S["Syntax.keyword"] = "fore:%s, bold:yes, italic:no, underline:no" % fore2
-    #
-    S["Syntax.functionname"] = "fore:%s, bold:yes, italic:no, underline:no" % fore3
-    S["Syntax.classname"] = "fore:%s, bold:yes, italic:no, underline:no" % orange
-    # EKR
-    S["Syntax.openparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
-    S["Syntax.closeparen"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
-    #
-    S["Syntax.string"] = "fore:%s, bold:no, italic:no, underline:no" % violet
-    S["Syntax.unterminatedstring"] = "fore:%s, bold:no, italic:no, underline:dotted" % violet
-    S["Syntax.python.multilinestring"] = "fore:%s, bold:no, italic:no, underline:no" % blue
-    #
-    S["Syntax.number"] = "fore:%s, bold:no, italic:no, underline:no" % cyan
-    S["Syntax.comment"] ="fore:%s, bold:no, italic:no, underline:no" % yellow
-    S["Syntax.todocomment"] = "fore:%s, bold:no, italic:yes, underline:no" % magenta
-    
-    S["Syntax.python.cellcomment"] = "fore:%s, bold:yes, italic:no, underline:full" % yellow
-    #
-    S["Editor.Long line indicator"] = "linestyle:solid, fore:%s" % back2
-    S["Editor.Highlight current line"] = "back:%s" % back2
-    S["Editor.Indentation guides"] = "linestyle:solid, fore:%s" % back2
-    S["Editor.Line numbers"] = "back:%s, fore:%s" % (back2, back3)
-    
-    # Define style using html color names. All 140 legal HTML colour
-    # names can be used (in addition to HEX codes). A full list of
-    # recognized colour names is available e.g. here
-    # http://www.html-color-names.com/color-chart.php
-        #         S  = {}
-        #         S["Editor.text"] = "back: white, fore: black"
-        #         S['Syntax.identifier'] = "fore: black, bold:no, italic:no, underline:no"
-        #         S["Syntax.nonidentifier"] = "fore: blue, bold:no, italic:no, underline:no"
-        #         S["Syntax.keyword"] = "fore: blue, bold:yes, italic:no, underline:no"
-        #         S["Syntax.functionname"] = "fore: black, bold:yes, italic:no, underline:no"
-        #         S["Syntax.classname"] = "fore: magenta, bold:yes, italic:no, underline:no"
-        #         S["Syntax.string"] = "fore: red, bold:no, italic:no, underline:no"
-        #         S["Syntax.unterminatedstring"] = "fore: red, bold:no, italic:no, underline:dotted"
-        #         S["Syntax.python.multilinestring"] = "fore: red, bold:no, italic:no, underline:no"
-        #         S["Syntax.number"] = "fore: dark orange, bold:no, italic:no, underline:no"
-        #         S["Syntax.comment"] ="fore: green, bold:no, italic:yes, underline:no"
-        #         S["Syntax.todocomment"] = "fore: magenta, bold:no, italic:yes, underline:no"
-        #         S["Syntax.python.cellcomment"] = "fore: green, bold:yes, italic:no, underline:full"
-        #         S["Editor.Long line indicator"] = "linestyle:solid, fore: dark grey"
-        #         S["Editor.Highlight current line"] = "back: light grey"
-        #         S["Editor.Indentation guides"] = "linestyle:solid, fore: light grey"
-        #         S["Editor.Line numbers"] = "back: light grey, fore: black"
-    
-    # Apply style
-    # g.trace('(CodeEditorBase)','*'*20) ; g.printDict(S)
-    self.setStyle(S, force=True) # EKR
-.. @+node:ekr.20170108045413.5: *5* _setHighlighter
-def _setHighlighter(self, highlighterClass):
-    self.__highlighter = highlighterClass(self, self.document())
-.. @+node:ekr.20170108092633.1: *5* Option setters/getters
-.. @+node:ekr.20170108045413.6: *6* ed.__getOptionSetters
-def __getOptionSetters(self):
-    """ Get a dict that maps (lowercase) option names to the setter
-    methods.
-    """
-    # Get all names that can be options
-    allNames = set(dir(self))
-    nativeNames = set(dir(QtWidgets.QPlainTextEdit))
-    names = allNames.difference(nativeNames)
-    # Init dict of setter members
-    setters = {}
-    for name in names:
-        # Get name without set
-        if name.lower().startswith('set'):
-            name = name[3:]
-        # Get setter and getter name
-        name_set = 'set' + name[0].upper() + name[1:]
-        name_get = name[0].lower() + name[1:]
-        # Check if both present
-        if not (name_set in names and name_get in names):
-            continue
-        # Get members
-        member_set = getattr(self, name_set)
-        member_get = getattr(self, name_get)
-        # Check if option decorator was used and get default value
-        for member in [member_set, member_get]:
-            if hasattr(member, DEFAULT_OPTION_NAME):
-                defaultValue = member.__dict__[DEFAULT_OPTION_NAME]
-                break
-        else:
-            continue
-        # Set default on both
-        member_set.__dict__[DEFAULT_OPTION_NAME] = defaultValue
-        member_get.__dict__[DEFAULT_OPTION_NAME] = defaultValue
-        # Add to list
-        setters[name.lower()] = member_set
-    # Done
-    if 0: ###
-        g.trace()
-        # g.printDict(setters)
-        g.printList(['%20s:%s' % (z, setters.get(z).__name__)
-            for z in sorted(setters)])
-    return setters
-.. @+node:ekr.20170108045413.7: *6* ed.__setOptions
-def __setOptions(self, setters, options):
-    """ Sets the options, given the list-of-tuples methods and an
-    options dict.
-    """
-    # List of invalid keys
-    invalidKeys = []
-    # Set options
-    for key1 in options:
-        key2 = key1.lower()
-        # Allow using the setter name
-        if key2.startswith('set'):
-            key2 = key2[3:]
-        # Check if exists. If so, call!
-        if key2 in setters:
-            fun = setters[key2]
-            val = options[key1]
-            fun(val)
-        else:
-            invalidKeys.append(key1)
-    # Check if invalid keys were given
-    if invalidKeys:
-        print("Warning, invalid options given: " + ', '.join(invalidKeys))
-.. @+node:ekr.20170108045413.8: *6* __initOptions
-def __initOptions(self, options=None):
-    """ Init the options with their default values.
-    Also applies the docstrings of one to the other.
-    """
-    # Make options an empty dict if not given
-    if not options:
-        options = {}
-    # Get setters
-    setters = self.__getOptionSetters()
-    # Set default value
-    for member_set in setters.values():
-        defaultVal = member_set.__dict__[DEFAULT_OPTION_NAME]
-        if defaultVal != DEFAULT_OPTION_NONE:
-            try:
-                member_set(defaultVal)
-            except Exception as why:
-                print('Error initing option ', member_set.__name__)
-    # Also set using given opions?
-    if options:
-        self.__setOptions(setters, options)
-.. @+node:ekr.20170108045413.9: *6* ed.setOptions
-def setOptions(self, options=None, **kwargs):
-    """ setOptions(options=None, **kwargs)
-    
-    Set the code editor options (e.g. highlightCurrentLine) using
-    a dict-like object, or using keyword arguments (options given
-    in the latter overrule opions in the first).
-    
-    The keys in the dict are case insensitive and one can use the
-    option's setter or getter name.
-    
-    """
-    # Process options
-    if options:
-        D = {}            
-        for key in options:
-            D[key] = options[key]
-        D.update(kwargs)
-    else:
-        D = kwargs
-    # Get setters
-    setters = self.__getOptionSetters()
-    # Go
-    self.__setOptions(setters, D)
-.. @+node:ekr.20170108092733.1: *5* Font settings
-.. @+node:ekr.20170108045413.10: *6* setFont
-def setFont(self, font=None):
-    """ setFont(font=None)
-    
-    Set the font for the editor. Should be a monospace font. If not,
-    Qt will select the best matching monospace font.
-    
-    """
-    defaultFont = Manager.defaultFont()
-    # Get font object
-    if font is None:
-        font = defaultFont
-    elif isinstance(font, QtGui.QFont):
-        pass
-    elif isinstance(font, str):
-        font = QtGui.QFont(font)
-    else:
-        raise ValueError("setFont accepts None, QFont or string.")
-    # Hint Qt that it should be monospace
-    font.setStyleHint(font.TypeWriter, font.PreferDefault)
-    # Get family, fall back to default if qt could not produce monospace
-    fontInfo = QtGui.QFontInfo(font)
-    if fontInfo.fixedPitch():
-        family = fontInfo.family() 
-    else:
-        family = defaultFont.family()
-    # Get size: default size + zoom
-    size = defaultFont.pointSize() + self.__zoom
-    # Create font instance
-    font = QtGui.QFont(family, size)
-    # Set, emit and return
-    QtWidgets.QPlainTextEdit.setFont(self, font)
-    self.fontChanged.emit()
-    return font
-.. @+node:ekr.20170108045413.11: *6* setZoom
-def setZoom(self, zoom):
-    """ setZoom(zoom)
-    
-    Set the zooming of the document. The font size is always the default
-    font size + the zoom factor.
-    
-    The final zoom is returned, this may not be the same as the given
-    zoom factor if the given factor is too small.
-    
-    """
-    # Set zoom (limit such that final pointSize >= 1)
-    size = Manager.defaultFont().pointSize()
-    self.__zoom = int(max(1-size,zoom))
-    # Set font
-    self.setFont(self.fontInfo().family())
-    # Return zoom
-    return self.__zoom
-.. @+node:ekr.20170108092658.1: *5* Syntax styling
-.. @+node:ekr.20170108045413.12: *6* getStyleElementDescriptions
-@classmethod
-def getStyleElementDescriptions(cls):
-    """ getStyleElementDescriptions()
-    
-    This classmethod returns a list of the StyleElementDescription 
-    instances used by this class. This includes the descriptions for
-    the syntax highlighting of all parsers.
-    
-    """
-    # g.trace('-'*20, g.callers())
-    # Collect members by walking the class bases
-    elements = []
-    def collectElements(cls, iter=1):
-        # Valid class?
-        if cls is object or cls is QtWidgets.QPlainTextEdit:
-            return
-        # Check members
-        if hasattr(cls, '_styleElements'):
-            for element in cls._styleElements:
-                elements.append(element)
-        # Recurse
-        for c in cls.__bases__:
-            collectElements(c, iter+1)
-    collectElements(cls)
-    # Make style element descriptions
-    # (Use a dict to ensure there are no duplicate keys)
-    elements2 = {}
-    for element in elements:
-        # Check
-        if isinstance(element, StyleElementDescription):
-            pass
-        elif isinstance(element, tuple):
-            element = StyleElementDescription(*element)
-        else:
-            print('Warning: invalid element: ' + repr(element))
-        # Store using the name as a key to prevent duplicates
-        elements2[element.key] = element
-    # Done
-    # g.trace() ; g.printList(list(elements2.values()))
-    return list(elements2.values())
-.. @+node:ekr.20170108045413.13: *6* ed.getStyleElementFormat
-def getStyleElementFormat(self, name):
-    """ getStyleElementFormat(name)
-    
-    Get the style format for the style element corresponding with
-    the given name. The name is case insensitive and invariant to
-    the use of spaces.
-    
-    """
-    normKey = name.replace(' ','').lower()
-    try:
-        return self.leo_style[normKey]
-    except KeyError:
-        g.trace(normKey)
-        raise KeyError('Not a known style element name: "%s".' % normKey)
-.. @+node:ekr.20170108045413.14: *6* ed.setStyle
-def setStyle(self, style=None, force=False, **kwargs):
-    """ setStyle(style=None, **kwargs)
-    
-    Updates the formatting per style element. 
-    
-    The style consists of a dictionary that maps style names to
-    style formats. The style names are case insensitive and invariant 
-    to the use of spaces.
-    
-    For convenience, keyword arguments may also be used. In this case,
-    underscores are interpreted as dots.
-    
-    This function can also be called without arguments to force the 
-    editor to restyle (and rehighlight) itself.
-    
-    Use getStyleElementDescriptions() to get information about the
-    available styles and their default values.
-    
-    Examples
-    --------
-    # To make the classname in underline, but keep the color and boldness:
-    setStyle(syntax_classname='underline') 
-    # To set all values for function names:
-    setStyle(syntax_functionname='#883,bold:no,italic:no') 
-    # To set line number and indent guides colors
-    setStyle({  'editor.LineNumbers':'fore:#000,back:#777', 
-                'editor.indentationGuides':'#f88' })
-    
-    """
-    # Combine user input
-    # def normkey(key):
-        # return key.replace(' ', '').lower()
-    g.trace('=====', 'force', force) #, '\n', g.callers())
-    D = {}
-    if style:
-        for key in style:
-            normKey = key.replace(' ', '').lower()
-            # g.trace(key, '->', normKey)
-            ### D[key] = style[key]
-            D[normKey] = style[key]
-    if True:
-        for key in kwargs:
-            key2 = key.replace('_', '.')
-            D[key2] = kwargs[key]
-    # List of given invalid style element names
-    invalidKeys = []
-    # g.printList(sorted(D.keys()))
-    # Set style elements
-    for key in D:
-        normKey = key.replace(' ', '').lower()
-        if force:
-            self.leo_style[normKey] = StyleFormat(format=D[normKey])
-        elif normKey in self.leo_style:
-            ### self.leo_style[normKey].update(D[key])
-            self.leo_style[normKey].update(D[normKey]) # EKR
-        else:
-            invalidKeys.append(key)
-    # Give warning for invalid keys
-    if invalidKeys:
-        print("Warning, invalid style names given: \n" + 
-            '\n'.join(sorted(invalidKeys)))
-    # Notify that style changed, adopt a lazy approach to make loading
-    # quicker.
-    if True: ### self.isVisible(): ###
-        callLater(self.styleChanged.emit)
-        self.__styleChangedPending = False
-    else:
-        self.__styleChangedPending = True
-.. @+node:ekr.20170108045413.15: *6* ed.showEvent
-def showEvent(self, event):
-    super(CodeEditorBase, self).showEvent(event)
-    # Does the style need updating?
-    if self.__styleChangedPending:
-        callLater(self.styleChanged.emit)
-        self.__styleChangedPending = False
-.. @+node:ekr.20170108045413.16: *6* ed.__afterSetStyle
-def __afterSetStyle(self):
-    """ _afterSetStyle()
-    
-    Callback after the style has been set.
-    """
-    # Set text style using editor style sheet
-    format = self.getStyleElementFormat('editor.text')
-    ss = 'QPlainTextEdit{ color:%s; background-color:%s; }' %  (
-        format['fore'], format['back'])
-    self.setStyleSheet(ss)
-    # Make sure the style is applied
-    self.viewport().update()
-    # Re-highlight
-    callLater(self.__highlighter.rehighlight)
-.. @+node:ekr.20170108092857.1: *5* Basic options
-.. @+node:ekr.20170108045413.17: *6* indentWidth
-@ce_option(4)
-def indentWidth(self):
-    """ Get the width of a tab character, and also the amount of spaces
-    to use for indentation when indentUsingSpaces() is True.
-    """
-    return self.__indentWidth
-.. @+node:ekr.20170108045413.18: *6* setIndentWidth
-def setIndentWidth(self, value):
-    value = int(value)
-    if value<=0:
-        raise ValueError("indentWidth must be >0")
-    self.__indentWidth = value
-    self.setTabStopWidth(self.fontMetrics().width('i'*self.__indentWidth))
-.. @+node:ekr.20170108045413.19: *6* indentUsingSpaces
-@ce_option(False)
-def indentUsingSpaces(self):
-    """Get whether to use spaces (if True) or tabs (if False) to indent
-    when the tab key is pressed
-    """
-    return self.__indentUsingSpaces
-.. @+node:ekr.20170108045413.20: *6* setIndentUsingSpaces
-def setIndentUsingSpaces(self, value):
-    self.__indentUsingSpaces = bool(value)
-    self.__highlighter.rehighlight()
-.. @+node:ekr.20170108092912.1: *5* Misc
-.. @+node:ekr.20170108045413.21: *6* gotoLine
-def gotoLine(self, lineNumber):
-    """ gotoLine(lineNumber)
-    
-    Move the cursor to the block given by the line number 
-    (first line is number 1) and show that line.
-    
-    """
-    return self.gotoBlock(lineNumber-1)
-.. @+node:ekr.20170108045413.22: *6* gotoBlock
-def gotoBlock(self, blockNumber):
-    """ gotoBlock(blockNumber)
-    
-    Move the cursor to the block given by the block number 
-    (first block is number 0) and show that line.
-    
-    """
-    # Two implementations. I know that the latter works, so lets
-    # just use that.
-    
-    cursor = self.textCursor()
-    #block = self.document().findBlockByNumber( blockNumber )
-    #cursor.setPosition(block.position())
-    cursor.movePosition(cursor.Start) # move to begin of the document
-    cursor.movePosition(cursor.NextBlock,n=blockNumber) # n blocks down
-    
-    try:
-        self.setTextCursor(cursor)
-    except Exception:
-        pass # File is smaller then the caller thought
+.. @+node:ekr.20140825132752.18561: *5* pqsh.Birth & death
+def __init__(self, parent, c=None, delay=10, limit=50):
+    '''
+    Ctor for QSyntaxHighlighter class.
+    Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
+    '''
+    # g.trace('(PythonQSyntaxBrowser)', parent)
+    # Ivars corresponding to QSH ivars...
+    self.c = c # The commander.
+    self.cb = None # The current block: a QTextBlock.
+    self.d = None # The QTextDocument attached to this colorizers.
+    self.formats = [] # An array of QTextLayout.FormatRange objects.
+    self.inReformatBlocks = False
+    self.rehighlightPending = False
+    # Ivars for reformatBlocks and idle_handler...
+    self.idle_active = False # True if the idle_handler should colorize.
+    self.r_block = None # The block to be colorized.
+    self.r_end = None # The ultimate ending position.
+    self.r_delay = delay # The waiting time, in msec. for self.timer.
+    self.r_force = False # True if the next block must be recolored.
+    self.r_limit = limit # The max number of lines to color at one time.
+    self.timer = g.IdleTime(
+        handler=self.idle_handler,
+        delay=self.r_delay,
+        tag='pqsh.idle_handler')
+    # Attach the parent's QTextDocument and set self.d.
+    self.setDocument(parent)
+.. @+node:ekr.20140825132752.18588: *5* pqsh.Entry points
+.. @+node:ekr.20140827112712.18469: *6* pqsh.kill
+def kill(self):
+    '''Kill any queued coloring.'''
+    trace = False and not g.unitTesting
+    if self.idle_active:
+        if trace: g.trace('(PythonQSyntaxHighlighter)')
+        self.idle_active = False
+        if self.timer:
+            self.timer.stop()
+.. @+node:ekr.20140825132752.18566: *6* pqsh.rehighlight
+def rehighlight(self):
+    '''Color the whole document.'''
+    trace = False and not g.unitTesting
+    c, d = self.c, self.d
+    if d:
+        n = d.characterCount()
+        if 0 < c.max_pre_loaded_body_chars < n:
+            if trace: g.trace('big text: no color', c.p.h)
+        elif n > 1000*10:
 
-    # TODO make this user configurable (setting relativeMargin to anything above
-    # 0.5 will cause cursor to center on each move)
-    relativeMargin = 0.2    # 20% margin on both sides of the window
-    margin = self.height() * relativeMargin
-    cursorRect = self.cursorRect(cursor)
-    if cursorRect.top() < margin or cursorRect.bottom() + margin > self.height():
-        self.centerCursor()
-.. @+node:ekr.20170108045413.23: *6* doForSelectedBlocks
-def doForSelectedBlocks(self, function):
-    """ doForSelectedBlocks(function)
-    
-    Call the given function(cursor) for all blocks in the current selection
-    A block is considered to be in the current selection if a part of it is in
-    the current selection 
-    
-    The supplied cursor will be located at the beginning of each block. This
-    cursor may be modified by the function as required
-    
-    """
-    
-    #Note: a 'TextCursor' does not represent the actual on-screen cursor, so
-    #movements do not move the on-screen cursor
-    
-    #Note 2: when the text is changed, the cursor and selection start/end
-    #positions of all cursors are updated accordingly, so the screenCursor
-    #stays in place even if characters are inserted at the editCursor
-    
-    screenCursor = self.textCursor() #For maintaining which region is selected
-    editCursor = self.textCursor()   #For inserting the comment marks
+            def rehightlight_callback(c=c, d=d, p=c.p, self=self):
+                if p == c.p:
+                    if trace: g.trace('=====', n, p.h)
+                    cursor = QtGui.QTextCursor(d)
+                    self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+                else:
+                    if trace: g.trace('node not selected', p.h)
 
-    #Use beginEditBlock / endEditBlock to make this one undo/redo operation
-    editCursor.beginEditBlock()
-    
+            QtCore.QTimer.singleShot(200, rehightlight_callback)
+        else:
+            if trace: g.trace('(pqsh)', n)
+            cursor = QtGui.QTextCursor(d)
+            self.rehighlight_helper(cursor, QtGui.QTextCursor.End)
+.. @+node:ekr.20140825132752.18568: *6* pqsh.rehighlightBlock (not used)
+def rehighlightBlock(self, block):
+    '''Reapplies the highlighting to the given QTextBlock block.'''
+    d = self.d
+    if d and self.is_valid(block) and block.document() == d:
+        self.rehighlightPending = d.rehighlightPending
+        cursor = QtGui.QTextCursor(block)
+        g.trace(g.u(block.text()))
+        self.rehighlight_helper(cursor, QtGui.QTextCursor.EndOfBlock)
+        if self.rehighlightPending:
+            d.rehighlightPending = self.rehighlightPending
+.. @+node:ekr.20140825132752.18591: *6* pqsh.rehighlight_helper
+def rehighlight_helper(self, cursor, operation):
+        # QtGui.QTextCursor &cursor
+        # QtGui.QTextCursor.MoveOperation operation
+    self.inReformatBlocks = True
     try:
-        editCursor.setPosition(screenCursor.selectionStart())
-        editCursor.movePosition(editCursor.StartOfBlock)
-        # < :if selection end is at beginning of the block, don't include that
-        #one, except when the selectionStart is same as selectionEnd
-        while editCursor.position()<screenCursor.selectionEnd() or \
-                editCursor.position()<=screenCursor.selectionStart(): 
-            #Create a copy of the editCursor and call the user-supplied function
-            editCursorCopy = QtGui.QTextCursor(editCursor)
-            function(editCursorCopy)
-            
-            #Move to the next block
-            if not editCursor.block().next().isValid():
-                break #We reached the end of the document
-            editCursor.movePosition(editCursor.NextBlock)
+        cursor.beginEditBlock()
+        from_ = cursor.position()
+        cursor.movePosition(operation)
+        self.reformatBlocks(from_, 0, cursor.position() - from_)
+        cursor.endEditBlock()
     finally:
-        editCursor.endEditBlock()
-.. @+node:ekr.20170108045413.24: *6* doForVisibleBlocks
-def doForVisibleBlocks(self, function):
-    """ doForVisibleBlocks(function)
-    
-    Call the given function(cursor) for all blocks that are currently
-    visible. This is used by several appearence extensions that
-    paint per block.
-    
-    The supplied cursor will be located at the beginning of each block. This
-    cursor may be modified by the function as required
-    
-    """
+        self.inReformatBlocks = False
+.. @+node:ekr.20140825132752.18590: *5* pqsh.Getters & Setters
+.. @+node:ekr.20140825132752.18582: *6* pqsh.currentBlock & currentBlockUserData
+def currentBlock(self):
+    '''Returns the current text block.'''
+    return self.cb
 
-    # Start cursor at top line.
-    cursor = self.cursorForPosition(QtCore.QPoint(0,0))
-    cursor.movePosition(cursor.StartOfBlock)
+def currentBlockUserData(self):
+    '''Returns the QTextBlockUserData object attached to the current text block.'''
+    return self.cb.userData() if self.is_valid(self.cb) else None
+.. @+node:ekr.20140825132752.18580: *6* pqsh.currentBlockState & previousBlockState
+def currentBlockState(self):
+    '''Returns the state of the current block or -1.'''
+    return self.cb.userState() if self.is_valid(self.cb) else - 1
 
-    while True:            
-        # Call the function with a copy of the cursor
-        function(QtGui.QTextCursor(cursor))
-        
-        # Go to the next block (or not if we are done)
-        y = self.cursorRect(cursor).bottom() 
-        if y > self.height():
-            break #Reached end of the repaint area
-        if not cursor.block().next().isValid():
-            break #Reached end of the text
-        cursor.movePosition(cursor.NextBlock)
-.. @+node:ekr.20170108045413.25: *6* indentBlock
-def indentBlock(self, cursor, amount=1):
-    """ indentBlock(cursor, amount=1)
-    
-    Indent the block given by cursor.
-    
-    The cursor specified is used to do the indentation; it is positioned
-    at the beginning of the first non-whitespace position after completion
-    May be overridden to customize indentation.
-    
-    """
-    text = ustr(cursor.block().text())
-    leadingWhitespace = text[:len(text)-len(text.lstrip())]
-    
-    #Select the leading whitespace
-    cursor.movePosition(cursor.StartOfBlock)
-    cursor.movePosition(cursor.Right,cursor.KeepAnchor,len(leadingWhitespace))
-    
-    #Compute the new indentation length, expanding any existing tabs
-    indent = len(leadingWhitespace.expandtabs(self.indentWidth()))
-    if self.indentUsingSpaces():            
-        # Determine correction, so we can round to multiples of indentation
-        correction = indent % self.indentWidth()
-        if correction and amount<0:
-            correction = - (self.indentWidth() - correction) # Flip
-        # Add the indentation tabs
-        indent += (self.indentWidth() * amount) - correction
-        cursor.insertText(' '*max(indent,0))
+def previousBlockState(self):
+    '''Returns the end state previous text block or -1'''
+    if self.is_valid(self.cb):
+        previous = self.cb.previous()
+        return previous.userState() if self.is_valid(previous) else - 1
     else:
-        # Convert indentation to number of tabs, and add one
-        indent = (indent // self.indentWidth()) + amount
-        cursor.insertText('\t' * max(indent,0))
-.. @+node:ekr.20170108045413.26: *6* dedentBlock
-def dedentBlock(self, cursor):
-    """ dedentBlock(cursor)
-    
-    Dedent the block given by cursor.
-    
-    Calls indentBlock with amount = -1.
-    May be overridden to customize indentation.
-    
-    """
-    self.indentBlock(cursor, amount = -1)
-.. @+node:ekr.20170108045413.27: *6* indentSelection
-def indentSelection(self):
-    """ indentSelection()
-    
-    Called when the current line/selection is to be indented.
-    Calls indentLine(cursor) for each line in the selection.
-    May be overridden to customize indentation.
-    
-    See also doForSelectedBlocks and indentBlock.
-    
-    """
-    self.doForSelectedBlocks(self.indentBlock)
-.. @+node:ekr.20170108045413.28: *6* dedentSelection
-def dedentSelection(self):
-    """ dedentSelection()
-    
-    Called when the current line/selection is to be dedented.
-    Calls dedentLine(cursor) for each line in the selection.
-    May be overridden to customize indentation.
-    
-    See also doForSelectedBlocks and dedentBlock.
-    
-    """
-    self.doForSelectedBlocks(self.dedentBlock)
-.. @+node:ekr.20170108045413.29: *6* justifyText
-def justifyText(self, linewidth=70):
-    """ justifyText(linewidth=70)
-    """
-    from .textutils import TextReshaper
-    
-    # Get cursor
-    cursor = self.textCursor()
-    
-    # Make selection include whole lines
-    pos1, pos2 = cursor.position(), cursor.anchor()
-    pos1, pos2 = min(pos1, pos2), max(pos1, pos2)
-    cursor.setPosition(pos1, cursor.MoveAnchor)
-    cursor.movePosition(cursor.StartOfBlock, cursor.MoveAnchor)
-    cursor.setPosition(pos2, cursor.KeepAnchor)
-    cursor.movePosition(cursor.EndOfBlock, cursor.KeepAnchor)
-    
-    # Use reshaper to create replacement text
-    reshaper = TextReshaper(linewidth)
-    reshaper.pushText(cursor.selectedText())
-    newText = reshaper.popText()
-    
-    # Update the selection
-    #self.setTextCursor(cursor) for testing
-    cursor.insertText(newText)
-.. @+node:ekr.20170108045413.30: *6* addLeftMargin
-def addLeftMargin(self, des, func):
-    """ Add a margin to the left. Specify a description for the margin,
-    and a function to get that margin. For internal use.
-    """
-    assert des is not None
-    self._leftmargins.append((des, func))
-.. @+node:ekr.20170108045413.31: *6* getLeftMargin
-def getLeftMargin(self, des=None):
-    """ Get the left margin, relative to the given description (which
-    should be the same as given to addLeftMargin). If des is omitted 
-    or None, the full left margin is returned.
-    """
-    margin = 0
-    for d, func in self._leftmargins:
-        if d == des:
+        return -1
+.. @+node:ekr.20140825132752.18565: *6* pqsh.document
+def document(self):
+    '''Returns the QTextDocument on which this syntax highlighter is installed.'''
+    return self.d
+.. @+node:ekr.20140825132752.18575: *6* pqsh.format
+def format(self, pos):
+    '''Return the format at the given position in the current text block.'''
+    if 0 <= pos < len(self.formatChanges):
+        return self.formatChanges[pos]
+    else:
+        return QtGui.QTextCharFormat()
+.. @+node:ekr.20140825132752.18576: *6* pqsh.setCurrentBlockState & setCurrentBlockUserData
+def setCurrentBlockState(self, newState):
+    '''Sets the state of the current text block.'''
+    if self.is_valid(self.cb):
+        self.cb.setUserState(newState)
+
+def setCurrentBlockUserData(self, data):
+    '''Set the user data of the current text block.'''
+    if self.is_valid(self.cb):
+        self.cb.setUserData(data)
+.. @+node:ekr.20140825132752.18564: *6* pqsh.setDocument
+def setDocument(self, parent):
+    '''Install self on the given QTextDocument.'''
+    d = self.d
+    if d:
+        d.contentsChange.disconnect()
+        cursor = QtGui.QTextCursor(d)
+        cursor.beginEditBlock()
+        blk = d.begin()
+        while self.is_valid(blk): # blk: QTextBlock
+            blk.layout().clearAdditionalFormats()
+            blk = blk.next()
+        cursor.endEditBlock()
+    self.d = d = parent.document()
+    assert isinstance(d, QtGui.QTextDocument), d
+    if d:
+        d.contentsChange.connect(self.q_reformatBlocks)
+        d.rehighlightPending = True
+            # Set d's pending flag.
+        QtCore.QTimer.singleShot(0, self.delayedRehighlight)
+.. @+node:ekr.20140825132752.18584: *6* pqsh.setFormat (start,count,format)
+def setFormat(self, start, count, format):
+    '''Remember the requested formatting.'''
+    trace = False and not g.unitTesting
+    verbose = False
+    if start >= 0:
+        r = QtGui.QTextLayout.FormatRange()
+        r.start, r.length, r.format = start, count, format
+        self.formats.append(r)
+        if trace and verbose: g.trace('%3s %3s %s %s' % (
+            start, count, self.format_to_color(format), self.cb.text()))
+    elif trace:
+        g.trace('bad start value', repr(start), g.callers())
+# Not used by Leo...
+# def setFormat(self,start,count,color):
+    # format = QTextCharFormat()
+    # format.setForeground(color)
+    # setFormat(start,count,format)
+# def setFormat(self,start,count,font):
+    # format = QTextCharFormat()
+    # format.setFont(font)
+    # self.setFormat(start,count,format)
+.. @+node:ekr.20140825132752.18589: *5* pqsh.Helpers
+# These helpers are the main reason QSyntaxHighlighter exists.
+# Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
+.. @+node:ekr.20140825132752.18557: *6* pqsh.applyFormatChanges
+def applyFormatChanges(self):
+    '''Apply self.formats to the current layout.'''
+    if self.formats:
+        layout = self.cb.layout()
+        layout.setAdditionalFormats(self.formats)
+        self.formats = []
+        self.d.markContentsDirty(self.cb.position(), self.cb.length())
+.. @+node:ekr.20140825132752.18592: *6* pqsh.delayedRehighlight
+def delayedRehighlight(self): # inline
+    '''Queued rehighlight.'''
+    # g.trace('=====',self.rehighlightPending)
+    if self.rehighlightPending:
+        self.rehighlightPending = False
+        self.rehighlight()
+.. @+node:ekr.20140826120657.18649: *6* pqsh.format_to_color
+def format_to_color(self, format):
+    '''Return the foreground color of the given character format.'''
+    return str(format.foreground().color().name())
+.. @+node:ekr.20140826120657.18650: *6* pqsh.highlightBlock
+def highlightBlock(self, s):
+    g.trace('must be defined in subclasses.' '')
+.. @+node:ekr.20140827063632.18569: *6* pqsh.idle_handler
+def idle_handler(self, timer):
+    trace = False and not g.unitTesting
+    verbose = True
+    if not self.idle_active:
+        # Shortcut everything else.
+        return
+    c = self.c
+    if trace and verbose:
+        s = g.u(self.r_block.text()).lstrip()
+        g.trace('force: %5s s: %s' % (self.r_force, s[: 20]))
+    # This is defensive code.  Apparently it is never needed.
+    # This is the only place c is used, so the c argument to the ctor is optional.
+    if c:
+        if c.p == self.r_p:
+            self.reformat_blocks_helper()
+        elif trace:
+            self.idle_active = False
+            g.trace('node changed: old: %s new: %s' % (
+                self.r_p and self.r_p.h[: 10], c.p and c.p.h[: 10]))
+.. @+node:ekr.20140826120657.18648: *6* pqsh.is_valid
+def is_valid(self, obj):
+    return obj and obj.isValid()
+.. @+node:ekr.20140825132752.18558: *6* pqsh.q_reformatBlocks
+def q_reformatBlocks(self, from_, charsRemoved, charsAdded):
+    if not self.inReformatBlocks:
+        # g.trace(from_,charsRemoved,charsAdded)
+        self.reformatBlocks(from_, charsRemoved, charsAdded)
+.. @+node:ekr.20140827074435.18570: *6* pqsh.reformat_blocks_helper
+def reformat_blocks_helper(self):
+    '''The common code shared by reformatBlocks and idle_handler.'''
+    block = self.r_block
+    n, start = 0, False
+    while self.is_valid(block) and (block.position() < self.r_end or self.r_force):
+        n += 1
+        if n >= self.r_limit > 0 and self.timer:
+            start = True
             break
-        margin += func()
-    return margin
-.. @+node:ekr.20170108045413.32: *6* updateMargins
-def updateMargins(self):
-    """ Force the margins to be recalculated and set the viewport 
-    accordingly.
-    """
-    leftmargin = self.getLeftMargin()
-    self.setViewportMargins(leftmargin , 0, 0, 0)
-.. @+node:ekr.20170108050440.1: *3* COPY ../external/pyzo/misc.py
-# -*- coding: utf-8 -*-
-<< pyzo copyright >>
-<< misc.py imports >>
-DEFAULT_OPTION_NAME = '_ce_default_value'
-DEFAULT_OPTION_NONE = '_+_just some absurd value_+_'
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171929.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170108050440.2: *4* << misc.py imports >>
-# import sys
-import leo.core.leoGlobals as g
-ustr = g.ustr
-bstr = bytes if g.isPython3 else str
-# from .qt import QtGui, QtCore, QtWidgets
-from leo.core.leoQt import QtCore, QtWidgets # QtGui, 
-if g.isPython3:
-    from queue import Queue, Empty
-else:
-    from Queue import Queue, Empty
-###
-# # Set Python version and get some names
-# PYTHON_VERSION = sys.version_info[0]
-# if PYTHON_VERSION < 3:
-    # ustr = unicode
-    # bstr = str
-    # from Queue import Queue, Empty
-# else:
-    # ustr = str
-    # bstr = bytes
-    # from queue import Queue, Empty
-.. @+node:ekr.20170108050440.3: *4* ce_option
-def ce_option(arg1):
-    """ Decorator for properties of the code editor. 
-    
-    It should be used on the setter function, with its default value
-    as an argument. The default value is then  stored on the function
-    object. 
-    
-    At the end of the initialization, the base codeeditor class will 
-    check all members and (by using the default-value-attribute as a
-    flag) select the ones that are options. These are then set to
-    their default values.
-    
-    Similarly this information is used by the setOptions method to
-    know which members are "options".
-    
-    """
-    
-    # If the decorator is used without arguments, arg1 is the function
-    # being decorated. If arguments are used, arg1 is the argument, and
-    # we should return a callable that is then used as a decorator.
-    
-    # Create decorator function.
-    def decorator_fun(f):
-        f.__dict__[DEFAULT_OPTION_NAME] = default
-        return f
-    
-    # Handle
-    default = DEFAULT_OPTION_NONE
-    if hasattr(arg1, '__call__'):
-        return decorator_fun(arg1)
+        else:
+            before_state = block.userState()
+            self.reformatBlock(block)
+            self.r_force = block.userState() != before_state
+            block = self.r_block = block.next()
+    self.formatChanges = []
+    self.idle_active = start
+    if self.timer and start:
+        self.timer.start()
+    elif self.timer:
+        self.timer.stop()
+        # g.trace('--end',g.app.allow_see,self.c.p and self.c.p.h or None)
+        # Fix bug 78: find-next match not always scrolled into view.
+        # https://github.com/leo-editor/leo-editor/issues/78
+        w = self.c.frame.body.wrapper
+        if g.app.allow_delayed_see and w:
+            w.seeInsertPoint()
+        g.app.allow_delayed_see = False
+.. @+node:ekr.20140825132752.18560: *6* pqsh.reformatBlock
+def reformatBlock(self, block):
+    trace = False and not g.unitTesting
+    if self.is_valid(self.cb) and not isQt5:
+        g.trace('can not happen: called recursively')
     else:
-        default = arg1
-        return decorator_fun
-.. @+node:ekr.20170108050440.4: *4* class _CallbackEventHandler
-class _CallbackEventHandler(QtCore.QObject):
-    """ Helper class to provide the callLater function. 
-    """
-    
-    @others
-.. @+node:ekr.20170108050440.5: *5* __init__
-def __init__(self):
-    QtCore.QObject.__init__(self)
-    self.queue = Queue()
-.. @+node:ekr.20170108050440.6: *5* customEvent
-def customEvent(self, event):
-    while True:
-        try:
-            callback, args = self.queue.get_nowait()
-        except Empty:
-            break
-        try:
-            callback(*args)
-        except Exception as why:
-            print('callback failed: {}:\n{}'.format(callback, why))
-.. @+node:ekr.20170108050440.7: *5* postEventWithCallback
-def postEventWithCallback(self, callback, *args):
-    self.queue.put((callback, args))
-    QtWidgets.qApp.postEvent(self, QtCore.QEvent(QtCore.QEvent.User))
-.. @+node:ekr.20170108050440.8: *4* callLater
-def callLater(callback, *args):
-    """ callLater(callback, *args)
-    
-    Post a callback to be called in the main thread. 
-    
-    """
-    _callbackEventHandler.postEventWithCallback(callback, *args)
-    
-# Create callback event handler instance and insert function in Pyzo namespace
-_callbackEventHandler = _CallbackEventHandler()   
-.. @+node:ekr.20170107220425.1: *3* COPY ../external/pyzo/parsers.py
-@first # -*- coding: utf-8 -*-
-<< pyzo copyright >>
-import leo.core.leoGlobals as g
-import sys
-from .tokens import Token, TextToken
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171939.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170107212231.3: *4* class BlockState
-class BlockState(object):
-    """ BlockState(state=0, info=None)
-    
-    The blockstate object should be used by parsers to
-    return the block state of the processed line. 
-    
-    This would typically be the last item to be yielded, but this
-    it may also be yielded befor the last yielded token. One can even
-    yield multiple of these items, in which case the last one considered
-    valid.
-    
-    """
-    isToken = False
-    @others
-# Base parser class (needs to be defined before importing parser modules)
-.. @+node:ekr.20170107212231.4: *5* __init__
-def __init__(self, state=0, info=None):
-    self._state = int(state)
-    self._info = info
-.. @+node:ekr.20170107212231.5: *5* state
-@property
-def state(self):
-    """ The integer value representing the block state.
-    """
-    return self._state
-.. @+node:ekr.20170107212231.6: *5* info
-@property
-def info(self):
-    """ Get the information corresponding to the block.
-    """
-    return self._info
-.. @+node:ekr.20170107212231.7: *4* class Parser
-class Parser(object):
-    """ Base parser class. 
-    All parsers should inherit from this class.
-    This base class generates a 'TextToken' for each line
-    """
-    _extensions = []
-    _keywords = []
-    
-    
-    @others
-    
-###
-## Import parsers statically
-# We could load the parser dynamically from the source files in the 
-# directory, but this takes quite some effort to get righ when apps 
-# are frozen. This is doable (I do it in Visvis) but it requires the
-# user to specify the parser modules by hand when freezing an app.
-#
-# In summary: it takes a lot of trouble, which can be avoided by just
-# listing all parsers here.
-
-# from . import (     python_parser, 
-                    # cython_parser,
-                    # c_parser,
-                                # )
-.. @+node:ekr.20170107212231.8: *5* p.parseLine
-def parseLine(self, line, previousState=0):
-    """ parseLine(line, previousState=0)
-    
-    The method that should be implemented by the parser. The 
-    previousState argument can be used to determine how
-    the previous block ended (e.g. for multiline comments). It
-    is an integer, the meaning of which is only known to the
-    specific parser. 
-    
-    This method should yield token instances. The last token can
-    be a BlockState to specify the previousState for the 
-    next block.
-    
-    """
-    g.trace('(Parser)')
-    yield TextToken(line,0,len(line))
-
-.. @+node:ekr.20170107212231.9: *5* name
-def name(self):
-    """ name()
-    
-    Get the name of the parser.
-    
-    """
-    name = self.__class__.__name__.lower()
-    if name.endswith('parser'):
-        name = name[:-6]
-    return name
-.. @+node:ekr.20170107212231.10: *5* __repr__
-def __repr__(self):
-    """ String representation of the parser. 
-    """
-    return '<Parser for "%s">' % self.name()
-.. @+node:ekr.20170107212231.11: *5* keywords
-def keywords(self):
-    """ keywords()
-    
-    Get a list of keywords valid for this parser.
-    
-    """
-    return [k for k in self._keywords]
-.. @+node:ekr.20170107212231.12: *5* filenameExtensions
-def filenameExtensions(self):
-    """ filenameExtensions()
-    
-    Get a list of filename extensions for which this parser
-    is appropriate.
-    
-    """
-    return ['.'+e.lstrip('.').lower() for e in self._extensions]
-.. @+node:ekr.20170107212231.13: *5* getStyleElementDescriptions
-### def getStyleElementDescriptions(cls):
-def getStyleElementDescriptions(self):
-    """ getStyleElementDescriptions()
-    
-    This method returns a list of the StyleElementDescription 
-    instances used by this parser. 
-    
-    """
-    descriptions = {}
-    for token in self.getUsedTokens():
-        descriptions[token.description.key] = token.description
-    
-    return list(descriptions.values())
-.. @+node:ekr.20170107212231.14: *5* getUsedTokens
-def getUsedTokens(self):
-    """ getUsedTokens()
-    
-    Get a a list of token instances used by this parser.
-    
-    """
-    # Get module object of the parser
-    try:
-        mod = sys.modules[self.__module__]
-    except KeyError:
-        return []
-    # Get token classes from module
-    tokenClasses = []
-    for name in mod.__dict__:
-        member = mod.__dict__[name]
-        if (isinstance(member, type) and 
-            issubclass(member, Token)
-        ):
-            if member is not Token:
-                tokenClasses.append(member) 
-    # Return as instances
-    return [t() for t in tokenClasses]
-.. @+node:ekr.20170107212231.15: *5* _isTodoItem
-def _isTodoItem(self, text):
-    """ _isTodoItem(text)
-    
-    Get whether the given text (which should be a comment) represents
-    a todo item. Todo items start with "todo", "2do" or "fixme", 
-    optionally with a colon at the end.
-    
-    """
-    # Get first word
-    word = text.lstrip().split(' ',1)[0].rstrip(':')
-    # Test
-    if word.lower() in ['todo', '2do', 'fixme']:
-        return True
+        self.cb = block
+        self.formats = []
+        for i in range(block.length()):
+            r = QtGui.QTextLayout.FormatRange()
+            r.start, r.length, r.format = i, 1, QtGui.QTextCharFormat()
+            self.formats.append(r)
+        if trace: g.trace(str(block.text()))
+        self.highlightBlock(block.text())
+        self.applyFormatChanges()
+        self.cb = QtGui.QTextBlock()
+.. @+node:ekr.20140825132752.18559: *6* pqsh.reformatBlocks (main line)
+def reformatBlocks(self, from_, charsRemoved, charsAdded):
+    '''Main line: Reformat the lines in the indicated range.'''
+    self.rehighlightPending = False
+    block = self.d.findBlock(from_)
+    if not self.is_valid(block):
+        return
+    # Set the ivars for reformat_blocks_helper.
+    adjust = 1 if charsRemoved > 0 else 0
+    lastBlock = self.d.findBlock(from_ + charsAdded + adjust)
+    if self.is_valid(lastBlock):
+        self.r_end = lastBlock.position() + lastBlock.length()
     else:
-        return False
-.. @+node:ekr.20170107213100.1: *3* COPY ../external/pyzo/python_parser.py
-@first # -*- coding: utf-8 -*-
-<< pyzo copyright >>
-<< python_parser imports >>
-<< python_parser keywords >>
-@others
-# if __name__=='__main__':
-    # main()
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171945.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170107220823.1: *4* << python_parser imports >>
-import leo.core.leoGlobals as g
-if 1:
-    # pylint: disable=no-member
-    ustr = str if g.isPython3 else g.builtins.unicode
-    text_type = str if g.isPython3 else g.builtins.unicode
-import re
-from .parsers import Parser, BlockState
-from .tokens import ALPHANUM
-# Import tokens in module namespace
-from .tokens import (CommentToken, StringToken, 
-    UnterminatedStringToken, IdentifierToken, NonIdentifierToken,
-    KeywordToken, NumberToken, FunctionNameToken, ClassNameToken,
-    TodoCommentToken, OpenParenToken, CloseParenToken)
-.. @+node:ekr.20170107213124.2: *4* << python_parser keywords >>
-# Source: import keyword; keyword.kwlist (Python 2.6.6)
-python2Keywords = set([
-    'and', 'as', 'assert', 'break', 'class', 'continue', 
-    'def', 'del', 'elif', 'else', 'except', 'exec', 'finally', 'for', 
-    'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'not', 'or', 
-    'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield'])
-
-# Source: import keyword; keyword.kwlist (Python 3.1.2)
-python3Keywords = set([
-    'False', 'None', 'True', 'and', 'as', 'assert', 'break', 
-    'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
-    'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 
-    'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 
-    'with', 'yield'])
-
-# Merge the two sets to get a general Python keyword list        
-pythonKeywords = python2Keywords | python3Keywords
-.. @+node:ekr.20170107213124.3: *4* class MultilineStringToken (StringToken)
-class MultilineStringToken(StringToken):
-    """ Characters representing a multi-line string. """
-    defaultStyle = 'fore:#7F0000'
-.. @+node:ekr.20170107213124.4: *4* class CellCommentToken (CommentToken)
-class CellCommentToken(CommentToken):
-    """ Characters representing a cell separator comment: "##". """
-    defaultStyle = 'bold:yes, underline:yes'
-
-
-# This regexp is used to find special stuff, such as comments, numbers and
-# strings.
-# pylint: disable=anomalous-backslash-in-string
-tokenProg = re.compile(
-    '#|' +						# Comment or
-    '([' + ALPHANUM + '_]+)|' +	# Identifiers/numbers (group 1) or
-    '(' +  						# Begin of string group (group 2)
-    '([bB]|[uU])?' +			# Possibly bytes or unicode (py2.x)
-    '[rR]?' +					# Possibly a raw string
-    '("""|\'\'\'|"|\')' +		# String start (triple qoutes first, group 4)
-    ')|' +						# End of string group
-    '(\(|\[|\{)|' +             # Opening parenthesis (gr 5)
-    '(\)|\]|\})'                # Closing parenthesis (gr 6)
-    )	
-
-
-#For a given type of string ( ', " , ''' , """ ),get  the RegExp
-#program that matches the end. (^|[^\\]) means: start of the line
-#or something that is not \ (since \ is supposed to escape the following
-#quote) (\\\\)* means: any number of two slashes \\ since each slash will
-#escape the next one
-endProgs = {
-    "'": re.compile(r"(^|[^\\])(\\\\)*'"),
-    '"': re.compile(r'(^|[^\\])(\\\\)*"'),
-    "'''": re.compile(r"(^|[^\\])(\\\\)*'''"),
-    '"""': re.compile(r'(^|[^\\])(\\\\)*"""')
-    }
-.. @+node:ekr.20170107213124.5: *4* class PythonParser(Parser)
-class PythonParser(Parser):
-    """ Parser for Python in general (2.x or 3.x).
-    """
-    _extensions = ['.py' , '.pyw']
-    #The list of keywords is overridden by the Python2/3 specific parsers
-    _keywords = pythonKeywords 
-    
-    
-    @others
-.. @+node:ekr.20170107213124.6: *5* _identifierState
-def _identifierState(self, identifier=None):
-    """ Given an identifier returs the identifier state:
-    3 means the current identifier can be a function.
-    4 means the current identifier can be a class.
-    0 otherwise.
-    
-    This method enables storing the state during the line,
-    and helps the Cython parser to reuse the Python parser's code.
-    """
-    if identifier is None:
-        # Explicit get/reset
-        try:
-            # pylint: disable=access-member-before-definition
-            state = self._idsState
-        except Exception:
-            state = 0
-        self._idsState = 0
-        return state
-    elif identifier == 'def':
-        # Set function state
-        self._idsState = 3
-        return 3
-    elif identifier == 'class':
-        # Set class state
-        self._idsState = 4
-        return 4
-    else:
-        # This one can be func or class, next one can't
-        state = self._idsState
-        self._idsState = 0
-        return state
-.. @+node:ekr.20170107213124.7: *5* py.parseLine
-n_parse = 0
-n_tokens = 0
-
-def parseLine(self, line, previousState=0):
-    """ parseLine(line, previousState=0)
-    
-    Parse a line of Python code, yielding tokens.
-    previousstate is the state of the previous block, and is used
-    to handle line continuation and multiline strings.
-    
-    """
-    self.n_parse += 1
-    line = text_type(line)
-    # Init
-    pos = 0 # Position following the previous match
-    # identifierState and previousstate values:
-    # 0: nothing special
-    # 1: multiline comment single qoutes
-    # 2: multiline comment double quotes
-    # 3: a def keyword
-    # 4: a class keyword
-    
-    #Handle line continuation after def or class
-    #identifierState is 3 or 4 if the previous identifier was 3 or 4
-    if previousState == 3 or previousState == 4: 
-        self._identifierState({3:'def',4:'class'}[previousState])
-    else:
-        self._identifierState(None)
-    if previousState in [1,2]:
-        token = MultilineStringToken(line, 0, 0)
-        token._style = ['', "'''", '"""'][previousState]
-        tokens = self._findEndOfString(line, token)
-        # Process tokens
-        for token in tokens:
-            yield token
-            if isinstance(token, BlockState):
-                return 
-        pos = token.end
-    # Enter the main loop that iterates over the tokens and skips strings
-    while True:
-        # Get next tokens
-        tokens = self._findNextToken(line, pos)
-        if not tokens:
-            return
-        elif isinstance(tokens[-1], StringToken):
-            moreTokens = self._findEndOfString(line, tokens[-1])
-            tokens = tokens[:-1] + moreTokens
-        # Process tokens
-        for token in tokens:
-            yield token
-            if isinstance(token, BlockState):
-                return 
-        pos = token.end
-.. @+node:ekr.20170107213124.8: *5* _findEndOfString
-def _findEndOfString(self, line, token):
-    """ _findEndOfString(line, token)
-    
-    Find the end of a string. Returns (token, endToken). The first 
-    is the given token or a replacement (UnterminatedStringToken).
-    The latter is None, or the BlockState. If given, the line is
-    finished.
-    
-    """
-    
-    # Set state
-    self._identifierState(None)
-    
-    # Find the matching end in the rest of the line
-    # Do not use the start parameter of search, since ^ does not work then
-    style = token._style
-    endMatch = endProgs[style].search(line[token.end:])
-    
-    if endMatch:
-        # The string does end on this line
-        tokenArgs = line, token.start, token.end + endMatch.end()
-        if style in ['"""', "'''"]:
-            token = MultilineStringToken(*tokenArgs)
-        else:
-            token.end = token.end + endMatch.end()
-        return [token]
-    else:
-        # The string does not end on this line
-        tokenArgs = line, token.start, token.end + len(line)
-        if style == "'''":
-            return [MultilineStringToken(*tokenArgs), BlockState(1)]
-        elif style == '"""':
-            return [MultilineStringToken(*tokenArgs), BlockState(2)]
-        else:
-            return [UnterminatedStringToken(*tokenArgs)]
-.. @+node:ekr.20170107213124.9: *5* _findNextToken
-def _findNextToken(self, line, pos):
-    """ _findNextToken(line, pos):
-    
-    Returns a token or None if no new tokens can be found.
-    
-    """
-    
-    # Init tokens, if pos too large, were done
-    if pos > len(line):
-        return None
-    tokens = []
-    
-    # Find the start of the next string or comment
-    match = tokenProg.search(line, pos)
-    
-    # Process the Non-Identifier between pos and match.start() 
-    # or end of line
-    nonIdentifierEnd = match.start() if match else len(line)
-    
-    # Return the Non-Identifier token if non-null
-    # todo: here it goes wrong (allow returning more than one token?)
-    token = NonIdentifierToken(line,pos,nonIdentifierEnd)
-    strippedNonIdentifier = ustr(token).strip()
-    if token:
-        tokens.append(token)
-    
-    # Do checks for line continuation and identifierState
-    # Is the last non-whitespace a line-continuation character?
-    if strippedNonIdentifier.endswith('\\'):
-        lineContinuation = True
-        # If there are non-whitespace characters after def or class,
-        # cancel the identifierState
-        if strippedNonIdentifier != '\\':
-            self._identifierState(None)
-    else:
-        lineContinuation = False
-        # If there are non-whitespace characters after def or class,
-        # cancel the identifierState
-        if strippedNonIdentifier != '':
-            self._identifierState(None)
-    
-    # If no match, we are done processing the line
-    if not match:
-        if lineContinuation:
-            tokens.append( BlockState(self._identifierState()) )
-        return tokens
-    
-    # The rest is to establish what identifier we are dealing with
-    
-    # Comment
-    if match.group() == '#':
-        matchStart = match.start()
-        if not line[:matchStart].strip() and (
-               line[matchStart:].startswith('##') or 
-               line[matchStart:].startswith('#%%') or 
-               line[matchStart:].startswith('# %%')):
-            tokens.append( CellCommentToken(line,matchStart,len(line)) )
-        elif self._isTodoItem(line[matchStart+1:]):
-            tokens.append( TodoCommentToken(line,matchStart,len(line)) )
-        else:
-            tokens.append( CommentToken(line,matchStart,len(line)) )
-        if lineContinuation:
-            tokens.append( BlockState(self._identifierState()) )
-        return tokens
-    
-    # If there are non-whitespace characters after def or class,
-    # cancel the identifierState (this time, also if there is just a \
-    # since apparently it was not on the end of a line)
-    if strippedNonIdentifier != '':
-        self._identifierState(None)
-    
-    # Identifier ("a word or number") Find out whether it is a key word
-    if match.group(1) is not None:
-        identifier = match.group(1)
-        tokenArgs = line, match.start(), match.end()
-        
-        # Set identifier state 
-        identifierState = self._identifierState(identifier)
-        
-        if identifier in self._keywords:
-            tokens.append( KeywordToken(*tokenArgs) )
-        elif identifier[0] in '0123456789':
-            self._identifierState(None)
-            tokens.append( NumberToken(*tokenArgs) )
-        else:
-            if (identifierState==3 and
-                    line[match.end():].lstrip().startswith('(') ):
-                tokens.append( FunctionNameToken(*tokenArgs) )
-            elif identifierState==4:
-                tokens.append( ClassNameToken(*tokenArgs) )
-            else:
-                tokens.append( IdentifierToken(*tokenArgs) )
-    
-    elif match.group(2) is not None :
-        # We have matched a string-start
-        # Find the string style ( ' or " or ''' or """)
-        token = StringToken(line, match.start(), match.end())
-        token._style = match.group(4) # The style is in match group 4
-        tokens.append( token )
-    elif match.group(5) is not None :
-        token = OpenParenToken(line, match.start(), match.end())
-        token._style = match.group(5)
-        tokens.append(token)
-    elif match.group(6) is not None :
-        token = CloseParenToken(line, match.start(), match.end())
-        token._style = match.group(6) 
-        tokens.append(token)
-    # Done
-    return tokens
-.. @+node:ekr.20170107213124.10: *4* class Python2Parser(Parser)
-class Python2Parser(PythonParser):
-    """ Parser for Python 2.x code.
-    """
-     # The application should choose whether to set the Py 2 specific parser
-    _extensions = []
-    _keywords = python2Keywords
-.. @+node:ekr.20170107213124.11: *4* class Python3Parser(Parser)
-class Python3Parser(PythonParser):
-    """ Parser for Python 3.x code.
-    """
-    # The application should choose whether to set the Py 3 specific parser
-    _extensions = []
-    _keywords = python3Keywords
-.. @+node:ekr.20170107222650.1: *4* main
-def main():
-    pass # tokenizeLine is undefined.
-    # print(list(tokenizeLine('this is "String" #Comment')))
-    # print(list(tokenizeLine('this is "String\' #Comment')))
-    # print(list(tokenizeLine('this is "String\' #Commen"t')))
-    # print(list(tokenizeLine(r'this "test\""')))
-    # import random
-    # stimulus=''
-    # expect=[]
-    # for i in range(10):
-        # #Create a string with lots of ' and "
-        # s=''.join("'\"\\ab#"[random.randint(0,5)] for i in range(10)  )
-        # stimulus+=repr(s)
-        # expect.append('S:'+repr(s))
-        # stimulus+='test'
-        # expect.append('I:test')
-    # result=list(tokenizeLine(stimulus))
-    # print (stimulus)
-    # print (expect)
-    # print (result)
-    # assert repr(result) == repr(expect)
-.. @+node:ekr.20170107214315.1: *3* COPY ../external/pyzo/style.py
-@first # -*- coding: utf-8 -*-
-<< pyzo copyright >>
-from leo.core.leoQt import QtCore, QtGui
-Qt = QtCore.Qt
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171955.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170107214321.3: *4* class StyleElementDescription
-class StyleElementDescription:
-    """ StyleElementDescription(name, defaultFormat, description)
-    
-    Describes a style element by its name, default format, and description.
-    
-    A style description is a simple placeholder for something
-    that can be styled.
-    
-    """
-    
-    @others
-.. @+node:ekr.20170107214321.4: *5* sf.__init__
-def __init__(self, name, description, defaultFormat):
-    self._name = name
-    self._description = description
-    self._defaultFormat = StyleFormat(defaultFormat)
-.. @+node:ekr.20170107214321.5: *5* __repr__
-def __repr__(self):
-    return '<"%s": "%s">' % (self.name, self.defaultFormat)
-.. @+node:ekr.20170107214321.6: *5* name
-@property
-def name(self):
-    return self._name
-.. @+node:ekr.20170107214321.7: *5* key
-@property
-def key(self):
-    return self._name.replace(' ', '').lower()
-.. @+node:ekr.20170107214321.8: *5* description
-@property
-def description(self):
-    return self._description
-.. @+node:ekr.20170107214321.9: *5* defaultFormat
-@property
-def defaultFormat(self):
-    return self._defaultFormat
-.. @+node:ekr.20170107214321.10: *4* class StyleFormat
-class StyleFormat:
-    """ StyleFormat(format='')
-    
-    Represents the style format for a specific style element.
-    A "style" is a dictionary that maps names (of style elements) 
-    to StyleFormat instances.
-    
-    The given format can be a string or another StyleFormat instance.
-    Style formats can be combined using their update() method. 
-    
-    A style format consists of multiple parts, where each "part" consists
-    of a key and a value. The keys can be anything, depending
-    on what kind of thing is being styled. The value can be obtained using
-    the index operator (e.g. styleFomat['fore'])
-    
-    For a few special keys, properties are defined that return the Qt object
-    corresponding to the value. These values are also buffered to enable
-    fast access. These keys are:
-      * fore: (QColor) the foreground color
-      * back: (QColor) the background color
-      * bold: (bool) whether the text should be bold
-      * italic: (bool) whether the text should be in italic
-      * underline: (int) whether an underline should be used (and which one)
-      * linestyle: (int) what line style to use (e.g. for indent guides)
-      * textCharFOrmat: (QTextCharFormat) for the syntax styles
-    
-    The format neglects spaces and case. Parts are separated by commas 
-    or semicolons. If only a key is given it's value is interpreted
-    as 'yes'. If only a color is given, its key is interpreted as 'fore' 
-    and back. Colors should be given using the '#' hex formatting.
-    
-    An example format string: 'fore:#334, bold, underline:dotLine'
-    
-    By calling str(styleFormatInstance) the string representing of the 
-    format can be obtained. By iterating over the instance, a series 
-    of key-value pairs is obtained.
-    
-    """
-    
-    @others
-.. @+node:ekr.20170107214321.11: *5* sf.__init__
-def __init__(self, format=''):
-    self._parts = {}
-    self.update(format)
-.. @+node:ekr.20170107214321.12: *5* sf._resetProperties
-def _resetProperties(self):
-    self._fore = None
-    self._back = None
-    self._bold = None
-    self._italic = None
-    self._underline = None
-    self._linestyle = None
-    self._textCharFormat = None
-.. @+node:ekr.20170107214321.13: *5* sf.__str__
-def __str__(self):
-    """ Get a (cleaned up) string representation of this style format. 
-    """
-    parts = []
-    for key in self._parts:
-        parts.append('%s:%s' % (key, self._parts[key]))
-    return ', '.join(parts)
-.. @+node:ekr.20170107214321.14: *5* sf.__repr__
-def __repr__(self):
-    return '<StyleFormat "%s">' % str(self)
-.. @+node:ekr.20170107214321.15: *5* sf.__getitem__
-def __getitem__(self, key):
-    try:
-        return self._parts[key]
-    except KeyError:
-        raise KeyError('Invalid part key for style format.')
-.. @+node:ekr.20170107214321.16: *5* sf.__iter__
-def __iter__(self):
-    """ Yields a series of tuples (key, val).
-    """
-    parts = []
-    for key in self._parts:
-        parts.append( (key, self._parts[key]) )
-    return parts.__iter__()
-.. @+node:ekr.20170107214321.17: *5* sf.update
-def update(self, format):
-    """ update(format)
-    
-    Update this style format with the given format.
-    
-    """
-    # Reset buffered values
-    self._resetProperties()
-    # Make a string, so we update the format with the given one
-    if isinstance(format, StyleFormat):
-        format = str(format)
-    # Split on ',' and ',', ignore spaces
-    styleParts = [p for p in
-        format.replace('=',':').replace(';',',').split(',')]
-    for stylePart in styleParts:
-        # Make sure it consists of identifier and value pair
-        # e.g. fore:#xxx, bold:yes, underline:no
-        if not ':' in stylePart:
-            if stylePart.startswith('#'):
-                stylePart = 'foreandback:' + stylePart
-            else:
-                stylePart += ':yes'
-        # Get key value and strip and make lowecase
-        key, _, val = [i.strip().lower() for i in stylePart.partition(':')]
-        # Store in parts
-        if key == 'foreandback':
-            self._parts['fore'] = val
-            self._parts['back'] = val
-        elif key:
-            self._parts[key] = val
-.. @+node:ekr.20170108171245.1: *5* properties & helper
-.. @+node:ekr.20170107214321.18: *6* _getValueSafe
-def _getValueSafe(self, key):
-    try:
-        return self._parts[key]
-    except KeyError:
-        return 'no'
-.. @+node:ekr.20170107214321.20: *6* back
-@property
-def back(self):
-    if self._back is None:
-        self._back = QtGui.QColor(self._parts['back'])
-    return self._back
-.. @+node:ekr.20170107214321.21: *6* bold
-@property
-def bold(self):
-    if self._bold is None:
-        if self._getValueSafe('bold') in ['yes', 'true']:
-            self._bold = True
-        else:
-            self._bold = False
-    return self._bold
-.. @+node:ekr.20170107214321.19: *6* fore
-@property
-def fore(self):
-    if self._fore is None:
-        self._fore = QtGui.QColor(self._parts['fore'])
-    return self._fore
-.. @+node:ekr.20170107214321.22: *6* italic
-@property
-def italic(self):
-    if self._italic is None:
-        if self._getValueSafe('italic') in ['yes', 'true']:
-            self._italic = True
-        else:
-            self._italic = False
-    return self._italic
-.. @+node:ekr.20170107214321.24: *6* linestyle
-@property
-def linestyle(self):
-    if self._linestyle is None:
-        val = self._getValueSafe('linestyle')
-        if val in ['yes', 'true']:
-            self._linestyle = Qt.SolidLine
-        elif val in ['dotted', 'dot', 'dots', 'dotline']: 
-            self._linestyle = Qt.DotLine
-        elif val in ['dashed', 'dash', 'dashes', 'dashline']: 
-            self._linestyle = Qt.DashLine
-        else:
-            self._linestyle = Qt.SolidLine # default to solid
-    return self._linestyle
-.. @+node:ekr.20170107214321.25: *6* textCharFormat
-@property
-def textCharFormat(self):
-    if self._textCharFormat is None:
-        self._textCharFormat = tcf = QtGui.QTextCharFormat()
-        self._textCharFormat.setForeground(self.fore)
-        self._textCharFormat.setUnderlineStyle(self.underline)
-        if self.bold:
-            self._textCharFormat.setFontWeight(QtGui.QFont.Bold)
-        if self.italic:
-            self._textCharFormat.setFontItalic(True)
-    return self._textCharFormat
-.. @+node:ekr.20170107214321.23: *6* underline
-@property
-def underline(self):
-    if self._underline is None:
-        val = self._getValueSafe('underline')
-        if val in ['yes', 'true']:
-            self._underline = QtGui.QTextCharFormat.SingleUnderline
-        elif val in ['dotted', 'dots', 'dotline']: 
-            self._underline = QtGui.QTextCharFormat.DotLine
-        elif val in ['wave']: 
-            self._underline = QtGui.QTextCharFormat.WaveUnderline
-        else:
-            self._underline = QtGui.QTextCharFormat.NoUnderline
-    return self._underline
-.. @+node:ekr.20170107212657.1: *3* COPY ../external/pyzo/tokens.py
-@first # -*- coding: utf-8 -*-
-<< pyzo copyright >>
-<< tokens imports >>
-ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-@others
-@language python
-@tabwidth -4
-.. @+node:ekr.20170108171959.1: *4* << pyzo copyright >>
-# Copyright (C) 2016, the Pyzo development team
-#
-# Pyzo is distributed under the terms of the (new) BSD License.
-# The full license can be found in 'license.txt'.
-.. @+node:ekr.20170107220236.1: *4*   << tokens imports >>
-import leo.core.leoGlobals as g
-if 1:
-    # pylint: disable=no-member
-    ustr = str if g.isPython3 else g.builtins.unicode
-from .style import StyleFormat, StyleElementDescription
-.. @+node:ekr.20170107212709.3: *4*  class Token
-class Token(object):
-    """ Token(line, start, end)
-    
-    Base token class.
-    
-    A token is a group of characters representing "something".
-    What is represented, is specified by the subclass.
-    
-    Each token class should have a docstring describing the meaning
-    of the characters it is applied to.
-    
-    """ 
-    defaultStyle = 'fore:#000, bold:no, underline:no, italic:no'
-    isToken = True # For the BlockState object, which is also returned by the parsers, this is False
-    @others
-.. @+node:ekr.20170107212709.4: *5* __init__
-def __init__(self, line='', start=0, end=0):
-    self.line = ustr(line)
-    self.start = start
-    self.end = end
-    self._name = self._getName()
-.. @+node:ekr.20170107212709.5: *5* __str__
-def __str__(self):  # on 2.x we use __unicode__
-    return self.line[self.start:self.end]
-.. @+node:ekr.20170107212709.6: *5* __unicode__
-def __unicode__(self):  # for py 2.x
-    return self.line[self.start:self.end]
-.. @+node:ekr.20170107212709.7: *5* __repr__
-def __repr__(self):
-    return repr('%s:%s' % (self.name, self))
-.. @+node:ekr.20170107212709.8: *5* __len__
-def __len__(self):
-    # Defining a length also gives a Token a boolean value: True if there
-    # are any characters (len!=0) and False if there are none
-    return self.end - self.start
-.. @+node:ekr.20170107212709.9: *5* _getName
-def _getName(self):
-    """ Get the name of this token. """
-    nameParts = ['Syntax']
-    if '_parser' in self.__module__:
-        language = self.__module__.split('_')[0]
-        language = language.split('.')[-1]
-        nameParts.append( language[0].upper() + language[1:] )
-    nameParts.append( self.__class__.__name__[:-5].lower() )
-    return '.'.join(nameParts)
-.. @+node:ekr.20170107212709.10: *5* tok.getDefaultStyleFormat
-def getDefaultStyleFormat(self):
-    elements = []
-    def collect(cls):
-        if hasattr(cls, 'defaultStyle'):
-            elements.append(cls.defaultStyle)
-            for c in cls.__bases__:
-                collect(c)
-    collect(self.__class__)
-    se = StyleFormat()
-    for e in reversed(elements):
-        se.update(e)
-    return se
-.. @+node:ekr.20170107212709.11: *5* name
-@property
-def name(self):
-    """ The name of this token. Used to identify it and attach a style.
-    """
-    return self._name
-.. @+node:ekr.20170107212709.12: *5* description
-@property
-def description(self):
-    """ description()
-    
-    Returns a StyleElementDescription instance that describes the
-    style element that this token represents.
-    
-    """
-    format = self.getDefaultStyleFormat()
-    des = 'syntax: ' + self.__doc__
-    return StyleElementDescription(self.name, des, str(format))
-.. @+node:ekr.20170107212709.13: *4* class CommentToken & subclasses
-class CommentToken(Token):
-    """ Characters representing a comment in the code. """
-    defaultStyle = 'fore:#007F00'
-.. @+node:ekr.20170107212709.14: *5* class TodoCommentToken
-class TodoCommentToken(CommentToken):
-    """ Characters representing a comment in the code. """
-    defaultStyle = 'fore:#E00,italic'
-.. @+node:ekr.20170107212709.24: *4* class ParenthesisToken & subclasses
-class ParenthesisToken(Token) :
-    """ Parenthesis (and square and curly brackets). """
-    defaultStyle = ''
-.. @+node:ekr.20170107212709.25: *5* class OpenParenToken
-class OpenParenToken(ParenthesisToken) :
-    """ Opening parenthesis (and square and curly brackets). """
-    defaultStyle = ''
-.. @+node:ekr.20170107212709.26: *5* class CloseParenToken
-class CloseParenToken(ParenthesisToken) :
-    """ Closing parenthesis (and square and curly brackets). """
-    defaultStyle = ''
-.. @+node:ekr.20170107212709.15: *4* class StringToken & subclasses
-class StringToken(Token):
-    """ Characters representing a textual string in the code. """
-    defaultStyle = 'fore:#7F007F'
-.. @+node:ekr.20170107212709.16: *5* class UnterminatedStringToken
-class UnterminatedStringToken(StringToken):
-    """ Characters belonging to an unterminated string. """
-    defaultStyle = 'underline:dotted'
-
-# todo: request from user: whitespace token
-.. @+node:ekr.20170107212709.17: *4* class TextToken & subclasses
-class TextToken(Token):
-    """ Anything that is not a string or comment. """ 
-    defaultStyle = 'fore:#000'
-.. @+node:ekr.20170107212709.18: *5* class IdentifierToken & subclasses
-class IdentifierToken(TextToken):
-    """ Characters representing normal text (i.e. words). """ 
-    defaultStyle = ''
-.. @+node:ekr.20170107212709.23: *6* class ClassNameToken
-class ClassNameToken(IdentifierToken):
-    """ Characters represening the name of a class. """
-    defaultStyle = 'fore:#0000FF, bold:yes'
-.. @+node:ekr.20170107212709.22: *6* class FunctionNameToken
-class FunctionNameToken(IdentifierToken):
-    """ Characters represening the name of a function. """
-    defaultStyle = 'fore:#007F7F, bold:yes'
-.. @+node:ekr.20170107212709.20: *6* class KeywordToken
-class KeywordToken(IdentifierToken):
-    """ A keyword is a word with a special meaning to the language. """
-    defaultStyle = 'fore:#00007F, bold:yes'
-.. @+node:ekr.20170107212709.19: *6* class NonIdentifierToken
-class NonIdentifierToken(TextToken):
-    """ Not a word (operators, whitespace, etc.). """
-    defaultStyle = ''
-.. @+node:ekr.20170107212709.21: *6* class NumberToken
-class NumberToken(IdentifierToken):
-    """ Characters represening a number. """
-    defaultStyle = 'fore:#007F7F'
+        self.r_end = self.d.blockCount()
+    self.r_block = block
+    self.r_p = self.c.p.copy()
+    self.r_force = False
+    # Delegate the colorizing to shared helper.
+    self.reformat_blocks_helper()
 .. @-all
 .. @@nosearch
 .. @-leo
