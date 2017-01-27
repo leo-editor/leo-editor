@@ -16,6 +16,79 @@ import string
 import time
 #@-<< imports >>
 #@+others
+#@+node:ekr.20170127141855.1: ** class BaseColorizer (new)
+class BaseColorizer(object):
+    '''The base class for all Leo colorizers.'''
+    
+    def __init__ (self, c):
+        '''ctor for BaseColorizer class.'''
+        self.c = c
+
+    #@+others
+    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
+    def updateSyntaxColorer(self, p):
+        '''
+        Scan for color directives in p and its ancestors.
+        Return True unless an coloring is unambiguously disabled.
+        Called from Leo's node-selection logic.
+        '''
+        enabled_flag = self.useSyntaxColoring(p)
+        language = self.scanColorDirectives(p)
+        return enabled_flag, language
+    #@+node:ekr.20170127142001.2: *4* bc.scanColorDirectives & helpers
+    def scanColorDirectives(self, p):
+        '''Return language based on the directives in p's ancestors.'''
+        c = self.c
+        root = p.copy()
+        for p in root.parents():
+            language = self.findFirstValidAtLanguageDirective(p)
+            if language:
+                return language
+        #  Get the language from the nearest ancestor @<file> node.
+        language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        return language
+    #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
+    at_language_pattern = re.compile('^@language\s+([\w-]+)', re.MULTILINE)
+
+    def findFirstValidAtLanguageDirective(self, p):
+        '''Return the first *valid* @language directive in p.b.'''
+        for m in self.at_language_pattern.finditer(p.b):
+            language = m.group(1)
+            if self.isValidLanguage(language):
+                return language
+        return None
+    #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
+    def isValidLanguage(self, language):
+        '''True if language exists in leo/modes.'''
+        fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
+        return g.os_path_exists(fn)
+    #@+node:ekr.20170127142001.7: *4* bc.useSyntaxColoring & helper
+    def useSyntaxColoring(self, p):
+        '''True if p's parents enable coloring in p.'''
+        # Note: @nocolor-node has no effect here.
+        for p in p.parents():
+            d = self.findColorDirectives(p)
+            # @killcolor anywhere disables coloring.
+            if 'killcolor' in d: return False
+            # @color anywhere in the target enables coloring.
+            elif 'color' in d: return True
+            # The @nocolor is unambiguous.
+            elif 'nocolor' in d: return False
+        return True
+    #@+node:ekr.20170127142001.8: *5* bc.findColorDirectives
+    color_directives_pat = re.compile(
+        # Order is important: put longest matches first.
+        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+        , re.MULTILINE)
+
+    def findColorDirectives(self, p):
+        '''Return a dict with each color directive in p.b, without the leading '@'.'''
+        d = {}
+        for m in self.color_directives_pat.finditer(p.b):
+            word = m.group(0)[1:]
+            d[word] = word
+        return d
+    #@-others
 #@+node:ekr.20140906081909.18690: ** class ColorizerMixin
 class ColorizerMixin(object):
     '''A mixin class for all c.frame.body.colorizer classes.'''
@@ -2011,26 +2084,30 @@ class LeoQtColorizer(object):
        '''
     #@+others
     #@+node:ekr.20110605121601.18552: *3*  colorizer.ctor
-    def __init__(self, c, widget):
+    def __init__(self, c, widget): ### widget not used.
         '''Ctor for LeoQtColorizer class.'''
         # g.trace('(LeoQtColorizer)',widget)
         self.c = c
-        self.widget = widget
+        ### self.widget = widget
         # Step 1: create the ivars.
-        self.count = 0 # For unit testing.
-        self.colorCacheFlag = False
-        self.enabled = c.config.getBool('use_syntax_coloring')
-        self.error = False # Set if there is an error in jeditColorizer.recolor
-        self.flag = True # Per-node enable/disable flag.
+        ### self.count = 0 # For unit testing.
+            ### The unit test should change. ############
+        ### self.colorCacheFlag = False
+        ### self.enabled = c.config.getBool('use_syntax_coloring')
+        ### self.error = False # Set if there is an error in jeditColorizer.recolor
+        self.flag = True
+            # Per-node enable/disable flag.
+            # Set by updateSyntaxColorer, used by jEdit colorizer.
         self.full_recolor_count = 0 # For unit testing.
-        self.killColorFlag = False
+        ### self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
         self.languageList = [] # List of color directives in the node the determines it.
         # self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
             # No longer needed now that coloring is continued in the background.
-        self.oldLanguageList = []
-        self.oldV = None
+        ### self.oldLanguageList = []
+        ### self.oldV = None
         self.showInvisibles = False
+            ### Very complicated.  Can be simplified.
         # Step 2: create the highlighter.
         self.highlighter = None
         self.colorer = None
@@ -2040,11 +2117,12 @@ class LeoQtColorizer(object):
                 colorizer = self,
                 document = widget.document(),
             )
-            assert self.colorer # Now done in LeoHighlighter.ctor.
+            assert self.colorer ### Now done in LeoHighlighter.ctor.
         widget.leo_colorizer = self
+        ###
         # Step 3: finish enabling.
-        if self.enabled:
-            self.enabled = hasattr(self.highlighter, 'currentBlock')
+        # if self.enabled:
+            # self.enabled = hasattr(self.highlighter, 'currentBlock')
     #@+node:ekr.20110605121601.18553: *3* colorizer.colorize (disabled)
     def colorize(self, p, incremental=False, interruptable=True):
         '''
@@ -2091,19 +2169,12 @@ class LeoQtColorizer(object):
         c = self.c
         if c is None: return None # self.c may be None for testing.
         root = p.copy()
-        self.colorCacheFlag = False
+        ### self.colorCacheFlag = False
         self.language = None
         self.rootMode = None # None, "code" or "doc"
         for p in root.self_and_parents():
             theDict = g.get_directives_dict(p)
             # if trace: g.trace(p.h,theDict)
-            #@+<< Test for @colorcache >>
-            #@+node:ekr.20121003152523.10126: *5* << Test for @colorcache >>
-            # The @colorcache directive is a per-node directive.
-            if p == root:
-                self.colorCacheFlag = 'colorcache' in theDict
-                # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
-            #@-<< Test for @colorcache >>
             #@+<< Test for @language >>
             #@+node:ekr.20110605121601.18557: *5* << Test for @language >>
             if 'language' in theDict:
@@ -2174,19 +2245,19 @@ class LeoQtColorizer(object):
             return False
         p = p.copy()
         first = True; kind = None; val = True
-        self.killColorFlag = False
+        ### self.killColorFlag = False
         for p in p.parents():
             d = self.findColorDirectives(p)
             color, no_color = 'color' in d, 'nocolor' in d
             # An @nocolor-node in the first node disabled coloring.
             if first and 'nocolor-node' in d:
                 kind = '@nocolor-node'
-                self.killColorFlag = True
+                ### self.killColorFlag = True
                 val = False; break
             # A killcolor anywhere disables coloring.
             elif 'killcolor' in d:
                 kind = '@killcolor %s' % p.h
-                self.killColorFlag = True
+                ### self.killColorFlag = True
                 val = False; break
             # A color anywhere in the target enables coloring.
             elif color and first:
@@ -2294,7 +2365,7 @@ if QtGui:
         def highlightBlock(self, s):
             """ Called by QSyntaxHiglighter """
             self.n_calls += 1
-            if not self.colorizer.killColorFlag:
+            if True: ### not self.colorizer.killColorFlag:
                 s = g.toUnicode(s)
                 self.colorer.recolor(s)
                     # Highlight just one line.
