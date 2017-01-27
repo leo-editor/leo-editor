@@ -546,18 +546,14 @@ class LeoBody(object):
                 return
     #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (disabled)
     def recolorWidget(self, p, w):
-        g.trace(g.callers())
-        return ###
-
-        c = self.c
-        old_wrapper = c.frame.body.wrapper
-        # Save.
-        c.frame.body.wrapper = w
-        try:
-            c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        finally:
-            # Restore.
-            c.frame.body.wrapper = old_wrapper
+        pass
+        # c = self.c
+        # old_wrapper = c.frame.body.wrapper
+        # c.frame.body.wrapper = w
+        # try:
+            # c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
+        # finally:
+            # c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''

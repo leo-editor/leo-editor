@@ -5737,12 +5737,12 @@ class Commands(object):
     def recolor_now(self, p=None, incremental=False, interruptable=True):
         return ###
 
-        c = self
-        if not p:
-            p = c.p
-        if c.frame.body.colorizer:
-            c.frame.body.colorizer.colorize(p,
-                incremental=incremental, interruptable=interruptable)
+        # c = self
+        # if not p:
+            # p = c.p
+        # if c.frame.body.colorizer:
+            # c.frame.body.colorizer.colorize(p,
+                # incremental=incremental, interruptable=interruptable)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self

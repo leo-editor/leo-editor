@@ -2054,14 +2054,10 @@ class LeoQtColorizer(object):
                   leo_h.rehighlight is never called(!)
         '''
         return 'ok' # For unit testing.
-        ###
 
-        if not g.unitTesting: g.trace(g.callers())
-        # self.updateSyntaxColorer(p)
-            # Not needed: called from Leo's select-node logic.
-        doc = self.c.frame.body.widget.document()
-        doc.markContentsDirty(0, len(p.b))
-        return 'ok' # for unit testing
+        # doc = self.c.frame.body.widget.document()
+        # doc.markContentsDirty(0, len(p.b))
+        # return 'ok' # for unit testing
     #@+node:ekr.20170115041807.1: *3* colorizer.init (new)
     def init (self, p, s):
         '''Init the colorizer using p, p's ancestors and s instead of p.b.'''

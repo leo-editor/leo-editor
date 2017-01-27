@@ -1728,27 +1728,23 @@ class LeoQtBody(leoFrame.LeoBody):
         if trace: g.trace('w.leo_label', w, lab)
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (disabled)
     def recolorWidget(self, p, wrapper):
-        g.trace(g.callers())
-        return ###
-
-        trace = False and not g.unitTesting
-        c = self.c
-        # Save.
-        old_wrapper = c.frame.body.wrapper
-        c.frame.body.wrapper = wrapper
-        w = wrapper.widget
-        if not hasattr(w, 'leo_colorizer'):
-            if trace: g.trace('*** creating colorizer for', w)
-            leoColorizer.LeoQtColorizer(c, w) # injects w.leo_colorizer
-            assert hasattr(w, 'leo_colorizer'), w
-        c.frame.body.colorizer = w.leo_colorizer
-        if trace: g.trace(w, c.frame.body.colorizer)
-        try:
-            # c.recolor_now(interruptable=False) # Force a complete recoloring.
-            c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        finally:
-            # Restore.
-            c.frame.body.wrapper = old_wrapper
+        pass
+        # c = self.c
+        # # Save.
+        # old_wrapper = c.frame.body.wrapper
+        # c.frame.body.wrapper = wrapper
+        # w = wrapper.widget
+        # if not hasattr(w, 'leo_colorizer'):
+            # if trace: g.trace('*** creating colorizer for', w)
+            # leoColorizer.LeoQtColorizer(c, w) # injects w.leo_colorizer
+            # assert hasattr(w, 'leo_colorizer'), w
+        # c.frame.body.colorizer = w.leo_colorizer
+        # try:
+            # # c.recolor_now(interruptable=False) # Force a complete recoloring.
+            # c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
+        # finally:
+            # # Restore.
+            # c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20110605121601.18214: *5* LeoQtBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''
