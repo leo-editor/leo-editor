@@ -72,13 +72,13 @@ I would try something like this:
 - Problems with Alt-G: goto-global-line.
 
 - Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20111010162047.15678: ** ?? Imports should put @first/@last directives in root node
+.. @+node:ekr.20111010162047.15678: *3* ?? Imports should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *3* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *4* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -91,8 +91,9 @@ def spam():
 @wrap
 
 * Rewrite scripting tutorial
-* Leo and Jupyter notebooks.
 * Mention viewrendered plugin in tutorials.
+
+* Leo and Jupyter notebooks.
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 

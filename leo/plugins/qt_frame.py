@@ -1726,8 +1726,11 @@ class LeoQtBody(leoFrame.LeoBody):
         layout.setRowStretch(1, 1) # Give row 1 as much as possible.
         w.leo_label = lab # Inject the ivar.
         if trace: g.trace('w.leo_label', w, lab)
-    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget
+    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (disabled)
     def recolorWidget(self, p, wrapper):
+        g.trace(g.callers())
+        return ###
+
         trace = False and not g.unitTesting
         c = self.c
         # Save.

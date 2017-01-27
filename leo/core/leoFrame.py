@@ -544,8 +544,11 @@ class LeoBody(object):
                 w2.leo_active = False
                 self.unselectLabel(w2)
                 return
-    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget
+    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (disabled)
     def recolorWidget(self, p, w):
+        g.trace(g.callers())
+        return ###
+
         c = self.c
         old_wrapper = c.frame.body.wrapper
         # Save.
@@ -1675,21 +1678,13 @@ class LeoTree(object):
             if trace: g.trace(p.h)
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
-            self.stop_colorizer(old_p)
+            ### self.stop_colorizer(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
             delta_t = time.time() - t1
             if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
-    #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer (to be removed)
-    def stop_colorizer(self, old_p):
-        '''Stop colorizing the present node.'''
-        c = self.c
-        colorizer = c.frame.body.colorizer
-        if colorizer:
-            if hasattr(colorizer, 'kill'):
-                colorizer.kill()
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self, old_p, p, traceTime):
         '''Select the new node, part 1.'''
@@ -1948,18 +1943,11 @@ class NullColorizer(leoColorizer.ColorizerMixin):
 
     def init(self, p, s): pass
 
-    def kill(self): pass
+    ## def kill(self): pass
 
     def setHighlighter(self, p): return False
 
     def showInvisibles(self): pass
-
-    # def write_colorizer_cache(self, p): pass
-
-    # External unit tests require the standard (ColorizerMixin) methods for these:
-        # def scanColorDirectives(self,p): pass
-        # def updateSyntaxColorer (self,p): pass
-        # def useSyntaxColoring(self,p): return False
     #@-others
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):

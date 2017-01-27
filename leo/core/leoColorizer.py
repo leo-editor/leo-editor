@@ -29,7 +29,7 @@ class ColorizerMixin(object):
 
     def kill(self):
         '''Kill colorizing.'''
-        pass
+        g.trace(g.callers())
 
     #@+others
     #@+node:ekr.20140906081909.18715: *3* cm.findColorDirectives
@@ -79,20 +79,6 @@ class ColorizerMixin(object):
     def isValidLanguage(self, language):
         fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
         return g.os_path_exists(fn)
-    #@+node:ekr.20140906081909.18711: *3* cm.scanColorByPosition
-    def scanColorByPosition(self, p):
-        '''Scan p for color-related directives.'''
-        c = self.c
-        wrapper = c.frame.body.wrapper
-        i = wrapper.getInsertPoint()
-        s = wrapper.getAllText()
-        i1, i2 = g.getLine(s, i)
-        tag = '@language'
-        language = self.language
-        for s in g.splitLines(s[: i1]):
-            if s.startswith(tag):
-                language = s[len(tag):].strip()
-        return language
     #@+node:ekr.20140906081909.18697: *3* cm.scanColorDirectives
     def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
@@ -1953,7 +1939,8 @@ class JEditColorizer(object):
         '''Queue up recoloring at idle time.'''
         c = self.c
         
-        if not g.app.unitTesting:
+        # This can fail on both python 2 and 3.
+        if False and g.isPython3 and not g.app.unitTesting:
         
             def recolorAtIdleTime(timer, c=c, self=self):
                 g.trace(self.n_recolorLater)
@@ -2077,7 +2064,7 @@ class LeoQtColorizer(object):
         # Step 3: finish enabling.
         if self.enabled:
             self.enabled = hasattr(self.highlighter, 'currentBlock')
-    #@+node:ekr.20110605121601.18553: *3* colorizer.colorize & helper
+    #@+node:ekr.20110605121601.18553: *3* colorizer.colorize (disabled)
     def colorize(self, p, incremental=False, interruptable=True):
         '''
         Python 2: This is the main LeoQtColorizer entry point.
@@ -2085,86 +2072,15 @@ class LeoQtColorizer(object):
         Python 3: LeoQtColorizer.init does all the work(!)
                   leo_h.rehighlight is never called(!)
         '''
-        # This method is called only with Python 2.
-        trace = False and not g.unitTesting
-        verbose = True
-        c = self.c
-        self.count += 1 # For unit testing.
-        if not incremental:
-            self.full_recolor_count += 1
-        s = p.b
-        if not s.strip():
-            if trace: g.trace('no body', p.h)
-            self.kill()
-            return
-        if s.startswith('@killcolor'):
-            if trace: g.trace('@killcolor')
-            self.kill()
-            return
-        elif self.enabled:
-            oldFlag = self.flag
-            self.updateSyntaxColorer(p)
-                # sets self.flag and self.language and self.languageList.
-            if trace and verbose:
-                g.trace('old: %s, new: %s, %s' % (
-                    self.oldLanguageList, self.languageList, repr(p.h)))
-            # fullRecolor is True if we can not do an incremental recolor.
-            fullRecolor = (
-                oldFlag != self.flag or
-                self.oldV != p.v or
-                self.oldLanguageList != self.languageList or
-                not incremental
-            )
-            # 2012/03/09: Determine the present language from the insertion
-            # point if there are more than one @language directives in effect
-            # and we are about to do an incremental recolor.
-            if len(self.languageList) > 0 and not fullRecolor:
-                language = self.scanColorByPosition(p) # May reset self.language
-                if language != self.colorer.language_name:
-                    if trace: g.trace('** must rescan', self.c.frame.title, language)
-                    fullRecolor = True
-                    self.language = language
-            if fullRecolor:
-                if trace: g.trace(
-                    '** calling rehighlight',
-                    self.highlighter, g.callers())
-                self.oldLanguageList = self.languageList[:]
-                self.oldV = p.v
-                if trace: g.trace(p and p.h)
-                # Do NOT call rehighlight here.
-                # That causes a *huge* slowdown.
-                doc = c.frame.body.widget.document()
-                doc.markContentsDirty(0, len(p.b))
-        return "ok" # For unit testing.
-    #@+node:ekr.20120309075544.9888: *4* scanColorByPosition (LeoQtColorizer)
-    def scanColorByPosition(self, p):
-        c = self.c
-        wrapper = c.frame.body.wrapper
-        i = wrapper.getInsertPoint()
-        s = wrapper.getAllText()
-        i1, i2 = g.getLine(s, i)
-        tag = '@language'
-        language = self.language
-        for s in g.splitLines(s[: i1]):
-            if s.startswith(tag):
-                language = s[len(tag):].strip()
-        return language
-    #@+node:ekr.20110605121601.18554: *3* colorizer.enable/disable (not used)
-    def disable(self, p):
-        g.trace(g.callers(4))
-        if self.enabled:
-            self.flag = False
-            self.enabled = False
-            self.highlighter.rehighlight(p) # Do a full recolor (to black)
+        return 'ok' # For unit testing.
+        ###
 
-    def enable(self, p):
-        g.trace(g.callers(4))
-        if not self.enabled:
-            self.enabled = True
-            self.flag = True
-            # Do a full recolor, but only if we aren't changing nodes.
-            if self.c.currentPosition() == p:
-                self.highlighter.rehighlight(p)
+        if not g.unitTesting: g.trace(g.callers())
+        # self.updateSyntaxColorer(p)
+            # Not needed: called from Leo's select-node logic.
+        doc = self.c.frame.body.widget.document()
+        doc.markContentsDirty(0, len(p.b))
+        return 'ok' # for unit testing
     #@+node:ekr.20170115041807.1: *3* colorizer.init (new)
     def init (self, p, s):
         '''Init the colorizer using p, p's ancestors and s instead of p.b.'''
@@ -2175,20 +2091,23 @@ class LeoQtColorizer(object):
             self.colorer.init(p, s)
     #@+node:ekr.20140827112712.18468: *3* colorizer.kill (to be deleted)
     def kill(self): # c.frame.body.colorizer.kill
-        '''Kill any queue colorizing.'''
+        '''Kill any queued colorizing.'''
+        g.trace(g.callers())
         if self.highlighter and hasattr(self.highlighter, 'kill'):
             self.highlighter.kill()
     #@+node:ekr.20110605121601.18562: *3* colorizer.updateSyntaxColorer & helpers
     def updateSyntaxColorer(self, p):
-        '''Scan for color directives in p and its ancestors.'''
-        trace = False and not g.unitTesting
+        '''
+        Scan for color directives in p and its ancestors.
+        Called from Leo's node-selection logic.
+        '''
         p = p.copy()
         # self.flag is True unless an unambiguous @nocolor is seen.
         self.flag = self.useSyntaxColoring(p)
         self.scanColorDirectives(p) # Sets self.language
-        if trace: g.trace(self.flag, self.language, p.h)
+        # g.trace(self.flag, self.language, p.h)
         return self.flag
-    #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (LeoQtColorizer) & helper
+    #@+node:ekr.20110605121601.18556: *4* colorizer.scanColorDirectives & helper
     def scanColorDirectives(self, p):
         '''Set self.language based on the directives in p's tree.'''
         trace = False and not g.unitTesting
@@ -2244,7 +2163,7 @@ class LeoQtColorizer(object):
             if trace: g.trace('using default', c.target_language)
             self.language = c.target_language
         return self.language # For use by external routines.
-    #@+node:ekr.20110605121601.18559: *5* findLanguageDirectives
+    #@+node:ekr.20110605121601.18559: *5* colorizer.findLanguageDirectives
     def findLanguageDirectives(self, p):
         '''Scan p's body text for *valid* @language directives.
 
@@ -2265,7 +2184,7 @@ class LeoQtColorizer(object):
                         if trace: g.trace('invalid', word)
         if trace: g.trace(aList)
         return aList
-    #@+node:ekr.20110605121601.18560: *5* isValidLanguage
+    #@+node:ekr.20110605121601.18560: *5* colorizer.isValidLanguage
     def isValidLanguage(self, language):
         fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
         return g.os_path_exists(fn)

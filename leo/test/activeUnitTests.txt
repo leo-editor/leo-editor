@@ -2736,7 +2736,6 @@ else:
 #@+node:ekr.20090615053403.4876: *3* leoColor
 #@+node:ekr.20090615053403.4877: *4* @test @comment after @language plain
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
