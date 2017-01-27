@@ -5735,7 +5735,7 @@ class Commands(object):
             c.frame.tree.redraw_after_select(p)
     #@+node:ekr.20080514131122.13: *4* c.recolor_now (disabled)
     def recolor_now(self, p=None, incremental=False, interruptable=True):
-        return ###
+        pass
 
         # c = self
         # if not p:

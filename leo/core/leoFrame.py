@@ -547,6 +547,7 @@ class LeoBody(object):
     #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (disabled)
     def recolorWidget(self, p, w):
         pass
+
         # c = self.c
         # old_wrapper = c.frame.body.wrapper
         # c.frame.body.wrapper = w

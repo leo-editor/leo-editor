@@ -1429,7 +1429,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c; p = c.p
         f = c.frame.top.leo_ui.leo_body_inner_frame
         # Step 1: create the editor.
-        w = qt_text.LeoQTextBrowser(f, c, self)
+        w = widget = qt_text.LeoQTextBrowser(f, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
@@ -1441,6 +1441,16 @@ class LeoQtBody(leoFrame.LeoBody):
         # self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p, wrapper)
+        ###
+        if isinstance(w, QtWidgets.QTextEdit):
+            colorizer = c.frame.body.colorizer
+            colorizer.highlighter.setDocument(widget.document())
+            # leoColorizer.LeoQtColorizer(c, widget)
+                ### 
+            # self.highlighter = leoColorizer.LeoHighlighter(c, 
+                # colorizer = colorizer,
+                # document = w.document(),
+            # )
         return f, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
@@ -1729,13 +1739,13 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (disabled)
     def recolorWidget(self, p, wrapper):
         pass
+        
         # c = self.c
         # # Save.
         # old_wrapper = c.frame.body.wrapper
         # c.frame.body.wrapper = wrapper
         # w = wrapper.widget
         # if not hasattr(w, 'leo_colorizer'):
-            # if trace: g.trace('*** creating colorizer for', w)
             # leoColorizer.LeoQtColorizer(c, w) # injects w.leo_colorizer
             # assert hasattr(w, 'leo_colorizer'), w
         # c.frame.body.colorizer = w.leo_colorizer
