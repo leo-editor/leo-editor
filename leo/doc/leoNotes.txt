@@ -35336,6 +35336,396 @@ def reformatBlocks(self, from_, charsRemoved, charsAdded):
     self.r_force = False
     # Delegate the colorizing to shared helper.
     self.reformat_blocks_helper()
+.. @+node:ekr.20140906081909.18690: *4* OLD class ColorizerMixin
+if 0:
+    class ColorizerMixin(object):
+        '''A mixin class for all c.frame.body.colorizer classes.'''
+    
+        def __init__(self, c):
+            '''Ctor for ColorizerMixin class.'''
+            self.c = c
+    
+        def colorize(self, p, incremental=False, interruptable=True):
+            assert False, 'colorize must be defined in sublcasses'
+    
+        def kill(self):
+            '''Kill colorizing.'''
+            g.trace(g.callers())
+    
+        @others
+.. @+node:ekr.20140906081909.18715: *5* cm.findColorDirectives
+color_directives_pat = re.compile(
+    # Order is important: put longest matches first.
+    r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+    , re.MULTILINE)
+
+def findColorDirectives(self, p):
+    '''
+    Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+    Return a dict containing pointers to the start of each directive.
+    '''
+    trace = False and not g.unitTesting
+    d = {}
+    anIter = self.color_directives_pat.finditer(p.b)
+    for m in anIter:
+        # Remove leading '@' for compatibility with
+        # functions in leoGlobals.py.
+        word = m.group(0)[1:]
+        d[word] = word
+    if trace: g.trace(d)
+    return d
+.. @+node:ekr.20140906081909.18701: *5* cm.findLanguageDirectives
+def findLanguageDirectives(self, p):
+    '''Scan p's body text for *valid* @language directives.
+
+    Return a list of languages.'''
+    # Speed not very important: called only for nodes containing @language directives.
+    trace = False and not g.unitTesting
+    aList = []
+    for s in g.splitLines(p.b):
+        if g.match_word(s, 0, '@language'):
+            i = len('@language')
+            i = g.skip_ws(s, i)
+            j = g.skip_id(s, i)
+            if j > i:
+                word = s[i: j]
+                if self.isValidLanguage(word):
+                    aList.append(word)
+                else:
+                    if trace: g.trace('invalid', word)
+    if trace: g.trace(aList)
+    return aList
+.. @+node:ekr.20140906081909.18702: *5* cm.isValidLanguage
+def isValidLanguage(self, language):
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
+    return g.os_path_exists(fn)
+.. @+node:ekr.20140906081909.18697: *5* cm.scanColorDirectives
+def scanColorDirectives(self, p):
+    '''Set self.language based on the directives in p's tree.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    if not c:
+        assert False, g.callers()
+        return None # self.c may be None for testing.
+    root = p.copy()
+    self.colorCacheFlag = False
+    self.language = None
+    self.rootMode = None # None, "code" or "doc"
+    for p in root.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        # if trace: g.trace(p.h,theDict)
+        if p == root:
+            # The @colorcache directive is a per-node directive.
+            self.colorCacheFlag = 'colorcache' in theDict
+            # g.trace('colorCacheFlag: %s' % self.colorCacheFlag)
+        if 'language' in theDict:
+            s = theDict["language"]
+            aList = self.findLanguageDirectives(p)
+            # In the root node, we use the first (valid) @language directive,
+            # no matter how many @language directives the root node contains.
+            # In ancestor nodes, only unambiguous @language directives
+            # set self.language.
+            if p == root or len(aList) == 1:
+                self.languageList = list(set(aList))
+                self.language = aList and aList[0] or []
+                break
+        if 'root' in theDict and not self.rootMode:
+            s = theDict["root"]
+            if g.match_word(s, 0, "@root-code"):
+                self.rootMode = "code"
+            elif g.match_word(s, 0, "@root-doc"):
+                self.rootMode = "doc"
+            else:
+                doc = c.config.at_root_bodies_start_in_doc_mode
+                self.rootMode = "doc" if doc else "code"
+    # If no language, get the language from any @<file> node.
+    if self.language:
+        if trace: g.trace('found @language %s %s' % (self.language, self.languageList))
+        return self.language
+    #  Attempt to get the language from the nearest enclosing @<file> node.
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
+    if not self.language:
+        if trace: g.trace('using default', c.target_language)
+        self.language = c.target_language
+    return self.language # For use by external routines.
+.. @+node:ekr.20140906081909.18704: *5* cm.updateSyntaxColorer
+def updateSyntaxColorer(self, p):
+    '''Scan p.b for color directives.'''
+    trace = False and not g.unitTesting
+    # An important hack: shortcut everything if the first line is @killcolor.
+    if p.b.startswith('@killcolor'):
+        if trace: g.trace('@killcolor')
+        self.flag = False
+        return self.flag
+    else:
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        p = p.copy()
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p) # Sets self.language
+    if trace: g.trace(self.flag, len(p.b), self.language, p.h, g.callers(5))
+    return self.flag
+.. @+node:ekr.20140906081909.18714: *5* cm.useSyntaxColoring
+def useSyntaxColoring(self, p):
+    """Return True unless p is unambiguously under the control of @nocolor."""
+    trace = False and not g.unitTesting
+    if not p:
+        if trace: g.trace('no p', repr(p))
+        return False
+    p = p.copy()
+    first = True; kind = None; val = True
+    self.killColorFlag = False
+    for p in p.self_and_parents():
+        d = self.findColorDirectives(p)
+        color, no_color = 'color' in d, 'nocolor' in d
+        # An @nocolor-node in the first node disabled coloring.
+        if first and 'nocolor-node' in d:
+            kind = '@nocolor-node'
+            self.killColorFlag = True
+            val = False; break
+        # A killcolor anywhere disables coloring.
+        elif 'killcolor' in d:
+            kind = '@killcolor %s' % p.h
+            self.killColorFlag = True
+            val = False; break
+        # A color anywhere in the target enables coloring.
+        elif color and first:
+            kind = 'color %s' % p.h
+            val = True; break
+        # Otherwise, the @nocolor specification must be unambiguous.
+        elif no_color and not color:
+            kind = '@nocolor %s' % p.h
+            val = False; break
+        elif color and not no_color:
+            kind = '@color %s' % p.h
+            val = True; break
+        first = False
+    if trace: g.trace(val, kind)
+    return val
+.. @+node:ekr.20110605121601.18551: *4* OLD class LeoQtColorizer
+# This WAS c.frame.body.colorizer
+if 0:
+
+    class OLDLeoQtColorizer(object):
+        '''An adaptor class that interfaces Leo's core to the colorizer.
+        
+        The interface consists of:
+    
+        1. a subclass of QSyntaxHighlighter,
+    
+        2. the JEditColorizer class that contains the
+           pattern-matchin code from the threading colorizer plugin.
+           '''
+        @others
+.. @+node:ekr.20110605121601.18552: *5*  colorizer.ctor
+def __init__(self, c, widget): ### widget not used.
+    '''Ctor for JEditColorizer class.'''
+    # g.trace('(JEditColorizer)',widget)
+    self.c = c
+    ### self.widget = widget
+    # Step 1: create the ivars.
+    ### self.count = 0 # For unit testing.
+        ### The unit test should change. ############
+    ### self.colorCacheFlag = False
+    ### self.enabled = c.config.getBool('use_syntax_coloring')
+    ### self.error = False # Set if there is an error in jeditColorizer.recolor
+    self.flag = True
+        # Per-node enable/disable flag.
+        # Set by updateSyntaxColorer, used by jEdit colorizer.
+    self.full_recolor_count = 0 # For unit testing.
+    ### self.killColorFlag = False
+    self.language = 'python' # set by scanColorDirectives.
+    self.languageList = [] # List of color directives in the node the determines it.
+    # self.max_chars_to_colorize = c.config.getInt('qt_max_colorized_chars') or 0
+        # No longer needed now that coloring is continued in the background.
+    ### self.oldLanguageList = []
+    ### self.oldV = None
+    self.showInvisibles = False
+        ### Very complicated.  Can be simplified.
+    # Step 2: create the highlighter.
+    ### self.highlighter = None
+    ### self.colorer = None
+         # No colorer for Scintilla
+    if isinstance(widget, QtWidgets.QTextEdit):
+        self.highlighter = LeoHighlighter(c, 
+            colorizer = self,
+            document = widget.document(),
+        )
+        assert self.colorer ### Now done in LeoHighlighter.ctor.
+    widget.leo_colorizer = self
+    ###
+    # Step 3: finish enabling.
+    # if self.enabled:
+        # self.enabled = hasattr(self.highlighter, 'currentBlock')
+.. @+node:ekr.20110605121601.18553: *5* colorizer.colorize (disabled)
+def colorize(self, p, incremental=False, interruptable=True):
+    '''
+    Python 2: This is the main LeoQtColorizer entry point.
+              leo_h.rehighlight *is* called.
+    Python 3: LeoQtColorizer.init does all the work(!)
+              leo_h.rehighlight is never called(!)
+    '''
+    return 'ok' # For unit testing.
+
+    # doc = self.c.frame.body.widget.document()
+    # doc.markContentsDirty(0, len(p.b))
+    # return 'ok' # for unit testing
+.. @+node:ekr.20170115041807.1: *5* colorizer.init (new) OLD colorizer
+def init (self, p, s):
+    '''Init the colorizer using p, p's ancestors and s instead of p.b.'''
+    # g.trace('(colorizer)', p and p.h)
+    if p:
+        self.updateSyntaxColorer(p)
+            # Must be called before colorer.init().
+        self.colorer.init(p, s)
+.. @+node:ekr.20140827112712.18468: *5* colorizer.kill (to be deleted)
+def kill(self): # c.frame.body.colorizer.kill
+    '''Kill any queued colorizing.'''
+    g.trace(g.callers())
+    if self.highlighter and hasattr(self.highlighter, 'kill'):
+        self.highlighter.kill()
+.. @+node:ekr.20110605121601.18562: *5* colorizer.updateSyntaxColorer & helpers (to be deleted)
+if 0:
+    def updateSyntaxColorer(self, p):
+        '''
+        Scan for color directives in p and its ancestors.
+        Called from Leo's node-selection logic.
+        '''
+        p = p.copy()
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p) # Sets self.language
+        # g.trace(self.flag, self.language, p.h)
+        return self.flag
+.. @+node:ekr.20110605121601.18556: *6* colorizer.scanColorDirectives & helper
+def scanColorDirectives(self, p):
+    '''Set self.language based on the directives in p's tree.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    if c is None: return None # self.c may be None for testing.
+    root = p.copy()
+    ### self.colorCacheFlag = False
+    self.language = None
+    self.rootMode = None # None, "code" or "doc"
+    for p in root.self_and_parents():
+        theDict = g.get_directives_dict(p)
+        # if trace: g.trace(p.h,theDict)
+        << Test for @language >>
+        << Test for @root, @root-doc or @root-code >>
+    # 2011/05/28: If no language, get the language from any @<file> node.
+    if self.language:
+        if trace: g.trace('found @language %s %s' % (self.language, self.languageList))
+        return self.language
+    #  Attempt to get the language from the nearest enclosing @<file> node.
+    self.language = g.getLanguageFromAncestorAtFileNode(root)
+    if not self.language:
+        if trace: g.trace('using default', c.target_language)
+        self.language = c.target_language
+    return self.language # For use by external routines.
+.. @+node:ekr.20110605121601.18557: *7* << Test for @language >>
+if 'language' in theDict:
+    s = theDict["language"]
+    aList = self.findLanguageDirectives(p)
+    # In the root node, we use the first (valid) @language directive,
+    # no matter how many @language directives the root node contains.
+    # In ancestor nodes, only unambiguous @language directives
+    # set self.language.
+    if p == root or len(aList) == 1:
+        self.languageList = list(set(aList))
+        self.language = aList and aList[0] or []
+        break
+.. @+node:ekr.20110605121601.18558: *7* << Test for @root, @root-doc or @root-code >>
+if 'root' in theDict and not self.rootMode:
+    s = theDict["root"]
+    if g.match_word(s, 0, "@root-code"):
+        self.rootMode = "code"
+    elif g.match_word(s, 0, "@root-doc"):
+        self.rootMode = "doc"
+    else:
+        doc = c.config.at_root_bodies_start_in_doc_mode
+        self.rootMode = "doc" if doc else "code"
+.. @+node:ekr.20110605121601.18559: *7* colorizer.findLanguageDirectives
+def findLanguageDirectives(self, p):
+    '''Scan p's body text for *valid* @language directives.
+
+    Return a list of languages.'''
+    # Speed not very important: called only for nodes containing @language directives.
+    trace = False and not g.unitTesting
+    aList = []
+    for s in g.splitLines(p.b):
+        if g.match_word(s, 0, '@language'):
+            i = len('@language')
+            i = g.skip_ws(s, i)
+            j = g.skip_id(s, i)
+            if j > i:
+                word = s[i: j]
+                if self.isValidLanguage(word):
+                    aList.append(word)
+                else:
+                    if trace: g.trace('invalid', word)
+    if trace: g.trace(aList)
+    return aList
+.. @+node:ekr.20110605121601.18560: *7* colorizer.isValidLanguage
+def isValidLanguage(self, language):
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', '%s.py' % (language))
+    return g.os_path_exists(fn)
+.. @+node:ekr.20110605121601.18563: *6* colorizer.useSyntaxColoring & helper
+def useSyntaxColoring(self, p):
+    """Return True unless p is unambiguously under the control of @nocolor."""
+    trace = False and not g.unitTesting
+    if not p:
+        if trace: g.trace('no p', repr(p))
+        return False
+    p = p.copy()
+    first = True; kind = None; val = True
+    ### self.killColorFlag = False
+    for p in p.parents():
+        d = self.findColorDirectives(p)
+        color, no_color = 'color' in d, 'nocolor' in d
+        # An @nocolor-node in the first node disabled coloring.
+        if first and 'nocolor-node' in d:
+            kind = '@nocolor-node'
+            ### self.killColorFlag = True
+            val = False; break
+        # A killcolor anywhere disables coloring.
+        elif 'killcolor' in d:
+            kind = '@killcolor %s' % p.h
+            ### self.killColorFlag = True
+            val = False; break
+        # A color anywhere in the target enables coloring.
+        elif color and first:
+            kind = 'color %s' % p.h
+            val = True; break
+        # Otherwise, the @nocolor specification must be unambiguous.
+        elif no_color and not color:
+            kind = '@nocolor %s' % p.h
+            val = False; break
+        elif color and not no_color:
+            kind = '@color %s' % p.h
+            val = True; break
+        first = False
+    if trace: g.trace(val, kind)
+    return val
+.. @+node:ekr.20110605121601.18564: *7* findColorDirectives
+color_directives_pat = re.compile(
+    # Order is important: put longest matches first.
+    r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+    , re.MULTILINE)
+
+def findColorDirectives(self, p):
+    '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+    Return a dict containing pointers to the start of each directive.'''
+    trace = False and not g.unitTesting
+    d = {}
+    anIter = self.color_directives_pat.finditer(p.b)
+    for m in anIter:
+        # Remove leading '@' for compatibility with
+        # functions in leoGlobals.py.
+        word = m.group(0)[1:]
+        d[word] = word
+    if trace: g.trace(d)
+    return d
 .. @-all
 .. @@nosearch
 .. @-leo

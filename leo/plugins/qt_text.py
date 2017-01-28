@@ -126,15 +126,16 @@ class QTextMixin(object):
             c.setChanged(True)
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
-        if 1: # This works, and is probably better.
-            # Set a hook for the old jEdit colorer.
-            colorer = c.frame.body.colorizer.highlighter.colorer
-            if colorer:
-                colorer.initFlag = True
-        else:
-            # Allow incremental recoloring.
-            c.incrementalRecolorFlag = True
-            c.outerUpdate()
+        ### No longer needed
+            # if 1: # This works, and is probably better.
+                # # Set a hook for the old jEdit colorer.
+                # colorer = c.frame.body.colorizer.highlighter.colorer
+                # if colorer:
+                    # colorer.initFlag = True
+            # else:
+                # # Allow incremental recoloring.
+                # c.incrementalRecolorFlag = True
+                # c.outerUpdate()
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
@@ -1264,8 +1265,9 @@ class QTextEditWrapper(QTextMixin):
     def delete(self, i, j=None):
         '''QTextEditWrapper.'''
         trace = False and not g.unitTesting
-        c, w = self.c, self.widget
-        colorer = c.frame.body.colorizer.highlighter.colorer
+        w = self.widget
+        ### c, w = self.c, self.widget
+        ### colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
         if trace: g.trace(self.getSelectionRange())
         i = self.toPythonIndex(i)
@@ -1274,8 +1276,9 @@ class QTextEditWrapper(QTextMixin):
         if i > j: i, j = j, i
         if trace: g.trace(i, j)
         # Set a hook for the colorer.
-        if colorer:
-            colorer.initFlag = True
+        ### No longer needed.
+            # if colorer:
+                # colorer.initFlag = True
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1301,7 +1304,6 @@ class QTextEditWrapper(QTextMixin):
         finally:
             self.changingText = False
         sb.setSliderPosition(pos)
-        # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         '''QTextEditWrapper.'''
@@ -1392,12 +1394,14 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
     def insert(self, i, s):
         '''QTextEditWrapper.'''
-        c, w = self.c, self.widget
-        colorer = c.frame.body.colorizer.highlighter.colorer
+        w = self.widget
+        ### c, w = self.c, self.widget
+        ### colorer = c.frame.body.colorizer.highlighter.colorer
         # n = colorer.recolorCount
-        # Set a hook for the colorer.
-        if colorer:
-            colorer.initFlag = True
+        ### No longer needed
+            # Set a hook for the colorer.
+            # if colorer:
+                # colorer.initFlag = True
         i = self.toPythonIndex(i)
         cursor = w.textCursor()
         try:
@@ -1539,18 +1543,20 @@ class QTextEditWrapper(QTextMixin):
         c, w = self.c, self.widget
         h = c.p and c.p.h or '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
-        colorizer = c.frame.body.colorizer
-        highlighter = colorizer.highlighter
+        ### colorizer = c.frame.body.colorizer
+        ### highlighter = colorizer.highlighter
         # Be careful: Scintilla doesn't have a colorer.
-        colorer = highlighter and highlighter.colorer
-        if colorer:
-            colorer.initFlag = True
+        ### No longer needed
+            # colorer = highlighter and highlighter.colorer
+            # if colorer:
+                # colorer.initFlag = True
         try:
             if trace and trace_time:
                 t1 = time.time()
             self.changingText = True # Disable onTextChanged.
-            if colorer:
-                colorizer.changingText = True # Disable colorizer.
+            ### No longer needed.
+                # if colorer:
+                    # colorizer.changingText = True # Disable colorizer.
             # g.trace('read/write text')
             w.setReadOnly(False)
             w.setPlainText(s)
@@ -1559,7 +1565,8 @@ class QTextEditWrapper(QTextMixin):
                 g.trace('%4.2f sec. %6s chars %s' % (delta_t, len(s), h))
         finally:
             self.changingText = False
-            colorizer.changingText = False
+            ### No longer needed
+                ### colorizer.changingText = False
     #@+node:ekr.20110605121601.18095: *4* qtew.setInsertPoint
     def setInsertPoint(self, i, s=None):
         # Fix bug 981849: incorrect body content shown.

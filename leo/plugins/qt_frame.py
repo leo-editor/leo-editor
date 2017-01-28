@@ -1362,7 +1362,8 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            self.colorizer = leoColorizer.LeoQtColorizer(c, self.wrapper.widget)
+            self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper) ###
+            
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -1445,12 +1446,6 @@ class LeoQtBody(leoFrame.LeoBody):
         if isinstance(w, QtWidgets.QTextEdit):
             colorizer = c.frame.body.colorizer
             colorizer.highlighter.setDocument(widget.document())
-            # leoColorizer.LeoQtColorizer(c, widget)
-                ### 
-            # self.highlighter = leoColorizer.LeoHighlighter(c, 
-                # colorizer = colorizer,
-                # document = w.document(),
-            # )
         return f, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
@@ -1711,7 +1706,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
         w.leo_chapter = None
-        # w.leo_colorizer = None # Set in LeoQtColorizer ctor.
+        # w.leo_colorizer = None # Set in JEditColorizer ctor.
         w.leo_frame = parentFrame
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
@@ -1746,7 +1741,7 @@ class LeoQtBody(leoFrame.LeoBody):
         # c.frame.body.wrapper = wrapper
         # w = wrapper.widget
         # if not hasattr(w, 'leo_colorizer'):
-            # leoColorizer.LeoQtColorizer(c, w) # injects w.leo_colorizer
+            # leoColorizer.JEditColorizer(c, w) # injects w.leo_colorizer
             # assert hasattr(w, 'leo_colorizer'), w
         # c.frame.body.colorizer = w.leo_colorizer
         # try:
