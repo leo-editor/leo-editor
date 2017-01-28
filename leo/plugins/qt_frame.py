@@ -1731,25 +1731,25 @@ class LeoQtBody(leoFrame.LeoBody):
         layout.setRowStretch(1, 1) # Give row 1 as much as possible.
         w.leo_label = lab # Inject the ivar.
         if trace: g.trace('w.leo_label', w, lab)
-    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (disabled)
+    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
-        pass
-        
-        # c = self.c
-        # # Save.
-        # old_wrapper = c.frame.body.wrapper
-        # c.frame.body.wrapper = wrapper
-        # w = wrapper.widget
-        # if not hasattr(w, 'leo_colorizer'):
-            # leoColorizer.JEditColorizer(c, w) # injects w.leo_colorizer
-            # assert hasattr(w, 'leo_colorizer'), w
-        # c.frame.body.colorizer = w.leo_colorizer
-        # try:
-            # # c.recolor_now(interruptable=False) # Force a complete recoloring.
-            # c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        # finally:
-            # # Restore.
-            # c.frame.body.wrapper = old_wrapper
+        # Support QScintillaColorizer.colorize.
+        c = self.c
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'colorize'):
+            g.trace(p and p.h)
+            old_wrapper = c.frame.body.wrapper
+            c.frame.body.wrapper = wrapper
+            # w = wrapper.widget
+            # if not hasattr(w, 'leo_colorizer'):
+                # leoColorizer.JEditColorizer(c, w) # injects w.leo_colorizer
+                # assert hasattr(w, 'leo_colorizer'), w
+            # c.frame.body.colorizer = w.leo_colorizer
+            try:
+                colorizer.colorize(p)
+            finally:
+                # Restore.
+                c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20110605121601.18214: *5* LeoQtBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''

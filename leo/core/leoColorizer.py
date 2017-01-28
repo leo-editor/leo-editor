@@ -2107,7 +2107,7 @@ class QScintillaColorizer(BaseColorizer): ### ColorizerMixin):
         w = wrapper.widget # A Qsci.QsciSintilla object.
         self.lexer = self.lexersDict.get(language, self.nullLexer)
         w.setLexer(self.lexer)
-        # g.trace(language,self.lexer)
+        # g.trace(bool(self.lexer), language)
     #@+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
     def configure_lexer(self, lexer):
         '''Configure the QScintilla lexer.'''
@@ -2187,6 +2187,13 @@ class QScintillaColorizer(BaseColorizer): ### ColorizerMixin):
             # if trace: g.trace(self.language)
             # self.changeLexer(self.language)
         # return "ok" # For unit testing.
+    #@+node:ekr.20170128031840.1: *3* qsc.init (new)
+    def init(self, p, s):
+        '''QScintillaColorizer.init'''
+        # g.trace(p and p.h)
+        self.updateSyntaxColorer(p)
+        # g.trace(p, self.language)
+        self.changeLexer(self.language)
     #@+node:ekr.20140906081909.18716: *3* qsc.kill
     def kill(self):
         '''Kill coloring for this node.'''

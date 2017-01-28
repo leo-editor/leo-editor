@@ -5733,16 +5733,14 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now (disabled)
+    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
     def recolor_now(self, p=None, incremental=False, interruptable=True):
-        pass
-
-        # c = self
-        # if not p:
-            # p = c.p
-        # if c.frame.body.colorizer:
-            # c.frame.body.colorizer.colorize(p,
-                # incremental=incremental, interruptable=interruptable)
+        # Support QScintillaColorizer.colorize.
+        c = self
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'colorize'):
+            g.trace(p and p.h)
+            colorizer.colorize(p)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self

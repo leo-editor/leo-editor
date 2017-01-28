@@ -546,17 +546,19 @@ class LeoBody(object):
                 w2.leo_active = False
                 self.unselectLabel(w2)
                 return
-    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (disabled)
+    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, w):
-        pass
-
-        # c = self.c
-        # old_wrapper = c.frame.body.wrapper
-        # c.frame.body.wrapper = w
-        # try:
-            # c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        # finally:
-            # c.frame.body.wrapper = old_wrapper
+        # Support QScintillaColorizer.colorize.
+        c = self.c
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'colorize'):
+            g.trace(p and p.h)
+            old_wrapper = c.frame.body.wrapper
+            c.frame.body.wrapper = w
+            try:
+                c.frame.body.colorizer.colorize(p)
+            finally:
+                c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''

@@ -1154,7 +1154,10 @@ class QScintillaWrapper(QTextMixin):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w, Qsci.QsciScintilla), w
-        w.setText(g.toEncodedString(s))
+        if g.isPython3:
+            w.setText(s)
+        else:
+            w.setText(g.toEncodedString(s))
         # w.update()
     #@+node:ekr.20110605121601.18114: *4* qsciw.setInsertPoint
     def setInsertPoint(self, i, s=None):
