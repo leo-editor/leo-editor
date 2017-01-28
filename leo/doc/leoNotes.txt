@@ -18263,6 +18263,18 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
+.. @+node:ekr.20170127152303.1: *3* @test BaseColorizer
+@language python
+import imp
+import leo.core.leoColorizer as leoColorizer
+imp.reload(leoColorizer)
+x = leoColorizer.BaseColorizer(c)
+child = p.firstChild().firstChild()
+x.updateSyntaxColorer(child)
+assert x.language == 'html', x.language
+.. @+node:ekr.20170127152638.1: *4* child
+@language html
+.. @+node:ekr.20170128142140.1: *5* grand-child
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
 @first # -*- coding: utf-8 -*-
