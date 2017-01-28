@@ -5738,8 +5738,8 @@ class Commands(object):
         # Support QScintillaColorizer.colorize.
         c = self
         colorizer = c.frame.body.colorizer
-        if p and colorizer and hasattr(colorizer, 'colorize'):
-            colorizer.colorize(p)
+        if colorizer and hasattr(colorizer, 'colorize'):
+            colorizer.colorize(p or c.p)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self

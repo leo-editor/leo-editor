@@ -950,7 +950,7 @@ class QScintillaWrapper(QTextMixin):
     - Add support for all scintilla lexers.
     '''
     #@+others
-    #@+node:ekr.20110605121601.18105: *3* qsciw.ctor & helpers
+    #@+node:ekr.20110605121601.18105: *3* qsciw.ctor
     def __init__(self, widget, c, name=None):
         '''Ctor for the QScintillaWrapper class.'''
         # g.trace('(QScintillaWrapper)',c.shortFileName(),name,g.callers())
@@ -965,7 +965,7 @@ class QScintillaWrapper(QTextMixin):
         self.set_config()
         # Set the signal.
         g.app.gui.setFilter(c, widget, self, tag=name)
-    #@+node:ekr.20110605121601.18106: *4* qsciw.set_config
+    #@+node:ekr.20110605121601.18106: *3* qsciw.set_config
     def set_config(self):
         '''Set QScintillaWrapper configuration options.'''
         c, w = self.c, self.widget

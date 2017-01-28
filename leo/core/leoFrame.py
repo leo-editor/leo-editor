@@ -242,7 +242,7 @@ class LeoBody(object):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing)
+    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing??)
     def forceFullRecolor(self):
         # self.forceFullRecolorFlag = True
         pass
@@ -254,7 +254,8 @@ class LeoBody(object):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p, incremental=False):
-        pass
+        self.c.requestRecolorFlag = True
+
         # trace = False and not g.unitTesting
         # from leo.core.leoQt import QtWidgets
         # assert self.widget and self.widget.document()

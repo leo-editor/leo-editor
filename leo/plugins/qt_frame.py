@@ -1357,7 +1357,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 # A Qsci.QsciSintilla object.
                 # dw.createText sets self.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
-            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget)
+            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
         else:
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
