@@ -41,8 +41,13 @@ class BaseColorizer(object):
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic.
         '''
-        self.enabled = self.useSyntaxColoring(p)
-        self.language = self.scanColorDirectives(p)
+        if p: # This guard is required.
+            try:
+                self.enabled = self.useSyntaxColoring(p)
+                self.language = self.scanColorDirectives(p)
+            except Exception:
+                g.es_print('unexpected exception in updateSyntaxColorer')
+                g.es_exception()
     #@+node:ekr.20170127142001.2: *4* bc.scanColorDirectives & helpers
     def scanColorDirectives(self, p):
         '''Return language based on the directives in p's ancestors.'''
@@ -100,34 +105,35 @@ class BaseColorizer(object):
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
 class JEditColorizer(BaseColorizer):
+    #@+<< docstring for JEditColorizer class >>
+    #@+node:ekr.20110605121601.18570: *3* << docstring for JEditColorizer class >>
+    #@@language rest
+    #@@wrap
     '''
-    This class contains jEdit pattern matchers adapted
-    for use with QSyntaxHighlighter.
+    The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
+
+    The line-oriented jEdit colorizer defines one or more *restarter* methods
+    for each pattern matcher that could possibly match across line boundaries.
+    I say "one or more" because we need a separate restarter method for all
+    combinations of arguments that can be passed to the jEdit pattern matchers.
+    In effect, these restarters are lambda bindings for the generic restarter
+    methods.
+
+    Few restarters are actually needed. For example, for Python, we need
+    restarters for continued strings, and both flavors of continued
+    triple-quoted strings. For python, these turn out to be three separate
+    bindings of the arguments to restart_match_span.
+
+    When a jEdit pattern matcher partially succeeds, it creates the lambda
+    binding for its restarter and calls setRestart to set the ending state of
+    the present line to an integer representing the bound restarter. setRestart
+    calls computeState to create a *string* representing the lambda binding of
+    the restarter. setRestart then calls stateNameToStateNumber to convert that
+    string to an integer state number that then gets passed to Qt's
+    setCurrentBlockState. The string is useful for debugging; Qt only uses the
+    corresponding number.
     '''
-    #@+<< about the line-oriented jEdit colorizer >>
-    #@+node:ekr.20110605121601.18570: *3* << about the line-oriented jEdit colorizer >>
-    #@@nocolor-node
-    #@+at
-    # The aha behind the line-oriented jEdit colorizer is that we can define one or
-    # more *restarter* methods for each pattern matcher that could possibly match
-    # across line boundaries. I say "one or more" because we need a separate restarter
-    # method for all combinations of arguments that can be passed to the jEdit pattern
-    # matchers. In effect, these restarters are lambda bindings for the generic
-    # restarter methods.
-    # 
-    # In actuality, very few restarters are needed. For example, for Python, we need
-    # restarters for continued strings, and both flavors of continued triple-quoted
-    # strings. For python, these turn out to be three separate lambda bindings for
-    # restart_match_span.
-    # 
-    # When a jEdit pattern matcher partially succeeds, it creates the lambda binding
-    # for its restarter and calls setRestart to set the ending state of the present
-    # line to an integer representing the bound restarter. setRestart calls
-    # computeState to create a *string* representing the lambda binding of the
-    # restarter. setRestart then calls stateNameToStateNumber to convert that string
-    # to an integer state number that then gets passed to Qt's setCurrentBlockState.
-    # The string is useful for debugging; Qt only uses the corresponding number.
-    #@-<< about the line-oriented jEdit colorizer >>
+    #@-<< docstring for JEditColorizer class >>
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ (now contains all ivars)
@@ -154,7 +160,6 @@ class JEditColorizer(BaseColorizer):
         else:
             self.highlighter = None
         widget.leo_colorizer = self
-        self.p = None
         # State data used by recolor and helpers...
         # init() properly sets these for each language.
         self.actualColorDict = {} # Used only by setTag.
@@ -542,8 +547,7 @@ class JEditColorizer(BaseColorizer):
         New: called from colorizer.colorize
         '''
         trace = False and not g.unitTesting
-        if p: self.p = p.copy()
-        if trace: g.trace('(jEdit)', self.language, p.h)
+        if trace: g.trace('(jEdit)', self.language, p and p.h)
         self.updateSyntaxColorer(p)
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
@@ -2065,16 +2069,13 @@ class QScintillaColorizer(BaseColorizer):
         # g.trace(bool(self.lexer), language)
     #@+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
     def configure_lexer(self, lexer):
-        '''Configure the QScintilla lexer.'''
-        # return # Try to use  USERPROFILE:SciTEUser.properties
-
+        '''Configure the QScintilla lexer using @data qt-scintilla-styles.'''
+       
         def oops(s):
             g.trace('bad @data qt-scintilla-styles:', s)
-        # A small font size, to be magnified.
 
         c = self.c
         qcolor, qfont = QtGui.QColor, QtGui.QFont
-        # font = qfont("Courier New",8,qfont.Bold)
         font = qfont("DejaVu Sans Mono", 14)
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
@@ -2089,23 +2090,22 @@ class QScintillaColorizer(BaseColorizer):
                     color, style = z
                     table.append((color.strip(), style.strip()),)
                 else: oops('entry: %s' % z)
-            # g.trace('@data ** qt-scintilla-styles',table)
         if not table:
-            # g.trace('using default color table')
             black = '#000000'
+            firebrick3 = '#CD2626'
             leo_green = '#00aa00'
             # See http://pyqt.sourceforge.net/Docs/QScintilla2/classQsciLexerPython.html
             # for list of selector names.
             table = (
-                # EKR's personal settings: they are reasonable defaults.
+                # EKR's personal settings are reasonable defaults.
                 (black, 'ClassName'),
-                ('#CD2626', 'Comment'), # Firebrick3
+                (firebrick3, 'Comment'),
                 (leo_green, 'Decorator'),
                 (leo_green, 'DoubleQuotedString'),
                 (black, 'FunctionMethodName'),
                 ('blue', 'Keyword'),
                 (black, 'Number'),
-                (leo_green, 'SingleQuotedString'), # Leo green.
+                (leo_green, 'SingleQuotedString'),
                 (leo_green, 'TripleSingleQuotedString'),
                 (leo_green, 'TripleDoubleQuotedString'),
                 (leo_green, 'UnclosedString'),
@@ -2116,11 +2116,11 @@ class QScintillaColorizer(BaseColorizer):
             if hasattr(lexer, style):
                 style_number = getattr(lexer, style)
                 try:
-                    # g.trace(color,style)
                     lexer.setColor(qcolor(color), style_number)
                 except Exception:
                     oops('bad color: %s' % color)
-            else: oops('bad style name: %s' % style)
+            else:
+                oops('bad style name: %s' % style)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize (revise)
     def colorize(self, p):
         '''The main Scintilla colorizer entry point.'''

@@ -529,8 +529,8 @@ class LeoBody(object):
         # Support QScintillaColorizer.colorize.
         c = self.c
         colorizer = c.frame.body.colorizer
-        if colorizer and hasattr(colorizer, 'colorize'):
-            g.trace(p and p.h)
+        if p and colorizer and hasattr(colorizer, 'colorize'):
+            g.trace(p.h)
             old_wrapper = c.frame.body.wrapper
             c.frame.body.wrapper = w
             try:
