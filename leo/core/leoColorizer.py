@@ -2060,24 +2060,12 @@ class QScintillaColorizer(BaseColorizer):
                 # document = widget.document())
         widget.leo_colorizer = self
         # Define/configure various lexers.
-        if self.NEW: ### Experimental
-            self.lexersDict = {}
-            self.nullLexer = None
+        if Qsci:
+            self.lexersDict = self.makeLexersDict()
+            self.nullLexer = NullScintillaLexer(c)
         else:
-            if Qsci:
-                parent = c.frame.body.wrapper.widget
-                self.lexersDict = {
-                    'cpp': Qsci.QsciLexerCPP(parent=parent),
-                    'css': Qsci.QsciLexerCSS(parent=parent),
-                    'python': Qsci.QsciLexerPython(parent=parent),
-                    # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
-                }
-                self.nullLexer = NullScintillaLexer(c)
-                lexer = self.lexersDict.get('python')
-                self.configure_lexer(lexer)
-            else:
-                self.lexersDict = {}
-                self.nullLexer = None
+            self.lexersDict = {}
+            self.nullLexer = g.NullObject()
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self, language):
         '''Set the lexer for the given language.'''
@@ -2087,19 +2075,28 @@ class QScintillaColorizer(BaseColorizer):
         self.lexer = self.lexersDict.get(language, self.nullLexer)
         w.setLexer(self.lexer)
         # g.trace(bool(self.lexer), language)
+    #@+node:ekr.20140906081909.18707: *3* qsc.colorize
+    def colorize(self, p):
+        '''The main Scintilla colorizer entry point.'''
+        # It would be much better to use QSyntaxHighlighter.
+        # Alas, a QSciDocument is not a QTextDocument.
+        self.updateSyntaxColorer(p)
+        if self.NEW:
+            # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
+            for s in g.splitLines(p.b):
+                self.jeditColorizer.recolor(s)
+        else:
+            self.changeLexer(self.language)
     #@+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
     def configure_lexer(self, lexer):
         '''Configure the QScintilla lexer using @data qt-scintilla-styles.'''
-       
-        def oops(s):
-            g.trace('bad @data qt-scintilla-styles:', s)
-
         c = self.c
         qcolor, qfont = QtGui.QColor, QtGui.QFont
         font = qfont("DejaVu Sans Mono", 14)
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
-        lexer.setStringsOverNewlineAllowed(False)
+        if hasattr(lexer, 'setStringsOverNewlineAllowed'):
+            lexer.setStringsOverNewlineAllowed(False)
         table = None
         aList = c.config.getData('qt-scintilla-styles')
         if aList:
@@ -2109,7 +2106,7 @@ class QScintillaColorizer(BaseColorizer):
                 if len(z) == 2:
                     color, style = z
                     table.append((color.strip(), style.strip()),)
-                else: oops('entry: %s' % z)
+                else: g.trace('entry: %s' % z)
         if not table:
             black = '#000000'
             firebrick3 = '#CD2626'
@@ -2138,21 +2135,10 @@ class QScintillaColorizer(BaseColorizer):
                 try:
                     lexer.setColor(qcolor(color), style_number)
                 except Exception:
-                    oops('bad color: %s' % color)
-            else:
-                oops('bad style name: %s' % style)
-    #@+node:ekr.20140906081909.18707: *3* qsc.colorize
-    def colorize(self, p):
-        '''The main Scintilla colorizer entry point.'''
-        # It would be much better to use QSyntaxHighlighter.
-        # Alas, a QSciDocument is not a QTextDocument.
-        self.updateSyntaxColorer(p)
-        if self.NEW:
-            # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
-            for s in g.splitLines(p.b):
-                self.jeditColorizer.recolor(s)
-        else:
-            self.changeLexer(self.language)
+                    g.trace('bad color', color)
+            else: pass
+                # Not an error. Not all lexers have all styles.
+                # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
     def init(self, p, s):
         '''QScintillaColorizer.init'''
@@ -2163,11 +2149,37 @@ class QScintillaColorizer(BaseColorizer):
             self.updateSyntaxColorer(p)
             self.changeLexer(self.language)
         # g.trace(self.language, p and p.h)
-    #@+node:ekr.20140906081909.18716: *3* qsc.kill
-    def kill(self):
-        '''Kill coloring for this node.'''
-        g.trace(g.callers())
-        self.changeLexer(language=None)
+    #@+node:ekr.20140906081909.18716: *3* qsc.kill (not used)
+    # def kill(self):
+        # '''Kill coloring for this node.'''
+        # g.trace(g.callers())
+        # self.changeLexer(language=None)
+    #@+node:ekr.20170128133525.1: *3* qsc.makeLexersDict
+    def makeLexersDict(self):
+        '''Make a dictionary of Scintilla lexers, and configure each one.'''
+        c = self.c
+        # g.printList(sorted(dir(Qsci)))
+        parent = c.frame.body.wrapper.widget
+        table = (
+            # 'Asm', 'Erlang', 'Forth', 'Haskell',
+            # 'LaTeX', 'Lisp', 'Markdown', 'Nsis', 'R',
+            'Bash', 'Batch', 'CPP', 'CSS', 'CMake', 'CSharp', 'CoffeeScript', 
+            'D', 'Diff', 'Fortran', 'Fortran77', 'HTML',
+            'Java', 'JavaScript', 'Lua', 'Makefile', 'Matlab', 
+            'Pascal', 'Perl', 'Python', 'PostScript', 'Properties',
+            'Ruby', 'SQL', 'TCL', 'TeX', 'XML', 'YAML',
+        )
+        d = {}
+        for language_name in table:
+            class_name = 'QsciLexer' + language_name
+            lexer_class = getattr(Qsci, class_name, None)
+            if lexer_class:
+                lexer = lexer_class(parent=parent)
+                self.configure_lexer(lexer)
+                d[language_name.lower()] = lexer
+            elif 0:
+                g.trace('no lexer for', class_name)
+        return d
     #@-others
 #@+node:ekr.20140825132752.18554: ** class PythonHighlighter (experimental)
 class PythonHighlighter(object):
