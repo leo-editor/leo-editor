@@ -34,7 +34,7 @@ class BaseColorizer(object):
         pass
 
     #@+others
-    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers (new)
+    #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
     def updateSyntaxColorer(self, p):
         '''
         Scan for color directives in p and its ancestors.
@@ -545,11 +545,7 @@ class JEditColorizer(BaseColorizer):
             wrapper.tag_configure("elide", elide="1")
     #@+node:ekr.20110605121601.18580: *4* jedit.init
     def init(self, p, s):
-        '''
-        Init the colorizer.
-        Old: called from leo_h.rehighlight.
-        New: called from colorizer.colorize
-        '''
+        '''Init the colorizer.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(jEdit)', self.language, p and p.h)
         self.updateSyntaxColorer(p)
@@ -2038,7 +2034,6 @@ class QScintillaColorizer(BaseColorizer):
         # g.trace('QScintillaColorizer)',widget)
         BaseColorizer.__init__(self, c)
             # init the base class.
-        self.NEW = False
         self.count = 0 # For unit testing.
         self.colorCacheFlag = False
         self.enabled = c.config.getBool('use_syntax_coloring')
@@ -2046,13 +2041,12 @@ class QScintillaColorizer(BaseColorizer):
         self.flag = True # Per-node enable/disable flag.
         self.full_recolor_count = 0 # For unit testing.
         self.language = 'python' # set by scanColorDirectives.
-        if self.NEW: ### Experimental
-            self.jeditColorizer = JEditColorizer(c, widget, wrapper)
-            self.highlighter = PythonHighlighter(c)
-            self.jeditColorizer.highlighter = self.highlighter
-        else:
-             self.highlighter = None
+        self.highlighter = None
         self.lexer = None # Set in changeLexer.
+        # if self.NEW:
+            # self.jeditColorizer = JEditColorizer(c, widget, wrapper)
+            # self.highlighter = PythonHighlighter(c)
+            # self.jeditColorizer.highlighter = self.highlighter
         # Alas QsciDocument is not a QDocument.
             # g.printList(sorted(dir(widget.document)))
             # self.highlighter = LeoHighlighter(c, 
@@ -2096,12 +2090,11 @@ class QScintillaColorizer(BaseColorizer):
         # It would be much better to use QSyntaxHighlighter.
         # Alas, a QSciDocument is not a QTextDocument.
         self.updateSyntaxColorer(p)
-        if self.NEW:
-            # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
-            for s in g.splitLines(p.b):
-                self.jeditColorizer.recolor(s)
-        else:
-            self.changeLexer(self.language)
+        self.changeLexer(self.language)
+        # if self.NEW:
+            # # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
+            # for s in g.splitLines(p.b):
+                # self.jeditColorizer.recolor(s)
     #@+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
     def configure_lexer(self, lexer):
         '''Configure the QScintilla lexer using @data qt-scintilla-styles.'''
@@ -2157,18 +2150,16 @@ class QScintillaColorizer(BaseColorizer):
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
     def init(self, p, s):
         '''QScintillaColorizer.init'''
-        if self.NEW: ### Experimental
-            self.jeditColorizer.init(p, s)
-                # Calls updateSyntaxColorer.
-        else:
-            self.updateSyntaxColorer(p)
-            self.changeLexer(self.language)
+        self.updateSyntaxColorer(p)
+        self.changeLexer(self.language)
         # g.trace(self.language, p and p.h)
-    #@+node:ekr.20140906081909.18716: *3* qsc.kill (not used)
-    # def kill(self):
-        # '''Kill coloring for this node.'''
-        # g.trace(g.callers())
-        # self.changeLexer(language=None)
+        
+        # if self.NEW:
+            # self.jeditColorizer.init(p, s)
+                # # Calls updateSyntaxColorer.
+        # else:
+            # self.updateSyntaxColorer(p)
+            # self.changeLexer(self.language)
     #@+node:ekr.20170128133525.1: *3* qsc.makeLexersDict
     def makeLexersDict(self):
         '''Make a dictionary of Scintilla lexers, and configure each one.'''
@@ -2196,166 +2187,6 @@ class QScintillaColorizer(BaseColorizer):
                 g.trace('no lexer for', class_name)
         return d
     #@-others
-#@+node:ekr.20140825132752.18554: ** class PythonHighlighter (experimental)
-class PythonHighlighter(object):
-    '''
-    Python implementation of QtGui.QSyntaxHighlighter.
-
-    This allows incremental coloring of text at idle time, trading slower
-    overall speed for much faster response time.
-    '''
-    #@+others
-    #@+node:ekr.20140825132752.18561: *3* pqsh.__init__
-    ### def __init__(self, parent, c=None, delay=10, limit=50):
-    def __init__(self, c):
-        '''
-        Ctor for QSyntaxHighlighter class.
-        Parent is a QTextDocument or QTextEdit: it becomes the owner of the QSyntaxHighlighter.
-        '''
-        # g.trace('(PythonQSyntaxBrowser)', parent)
-        # Ivars corresponding to QSH ivars...
-        self.c = c # The commander.
-        self.cb = None # The current block: a QTextBlock.
-        self.d = None # The QTextDocument attached to this colorizers.
-        self.formats = [] # An array of QTextLayout.FormatRange objects.
-        self.formatChanges = []
-        ### self.inReformatBlocks = False
-        ### self.rehighlightPending = False
-        # Ivars for reformatBlocks and idle_handler...
-        ###
-            # self.idle_active = False # True if the idle_handler should colorize.
-            # self.r_block = None # The block to be colorized.
-            # self.r_end = None # The ultimate ending position.
-            # self.r_delay = delay # The waiting time, in msec. for self.timer.
-            # self.r_force = False # True if the next block must be recolored.
-            # self.r_limit = limit # The max number of lines to color at one time.
-            # self.timer = g.IdleTime(
-                # handler=self.idle_handler,
-                # delay=self.r_delay,
-                # tag='pqsh.idle_handler')
-        # Attach the parent's QTextDocument and set self.d.
-        ### self.setDocument(parent)
-    #@+node:ekr.20140825132752.18590: *3* pqsh.Getters & Setters
-    #@+node:ekr.20140825132752.18582: *4* pqsh.currentBlock & currentBlockUserData
-    def currentBlock(self):
-        '''Returns the current text block.'''
-        return self.cb
-
-    def currentBlockUserData(self):
-        '''Returns the QTextBlockUserData object attached to the current text block.'''
-        return self.cb.userData() if self.is_valid(self.cb) else None
-    #@+node:ekr.20140825132752.18580: *4* pqsh.currentBlockState & previousBlockState
-    def currentBlockState(self):
-        '''Returns the state of the current block or -1.'''
-        return self.cb.userState() if self.is_valid(self.cb) else - 1
-
-    def previousBlockState(self):
-        '''Returns the end state previous text block or -1'''
-        if self.is_valid(self.cb):
-            previous = self.cb.previous()
-            return previous.userState() if self.is_valid(previous) else - 1
-        else:
-            return -1
-    #@+node:ekr.20140825132752.18565: *4* pqsh.document
-    def document(self):
-        '''Returns the QTextDocument on which this syntax highlighter is installed.'''
-        return self.d
-    #@+node:ekr.20140825132752.18575: *4* pqsh.format
-    def format(self, pos):
-        '''Return the format at the given position in the current text block.'''
-        if 0 <= pos < len(self.formatChanges):
-            return self.formatChanges[pos]
-        else:
-            return QtGui.QTextCharFormat()
-    #@+node:ekr.20140825132752.18576: *4* pqsh.setCurrentBlockState & setCurrentBlockUserData
-    def setCurrentBlockState(self, newState):
-        '''Sets the state of the current text block.'''
-        if self.is_valid(self.cb):
-            self.cb.setUserState(newState)
-
-    def setCurrentBlockUserData(self, data):
-        '''Set the user data of the current text block.'''
-        if self.is_valid(self.cb):
-            self.cb.setUserData(data)
-    #@+node:ekr.20140825132752.18584: *4* pqsh.setFormat (start,count,format)
-    def setFormat(self, start, count, format):
-        '''Remember the requested formatting.'''
-        trace = False and not g.unitTesting
-        verbose = False
-        if start >= 0:
-            r = QtGui.QTextLayout.FormatRange()
-            r.start, r.length, r.format = start, count, format
-            self.formats.append(r)
-            if trace and verbose: g.trace('%3s %3s %s %s' % (
-                start, count, self.format_to_color(format), self.cb.text()))
-        elif trace:
-            g.trace('bad start value', repr(start), g.callers())
-    # Not used by Leo...
-    # def setFormat(self,start,count,color):
-        # format = QTextCharFormat()
-        # format.setForeground(color)
-        # setFormat(start,count,format)
-    # def setFormat(self,start,count,font):
-        # format = QTextCharFormat()
-        # format.setFont(font)
-        # self.setFormat(start,count,format)
-    #@+node:ekr.20140825132752.18589: *3* pqsh.Helpers
-    # These helpers are the main reason QSyntaxHighlighter exists.
-    # Getting this code exactly right is the main challenge for PythonQSyntaxHighlighter.
-    #@+node:ekr.20140825132752.18557: *4* pqsh.applyFormatChanges
-    def applyFormatChanges(self):
-        '''Apply self.formats to the current layout.'''
-        if self.formats:
-            layout = self.cb.layout()
-            layout.setAdditionalFormats(self.formats)
-            self.formats = []
-            self.d.markContentsDirty(self.cb.position(), self.cb.length())
-    #@+node:ekr.20140826120657.18649: *4* pqsh.format_to_color
-    def format_to_color(self, format):
-        '''Return the foreground color of the given character format.'''
-        return str(format.foreground().color().name())
-    #@+node:ekr.20140826120657.18648: *4* pqsh.is_valid
-    def is_valid(self, obj):
-        return obj and obj.isValid()
-    #@-others
-#@+node:ekr.20140906143232.18697: ** class PythonLexer
-# Stuck: regardless of class: there seems to be no way to force a recolor.
-if Qsci:
-
-    class PythonLexer(Qsci.QsciLexerCustom):
-        '''A subclass of the Python lexer that colorizers section references.'''
-
-        def __init__(self, parent=None):
-            '''Ctor for PythonLexer class.'''
-            Qsci.QsciLexerCustom.__init__(self, parent)
-                # Init the base class.
-            self.lexer = None
-            self.parent = parent
-            self.tag = '(PythonLexer)'
-
-        def setStringsOverNewlineAllowed(self, aBool):
-            pass
-
-        def description(self, style):
-            return self.tag
-
-        def setStyling(self, length, style):
-            g.trace(self.tag, length, style)
-
-        def styleText(self, start, end):
-            '''Style the text from start to end.'''
-            g.trace(self.tag, start, end)
-            self.lexer = Qsci.QsciLexerPython(parent=self.parent)
-            self.lexer.setStringsOverNewlineAllowed(True)
-            # self.lexer.styleText(start,end)
-
-        def configure_lexer(self):
-            '''Configure the QScintilla lexer.'''
-            lexer = self
-            # To do: use c.config setting.
-            # pylint: disable=no-member
-            font = QtGui.QFont("DejaVu Sans Mono", 14)
-            lexer.setFont(font)
 #@-others
 #@@language python
 #@@tabwidth -4
