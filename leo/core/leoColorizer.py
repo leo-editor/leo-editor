@@ -2065,8 +2065,11 @@ class QScintillaColorizer(BaseColorizer):
             self.nullLexer = None
         else:
             if Qsci:
+                parent = c.frame.body.wrapper.widget
                 self.lexersDict = {
-                    'python': Qsci.QsciLexerPython(parent=c.frame.body.wrapper.widget),
+                    'cpp': Qsci.QsciLexerCPP(parent=parent),
+                    'css': Qsci.QsciLexerCSS(parent=parent),
+                    'python': Qsci.QsciLexerPython(parent=parent),
                     # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
                 }
                 self.nullLexer = NullScintillaLexer(c)
