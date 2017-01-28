@@ -35726,6 +35726,48 @@ def findColorDirectives(self, p):
         d[word] = word
     if trace: g.trace(d)
     return d
+.. @+node:ekr.20140904043623.18535: *4* OLD class ColorizerAPI
+if 0:
+    class ColorizerAPI(object):
+        '''The required API of c.frame.body.colorizer.'''
+    
+        def __init__(self, c, widget): pass
+    
+        def colorize(self, p, incremental=False, interruptable=True): return 'ok'
+        # def disable (self,p): pass
+        # def enable (self,p): pass
+    
+        def kill(self): pass
+    
+        def scanColorDirectives(self, p): return 'python'
+    
+        def setHighlighter(self, p): return True
+    
+        def updateSyntaxColorer(self, p): return True
+    
+        def useSyntaxColoring(self, p): return True
+    
+        # def write_colorizer_cache(self, p): pass
+.. @+node:ekr.20170128035021.1: *4* from NullColorizer no longer used
+.. @+node:ekr.20031218072017.2219: *5* NullColorizer.__init__
+def __init__(self, c):
+    '''NullColorizer'''
+    leoColorizer.BaseColorizer.__init__(self, c)
+.. @+node:ekr.20031218072017.2220: *5* NullColorizer.Entry points
+###
+# def colorize(self, p, incremental=False, interruptable=True):
+    # self.count += 1 # Used by unit tests.
+    # return 'ok' # Used by unit tests.
+
+### def disable(self): pass
+
+### def enable(self): pass
+
+### def init(self, p, s): pass
+
+# def setHighlighter(self, p): return False
+
+# def showInvisibles(self): pass
 .. @-all
 .. @@nosearch
 .. @-leo

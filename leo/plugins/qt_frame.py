@@ -1362,7 +1362,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper) ###
+            self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
             
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
@@ -1439,10 +1439,8 @@ class LeoQtBody(leoFrame.LeoBody):
         self.updateInjectedIvars(w, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
-        # self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p, wrapper)
-        ###
         if isinstance(w, QtWidgets.QTextEdit):
             colorizer = c.frame.body.colorizer
             colorizer.highlighter.setDocument(widget.document())

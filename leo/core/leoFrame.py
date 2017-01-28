@@ -49,28 +49,6 @@ import time
 #@+node:ekr.20140907201613.18660: ** API classes
 # These classes are for documentation and unit testing.
 # They are the base class for no class.
-#@+node:ekr.20140904043623.18535: *3* class ColorizerAPI (no longer used)
-if 0:
-    class ColorizerAPI(object):
-        '''The required API of c.frame.body.colorizer.'''
-    
-        def __init__(self, c, widget): pass
-    
-        def colorize(self, p, incremental=False, interruptable=True): return 'ok'
-        # def disable (self,p): pass
-        # def enable (self,p): pass
-    
-        def kill(self): pass
-    
-        def scanColorDirectives(self, p): return 'python'
-    
-        def setHighlighter(self, p): return True
-    
-        def updateSyntaxColorer(self, p): return True
-    
-        def useSyntaxColoring(self, p): return True
-    
-        # def write_colorizer_cache(self, p): pass
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
 class StatusLineAPI(object):
     '''The required API for c.frame.statusLine.'''
@@ -266,7 +244,7 @@ class LeoBody(object):
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing)
     def forceFullRecolor(self):
-        ### self.forceFullRecolorFlag = True
+        # self.forceFullRecolorFlag = True
         pass
 
     def getColorizer(self):
@@ -1679,7 +1657,6 @@ class LeoTree(object):
             if trace: g.trace(p.h)
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
-            ### self.stop_colorizer(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
@@ -1917,41 +1894,10 @@ class NullBody(LeoBody):
 
     def setFocus(self): pass
     #@-others
-#@+node:ekr.20031218072017.2218: ** class NullColorizer (ColorizerMixin)
-class NullColorizer(leoColorizer.BaseColorizer): ### leoColorizer.ColorizerMixin):
-    '''
-    A colorizer class that doesn't color,
-    but does support methods
-    '''
-    #@+others
-    #@+node:ekr.20031218072017.2219: *3* NullColorizer.__init__
-    def __init__(self, c):
-        '''NullColorizer'''
-        ### leoColorizer.ColorizerMixin.__init__(self, c)
-        leoColorizer.BaseColorizer.__init__(self, c)
-        ###
-        # self.c = c
-        # self.count = 0
-        # self.enabled = False
-        # self.full_recolor_count = 0
-        # self.highlighter = None
-    #@+node:ekr.20031218072017.2220: *3* NullColorizer.Entry points
-    def colorize(self, p, incremental=False, interruptable=True):
-        self.count += 1 # Used by unit tests.
-        return 'ok' # Used by unit tests.
-
-    def disable(self): pass
-
-    def enable(self): pass
-
-    def init(self, p, s): pass
-
-    ## def kill(self): pass
-
-    def setHighlighter(self, p): return False
-
-    def showInvisibles(self): pass
-    #@-others
+#@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
+class NullColorizer(leoColorizer.BaseColorizer):
+    '''A colorizer class that doesn't color.'''
+    pass
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''

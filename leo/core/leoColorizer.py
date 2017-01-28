@@ -28,6 +28,10 @@ class BaseColorizer(object):
         self.enabled = False
         self.full_recolor_count = 0
         self.highlighter = None
+        
+    def init(self, p, s):
+        '''May be over-ridden in subclasses.'''
+        pass
 
     #@+others
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers (new)
@@ -39,8 +43,6 @@ class BaseColorizer(object):
         '''
         self.enabled = self.useSyntaxColoring(p)
         self.language = self.scanColorDirectives(p)
-        ### g.trace(self.enabled, self.language)
-        ### return self.enabled ### Needed?
     #@+node:ekr.20170127142001.2: *4* bc.scanColorDirectives & helpers
     def scanColorDirectives(self, p):
         '''Return language based on the directives in p's ancestors.'''
@@ -96,7 +98,7 @@ class BaseColorizer(object):
         return d
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
-# This is c.frame.body.colorizer ### .highlighter.colorer
+# This is c.frame.body.colorizer
 class JEditColorizer(BaseColorizer):
     '''
     This class contains jEdit pattern matchers adapted
@@ -129,7 +131,6 @@ class JEditColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ (now contains all ivars)
-    ### def __init__(self, c, colorizer, highlighter, wrapper):
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         # g.trace('(JEditColorizer) widget', widget)
@@ -138,40 +139,24 @@ class JEditColorizer(BaseColorizer):
         self.widget = widget
         self.wrapper = wrapper
         assert(wrapper == self.c.frame.body.wrapper)
-        ### From old LeoQtColorizer ctor. ###
-        ### self.flag = True
         self.enabled = True
             # Per-node enable/disable flag.
             # Set by updateSyntaxColorer, used by jEdit colorizer.
         self.full_recolor_count = 0 # For unit testing.
-        ### self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
-        ### self.languageList = [] # List of color directives in the node the determines it.
         self.showInvisibles = False
-            ### Very complicated.  Can be simplified.
         # Step 2: create the highlighter.
-        ### self.highlighter = None
-        ### self.colorer = None
-             # No colorer for Scintilla
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c, 
                 colorizer = self,
                 document = widget.document(),
             )
-            ### assert self.colorer ### Now done in LeoHighlighter.ctor.
-            ### The colorer and colorizer are now the same class.
         else:
             self.highlighter = None
         widget.leo_colorizer = self
-        ### assert highlighter, g.callers()
-        # Basic data...
-        ### self.c = c
-        ### self.colorizer = colorizer
-        ### self.highlighter = highlighter # a QSyntaxHighlighter
         self.p = None
-        
         # State data used by recolor and helpers...
-        # jedit.init() properly sets these for each language.
+        # init() properly sets these for each language.
         self.actualColorDict = {} # Used only by setTag.
         self.hyperCount = 0
         self.initialStateNumber = -1
@@ -188,11 +173,9 @@ class JEditColorizer(BaseColorizer):
         self.no_word_sep = ''
         # Config settings...
         self.showInvisibles = c.config.getBool("show_invisibles_by_default")
-        ### self.colorizer.showInvisibles = self.showInvisibles
         self.underline_undefined = c.config.getBool("underline_undefined_section_names")
         self.use_hyperlinks = c.config.getBool("use_hyperlinks")
         # Debugging...
-        ### self.count = 0 # For unit testing.
         self.allow_mark_prev = True
         self.n_setTag = 0
         self.tagCount = 0
@@ -448,7 +431,6 @@ class JEditColorizer(BaseColorizer):
         c = self.c
         wrapper = self.wrapper
         isQt = g.app.gui.guiName().startswith('qt')
-        ### if trace: g.trace(self.colorizer.language)
         if trace: g.trace(self.language)
         if wrapper and hasattr(wrapper, 'start_tag_configure'):
             wrapper.start_tag_configure()
@@ -466,7 +448,6 @@ class JEditColorizer(BaseColorizer):
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
-            ### for name in ('%s_%s' % (self.colorizer.language, option_name), (option_name)):
             for name in ('%s_%s' % (self.language, option_name), (option_name)):
                 if trace and traceFonts: g.trace(name)
                 font = self.fonts.get(name)
@@ -507,7 +488,6 @@ class JEditColorizer(BaseColorizer):
         for name in keys:
             option_name, default_color = self.default_colors_dict[name]
             color = (
-                ### c.config.getColor('%s_%s' % (self.colorizer.language, option_name)) or
                 c.config.getColor('%s_%s' % (self.language, option_name)) or
                 c.config.getColor(option_name) or
                 default_color)
@@ -563,28 +543,22 @@ class JEditColorizer(BaseColorizer):
         '''
         trace = False and not g.unitTesting
         if p: self.p = p.copy()
-        ### if trace: g.trace('(jEdit)', self.colorizer.language, p.h)
         if trace: g.trace('(jEdit)', self.language, p.h)
-        self.updateSyntaxColorer(p) ### Was in colorer.init ###
+        self.updateSyntaxColorer(p)
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
         self.stateNameDict = {}
         self.restartDict = {}
-        ### self.init_mode(self.colorizer.language)
         self.init_mode(self.language)
         self.setInitialStateNumber()
         self.clearState()
-        ### self.showInvisibles = self.colorizer.showInvisibles
-            # The show/hide-invisible commands changes this.
         # Used by matchers.
         self.prev = None
-        ### if self.last_language != self.colorizer.language:
         if self.last_language != self.language:
             # Must be done to support per-language @font/@color settings.
             self.configure_tags()
-            ### self.last_language = self.colorizer.language
             self.last_language = self.language
         self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
@@ -648,7 +622,6 @@ class JEditColorizer(BaseColorizer):
             self.rulesetName = rulesetName
             self.language_name = 'unknown-language'
             return False
-        ### self.colorizer.language = language
         self.language = language
         self.rulesetName = rulesetName
         self.properties = hasattr(mode, 'properties') and mode.properties or {}
@@ -666,7 +639,6 @@ class JEditColorizer(BaseColorizer):
             attributesDict=self.attributesDict,
             defaultColor=self.defaultColor,
             keywordsDict=self.keywordsDict,
-            ### language=self.colorizer.language,
             language = self.language,
             mode=self.mode,
             properties=self.properties,
@@ -767,7 +739,6 @@ class JEditColorizer(BaseColorizer):
         self.setModeAttributes()
         self.defaultColor = bunch.defaultColor
         self.keywordsDict = bunch.keywordsDict
-        ### self.colorizer.language = bunch.language
         self.language = bunch.language
         self.mode = bunch.mode
         self.properties = bunch.properties
@@ -791,9 +762,7 @@ class JEditColorizer(BaseColorizer):
             delims = None
         if delims:
             d = g.app.language_delims_dict
-            ### if not d.get(self.colorizer.language):
             if not d.get(self.language):
-                ### d[self.colorizer.language] = delims
                 d[self.language] = delims
                 # g.trace(self.language,'delims:',repr(delims))
     #@+node:ekr.20110605121601.18587: *4* jedit.munge
@@ -1337,7 +1306,6 @@ class JEditColorizer(BaseColorizer):
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
         trace = False and not g.unitTesting
         if trace: g.trace('%-10s %-20s %s' % (self.language, pattern, s))
-            ### self.colorizer.language, pattern, s)) # g.callers(1)
         try:
             flags = re.MULTILINE
             if self.ignore_case: flags |= re.IGNORECASE
@@ -1664,7 +1632,6 @@ class JEditColorizer(BaseColorizer):
             'no_line_break': '!lbrk',
             'no_word_break': '!wbrk',
         }
-        ### result = [self.languageTag(self.colorizer.language)]
         result = [self.languageTag(self.language)]
         if not self.rulesetName.endswith('_main'):
             result.append(self.rulesetName)
@@ -1859,7 +1826,6 @@ class JEditColorizer(BaseColorizer):
         Init *local* ivars when handling block 0.
         This prevents endless recalculation of the proper default state.
         '''
-        ### if self.colorizer.flag:
         if self.enabled:
             n = self.setInitialStateNumber()
         else:
@@ -1873,12 +1839,10 @@ class JEditColorizer(BaseColorizer):
 
         Called from init() and initBlock0.
         '''
-        ### state = self.languageTag(self.colorizer.language or 'no-language')
         state = self.languageTag(self.language or 'no-language')
         n = self.stateNameToStateNumber(None, state)
         self.initialStateNumber = n
         self.blankStateNumber = self.stateNameToStateNumber(None,state+';blank')
-        # g.trace(self.blankStateNumber)
         return n
     #@+node:ekr.20170126103925.1: *4* jedit.languageTag
     def languageTag(self, name):
@@ -1974,12 +1938,6 @@ if QtGui:
             assert isinstance(document, QtGui.QTextDocument), document
             # Init the base class.
             self.colorizer = colorizer
-            ###
-            # self.colorer = JEditColorizer(c,
-                # colorizer=colorizer,
-                # highlighter=self,
-                # wrapper=c.frame.body.wrapper)
-            # colorizer.colorer = self.colorer
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
         #@+node:ekr.20110605121601.18568: *3* leo_h.rehighlight
@@ -2027,11 +1985,9 @@ if QtGui:
         def highlightBlock(self, s):
             """ Called by QSyntaxHiglighter """
             self.n_calls += 1
-            if True: ### not self.colorizer.killColorFlag:
-                s = g.toUnicode(s)
-                ### self.colorer.recolor(s)
-                self.colorizer.recolor(s)
-                    # Highlight just one line.
+            s = g.toUnicode(s)
+            self.colorizer.recolor(s)
+                # Highlight just one line.
         #@-others
 #@+node:ekr.20140906095826.18717: ** class NullScintillaLexer
 if Qsci:
@@ -2065,14 +2021,13 @@ if Qsci:
             lexer.setFont(font)
 #@+node:ekr.20140906081909.18689: ** class QScintillaColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
-class QScintillaColorizer(BaseColorizer): ### ColorizerMixin):
+class QScintillaColorizer(BaseColorizer):
     '''A colorizer for a QsciScintilla widget.'''
     #@+others
     #@+node:ekr.20140906081909.18709: *3* qsc.ctor
     def __init__(self, c, widget):
         '''Ctor for QScintillaColorizer. widget is a '''
         # g.trace('QScintillaColorizer)',widget)
-        ### ColorizerMixin.__init__(self, c)
         BaseColorizer.__init__(self, c)
             # init the base class.
         self.count = 0 # For unit testing.
@@ -2169,24 +2124,11 @@ class QScintillaColorizer(BaseColorizer): ### ColorizerMixin):
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize (revise)
     def colorize(self, p):
         '''The main Scintilla colorizer entry point.'''
-        ### Leo no longer calls colorize.
-        ### Instead, this class should hook into QSyntaxHighlighter.
+        # It might be better to hook into QSyntaxHighlighter.
+        # This would allow Leo not to call this method explicitly.
         # https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
         self.updateSyntaxColorer(p)
         self.changeLexer(self.language)
-        # trace = False and not g.unitTesting
-        # self.count += 1 # For unit testing.
-        # if not incremental:
-            # self.full_recolor_count += 1
-        # if p.b.startswith('@killcolor'):
-            # if trace: g.trace('kill: @killcolor')
-            # self.kill()
-        # else:
-            # self.updateSyntaxColorer(p)
-                # # sets self.flag and self.language and self.languageList.
-            # if trace: g.trace(self.language)
-            # self.changeLexer(self.language)
-        # return "ok" # For unit testing.
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
     def init(self, p, s):
         '''QScintillaColorizer.init'''
