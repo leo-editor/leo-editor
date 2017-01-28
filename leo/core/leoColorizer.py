@@ -136,7 +136,7 @@ class JEditColorizer(BaseColorizer):
     #@-<< docstring for JEditColorizer class >>
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
-    #@+node:ekr.20110605121601.18572: *4* jedit.__init__ (now contains all ivars)
+    #@+node:ekr.20110605121601.18572: *4* jedit.__init__
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         # g.trace('(JEditColorizer) widget', widget)
@@ -1938,10 +1938,10 @@ if QtGui:
         def __init__(self, c, colorizer, document):
             '''ctor for LeoHighlighter class.'''
             self.c = c
+            self.colorizer = colorizer
             self.n_calls = 0
             assert isinstance(document, QtGui.QTextDocument), document
-            # Init the base class.
-            self.colorizer = colorizer
+                # Alas, a QsciDocument is not a QTextDocument.
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
         #@+node:ekr.20110605121601.18568: *3* leo_h.rehighlight
@@ -2041,10 +2041,13 @@ class QScintillaColorizer(BaseColorizer):
         self.flag = True # Per-node enable/disable flag.
         self.full_recolor_count = 0 # For unit testing.
         self.language = 'python' # set by scanColorDirectives.
-        self.languageList = [] # List of color directives in the node the determines it.
         self.lexer = None # Set in changeLexer.
-        self.oldLanguageList = []
-        self.showInvisibles = False
+        # Alas QsciDocument is not a QDocument.
+            # g.printList(sorted(dir(widget.document)))
+            # self.highlighter = LeoHighlighter(c, 
+                # colorizer = self,
+                # document = widget.document())
+        self.highlighter = None
         widget.leo_colorizer = self
         # Define/configure various lexers.
         if Qsci:
@@ -2053,11 +2056,11 @@ class QScintillaColorizer(BaseColorizer):
                 # 'python': PythonLexer(parent=c.frame.body.wrapper.widget),
             }
             self.nullLexer = NullScintillaLexer(c)
+            lexer = self.lexersDict.get('python')
+            self.configure_lexer(lexer)
         else:
             self.lexersDict = {}
             self.nullLexer = None
-        lexer = self.lexersDict.get('python')
-        self.configure_lexer(lexer)
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self, language):
         '''Set the lexer for the given language.'''
@@ -2121,12 +2124,11 @@ class QScintillaColorizer(BaseColorizer):
                     oops('bad color: %s' % color)
             else:
                 oops('bad style name: %s' % style)
-    #@+node:ekr.20140906081909.18707: *3* qsc.colorize (revise)
+    #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):
         '''The main Scintilla colorizer entry point.'''
-        # It might be better to hook into QSyntaxHighlighter.
-        # This would allow Leo not to call this method explicitly.
-        # https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
+        # It would be much better to use QSyntaxHighlighter.
+        # Alas, a QSciDocument is not a QTextDocument.
         self.updateSyntaxColorer(p)
         self.changeLexer(self.language)
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
@@ -2141,7 +2143,7 @@ class QScintillaColorizer(BaseColorizer):
         '''Kill coloring for this node.'''
         self.changeLexer(language=None)
     #@-others
-#@+node:ekr.20140906143232.18697: ** class PythonLexer (does not work)
+#@+node:ekr.20140906143232.18697: ** class PythonLexer
 # Stuck: regardless of class: there seems to be no way to force a recolor.
 if Qsci:
 
