@@ -1407,6 +1407,7 @@ class JEditColorizer(BaseColorizer):
                 # A hack to handle continued strings. Should work for most languages.
                 # Prepend "dots" to the kind, as a flag to setTag.
                 dots = j > len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+                dots = dots and not self.language in ('lisp', 'elisp')
                 if dots:
                     kind = 'dots'+kind
                     if trace: g.trace('underline', kind, repr(s[i:j]))
