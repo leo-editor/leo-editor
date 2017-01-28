@@ -17,7 +17,7 @@ import time
 #@-<< imports >>
 # pylint: disable=anomalous-backslash-in-string
 #@+others
-#@+node:ekr.20170127141855.1: ** class BaseColorizer (new)
+#@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer(object):
     '''The base class for all Leo colorizers.'''
     
@@ -2066,6 +2066,21 @@ class QScintillaColorizer(BaseColorizer):
         else:
             self.lexersDict = {}
             self.nullLexer = g.NullObject()
+    #@+node:ekr.20170128141158.1: *3* qsc.scanColorDirectives (over-ride)
+    def scanColorDirectives(self, p):
+        '''
+        Return language based on the directives in p's ancestors.
+        Same as BaseColorizer.scanColorDirectives, except it also scans p.b.
+        '''
+        c = self.c
+        root = p.copy()
+        for p in root.self_and_parents():
+            language = self.findFirstValidAtLanguageDirective(p)
+            if language:
+                return language
+        #  Get the language from the nearest ancestor @<file> node.
+        language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        return language
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self, language):
         '''Set the lexer for the given language.'''
