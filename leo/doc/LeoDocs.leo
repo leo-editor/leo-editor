@@ -1312,6 +1312,7 @@
 <v t="ekr.20170129120630.4"><vh>Helper methods</vh></v>
 <v t="ekr.20170129124141.1"><vh>demo.setup and demo.teardown</vh></v>
 <v t="ekr.20170129120630.6"><vh>The program counter, demo.p</vh></v>
+<v t="ekr.20170129130428.1"><vh>The script list</vh></v>
 <v t="ekr.20170129120630.7"><vh>Style sheets</vh></v>
 <v t="ekr.20170129120630.8"><vh>Acknowledgements</vh></v>
 </v>
@@ -19779,15 +19780,11 @@ The Escape or Ctrl-G keys terminate any screencast.
 </t>
 <t tx="ekr.20170129120630.6">## The program counter, demo.p
 
-Most presenters will want to keep the nodes of the presentation tree
-hidden. Instead, presentation will make *other* nodes visible by calling
-demo.selectPosition(p) or demo.redraw(p).
+The demo.p ivar points to the to-be-executed node in the script tree. You can think of demo.p as the demo's program counter. demo scripts should rarely need to change demo.p.
 
-Thus, there must be a sharp distinction between the presently *selected*
-node, c.p, and the present screencast node, demo.p. You can think of demo.p as
-the program counter for the screencast.
+After executing a demo script, the Demo class advances demo.p to the next non-empty, non-ignored node in the script tree, unless the previous script has changed demo.p. By default, the Demo class keeps the script tree collapsed.
 
-By default, after executing a screencast script, the Demo class advances demo.p to the next non-empty, non-ignored node in the \@screencast tree. However, if the just-executed screencast script has set demo.p to a new, non-empty value, that value will be the new value of demo.p.
+In contrast, c.p is the presently selected (and therefore visible) node. demo scripts will can use c.selectPosition(p) or c.redraw(p) as usual to make *other* nodes visible by calling 
 
 </t>
 <t tx="ekr.20170129120630.7">## Style sheets
@@ -19877,6 +19874,11 @@ test.leo. Then run those screencasts to see the what the scripts do.
 <t tx="ekr.20170129124141.1">## demo.setup and demo.teardown
 
 The Demo class defines two do-nothing methods: demo.setup and demo.teardown. These may be overridden in subclasses. Just as with unit tests, the Demo class executes the setup method before executing the first demo script and executes the teardown method whenever quitting the demo.
+
+</t>
+<t tx="ekr.20170129130428.1">## The script list may replace demo.py
+
+It may be safer to "bind" all scripts into a list before any are executed.  This would do away with the demo.p program counter entirely.  It's likely that the new code will do this.
 
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
