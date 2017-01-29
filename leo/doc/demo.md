@@ -1,9 +1,8 @@
-.. @+leo-ver=5-thin
-.. @+node:ekr.20170129112253.1: * @file ..\doc\demo.md
-.. @@language rest
-.. @@wrap
-.. @+others
-.. @+node:ekr.20170129112412.1: ** Overview
+
+# The demo.py plugin
+
+## Overview
+
 This plugin runs dynamic demos from Leo files.
 
 The **script tree** controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts alter the outline, freeing the presenter from the burden of having to type correctly or remember the sequence of desired actions. 
@@ -18,11 +17,8 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Scale font sizes.
 - Open another .leo file and present the demo in the new outline window.
 
+## The demo class
 
-
-
-
-.. @+node:ekr.20170129112922.1: ** The Demo class
 The Demo class controls key handling during screencasts and
 executes demo scripts as the demo moves from node to node.
 
@@ -35,9 +31,10 @@ handling in key-states during the execution of a screencast. For example::
 ```
 
 executes the insert-node command!
-.. @+node:ekr.20170129113435.1: ** Helper methods
-Demo scripts may use the following helper methods:
 
+## Helper methods
+
+Demo scripts may use the following helper methods:
 
 **demo.body(s)**, **demo.log(s)** and **demo.tree(s)** create a caption with text s
 in the indicated pane. A **caption** is a text area that overlays part of
@@ -96,15 +93,9 @@ is different from "ctrl-shift-f".
 **demo.start(p)** Starts a screencast at node p, regardless of whether p is an
 \@screencast node. This is useful during development while testing the
 script in node p.
-.. @+node:ekr.20170129112613.1: ** demo-start (probably obsolete)
-The demo-start command starts a screencast. This command first
-searches backwards for the nearest \@screencast node. If no such node is
-found, the command searches forwards for the next \@screencast node. This
-command then executes the script in the body text, and pauses. Thereafter,
-the Right Arrow key executes the script in the next slide node (in outline
-order). The Left Arrow key executes the script in the previous slide node.
-The Escape or Ctrl-G keys terminate any screencast.
-.. @+node:ekr.20170129112514.1: ** The program counter, demo.p
+
+## The program counter, demo.p
+
 Most presenters will want to keep the nodes of the presentation tree
 hidden. Instead, presentation will make *other* nodes visible by calling
 demo.selectPosition(p) or demo.redraw(p).
@@ -114,7 +105,9 @@ node, c.p, and the present screencast node, demo.p. You can think of demo.p as
 the program counter for the screencast.
 
 By default, after executing a screencast script, the Demo class advances demo.p to the next non-empty, non-ignored node in the \@screencast tree. However, if the just-executed screencast script has set demo.p to a new, non-empty value, that value will be the new value of demo.p.
-.. @+node:ekr.20170129112546.1: ** Style sheets
+
+## Style sheets
+
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
 
@@ -129,8 +122,7 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
+## Acknowledgements
 
-.. @+node:ekr.20170129113314.1: ** Acknowledgements
 This plugin was inspired by [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org). Or perhaps demo-it was inspired by Leo's earlier screencast plugin.
-.. @-others
-.. @-leo
+
