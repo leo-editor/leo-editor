@@ -6676,7 +6676,7 @@ class Commands(object):
                 c.setChanged(True)
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self, changedFlag):
+    def setChanged(self, changedFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
         trace = False and not g.unitTesting # and changedFlag
         if trace: g.trace(g.callers())

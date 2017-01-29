@@ -1462,8 +1462,7 @@ class GetArg(object):
     #@+node:ekr.20140817110228.18316: *4* ga.do_end
     def do_end(ga, event, char, stroke):
         '''A return or escape has been seen.'''
-        trace = True and not g.unitTesting
-        ### g.pdb()
+        trace = False and not g.unitTesting
         k = ga.k
         if trace:
             g.trace('char', repr(char), stroke, k.getArgEscapes)
