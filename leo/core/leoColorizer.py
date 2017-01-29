@@ -1808,7 +1808,7 @@ class JEditColorizer(BaseColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers (entry, good trace)
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor (color one line)
     def recolor(self, s):
         '''
         jEdit.recolor: Recolor a *single* line, s.
