@@ -19671,6 +19671,8 @@ The new javascript and perl importers know *nothing* about parsing. They know on
 
 # Leo's demo.py plugin
 
+At present, these are more design docs than actual descriptions of reality.
+
 @others
 
 </t>
@@ -19692,11 +19694,11 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 
 
 </t>
-<t tx="ekr.20170129120630.3">## The demo class
+<t tx="ekr.20170129120630.3">## The Demo class
 
 The Demo class controls key handling during demos and executes demo scripts as the demo moves from node to node.
 
-During a demo, the Demo class traps only the right-arrow key, passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
+During a demo, the Demo class traps only the space-bar key (or right-arrow key?), passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
 
 ```python
     demo.single_key('Alt-X')
@@ -19708,7 +19710,7 @@ executes the insert-node command!
 </t>
 <t tx="ekr.20170129120630.4">## Helper methods
 
-Demo scripts may use the following helper methods:
+*These descriptions may change at any time, without notice*:
 
 **demo.body(s)**, **demo.log(s)** and **demo.tree(s)** Create a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
 

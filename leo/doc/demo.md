@@ -1,6 +1,8 @@
 
 # Leo's demo.py plugin
 
+At present, these are more design docs than actual descriptions of reality.
+
 ## Overview
 
 This plugin runs dynamic demos from Leo files.
@@ -18,11 +20,11 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Open another .leo file and present the demo in the new outline window.
 
 
-## The demo class
+## The Demo class
 
 The Demo class controls key handling during demos and executes demo scripts as the demo moves from node to node.
 
-During a demo, the Demo class traps only the right-arrow key, passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
+During a demo, the Demo class traps only the space-bar key (or right-arrow key?), passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
 
 ```python
     demo.single_key('Alt-X')
@@ -33,7 +35,7 @@ executes the insert-node command!
 
 ## Helper methods
 
-Demo scripts may use the following helper methods:
+*These descriptions may change at any time, without notice*:
 
 **demo.body(s)**, **demo.log(s)** and **demo.tree(s)** Create a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
 
