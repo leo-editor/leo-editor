@@ -9,7 +9,21 @@ This plugin runs dynamic demos from Leo files.
 
 A **script tree**, a tree of **demo scripts**, controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
 
-To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree.
+To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree. For example:
+
+```python
+import leo.plugins.demo as demo
+
+class Demo1(demo.Demo):
+    
+    def setup(self, p):
+        fn = 'c:/demos/demo1.leo'
+        demo.user_d['c'] = g.openWithFileName(fn, old_c=c)
+
+Demo1(c).demo(g.findNodeInTree(c, p, 'demo1-commands'))
+```
+
+**demo.user_d** is a Python dictionary that demo scripts may freely use.
 
 Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any **helper method** in the Demo class. These methods can:
 
@@ -18,13 +32,14 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Open any Leo menu, selecting particular menu items.
 - Scale font sizes.
 - Open another .leo file and present the demo in the new outline window.
+- And many other things, as described below.
 
 
 ## The Demo class
 
 The Demo class controls key handling during demos and executes demo scripts as the demo moves from node to node.
 
-During a demo, the Demo class traps only the space-bar key (or right-arrow key?), passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
+During a demo, the Demo class traps only the space-bar key (*or right-arrow key?*), passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a demo. For example::
 
 ```python
     demo.single_key('Alt-X')
@@ -48,31 +63,18 @@ approximate a typical typing rate.
 
 **demo.dismiss_menubar()** Dismisses the menu opened with demo.open_menu.
 
-**demo.focus(pane)** Immediately forces focus to the indicated pane. Valid
-values are 'body', 'log' or 'tree'.
+**demo.focus(pane)** Immediately forces focus to the indicated pane. Valid values are 'body', 'log' or 'tree'.
 
-**demo.image(pane,fn,center=None,height=None,width=None)** Overlays an image
-in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is
-the path to the image file, resolved to the leo/Icons directory if fn is a
-relative path. If `height` is given, the image is scaled so it is height
-pixels high. If `width` is given, the image is scaled so it width pixels
-wide. If `center` is True, the image is centered horizontally in the given
-pane.
+**demo.image(pane,fn,center=None,height=None,width=None)** Overlays an image in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is the path to the image file, resolved to the leo/Icons directory if fn is a relative path. If `height` is given, the image is scaled so it is height pixels high. If `width` is given, the image is scaled so it width pixels wide. If `center` is True, the image is centered horizontally in the given pane.
 
 **demo.head_keys(s,n1=None,n2=None)** Same as demo.body_keys, except that the
 keys are "typed" into the headline of the presently selected node.
 
-**demo.open_menu(menu_name)** Opens the menu whose name is given, ignoring
-case and any non-alpha characters in menu_name. This method shows all
-parent menus, so demo.open_menu('cursorback') suffices to show the
-"Cmds\:Cursor/Selection\:Cursor Back..." menu.
+**demo.open_menu(menu_name)** Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
 
-**demo.plain_keys(s,n1=None,n2=None,pane='body')** Same as demo.body_keys, except
-that the keys are typed into the designated pane. The valid values for the
-'pane' argument are 'body','log' or 'tree'.
+**demo.plain_keys(s,n1=None,n2=None,pane='body')** Same as demo.body_keys, except that the keys are typed into the designated pane. The valid values for the 'pane' argument are 'body','log' or 'tree'.
 
-**demo.quit** ends the screencast. By definition, the last slide of screencast
-is the screencast node that calls demo.quit.
+**demo.quit** ends the demo and calls the teardown script. The Demo class calls the teardown script whenever the demo ends.
 
 **demo.redraw(p)** Forces an immediate redraw of the outline pane. If p is
 given, that position becomes c.p, the presently selected node.
@@ -84,13 +86,9 @@ given, that position becomes c.p, the presently selected node.
    demo.single_key('Alt-X') # Activates the minibuffer
    demo.single_key('Ctrl-F') # Activates Leo's Find command
 
-The 'setting' arg can be anything that would be a valid key setting. The
-following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F"
-is different from "ctrl-shift-f".
+The 'setting' arg can be anything that would be a valid key setting. The following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F" is different from "ctrl-shift-f".
 
-**demo.start(p)** Starts a screencast at node p, regardless of whether p is an
-\@screencast node. This is useful during development while testing the
-script in node p.
+**demo.start(p)** Starts a demo, where p is the root of demo script tree.
 
 ## demo.setup and demo.teardown
 
@@ -106,9 +104,11 @@ In contrast, c.p is the presently selected (and therefore visible) node. demo sc
 
 ## The script list may replace demo.py
 
-It may be safer to "bind" all scripts into a list before any are executed.  This would do away with the demo.p program counter entirely.  It's likely that the new code will do this.
+It may be safer to "bind" all scripts into a list before any are executed.  This would do away with the demo.p program counter entirely.  The new code will likely do this.
 
 ## Style sheets
+
+**Note**: Helper methods will likely exist to alter this stylesheet more easily.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
