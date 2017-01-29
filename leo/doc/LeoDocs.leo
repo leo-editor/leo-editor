@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1301,6 +1301,20 @@
 </v>
 <v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
 <v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
+<v t="ekr.20170129121025.1"><vh>Old demo docs</vh>
+<v t="ekr.20170129121025.2"><vh>Old docs</vh></v>
+<v t="ekr.20170129121025.3"><vh>Old helper methods, from the overview</vh></v>
+<v t="ekr.20170129120630.5"><vh>demo-start (probably obsolete)</vh></v>
+</v>
+<v t="ekr.20170129120630.1"><vh>@nosent ../doc/demo.md</vh>
+<v t="ekr.20170129120630.2"><vh>Overview</vh></v>
+<v t="ekr.20170129120630.3"><vh>The Demo class</vh></v>
+<v t="ekr.20170129120630.4"><vh>Helper methods</vh></v>
+<v t="ekr.20170129124141.1"><vh>demo.setup and demo.teardown</vh></v>
+<v t="ekr.20170129120630.6"><vh>The program counter, demo.p</vh></v>
+<v t="ekr.20170129120630.7"><vh>Style sheets</vh></v>
+<v t="ekr.20170129120630.8"><vh>Acknowledgements</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19653,7 +19667,217 @@ https://github.com/leo-editor/leo-editor/issues/332
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
 <t tx="ekr.20170124041304.1"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170129120630.1">@language rest
+
+# Leo's demo.py plugin
+
+@others
+
+</t>
+<t tx="ekr.20170129120630.2">## Overview
+
+This plugin runs dynamic demos from Leo files.
+
+A **script tree**, a tree of **demo scripts**, controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
+
+To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree.
+
+Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any **helper method** in the Demo class. These methods can:
+
+- Animate typing in headlines, body text, the minibuffer, or anywhere else.
+- Overlay a scaled image on the screen.
+- Open any Leo menu, selecting particular menu items.
+- Scale font sizes.
+- Open another .leo file and present the demo in the new outline window.
+
+
+</t>
+<t tx="ekr.20170129120630.3">## The demo class
+
+The Demo class controls key handling during demos and executes demo scripts as the demo moves from node to node.
+
+During a demo, the Demo class traps only the right-arrow key, passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
+
+```python
+    demo.single_key('Alt-X')
+    demo.plain_keys('ins\\tno\\t\\n')
+```
+
+executes the insert-node command!
+
+</t>
+<t tx="ekr.20170129120630.4">## Helper methods
+
+Demo scripts may use the following helper methods:
+
+**demo.body(s)**, **demo.log(s)** and **demo.tree(s)** Create a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+
+**demo.body_keys(s,n1=None,n2=None)** Draws the string s in the body pane of
+the presently selected node. n1 and n2 give the range of delays to be
+inserted between typing. If n1 and n2 are both None, values are given that
+approximate a typical typing rate.
+
+**demo.command(command_name)** Executes the named command.
+
+**demo.dismiss_menubar()** Dismisses the menu opened with demo.open_menu.
+
+**demo.focus(pane)** Immediately forces focus to the indicated pane. Valid
+values are 'body', 'log' or 'tree'.
+
+**demo.image(pane,fn,center=None,height=None,width=None)** Overlays an image
+in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is
+the path to the image file, resolved to the leo/Icons directory if fn is a
+relative path. If `height` is given, the image is scaled so it is height
+pixels high. If `width` is given, the image is scaled so it width pixels
+wide. If `center` is True, the image is centered horizontally in the given
+pane.
+
+**demo.head_keys(s,n1=None,n2=None)** Same as demo.body_keys, except that the
+keys are "typed" into the headline of the presently selected node.
+
+**demo.open_menu(menu_name)** Opens the menu whose name is given, ignoring
+case and any non-alpha characters in menu_name. This method shows all
+parent menus, so demo.open_menu('cursorback') suffices to show the
+"Cmds\:Cursor/Selection\:Cursor Back..." menu.
+
+**demo.plain_keys(s,n1=None,n2=None,pane='body')** Same as demo.body_keys, except
+that the keys are typed into the designated pane. The valid values for the
+'pane' argument are 'body','log' or 'tree'.
+
+**demo.quit** ends the screencast. By definition, the last slide of screencast
+is the screencast node that calls demo.quit.
+
+**demo.redraw(p)** Forces an immediate redraw of the outline pane. If p is
+given, that position becomes c.p, the presently selected node.
+
+**demo.selectPosition(p)** Same as demo.redraw(p)
+
+**demo.single_key(setting)** generates a key event. Examples::
+
+   demo.single_key('Alt-X') # Activates the minibuffer
+   demo.single_key('Ctrl-F') # Activates Leo's Find command
+
+The 'setting' arg can be anything that would be a valid key setting. The
+following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F"
+is different from "ctrl-shift-f".
+
+**demo.start(p)** Starts a screencast at node p, regardless of whether p is an
+\@screencast node. This is useful during development while testing the
+script in node p.
+
+</t>
+<t tx="ekr.20170129120630.5">The demo-start command starts a screencast. This command first
+searches backwards for the nearest \@screencast node. If no such node is
+found, the command searches forwards for the next \@screencast node. This
+command then executes the script in the body text, and pauses. Thereafter,
+the Right Arrow key executes the script in the next slide node (in outline
+order). The Left Arrow key executes the script in the previous slide node.
+The Escape or Ctrl-G keys terminate any screencast.
+
+</t>
+<t tx="ekr.20170129120630.6">## The program counter, demo.p
+
+Most presenters will want to keep the nodes of the presentation tree
+hidden. Instead, presentation will make *other* nodes visible by calling
+demo.selectPosition(p) or demo.redraw(p).
+
+Thus, there must be a sharp distinction between the presently *selected*
+node, c.p, and the present screencast node, demo.p. You can think of demo.p as
+the program counter for the screencast.
+
+By default, after executing a screencast script, the Demo class advances demo.p to the next non-empty, non-ignored node in the \@screencast tree. However, if the just-executed screencast script has set demo.p to a new, non-empty value, that value will be the new value of demo.p.
+
+</t>
+<t tx="ekr.20170129120630.7">## Style sheets
+
+Presenters may alter the appearance of captions by using changing the
+following stylesheet::
+
+```css
+    QPlainTextEdit#democaption {
+        background-color: yellow;
+        font-family: DejaVu Sans Mono;
+        font-size: 18pt;
+        font-weight: normal; /* normal,bold,100,..,900 */
+        font-style: normal; /* normal,italic,oblique */
+    }
+```
+
+You will find this stylesheet in the node @data
+``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
+
+</t>
+<t tx="ekr.20170129120630.8">## Acknowledgements
+
+This plugin was inspired by [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org). Or perhaps demo-it was inspired by Leo's earlier screencast plugin.</t>
+<t tx="ekr.20170129121025.1"></t>
+<t tx="ekr.20170129121025.2">@language rest
+
+To create the presentation, the presenter creates an **@screencast** node.
+This node, and all its descendants, is called the **controlling tree**.
+Each node of this tree may contain a script in its body text; each script
+creates a slide. Nodes without scripts can be used as organizer nodes as
+usual. **@ignore-node** nodes and **@ignore-tree** trees are ignored.
+Normally, the controlling tree will be hidden from view during the
+presentation--the presentation will be about *other* parts of the tree.
+
+The screencast-start command starts a screencast. This command shows the
+first slide of the nearest \@screencast node. Thereafter, the plugin
+executes the next script in controlling tree when the demonstrator types
+the RtArrow key. These scripts are normal Leo scripts, except that they
+also have access to an "m" variable that denotes a **ScreenCastController**
+(SCC), an object created by this plugin. The term **screencast script**
+denotes a script that has access to the "m" variable.
+
+=====
+
+To summarize: the presenter moves from slide to slide using the RtArrow
+key. The RtArrow key causes the Demo class executes the next script in the
+controlling tree. The script alters the screen, say by selecting inserting,
+deleting, expanding and contracting nodes, or by inserting, deleting or
+changing headline or body text. The script will typically also show images
+or captions to highlight what the slide is supposed to be showing. In
+short:
+
+- A screencast is a sequence of slides.  A slide is the appearance
+  of Leo after a screencast script is executed.
+
+- The human presenter moves to the next slide using the RtArrow key.
+  The LtArrow key moves back to the previous slide.
+
+- Scripts in an \@screencast tree create slides. The 'm' variable allows
+  such scripts to animate keystrokes or overlay images or captions on the
+  screen.
+
+Before reading further, please look at the example \@screencast trees in
+test.leo. Then run those screencasts to see the what the scripts do.
+</t>
+<t tx="ekr.20170129121025.3">@language rest
+@wrap
+
+- **m.image(file_name)** overlays a scaled image on Leo's window. For
+  example, a screencast could discuss Leo's icon box by shown greatly
+  magnified images of various kinds of icon box.
+
+- **m.body(text)** overlays a caption on Leo's body pane. By default,
+  captions have a bright yellow background so that they clearly stand out
+  from the normal appearance of Leo's screen. Similarly **m.log(text)** and
+  **m.tree(text)** overlay captions on Leo's log and tree panes.
+
+- **m.body_keys(text)** and **m.head_keys(text)** animate typing of text in
+  body text and headlines respectively.
+
+- **m.single_key(key_setting)** allows any key to be handled exactly as if
+  the user had typed the key.
+
+- **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
+  with a mouse click. **m.dismiss_menubar()** closes all open menus.</t>
+<t tx="ekr.20170129124141.1">## demo.setup and demo.teardown
+
+The Demo class defines two do-nothing methods: demo.setup and demo.teardown. These may be overridden in subclasses. Just as with unit tests, the Demo class executes the setup method before executing the first demo script and executes the teardown method whenever quitting the demo.
+
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

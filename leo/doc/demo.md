@@ -5,7 +5,7 @@
 
 This plugin runs dynamic demos from Leo files.
 
-A **script tree**, a tree of **demo scripts** controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typiclly alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
+A **script tree**, a tree of **demo scripts**, controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
 
 To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree.
 
@@ -47,7 +47,7 @@ approximate a typical typing rate.
 **demo.dismiss_menubar()** Dismisses the menu opened with demo.open_menu.
 
 **demo.focus(pane)** Immediately forces focus to the indicated pane. Valid
-values are 'bodly', 'log' or 'tree'.
+values are 'body', 'log' or 'tree'.
 
 **demo.image(pane,fn,center=None,height=None,width=None)** Overlays an image
 in a pane. The valid values for `pane` are 'body', 'log' or 'tree'. `fn` is
@@ -90,6 +90,10 @@ is different from "ctrl-shift-f".
 \@screencast node. This is useful during development while testing the
 script in node p.
 
+## demo.setup and demo.teardown
+
+The Demo class defines two do-nothing methods: demo.setup and demo.teardown. These may be overridden in subclasses. Just as with unit tests, the Demo class executes the setup method before executing the first demo script and executes the teardown method whenever quitting the demo.
+
 ## The program counter, demo.p
 
 Most presenters will want to keep the nodes of the presentation tree
@@ -108,7 +112,7 @@ Presenters may alter the appearance of captions by using changing the
 following stylesheet::
 
 ```css
-    QPlainTextEdit#screencastcaption {
+    QPlainTextEdit#democaption {
         background-color: yellow;
         font-family: DejaVu Sans Mono;
         font-size: 18pt;
