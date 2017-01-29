@@ -49,27 +49,6 @@ import time
 #@+node:ekr.20140907201613.18660: ** API classes
 # These classes are for documentation and unit testing.
 # They are the base class for no class.
-#@+node:ekr.20140904043623.18535: *3* class ColorizerAPI
-class ColorizerAPI(object):
-    '''The required API of c.frame.body.colorizer.'''
-
-    def __init__(self, c, widget): pass
-
-    def colorize(self, p, incremental=False, interruptable=True): return 'ok'
-    # def disable (self,p): pass
-    # def enable (self,p): pass
-
-    def kill(self): pass
-
-    def scanColorDirectives(self, p): return 'python'
-
-    def setHighlighter(self, p): return True
-
-    def updateSyntaxColorer(self, p): return True
-
-    def useSyntaxColoring(self, p): return True
-
-    # def write_colorizer_cache(self, p): pass
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
 class StatusLineAPI(object):
     '''The required API for c.frame.statusLine.'''
@@ -263,9 +242,10 @@ class LeoBody(object):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
+    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing??)
     def forceFullRecolor(self):
-        self.forceFullRecolorFlag = True
+        # self.forceFullRecolorFlag = True
+        pass
 
     def getColorizer(self):
         return self.colorizer
@@ -274,20 +254,21 @@ class LeoBody(object):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p, incremental=False):
-        
-        trace = False and not g.unitTesting
-        from leo.core.leoQt import QtWidgets
-        assert self.widget and self.widget.document()
-        assert isinstance(self.widget, QtWidgets.QTextEdit)
-        if incremental:
-            if trace: g.trace('***** incremental', incremental, p and p.h)
-        else:
-            if trace: g.trace('(body)',
-                id(self.widget.document()),
-                id(self.widget),
-                p and p.h)
         self.c.requestRecolorFlag = True
-        self.c.incrementalRecolorFlag = incremental
+
+        # trace = False and not g.unitTesting
+        # from leo.core.leoQt import QtWidgets
+        # assert self.widget and self.widget.document()
+        # assert isinstance(self.widget, QtWidgets.QTextEdit)
+        # if incremental:
+            # if trace: g.trace('***** incremental', incremental, p and p.h)
+        # else:
+            # if trace: g.trace('(body)',
+                # id(self.widget.document()),
+                # id(self.widget),
+                # p and p.h)
+        # self.c.requestRecolorFlag = True
+        # self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
     #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
@@ -544,17 +525,19 @@ class LeoBody(object):
                 w2.leo_active = False
                 self.unselectLabel(w2)
                 return
-    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget
+    #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, w):
+        # Support QScintillaColorizer.colorize.
         c = self.c
-        old_wrapper = c.frame.body.wrapper
-        # Save.
-        c.frame.body.wrapper = w
-        try:
-            c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        finally:
-            # Restore.
-            c.frame.body.wrapper = old_wrapper
+        colorizer = c.frame.body.colorizer
+        if p and colorizer and hasattr(colorizer, 'colorize'):
+            g.trace(p.h)
+            old_wrapper = c.frame.body.wrapper
+            c.frame.body.wrapper = w
+            try:
+                c.frame.body.colorizer.colorize(p)
+            finally:
+                c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''
@@ -1675,21 +1658,12 @@ class LeoTree(object):
             if trace: g.trace(p.h)
             # Actually unselect the old node.
             self.endEditLabel() # sets editPosition = None
-            self.stop_colorizer(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
             delta_t = time.time() - t1
             if delta_t > 0.1:
                 print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
-    #@+node:ekr.20140829172618.18476: *6* LeoTree.stop_colorizer (to be removed)
-    def stop_colorizer(self, old_p):
-        '''Stop colorizing the present node.'''
-        c = self.c
-        colorizer = c.frame.body.colorizer
-        if colorizer:
-            if hasattr(colorizer, 'kill'):
-                colorizer.kill()
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
     def select_new_node(self, old_p, p, traceTime):
         '''Select the new node, part 1.'''
@@ -1921,46 +1895,10 @@ class NullBody(LeoBody):
 
     def setFocus(self): pass
     #@-others
-#@+node:ekr.20031218072017.2218: ** class NullColorizer (ColorizerMixin)
-class NullColorizer(leoColorizer.ColorizerMixin):
-    '''
-    A colorizer class that doesn't color,
-    but does support methods
-    '''
-    #@+others
-    #@+node:ekr.20031218072017.2219: *3* NullColorizer.__init__
-    def __init__(self, c):
-        '''NullColorizer'''
-        leoColorizer.ColorizerMixin.__init__(self, c)
-        self.c = c
-        self.count = 0
-        self.enabled = False
-        self.full_recolor_count = 0
-        self.highlighter = None
-    #@+node:ekr.20031218072017.2220: *3* NullColorizer.Entry points
-    def colorize(self, p, incremental=False, interruptable=True):
-        self.count += 1 # Used by unit tests.
-        return 'ok' # Used by unit tests.
-
-    def disable(self): pass
-
-    def enable(self): pass
-
-    def init(self, p, s): pass
-
-    def kill(self): pass
-
-    def setHighlighter(self, p): return False
-
-    def showInvisibles(self): pass
-
-    # def write_colorizer_cache(self, p): pass
-
-    # External unit tests require the standard (ColorizerMixin) methods for these:
-        # def scanColorDirectives(self,p): pass
-        # def updateSyntaxColorer (self,p): pass
-        # def useSyntaxColoring(self,p): return False
-    #@-others
+#@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
+class NullColorizer(leoColorizer.BaseColorizer):
+    '''A colorizer class that doesn't color.'''
+    pass
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''

@@ -2168,7 +2168,7 @@ class Commands(object):
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
@@ -5648,10 +5648,20 @@ class Commands(object):
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
     def requestRecolor(self):
         c = self
-        # g.trace(g.callers(4))
         c.requestRecolorFlag = True
 
     recolor = requestRecolor
+
+    @cmd('recolor')
+    def recolorCommand(self, event=None):
+        '''Force a full recolor.'''
+        c = self
+        wrapper = c.frame.body.wrapper
+        # Setting all text appears to be the only way.
+        i, j = wrapper.getSelectionRange()
+        ins = wrapper.getInsertPoint()
+        wrapper.setAllText(c.p.b)
+        wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
@@ -5723,15 +5733,13 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now
+    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
     def recolor_now(self, p=None, incremental=False, interruptable=True):
+        # Support QScintillaColorizer.colorize.
         c = self
-        if not p:
-            p = c.p
-        # g.trace('incremental',incremental,p and p.h,g.callers())
-        if c.frame.body.colorizer:
-            c.frame.body.colorizer.colorize(p,
-                incremental=incremental, interruptable=interruptable)
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'colorize'):
+            colorizer.colorize(p or c.p)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self

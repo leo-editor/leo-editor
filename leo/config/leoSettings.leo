@@ -2019,14 +2019,12 @@
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
-<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
+<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
-<v t="ekr.20081018053140.11"><vh>For developers only</vh>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
-<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles (may not work)</vh></v>
-</v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -5421,7 +5419,6 @@ True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
 If there are more than this number, a new row is created.</t>
-<t tx="ekr.20081018053140.11">Don't change these unless you know what you are doing.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.
 </t>
@@ -11854,7 +11851,7 @@ Put notes about each version here.
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
-<t tx="leohag.20081204085551.13"></t>
+<t tx="leohag.20081204085551.13"># Don't change this unless you know what you are doing.</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
