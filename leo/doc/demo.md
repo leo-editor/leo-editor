@@ -20,7 +20,7 @@ class Demo1(demo.Demo):
         fn = 'c:/demos/demo1.leo'
         demo.user_d['c'] = g.openWithFileName(fn, old_c=c)
 
-Demo1(c).demo(g.findNodeInTree(c, p, 'demo1-commands'))
+Demo1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
 Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any **helper method** in the Demo class. These methods can:
