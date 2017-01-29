@@ -1463,7 +1463,7 @@ class GetArg(object):
     def do_end(ga, event, char, stroke):
         '''A return or escape has been seen.'''
         trace = True and not g.unitTesting
-        g.pdb()
+        ### g.pdb()
         k = ga.k
         if trace:
             g.trace('char', repr(char), stroke, k.getArgEscapes)

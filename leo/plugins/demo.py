@@ -256,8 +256,8 @@ def screencast_start(event=None):
             m.start(p)
         else:
             g.trace('no m')
-#@+node:ekr.20170128213103.8: ** class ScreenCastController
-class ScreenCastController(object):
+#@+node:ekr.20170128213103.8: ** class Demo
+class Demo(object):
     #@+others
     #@+node:ekr.20170128213103.9: *3* sc.__init__ (ScreenCastController)
     def __init__(self, c):
