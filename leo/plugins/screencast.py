@@ -230,6 +230,14 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@@tabwidth -4
 #@+others
 #@+node:ekr.20120913110135.10608: ** top-level
+#@+node:ekr.20170128183737.1: *3* controller
+def controller(c):
+    '''Return the controller for c, creating it if necessary.'''
+    try:
+        x = c.screenCastController
+    except AttributeError:
+        x = c.screenCastController = ScreenCastController(c)
+    return x
 #@+node:ekr.20120913110135.10603: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -246,21 +254,26 @@ def onCreate(tag, keys):
         c.screencast_controller = ScreenCastController(c)
 #@+node:ekr.20120922041923.10609: *3* @g.command('screencast-start')
 @g.command('screencast-start')
-def screencast_start(event):
+def screencast_start(event=None, command_list=None):
     '''Start a screencast (screencast.py)'''
     c = event.get('c')
-    # g.trace(c, c and c.p.h)
     if c:
         m = c.screenCastController
-        if m:
+        if m and command_list:
+            m.start_commands(command_list)
+        elif m:
             p = m.find_screencast(c.p)
             m.start(p)
+        else:
+            g.trace('no commands and no p.')
 #@+node:ekr.20120913110135.10607: ** class ScreenCastController
 class ScreenCastController(object):
     #@+others
-    #@+node:ekr.20120913110135.10606: *3* __init__ (ScreenCastController)
+    #@+node:ekr.20120913110135.10606: *3* sc.__init__ (ScreenCastController)
     def __init__(self, c):
         self.c = c
+        self.commands = []
+        self.command_index = 0
         self.log_color = 'black'
         self.log_focus = True # True: writing to log sets focus to log.
         self.ignore_keys = False # True: ignore keys in state_handler.
@@ -279,8 +292,8 @@ class ScreenCastController(object):
         self.widgets = [] # List of (popup) widgets created by this class.
         # inject c.screenCastController
         c.screenCastController = self
-    #@+node:ekr.20120916193057.10605: *3* Entry points
-    #@+node:ekr.20120913110135.10580: *4* body_keys
+    #@+node:ekr.20120916193057.10605: *3* sc.Entry points
+    #@+node:ekr.20120913110135.10580: *4* sc.body_keys
     def body_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
@@ -299,7 +312,7 @@ class ScreenCastController(object):
             w.repaint()
             m.wait(n1, n2)
         c.redraw()
-    #@+node:ekr.20120914133947.10578: *4* caption and abbreviations: body, log, tree
+    #@+node:ekr.20120914133947.10578: *4* sc.caption and abbreviations: body, log, tree
     def caption(self, s, pane): # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         m = self
@@ -330,12 +343,12 @@ class ScreenCastController(object):
 
     def tree(self, s):
         return self.caption(s, 'tree')
-    #@+node:ekr.20120913110135.10612: *4* clear_log
+    #@+node:ekr.20120913110135.10612: *4* sc.clear_log
     def clear_log(self):
         '''Clear the log.'''
         m = self
         m.c.frame.log.clearTab('Log')
-    #@+node:ekr.20120913110135.10581: *4* command
+    #@+node:ekr.20120913110135.10581: *4* sc.command
     def command(self, command_name):
         '''Execute the command whose name is given and update the screen immediately.'''
         m = self; c = m.c
@@ -344,7 +357,7 @@ class ScreenCastController(object):
             # The undo handling in m.next should suffice.
         c.redraw_now()
         m.repaint('all')
-    #@+node:ekr.20120922041923.10612: *4* dismiss_menu_bar
+    #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
     def dismiss_menu_bar(self):
         m = self; c = m.c
         # c.frame.menu.deactivateMenuBar()
@@ -352,13 +365,13 @@ class ScreenCastController(object):
         menubar = c.frame.top.leo_menubar
         menubar.setActiveAction(None)
         menubar.repaint()
-    #@+node:ekr.20120915091327.13816: *4* find_screencast & helpers
+    #@+node:ekr.20120915091327.13816: *4* sc.find_screencast & helpers
     def find_screencast(self, p):
         '''Find the nearest screencast, prefering previous screencasts
         because that makes it easier to create screencasts.'''
         m = self
         return m.find_prev_screencast(p) or m.find_next_screencast(p)
-    #@+node:ekr.20120916193057.10608: *5* find_next_screencast
+    #@+node:ekr.20120916193057.10608: *5* sc.find_next_screencast
     def find_next_screencast(self, p):
         # m = self
         p = p.copy()
@@ -368,7 +381,7 @@ class ScreenCastController(object):
             else:
                 p.moveToThreadNext()
         return None
-    #@+node:ekr.20120916193057.10609: *5* find_prev_screencast
+    #@+node:ekr.20120916193057.10609: *5* sc.find_prev_screencast
     def find_prev_screencast(self, p):
         # m = self
         p = p.copy()
@@ -378,7 +391,7 @@ class ScreenCastController(object):
             else:
                 p.moveToThreadBack()
         return None
-    #@+node:ekr.20120913110135.10582: *4* focus
+    #@+node:ekr.20120913110135.10582: *4* sc.focus
     def focus(self, pane):
         '''Immediately set the focus to the given pane.'''
         m = self; c = m.c
@@ -394,7 +407,7 @@ class ScreenCastController(object):
             m.repaint(pane)
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20120913110135.10583: *4* head_keys
+    #@+node:ekr.20120913110135.10583: *4* sc.head_keys
     def head_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.
@@ -425,7 +438,7 @@ class ScreenCastController(object):
             m.ignore_keys = False
         p.h = s
         c.redraw()
-    #@+node:ekr.20120913110135.10615: *4* image
+    #@+node:ekr.20120913110135.10615: *4* sc.image
     def image(self, pane, fn, center=None, height=None, width=None):
         '''Put an image in the indicated pane.'''
         m = self
@@ -453,7 +466,7 @@ class ScreenCastController(object):
         else:
             g.trace('bad pane: %s' % (pane))
             return None
-    #@+node:ekr.20120921064434.10605: *4* open_menu
+    #@+node:ekr.20120921064434.10605: *4* sc.open_menu
     def open_menu(self, menu_name):
         '''Activate the indicated *top-level* menu.'''
         m = self; c = m.c
@@ -476,13 +489,13 @@ class ScreenCastController(object):
                     else:
                         parent = parent.parent()
         return menu
-    #@+node:ekr.20120916062255.10590: *4* plain_keys
+    #@+node:ekr.20120916062255.10590: *4* sc.plain_keys
     def plain_keys(self, s, n1=None, n2=None, pane='body'):
         '''Simulate typing a string of plain keys.'''
         m = self
         for ch in s:
             m.single_key(ch, n1=n1, n2=n2, pane=pane)
-    #@+node:ekr.20120914074855.10722: *4* quit
+    #@+node:ekr.20120914074855.10722: *4* sc.quit
     def quit(self):
         '''Terminate the slide show.'''
         m = self; c = m.c; k = c.k
@@ -496,11 +509,11 @@ class ScreenCastController(object):
         m.clear_state()
         m.quit_flag = True
         c.bodyWantsFocus()
-    #@+node:ekr.20120918103526.10594: *4* redraw
+    #@+node:ekr.20120918103526.10594: *4* sc.redraw
     def redraw(self, p=None):
         m = self
         m.c.redraw_now(p)
-    #@+node:ekr.20120913110135.10585: *4* repaint
+    #@+node:ekr.20120913110135.10585: *4* sc.repaint
     def repaint(self, pane):
         '''Repaint the given pane.'''
         m = self
@@ -509,12 +522,12 @@ class ScreenCastController(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20120923063251.10652: *4* select_position
+    #@+node:ekr.20120923063251.10652: *4* sc.select_position
     def select_position(self, p):
         m = self
         assert p
         m.redraw(p)
-    #@+node:ekr.20120916062255.10593: *4* single_key
+    #@+node:ekr.20120916062255.10593: *4* sc.single_key
     def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
         '''Simulate typing a single key, properly saving and restoring m.k_state.'''
         m = self; k = m.c.k
@@ -539,8 +552,8 @@ class ScreenCastController(object):
                 m.set_state(k.state)
             # Important: do *not* re-enable m.state_handler here.
             # This should be done *only* in m.next.
-    #@+node:ekr.20120916193057.10607: *3* State handling
-    #@+node:ekr.20120914074855.10721: *4* next & helper
+    #@+node:ekr.20120916193057.10607: *3* sc.State handling
+    #@+node:ekr.20120914074855.10721: *4* sc.next & helper
     def next(self):
         '''Find the next screencast node and execute its script.
         Call m.quit if no more nodes remain.'''
@@ -582,7 +595,7 @@ class ScreenCastController(object):
         else:
             # No non-empty node found.
             m.quit()
-    #@+node:ekr.20120918103526.10596: *5* exec_node
+    #@+node:ekr.20120918103526.10596: *5* sc.exec_node
     def exec_node(self, p):
         '''Execute the script in node p.'''
         trace = False and not g.unitTesting
@@ -600,7 +613,7 @@ class ScreenCastController(object):
         except Exception:
             g.es_exception()
             m.quit()
-    #@+node:ekr.20120917132841.10609: *4* prev
+    #@+node:ekr.20120917132841.10609: *4* sc.prev
     def prev(self):
         '''Show the previous slide.  This will recreate the slide's widgets,
         but the user may have to adjust the minibuffer or other widgets by hand.'''
@@ -621,7 +634,7 @@ class ScreenCastController(object):
             else:
                 if trace: g.trace('no undo: restart: %s' % (m.p and m.p.h))
                 m.start(m.p1)
-    #@+node:ekr.20120914074855.10720: *4* start
+    #@+node:ekr.20120914074855.10720: *4* sc.start
     def start(self, p):
         '''Start a screencast whose root node is p.
 
@@ -641,10 +654,31 @@ class ScreenCastController(object):
         m.delete_widgets()
             # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
-    #@+node:ekr.20120914074855.10715: *4* state_handler
+    #@+node:ekr.20170128184559.1: *4* sc.start_commands (new)
+    def start_commands(self, commands):
+        '''Start a screencast given by a list of commands.
+
+        Important: p is not necessarily c.p!
+        '''
+        k, m = self.c.k, self
+        self.commands = commands
+        self.command_index = 0
+        # Reset Leo's state.
+        k.keyboardQuit()
+        # Set ivars
+        # m.p1 = p.copy()
+        # m.p = p.copy()
+        m.quit_flag = False
+        m.clear_state()
+        # p.contract()
+        # c.redraw_now(p)
+        m.delete_widgets()
+            # Clear widgets left over from previous, unfinished, slideshows.
+        m.state_handler()
+    #@+node:ekr.20120914074855.10715: *4* sc.state_handler
     def state_handler(self, event=None):
         '''Handle keys while in the "screencast" input state.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         m = self; c = m.c; k = c.k
         state = k.getState(m.state_name)
         char = event and event.char or ''
@@ -687,7 +721,7 @@ class ScreenCastController(object):
             m.set_state(m_state_copy)
         elif trace:
             g.trace('ignore %s' % (repr(char)))
-    #@+node:ekr.20120914195404.11208: *4* undo
+    #@+node:ekr.20120914195404.11208: *4* sc.undo
     def undo(self):
         '''Undo the previous screencast scene.'''
         m = self
@@ -700,7 +734,7 @@ class ScreenCastController(object):
             return m.p
         else:
             return None
-    #@+node:ekr.20120916062255.10596: *4* set_state & clear_state
+    #@+node:ekr.20120916062255.10596: *4* sc.set_state & clear_state
     def set_state(self, state):
         m = self
         # g.trace('**** setting m.k_state: %s' % (state.kind))
@@ -714,8 +748,8 @@ class ScreenCastController(object):
         m.k_state.kind = None
         m.k_state.n = None
         m.k_state.handler = None
-    #@+node:ekr.20120916193057.10606: *3* Utilities
-    #@+node:ekr.20120916062255.10589: *4* get_key_event
+    #@+node:ekr.20120916193057.10606: *3* sc.Utilities
+    #@+node:ekr.20120916062255.10589: *4* sc.get_key_event
     def get_key_event(self, ch, w):
         m = self; c = m.c; k = c.k
         m.key_w = w
@@ -730,13 +764,13 @@ class ScreenCastController(object):
             w=w,
             x=0, y=0,
             x_root=0, y_root=0)
-    #@+node:ekr.20120914163440.10581: *4* delete_widgets
+    #@+node:ekr.20120914163440.10581: *4* sc.delete_widgets
     def delete_widgets(self):
         m = self
         for w in m.widgets:
             w.deleteLater()
         m.widgets = []
-    #@+node:ekr.20120914133947.10579: *4* pane_widget
+    #@+node:ekr.20120914133947.10579: *4* sc.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget.'''
         m = self; c = m.c
@@ -748,7 +782,7 @@ class ScreenCastController(object):
             'tree': c.frame.tree.treeWidget,
         }
         return d.get(pane)
-    #@+node:ekr.20120914163440.10582: *4* resolve_icon_fn
+    #@+node:ekr.20120914163440.10582: *4* sc.resolve_icon_fn
     def resolve_icon_fn(self, fn):
         '''Resolve fn relative to the Icons directory.'''
         # m = self
@@ -759,7 +793,7 @@ class ScreenCastController(object):
         else:
             g.trace('does not exist: %s' % (path))
             return None
-    #@+node:ekr.20120913110135.10587: *4* wait
+    #@+node:ekr.20120913110135.10587: *4* sc.wait
     def wait(self, n1=1, n2=0):
         '''Wait for an interval between n1 and n2.'''
         m = self
