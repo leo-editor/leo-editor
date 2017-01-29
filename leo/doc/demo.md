@@ -1,15 +1,15 @@
 
-# The demo.py plugin
+# Leo's demo.py plugin
 
 ## Overview
 
 This plugin runs dynamic demos from Leo files.
 
-The **script tree** controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts alter the outline, freeing the presenter from the burden of having to type correctly or remember the sequence of desired actions. 
+A **script tree**, a tree of **demo scripts** controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typiclly alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
 
-To run a demo, you create a **top-level script** that creates an instance of the Demo class, or a subclass of the Demo class. The top-level script calls Demo.start(p), where p is the root of the script tree.
+To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree.
 
-Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any of the many **helper methods** in the Demo class. Here is a sample of what helper methods can do:
+Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any **helper method** in the Demo class. These methods can:
 
 - Animate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
@@ -17,13 +17,12 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Scale font sizes.
 - Open another .leo file and present the demo in the new outline window.
 
+
 ## The demo class
 
-The Demo class controls key handling during screencasts and
-executes demo scripts as the demo moves from node to node.
+The Demo class controls key handling during demos and executes demo scripts as the demo moves from node to node.
 
-During a demo, the Demo class traps the RtArrow and LtArrow keys, passing all other keys to Leo's key-handling code. This allows key
-handling in key-states during the execution of a screencast. For example::
+During a demo, the Demo class traps only the right-arrow key, passing all other keys to Leo's key-handling code. This allows key handling in key-states during the execution of a screencast. For example::
 
 ```python
     demo.single_key('Alt-X')
@@ -36,10 +35,7 @@ executes the insert-node command!
 
 Demo scripts may use the following helper methods:
 
-**demo.body(s)**, **demo.log(s)** and **demo.tree(s)** create a caption with text s
-in the indicated pane. A **caption** is a text area that overlays part of
-Leo's screen. By default, captions have a distinctive yellow background.
-The appearance of captions can be changed using Qt stylesheets. See below.
+**demo.body(s)**, **demo.log(s)** and **demo.tree(s)** Create a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
 
 **demo.body_keys(s,n1=None,n2=None)** Draws the string s in the body pane of
 the presently selected node. n1 and n2 give the range of delays to be
@@ -111,6 +107,7 @@ By default, after executing a screencast script, the Demo class advances demo.p 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
 
+```css
     QPlainTextEdit#screencastcaption {
         background-color: yellow;
         font-family: DejaVu Sans Mono;
@@ -118,6 +115,7 @@ following stylesheet::
         font-weight: normal; /* normal,bold,100,..,900 */
         font-style: normal; /* normal,italic,oblique */
     }
+```
 
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
