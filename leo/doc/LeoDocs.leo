@@ -19697,8 +19697,6 @@ class Demo1(demo.Demo):
 Demo1(c).demo(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-**demo.user_d** is a Python dictionary that demo scripts may freely use.
-
 Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use any **helper method** in the Demo class. These methods can:
 
 - Animate typing in headlines, body text, the minibuffer, or anywhere else.
@@ -19708,6 +19706,7 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Open another .leo file and present the demo in the new outline window.
 - And many other things, as described below.
 
+**demo.user_d** is a Python dictionary that demo scripts may freely use.
 
 </t>
 <t tx="ekr.20170129120630.3">## The Demo class
