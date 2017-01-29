@@ -1416,7 +1416,7 @@ class GetArg(object):
         '''
         #@-<< ga.get_arg docstring >>
         # pylint: disable=unpacking-non-sequence
-        trace = True and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         if tabList is None: tabList = []
         c, k = ga.c, ga.k
         state = k.getState('getArg')
