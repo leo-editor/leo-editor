@@ -1416,7 +1416,7 @@ class GetArg(object):
         '''
         #@-<< ga.get_arg docstring >>
         # pylint: disable=unpacking-non-sequence
-        trace = False and not g.app.unitTesting
+        trace = True and not g.app.unitTesting
         if tabList is None: tabList = []
         c, k = ga.c, ga.k
         state = k.getState('getArg')
@@ -1462,7 +1462,8 @@ class GetArg(object):
     #@+node:ekr.20140817110228.18316: *4* ga.do_end
     def do_end(ga, event, char, stroke):
         '''A return or escape has been seen.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        g.pdb()
         k = ga.k
         if trace:
             g.trace('char', repr(char), stroke, k.getArgEscapes)
@@ -3366,7 +3367,9 @@ class KeyHandlerClass(object):
         k = self; w_name = k.c.widget_name(w)
         # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
-        assert g.isStroke(stroke)
+        if not g.isStroke(stroke):
+            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+            return None
         if trace: g.trace('w_name', repr(w_name), 'stroke', stroke, 'w', w,
             'isTextWrapper(w)', g.isTextWrapper(w))
         for key, name in (
@@ -3508,7 +3511,9 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         modesTuple = ('insert', 'overwrite')
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
-        assert g.isStroke(stroke)
+        if not g.isStroke(stroke):
+            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+            return
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
             repr(event and event.char), repr(stroke)))
         # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
