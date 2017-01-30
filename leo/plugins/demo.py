@@ -59,19 +59,6 @@ class Demo(object):
         self.widgets = [] # References to (popup) widgets created by this class.
         # Create *global* demo commands.
         self.init()
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
-    def delete_widgets(self):
-        '''Delete all presently visible widgets.'''
-        for w in self.widgets:
-            w.deleteLater()
-        self.widgets = []
-    #@+node:ekr.20170129174128.1: *4* demo.init
-    def init(self):
-        '''Link the global commands to this class.'''
-        if hasattr(g.app, 'demo'):
-            g.app.demo.delete_widgets()
-        g.app.demo = self
-    #@+node:ekr.20170128222411.1: *3* demo.Entries & helpers
     #@+node:ekr.20170129180623.1: *4* demo.create_script_list
     def create_script_list(self, p):
         '''Create the state_list from the tree of script nodes rooted in p.'''
@@ -89,12 +76,25 @@ class Demo(object):
                 if script.strip():
                     aList.append(script)
         self.script_list = list(reversed(aList))
-        
+    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
+    def delete_widgets(self):
+        '''Delete all presently visible widgets.'''
+        for w in self.widgets:
+            w.deleteLater()
+        self.widgets = []
+    #@+node:ekr.20170129174128.1: *4* demo.init
+    def init(self):
+        '''Link the global commands to this class.'''
+        if hasattr(g.app, 'demo'):
+            g.app.demo.delete_widgets()
+        g.app.demo = self
+    #@+node:ekr.20170128222411.1: *3* demo.Commands
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''End this slideshow and call teardown().'''
         g.es_print('ending', self.__class__.__name__)
-        self.delete_widgets()
+        # Don't delete widgets here. Use the teardown method instead.
+        # self.delete_widgets()
         self.teardown()
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
@@ -113,7 +113,8 @@ class Demo(object):
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self):
         '''Execute the next demo script, or call end().'''
-        self.delete_widgets()
+        # Don't delete widgets here. Leave that up to the demo scripts!
+        # self.delete_widgets()
         if self.script_list:
             # Execute the next script.
             script = self.script_list.pop()
