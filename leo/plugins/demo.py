@@ -142,7 +142,7 @@ class Demo(object):
         else:
             g.trace('no script tree')
             self.end()
-    #@+node:ekr.20170128213103.10: *3* demo.Helpers
+    #@+node:ekr.20170130090031.1: *3* demo.Keys
     #@+node:ekr.20170128213103.11: *4* demo.body_keys
     def body_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the body pane.
@@ -162,66 +162,6 @@ class Demo(object):
             w.repaint()
             m.wait(n1, n2)
         c.redraw()
-    #@+node:ekr.20170128213103.12: *4* demo.caption and abbreviations: body, log, tree
-    def caption(self, s, pane): # To do: center option.
-        '''Pop up a QPlainTextEdit in the indicated pane.'''
-        m = self
-        parent = m.pane_widget(pane)
-        if parent:
-            s = s.rstrip()
-            if s and s[-1].isalpha(): s = s + '.'
-            w = QtWidgets.QPlainTextEdit(s, parent)
-            w.setObjectName('screencastcaption')
-            m.widgets.append(w)
-            w2 = m.pane_widget(pane)
-            geom = w2.geometry()
-            w.resize(geom.width(), min(150, geom.height() / 2))
-            off = QtCore.Qt.ScrollBarAlwaysOff
-            w.setHorizontalScrollBarPolicy(off)
-            w.setVerticalScrollBarPolicy(off)
-            w.show()
-            return w
-        else:
-            g.trace('bad pane: %s' % (pane))
-            return None
-
-    def body(self, s):
-        return self.caption(s, 'body')
-
-    def log(self, s):
-        return self.caption(s, 'log')
-
-    def tree(self, s):
-        return self.caption(s, 'tree')
-    #@+node:ekr.20170128213103.13: *4* demo.clear_log
-    def clear_log(self):
-        '''Clear the log.'''
-        m = self
-        m.c.frame.log.clearTab('Log')
-    #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
-    def dismiss_menu_bar(self):
-        m = self; c = m.c
-        # c.frame.menu.deactivateMenuBar()
-        g.trace()
-        menubar = c.frame.top.leo_menubar
-        menubar.setActiveAction(None)
-        menubar.repaint()
-    #@+node:ekr.20170128213103.19: *4* demo.focus
-    def focus(self, pane):
-        '''Immediately set the focus to the given pane.'''
-        m = self; c = m.c
-        d = {
-            'body': c.bodyWantsFocus,
-            'log': c.logWantsFocus,
-            'tree': c.treeWantsFocus,
-        }
-        f = d.get(pane)
-        if f:
-            f()
-            c.outerUpdate()
-            m.repaint(pane)
-        else:
-            g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20170128213103.20: *4* demo.head_keys
     def head_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the headline.
@@ -253,103 +193,12 @@ class Demo(object):
             m.ignore_keys = False
         p.h = s
         c.redraw()
-    #@+node:ekr.20170128213103.21: *4* demo.image
-    def image(self, pane, fn, center=None, height=None, width=None):
-        '''Put an image in the indicated pane.'''
-        m = self
-        parent = m.pane_widget(pane)
-        if parent:
-            w = QtWidgets.QLabel('label', parent)
-            fn = m.resolve_icon_fn(fn)
-            if not fn: return None
-            pixmap = QtGui.QPixmap(fn)
-            if not pixmap:
-                return g.trace('Not a pixmap: %s' % (fn))
-            if height:
-                pixmap = pixmap.scaledToHeight(height)
-            if width:
-                pixmap = pixmap.scaledToWidth(width)
-            w.setPixmap(pixmap)
-            if center:
-                g_w = w.geometry()
-                g_p = parent.geometry()
-                dx = (g_p.width() - g_w.width()) / 2
-                w.move(g_w.x() + dx, g_w.y() + 10)
-            w.show()
-            m.widgets.append(w)
-            return w
-        else:
-            g.trace('bad pane: %s' % (pane))
-            return None
-    #@+node:ekr.20170128213103.22: *4* demo.open_menu
-    def open_menu(self, menu_name):
-        '''Activate the indicated *top-level* menu.'''
-        m = self; c = m.c
-        menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
-        if menu:
-            c.frame.menu.activateMenu(menu_name)
-            # g.trace(menu.signalsBlocked())
-            if 0: # None of this works.
-                g.trace('repaint', c.frame.top)
-                c.frame.top.repaint()
-                g.trace('repaint', menu)
-                menu.repaint()
-                parent = menu.parent()
-                while parent:
-                    g.trace('repaint', parent)
-                    parent.repaint()
-                    if isinstance(parent, QtWidgets.QMenuBar):
-                        break
-                    else:
-                        parent = parent.parent()
-        return menu
-    #@+node:ekr.20170128213103.41: *4* demo.pane_widget
-    def pane_widget(self, pane):
-        '''Return the pane's widget.'''
-        c = self.c
-        d = {
-            'all': c.frame.top,
-            'body': c.frame.body.wrapper.widget,
-            'log': c.frame.log.logCtrl.widget,
-            'minibuffer': c.frame.miniBufferWidget.widget,
-            'tree': c.frame.tree.treeWidget,
-        }
-        return d.get(pane)
     #@+node:ekr.20170128213103.23: *4* demo.plain_keys
     def plain_keys(self, s, n1=None, n2=None, pane='body'):
         '''Simulate typing a string of plain keys.'''
         m = self
         for ch in s:
             m.single_key(ch, n1=n1, n2=n2, pane=pane)
-    #@+node:ekr.20170128213103.25: *4* demo.redraw
-    def redraw(self, p=None):
-        m = self
-        m.c.redraw_now(p)
-    #@+node:ekr.20170128213103.26: *4* demo.repaint
-    def repaint(self, pane):
-        '''Repaint the given pane.'''
-        m = self
-        w = m.pane_widget(pane)
-        if w:
-            w.repaint()
-        else:
-            g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20170128213103.42: *4* demo.resolve_icon_fn
-    def resolve_icon_fn(self, fn):
-        '''Resolve fn relative to the Icons directory.'''
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
-        if g.os_path_exists(path):
-            return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
-    #@+node:ekr.20170128213103.27: *4* demo.select_position
-    def select_position(self, p):
-        m = self
-        assert p
-        m.redraw(p)
     #@+node:ekr.20170128213103.28: *4* demo.single_key
     def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
         '''Simulate typing a single key, properly saving and restoring m.k_state.'''
@@ -388,6 +237,151 @@ class Demo(object):
         if n > 0:
             n = n * m.speed
             g.sleep(n)
+    #@+node:ekr.20170130090141.1: *3* demo.Images
+    #@+node:ekr.20170128213103.12: *4* demo.caption and abbreviations: body, log, tree
+    def caption(self, s, pane): # To do: center option.
+        '''Pop up a QPlainTextEdit in the indicated pane.'''
+        m = self
+        parent = m.pane_widget(pane)
+        if parent:
+            s = s.rstrip()
+            if s and s[-1].isalpha(): s = s + '.'
+            w = QtWidgets.QPlainTextEdit(s, parent)
+            w.setObjectName('screencastcaption')
+            m.widgets.append(w)
+            w2 = m.pane_widget(pane)
+            geom = w2.geometry()
+            w.resize(geom.width(), min(150, geom.height() / 2))
+            off = QtCore.Qt.ScrollBarAlwaysOff
+            w.setHorizontalScrollBarPolicy(off)
+            w.setVerticalScrollBarPolicy(off)
+            w.show()
+            return w
+        else:
+            g.trace('bad pane: %s' % (pane))
+            return None
+
+    def body(self, s):
+        return self.caption(s, 'body')
+
+    def log(self, s):
+        return self.caption(s, 'log')
+
+    def tree(self, s):
+        return self.caption(s, 'tree')
+    #@+node:ekr.20170128213103.21: *4* demo.image
+    def image(self, pane, fn, center=None, height=None, width=None):
+        '''Put an image in the indicated pane.'''
+        m = self
+        parent = m.pane_widget(pane)
+        if parent:
+            w = QtWidgets.QLabel('label', parent)
+            fn = m.resolve_icon_fn(fn)
+            if not fn: return None
+            pixmap = QtGui.QPixmap(fn)
+            if not pixmap:
+                return g.trace('Not a pixmap: %s' % (fn))
+            if height:
+                pixmap = pixmap.scaledToHeight(height)
+            if width:
+                pixmap = pixmap.scaledToWidth(width)
+            w.setPixmap(pixmap)
+            if center:
+                g_w = w.geometry()
+                g_p = parent.geometry()
+                dx = (g_p.width() - g_w.width()) / 2
+                w.move(g_w.x() + dx, g_w.y() + 10)
+            w.show()
+            m.widgets.append(w)
+            return w
+        else:
+            g.trace('bad pane: %s' % (pane))
+            return None
+    #@+node:ekr.20170128213103.42: *4* demo.resolve_icon_fn
+    def resolve_icon_fn(self, fn):
+        '''Resolve fn relative to the Icons directory.'''
+        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.os_path_finalize_join(dir_, fn)
+        if g.os_path_exists(path):
+            return path
+        else:
+            g.trace('does not exist: %s' % (path))
+            return None
+    #@+node:ekr.20170130090124.1: *3* demo.Menus
+    #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
+    def dismiss_menu_bar(self):
+        m = self; c = m.c
+        # c.frame.menu.deactivateMenuBar()
+        g.trace()
+        menubar = c.frame.top.leo_menubar
+        menubar.setActiveAction(None)
+        menubar.repaint()
+    #@+node:ekr.20170128213103.22: *4* demo.open_menu
+    def open_menu(self, menu_name):
+        '''Activate the indicated *top-level* menu.'''
+        m = self; c = m.c
+        menu = c.frame.menu.getMenu(menu_name)
+            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
+        if menu:
+            c.frame.menu.activateMenu(menu_name)
+            # g.trace(menu.signalsBlocked())
+            if 0: # None of this works.
+                g.trace('repaint', c.frame.top)
+                c.frame.top.repaint()
+                g.trace('repaint', menu)
+                menu.repaint()
+                parent = menu.parent()
+                while parent:
+                    g.trace('repaint', parent)
+                    parent.repaint()
+                    if isinstance(parent, QtWidgets.QMenuBar):
+                        break
+                    else:
+                        parent = parent.parent()
+        return menu
+    #@+node:ekr.20170130090250.1: *3* demo.Panes & widgets
+    #@+node:ekr.20170128213103.13: *4* demo.clear_log
+    def clear_log(self):
+        '''Clear the log.'''
+        m = self
+        m.c.frame.log.clearTab('Log')
+    #@+node:ekr.20170128213103.19: *4* demo.focus
+    def focus(self, pane):
+        '''Immediately set the focus to the given pane.'''
+        m = self; c = m.c
+        d = {
+            'body': c.bodyWantsFocus,
+            'log': c.logWantsFocus,
+            'tree': c.treeWantsFocus,
+        }
+        f = d.get(pane)
+        if f:
+            f()
+            c.outerUpdate()
+            m.repaint(pane)
+        else:
+            g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170128213103.41: *4* demo.pane_widget
+    def pane_widget(self, pane):
+        '''Return the pane's widget.'''
+        c = self.c
+        d = {
+            'all': c.frame.top,
+            'body': c.frame.body.wrapper.widget,
+            'log': c.frame.log.logCtrl.widget,
+            'minibuffer': c.frame.miniBufferWidget.widget,
+            'tree': c.frame.tree.treeWidget,
+        }
+        return d.get(pane)
+    #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
+    def repaint_pane(self, pane):
+        '''Repaint the given pane.'''
+        m = self
+        w = m.pane_widget(pane)
+        if w:
+            w.repaint()
+        else:
+            g.trace('bad pane: %s' % (pane))
     #@-others
 #@-others
 #@-leo
