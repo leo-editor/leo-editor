@@ -2509,7 +2509,7 @@ class KeyHandlerClass(object):
     def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
-        trace_event = True
+        # trace_event = True
         verbose = False
         try:
             k = self; c = k.c
@@ -2520,7 +2520,7 @@ class KeyHandlerClass(object):
             ch = char = event and event.char or ''
             stroke = event and event.stroke or None
             if trace:
-                g.trace('state', state, char) ### 'recording', recording, 
+                g.trace('state', state, repr(char)) ### 'recording', recording, 
             ###
             # if recording:
                 # c.macroCommands.startRecordingMacro(event)
@@ -2528,8 +2528,8 @@ class KeyHandlerClass(object):
                 k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event # Save the full event for later.
-                if trace and trace_event:
-                    g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
+                # if trace and trace_event:
+                    # g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
                 k.setState('full-command', 1, handler=k.fullCommand)
                 prompt = helpPrompt if help else k.altX_prompt
                 k.setLabelBlue(prompt)
@@ -2546,9 +2546,9 @@ class KeyHandlerClass(object):
                 k.commandHistoryUp()
             elif char in ('\n', 'Return'):
                 if trace and verbose: g.trace('***Return')
-                if trace and trace_event:
-                    g.trace('hasSelection %r' % (
-                        k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
+                # if trace and trace_event:
+                    # g.trace('hasSelection %r' % (
+                        # k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
                 # Fix bug 157: save and restore the selection.
                 w = k.mb_event and k.mb_event.w
                 if w and hasattr(w, 'hasSelection') and w.hasSelection():
@@ -3193,7 +3193,8 @@ class KeyHandlerClass(object):
         '''The master key handler for almost all key bindings.'''
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
-        verbose = True
+        verbose = False
+        trace_unbound = True
         k, c = self, self.c
         c.check_event(event)
         #@+<< define vars >>
@@ -3228,17 +3229,16 @@ class KeyHandlerClass(object):
             'state', state, 'state2', k.unboundKeyAction)
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            if hasattr(c, 'screenCastController') and c.screenCastController:
-                c.screenCastController.quit()
-            if 1:
-                k.masterCommand(commandName='keyboard-quit',
-                        event=event, func=k.keyboardQuit, stroke=stroke)
-            else: ###
-                if c.macroCommands.recordingMacro:
-                    c.macroCommands.endMacro()
-                else:
-                    k.masterCommand(commandName='keyboard-quit',
-                        event=event, func=k.keyboardQuit, stroke=stroke)
+            ### if hasattr(c, 'screenCastController') and c.screenCastController:
+            ###    c.screenCastController.quit()
+            k.masterCommand(commandName='keyboard-quit',
+                    event=event, func=k.keyboardQuit, stroke=stroke)
+            ### Macros no longer exist.
+                # if c.macroCommands.recordingMacro:
+                    # c.macroCommands.endMacro()
+                # else:
+                    # k.masterCommand(commandName='keyboard-quit',
+                        # event=event, func=k.keyboardQuit, stroke=stroke)
             return
         # Always handle modes regardless of vim.
         if k.inState():
@@ -3276,7 +3276,7 @@ class KeyHandlerClass(object):
             k.searchTree(char)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
-            if trace: g.trace(' unbound', stroke)
+            if trace and trace_unbound: g.trace(' unbound', stroke)
             k.handleUnboundKeys(event, char, stroke)
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
@@ -3463,7 +3463,8 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
-        assert g.isStroke(stroke), repr(stroke)
+        ### Not necessary, and makes life hard for the demo plugin.
+            # assert g.isStroke(stroke), repr(stroke)
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
         if state in ('getArg', 'full-command'):

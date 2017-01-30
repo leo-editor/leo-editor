@@ -10,7 +10,7 @@ Written by Edward K. Ream, January, 2017.
 #@+node:ekr.20170128213103.3: ** << demo.py imports >>
 import random
 import leo.core.leoGlobals as g
-# import leo.core.leoGui as leoGui # for LeoKeyEvents.
+import leo.core.leoGui as leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
 #@@language python
@@ -44,12 +44,14 @@ def demo_end(self, event=None):
 class Demo(object):
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
-    def __init__(self, c):
+    def __init__(self, c, description=None):
         '''Ctor for the Demo class.'''
         self.c = c
+        self.description = description or self.__class__.__name__
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay.
         self.n2 = 0.175 # default maximum typing delay.
+        self.key_w = None # The widget for the keystroke.
         self.speed = 1.0 # Amount to multiply wait times.
         # Other ivars.
         self.script_list = []
@@ -85,17 +87,19 @@ class Demo(object):
     #@+node:ekr.20170129174128.1: *4* demo.init
     def init(self):
         '''Link the global commands to this class.'''
-        if hasattr(g.app, 'demo'):
-            g.app.demo.delete_widgets()
+        old_demo = getattr(g.app, 'demo', None)
+        if old_demo:
+            old_demo.delete_widgets()
+            g.trace('deleting old demo:', old_demo.description)
         g.app.demo = self
     #@+node:ekr.20170128222411.1: *3* demo.Commands
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''End this slideshow and call teardown().'''
-        g.es_print('ending', self.__class__.__name__)
         # Don't delete widgets here. Use the teardown method instead.
         # self.delete_widgets()
         self.teardown()
+        g.trace(self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
@@ -139,6 +143,7 @@ class Demo(object):
         '''Start a demo whose root node is p,'''
         if p:
             self.create_script_list(p)
+            self.setup(p)
             self.next()
         else:
             g.trace('no script tree')
@@ -149,10 +154,10 @@ class Demo(object):
         '''Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
         '''
-        m = self; c = m.c
+        c = self.c
         if n1 is None: n1 = 0.02
         if n2 is None: n2 = 0.095
-        m.key_w = m.pane_widget('body')
+        self.key_w = self.pane_widget('body')
         c.bodyWantsFocusNow()
         p = c.p
         w = c.frame.body.wrapper.widget
@@ -161,15 +166,17 @@ class Demo(object):
         for ch in s:
             p.b = p.b + ch
             w.repaint()
-            m.wait(n1, n2)
-        c.redraw()
+            self.wait(n1, n2)
+        ### c.redraw()
     #@+node:ekr.20170128213103.20: *4* demo.head_keys
     def head_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.
         '''
-        m = self; c = m.c; p = c.p; undoType = 'Typing'
-        oldHead = p.h; tree = c.frame.tree
+        c, p = self.c, self.c.p
+        undoType = 'Typing'
+        oldHead = p.h
+        tree = c.frame.tree
         if n1 is None: n1 = 0.02
         if n2 is None: n2 = 0.095
         p.h = ''
@@ -180,55 +187,68 @@ class Demo(object):
         dirtyVnodeList = p.setDirty()
         c.undoer.afterChangeNodeContents(p, undoType, undoData,
             dirtyVnodeList=dirtyVnodeList)
-        # Lock out key handling in m.state_handler.
-        m.ignore_keys = True
-        try:
-            m.key_w = w
-            for ch in s:
-                p.h = p.h + ch
-                tree.repaint() # *not* tree.update.
-                m.wait(n1, n2)
-                event = m.get_key_event(ch, w)
-                c.k.masterKeyHandler(event)
-        finally:
-            m.ignore_keys = False
+        for ch in s:
+            p.h = p.h + ch
+            tree.repaint() # *not* tree.update.
+            self.wait(n1, n2)
+            event = self.get_key_event(ch, w)
+            c.k.masterKeyHandler(event)
+        ###
+        # # Lock out key handling in m.state_handler.
+        # m.ignore_keys = True
+        # try:
+            # m.key_w = w
+            # for ch in s:
+                # p.h = p.h + ch
+                # tree.repaint() # *not* tree.update.
+                # m.wait(n1, n2)
+                # event = m.get_key_event(ch, w)
+                # c.k.masterKeyHandler(event)
+        # finally:
+            # m.ignore_keys = False
         p.h = s
         c.redraw()
-    #@+node:ekr.20170128213103.23: *4* demo.plain_keys
-    def plain_keys(self, s, n1=None, n2=None, pane='body'):
-        '''Simulate typing a string of plain keys.'''
-        m = self
-        for ch in s:
-            m.single_key(ch, n1=n1, n2=n2, pane=pane)
-    #@+node:ekr.20170128213103.28: *4* demo.single_key
-    def single_key(self, ch, n1=None, n2=None, pane=None, w=None):
-        '''Simulate typing a single key, properly saving and restoring m.k_state.'''
-        m = self; k = m.c.k
-        w = w or m.pane_widget(pane or 'body')
-        force = n1 is not None or n2 is not None
-        if force and n1 is None: n1 = 0.02
-        if force and n2 is None: n2 = 0.095
-        try:
-            if m.k_state.kind:
-                # old_state_kind = m.k_state.kind
-                k.setState(m.k_state.kind, m.k_state.n, m.k_state.handler)
+    #@+node:ekr.20170128213103.39: *4* demo.new_key_event
+    def new_key_event(self, shortcut, w):
+        '''Create a LeoKeyEvent for a *raw* shortcut.'''
+        trace = False and not g.unitTesting
+        c, k = self.c, self.c.k
+        # Tricky: Canonicalize the shortcut, without making it a stroke.
+        if 1: # A bad hack. Temporary.
+            if shortcut == '\n':
+                shortcut2 = 'Return'
+            elif shortcut == '\t':
+                shortcut2 = 'Tab'
             else:
-                # old_state_kind = None
-                k.clearState()
-            w.repaint() # *not* tree.update.
-            m.wait(n1, n2)
-            event = m.get_key_event(ch, w)
-            k.masterKeyHandler(event)
-        finally:
-            # Save k.state in m.k_state.
-            if k.state.kind != m.state_name:
-                m.set_state(k.state)
-            # Important: do *not* re-enable m.state_handler here.
-            # This should be done *only* in m.next.
+                stroke = k.strokeFromSetting(shortcut)
+                shortcut2 = stroke.s if stroke else ''
+        else:
+            stroke = k.strokeFromSetting(shortcut)
+            shortcut2 = stroke.s if stroke else ''
+        if trace: g.trace('%r -> %r' % (shortcut, shortcut2))
+        return leoGui.LeoKeyEvent(c,
+            char='' if len(shortcut) > 1 else shortcut,
+            event=None, shortcut=shortcut2, w=w)
+    #@+node:ekr.20170128213103.28: *4* demo.key
+    def key(self, ch):
+        '''Simulate typing a single key'''
+        c, k = self.c, self.c.k
+        w = g.app.gui.get_focus(c=c, raw=True)
+        self.wait(self.n1, self.n2)
+        event = self.new_key_event(ch, w)
+        k.masterKeyHandler(event)
+        w.repaint() # Make the character visible immediately.
+    #@+node:ekr.20170128213103.23: *4* demo.keys
+    def keys(self, s):
+        '''
+        Simulate typing a string of *plain* keys.
+        Use demo.key(ch) to type any other characters.
+        '''
+        for ch in s:
+            self.key(ch)
     #@+node:ekr.20170128213103.43: *4* demo.wait
     def wait(self, n1=1, n2=0):
-        '''Wait for an interval between n1 and n2.'''
-        m = self
+        '''Wait for an interval between n1 and n2, in seconds.'''
         if n1 is None: n1 = 0
         if n2 is None: n2 = 0
         if n1 > 0 and n2 > 0:
@@ -236,21 +256,20 @@ class Demo(object):
         else:
             n = n1
         if n > 0:
-            n = n * m.speed
+            n = n * self.speed
             g.sleep(n)
     #@+node:ekr.20170130090141.1: *3* demo.Images
     #@+node:ekr.20170128213103.12: *4* demo.caption and abbreviations: body, log, tree
     def caption(self, s, pane): # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
-        m = self
-        parent = m.pane_widget(pane)
+        parent = self.pane_widget(pane)
         if parent:
             s = s.rstrip()
             if s and s[-1].isalpha(): s = s + '.'
             w = QtWidgets.QPlainTextEdit(s, parent)
             w.setObjectName('screencastcaption')
-            m.widgets.append(w)
-            w2 = m.pane_widget(pane)
+            self.widgets.append(w)
+            w2 = self.pane_widget(pane)
             geom = w2.geometry()
             w.resize(geom.width(), min(150, geom.height() / 2))
             off = QtCore.Qt.ScrollBarAlwaysOff
@@ -273,11 +292,10 @@ class Demo(object):
     #@+node:ekr.20170128213103.21: *4* demo.image
     def image(self, pane, fn, center=None, height=None, width=None):
         '''Put an image in the indicated pane.'''
-        m = self
-        parent = m.pane_widget(pane)
+        parent = self.pane_widget(pane)
         if parent:
             w = QtWidgets.QLabel('label', parent)
-            fn = m.resolve_icon_fn(fn)
+            fn = self.resolve_icon_fn(fn)
             if not fn: return None
             pixmap = QtGui.QPixmap(fn)
             if not pixmap:
@@ -293,7 +311,7 @@ class Demo(object):
                 dx = (g_p.width() - g_w.width()) / 2
                 w.move(g_w.x() + dx, g_w.y() + 10)
             w.show()
-            m.widgets.append(w)
+            self.widgets.append(w)
             return w
         else:
             g.trace('bad pane: %s' % (pane))
@@ -311,16 +329,15 @@ class Demo(object):
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
     def dismiss_menu_bar(self):
-        m = self; c = m.c
+        c = self.c
         # c.frame.menu.deactivateMenuBar()
-        g.trace()
         menubar = c.frame.top.leo_menubar
         menubar.setActiveAction(None)
         menubar.repaint()
     #@+node:ekr.20170128213103.22: *4* demo.open_menu
     def open_menu(self, menu_name):
         '''Activate the indicated *top-level* menu.'''
-        m = self; c = m.c
+        c = self.c
         menu = c.frame.menu.getMenu(menu_name)
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
@@ -344,22 +361,21 @@ class Demo(object):
     #@+node:ekr.20170128213103.13: *4* demo.clear_log
     def clear_log(self):
         '''Clear the log.'''
-        m = self
-        m.c.frame.log.clearTab('Log')
+        self.c.frame.log.clearTab('Log')
     #@+node:ekr.20170128213103.19: *4* demo.focus
     def focus(self, pane):
         '''Immediately set the focus to the given pane.'''
-        m = self; c = m.c
+        c = self.c
         d = {
-            'body': c.bodyWantsFocus,
-            'log': c.logWantsFocus,
-            'tree': c.treeWantsFocus,
+            'body': c.bodyWantsFocusNow,
+            'log': c.logWantsFocusNow,
+            'tree': c.treeWantsFocusNow,
         }
         f = d.get(pane)
         if f:
             f()
-            c.outerUpdate()
-            m.repaint(pane)
+            ### c.outerUpdate()
+            ### self.repaint(pane)
         else:
             g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
@@ -377,8 +393,7 @@ class Demo(object):
     #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
     def repaint_pane(self, pane):
         '''Repaint the given pane.'''
-        m = self
-        w = m.pane_widget(pane)
+        w = self.pane_widget(pane)
         if w:
             w.repaint()
         else:
