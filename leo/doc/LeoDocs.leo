@@ -19675,7 +19675,7 @@ The new javascript and perl importers know *nothing* about parsing. They know on
 
 # Leo's demo.py plugin
 
-The demo.py plugin helps run dynamic demos from Leo files.
+The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions.
 
@@ -19817,13 +19817,14 @@ test.leo. Then run those screencasts to see the what the scripts do.
 <t tx="ekr.20170130064405.1">
 ### Starting and stopping
 
-**demo.setup(p)**: May be oeverriden in subclasses. Called before executing the first demo script.
+**demo.setup(p)**: May be overridden in subclasses. Called before executing the first demo script.
 
 **demo.start(p)**: Starts a demo, where p is the root of demo script tree. 
 
 **demo.quit()**: Ends the demo and calls the teardown script. **Note**: The demo automatically quits after executing the last demo script.
 
-**demo.teardown(p)**: May be oeverriden in subclasses. Called whenever the demo ends.</t>
+**demo.teardown(p)**: May be overridden in subclasses. Called whenever the demo ends.
+</t>
 <t tx="ekr.20170130064411.1">
 ### Typing
 
@@ -19868,7 +19869,7 @@ The 'setting' arg can be anything that would be a valid key setting. The followi
 <t tx="ekr.20170130065616.1">
 ## Demo scripts
 
-Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefinede **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
+Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
 - Animate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
