@@ -198,15 +198,6 @@ class Demo(object):
         '''Clear the log.'''
         m = self
         m.c.frame.log.clearTab('Log')
-    #@+node:ekr.20170128213103.14: *4* demo.command
-    def command(self, command_name):
-        '''Execute the command whose name is given and update the screen immediately.'''
-        m = self; c = m.c
-        c.k.simulateCommand(command_name)
-            # Named commands handle their own undo!
-            # The undo handling in m.next should suffice.
-        c.redraw_now()
-        m.repaint('all')
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
     def dismiss_menu_bar(self):
         m = self; c = m.c

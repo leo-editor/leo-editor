@@ -7,7 +7,7 @@ A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts f
 
 The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
 
-To start a demo, presenters run a **top-level script**. Top-level scripts instantiate the Demo class, and then call demo.start(p). p is the root of the script tree. For example:
+To start a demo, presenters run a **top-level script**. Top-level scripts instantiate the Demo class, and then call demo.start(p), where p is the root of the script tree. For example:
 ```python
 import leo.plugins.demo as demo
 
@@ -24,7 +24,7 @@ class Demo_1(demo.Demo):
 Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-As shown above, subclasses of the Demo class may define **setup** and **teardown** methods. The demo class executes demo.setup just before the first demo script, and executes demo.teardown just after the last demo script.
+As shown above, subclasses of the Demo class may define **setup** and **teardown** methods. The demo class calls demo.setup(p) just before the first demo script, and calls demo.teardown() just after the last demo script.
 
 **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications. 
 
@@ -99,7 +99,7 @@ Generates a key event. Examples:
    demo.single_key('Ctrl-F') # Execute Leo's Find command
 ```
 
-### Commands and Menus
+### Menus
 
 **demo.command(command_name)**
 
@@ -117,13 +117,13 @@ Dismisses the menu opened with demo.open_menu.
 
 **demo.image(pane,fn,center=None,height=None,width=None)**
 
-Overlays an image in a pane:
+Overlays an image in a pane.
 
-- `pane`: One of  'body', 'log' or 'tree'.
-- `fn`: The path to the image file, resolved to the leo/Icons directory if fn is a relative path.
-- `height`: Scales the image so it is `height` pixels high.
-- `width`: Scales the image i so it `width` pixels wide.
-- `center`: True: center the image horizontally in the given pane.
+- `pane`: Valid values are 'body', 'log' or 'tree'.
+- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
+- `height`: Scales the image so it has the given height.
+- `width`: Scales the image i so it has the given width.
+- `center`: If True, centers the image horizontally in the given pane.
 
 **demo.focus(pane)**
 
