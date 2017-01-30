@@ -1,16 +1,13 @@
 
 # Leo's demo.py plugin
 
-At present, these are more design docs than actual descriptions of reality.
+The demo.py plugin helps run dynamic demos from Leo files.
 
-## Overview
+A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions.
 
-This plugin runs dynamic demos from Leo files.
+The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Pressing the space bar executes the next script in the tree. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions. 
-
-To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. The top-level script calls my_demo.start(p), where p is the root of the script tree. For example:
-
+To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. To start the demo, the top-level script calls my_demo.start(p), where p is the root of the script tree. For example:
 ```python
 import leo.plugins.demo as demo
 
@@ -23,7 +20,10 @@ class Demo1(demo.Demo):
 Demo1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-Demo scripts have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
+
+## Demo scripts
+
+Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
 - Animate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
@@ -32,11 +32,7 @@ Demo scripts have access to the 'demo' variable, which is bound to the Demo inst
 - Open another .leo file and present the demo in the new outline window.
 - And many other things, as described below.
 
-## The Demo class
-
-The Demo class executes demo scripts and handles key handling during the demo.
-
-The Demo class traps only the space-bar key (*or right-arrow key?*), passing all other keys to Leo's key-handling code. For example:
+For example, this demo script:
 
 ```python
     demo.single_key('Alt-X')
@@ -47,7 +43,9 @@ This executes the insert-node command!
 
 ## Helper methods
 
-*These descriptions may change at any time, without notice*.
+Here is a list of all the helper methods in the Demo class. Helper scripts have access to these methods via the predefined **demo** var.
+
+The **demo.user_dict** ivar is a Python dictionary that demo scripts may freely use.
 
 ### Starting and stopping
 
@@ -76,17 +74,15 @@ This executes the insert-node command!
 ```
 The 'setting' arg can be anything that would be a valid key setting. The following are equivalent: "ctrl-f", "Ctrl-f", "Ctrl+F", etc., but "ctrl-F" is different from "ctrl-shift-f".
 
-### Commands
+### Commands and Menus
 
 **demo.command(command_name)**: Executes the named command.
-
-### Menus
 
 **demo.open_menu(menu_name)**: Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
 
 **demo.dismiss_menubar()**: Dismisses the menu opened with demo.open_menu.
 
-### Images and overlays
+### Images and focus
 
 **demo.image(pane,fn,center=None,height=None,width=None)**: Overlays an image in a pane:
 
@@ -96,17 +92,10 @@ The 'setting' arg can be anything that would be a valid key setting. The followi
 - `width`: Scales the image i so it `width` pixels wide.
 - `center`: True: center the image horizontally in the given pane.
 
-### Focus
-
 **demo.focus(pane)**: Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
 
-### Demo ivars
 
-**demo.script_list**: Starting a demo "freezes" all demo scripts into this list.
 
-**demo.user_dict**: A Python dictionary that demo scripts may freely use.
-
-**demo.index**: The index into demo.script_list of the *next* script to be executed.
 ## Style sheets
 
 **Note**: Helper methods will likely exist to alter this stylesheet more easily.
@@ -127,7 +116,10 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
+
 ## Acknowledgements
+
+This plugin was written by Edward K. Ream, using Leo's screencast plugin as a starting point.
 
 This plugin was inspired by [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org). Or perhaps demo-it was inspired by Leo's earlier screencast plugin.
 
