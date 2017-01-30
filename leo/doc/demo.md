@@ -1,5 +1,4 @@
-
-# Leo's demo.py plugin
+#Leo's demo.py plugin
 
 The demo.py plugin helps presenters run dynamic demos from Leo files.
 
@@ -30,10 +29,9 @@ Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 
 - Subclasses of Demo may define **setup** and **teardown** methods. The demo class calls demo.setup(p) just before the first demo script, and calls demo.teardown() just after the last demo script.
 
-- **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications. 
+- **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications.
 
-
-## Helper methods
+#Helper methods
 
 Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
@@ -51,7 +49,7 @@ For example, this demo script executes the insert-node command!
 
 The following sections describe all public helper methods of the Demo class.
 
-### Images and focus
+##Images and focus
 
 **demo.image(pane,fn,center=None,height=None,width=None)**
 
@@ -67,7 +65,7 @@ Overlays an image in a pane.
 
 Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
 
-### Menus
+##Menus
 
 **demo.command(command_name)**
 
@@ -75,13 +73,13 @@ Executes the named command.
 
 **demo.open_menu(menu_name)**
 
-Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
+Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
 
 **demo.dismiss_menubar()**
 
 Dismisses the menu opened with demo.open_menu.
 
-### Starting and stopping
+##Starting and ending
 
 **demo.setup(p)**
 
@@ -99,7 +97,7 @@ Ends the demo and calls the teardown script. The demo automatically ends after e
 
 May be overridden in subclasses. Called whenever the demo ends.
 
-### Typing
+##Typing
 
 **demo.body(s)**, **demo.log(s)** and **demo.tree(s)**
 
@@ -125,7 +123,7 @@ Generates a key event. Examples:
    demo.single_key('Ctrl-F') # Execute Leo's Find command
 ```
 
-## Undo
+#Undo
 
 The demo plugin does not change Leo's key-handling in any way.  As a result, presenters may undo/redo the *actions* of demo scripts. Some limitations:
 
@@ -135,7 +133,7 @@ The demo plugin does not change Leo's key-handling in any way.  As a result, pre
 
 These limitations are unlikely to be a nuisance in practice.
 
-## Style sheets
+#Style sheets
 
 **Note**: Helper methods will likely exist to alter this stylesheet more easily.
 
@@ -155,9 +153,9 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
+#Acknowledgements
 
-## Acknowledgements
+Edward K. Ream wrote this plugin on January 29-30, 2017, using Leo's screencast plugin as a starting point.
 
-This plugin was written by Edward K. Ream, using Leo's screencast plugin as a starting point.
+The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps it was the other way around. demo-it may have been inspired by the screencast plugin.
 
-This plugin was inspired by [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org). Or perhaps demo-it was inspired by Leo's earlier screencast plugin.

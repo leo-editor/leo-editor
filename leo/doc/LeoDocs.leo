@@ -1307,7 +1307,7 @@
 <v t="ekr.20170129120630.5"><vh>demo-start (probably obsolete)</vh></v>
 <v t="ekr.20170129120630.6"><vh>The program counter, demo.p</vh></v>
 </v>
-<v t="ekr.20170129120630.1"><vh>@nosent ../doc/demo.md</vh>
+<v t="ekr.20170129120630.1"><vh>OLD @nosent ../doc/demo.md</vh>
 <v t="ekr.20170129120630.4"><vh>Helper methods</vh>
 <v t="ekr.20170130064411.3"><vh>Images and focus</vh></v>
 <v t="ekr.20170130064411.2"><vh>Menus</vh></v>
@@ -1319,6 +1319,7 @@
 <v t="ekr.20170129120630.8"><vh>Acknowledgements</vh></v>
 </v>
 <v t="ekr.20170130071657.1"><vh>** To do: toc, magnification command</vh></v>
+<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19893,7 +19894,7 @@ Executes the named command.
 
 **demo.open_menu(menu_name)**
 
-Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
+Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
 
 **demo.dismiss_menubar()**
 
