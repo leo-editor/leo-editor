@@ -100,7 +100,7 @@ class Demo(object):
     def exec_node(self, script):
         '''Execute the script in node p.'''
         c = self.c
-        g.trace(repr(g.splitLines(script)[0]))
+        # g.trace(repr(g.splitLines(script)[0]))
         try:
             c.executeScript(
                 namespace={'c': c, 'demo': self, 'g:': g, 'p': c.p},
@@ -110,7 +110,6 @@ class Demo(object):
             )
         except Exception:
             g.es_exception()
-            ### self.end()
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self):
         '''Execute the next demo script, or call end().'''
@@ -120,7 +119,6 @@ class Demo(object):
             script = self.script_list.pop()
             self.exec_node(script)
         if not self.script_list:
-            # No non-empty node found.
             self.end()
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
     def startup(self, p):
