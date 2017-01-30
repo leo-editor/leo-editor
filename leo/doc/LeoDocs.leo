@@ -1309,7 +1309,8 @@
 </v>
 <v t="ekr.20170130071657.1"><vh>** To do: toc, magnification command</vh></v>
 <v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
-<v t="ekr.20170130081524.1"><vh>Table of contents</vh></v>
+<v t="ekr.20161204055040.1"></v>
+<v t="ekr.20170130082205.1"><vh>Table of contents</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -18887,8 +18888,12 @@ if p:
         n = stack[-1]
         stack[-1] = n+1
         indent = ' '*4*(level-1)
-        line = '%s%s. [%s](%s#%s)\n' % (
-            indent, n, p.h, prefix, self.make_link(p.h))
+        if 1: # Use bullets
+            line = '%s- [%s](%s#%s)\n' % (
+                indent, p.h, prefix, self.make_link(p.h))
+        else: # Use numbers.
+            line = '%s%s. [%s](%s#%s)\n' % (
+                indent, n, p.h, prefix, self.make_link(p.h))
         result.append(line)
     if 0:
         g.trace(p.h)
@@ -19749,15 +19754,16 @@ test.leo. Then run those screencasts to see the what the scripts do.
 - **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
   with a mouse click. **m.dismiss_menubar()** closes all open menus.</t>
 <t tx="ekr.20170130071657.1"></t>
-<t tx="ekr.20170130081524.1">1. [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
-2. [Helper methods](../doc/demo.md#helper-methods)
-    1. [Images and focus](../doc/demo.md#images-and-focus)
-    2. [Menus](../doc/demo.md#menus)
-    3. [Starting and ending](../doc/demo.md#starting-and-ending)
-    4. [Typing](../doc/demo.md#typing)
-3. [Undo](../doc/demo.md#undo)
-4. [Style sheets](../doc/demo.md#style-sheets)
-5. [Acknowledgements](../doc/demo.md#acknowledgements)
+<t tx="ekr.20170130082205.1">- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
+- [Overview](../doc/demo.md#overview)
+- [Helper methods](../doc/demo.md#helper-methods)
+    - [Images and focus](../doc/demo.md#images-and-focus)
+    - [Menus](../doc/demo.md#menus)
+    - [Starting and ending](../doc/demo.md#starting-and-ending)
+    - [Typing](../doc/demo.md#typing)
+- [Undo](../doc/demo.md#undo)
+- [Style sheets](../doc/demo.md#style-sheets)
+- [Acknowledgements](../doc/demo.md#acknowledgements)
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
