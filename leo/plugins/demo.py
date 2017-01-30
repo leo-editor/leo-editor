@@ -10,7 +10,7 @@ Written by Edward K. Ream, January, 2017.
 #@+node:ekr.20170128213103.3: ** << demo.py imports >>
 import random
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui # for LeoKeyEvents.
+# import leo.core.leoGui as leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
 #@@language python
@@ -24,156 +24,126 @@ def init():
         ### g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20170129170242.1: ** class DemoState
-class DemoState(object):
-    '''A class representing the state of a demo.'''
-    
-    def __init__(self, back_p, next_p, script):
-        '''Ctor for the DemoState class.'''
-        self.back_p = back_p
-        self.next_p = next_p
-        self.script = script
+#@+node:ekr.20170129230307.1: ** commands (demo.py)
+# Note: importing this plugin creates the commands.
+
+@g.command('demo-next')
+def demo_next(self, event=None):
+    if hasattr(g.app, 'demo', None):
+        g.app.demo.next()
+    else:
+        g.trace('no demo instance')
+        
+@g.command('demo-end')
+def demo_end(self, event=None):
+    if getattr(g.app, 'demo', None):
+        g.app.demo.end()
+    else:
+        g.trace('no demo instance')
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
-    #@+node:ekr.20170128213103.9: *3* demo.__init__
+    #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
     def __init__(self, c):
+        '''Ctor for the Demo class.'''
         self.c = c
-        self.commands = []
-        self.command_index = 0
-        self.log_color = 'black'
-        self.log_focus = True # True: writing to log sets focus to log.
-        self.ignore_keys = False # True: ignore keys in state_handler.
-        self.quit_flag = False # True if m.quit has been called.
-        self.k_state = g.bunch(kind=None, n=None, handler=None) # Saved k.state.
-        self.key_w = None # Saved widget for passed-along key handling.
+        # Typing params.
         self.n1 = 0.02 # default minimal typing delay.
         self.n2 = 0.175 # default maximum typing delay.
-        self.p1 = None # The first slide of the show.
-        self.p = None # The present slide of the show.
         self.speed = 1.0 # Amount to multiply wait times.
-        self.state_name = 'screencast' # The state name to enable m.state_handler.
-        self.node_stack = [] # For m.prev and m.undo.
-        self.text_flag = False # True: m.next shows body text instead of executing it.
+        # Other ivars.
+        self.script_list = []
+            # A list of strings (scripts).
+            # Scripts are removed when executed.
         self.user_dict = {} # For use by scripts.
-        self.widgets = [] # List of (popup) widgets created by this class.
-        # inject c.screenCastController
-        c.screenCastController = self
-    #@+node:ekr.20170128222411.1: *3* demo.Commands
-    #@+node:ekr.20170128214606.1: *4* demo.demo
-    def demo(self, headline):
-        '''Run the demo.'''
+        self.widgets = [] # References to (popup) widgets created by this class.
+        # Create *global* demo commands.
+        self.init()
+    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
+    def delete_widgets(self):
+        '''Delete all presently visible widgets.'''
+        for w in self.widgets:
+            w.deleteLater()
+        self.widgets = []
+    #@+node:ekr.20170129174128.1: *4* demo.init
+    def init(self):
+        '''Link the global commands to this class.'''
+        if hasattr(g.app, 'demo'):
+            g.app.demo.delete_widgets()
+        g.app.demo = self
+    #@+node:ekr.20170128222411.1: *3* demo.Entries & helpers
+    #@+node:ekr.20170129180623.1: *4* demo.create_script_list
+    def create_script_list(self, p):
+        '''Create the state_list from the tree of script nodes rooted in p.'''
         c = self.c
-        p = g.findNodeAnywhere(c, headline)
-        if p:
-            self.setup(p)
-            self.start(p)
-        else:
-            g.trace('node not found:', headline)
-    #@+node:ekr.20170128213103.30: *4* demo.next & helper
-    def next(self):
-        '''Find the next screencast node and execute its script.
-        Call m.quit if no more nodes remain.'''
-        trace = False and not g.unitTesting
-        m = self; c = m.c; k = c.k
-        m.delete_widgets()
-        # Restore k.state from m.k_state.
-        if m.k_state.kind and m.k_state.kind != m.state_name:
-            k.setState(kind=m.k_state.kind, n=m.k_state.n, handler=m.k_state.handler)
-        while m.p:
-            if trace: g.trace(m.p.h)
-            h = m.p.h.replace('_', '').replace('-', '')
-            if g.match_word(h, 0, '@ignorenode'):
-                m.p.moveToThreadNext()
-            elif g.match_word(h, 0, '@ignoretree') or g.match_word(h, 0, '@button'):
-                m.p.moveToNodeAfterTree()
-            elif m.p.b.strip():
-                p_next = m.p.threadNext()
-                p_old = m.p.copy()
-                if g.match_word(m.p.h, 0, '@text'):
-                    c.redraw(m.p) # Selects the node, thereby showing the body text.
-                else:
-                    m.exec_node(m.p)
-                # Save k.state in m.k_state.
-                if k.state:
-                    if k.state.kind == m.state_name:
-                        m.clear_state()
-                    else:
-                        m.set_state(k.state)
-                # Re-enable m.state_handler.
-                if not m.quit_flag:
-                    k.setState(m.state_name, 1, m.state_handler)
-                # Change m.p only if the script has not already changed it.
-                if not m.p or m.p == p_old:
-                    m.p = p_next
-                break
+        aList = []
+        for p in p.self_and_subtree():
+            if p.h.startswith('@ignore'):
+                pass
             else:
-                m.p.moveToThreadNext()
-        else:
-            # No non-empty node found.
-            m.quit()
-    #@+node:ekr.20170128213103.31: *5* demo.exec_node
-    def exec_node(self, p):
+                script = g.getScript(c, p,
+                    useSelectedText=False,
+                    forcePythonSentinels=False,
+                    useSentinels=False,
+                )
+                if script.strip():
+                    aList.append(script)
+        self.script_list = list(reversed(aList))
+        
+    #@+node:ekr.20170129174251.1: *4* demo.end
+    def end(self):
+        '''End this slideshow and call teardown().'''
+        g.es_print('ending', self.__class__.__name__)
+        self.delete_widgets()
+        self.teardown()
+    #@+node:ekr.20170128213103.31: *4* demo.exec_node
+    def exec_node(self, script):
         '''Execute the script in node p.'''
-        trace = False and not g.unitTesting
-        m = self; c = m.c
-        if trace: g.trace(p.h, c.p.v)
-        assert p
-        assert p.b
-        d = {'c': c, 'g:': g, 'm': m, 'p': p}
-        tag = 'screencast'
-        m.node_stack.append(p)
+        c = self.c
+        g.trace(repr(g.splitLines(script)[0]))
         try:
-            undoData = c.undoer.beforeChangeGroup(c.p, tag, verboseUndoGroup=False)
-            c.executeScript(p=p, namespace=d, useSelectedText=False, raiseFlag=True)
-            c.undoer.afterChangeGroup(c.p, tag, undoData)
+            c.executeScript(
+                namespace={'c': c, 'demo': self, 'g:': g, 'p': c.p},
+                script=script,
+                raiseFlag=True,
+                useSelectedText=False,
+            )
         except Exception:
             g.es_exception()
-            m.quit()
-    #@+node:ekr.20170128213103.32: *4* demo.prev
-    def prev(self):
-        '''Show the previous slide.  This will recreate the slide's widgets,
-        but the user may have to adjust the minibuffer or other widgets by hand.'''
-        trace = False and not g.unitTesting
-        m = self
-        if m.p and m.p == m.p1:
-            g.trace('at start: %s' % (m.p and m.p.h))
-            m.start(m.p1)
-        else:
-            p = m.undo()
-            if p and p == m.p1:
-                if trace: g.trace('at start: %s' % (m.p and m.p.h))
-                m.start(m.p1)
-            elif p:
-                if trace: g.trace('undo, undo, next: %s' % (m.p and m.p.h))
-                m.undo()
-                m.next()
-            else:
-                if trace: g.trace('no undo: restart: %s' % (m.p and m.p.h))
-                m.start(m.p1)
+            ### self.end()
+    #@+node:ekr.20170128213103.30: *4* demo.next
+    def next(self):
+        '''Execute the next demo script, or call end().'''
+        self.delete_widgets()
+        if self.script_list:
+            # Execute the next script.
+            script = self.script_list.pop()
+            self.exec_node(script)
+        if not self.script_list:
+            # No non-empty node found.
+            self.end()
+    #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
+    def startup(self, p):
+        '''
+        Called before running the first demo script.
+        p is the root of the tree of demo scripts.
+        May be over-ridden in subclasses.
+        '''
+
+    def teardown(self):
+        '''
+        Called when the demo ends.
+        Subclasses may override this.
+        '''
     #@+node:ekr.20170128213103.33: *4* demo.start
     def start(self, p):
-        '''Start a screencast whose root node is p.
-
-        Important: p is not necessarily c.p!
-        '''
-        m = self; c = m.c; k = c.k
-        assert p
-        # Reset Leo's state.
-        k.keyboardQuit()
-        # Set ivars
-        m.p1 = p.copy()
-        m.p = p.copy()
-        m.quit_flag = False
-        m.clear_state()
-        p.contract()
-        c.redraw_now(p)
-        m.delete_widgets()
-            # Clear widgets left over from previous, unfinished, slideshows.
-        m.state_handler()
-    #@+node:ekr.20170128214912.1: *3* demo.setup
-    def startup(self):
-        '''May be over-ridden in subclasses.'''
+        '''Start a demo whose root node is p,'''
+        if p:
+            self.create_script_list(p)
+            self.next()
+        else:
+            g.trace('no script tree')
+            self.end()
     #@+node:ekr.20170128213103.10: *3* demo.Helpers
     #@+node:ekr.20170128213103.11: *4* demo.body_keys
     def body_keys(self, s, n1=None, n2=None):
@@ -247,32 +217,6 @@ class Demo(object):
         menubar = c.frame.top.leo_menubar
         menubar.setActiveAction(None)
         menubar.repaint()
-    #@+node:ekr.20170128213103.16: *4* demo.find_screencast & helpers
-    def find_screencast(self, p):
-        '''Find the nearest screencast, prefering previous screencasts
-        because that makes it easier to create screencasts.'''
-        m = self
-        return m.find_prev_screencast(p) or m.find_next_screencast(p)
-    #@+node:ekr.20170128213103.17: *5* demo.find_next_screencast
-    def find_next_screencast(self, p):
-        # m = self
-        p = p.copy()
-        while p:
-            if p.h.startswith('@screencast'):
-                return p
-            else:
-                p.moveToThreadNext()
-        return None
-    #@+node:ekr.20170128213103.18: *5* demo.find_prev_screencast
-    def find_prev_screencast(self, p):
-        # m = self
-        p = p.copy()
-        while p:
-            if p.h.startswith('@screencast'):
-                return p
-            else:
-                p.moveToThreadBack()
-        return None
     #@+node:ekr.20170128213103.19: *4* demo.focus
     def focus(self, pane):
         '''Immediately set the focus to the given pane.'''
@@ -371,26 +315,24 @@ class Demo(object):
                     else:
                         parent = parent.parent()
         return menu
+    #@+node:ekr.20170128213103.41: *4* demo.pane_widget
+    def pane_widget(self, pane):
+        '''Return the pane's widget.'''
+        c = self.c
+        d = {
+            'all': c.frame.top,
+            'body': c.frame.body.wrapper.widget,
+            'log': c.frame.log.logCtrl.widget,
+            'minibuffer': c.frame.miniBufferWidget.widget,
+            'tree': c.frame.tree.treeWidget,
+        }
+        return d.get(pane)
     #@+node:ekr.20170128213103.23: *4* demo.plain_keys
     def plain_keys(self, s, n1=None, n2=None, pane='body'):
         '''Simulate typing a string of plain keys.'''
         m = self
         for ch in s:
             m.single_key(ch, n1=n1, n2=n2, pane=pane)
-    #@+node:ekr.20170128213103.24: *4* demo.quit
-    def quit(self):
-        '''Terminate the slide show.'''
-        m = self; c = m.c; k = c.k
-        if m.quit_flag:
-            return
-        if not m.p1:
-            return
-        g.red('end slide show: %s' % (m.p1.h))
-        m.delete_widgets()
-        k.keyboardQuit()
-        m.clear_state()
-        m.quit_flag = True
-        c.bodyWantsFocus()
     #@+node:ekr.20170128213103.25: *4* demo.redraw
     def redraw(self, p=None):
         m = self
@@ -404,6 +346,16 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170128213103.42: *4* demo.resolve_icon_fn
+    def resolve_icon_fn(self, fn):
+        '''Resolve fn relative to the Icons directory.'''
+        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.os_path_finalize_join(dir_, fn)
+        if g.os_path_exists(path):
+            return path
+        else:
+            g.trace('does not exist: %s' % (path))
+            return None
     #@+node:ekr.20170128213103.27: *4* demo.select_position
     def select_position(self, p):
         m = self
@@ -434,131 +386,6 @@ class Demo(object):
                 m.set_state(k.state)
             # Important: do *not* re-enable m.state_handler here.
             # This should be done *only* in m.next.
-    #@+node:ekr.20170128213103.29: *3* demo.State handling
-    #@+node:ekr.20170128213103.37: *4* demo.set_state & clear_state
-    def set_state(self, state):
-        m = self
-        # g.trace('**** setting m.k_state: %s' % (state.kind))
-        m.k_state.kind = state.kind
-        m.k_state.n = state.n
-        m.k_state.handler = state.handler
-
-    def clear_state(self):
-        m = self
-        # g.trace('**** clearing m.k_state')
-        m.k_state.kind = None
-        m.k_state.n = None
-        m.k_state.handler = None
-    #@+node:ekr.20170128213103.35: *4* demo.state_handler
-    def state_handler(self, event=None):
-        '''Handle keys while in the "screencast" input state.'''
-        trace = True and not g.unitTesting
-        k, m = self.c.k, self
-        ### state = k.getState(m.state_name)
-        char = event and event.char or ''
-        if trace:
-            g.trace('char: %s k.state.kind: %s m.k_state: %s' % (
-                repr(char), repr(k.state.kind),
-                m.k_state and repr(m.k_state.kind) or '<none>'))
-        if m.ignore_keys:
-            return
-        # Init the minibuffer as in k.fullCommand.
-        if trace: g.trace('=====')
-        ### assert m.p1 and m.p1 == m.p
-        k.mb_event = event
-        k.mb_prefix = k.getLabel()
-        k.mb_prompt = 'Screencast: '
-        k.mb_tabList = []
-        k.setLabel(k.mb_prompt)
-        ### k.setState(m.state_name, 1, m.state_handler)
-        m.next()
-        k.get1Arg(event, handler=self.state_handler1, oneCharacter=True, useMinibuffer=False)
-        # Only exit on Ctrl-g.
-        # Because of menu handling, it's convenient to have escape go to the next slide.
-        # That way an "extra" escape while dismissing menus will be handled well.
-
-    def state_handler1(self, event):
-        trace = True and not g.unitTesting
-        k, m = self.c.k, self
-        char = k.arg
-        g.trace(repr(char))
-        if char == 'Escape':
-            # m.quit()
-            m.next()
-        elif char == 'Right':
-            m.next()
-        elif char == 'Left':
-            m.prev()
-        elif m.k_state.kind != m.state_name:
-            # We are simulating another state.
-            # Pass the character to *that* state,
-            # making *sure* to save/restore all state.
-            ### kind, n, handler = k.state.kind, k.state.n, k.state.handler
-            m_state_copy = g.bunch(kind=m.k_state.kind,
-                n=m.k_state.n, handler=m.k_state.handler)
-            m.single_key(char)
-            ### k.setState(kind, n, handler)
-            m.set_state(m_state_copy)
-        elif trace:
-            g.trace('ignore %s' % (repr(char)))
-    #@+node:ekr.20170128213103.36: *4* demo.undo
-    def undo(self):
-        '''Undo the previous screencast scene.'''
-        m = self
-        m.delete_widgets()
-        if m.node_stack:
-            c = m.c
-            m.p = m.node_stack.pop()
-            c.undoer.undo()
-            c.redraw()
-            return m.p
-        else:
-            return None
-    #@+node:ekr.20170128213103.38: *3* demo.Utilities
-    #@+node:ekr.20170128213103.39: *4* demo.get_key_event
-    def get_key_event(self, ch, w):
-        m = self; c = m.c; k = c.k
-        m.key_w = w
-        if len(ch) > 1:
-            key = None
-            stroke = k.strokeFromSetting(ch).s
-        else:
-            stroke = key = ch
-        # g.trace(ch,key,stroke)
-        return leoGui.LeoKeyEvent(c, key, stroke,
-            shortcut=None,
-            w=w,
-            x=0, y=0,
-            x_root=0, y_root=0)
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
-    def delete_widgets(self):
-        m = self
-        for w in m.widgets:
-            w.deleteLater()
-        m.widgets = []
-    #@+node:ekr.20170128213103.41: *4* demo.pane_widget
-    def pane_widget(self, pane):
-        '''Return the pane's widget.'''
-        m = self; c = m.c
-        d = {
-            'all': c.frame.top,
-            'body': c.frame.body.wrapper.widget,
-            'log': c.frame.log.logCtrl.widget,
-            'minibuffer': c.frame.miniBufferWidget.widget,
-            'tree': c.frame.tree.treeWidget,
-        }
-        return d.get(pane)
-    #@+node:ekr.20170128213103.42: *4* demo.resolve_icon_fn
-    def resolve_icon_fn(self, fn):
-        '''Resolve fn relative to the Icons directory.'''
-        # m = self
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
-        if g.os_path_exists(path):
-            return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
     #@+node:ekr.20170128213103.43: *4* demo.wait
     def wait(self, n1=1, n2=0):
         '''Wait for an interval between n1 and n2.'''
@@ -571,7 +398,6 @@ class Demo(object):
             n = n1
         if n > 0:
             n = n * m.speed
-            # g.trace(n)
             g.sleep(n)
     #@-others
 #@-others

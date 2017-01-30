@@ -18,7 +18,7 @@ class Demo1(demo.Demo):
     
     def setup(self, p):
         fn = 'c:/demos/demo1.leo'
-        demo.user_d['c'] = g.openWithFileName(fn, old_c=c)
+        demo.user_dict['c'] = g.openWithFileName(fn, old_c=c)
 
 Demo1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
@@ -104,7 +104,7 @@ The 'setting' arg can be anything that would be a valid key setting. The followi
 
 **demo.script_list**: Starting a demo "freezes" all demo scripts into this list.
 
-**demo.user_d**: A Python dictionary that demo scripts may freely use.
+**demo.user_dict**: A Python dictionary that demo scripts may freely use.
 
 **demo.index**: The index into demo.script_list of the *next* script to be executed.
 ## Style sheets

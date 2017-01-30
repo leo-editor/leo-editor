@@ -1314,6 +1314,8 @@
 <v t="ekr.20170129120630.7"><vh>Style sheets</vh></v>
 <v t="ekr.20170129120630.8"><vh>Acknowledgements</vh></v>
 </v>
+<v t="ekr.20170129120630.4"></v>
+<v t="ekr.20170129120630.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19690,7 +19692,7 @@ class Demo1(demo.Demo):
     
     def setup(self, p):
         fn = 'c:/demos/demo1.leo'
-        demo.user_d['c'] = g.openWithFileName(fn, old_c=c)
+        demo.user_dict['c'] = g.openWithFileName(fn, old_c=c)
 
 Demo1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
@@ -19778,7 +19780,7 @@ The 'setting' arg can be anything that would be a valid key setting. The followi
 
 **demo.script_list**: Starting a demo "freezes" all demo scripts into this list.
 
-**demo.user_d**: A Python dictionary that demo scripts may freely use.
+**demo.user_dict**: A Python dictionary that demo scripts may freely use.
 
 **demo.index**: The index into demo.script_list of the *next* script to be executed.
 </t>
