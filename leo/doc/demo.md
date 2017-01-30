@@ -24,36 +24,62 @@ class Demo_1(demo.Demo):
 Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-As shown above, subclasses of the Demo class may define **setup** and **teardown** methods. The demo class calls demo.setup(p) just before the first demo script, and calls demo.teardown() just after the last demo script.
+**Notes**:
 
-**Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications. 
+- The **demo.user_dict** ivar is a Python dictionary that demo scripts may freely use.
+
+- Subclasses of Demo may define **setup** and **teardown** methods. The demo class calls demo.setup(p) just before the first demo script, and calls demo.teardown() just after the last demo script.
+
+- **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications. 
 
 
-## Demo scripts
+## Helper methods
 
 Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
-- Animate typing in headlines, body text, the minibuffer, or anywhere else.
+- Simulate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
 - Open any Leo menu, selecting particular menu items.
-- Scale font sizes.
-- Open another .leo file and present the demo in the new outline window.
-- And many other things, as described below.
+- [Coming soon] Scale font sizes.
 
-For example, this demo script:
+For example, this demo script executes the insert-node command!
 
 ```python
     demo.single_key('Alt-X')
     demo.plain_keys('ins\\tno\\t\\n')
 ```
 
-This executes the insert-node command!
+The following sections describe all public helper methods of the Demo class.
 
-The **demo.user_dict** ivar is a Python dictionary that demo scripts may freely use.
+### Images and focus
 
-## Helper methods
+**demo.image(pane,fn,center=None,height=None,width=None)**
 
-Here is a list of all the helper methods in the Demo class. Helper scripts have access to these methods via the predefined **demo** var.
+Overlays an image in a pane.
+
+- `pane`: Valid values are 'body', 'log' or 'tree'.
+- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
+- `height`: Scales the image so it has the given height.
+- `width`: Scales the image i so it has the given width.
+- `center`: If True, centers the image horizontally in the given pane.
+
+**demo.focus(pane)**
+
+Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
+
+### Menus
+
+**demo.command(command_name)**
+
+Executes the named command.
+
+**demo.open_menu(menu_name)**
+
+Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
+
+**demo.dismiss_menubar()**
+
+Dismisses the menu opened with demo.open_menu.
 
 ### Starting and stopping
 
@@ -99,36 +125,6 @@ Generates a key event. Examples:
    demo.single_key('Ctrl-F') # Execute Leo's Find command
 ```
 
-### Menus
-
-**demo.command(command_name)**
-
-Executes the named command.
-
-**demo.open_menu(menu_name)**
-
-Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the "Cmds\:Cursor/Selection\:Cursor Back..." menu.
-
-**demo.dismiss_menubar()**
-
-Dismisses the menu opened with demo.open_menu.
-
-### Images and focus
-
-**demo.image(pane,fn,center=None,height=None,width=None)**
-
-Overlays an image in a pane.
-
-- `pane`: Valid values are 'body', 'log' or 'tree'.
-- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
-- `height`: Scales the image so it has the given height.
-- `width`: Scales the image i so it has the given width.
-- `center`: If True, centers the image horizontally in the given pane.
-
-**demo.focus(pane)**
-
-Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
-
 ## Undo
 
 The demo plugin does not change Leo's key-handling in any way.  As a result, presenters may undo/redo the *actions* of demo scripts. Some limitations:
@@ -165,4 +161,3 @@ You will find this stylesheet in the node @data
 This plugin was written by Edward K. Ream, using Leo's screencast plugin as a starting point.
 
 This plugin was inspired by [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org). Or perhaps demo-it was inspired by Leo's earlier screencast plugin.
-
