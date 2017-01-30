@@ -3,11 +3,11 @@
 
 The demo.py plugin helps run dynamic demos from Leo files.
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts typically alter the outline, freeing the presenter from having to type correctly or remember sequences of desired actions.
+A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions.
 
 The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
 
-To run a demo, you create a **top-level script** that creates an instance of the Demo class. Top-level scripts are free to subclass the Demo class. To start the demo, the top-level script calls my_demo.start(p), where p is the root of the script tree. For example:
+To run a demo, you create a **top-level script** that creates an instance of the Demo class. These scripts may subclass the Demo class. To start the demo, the top-level script calls my_demo.start(p), where p is the root of the script tree. For example:
 ```python
 import leo.plugins.demo as demo
 
@@ -23,7 +23,7 @@ Demo1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 
 ## Demo scripts
 
-Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the 'demo' variable, which is bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
+Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefinede **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
 - Animate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
