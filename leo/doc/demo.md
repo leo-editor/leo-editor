@@ -2,6 +2,15 @@
 
 The demo.py plugin helps presenters run dynamic demos from Leo files.
 
+1. [Helper methods](../doc/demo.md#helper-methods)
+    1. [Images and focus](../doc/demo.md#images-and-focus)
+    2. [Menus](../doc/demo.md#menus)
+    3. [Starting and ending](../doc/demo.md#starting-and-ending)
+    4. [Typing](../doc/demo.md#typing)
+2. [Undo](../doc/demo.md#undo)
+3. [Style sheets](../doc/demo.md#style-sheets)
+4. [Acknowledgements](../doc/demo.md#acknowledgements)
+
 A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions.
 
 The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
