@@ -6,24 +6,15 @@
 A plugin that makes making Leo demos easy.
 For full details, see leo/docs/demo.md.
 
-Written by Edward K. Ream, January, 2017.
+Written by Edward K. Ream, January 29-31, 2017.
 '''
 #@+<< demo.py imports >>
 #@+node:ekr.20170128213103.3: ** << demo.py imports >>
 import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
-# import leo.core.leoGui as leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
-#@+<< demo.py to do >>
-#@+node:ekr.20170130002513.1: ** << demo.py to do >>
-#@@nocolor-node
-#@+at
-# Improve captions/callouts.
-# - Allow transparancy and auto-sizing.
-# - Add auto callouts for keys?
-#@-<< demo.py to do >>
 #@@language python
 #@@tabwidth -4
 #@+others
