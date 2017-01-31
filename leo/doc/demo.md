@@ -113,7 +113,11 @@ May be overridden in subclasses. Called whenever the demo ends.
 
 ##Typing
 
-The **demo.n1** and **demo.n2** ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of betwen n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively. 
+The **demo.n1** and **demo.n2** ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
+
+**demo.set_text_delta(self, delta, w=None)**
+
+Updates the style sheet for the given widget (default is the body pane). Delta increases the text size by the given number of points.
 
 **demo.body_keys(s)**
 
@@ -171,5 +175,5 @@ You will find this stylesheet in the node @data
 
 Edward K. Ream started this plugin on January 29, 2017, based on Leo's screencast plugin.
 
-The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps it was the other way around. demo-it may have been inspired by the screencast plugin.
+The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps demo-it was inspired by the screencast plugin.
 
