@@ -20,14 +20,9 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@+node:ekr.20170130002513.1: ** << demo.py to do >>
 #@@nocolor-node
 #@+at
-# 
-# * Improve captions/callouts.
-#     - Allow transparancy and auto-sizing.
-#     - Add auto callouts for keys?
-# 
-# *** Teach with examples.  Add example sections.
-#     - Typing should happen in present widget. Discuss c.FocusTo..., etc.
-#       (This could replace demo.focus(pane)
+# Improve captions/callouts.
+# - Allow transparancy and auto-sizing.
+# - Add auto callouts for keys?
 #@-<< demo.py to do >>
 #@@language python
 #@@tabwidth -4
