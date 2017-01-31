@@ -51,7 +51,6 @@ class Demo(object):
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
-        ### self.key_w = None # The widget for the keystroke.
         self.speed = 1.0 # Amount to multiply wait times.
         # Other ivars.
         self.script_list = []
@@ -174,20 +173,21 @@ class Demo(object):
         except Exception:
             g.es_exception()
     #@+node:ekr.20170128213103.11: *4* demo.body_keys
-    def body_keys(self, s):
+    def body_keys(self, s, undo=False):
         '''Undoably simulate typing in the body pane.'''
         c = self.c
         c.bodyWantsFocusNow()
         p = c.p
         w = c.frame.body.wrapper.widget
-        c.undoer.setUndoTypingParams(p, 'typing',
-            oldText=p.b, newText=p.b + s, oldSel=None, newSel=None, oldYview=None)
+        if undo:
+            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
+                # oldSel=None, newSel=None, oldYview=None)
         for ch in s:
             p.b = p.b + ch
             w.repaint()
             self.wait()
     #@+node:ekr.20170128213103.20: *4* demo.head_keys
-    def head_keys(self, s):
+    def head_keys(self, s, undo=False):
         '''Undoably simulates typing in the headline.'''
         c, p = self.c, self.c.p
         undoType = 'Typing'
@@ -196,11 +196,11 @@ class Demo(object):
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
-        # Support undo.
-        undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
-        dirtyVnodeList = p.setDirty()
-        c.undoer.afterChangeNodeContents(p, undoType, undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        if undo:
+            undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+            dirtyVnodeList = p.setDirty()
+            c.undoer.afterChangeNodeContents(p, undoType, undoData,
+                dirtyVnodeList=dirtyVnodeList)
         for ch in s:
             p.h = p.h + ch
             tree.repaint() # *not* tree.update.

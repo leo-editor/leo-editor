@@ -14,7 +14,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 #Overview
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions.
+A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. Within the script tree, @ignore and @ignore-tree work as you might expect.
 
 The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
 
@@ -35,15 +35,7 @@ class Demo_1(demo.Demo):
 Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-**Notes**:
-
-- The **demo.user_dict** ivar is a Python dictionary that demo scripts may freely use.
-
-- Subclasses of Demo may define **setup** and **teardown** methods. The demo class calls demo.setup(p) just before the first demo script, and calls demo.teardown() just after the last demo script.
-
-- **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications.
-
-- The demo plugin executes scripts in the script tree in outline order, ignoring empty nodes, **@ignore nodes**, and trees whose root is an **@ignore-tree** node.
+**Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications.
 
 #Helper methods
 
@@ -62,6 +54,20 @@ For example, this demo script executes the insert-node command!
 ```
 
 The following sections describe all public helper methods of the Demo class.
+
+##Ivars
+
+**demo.user_dict**
+
+This ivar is a Python dictionary that demo scripts may freely use.
+
+**demo.n1** and **demo.n2**
+
+These ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
+
+**demo.speed**
+
+This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.  So using demo.speed factor is the easy way to adjust simulated typing speed.
 
 ##Images
 
@@ -89,7 +95,7 @@ Opens the menu whose name is given, ignoring case and any non-alpha characters i
 
 **demo.dismiss_menubar()**
 
-Dismisses the menu opened with demo.open_menu.
+Close the menu opened with demo.open_menu.
 
 ##Starting and ending
 
@@ -110,8 +116,6 @@ Ends the demo and calls the teardown script. The demo automatically ends after e
 May be overridden in subclasses. Called whenever the demo ends.
 
 ##Typing
-
-The **demo.n1** and **demo.n2** ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
 
 **demo.body_keys(s)**
 
