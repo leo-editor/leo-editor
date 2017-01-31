@@ -3,18 +3,19 @@
 The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Overview](../doc/demo.md#overview)
+- [Demo scripts](../doc/demo.md#demo-scripts)
 - [Helper methods](../doc/demo.md#helper-methods)
     - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
     - [Starting and ending](../doc/demo.md#starting-and-ending)
     - [Typing](../doc/demo.md#typing)
 - [Undo](../doc/demo.md#undo)
-- [Styling](../doc/demo.md#styling)
+- [Magnification and styling](../doc/demo.md#magnification-and-styling)
 - [Acknowledgements](../doc/demo.md#acknowledgements)
 
 #Overview
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. Within the script tree, @ignore and @ignore-tree work as you might expect.
+A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. 
 
 The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
 
@@ -35,10 +36,7 @@ class Demo_1(demo.Demo):
 Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
-**Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications.
-
-#Helper methods
-
+#Demo scripts
 Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
@@ -46,12 +44,18 @@ Demo scripts have access to c, g and p as usual.  Demo scripts also have access 
 - Open any Leo menu, selecting particular menu items.
 - Scale font sizes.
 
-For example, this demo script executes the insert-node command!
+For example, this demo script executes the insert-node command:
 
 ```python
     demo.key('Alt-x')
     demo.keys('insert-node\n')
 ```
+
+Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
+
+**Note**: The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
+
+#Helper methods
 
 The following sections describe all public helper methods of the Demo class.
 
@@ -116,18 +120,19 @@ Ends the demo and calls the teardown script. The demo automatically ends after e
 May be overridden in subclasses. Called whenever the demo ends.
 
 ##Typing
+The following methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without the `undo` argument do not support undo at all.
 
-**demo.body_keys(s)**
+**demo.body_keys(s, undo=False)**
 
-Simulates typing the string s in the body pane. This method supports undo.
+Simulates typing the string s in the body pane.
 
-**demo.head_keys(s)**
+**demo.head_keys(s, undo=False)**
 
-Simulates typing the string s in the body pane. This method supports undo.
+Simulates typing the string s in the body pane.
 
-**demo.keys(s)**
+**demo.keys(s, undo=False)**
 
-Simulates typing the string s in the present widget. This method support undo
+Simulates typing the string s in the present widget.
 
 **demo.key(setting)**
 
@@ -147,7 +152,7 @@ The demo plugin does not change Leo's key-handling in any way.  As a result, pre
 
 These limitations are unlikely to be a nuisance in practice.
 
-#Styling
+#Magnification and styling
 
 **demo.set_text_delta(self, delta, w=None)**
 
@@ -171,7 +176,7 @@ You will find this stylesheet in the node @data
 
 #Acknowledgements
 
-Edward K. Ream started this plugin on January 29, 2017, based on Leo's screencast plugin.
+Edward K. Ream started this plugin on January 29, 2017, using Leo's screencast plugin as a starting point.
 
 The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin. inspired demo-it.
 
