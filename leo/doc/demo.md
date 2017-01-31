@@ -37,6 +37,7 @@ Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
 
 #Demo scripts
+
 Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
@@ -57,7 +58,11 @@ Within the script tree, **@ignore** and **@ignore-tree** work as expected. The d
 
 #Helper methods
 
-The following sections describe all public helper methods of the Demo class.
+The following sections describe all public ivars and helper methods of the Demo class.
+
+The valid values for `pane` arguments are the strings, "body", "log" or "tree".
+
+Helper methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
 
 ##Ivars
 
@@ -74,8 +79,6 @@ These ivars determine the speed of the simulated typing provided by the followin
 This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.  So using demo.speed factor is the easy way to adjust simulated typing speed.
 
 ##Images
-
-In the following methods, the valid values for the `pane` arguments are "body", "log" and "tree".
 
 **demo.caption(s, pane)**
 
@@ -115,12 +118,11 @@ Starts a demo. p is the root of demo script tree.
 
 Ends the demo and calls the teardown script. The demo automatically ends after executing the last demo script.
 
-**demo.teardown(p)**
+**demo.teardown()**
 
-May be overridden in subclasses. Called whenever the demo ends.
+May be overridden in subclasses. Called when the demo ends.
 
 ##Typing
-The following methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without the `undo` argument do not support undo at all.
 
 **demo.body_keys(s, undo=False)**
 
