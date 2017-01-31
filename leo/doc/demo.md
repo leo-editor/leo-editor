@@ -63,6 +63,12 @@ The following sections describe all public helper methods of the Demo class.
 
 ##Images and focus
 
+In the following methods, the valid values for the `pane` arguments are "body", "log" and "tree".
+
+**demo.caption(s, pane)**
+
+Creates a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+
 **demo.image(pane,fn,center=None,height=None,width=None)**
 
 Overlays an image in a pane.
@@ -78,10 +84,6 @@ Overlays an image in a pane.
 Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
 
 ##Menus
-
-**demo.command(command_name)**
-
-Executes the named command.
 
 **demo.open_menu(menu_name)**
 
@@ -111,28 +113,26 @@ May be overridden in subclasses. Called whenever the demo ends.
 
 ##Typing
 
-**demo.body(s)**, **demo.log(s)** and **demo.tree(s)**
+The **demo.n1** and **demo.n2** ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of betwen n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively. 
 
-Creates a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+**demo.body_keys(s)**
 
-**demo.body_keys(s,n1=None,n2=None)**
+Simulates typing the string s in the body pane. This method supports undo.
 
-Draws the string s in the body pane of the presently selected node. n1 and n2 give the range of delays to be inserted between typing. If n1 and n2 are both None, values are given that approximate a typical typing rate.
+**demo.head_keys(s)**
 
-**demo.head_keys(s,n1=None,n2=None)**
+Simulates typing the string s in the body pane. This method supports undo.
 
-Same as demo.body_keys, except that the keys are "typed" into the headline of the presently selected node.
+**demo.keys(s)**
 
-**demo.plain_keys(s,n1=None,n2=None,pane='body')**
+Simulates typing the string s in the present widget. This method support undo
 
-Same as demo.body_keys, except that the keys are typed into the designated pane. The valid values for the 'pane' argument are 'body','log' or 'tree'.
+**demo.key(setting)**
 
-**demo.single_key(setting)**
-
-Generates a key event. Examples:
+Types a single key in the present widget. This method does not support undo. Examples:
 ```python
-   demo.single_key('Alt-X') # Activate the minibuffer
-   demo.single_key('Ctrl-F') # Execute Leo's Find command
+   demo.key('Alt-X') # Activate the minibuffer
+   demo.key('Ctrl-F') # Execute Leo's Find command
 ```
 
 #Undo
@@ -145,9 +145,11 @@ The demo plugin does not change Leo's key-handling in any way.  As a result, pre
 
 These limitations are unlikely to be a nuisance in practice.
 
-#Style sheets
+#Style sheets & magnification
 
-**Note**: Helper methods will likely exist to alter this stylesheet more easily.
+**demo.set_magnification(multiplier)**
+
+Magnifies text by the given multiplier, a number between 0.0 and 1.0.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::

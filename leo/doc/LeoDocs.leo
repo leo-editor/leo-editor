@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1246,15 +1246,19 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20161207045325.1"><vh>To be documented</vh>
 <v t="ekr.20161207050138.1"><vh>Prefer list processing to string processing </vh></v>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
-</v>
+<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
 <v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
 <v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
+</v>
+<v t="ekr.20131015104133.16763"></v>
+<v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
+<v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
+</v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -1299,18 +1303,31 @@
 <v t="ekr.20170123084609.7"><vh>\@button make-test</vh></v>
 </v>
 </v>
-<v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
-<v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
-<v t="ekr.20170129121025.1"><vh>Old demo docs</vh>
-<v t="ekr.20170129121025.2"><vh>Old docs</vh></v>
-<v t="ekr.20170129121025.3"><vh>Old helper methods, from the overview</vh></v>
-<v t="ekr.20170129120630.5"><vh>demo-start (probably obsolete)</vh></v>
-<v t="ekr.20170129120630.6"><vh>The program counter, demo.p</vh></v>
-</v>
-<v t="ekr.20170130071657.1"><vh>** To do: toc, magnification command</vh></v>
-<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
+<v t="ekr.20170130190952.1"><vh>Demo stuff</vh>
 <v t="ekr.20161204055040.1"></v>
 <v t="ekr.20170130082205.1"><vh>Table of contents</vh></v>
+<v t="ekr.20170130190346.5"><vh>Examples (to do)</vh>
+<v t="ekr.20170130190346.6"><vh>Alt-X insert-node</vh></v>
+</v>
+<v t="ekr.20170130190834.1"><vh>@button demo1</vh>
+<v t="ekr.20170130190834.2"><vh>&lt;&lt; class MyDemo &gt;&gt;</vh>
+<v t="ekr.20170130190834.3"><vh>setup</vh></v>
+<v t="ekr.20170130190834.4"><vh>teardown</vh></v>
+</v>
+<v t="ekr.20170130190834.5"><vh>demo1-commands</vh>
+<v t="ekr.20170130190834.6"><vh>@ignore Alt-X insert-node</vh></v>
+<v t="ekr.20170130190834.7"><vh>@ignore Return</vh></v>
+<v t="ekr.20170130190834.8"><vh>@ignore undo</vh></v>
+<v t="ekr.20170130190834.9"><vh>set_text_delta</vh></v>
+<v t="ekr.20170130190834.10"><vh>headline</vh></v>
+<v t="ekr.20170130190834.11"><vh>caption</vh></v>
+<v t="ekr.20170130190834.12"><vh>@image</vh></v>
+<v t="ekr.20170130190834.13"><vh>open menu</vh></v>
+<v t="ekr.20170130190834.14"><vh>close menu</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19670,90 +19687,6 @@ https://github.com/leo-editor/leo-editor/issues/332
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
 <t tx="ekr.20170124041304.1"></t>
-<t tx="ekr.20170129120630.5">The demo-start command starts a screencast. This command first
-searches backwards for the nearest \@screencast node. If no such node is
-found, the command searches forwards for the next \@screencast node. This
-command then executes the script in the body text, and pauses. Thereafter,
-the Right Arrow key executes the script in the next slide node (in outline
-order). The Left Arrow key executes the script in the previous slide node.
-The Escape or Ctrl-G keys terminate any screencast.
-
-</t>
-<t tx="ekr.20170129120630.6">## The program counter, demo.p
-
-The demo.p ivar points to the to-be-executed node in the script tree. You can think of demo.p as the demo's program counter. demo scripts should rarely need to change demo.p.
-
-After executing a demo script, the Demo class advances demo.p to the next non-empty, non-ignored node in the script tree, unless the previous script has changed demo.p. By default, the Demo class keeps the script tree collapsed.
-
-In contrast, c.p is the presently selected (and therefore visible) node. demo scripts will can use c.selectPosition(p) or c.redraw(p) as usual to make *other* nodes visible by calling 
-
-</t>
-<t tx="ekr.20170129121025.1">**demo.redraw(p)** Forces an immediate redraw of the outline pane. If p is
-given, that position becomes c.p, the presently selected node.
-
-**demo.selectPosition(p)** Same as demo.redraw(p)</t>
-<t tx="ekr.20170129121025.2">@language rest
-
-To create the presentation, the presenter creates an **@screencast** node.
-This node, and all its descendants, is called the **controlling tree**.
-Each node of this tree may contain a script in its body text; each script
-creates a slide. Nodes without scripts can be used as organizer nodes as
-usual. **@ignore-node** nodes and **@ignore-tree** trees are ignored.
-Normally, the controlling tree will be hidden from view during the
-presentation--the presentation will be about *other* parts of the tree.
-
-The screencast-start command starts a screencast. This command shows the
-first slide of the nearest \@screencast node. Thereafter, the plugin
-executes the next script in controlling tree when the demonstrator types
-the RtArrow key. These scripts are normal Leo scripts, except that they
-also have access to an "m" variable that denotes a **ScreenCastController**
-(SCC), an object created by this plugin. The term **screencast script**
-denotes a script that has access to the "m" variable.
-
-=====
-
-To summarize: the presenter moves from slide to slide using the RtArrow
-key. The RtArrow key causes the Demo class executes the next script in the
-controlling tree. The script alters the screen, say by selecting inserting,
-deleting, expanding and contracting nodes, or by inserting, deleting or
-changing headline or body text. The script will typically also show images
-or captions to highlight what the slide is supposed to be showing. In
-short:
-
-- A screencast is a sequence of slides.  A slide is the appearance
-  of Leo after a screencast script is executed.
-
-- The human presenter moves to the next slide using the RtArrow key.
-  The LtArrow key moves back to the previous slide.
-
-- Scripts in an \@screencast tree create slides. The 'm' variable allows
-  such scripts to animate keystrokes or overlay images or captions on the
-  screen.
-
-Before reading further, please look at the example \@screencast trees in
-test.leo. Then run those screencasts to see the what the scripts do.
-</t>
-<t tx="ekr.20170129121025.3">@language rest
-@wrap
-
-- **m.image(file_name)** overlays a scaled image on Leo's window. For
-  example, a screencast could discuss Leo's icon box by shown greatly
-  magnified images of various kinds of icon box.
-
-- **m.body(text)** overlays a caption on Leo's body pane. By default,
-  captions have a bright yellow background so that they clearly stand out
-  from the normal appearance of Leo's screen. Similarly **m.log(text)** and
-  **m.tree(text)** overlay captions on Leo's log and tree panes.
-
-- **m.body_keys(text)** and **m.head_keys(text)** animate typing of text in
-  body text and headlines respectively.
-
-- **m.single_key(key_setting)** allows any key to be handled exactly as if
-  the user had typed the key.
-
-- **m.open_menu(menu_name)** opens a menu as if the demonstrator had opened it
-  with a mouse click. **m.dismiss_menubar()** closes all open menus.</t>
-<t tx="ekr.20170130071657.1"></t>
 <t tx="ekr.20170130082205.1">- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
 - [Helper methods](../doc/demo.md#helper-methods)
@@ -19765,7 +19698,96 @@ test.leo. Then run those screencasts to see the what the scripts do.
 - [Style sheets](../doc/demo.md#style-sheets)
 - [Acknowledgements](../doc/demo.md#acknowledgements)
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170130190346.5">
+
+</t>
+<t tx="ekr.20170130190346.6">demo.key('Alt+x') # Same as Alt-X??
+demo.keys('insert-node')
+demo.wait(0.8)
+demo.key('\n') # Works.
+</t>
+<t tx="ekr.20170130190834.1">g.cls()
+if c.isChanged(): c.save()
+import imp
+import leo.plugins.demo as demo
+imp.reload(demo)
+&lt;&lt; class MyDemo &gt;&gt;
+h = 'demo1-commands'
+button_p = g.findNodeAnywhere(c, '@button demo1')
+commands = g.findNodeInTree(c, button_p, h)
+if commands:
+    MyDemo(c).start(commands)
+else:
+    print('not found', h, c.p.h)
+</t>
+<t tx="ekr.20170130190834.10">c.k.simulateCommand('insert-node')
+demo.head_keys('This is a test')</t>
+<t tx="ekr.20170130190834.11">demo.caption('My Caption', 'body')</t>
+<t tx="ekr.20170130190834.12">demo.delete_widgets()
+fn = 'SplashScreen.ico'
+demo.image('body', fn, center=True, height=None, width=None)</t>
+<t tx="ekr.20170130190834.13">demo.delete_widgets()
+demo.open_menu('Import')</t>
+<t tx="ekr.20170130190834.14">demo.dismiss_menu_bar()</t>
+<t tx="ekr.20170130190834.2">class MyDemo(demo.Demo):
+    
+    @others
+    
+</t>
+<t tx="ekr.20170130190834.3">def setup(self, p):
+    
+    c = self.c
+    self.delta = 0
+    self.clear_log()
+    p = g.findNodeAnywhere(c, 'Demo area')
+    if p:
+        c.selectPosition(p)
+</t>
+<t tx="ekr.20170130190834.4">def teardown(self):
+    
+    c = self.c
+    if self.delta:
+        self.set_text_delta(-self.delta)
+    p = g.findNodeAnywhere(c, 'Demo area')
+    if p:
+        c.selectPosition(p)
+        next = p.next()
+        if next and next.h == 'This is a test':
+            c.selectPosition(next)
+            next.doDelete()
+            c.selectPosition(p)
+            c.setChanged(False)
+            c.redraw()
+    
+
+</t>
+<t tx="ekr.20170130190834.5">print('demo1-commands')
+# c.contractAllHeadlines()
+</t>
+<t tx="ekr.20170130190834.6">demo.key('Alt+x') # Not the same as Alt-X
+# demo.keys('ins\\tno\\t\\n')
+demo.keys('insert-node')
+# g.trace(c.k.inState()) # True
+demo.wait(0.8)
+demo.key('\n') # Works.
+# demo.key('Return') # Works.
+# demo.save_key_state()
+</t>
+<t tx="ekr.20170130190834.7">state = c.k.state
+print(state.kind)
+demo.restore_key_state()
+print(state.kind)
+demo.key('\n')
+print(state.kind)</t>
+<t tx="ekr.20170130190834.8">undo_type = c.undoer.undoType
+if undo_type == 'Insert Node':
+    c.undoer.undo()</t>
+<t tx="ekr.20170130190834.9">print('increasing text size by 10')
+demo.delta = 10
+demo.set_text_delta(demo.delta)</t>
+<t tx="ekr.20170130190843.1"></t>
+<t tx="ekr.20170130190952.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
