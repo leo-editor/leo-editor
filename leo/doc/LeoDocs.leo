@@ -1258,6 +1258,7 @@
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
 <v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
+<v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 </v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
@@ -19787,6 +19788,10 @@ demo.delta = 10
 demo.set_text_delta(demo.delta)</t>
 <t tx="ekr.20170130190843.1"></t>
 <t tx="ekr.20170130190952.1"></t>
+<t tx="ekr.20170131092936.1">- Use @auto-md.
+- Optional: change @language md to @language rest.
+- Use @button make-md-toc in LeoDocs.leo.
+</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

@@ -158,7 +158,7 @@ These limitations are unlikely to be a nuisance in practice.
 
 **demo.set_text_delta(self, delta, w=None)**
 
-Updates the style sheet for the given widget (default is the body pane). Delta increases the text size by the given number of points.
+Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
