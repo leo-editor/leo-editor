@@ -926,7 +926,9 @@ class Undoer(object):
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams
-    def setUndoTypingParams(self, p, undo_type, oldText, newText, oldSel, newSel, oldYview=None):
+    def setUndoTypingParams(self, p, undo_type, oldText, newText, 
+        oldSel=None, newSel=None, oldYview=None,
+    ):
         '''
         Save enough information to undo or redo typing operation.
 
