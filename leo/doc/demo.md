@@ -4,7 +4,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Overview](../doc/demo.md#overview)
 - [Helper methods](../doc/demo.md#helper-methods)
-    - [Images and focus](../doc/demo.md#images-and-focus)
+    - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
     - [Starting and ending](../doc/demo.md#starting-and-ending)
     - [Typing](../doc/demo.md#typing)
@@ -63,7 +63,7 @@ For example, this demo script executes the insert-node command!
 
 The following sections describe all public helper methods of the Demo class.
 
-##Images and focus
+##Images
 
 In the following methods, the valid values for the `pane` arguments are "body", "log" and "tree".
 
@@ -80,10 +80,6 @@ Overlays an image in a pane.
 - `height`: Scales the image so it has the given height.
 - `width`: Scales the image i so it has the given width.
 - `center`: If True, centers the image horizontally in the given pane.
-
-**demo.focus(pane)**
-
-Forces focus to the given pane. Valid values are 'body', 'log' or 'tree'.
 
 ##Menus
 
