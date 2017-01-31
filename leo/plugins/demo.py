@@ -240,24 +240,6 @@ class Demo(object):
         )
         # g.trace('%10r %r' % (shortcut, event))
         return event
-    #@+node:ekr.20170130160749.1: *4* demo.save/restore_key_state
-    def save_key_state(self):
-        '''Save the key handler state, if any.'''
-        k = self.c.k
-        state = k.state
-        if state.kind is not None:
-            label = k.getLabel()
-            self.saved_key_state = state.kind, state.n, state.handler, label
-        # g.trace('=====', self.saved_key_state)
-
-    def restore_key_state(self):
-        '''Restore the key handler state, if any.'''
-        k = self.c.k
-        if self.saved_key_state:
-            # g.trace('-----', self.saved_key_state)
-            k.state.kind, k.state.n, k.state.handler, label = self.saved_key_state
-            if label: k.setLabel(label)
-            self.saved_key_state = None
     #@+node:ekr.20170128213103.28: *4* demo.key
     def key(self, ch):
         '''Simulate typing a single key'''
