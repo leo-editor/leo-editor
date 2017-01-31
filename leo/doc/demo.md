@@ -9,7 +9,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Starting and ending](../doc/demo.md#starting-and-ending)
     - [Typing](../doc/demo.md#typing)
 - [Undo](../doc/demo.md#undo)
-- [Style sheets](../doc/demo.md#style-sheets)
+- [Styling](../doc/demo.md#styling)
 - [Acknowledgements](../doc/demo.md#acknowledgements)
 
 #Overview
@@ -115,10 +115,6 @@ May be overridden in subclasses. Called whenever the demo ends.
 
 The **demo.n1** and **demo.n2** ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
 
-**demo.set_text_delta(self, delta, w=None)**
-
-Updates the style sheet for the given widget (default is the body pane). Delta increases the text size by the given number of points.
-
 **demo.body_keys(s)**
 
 Simulates typing the string s in the body pane. This method supports undo.
@@ -149,11 +145,11 @@ The demo plugin does not change Leo's key-handling in any way.  As a result, pre
 
 These limitations are unlikely to be a nuisance in practice.
 
-#Style sheets & magnification
+#Styling
 
-**demo.set_magnification(multiplier)**
+**demo.set_text_delta(self, delta, w=None)**
 
-Magnifies text by the given multiplier, a number between 0.0 and 1.0.
+Updates the style sheet for the given widget (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
