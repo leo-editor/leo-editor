@@ -13,6 +13,31 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
+#@+<< demo.py to do >>
+#@+node:ekr.20170130002513.1: ** << demo.py to do >>
+#@@nocolor-node
+#@+at
+#@@language rest
+#@@wrap
+# 
+# *** k.masterKeyHander handles demo-next w/o changing KeyHandler state.
+#     kinda like ctrl-g handling.
+#     
+# * Improve captions/callouts.
+# - Add auto callouts for keys?
+# - Remove undo code from demo.keys??
+# 
+# ** Fix crashers in demo related to bad shortcuts.
+# 
+# ** An Info Issue/FAQ about creating markdown files:
+#     - Use @auto-md.
+#     - Use @button make-md-toc in LeoDocs.leo.
+# 
+# *** Teach with examples.  Add example sections.
+#     - Typing should happen in present widget. Discuss c.FocusTo..., etc.
+#       (This could replace demo.focus(pane)
+#     
+#@-<< demo.py to do >>
 #@@language python
 #@@tabwidth -4
 #@+others
