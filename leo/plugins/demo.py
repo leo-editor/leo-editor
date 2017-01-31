@@ -131,7 +131,7 @@ class Demo(object):
         if not self.script_list:
             self.end()
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
-    def startup(self, p):
+    def setup(self, p):
         '''
         Called before running the first demo script.
         p is the root of the tree of demo scripts.
