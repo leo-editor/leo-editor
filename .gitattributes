@@ -19,4 +19,4 @@ leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
 
-commit_timestamp.json merge=ours
+leo/core/commit_timestamp.json merge=ours
