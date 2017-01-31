@@ -261,14 +261,14 @@ class Demo(object):
         k.masterKeyHandler(event)
         w.repaint() # Make the character visible immediately.
     #@+node:ekr.20170128213103.23: *4* demo.keys
-    def keys(self, s):
+    def keys(self, s, undo=False):
         '''
         Simulate typing a string of *plain* keys.
         Use demo.key(ch) to type any other characters.
         '''
         c, p = self.c, self.c.p
-        c.undoer.setUndoTypingParams(p, 'typing',
-            oldText=p.b, newText=p.b + s, oldSel=None, newSel=None, oldYview=None)
+        if undo:
+            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
         for ch in s:
             self.key(ch)
     #@+node:ekr.20170128213103.43: *4* demo.wait
