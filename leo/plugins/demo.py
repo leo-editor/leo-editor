@@ -373,22 +373,6 @@ class Demo(object):
     def clear_log(self):
         '''Clear the log.'''
         self.c.frame.log.clearTab('Log')
-    #@+node:ekr.20170128213103.19: *4* demo.focus
-    def focus(self, pane):
-        '''Immediately set the focus to the given pane.'''
-        c = self.c
-        d = {
-            'body': c.bodyWantsFocusNow,
-            'log': c.logWantsFocusNow,
-            'tree': c.treeWantsFocusNow,
-        }
-        f = d.get(pane)
-        if f:
-            f()
-            ### c.outerUpdate()
-            ### self.repaint(pane)
-        else:
-            g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget.'''

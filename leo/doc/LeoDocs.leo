@@ -1328,6 +1328,7 @@
 </v>
 </v>
 <v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
+<v t="ekr.20170130195122.1"><vh>** document problems with preserving minbuffer state</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19787,6 +19788,7 @@ demo.delta = 10
 demo.set_text_delta(demo.delta)</t>
 <t tx="ekr.20170130190843.1"></t>
 <t tx="ekr.20170130190952.1"></t>
+<t tx="ekr.20170130195122.1"></t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
