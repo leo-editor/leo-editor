@@ -178,7 +178,7 @@ You will find this stylesheet in the node @data
 
 #Acknowledgements
 
-Edward K. Ream started this plugin on January 29, 2017, using Leo's screencast plugin as a starting point.
+Edward K. Ream wrote this plugin on January 29-31, 2017, using Leo's screencast plugin as a starting point. 
 
 The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin. inspired demo-it.
 
