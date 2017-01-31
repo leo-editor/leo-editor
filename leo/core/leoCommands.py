@@ -2067,6 +2067,7 @@ class Commands(object):
         g.app.writeWaitingLog(c)
         g.doHook("new", old_c=self, c=c, new_c=c)
         c.setLog()
+        c.setChanged(False) # Fix #387
         c.redraw()
         return c # For unit tests and scripts.
     #@+node:ekr.20031218072017.2821: *6* c.open & helper
@@ -3170,7 +3171,7 @@ class Commands(object):
         c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
-        c.setChanged(True)
+        c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.
         # paste as first child if back is expanded.
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
@@ -6676,10 +6677,10 @@ class Commands(object):
                 c.setChanged(True)
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self, changedFlag=True):
+    def setChanged(self, changedFlag=True, redrawFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
         trace = False and not g.unitTesting # and changedFlag
-        if trace: g.trace(g.callers())
+        if trace: g.trace(changedFlag, redrawFlag, g.callers(2))
         c = self
         if not c.frame:
             return
@@ -6698,20 +6699,21 @@ class Commands(object):
         if not c.frame.top:
             return
         master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
-        if master:
-            # Call LeoTabbedTopLevel.setChanged.
-            master.setChanged(c, changedFlag)
-        s = c.frame.getTitle()
-        # if trace: g.trace(changedFlag,repr(s))
-        if len(s) > 2:
-            if changedFlag:
-                if s[0] != '*':
-                    c.frame.setTitle("* " + s)
-                    # if trace: g.trace('(c)',"* " + s)
-            else:
-                if s[0: 2] == "* ":
-                    c.frame.setTitle(s[2:])
-                    # if trace: g.trace('(c)',s[2:])
+        if redrawFlag: # Prevent flash when fixing #387.
+            if master:
+                # Call LeoTabbedTopLevel.setChanged.
+                master.setChanged(c, changedFlag)
+            s = c.frame.getTitle()
+            # if trace: g.trace(changedFlag,repr(s))
+            if len(s) > 2:
+                if changedFlag:
+                    if s[0] != '*':
+                        c.frame.setTitle("* " + s)
+                        # if trace: g.trace('(c)',"* " + s)
+                else:
+                    if s[0: 2] == "* ":
+                        c.frame.setTitle(s[2:])
+                        # if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
