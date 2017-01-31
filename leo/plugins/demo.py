@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170128213103.1: * @file demo.py
+#@@first
 '''
 A plugin that makes making Leo demos easy.
 For full details, see leo/docs/demo.md.
@@ -10,18 +12,15 @@ Written by Edward K. Ream, January, 2017.
 #@+node:ekr.20170128213103.3: ** << demo.py imports >>
 import random
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui # for LeoKeyEvents.
+import leo.plugins.qt_events as qt_events
+# import leo.core.leoGui as leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
 #@+<< demo.py to do >>
 #@+node:ekr.20170130002513.1: ** << demo.py to do >>
 #@@nocolor-node
 #@+at
-#     
-# * Fix crashers in demo related to bad shortcuts.
-#     - Use Leo's *input* key handling logic to create proper strokes.
-#     ** Don't use special case in demo.new_key_event
-#     
+# 
 # * Improve captions/callouts.
 #     - Allow transparancy and auto-sizing.
 #     - Add auto callouts for keys?
@@ -72,6 +71,8 @@ class Demo(object):
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
         self.speed = 1.0 # Amount to multiply wait times.
+        # Converting arguments to demo.key.
+        self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
         # Other ivars.
         self.script_list = []
             # A list of strings (scripts).
@@ -233,27 +234,17 @@ class Demo(object):
     #@+node:ekr.20170128213103.39: *4* demo.new_key_event
     def new_key_event(self, shortcut, w):
         '''Create a LeoKeyEvent for a *raw* shortcut.'''
-        trace = False and not g.unitTesting
-        c, k = self.c, self.c.k
-        # Tricky: Canonicalize the shortcut, without making it a stroke.
-        if 1: # A bad hack. Temporary.
-            if shortcut == '\n':
-                char = '\n'
-                shortcut2 = 'Return'
-            elif shortcut == '\t':
-                char = 'tab'
-                shortcut2 = 'Tab'
-            else:
-                stroke = k.strokeFromSetting(shortcut)
-                shortcut2 = stroke.s if stroke else ''
-                char = '' if len(shortcut) > 1 else shortcut
-        else:
-            stroke = k.strokeFromSetting(shortcut)
-            shortcut2 = stroke.s if stroke else ''
-            char = '' if len(shortcut) > 1 else shortcut
-        if trace: g.trace('%r -> %r' % (shortcut, shortcut2))
-        return leoGui.LeoKeyEvent(c,
-            char=char, event=None, shortcut=shortcut2, w=w)
+        # Using the *input* logic seems best.
+        event = self.filter_.create_key_event(
+            event=None,
+            c=self.c,
+            w=w,
+            ch=shortcut if len(shortcut) is 1 else '',
+            tkKey=None,
+            shortcut=shortcut,
+        )
+        # g.trace('%10r %r' % (shortcut, event))
+        return event
     #@+node:ekr.20170130160749.1: *4* demo.save/restore_key_state
     def save_key_state(self):
         '''Save the key handler state, if any.'''
