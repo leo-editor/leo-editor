@@ -43,6 +43,8 @@ Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 
 - **Important**: The Demo class executes demo scripts *in the present outline*. As shown above, demo scripts may create new outlines, thereby changing the meaning of c. It is up to the demo scripts themselves to handle such complications.
 
+The demo plugin executes scripts in the script tree in outline order, ignoring empty nodes, **@ignore nodes**, and trees whose root is an **@ignore-tree** node.
+
 #Helper methods
 
 Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:

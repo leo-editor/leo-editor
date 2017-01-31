@@ -66,9 +66,13 @@ class Demo(object):
         '''Create the state_list from the tree of script nodes rooted in p.'''
         c = self.c
         aList = []
-        for p in p.self_and_subtree():
-            if p.h.startswith('@ignore'):
-                pass
+        after = p.nodeAfterTree()
+        # for p in p.self_and_subtree():
+        while p and p != after:
+            if p.h.startswith('@ignore-tree'):
+                p.moveToNodeAfterTree()
+            elif p.h.startswith('@ignore'):
+                p.moveToThreadNext()
             else:
                 script = g.getScript(c, p,
                     useSelectedText=False,
@@ -77,6 +81,7 @@ class Demo(object):
                 )
                 if script.strip():
                     aList.append(script)
+                p.moveToThreadNext()
         self.script_list = list(reversed(aList))
     #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
     def delete_widgets(self):
