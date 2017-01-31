@@ -29,13 +29,16 @@ def init():
 
 @g.command('demo-next')
 def demo_next(self, event=None):
-    if hasattr(g.app, 'demo', None):
+    '''Run the next demo script.'''
+    g.trace(g.callers())
+    if getattr(g.app, 'demo', None):
         g.app.demo.next()
     else:
         g.trace('no demo instance')
         
 @g.command('demo-end')
 def demo_end(self, event=None):
+    '''End the present demo.'''
     if getattr(g.app, 'demo', None):
         g.app.demo.end()
     else:
@@ -102,6 +105,7 @@ class Demo(object):
         '''End this slideshow and call teardown().'''
         # Don't delete widgets here. Use the teardown method instead.
         # self.delete_widgets()
+        g.app.demo = None
         self.teardown()
         g.trace(self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node

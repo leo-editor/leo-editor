@@ -1745,6 +1745,7 @@ class KeyHandlerClass(object):
         # Keys whose bindings are computed by initSpecialIvars...
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
+        self.demoNextKey = None # New support for the demo.py plugin.
         self.fullCommandKey = None
         self.universalArgKey = None
         # Used by k.masterKeyHandler...
@@ -2360,6 +2361,7 @@ class KeyHandlerClass(object):
             ('abortAllModesKey', 'keyboard-quit'),
             ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
+            ('demoNextKey', 'demo-next'),
         ):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
@@ -2367,7 +2369,7 @@ class KeyHandlerClass(object):
                 for si in aList:
                     assert g.isShortcutInfo(si), si
                     if si.pane == pane:
-                        if trace: g.trace(commandName, si.stroke)
+                        if trace: g.trace(commandName, ivar, si.stroke)
                         setattr(k, ivar, si.stroke)
                         found = True; break
             if not found and warn:
@@ -3229,17 +3231,20 @@ class KeyHandlerClass(object):
             'state', state, 'state2', k.unboundKeyAction)
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            ### if hasattr(c, 'screenCastController') and c.screenCastController:
-            ###    c.screenCastController.quit()
+            ### For now, leave this support in place.
+            if hasattr(c, 'screenCastController') and c.screenCastController:
+                c.screenCastController.quit()
             k.masterCommand(commandName='keyboard-quit',
                     event=event, func=k.keyboardQuit, stroke=stroke)
-            ### Macros no longer exist.
-                # if c.macroCommands.recordingMacro:
-                    # c.macroCommands.endMacro()
-                # else:
-                    # k.masterCommand(commandName='keyboard-quit',
-                        # event=event, func=k.keyboardQuit, stroke=stroke)
             return
+        # 2017/01/31: Important support for the demo.py plugin.
+        # Shortcut everything so that demo-next won't alter any KeyHandler ivars.
+        if k.demoNextKey and stroke == k.demoNextKey:
+            if getattr(g.app, 'demo', None):
+                g.app.demo.next()
+            else:
+                g.es_print('no demo active')
+            return 
         # Always handle modes regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state, stroke))
