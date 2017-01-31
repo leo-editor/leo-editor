@@ -3551,7 +3551,6 @@ class LeoQtMenu(leoMenu.LeoMenu):
         '''Activate the menu with the given name'''
         menu = self.getMenu(menuName)
             # Menu is a QtMenuWrapper, a subclass of both QMenu and LeoQtMenu.
-        g.trace(menu)
         if menu:
             self.activateAllParentMenus(menu)
         else:

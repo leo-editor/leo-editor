@@ -3193,7 +3193,7 @@ class KeyHandlerClass(object):
         '''The master key handler for almost all key bindings.'''
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
-        verbose = False
+        verbose = True
         trace_unbound = True
         k, c = self, self.c
         c.check_event(event)

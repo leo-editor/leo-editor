@@ -49,9 +49,9 @@ class Demo(object):
         self.c = c
         self.description = description or self.__class__.__name__
         # Typing params.
-        self.n1 = 0.02 # default minimal typing delay.
-        self.n2 = 0.175 # default maximum typing delay.
-        self.key_w = None # The widget for the keystroke.
+        self.n1 = 0.02 # default minimal typing delay, in seconds.
+        self.n2 = 0.175 # default maximum typing delay, in seconds.
+        ### self.key_w = None # The widget for the keystroke.
         self.speed = 1.0 # Amount to multiply wait times.
         # Other ivars.
         self.script_list = []
@@ -149,15 +149,29 @@ class Demo(object):
             g.trace('no script tree')
             self.end()
     #@+node:ekr.20170130090031.1: *3* demo.Keys
-    #@+node:ekr.20170128213103.11: *4* demo.body_keys
-    def body_keys(self, s, n1=None, n2=None):
-        '''Simulate typing in the body pane.
-        n1 and n2 indicate the range of delays between keystrokes.
+    #@+node:ekr.20170130184230.1: *4* demo.set_text_delta
+    def set_text_delta(self, delta, w=None):
         '''
+        Updates the style sheet for the given widget (default is the body pane).
+        Delta should be an int.
+        '''
+        # Copied from zoom-in/out commands.
         c = self.c
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
-        self.key_w = self.pane_widget('body')
+        ssm = c.styleSheetManager
+        c._style_deltas['font-size-body'] += delta
+        # for performance, don't call c.styleSheetManager.reload_style_sheets()
+        sheet = ssm.expand_css_constants(c.active_stylesheet)
+        # and apply to body widget directly
+        if w is None:
+            w = c.frame.body.widget
+        try:
+            w.setStyleSheet(sheet)
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20170128213103.11: *4* demo.body_keys
+    def body_keys(self, s):
+        '''Undoably simulate typing in the body pane.'''
+        c = self.c
         c.bodyWantsFocusNow()
         p = c.p
         w = c.frame.body.wrapper.widget
@@ -166,19 +180,14 @@ class Demo(object):
         for ch in s:
             p.b = p.b + ch
             w.repaint()
-            self.wait(n1, n2)
-        ### c.redraw()
+            self.wait()
     #@+node:ekr.20170128213103.20: *4* demo.head_keys
-    def head_keys(self, s, n1=None, n2=None):
-        '''Simulate typing in the headline.
-        n1 and n2 indicate the range of delays between keystrokes.
-        '''
+    def head_keys(self, s):
+        '''Undoably simulates typing in the headline.'''
         c, p = self.c, self.c.p
         undoType = 'Typing'
         oldHead = p.h
         tree = c.frame.tree
-        if n1 is None: n1 = 0.02
-        if n2 is None: n2 = 0.095
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
@@ -190,22 +199,9 @@ class Demo(object):
         for ch in s:
             p.h = p.h + ch
             tree.repaint() # *not* tree.update.
-            self.wait(n1, n2)
-            event = self.get_key_event(ch, w)
+            self.wait()
+            event = self.new_key_event(ch, w)
             c.k.masterKeyHandler(event)
-        ###
-        # # Lock out key handling in m.state_handler.
-        # m.ignore_keys = True
-        # try:
-            # m.key_w = w
-            # for ch in s:
-                # p.h = p.h + ch
-                # tree.repaint() # *not* tree.update.
-                # m.wait(n1, n2)
-                # event = m.get_key_event(ch, w)
-                # c.k.masterKeyHandler(event)
-        # finally:
-            # m.ignore_keys = False
         p.h = s
         c.redraw()
     #@+node:ekr.20170128213103.39: *4* demo.new_key_event
@@ -216,25 +212,46 @@ class Demo(object):
         # Tricky: Canonicalize the shortcut, without making it a stroke.
         if 1: # A bad hack. Temporary.
             if shortcut == '\n':
+                char = '\n'
                 shortcut2 = 'Return'
             elif shortcut == '\t':
+                char = 'tab'
                 shortcut2 = 'Tab'
             else:
                 stroke = k.strokeFromSetting(shortcut)
                 shortcut2 = stroke.s if stroke else ''
+                char = '' if len(shortcut) > 1 else shortcut
         else:
             stroke = k.strokeFromSetting(shortcut)
             shortcut2 = stroke.s if stroke else ''
+            char = '' if len(shortcut) > 1 else shortcut
         if trace: g.trace('%r -> %r' % (shortcut, shortcut2))
         return leoGui.LeoKeyEvent(c,
-            char='' if len(shortcut) > 1 else shortcut,
-            event=None, shortcut=shortcut2, w=w)
+            char=char, event=None, shortcut=shortcut2, w=w)
+    #@+node:ekr.20170130160749.1: *4* demo.save/restore_key_state
+    def save_key_state(self):
+        '''Save the key handler state, if any.'''
+        k = self.c.k
+        state = k.state
+        if state.kind is not None:
+            label = k.getLabel()
+            self.saved_key_state = state.kind, state.n, state.handler, label
+        # g.trace('=====', self.saved_key_state)
+
+    def restore_key_state(self):
+        '''Restore the key handler state, if any.'''
+        k = self.c.k
+        if self.saved_key_state:
+            # g.trace('-----', self.saved_key_state)
+            k.state.kind, k.state.n, k.state.handler, label = self.saved_key_state
+            if label: k.setLabel(label)
+            self.saved_key_state = None
     #@+node:ekr.20170128213103.28: *4* demo.key
     def key(self, ch):
         '''Simulate typing a single key'''
         c, k = self.c, self.c.k
         w = g.app.gui.get_focus(c=c, raw=True)
-        self.wait(self.n1, self.n2)
+        self.wait()
         event = self.new_key_event(ch, w)
         k.masterKeyHandler(event)
         w.repaint() # Make the character visible immediately.
@@ -244,13 +261,16 @@ class Demo(object):
         Simulate typing a string of *plain* keys.
         Use demo.key(ch) to type any other characters.
         '''
+        c, p = self.c, self.c.p
+        c.undoer.setUndoTypingParams(p, 'typing',
+            oldText=p.b, newText=p.b + s, oldSel=None, newSel=None, oldYview=None)
         for ch in s:
             self.key(ch)
     #@+node:ekr.20170128213103.43: *4* demo.wait
-    def wait(self, n1=1, n2=0):
+    def wait(self, n1=None, n2=None):
         '''Wait for an interval between n1 and n2, in seconds.'''
-        if n1 is None: n1 = 0
-        if n2 is None: n2 = 0
+        if n1 is None: n1 = self.n1
+        if n2 is None: n2 = self.n2
         if n1 > 0 and n2 > 0:
             n = random.uniform(n1, n2)
         else:
@@ -342,20 +362,6 @@ class Demo(object):
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
-            # g.trace(menu.signalsBlocked())
-            if 0: # None of this works.
-                g.trace('repaint', c.frame.top)
-                c.frame.top.repaint()
-                g.trace('repaint', menu)
-                menu.repaint()
-                parent = menu.parent()
-                while parent:
-                    g.trace('repaint', parent)
-                    parent.repaint()
-                    if isinstance(parent, QtWidgets.QMenuBar):
-                        break
-                    else:
-                        parent = parent.parent()
         return menu
     #@+node:ekr.20170130090250.1: *3* demo.Panes & widgets
     #@+node:ekr.20170128213103.13: *4* demo.clear_log

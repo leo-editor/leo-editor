@@ -50,13 +50,13 @@ Demo scripts have access to c, g and p as usual.  Demo scripts also have access 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
 - Overlay a scaled image on the screen.
 - Open any Leo menu, selecting particular menu items.
-- [Coming soon] Scale font sizes.
+- Scale font sizes.
 
 For example, this demo script executes the insert-node command!
 
 ```python
-    demo.single_key('Alt-X')
-    demo.plain_keys('ins\\tno\\t\\n')
+    demo.key('Alt-x')
+    demo.keys('insert-node\n')
 ```
 
 The following sections describe all public helper methods of the Demo class.
@@ -171,5 +171,5 @@ You will find this stylesheet in the node @data
 
 Edward K. Ream started this plugin on January 29, 2017, based on Leo's screencast plugin.
 
-The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps demo-it was inspired by the screencast plugin.
+The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin. inspired demo-it.
 
