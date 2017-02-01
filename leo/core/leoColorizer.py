@@ -35,6 +35,8 @@ class BaseColorizer(object):
 
     #@+others
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
+    at_language_pattern = re.compile('^@language\s+([\w-]+)', re.MULTILINE)
+
     def updateSyntaxColorer(self, p):
         '''
         Scan for color directives in p and its ancestors.
@@ -45,41 +47,57 @@ class BaseColorizer(object):
         if p: # This guard is required.
             try:
                 self.enabled = self.useSyntaxColoring(p)
-                self.language = self.scanColorDirectives(p)
+                self.language = self.scanLanguageDirectives(p)
+                if trace: g.trace(self.enabled, self.language, p.h)
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
         elif trace:
             g.trace('no p')
-    #@+node:ekr.20170127142001.2: *4* bc.scanColorDirectives & helpers
-    def scanColorDirectives(self, p):
+    #@+node:ekr.20170127142001.2: *4* bc.scanLanguageDirectives & helpers
+    def scanLanguageDirectives(self, p):
         '''Return language based on the directives in p's ancestors.'''
         trace = False and not g.unitTesting
         c = self.c
         root = p.copy()
-        for p in root.self_and_parents():
+        # Look for the first @language directive only in p itself.
+        language = self.findFirstValidAtLanguageDirective(p)
+        if language:
+            if trace: g.trace(repr(language), 'found 1 -----', p.h)
+            return language
+        for p in root.parents():
             if trace: g.trace('scan', p.h)
-            language = self.findFirstValidAtLanguageDirective(p)
-            if language:
-                if trace: g.trace(repr(language), 'found -----', p.h)
+            languages = self.findAllValidLanguageDirectives(p)
+            if len(languages) == 1: # An unambiguous language
+                language = languages[0]
+                if trace: g.trace(repr(language), 'found 2 -----', p.h)
                 return language
         #  Get the language from the nearest ancestor @<file> node.
         language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
         if trace: g.trace(repr(language), 'default -----', p.h)
         return language
-    #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
-    at_language_pattern = re.compile('^@language\s+([\w-]+)', re.MULTILINE)
-
-    def findFirstValidAtLanguageDirective(self, p):
-        '''Return the first *valid* @language directive in p.b.'''
-        trace = True and not g.unitTesting
+    #@+node:ekr.20170201150505.1: *5* bc.findAllValidLanguageDirectives
+    def findAllValidLanguageDirectives(self, p):
+        '''Return list of all valid @language directives in p.b'''
+        languages = set()
         for m in self.at_language_pattern.finditer(p.b):
             language = m.group(1)
             if self.isValidLanguage(language):
+                languages.add(language)
+        # g.trace(list(languages))
+        return list(sorted(languages))
+    #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
+    def findFirstValidAtLanguageDirective(self, p):
+        '''Return the first *valid* @language directive in p.b.'''
+        trace = False and not g.unitTesting
+        for m in self.at_language_pattern.finditer(p.b):
+            language = m.group(1)
+            if self.isValidLanguage(language):
+                if trace: g.trace(language, p.h)
                 return language
-            elif trace:
-                g.trace('not a valid language', language)
+            elif trace: g.trace('not a valid language', language, p.h)
         return None
+        
     #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
     def isValidLanguage(self, language):
         '''True if language exists in leo/modes.'''
@@ -97,10 +115,10 @@ class BaseColorizer(object):
             d = self.findColorDirectives(p)
             # @killcolor anywhere disables coloring.
             if 'killcolor' in d: return False
-            # @color anywhere in the target enables coloring.
-            elif 'color' in d: return True
-            # The @nocolor is unambiguous.
-            elif 'nocolor' in d: return False
+            # unambiguous @color enables coloring.
+            elif 'color' in d and 'nocolor' not in d: return True
+            # Unambiguous @nocolor disables coloring.
+            elif 'nocolor' in d and 'color' not in d: return False
         return True
     #@+node:ekr.20170127142001.8: *5* bc.findColorDirectives
     color_directives_pat = re.compile(
@@ -163,7 +181,7 @@ class JEditColorizer(BaseColorizer):
             # Per-node enable/disable flag.
             # Set by updateSyntaxColorer, used by jEdit colorizer.
         self.full_recolor_count = 0 # For unit testing.
-        self.language = 'python' # set by scanColorDirectives.
+        self.language = 'python' # set by scanLanguageDirectives.
         self.showInvisibles = False
         # Step 2: create the highlighter.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -1863,7 +1881,7 @@ class JEditColorizer(BaseColorizer):
             n = self.initBlock0()
         n = self.setState(n) # Required.
         if trace and trace_lines: g.trace('%8s %25s %-3s %r' % (
-            self.language, self.showState(n), block_n, s[20:]+'...'))
+            self.language, self.showState(n), block_n, g.truncate(s, 20)))
         # Always color the line, even if colorizing is disabled.
         if s:
             self.mainLoop(n, s)
@@ -2083,7 +2101,7 @@ class QScintillaColorizer(BaseColorizer):
         self.error = False # Set if there is an error in jeditColorizer.recolor
         self.flag = True # Per-node enable/disable flag.
         self.full_recolor_count = 0 # For unit testing.
-        self.language = 'python' # set by scanColorDirectives.
+        self.language = 'python' # set by scanLanguageDirectives.
         self.highlighter = None
         self.lexer = None # Set in changeLexer.
         # if self.NEW:

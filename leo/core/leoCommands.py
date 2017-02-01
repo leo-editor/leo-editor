@@ -1445,7 +1445,7 @@ class Commands(object):
             g.warning('no text selected')
             return
         # The default language in effect at p.
-        language = c.frame.body.colorizer.scanColorDirectives(p)
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
         if c.hasAmbiguousLanguage(p):
             language = c.getLanguageAtCursor(p, language)
         # g.trace(language,p.h)
@@ -1494,7 +1494,7 @@ class Commands(object):
             g.warning('no text selected')
             return
         # The default language in effect at p.
-        language = c.frame.body.colorizer.scanColorDirectives(p)
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
         if c.hasAmbiguousLanguage(p):
             language = c.getLanguageAtCursor(p, language)
         d1, d2, d3 = g.set_delims_from_language(language)
@@ -5287,8 +5287,8 @@ class Commands(object):
         if trace: g.trace('returns', path)
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
-    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
-    # Called only by scanColorDirectives.
+    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
+    # No longer used. Was called only by scanLanguageDirectives.
 
     def scanAtRootDirectives(self, aList):
         '''Scan aList for @root-code and @root-doc directives.'''
