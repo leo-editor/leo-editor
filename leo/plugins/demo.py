@@ -106,12 +106,16 @@ class Demo(object):
     #@+node:ekr.20170128222411.1: *3* demo.Commands
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
-        '''End this slideshow and call teardown().'''
+        '''
+        End this slideshow and call teardown().
+        This will be called several times if demo scripts call demo.next().
+        '''
         # Don't delete widgets here. Use the teardown method instead.
         # self.delete_widgets()
-        g.app.demo = None
-        self.teardown()
-        g.trace(self.__class__.__name__)
+        if g.app.demo:
+            g.app.demo = None
+            self.teardown()
+            g.trace(self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
@@ -135,8 +139,8 @@ class Demo(object):
             # Execute the next script.
             script = self.script_list.pop()
             self.exec_node(script)
-        if not self.script_list:
-            self.end()
+            if not self.script_list:
+                self.end()
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
     def setup(self, p):
         '''

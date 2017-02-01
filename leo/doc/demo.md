@@ -176,6 +176,52 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
+#Tips **** to do
+**No need for helper methods**
+
+Unlike the screencast plugin, the full power of Leo scripting is available to demo scripts. Examples:
+
+1. Demo scripts can call c.editHeadline() to start editing a headline.
+
+2. Demo scripts can call c.bodyWantsFocusNow() or c.treeWantsFocusNow() or c.minibufferWantsFocusNow() to switch panes.
+
+These "just work" because the demo plugin does not interfere with Leo's focus or key handling.
+
+**Presentations can be descriptive**
+
+Demo scripts can focus on what should be done, not how. Subclasses of demo.Demo can (should) define helpers that hide implementation or configuration details.
+
+Basing presentations on (subclasses of) demo.Demo is a major innovation. It's much more powerful and flexible than screencast.py, or demo.el.
+
+**Presentations can be fully automated**
+
+Demo scripts can be chained using demo.next().  Like this:
+
+    demo.wait(whatever)
+    demo.next()
+
+Alternatively, a single demo script suffices:
+
+    << section 1 >>
+    demo.wait(n1)
+    << section 2 >>
+    demo.wait(n2)
+    ...
+
+**No post production required**
+
+Fixed wait times make it easy to create finished presentations that can be recorded without any further editing! 
+
+Summary
+
+The demo plugin does not interfere with focus or key-handling. As a result, the full power of Leo scripting is available to demo scripts.
+
+Demo scripts can (and should) be descriptive. Subclasses of demo.Demo can define methods that hide implementation and configuration details.
+
+Demo scripts can insert fixed delays, callouts and subtitles. As a result, demo scripts can be fully automated. They can be recorded without any post-production editing.
+
+Edward
+
 #Acknowledgements
 
 Edward K. Ream wrote this plugin on January 29-31, 2017, using Leo's screencast plugin as a starting point. 
