@@ -19848,8 +19848,7 @@ Fixed wait times make it easy to create finished presentations that can be recor
 emo scripts may free use all of Leo's scripting API.
 
 </t>
-<t tx="ekr.20170201160127.1">@language python
-
+<t tx="ekr.20170201160127.1">```python
 '''Switch focus to the tree.'''
 c.treeWantsFocusNow()
 
@@ -19857,16 +19856,15 @@ c.treeWantsFocusNow()
     # c.bodyWantsFocusNow()
     # c.logWantsFocusNow()
     # c.minibufferWantsFocusNow()
+```
 </t>
-<t tx="ekr.20170201160245.1">@language python
-
+<t tx="ekr.20170201160245.1">```python
 '''Begin editing a headline and select all its text.'''
 c.editHeadline()
 wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
-
-</t>
-<t tx="ekr.20170201161531.1">c.insertHeadline()
+```</t>
+<t tx="ekr.20170201161531.1">```pythonc.insertHeadline()
 c.redraw()
 c.editHeadline()
 demo.head_keys('My Headline')
@@ -19875,14 +19873,15 @@ c.endEditing()
 
 # wrapper = c.edit_widget(p)
 # wrapper.setSelectionRange(0, len(p.h))
+```
 </t>
-<t tx="ekr.20170201161638.1">@language python
-
+<t tx="ekr.20170201161638.1">```python
 '''Show typing in the minibuffer.'''
 demo.key('Alt+x')
 demo.keys('insert-node')
 demo.wait(2)
-demo.key('\n')</t>
+demo.key('\n')
+```</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

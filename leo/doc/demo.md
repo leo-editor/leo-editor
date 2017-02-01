@@ -71,15 +71,16 @@ This section *teaches by example* by giving short demo scripts.
 emo scripts may free use all of Leo's scripting API.
 
 ##Show typing in the minibuffer
-
+```python
 '''Show typing in the minibuffer.'''
 demo.key('Alt+x')
 demo.keys('insert-node')
 demo.wait(2)
 demo.key('\n')
+```
 
 ##Show typing in a headline
-c.insertHeadline()
+```pythonc.insertHeadline()
 c.redraw()
 c.editHeadline()
 demo.head_keys('My Headline')
@@ -88,9 +89,10 @@ c.endEditing()
 
 # wrapper = c.edit_widget(p)
 # wrapper.setSelectionRange(0, len(p.h))
+```
 
 ##Switching focus
-
+```python
 '''Switch focus to the tree.'''
 c.treeWantsFocusNow()
 
@@ -98,13 +100,15 @@ c.treeWantsFocusNow()
     # c.bodyWantsFocusNow()
     # c.logWantsFocusNow()
     # c.minibufferWantsFocusNow()
+```
 
 ##Select all headline text
-
+```python
 '''Begin editing a headline and select all its text.'''
 c.editHeadline()
 wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
+```
 
 #Helper methods
 
