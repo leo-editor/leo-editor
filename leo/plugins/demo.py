@@ -251,18 +251,6 @@ class Demo(object):
             c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
         for ch in s:
             self.key(ch)
-    #@+node:ekr.20170128213103.43: *4* demo.wait
-    def wait(self, n1=None, n2=None):
-        '''Wait for an interval between n1 and n2, in seconds.'''
-        if n1 is None: n1 = self.n1
-        if n2 is None: n2 = self.n2
-        if n1 > 0 and n2 > 0:
-            n = random.uniform(n1, n2)
-        else:
-            n = n1
-        if n > 0:
-            n = n * self.speed
-            g.sleep(n)
     #@+node:ekr.20170130090141.1: *3* demo.Images
     #@+node:ekr.20170128213103.12: *4* demo.caption and abbreviations: body, log, tree
     def caption(self, s, pane): # To do: center option.
@@ -373,6 +361,18 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170128213103.43: *3* demo.wait
+    def wait(self, n1=None, n2=None):
+        '''Wait for an interval between n1 and n2, in seconds.'''
+        if n1 is None: n1 = self.n1
+        if n2 is None: n2 = self.n2
+        if n1 > 0 and n2 > 0:
+            n = random.uniform(n1, n2)
+        else:
+            n = n1
+        if n > 0:
+            n = n * self.speed
+            g.sleep(n)
     #@-others
 #@-others
 #@-leo
