@@ -29,47 +29,56 @@ class BaseColorizer(object):
         self.full_recolor_count = 0
         self.highlighter = None
         
-    def init(self, p, s):
+    def init(self, p):
         '''May be over-ridden in subclasses.'''
         pass
 
     #@+others
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
-    def updateSyntaxColorer(self, p, language=None):
+    def updateSyntaxColorer(self, p):
         '''
         Scan for color directives in p and its ancestors.
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic and from the colorizer.
         '''
+        trace = False and not g.unitTesting
         if p: # This guard is required.
             try:
                 self.enabled = self.useSyntaxColoring(p)
-                if not language:
-                    self.language = self.scanColorDirectives(p)
+                self.language = self.scanColorDirectives(p)
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
+        elif trace:
+            g.trace('no p')
     #@+node:ekr.20170127142001.2: *4* bc.scanColorDirectives & helpers
     def scanColorDirectives(self, p):
         '''Return language based on the directives in p's ancestors.'''
+        trace = False and not g.unitTesting
         c = self.c
         root = p.copy()
-        for p in root.parents():
+        for p in root.self_and_parents():
+            if trace: g.trace('scan', p.h)
             language = self.findFirstValidAtLanguageDirective(p)
             if language:
+                if trace: g.trace(repr(language), 'found -----', p.h)
                 return language
         #  Get the language from the nearest ancestor @<file> node.
         language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        if trace: g.trace(repr(language), 'default -----', p.h)
         return language
     #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
     at_language_pattern = re.compile('^@language\s+([\w-]+)', re.MULTILINE)
 
     def findFirstValidAtLanguageDirective(self, p):
         '''Return the first *valid* @language directive in p.b.'''
+        trace = True and not g.unitTesting
         for m in self.at_language_pattern.finditer(p.b):
             language = m.group(1)
             if self.isValidLanguage(language):
                 return language
+            elif trace:
+                g.trace('not a valid language', language)
         return None
     #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
     def isValidLanguage(self, language):
@@ -79,7 +88,11 @@ class BaseColorizer(object):
     #@+node:ekr.20170127142001.7: *4* bc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
         '''True if p's parents enable coloring in p.'''
-        # Note: @nocolor-node has no effect here.
+        # Special cases for the selected node.
+        d = self.findColorDirectives(p)
+        if 'killcolor' in d: return False
+        if 'nocolor-node' in d: return False
+        # Now look at the parents.
         for p in p.parents():
             d = self.findColorDirectives(p)
             # @killcolor anywhere disables coloring.
@@ -165,8 +178,9 @@ class JEditColorizer(BaseColorizer):
         # init() properly sets these for each language.
         self.actualColorDict = {} # Used only by setTag.
         self.hyperCount = 0
-        # State dicts and numbers.
+        # State dicts, etc.
         self.initialStateNumber = -1
+        self.old_v = None
         self.nextState = 1 # Dont use 0.
         self.n2languageDict = {-1: c.target_language}
         self.restartDict = {} # Keys are state numbers, values are restart functions.
@@ -547,15 +561,13 @@ class JEditColorizer(BaseColorizer):
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
     #@+node:ekr.20110605121601.18580: *4* jedit.init
-    def init(self, p, s=None): # s not used.
-        '''Init the colorizer.'''
+    def init(self, p):
+        '''Init the colorizer, but *not* state. p is for tracing only.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(jEdit)', self.language, p and p.h)
-        self.updateSyntaxColorer(p, language=self.language)
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
-        # 2017/01/31: fix #389.
-        # **Never** recompute these.
+        # 2017/01/31: fix #389. Do *not* change these.
             # self.nextState = 1 # Dont use 0.
             # self.stateDict = {}
             # self.stateNameDict = {}
@@ -568,6 +580,16 @@ class JEditColorizer(BaseColorizer):
         if trace: g.trace('configure_tags ==>', self.language)
         self.configure_tags()
         self.configure_hard_tab_width() # 2011/10/04
+    #@+node:ekr.20170201082248.1: *4* jedit.init_all_state
+    def init_all_state(self, v):
+        '''Completely init all state data.'''
+        assert self.language, g.callers(8)
+        self.old_v = v
+        self.n2languageDict = {-1: self.language}
+        self.nextState = 1 # Dont use 0.
+        self.restartDict = {}
+        self.stateDict = {}
+        self.stateNameDict = {}
     #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name):
         '''Name may be a language name or a delegate name.'''
@@ -1820,18 +1842,27 @@ class JEditColorizer(BaseColorizer):
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
         trace = False and not g.unitTesting
+        trace_lines = False
+        p = self.c.p
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
-        new_language = self.n2languageDict.get(n)
-        if new_language != self.language:
-            if trace: g.trace(self.language, '==>', new_language)
-            self.language = new_language
-            self.init(self.c.p)
+        if p.v != self.old_v:
+            self.updateSyntaxColorer(p) # Force a full recolor
+            assert self.language
+            self.init_all_state(p.v)
+            self.init(p)
+            if trace: g.trace('New node ==>', self.language, p.h)
+        else:
+            new_language = self.n2languageDict.get(n)
+            if new_language != self.language:
+                if trace: g.trace(self.language, '==>', new_language)
+                self.language = new_language
+                self.init(p)
         if block_n == 0:
             n = self.initBlock0()
         n = self.setState(n) # Required.
-        if trace: g.trace('%8s %25s %-3s %r' % (
+        if trace and trace_lines: g.trace('%8s %25s %-3s %r' % (
             self.language, self.showState(n), block_n, s[20:]+'...'))
         # Always color the line, even if colorizing is disabled.
         if s:
@@ -2160,18 +2191,10 @@ class QScintillaColorizer(BaseColorizer):
                 # Not an error. Not all lexers have all styles.
                 # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
-    def init(self, p, s):
+    def init(self, p):
         '''QScintillaColorizer.init'''
         self.updateSyntaxColorer(p)
         self.changeLexer(self.language)
-        # g.trace(self.language, p and p.h)
-        
-        # if self.NEW:
-            # self.jeditColorizer.init(p, s)
-                # # Calls updateSyntaxColorer.
-        # else:
-            # self.updateSyntaxColorer(p)
-            # self.changeLexer(self.language)
     #@+node:ekr.20170128133525.1: *3* qsc.makeLexersDict
     def makeLexersDict(self):
         '''Make a dictionary of Scintilla lexers, and configure each one.'''

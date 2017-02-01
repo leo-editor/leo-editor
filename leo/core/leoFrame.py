@@ -1695,7 +1695,6 @@ class LeoTree(object):
         trace_time = (True or traceTime)
         if trace_time: t1 = time.time()
         c = self.c
-        colorizer = c.frame.body.colorizer
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         # Part 1: get the old text.
@@ -1708,9 +1707,12 @@ class LeoTree(object):
             if trace and trace_pass:
                 g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
-        # Part 2: set the new text **and** recolor.
+        # Part 2: set the new text. This forces a recolor.
         c.setCurrentPosition(p)
-        colorizer.init(p, s) # init *first*.
+            # Important: do this *before* setting text,
+            # so that the colorizer will have the proper c.p.
+        ### colorizer = c.frame.body.colorizer
+        ### colorizer.init(p, s) # init *first*.
         w.setAllText(s)
         if trace and trace_time:
             t3 = time.time()
