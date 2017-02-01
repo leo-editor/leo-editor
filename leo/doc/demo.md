@@ -9,8 +9,8 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Menus](../doc/demo.md#menus)
     - [Starting and ending](../doc/demo.md#starting-and-ending)
     - [Typing](../doc/demo.md#typing)
-- [Undo](../doc/demo.md#undo)
 - [Magnification and styling](../doc/demo.md#magnification-and-styling)
+- [Details](../doc/demo.md#details)
 - [Acknowledgements](../doc/demo.md#acknowledgements)
 
 #Overview
@@ -35,6 +35,14 @@ class Demo_1(demo.Demo):
 
 Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
 ```
+
+This plugin boasts significant advantages compared with Leo's screencast plugin:
+
+- The demo plugin does not interfere with focus or key-handling. As a result, the full power of Leo scripting is available to demo scripts. Few helper methods are needed.
+
+- Demo scripts can (and should) be descriptive. Subclasses of demo.Demo can define methods that hide implementation and configuration details.
+
+- Demo scripts can insert fixed delays, callouts and subtitles. As a result, demo scripts can be fully automated. There is little need for post-production editing.
 
 #Demo scripts
 
@@ -144,16 +152,6 @@ Types a single key in the present widget. This method does not support undo. Exa
    demo.key('Ctrl-F') # Execute Leo's Find command
 ```
 
-#Undo
-
-The demo plugin does not change Leo's key-handling in any way.  As a result, presenters may undo/redo the *actions* of demo scripts. Some limitations:
-
-- Demo scripts can not be undone/redone in a single step, unless each demo script makes *itself* undoable.
-
-- Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
-
-These limitations are unlikely to be a nuisance in practice.
-
 #Magnification and styling
 
 **demo.set_text_delta(self, delta, w=None)**
@@ -176,51 +174,13 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
-#Tips **** to do
-**No need for helper methods**
+#Details
 
-Unlike the screencast plugin, the full power of Leo scripting is available to demo scripts. Examples:
+- Demo scripts can not be undone/redone in a single step, unless each demo script makes *itself* undoable.
 
-1. Demo scripts can call c.editHeadline() to start editing a headline.
+- Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
 
-2. Demo scripts can call c.bodyWantsFocusNow() or c.treeWantsFocusNow() or c.minibufferWantsFocusNow() to switch panes.
-
-These "just work" because the demo plugin does not interfere with Leo's focus or key handling.
-
-**Presentations can be descriptive**
-
-Demo scripts can focus on what should be done, not how. Subclasses of demo.Demo can (should) define helpers that hide implementation or configuration details.
-
-Basing presentations on (subclasses of) demo.Demo is a major innovation. It's much more powerful and flexible than screencast.py, or demo.el.
-
-**Presentations can be fully automated**
-
-Demo scripts can be chained using demo.next().  Like this:
-
-    demo.wait(whatever)
-    demo.next()
-
-Alternatively, a single demo script suffices:
-
-    << section 1 >>
-    demo.wait(n1)
-    << section 2 >>
-    demo.wait(n2)
-    ...
-
-**No post production required**
-
-Fixed wait times make it easy to create finished presentations that can be recorded without any further editing! 
-
-Summary
-
-The demo plugin does not interfere with focus or key-handling. As a result, the full power of Leo scripting is available to demo scripts.
-
-Demo scripts can (and should) be descriptive. Subclasses of demo.Demo can define methods that hide implementation and configuration details.
-
-Demo scripts can insert fixed delays, callouts and subtitles. As a result, demo scripts can be fully automated. They can be recorded without any post-production editing.
-
-Edward
+- Chaining from one script to another using demo.next() cause a recursion. This would be a problem only if a presentation had hundreds of demo scripts.
 
 #Acknowledgements
 
