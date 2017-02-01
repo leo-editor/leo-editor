@@ -4,6 +4,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Overview](../doc/demo.md#overview)
 - [Demo scripts](../doc/demo.md#demo-scripts)
+- [Example scripts](../doc/demo.md#example-scripts)
 - [Helper methods](../doc/demo.md#helper-methods)
     - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
@@ -63,6 +64,47 @@ For example, this demo script executes the insert-node command:
 Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
 
 **Note**: The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
+
+#Example scripts
+This section *teaches by example* by giving short demo scripts.
+
+emo scripts may free use all of Leo's scripting API.
+
+##Show typing in the minibuffer
+
+'''Show typing in the minibuffer.'''
+demo.key('Alt+x')
+demo.keys('insert-node')
+demo.wait(2)
+demo.key('\n')
+
+##Show typing in a headline
+c.insertHeadline()
+c.redraw()
+c.editHeadline()
+demo.head_keys('My Headline')
+demo.wait(1)
+c.endEditing()
+
+# wrapper = c.edit_widget(p)
+# wrapper.setSelectionRange(0, len(p.h))
+
+##Switching focus
+
+'''Switch focus to the tree.'''
+c.treeWantsFocusNow()
+
+# Other possibilities:
+    # c.bodyWantsFocusNow()
+    # c.logWantsFocusNow()
+    # c.minibufferWantsFocusNow()
+
+##Select all headline text
+
+'''Begin editing a headline and select all its text.'''
+c.editHeadline()
+wrapper = c.edit_widget(p)
+wrapper.setSelectionRange(0, len(p.h))
 
 #Helper methods
 
