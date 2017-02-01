@@ -4,7 +4,7 @@
 #@@first
 '''
 A plugin that makes making Leo demos easy. See:
-https://github.com/leo-editor/leo-editor/blob/demo/leo/doc/demo.md
+https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md
 
 Written by Edward K. Ream, January 29-31, 2017.
 '''
