@@ -66,7 +66,7 @@ Within the script tree, **@ignore** and **@ignore-tree** work as expected. The d
 **Note**: The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
 
 #Example scripts
-demo scripts may free use all of Leo's scripting API...
+Demo scripts may freely use all of Leo's scripting API. The demo plugin does not interfere in any way.
 
 ##Show typing in the minibuffer
 ```python

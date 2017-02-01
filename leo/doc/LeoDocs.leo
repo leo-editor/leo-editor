@@ -19843,7 +19843,8 @@ Fixed wait times make it easy to create finished presentations that can be recor
 </t>
 <t tx="ekr.20170201105948.6">
 </t>
-<t tx="ekr.20170201155917.1">demo scripts may free use all of Leo's scripting API...
+<t tx="ekr.20170201155917.1">Demo scripts may freely use all of Leo's scripting API. The demo plugin does not interfere in any way.
+
 
 </t>
 <t tx="ekr.20170201160127.1">```python
