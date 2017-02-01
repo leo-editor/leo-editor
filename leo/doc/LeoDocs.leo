@@ -19849,13 +19849,17 @@ emo scripts may free use all of Leo's scripting API.
 
 </t>
 <t tx="ekr.20170201160127.1">```python
-'''Switch focus to the tree.'''
+# Put focus to the tree.
 c.treeWantsFocusNow()
 
-# Other possibilities:
-    # c.bodyWantsFocusNow()
-    # c.logWantsFocusNow()
-    # c.minibufferWantsFocusNow()
+# Put focus to the minibuffer.
+c.minibufferWantsFocusNow()
+
+# Put focus to the body.
+c.bodyWantsFocusNow()
+
+# Put focus in the log pane.
+c.logWantsFocusNow()
 ```
 </t>
 <t tx="ekr.20170201160245.1">```python
@@ -19863,8 +19867,10 @@ c.treeWantsFocusNow()
 c.editHeadline()
 wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
-```</t>
-<t tx="ekr.20170201161531.1">```pythonc.insertHeadline()
+```
+</t>
+<t tx="ekr.20170201161531.1">```
+c.insertHeadline()
 c.redraw()
 c.editHeadline()
 demo.head_keys('My Headline')
@@ -19876,7 +19882,6 @@ c.endEditing()
 ```
 </t>
 <t tx="ekr.20170201161638.1">```python
-'''Show typing in the minibuffer.'''
 demo.key('Alt+x')
 demo.keys('insert-node')
 demo.wait(2)

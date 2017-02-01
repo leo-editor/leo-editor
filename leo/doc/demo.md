@@ -72,7 +72,6 @@ emo scripts may free use all of Leo's scripting API.
 
 ##Show typing in the minibuffer
 ```python
-'''Show typing in the minibuffer.'''
 demo.key('Alt+x')
 demo.keys('insert-node')
 demo.wait(2)
@@ -80,7 +79,8 @@ demo.key('\n')
 ```
 
 ##Show typing in a headline
-```pythonc.insertHeadline()
+```
+c.insertHeadline()
 c.redraw()
 c.editHeadline()
 demo.head_keys('My Headline')
@@ -93,13 +93,17 @@ c.endEditing()
 
 ##Switching focus
 ```python
-'''Switch focus to the tree.'''
+# Put focus to the tree.
 c.treeWantsFocusNow()
 
-# Other possibilities:
-    # c.bodyWantsFocusNow()
-    # c.logWantsFocusNow()
-    # c.minibufferWantsFocusNow()
+# Put focus to the minibuffer.
+c.minibufferWantsFocusNow()
+
+# Put focus to the body.
+c.bodyWantsFocusNow()
+
+# Put focus in the log pane.
+c.logWantsFocusNow()
 ```
 
 ##Select all headline text
