@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -192,6 +192,7 @@
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -1246,8 +1247,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161207045325.1"><vh>To be documented</vh>
-<v t="ekr.20161207050138.1"><vh>Prefer list processing to string processing </vh></v>
+<v t="ekr.20161207045325.1"><vh>** To do</vh>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 <v t="ekr.20170130190843.1"><vh>Code Academy</vh>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
@@ -1256,8 +1256,6 @@
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
 </v>
 <v t="ekr.20131015104133.16763"></v>
-<v t="ekr.20170124041304.1"><vh>*** Insert to-be-documented mail items</vh></v>
-<v t="ekr.20170124030628.1"><vh>*** what setting allows auto pyflakes</vh></v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 </v>
 <v t="ekr.20170123090814.1"></v>
@@ -1303,44 +1301,6 @@
 <v t="ekr.20170123084609.6"><vh>\@button make-table</vh></v>
 <v t="ekr.20170123084609.7"><vh>\@button make-test</vh></v>
 </v>
-</v>
-<v t="ekr.20170130190952.1"><vh>Demo stuff</vh>
-<v t="ekr.20161204055040.1"></v>
-<v t="ekr.20170130082205.1"><vh>Table of contents</vh></v>
-<v t="ekr.20170130190346.5"><vh>Examples (to do)</vh>
-<v t="ekr.20170130190346.6"><vh>Alt-X insert-node</vh></v>
-</v>
-<v t="ekr.20170130190834.1"><vh>@button demo1</vh>
-<v t="ekr.20170130190834.2"><vh>&lt;&lt; class MyDemo &gt;&gt;</vh>
-<v t="ekr.20170130190834.3"><vh>setup</vh></v>
-<v t="ekr.20170130190834.4"><vh>teardown</vh></v>
-</v>
-<v t="ekr.20170130190834.5"><vh>demo1-commands</vh>
-<v t="ekr.20170130190834.6"><vh>@ignore Alt-X insert-node</vh></v>
-<v t="ekr.20170130190834.7"><vh>@ignore Return</vh></v>
-<v t="ekr.20170130190834.8"><vh>@ignore undo</vh></v>
-<v t="ekr.20170130190834.9"><vh>set_text_delta</vh></v>
-<v t="ekr.20170130190834.10"><vh>headline</vh></v>
-<v t="ekr.20170130190834.11"><vh>caption</vh></v>
-<v t="ekr.20170130190834.12"><vh>@image</vh></v>
-<v t="ekr.20170130190834.13"><vh>open menu</vh></v>
-<v t="ekr.20170130190834.14"><vh>close menu</vh></v>
-</v>
-</v>
-<v t="ekr.20170201105948.1"><vh>Unused docs</vh>
-<v t="ekr.20170201105948.2"><vh>Little need for helper methods</vh></v>
-<v t="ekr.20170201105948.3"><vh>Descriptive scripts</vh></v>
-<v t="ekr.20170201105948.4"><vh>Fully automated presentation</vh></v>
-<v t="ekr.20170201105948.5"><vh>Eliminates post production</vh></v>
-<v t="ekr.20170201105948.6"><vh>Summary of advantages</vh></v>
-</v>
-</v>
-<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
-<v t="ekr.20170201155917.1"><vh>Example scripts</vh>
-<v t="ekr.20170201161638.1"><vh>Show typing in the minibuffer</vh></v>
-<v t="ekr.20170201161531.1"><vh>Show typing in a headline</vh></v>
-<v t="ekr.20170201160127.1"><vh>Switching focus</vh></v>
-<v t="ekr.20170201160245.1"><vh>Select all headline text</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -18944,15 +18904,8 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1"></t>
-<t tx="ekr.20161207050138.1">Using lists of (short) strings is fundamentally better than splitting and joining large strings.
-
-Because python "interns" strings, creating a new list of strings creates new strings only if those strings have never before been seen (in the present gc generation). The lists consist of short strings, so they are much more likely to be interned. This is important.
-
-Lists themselves are just lists of references to strings. For example, rearranging a list of strings never generates any new strings!
-
-Happily, using lists of strings usually simplifies the code, thanks to python's superb list comprehensions. If you don't grok comprehensions, you are missing one of python's most powerful and beautiful features.
-</t>
+<t tx="ekr.20161207045325.1">* Insert to-be-documented mail items
+- What setting allows automatic pyflakes?</t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
 **Executive Summary**
@@ -19649,7 +19602,6 @@ stroke=None:        The incoming key stroke.
 useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                     False allows sort-lines, for example, to show the selection range.
 </t>
-<t tx="ekr.20170124030628.1"></t>
 <t tx="ekr.20170124031347.1">@language rest
 Test-driven development is easy in Leo.  Just start each unit test with a custom preamble.
 
@@ -19700,193 +19652,12 @@ https://github.com/leo-editor/leo-editor/issues/332
 
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
-<t tx="ekr.20170124041304.1"></t>
-<t tx="ekr.20170130082205.1">- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
-- [Overview](../doc/demo.md#overview)
-- [Helper methods](../doc/demo.md#helper-methods)
-    - [Images and focus](../doc/demo.md#images-and-focus)
-    - [Menus](../doc/demo.md#menus)
-    - [Starting and ending](../doc/demo.md#starting-and-ending)
-    - [Typing](../doc/demo.md#typing)
-- [Undo](../doc/demo.md#undo)
-- [Style sheets](../doc/demo.md#style-sheets)
-- [Acknowledgements](../doc/demo.md#acknowledgements)
-</t>
-<t tx="ekr.20170130190346.5">* Teach with examples.
-- Typing should happen in present widget. Discuss c.FocusTo..., etc.
-  (This could replace demo.focus(pane)
-</t>
-<t tx="ekr.20170130190346.6">demo.key('Alt+x') # Same as Alt-X??
-demo.keys('insert-node')
-demo.wait(0.8)
-demo.key('\n') # Works.
-</t>
-<t tx="ekr.20170130190834.1">g.cls()
-if c.isChanged(): c.save()
-import imp
-import leo.plugins.demo as demo
-imp.reload(demo)
-&lt;&lt; class MyDemo &gt;&gt;
-h = 'demo1-commands'
-button_p = g.findNodeAnywhere(c, '@button demo1')
-commands = g.findNodeInTree(c, button_p, h)
-if commands:
-    MyDemo(c).start(commands)
-else:
-    print('not found', h, c.p.h)
-</t>
-<t tx="ekr.20170130190834.10">c.k.simulateCommand('insert-node')
-demo.head_keys('This is a test')</t>
-<t tx="ekr.20170130190834.11">demo.caption('My Caption', 'body')</t>
-<t tx="ekr.20170130190834.12">demo.delete_widgets()
-fn = 'SplashScreen.ico'
-demo.image('body', fn, center=True, height=None, width=None)</t>
-<t tx="ekr.20170130190834.13">demo.delete_widgets()
-demo.open_menu('Import')</t>
-<t tx="ekr.20170130190834.14">demo.dismiss_menu_bar()</t>
-<t tx="ekr.20170130190834.2">class MyDemo(demo.Demo):
-    
-    @others
-    
-</t>
-<t tx="ekr.20170130190834.3">def setup(self, p):
-    
-    c = self.c
-    self.delta = 0
-    self.clear_log()
-    p = g.findNodeAnywhere(c, 'Demo area')
-    if p:
-        c.selectPosition(p)
-</t>
-<t tx="ekr.20170130190834.4">def teardown(self):
-    
-    c = self.c
-    if self.delta:
-        self.set_text_delta(-self.delta)
-    p = g.findNodeAnywhere(c, 'Demo area')
-    if p:
-        c.selectPosition(p)
-        next = p.next()
-        if next and next.h == 'This is a test':
-            c.selectPosition(next)
-            next.doDelete()
-            c.selectPosition(p)
-            c.setChanged(False)
-            c.redraw()
-    
-
-</t>
-<t tx="ekr.20170130190834.5">print('demo1-commands')
-# c.contractAllHeadlines()
-</t>
-<t tx="ekr.20170130190834.6">demo.key('Alt+x') # Not the same as Alt-X
-# demo.keys('ins\\tno\\t\\n')
-demo.keys('insert-node')
-# g.trace(c.k.inState()) # True
-demo.wait(0.8)
-demo.key('\n') # Works.
-# demo.key('Return') # Works.
-# demo.save_key_state()
-</t>
-<t tx="ekr.20170130190834.7">state = c.k.state
-print(state.kind)
-demo.restore_key_state()
-print(state.kind)
-demo.key('\n')
-print(state.kind)</t>
-<t tx="ekr.20170130190834.8">undo_type = c.undoer.undoType
-if undo_type == 'Insert Node':
-    c.undoer.undo()</t>
-<t tx="ekr.20170130190834.9">print('increasing text size by 10')
-demo.delta = 10
-demo.set_text_delta(demo.delta)</t>
 <t tx="ekr.20170130190843.1"></t>
-<t tx="ekr.20170130190952.1"></t>
 <t tx="ekr.20170131092936.1">- Use @auto-md.
 - Optional: change @language md to @language rest.
 - Use @button make-md-toc in LeoDocs.leo.
 </t>
-<t tx="ekr.20170201105948.1"></t>
-<t tx="ekr.20170201105948.2">
-Unlike the screencast plugin, the full power of Leo scripting is available to demo scripts. Examples:
-
-1. Demo scripts can call c.editHeadline() to start editing a headline.
-
-2. Demo scripts can call c.bodyWantsFocusNow() or c.treeWantsFocusNow() or c.minibufferWantsFocusNow() to switch panes.
-
-These "just work" because the demo plugin does not interfere with Leo's focus or key handling.
-
-</t>
-<t tx="ekr.20170201105948.3">
-Demo scripts can focus on what should be done, not how. Subclasses of demo.Demo can (should) define helpers that hide implementation or configuration details.
-
-Basing presentations on (subclasses of) demo.Demo is a major innovation. It's much more powerful and flexible than screencast.py, or demo.el.
-
-</t>
-<t tx="ekr.20170201105948.4">
-Demo scripts can be chained using demo.next().  Like this:
-
-    demo.wait(whatever)
-    demo.next()
-
-Alternatively, a single demo script suffices:
-
-    &lt;&lt; section 1 &gt;&gt;
-    demo.wait(n1)
-    &lt;&lt; section 2 &gt;&gt;
-    demo.wait(n2)
-    ...
-
-</t>
-<t tx="ekr.20170201105948.5">
-Fixed wait times make it easy to create finished presentations that can be recorded without any further editing! 
-</t>
-<t tx="ekr.20170201105948.6">
-</t>
-<t tx="ekr.20170201155917.1">Demo scripts may freely use all of Leo's scripting API. The demo plugin does not interfere in any way.
-
-
-</t>
-<t tx="ekr.20170201160127.1">```python
-# Put focus to the tree.
-c.treeWantsFocusNow()
-
-# Put focus to the minibuffer.
-c.minibufferWantsFocusNow()
-
-# Put focus to the body.
-c.bodyWantsFocusNow()
-
-# Put focus in the log pane.
-c.logWantsFocusNow()
-```
-</t>
-<t tx="ekr.20170201160245.1">```python
-'''Begin editing a headline and select all its text.'''
-c.editHeadline()
-wrapper = c.edit_widget(p)
-wrapper.setSelectionRange(0, len(p.h))
-```
-</t>
-<t tx="ekr.20170201161531.1">```
-c.insertHeadline()
-c.redraw()
-c.editHeadline()
-demo.head_keys('My Headline')
-demo.wait(1)
-c.endEditing()
-
-# wrapper = c.edit_widget(p)
-# wrapper.setSelectionRange(0, len(p.h))
-```
-</t>
-<t tx="ekr.20170201161638.1">```python
-demo.key('Alt+x')
-demo.keys('insert-node')
-demo.wait(2)
-demo.key('\n')
-```</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

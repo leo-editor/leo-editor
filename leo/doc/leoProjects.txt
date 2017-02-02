@@ -35,6 +35,8 @@ But the fix should actually be safe enough, because only startup code is affecte
 https://github.com/leo-editor/leo-editor/issues/389
 
 See the checkin log for details.
+.. @+node:ekr.20170202041220.1: ** re: colorize doc parts as rST
+# The only changes were to match_doc_part and its restarter.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
