@@ -16,6 +16,7 @@ except ImportError:
 
     g.command = command
 import ast
+import itertools
 import optparse
 import os
 import sys
@@ -113,6 +114,123 @@ def beautifyPythonTree(event):
             g.es_print('beautified total %s node%s in %4.2f sec.' % (
                 pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
+#@+node:ekr.20170202095153.1: *3* compare_ast
+# http://stackoverflow.com/questions/3312989/
+# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
+ 
+def compare_ast(node1, node2):
+    if type(node1) is not type(node2):
+        return False
+    if isinstance(node1, ast.AST):
+        # Py 2/3: Use items, not itertool.iteritems.
+        for k, v in vars(node1).items():
+            if k in ('lineno', 'col_offset', 'ctx'):
+                continue
+            if not compare_ast(v, getattr(node2, k)):
+                return False
+        return True
+    elif isinstance(node1, list):
+        return all(itertools.starmap(compare_ast, zip(node1, node2)))
+            # Py 2/3: Use zip, not itertools.izip.
+    else:
+        return node1 == node2
+#@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
+def dump_tokens(tokens, verbose=True):
+    last_line_number = 0
+    for token5tuple in tokens:
+        last_line_number = dump_token(last_line_number, token5tuple, verbose)
+
+def dump_token(last_line_number, token5tuple, verbose):
+    '''Dump the given input token.'''
+    t1, t2, t3, t4, t5 = token5tuple
+    name = token.tok_name[t1].lower()
+    val = str(t2) # can fail
+    srow, scol = t3
+    erow, ecol = t4
+    line = str(t5) # can fail
+    if last_line_number != srow:
+        if verbose:
+            print("\n---- line: %3s %3s %r" % (srow, erow, line))
+        else:
+            print('%3s %7s %r' % (srow, name, line))
+    if verbose:
+        if name in ('dedent', 'indent', 'newline', 'nl'):
+            val = repr(val)
+        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
+        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
+        print('%10s %s' % (name, val))
+            # line[scol:ecol]
+    last_line_number = srow
+    return last_line_number
+#@+node:ekr.20170202095522.1: *3* fail (not used)
+def fail(node1, node2, tag):
+    '''Report a failed mismatch in the beautifier. This is a bug.'''
+    name1 = node1.__class__.__name__
+    name2 = node2.__class__.__name__
+    format = 'compare_ast failed: %s: %s %s %r %r'
+    if name1 == 'str':
+        print(format % (tag, name1, name2, node1, node2))
+    elif name1 == 'Str':
+        print(format % (tag, name1, name2, node1.s, node2.s))
+    elif 1:
+        format = 'compare_ast failed: %s: %s %s\n%r\n%r'
+        print(format % (tag, name1, name2, node1, node2))
+    else:
+        format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
+        attr1 = getattr(node1, 'lineno', '<no lineno>')
+        attr2 = getattr(node2, 'lineno', '<no lineno>')
+        print(format % (tag, name1, name2, node1, node2, attr1, attr2))
+#@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
+def main():
+    '''External entry point for Leo's beautifier.'''
+    t1 = time.time()
+    base = g.os_path_abspath(os.curdir)
+    files, options = scan_options()
+    for path in files:
+        path = g.os_path_finalize_join(base, path)
+        beautify(options, path)
+    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
+#@+node:ekr.20150601170125.1: *4* beautify (stand alone)
+def beautify(options, path):
+    '''Beautify the file with the given path.'''
+    fn = g.shortFileName(path)
+    s, e = g.readFileIntoString(path)
+    if not s:
+        return
+    print('beautifying %s' % fn)
+    s1 = g.toEncodedString(s)
+    node1 = ast.parse(s1, filename='before', mode='exec')
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    beautifier = PythonTokenBeautifier(c=None)
+    beautifier.delete_blank_lines = not options.keep
+    s2 = beautifier.run(tokens)
+    s2_e = g.toEncodedString(s2)
+    node2 = ast.parse(s2_e, filename='before', mode='exec')
+    if compare_ast(node1, node2):
+        f = open(path, 'wb')
+        f.write(s2_e)
+        f.close()
+    else:
+        print('failed to beautify %s' % fn)
+#@+node:ekr.20150601162203.1: *4* scan_options & helper
+def scan_options():
+    '''Handle all options. Return a list of files.'''
+    # This automatically implements the --help option.
+    usage = "usage: python leoBeautify -m file1, file2, ..."
+    parser = optparse.OptionParser(usage=usage)
+    add = parser.add_option
+    add('-d', '--debug', action='store_true', dest='debug',
+        help='print the list of files and exit')
+    add('-k', '--keep-blank-lines', action='store_true', dest='keep',
+        help='keep-blank-lines')
+    # Parse the options.
+    options, files = parser.parse_args()
+    if options.debug:
+        # Print the list of files and exit.
+        g.trace('files...', files)
+        sys.exit(0)
+    return files, options
 #@+node:ekr.20150531042746.1: *3* munging leo directives
 #@+node:ekr.20150529084212.1: *4* comment_leo_lines (leoBeautifier.py)
 def comment_leo_lines(p):
@@ -247,87 +365,6 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
             # A directive line.
             result.append(s)
         return i
-#@+node:ekr.20150526115312.1: *3* compare_ast
-# http://stackoverflow.com/questions/3312989/
-# elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
-
-def compare_ast(node1, node2):
-
-    trace = False and not g.unitTesting
-
-    def fail(node1, node2, tag):
-        '''Report a failed mismatch in the beautifier. This is a bug.'''
-        name1 = node1.__class__.__name__
-        name2 = node2.__class__.__name__
-        format = 'compare_ast failed: %s: %s %s %r %r'
-        if name1 == 'str':
-            print(format % (tag, name1, name2, node1, node2))
-        elif name1 == 'Str':
-            print(format % (tag, name1, name2, node1.s, node2.s))
-        elif 1:
-            format = 'compare_ast failed: %s: %s %s\n%r\n%r'
-            print(format % (tag, name1, name2, node1, node2))
-        else:
-            format = 'compare_ast failed: %s: %s %s\n%r\n%r\n%r %r'
-            attr1 = getattr(node1, 'lineno', '<no lineno>')
-            attr2 = getattr(node2, 'lineno', '<no lineno>')
-            print(format % (tag, name1, name2, node1, node2, attr1, attr2))
-
-    # pylint: disable=unidiomatic-typecheck
-    if type(node1) != type(node2):
-        if trace: fail(node1, node2, 'type mismatch')
-        return False
-    # The types of node1 and node2 match. Recursively compare components.
-    if isinstance(node1, ast.AST):
-        for kind, var in vars(node1).items():
-            if kind not in ('lineno', 'col_offset', 'ctx'):
-                var2 = vars(node2).get(kind) # Bug fix: 2016/05/16.
-                if not compare_ast(var, var2):
-                    if trace: fail(var, var2, 'AST subnode mismatch')
-                    return False
-        return True
-    elif isinstance(node1, list):
-        if len(node1) != len(node2):
-            if trace: fail(node1, node2, 'list len mismatch')
-            return False
-        for i in range(len(node1)):
-            if not compare_ast(node1[i], node2[i]):
-                if trace: fail(node1, node2, 'list element mismatch')
-                return False
-        return True
-    elif node1 != node2:
-        if trace: fail(node1, node2, 'node mismatch')
-        return False
-    else:
-        return True
-#@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
-def dump_tokens(tokens, verbose=True):
-    last_line_number = 0
-    for token5tuple in tokens:
-        last_line_number = dump_token(last_line_number, token5tuple, verbose)
-
-def dump_token(last_line_number, token5tuple, verbose):
-    '''Dump the given input token.'''
-    t1, t2, t3, t4, t5 = token5tuple
-    name = token.tok_name[t1].lower()
-    val = str(t2) # can fail
-    srow, scol = t3
-    erow, ecol = t4
-    line = str(t5) # can fail
-    if last_line_number != srow:
-        if verbose:
-            print("\n---- line: %3s %3s %r" % (srow, erow, line))
-        else:
-            print('%3s %7s %r' % (srow, name, line))
-    if verbose:
-        if name in ('dedent', 'indent', 'newline', 'nl'):
-            val = repr(val)
-        # print("%10s %3d %3d %-8s" % (name,scol,ecol,val))
-        # print('%10s srow: %s erow: %s %s' % (name,srow,erow,val))
-        print('%10s %s' % (name, val))
-            # line[scol:ecol]
-    last_line_number = srow
-    return last_line_number
 #@+node:ekr.20150602154951.1: *3* should_beautify
 def should_beautify(p):
     '''
@@ -364,57 +401,6 @@ def should_beautify(p):
 def should_kill_beautify(p):
     '''Return True if p.b contains @killbeautify'''
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20150530061745.1: *3* main (external entry) & helpers
-def main():
-    '''External entry point for Leo's beautifier.'''
-    t1 = time.time()
-    base = g.os_path_abspath(os.curdir)
-    files, options = scan_options()
-    for path in files:
-        path = g.os_path_finalize_join(base, path)
-        beautify(options, path)
-    print('beautified %s files in %4.2f sec.' % (len(files), time.time() - t1))
-#@+node:ekr.20150601170125.1: *4* beautify (stand alone)
-def beautify(options, path):
-    '''Beautify the file with the given path.'''
-    fn = g.shortFileName(path)
-    s, e = g.readFileIntoString(path)
-    if not s:
-        return
-    print('beautifying %s' % fn)
-    s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1, filename='before', mode='exec')
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    beautifier = PythonTokenBeautifier(c=None)
-    beautifier.delete_blank_lines = not options.keep
-    s2 = beautifier.run(tokens)
-    s2_e = g.toEncodedString(s2)
-    node2 = ast.parse(s2_e, filename='before', mode='exec')
-    if compare_ast(node1, node2):
-        f = open(path, 'wb')
-        f.write(s2_e)
-        f.close()
-    else:
-        print('failed to beautify %s' % fn)
-#@+node:ekr.20150601162203.1: *4* scan_options & helper
-def scan_options():
-    '''Handle all options. Return a list of files.'''
-    # This automatically implements the --help option.
-    usage = "usage: python leoBeautify -m file1, file2, ..."
-    parser = optparse.OptionParser(usage=usage)
-    add = parser.add_option
-    add('-d', '--debug', action='store_true', dest='debug',
-        help='print the list of files and exit')
-    add('-k', '--keep-blank-lines', action='store_true', dest='keep',
-        help='keep-blank-lines')
-    # Parse the options.
-    options, files = parser.parse_args()
-    if options.debug:
-        # Print the list of files and exit.
-        g.trace('files...', files)
-        sys.exit(0)
-    return files, options
 #@+node:ekr.20150527143619.1: *3* show_lws
 def show_lws(s):
     '''Show leading whitespace in a convenient format.'''
