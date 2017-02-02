@@ -2035,6 +2035,7 @@
 <v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
+<v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
 <v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
@@ -11812,6 +11813,8 @@ Put notes about each version here.
     return x.lower()
 </t>
 <t tx="ekr.20170123145248.1"></t>
+<t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
+True: call all @ and @doc parts as reStructuredText (@language rest).</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

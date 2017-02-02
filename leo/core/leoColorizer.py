@@ -1010,19 +1010,22 @@ class JEditColorizer(BaseColorizer):
             j = i + 1
         else:
             return 0
+        c = self.c
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
-        # New in Leo 5.5: always colorize doc parts using reStructuredText
-        # Switch langauges.
-        self.after_doc_language = self.language
-        self.language = 'rest'
-        self.clearState()
-        self.init(self.c.p)
-        # Restart.
-        self.setRestart(self.restartDocPart)
-        if 1:
+        # New in Leo 5.5: optionally colorize doc parts using reStructuredText
+        if c.config.getBool('color-doc-parts-as-rest'):
+            # Switch langauges.
+            self.after_doc_language = self.language
+            self.language = 'rest'
+            self.clearState()
+            self.init(c.p)
+            # Restart.
+            self.setRestart(self.restartDocPart)
             # Do *not* color the text here!
             return j
         else:
+            self.clearState()
+            self.setRestart(self.restartDocPart)
             self.colorRangeWithTag(s, j, len(s), 'docpart')
             return len(s)
     #@+node:ekr.20110605121601.18603: *6* jedit.restartDocPart
@@ -1044,8 +1047,10 @@ class JEditColorizer(BaseColorizer):
                     self.init(self.c.p)
                     self.after_doc_language = None
                     return j
+        # Color the next line.
         self.setRestart(self.restartDocPart)
-        if 1: # Do *not* colorize the text here.
+        if self.c.config.getBool('color-doc-parts-as-rest'):
+            # Do *not* colorize the text here.
             return 0
         else:
             self.colorRangeWithTag(s, 0, len(s), 'docpart')
