@@ -2750,9 +2750,9 @@ continues */
 More plain text.
 #@+node:ekr.20170201143435.1: *4* @test bc.scanLanguageDirectives
 @language python
-import imp
 import leo.core.leoColorizer as leoColorizer
-imp.reload(leoColorizer)
+# import imp
+# imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
 x = leoColorizer.JEditColorizer(c, widget, wrapper)
@@ -2785,9 +2785,9 @@ language_table = [
 #@+node:ekr.20170201143435.4: *6* test-grandchild
 #@+node:ekr.20170201175441.1: *4* @test bc.useSyntaxColoring
 @language python
-import imp
 import leo.core.leoColorizer as leoColorizer
-imp.reload(leoColorizer)
+# import imp
+# imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
 x = leoColorizer.JEditColorizer(c, widget, wrapper)
