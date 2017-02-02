@@ -855,7 +855,7 @@ if QtWidgets: # NOQA
             if got_markdown:
                 force = keywords.get('force')
                 colorizer = c.frame.body.colorizer
-                language = colorizer.scanColorDirectives(p)
+                language = colorizer.scanLanguageDirectives(p)
                 if trace: g.trace(language)
                 if force or language in ('rst', 'rest', 'markdown', 'md'):
                     if not isHtml:
@@ -1026,7 +1026,7 @@ if QtWidgets: # NOQA
             if got_docutils:
                 force = keywords.get('force')
                 colorizer = c.frame.body.colorizer
-                language = colorizer.scanColorDirectives(p)
+                language = colorizer.scanLanguageDirectives(p)
                 if trace: g.trace(language)
                 if force or language in ('rst', 'rest', 'markdown', 'md'):
                     if not isHtml:
@@ -1089,7 +1089,7 @@ if QtWidgets: # NOQA
             pc = self
             c, p = self.c, self.c.p
             colorizer = c.frame.body.colorizer
-            language = colorizer.scanColorDirectives(p)
+            language = colorizer.scanLanguageDirectives(p)
             if language in ('rest', 'rst'):
                 pc.update_rst(s, keywords)
             elif language in ('markdown', 'md'):
@@ -1140,7 +1140,7 @@ if QtWidgets: # NOQA
                     return word
             # 2016/03/25: Honor @language
             colorizer = c.frame.body.colorizer
-            language = colorizer.scanColorDirectives(p)
+            language = colorizer.scanLanguageDirectives(p)
             if got_markdown and language in ('md', 'markdown'):
                 return language
             elif got_docutils and language in ('rest', 'rst'):
