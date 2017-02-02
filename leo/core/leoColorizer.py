@@ -197,6 +197,7 @@ class JEditColorizer(BaseColorizer):
         self.actualColorDict = {} # Used only by setTag.
         self.hyperCount = 0
         # State dicts, etc.
+        self.after_doc_language = None
         self.initialStateNumber = -1
         self.old_v = None
         self.nextState = 1 # Dont use 0.
@@ -1008,10 +1009,21 @@ class JEditColorizer(BaseColorizer):
             j = i + 1
         else:
             return 0
-        self.colorRangeWithTag(s, i, j, 'leokeyword')
-        self.colorRangeWithTag(s, j, len(s), 'docpart')
+        self.colorRangeWithTag(s, 0, j, 'leokeyword')
+        # New in Leo 5.5: always colorize doc parts using reStructuredText
+        # Switch langauges.
+        self.after_doc_language = self.language
+        self.language = 'rest'
+        self.clearState()
+        self.init(self.c.p)
+        # Restart.
         self.setRestart(self.restartDocPart)
-        return len(s)
+        if 1:
+            # Do *not* color the text here!
+            return j
+        else:
+            self.colorRangeWithTag(s, j, len(s), 'docpart')
+            return len(s)
     #@+node:ekr.20110605121601.18603: *6* jedit.restartDocPart
     def restartDocPart(self, s):
         '''
@@ -1025,13 +1037,18 @@ class JEditColorizer(BaseColorizer):
                 else:
                     j = len(tag)
                     self.colorRangeWithTag(s, 0, j, 'leokeyword') # 'docpart')
-                    # This call to clearState is essential, but it interferes
-                    # with full recoloring when @language changes.
+                    # Switch languages.
+                    self.language = self.after_doc_language
                     self.clearState()
+                    self.init(self.c.p)
+                    self.after_doc_language = None
                     return j
         self.setRestart(self.restartDocPart)
-        self.colorRangeWithTag(s, 0, len(s), 'docpart')
-        return len(s)
+        if 1: # Do *not* colorize the text here.
+            return 0
+        else:
+            self.colorRangeWithTag(s, 0, len(s), 'docpart')
+            return len(s)
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
     def match_leo_keywords(self, s, i):
         '''Succeed if s[i:] is a Leo keyword.'''
@@ -1860,7 +1877,7 @@ class JEditColorizer(BaseColorizer):
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
         trace = False and not g.unitTesting
-        trace_lines = False
+        trace_lines = True
         p = self.c.p
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
