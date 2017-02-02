@@ -1428,7 +1428,8 @@ class LeoQtBody(leoFrame.LeoBody):
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18196: *6* LeoQtBody.createEditor
     def createEditor(self, name):
-        c = self.c; p = c.p
+        '''Create a new body editor.'''
+        c, p = self.c, self.c.p
         f = c.frame.top.leo_ui.leo_body_inner_frame
         # Step 1: create the editor.
         w = widget = qt_text.LeoQTextBrowser(f, c, self)
@@ -1441,10 +1442,13 @@ class LeoQtBody(leoFrame.LeoBody):
         wrapper.setAllText(p.b)
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
-        self.recolorWidget(p, wrapper)
         if isinstance(w, QtWidgets.QTextEdit):
-            colorizer = c.frame.body.colorizer
+            colorizer = leoColorizer.JEditColorizer(c, widget, wrapper)
             colorizer.highlighter.setDocument(widget.document())
+            # g.trace('highlighter', id(colorizer.highlighter))
+        else:
+            # Scintilla only.
+            self.recolorWidget(p, wrapper)
         return f, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
@@ -1732,18 +1736,13 @@ class LeoQtBody(leoFrame.LeoBody):
         if trace: g.trace('w.leo_label', w, lab)
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
-        # Support QScintillaColorizer.colorize.
+        '''Support QScintillaColorizer.colorize.'''
         c = self.c
         colorizer = c.frame.body.colorizer
         if p and colorizer and hasattr(colorizer, 'colorize'):
-            g.trace(p.h)
+            g.trace('=====', hasattr(colorizer, 'colorize'), p.h, g.callers())
             old_wrapper = c.frame.body.wrapper
             c.frame.body.wrapper = wrapper
-            # w = wrapper.widget
-            # if not hasattr(w, 'leo_colorizer'):
-                # leoColorizer.JEditColorizer(c, w) # injects w.leo_colorizer
-                # assert hasattr(w, 'leo_colorizer'), w
-            # c.frame.body.colorizer = w.leo_colorizer
             try:
                 colorizer.colorize(p)
             finally:

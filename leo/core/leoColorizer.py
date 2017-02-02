@@ -13,7 +13,7 @@ from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore,
     # import __builtin__ as builtins # Python 2.
 import re
 import string
-import time
+# import time
 #@-<< imports >>
 # pylint: disable=anomalous-backslash-in-string
 #@+others
@@ -176,7 +176,8 @@ class JEditColorizer(BaseColorizer):
         assert self.c, g.callers()
         self.widget = widget
         self.wrapper = wrapper
-        assert(wrapper == self.c.frame.body.wrapper)
+        # This assert is not true when using multiple body editors
+            # assert(wrapper == self.c.frame.body.wrapper)
         self.enabled = True
             # Per-node enable/disable flag.
             # Set by updateSyntaxColorer, used by jEdit colorizer.
@@ -2022,47 +2023,49 @@ if QtGui:
                 # Alas, a QsciDocument is not a QTextDocument.
             QtGui.QSyntaxHighlighter.__init__(self, document)
                 # Init the base class.
-        #@+node:ekr.20110605121601.18568: *3* leo_h.rehighlight
-        no_method_message = True # True: give message once.
+        #@+node:ekr.20110605121601.18568: *3* leo_h.rehighlight (disabled)
+        if 0:
+            no_method_message = True # True: give message once.
 
-        def rehighlight(self, p):
-            '''
-            Override base rehighlight method.
-            Does nothing unless QSyntaxHighlighter.currentBlock exists.
-            
-            It appears that this method is seldom (never?) called!
-            '''
-            # pylint: disable=arguments-differ
-            trace = False # and not g.unitTesting
-            if trace: g.trace('=====', p and p.h, g.callers())
-            if not hasattr(self, 'currentBlock'):
-                if self.no_method_message:
-                    self.no_method_message = False
-                    g.trace('===== QSyntaxHighlighter has no currentBlock method')
-                return
-            c = self.c
-            if not p.b.strip():
-                if trace: g.trace('no body', p and p.h)
-                return
-            self.n_calls = 0
-            tree = c.frame.tree
-            self.widget = c.frame.body.widget
-            if trace:
-                t1 = time.clock()
-            # n = self.colorer.recolorCount
-            if self.colorizer.enabled:
-                # Lock out onTextChanged.
-                old_selecting = tree.selecting
-                try:
-                    tree.selecting = True
-                    self.colorer.init(p, p.b)
-                    QtGui.QSyntaxHighlighter.rehighlight(self)
-                        # Execute the base class method.
-                finally:
-                    tree.selecting = old_selecting
-            if trace:
-                delta_t = time.clock()-t1
-                g.trace('(leo_h) ----- %2.3f sec' % (delta_t), self.n_calls)
+            def rehighlight(self, p):
+                '''
+                Override base rehighlight method.
+                Does nothing unless QSyntaxHighlighter.currentBlock exists.
+                
+                It appears that this method is seldom (never?) called!
+                '''
+                # pylint: disable=arguments-differ
+                trace = False # and not g.unitTesting
+                import time
+                if trace: g.trace('=====', p and p.h, g.callers())
+                if not hasattr(self, 'currentBlock'):
+                    if self.no_method_message:
+                        self.no_method_message = False
+                        g.trace('===== QSyntaxHighlighter has no currentBlock method')
+                    return
+                c = self.c
+                if not p.b.strip():
+                    if trace: g.trace('no body', p and p.h)
+                    return
+                self.n_calls = 0
+                tree = c.frame.tree
+                self.widget = c.frame.body.widget
+                if trace:
+                    t1 = time.clock()
+                # n = self.colorer.recolorCount
+                if self.colorizer.enabled:
+                    # Lock out onTextChanged.
+                    old_selecting = tree.selecting
+                    try:
+                        tree.selecting = True
+                        self.colorer.init(p, p.b)
+                        QtGui.QSyntaxHighlighter.rehighlight(self)
+                            # Execute the base class method.
+                    finally:
+                        tree.selecting = old_selecting
+                if trace:
+                    delta_t = time.clock()-t1
+                    g.trace('(leo_h) ----- %2.3f sec' % (delta_t), self.n_calls)
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHiglighter """
