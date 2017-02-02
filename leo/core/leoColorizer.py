@@ -137,35 +137,11 @@ class BaseColorizer(object):
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
 class JEditColorizer(BaseColorizer):
-    #@+<< docstring for JEditColorizer class >>
-    #@+node:ekr.20110605121601.18570: *3* << docstring for JEditColorizer class >>
-    #@@language rest
-    #@@wrap
     '''
     The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
-
-    The line-oriented jEdit colorizer defines one or more *restarter* methods
-    for each pattern matcher that could possibly match across line boundaries.
-    I say "one or more" because we need a separate restarter method for all
-    combinations of arguments that can be passed to the jEdit pattern matchers.
-    In effect, these restarters are lambda bindings for the generic restarter
-    methods.
-
-    Few restarters are actually needed. For example, for Python, we need
-    restarters for continued strings, and both flavors of continued
-    triple-quoted strings. For python, these turn out to be three separate
-    bindings of the arguments to restart_match_span.
-
-    When a jEdit pattern matcher partially succeeds, it creates the lambda
-    binding for its restarter and calls setRestart to set the ending state of
-    the present line to an integer representing the bound restarter. setRestart
-    calls computeState to create a *string* representing the lambda binding of
-    the restarter. setRestart then calls stateNameToStateNumber to convert that
-    string to an integer state number that then gets passed to Qt's
-    setCurrentBlockState. The string is useful for debugging; Qt only uses the
-    corresponding number.
+    For full documentation, see:
+    https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
     '''
-    #@-<< docstring for JEditColorizer class >>
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__
