@@ -116,6 +116,24 @@ class ChapterController(object):
         k.resetLabel()
         if k.arg:
             cc.selectChapterByName(k.arg)
+    #@+node:ekr.20170202061705.1: *3* cc.selectNext/Back
+    @cmd('chapter-back')
+    def backChapter(self, event=None):
+        cc = self
+        names = sorted(cc.setAllChapterNames())
+        sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
+        i = names.index(sel_name)
+        new_name = names[i-1 if i > 0 else len(names)-1]
+        cc.selectChapterByName(new_name)
+        
+    @cmd('chapter-next')
+    def nextChapter(self, event=None):
+        cc = self
+        names = sorted(cc.setAllChapterNames())
+        sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
+        i = names.index(sel_name)
+        new_name = names[i+1 if i+1 < len(names) else 0]
+        cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
     def selectChapterByName(self, name, collapse=True):
         '''Select a chapter.  Return True if a redraw is needed.'''
@@ -125,7 +143,7 @@ class ChapterController(object):
             if trace: g.trace('lockout', g.callers())
             return
         if g.isInt(name):
-            return cc.note('PyQt5 chapaters not supported')
+            return cc.note('PyQt5 chapters not supported')
         chapter = cc.getChapter(name)
         if not chapter:
             g.es_print('no such @chapter node: %s' % name)
@@ -342,6 +360,7 @@ class ChapterController(object):
             chapterName, binding = self.parseHeadline(p)
             if chapterName and p.v not in seen:
                 seen.add(p.v)
+                ### result.append(chapterName)
                 if chapterName != sel_name:
                     result.append(chapterName)
                 if chapterName not in cc.chaptersDict:
