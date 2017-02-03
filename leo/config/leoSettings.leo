@@ -65,28 +65,6 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
-<v t="ekr.20161021092615.1"><vh>Unused menus</vh>
-<v t="ekr.20131213135427.22064"><vh>@menu Buffers</vh>
-<v t="ekr.20131213135427.22065"><vh>@item buffer-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22066"><vh>@item buffer-&amp;kill</vh></v>
-<v t="ekr.20131213135427.22067"><vh>@item buffer-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22068"><vh>@item buffer-&amp;switch-to</vh></v>
-<v t="ekr.20131213135427.22069"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22070"><vh>@item &amp;buffers-list</vh></v>
-<v t="ekr.20131213135427.22071"><vh>@item buffers-&amp;list-alphabetically</vh></v>
-</v>
-<v t="ekr.20131213135427.22213"><vh>@menu Registers</vh>
-<v t="ekr.20131213135427.22214"><vh>@item register-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22215"><vh>@item register-&amp;copy-to</vh></v>
-<v t="ekr.20131213135427.22216"><vh>@item register-copy-&amp;rectangle-to</vh></v>
-<v t="ekr.20131213135427.22217"><vh>@item register-&amp;increment</vh></v>
-<v t="ekr.20131213135427.22218"><vh>@item register-&amp;insert</vh></v>
-<v t="ekr.20131213135427.22219"><vh>@item register-&amp;jump-to</vh></v>
-<v t="ekr.20131213135427.22220"><vh>@item register-&amp;point-to</vh></v>
-<v t="ekr.20131213135427.22221"><vh>@item register-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22222"><vh>@item register-&amp;view</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -6825,14 +6803,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22061"></t>
 <t tx="ekr.20131213135427.22062"></t>
 <t tx="ekr.20131213135427.22063"></t>
-<t tx="ekr.20131213135427.22064"></t>
-<t tx="ekr.20131213135427.22065"></t>
-<t tx="ekr.20131213135427.22066"></t>
-<t tx="ekr.20131213135427.22067"></t>
-<t tx="ekr.20131213135427.22068"></t>
-<t tx="ekr.20131213135427.22069"></t>
-<t tx="ekr.20131213135427.22070"></t>
-<t tx="ekr.20131213135427.22071"></t>
 <t tx="ekr.20131213135427.22072"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
@@ -6942,16 +6912,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22210"></t>
 <t tx="ekr.20131213135427.22211"></t>
 <t tx="ekr.20131213135427.22212"></t>
-<t tx="ekr.20131213135427.22213"></t>
-<t tx="ekr.20131213135427.22214"></t>
-<t tx="ekr.20131213135427.22215"></t>
-<t tx="ekr.20131213135427.22216"></t>
-<t tx="ekr.20131213135427.22217"></t>
-<t tx="ekr.20131213135427.22218"></t>
-<t tx="ekr.20131213135427.22219"></t>
-<t tx="ekr.20131213135427.22220"></t>
-<t tx="ekr.20131213135427.22221"></t>
-<t tx="ekr.20131213135427.22222"></t>
 <t tx="ekr.20131213135427.22223"></t>
 <t tx="ekr.20131213135427.22224"></t>
 <t tx="ekr.20131213135427.22225"></t>
@@ -11739,7 +11699,6 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021092615.1"></t>
 <t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Open Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations

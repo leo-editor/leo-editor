@@ -18294,6 +18294,26 @@ for shortcut in aList:
     event = filter_.create_key_event(event, c, w, ch, tkKey, shortcut)
     g.trace('%10r %r' % (shortcut, event))
         
+.. @+node:ekr.20170202194615.1: ** Unused menus
+From leoSettings.leo
+.. @+node:ekr.20170202194615.2: *3* @menu Buffers
+.. @+node:ekr.20170202194615.3: *4* @item buffer-&append-to
+.. @+node:ekr.20170202194615.4: *4* @item buffer-&kill
+.. @+node:ekr.20170202194615.5: *4* @item buffer-&prepend-to
+.. @+node:ekr.20170202194615.6: *4* @item buffer-&switch-to
+.. @+node:ekr.20170202194615.7: *4* @item -
+.. @+node:ekr.20170202194615.8: *4* @item &buffers-list
+.. @+node:ekr.20170202194615.9: *4* @item buffers-&list-alphabetically
+.. @+node:ekr.20170202194615.10: *3* @menu Registers
+.. @+node:ekr.20170202194615.11: *4* @item register-&append-to
+.. @+node:ekr.20170202194615.12: *4* @item register-&copy-to
+.. @+node:ekr.20170202194615.13: *4* @item register-copy-&rectangle-to
+.. @+node:ekr.20170202194615.14: *4* @item register-&increment
+.. @+node:ekr.20170202194615.15: *4* @item register-&insert
+.. @+node:ekr.20170202194615.16: *4* @item register-&jump-to
+.. @+node:ekr.20170202194615.17: *4* @item register-&point-to
+.. @+node:ekr.20170202194615.18: *4* @item register-&prepend-to
+.. @+node:ekr.20170202194615.19: *4* @item register-&view
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
 @first # -*- coding: utf-8 -*-
