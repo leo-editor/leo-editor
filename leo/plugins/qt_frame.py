@@ -2366,9 +2366,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             c2, p = controller.open_gnx(c, gnx)
             if p:
-                g.app.selectLeoWindow(c2)
-                c2.selectPosition(p)
-                c2.redraw()
+                assert c2.positionExists(p)
+                if c == c2:
+                    c2.selectPosition(p)
+                else:
+                    # Fix #367: complete the selection at idle time.
+                    g.app.selectLeoWindow(c2)
+                
+                    def handler(timer, c=c2, p=p):
+                        c2.selectPosition(p)
+                        timer.stop()
+
+                    timer = g.IdleTime(handler, delay=0, tag='goto-script-button')
+                    if timer: timer.start()
             else:
                 g.trace('not found', gnx)
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper

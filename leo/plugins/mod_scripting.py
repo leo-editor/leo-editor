@@ -460,7 +460,10 @@ class ScriptingController(object):
                         break
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
-    def createLocalAtButtonHelper(self, p, h, statusLine, kind='at-button', verbose=True):
+    def createLocalAtButtonHelper(self, p, h, statusLine,
+        kind='at-button',
+        verbose=True,
+    ):
         '''Create a button for a local @button node.'''
         c = self.c
         buttonText = self.cleanButtonText(h, minimal=True)
@@ -582,9 +585,12 @@ class ScriptingController(object):
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
         '''
+        trace = False and not g.unitTesting
+        if not gnx: g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
+                if trace: g.trace('Found', c.shortFileName(), p2.h)
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
@@ -592,13 +598,15 @@ class ScriptingController(object):
             if c2:
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
+                        if trace: g.trace('Found', c2.shortFileName(), p2.h)
                         return c2, p2
                 c2.close()
         # Fix bug 92: restore the previously selected tab.
+        if trace: g.trace('Not found', gnx)
         if g.app.qt_use_tabs:
             c.frame.top.leo_master.select(c)
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
-        return c, c.p
+        return None, None # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self):
@@ -619,7 +627,7 @@ class ScriptingController(object):
         tree. Binds button presses to a callback that executes the script.
         '''
         c = self.c
-        # g.trace('global @button',c.shortFileName(),p.h)
+        # g.trace('global @button', c.shortFileName(), p.gnx, p.h)
         gnx = p.gnx
         args = self.getArgs(p)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
@@ -649,7 +657,7 @@ class ScriptingController(object):
             c=c,
             buttonText=buttonText,
             docstring=docstring,
-            gnx=None, # Common buttons have static scripts.
+            gnx=gnx, # Fix #367: the gnx is needed for the Goto Script command.
             script=script,
         )
         # Now patch the button.
