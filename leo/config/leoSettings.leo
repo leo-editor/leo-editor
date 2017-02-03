@@ -3586,10 +3586,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20051126062243.1"></t>
 <t tx="ekr.20051126062525"></t>
 <t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
-<t tx="ekr.20060112103537.17">'''
-This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.
-'''
+<t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
 import leo.core.leoTest as leoTest
@@ -5447,8 +5444,7 @@ meaning of Python programs.
 </t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
-<t tx="ekr.20090203131919.1">'''Check all commands mentioned in the @menus tree
-   to ensure that they exist.'''
+<t tx="ekr.20090203131919.1">'''Check that all commands mentioned in the @menus tree actually exist.'''
 
 def checkMenu (p):
     for p2 in p.subtree_iter():
@@ -5868,7 +5864,9 @@ gray90: #E5E5E5
 </t>
 <t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
-<t tx="ekr.20111006212449.11850">class Controller:
+<t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
+
+class Controller:
     @others
     
 Controller(c).run()</t>
@@ -10167,7 +10165,8 @@ Many users will want to change the settings in the Fonts section, especially the
 - @string small-font-size:
   A small font size used in buttons.
 </t>
-<t tx="ekr.20140912105440.19376">c.k.simulateCommand('style-reload')</t>
+<t tx="ekr.20140912105440.19376">'''Execute style-reload'''
+c.k.simulateCommand('style-reload')</t>
 <t tx="ekr.20140915194122.19458">/* ========== Body pane ========== */
 
 QTextEdit#richTextEdit {
@@ -10595,11 +10594,15 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
 <t tx="ekr.20140917063815.21917"></t>
-<t tx="ekr.20140918165611.38050">from leo.core.leoQt import QtWidgets,QtCore
+<t tx="ekr.20140918165611.38050">'''
+Show a color wheel.
+Writes the selected color to the clipboard.
+'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 picker = QtWidgets.QColorDialog()
-text = QtWidgets.QApplication.clipboard().text()
 try:
-    color = QtWidgets.QColor(text)
+    text = QtWidgets.QApplication.clipboard().text()
+    color = QtGui.QColor(text)
     picker.setCurrentColor(color)
 except ValueError:
     pass
@@ -10607,7 +10610,7 @@ if not picker.exec_():
     g.es("No color selected")
 else:
     text = picker.selectedColor().name()
-    g.es("%s\ncopied to clipboard"%text)
+    g.es("copied to clipboard:", text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
 <t tx="ekr.20140922124047.19516"></t>
@@ -12105,7 +12108,11 @@ if date:
 else:
     g.es("No date selected")
 </t>
-<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets,QtCore
+<t tx="tbrown.20140609102412.32428">'''
+Create a combo box in the icon area that shows color names.
+It writes the selected color name to the clipboard.
+'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import leo.core.leoColor as leoColor
 template = '''
 QComboBox {
@@ -12113,37 +12120,43 @@ QComboBox {
     selection-background-color: %s;
     selection-color: black;
 }''' 
-ivar = 'settings-color-picker'
-if not hasattr(c,ivar):
-    setattr(c,ivar,True)
+ivar = 'leo_settings_color_picker'
+if getattr(c, ivar, None):
+    g.es('The color picker already exists in the icon bar.')
+else:
     color_list = []
-    ivar = 'settings_color_picker'
     box = QtWidgets.QComboBox()
+
     def onActivated(n,*args,**keys):
         icon = box.itemIcon(n)
         color = color_list[n]
         sheet = template % (color,color)
         box.setStyleSheet(sheet)
+        g.es("copied to clipboard:", color)
+        QtWidgets.QApplication.clipboard().setText(color)
+        
     box.activated.connect(onActivated)
     color_db = leoColor.leo_color_database
     for key in sorted(color_db):
         if not key.startswith('grey'): # Use gray, not grey.
             val = color_db.get(key)
             if val:
-                color = QtWidgets.QColor(val)
+                color = QtGui.QColor(val)
                 color_list.append(val)
-                pixmap = QtWidgets.QPixmap(40,40)
+                pixmap = QtGui.QPixmap(40,40)
                 pixmap.fill(color)
-                icon = QtWidgets.QIcon(pixmap)
+                icon = QtGui.QIcon(pixmap)
                 box.addItem(icon,key)
     c.frame.iconBar.addWidget(box)
+    setattr(c,ivar,True) # Do this last, so errors don't prevent re-execution.
 </t>
-<t tx="tbrown.20140609102412.32430">from leo.core.leoQt import QtWidgets, QtCore
+<t tx="tbrown.20140609102412.32430">'''Show a dialog for picking fonts.'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 
 picker = QtWidgets.QFontDialog()
 text = QtWidgets.QApplication.clipboard().text()
 try:
-    font = QtWidgets.QFont(text)
+    font = QtGui.QFont(text)
     picker.setCurrentFont(font)
 except ValueError:
     pass
@@ -12152,7 +12165,7 @@ if not picker.exec_():
     g.es("No font selected")
 else:
     text = picker.selectedFont().family()
-    g.es("%s\ncopied to clipboard"%text)
+    g.es('copied to clipboard:', text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
 <t tx="tbrown.20140814090009.57475"></t>
