@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1249,6 +1249,10 @@
 </v>
 </v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
+<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
+</v>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 <v t="ekr.20170130190843.1"><vh>Code Academy</vh>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
@@ -1259,6 +1263,7 @@
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 </v>
+<v t="ekr.20170203060541.1"><vh>** Why can't we put graphics directly in Leo's body pane?</vh></v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -18906,7 +18911,9 @@ if p:
             pass
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1">* Insert to-be-documented mail items
-- What setting allows automatic pyflakes?</t>
+- What setting allows automatic pyflakes?
+
+</t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
 **Executive Summary**
@@ -19658,7 +19665,69 @@ The new javascript and perl importers know *nothing* about parsing. They know on
 - Optional: change @language md to @language rest.
 - Use @button make-md-toc in LeoDocs.leo.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170203055137.1">https://github.com/leo-editor/leo-editor/issues/368
+
+The general principle is that names used outside their defining module usually can't be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py. Otoh, names used only within a single file (python module), usually can be changed. This includes class names. This distinction is usually clear to me (perhaps after a cff command), but this is an implementor's distinction, not something that would be clear to a newbie, or a casual script writer.
+
+Furthermore, there seems to be no listing of Leo's most important ivars, c.frame, frame.body, body.widget and body.wrapper, etc. along with the names of Leo's subcommanders. These are burned into my memory. All users should know about them.
+
+Important: It is often good design to put multiple classes in a single module, so as to be able to hide implementation details. For example, most classes in leoColorizer.py may be renamed freely. More importantly, those classes can be changed at will, or even deleted. Within a module, helper classes can be added without affecting other modules in any way.
+</t>
+<t tx="ekr.20170203055237.1">https://github.com/leo-editor/leo-editor/issues/356
+
+=== EKR
+
+The pyzo "wizard" (really, a slideshow, available from the help menu), could be a model for all of Leo's revised tutorials. It's a model both for content (what the user sees) and implementation (a series of docstrings). Like I said, pyzo is a work of genius, and Leo must beg/borrow/steal as much of it as possible.
+
+===
+
+While I was learning Leo couple of months back, i took some notes and placed them at the github repo below
+
+https://github.com/satishgoda/leo-editor-tutorial/tree/master/reference/scripting
+https://github.com/satishgoda/leo-editor-tutorial/tree/master/workflows
+
+I am currently going through an online course on python/matplotlib for dataviz. I am using Leo to document and work out the examples (See image below). As part of the leo distribution we could provide examples Leo files clearly demonstrating the disparate use cases that Leo can be fitted.
+
+Interesting graphic
+https://cloud.githubusercontent.com/assets/536008/21877940/b7118392-d8c9-11e6-9a26-7b9bd79eb87e.png
+</t>
+<t tx="ekr.20170203060220.1">Problem Context
+
+New adopter of leoeditor using the scripting interface for the first time
+
+Scenario
+
+using the tutorial-scripting page
+http://leoeditor.com/tutorial-scripting.html
+
+Issue
+
+The tutorial introduces a "hello world" example, which is clear and readily understood, even by non-python programmers, immediately after that however, it goes into fairly abstruse territory: vnodes, positions and other content that assumes familiarity with the internals of leo.
+
+This makes the tutorial-scripting page quite difficult to follow, even for experienced python programmers. Moreover, the more abstruse content does not appear to be runnable. pasting the code into the editor and pressing ctrl+b does not produce any output.
+
+Question
+
+Is there a step-by-step guide with easily-understood and runnable examples, that goes beyond the g.es helloworld example?
+
+It would seem useful to have an incremental introduction with runnable examples, each building upon the previous one, where each incremental step is runnable or capable of producing some kind of comprehensible output, without going into details about the internal guts of leo
+
+It would seem useful if the introduction included basic concepts that talk more about the end result (using outlines and things that can be done with them) without going into depth about the internal architecture of leo (which has changed in important ways over the years, further compounding difficulty and uptake by new users)
+
+For example ... a modified tutorial could be something like:
+
+your first script ... helloworld
+next script: create an outline node ;; with runnable example
+next script: duplicate an outline node ;; with runnable example
+next script: create five outline nodes, each with a different name
+next script: populate node bodies with dynamic values (e.g., current date)
+next script: generate an output html or text file of the nodes you just created
+
+Each of the above examples could just gloss over the internal architecture, (but still reference architecture with links elsewhere in the documentation.
+
+This would give new users exposure to the editor itself without confusing nomenclature that does not make much sense, except to experienced users (or developers) of the tool.</t>
+<t tx="ekr.20170203060541.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
