@@ -84,10 +84,10 @@ def cmd_toggle(event):
     c._wikiview.active = not c._wikiview.active
     if  c._wikiview.active:
         g.es("WikiView active")
-        cmd_hide_all(c)
+        cmd_hide_all(event)
     else:
         g.es("WikiView inactive")
-        cmd_show_all(c)
+        cmd_show_all(event)
 #@+node:tbrown.20141101114322.7: ** wikiview-hide-all
 @g.command('wikiview-hide-all')
 def cmd_hide_all(event):
