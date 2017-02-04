@@ -14,25 +14,18 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
 
     def __init__(self, *args, **kwargs):
         """set up"""
-        self.c = kwargs['c']
-        self.lep = kwargs['lep']
-        p = kwargs.get('p', self.c.p)    
-        kwargs = {k:v for k,v in kwargs.items() 
-                  if k not in ('c', 'p', 'lep')}
+        self.c = kwargs.pop('c')
+        self.lep = kwargs.pop('lep')
         QtWidgets.QTextEdit.__init__(self, *args, **kwargs)
         self.textChanged.connect(self.text_changed)
-        self.focused = None
-
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
-        self.focused = True
         DBG("focusin()")
         self.lep.edit_widget_focus()
         self.update_position(self.lep.get_position())
 
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
-        self.focused = False
         DBG("focusout()")
         p = self.lep.get_position()
         p.b = self.toPlainText()
