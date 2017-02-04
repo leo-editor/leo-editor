@@ -2,6 +2,7 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 from leo.core.editpane import plaintextedit
+from leo.core.editpane import vanillascintilla
 from leo.core.editpane import plaintextview
 
 if g.isPython3:
@@ -55,7 +56,9 @@ class LeoEditPane(QtWidgets.QWidget):
 
         reload(plaintextedit)
         reload(plaintextview)
-        self.edit_widget = plaintextedit.LEP_PlainTextEdit(lep=self, c=self.c)
+        reload(vanillascintilla)
+        # self.edit_widget = plaintextedit.LEP_PlainTextEdit(lep=self, c=self.c)
+        self.edit_widget = vanillascintilla.LEP_VanillaScintilla(lep=self, c=self.c)
         self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
         self.edit_frame.layout().addWidget(self.edit_widget)
         self.view_frame.layout().addWidget(self.view_widget)
