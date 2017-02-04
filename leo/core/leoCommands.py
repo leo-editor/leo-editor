@@ -272,7 +272,7 @@ class Commands(object):
         import leo.commands.helpCommands as helpCommands
         import leo.commands.keyCommands as keyCommands
         import leo.commands.killBufferCommands as killBufferCommands
-        import leo.commands.macroCommands as macroCommands
+        ### import leo.commands.macroCommands as macroCommands
         import leo.commands.rectangleCommands as rectangleCommands
         import leo.commands.spellCommands as spellCommands
         # Other subcommanders.
@@ -313,7 +313,7 @@ class Commands(object):
         self.helpCommands       = helpCommands.HelpCommandsClass(c)
         self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
-        self.macroCommands      = macroCommands.MacroCommandsClass(c)
+        ### self.macroCommands      = macroCommands.MacroCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
         # Other objects
@@ -326,10 +326,6 @@ class Commands(object):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
         else:
             self.styleSheetManager = None
-        if hasattr(g.app.gui, 'bigTextControllerClass'):
-            self.bigTextController = g.app.gui.bigTextControllerClass(c)
-        else:
-            self.bigTextController = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings):
         '''Init the settings *before* initing the objects.'''
@@ -1449,7 +1445,7 @@ class Commands(object):
             g.warning('no text selected')
             return
         # The default language in effect at p.
-        language = c.frame.body.colorizer.scanColorDirectives(p)
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
         if c.hasAmbiguousLanguage(p):
             language = c.getLanguageAtCursor(p, language)
         # g.trace(language,p.h)
@@ -1498,7 +1494,7 @@ class Commands(object):
             g.warning('no text selected')
             return
         # The default language in effect at p.
-        language = c.frame.body.colorizer.scanColorDirectives(p)
+        language = c.frame.body.colorizer.scanLanguageDirectives(p)
         if c.hasAmbiguousLanguage(p):
             language = c.getLanguageAtCursor(p, language)
         d1, d2, d3 = g.set_delims_from_language(language)
@@ -2071,6 +2067,7 @@ class Commands(object):
         g.app.writeWaitingLog(c)
         g.doHook("new", old_c=self, c=c, new_c=c)
         c.setLog()
+        c.setChanged(False) # Fix #387
         c.redraw()
         return c # For unit tests and scripts.
     #@+node:ekr.20031218072017.2821: *6* c.open & helper
@@ -2172,12 +2169,12 @@ class Commands(object):
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
+        # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
             highlighter = c.frame.body.colorizer.highlighter
             g.trace(highlighter.n_calls)
-        trace_time = False and not g.unitTesting
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:
@@ -3174,7 +3171,7 @@ class Commands(object):
         c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
-        c.setChanged(True)
+        c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.
         # paste as first child if back is expanded.
         back = pasted.back()
         if back and back.hasChildren() and back.isExpanded():
@@ -5290,8 +5287,8 @@ class Commands(object):
         if trace: g.trace('returns', path)
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
-    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives
-    # Called only by scanColorDirectives.
+    #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
+    # No longer used. Was called only by scanLanguageDirectives.
 
     def scanAtRootDirectives(self, aList):
         '''Scan aList for @root-code and @root-doc directives.'''
@@ -5652,10 +5649,20 @@ class Commands(object):
     #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
     def requestRecolor(self):
         c = self
-        # g.trace(g.callers(4))
         c.requestRecolorFlag = True
 
     recolor = requestRecolor
+
+    @cmd('recolor')
+    def recolorCommand(self, event=None):
+        '''Force a full recolor.'''
+        c = self
+        wrapper = c.frame.body.wrapper
+        # Setting all text appears to be the only way.
+        i, j = wrapper.getSelectionRange()
+        ins = wrapper.getInsertPoint()
+        wrapper.setAllText(c.p.b)
+        wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
@@ -5727,15 +5734,13 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now
+    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
     def recolor_now(self, p=None, incremental=False, interruptable=True):
+        # Support QScintillaColorizer.colorize.
         c = self
-        if not p:
-            p = c.p
-        # g.trace('incremental',incremental,p and p.h,g.callers())
-        if c.frame.body.colorizer:
-            c.frame.body.colorizer.colorize(p,
-                incremental=incremental, interruptable=interruptable)
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'colorize'):
+            colorizer.colorize(p or c.p)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -6672,10 +6677,10 @@ class Commands(object):
                 c.setChanged(True)
             c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self, changedFlag):
+    def setChanged(self, changedFlag=True, redrawFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
         trace = False and not g.unitTesting # and changedFlag
-        if trace: g.trace(g.callers())
+        if trace: g.trace(changedFlag, redrawFlag, g.callers(2))
         c = self
         if not c.frame:
             return
@@ -6694,20 +6699,21 @@ class Commands(object):
         if not c.frame.top:
             return
         master = hasattr(c.frame.top, 'leo_master') and c.frame.top.leo_master
-        if master:
-            # Call LeoTabbedTopLevel.setChanged.
-            master.setChanged(c, changedFlag)
-        s = c.frame.getTitle()
-        # if trace: g.trace(changedFlag,repr(s))
-        if len(s) > 2:
-            if changedFlag:
-                if s[0] != '*':
-                    c.frame.setTitle("* " + s)
-                    # if trace: g.trace('(c)',"* " + s)
-            else:
-                if s[0: 2] == "* ":
-                    c.frame.setTitle(s[2:])
-                    # if trace: g.trace('(c)',s[2:])
+        if redrawFlag: # Prevent flash when fixing #387.
+            if master:
+                # Call LeoTabbedTopLevel.setChanged.
+                master.setChanged(c, changedFlag)
+            s = c.frame.getTitle()
+            # if trace: g.trace(changedFlag,repr(s))
+            if len(s) > 2:
+                if changedFlag:
+                    if s[0] != '*':
+                        c.frame.setTitle("* " + s)
+                        # if trace: g.trace('(c)',"* " + s)
+                else:
+                    if s[0: 2] == "* ":
+                        c.frame.setTitle(s[2:])
+                        # if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 

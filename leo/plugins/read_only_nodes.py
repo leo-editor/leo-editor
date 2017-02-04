@@ -67,8 +67,8 @@ import os
 import sys
 # import urllib
 
+# pylint: disable=no-name-in-module,no-member
 if g.isPython3:
-    # pylint: disable=no-name-in-module,no-member
     import urllib.parse as urlparse
     import urllib.request.urlopen as urlopen
 else:

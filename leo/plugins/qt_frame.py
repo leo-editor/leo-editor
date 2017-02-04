@@ -274,6 +274,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event):
+                ### g.trace(g.callers()) ###
                 self.parent().show()
                 QtWidgets.QLineEdit.focusInEvent(self, event)
                     # EKR: 2014/06/28: Call the base class method.
@@ -1357,12 +1358,13 @@ class LeoQtBody(leoFrame.LeoBody):
                 # A Qsci.QsciSintilla object.
                 # dw.createText sets self.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
-            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget)
+            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
         else:
             self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
-            self.colorizer = leoColorizer.LeoQtColorizer(c, self.wrapper.widget)
+            self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
+            
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -1426,10 +1428,11 @@ class LeoQtBody(leoFrame.LeoBody):
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18196: *6* LeoQtBody.createEditor
     def createEditor(self, name):
-        c = self.c; p = c.p
+        '''Create a new body editor.'''
+        c, p = self.c, self.c.p
         f = c.frame.top.leo_ui.leo_body_inner_frame
         # Step 1: create the editor.
-        w = qt_text.LeoQTextBrowser(f, c, self)
+        w = widget = qt_text.LeoQTextBrowser(f, c, self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = qt_text.QTextEditWrapper(w, name='body', c=c)
         self.packLabel(w)
@@ -1438,9 +1441,14 @@ class LeoQtBody(leoFrame.LeoBody):
         self.updateInjectedIvars(w, p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
-        # self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
-        self.recolorWidget(p, wrapper)
+        if isinstance(w, QtWidgets.QTextEdit):
+            colorizer = leoColorizer.JEditColorizer(c, widget, wrapper)
+            colorizer.highlighter.setDocument(widget.document())
+            # g.trace('highlighter', id(colorizer.highlighter))
+        else:
+            # Scintilla only.
+            self.recolorWidget(p, wrapper)
         return f, wrapper
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
@@ -1701,7 +1709,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
         w.leo_chapter = None
-        # w.leo_colorizer = None # Set in LeoQtColorizer ctor.
+        # w.leo_colorizer = None # Set in JEditColorizer ctor.
         w.leo_frame = parentFrame
         # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
@@ -1726,26 +1734,20 @@ class LeoQtBody(leoFrame.LeoBody):
         layout.setRowStretch(1, 1) # Give row 1 as much as possible.
         w.leo_label = lab # Inject the ivar.
         if trace: g.trace('w.leo_label', w, lab)
-    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget
+    #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
-        trace = False and not g.unitTesting
+        '''Support QScintillaColorizer.colorize.'''
         c = self.c
-        # Save.
-        old_wrapper = c.frame.body.wrapper
-        c.frame.body.wrapper = wrapper
-        w = wrapper.widget
-        if not hasattr(w, 'leo_colorizer'):
-            if trace: g.trace('*** creating colorizer for', w)
-            leoColorizer.LeoQtColorizer(c, w) # injects w.leo_colorizer
-            assert hasattr(w, 'leo_colorizer'), w
-        c.frame.body.colorizer = w.leo_colorizer
-        if trace: g.trace(w, c.frame.body.colorizer)
-        try:
-            # c.recolor_now(interruptable=False) # Force a complete recoloring.
-            c.frame.body.colorizer.colorize(p, incremental=False, interruptable=False)
-        finally:
-            # Restore.
-            c.frame.body.wrapper = old_wrapper
+        colorizer = c.frame.body.colorizer
+        if p and colorizer and hasattr(colorizer, 'colorize'):
+            g.trace('=====', hasattr(colorizer, 'colorize'), p.h, g.callers())
+            old_wrapper = c.frame.body.wrapper
+            c.frame.body.wrapper = wrapper
+            try:
+                colorizer.colorize(p)
+            finally:
+                # Restore.
+                c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20110605121601.18214: *5* LeoQtBody.switchToChapter
     def switchToChapter(self, w):
         '''select w.leo_chapter.'''
@@ -2364,9 +2366,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             c2, p = controller.open_gnx(c, gnx)
             if p:
-                g.app.selectLeoWindow(c2)
-                c2.selectPosition(p)
-                c2.redraw()
+                assert c2.positionExists(p)
+                if c == c2:
+                    c2.selectPosition(p)
+                else:
+                    # Fix #367: complete the selection at idle time.
+                    g.app.selectLeoWindow(c2)
+                
+                    def handler(timer, c=c2, p=p):
+                        c2.selectPosition(p)
+                        timer.stop()
+
+                    timer = g.IdleTime(handler, delay=0, tag='goto-script-button')
+                    if timer: timer.start()
             else:
                 g.trace('not found', gnx)
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
@@ -3548,7 +3560,6 @@ class LeoQtMenu(leoMenu.LeoMenu):
         '''Activate the menu with the given name'''
         menu = self.getMenu(menuName)
             # Menu is a QtMenuWrapper, a subclass of both QMenu and LeoQtMenu.
-        g.trace(menu)
         if menu:
             self.activateAllParentMenus(menu)
         else:

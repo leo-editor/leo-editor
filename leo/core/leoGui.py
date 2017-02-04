@@ -244,7 +244,7 @@ class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
-    def __init__(self, c, char, event, shortcut, w, x, y, x_root, y_root):
+    def __init__(self, c, char, event, shortcut, w, x=None, y=None, x_root=None, y_root=None):
         '''Ctor for LeoKeyEvent class.'''
         trace = False and not g.unitTesting
         if g.isStroke(shortcut):

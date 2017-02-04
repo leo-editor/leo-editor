@@ -65,28 +65,6 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
-<v t="ekr.20161021092615.1"><vh>Unused menus</vh>
-<v t="ekr.20131213135427.22064"><vh>@menu Buffers</vh>
-<v t="ekr.20131213135427.22065"><vh>@item buffer-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22066"><vh>@item buffer-&amp;kill</vh></v>
-<v t="ekr.20131213135427.22067"><vh>@item buffer-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22068"><vh>@item buffer-&amp;switch-to</vh></v>
-<v t="ekr.20131213135427.22069"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22070"><vh>@item &amp;buffers-list</vh></v>
-<v t="ekr.20131213135427.22071"><vh>@item buffers-&amp;list-alphabetically</vh></v>
-</v>
-<v t="ekr.20131213135427.22213"><vh>@menu Registers</vh>
-<v t="ekr.20131213135427.22214"><vh>@item register-&amp;append-to</vh></v>
-<v t="ekr.20131213135427.22215"><vh>@item register-&amp;copy-to</vh></v>
-<v t="ekr.20131213135427.22216"><vh>@item register-copy-&amp;rectangle-to</vh></v>
-<v t="ekr.20131213135427.22217"><vh>@item register-&amp;increment</vh></v>
-<v t="ekr.20131213135427.22218"><vh>@item register-&amp;insert</vh></v>
-<v t="ekr.20131213135427.22219"><vh>@item register-&amp;jump-to</vh></v>
-<v t="ekr.20131213135427.22220"><vh>@item register-&amp;point-to</vh></v>
-<v t="ekr.20131213135427.22221"><vh>@item register-&amp;prepend-to</vh></v>
-<v t="ekr.20131213135427.22222"><vh>@item register-&amp;view</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -1283,14 +1261,7 @@
 </v>
 <v t="ekr.20131213135427.22049"><vh>@menu &amp;Cmds</vh>
 <v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbrev</vh>
-<v t="ekr.20131213135427.22051"><vh>@item &amp;toggle-abbrev-mode</vh></v>
-<v t="ekr.20131213135427.22052"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
-<v t="ekr.20131213135427.22054"><vh>@item abbrev-&amp;read</vh></v>
-<v t="ekr.20131213135427.22055"><vh>@item abbrev-&amp;write</vh></v>
-<v t="ekr.20131213135427.22056"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22057"><vh>@item abbrev-&amp;add-global</vh></v>
-<v t="ekr.20131213135427.22058"><vh>@item abbrev-&amp;inverse-add-global</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Body Editors</vh>
@@ -1299,12 +1270,8 @@
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
 <v t="ekr.20131213135427.22072"><vh>@menu &amp;Chapters</vh>
-<v t="ekr.20131213135427.22073"><vh>@item chapter-&amp;clone-node-to</vh></v>
-<v t="ekr.20131213135427.22074"><vh>@item chapter-c&amp;opy-node-to</vh></v>
-<v t="ekr.20131213135427.22075"><vh>@item chapter-c&amp;reate</vh></v>
-<v t="ekr.20131213135427.22076"><vh>@item chapter-&amp;move-node-to</vh></v>
-<v t="ekr.20131213135427.22077"><vh>@item chapter-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22078"><vh>@item chapter-&amp;select</vh></v>
+<v t="ekr.20170123145248.1"><vh>@item chapter-select-&amp;main</vh></v>
 </v>
 <v t="ekr.20131213135427.22079"><vh>@menu Cursor/Selection</vh>
 <v t="ekr.20131213135427.22080"><vh>@menu Cursor &amp;Back</vh>
@@ -1396,18 +1363,6 @@
 <v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
 <v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
-</v>
-<v t="ekr.20131213135427.22183"><vh>@menu &amp;Macros</vh>
-<v t="ekr.20131213135427.22184"><vh>@item macro-start-&amp;recording</vh></v>
-<v t="ekr.20131213135427.22185"><vh>@item macro-&amp;end-recording</vh></v>
-<v t="ekr.20131213135427.22186"><vh>@item macro-&amp;name-last</vh></v>
-<v t="ekr.20131213135427.22187"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22188"><vh>@item macro-&amp;call</vh></v>
-<v t="ekr.20131213135427.22189"><vh>@item macro-call-&amp;last</vh></v>
-<v t="ekr.20131213135427.22190"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22191"><vh>@item macro-&amp;load-&amp;all</vh></v>
-<v t="ekr.20131213135427.22192"><vh>@item macro-&amp;print-all</vh></v>
-<v t="ekr.20131213135427.22193"><vh>@item macro-&amp;save-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu Minibuffer</vh>
 <v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
@@ -2042,15 +1997,12 @@
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
-<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20140829172618.19886"><vh>@int max-pre-loaded-body-chars = 30000</vh></v>
+<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
+<v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
-<v t="ekr.20081018053140.11"><vh>For developers only</vh>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
-<v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles (may not work)</vh></v>
-</v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -2061,6 +2013,7 @@
 <v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
+<v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
 <v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
@@ -3633,10 +3586,7 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20051126062243.1"></t>
 <t tx="ekr.20051126062525"></t>
 <t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
-<t tx="ekr.20060112103537.17">'''
-This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.
-'''
+<t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
 import leo.core.leoTest as leoTest
@@ -4215,9 +4165,9 @@ toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w
 toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
-negative-argument       = None      # Alt-minus conflicts with contract-all.
+# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
-universal-argument      = Alt-u     # Usually Ctrl-u, conflicts with move-outline-up.
+# universal-argument    = Alt-u   # Usually Ctrl-u, conflicts with move-outline-up.
 
 
 
@@ -5445,7 +5395,6 @@ True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080930072519.3"></t>
 <t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
 If there are more than this number, a new row is created.</t>
-<t tx="ekr.20081018053140.11">Don't change these unless you know what you are doing.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.
 </t>
@@ -5495,8 +5444,7 @@ meaning of Python programs.
 </t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
-<t tx="ekr.20090203131919.1">'''Check all commands mentioned in the @menus tree
-   to ensure that they exist.'''
+<t tx="ekr.20090203131919.1">'''Check that all commands mentioned in the @menus tree actually exist.'''
 
 def checkMenu (p):
     for p2 in p.subtree_iter():
@@ -5916,7 +5864,9 @@ gray90: #E5E5E5
 </t>
 <t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
-<t tx="ekr.20111006212449.11850">class Controller:
+<t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
+
+class Controller:
     @others
     
 Controller(c).run()</t>
@@ -6845,33 +6795,13 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22048"></t>
 <t tx="ekr.20131213135427.22049"></t>
 <t tx="ekr.20131213135427.22050"></t>
-<t tx="ekr.20131213135427.22051"></t>
-<t tx="ekr.20131213135427.22052"></t>
 <t tx="ekr.20131213135427.22053"></t>
-<t tx="ekr.20131213135427.22054"></t>
-<t tx="ekr.20131213135427.22055"></t>
-<t tx="ekr.20131213135427.22056"></t>
-<t tx="ekr.20131213135427.22057"></t>
-<t tx="ekr.20131213135427.22058"></t>
 <t tx="ekr.20131213135427.22059"></t>
 <t tx="ekr.20131213135427.22060"></t>
 <t tx="ekr.20131213135427.22061"></t>
 <t tx="ekr.20131213135427.22062"></t>
 <t tx="ekr.20131213135427.22063"></t>
-<t tx="ekr.20131213135427.22064"></t>
-<t tx="ekr.20131213135427.22065"></t>
-<t tx="ekr.20131213135427.22066"></t>
-<t tx="ekr.20131213135427.22067"></t>
-<t tx="ekr.20131213135427.22068"></t>
-<t tx="ekr.20131213135427.22069"></t>
-<t tx="ekr.20131213135427.22070"></t>
-<t tx="ekr.20131213135427.22071"></t>
 <t tx="ekr.20131213135427.22072"></t>
-<t tx="ekr.20131213135427.22073"></t>
-<t tx="ekr.20131213135427.22074"></t>
-<t tx="ekr.20131213135427.22075"></t>
-<t tx="ekr.20131213135427.22076"></t>
-<t tx="ekr.20131213135427.22077"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
 <t tx="ekr.20131213135427.22080"></t>
@@ -6961,17 +6891,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22180"></t>
 <t tx="ekr.20131213135427.22181"></t>
 <t tx="ekr.20131213135427.22182"></t>
-<t tx="ekr.20131213135427.22183"></t>
-<t tx="ekr.20131213135427.22184"></t>
-<t tx="ekr.20131213135427.22185"></t>
-<t tx="ekr.20131213135427.22186"></t>
-<t tx="ekr.20131213135427.22187"></t>
-<t tx="ekr.20131213135427.22188"></t>
-<t tx="ekr.20131213135427.22189"></t>
-<t tx="ekr.20131213135427.22190"></t>
-<t tx="ekr.20131213135427.22191"></t>
-<t tx="ekr.20131213135427.22192"></t>
-<t tx="ekr.20131213135427.22193"></t>
 <t tx="ekr.20131213135427.22194"></t>
 <t tx="ekr.20131213135427.22195"></t>
 <t tx="ekr.20131213135427.22196"></t>
@@ -6991,16 +6910,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22210"></t>
 <t tx="ekr.20131213135427.22211"></t>
 <t tx="ekr.20131213135427.22212"></t>
-<t tx="ekr.20131213135427.22213"></t>
-<t tx="ekr.20131213135427.22214"></t>
-<t tx="ekr.20131213135427.22215"></t>
-<t tx="ekr.20131213135427.22216"></t>
-<t tx="ekr.20131213135427.22217"></t>
-<t tx="ekr.20131213135427.22218"></t>
-<t tx="ekr.20131213135427.22219"></t>
-<t tx="ekr.20131213135427.22220"></t>
-<t tx="ekr.20131213135427.22221"></t>
-<t tx="ekr.20131213135427.22222"></t>
 <t tx="ekr.20131213135427.22223"></t>
 <t tx="ekr.20131213135427.22224"></t>
 <t tx="ekr.20131213135427.22225"></t>
@@ -7148,7 +7057,7 @@ abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
 abbrev-kill-all                     = None
-advertised-undo                     = Ctrl-underscore
+# advertised-undo                   = Ctrl-underscore
 auto-complete                       = None
 back-char                           = Ctrl-b
 back-char-extend-selection          = None
@@ -7204,7 +7113,7 @@ delete-indentation                  = Alt-asciicircum
 delete-node                         = Shift-Ctrl-BkSp
 delete-spaces                       = Alt-backslash
 demote                              = Ctrl-}
-digit-argument                      = None
+# digit-argument                    = None
 directory-make                      = None
 directory-remove                    = None
 downcase-region                     = None
@@ -7338,22 +7247,22 @@ move-outline-left               = None         # Removed Ctrl-L: no point if oth
 move-outline-right              = None         # Ctrl-R conflicts with search-backward.
 move-outline-up                 = None         # Ctrl-U confllicts with universal-argument.
 move-past-close                 = Alt-parenright
-negative-argument               = Alt-minus
+# negative-argument             = Alt-minus
 new                             = None         # Ctrl-n conflicts with next-line.
 newline-and-indent              = Ctrl-j
 next-line                       = Ctrl-n
 next-line-extend-selection      = None
-number-command                  = None
-number-command-0                = Alt-0
-number-command-1                = Alt-1
-number-command-2                = Alt-2
-number-command-3                = Alt-3
-number-command-4                = Alt-4
-number-command-5                = Alt-5
-number-command-6                = Alt-6
-number-command-7                = Alt-7
-number-command-8                = Alt-8
-number-command-9                = Alt-9 
+# number-command                  = None
+# number-command-0                = Alt-0
+# number-command-1                = Alt-1
+# number-command-2                = Alt-2
+# number-command-3                = Alt-3
+# number-command-4                = Alt-4
+# number-command-5                = Alt-5
+# number-command-6                = Alt-6
+# number-command-7                = Alt-7
+# number-command-8                = Alt-8
+# number-command-9                = Alt-9 
 open-leoDocs-leo                = None
 open-leoDist-leo                = None
 open-leoPlugins-leo             = None
@@ -7460,7 +7369,7 @@ transpose-lines                 = None
 transpose-words                 = Alt-t
 undo                            = None         # Ctrl-Z conflicts with suspend.
 unindent-region                 = None
-universal-argument              = Ctrl-u
+# universal-argument            = Ctrl-u
 unmark-all                      = None         # Alt-U: conflicts with upcase-word.
 untabify                        = None
 untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
@@ -7810,22 +7719,22 @@ move-outline-up                     = None
 move-past-close                     = None
 move-past-close-extend-selection    = None
 </t>
-<t tx="ekr.20140721165014.19157">negative-argument                   = None
+<t tx="ekr.20140721165014.19157"># negative-argument                   = None
 new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
-number-command                      = None
-number-command-0                    = None
-number-command-1                    = None
-number-command-2                    = None
-number-command-3                    = None
-number-command-4                    = None
-number-command-5                    = None
-number-command-6                    = None
-number-command-7                    = None
-number-command-8                    = None
-number-command-9                    = None
+# number-command                    = None
+# number-command-0                  = None
+# number-command-1                  = None
+# number-command-2                  = None
+# number-command-3                  = None
+# number-command-4                  = None
+# number-command-5                  = None
+# number-command-6                  = None
+# number-command-7                  = None
+# number-command-8                  = None
+# number-command-9                  = None
 # number-to-register                = None
 # open-compare-window               = None
 # open-find-dialog                  = None
@@ -7971,7 +7880,7 @@ transpose-words                     = None
 undo                                = None
 unformat-paragraph                  = None
 unindent-region                     = None
-universal-argument                  = None
+# universal-argument                  = None
 unmark-all                          = None
 untabify                            = None
 untangle                            = None
@@ -10084,11 +9993,6 @@ like vim.
 To enable vim emulation, place a copy this "@keys Vim bindings" node and
 its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 </t>
-<t tx="ekr.20140829172618.19886">The maximum number of characters that will be automatically load into the body text.
-If p.b exceeds this number, Leo will show 'load' and 'copy to clipboard' buttons.
-Clicking the 'load' button will load the body text and remove the buttons.
-
-A value of zero disables this feature.</t>
 <t tx="ekr.20140912072521.19153"></t>
 <t tx="ekr.20140912072521.19154">Leo's traditional tree color.</t>
 <t tx="ekr.20140912072521.19160">/*
@@ -10261,7 +10165,8 @@ Many users will want to change the settings in the Fonts section, especially the
 - @string small-font-size:
   A small font size used in buttons.
 </t>
-<t tx="ekr.20140912105440.19376">c.k.simulateCommand('style-reload')</t>
+<t tx="ekr.20140912105440.19376">'''Execute style-reload'''
+c.k.simulateCommand('style-reload')</t>
 <t tx="ekr.20140915194122.19458">/* ========== Body pane ========== */
 
 QTextEdit#richTextEdit {
@@ -10689,11 +10594,15 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
 <t tx="ekr.20140917063815.21917"></t>
-<t tx="ekr.20140918165611.38050">from leo.core.leoQt import QtWidgets,QtCore
+<t tx="ekr.20140918165611.38050">'''
+Show a color wheel.
+Writes the selected color to the clipboard.
+'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 picker = QtWidgets.QColorDialog()
-text = QtWidgets.QApplication.clipboard().text()
 try:
-    color = QtWidgets.QColor(text)
+    text = QtWidgets.QApplication.clipboard().text()
+    color = QtGui.QColor(text)
     picker.setCurrentColor(color)
 except ValueError:
     pass
@@ -10701,7 +10610,7 @@ if not picker.exec_():
     g.es("No color selected")
 else:
     text = picker.selectedColor().name()
-    g.es("%s\ncopied to clipboard"%text)
+    g.es("copied to clipboard:", text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
 <t tx="ekr.20140922124047.19516"></t>
@@ -11683,9 +11592,9 @@ push-to-ipython         = None
 ###
 do-nothing              = Meta-o
 full-command            = Meta-Shift-x
-negative-argument       = None      # Alt-minus conflicts with contract-all.
+# negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = None # Ctrl-P
-universal-argument      = Meta-u     # Usually Ctrl-u, conflicts with move-outline-up.
+# universal-argument    = Meta-u     # Usually Ctrl-u, conflicts with move-outline-up.
 
 ###
 
@@ -11793,7 +11702,6 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021092615.1"></t>
 <t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Open Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
@@ -11866,6 +11774,9 @@ Put notes about each version here.
     _values = c.abbrev_subst_env['cap_name'] = x.capitalize()
     return x.lower()
 </t>
+<t tx="ekr.20170123145248.1"></t>
+<t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
+True: call all @ and @doc parts as reStructuredText (@language rest).</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -11905,7 +11816,7 @@ Put notes about each version here.
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
-<t tx="leohag.20081204085551.13"></t>
+<t tx="leohag.20081204085551.13"># Don't change this unless you know what you are doing.</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
@@ -12197,7 +12108,11 @@ if date:
 else:
     g.es("No date selected")
 </t>
-<t tx="tbrown.20140609102412.32428">from leo.core.leoQt import QtWidgets,QtCore
+<t tx="tbrown.20140609102412.32428">'''
+Create a combo box in the icon area that shows color names.
+It writes the selected color name to the clipboard.
+'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import leo.core.leoColor as leoColor
 template = '''
 QComboBox {
@@ -12205,37 +12120,43 @@ QComboBox {
     selection-background-color: %s;
     selection-color: black;
 }''' 
-ivar = 'settings-color-picker'
-if not hasattr(c,ivar):
-    setattr(c,ivar,True)
+ivar = 'leo_settings_color_picker'
+if getattr(c, ivar, None):
+    g.es('The color picker already exists in the icon bar.')
+else:
     color_list = []
-    ivar = 'settings_color_picker'
     box = QtWidgets.QComboBox()
+
     def onActivated(n,*args,**keys):
         icon = box.itemIcon(n)
         color = color_list[n]
         sheet = template % (color,color)
         box.setStyleSheet(sheet)
+        g.es("copied to clipboard:", color)
+        QtWidgets.QApplication.clipboard().setText(color)
+        
     box.activated.connect(onActivated)
     color_db = leoColor.leo_color_database
     for key in sorted(color_db):
         if not key.startswith('grey'): # Use gray, not grey.
             val = color_db.get(key)
             if val:
-                color = QtWidgets.QColor(val)
+                color = QtGui.QColor(val)
                 color_list.append(val)
-                pixmap = QtWidgets.QPixmap(40,40)
+                pixmap = QtGui.QPixmap(40,40)
                 pixmap.fill(color)
-                icon = QtWidgets.QIcon(pixmap)
+                icon = QtGui.QIcon(pixmap)
                 box.addItem(icon,key)
     c.frame.iconBar.addWidget(box)
+    setattr(c,ivar,True) # Do this last, so errors don't prevent re-execution.
 </t>
-<t tx="tbrown.20140609102412.32430">from leo.core.leoQt import QtWidgets, QtCore
+<t tx="tbrown.20140609102412.32430">'''Show a dialog for picking fonts.'''
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 
 picker = QtWidgets.QFontDialog()
 text = QtWidgets.QApplication.clipboard().text()
 try:
-    font = QtWidgets.QFont(text)
+    font = QtGui.QFont(text)
     picker.setCurrentFont(font)
 except ValueError:
     pass
@@ -12244,7 +12165,7 @@ if not picker.exec_():
     g.es("No font selected")
 else:
     text = picker.selectedFont().family()
-    g.es("%s\ncopied to clipboard"%text)
+    g.es('copied to clipboard:', text)
     QtWidgets.QApplication.clipboard().setText(text)
 </t>
 <t tx="tbrown.20140814090009.57475"></t>

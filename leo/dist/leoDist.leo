@@ -598,6 +598,7 @@ import leo.core.leoVersion as leoVersion</t>
 <t tx="ekr.20100202061222.1494">@language rest
 
 - Create Release on SourceForge: http://sourceforge.net/projects/leo/
+    - Make sure to upload readme.md and Readme-quick-install.txt.
 - Announcements
 </t>
 <t tx="ekr.20101025095431.1517">@language rest</t>

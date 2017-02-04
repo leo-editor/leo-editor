@@ -347,7 +347,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.trace(z.h)
         # Original code.  Probably unwise to change it.
         do_placeholder = False
-        for p in old_p.self_and_subtree(): ### Was old_p.subtree()
+        for p in old_p.self_and_subtree():
             # Search for the next place-holder.
             val, do_placeholder = self.make_script_substitutions(0, 0, p.b)
             if not do_placeholder: p.b = val

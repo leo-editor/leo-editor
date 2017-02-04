@@ -1422,8 +1422,8 @@ class GetArg(object):
         state = k.getState('getArg')
         c.check_event(event)
         # Remember these events also.
-        if c.macroCommands.recordingMacro and state > 0:
-            c.macroCommands.startRecordingMacro(event)
+        ### if c.macroCommands.recordingMacro and state > 0:
+        ###    c.macroCommands.startRecordingMacro(event)
         char = event and event.char or ''
         if state > 0:
             k.setLossage(char, stroke)
@@ -1745,6 +1745,7 @@ class KeyHandlerClass(object):
         # Keys whose bindings are computed by initSpecialIvars...
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
+        self.demoNextKey = None # New support for the demo.py plugin.
         self.fullCommandKey = None
         self.universalArgKey = None
         # Used by k.masterKeyHandler...
@@ -1936,18 +1937,18 @@ class KeyHandlerClass(object):
             'upcase-word',
             # KeyHandlerCommandsClass
             # 'auto-complete',
-            'negative-argument',
-            'number-command',
-            'number-command-0',
-            'number-command-1',
-            'number-command-2',
-            'number-command-3',
-            'number-command-4',
-            'number-command-5',
-            'number-command-6',
-            'number-command-7',
-            'number-command-8',
-            'universal-argument',
+                # 'negative-argument',
+                # 'number-command',
+                # 'number-command-0',
+                # 'number-command-1',
+                # 'number-command-2',
+                # 'number-command-3',
+                # 'number-command-4',
+                # 'number-command-5',
+                # 'number-command-6',
+                # 'number-command-7',
+                # 'number-command-8',
+                # 'universal-argument',
             # KillBufferCommandsClass
             'backward-kill-word',
             'kill-line',
@@ -2360,6 +2361,7 @@ class KeyHandlerClass(object):
             ('abortAllModesKey', 'keyboard-quit'),
             ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
+            ('demoNextKey', 'demo-next'),
         ):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
@@ -2367,7 +2369,7 @@ class KeyHandlerClass(object):
                 for si in aList:
                     assert g.isShortcutInfo(si), si
                     if si.pane == pane:
-                        if trace: g.trace(commandName, si.stroke)
+                        if trace: g.trace(commandName, ivar, si.stroke)
                         setattr(k, ivar, si.stroke)
                         found = True; break
             if not found and warn:
@@ -2509,26 +2511,27 @@ class KeyHandlerClass(object):
     def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
-        trace_event = True
+        # trace_event = True
         verbose = False
         try:
             k = self; c = k.c
-            recording = c.macroCommands.recordingMacro
+            ### recording = c.macroCommands.recordingMacro
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event and event.char or ''
             stroke = event and event.stroke or None
             if trace:
-                g.trace('recording', recording, 'state', state, char)
-            if recording:
-                c.macroCommands.startRecordingMacro(event)
+                g.trace('state', state, repr(char)) ### 'recording', recording, 
+            ###
+            # if recording:
+                # c.macroCommands.startRecordingMacro(event)
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event # Save the full event for later.
-                if trace and trace_event:
-                    g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
+                # if trace and trace_event:
+                    # g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
                 k.setState('full-command', 1, handler=k.fullCommand)
                 prompt = helpPrompt if help else k.altX_prompt
                 k.setLabelBlue(prompt)
@@ -2545,9 +2548,9 @@ class KeyHandlerClass(object):
                 k.commandHistoryUp()
             elif char in ('\n', 'Return'):
                 if trace and verbose: g.trace('***Return')
-                if trace and trace_event:
-                    g.trace('hasSelection %r' % (
-                        k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
+                # if trace and trace_event:
+                    # g.trace('hasSelection %r' % (
+                        # k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
                 # Fix bug 157: save and restore the selection.
                 w = k.mb_event and k.mb_event.w
                 if w and hasattr(w, 'hasSelection') and w.hasSelection():
@@ -2671,99 +2674,10 @@ class KeyHandlerClass(object):
                 # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
                 k.newMinibufferWidget = None
     #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
-    #@+node:ekr.20061031131434.115: *4* k.digitArgument & universalArgument
-    @cmd('universal-argument')
-    def universalArgument(self, event):
-        '''Prompt for a universal argument.'''
-        k = self
-        k.setLabelBlue('Universal Argument: ')
-        k.universalDispatcher(event)
-
-    @cmd('digit-argument')
-    def digitArgument(self, event):
-        '''Prompt for a digit argument.'''
-        k = self
-        k.setLabelBlue('Digit Argument: ')
-        k.universalDispatcher(event)
     #@+node:ekr.20070613133500: *4* k.menuCommandKey
     def menuCommandKey(self, event=None):
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.117: *4* k.negativeArgument (redo?)
-    @cmd('negative-argument')
-    def negativeArgument(self, event):
-        '''Prompt for a negative digit argument.'''
-        g.trace('not ready yet')
-        # k = self ; state = k.getState('neg-arg')
-        # if state == 0:
-            # k.setLabelBlue('Negative Argument: ')
-            # k.setState('neg-arg',1,k.negativeArgument)
-        # else:
-            # k.clearState()
-            # k.resetLabel()
-            # func = k.negArgFunctions.get(k.stroke)
-            # if func:
-                # func(event)
-    #@+node:ekr.20061031131434.118: *4* k.numberCommand
-    @cmd('number-command')
-    def numberCommand(self, event, stroke, number):
-        '''Enter a number prefix for commands.'''
-        k = self; c = self.c
-        k.stroke = stroke
-        w = event and event.widget
-        k.universalDispatcher(event)
-        g.app.gui.event_generate(c, chr(number), chr(number), w)
-        return
-
-    @cmd('number-command-0')
-    def numberCommand0(self, event):
-        '''Execute command number 0.'''
-        return self.numberCommand(event, None, 0)
-
-    @cmd('number-command-1')
-    def numberCommand1(self, event):
-        '''Execute command number 1.'''
-        return self.numberCommand(event, None, 1)
-
-    @cmd('number-command-2')
-    def numberCommand2(self, event):
-        '''Execute command number 2.'''
-        return self.numberCommand(event, None, 2)
-
-    @cmd('number-command-3')
-    def numberCommand3(self, event):
-        '''Execute command number 3.'''
-        return self.numberCommand(event, None, 3)
-
-    @cmd('number-command-4')
-    def numberCommand4(self, event):
-        '''Execute command number 4.'''
-        return self.numberCommand(event, None, 4)
-
-    @cmd('number-command-5')
-    def numberCommand5(self, event):
-        '''Execute command number 5.'''
-        return self.numberCommand(event, None, 5)
-
-    @cmd('number-command-6')
-    def numberCommand6(self, event):
-        '''Execute command number 6.'''
-        return self.numberCommand(event, None, 6)
-
-    @cmd('number-command-7')
-    def numberCommand7(self, event):
-        '''Execute command number 7.'''
-        return self.numberCommand(event, None, 7)
-
-    @cmd('number-command-8')
-    def numberCommand8(self, event):
-        '''Execute command number 8.'''
-        return self.numberCommand(event, None, 8)
-
-    @cmd('number-command-9')
-    def numberCommand9(self, event):
-        '''Execute command number 9.'''
-        return self.numberCommand(event, None, 9)
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
     @cmd('print-bindings')
     def printBindings(self, event=None):
@@ -3030,11 +2944,11 @@ class KeyHandlerClass(object):
                 k.showStateAndMode()
                 
         k.get1Arg and k.getNextArg are a convenience methods. They simply passes
-        its arguments to the get_arg method of the singleton GetArg instance. This
+        their arguments to the get_arg method of the singleton GetArg instance. This
         docstring describes k.get1arg and k.getNextArg as if they were the
         corresponding methods of the GetArg class.
 
-        k.get1Arg state machine. Logically, states as tuples (kind, n, handler)
+        k.get1Arg is a state machine. Logically, states are tuples (kind, n, handler)
         though they aren't represented that way. When the state machine in the
         GetArg class is active, the kind is 'getArg'.  This constant has special
         meaning to Leo's key-handling code.
@@ -3043,9 +2957,9 @@ class KeyHandlerClass(object):
 
         event:              The event passed to the command.
 
-        handler=None,       An executable. When the user completes the
-                            argument by typing <Return> (or sometimes <tab>)
-                            k.get1arg calls handler(event)
+        handler=None,       An executable. k.get1arg calls handler(event)
+                            when the user completes the argument by typing
+                            <Return> or (sometimes) <tab>.
 
         tabList=[]:         A list of possible completions.
 
@@ -3282,6 +3196,7 @@ class KeyHandlerClass(object):
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
         verbose = True
+        trace_unbound = True
         k, c = self, self.c
         c.check_event(event)
         #@+<< define vars >>
@@ -3316,14 +3231,20 @@ class KeyHandlerClass(object):
             'state', state, 'state2', k.unboundKeyAction)
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            ### For now, leave this support in place.
             if hasattr(c, 'screenCastController') and c.screenCastController:
                 c.screenCastController.quit()
-            if c.macroCommands.recordingMacro:
-                c.macroCommands.endMacro()
-            else:
-                k.masterCommand(commandName='keyboard-quit',
+            k.masterCommand(commandName='keyboard-quit',
                     event=event, func=k.keyboardQuit, stroke=stroke)
             return
+        # 2017/01/31: Important support for the demo.py plugin.
+        # Shortcut everything so that demo-next won't alter any KeyHandler ivars.
+        if k.demoNextKey and stroke == k.demoNextKey:
+            if getattr(g.app, 'demo', None):
+                g.app.demo.next()
+            else:
+                g.es_print('no demo active')
+            return 
         # Always handle modes regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state, stroke))
@@ -3360,7 +3281,7 @@ class KeyHandlerClass(object):
             k.searchTree(char)
         else:
             if traceGC: g.printNewObjects('masterKey 4')
-            if trace: g.trace(' unbound', stroke)
+            if trace and trace_unbound: g.trace(' unbound', stroke)
             k.handleUnboundKeys(event, char, stroke)
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
@@ -3450,7 +3371,9 @@ class KeyHandlerClass(object):
         k = self; w_name = k.c.widget_name(w)
         # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
-        assert g.isStroke(stroke)
+        if not g.isStroke(stroke):
+            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+            return None
         if trace: g.trace('w_name', repr(w_name), 'stroke', stroke, 'w', w,
             'isTextWrapper(w)', g.isTextWrapper(w))
         for key, name in (
@@ -3545,7 +3468,8 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
-        assert g.isStroke(stroke), repr(stroke)
+        ### Not necessary, and makes life hard for the demo plugin.
+            # assert g.isStroke(stroke), repr(stroke)
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
         if state in ('getArg', 'full-command'):
@@ -3592,7 +3516,9 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         modesTuple = ('insert', 'overwrite')
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
-        assert g.isStroke(stroke)
+        if not g.isStroke(stroke):
+            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+            return
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
             repr(event and event.char), repr(stroke)))
         # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
@@ -3695,9 +3621,9 @@ class KeyHandlerClass(object):
         if inserted:
             k.setLossage(ch, stroke)
         # We *must not* interfere with the global state in the macro class.
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.startRecordingMacro(event)
-            # 2011/06/06: Show the key, if possible.
+        ###
+        # if c.macroCommands.recordingMacro:
+        #    c.macroCommands.startRecordingMacro(event)
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
@@ -4732,14 +4658,15 @@ class KeyHandlerClass(object):
                     k.masterKeyHandler(event)
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU(self, event, stroke):
-        k = self; c = k.c
+        k = self
+        ### c = k.c
         ch = event and event.char or ''
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
         if ch == '(':
             k.clearState()
             k.resetLabel()
-            c.macroCommands.startKbdMacro(event)
-            c.macroCommands.callLastKeyboardMacro(event)
+            ### c.macroCommands.startKbdMacro(event)
+            ### c.macroCommands.callLastKeyboardMacro(event)
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo(object):

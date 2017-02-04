@@ -1422,8 +1422,8 @@ class Position(object):
 
     def copyTreeFromSelfTo(self, p2):
         p = self
-        p2.v._headString = p.h
-        p2.v._bodyString = p.b
+        p2.v._headString = g.toUnicode(p.h, reportErrors=True) # 2017/01/24
+        p2.v._bodyString = g.toUnicode(p.b, reportErrors=True) # 2017/01/24
         # 2013/09/08: Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
         # 2009/10/02: no need to copy arg to iter
@@ -2189,8 +2189,8 @@ class VNodeBase(object):
         assert v2.gnx
         assert v.gnx != v2.gnx
         # Copy vnode fields. Do **not** set v2.parents.
-        v2._headString = v._headString
-        v2._bodyString = v._bodyString
+        v2._headString = g.toUnicode(v._headString, reportErrors=True) # 2017/01/24
+        v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True) # 2017/01/24
         v2.u = copy.deepcopy(v.u)
         if copyMarked and v.isMarked():
             v2.setMarked()
@@ -2504,7 +2504,7 @@ class VNodeBase(object):
     def setBodyString(self, s):
         v = self
         # if not g.isUnicode(s):
-            # g.trace('converting to unicode', type(s), repr(s), g.callers())
+            # g.trace('converting to unicode', type(s), repr(s), g.callers(10))
         v._bodyString = g.toUnicode(s, reportErrors=True)
 
     def setHeadString(self, s):

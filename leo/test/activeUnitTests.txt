@@ -636,7 +636,6 @@ else:
     import leo.core.leoFrame as leoFrame
     import leo.plugins.qt_text as qt_text
     from leo.core.leoQt import Qsci,QtWidgets
-    
     if Qsci:
         w = Qsci.QsciScintilla()
         q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
@@ -660,10 +659,6 @@ else:
                 assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
     # Check Null classes that are not subclasses of a base type:
     table = (
-        ('NullColorizer',leoFrame.NullColorizer(c),
-         # 'c.frame.body.colorizer',c.frame.body.colorizer,
-         'ColorizerAPI', leoFrame.ColorizerAPI(c,None),
-        ),
         ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
          # 'c.frame.iconBar',c.frame.iconBar,
          'IconBarAPI',leoFrame.IconBarAPI(c,None),
@@ -1540,6 +1535,23 @@ for s,i,expected in table:
     result = at.directiveKind4(s,i)
     assert result == expected, '%d %s result: %s expected: %s' % (
         i,repr(s),at.sentinelName(result),at.sentinelName(expected))
+#@+node:ekr.20170123035753.1: *4* @test at.directiveKind4 (new)
+at = c.atFileCommands
+table = (
+    (at.othersDirective, '@others'),
+    (at.othersDirective, '@others\n'),
+    (at.othersDirective, '    @others'),
+    (at.miscDirective,   '@tabwidth -4'),
+    (at.miscDirective,   '@tabwidth -4\n'),
+    (at.miscDirective,   '@encoding'),
+    (at.noDirective,     '@encoding.setter'),
+    (at.noDirective,     '@encoding("abc")'),
+    (at.noDirective,     'encoding = "abc"'),
+    (at.noDirective,     '@directive'), # A crucial new test.
+)
+for expected, s in table:
+    result = at.directiveKind4(s, 0)
+    assert expected == result, (expected, result, repr(s))
 #@+node:ekr.20100225094004.5385: *4* @test at.isFileLike
 s1 = '''
 #@verbatim
@@ -2716,13 +2728,12 @@ elif cc and not g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 
-#@+node:ekr.20090615053403.4876: *3* leoColor
+#@+node:ekr.20090615053403.4876: *3* leoColorizer
 #@+node:ekr.20090615053403.4877: *4* @test @comment after @language plain
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4878: *5* plain code
 @language plain
 @comment # /* */
@@ -2737,12 +2748,101 @@ More plain text.
 continues */
 
 More plain text.
+#@+node:ekr.20170201143435.1: *4* @test bc.scanLanguageDirectives
+@language python
+import leo.core.leoColorizer as leoColorizer
+# import imp
+# imp.reload(leoColorizer)
+wrapper = c.frame.body.wrapper
+widget = c.frame.body.widget
+x = leoColorizer.JEditColorizer(c, widget, wrapper)
+tables = p.firstChild()
+tables_s = tables.b
+child = p.firstChild().next()
+assert child.h == 'test-child'
+grand = child.firstChild()
+<< scanLanguageDirectives test tables >>
+try:
+    for i, data in enumerate(language_table):
+        language, child_s, grand_s = data
+        child.b = child_s
+        grand.b = grand_s
+        got = x.scanLanguageDirectives(grand)
+        assert got == language, '%s expected %r, got %r child.b %r' % (
+            i, language, got, child.b)
+finally:
+    tables.b = tables_s
+    
+#@+node:ekr.20170201143435.2: *5* << scanLanguageDirectives test tables >>
+language_table = [
+    ('python', '@language rest\n@language python\n', ''),
+    ('rest', '@language rest', ''),
+    ('python', '@language rest\n@language python\n', ''),
+]
+#@+node:ekr.20170201143435.3: *5* test-child
+@language rest
+@language python
+#@+node:ekr.20170201143435.4: *6* test-grandchild
+#@+node:ekr.20170201175441.1: *4* @test bc.useSyntaxColoring
+@language python
+import leo.core.leoColorizer as leoColorizer
+# import imp
+# imp.reload(leoColorizer)
+wrapper = c.frame.body.wrapper
+widget = c.frame.body.widget
+x = leoColorizer.JEditColorizer(c, widget, wrapper)
+tables = p.firstChild()
+tables_s = tables.b
+child = p.firstChild().next()
+assert child.h == 'test-child'
+grand = child.firstChild()
+<< useSyntaxColoring test tables >>
+try:
+    for i, data in enumerate(language_table):
+        expected, child_s, grand_s = data
+        child.b = child_s
+        grand.b = grand_s
+        got = x.useSyntaxColoring(grand)
+        assert got == expected, '%s expected %r, got %r child.b %r' % (
+            i, expected, got, child.b)
+finally:
+    tables.b = tables_s
+    
+#@+node:ekr.20170201175441.2: *5* << useSyntaxColoring test tables >>
+language_table = [
+    (True, '', ''),
+    # Ambiguous parent.
+    (True, '@color \n@nocolor\n', ''),
+    (True, '@nocolor \n@color\n', ''),
+    # Unambiguous parent.
+    (True, '@nocolor-node', ''), # Does not apply to descendants.
+    (False, '@nocolor', ''),
+    (False, '@killcolor', ''),
+    #
+    # Note: the following tests don't matter because
+    # jedit.recolor ignores the self.enabled flag.
+    # As a result, *all* color directives, including @nocolor-node,
+    # Apply from the directive to the next color directive.
+    #
+    # Unambiguous child.
+    (False, '', '@killcolor\n'),
+    (True, '', '@color\n'),
+    # @nocolor-node rules node.
+    (False, '', '@nocolor-node\n'),
+    (False, '', '@color\n@nocolor-node\n'),
+    # Ambiguous node: defer to ancestors.
+    (True, '', '@color\n@nocolor'),
+    (True, '', '@nocolor\n@color'),
+]
+#@+node:ekr.20170201175441.3: *5* test-child
+#@+node:ekr.20170201175441.4: *6* test-grandchild
+@nocolor
+@color
 #@+node:ekr.20090615053403.4879: *4* @test colorizer Actionscript
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4880: *5* actionscript test
 @language actionscript
 
@@ -2803,10 +2903,9 @@ _y, _ymouse, _yscale
 and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket
 #@+node:ekr.20090615053403.4881: *4* @test colorizer C
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4882: *5* c code
 @language c
 @comment /* */
@@ -2827,10 +2926,9 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 #include <rlydef.h>
 #@+node:ekr.20090615053403.4883: *4* @test colorizer C#
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4884: *5* c# code
 @language csharp
 @ comment
@@ -2865,10 +2963,9 @@ where while
 yield
 #@+node:ekr.20090615053403.4885: *4* @test colorizer css
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4886: *5* css
 @language css
 /* New in 4.2. */
@@ -2940,10 +3037,9 @@ stress, azimuth, elevation, pitch, richness, volume,
 page-break, page-after, page-inside
 #@+node:ekr.20090615053403.4887: *4* @test colorizer CWEB
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4888: *5* CWEB
 @language cweb
 
@@ -2977,10 +3073,9 @@ if else, while, do // C keywords.
 @language python
 
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20110521073115.3490: *5* cython
 @language cython
 
@@ -2998,10 +3093,9 @@ except Exception:
 
 #@+node:ekr.20090615053403.4890: *4* @test colorizer elisp
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4891: *5* elisp
 @language elisp
 
@@ -3026,10 +3120,9 @@ unless
 when while
 #@+node:ekr.20090615053403.4892: *4* @test colorizer erlang
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4893: *5* erlang
 @language erlang
 
@@ -3038,10 +3131,9 @@ halt()
 -module()
 #@+node:ekr.20090615053403.4894: *4* @test colorizer forth
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4895: *5* forth
 @language forth
 
@@ -3077,10 +3169,9 @@ asm[ abc ]asm
 ;
 #@+node:ekr.20090615053403.4896: *4* @test colorizer HTML string bug
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4897: *5* html
 @language html
 
@@ -3088,10 +3179,9 @@ b = "cd"
 d
 #@+node:ekr.20090615053403.4898: *4* @test colorizer HTML1
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4899: *5* html
 @language html
 
@@ -3188,10 +3278,9 @@ HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3">
 </HTML>
 #@+node:ekr.20090615053403.4900: *4* @test colorizer HTML2
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4901: *5* html
 @language html
 
@@ -3201,10 +3290,9 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 </project>"""
 #@+node:ekr.20090615053403.4902: *4* @test colorizer Java
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4903: *5* html
 @ doc part
 @c
@@ -3220,10 +3308,9 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 /** @see tag = label */
 #@+node:ekr.20090615053403.4904: *4* @test colorizer LaTex
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4905: *5* LaTex
 @language latex
 
@@ -3250,10 +3337,9 @@ The following 2-letter words should be colored, regardless of what follows:
 \(abc\)abc\{abc\}abc\@abc
 #@+node:ekr.20090615053403.4906: *4* @test colorizer lisp
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4907: *5* lisp
 @language lisp
 
@@ -3278,10 +3364,9 @@ unless
 when while
 #@+node:ekr.20101020123501.6005: *4* @test colorizer objective-c
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20101020123501.6006: *5* objective-c
 @language objective_c
 
@@ -3317,10 +3402,9 @@ the @interface
 */
 #@+node:ekr.20090615053403.4908: *4* @test colorizer perl
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4909: *5* perl
 @language perl
 
@@ -3379,10 +3463,9 @@ sub inside
 }
 #@+node:ekr.20090615053403.4910: *4* @test colorizer PHP
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4911: *5* PHP
 @language php
 @ doc
@@ -3400,10 +3483,9 @@ __CLASS__
 <?PHP and or array() ?>
 #@+node:ekr.20090615053403.4912: *4* @test colorizer plsql
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4913: *5* plsql
 @language plsql
 
@@ -3786,10 +3868,9 @@ write,
 xor
 #@+node:ekr.20090615053403.4914: *4* @test colorizer python.xml (jEdit)
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4915: *5* python.xml
 @language html
 
@@ -4140,10 +4221,9 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 <KEYWORD3>__xor__</KEYWORD3>
 #@+node:ekr.20090615053403.4925: *4* @test colorizer Python1
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4926: *5* python
 @language python
 
@@ -4152,10 +4232,9 @@ float
 dict
 #@+node:ekr.20090615053403.4927: *4* @test colorizer Python2
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4928: *5* python
 """This creates a free-floating copy of v's tree for undo.
 The copied trees must use different tnodes than the original."""
@@ -4176,10 +4255,9 @@ def copyTree(self,root):
     return result
 #@+node:ekr.20090615053403.4929: *4* @test colorizer r
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4930: *5* r
 @language r
 
@@ -4191,10 +4269,9 @@ def python_funct(uu):
 return uu
 #@+node:ekr.20090615053403.4931: *4* @test colorizer rapidq
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4932: *5* rapidq
 ' New in 4.2.
 @language rapidq
@@ -4228,10 +4305,9 @@ UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
 WEND,WHILE,WITH,WORD,XOR
 #@+node:ekr.20090615053403.4933: *4* @test colorizer Rebol
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4934: *5* Rebol
 @language rebol
 
@@ -4301,10 +4377,9 @@ within? word?
 zero?
 #@+node:ekr.20090615053403.4935: *4* @test colorizer rest
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4936: *5* rest
 @language rest
 
@@ -4372,10 +4447,9 @@ please ask for help on Leo's help forum:
 |back| |leo| |next|
 #@+node:ekr.20110529215703.3494: *4* @test colorizer scala
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20110529215703.3495: *5* scala
 @language scala
 
@@ -4388,10 +4462,9 @@ object HelloWorld {
   }
 #@+node:ekr.20090615053403.4937: *4* @test colorizer shell
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4938: *5* shell
 # New in 4.2.
 
@@ -4416,10 +4489,9 @@ shift,test,trap,ulimit,
 umask,wait
 #@+node:ekr.20090615053403.4939: *4* @test colorizer shellscript
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4940: *5* shellscript
 @language shellscript
 
@@ -4442,10 +4514,9 @@ shift,test,trap,ulimit,
 umask,wait
 #@+node:ekr.20090615053403.4941: *4* @test colorizer tex.xml (jEdit)
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4942: *5* tex.xml
 @language html
 
@@ -4544,10 +4615,9 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 <EOL_SPAN TYPE="COMMENT1">%</EOL_SPAN>
 #@+node:ekr.20090615053403.4945: *4* @test colorizer wikiTest1
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4946: *5* wiki
 # both color_markup & add_directives plugins must be enabled.
 
@@ -4590,10 +4660,9 @@ if 1 and 2:
 print(g.app().loadDir)
 #@+node:ekr.20090615053403.4947: *4* @test colorizer wikiTest2
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4948: *5* wiki
 # both color_markup & add_directives plugins must be enabled.
 @markup wiki
@@ -4629,10 +4698,9 @@ if 1 and 2:
 print(g.app().loadDir)
 #@+node:ekr.20090615053403.4949: *4* @test colorizer wikiTest3
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4950: *5* wiki
 # both color_markup & add_directives plugins must be enabled.
 
@@ -4662,10 +4730,9 @@ language = g.findLanguageDirectives(c,p)
 assert language == 'python','got:%s' % language
 #@+node:ekr.20090615053403.4955: *4* @test vbscript
 p = c.p.firstChild()
-
 c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+# val = c.frame.body.colorizer.colorize(p,incremental=False)
+# assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090615053403.4956: *5* vbscript
 @language vbscript
 
@@ -4823,7 +4890,9 @@ try:
 finally:
     # print('\n'.join([repr(z) for z in g.splitLines(p.b)]))
     p.b = s
-#@+node:ekr.20111112171235.3855: *5* html
+#@+node:ekr.20170128023431.1: *5* @language html
+@language html
+#@+node:ekr.20111112171235.3855: *6* html
 @language html
 <html>
     text 
@@ -7820,7 +7889,7 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
-#@+node:ekr.20150626093653.1: *6* @@@test find_file_line: @auto-rst
+#@+node:ekr.20150626093653.1: *6* @@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7844,7 +7913,7 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 9, n
             break
-#@+node:ekr.20160403143643.1: *6* @test find_file_line: @clean-c
+#@+node:ekr.20160403143643.1: *6* @@test find_file_line: @clean-c
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7856,7 +7925,9 @@ else:
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     lines = g.splitLines(s)
+    g.printList(lines)
     stripped_lines = [z for z in lines if not z.startswith('//@')]
+    g.printList(stripped_lines)
     if trace:
         g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
@@ -7884,7 +7955,7 @@ else:
     i = len(table)
     p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
     assert not found
-#@+node:ekr.20160403143655.1: *6* @test find_file_line: @clean-python
+#@+node:ekr.20160403143655.1: *6* @@test find_file_line: @clean-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -10386,24 +10457,17 @@ finally:
 h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
 w = c.frame.body.wrapper
+n = c.frame.body.colorizer.recolorCount
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocus()
 paste = '# Should be a comment'
 g.app.gui.replaceClipboardWith(paste)
 c.outerUpdate()
-n = c.frame.body.colorizer.count
 event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-# i = w.getInsertPoint()
 c.frame.pasteText(event)
-# assert w.getInsertPoint()==i
-
-# Move around and and make sure it doesn't change.
 try:
-    # There is no colorizer to test for wx.
-    if g.app.gui.guiName() == 'tkinter':
-        c.outerUpdate() # Force the coloring before doing the test.
-        assert c.frame.body.colorizer.count > n, 'did not recolor text'
+    assert c.frame.body.colorizer.recolorCount > n
 finally:
     if 1:
         c.setBodyString(p,'')
@@ -11385,7 +11449,7 @@ assert d.get('pagewidth') == 120
 @tabwidth -8
 @pagewidth 72
 @encoding utf-8
-@path: anError # @path ends with ':'.
+# @path: anError # @path ends with ':'.
 
 # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
 
@@ -11472,6 +11536,21 @@ assert g.importModule('codewise',verbose=False)
     # Top-level .py file.
 assert g.importModule('rope',verbose=False)
     # In a folder.
+#@+node:ekr.20170122164330.1: *4* @test g.isDirective
+# Do not try to reload g.
+table = (
+    (True, '@language python\n'),
+    (True, '@tabwidth -4 #test\n'),
+    (True, '@others\n'),
+    (True, '    @others\n'),
+    (True, '@encoding\n'),
+    (False, '@encoding.setter\n'),
+    (False, '@encoding("abc")\n'),
+    (False, 'encoding = "abc"\n'),
+)
+for expected, s in table:
+    result = g.isDirective(s)
+    assert expected == bool(result), (expected, bool(result), repr(s))
 #@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
@@ -15365,8 +15444,11 @@ else:
         g.Bunch(line="end of continued string'''", ctx=("'''", '')),
         g.Bunch(line='a = {[(')
     ]
-importer = python.Py_Importer(c.importCommands, atAuto=True)
-importer.test_scan_state(tests, State=python.Python_ScanState)
+if hasattr(python, 'Py_Importer'):
+    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer.test_scan_state(tests, State=python.Python_ScanState)
+else:
+    self.skipTest('Skipping test for new python importer')
 #@+node:ekr.20161224145026.1: *6* @test leoApp fail
 if 0: # Preamble...
     # g.cls()
@@ -15569,7 +15651,6 @@ def make_parser():
 '''
 table = (
     (1, 'Declarations'),
-    # (1, 'if sys.version_info[0] >= 3:'),
     (1, 'make_parser'),
 )
 try:
@@ -15623,8 +15704,361 @@ else:
         return builtins.unicode(s, encoding)
 """
 table = (
-    # (1, 'if isPython3:'),
     (1, 'Declarations'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20170122033034.1: *6* @test python bug #357
+if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
+s = '''
+"""
+sheet_stats.py - report column stats for spreadsheets
+
+requires openpyxl and numpy
+
+Terry N. Brown, terrynbrown@gmail.com, Fri Dec 16 13:20:47 2016
+2016-12-26 Henry Helgen added average, variance, standard deviation,
+                        coefficient of variation to output
+2016-12-23 Henry Helgen updated to Python 3.5 syntax including print() and
+                        writer = csv.writer(open(opt.output, 'w', newline=''))
+"""
+
+import csv
+import argparse
+import glob
+import multiprocessing
+import os
+import sys
+from collections import namedtuple
+from math import sqrt, isnan
+NAN = float('NAN')
+
+from openpyxl import load_workbook
+
+PYTHON_2 = sys.version_info[0] < 3
+if not PYTHON_2:
+    unicode = str
+
+class AttrDict(dict):
+    """allow d.attr instead of d['attr']
+    http://stackoverflow.com/a/14620633
+    """
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+FIELDS = [  # fields in outout table
+    'file', 'field', 'n', 'blank', 'bad', 'min', 'max', 'mean', 'std',
+    'sum', 'sumsq', 'variance', 'coefvar'
+]
+def make_parser():
+    """build an argparse.ArgumentParser, don't call this directly,
+       call get_options() instead.
+    """
+    parser = argparse.ArgumentParser(
+        description="""Report column stats for spreadsheets""",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('files', type=str, nargs='+',
+        help="Files to process, '*' patterns expanded."
+    )
+
+    required_named = parser.add_argument_group('required named arguments')
+
+    required_named.add_argument("--output",
+        help="Path to .csv file for output, will be overwritten",
+        metavar='FILE'
+    )
+
+    return parser
+
+def get_options(args=None):
+    """
+    get_options - use argparse to parse args, and return a
+    argparse.Namespace, possibly with some changes / expansions /
+    validatations.
+
+    Client code should call this method with args as per sys.argv[1:],
+    rather than calling make_parser() directly.
+
+    :param [str] args: arguments to parse
+    :return: options with modifications / validations
+    :rtype: argparse.Namespace
+    """
+    opt = make_parser().parse_args(args)
+
+    # modifications / validations go here
+
+    if not opt.output:
+        print("No --output supplied")
+        exit(10)
+
+    return opt
+
+def get_aggregate(psumsqn, psumn, pcountn):
+    """
+    get_aggregate - compute mean, variance, standard deviation,
+    coefficient of variation This function is used instead of
+    numpy.mean, numpy.var, numpy.std since the sum, sumsq, and count are
+    available when the function is called. It avoids an extra pass
+    through the list.
+
+    # note pcountn means the full list n,  not a sample n - 1
+
+    :param sum of squares, sum, count
+    :return: a tuple of floats mean, variance, standard deviation, coefficient of variation
+    """
+
+    Agg = namedtuple("Agg", "mean variance std coefvar")
+
+    # validate inputs check for count == 0
+    if pcountn == 0:
+        result = Agg(NAN, NAN, NAN, NAN)
+    else:
+
+        mean = psumn / pcountn # mean
+
+        # compute variance from sum squared without knowing mean while summing
+        variance = (psumsqn - (psumn * psumn) / pcountn ) / pcountn
+
+        #compute standard deviation
+        if variance < 0:
+            std = NAN
+        else:
+            std = sqrt(variance)
+
+        # compute coefficient of variation
+        if mean == 0:
+            coefvar = NAN
+        else:
+            coefvar = std / mean
+
+        result = Agg(mean, variance, std, coefvar)
+
+    return result
+
+
+def proc_file(filepath):
+    """
+    proc_file - process one .xlsx file
+
+    :param str filepath: path to file
+    :return: list of lists, rows of info. as expected in main()
+    """
+
+    print(filepath)
+
+    # get the first sheet
+    book = load_workbook(filename=filepath, read_only=True)
+    sheets = book.get_sheet_names()
+    sheet = book[sheets[0]]
+    row_source = sheet.rows
+    row0 = next(row_source)
+    # get field names from the first row
+    fields = [i.value for i in row0]
+
+    data = {
+        'filepath': filepath,
+        'fields': {field:AttrDict({f:0 for f in FIELDS}) for field in fields}
+    }
+
+    for field in fields:
+        # init. mins/maxs with invalid value for later calc.
+        data['fields'][field].update(dict(
+            min=NAN,
+            max=NAN,
+            field=field,
+            file=filepath,
+        ))
+
+    rows = 0
+    for row in row_source:
+
+        if rows % 1000 == 0:  # feedback every 1000 rows
+            print(rows)
+            # Much cleaner to exit by creating a file called "STOP" in the
+            # local directory than to try and use Ctrl-C, when using
+            # multiprocessing.  Save time by checking only every 1000 rows.
+            if os.path.exists("STOP"):
+                return
+
+        rows += 1
+
+        for cell_n, cell in enumerate(row):
+            d = data['fields'][fields[cell_n]]
+            if cell.value is None or unicode(cell.value).strip() == '':
+                d.blank += 1
+            else:
+                try:
+                    x = float(cell.value)
+                    d.sum += x
+                    d.sumsq += x*x
+                    d.n += 1
+                    # min is x if no value seen yet, else min(prev-min, x)
+                    if isnan(d.min):
+                        d.min = x
+                    else:
+                        d.min = min(d.min, x)
+                    # as for min
+                    if isnan(d.max):
+                        d.max = x
+                    else:
+                        d.max = max(d.max, x)
+                except ValueError:
+                    d.bad += 1
+
+    assert sum(d.n+d.blank+d.bad for d in data['fields'].values()) == rows * len(fields)
+
+    # compute the derived values
+    for field in data['fields']:
+        d = data['fields'][field]
+        d.update(get_aggregate(d.sumsq, d.sum, d.n)._asdict().items())
+
+    return data
+def get_answers(opt=None, **kwargs):
+    """get_answers - process files
+
+    :param argparse.Namespace opt: options
+    :return: list of answers from proc_file
+    """
+
+    if opt is None:  # API call rather than command line
+        opt = type("opt", (), kwargs)
+
+    # pass filenames through glob() to expand "2017_*.xlsx" etc.
+    files = []
+    for filepath in opt.files:
+        files.extend(glob.glob(filepath))
+
+    # create a pool of processors
+    pool = multiprocessing.Pool(multiprocessing.cpu_count()-1)
+
+    # process file list with processor pool
+    return pool.map(proc_file, files)
+def get_table_rows(answers):
+    """get_table_rows - generator - convert get_answers() output to table format
+
+    :param list answers: output from get_answers()
+    :return: list of rows suitable for csv.writer
+    """
+    yield FIELDS
+    for answer in answers:
+        for field in answer['fields']:
+            row = [answer['fields'][field][k] for k in FIELDS]
+            if PYTHON_2:
+                yield [unicode(col).encode('utf-8') for col in row]
+            else:
+                yield row
+
+def main():
+    """main() - when invoked directly"""
+    opt = get_options()
+
+    # csv.writer does its own EOL handling,
+    # see https://docs.python.org/3/library/csv.html#csv.reader
+    if PYTHON_2:
+        output = open(opt.output, 'wb')
+    else:
+        output = open(opt.output, 'w', newline='')
+
+    with output as out:
+        writer = csv.writer(out)
+        for row in get_table_rows(get_answers(opt)):
+            writer.writerow(row)
+
+if __name__ == '__main__':
+    main()
+'''
+table = (
+    (1, "Declarations"),
+    (1, "class AttrDict"),
+    (2, "__init__"),
+    (1, "make_parser"),
+    (1, "get_options"),
+    (1, "get_aggregate"),
+    (1, "proc_file"),
+    (1, "get_answers"),
+    (1, "get_table_rows"),
+    (1, "main"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20170122032242.1: *6* @test python bug #360
+if 0: # Preamble...
+    # g.cls()
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    # Reload all.
+    import imp
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands 
+s = """
+@base_task(
+    targets=['img/who_map.png', 'img/who_map.pdf'],
+    file_dep=[data_path('phyto')],
+    task_dep=['load_data'],
+)
+def make_map():
+    '''make_map - plot the Thompson / Bartsh / WHO map'''
+"""
+table = (
+    (1, 'Declarations'),
+        # Poor, but passes perfect import.
+    (1, 'make_map'),
 )
 try:
     test_node = p.copy()
@@ -15717,7 +16151,6 @@ NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
 tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
 '''
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
 )
 try:
@@ -15763,7 +16196,6 @@ import leo.core.leoGlobals as g
 a = 3
 '''
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
 )
 try:
@@ -15922,10 +16354,8 @@ table = (
     (2, "mousePressEvent"),
     (2, "mouseMoveEvent"),
     (1, "command"),
-    # (2, "makebutton"),
     (1, "exit_"),
     (1, "main"),
-    # (1, "if __name__ == '__main__':"),
 )
 try:
     test_node = p.copy()
@@ -16040,10 +16470,10 @@ class test:
         return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
 '''
 table = (
-        (1, 'class test'),
-        (2, 'importFilesCommand'),
-        (2, 'convertMoreStringToOutlineAfter'),
-    )
+    (1, 'class test'),
+    (2, 'importFilesCommand'),
+    (2, 'convertMoreStringToOutlineAfter'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -16093,12 +16523,11 @@ class test:
     def foo(a):
         pass
 '''
-
 table = (
-        (1, 'class test'),
-        (2, 'spam'),
-        (2, 'foo'),
-    )
+    (1, 'class test'),
+    (2, 'spam'),
+    (2, 'foo'),
+)
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
@@ -16306,15 +16735,12 @@ class LeoImportCommands(object):
         '''Init ivars & vars for imports.'''
 """
 table = (
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
     (1, "class LeoImportCommands"),
     (2, "createOutline"),
     (2, "dispatch"),
     (2, "scanner_for_at_auto"),
-    # (3, "scanner_for_at_auto_cb"),
     (2, "scanner_for_ext"),
-    # (3, "scanner_for_ext_cb"),
     (2, "get_import_filename"),
     (2, "init_import"),
 )
@@ -16466,7 +16892,6 @@ class testClass1:
 '''
 table = (
     (1, 'Declarations'),
-    # (1, "if 0: # Causes the 'overindent'"),
     (1, 'class testClass1'),
 )
 try:
@@ -16584,14 +17009,11 @@ if __name__=="__main__":
     main()
 '''
 table = (
-    # @auto does not allow section references.
-    # (1, g.angleBrackets('Declarations')),
     (1, 'Declarations'),
     (1, 'merge_value'),
     (1, 'class MainDisplay'),
     (2, 'save_file'),
     (1, 'retab'),
-    # (1, 'if __name__=="__main__":'),
 )
 try:
     test_node = p.copy()
@@ -16612,6 +17034,40 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20170122040158.23: *7* @@file c:/leo.repo/leo-editor/leo/test/python top-level later decl
+#!/usr/bin/env python3
+
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20170122040158.24: *8* Declarations
+import os
+import re
+
+#@+node:ekr.20170122040158.25: *8* merge_value
+def merge_value(v1, v2):
+    return v
+
+#@+node:ekr.20170122040158.26: *8* class MainDisplay
+class MainDisplay(object):
+
+    @others
+# This line should be included at the end of the class node.
+ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
+
+#@+node:ekr.20170122040158.27: *9* save_file
+def save_file(self):
+    """Write the file out to disk."""
+    with open(self.save_name, "w") as f:
+        for newline in newlines:
+            f.write(newline)
+
+#@+node:ekr.20170122040158.28: *8* retab
+def retab(s, tabsize):
+    return ''.join(pieces)
+
+if __name__=="__main__":
+    main()
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
@@ -18811,6 +19267,8 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 #@+node:ekr.20161127181028.1: *5* @test markdown github syntax
+@first # -*- coding: utf-8 -*-
+    # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
     g.cls()
@@ -20790,8 +21248,7 @@ def not_a_sentinel(x):
 def spam():
     pass
 
-# s1 = ''.join([z for z in g.splitLines(p.b) if not z.startswith('@language')])
-s1 = ''.join(g.splitLines(p.b)[2:])
+s1 = ''.join(g.splitLines(p.b) [2:])
 s2 = p.nosentinels   
 assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 #@+node:ekr.20040802071519: *4* @test p.setBodyString
@@ -27668,6 +28125,10 @@ print('\nEnd of plugins unit tests')
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print('%s: %s' % (p.h,tree.redrawCount))
+#@+node:ekr.20170123053430.1: ** @test print calls to jedit.setTag
+if 0:
+    print('calls to jedit.setTag: %s' %
+        c.frame.body.colorizer.highlighter.colorer.n_setTag)
 #@+node:ekr.20081111150402.11: ** @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

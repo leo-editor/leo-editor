@@ -171,7 +171,7 @@ cmd_instance_dict = {
     'LeoApp':                   ['g', 'app'],
     'LeoFind':                  ['c', 'findCommands'],
     'LeoImportCommands':        ['c', 'importCommands'],
-    'MacroCommandsClass':       ['c', 'macroCommands'],
+    # 'MacroCommandsClass':       ['c', 'macroCommands'],
     'PrintingController':       ['c', 'printingController'],
     'RectangleCommandsClass':   ['c', 'rectangleCommands'],
     'RstCommands':              ['c', 'rstCommands'],
@@ -2473,14 +2473,22 @@ def getOutputNewline(c=None, name=None):
         s = str(s)
     return s
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
+# This pattern excludes @encoding.whatever and @encoding(whatever)
+# It must allow @language python, @nocolor-node, etc.
+g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
+
 def isDirective(s):
-    '''Return True if s startswith a directive.'''
-    if s and s[0] == '@':
-        i = g.skip_ws(s, 1)
-        j = g.skip_c_id(s, i)
-        return s[i: j] in g.globalDirectiveList
+    '''Return True if s starts with a directive.'''
+    m = g_is_directive_pattern.match(s)
+    if m:
+        s2 = s[m.end(1):]
+        if s2 and s2[0] in ".(":
+            return False
+        else:
+            return bool(m.group(1) in g.globalDirectiveList)
     else:
         return False
+   
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     '''
@@ -5271,11 +5279,11 @@ def goto_last_exception(c):
 #@+node:ekr.20100126062623.6240: *3* g.internalError
 def internalError(*args):
     '''Report a serious interal error in Leo.'''
-    callers = g.callers(5).split(',')
+    callers = g.callers(20).split(',')
     caller = callers[-1]
     g.error('\nInternal Leo error in', caller)
     g.es_print(*args)
-    g.es_print('Called from', ','.join(callers[: -1]))
+    g.es_print('Called from', ', '.join(callers[: -1]))
     g.es_print('Please report this error to Leo\'s developers', color='red')
 #@+node:ekr.20150127060254.5: *3* g.log
 def log(s, fn=None):
@@ -5803,6 +5811,7 @@ def os_path_expandExpression(s, **keys):
     if not s:
         if trace: g.trace('no s')
         return ''
+    s = g.toUnicode(s) # 2017/02/02: # Attempt a fix for #343:
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
@@ -5812,7 +5821,9 @@ def os_path_expandExpression(s, **keys):
                 p = c.p
                 d = {'c': c, 'g': g, 'p': p, 'os': os, 'sys': sys,}
                 val = eval(exp, d)
-                s = s[: i] + str(val) + s[j + 2:]
+                # 2017/02/02: # Attempt a fix for #343:
+                val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
+                s = s[: i] + val + s[j + 2:]
                 if trace: g.trace('returns', s)
             except Exception:
                 g.trace(g.callers())
@@ -6173,7 +6184,7 @@ def findTopLevelNode(c, headline):
         if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
-#@+node:EKR.20040614071102.1: *3* g.getScript
+#@+node:EKR.20040614071102.1: *3* g.getScript & helper
 def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinels=True):
     '''
     Return the expansion of the selected text of node p.
@@ -6195,6 +6206,7 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
+        s = g.extractExecutableString(c, p, s)
         if s.strip():
             # This causes too many special cases.
             # if not g.unitTesting and forceEncoding:
@@ -6215,6 +6227,46 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
         g.es_exception()
         script = ''
     return script
+#@+node:ekr.20170123074946.1: *4* g.extractExecutableString
+def extractExecutableString(c, p, s):
+    '''
+    Return s suitable for execution:
+        
+    - Remove all @language rest and @language md/markdown parts.
+    - Give an error and truncate if multiple executable languages are found.
+    '''
+
+    # https://github.com/leo-editor/leo-editor/issues/371
+    def set_skipping(language):
+        return language in ('md', 'markdown', 'plain', 'rest')
+        
+    if g.unitTesting:
+        return s # Regretable, but necessary.
+
+    language = 'python'
+    # language = g.scanForAtLanguage(c, p)
+    pattern = re.compile(r'\s*@language\s+(\w+)')
+    skipping = set_skipping(language)
+    prev_language = None if skipping else language
+    result = []
+    for line in g.splitLines(s):
+        m = pattern.match(line)
+        if m: # Found an @language directive.
+            language = m.group(1)
+            skipping = set_skipping(language)
+            if skipping:
+                pass
+            elif prev_language and language == prev_language:
+                pass
+            elif prev_language:
+                g.error('can not execute multiple languages')
+                g.es('ignoring @language %s and all following lines' % language)
+                break
+            else:
+                prev_language = language
+        if not skipping:
+            result.append(line)
+    return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")

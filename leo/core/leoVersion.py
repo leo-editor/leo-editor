@@ -19,6 +19,7 @@ import json
 # Leo 5.1 final: April 17, 2015.
 # Leo 5.2 final: March 18, 2016.
 # Leo 5.3 final: May 2, 2016.
+# Leo 5.4 final: October 22, 2016.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>

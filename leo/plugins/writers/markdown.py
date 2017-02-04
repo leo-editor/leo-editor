@@ -33,7 +33,7 @@ class MarkdownWriter(basewriter.BaseWriter):
     def write_headline(self, p):
         '''
         Write or skip the headline.
-        
+
         New in Leo 5.5: Always write '#' sections.
         This will cause perfect import to fail.
         The alternatives are much worse.
@@ -47,7 +47,7 @@ class MarkdownWriter(basewriter.BaseWriter):
             # self.put(p.h)
             # self.put(kind*max(4,len(p.h)))
         else:
-            self.put('%s%s' % ('#'*level, p.h))
+            self.put('%s %s' % ('#'*level, p.h))
     #@-others
 #@-others
 writer_dict = {
