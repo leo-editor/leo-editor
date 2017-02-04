@@ -27,9 +27,9 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
-        p = self.lep.get_position()
-        p.b = self.toPlainText()
-        self.lep.c.redraw()
+        #X p = self.lep.get_position()
+        #X p.b = self.toPlainText()
+        #X self.lep.c.redraw()
     def new_position(self, p):
         """new_position - update for new position
 
@@ -40,9 +40,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         """text_changed - text editor text changed"""
         if QtWidgets.QApplication.focusWidget() == self:
             DBG("text changed, focused")
-            p = self.lep.get_position()
-            p.b = self.toPlainText()
-            self.lep.text_changed()
+            self.lep.text_changed(self.toPlainText())
         else:
             DBG("text changed, NOT focused")
     def update_position(self, p):

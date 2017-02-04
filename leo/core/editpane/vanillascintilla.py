@@ -44,9 +44,9 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
     def focusOutEvent (self, event):
         Qsci.QsciScintilla.focusOutEvent(self, event)
         DBG("focusout()")
-        p = self.lep.get_position()
-        p.b = self.text()
-        self.lep.c.redraw()
+        #X p = self.lep.get_position()
+        #X p.b = self.text()
+        #X self.lep.c.redraw()
     def new_position(self, p):
         """new_position - update for new position
 
@@ -57,9 +57,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         """text_changed - text editor text changed"""
         if QtWidgets.QApplication.focusWidget() == self:
             DBG("text changed, focused")
-            p = self.lep.get_position()
-            p.b = self.text()
-            self.lep.text_changed()
+            self.lep.text_changed(self.text())
         else:
             DBG("text changed, NOT focused")
     def update_position(self, p):

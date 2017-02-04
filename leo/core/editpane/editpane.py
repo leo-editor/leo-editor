@@ -65,7 +65,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.set_mode(self.mode)
         self.new_position(p)
-    def _add_checkbox(self, text, state_changed, tooltip, checked=True, 
+    def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
         _add_checkbox - helper to add a checkbox
@@ -205,7 +205,7 @@ class LeoEditPane(QtWidgets.QWidget):
             "Make the tree go to this node"+txt)
         self.cb_update = self._add_checkbox("Update", self.change_update,
             "Update view to match changed node"+txt)
-        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, 
+        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
             "Recursive view"+txt, checked=recurse)
         # mode menu
         btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
@@ -334,13 +334,18 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.mode != 'edit':
             self.view_widget.new_position(p)
 
-    def text_changed(self):
+    def text_changed(self, new_text):
         """text_changed - node text changed by this LEP's editor"""
+
+        # Update p.b
+        p = self.get_position()
+        p.b = new_text
+
         for lep in self.c._LEPs:
             if lep == self:
                 if self.update and self.mode != 'edit':
                     # don't update the edit part, could be infinite loop
-                    self.update_position_view(lep.get_position())
+                    self.update_position_view(p)
             else:
                 lep.update_position(lep.get_position())
     def update_position(self, p):
