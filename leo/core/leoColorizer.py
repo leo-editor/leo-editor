@@ -1168,7 +1168,7 @@ class JEditColorizer(BaseColorizer):
 
     def match_url_w(self, s, i):
         return self.match_compiled_regexp(s, i, kind='url', regexp=self.url_regex_w)
-    #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp (new)
+    #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
         '''Succeed if the compiled regular expression regexp matches at s[i:].'''
         # g.trace(g.callers(1), i, repr(s[i: i + 20]), 'regexp', regexp)
@@ -1903,7 +1903,7 @@ class JEditColorizer(BaseColorizer):
 
         Called from init() and initBlock0.
         '''
-        state = self.languageTag(self.language or 'no-language')
+        state = self.languageTag(self.language)
         n = self.stateNameToStateNumber(None, state)
         self.initialStateNumber = n
         self.blankStateNumber = self.stateNameToStateNumber(None,state+';blank')
@@ -1914,14 +1914,17 @@ class JEditColorizer(BaseColorizer):
         Return the standardized form of the language name.
         Doing this consistently prevents subtle bugs.
         '''
-        table = (
-            ('markdown', 'md'),
-            ('python', 'py'),
-            ('javascript', 'js'),
-        )
-        for pattern, s in table:
-            name = name.replace(pattern, s)
-        return name
+        if name:
+            table = (
+                ('markdown', 'md'),
+                ('python', 'py'),
+                ('javascript', 'js'),
+            )
+            for pattern, s in table:
+                name = name.replace(pattern, s)
+            return name
+        else:
+            return 'no-language'
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
