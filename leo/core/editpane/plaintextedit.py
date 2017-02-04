@@ -12,11 +12,11 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        self.c = kwargs.pop('c')
-        self.lep = kwargs.pop('lep')
         QtWidgets.QTextEdit.__init__(self, *args, **kwargs)
+        self.c = c
+        self.lep = lep
         self.textChanged.connect(self.text_changed)
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)

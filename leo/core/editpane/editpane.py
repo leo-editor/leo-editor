@@ -16,27 +16,21 @@ class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=False,
+                 update=True, recurse=False, *args, **kwargs):
         """__init__ - bind to outline
 
         :param outline c: outline to bind to
         """
         DBG("__init__ LEP")
-        self.c = kwargs['c']
+        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+
+        self.c = c
         if not hasattr(self.c, '_LEPs'):
             self.c._LEPs = []
         self.c._LEPs.append(self)
-        p = kwargs.get('p', self.c.p)
-        self.mode = kwargs.get('mode', 'edit')
-        show_head = kwargs.get('show_head', True)
-        show_control = kwargs.get('show_control', True)
-        recurse = kwargs.get('recurse', False)
-        update = kwargs.get('update', True)
-        for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'update':
-            if arg in kwargs:
-                del kwargs[arg]
-
-        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        p = p or self.c.p
+        self.mode = mode
 
         self.gnx = p.gnx
 
@@ -169,7 +163,6 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("before select")
 
         return None
-
     def _find_gnx_node(self, gnx):
         '''Return the first position having the given gnx.'''
         if self.c.p.gnx == gnx:
