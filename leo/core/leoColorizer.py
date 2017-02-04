@@ -874,6 +874,19 @@ class JEditColorizer(BaseColorizer):
             n = self.setRestart(self.restartColor)
             self.setState(n) # Enables coloring of *this* line.
             return 0 # Allow colorizing!
+    #@+node:ekr.20110605121601.18597: *5* jedit.match_at_killcolor & restarter
+    def match_at_killcolor(self, s, i):
+        # if self.trace_leo_matches: g.trace(i, repr(s))
+        # Only matches at start of line.
+        if i == 0 and g.match_word(s, i, '@killcolor'):
+            self.setRestart(self.restartKillColor)
+            return len(s) # Match everything.
+        else:
+            return 0
+    #@+node:ekr.20110605121601.18598: *6* jedit.restartKillColor
+    def restartKillColor(self, s):
+        self.setRestart(self.restartKillColor)
+        return len(s) + 1
     #@+node:ekr.20110605121601.18594: *5* jedit.match_at_language
     def match_at_language(self, s, i):
         '''Match Leo's @language directive.'''
@@ -915,19 +928,6 @@ class JEditColorizer(BaseColorizer):
         else:
             self.setRestart(self.restartNoColor)
             return len(s) # Match everything.
-    #@+node:ekr.20110605121601.18597: *5* jedit.match_at_killcolor & restarter
-    def match_at_killcolor(self, s, i):
-        # if self.trace_leo_matches: g.trace(i, repr(s))
-        # Only matches at start of line.
-        if i == 0 and g.match_word(s, i, '@killcolor'):
-            self.setRestart(self.restartKillColor)
-            return len(s) # Match everything.
-        else:
-            return 0
-    #@+node:ekr.20110605121601.18598: *6* jedit.restartKillColor
-    def restartKillColor(self, s):
-        self.setRestart(self.restartKillColor)
-        return len(s) + 1
     #@+node:ekr.20110605121601.18599: *5* jedit.match_at_nocolor_node & restarter
     def match_at_nocolor_node(self, s, i):
         # if self.trace_leo_matches: g.trace()
