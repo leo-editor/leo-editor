@@ -10,7 +10,7 @@ import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 # Used by writers.leo_rst as well as in this file.
 underlines_old = "!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~#"
-underlines = '*=-^~"+!\$%&(),./:;<>?@[\\]_`{|}#'
+underlines = '*=-^~"+!$%&(),./:;<>?@[\\]_`{|}#'
     # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 #@+others
 #@+node:ekr.20161127192007.2: ** class Rst_Importer
