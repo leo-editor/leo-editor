@@ -115,7 +115,7 @@ class WikiView(object):
         self.select = 'select3'  # Leo hook to hide text
         self.pts=0.1  # hidden text size
         self.pct=1  # hidden text letter spacing
-        self.active = c.config.getBool('wikiview-active')
+        self.active = True ### c.config.getBool('wikiview-active')
         w = c.frame.body.wrapper.widget
         if not w:
             return # w may not exist during unit testing.

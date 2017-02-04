@@ -2511,27 +2511,19 @@ class KeyHandlerClass(object):
     def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
-        # trace_event = True
         verbose = False
         try:
             k = self; c = k.c
-            ### recording = c.macroCommands.recordingMacro
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event and event.char or ''
             stroke = event and event.stroke or None
-            if trace:
-                g.trace('state', state, repr(char)) ### 'recording', recording, 
-            ###
-            # if recording:
-                # c.macroCommands.startRecordingMacro(event)
+            if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event # Save the full event for later.
-                # if trace and trace_event:
-                    # g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
                 k.setState('full-command', 1, handler=k.fullCommand)
                 prompt = helpPrompt if help else k.altX_prompt
                 k.setLabelBlue(prompt)
