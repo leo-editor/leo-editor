@@ -1037,20 +1037,22 @@ class JEditColorizer(BaseColorizer):
 
     def match_image(self, s, i):
         '''Matcher for <img...>'''
-        if i == 0:
-            m = self.image_url.match(s)
-            if m:
-                self.image_src = src = m.group(1)
-                j = len(src)
-                g.trace('Found. length', j, repr(src))
-                # body = self.c.frame.body
-                # widget, wrapper = body.widget, body.wrapper
-                # s = wrapper.getAllText()
-                # wrapper.delete(0, j)
-                # widget.insertHtml(src)
-                return j
-            else:
-                return 0
+        m = self.image_url.match(s[i:])
+        if m:
+            self.image_src = src = m.group(1)
+            j = len(src)
+            doc = self.highlighter.document()
+            block_n = self.currentBlockNumber()
+            text_block = doc.findBlockByNumber(block_n)
+            g.trace('block_n: %2s %s' % (block_n, repr(s)))
+            g.trace('block text: %s' % repr(text_block.text()))
+                # How to get the cursor of the colorized line.
+                ### body = self.c.frame.body
+                ###
+                    # s = body.wrapper.getAllText()
+                    # wrapper.delete(0, j)
+                ### cursor.insertHtml(src)
+            return j
         else:
             return 0
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
