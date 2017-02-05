@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
@@ -8,9 +6,6 @@ from leo.core.editpane import plaintextview
 
 if g.isPython3:
     from importlib import reload
-
-AvailableEditor = namedtuple("AvailableEditor", 'name widget_class')
-AvailableViewer = namedtuple("AvailableViewer", 'name widget_class')
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -38,11 +33,11 @@ class LeoEditPane(QtWidgets.QWidget):
         self.mode = mode
 
         self.available_editors = [
-            AvailableEditor("Vanilla Scintilla", vanillascintilla.LEP_VanillaScintilla),
-            AvailableEditor("plain text edit", plaintextedit.LEP_PlainTextEdit),
+            vanillascintilla.LEP_VanillaScintilla,
+            plaintextedit.LEP_PlainTextEdit,
         ]
         self.available_viewers = [
-            AvailableViewer("plain text view", plaintextview.LEP_PlainTextView),
+            plaintextview.LEP_PlainTextView,
         ]
 
         self.gnx = p.gnx
@@ -304,11 +299,11 @@ class LeoEditPane(QtWidgets.QWidget):
         ]
 
         menu = QtWidgets.QMenu()
-        for name, widgets, setter in named_widgets:
-            for widget in widgets:
+        for name, widget_classes, setter in named_widgets:
+            for widget_class in widget_classes:
                 def cb(checked, self=self, widget=widget, setter=setter):
-                    setter(widget.widget_class)
-                act = QtWidgets.QAction("%s: %s" % (name, widget.name), self)
+                    setter(widget_class)
+                act = QtWidgets.QAction("%s: %s" % (name, widget.lep_name), self)
                 act.triggered.connect(cb)
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))

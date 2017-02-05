@@ -16,6 +16,7 @@ def DBG(text):
     """
     print("LEP: \033[34m%s\033[39m" % text)
 class LEP_VanillaScintilla(Qsci.QsciScintilla):
+    lep_name = "Vanilla Scintilla"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         Qsci.QsciScintilla.__init__(self, *args, **kwargs)

@@ -11,7 +11,7 @@ def DBG(text):
 class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
     """
-
+    lep_name = "Plain Text Edit"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         QtWidgets.QTextEdit.__init__(self, *args, **kwargs)

@@ -4,7 +4,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 class LEP_PlainTextView(QtWidgets.QTextBrowser):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
-
+    lep_name = "Plain Text View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
