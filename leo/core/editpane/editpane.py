@@ -18,14 +18,22 @@ try:
     from leo.core.editpane import vanillascintilla
     MODULES.append(vanillascintilla)
     AVAIL_EDITORS.append(vanillascintilla.LEP_VanillaScintilla)
-except ImportError:
+except:
+    pass
+
+try:
+    from leo.core.editpane import webkitview
+    MODULES.append(webengineview)
+    AVAIL_VIEWERS.append(webkitview.LEP_WebKitView)
+except:
     pass
 
 try:
     from leo.core.editpane import webengineview
     MODULES.append(webengineview)
     AVAIL_VIEWERS.append(webengineview.LEP_WebEngineView)
-except ImportError:
+except:
+    raise
     pass
 
 if g.isPython3:

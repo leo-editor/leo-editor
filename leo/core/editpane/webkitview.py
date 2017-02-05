@@ -1,14 +1,13 @@
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-from PyQt5 import QtWebEngineWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit
 
-class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
-    """LEP_PlainTextView - simplest possible LeoEditorPane viewer
+class LEP_WebKitView(QtWebKit.QWebView):
+    """LEP_WebKitView - Web Kit View
     """
-    lep_name = "Web Engine View"
+    lep_name = "Web Kit View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWebEngineWidgets.QWebEngineView.__init__(self, *args, **kwargs)
+        QtWebKit.QWebView.__init__(self, *args, **kwargs)
         self.c = c
         self.lep = lep
     def new_position(self, p):
@@ -25,8 +24,11 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
 
         :param Leo position p: current position
         """
-        # h = self.horizontalScrollBar().value()
-        # v = self.verticalScrollBar().value()
+        h = self.horizontalScrollBar().value()
+        v = self.verticalScrollBar().value()
         self.new_position(p)
-        # self.horizontalScrollBar().setValue(h)
-        # self.verticalScrollBar().setValue(v)
+        self.horizontalScrollBar().setValue(h)
+        self.verticalScrollBar().setValue(v)
+
+from PyQt5 import QtWebEngineCore
+from PyQt5 import QtWebEngineWidgets
