@@ -84,10 +84,10 @@ def cmd_toggle(event):
     c._wikiview.active = not c._wikiview.active
     if  c._wikiview.active:
         g.es("WikiView active")
-        cmd_hide_all(c)
+        cmd_hide_all(event)
     else:
         g.es("WikiView inactive")
-        cmd_show_all(c)
+        cmd_show_all(event)
 #@+node:tbrown.20141101114322.7: ** wikiview-hide-all
 @g.command('wikiview-hide-all')
 def cmd_hide_all(event):
@@ -116,7 +116,8 @@ class WikiView(object):
         self.pts=0.1  # hidden text size
         self.pct=1  # hidden text letter spacing
         self.active = c.config.getBool('wikiview-active')
-        w = c.frame.body.wrapper.widget
+            # This setting is True by default, so the redundancy is harmless.
+        w = c.frame.body.widget
         if not w:
             return # w may not exist during unit testing.
         g.registerHandler(self.select,self.hide)
@@ -129,23 +130,27 @@ class WikiView(object):
         self.hide(self.select, {'c': c})
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
-
+        trace = False and not g.unitTesting
+        trace_parts = False
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
-
-        w = c.frame.body.wrapper.widget
+        if trace: g.trace(g.callers())
+        w = c.frame.body.widget
         curse = w.textCursor()
-
         s = w.toPlainText()
         for urlpat in self.urlpats:
-            for match in urlpat.finditer(s):
-                for group_n, group in enumerate(match.groups()):
-                    # print group_n, group, match.start(group_n+1), match.end(group_n+1)
+            for m in urlpat.finditer(s):
+                if trace: g.trace('=====', repr(m.group(0)))
+                for group_n, group in enumerate(m.groups()):
                     if group is None:
                         continue
-                    curse.setPosition(match.start(group_n+1))
-                    curse.setPosition(match.end(group_n+1), curse.KeepAnchor)
+                    if trace and trace_parts: g.trace(
+                            m.start(group_n+1),
+                            m.end(group_n+1),
+                            repr(m.group(group_n+1)))
+                    curse.setPosition(m.start(group_n+1))
+                    curse.setPosition(m.end(group_n+1), curse.KeepAnchor)
                     cfmt = curse.charFormat()
                     cfmt.setFontPointSize(self.pts)
                     cfmt.setFontLetterSpacing(self.pct)
@@ -153,12 +158,17 @@ class WikiView(object):
                     curse.setCharFormat(cfmt)
     #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
+        trace = False and not g.unitTesting
         c = self.c
-        w = c.frame.body.wrapper.widget
+        w = c.frame.body.widget
         curse = w.textCursor()
         cfmt = curse.charFormat()
         if cfmt.fontPointSize() == self.pts or all:
-            if not all:
+            if trace: g.trace()
+            if all:
+                curse.setPosition(0)
+                curse.setPosition(len(w.toPlainText()), curse.KeepAnchor)
+            else:
                 end = curse.position()
                 # move left to find left end of range
                 while curse.movePosition(curse.PreviousCharacter) and \
@@ -172,9 +182,7 @@ class WikiView(object):
                     pass
                 # select range and restore normal size
                 curse.setPosition(start, curse.KeepAnchor)
-            else:
-                curse.setPosition(0)
-                curse.setPosition(len(w.toPlainText()), curse.KeepAnchor)
+            # Common code.
             cfmt.setFontPointSize(self.size)
             cfmt.setFontLetterSpacing(100)
             curse.setCharFormat(cfmt)
