@@ -837,8 +837,10 @@ class Importer(object):
         ]
         if self.parse_body:
             pass
-        else:
+        elif self.has_lines(parent):
             self.extend_lines(parent, table)
+        else:
+            self.set_lines(parent, table)
     #@+node:ekr.20161110042020.1: *5* i.finalize_ivars
     def finalize_ivars(self, parent):
         '''
