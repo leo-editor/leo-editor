@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
@@ -7,6 +9,9 @@ from leo.core.editpane import plaintextview
 
 if g.isPython3:
     from importlib import reload
+
+AvailableEditor = namedtuple("AvailableEditor", 'name widget_class')
+
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -57,10 +62,14 @@ class LeoEditPane(QtWidgets.QWidget):
         reload(plaintextedit)
         reload(plaintextview)
         reload(vanillascintilla)
-        # self.edit_widget = plaintextedit.LEP_PlainTextEdit(lep=self, c=self.c)
-        self.edit_widget = vanillascintilla.LEP_VanillaScintilla(lep=self, c=self.c)
+
+        self.available_editors = [
+            AvailableEditor("Vanilla Scintilla", vanillascintilla.LEP_VanillaScintilla),
+            AvailableEditor("plain text edit", plaintextedit.LEP_PlainTextEdit),
+        ]
+        self.set_edit_widget()
+
         self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
-        self.edit_frame.layout().addWidget(self.edit_widget)
         self.view_frame.layout().addWidget(self.view_widget)
 
         self.set_mode(self.mode)
@@ -388,6 +397,18 @@ class LeoEditPane(QtWidgets.QWidget):
         pass
 
 
+    def set_edit_widget(self, widget_class=None):
+        """set_edit_widget - 
+
+        :param QWidget widget: widget to use
+        """
+
+        if widget_class is None:
+            widget_class = self.available_editors[0].widget_class
+        self.edit_widget = widget_class(self.c, self)
+        for i in reversed(range(self.edit_frame.layout().count())): 
+            self.edit_frame.layout().itemAt(i).widget().setParent(None)
+        self.edit_frame.layout().addWidget(self.edit_widget)
     def set_mode(self, mode):
         """set_mode - change mode edit / view / split
 
