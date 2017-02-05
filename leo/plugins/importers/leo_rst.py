@@ -228,6 +228,7 @@ class Rst_ScanState:
     #@-others
 #@-others
 importer_dict = {
+    '@auto': ['@auto-rst',], # Fix #392: @auto-rst file.txt: -rst ignored on read
     'class': Rst_Importer,
     'extensions': ['.rst', '.rest'],
 }
