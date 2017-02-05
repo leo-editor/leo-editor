@@ -12181,6 +12181,21 @@ else:
 # The first character of the pattern (not counting \b) is the leadin character.
 # The pattern will be applied only for strings starting with the leadin character.
 
+# UNLs
+
+\b(file://.*--&gt;)\S+\b
+\b(https?://.*--&gt;)\S+\b
+
+# restructuredText `Visible text &lt;http://invisible.url/here&gt;`
+
+(`)\S+(\s*&lt;https?://\S+&gt;`_)
+(`)\S+(\s*&lt;file://\S+&gt;`_)
+
+# regular urls
+
+\b(https?://.*/)\w+\b
+\b(file:(//.*/)\w+\b
+
 # Test patterns: see http://pythex.org/
 
 # file://#some--&gt;headlines--&gt;mynode
@@ -12191,21 +12206,6 @@ else:
 # file://www.google.com/search
 # `Python &lt;https://www.python.org/&gt;`_ 
 # `Python &lt;file://www.python.org/&gt;`_ 
-
-# UNLs
-
-\bfile://.*--&gt;(\S+)\b
-\bhttps?://.*--&gt;(\S+)\b
-
-# restructuredText `Visible text &lt;http://invisible.url/here&gt;`
-
-`(\S+)\s*&lt;https?://\S+&gt;`_
-`(\S+)\s*&lt;file://\S+&gt;`_
-
-# regular urls
-\b(https?:)//.*/(\w+)
-\b(file:)//.*/(\w+)
-
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
 <t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications

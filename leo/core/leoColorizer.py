@@ -220,7 +220,6 @@ class JEditColorizer(BaseColorizer):
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
         self.rulesDict = {}
-        ### self.show_wiki_patterns = True
         # self.defineAndExtendForthWords()
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
@@ -403,7 +402,7 @@ class JEditColorizer(BaseColorizer):
             ('p', self.match_url_p, True),
             ('t', self.match_url_t, True),
             ('w', self.match_url_w, True),
-            ### ('<', self.match_image, True), ###
+            ### ('<', self.match_image, True),
             ('<', self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
@@ -1048,11 +1047,10 @@ class JEditColorizer(BaseColorizer):
             g.trace('block_n: %2s %s' % (block_n, repr(s)))
             g.trace('block text: %s' % repr(text_block.text()))
                 # How to get the cursor of the colorized line.
-                ### body = self.c.frame.body
-                ###
+                    # body = self.c.frame.body
                     # s = body.wrapper.getAllText()
                     # wrapper.delete(0, j)
-                ### cursor.insertHtml(src)
+                    # cursor.insertHtml(src)
             return j
         else:
             return 0
@@ -1632,32 +1630,10 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
     def match_wiki_pattern(self, s, i, pattern):
         '''Show or hide a regex pattern managed by the wikiview plugin.'''
-        trace = False and not g.unitTesting
         m = pattern.match(s,i)
-        # g.trace(i, repr(pattern), repr(s))
         if m:
             n = len(m.group(0))
-            if trace: g.trace(i, i+n, m.group(0))
-                # kind = 'SHOW' if self.show_wiki_patterns else 'HIDE'
-            # if self.show_wiki_patterns:
             self.colorRangeWithTag(s, i, i + n, 'url')
-            # elif 1:
-                # self.colorRangeWithTag(s, i, i + n, 'url')
-            # elif 1:
-                # for i, group in enumerate(m.groups()):
-                    # # g.trace(m.group(i+1))
-                    # start, end = m.start(i+1), m.end(i+1)
-                    # # self.colorRangeWithTag(s, start, end, 'comment1')
-                    # self.colorRangeWithTag(s, start, end, 'url')
-            # else:
-                # format = QtGui.QTextCharFormat()
-                # format.setFontPointSize(1)
-                # format.setFontLetterSpacing(1)
-                # for i, group in enumerate(m.groups()):
-                    # start, end = m.start(i+1), m.end(i+1)
-                    # # g.trace('hide', group)
-                    # self.highlighter.setFormat(start, end, format)
-            # assert n == len(m.group(0))
             return n
         else:
             return 0
@@ -1829,9 +1805,6 @@ class JEditColorizer(BaseColorizer):
         This is called whenever a pattern matcher succeed.'''
         trace = False and not g.unitTesting
             # A superb trace: enable this first to see what gets colored.
-        # if tag == 'image':
-            # g.trace('===== image', self.image_src)
-            # return
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace: g.trace('not in color state')
@@ -1844,7 +1817,6 @@ class JEditColorizer(BaseColorizer):
                     s2 = repr(s[i: i + 17 - 2] + '...')
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
-            # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -1858,10 +1830,9 @@ class JEditColorizer(BaseColorizer):
                         # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n; break
                 else:
-                    # New in Leo 4.6: Use the default chars for everything else.
-                    # New in Leo 4.8 devel: use the *delegate's* default characters if possible.
+                    # Use the default chars for everything else.
+                    # Use the *delegate's* default characters if possible.
                     default_tag = self.attributesDict.get('default')
-                    # g.trace(default_tag)
                     self.setTag(default_tag or tag, s, i, i + 1)
                     i += 1
                 assert i > progress
@@ -1873,15 +1844,15 @@ class JEditColorizer(BaseColorizer):
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
-        if False and tag != 'url': ####
-            # Allow URL's *everywhere*.
-            j = min(j, len(s))
-            while i < j:
-                if s[i].lower() in 'fh': # file|ftp|http|https
-                    n = self.match_any_url(s, i)
-                    i += max(1, n)
-                else:
-                    i += 1
+        # if False and tag != 'url':
+            # # Allow URL's *everywhere*.
+            # j = min(j, len(s))
+            # while i < j:
+                # if s[i].lower() in 'fh': # file|ftp|http|https
+                    # n = self.match_any_url(s, i)
+                    # i += max(1, n)
+                # else:
+                    # i += 1
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''

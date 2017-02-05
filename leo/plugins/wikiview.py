@@ -129,25 +129,27 @@ class WikiView(object):
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
         self.hide(self.select, {'c': c})
-    #@+node:ekr.20170205071315.1: *3* parse_options
+    #@+node:ekr.20170205071315.1: *3* parse_options & helper
     def parse_options(self):
         '''Return leadins, patterns from @data wikiview-link-patterns'''
         c = self.c
         data = c.config.getData('wikiview-link-patterns')
         leadins, patterns = [], []
         for s in data:
-            if s.startswith('leadins:'):
-                leadins.append(s[len('leadins:'):].strip())
-            elif s.startswith('pattern:'):
-                patterns.append(s[len('patterns:'):].strip())
+            leadin = self.get_leadin(s)
+            if leadin:
+                leadins.append(leadin)
+                patterns.append(re.compile(s, re.IGNORECASE))
             else:
-                g.trace('ignoring', repr(s))
-        if len(leadins) == len(patterns):
-            patterns = [re.compile(z, re.IGNORECASE) for z in patterns]
-            return leadins, patterns
-        else:
-            g.trace("'leadins' lines do not match 'patterns' lines")
-            return [], []
+                g.trace('bad leadin:', repr(s))
+        return leadins, patterns
+    #@+node:ekr.20170205160357.1: *4* get_leadin
+    leadin_pattern = re.compile(r'(\\b)?(\()*(.)')
+
+    def get_leadin(self, s):
+        '''Return the leadin of the given pattern s, or None if there is an error.'''
+        m = self.leadin_pattern.match(s)
+        return m and m.group(3)
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
         '''Hide all wikiview tags. Now done in the colorizer.'''
@@ -157,8 +159,6 @@ class WikiView(object):
         if not (self.active or force) or kwargs['c'] != c:
             return
         if trace: g.trace(g.callers())
-        ### self.colorizer.show_wiki_patterns = False
-            # At present, this is not used.
         w = c.frame.body.widget
         cursor = w.textCursor()
         s = w.toPlainText()
@@ -185,8 +185,6 @@ class WikiView(object):
         trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.widget
-        ### self.colorizer.show_wiki_patterns = True
-            # no longer used.
         cursor = w.textCursor()
         cfmt = cursor.charFormat()
         if cfmt.fontPointSize() == self.pts or all:
@@ -197,14 +195,18 @@ class WikiView(object):
             else:
                 end = cursor.position()
                 # move left to find left end of range
-                while cursor.movePosition(cursor.PreviousCharacter) and \
-                      cursor.charFormat().fontPointSize() == self.pts:
+                while (
+                    cursor.movePosition(cursor.PreviousCharacter) and
+                    cursor.charFormat().fontPointSize() == self.pts
+                ):
                     pass
                 start = cursor.position()
                 # move right to find left end of range
                 cursor.setPosition(end)
-                while cursor.movePosition(cursor.NextCharacter) and \
-                      cursor.charFormat().fontPointSize() == self.pts:
+                while (
+                    cursor.movePosition(cursor.NextCharacter) and
+                    cursor.charFormat().fontPointSize() == self.pts
+                ):
                     pass
                 # select range and restore normal size
                 cursor.setPosition(start, cursor.KeepAnchor)
