@@ -1,8 +1,32 @@
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
-from leo.core.editpane import plaintextedit, vanillascintilla
+from leo.core.editpane import plaintextedit
 from leo.core.editpane import plaintextview
+MODULES = [
+    plaintextedit,
+    plaintextview,
+]
+AVAIL_EDITORS = [
+    plaintextedit.LEP_PlainTextEdit,
+]
+AVAIL_VIEWERS = [
+    plaintextview.LEP_PlainTextView,
+]
+
+try:
+    from leo.core.editpane import vanillascintilla
+    MODULES.append(vanillascintilla)
+    AVAIL_EDITORS.append(vanillascintilla.LEP_VanillaScintilla)
+except ImportError:
+    pass
+
+try:
+    from leo.core.editpane import webengineview
+    MODULES.append(webengineview)
+    AVAIL_VIEWERS.append(webengineview.LEP_WebEngineView)
+except ImportError:
+    pass
 
 if g.isPython3:
     from importlib import reload
@@ -32,14 +56,6 @@ class LeoEditPane(QtWidgets.QWidget):
         p = p or self.c.p
         self.mode = mode
 
-        self.available_editors = [
-            vanillascintilla.LEP_VanillaScintilla,
-            plaintextedit.LEP_PlainTextEdit,
-        ]
-        self.available_viewers = [
-            plaintextview.LEP_PlainTextView,
-        ]
-
         self.gnx = p.gnx
 
         self._build_layout(
@@ -61,9 +77,9 @@ class LeoEditPane(QtWidgets.QWidget):
         self.recurse = self.cb_recurse.isChecked()
         self.goto    = self.cb_goto.isChecked()
 
-        reload(plaintextedit)
-        reload(plaintextview)
-        reload(vanillascintilla)
+        # for development
+        for module in MODULES:
+            reload(module)
 
         self.set_edit_widget()
         self.set_view_widget()
@@ -294,8 +310,8 @@ class LeoEditPane(QtWidgets.QWidget):
         """build menu on Action button"""
 
         named_widgets = [
-            ("Editor", self.available_editors, self.set_edit_widget),
-            ("Viewer", self.available_viewers, self.set_view_widget),
+            ("Editor", AVAIL_EDITORS, self.set_edit_widget),
+            ("Viewer", AVAIL_VIEWERS, self.set_view_widget),
         ]
 
         menu = QtWidgets.QMenu()
@@ -417,7 +433,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         if widget_class is None:
-            widget_class = self.available_editors[0]
+            widget_class = AVAIL_EDITORS[0]
         self.edit_widget = widget_class(self.c, self)
         for i in reversed(range(self.edit_frame.layout().count())):
             self.edit_frame.layout().itemAt(i).widget().setParent(None)
@@ -431,7 +447,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         if widget_class is None:
-            widget_class = self.available_viewers[0]
+            widget_class = AVAIL_VIEWERS[0]
         self.view_widget = widget_class(self.c, self)
         for i in reversed(range(self.view_frame.layout().count())):
             self.view_frame.layout().itemAt(i).widget().setParent(None)
