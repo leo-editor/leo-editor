@@ -301,9 +301,9 @@ class LeoEditPane(QtWidgets.QWidget):
         menu = QtWidgets.QMenu()
         for name, widget_classes, setter in named_widgets:
             for widget_class in widget_classes:
-                def cb(checked, self=self, widget=widget, setter=setter):
+                def cb(checked, widget_class=widget_class, setter=setter):
                     setter(widget_class)
-                act = QtWidgets.QAction("%s: %s" % (name, widget.lep_name), self)
+                act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
                 act.triggered.connect(cb)
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
@@ -417,7 +417,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         if widget_class is None:
-            widget_class = self.available_editors[0].widget_class
+            widget_class = self.available_editors[0]
         self.edit_widget = widget_class(self.c, self)
         for i in reversed(range(self.edit_frame.layout().count())):
             self.edit_frame.layout().itemAt(i).widget().setParent(None)
@@ -431,7 +431,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         if widget_class is None:
-            widget_class = self.available_viewers[0].widget_class
+            widget_class = self.available_viewers[0]
         self.view_widget = widget_class(self.c, self)
         for i in reversed(range(self.view_frame.layout().count())):
             self.view_frame.layout().itemAt(i).widget().setParent(None)
