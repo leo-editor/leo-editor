@@ -3,15 +3,14 @@ from collections import namedtuple
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
-from leo.core.editpane import plaintextedit
-from leo.core.editpane import vanillascintilla
+from leo.core.editpane import plaintextedit, vanillascintilla
 from leo.core.editpane import plaintextview
 
 if g.isPython3:
     from importlib import reload
 
 AvailableEditor = namedtuple("AvailableEditor", 'name widget_class')
-
+AvailableViewer = namedtuple("AvailableViewer", 'name widget_class')
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -38,6 +37,14 @@ class LeoEditPane(QtWidgets.QWidget):
         p = p or self.c.p
         self.mode = mode
 
+        self.available_editors = [
+            AvailableEditor("Vanilla Scintilla", vanillascintilla.LEP_VanillaScintilla),
+            AvailableEditor("plain text edit", plaintextedit.LEP_PlainTextEdit),
+        ]
+        self.available_viewers = [
+            AvailableViewer("plain text view", plaintextview.LEP_PlainTextView),
+        ]
+
         self.gnx = p.gnx
 
         self._build_layout(
@@ -63,17 +70,10 @@ class LeoEditPane(QtWidgets.QWidget):
         reload(plaintextview)
         reload(vanillascintilla)
 
-        self.available_editors = [
-            AvailableEditor("Vanilla Scintilla", vanillascintilla.LEP_VanillaScintilla),
-            AvailableEditor("plain text edit", plaintextedit.LEP_PlainTextEdit),
-        ]
         self.set_edit_widget()
-
-        self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
-        self.view_frame.layout().addWidget(self.view_widget)
+        self.set_view_widget()
 
         self.set_mode(self.mode)
-        self.new_position(p)
     def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
@@ -226,8 +226,14 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.mode_menu())
 
         # misc. menu
-        self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
-        self.control.layout().addWidget(self.control_menu_button)
+        btn = self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
+        self.control.layout().addWidget(btn)
+        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+        btn.customContextMenuRequested.connect(  # right click
+            lambda pnt: self.misc_menu())
+        btn.clicked.connect(  # or left click
+            lambda checked: self.misc_menu())
+
         # padding
         self.control.layout().addItem(
             QtWidgets.QSpacerItem(0, 0, hPolicy=QtWidgets.QSizePolicy.Expanding))
@@ -240,12 +246,6 @@ class LeoEditPane(QtWidgets.QWidget):
         self.splitter.addWidget(self.edit_frame)
         self.view_frame = self._add_frame()
         self.splitter.addWidget(self.view_frame)
-
-        #X if self.mode not in ('edit', 'split'):
-        #X     self.edit_frame.hide()
-        #X else:  # avoid hiding both parts
-        #X     if self.mode not in ('view', 'split'):
-        #X         self.view_frame.hide()
 
         self.show()
 
@@ -295,6 +295,24 @@ class LeoEditPane(QtWidgets.QWidget):
         p = self.get_position()
         if p and p != self.c.p:
             self.c.selectPosition(p)
+    def misc_menu(self):
+        """build menu on Action button"""
+
+        named_widgets = [
+            ("Editor", self.available_editors, self.set_edit_widget),
+            ("Viewer", self.available_viewers, self.set_view_widget),
+        ]
+
+        menu = QtWidgets.QMenu()
+        for name, widgets, setter in named_widgets:
+            for widget in widgets:
+                def cb(checked, self=self, widget=widget, setter=setter):
+                    setter(widget.widget_class)
+                act = QtWidgets.QAction("%s: %s" % (name, widget.name), self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+        menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
+
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
@@ -398,7 +416,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
 
     def set_edit_widget(self, widget_class=None):
-        """set_edit_widget - 
+        """set_edit_widget -
 
         :param QWidget widget: widget to use
         """
@@ -406,9 +424,24 @@ class LeoEditPane(QtWidgets.QWidget):
         if widget_class is None:
             widget_class = self.available_editors[0].widget_class
         self.edit_widget = widget_class(self.c, self)
-        for i in reversed(range(self.edit_frame.layout().count())): 
+        for i in reversed(range(self.edit_frame.layout().count())):
             self.edit_frame.layout().itemAt(i).widget().setParent(None)
         self.edit_frame.layout().addWidget(self.edit_widget)
+        self.new_position_edit(self.get_position())
+
+    def set_view_widget(self, widget_class=None):
+        """set_view_widget -
+
+        :param QWidget widget: widget to use
+        """
+
+        if widget_class is None:
+            widget_class = self.available_viewers[0].widget_class
+        self.view_widget = widget_class(self.c, self)
+        for i in reversed(range(self.view_frame.layout().count())):
+            self.view_frame.layout().itemAt(i).widget().setParent(None)
+        self.view_frame.layout().addWidget(self.view_widget)
+        self.new_position_view(self.get_position())
     def set_mode(self, mode):
         """set_mode - change mode edit / view / split
 
