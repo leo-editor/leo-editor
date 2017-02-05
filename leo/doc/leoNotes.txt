@@ -35248,6 +35248,29 @@ def compare_ast(node1, node2):
         return False
     else:
         return True
+.. @+node:ekr.20170204164635.1: ** class ImageManager
+class ImageManager:
+    '''A global class to manage persistent images in the body pane.'''
+    
+    def __init__(self):
+        '''ImageManager.__init__'''
+        self.cursors = []
+        self.images = []
+        self.names = []
+        self.name_index = 0
+        
+    @others
+        
+.. @+node:ekr.20170204164826.1: *3* image.deselect
+def deselect (self, c):
+    '''Save image data when unselecting c's body pane.'''
+    # widget = c.frame.body.widget
+    g.trace()
+.. @+node:ekr.20170204164839.1: *3* image.select
+def select (self, c):
+    '''Prepare all images in c's body pane.'''
+    # widget = c.frame.body.widget
+    g.trace()
 .. @-all
 .. @@nosearch
 .. @-leo
