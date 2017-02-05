@@ -114,7 +114,7 @@ class WikiView(object):
         if hasattr(self.colorizer, 'set_wikiview_patterns'):
             self.colorizer.set_wikiview_patterns(leadins, self.urlpats)
         self.select = 'select3'  # Leo hook to hide text
-        self.pts=0.1  # hidden text size
+        self.pts=1  # hidden text size (0.1 does not work!)
         self.pct=1  # hidden text letter spacing
         self.active = c.config.getBool('wikiview-active')
             # This setting is True by default, so the redundancy is harmless.
@@ -151,13 +151,13 @@ class WikiView(object):
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
         '''Hide all wikiview tags. Now done in the colorizer.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_parts = False
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
         if trace: g.trace(g.callers())
-        self.colorizer.show_wiki_patterns = False
+        ### self.colorizer.show_wiki_patterns = False
             # At present, this is not used.
         w = c.frame.body.widget
         cursor = w.textCursor()
@@ -175,9 +175,8 @@ class WikiView(object):
                     cursor.setPosition(m.start(group_n+1))
                     cursor.setPosition(m.end(group_n+1), cursor.KeepAnchor)
                     cfmt = cursor.charFormat()
-                    if 1:
-                        cfmt.setFontPointSize(self.pts)
-                        cfmt.setFontLetterSpacing(self.pct)
+                    cfmt.setFontPointSize(self.pts)
+                    cfmt.setFontLetterSpacing(self.pct)
                     # cfmt._is_hidden = True  # gets lost
                     cursor.setCharFormat(cfmt)
                         # Triggers a recolor.
@@ -186,9 +185,8 @@ class WikiView(object):
         trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.widget
-        self.colorizer.show_wiki_patterns = False
-            # The colorizer will do the actual coloring.
-            # This code simply triggers the colorizer on the proper lines.
+        ### self.colorizer.show_wiki_patterns = True
+            # no longer used.
         cursor = w.textCursor()
         cfmt = cursor.charFormat()
         if cfmt.fontPointSize() == self.pts or all:

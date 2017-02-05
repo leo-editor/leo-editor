@@ -2449,6 +2449,7 @@
 </v>
 </v>
 </v>
+<v t="tbrown.20141101105337.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12172,21 +12173,39 @@ else:
 <t tx="tbrown.20140814090009.57476">Reload Styles</t>
 <t tx="tbrown.20141101105337.1"></t>
 <t tx="tbrown.20141101105337.2"># regex patterns for text to be hidden by the wikiview plugin
-# each non-blank link not starting with '#' is treated as a
-# separate pattern, use [#] for patterns starting with '#'
+# Blanks lines and lines starting with '#' are comment lines.
 
-# only `groups` within the pattern, i.e. parts of the pattern
-# in (parentheses), will be hidden, e.g. the first \S+ in the
-# restructuredText pattern is not hidden
+# Each non-comment line represents a pattern.
+# Use \b# for patterns starting with '#'
+# Only `groups` parts of the pattern in parentheses will be shown.
+# The first character of the pattern (not counting \b) is the leadin character.
+# The pattern will be applied only for strings starting with the leadin character.
+
+# Test patterns: see http://pythex.org/
+
+# file://#some--&gt;headlines--&gt;mynode
+# http://#some--&gt;headlines--&gt;mynode
+# https://#some--&gt;headlines--&gt;mynode
+# http://www.google.com/search
+# https://www.google.com/search
+# file://www.google.com/search
+# `Python &lt;https://www.python.org/&gt;`_ 
+# `Python &lt;file://www.python.org/&gt;`_ 
+
+# UNLs
+
+\bfile://.*--&gt;(\S+)\b
+\bhttps?://.*--&gt;(\S+)\b
 
 # restructuredText `Visible text &lt;http://invisible.url/here&gt;`
 
-leadins: `
-pattern: (`)\S+(\s*&lt;(https?|file)://\S+&gt;`_)
+`(\S+)\s*&lt;https?://\S+&gt;`_
+`(\S+)\s*&lt;file://\S+&gt;`_
 
 # regular urls
-leadins: hf
-pattern: ((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
+\b(https?:)//.*/(\w+)
+\b(file:)//.*/(\w+)
+
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
 <t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications

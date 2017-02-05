@@ -220,7 +220,7 @@ class JEditColorizer(BaseColorizer):
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
         self.rulesDict = {}
-        self.show_wiki_patterns = True
+        ### self.show_wiki_patterns = True
         # self.defineAndExtendForthWords()
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
@@ -1632,30 +1632,32 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
     def match_wiki_pattern(self, s, i, pattern):
         '''Show or hide a regex pattern managed by the wikiview plugin.'''
+        trace = False and not g.unitTesting
         m = pattern.match(s,i)
         # g.trace(i, repr(pattern), repr(s))
         if m:
             n = len(m.group(0))
-            return n
-            g.trace('==========',
-                'SHOW' if self.show_wiki_patterns else 'HIDE',
-                i, i+n, m.group(0))
-            if self.show_wiki_patterns:
-                self.colorRangeWithTag(s, i, i + n, 'url')
-            elif 1:
-                for i, group in enumerate(m.groups()):
-                    # g.trace(m.group(i+1))
-                    start, end = m.start(i+1), m.end(i+1)
-                    self.colorRangeWithTag(s, start, end, 'comment1')
-            else:
-                format = QtGui.QTextCharFormat()
-                format.setFontPointSize(0.1)
-                format.setFontLetterSpacing(1)
-                for i, group in enumerate(m.groups()):
-                    start, end = m.start(i+1), m.end(i+1)
-                    # g.trace('hide', group)
-                    self.highlighter.setFormat(start, end, format)
-            assert n == len(m.group(0))
+            if trace: g.trace(i, i+n, m.group(0))
+                # kind = 'SHOW' if self.show_wiki_patterns else 'HIDE'
+            # if self.show_wiki_patterns:
+            self.colorRangeWithTag(s, i, i + n, 'url')
+            # elif 1:
+                # self.colorRangeWithTag(s, i, i + n, 'url')
+            # elif 1:
+                # for i, group in enumerate(m.groups()):
+                    # # g.trace(m.group(i+1))
+                    # start, end = m.start(i+1), m.end(i+1)
+                    # # self.colorRangeWithTag(s, start, end, 'comment1')
+                    # self.colorRangeWithTag(s, start, end, 'url')
+            # else:
+                # format = QtGui.QTextCharFormat()
+                # format.setFontPointSize(1)
+                # format.setFontLetterSpacing(1)
+                # for i, group in enumerate(m.groups()):
+                    # start, end = m.start(i+1), m.end(i+1)
+                    # # g.trace('hide', group)
+                    # self.highlighter.setFormat(start, end, format)
+            # assert n == len(m.group(0))
             return n
         else:
             return 0
@@ -1825,7 +1827,7 @@ class JEditColorizer(BaseColorizer):
         '''Actually colorize the selected range.
 
         This is called whenever a pattern matcher succeed.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
             # A superb trace: enable this first to see what gets colored.
         # if tag == 'image':
             # g.trace('===== image', self.image_src)
