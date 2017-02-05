@@ -62,19 +62,17 @@ from leo.core.leoQt import QtGui # ,QtWidgets
 #@+others
 #@+node:tbrown.20141101114322.4: ** init
 def init():
-
+    '''Return True if this plugin should be enabled.'''
     if g.unitTesting:
         return False
-
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.plugin_signon(__name__)
-
-    return True
+    else:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
+        return True
 #@+node:tbrown.20141101114322.5: ** onCreate
 def onCreate(tag, keys):
 
     c = keys.get('c')
-
     WikiView(c)
 #@+node:tbrown.20141101114322.6: ** wikiview-toggle
 @g.command('wikiview-toggle')
@@ -110,8 +108,11 @@ class WikiView(object):
         '''Ctor for WikiView class.'''
         self.c = c
         c._wikiview = self
-        url_patterns = c.config.getData('wikiview-link-patterns')
-        self.urlpats = [re.compile(i, re.IGNORECASE) for i in url_patterns]
+        leadins, self.urlpats = self.parse_options()
+        assert len(leadins) == len(self.urlpats), (leadins, self.urlpats)
+        self.colorizer = c.frame.body.colorizer
+        if hasattr(self.colorizer, 'set_wikiview_patterns'):
+            self.colorizer.set_wikiview_patterns(leadins, self.urlpats)
         self.select = 'select3'  # Leo hook to hide text
         self.pts=0.1  # hidden text size
         self.pct=1  # hidden text letter spacing
@@ -128,16 +129,38 @@ class WikiView(object):
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
         self.hide(self.select, {'c': c})
+    #@+node:ekr.20170205071315.1: *3* parse_options
+    def parse_options(self):
+        '''Return leadins, patterns from @data wikiview-link-patterns'''
+        c = self.c
+        data = c.config.getData('wikiview-link-patterns')
+        leadins, patterns = [], []
+        for s in data:
+            if s.startswith('leadins:'):
+                leadins.append(s[len('leadins:'):].strip())
+            elif s.startswith('pattern:'):
+                patterns.append(s[len('patterns:'):].strip())
+            else:
+                g.trace('ignoring', repr(s))
+        if len(leadins) == len(patterns):
+            patterns = [re.compile(z, re.IGNORECASE) for z in patterns]
+            return leadins, patterns
+        else:
+            g.trace("'leadins' lines do not match 'patterns' lines")
+            return [], []
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
-        trace = False and not g.unitTesting
+        '''Hide all wikiview tags. Now done in the colorizer.'''
+        trace = True and not g.unitTesting
         trace_parts = False
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
         if trace: g.trace(g.callers())
+        self.colorizer.show_wiki_patterns = False
+            # At present, this is not used.
         w = c.frame.body.widget
-        curse = w.textCursor()
+        cursor = w.textCursor()
         s = w.toPlainText()
         for urlpat in self.urlpats:
             for m in urlpat.finditer(s):
@@ -149,43 +172,49 @@ class WikiView(object):
                             m.start(group_n+1),
                             m.end(group_n+1),
                             repr(m.group(group_n+1)))
-                    curse.setPosition(m.start(group_n+1))
-                    curse.setPosition(m.end(group_n+1), curse.KeepAnchor)
-                    cfmt = curse.charFormat()
-                    cfmt.setFontPointSize(self.pts)
-                    cfmt.setFontLetterSpacing(self.pct)
+                    cursor.setPosition(m.start(group_n+1))
+                    cursor.setPosition(m.end(group_n+1), cursor.KeepAnchor)
+                    cfmt = cursor.charFormat()
+                    if 1:
+                        cfmt.setFontPointSize(self.pts)
+                        cfmt.setFontLetterSpacing(self.pct)
                     # cfmt._is_hidden = True  # gets lost
-                    curse.setCharFormat(cfmt)
+                    cursor.setCharFormat(cfmt)
+                        # Triggers a recolor.
     #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
         trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.widget
-        curse = w.textCursor()
-        cfmt = curse.charFormat()
+        self.colorizer.show_wiki_patterns = False
+            # The colorizer will do the actual coloring.
+            # This code simply triggers the colorizer on the proper lines.
+        cursor = w.textCursor()
+        cfmt = cursor.charFormat()
         if cfmt.fontPointSize() == self.pts or all:
             if trace: g.trace()
             if all:
-                curse.setPosition(0)
-                curse.setPosition(len(w.toPlainText()), curse.KeepAnchor)
+                cursor.setPosition(0)
+                cursor.setPosition(len(w.toPlainText()), cursor.KeepAnchor)
             else:
-                end = curse.position()
+                end = cursor.position()
                 # move left to find left end of range
-                while curse.movePosition(curse.PreviousCharacter) and \
-                      curse.charFormat().fontPointSize() == self.pts:
+                while cursor.movePosition(cursor.PreviousCharacter) and \
+                      cursor.charFormat().fontPointSize() == self.pts:
                     pass
-                start = curse.position()
+                start = cursor.position()
                 # move right to find left end of range
-                curse.setPosition(end)
-                while curse.movePosition(curse.NextCharacter) and \
-                      curse.charFormat().fontPointSize() == self.pts:
+                cursor.setPosition(end)
+                while cursor.movePosition(cursor.NextCharacter) and \
+                      cursor.charFormat().fontPointSize() == self.pts:
                     pass
                 # select range and restore normal size
-                curse.setPosition(start, curse.KeepAnchor)
+                cursor.setPosition(start, cursor.KeepAnchor)
             # Common code.
             cfmt.setFontPointSize(self.size)
             cfmt.setFontLetterSpacing(100)
-            curse.setCharFormat(cfmt)
+            cursor.setCharFormat(cfmt)
+                # Triggers a recolor.
     #@-others
 #@-others
 #@-leo

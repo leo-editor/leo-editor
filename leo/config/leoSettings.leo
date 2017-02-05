@@ -12180,10 +12180,13 @@ else:
 # restructuredText pattern is not hidden
 
 # restructuredText `Visible text &lt;http://invisible.url/here&gt;`
-(`)\S+(\s*&lt;(https?|file)://\S+&gt;`_)
+
+leadins: `
+pattern: (`)\S+(\s*&lt;(https?|file)://\S+&gt;`_)
 
 # regular urls
-((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
+leadins: hf
+pattern: ((https?|file)://(\S+)?(--&gt;|[/#])(?=[.%/a-zA-Z0-9_]))
 </t>
 <t tx="tbrown.20141101105337.3">Should wikiview mode be active by default?</t>
 <t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications

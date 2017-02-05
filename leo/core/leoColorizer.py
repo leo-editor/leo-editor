@@ -220,6 +220,7 @@ class JEditColorizer(BaseColorizer):
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
         self.rulesDict = {}
+        self.show_wiki_patterns = True
         # self.defineAndExtendForthWords()
         self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
@@ -402,7 +403,7 @@ class JEditColorizer(BaseColorizer):
             ('p', self.match_url_p, True),
             ('t', self.match_url_t, True),
             ('w', self.match_url_w, True),
-            ('<', self.match_image, True), ###
+            ### ('<', self.match_image, True), ###
             ('<', self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
@@ -1037,7 +1038,7 @@ class JEditColorizer(BaseColorizer):
 
     def match_image(self, s, i):
         '''Matcher for <img...>'''
-        m = self.image_url.match(s[i:])
+        m = self.image_url.match(s,i) 
         if m:
             self.image_src = src = m.group(1)
             j = len(src)
@@ -1199,11 +1200,10 @@ class JEditColorizer(BaseColorizer):
         n = self.match_compiled_regexp_helper(s, i, regexp)
         if n > 0:
             j = i + n
-            assert(j - i == n)
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
-            return j - i
+            return n
         else:
             return 0
     #@+node:ekr.20110605121601.18610: *5* jedit.match_compiled_regexp_helper
@@ -1629,6 +1629,36 @@ class JEditColorizer(BaseColorizer):
             self.trace_match(kind, s, i, j2)
             return j2 - i
         else: return 0
+    #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
+    def match_wiki_pattern(self, s, i, pattern):
+        '''Show or hide a regex pattern managed by the wikiview plugin.'''
+        m = pattern.match(s,i)
+        # g.trace(i, repr(pattern), repr(s))
+        if m:
+            n = len(m.group(0))
+            return n
+            g.trace('==========',
+                'SHOW' if self.show_wiki_patterns else 'HIDE',
+                i, i+n, m.group(0))
+            if self.show_wiki_patterns:
+                self.colorRangeWithTag(s, i, i + n, 'url')
+            elif 1:
+                for i, group in enumerate(m.groups()):
+                    # g.trace(m.group(i+1))
+                    start, end = m.start(i+1), m.end(i+1)
+                    self.colorRangeWithTag(s, start, end, 'comment1')
+            else:
+                format = QtGui.QTextCharFormat()
+                format.setFontPointSize(0.1)
+                format.setFontLetterSpacing(1)
+                for i, group in enumerate(m.groups()):
+                    start, end = m.start(i+1), m.end(i+1)
+                    # g.trace('hide', group)
+                    self.highlighter.setFormat(start, end, format)
+            assert n == len(m.group(0))
+            return n
+        else:
+            return 0
     #@+node:ekr.20110605121601.18626: *4* jedit.match_word_and_regexp
     def match_word_and_regexp(self, s, i,
         kind1='', word='',
@@ -1795,11 +1825,11 @@ class JEditColorizer(BaseColorizer):
         '''Actually colorize the selected range.
 
         This is called whenever a pattern matcher succeed.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
             # A superb trace: enable this first to see what gets colored.
-        if tag == 'image':
-            g.trace('===== image', self.image_src)
-            return
+        # if tag == 'image':
+            # g.trace('===== image', self.image_src)
+            # return
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace: g.trace('not in color state')
@@ -1841,7 +1871,7 @@ class JEditColorizer(BaseColorizer):
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
-        if tag != 'url':
+        if False and tag != 'url': ####
             # Allow URL's *everywhere*.
             j = min(j, len(s))
             while i < j:
@@ -1891,6 +1921,7 @@ class JEditColorizer(BaseColorizer):
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
+        if trace: g.trace('==========', repr(s))
         if p.v != self.old_v:
             self.updateSyntaxColorer(p) # Force a full recolor
             assert self.language
@@ -1952,6 +1983,29 @@ class JEditColorizer(BaseColorizer):
             return name
         else:
             return 'no-language'
+    #@+node:ekr.20170205055743.1: *3* jedit.set_wikiview_patterns
+    def set_wikiview_patterns(self, leadins, patterns):
+        '''
+        Init the colorizer so it will *skip* all patterns.
+        The wikiview plugin calls this method.
+        '''
+        d = self.rulesDict
+        for leadins_list, pattern in zip(leadins, patterns):
+            # g.trace('%3s %s' % (leadins_list, pattern))
+            for ch in leadins_list:
+                
+                def wiki_rule(self, s, i, pattern=pattern):
+                    '''Bind pattern and leadin for jedit.match_wiki_pattern.'''
+                    return self.match_wiki_pattern(s, i, pattern)
+                
+                aList = d.get(ch, [])
+                if wiki_rule not in aList:
+                    aList.insert(0, wiki_rule)
+                    d [ch] = aList
+        self.rulesDict = d
+        # g.trace('===== f') ; g.printList(d.get('f'))
+        # g.trace('===== h') ; g.printList(d.get('h'))
+        # g.trace('===== `') ; g.printList(d.get('`'))
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
