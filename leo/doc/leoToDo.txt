@@ -3,6 +3,145 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20170128161249.1: ** Next projects
+@language rest
+@wrap
+
+Docs
+- Scripting docs: the less said the better.
+
+Bugs
+- elisp importer fails
+
+.leo.org files
+    - Study and use org-mode
+
+pyzo server
+.. @+node:ekr.20170128165109.1: *3* *** elisp importer fails
+Exception running Elisp_Importer
+Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 936, in scanner_for_ext_cb
+    return scanner.run(s, parent, prepass=prepass)
+  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 450, in run
+    self.generate_nodes(s, parent)
+  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 514, in generate_nodes
+    self.gen_lines(s, parent)
+  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 583, in gen_lines
+    tail_p = self.end_block(line, new_state, stack)
+  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 629, in end_block
+    self.cut_stack(new_state, stack)
+  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 606, in cut_stack
+    assert len(stack) > 1, stack # <
+AssertionError: [Target: Elisp_ScanState context: '' parens: 0 @others: 1 refs: 0 p: demo-it.el]
+imported C:/leo.repo/demo-it/demo-it.el
+.. @+node:ekr.20170125104430.1: ** From Jon N
+@language rest
+@wrap
+
+I do not think the 'use lossage()' key functions should be in the core, unless you know better...
+
+A few things:
+
+- depending on the actual size of the Body pane, there can be a small amount of 'micro-scrolling' as you move the cursor to the top/bottom of the pane. I think my other editor resizes the pane so as not to have partial text lines. The current behaviour seems liveable with, although I might be interested in learning how to 'fix' this.
+
+- I don't currently deal with any existing selected region. If this were to go into the core this would probably all be refactored, maybe using some of the existing helper functions
+
+- the doKey() function has to know about the key(s) that are calling it, "Home" or "End" in the lossage() list. How might I improve this?
+
+- I had some trouble calling the pre-existing editor commands, like c.editCommand.beginningOfBuffer() etc. Not 100% sure I am doing this correctly.
+
+- as per the comments I am currently assuming that lossage() has at least three entries. I'll fix this shortly.
+       
+Anyway, here's what I have. I am currently using two @command nodes
+    @command myCtrlHome @key=Ctrl+Home
+    @command myCtrlEnd @key=Ctrl+End
+with content like below (merged a bit from two nodes for 'clarity')
+.. @+node:ekr.20170125104502.1: *3* Declarations
+​
+from leo.core.leoQt import QtCore
+
+.. @+node:ekr.20170125104502.2: *3* cursorToEndOfPane
+def cursorToEndOfPane():
+    """ move the text cursor to the last character visible in the body pane
+    """
+    w = c.frame.body.widget
+    # get viewport of the body widget
+    vp = w.viewport()
+   
+    # get the coordinates of the bottom of the visible area
+    vWidth = vp.width() -1
+    vHeight = vp.height() -1
+    # g.es("width", vWidth, "height", vHeight)
+   
+    # create a QPoint from this
+    bottom_right = QtCore.QPoint(vWidth, vHeight)
+   
+    # get the (text)'position' within the widget of the bottom right QPoint
+    end_pos = w.cursorForPosition(bottom_right).position()
+   
+    # create a cursor and set it to this position
+    cursor = w.textCursor()
+    cursor.setPosition(end_pos)
+    # set the Leo cursor from this
+    w.setTextCursor(cursor)
+   
+    c.bodyWantsFocusNow()
+   
+.. @+node:ekr.20170125104502.3: *3* cursorToTopOfPane
+def cursorToTopOfPane():
+    """ move the text cursor to the first character visible in the body pane
+    """
+    w = c.frame.body.widget
+
+    # create a QPoint of the top of the widget (client area)
+    top_left = QtCore.QPoint(0, 0)
+   
+    # get the (text)'position' within the widget of the top left QPoint
+    start_pos = w.cursorForPosition(top_left).position()
+   
+    # create a cursor and set it to this position
+    cursor = w.textCursor()
+    cursor.setPosition(start_pos)
+    # set the Leo cursor from this
+    w.setTextCursor(cursor)
+   
+    c.bodyWantsFocusNow()
+
+# arrive here with 'Ctrl-Home' the first entry in lossage
+# XXX for now, assume we have pressed more than three keys...
+.. @+node:ekr.20170125104502.4: *3* doMyCtrlHomeKey
+def doMyCtrlHomeKey():
+    if g.app.lossage[1][1] == "Ctrl+Home":
+        if g.app.lossage[2][1] == "Ctrl+Home":
+            g.es("would move to top of buffer")
+            c.editCommands.beginningOfBuffer(None)
+        else:
+            g.es("would move to top of body")
+            cursorToTopOfPane()
+    else:
+        g.es("would move to beginning of line")
+        c.editCommands.beginningOfLine(None)
+
+doMyCtrlHomeKey()
+
+# arrive here with 'Ctrl-End' the first entry in lossage
+# XXX for now, assume we have pressed more than three keys...
+.. @+node:ekr.20170125104502.5: *3* doCtrlEndKey
+def doCtrlEndKey():
+    showLossage()
+    if g.app.lossage[1][1] == "Ctrl+End":
+        if g.app.lossage[2][1] == "Ctrl+End":
+            g.es("would move to end of buffer")
+            c.editCommands.endOfBuffer(None)
+        else:
+            g.es("would move to end of body pane")
+            cursorToEndOfPane()
+    else:
+        g.es("would move to end of line")
+        c.editCommands.endOfLine(None)
+
+
+doCtrlEndKey()
 .. @+node:ekr.20170122010350.1: ** Fossil videos & ideas
 ​Richard Hipp, Fossil and SQLite author, makes that distinction and about
 the "pile of files" database (like the .git folder) instead of the single
@@ -72,13 +211,13 @@ I would try something like this:
 - Problems with Alt-G: goto-global-line.
 
 - Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20111010162047.15678: ** ?? Imports should put @first/@last directives in root node
+.. @+node:ekr.20111010162047.15678: *3* ?? Imports should put @first/@last directives in root node
 Especially:
     - Shebang line.
     - Python encoding line.
     
 - @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *3* @@@nosent ../test/at-auto-at-first-test.py
+.. @+node:ekr.20111221102703.10289: *4* @@@nosent ../test/at-auto-at-first-test.py
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -91,8 +230,9 @@ def spam():
 @wrap
 
 * Rewrite scripting tutorial
-* Leo and Jupyter notebooks.
 * Mention viewrendered plugin in tutorials.
+
+* Leo and Jupyter notebooks.
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 

@@ -245,7 +245,7 @@ class AtButtonCallback(object):
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self, controller, b, c, buttonText, docstring, gnx, script):
-        '''Ctor for AtButtonCallback class.'''
+        '''AtButtonCallback.__init__.'''
         self.b = b
             # A QButton.
         self.buttonText = buttonText
@@ -264,9 +264,31 @@ class AtButtonCallback(object):
             # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event=None):
+        '''AtButtonCallbgack.__call__. The callback for @button nodes.'''
+        self.execute_script()
+    #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
+    def __repr__(self):
+        '''AtButtonCallback.__repr__.'''
+        c = self.c
+        return 'AtButtonCallback %s gnx: %s len(script) %s' % (
+            c.shortFileName(), self.gnx, len(self.script or ''))
+    #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
+    def __getattr__(self, attr):
+        '''AtButtonCallback.__getattr__. Implement __name__.'''
+        if attr == '__name__':
+            return 'AtButtonCallback: %s' % self.gnx
+        else:
+            return None
+    #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script
+    def execute_script(self):
         '''Execute the script associated with this button.'''
+        trace = False and not g.unitTesting
         c, gnx, script = self.c, self.gnx, self.script
-        # g.trace('(AtButtonCallback) %s len(script): %s' % (self.c.shortFileName(),len(self.script or '')))
+        if trace:
+            g.trace('%s len(script): %s' % (
+                self.c.shortFileName(),
+                len(self.script or ''),
+            ))
         if not script:
             # Find the node in c with the given gnx.
             for p in c.all_positions():
@@ -282,19 +304,6 @@ class AtButtonCallback(object):
                 p=None,
                 script=script,
             )
-    #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
-    def __repr__(self):
-        '''__repr__ for AtButtonCallback class.'''
-        c = self.c
-        return 'AtButtonCallback %s gnx: %s len(script) %s' % (
-            c.shortFileName(), self.gnx, len(self.script or ''))
-    #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
-    def __getattr__(self, attr):
-        '''Implement __name__.'''
-        if attr == '__name__':
-            return 'AtButtonCallback: %s' % self.gnx
-        else:
-            return None
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController(object):
@@ -460,7 +469,10 @@ class ScriptingController(object):
                         break
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
-    def createLocalAtButtonHelper(self, p, h, statusLine, kind='at-button', verbose=True):
+    def createLocalAtButtonHelper(self, p, h, statusLine,
+        kind='at-button',
+        verbose=True,
+    ):
         '''Create a button for a local @button node.'''
         c = self.c
         buttonText = self.cleanButtonText(h, minimal=True)
@@ -480,7 +492,7 @@ class ScriptingController(object):
             return None
         # Now that b is defined we can define the callback.
         # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
-        docstring = g.getDocString(p.b)
+        docstring = g.getDocString(p.b).strip()
         cb = AtButtonCallback(
             controller=self,
             b=b,
@@ -582,9 +594,12 @@ class ScriptingController(object):
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
         '''
+        trace = False and not g.unitTesting
+        if not gnx: g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
+                if trace: g.trace('Found', c.shortFileName(), p2.h)
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
@@ -592,13 +607,15 @@ class ScriptingController(object):
             if c2:
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
+                        if trace: g.trace('Found', c2.shortFileName(), p2.h)
                         return c2, p2
                 c2.close()
         # Fix bug 92: restore the previously selected tab.
+        if trace: g.trace('Not found', gnx)
         if g.app.qt_use_tabs:
             c.frame.top.leo_master.select(c)
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
-        return c, c.p
+        return None, None # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self):
@@ -619,11 +636,11 @@ class ScriptingController(object):
         tree. Binds button presses to a callback that executes the script.
         '''
         c = self.c
-        # g.trace('global @button',c.shortFileName(),p.h)
+        # g.trace('global @button', c.shortFileName(), p.gnx, p.h)
         gnx = p.gnx
         args = self.getArgs(p)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
-        docstring = g.getDocString(p.b)
+        docstring = g.getDocString(p.b).strip()
         statusLine = docstring or 'Global script button'
         shortcut = self.getShortcut(p.h)
             # Get the shortcut from the @key field in the headline.
@@ -649,7 +666,7 @@ class ScriptingController(object):
             c=c,
             buttonText=buttonText,
             docstring=docstring,
-            gnx=None, # Common buttons have static scripts.
+            gnx=gnx, # Fix #367: the gnx is needed for the Goto Script command.
             script=script,
         )
         # Now patch the button.
@@ -692,7 +709,7 @@ class ScriptingController(object):
         def commonCommandCallback(event=None, script=script):
             c.executeScript(args=args, script=script, silent=True)
 
-        commonCommandCallback.__doc__ = g.getDocString(script)
+        commonCommandCallback.__doc__ = g.getDocString(script).strip()
             # Bug fix: 2015/03/28.
         self.registerAllCommands(
             args=args,
@@ -717,7 +734,7 @@ class ScriptingController(object):
         trace = False and not g.app.unitTesting and not g.app.batchMode
         h = p.h
         shortcut = self.getShortcut(h)
-        docstring = g.getDocString(p.b)
+        docstring = g.getDocString(p.b).strip()
         statusLine = docstring if docstring else 'Local script button'
         if shortcut:
             statusLine = '%s = %s' % (statusLine, shortcut)
@@ -740,7 +757,7 @@ class ScriptingController(object):
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
         # Minibuffer commands created by mod_scripting.py have no docstrings
 
-        atCommandCallback.__doc__ = g.getDocString(p.b)
+        atCommandCallback.__doc__ = g.getDocString(p.b).strip()
         self.registerAllCommands(
             args=args,
             func=atCommandCallback,

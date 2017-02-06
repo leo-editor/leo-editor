@@ -177,7 +177,7 @@ class Export_IPYNB(object):
             type_ = p_key.b.strip()
         else:
             colorizer = self.c.frame.body.colorizer
-            language = colorizer.scanColorDirectives(p)
+            language = colorizer.scanLanguageDirectives(p)
             if language in ('rest', 'markdown', 'md'):
                 type_ = 'markdown'
             else:

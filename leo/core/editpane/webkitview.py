@@ -1,25 +1,24 @@
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit
 
-class LEP_PlainTextView(QtWidgets.QTextBrowser):
-    """LEP_PlainTextView - simplest possible LeoEditorPane viewer
+class LEP_WebKitView(QtWebKit.QWebView):
+    """LEP_WebKitView - Web Kit View
     """
-    lep_name = "Plain Text View"
+    lep_name = "Web Kit View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
+        QtWebKit.QWebView.__init__(self, *args, **kwargs)
         self.c = c
         self.lep = lep
-        self.setStyleSheet("* {background: #998; color: #222; }")
     def new_position(self, p):
         """new_position - update for new position
 
         :param Leo position p: new position
         """
         if self.lep.recurse:
-            self.setText(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
+            self.setHtml(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
         else:
-            self.setText(p.b)
+            self.setHtml(p.b)
     def update_position(self, p):
         """update_position - update for current position
 
@@ -30,3 +29,6 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.new_position(p)
         self.horizontalScrollBar().setValue(h)
         self.verticalScrollBar().setValue(v)
+
+from PyQt5 import QtWebEngineCore
+from PyQt5 import QtWebEngineWidgets

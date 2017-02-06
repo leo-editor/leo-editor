@@ -126,15 +126,6 @@ class QTextMixin(object):
             c.setChanged(True)
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
-        if 1: # This works, and is probably better.
-            # Set a hook for the old jEdit colorer.
-            colorer = c.frame.body.colorizer.highlighter.colorer
-            if colorer:
-                colorer.initFlag = True
-        else:
-            # Allow incremental recoloring.
-            c.incrementalRecolorFlag = True
-            c.outerUpdate()
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
@@ -959,7 +950,7 @@ class QScintillaWrapper(QTextMixin):
     - Add support for all scintilla lexers.
     '''
     #@+others
-    #@+node:ekr.20110605121601.18105: *3* qsciw.ctor & helpers
+    #@+node:ekr.20110605121601.18105: *3* qsciw.ctor
     def __init__(self, widget, c, name=None):
         '''Ctor for the QScintillaWrapper class.'''
         # g.trace('(QScintillaWrapper)',c.shortFileName(),name,g.callers())
@@ -974,7 +965,7 @@ class QScintillaWrapper(QTextMixin):
         self.set_config()
         # Set the signal.
         g.app.gui.setFilter(c, widget, self, tag=name)
-    #@+node:ekr.20110605121601.18106: *4* qsciw.set_config
+    #@+node:ekr.20110605121601.18106: *3* qsciw.set_config
     def set_config(self):
         '''Set QScintillaWrapper configuration options.'''
         c, w = self.c, self.widget
@@ -1153,7 +1144,10 @@ class QScintillaWrapper(QTextMixin):
         '''Set the text of a QScintilla widget.'''
         w = self.widget
         assert isinstance(w, Qsci.QsciScintilla), w
-        w.setText(g.toEncodedString(s))
+        if g.isPython3:
+            w.setText(s)
+        else:
+            w.setText(g.toEncodedString(s))
         # w.update()
     #@+node:ekr.20110605121601.18114: *4* qsciw.setInsertPoint
     def setInsertPoint(self, i, s=None):
@@ -1264,18 +1258,13 @@ class QTextEditWrapper(QTextMixin):
     def delete(self, i, j=None):
         '''QTextEditWrapper.'''
         trace = False and not g.unitTesting
-        c, w = self.c, self.widget
-        colorer = c.frame.body.colorizer.highlighter.colorer
-        # n = colorer.recolorCount
+        w = self.widget
         if trace: g.trace(self.getSelectionRange())
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
         j = self.toPythonIndex(j)
         if i > j: i, j = j, i
         if trace: g.trace(i, j)
-        # Set a hook for the colorer.
-        if colorer:
-            colorer.initFlag = True
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -1301,7 +1290,6 @@ class QTextEditWrapper(QTextMixin):
         finally:
             self.changingText = False
         sb.setSliderPosition(pos)
-        # g.trace('%s calls to recolor' % (colorer.recolorCount-n))
     #@+node:ekr.20110605121601.18080: *4* qtew.flashCharacter
     def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75):
         '''QTextEditWrapper.'''
@@ -1392,18 +1380,13 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
     def insert(self, i, s):
         '''QTextEditWrapper.'''
-        c, w = self.c, self.widget
-        colorer = c.frame.body.colorizer.highlighter.colorer
-        # n = colorer.recolorCount
-        # Set a hook for the colorer.
-        if colorer:
-            colorer.initFlag = True
+        w = self.widget
         i = self.toPythonIndex(i)
         cursor = w.textCursor()
         try:
             self.changingText = True # Disable onTextChanged.
             cursor.setPosition(i)
-            cursor.insertText(s) # This cause an incremental call to recolor.
+            cursor.insertText(s)
             w.setTextCursor(cursor) # Bug fix: 2010/01/27
         finally:
             self.changingText = False
@@ -1539,19 +1522,10 @@ class QTextEditWrapper(QTextMixin):
         c, w = self.c, self.widget
         h = c.p and c.p.h or '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
-        colorizer = c.frame.body.colorizer
-        highlighter = colorizer.highlighter
-        # Be careful: Scintilla doesn't have a colorer.
-        colorer = highlighter and highlighter.colorer
-        if colorer:
-            colorer.initFlag = True
         try:
             if trace and trace_time:
                 t1 = time.time()
             self.changingText = True # Disable onTextChanged.
-            if colorer:
-                colorizer.changingText = True # Disable colorizer.
-            # g.trace('read/write text')
             w.setReadOnly(False)
             w.setPlainText(s)
             if trace and trace_time:
@@ -1559,7 +1533,6 @@ class QTextEditWrapper(QTextMixin):
                 g.trace('%4.2f sec. %6s chars %s' % (delta_t, len(s), h))
         finally:
             self.changingText = False
-            colorizer.changingText = False
     #@+node:ekr.20110605121601.18095: *4* qtew.setInsertPoint
     def setInsertPoint(self, i, s=None):
         # Fix bug 981849: incorrect body content shown.

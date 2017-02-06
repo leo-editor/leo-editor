@@ -5811,6 +5811,7 @@ def os_path_expandExpression(s, **keys):
     if not s:
         if trace: g.trace('no s')
         return ''
+    s = g.toUnicode(s) # 2017/02/02: # Attempt a fix for #343:
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
@@ -5820,7 +5821,9 @@ def os_path_expandExpression(s, **keys):
                 p = c.p
                 d = {'c': c, 'g': g, 'p': p, 'os': os, 'sys': sys,}
                 val = eval(exp, d)
-                s = s[: i] + str(val) + s[j + 2:]
+                # 2017/02/02: # Attempt a fix for #343:
+                val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
+                s = s[: i] + val + s[j + 2:]
                 if trace: g.trace('returns', s)
             except Exception:
                 g.trace(g.callers())

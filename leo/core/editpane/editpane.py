@@ -3,6 +3,38 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 from leo.core.editpane import plaintextedit
 from leo.core.editpane import plaintextview
+MODULES = [
+    plaintextedit,
+    plaintextview,
+]
+AVAIL_EDITORS = [
+    plaintextedit.LEP_PlainTextEdit,
+]
+AVAIL_VIEWERS = [
+    plaintextview.LEP_PlainTextView,
+]
+
+try:
+    from leo.core.editpane import vanillascintilla
+    MODULES.append(vanillascintilla)
+    AVAIL_EDITORS.append(vanillascintilla.LEP_VanillaScintilla)
+except:
+    pass
+
+try:
+    from leo.core.editpane import webkitview
+    MODULES.append(webengineview)
+    AVAIL_VIEWERS.append(webkitview.LEP_WebKitView)
+except:
+    pass
+
+try:
+    from leo.core.editpane import webengineview
+    MODULES.append(webengineview)
+    AVAIL_VIEWERS.append(webengineview.LEP_WebEngineView)
+except:
+    raise
+    pass
 
 if g.isPython3:
     from importlib import reload
@@ -16,27 +48,21 @@ class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=False,
+                 update=True, recurse=False, *args, **kwargs):
         """__init__ - bind to outline
 
         :param outline c: outline to bind to
         """
         DBG("__init__ LEP")
-        self.c = kwargs['c']
+        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+
+        self.c = c
         if not hasattr(self.c, '_LEPs'):
             self.c._LEPs = []
         self.c._LEPs.append(self)
-        p = kwargs.get('p', self.c.p)
-        self.mode = kwargs.get('mode', 'edit')
-        show_head = kwargs.get('show_head', True)
-        show_control = kwargs.get('show_control', True)
-        recurse = kwargs.get('recurse', False)
-        update = kwargs.get('update', True)
-        for arg in 'c', 'p', 'show_head', 'show_control', 'mode', 'recurse', 'update':
-            if arg in kwargs:
-                del kwargs[arg]
-
-        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        p = p or self.c.p
+        self.mode = mode
 
         self.gnx = p.gnx
 
@@ -59,16 +85,15 @@ class LeoEditPane(QtWidgets.QWidget):
         self.recurse = self.cb_recurse.isChecked()
         self.goto    = self.cb_goto.isChecked()
 
-        reload(plaintextedit)
-        reload(plaintextview)
-        self.edit_widget = plaintextedit.LEP_PlainTextEdit(lep=self, c=self.c)
-        self.view_widget = plaintextview.LEP_PlainTextView(lep=self, c=self.c)
-        self.edit_frame.layout().addWidget(self.edit_widget)
-        self.view_frame.layout().addWidget(self.view_widget)
+        # for development
+        for module in MODULES:
+            reload(module)
+
+        self.set_edit_widget()
+        self.set_view_widget()
 
         self.set_mode(self.mode)
-        self.new_position(p)
-    def _add_checkbox(self, text, state_changed, tooltip, checked=True, 
+    def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
         _add_checkbox - helper to add a checkbox
@@ -169,7 +194,6 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("before select")
 
         return None
-
     def _find_gnx_node(self, gnx):
         '''Return the first position having the given gnx.'''
         if self.c.p.gnx == gnx:
@@ -209,7 +233,7 @@ class LeoEditPane(QtWidgets.QWidget):
             "Make the tree go to this node"+txt)
         self.cb_update = self._add_checkbox("Update", self.change_update,
             "Update view to match changed node"+txt)
-        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse, 
+        self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
             "Recursive view"+txt, checked=recurse)
         # mode menu
         btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
@@ -221,8 +245,14 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.mode_menu())
 
         # misc. menu
-        self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
-        self.control.layout().addWidget(self.control_menu_button)
+        btn = self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
+        self.control.layout().addWidget(btn)
+        btn.setContextMenuPolicy(QtConst.CustomContextMenu)
+        btn.customContextMenuRequested.connect(  # right click
+            lambda pnt: self.misc_menu())
+        btn.clicked.connect(  # or left click
+            lambda checked: self.misc_menu())
+
         # padding
         self.control.layout().addItem(
             QtWidgets.QSpacerItem(0, 0, hPolicy=QtWidgets.QSizePolicy.Expanding))
@@ -235,12 +265,6 @@ class LeoEditPane(QtWidgets.QWidget):
         self.splitter.addWidget(self.edit_frame)
         self.view_frame = self._add_frame()
         self.splitter.addWidget(self.view_frame)
-
-        #X if self.mode not in ('edit', 'split'):
-        #X     self.edit_frame.hide()
-        #X else:  # avoid hiding both parts
-        #X     if self.mode not in ('view', 'split'):
-        #X         self.view_frame.hide()
 
         self.show()
 
@@ -290,6 +314,24 @@ class LeoEditPane(QtWidgets.QWidget):
         p = self.get_position()
         if p and p != self.c.p:
             self.c.selectPosition(p)
+    def misc_menu(self):
+        """build menu on Action button"""
+
+        named_widgets = [
+            ("Editor", AVAIL_EDITORS, self.set_edit_widget),
+            ("Viewer", AVAIL_VIEWERS, self.set_view_widget),
+        ]
+
+        menu = QtWidgets.QMenu()
+        for name, widget_classes, setter in named_widgets:
+            for widget_class in widget_classes:
+                def cb(checked, widget_class=widget_class, setter=setter):
+                    setter(widget_class)
+                act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+        menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
+
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
@@ -338,13 +380,18 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.mode != 'edit':
             self.view_widget.new_position(p)
 
-    def text_changed(self):
+    def text_changed(self, new_text):
         """text_changed - node text changed by this LEP's editor"""
+
+        # Update p.b
+        p = self.get_position()
+        p.b = new_text
+
         for lep in self.c._LEPs:
             if lep == self:
                 if self.update and self.mode != 'edit':
                     # don't update the edit part, could be infinite loop
-                    self.update_position_view(lep.get_position())
+                    self.update_position_view(p)
             else:
                 lep.update_position(lep.get_position())
     def update_position(self, p):
@@ -387,6 +434,33 @@ class LeoEditPane(QtWidgets.QWidget):
         pass
 
 
+    def set_edit_widget(self, widget_class=None):
+        """set_edit_widget -
+
+        :param QWidget widget: widget to use
+        """
+
+        if widget_class is None:
+            widget_class = AVAIL_EDITORS[0]
+        self.edit_widget = widget_class(self.c, self)
+        for i in reversed(range(self.edit_frame.layout().count())):
+            self.edit_frame.layout().itemAt(i).widget().setParent(None)
+        self.edit_frame.layout().addWidget(self.edit_widget)
+        self.new_position_edit(self.get_position())
+
+    def set_view_widget(self, widget_class=None):
+        """set_view_widget -
+
+        :param QWidget widget: widget to use
+        """
+
+        if widget_class is None:
+            widget_class = AVAIL_VIEWERS[0]
+        self.view_widget = widget_class(self.c, self)
+        for i in reversed(range(self.view_frame.layout().count())):
+            self.view_frame.layout().itemAt(i).widget().setParent(None)
+        self.view_frame.layout().addWidget(self.view_widget)
+        self.new_position_view(self.get_position())
     def set_mode(self, mode):
         """set_mode - change mode edit / view / split
 
