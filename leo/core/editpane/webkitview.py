@@ -1,7 +1,6 @@
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit
-
-class LEP_WebKitView(QtWebKit.QWebView):
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit, QtWebKitWidgets
+class LEP_WebKitView(QtWebKitWidgets.QWebView):
     """LEP_WebKitView - Web Kit View
     """
     lep_type = "HTML"
@@ -25,11 +24,4 @@ class LEP_WebKitView(QtWebKit.QWebView):
 
         :param Leo position p: current position
         """
-        h = self.horizontalScrollBar().value()
-        v = self.verticalScrollBar().value()
         self.new_position(p)
-        self.horizontalScrollBar().setValue(h)
-        self.verticalScrollBar().setValue(v)
-
-from PyQt5 import QtWebEngineCore
-from PyQt5 import QtWebEngineWidgets
