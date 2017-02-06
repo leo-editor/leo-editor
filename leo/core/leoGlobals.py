@@ -5725,6 +5725,13 @@ def init_zodb(pathToZodbStorage, verbose=True):
             g.es_exception()
         init_zodb_failed[pathToZodbStorage] = True
         return None
+#@+node:ekr.20170206080908.1: *3* g.input_
+def input_(message=''):
+    '''Safely execute python's input statement.'''
+    # pylint: disable=no-member
+    from leo.core.leoQt import QtCore
+    QtCore.pyqtRemoveInputHook()
+    return input(message)
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'
