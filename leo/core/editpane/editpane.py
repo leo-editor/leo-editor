@@ -1,45 +1,17 @@
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-
-if g.isPython3:
-    from importlib import reload
-
-from leo.core.editpane import plaintextedit
-from leo.core.editpane import plaintextview
-MODULES = [
-    plaintextedit,
-    plaintextview,
-]
-
-try:
-    from leo.core.editpane import vanillascintilla
-    MODULES.append(vanillascintilla)
-except ImportError:
-    pass
-
-try:
-    from leo.core.editpane import webkitview
-    MODULES.append(webkitview)
-except ImportError:
-    pass
-
-try:
-    from leo.core.editpane import webengineview
-    MODULES.append(webengineview)
-except ImportError:
-    pass
-
-WIDGETS = []
-for module in MODULES:
-    for key in dir(module):
-        if hasattr(getattr(module, key), 'lep_type'):
-            WIDGETS.append(getattr(module, key))
 def DBG(text):
     """DBG - temporary debugging function
 
     :param str text: text to print
     """
     print("LEP: %s" % text)
+import imp
+import os
+
+import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+
+if g.isPython3:
+    from importlib import reload
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
@@ -62,6 +34,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.gnx = p.gnx
 
+        self.load_modules()
+
         self._build_layout(
             show_head=show_head,
             show_control=show_control,
@@ -73,19 +47,6 @@ class LeoEditPane(QtWidgets.QWidget):
         self.update  = self.cb_update.isChecked()
         self.recurse = self.cb_recurse.isChecked()
         self.goto    = self.cb_goto.isChecked()
-
-        # for development
-        for module in MODULES:
-            # doing this:
-            reload(module)
-            # without doing this:
-            WIDGETS[:] = []
-            for module in MODULES:
-                for key in dir(module):
-                    if hasattr(getattr(module, key), 'lep_type'):
-                        WIDGETS.append(getattr(module, key))
-            # breaks inheritance, even on the first run.  Makes sense.
-
 
         self.set_widget(lep_type='EDITOR')
         self.set_widget(lep_type='TEXT')
@@ -320,24 +281,52 @@ class LeoEditPane(QtWidgets.QWidget):
         p = self.get_position()
         if p and p != self.c.p:
             self.c.selectPosition(p)
+    def load_modules(self):
+        """load_modules - load modules to find widgets
+        """
+
+        module_dir = os.path.dirname(__file__)
+        names = [os.path.splitext(i) for i in os.listdir(module_dir)
+                 if os.path.isfile(os.path.join(module_dir, i))]
+        modules = []
+        print names
+        print os.listdir(module_dir)
+        for name in [i[0] for i in names if i[1].lower() == '.py']:
+            print(name)
+            find = imp.find_module(name, [module_dir])
+            try:
+                modules.append(imp.load_module(name, *find))
+            except ImportError:
+                pass
+        
+        self.modules = []
+        self.widget_classes = []
+        for module in modules:
+            for key in dir(module):
+                if hasattr(getattr(module, key), 'lep_type'):
+                    if module not in self.modules:
+                        self.modules.append(module)
+                    self.widget_classes.append(getattr(module, key))
+                    
     def misc_menu(self):
         """build menu on Action button"""
 
         edit_view = [
-            ("Editor", lambda x: x.lep_type == 'EDITOR'),
-            ("Viewer", lambda x: x.lep_type != 'EDITOR'),
+            ("Editor", lambda x: x.lep_type == 'EDITOR', self.edit_widget.__class__),
+            ("Viewer", lambda x: x.lep_type != 'EDITOR', self.view_widget.__class__),
         ]
 
         menu = QtWidgets.QMenu()
-        for name, is_one in edit_view:
-            for widget_class in [i for i in WIDGETS if is_one(i)]:
+        for name, is_one, current in edit_view:
+            for widget_class in [i for i in self.widget_classes if is_one(i)]:
                 def cb(checked, widget_class=widget_class):
                     self.set_widget(widget_class=widget_class)
-                act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
+                current_txt = " (current)" if widget_class == current else ""
+                act = QtWidgets.QAction("%s: %s%s" % (
+                    name, widget_class.lep_name, current_txt), self)
                 act.triggered.connect(cb)
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
-
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
@@ -447,7 +436,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         if widget_class is None:
-            widget_class = [i for i in WIDGETS if i.lep_type == lep_type][0]
+            widget_class = [i for i in self.widget_classes if i.lep_type == lep_type][0]
         if hasattr(widget_class, 'lep_type') and widget_class.lep_type == 'EDITOR':
             frame = self.edit_frame
             attr = 'edit_widget'
