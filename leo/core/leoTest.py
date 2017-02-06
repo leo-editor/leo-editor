@@ -432,7 +432,7 @@ class LinterTable():
     def get_files_for_scope(self, scope, fn):
         '''Return a list of absolute filenames for external linters.'''
         d = {
-            'all':      [self.core, self.commands, self.external, self.plugins, self.modes],
+            'all':      [self.core, self.commands, self.external, self.plugins], #  self.modes
             'commands': [self.commands],
             'core':     [self.core, self.commands, self.external, self.gui_plugins],
             'external': [self.external],
