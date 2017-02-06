@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1270,23 +1270,57 @@
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
 <v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
 <v t="ekr.20170124034150.1"><vh>Greatly improved javascript and perl importers</vh></v>
+<v t="ekr.20170205185641.2"><vh>Optionally colorize doc parts using rST</vh></v>
 <v t="ekr.20170124014606.1"><vh>#371: execute-script supports multiple @languages direcitves</vh></v>
 <v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
 <v t="ekr.20170123084609.26"><vh>#328: The pylint command now runs in the background</vh></v>
 <v t="ekr.20170124024347.1"><vh>#311: Simplified Leo's argument logic</vh></v>
 </v>
 <v t="ekr.20170123084609.8"><vh>Bugs</vh>
+<v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
+<v t="ekr.20170123084609.14"><vh>#325 Simplify the organization of commands</vh></v>
+<v t="ekr.20170123084609.17"><vh>#348 (CDATA errors)</vh></v>
+<v t="ekr.20170205185641.4"><vh>#367: goto-script problems</vh></v>
+<v t="ekr.20170205185641.5"><vh>#371: support multiple languages in scripts</vh></v>
+<v t="ekr.20170124015707.1"><vh>#374: Leo can confuse directives with decorators</vh></v>
+<v t="ekr.20170205185641.6"><vh>#375: improve jedit.setTag</vh></v>
+<v t="ekr.20170205185641.7"><vh>#380: New colorizer doesn't update properly...</vh></v>
+<v t="ekr.20170205185641.8"><vh>#387: New file is marked as changed</vh></v>
+<v t="ekr.20170205185641.9"><vh>#388: wikiview plugin</vh></v>
+<v t="ekr.20170205185641.10"><vh>#389: syntax coloring changes</vh></v>
+<v t="ekr.20170205190147.1"><vh>#392: @auto-rst file.txt: -rst ignored on read</vh></v>
+<v t="ekr.20170205185641.11"><vh>#395: beautify-node can hang</vh></v>
+<v t="ekr.20170205185641.12"><vh>#396: Show images in Leo's body pane </vh>
+<v t="ekr.20170205185641.13"><vh>changed/new</vh>
+<v t="ekr.20170205185641.14"><vh>jedit.addLeoRules</vh></v>
+<v t="ekr.20170205185641.15"><vh>jedit.colorRangeWithTag</vh></v>
+</v>
+<v t="ekr.20170205185641.16"><vh>Test inserting picture (new)</vh></v>
+<v t="ekr.20170205185641.17"><vh>test3 insert an image</vh></v>
+<v t="ekr.20170205185641.18"><vh>clear g.app.permanentScriptDict </vh></v>
+<v t="ekr.20170205185641.19"><vh>@button show-images</vh></v>
+<v t="ekr.20170205185641.20"><vh>test2 insert an image</vh></v>
+<v t="ekr.20170205185641.21"><vh>LeoTree.select &amp; helpers</vh>
+<v t="ekr.20170205185641.22"><vh>selectHelper (LeoTree) &amp; helpers</vh>
+<v t="ekr.20170205185641.23"><vh>LeoTree.is_qt_body (not used)</vh></v>
+<v t="ekr.20170205185641.24"><vh>1. LeoTree.unselect_helper &amp; helper</vh></v>
+<v t="ekr.20170205185641.25"><vh>2. LeoTree.select_new_node &amp; helper</vh>
+<v t="ekr.20170205185641.26"><vh>LeoTree.set_body_text_after_select</vh></v>
+</v>
+<v t="ekr.20170205185641.27"><vh>3. LeoTree.change_current_position</vh></v>
+<v t="ekr.20170205185641.28"><vh>4. LeoTree.scroll_cursor</vh></v>
+<v t="ekr.20170205185641.29"><vh>5. LeoTree.set_status_line</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh>
 <v t="ekr.20170123084609.10"><vh>doPlainChar</vh></v>
 </v>
-<v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
 <v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
-<v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
-<v t="ekr.20170123084609.14"><vh>Completed #325 Simplify the organization of commands</vh></v>
-<v t="ekr.20170123084609.15"><vh>Fixed crasher in ac.insert_string</vh></v>
-<v t="ekr.20170123084609.16"><vh>crash in autocomplete (with backspace key?)</vh></v>
-<v t="ekr.20170123084609.17"><vh>Fixed #348 (CDATA errors)</vh></v>
-<v t="ekr.20170124015707.1"><vh>Fixed #374: Leo can confuse directives with decorators</vh></v>
+<v t="ekr.20170123084609.15"><vh>Fixed crash in ac.insert_string</vh></v>
+<v t="ekr.20170123084609.16"><vh>Fixed crash in autocomplete (with backspace key?)</vh></v>
+<v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
 </v>
 <v t="ekr.20170123084609.18"><vh>Code</vh>
 <v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
@@ -19247,7 +19281,7 @@ print("table = (\n    %s\n)" % '\n    '.join(table))
 <t tx="ekr.20170123084609.7">Make an @test node for the importer whose name is given.
 </t>
 <t tx="ekr.20170123084609.8"></t>
-<t tx="ekr.20170123084609.9"># A recent in doPlainChar change to handle #14 ruined bracket matching.
+<t tx="ekr.20170123084609.9">A recent in doPlainChar change to handle #14 ruined bracket matching.
 </t>
 <t tx="ekr.20170123084701.1">As a result, the horrible big text hack is no longer needed.
 </t>
@@ -19727,7 +19761,468 @@ Each of the above examples could just gloss over the internal architecture, (but
 
 This would give new users exposure to the editor itself without confusing nomenclature that does not make much sense, except to experienced users (or developers) of the tool.</t>
 <t tx="ekr.20170203060541.1"></t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170205185641.10">https://github.com/leo-editor/leo-editor/issues/389
+
+See the checkin log for details.
+</t>
+<t tx="ekr.20170205185641.11">https://github.com/leo-editor/leo-editor/issues/395</t>
+<t tx="ekr.20170205185641.12">https://github.com/leo-editor/leo-editor/issues/396
+
+http://stackoverflow.com/questions/3254652/
+several-ways-of-placing-an-image-in-a-qtextedit</t>
+<t tx="ekr.20170205185641.13"></t>
+<t tx="ekr.20170205185641.14">def addLeoRules(self, theDict):
+    '''Put Leo-specific rules to theList.'''
+    # pylint: disable=no-member
+    # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
+    table = (
+        # Rules added at front are added in **reverse** order.
+        ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
+            # Debatable: Leo keywords override langauge keywords.
+        ('@', self.match_at_color, True),
+        ('@', self.match_at_killcolor, True),
+        ('@', self.match_at_language, True), # 2011/01/17
+        ('@', self.match_at_nocolor, True),
+        ('@', self.match_at_nocolor_node, True),
+        ('@', self.match_at_wrap, True), # 2015/06/22
+        ('@', self.match_doc_part, True),
+        ('f', self.match_url_f, True),
+        ('g', self.match_url_g, True),
+        ('h', self.match_url_h, True),
+        ('m', self.match_url_m, True),
+        ('n', self.match_url_n, True),
+        ('p', self.match_url_p, True),
+        ('t', self.match_url_t, True),
+        ('w', self.match_url_w, True),
+        ### ('&lt;', self.match_image, True),
+        ('&lt;', self.match_section_ref, True), # Called **first**.
+        # Rules added at back are added in normal order.
+        (' ', self.match_blanks, False),
+        ('\t', self.match_tabs, False),
+    )
+    for ch, rule, atFront, in table:
+        # Replace the bound method by an unbound method.
+        if g.isPython3:
+            rule = rule.__func__
+        else:
+            rule = rule.im_func
+        # g.trace(rule)
+        theList = theDict.get(ch, [])
+        if rule not in theList:
+            if atFront:
+                theList.insert(0, rule)
+            else:
+                theList.append(rule)
+            theDict[ch] = theList
+    # g.trace(g.listToString(theDict.get('@')))
+</t>
+<t tx="ekr.20170205185641.15">def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
+    '''Actually colorize the selected range.
+
+    This is called whenever a pattern matcher succeed.'''
+    trace = False and not g.unitTesting
+        # A superb trace: enable this first to see what gets colored.
+    if not self.inColorState():
+        # Do *not* check x.flag here. It won't work.
+        if trace: g.trace('not in color state')
+        return
+    if delegate:
+        if trace:
+            if len(repr(s[i: j])) &lt;= 20:
+                s2 = repr(s[i: j])
+            else:
+                s2 = repr(s[i: i + 17 - 2] + '...')
+            g.trace('%25s %3s %3s %-20s %s' % (
+                ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
+        self.modeStack.append(self.modeBunch)
+        self.init_mode(delegate)
+        while 0 &lt;= i &lt; j and i &lt; len(s):
+            progress = i
+            assert j &gt;= 0, j
+            for f in self.rulesDict.get(s[i], []):
+                n = f(self, s, i)
+                if n is None:
+                    g.trace('Can not happen: delegate matcher returns None')
+                elif n &gt; 0:
+                    # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                    i += n; break
+            else:
+                # Use the default chars for everything else.
+                # Use the *delegate's* default characters if possible.
+                default_tag = self.attributesDict.get('default')
+                self.setTag(default_tag or tag, s, i, i + 1)
+                i += 1
+            assert i &gt; progress
+        bunch = self.modeStack.pop()
+        self.initModeFromBunch(bunch)
+    elif not exclude_match:
+        if trace:
+            s2 = repr(s[i: j]) if len(repr(s[i: j])) &lt;= 20 else repr(s[i: i + 17 - 2] + '...')
+            g.trace('%25s %3s %3s %-20s %s' % (
+                ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
+        self.setTag(tag, s, i, j)
+    # if False and tag != 'url':
+        # # Allow URL's *everywhere*.
+        # j = min(j, len(s))
+        # while i &lt; j:
+            # if s[i].lower() in 'fh': # file|ftp|http|https
+                # n = self.match_any_url(s, i)
+                # i += max(1, n)
+            # else:
+                # i += 1
+</t>
+<t tx="ekr.20170205185641.16"># https://github.com/leo-editor/leo-editor/issues/396
+g.cls()
+images = [i for i in range(len(p.b)) if ord(p.b[i]) &gt; 128]
+if images:
+    print('images at', images)
+else:
+    table = (
+        'application-x-leo-outline.png',
+        'LeoDoc.ico',
+    )    
+    for image in table:
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+        assert g.os_path_exists(path), repr(path)
+        c.frame.body.wrapper.setInsertPoint(len(p.b))
+        if 0:
+            format = QtGui.QTextImageFormat()
+            format.setName(path)
+            cursor = cursor = body.widget.textCursor()
+            cursor.insertImage(format)
+        c.frame.body.widget.insertHtml('&lt;img src="%s"&gt;' % path)
+            # style="width:40px;height:80px;"
+    for i, ch in enumerate(p.b):
+        if ord(ch) &gt; 128: print('new', i, ord(ch))
+#
+#￼￼</t>
+<t tx="ekr.20170205185641.17">g.cls()
+from leo.core.leoQt import QtGui
+body = c.frame.body
+table = ('box01.bmp','box02.bmp','box03.bmp',)
+d = g.app.permanentScriptDict
+images = d.get('images', [])
+for image in table:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+    assert g.os_path_exists(path), repr(path)
+    image = QtGui.QImage(path)
+    images.append(image)
+    body.wrapper.setInsertPoint(len(p.b))
+    cursor = body.widget.textCursor()
+    cursor.insertImage(image)
+for i, ch in enumerate(p.b):
+    if ord(ch) &gt; 128: print('new', i, ord(ch))
+d ['images'] = images
+#
+#</t>
+<t tx="ekr.20170205185641.18">g.printDict(g.app.permanentScriptDict)
+g.app.permanentScriptDict = {}</t>
+<t tx="ekr.20170205185641.19">from leo.core.leoQt import QtCore
+d = g.app.permanentScriptDict
+name_index = d.get('name_index', 0)
+names = ['leo_image%s' % (i) for i in range(name_index)]
+# print('image names', names)
+widget = c.frame.body.widget
+doc = widget.document()
+for i, name in enumerate(names):
+    image = doc.resource(doc.ImageResource, QtCore.QUrl(name))
+    print(name, image)
+</t>
+<t tx="ekr.20170205185641.2">New in Leo 5.5: optionally colorize doc parts using reStructuredText
+
+Added @bool color-doc-parts-as-rest
+
+The only changes were to match_doc_part and its restarter.
+</t>
+<t tx="ekr.20170205185641.20">g.cls()
+from leo.core.leoQt import QtGui
+body = c.frame.body
+table = (
+    'application-x-leo-outline.png',
+    'LeoDoc.ico',
+)
+g.app.permanentScriptDict = {}
+d = g.app.permanentScriptDict
+images = d.get('images', [])
+cursors = d.get('cursors', [])
+name_index = d.get('name_index', 0)
+for image in table:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+    assert g.os_path_exists(path), repr(path)
+    image = QtGui.QImage(path)
+    print(image.format().name())
+    images.append(image)
+    body.wrapper.setInsertPoint(len(p.b))
+    cursor = body.widget.textCursor()
+    #name = 'leo_image%s' % name_index
+    #name_index += 1
+    cursor.insertImage(image) ### , name)
+    cursors.append(cursor)
+for i, ch in enumerate(p.b):
+    if ord(ch) &gt; 128: print('new', i, ord(ch))
+d ['images'] = images
+d ['cursors'] = cursors
+d ['name_index'] = name_index
+g.app.permanentScriptDict = d
+g.printDict(d)
+#
+#￼￼￼
+#￼</t>
+<t tx="ekr.20170205185641.21">tree_select_lockout = False
+
+def select(self, p, scroll=True):
+    '''
+    Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by the gui to suppress scrolling while dragging.
+    '''
+    if g.app.killed or self.tree_select_lockout:
+        return None
+    traceTime = False and not g.unitTesting
+    if traceTime:
+        t1 = time.time()
+    try:
+        c = self.c; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p, old_p)
+        val = self.selectHelper(p, scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p, old_p)
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:outer', delta_t))
+    return val # Don't put a return in a finally clause.
+</t>
+<t tx="ekr.20170205185641.22">def selectHelper(self, p, scroll):
+    '''
+    A helper function for leoTree.select.
+    Do **not** "optimize" this by returning if p==c.p!
+    '''
+    traceTime = False and not g.unitTesting
+    if traceTime:
+        t1 = time.time()
+    if not p:
+        # This is not an error! We may be changing roots.
+        # Do *not* test c.positionExists(p) here!
+        
+        return
+    c = self.c
+    if not c.frame.body.wrapper:
+        return # Defensive.
+    assert p.v.context == c
+        # Selecting a foreign position will not be pretty.
+    old_p = c.p
+    call_event_handlers = p != old_p
+    # Order is important...
+    self.unselect_helper(old_p, p, traceTime)
+    self.select_new_node(old_p, p, traceTime)
+    self.change_current_position(old_p, p, traceTime)
+    self.scroll_cursor(p, traceTime)
+    self.set_status_line(p, traceTime)
+    if call_event_handlers:
+        g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:total', delta_t))
+</t>
+<t tx="ekr.20170205185641.23">if 0:
+
+    def is_qt_body(self):
+        '''Return True if the body widget is a QTextEdit.'''
+        c = self.c
+        import leo.plugins.qt_text as qt_text
+        w = c.frame.body.wrapper.widget
+        val = isinstance(w, qt_text.LeoQTextBrowser)
+            # c.frame.body.wrapper.widget is a LeoQTextBrowser.
+            # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+        # if not val: g.trace(val,w,g.callers())
+        return val
+</t>
+<t tx="ekr.20170205185641.24">def unselect_helper(self, old_p, p, traceTime):
+    '''Unselect the old node, calling the unselect hooks.'''
+    trace = False and not g.unitTesting
+    if traceTime:
+        t1 = time.time()
+    c = self.c
+    call_event_handlers = p != old_p
+    if call_event_handlers:
+        unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    else:
+        unselect = True
+    if unselect and old_p != p:
+        if trace: g.trace(p.h)
+        # Actually unselect the old node.
+        self.endEditLabel() # sets editPosition = None
+    if call_event_handlers:
+        g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
+</t>
+<t tx="ekr.20170205185641.25">def select_new_node(self, old_p, p, traceTime):
+    '''Select the new node, part 1.'''
+    if traceTime:
+        t1 = time.time()
+    c = self.c
+    call_event_handlers = p != old_p
+    if call_event_handlers:
+        select = not g.doHook("select1",
+            c=c, new_p=p, old_p=old_p,
+            new_v=p, old_v=old_p)
+    else:
+        select = True
+    if select:
+        self.revertHeadline = p.h
+        # Not that expensive
+        c.frame.setWrap(p)
+        self.set_body_text_after_select(p, old_p, traceTime)
+        c.nodeHistory.update(p)
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
+</t>
+<t tx="ekr.20170205185641.26">def set_body_text_after_select(self, p, old_p, traceTime, force=False):
+    '''Set the text after selecting a node.'''
+    trace = False and not g.unitTesting
+    trace_pass = False # Trace early return.
+    trace_time = (True or traceTime)
+    if trace_time: t1 = time.time()
+    c = self.c
+    w = c.frame.body.wrapper
+    s = p.v.b # Guaranteed to be unicode.
+    # Part 1: get the old text.
+    old_s = w.getAllText()
+    if trace and trace_time:
+        t2 = time.time()
+        if t2-t1 &gt; 0.1:
+            print('  part1: getAllText %4.2f sec' % (t2-t1))
+    if not force and p and p == old_p and s == old_s:
+        if trace and trace_pass:
+            g.trace('*pass: len(s)', len(s), p.h, old_p.h)
+        return
+    # Part 2: set the new text. This forces a recolor.
+    c.setCurrentPosition(p)
+        # Important: do this *before* setting text,
+        # so that the colorizer will have the proper c.p.
+    ### colorizer = c.frame.body.colorizer
+    ### colorizer.init(p, s) # init *first*.
+    w.setAllText(s)
+    if trace and trace_time:
+        t3 = time.time()
+        if t3-t2 &gt; 0.1:
+            print('  part2: setAllText %4.2f sec' % (t3-t2))
+    if trace and trace_time:
+        t4 = time.time()
+        if t4-t3 &gt; 0.1:
+            print('  part3: colorize   %4.2f sec' % (t4-t3))
+            print('n_calls', c.frame.body.colorizer.highlighter.n_calls)
+        if t4-t1 &gt; 0.1:
+            print('  total:            %4.2f sec' % (t4-t1))
+    # This is now done after c.p has been changed.
+        # p.restoreCursorAndScroll()
+</t>
+<t tx="ekr.20170205185641.27">def change_current_position(self, old_p, p, traceTime):
+    '''Select the new node, part 2.'''
+    if traceTime:
+        t1 = time.time()
+    c = self.c
+    # c.setCurrentPosition(p)
+        # This is now done in set_body_text_after_select.
+    c.frame.scanForTabWidth(p)
+        #GS I believe this should also get into the select1 hook
+    use_chapters = c.config.getBool('use_chapters')
+    if use_chapters:
+        cc = c.chapterController
+        theChapter = cc and cc.getSelectedChapter()
+        if theChapter:
+            theChapter.p = p.copy()
+    c.treeFocusHelper()
+    c.undoer.onSelect(old_p, p)
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:select2', delta_t))
+</t>
+<t tx="ekr.20170205185641.28">def scroll_cursor(self, p, traceTime):
+    '''Scroll the cursor. It deserves separate timing stats.'''
+    if traceTime:
+        t1 = time.time()
+    p.restoreCursorAndScroll()
+        # Was in setBodyTextAfterSelect
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:scroll', delta_t))
+</t>
+<t tx="ekr.20170205185641.29">def set_status_line(self, p, traceTime=False):
+    '''Update the status line.'''
+    if traceTime:
+        t1 = time.time()
+    c = self.c
+    c.frame.body.assignPositionToEditor(p)
+        # New in Leo 4.4.1.
+    c.frame.updateStatusLine()
+        # New in Leo 4.4.1.
+    c.frame.clearStatusLine()
+    verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
+    c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
+    if traceTime:
+        delta_t = time.time() - t1
+        if delta_t &gt; 0.1:
+            print('%20s: %2.3f sec' % ('tree-select:status', delta_t))
+</t>
+<t tx="ekr.20170205185641.3">https://github.com/leo-editor/leo-editor/issues/257
+chapter-select-forward and chapter-select-back
+</t>
+<t tx="ekr.20170205185641.4">https://github.com/leo-editor/leo-editor/issues/367
+
+createCommonButton now sets the gnx for AtButtonCallback.
+
+QtIconBarClass.goto_command now completes the selection at idle time.
+There seems to be no way to do this in one step.
+
+**Note**: ScriptingController.open_gnx uses g.openWithFileName to open settings files.
+So the focus problem is pretty strange. 
+</t>
+<t tx="ekr.20170205185641.5">https://github.com/leo-editor/leo-editor/issues/371
+
+# The fix was to extractExecutableString
+</t>
+<t tx="ekr.20170205185641.6">https://github.com/leo-editor/leo-editor/issues/375
+</t>
+<t tx="ekr.20170205185641.7">https://github.com/leo-editor/leo-editor/issues/380
+New colorizing code doesn't update properly after changing @language directives. 
+</t>
+<t tx="ekr.20170205185641.8">https://github.com/leo-editor/leo-editor/issues/387
+
+The problem:
+
+abbrev.init_tree_abbrev changes the outline's changed indicator (*) during startup.
+Simply reversing this in c.new causes the * to flip back and forth.
+
+The changes were a bit tricky:
+    
+- init_tree_abbrev calls c.pasteOutline(...,redrawFlag=False)
+- pasteOutline calls c.setChanged(True, redrawFlag=redrawFlag)
+- c.new calls c.setChanged(False)
+- Added redrawFlag keyword arg to c.setChanged.
+  When this is false, c.setChanged does not alter the outline's changed indicator.
+  
+Suppressing the change indicator is a bit dangerous.
+It could be very confusing if the indicator gets out of sync with reality.
+But the fix should actually be safe enough, because only startup code is affected.
+</t>
+<t tx="ekr.20170205185641.9">https://github.com/leo-editor/leo-editor/issues/388</t>
+<t tx="ekr.20170205190147.1">https://github.com/leo-editor/leo-editor/issues/392
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

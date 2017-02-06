@@ -3,6 +3,15 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20170202194818.1: ** ** To do next
+@language rest
+@wrap
+
+- Elisp importer fails.
+- Parse-body selects the wrong node.
+- demo.py.
+- tutorials
+- A Leo wizard, like pyzo. (a slideshow, available from the help menu)
 .. @+node:ekr.20170128161249.1: ** Next projects
 @language rest
 @wrap
@@ -17,23 +26,6 @@ Bugs
     - Study and use org-mode
 
 pyzo server
-.. @+node:ekr.20170128165109.1: *3* *** elisp importer fails
-Exception running Elisp_Importer
-Traceback (most recent call last):
-  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 936, in scanner_for_ext_cb
-    return scanner.run(s, parent, prepass=prepass)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 450, in run
-    self.generate_nodes(s, parent)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 514, in generate_nodes
-    self.gen_lines(s, parent)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 583, in gen_lines
-    tail_p = self.end_block(line, new_state, stack)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 629, in end_block
-    self.cut_stack(new_state, stack)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 606, in cut_stack
-    assert len(stack) > 1, stack # <
-AssertionError: [Target: Elisp_ScanState context: '' parens: 0 @others: 1 refs: 0 p: demo-it.el]
-imported C:/leo.repo/demo-it/demo-it.el
 .. @+node:ekr.20170125104430.1: ** From Jon N
 @language rest
 @wrap
