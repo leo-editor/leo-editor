@@ -14,6 +14,20 @@ import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
+
+# For callout stuff.
+Qt = QtCore.Qt
+QBrush = QtGui.QBrush
+QColor = QtGui.QColor
+QImage = QtGui.QImage
+QPainter = QtGui.QPainter
+QPainterPath = QtGui.QPainterPath
+QPixmap = QtGui.QPixmap
+QPoint = QtCore.QPoint
+QRect = QtCore.QRect
+QRegion = QtGui.QRegion
+QSize = QtCore.QSize
+QWidget = QtWidgets.QWidget
 #@-<< demo.py imports >>
 #@@language python
 #@@tabwidth -4
@@ -45,14 +59,102 @@ def demo_end(self, event=None):
         g.app.demo.end()
     else:
         g.trace('no demo instance')
+#@+node:ekr.20170206103122.5: ** class Callout (QWidget)
+# http://stackoverflow.com/questions/16519621/implementing-pyside-callout
+
+class Callout(QWidget):
+    #@+others
+    #@+node:ekr.20170206103122.6: *3* callout.__init__
+    def __init__(self, text, parent=None, color=None, font=None):
+        '''Create a callout.'''
+        super(Callout, self).__init__(parent)
+        self.text=text
+        self.color = color if color else QColor(192, 192, 192)
+            # A grey background by default.
+        self.font = font if font else QtGui.QFont('DejaVu Sans Mono', 14)
+        self.setWindowFlags(Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        # Measure the width of the text.
+        fm = QtGui.QFontMetrics(self.font)
+        r = fm.boundingRect(text)
+        w, h = r.width() + 20, r.height() + 18
+        # w, h = fm.width(text) + 20, fm.height() + 18
+        self.setMinimumSize(w, h)
+        r = self.createRegion(bubbleSize=QSize(w,h))
+        self.setMask(r)
+    #@+node:ekr.20170206103122.2: *3* callout.createMask
+    def createMask(self,size):
+        w=size.width()
+        h=size.height()
+        img=QImage(size, QImage.Format_MonoLSB)
+        qp=QtGui.QPainter()
+        qp.begin(img)
+        qp.fillRect(QRect(QPoint(0, 0), size), QColor(255,255,255))
+        path=QPainterPath()
+        path.moveTo(0, h-1)
+        path.lineTo(w-1,0)
+        path.lineTo(h-1, 0)
+        path.lineTo(0, h-1)
+        qp.fillPath(path, QBrush(QColor(0, 0, 0)))
+        qp.end()
+        return img
+    #@+node:ekr.20170206103122.4: *3* callout.createRegion
+    def createRegion(self, bubbleSize, pointSize=None, offset=None):
+        r = self.createRoundedRectRegion(
+            rect = QRect(QPoint(0, 0), bubbleSize),
+            radius = 10)
+        ### bt=QRegion(QPixmap(createMask(pointSize)))
+        ### t.translate(offset, bubbleSize.height())
+        ### r|=t
+        return r
+    #@+node:ekr.20170206103122.3: *3* callout.createRoundedRectRegion
+    def createRoundedRectRegion(self, rect, radius):
+        
+        r=QtGui.QRegion(rect.adjusted(radius, 0, -radius, 0))
+        r|=QRegion(rect.adjusted(0, radius, 0, -radius))
+        r|=QRegion(rect.left(), rect.top(),
+            2*radius, 2*radius, QRegion.Ellipse)
+        r|=QRegion(rect.right()-2*radius, rect.top(),
+            2*radius, 2*radius, QRegion.Ellipse)
+        r|=QRegion(rect.left(), rect.bottom()-2*radius,
+            2*radius, 2*radius, QRegion.Ellipse)
+        r|=QRegion(rect.right()-2*radius, rect.bottom()-2*radius,
+            2*radius, 2*radius, QRegion.Ellipse)
+        return r
+    #@+node:ekr.20170206103122.7: *3* callout.paintEvent
+    def paintEvent(self, event):
+        
+        painter = QPainter()
+        painter.begin(self)
+        if self.font:
+            painter.setFont(self.font)
+        painter.fillRect(0, 0, self.width(), 200, self.color)
+        painter.drawText(
+            QRect(0, 0, self.width(), 50),
+            Qt.AlignCenter,
+            self.text,
+        )
+        painter.end()
+    #@-others
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
-    def __init__(self, c, description=None):
+    def __init__(self, c,
+        color=None,
+        font=None,
+        subtitle_color=None,
+        subtitle_font=None,
+        trace=False,
+    ):
         '''Ctor for the Demo class.'''
         self.c = c
-        self.description = description or self.__class__.__name__
+        self.description = self.__class__.__name__
+        # Config...
+        self.color = color
+        self.font = font
+        self.subtitle_color = subtitle_color
+        self.subtitle_font = subtitle_font
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
@@ -63,6 +165,7 @@ class Demo(object):
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
+        self.trace = trace
         self.user_dict = {} # For use by scripts.
         self.widgets = [] # References to (popup) widgets created by this class.
         # Create *global* demo commands.
@@ -73,7 +176,6 @@ class Demo(object):
         c = self.c
         aList = []
         after = p.nodeAfterTree()
-        # for p in p.self_and_subtree():
         while p and p != after:
             if p.h.startswith('@ignore-tree'):
                 p.moveToNodeAfterTree()
@@ -88,7 +190,7 @@ class Demo(object):
                 if script.strip():
                     aList.append(script)
                 p.moveToThreadNext()
-        self.script_list = list(reversed(aList))
+        return aList
     #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
     def delete_widgets(self):
         '''Delete all presently visible widgets.'''
@@ -137,12 +239,13 @@ class Demo(object):
         # self.delete_widgets()
         if self.script_list:
             # Execute the next script.
-            script = self.script_list.pop()
+            script = self.script_list.pop(0)
+            if self.trace: print(script)
             self.exec_node(script)
-            if not self.script_list:
-                self.end()
+        else:
+            self.end()
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
-    def setup(self, p):
+    def setup(self, p=None):
         '''
         Called before running the first demo script.
         p is the root of the tree of demo scripts.
@@ -155,10 +258,14 @@ class Demo(object):
         Subclasses may override this.
         '''
     #@+node:ekr.20170128213103.33: *4* demo.start
-    def start(self, p):
+    def start(self, p=None, script_list=None):
         '''Start a demo whose root node is p,'''
-        if p:
-            self.create_script_list(p)
+        self.delete_widgets()
+        if script_list:
+            self.script_list = script_list[:]
+        else:
+            self.script_list = self.create_script_list(p)
+        if self.script_list:
             self.setup(p)
             self.next()
         else:
@@ -256,7 +363,19 @@ class Demo(object):
         for ch in s:
             self.key(ch)
     #@+node:ekr.20170130090141.1: *3* demo.Images
-    #@+node:ekr.20170128213103.12: *4* demo.caption and abbreviations: body, log, tree
+    #@+node:ekr.20170206100558.1: *4* demo.callout
+    def callout(self, s, pane=None, position=None):
+        '''
+        Show a highlighted, auto-sized message s at the given position. Use a
+        standard location if none is given.
+        '''
+        parent = self.pane_widget(pane)
+        w = Callout(s, parent, color=self.color, font=self.font)
+        self.widgets.append(w)
+        self.set_position(position, parent, w)
+        w.show()
+        return w
+    #@+node:ekr.20170128213103.12: *4* demo.caption & body, log, tree
     def caption(self, s, pane): # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         parent = self.pane_widget(pane)
@@ -286,10 +405,10 @@ class Demo(object):
 
     def tree(self, s):
         return self.caption(s, 'tree')
-    #@+node:ekr.20170128213103.21: *4* demo.image
-    def image(self, pane, fn, center=None, height=None, width=None):
+    #@+node:ekr.20170128213103.21: *4* demo.image & helper
+    def image(self, fn, center=None, height=None, pane=None, width=None):
         '''Put an image in the indicated pane.'''
-        parent = self.pane_widget(pane)
+        parent = self.pane_widget(pane or 'body')
         if parent:
             w = QtWidgets.QLabel('label', parent)
             fn = self.resolve_icon_fn(fn)
@@ -313,7 +432,7 @@ class Demo(object):
         else:
             g.trace('bad pane: %s' % (pane))
             return None
-    #@+node:ekr.20170128213103.42: *4* demo.resolve_icon_fn
+    #@+node:ekr.20170128213103.42: *5* demo.resolve_icon_fn
     def resolve_icon_fn(self, fn):
         '''Resolve fn relative to the Icons directory.'''
         dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
@@ -323,6 +442,22 @@ class Demo(object):
         else:
             g.trace('does not exist: %s' % (path))
             return None
+    #@+node:ekr.20170206100605.1: *4* demo.subtitle
+    def subtitle(self, s, pane=None, position=None):
+        '''
+        Show a subtitle s at the given location on the screen. Use a standard
+        location if none is given.
+        '''
+        parent = self.pane_widget(pane)
+        w = Callout(s, parent, color=self.subtitle_color, font=self.subtitle_font)
+        self.widgets.append(w)
+        if not position:
+            # Unlike callouts, the standard position is near the bottom.
+            y = parent.geometry().height() - 50
+            position = ('center', y)
+        self.set_position(position, parent, w)
+        w.show()
+        return w
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
     def dismiss_menu_bar(self):
@@ -347,11 +482,12 @@ class Demo(object):
         self.c.frame.log.clearTab('Log')
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
-        '''Return the pane's widget.'''
-        c = self.c
+        '''Return the pane's widget, defaulting to the body pane.'''
+        m = self; c = m.c
         d = {
+            None: c.frame.body.widget,
             'all': c.frame.top,
-            'body': c.frame.body.wrapper.widget,
+            'body': c.frame.body.widget,
             'log': c.frame.log.logCtrl.widget,
             'minibuffer': c.frame.miniBufferWidget.widget,
             'tree': c.frame.tree.treeWidget,
@@ -365,6 +501,70 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170206132709.1: *3* demo.positioning
+    #@+node:ekr.20170206111124.1: *4* demo.center
+    def center(self, w, parent):
+        '''Center widget w in its parent.'''
+        g_p = parent.geometry()
+        x = g_p.width()/2
+        y = g_p.height()/2
+        w.move(x, y)
+    #@+node:ekr.20170206132754.1: *4* demo.center_horizontally
+    def center_horizontally(self, y, parent, w):
+        '''Center w horizontally in its parent, and set its y position.'''
+        x = parent.geometry().width()/2
+        w.move(x, y)
+    #@+node:ekr.20170206132802.1: *4* demo.center_vertically
+    def center_vertically(self, x, parent, w):
+        '''Center w vertically in its parent, setting its x position.'''
+        y = parent.geometry().height()/2
+        w.move(x, y)
+    #@+node:ekr.20170206112010.1: *4* demo.set_position
+    def set_position(self, position, parent, w):
+        '''Position w at the given position, or center it.'''
+        if position:
+            try:
+                x, y = position
+            except Exception:
+                g.es('position argument must be a 2-tuple')
+                return
+            if not isinstance(x, int):
+                x = x.strip().lower()
+            if not isinstance(y, int):
+                y = y.strip().lower()
+            if x == y == 'center':
+                self.center(parent, w)
+            elif x == 'center':
+                self.center_horizontally(y, parent, w)
+            elif y == 'center':
+                self.center_vertically(x, parent, w)
+            else:
+                self.set_x(x, w)
+                self.set_y(y, w)
+        else:
+            self.center(w, parent)
+    #@+node:ekr.20170206142602.1: *4* demo.set_x/y
+    def set_x(self, x, w):
+        '''Set the x coordinate of w to x.'''
+        if not isinstance(x, int):
+            try:
+                x = int(x)
+            except ValueError:
+                g.es_exception()
+                g.trace('bad x position', repr(x))
+                return
+        w.move(x, w.geometry().y())
+
+    def set_y(self, y, w):
+        '''Set the y coordinate of w to y.'''
+        if not isinstance(y, int):
+            try:
+                y = int(y)
+            except ValueError:
+                g.es_exception()
+                g.trace('bad x position', repr(y))
+                return
+        w.move(w.geometry().x(), y)
     #@+node:ekr.20170128213103.43: *3* demo.wait
     def wait(self, n1=None, n2=None):
         '''Wait for an interval between n1 and n2, in seconds.'''
