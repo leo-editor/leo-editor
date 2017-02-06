@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -245,19 +245,19 @@
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
-<v t="ekr.20100817101952.4303"><vh>Installing Leo itself</vh>
-<v t="ekr.20100731112744.7276"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20130807203905.16602"><vh>Using the single-click installer</vh></v>
-<v t="ekr.20130807203905.16603"><vh>Installing from sources (Windows)</vh></v>
-<v t="ekr.20130807203905.16597"><vh>Creating Windows file associations</vh></v>
+<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
+<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
+<v t="ekr.20170206073747.3"><vh>Using the single-click installer</vh></v>
+<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
+<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
-<v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh>
-<v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
-<v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
+<v t="ekr.20170206073747.6"><vh>Installing Leo on Linux</vh>
+<v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
+<v t="ekr.20170206073747.8"><vh>Installing from sources (Linux)</vh></v>
 </v>
-<v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-<v t="ekr.20100817101952.4306"><vh>Contributing to Leo with git</vh></v>
 </v>
+<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
+<v t="ekr.20170206073747.10"><vh>Contributing to Leo with git</vh></v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -6385,23 +6385,6 @@ For example, the following modifies the cleo.py plugin after Leo has completed l
 
 Attempting to modify c.cleo.prikey immediately in the @script gives an AttributeError as c has no .cleo when the @script is executed. Deferring it by using registerHandler() avoids the problem.
 </t>
-<t tx="ekr.20100731112744.7274">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
-.. _`install Leo using pip`: installing.html#installing-using-pip
-.. _`install Leo from sources`: installing.html#installing-from-sources-linux
-
-If you are using Debian/Ubuntu, it's best to
-`install Leo from a debian package`_, as described next.
-This provides file associations, icons, launcher items, etc.
-
-.. Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
-
-Otherwise, you may `install Leo from sources`_.
-</t>
-<t tx="ekr.20100731112744.7276">Install Python and Qt, as described above (`Installing Packages`_).
-
-Now you have a choice.  You can use Leo's binary (single-click) installer
-or download Leo's sources directly.
-</t>
 <t tx="ekr.20100804133903.7250">.. index::
     pair: @; Glossary
 
@@ -7866,55 +7849,6 @@ The code_mode and doc_only_mode options determine the mode as follows:
 <t tx="ekr.20100813075851.4296">This section discusses options--what they are, how to set them and how to set their defaults.
 </t>
 <t tx="ekr.20100813075851.4297"></t>
-<t tx="ekr.20100817101952.4303">.. _`git`: http://git-scm.com/
-.. _`GitHub`: https://github.com/leo-editor
-.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.11%20final/
-.. _`SourceForge`: https://sourceforge.net
-.. _`Leo's snapshots page`: http://www.greygreen.org/leo/
-.. _`nightly snapshot`: http://www.greygreen.org/leo/
-.. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
-
-Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading the most recent `nightly snapshot`_ of the development code is going to give you code that is just as stable and much more up-to-date than the most recent `latest stable release`_ which most Leonistas would consider already outdated.
-
-If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_.
-
-To summarize, you may get Leo in three ways:
-
-1. Download the `latest stable release`_ from `SourceForge`_. This release contains an executable installer. This release will usually be a bit out of date.
-
-2. Download a `nightly snapshot`_ from `Leo's snapshots page`_. This page contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days ago.
-   
-3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Installing git is easy, and once set up this is the easiest way to get the latest version of Leo's code::
-   
-        git clone https://github.com/leo-editor/leo-editor (http access)
-    
-   or::
-   
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
-</t>
-<t tx="ekr.20100817101952.4306">**Important**: This section tells how to set up git_ so that you can grab
-the latest sources using ``git clone``. However, you can get a nightly
-snapshot of Leo's git repository (without installing git) from
-http://www.greygreen.org/leo/
-
-Many users will want to track the development version of Leo, in order to stay
-on top of the latest features and bug fixes. Running the development version is
-quite safe and easy, and it's also a requirement if you want to contribute to
-Leo.
-
-1. First, you need to get git from http://git-scm.com/.
-2. Get Leo from GitHub by doing::
-
-        git clone https://github.com/leo-editor/leo-editor (http access)
-    
-   or::
-   
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
-
-And that's it! You can run leo/core/leo.py directly. When you want to refresh the
-code with latest modifications from GitHub, run git pull.
-
-</t>
 <t tx="ekr.20100821182153.4343">@ @rst-options
 call_docutils=False
 stylesheet_path=..\doc
@@ -11044,72 +10978,6 @@ To summarize, you may get Leo in three ways:
 
         git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 </t>
-<t tx="ekr.20120229094652.15098">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
-
-Many thanks to Ludwig Schwardt for the following installation instructions. Using the HomeBrew installation method is *much* easier than before.
-
-**Note from EKR**: When upgrading MacOS, it's probably a good idea to uninstall pyqt, sip and qt first::
-
-    brew remove pyqt sip qt
-    brew install qt sip pyqt
-
-I (Ludwig) recently received a new MacBook Pro and did a fresh upgrade to Mac OS 10.7 (Lion). I then used the opportunity to test out installation procedures of various software on a clean system. My main finding is that the excellent Homebrew (mxcl.github.com/homebrew/) makes things much easier these days.
-
-Why Homebrew? It does not try to replace every single bit of functionality on your Mac with their own version, like Macports or fink. It reuses the existing libraries as far as possible. No need to reinstall Python, for example (one of my pet gripes when people try to install new software on their Macs, and the source of much confusion and pain). It installs to /usr/local, the standard place to find third-party libraries and headers, instead of the obscure /opt or /sw. It's simple to use and to extend.
-
-Here is my installation write-up:
-
-- Read the Homebrew installation instructions at http://brew.sh/
-
-- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
-
-- In preparation for Homebrew, the best option in my opinion is to delete /usr/local via::
-
-    sudo rm -rf /usr/local
-
-  and install any software in it via HomeBrew instead.
-  
-  The HomeBrew package manager is so easy to use that you will find replacing deleted packages a snap.
-  
-  If deleting /usr/local fills you with dread (you do not want to lose your beloved third-party software), the second-best option is to make sure you have write permission for the directory via::
-
-    sudo chown -R &lt;your user name&gt;:admin /usr/local
-
-  If you don't know your username, run "whoami". :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).
-
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running the
-  following command in the Terminal::
-    
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-- Run "brew doctor" and check any further suggestions to improve your system.
-
-  EKR note: I thought I had installed command-line tools after installing the XCode page. I hadn't, and "brew doctor" told me so.
-
-- Run "brew update" to get the latest formulas
-
-- Install sip and note the caveat::
-
-    brew install sip
-
-  This warns you to add the local python directory to your PYTHONPATH.
-  Make a note of what this is (especially if you are not on Lion!).
-
-- Add the following lines to your ~/.bash_profile
-  (or ~/.profile on Leopard). This is the default for LION::
-
-      export PATH=/usr/local/bin:$PATH
-      # This is for SIP (and PyQt) as suggested by Homebrew
-      export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
-
-- Install PyQt::
-
-    brew install pyqt
- 
-- Open a new Terminal tab / window so that the above settings take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and ran "python launchLeo.py" inside the Leo directory.
-
-It would really be great to get a Leo formula going for Homebrew. As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
-</t>
 <t tx="ekr.20120229094652.15099">Put @command nodes as children of an @commands node in myLeoSettings.leo. This makes the the @command nodes available to all opened .leo files.
 
 Using @command rather than @button means that there is never any need to disable scripts. There is no need for @button. To see the list of your @command nodes, type::
@@ -11255,53 +11123,6 @@ say, python/Lib/site-packages.
 - git diff ensures that import hasn't significantly altered the code,
 
 This is exactly what I need:  I can make changes to important tools *safely* within Leo.
-</t>
-<t tx="ekr.20130807203905.16597">*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-There are two ways of associating .leo files with Leo. The first uses the
-Windows control panel, the second, the Windows console.
-
-**Method 1: Using the Windows Control Panel**
-
-The goal is that you want to associate .leo files with the following command::
-
-    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
-    
-Before Windows 7, you do this with using the Folder Options control panel.
-In Windows 7, you do this with the Default Programs control panel.
-
-*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
-The quotation marks are needed to handle file paths containing spaces.
-
-*Warning:* In a batch file, %1 passes just the first command line parameter.
-It is logical to expect %* to work for file associations just as in batch
-files. Alas, it does not.
-
-**Method 2: Using the Windows Console**
-
-Open a Windows console with administrator privileges, then type::
-
-    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-    assoc .leo=LeoFile
-
-And put this leo.bat in %PATH%::
-
-    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
-    
-You may omit the /b option if you want to create a separate console window for Leo.
-</t>
-<t tx="ekr.20130807203905.16602">.. _`SourceForge download page`: http://sourceforge.net/projects/leo/files/Leo/
-.. _`Running Leo`: running.html
-
-Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
-</t>
-<t tx="ekr.20130807203905.16603">.. _`Leo's download page`: http://leoeditor.com/download.html
-
-You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python26\\Lib\\site-packages.
-
-Next, you will find it convenient to create Windows files associations for .leo files, as described in the next section.
 </t>
 <t tx="ekr.20130815102041.15618">This plugin supports printing using the Qt GUI.
 Written by Jacob M. Peck.
@@ -12149,7 +11970,7 @@ Installing Leo
 
 .. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
-This chapter tells how to install and run Leo on Windows or Linux. Leo can be installed on MacOS, but the process is difficult and not recommended.
+This chapter tells how to install and run Leo on Windows or Linux.
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
@@ -14145,31 +13966,6 @@ More resources:
 - `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
 - Rickard Lindberg's `blog post`_ about how Leo improves computer code.
 
-</t>
-<t tx="ekr.20131030184445.17285">Add these files to `/etc/apt/sources.list`::
-
-    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-
-Then run::
-
-    sudo apt-get update
-    sudo apt-get install leo
-</t>
-<t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.4.
-
-You now have several choices.
-
-1. You can run Leo from your home directory. Just add  ~/leo-5.4 to your path.
-
-2. You can install leo into /usr/local/lib and /usr/local/bin with:
-
-    cd ~/leo-5.4
-    sudo python setup.py install
-
-See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core::
 
@@ -20224,7 +20020,186 @@ But the fix should actually be safe enough, because only startup code is affecte
 <t tx="ekr.20170205190147.1">https://github.com/leo-editor/leo-editor/issues/392
 </t>
 <t tx="ekr.20170205201047.1">It can now import demo-it.el.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170206073747.10">**Important**: This section tells how to set up git_ so that you can grab
+the latest sources using ``git clone``. However, you can get a nightly
+snapshot of Leo's git repository (without installing git) from
+http://www.greygreen.org/leo/
+
+Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bug fixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get git from http://git-scm.com/.
+2. Get Leo from GitHub by doing::
+
+        git clone https://github.com/leo-editor/leo-editor (http access)
+    
+   or::
+   
+        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
+
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
+code with latest modifications from GitHub, run git pull.
+
+</t>
+<t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
+
+Now you have a choice.  You can use Leo's binary (single-click) installer
+or download Leo's sources directly.
+</t>
+<t tx="ekr.20170206073747.3">.. _`SourceForge download page`: http://sourceforge.net/projects/leo/files/Leo/
+.. _`Running Leo`: running.html
+
+Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
+</t>
+<t tx="ekr.20170206073747.4">.. _`Leo's download page`: http://leoeditor.com/download.html
+
+You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python26\\Lib\\site-packages.
+
+Next, you will find it convenient to create Windows files associations for .leo files, as described in the next section.
+</t>
+<t tx="ekr.20170206073747.5">*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "&lt;path to python&gt;\python.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
+</t>
+<t tx="ekr.20170206073747.6">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
+.. _`install Leo using pip`: installing.html#installing-using-pip
+.. _`install Leo from sources`: installing.html#installing-from-sources-linux
+
+If you are using Debian/Ubuntu, it's best to
+`install Leo from a debian package`_, as described next.
+This provides file associations, icons, launcher items, etc.
+
+.. Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
+
+Otherwise, you may `install Leo from sources`_.
+</t>
+<t tx="ekr.20170206073747.7">Add these files to `/etc/apt/sources.list`::
+
+    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+
+Then run::
+
+    sudo apt-get update
+    sudo apt-get install leo
+</t>
+<t tx="ekr.20170206073747.8">You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into a folder in your home directory, say ~/leo-5.4.
+
+You now have several choices.
+
+1. You can run Leo from your home directory. Just add  ~/leo-5.4 to your path.
+
+2. You can install leo into /usr/local/lib and /usr/local/bin with:
+
+    cd ~/leo-5.4
+    sudo python setup.py install
+
+See `Running Leo`_ for how to run Leo after installing it.
+</t>
+<t tx="ekr.20170206073747.9">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
+
+Many thanks to Ludwig Schwardt for the following installation instructions. Using the HomeBrew installation method is *much* easier than before.
+
+**Note from EKR**: When upgrading MacOS, it's probably a good idea to uninstall pyqt, sip and qt first::
+
+    brew remove pyqt sip qt
+    brew install qt sip pyqt
+
+I (Ludwig) recently received a new MacBook Pro and did a fresh upgrade to Mac OS 10.7 (Lion). I then used the opportunity to test out installation procedures of various software on a clean system. My main finding is that the excellent Homebrew (mxcl.github.com/homebrew/) makes things much easier these days.
+
+Why Homebrew? It does not try to replace every single bit of functionality on your Mac with their own version, like Macports or fink. It reuses the existing libraries as far as possible. No need to reinstall Python, for example (one of my pet gripes when people try to install new software on their Macs, and the source of much confusion and pain). It installs to /usr/local, the standard place to find third-party libraries and headers, instead of the obscure /opt or /sw. It's simple to use and to extend.
+
+Here is my installation write-up:
+
+- Read the Homebrew installation instructions at http://brew.sh/
+
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs in the Terminal). Only the smaller command-line tools are required; there is no need to get the full Xcode beast.
+
+- In preparation for Homebrew, the best option in my opinion is to delete /usr/local via::
+
+    sudo rm -rf /usr/local
+
+  and install any software in it via HomeBrew instead.
+  
+  The HomeBrew package manager is so easy to use that you will find replacing deleted packages a snap.
+  
+  If deleting /usr/local fills you with dread (you do not want to lose your beloved third-party software), the second-best option is to make sure you have write permission for the directory via::
+
+    sudo chown -R &lt;your user name&gt;:admin /usr/local
+
+  If you don't know your username, run "whoami". :-) This is useful because homebrew actually discourages you from installing third-party software as the superuser (the usual Mac apps in /Applications are also installed as the normal user, for that matter).
+
+- Install Homebrew (http://mxcl.github.com/homebrew/) by running the
+  following command in the Terminal::
+    
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+- Run "brew doctor" and check any further suggestions to improve your system.
+
+  EKR note: I thought I had installed command-line tools after installing the XCode page. I hadn't, and "brew doctor" told me so.
+
+- Run "brew update" to get the latest formulas
+
+- Install sip and note the caveat::
+
+    brew install sip
+
+  This warns you to add the local python directory to your PYTHONPATH.
+  Make a note of what this is (especially if you are not on Lion!).
+
+- Add the following lines to your ~/.bash_profile
+  (or ~/.profile on Leopard). This is the default for LION::
+
+      export PATH=/usr/local/bin:$PATH
+      # This is for SIP (and PyQt) as suggested by Homebrew
+      export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
+
+- Install PyQt::
+
+    brew install pyqt
+ 
+- Open a new Terminal tab / window so that the above settings take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and ran "python launchLeo.py" inside the Leo directory.
+
+It would really be great to get a Leo formula going for Homebrew. As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
+</t>
+<t tx="ekr.20170206073848.1"></t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
