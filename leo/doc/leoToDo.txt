@@ -8,7 +8,6 @@
 @wrap
 
 - Elisp importer fails.
-- Parse-body selects the wrong node.
 - demo.py.
 - tutorials
 - A Leo wizard, like pyzo. (a slideshow, available from the help menu)
