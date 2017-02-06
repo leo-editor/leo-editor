@@ -5726,12 +5726,29 @@ def init_zodb(pathToZodbStorage, verbose=True):
         init_zodb_failed[pathToZodbStorage] = True
         return None
 #@+node:ekr.20170206080908.1: *3* g.input_
-def input_(message=''):
-    '''Safely execute python's input statement.'''
-    # pylint: disable=no-member
-    from leo.core.leoQt import QtCore
-    QtCore.pyqtRemoveInputHook()
-    return input(message)
+def input_(message='', c=None):
+    '''
+    Safely execute python's input statement.
+    
+    c.executeScriptHelper binds 'input' to be a wrapper that calls g.input_
+    with c and handler bound properly.
+    '''
+    if False: # c and app and not app.gui.isNullGui:
+        # Use the minibuffer.
+        
+        def handler(event, c=c):
+            c.k.resetLabel()
+            return c.k.arg
+
+        k = c.k
+        k.setLabelBlue(message)
+        return k.getArg(event=None, completion=False, handler=handler)
+    else:
+        # Prompt for input from the console, assuming there is one.
+        # pylint: disable=no-member
+        from leo.core.leoQt import QtCore
+        QtCore.pyqtRemoveInputHook()
+        return input(message)
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'

@@ -867,7 +867,11 @@ class Commands(object):
         c = self
         p = c.p.copy() # *Always* use c.p and pass c.p to script.
         c.setCurrentDirectoryFromContext(p)
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        
+        def g_input_wrapper(message, c=c):
+            return g.input_(message, c=c)
+        
+        d = {'c': c, 'g': g, 'input': g_input_wrapper, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
         if namespace: d.update(namespace)
