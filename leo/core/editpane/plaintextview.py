@@ -4,10 +4,11 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 class LEP_PlainTextView(QtWidgets.QTextBrowser):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
+    lep_type = "TEXT"
     lep_name = "Plain Text View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWidgets.QTextBrowser.__init__(self, *args, **kwargs)
+        super(LEP_PlainTextView, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.setStyleSheet("* {background: #998; color: #222; }")
@@ -30,3 +31,12 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.new_position(p)
         self.horizontalScrollBar().setValue(h)
         self.verticalScrollBar().setValue(v)
+class LEP_PlainTextViewB(LEP_PlainTextView):
+    """LEP_PlainTextViewB - copy of LEP_PlainTextView with different
+    background color to test multiple viewers
+    """
+    lep_name = "Plain Text View 'B'"
+    def __init__(self, c=None, lep=None, *args, **kwargs):
+        """set up"""
+        super(LEP_PlainTextViewB, self).__init__(c=c, lep=lep, *args, **kwargs)
+        self.setStyleSheet("* {background: #899; color: #222; }")

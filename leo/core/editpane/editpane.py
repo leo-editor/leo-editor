@@ -1,43 +1,39 @@
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
+if g.isPython3:
+    from importlib import reload
+
 from leo.core.editpane import plaintextedit
 from leo.core.editpane import plaintextview
 MODULES = [
     plaintextedit,
     plaintextview,
 ]
-AVAIL_EDITORS = [
-    plaintextedit.LEP_PlainTextEdit,
-]
-AVAIL_VIEWERS = [
-    plaintextview.LEP_PlainTextView,
-]
 
 try:
     from leo.core.editpane import vanillascintilla
     MODULES.append(vanillascintilla)
-    AVAIL_EDITORS.append(vanillascintilla.LEP_VanillaScintilla)
-except:
+except ImportError:
     pass
 
 try:
     from leo.core.editpane import webkitview
-    MODULES.append(webengineview)
-    AVAIL_VIEWERS.append(webkitview.LEP_WebKitView)
-except:
+    MODULES.append(webkitview)
+except ImportError:
     pass
 
 try:
     from leo.core.editpane import webengineview
     MODULES.append(webengineview)
-    AVAIL_VIEWERS.append(webengineview.LEP_WebEngineView)
-except:
-    raise
+except ImportError:
     pass
 
-if g.isPython3:
-    from importlib import reload
+WIDGETS = []
+for module in MODULES:
+    for key in dir(module):
+        if hasattr(getattr(module, key), 'lep_type'):
+            WIDGETS.append(getattr(module, key))
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -55,7 +51,7 @@ class LeoEditPane(QtWidgets.QWidget):
         :param outline c: outline to bind to
         """
         DBG("__init__ LEP")
-        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        super(LeoEditPane, self).__init__(*args, **kwargs)
 
         self.c = c
         if not hasattr(self.c, '_LEPs'):
@@ -73,13 +69,6 @@ class LeoEditPane(QtWidgets.QWidget):
             recurse=recurse,
         )
 
-        self.handlers = [
-            ('select1', self._before_select),
-            ('select2', self._after_select),
-            ('bodykey2', self._after_body_key),
-        ]
-        self._register_handlers()
-
         self.track   = self.cb_track.isChecked()
         self.update  = self.cb_update.isChecked()
         self.recurse = self.cb_recurse.isChecked()
@@ -87,12 +76,29 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # for development
         for module in MODULES:
+            # doing this:
             reload(module)
+            # without doing this:
+            WIDGETS[:] = []
+            for module in MODULES:
+                for key in dir(module):
+                    if hasattr(getattr(module, key), 'lep_type'):
+                        WIDGETS.append(getattr(module, key))
+            # breaks inheritance, even on the first run.  Makes sense.
 
-        self.set_edit_widget()
-        self.set_view_widget()
+
+        self.set_widget(lep_type='EDITOR')
+        self.set_widget(lep_type='TEXT')
 
         self.set_mode(self.mode)
+
+        # do this last, max. chance of not registering broken handler
+        self.handlers = [
+            ('select1', self._before_select),
+            ('select2', self._after_select),
+            ('bodykey2', self._after_body_key),
+        ]
+        self._register_handlers()
     def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
@@ -317,16 +323,16 @@ class LeoEditPane(QtWidgets.QWidget):
     def misc_menu(self):
         """build menu on Action button"""
 
-        named_widgets = [
-            ("Editor", AVAIL_EDITORS, self.set_edit_widget),
-            ("Viewer", AVAIL_VIEWERS, self.set_view_widget),
+        edit_view = [
+            ("Editor", lambda x: x.lep_type == 'EDITOR'),
+            ("Viewer", lambda x: x.lep_type != 'EDITOR'),
         ]
 
         menu = QtWidgets.QMenu()
-        for name, widget_classes, setter in named_widgets:
-            for widget_class in widget_classes:
-                def cb(checked, widget_class=widget_class, setter=setter):
-                    setter(widget_class)
+        for name, is_one in edit_view:
+            for widget_class in [i for i in WIDGETS if is_one(i)]:
+                def cb(checked, widget_class=widget_class):
+                    self.set_widget(widget_class=widget_class)
                 act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
                 act.triggered.connect(cb)
                 menu.addAction(act)
@@ -434,33 +440,30 @@ class LeoEditPane(QtWidgets.QWidget):
         pass
 
 
-    def set_edit_widget(self, widget_class=None):
-        """set_edit_widget -
+    def set_widget(self, widget_class=None, lep_type='TEXT'):
+        """set_widget - set edit or view widget
 
         :param QWidget widget: widget to use
         """
 
         if widget_class is None:
-            widget_class = AVAIL_EDITORS[0]
-        self.edit_widget = widget_class(self.c, self)
-        for i in reversed(range(self.edit_frame.layout().count())):
-            self.edit_frame.layout().itemAt(i).widget().setParent(None)
-        self.edit_frame.layout().addWidget(self.edit_widget)
-        self.new_position_edit(self.get_position())
+            widget_class = [i for i in WIDGETS if i.lep_type == lep_type][0]
+        if hasattr(widget_class, 'lep_type') and widget_class.lep_type == 'EDITOR':
+            frame = self.edit_frame
+            attr = 'edit_widget'
+            update = self.new_position_edit
+        else:
+            frame = self.view_frame
+            attr = 'view_widget'
+            update = self.new_position_view
+        widget = widget_class(c=self.c, lep=self)
 
-    def set_view_widget(self, widget_class=None):
-        """set_view_widget -
+        setattr(self, attr, widget)
+        for i in reversed(range(frame.layout().count())):
+            frame.layout().itemAt(i).widget().setParent(None)
+        frame.layout().addWidget(widget)
+        update(self.get_position())
 
-        :param QWidget widget: widget to use
-        """
-
-        if widget_class is None:
-            widget_class = AVAIL_VIEWERS[0]
-        self.view_widget = widget_class(self.c, self)
-        for i in reversed(range(self.view_frame.layout().count())):
-            self.view_frame.layout().itemAt(i).widget().setParent(None)
-        self.view_frame.layout().addWidget(self.view_widget)
-        self.new_position_view(self.get_position())
     def set_mode(self, mode):
         """set_mode - change mode edit / view / split
 

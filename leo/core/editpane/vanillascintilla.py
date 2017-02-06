@@ -14,12 +14,13 @@ def DBG(text):
 
     :param str text: text to print
     """
-    print("LEP: \033[34m%s\033[39m" % text)
+    print("LEP: %s" % text)
 class LEP_VanillaScintilla(Qsci.QsciScintilla):
+    lep_type = "EDITOR"
     lep_name = "Vanilla Scintilla"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        Qsci.QsciScintilla.__init__(self, *args, **kwargs)
+        super(LEP_VanillaScintilla, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)

@@ -7,14 +7,15 @@ def DBG(text):
 
     :param str text: text to print
     """
-    print("LEP: \033[34m%s\033[39m" % text)
+    print("LEP: %s" % text)
 class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
     """
+    lep_type = "EDITOR"
     lep_name = "Plain Text Edit"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWidgets.QTextEdit.__init__(self, *args, **kwargs)
+        super(LEP_PlainTextEdit, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
@@ -50,3 +51,12 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         """
         DBG("update editor position")
         self.setText(p.b)
+class LEP_PlainTextEditB(LEP_PlainTextEdit):
+    """LEP_PlainTextEditB - copy of LEP_PlainTextEdit with different
+    background color to test multiple edtitors
+    """
+    lep_name = "Plain Text Edit 'B'"
+    def __init__(self, c=None, lep=None, *args, **kwargs):
+        """set up"""
+        super(LEP_PlainTextEditB, self).__init__(c=c, lep=lep, *args, **kwargs)
+        self.setStyleSheet("* {background: #989; color: #222; }")

@@ -5,10 +5,11 @@ from PyQt5 import QtWebEngineWidgets
 class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
+    lep_type = "HTML"
     lep_name = "Web Engine View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWebEngineWidgets.QWebEngineView.__init__(self, *args, **kwargs)
+        super(LEP_WebEngineView, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
     def new_position(self, p):

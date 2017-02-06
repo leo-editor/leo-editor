@@ -4,10 +4,11 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit
 class LEP_WebKitView(QtWebKit.QWebView):
     """LEP_WebKitView - Web Kit View
     """
+    lep_type = "HTML"
     lep_name = "Web Kit View"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        QtWebKit.QWebView.__init__(self, *args, **kwargs)
+        super(LEP_WebKitView, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
     def new_position(self, p):
