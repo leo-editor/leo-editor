@@ -1278,8 +1278,8 @@
 </v>
 <v t="ekr.20170123084609.8"><vh>Bugs</vh>
 <v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
-<v t="ekr.20170123084609.14"><vh>#325 Simplify the organization of commands</vh></v>
-<v t="ekr.20170123084609.17"><vh>#348 (CDATA errors)</vh></v>
+<v t="ekr.20170123084609.14"><vh>#325: Simplify the organization of commands</vh></v>
+<v t="ekr.20170123084609.17"><vh>#348: (CDATA errors)</vh></v>
 <v t="ekr.20170205185641.4"><vh>#367: goto-script problems</vh></v>
 <v t="ekr.20170205185641.5"><vh>#371: support multiple languages in scripts</vh></v>
 <v t="ekr.20170124015707.1"><vh>#374: Leo can confuse directives with decorators</vh></v>
@@ -1313,14 +1313,15 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170206095132.1"><vh>#402: python's input statement hangs Leo</vh></v>
 <v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh>
 <v t="ekr.20170123084609.10"><vh>doPlainChar</vh></v>
 </v>
-<v t="ekr.20170205201047.1"><vh>Fixed crash in elisp importer</vh></v>
 <v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
 <v t="ekr.20170123084609.15"><vh>Fixed crash in ac.insert_string</vh></v>
 <v t="ekr.20170123084609.16"><vh>Fixed crash in autocomplete (with backspace key?)</vh></v>
+<v t="ekr.20170205201047.1"><vh>Fixed crash in elisp importer</vh></v>
 <v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
 </v>
 <v t="ekr.20170123084609.18"><vh>Code</vh>
@@ -20199,6 +20200,10 @@ Here is my installation write-up:
 It would really be great to get a Leo formula going for Homebrew. As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
 </t>
 <t tx="ekr.20170206073848.1"></t>
+<t tx="ekr.20170206095132.1">https://github.com/leo-editor/leo-editor/issues/402
+
+Added g.input_, but this is not a great solution.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
