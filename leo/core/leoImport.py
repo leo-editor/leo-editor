@@ -1463,6 +1463,7 @@ class LeoImportCommands(object):
             parser(p, s)
             c.undoer.afterChangeTree(p, 'parse-body', bunch)
             p.expand()
+            c.selectPosition(p)
             c.redraw()
     #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
     def body_parser_for_ext(self, ext):
