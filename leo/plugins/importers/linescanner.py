@@ -662,7 +662,7 @@ class Importer(object):
             g.trace('===== %r' % line)
         except Exception:
             g.trace('     top.p: %s' % g.toEncodedString(top.p.h))
-        print('len(stack): %s' % len(stack))
+        # print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
