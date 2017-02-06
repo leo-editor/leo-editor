@@ -338,6 +338,8 @@ class LeoEditPane(QtWidgets.QWidget):
             def cb(checked, self=self, mode=mode):
                 self.set_mode(mode)
             act.triggered.connect(cb)
+            act.setCheckable(True)
+            act.setChecked(mode == self.mode)
             menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
     def new_position(self, p):
