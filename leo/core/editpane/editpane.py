@@ -311,19 +311,21 @@ class LeoEditPane(QtWidgets.QWidget):
     def misc_menu(self):
         """build menu on Action button"""
 
-        edit_view = [
+        # info needed to separate edit and view widgets in self.widget_classes
+        name_test_current = [
             ("Editor", lambda x: x.lep_type == 'EDITOR', self.edit_widget.__class__),
             ("Viewer", lambda x: x.lep_type != 'EDITOR', self.view_widget.__class__),
         ]
 
         menu = QtWidgets.QMenu()
-        for name, is_one, current in edit_view:
+        for name, is_one, current in name_test_current:
+            # list Editor widgets, then Viewer widgets
             for widget_class in [i for i in self.widget_classes if is_one(i)]:
                 def cb(checked, widget_class=widget_class):
                     self.set_widget(widget_class=widget_class)
-                current_txt = " (current)" if widget_class == current else ""
-                act = QtWidgets.QAction("%s: %s%s" % (
-                    name, widget_class.lep_name, current_txt), self)
+                act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
+                act.setCheckable(True)
+                act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
