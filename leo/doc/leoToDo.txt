@@ -7,7 +7,6 @@
 @language rest
 @wrap
 
-- Elisp importer fails.
 - demo.py.
 - tutorials
 - A Leo wizard, like pyzo. (a slideshow, available from the help menu)
