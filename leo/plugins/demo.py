@@ -7,9 +7,10 @@ A plugin that makes making Leo demos easy. See:
 https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md
 
 Written by Edward K. Ream, January 29-31, 2017.
+Revised by EKR February 6-7, 2017.
 '''
 #@+<< demo.py imports >>
-#@+node:ekr.20170128213103.3: ** << demo.py imports >>
+#@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
@@ -18,15 +19,8 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@@language python
 #@@tabwidth -4
 #@+others
-#@+node:ekr.20170128213103.5: ** init
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    ok = g.app.gui.guiName() in ('qt', 'qttabs')
-    if ok:
-        ### g.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-    return ok
-#@+node:ekr.20170129230307.1: ** commands (demo.py)
+#@+node:ekr.20170207082108.1: **   top level
+#@+node:ekr.20170129230307.1: *3* commands (demo.py)
 # Note: importing this plugin creates the commands.
 
 @g.command('demo-next')
@@ -45,40 +39,152 @@ def demo_end(self, event=None):
         g.app.demo.end()
     else:
         g.trace('no demo instance')
+#@+node:ekr.20170128213103.5: *3* init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    ok = g.app.gui.guiName() in ('qt', 'qttabs')
+    if ok:
+        ### g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
+    return ok
+#@+node:ekr.20170206203005.1: **  class Label (QLabel)
+class Label (QtWidgets.QLabel):
+    '''A class for user-defined callouts in demo.py.'''
+        
+    #@+others
+    #@+node:ekr.20170207074327.1: *3* label.__init__
+    def __init__(self, text,
+        font=None,
+        position=None,
+        stylesheet=None,
+    ):
+        '''
+        Label.__init__. The ctor for all user-defined callout classes.
+        Show the callout in the indicated place.
+        '''
+        c = g.app.demo.c
+        self.parent = c.frame.body.widget
+        QtWidgets.QLabel.__init__(self, self.parent)
+            # Init the base class
+        self.setText(text)
+        self._position = position or 'center'
+        self._stylesheet = stylesheet or '''\
+            QLabel {
+                border: 2px solid black;
+                background-color : lightgrey;
+                color : black;
+            }'''
+        self._font = font or QtGui.QFont('DejaVu Sans Mono', 16)
+        self.init()
+        g.app.demo.widgets.append(self)
+            # Must be done in all subclasses, so we do it here.
+    #@+node:ekr.20170207081055.1: *3* label.init
+    def init(self):
+        '''Actually set the attributes of the widget.'''
+        self.set_position(self._position)
+        self.setStyleSheet(self._stylesheet)
+        self.setFont(self._font)
+        self.show()
+
+    #@+node:ekr.20170206111124.1: *3* label.center*
+    def center(self):
+        '''Center this widget in its parent.'''
+        g_p = self.parent.geometry()
+        x = g_p.width()/2
+        y = g_p.height()/2
+        self.move(x, y)
+
+    def center_horizontally(self, y):
+        '''Center w horizontally in its parent, and set its y position.'''
+        x = self.parent.geometry().width()/2
+        self.move(x, y)
+
+    def center_vertically(self, x):
+        '''Center w vertically in its parent, setting its x position.'''
+        y = self.parent.geometry().height()/2
+        self.move(x, y)
+    #@+node:ekr.20170206112010.1: *3* label.set_position
+    def set_position(self, position):
+        '''Position w at the given position, or center it.'''
+        if not position:
+            position = self.position
+        if position == 'center':
+            self.center()
+            return
+        try:
+            x, y = position
+        except Exception:
+            g.es('position must be "center" or a 2-tuple', repr(position))
+            return
+        if not isinstance(x, int):
+            x = x.strip().lower()
+        if not isinstance(y, int):
+            y = y.strip().lower()
+        if x == y == 'center':
+            self.center()
+        elif x == 'center':
+            self.center_horizontally(y)
+        elif y == 'center':
+            self.center_vertically(x)
+        else:
+            self.set_x(x)
+            self.set_y(y)
+    #@+node:ekr.20170206142602.1: *3* label.set_x/y & helper
+    def set_x(self, x):
+        '''Set our x coordinate to x.'''
+        x = self.get_int(x)
+        if x is not None:
+            self.move(x, self.geometry().y())
+
+    def set_y(self, y):
+        '''Set our y coordinate to y.'''
+        y = self.get_int(y)
+        if y is not None:
+            self.move(self.geometry().x(), y)
+    #@+node:ekr.20170207094113.1: *4* label.get_int
+    def get_int(self, obj):
+        '''Convert obj to an int, if needed.'''
+        if isinstance(obj, int):
+            return obj
+        else:
+            try:
+                return int(obj)
+            except ValueError:
+                g.es_exception()
+                g.trace('bad x position', repr(obj))
+                return None
+    #@-others
+#@+node:ekr.20170207071819.1: ** class Callout(Label)
+class Callout(Label):
+    
+    def __init__(self, text, position=None):
+        # Init the base class.'''
+        Label.__init__(self, text,
+            font = QtGui.QFont('DejaVu Sans Mono', 20),
+            position = position or 'center',
+            stylesheet = '''\
+                QLabel {
+                    border: 2px solid black;
+                    background-color : lightblue;
+                    color : black;
+                }''')
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
-    def __init__(self, c,
-        callout_color=None,
-        callout_font=None,
-        callout_stylesheet=None,
-        subtitle_color=None,
-        subtitle_font=None,
-        subtitle_stylesheet=None,
-        trace=False,
-    ):
+    def __init__(self, c, trace=False):
         '''Ctor for the Demo class.'''
         self.c = c
-        self.description = self.__class__.__name__
-        # Config...
-        self.default_stylesheet = '''\
-    QLabel {
-        border: 2px solid black;
-        background-color : %s;
-        color : black;
-    }'''
-        self.callout_color = callout_color or 'lightgrey'
-        self.callout_stylesheet = callout_stylesheet
-        self.subtitle_color = subtitle_color or 'lightgrey'
-        self.subtitle_stylesheet = subtitle_stylesheet
-        # Set default fonts if stylesheets are given.
-        self.callout_font = callout_font
-        if not self.callout_font and not self.callout_stylesheet:
-            self.callout_font = QtGui.QFont('DejaVu Sans Mono', 14)
-        self.subtitle_font = subtitle_font
-        if not self.subtitle_font and not self.subtitle_stylesheet:
-            self.subtitle_font = QtGui.QFont('DejaVu Sans Mono', 12)
+        # The *permanent* namespace.
+        self.namespace = {
+            'c': c,
+            'demo': self,
+            'g:': g,
+            'p': c.p,
+            'Label': Label,
+            'Callout': Callout,
+            'Title': Title,
+        }
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
@@ -94,7 +200,116 @@ class Demo(object):
         self.widgets = [] # References to (popup) widgets created by this class.
         # Create *global* demo commands.
         self.init()
-    #@+node:ekr.20170129180623.1: *4* demo.create_script_list
+    #@+node:ekr.20170129174128.1: *4* demo.init
+    def init(self):
+        '''Link the global commands to this class.'''
+        old_demo = getattr(g.app, 'demo', None)
+        if old_demo:
+            old_demo.delete_widgets()
+            g.trace('deleting old demo:', old_demo.__class__.__name__)
+        g.app.demo = self
+    #@+node:ekr.20170207090715.1: *4* demo.register_name
+    def register_name(self, name, object_):
+        '''Add the name:object binding to self.namespace.'''
+        assert name not in self.namespace, (name, self.namespace)
+        self.namespace [name] = object_
+        # g.trace(name, object_, object_.__init__)
+    #@+node:ekr.20170128222411.1: *3* demo.Commands
+    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
+    def delete_widgets(self):
+        '''Delete all presently visible widgets.'''
+        # g.trace(self) ; g.printList(self.widgets)
+        for w in self.widgets:
+            w.deleteLater()
+        self.widgets = []
+    #@+node:ekr.20170129174251.1: *4* demo.end
+    def end(self):
+        '''
+        End this slideshow and call teardown().
+        This will be called several times if demo scripts call demo.next().
+        '''
+        # Don't delete widgets here. Use the teardown method instead.
+        # self.delete_widgets()
+        if g.app.demo:
+            g.app.demo = None
+            self.teardown()
+            g.es_print('End of', self.__class__.__name__)
+    #@+node:ekr.20170128213103.30: *4* demo.next & helper
+    def next(self):
+        '''Execute the next demo script, or call end().'''
+        # Don't delete widgets here. Leave that up to the demo scripts!
+        # self.delete_widgets()
+        if self.script_list:
+            # Execute the next script.
+            script = self.script_list.pop(0)
+            if self.trace: print(script)
+            ### self.script_setup(demo=self)
+            self.exec_node(script)
+            ### self.script_teardown(demo=self)
+        else:
+            self.end()
+    #@+node:ekr.20170128213103.31: *5* demo.exec_node
+    def exec_node(self, script):
+        '''Execute the script in node p.'''
+        c = self.c
+        # g.trace(repr(g.splitLines(script)[0]))
+        try:
+            c.executeScript(
+                namespace=self.namespace,
+                script=script,
+                raiseFlag=True,
+                useSelectedText=False,
+            )
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
+    def setup(self, p=None):
+        '''
+        Called before running the first demo script.
+        p is the root of the tree of demo scripts.
+        May be over-ridden in subclasses.
+        '''
+        
+    def script_setup(self):
+        '''
+        Called before running each demo script.
+        p is the root of the tree of demo scripts.
+        May be over-ridden in subclasses.
+        '''
+
+    def teardown(self):
+        '''
+        Called when the demo ends.
+        Subclasses may override this.
+        '''
+
+    def script_teardown(self):
+        '''
+        Called when the demo ends.
+        Subclasses may override this.
+        '''
+    #@+node:ekr.20170128213103.33: *4* demo.start & helpers
+    def start(self, p=None, script_list=None, script_string=None, delim='###'):
+        '''
+        Start a demo whose scripts are given by:
+        script_string is not None:  a single string, with given delim.
+        script_list is not None:    a list of strings,
+        p is not None:              The body texts of a tree of nodes.
+        '''
+        self.delete_widgets()
+        if script_string:
+            self.script_list = self.parse_script_string(script_string, delim)
+        elif script_list:
+            self.script_list = script_list[:]
+        else:
+            self.script_list = self.create_script_list(p)
+        if self.script_list:
+            self.setup(p)
+            self.next()
+        else:
+            g.trace('no script tree')
+            self.end()
+    #@+node:ekr.20170129180623.1: *5* demo.create_script_list
     def create_script_list(self, p):
         '''Create the state_list from the tree of script nodes rooted in p.'''
         c = self.c
@@ -115,86 +330,39 @@ class Demo(object):
                     aList.append(script)
                 p.moveToThreadNext()
         return aList
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
-    def delete_widgets(self):
-        '''Delete all presently visible widgets.'''
-        for w in self.widgets:
-            w.deleteLater()
-        self.widgets = []
-    #@+node:ekr.20170129174128.1: *4* demo.init
-    def init(self):
-        '''Link the global commands to this class.'''
-        old_demo = getattr(g.app, 'demo', None)
-        if old_demo:
-            old_demo.delete_widgets()
-            g.trace('deleting old demo:', old_demo.description)
-        g.app.demo = self
-    #@+node:ekr.20170128222411.1: *3* demo.Commands
-    #@+node:ekr.20170129174251.1: *4* demo.end
-    def end(self):
+    #@+node:ekr.20170207080029.1: *5* demo.parse_script_string
+    def parse_script_string (self, script_string, delim):
         '''
-        End this slideshow and call teardown().
-        This will be called several times if demo scripts call demo.next().
+        script_string is single string, representing a list of script strings
+        separated by lines that start with delim.
+        
+        Return a list of strings.
         '''
-        # Don't delete widgets here. Use the teardown method instead.
-        # self.delete_widgets()
-        if g.app.demo:
-            g.app.demo = None
-            self.teardown()
-            g.trace(self.__class__.__name__)
-    #@+node:ekr.20170128213103.31: *4* demo.exec_node
-    def exec_node(self, script):
-        '''Execute the script in node p.'''
-        c = self.c
-        # g.trace(repr(g.splitLines(script)[0]))
-        try:
-            c.executeScript(
-                namespace={'c': c, 'demo': self, 'g:': g, 'p': c.p},
-                script=script,
-                raiseFlag=True,
-                useSelectedText=False,
-            )
-        except Exception:
-            g.es_exception()
-    #@+node:ekr.20170128213103.30: *4* demo.next
-    def next(self):
-        '''Execute the next demo script, or call end().'''
-        # Don't delete widgets here. Leave that up to the demo scripts!
-        # self.delete_widgets()
-        if self.script_list:
-            # Execute the next script.
-            script = self.script_list.pop(0)
-            if self.trace: print(script)
-            self.exec_node(script)
+        aList = []
+        lines = []
+        for s in g.splitLines(script_string):
+            if s.startswith(delim):
+                if lines:
+                    aList.append(''.join(lines))
+                lines = []
+            else:
+                lines.append(s)
+        if lines:
+            aList.append(''.join(lines))
+        # g.trace('===== delim', delim) ; g.printList(aList)
+        return aList
+    #@+node:ekr.20170128213103.43: *4* demo.wait
+    def wait(self, n1=None, n2=None):
+        '''Wait for an interval between n1 and n2, in seconds.'''
+        if n1 is None: n1 = self.n1
+        if n2 is None: n2 = self.n2
+        if n1 > 0 and n2 > 0:
+            n = random.uniform(n1, n2)
         else:
-            self.end()
-    #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
-    def setup(self, p=None):
-        '''
-        Called before running the first demo script.
-        p is the root of the tree of demo scripts.
-        May be over-ridden in subclasses.
-        '''
-
-    def teardown(self):
-        '''
-        Called when the demo ends.
-        Subclasses may override this.
-        '''
-    #@+node:ekr.20170128213103.33: *4* demo.start
-    def start(self, p=None, script_list=None):
-        '''Start a demo whose root node is p,'''
-        self.delete_widgets()
-        if script_list:
-            self.script_list = script_list[:]
-        else:
-            self.script_list = self.create_script_list(p)
-        if self.script_list:
-            self.setup(p)
-            self.next()
-        else:
-            g.trace('no script tree')
-            self.end()
+            n = n1
+        if n > 0:
+            n = n * self.speed
+            g.sleep(n)
     #@+node:ekr.20170130090031.1: *3* demo.Keys
     #@+node:ekr.20170130184230.1: *4* demo.set_text_delta
     def set_text_delta(self, delta, w=None):
@@ -287,22 +455,6 @@ class Demo(object):
         for ch in s:
             self.key(ch)
     #@+node:ekr.20170130090141.1: *3* demo.Images
-    #@+node:ekr.20170206100558.1: *4* demo.callout
-    def callout(self, s, pane=None, position=None):
-        '''
-        Show a highlighted, auto-sized message s at the given position. Use a
-        standard location if none is given.
-        '''
-        parent = self.pane_widget(pane)
-        stylesheet = (
-            self.callout_stylesheet or
-            self.default_stylesheet % (self.callout_color)
-        )
-        w = Label(parent, s, self.callout_font, stylesheet)
-        self.widgets.append(w)
-        self.set_position(position, parent, w)
-        w.show()
-        return w
     #@+node:ekr.20170128213103.12: *4* demo.caption & body, log, tree
     def caption(self, s, pane): # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
@@ -370,26 +522,6 @@ class Demo(object):
         else:
             g.trace('does not exist: %s' % (path))
             return None
-    #@+node:ekr.20170206100605.1: *4* demo.subtitle
-    def subtitle(self, s, pane=None, position=None):
-        '''
-        Show a subtitle s at the given location on the screen. Use a standard
-        location if none is given.
-        '''
-        parent = self.pane_widget(pane)
-        stylesheet = (
-            self.callout_stylesheet or
-            self.default_stylesheet % (self.subtitle_color)
-        )
-        w = Label(parent, s, self.subtitle_font, stylesheet)
-        self.widgets.append(w)
-        if not position:
-            # Unlike callouts, the standard position is near the bottom.
-            y = parent.geometry().height() - 50
-            position = ('center', y)
-        self.set_position(position, parent, w)
-        w.show()
-        return w
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
     def dismiss_menu_bar(self):
@@ -433,93 +565,35 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20170206132709.1: *3* demo.positioning
-    #@+node:ekr.20170206111124.1: *4* demo.center
-    def center(self, w, parent):
-        '''Center widget w in its parent.'''
-        g_p = parent.geometry()
-        x = g_p.width()/2
-        y = g_p.height()/2
-        w.move(x, y)
-    #@+node:ekr.20170206132754.1: *4* demo.center_horizontally
-    def center_horizontally(self, y, parent, w):
-        '''Center w horizontally in its parent, and set its y position.'''
-        x = parent.geometry().width()/2
-        w.move(x, y)
-    #@+node:ekr.20170206132802.1: *4* demo.center_vertically
-    def center_vertically(self, x, parent, w):
-        '''Center w vertically in its parent, setting its x position.'''
-        y = parent.geometry().height()/2
-        w.move(x, y)
-    #@+node:ekr.20170206112010.1: *4* demo.set_position
-    def set_position(self, position, parent, w):
-        '''Position w at the given position, or center it.'''
-        if position:
-            try:
-                x, y = position
-            except Exception:
-                g.es('position argument must be a 2-tuple')
-                return
-            if not isinstance(x, int):
-                x = x.strip().lower()
-            if not isinstance(y, int):
-                y = y.strip().lower()
-            if x == y == 'center':
-                self.center(parent, w)
-            elif x == 'center':
-                self.center_horizontally(y, parent, w)
-            elif y == 'center':
-                self.center_vertically(x, parent, w)
-            else:
-                self.set_x(x, w)
-                self.set_y(y, w)
-        else:
-            self.center(w, parent)
-    #@+node:ekr.20170206142602.1: *4* demo.set_x/y
-    def set_x(self, x, w):
-        '''Set the x coordinate of w to x.'''
-        if not isinstance(x, int):
-            try:
-                x = int(x)
-            except ValueError:
-                g.es_exception()
-                g.trace('bad x position', repr(x))
-                return
-        w.move(x, w.geometry().y())
-
-    def set_y(self, y, w):
-        '''Set the y coordinate of w to y.'''
-        if not isinstance(y, int):
-            try:
-                y = int(y)
-            except ValueError:
-                g.es_exception()
-                g.trace('bad x position', repr(y))
-                return
-        w.move(w.geometry().x(), y)
-    #@+node:ekr.20170128213103.43: *3* demo.wait
-    def wait(self, n1=None, n2=None):
-        '''Wait for an interval between n1 and n2, in seconds.'''
-        if n1 is None: n1 = self.n1
-        if n2 is None: n2 = self.n2
-        if n1 > 0 and n2 > 0:
-            n = random.uniform(n1, n2)
-        else:
-            n = n1
-        if n > 0:
-            n = n * self.speed
-            g.sleep(n)
     #@-others
-#@+node:ekr.20170206203005.1: ** class Label (QLabel)
-class Label (QtWidgets.QLabel):
-    '''A class for callouts and subtitles in demo.py.'''
+#@+node:ekr.20170207080814.1: ** class Title(Label)
+class Title(Label):
     
-    def __init__(self, parent, text, font, stylesheet):
-        QtWidgets.QLabel.__init__(self, parent)
-        assert stylesheet
-        self.setStyleSheet(stylesheet)
-        if font:
-            self.setFont(font)
-        self.setText(text)
+    def __init__(self, text, position=None):
+        # Init the base class.
+        self.original_position = position
+        Label.__init__(self, text,
+            position = position, # May be changed in init.
+            font = QtGui.QFont('DejaVu Sans Mono', 16),
+            stylesheet = '''\
+                QLabel {
+                    border: 1px solid black;
+                    background-color : mistyrose;
+                    color : black;
+                }'''
+            )
+            
+    def init(self):
+        '''Actually set the attributes of the widget.'''
+        # The Label ctor will set self._position to its default.
+        # We don't want that.
+        self._position = (
+            self.original_position or
+            ('center', self.parent.geometry().height() - 50)
+        )
+        self.set_position(self._position)
+        self.setStyleSheet(self._stylesheet)
+        self.setFont(self._font)
+        self.show()
 #@-others
 #@-leo
