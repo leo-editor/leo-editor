@@ -289,8 +289,6 @@ class LeoEditPane(QtWidgets.QWidget):
         names = [os.path.splitext(i) for i in os.listdir(module_dir)
                  if os.path.isfile(os.path.join(module_dir, i))]
         modules = []
-        print names
-        print os.listdir(module_dir)
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             print(name)
             find = imp.find_module(name, [module_dir])
@@ -303,10 +301,11 @@ class LeoEditPane(QtWidgets.QWidget):
         self.widget_classes = []
         for module in modules:
             for key in dir(module):
-                if hasattr(getattr(module, key), 'lep_type'):
+                value = getattr(module, key)
+                if hasattr(value, 'lep_type') and value not in self.widget_classes:
                     if module not in self.modules:
                         self.modules.append(module)
-                    self.widget_classes.append(getattr(module, key))
+                    self.widget_classes.append(value)
                     
     def misc_menu(self):
         """build menu on Action button"""
