@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1248,22 +1248,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
-<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
-<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
-</v>
-<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
-<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
-<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
-<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
-<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
-<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
-</v>
-<v t="ekr.20131015104133.16763"></v>
-<v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
-</v>
-<v t="ekr.20170203060541.1"><vh>** Why can't we put graphics directly in Leo's body pane?</vh></v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -1343,6 +1327,21 @@
 <v t="ekr.20170123084609.6"><vh>\@button make-table</vh></v>
 <v t="ekr.20170123084609.7"><vh>\@button make-test</vh></v>
 </v>
+</v>
+<v t="ekr.20161207045325.1"><vh>** To do</vh>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
+<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
+</v>
+<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
+<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
+<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
+<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
+<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
+</v>
+<v t="ekr.20131015104133.16763"></v>
+<v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -18742,7 +18741,8 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">* Insert to-be-documented mail items
+<t tx="ekr.20161207045325.1">* Revise tutorials: the less said, the better.
+- Insert to-be-documented mail items
 - What setting allows automatic pyflakes?
 
 </t>
@@ -19558,7 +19558,6 @@ next script: generate an output html or text file of the nodes you just created
 Each of the above examples could just gloss over the internal architecture, (but still reference architecture with links elsewhere in the documentation.
 
 This would give new users exposure to the editor itself without confusing nomenclature that does not make much sense, except to experienced users (or developers) of the tool.</t>
-<t tx="ekr.20170203060541.1"></t>
 <t tx="ekr.20170205185641.10">https://github.com/leo-editor/leo-editor/issues/389
 
 See the checkin log for details.
@@ -20204,7 +20203,7 @@ It would really be great to get a Leo formula going for Homebrew. As mentioned b
 
 Added g.input_, but this is not a great solution.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

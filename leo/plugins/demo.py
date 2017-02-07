@@ -14,20 +14,6 @@ import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
-
-# For callout stuff.
-Qt = QtCore.Qt
-QBrush = QtGui.QBrush
-QColor = QtGui.QColor
-QImage = QtGui.QImage
-QPainter = QtGui.QPainter
-QPainterPath = QtGui.QPainterPath
-QPixmap = QtGui.QPixmap
-QPoint = QtCore.QPoint
-QRect = QtCore.QRect
-QRegion = QtGui.QRegion
-QSize = QtCore.QSize
-QWidget = QtWidgets.QWidget
 #@-<< demo.py imports >>
 #@@language python
 #@@tabwidth -4
@@ -59,102 +45,40 @@ def demo_end(self, event=None):
         g.app.demo.end()
     else:
         g.trace('no demo instance')
-#@+node:ekr.20170206103122.5: ** class Callout (QWidget)
-# http://stackoverflow.com/questions/16519621/implementing-pyside-callout
-
-class Callout(QWidget):
-    #@+others
-    #@+node:ekr.20170206103122.6: *3* callout.__init__
-    def __init__(self, text, parent=None, color=None, font=None):
-        '''Create a callout.'''
-        super(Callout, self).__init__(parent)
-        self.text=text
-        self.color = color if color else QColor(192, 192, 192)
-            # A grey background by default.
-        self.font = font if font else QtGui.QFont('DejaVu Sans Mono', 14)
-        self.setWindowFlags(Qt.FramelessWindowHint|Qt.WindowStaysOnTopHint)
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        # Measure the width of the text.
-        fm = QtGui.QFontMetrics(self.font)
-        r = fm.boundingRect(text)
-        w, h = r.width() + 20, r.height() + 18
-        # w, h = fm.width(text) + 20, fm.height() + 18
-        self.setMinimumSize(w, h)
-        r = self.createRegion(bubbleSize=QSize(w,h))
-        self.setMask(r)
-    #@+node:ekr.20170206103122.2: *3* callout.createMask
-    def createMask(self,size):
-        w=size.width()
-        h=size.height()
-        img=QImage(size, QImage.Format_MonoLSB)
-        qp=QtGui.QPainter()
-        qp.begin(img)
-        qp.fillRect(QRect(QPoint(0, 0), size), QColor(255,255,255))
-        path=QPainterPath()
-        path.moveTo(0, h-1)
-        path.lineTo(w-1,0)
-        path.lineTo(h-1, 0)
-        path.lineTo(0, h-1)
-        qp.fillPath(path, QBrush(QColor(0, 0, 0)))
-        qp.end()
-        return img
-    #@+node:ekr.20170206103122.4: *3* callout.createRegion
-    def createRegion(self, bubbleSize, pointSize=None, offset=None):
-        r = self.createRoundedRectRegion(
-            rect = QRect(QPoint(0, 0), bubbleSize),
-            radius = 10)
-        ### bt=QRegion(QPixmap(createMask(pointSize)))
-        ### t.translate(offset, bubbleSize.height())
-        ### r|=t
-        return r
-    #@+node:ekr.20170206103122.3: *3* callout.createRoundedRectRegion
-    def createRoundedRectRegion(self, rect, radius):
-        
-        r=QtGui.QRegion(rect.adjusted(radius, 0, -radius, 0))
-        r|=QRegion(rect.adjusted(0, radius, 0, -radius))
-        r|=QRegion(rect.left(), rect.top(),
-            2*radius, 2*radius, QRegion.Ellipse)
-        r|=QRegion(rect.right()-2*radius, rect.top(),
-            2*radius, 2*radius, QRegion.Ellipse)
-        r|=QRegion(rect.left(), rect.bottom()-2*radius,
-            2*radius, 2*radius, QRegion.Ellipse)
-        r|=QRegion(rect.right()-2*radius, rect.bottom()-2*radius,
-            2*radius, 2*radius, QRegion.Ellipse)
-        return r
-    #@+node:ekr.20170206103122.7: *3* callout.paintEvent
-    def paintEvent(self, event):
-        
-        painter = QPainter()
-        painter.begin(self)
-        if self.font:
-            painter.setFont(self.font)
-        painter.fillRect(0, 0, self.width(), 200, self.color)
-        painter.drawText(
-            QRect(0, 0, self.width(), 50),
-            Qt.AlignCenter,
-            self.text,
-        )
-        painter.end()
-    #@-others
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
     def __init__(self, c,
-        color=None,
-        font=None,
+        callout_color=None,
+        callout_font=None,
+        callout_stylesheet=None,
         subtitle_color=None,
         subtitle_font=None,
+        subtitle_stylesheet=None,
         trace=False,
     ):
         '''Ctor for the Demo class.'''
         self.c = c
         self.description = self.__class__.__name__
         # Config...
-        self.color = color
-        self.font = font
-        self.subtitle_color = subtitle_color
+        self.default_stylesheet = '''\
+    QLabel {
+        border: 2px solid black;
+        background-color : %s;
+        color : black;
+    }'''
+        self.callout_color = callout_color or 'lightgrey'
+        self.callout_stylesheet = callout_stylesheet
+        self.subtitle_color = subtitle_color or 'lightgrey'
+        self.subtitle_stylesheet = subtitle_stylesheet
+        # Set default fonts if stylesheets are given.
+        self.callout_font = callout_font
+        if not self.callout_font and not self.callout_stylesheet:
+            self.callout_font = QtGui.QFont('DejaVu Sans Mono', 14)
         self.subtitle_font = subtitle_font
+        if not self.subtitle_font and not self.subtitle_stylesheet:
+            self.subtitle_font = QtGui.QFont('DejaVu Sans Mono', 12)
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
@@ -370,7 +294,11 @@ class Demo(object):
         standard location if none is given.
         '''
         parent = self.pane_widget(pane)
-        w = Callout(s, parent, color=self.color, font=self.font)
+        stylesheet = (
+            self.callout_stylesheet or
+            self.default_stylesheet % (self.callout_color)
+        )
+        w = Label(parent, s, self.callout_font, stylesheet)
         self.widgets.append(w)
         self.set_position(position, parent, w)
         w.show()
@@ -449,7 +377,11 @@ class Demo(object):
         location if none is given.
         '''
         parent = self.pane_widget(pane)
-        w = Callout(s, parent, color=self.subtitle_color, font=self.subtitle_font)
+        stylesheet = (
+            self.callout_stylesheet or
+            self.default_stylesheet % (self.subtitle_color)
+        )
+        w = Label(parent, s, self.subtitle_font, stylesheet)
         self.widgets.append(w)
         if not position:
             # Unlike callouts, the standard position is near the bottom.
@@ -578,5 +510,16 @@ class Demo(object):
             n = n * self.speed
             g.sleep(n)
     #@-others
+#@+node:ekr.20170206203005.1: ** class Label (QLabel)
+class Label (QtWidgets.QLabel):
+    '''A class for callouts and subtitles in demo.py.'''
+    
+    def __init__(self, parent, text, font, stylesheet):
+        QtWidgets.QLabel.__init__(self, parent)
+        assert stylesheet
+        self.setStyleSheet(stylesheet)
+        if font:
+            self.setFont(font)
+        self.setText(text)
 #@-others
 #@-leo
