@@ -291,9 +291,11 @@ class LeoEditPane(QtWidgets.QWidget):
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             print(name)
-            find = imp.find_module(name, [module_dir])
+            # find = imp.find_module(name, [module_dir])
             try:
-                modules.append(imp.load_module(name, *find))
+                # modules.append(imp.load_module(name, *find))
+                exec "import %s" % name
+                modules.append(locals()[name])
             except ImportError:
                 pass
         
