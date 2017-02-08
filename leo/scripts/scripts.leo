@@ -278,11 +278,11 @@
 <v t="ekr.20170120110948.3"><vh>test</vh></v>
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
-<v t="ekr.20170208050850.1"><vh>@command test-demo</vh>
-<v t="ekr.20170208050850.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170208050850.3"><vh>script_string</vh></v>
-<v t="ekr.20170208050850.4"><vh>class myDemo</vh></v>
-<v t="ekr.20170208050850.5"><vh>wrappers</vh></v>
+<v t="ekr.20170208053852.1"><vh>@button test-demo @key=Ctrl-9</vh>
+<v t="ekr.20170208053852.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170208053852.3"><vh>script_string</vh></v>
+<v t="ekr.20170208053852.4"><vh>class myDemo</vh></v>
+<v t="ekr.20170208053852.5"><vh>wrappers</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3291,20 +3291,29 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170208050850.1">g.cls()
-&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20170208053852.1">&lt;&lt; imports &gt;&gt;
 @others
-demo = MyDemo(c, trace=False)
-demo.bind('callout', callout)
-demo.bind('title', title)
-demo.start(script_string=script_string)
+# Use the *same* command/key binding for demo-start and demo.next.
+try:
+    if getattr(g.app, 'demo', None):
+        g.app.demo.next()
+    else:
+        g.cls()
+        print('starting demo')
+        demo = MyDemo(c, trace=False)
+        demo.bind('callout', callout)
+        demo.bind('title', title)
+        demo.start(script_string=script_string)
+except Exception:
+    g.app.demo = None
+    raise
 </t>
-<t tx="ekr.20170208050850.2">if c.isChanged(): c.save()
+<t tx="ekr.20170208053852.2">if c.isChanged(): c.save()
 import imp
 from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
 imp.reload(demo_module)</t>
-<t tx="ekr.20170208050850.3">script_string = '''\
+<t tx="ekr.20170208053852.3">script_string = '''\
 callout('Callout 1 centered')
 title('This is title 1')
 ###
@@ -3323,11 +3332,12 @@ title('Short 5')
 demo.next()
 '''
 </t>
-<t tx="ekr.20170208050850.4">class MyDemo (demo_module.Demo):
+<t tx="ekr.20170208053852.4">class MyDemo (demo_module.Demo):
     
     def setup_script(self):
+        
         self.delete_widgets()</t>
-<t tx="ekr.20170208050850.5">def callout(text, **keys):
+<t tx="ekr.20170208053852.5">def callout(text, **keys):
     w = demo_module.Callout(text, **keys)
     
 def title(text, **keys):
