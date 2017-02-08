@@ -55,6 +55,7 @@ class Demo(object):
         '''Ctor for the Demo class.'''
         self.c = c
         # The *permanent* namespace.
+        # pylint: disable=import-self
         import leo.plugins.demo as module
         self.module = module
         self.namespace = {
@@ -99,7 +100,7 @@ class Demo(object):
         self.namespace [name] = object_
         # g.trace(name, object_, object_.__init__)
         return object_
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets & delete_retained_widgets
+    #@+node:ekr.20170128213103.40: *4* demo.delete_*
     def delete_widgets(self):
         '''Delete all presently visible widgets.'''
         # g.trace(self) ; g.printList(self.widgets)
@@ -107,6 +108,13 @@ class Demo(object):
             if w not in self.retained_widgets:
                 w.deleteLater()
         self.widgets = []
+        
+    def delete_one_widget(self, w):
+        if w in self.widgets:
+            self.widgets.remove(w)
+        if w in self.retained_widgets:
+            self.retained_widgets.remove(w)
+        w.deleteLater()
 
     def delete_retained_widgets(self):
         '''Delete all previously retained widgets.'''
