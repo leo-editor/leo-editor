@@ -47,131 +47,10 @@ def init():
         ### g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20170206203005.1: **  class Label (QLabel)
-class Label (QtWidgets.QLabel):
-    '''A class for user-defined callouts in demo.py.'''
-        
-    #@+others
-    #@+node:ekr.20170207074327.1: *3* label.__init__
-    def __init__(self, text,
-        font=None,
-        position=None,
-        stylesheet=None,
-    ):
-        '''
-        Label.__init__. The ctor for all user-defined callout classes.
-        Show the callout in the indicated place.
-        '''
-        c = g.app.demo.c
-        self.parent = c.frame.body.widget
-        QtWidgets.QLabel.__init__(self, self.parent)
-            # Init the base class
-        self.setText(text)
-        self._position = position or 'center'
-        self._stylesheet = stylesheet or '''\
-            QLabel {
-                border: 2px solid black;
-                background-color : lightgrey;
-                color : black;
-            }'''
-        self._font = font or QtGui.QFont('DejaVu Sans Mono', 16)
-        self.init()
-        g.app.demo.widgets.append(self)
-            # Must be done in all subclasses, so we do it here.
-    #@+node:ekr.20170207081055.1: *3* label.init
-    def init(self):
-        '''Actually set the attributes of the widget.'''
-        self.set_position(self._position)
-        self.setStyleSheet(self._stylesheet)
-        self.setFont(self._font)
-        self.show()
-
-    #@+node:ekr.20170206111124.1: *3* label.center*
-    def center(self):
-        '''Center this widget in its parent.'''
-        g_p = self.parent.geometry()
-        x = g_p.width()/2
-        y = g_p.height()/2
-        self.move(x, y)
-
-    def center_horizontally(self, y):
-        '''Center w horizontally in its parent, and set its y position.'''
-        x = self.parent.geometry().width()/2
-        self.move(x, y)
-
-    def center_vertically(self, x):
-        '''Center w vertically in its parent, setting its x position.'''
-        y = self.parent.geometry().height()/2
-        self.move(x, y)
-    #@+node:ekr.20170206112010.1: *3* label.set_position
-    def set_position(self, position):
-        '''Position w at the given position, or center it.'''
-        if not position:
-            position = self.position
-        if position == 'center':
-            self.center()
-            return
-        try:
-            x, y = position
-        except Exception:
-            g.es('position must be "center" or a 2-tuple', repr(position))
-            return
-        if not isinstance(x, int):
-            x = x.strip().lower()
-        if not isinstance(y, int):
-            y = y.strip().lower()
-        if x == y == 'center':
-            self.center()
-        elif x == 'center':
-            self.center_horizontally(y)
-        elif y == 'center':
-            self.center_vertically(x)
-        else:
-            self.set_x(x)
-            self.set_y(y)
-    #@+node:ekr.20170206142602.1: *3* label.set_x/y & helper
-    def set_x(self, x):
-        '''Set our x coordinate to x.'''
-        x = self.get_int(x)
-        if x is not None:
-            self.move(x, self.geometry().y())
-
-    def set_y(self, y):
-        '''Set our y coordinate to y.'''
-        y = self.get_int(y)
-        if y is not None:
-            self.move(self.geometry().x(), y)
-    #@+node:ekr.20170207094113.1: *4* label.get_int
-    def get_int(self, obj):
-        '''Convert obj to an int, if needed.'''
-        if isinstance(obj, int):
-            return obj
-        else:
-            try:
-                return int(obj)
-            except ValueError:
-                g.es_exception()
-                g.trace('bad x position', repr(obj))
-                return None
-    #@-others
-#@+node:ekr.20170207071819.1: ** class Callout(Label)
-class Callout(Label):
-    
-    def __init__(self, text, position=None):
-        # Init the base class.'''
-        Label.__init__(self, text,
-            font = QtGui.QFont('DejaVu Sans Mono', 20),
-            position = position or 'center',
-            stylesheet = '''\
-                QLabel {
-                    border: 2px solid black;
-                    background-color : lightblue;
-                    color : black;
-                }''')
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
-    #@+node:ekr.20170128213103.9: *3* demo.__init__ & helpers
+    #@+node:ekr.20170128213103.9: *3* demo.__init__ & init
     def __init__(self, c, trace=False):
         '''Ctor for the Demo class.'''
         self.c = c
@@ -208,20 +87,13 @@ class Demo(object):
             old_demo.delete_widgets()
             g.trace('deleting old demo:', old_demo.__class__.__name__)
         g.app.demo = self
-    #@+node:ekr.20170207090715.1: *4* demo.register_name
-    def register_name(self, name, object_):
+    #@+node:ekr.20170128222411.1: *3* demo.Control
+    #@+node:ekr.20170207090715.1: *4* demo.bind
+    def bind(self, name, object_):
         '''Add the name:object binding to self.namespace.'''
         assert name not in self.namespace, (name, self.namespace)
         self.namespace [name] = object_
         # g.trace(name, object_, object_.__init__)
-    #@+node:ekr.20170128222411.1: *3* demo.Commands
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
-    def delete_widgets(self):
-        '''Delete all presently visible widgets.'''
-        # g.trace(self) ; g.printList(self.widgets)
-        for w in self.widgets:
-            w.deleteLater()
-        self.widgets = []
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''
@@ -243,9 +115,9 @@ class Demo(object):
             # Execute the next script.
             script = self.script_list.pop(0)
             if self.trace: print(script)
-            ### self.script_setup(demo=self)
+            self.setup_script()
             self.exec_node(script)
-            ### self.script_teardown(demo=self)
+            self.teardown_script()
         else:
             self.end()
     #@+node:ekr.20170128213103.31: *5* demo.exec_node
@@ -270,7 +142,7 @@ class Demo(object):
         May be over-ridden in subclasses.
         '''
         
-    def script_setup(self):
+    def setup_script(self):
         '''
         Called before running each demo script.
         p is the root of the tree of demo scripts.
@@ -283,7 +155,7 @@ class Demo(object):
         Subclasses may override this.
         '''
 
-    def script_teardown(self):
+    def teardown_script(self):
         '''
         Called when the demo ends.
         Subclasses may override this.
@@ -363,6 +235,23 @@ class Demo(object):
         if n > 0:
             n = n * self.speed
             g.sleep(n)
+    #@+node:ekr.20170130090124.1: *3* demo.Menus
+    #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
+    def dismiss_menu_bar(self):
+        c = self.c
+        # c.frame.menu.deactivateMenuBar()
+        menubar = c.frame.top.leo_menubar
+        menubar.setActiveAction(None)
+        menubar.repaint()
+    #@+node:ekr.20170128213103.22: *4* demo.open_menu
+    def open_menu(self, menu_name):
+        '''Activate the indicated *top-level* menu.'''
+        c = self.c
+        menu = c.frame.menu.getMenu(menu_name)
+            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
+        if menu:
+            c.frame.menu.activateMenu(menu_name)
+        return menu
     #@+node:ekr.20170130090031.1: *3* demo.Keys
     #@+node:ekr.20170130184230.1: *4* demo.set_text_delta
     def set_text_delta(self, delta, w=None):
@@ -454,7 +343,7 @@ class Demo(object):
             c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
         for ch in s:
             self.key(ch)
-    #@+node:ekr.20170130090141.1: *3* demo.Images
+    #@+node:ekr.20170130090141.1: *3* demo.Images (Create classes)
     #@+node:ekr.20170128213103.12: *4* demo.caption & body, log, tree
     def caption(self, s, pane): # To do: center option.
         '''Pop up a QPlainTextEdit in the indicated pane.'''
@@ -522,28 +411,18 @@ class Demo(object):
         else:
             g.trace('does not exist: %s' % (path))
             return None
-    #@+node:ekr.20170130090124.1: *3* demo.Menus
-    #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
-    def dismiss_menu_bar(self):
-        c = self.c
-        # c.frame.menu.deactivateMenuBar()
-        menubar = c.frame.top.leo_menubar
-        menubar.setActiveAction(None)
-        menubar.repaint()
-    #@+node:ekr.20170128213103.22: *4* demo.open_menu
-    def open_menu(self, menu_name):
-        '''Activate the indicated *top-level* menu.'''
-        c = self.c
-        menu = c.frame.menu.getMenu(menu_name)
-            # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
-        if menu:
-            c.frame.menu.activateMenu(menu_name)
-        return menu
     #@+node:ekr.20170130090250.1: *3* demo.Panes & widgets
     #@+node:ekr.20170128213103.13: *4* demo.clear_log
     def clear_log(self):
         '''Clear the log.'''
         self.c.frame.log.clearTab('Log')
+    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
+    def delete_widgets(self):
+        '''Delete all presently visible widgets.'''
+        # g.trace(self) ; g.printList(self.widgets)
+        for w in self.widgets:
+            w.deleteLater()
+        self.widgets = []
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
@@ -565,8 +444,129 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
+    def set_position(self, w, position):
+        '''Position w at the given position, or center it.'''
+        if position == 'center':
+            self.center(w)
+            return
+        try:
+            x, y = position
+        except Exception:
+            g.es('position must be "center" or a 2-tuple', repr(position))
+            return
+        if not isinstance(x, int):
+            x = x.strip().lower()
+        if not isinstance(y, int):
+            y = y.strip().lower()
+        if x == y == 'center':
+            self.center(w)
+        elif x == 'center':
+            self.center_horizontally(w, y)
+        elif y == 'center':
+            self.center_vertically(w, x)
+        else:
+            self.set_x(w, x)
+            self.set_y(w, y)
+    #@+node:ekr.20170206111124.1: *5* demo.center*
+    def center(self, w):
+        '''Center this widget in its parent.'''
+        g_p = w.parent.geometry()
+        x = g_p.width()/2
+        y = g_p.height()/2
+        w.move(x, y)
+
+    def center_horizontally(self, w, y):
+        '''Center w horizontally in its parent, and set its y position.'''
+        x = w.parent.geometry().width()/2
+        w.move(x, y)
+
+    def center_vertically(self, w, x):
+        '''Center w vertically in its parent, setting its x position.'''
+        y = w.parent.geometry().height()/2
+        w.move(x, y)
+    #@+node:ekr.20170206142602.1: *5* demo.set_x/y & helper
+    def set_x(self, w, x):
+        '''Set our x coordinate to x.'''
+        x = self.get_int(x)
+        if x is not None:
+            w.move(x, w.geometry().y())
+
+    def set_y(self, w, y):
+        '''Set our y coordinate to y.'''
+        y = self.get_int(y)
+        if y is not None:
+            w.move(w.geometry().x(), y)
+    #@+node:ekr.20170207094113.1: *5* demo.get_int
+    def get_int(self, obj):
+        '''Convert obj to an int, if needed.'''
+        if isinstance(obj, int):
+            return obj
+        else:
+            try:
+                return int(obj)
+            except ValueError:
+                g.es_exception()
+                g.trace('bad x position', repr(obj))
+                return None
     #@-others
-#@+node:ekr.20170207080814.1: ** class Title(Label)
+#@+node:ekr.20170208045907.1: ** Graphics classes
+#@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
+class Label (QtWidgets.QLabel):
+    '''A class for user-defined callouts in demo.py.'''
+        
+    #@+others
+    #@+node:ekr.20170207074327.1: *4* label.__init__
+    def __init__(self, text,
+        font=None,
+        position=None,
+        stylesheet=None,
+    ):
+        '''
+        Label.__init__. The ctor for all user-defined callout classes.
+        Show the callout in the indicated place.
+        '''
+        c = g.app.demo.c
+        self.demo = g.app.demo
+        self.parent = c.frame.body.widget
+        QtWidgets.QLabel.__init__(self, self.parent)
+            # Init the base class
+        self.setText(text)
+        self._position = position or 'center'
+        self._stylesheet = stylesheet or '''\
+            QLabel {
+                border: 2px solid black;
+                background-color : lightgrey;
+                color : black;
+            }'''
+        self._font = font or QtGui.QFont('DejaVu Sans Mono', 16)
+        self.init()
+        g.app.demo.widgets.append(self)
+            # Must be done in all subclasses, so we do it here.
+    #@+node:ekr.20170207081055.1: *4* label.init
+    def init(self):
+        '''Actually set the attributes of the widget.'''
+        self.demo.set_position(self, self._position)
+        self.setStyleSheet(self._stylesheet)
+        self.setFont(self._font)
+        self.show()
+
+    #@-others
+#@+node:ekr.20170207071819.1: *3* class Callout(Label)
+class Callout(Label):
+    
+    def __init__(self, text, position=None):
+        # Init the base class.'''
+        Label.__init__(self, text,
+            font = QtGui.QFont('DejaVu Sans Mono', 20),
+            position = position or 'center',
+            stylesheet = '''\
+                QLabel {
+                    border: 2px solid black;
+                    background-color : lightblue;
+                    color : black;
+                }''')
+#@+node:ekr.20170207080814.1: *3* class Title(Label)
 class Title(Label):
     
     def __init__(self, text, position=None):
@@ -591,7 +591,7 @@ class Title(Label):
             self.original_position or
             ('center', self.parent.geometry().height() - 50)
         )
-        self.set_position(self._position)
+        self.demo.set_position(self, self._position)
         self.setStyleSheet(self._stylesheet)
         self.setFont(self._font)
         self.show()

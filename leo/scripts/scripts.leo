@@ -278,6 +278,12 @@
 <v t="ekr.20170120110948.3"><vh>test</vh></v>
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
+<v t="ekr.20170208050850.1"><vh>@command test-demo</vh>
+<v t="ekr.20170208050850.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170208050850.3"><vh>script_string</vh></v>
+<v t="ekr.20170208050850.4"><vh>class myDemo</vh></v>
+<v t="ekr.20170208050850.5"><vh>wrappers</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3284,6 +3290,48 @@ if 1:
 from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
+</t>
+<t tx="ekr.20170208050850.1">g.cls()
+&lt;&lt; imports &gt;&gt;
+@others
+demo = MyDemo(c, trace=False)
+demo.bind('callout', callout)
+demo.bind('title', title)
+demo.start(script_string=script_string)
+</t>
+<t tx="ekr.20170208050850.2">if c.isChanged(): c.save()
+import imp
+from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+imp.reload(demo_module)</t>
+<t tx="ekr.20170208050850.3">script_string = '''\
+callout('Callout 1 centered')
+title('This is title 1')
+###
+callout('Callout 2 (700, 200)', position=[700, 200])
+title('This is title 2')
+###
+callout('Callout 3 (200, 300)', position=[200, 300])
+title('This is title 3')
+###
+callout('Callout 4 (center, 200)', position=['center', 200])
+title('This is a much much longer title 4')
+###
+callout('Callout 5 (700, center)', position=[700, 'center'])
+title('Short 5')
+###
+demo.next()
+'''
+</t>
+<t tx="ekr.20170208050850.4">class MyDemo (demo_module.Demo):
+    
+    def setup_script(self):
+        self.delete_widgets()</t>
+<t tx="ekr.20170208050850.5">def callout(text, **keys):
+    w = demo_module.Callout(text, **keys)
+    
+def title(text, **keys):
+    w = demo_module.Title(text, **keys)
 </t>
 </tnodes>
 </leo_file>
