@@ -3291,7 +3291,11 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170208053852.1">&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20170208053852.1">'''
+A template for demonstrations based on plugins/demo.py.
+The demo;; abbreviation will create this tree.
+'''
+&lt;&lt; imports &gt;&gt;
 @others
 # Use the *same* command/key binding for demo-start and demo.next.
 try:

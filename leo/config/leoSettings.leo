@@ -2457,8 +2457,6 @@
 </v>
 </v>
 </v>
-<v t="tbrown.20141101105337.1"></v>
-<v t="ekr.20100904134301.11000"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11788,7 +11786,11 @@ Put notes about each version here.
 <t tx="ekr.20170123145248.1"></t>
 <t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
 True: call all @ and @doc parts as reStructuredText (@language rest).</t>
-<t tx="ekr.20170208063901.1">&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20170208063901.1">'''
+A template for demonstrations based on plugins/demo.py.
+The demo;; abbreviation will create this tree.
+'''
+&lt;&lt; imports &gt;&gt;
 @others
 # Use the *same* command/key binding for demo-start and demo.next.
 try:
