@@ -7,7 +7,6 @@
 @language rest
 @wrap
 
-- demo.py.
 - tutorials
 - A Leo wizard, like pyzo. (a slideshow, available from the help menu)
 .. @+node:ekr.20170128161249.1: ** Next projects

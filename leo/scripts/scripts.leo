@@ -278,12 +278,11 @@
 <v t="ekr.20170120110948.3"><vh>test</vh></v>
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
-<v t="ekr.20170208053852.1"><vh>@button test-demo @key=Ctrl-9</vh>
-<v t="ekr.20170208053852.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170208053852.3"><vh>script_string</vh></v>
-<v t="ekr.20170208053852.4"><vh>class myDemo</vh></v>
-<v t="ekr.20170208053852.5"><vh>wrappers</vh></v>
 </v>
+<v t="ekr.20170208111343.1"><vh>@button test-demo @key=Ctrl-9</vh>
+<v t="ekr.20170208111343.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170208111343.3"><vh>class myDemo</vh></v>
+<v t="ekr.20170208111343.4"><vh>script_string</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3291,61 +3290,69 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170208053852.1">'''
-A template for demonstrations based on plugins/demo.py.
-The demo;; abbreviation will create this tree.
-'''
-&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20170208111343.1">&lt;&lt; imports &gt;&gt;
 @others
-# Use the *same* command/key binding for demo-start and demo.next.
+# The *same* command/key binding calls both demo-start and demo.next.
 try:
     if getattr(g.app, 'demo', None):
         g.app.demo.next()
     else:
         g.cls()
-        print('starting demo')
+        print('starting MyDemo')
         demo = MyDemo(c, trace=False)
-        demo.bind('callout', callout)
-        demo.bind('title', title)
         demo.start(script_string=script_string)
 except Exception:
     g.app.demo = None
     raise
 </t>
-<t tx="ekr.20170208053852.2">if c.isChanged(): c.save()
+<t tx="ekr.20170208111343.2">if c.isChanged(): c.save()
 import imp
 from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
 imp.reload(demo_module)</t>
-<t tx="ekr.20170208053852.3">script_string = '''\
+<t tx="ekr.20170208111343.3">class MyDemo (demo_module.Demo):
+    
+    def __init__(self, c, trace=False):
+        demo_module.Demo.__init__(self, c, trace)
+            # init the base class.
+    
+    def setup(self, p=None):
+        demo = self
+        demo.bind('QtGui', QtGui)
+        demo.bind('callout', demo.module.Callout)
+        demo.bind('image', demo_module.Image)
+        demo.bind('text', demo_module.Text)
+        demo.bind('title', demo.module.Title)
+
+    def setup_script(self):
+        self.delete_widgets()
+        </t>
+<t tx="ekr.20170208111343.4">script_string = '''\
+w = image('C:/leo.repo/leo-editor/leo/Icons/SplashScreen.ico')
+demo.retain(w)
 callout('Callout 1 centered')
 title('This is title 1')
 ###
 callout('Callout 2 (700, 200)', position=[700, 200])
 title('This is title 2')
 ###
+demo.delete_retained_widgets()
+text('This is a text area',
+    font=QtGui.QFont('Verdana', 14),
+    position=(20, 40),
+    size=(100, 200))
+###
 callout('Callout 3 (200, 300)', position=[200, 300])
 title('This is title 3')
 ###
-callout('Callout 4 (center, 200)', position=['center', 200])
-title('This is a much much longer title 4')
+# callout('Callout 4 (center, 200)', position=['center', 200])
+# title('This is a much much longer title 4')
 ###
-callout('Callout 5 (700, center)', position=[700, 'center'])
-title('Short 5')
+# callout('Callout 5 (700, center)', position=[700, 'center'])
+# title('Short 5')
 ###
 demo.next()
 '''
-</t>
-<t tx="ekr.20170208053852.4">class MyDemo (demo_module.Demo):
-    
-    def setup_script(self):
-        
-        self.delete_widgets()</t>
-<t tx="ekr.20170208053852.5">def callout(text, **keys):
-    w = demo_module.Callout(text, **keys)
-    
-def title(text, **keys):
-    w = demo_module.Title(text, **keys)
 </t>
 </tnodes>
 </leo_file>

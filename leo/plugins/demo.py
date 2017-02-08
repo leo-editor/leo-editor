@@ -14,7 +14,7 @@ Revised by EKR February 6-7, 2017.
 import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets # QtCore
 #@-<< demo.py imports >>
 #@@language python
 #@@tabwidth -4
@@ -55,6 +55,8 @@ class Demo(object):
         '''Ctor for the Demo class.'''
         self.c = c
         # The *permanent* namespace.
+        import leo.plugins.demo as module
+        self.module = module
         self.namespace = {
             'c': c,
             'demo': self,
@@ -71,6 +73,8 @@ class Demo(object):
         # Converting arguments to demo.key.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
         # Other ivars.
+        self.retained_widgets = []
+            # List of widgets *not* to be deleted by delete_widgets.
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
@@ -94,6 +98,21 @@ class Demo(object):
         assert name not in self.namespace, (name, self.namespace)
         self.namespace [name] = object_
         # g.trace(name, object_, object_.__init__)
+        return object_
+    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets & delete_retained_widgets
+    def delete_widgets(self):
+        '''Delete all presently visible widgets.'''
+        # g.trace(self) ; g.printList(self.widgets)
+        for w in self.widgets:
+            if w not in self.retained_widgets:
+                w.deleteLater()
+        self.widgets = []
+
+    def delete_retained_widgets(self):
+        '''Delete all previously retained widgets.'''
+        for w in self.retained_widgets:
+            w.deleteLater()
+        self.retained_widgets = []
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''
@@ -134,6 +153,10 @@ class Demo(object):
             )
         except Exception:
             g.es_exception()
+    #@+node:ekr.20170208094834.1: *4* demo.retain
+    def retain (self, w):
+        '''Retain widet w so that dele_widgets does not delete it.'''
+        self.retained_widgets.append(w)
     #@+node:ekr.20170128214912.1: *4* demo.setup & teardown
     def setup(self, p=None):
         '''
@@ -154,6 +177,8 @@ class Demo(object):
         Called when the demo ends.
         Subclasses may override this.
         '''
+        self.delete_retained_widgets()
+        self.delete_widgets()
 
     def teardown_script(self):
         '''
@@ -217,6 +242,10 @@ class Demo(object):
                 if lines:
                     aList.append(''.join(lines))
                 lines = []
+            elif s.isspace() or s.strip().startswith('#'):
+                # Ignore comment or blank lines.
+                # This allows the user to comment out entire sections.
+                pass
             else:
                 lines.append(s)
         if lines:
@@ -343,86 +372,11 @@ class Demo(object):
             c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
         for ch in s:
             self.key(ch)
-    #@+node:ekr.20170130090141.1: *3* demo.Images (Create classes)
-    #@+node:ekr.20170128213103.12: *4* demo.caption & body, log, tree
-    def caption(self, s, pane): # To do: center option.
-        '''Pop up a QPlainTextEdit in the indicated pane.'''
-        parent = self.pane_widget(pane)
-        if parent:
-            s = s.rstrip()
-            if s and s[-1].isalpha(): s = s + '.'
-            w = QtWidgets.QPlainTextEdit(s, parent)
-            w.setObjectName('screencastcaption')
-            self.widgets.append(w)
-            w2 = self.pane_widget(pane)
-            geom = w2.geometry()
-            w.resize(geom.width(), min(150, geom.height() / 2))
-            off = QtCore.Qt.ScrollBarAlwaysOff
-            w.setHorizontalScrollBarPolicy(off)
-            w.setVerticalScrollBarPolicy(off)
-            w.show()
-            return w
-        else:
-            g.trace('bad pane: %s' % (pane))
-            return None
-
-    def body(self, s):
-        return self.caption(s, 'body')
-
-    def log(self, s):
-        return self.caption(s, 'log')
-
-    def tree(self, s):
-        return self.caption(s, 'tree')
-    #@+node:ekr.20170128213103.21: *4* demo.image & helper
-    def image(self, fn, center=None, height=None, pane=None, width=None):
-        '''Put an image in the indicated pane.'''
-        parent = self.pane_widget(pane or 'body')
-        if parent:
-            w = QtWidgets.QLabel('label', parent)
-            fn = self.resolve_icon_fn(fn)
-            if not fn: return None
-            pixmap = QtGui.QPixmap(fn)
-            if not pixmap:
-                return g.trace('Not a pixmap: %s' % (fn))
-            if height:
-                pixmap = pixmap.scaledToHeight(height)
-            if width:
-                pixmap = pixmap.scaledToWidth(width)
-            w.setPixmap(pixmap)
-            if center:
-                g_w = w.geometry()
-                g_p = parent.geometry()
-                dx = (g_p.width() - g_w.width()) / 2
-                w.move(g_w.x() + dx, g_w.y() + 10)
-            w.show()
-            self.widgets.append(w)
-            return w
-        else:
-            g.trace('bad pane: %s' % (pane))
-            return None
-    #@+node:ekr.20170128213103.42: *5* demo.resolve_icon_fn
-    def resolve_icon_fn(self, fn):
-        '''Resolve fn relative to the Icons directory.'''
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
-        if g.os_path_exists(path):
-            return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
-    #@+node:ekr.20170130090250.1: *3* demo.Panes & widgets
+    #@+node:ekr.20170130090250.1: *3* demo.Utils
     #@+node:ekr.20170128213103.13: *4* demo.clear_log
     def clear_log(self):
         '''Clear the log.'''
         self.c.frame.log.clearTab('Log')
-    #@+node:ekr.20170128213103.40: *4* demo.delete_widgets
-    def delete_widgets(self):
-        '''Delete all presently visible widgets.'''
-        # g.trace(self) ; g.printList(self.widgets)
-        for w in self.widgets:
-            w.deleteLater()
-        self.widgets = []
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
@@ -444,10 +398,20 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
+    #@+node:ekr.20170208093727.1: *4* demo.resolve_icon_fn
+    def resolve_icon_fn(self, fn):
+        '''Resolve fn relative to the Icons directory.'''
+        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.os_path_finalize_join(dir_, fn)
+        if g.os_path_exists(path):
+            return path
+        else:
+            g.trace('does not exist: %s' % (path))
+            return None
     #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
     def set_position(self, w, position):
         '''Position w at the given position, or center it.'''
-        if position == 'center':
+        if not position or position == 'center':
             self.center(w)
             return
         try:
@@ -471,19 +435,19 @@ class Demo(object):
     #@+node:ekr.20170206111124.1: *5* demo.center*
     def center(self, w):
         '''Center this widget in its parent.'''
-        g_p = w.parent.geometry()
+        g_p = w.parent().geometry()
         x = g_p.width()/2
         y = g_p.height()/2
         w.move(x, y)
 
     def center_horizontally(self, w, y):
         '''Center w horizontally in its parent, and set its y position.'''
-        x = w.parent.geometry().width()/2
+        x = w.parent().geometry().width()/2
         w.move(x, y)
 
     def center_vertically(self, w, x):
         '''Center w vertically in its parent, setting its x position.'''
-        y = w.parent.geometry().height()/2
+        y = w.parent().geometry().height()/2
         w.move(x, y)
     #@+node:ekr.20170206142602.1: *5* demo.set_x/y & helper
     def set_x(self, w, x):
@@ -517,21 +481,17 @@ class Label (QtWidgets.QLabel):
         
     #@+others
     #@+node:ekr.20170207074327.1: *4* label.__init__
-    def __init__(self, text,
-        font=None,
-        position=None,
-        stylesheet=None,
-    ):
+    def __init__(self, text=None, font=None, position=None, stylesheet=None):
         '''
         Label.__init__. The ctor for all user-defined callout classes.
         Show the callout in the indicated place.
         '''
         c = g.app.demo.c
         self.demo = g.app.demo
-        self.parent = c.frame.body.widget
-        QtWidgets.QLabel.__init__(self, self.parent)
+        QtWidgets.QLabel.__init__(self, parent=c.frame.body.widget)
             # Init the base class
-        self.setText(text)
+        if text:
+            self.setText(text)
         self._position = position or 'center'
         self._stylesheet = stylesheet or '''\
             QLabel {
@@ -551,6 +511,91 @@ class Label (QtWidgets.QLabel):
         self.setFont(self._font)
         self.show()
 
+    #@-others
+#@+node:ekr.20170208065111.1: *3*  class Image (QLabel)
+class Image (QtWidgets.QLabel):
+    
+    def __init__(self, fn, position=None, size=None):
+        '''Image.__init__.'''
+        self.demo = getattr(g.app, 'demo', None)
+        if self.demo:
+            c = g.app.demo.c
+            QtWidgets.QLabel.__init__(self, parent=c.frame.body.widget)
+                # init the base class
+            self.init_image(fn, position, size)
+            g.app.demo.widgets.append(self)
+        else:
+            g.trace('(Image): no g.app.demo')
+
+    #@+others
+    #@+node:ekr.20170208070231.1: *4* image.init_image
+    def init_image(self, fn, position, size):
+        '''Init the image whose file name fn is given.'''
+        demo, w = self.demo, self
+        fn = demo.resolve_icon_fn(fn)
+        if not fn:
+            g.trace('can not resolve', fn)
+            return
+        pixmap = QtGui.QPixmap(fn)
+        if not pixmap:
+            return g.trace('Not a pixmap:', fn)
+        if size:
+            try:
+                height, width = size
+                height = demo.get_int(height)
+                width = demo.get_int(width)
+                if height is not None:
+                    pixmap = pixmap.scaledToHeight(height)
+                if width is not None:
+                    pixmap = pixmap.scaledToWidth(width)
+            except ValueError:
+                g.trace('invalid size', repr(size))
+        if position:
+            demo.set_position(w)
+        w.setPixmap(pixmap)
+        w.show()
+    #@-others
+#@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
+class Text (QtWidgets.QPlainTextEdit):
+    
+    def __init__(self, s,
+        font=None, pane=None, position=None, size=None, stylesheet=None,):
+        '''Pop up a QPlainTextEdit in the indicated pane.'''
+        self.demo = demo = getattr(g.app, 'demo', None)
+        if demo:
+            self._parent = demo.pane_widget(pane)
+            s = s.rstrip()
+            if s and s[-1].isalpha(): s = s + '.'
+            QtWidgets.QPlainTextEdit.__init__(self, s, self._parent)
+            self.init(font, position, size, stylesheet)
+            demo.widgets.append(self)
+            
+    #@+others
+    #@+node:ekr.20170208101919.1: *4* text.init
+    def init(self, font, position, size, stylesheet):
+        '''Init the Text widget.'''
+        demo, w = self.demo, self
+        demo.set_position(w, position)
+            # position = None centers the widget.
+        if size:
+            try:
+                height, width = size
+                height = demo.get_int(height)
+                width = demo.get_int(width)
+                w.resize(width, height)
+            except ValueError:
+                g.trace('invalid size', repr(size))
+        else:
+            geom = self._parent.geometry()
+            w.resize(geom.width(), min(150, geom.height() / 2))
+        # off = QtCore.Qt.ScrollBarAlwaysOff
+        # w.setHorizontalScrollBarPolicy(off)
+        # w.setVerticalScrollBarPolicy(off)
+        if stylesheet:
+            w.setStyleSheet(stylesheet)
+        else:
+            w.setFont(font or QtGui.QFont('Verdana', 14))
+        w.show()
     #@-others
 #@+node:ekr.20170207071819.1: *3* class Callout(Label)
 class Callout(Label):
@@ -589,7 +634,7 @@ class Title(Label):
         # We don't want that.
         self._position = (
             self.original_position or
-            ('center', self.parent.geometry().height() - 50)
+            ('center', self.parent().geometry().height() - 50)
         )
         self.demo.set_position(self, self._position)
         self.setStyleSheet(self._stylesheet)
