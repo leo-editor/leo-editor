@@ -50,7 +50,7 @@ def init():
 #@+node:ekr.20170128213103.8: ** class Demo
 class Demo(object):
     #@+others
-    #@+node:ekr.20170128213103.9: *3* demo.__init__ & init
+    #@+node:ekr.20170128213103.9: *3* demo.__init__ & init_*
     def __init__(self, c, trace=False):
         '''Ctor for the Demo class.'''
         self.c = c
@@ -58,15 +58,7 @@ class Demo(object):
         # pylint: disable=import-self
         import leo.plugins.demo as module
         self.module = module
-        self.namespace = {
-            'c': c,
-            'demo': self,
-            'g:': g,
-            'p': c.p,
-            'Label': Label,
-            'Callout': Callout,
-            'Title': Title,
-        }
+        self.namespace = {} # Set in init_namespace.
         # Typing params.
         self.n1 = 0.02 # default minimal typing delay, in seconds.
         self.n2 = 0.175 # default maximum typing delay, in seconds.
@@ -84,6 +76,7 @@ class Demo(object):
         self.widgets = [] # References to (popup) widgets created by this class.
         # Create *global* demo commands.
         self.init()
+        self.init_namespace()
     #@+node:ekr.20170129174128.1: *4* demo.init
     def init(self):
         '''Link the global commands to this class.'''
@@ -92,11 +85,30 @@ class Demo(object):
             old_demo.delete_widgets()
             g.trace('deleting old demo:', old_demo.__class__.__name__)
         g.app.demo = self
+    #@+node:ekr.20170208124125.1: *4* demo.init_namespace
+    def init_namespace(self):
+        '''
+        Init self.namespace. May be overridden.
+        '''
+        c = self.c
+        self.namespace = {
+            'c': c,
+            'demo': self,
+            'g:': g,
+            'p': c.p,
+            'Callout': Callout,
+            'Image': Image,
+            'Label': Label,
+            'Text': Text,
+            'Title': Title,
+        }
     #@+node:ekr.20170128222411.1: *3* demo.Control
     #@+node:ekr.20170207090715.1: *4* demo.bind
     def bind(self, name, object_):
         '''Add the name:object binding to self.namespace.'''
-        assert name not in self.namespace, (name, self.namespace)
+        if name in self.namespace:
+            g.trace('redefining', name)
+            g.printDict(self.namespace)
         self.namespace [name] = object_
         # g.trace(name, object_, object_.__init__)
         return object_
@@ -152,6 +164,7 @@ class Demo(object):
         '''Execute the script in node p.'''
         c = self.c
         # g.trace(repr(g.splitLines(script)[0]))
+        # g.printDict(self.namespace)
         try:
             c.executeScript(
                 namespace=self.namespace,
