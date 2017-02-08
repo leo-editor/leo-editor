@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="72" left="646" height="983" width="1098"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -133,6 +133,14 @@
 <v t="ekr.20161121044950.9"><vh>class pluginController</vh>
 <v t="ekr.20161121044950.10"><vh>__init__</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20170208063946.1"><vh>demo;;</vh>
+<v t="ekr.20170208063901.1"><vh>@button MyDemo @key=Ctrl-9</vh>
+<v t="ekr.20170208063901.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170208063901.3"><vh>script_string</vh></v>
+<v t="ekr.20170208063901.4"><vh>class myDemo</vh></v>
+<v t="ekr.20170208063901.5"><vh>wrappers</vh></v>
 </v>
 </v>
 </v>
@@ -2450,6 +2458,7 @@
 </v>
 </v>
 <v t="tbrown.20141101105337.1"></v>
+<v t="ekr.20100904134301.11000"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4759,7 +4768,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="5,0">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -11716,6 +11725,7 @@ https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 # the abbreviation node as the last children of the presently selected node.
 
 per-commander-plugin;;
+demo;;
 </t>
 <t tx="ekr.20161121044950.10">def __init__ (self,c):
     
@@ -11778,6 +11788,50 @@ Put notes about each version here.
 <t tx="ekr.20170123145248.1"></t>
 <t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
 True: call all @ and @doc parts as reStructuredText (@language rest).</t>
+<t tx="ekr.20170208063901.1">&lt;&lt; imports &gt;&gt;
+@others
+# Use the *same* command/key binding for demo-start and demo.next.
+try:
+    if getattr(g.app, 'demo', None):
+        g.app.demo.next()
+    else:
+        g.cls()
+        print('starting demo')
+        demo = MyDemo(c, trace=False)
+        demo.bind('callout', callout)
+        demo.bind('title', title)
+        demo.start(script_string=script_string)
+except Exception:
+    g.app.demo = None
+    raise
+</t>
+<t tx="ekr.20170208063901.2">if c.isChanged(): c.save()
+import imp
+from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+imp.reload(demo_module)</t>
+<t tx="ekr.20170208063901.3"># A short example. Change as needed.
+script_string = '''\
+callout('Callout 1 centered')
+title('This is title 1')
+###
+callout('Callout 2 (700, 200)', position=[700, 200])
+title('This is title 2')
+demo.next()
+'''
+</t>
+<t tx="ekr.20170208063901.4">class MyDemo (demo_module.Demo):
+    
+    def setup_script(self):
+        '''Delete all previously shown widgets.'''
+        self.delete_widgets()</t>
+<t tx="ekr.20170208063901.5">def callout(text, **keys):
+    w = demo_module.Callout(text, **keys)
+    
+def title(text, **keys):
+    w = demo_module.Title(text, **keys)
+</t>
+<t tx="ekr.20170208063946.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
