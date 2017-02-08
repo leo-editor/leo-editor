@@ -909,30 +909,32 @@ class FileCommands(object):
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
-        trace = False and not g.unitTesting
-        verbose = True
+        trace = True and not g.unitTesting
+        trace_dict = False
+        trace_expanded = False
+        trace_marks = False
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
-            if trace and verbose: g.trace('t.dict', resultDict)
+            if trace and trace_dict: g.trace('t.dict', resultDict)
             for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = 1
-                elif verbose:
+                elif trace:
                     g.error(
                         'restoreDescendantAttributes: '
                         'can not find VNode (duA): gnx = %s' % (gnx))
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
-            if trace and verbose: g.trace('v.dict', resultDict)
+            if trace and trace_dict: g.trace('v.dict', resultDict)
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = 1
-                elif verbose:
+                elif trace:
                     g.error(
                         'restoreDescendantAttributes: '
                         'can not find VNode (duA): archivedPosition: %s, root_v: %s' % (
@@ -944,18 +946,24 @@ class FileCommands(object):
             if v:
                 expanded[v] = v
                 # if trace: g.trace('expanded',v)
-            elif verbose:
+            elif trace and trace_expanded:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (expanded): gnx = %s, tref: %s' % (gnx, tref))
+                # This doesn't help, because it is never written.
+                # The real answer would be to delete the "offending" uA.
+                    # self.descendentExpandedList.remove(gnx)
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
             if v: marks[v] = v
-            elif verbose:
+            elif trace and trace_marks:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (marks): gnx = %s tref: %s' % (gnx, tref))
+                # This doesn't help, because it is never written.
+                # The real answer would be to delete the "offending" uA.
+                    # self.descendentMarksList.remove(gnx)
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
             for p in c.all_unique_positions():
