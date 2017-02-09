@@ -498,13 +498,19 @@ class Demo(object):
                 return None
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes
+# When using reload, the correct code is:
+#
+#   super(self.__class__, self).__init__(...)
+#
+# This code works with both Python 2 and 3.
+#
+# http://stackoverflow.com/questions/9722343/python-super-behavior-not-dependable
 #@+node:ekr.20170207071819.1: *3* class Callout(QLabel)
 class Callout(QtWidgets.QLabel):
 
     def __init__(self, text, font=None, position=None, stylesheet=None):
         demo, w = g.app.demo, self
-        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
-            # Init the base class.
+        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
@@ -528,8 +534,7 @@ class Image (QtWidgets.QLabel):
         self.demo = getattr(g.app, 'demo', None)
         if self.demo:
             c = g.app.demo.c
-            QtWidgets.QLabel.__init__(self, parent=c.frame.body.widget)
-                # init the base class
+            super(self.__class__, self).__init__(parent=c.frame.body.widget)
             self.init_image(fn, position, size)
             g.app.demo.widgets.append(self)
         else:
@@ -573,8 +578,7 @@ class Label (QtWidgets.QLabel):
         Show the callout in the indicated place.
         '''
         demo, w = g.app.demo, self
-        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
-            # Init the base class
+        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
@@ -594,15 +598,13 @@ class Label (QtWidgets.QLabel):
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
 class Text (QtWidgets.QPlainTextEdit):
     
-    def __init__(self, s,
+    def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None,):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         self.demo = demo = getattr(g.app, 'demo', None)
         if demo:
-            self._parent = demo.pane_widget(pane)
-            s = s.rstrip()
-            if s and s[-1].isalpha(): s = s + '.'
-            QtWidgets.QPlainTextEdit.__init__(self, s, self._parent)
+            parent = demo.pane_widget(pane)
+            super(self.__class__, self).__init__(text.rstrip(), parent=parent)
             self.init(font, position, size, stylesheet)
             demo.widgets.append(self)
             
@@ -638,7 +640,7 @@ class Title(QtWidgets.QLabel):
     
     def __init__(self, text, font=None, position=None, stylesheet=None):
         demo, w = g.app.demo, self
-        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
+        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
             # Init the base class.
         self.init(font, position, stylesheet)
         w.show()
