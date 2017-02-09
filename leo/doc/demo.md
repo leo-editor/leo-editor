@@ -12,9 +12,6 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Details](../doc/demo.md#details)
 - [Example scripts](../doc/demo.md#example-scripts)
     - [Top-level script](../doc/demo.md#top-level-script)
-    - [@button test-demo @key=Ctrl-9](../doc/demo.md#button-test-demo-keyctrl-9)
-        - [class myDemo](../doc/demo.md#class-mydemo)
-        - [script_string](../doc/demo.md#scriptstring)
     - [Simulate typing](../doc/demo.md#simulate-typing)
     - [Add graphics elements](../doc/demo.md#add-graphics-elements)
     - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
@@ -55,13 +52,14 @@ For example, this demo script executes the insert-node command:
 
 
 ## Creating demo lists (to do)
-def start(self, p=None, script_list=None, script_string=None, delim='###'):
+```def start(self, p=None, script_list=None, script_string=None, delim='###'):
     '''
     Start a demo whose scripts are given by:
     script_string is not None:  a single string, with given delim.
     script_list is not None:    a list of strings,
     p is not None:              The body texts of a tree of nodes.
     '''
+```
 
 Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
 
@@ -76,7 +74,6 @@ At startup, **demo.init_namespace()** creates demo.namespace. Subclasses may ove
 
 ```python
 demo.bind('name', object)
-
 demo.namespace.update({'name', object})
 ```
 
@@ -99,6 +96,7 @@ Title('This is a subtitle', position=[700, 'center'])
 
 ## Deleting graphics elements
 By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
+
 **demo.delete_widgets()** destroys all the widgets in that list by calling w.deleteLater and clears demo.widgets.
 
 ```python
@@ -149,11 +147,9 @@ demo.delete_one_widget(w)
 The demo plugin does not change focus in any way, nor does it interfere with Leo's key handling. As a results, *demo scripts work just like normal Leo scripts*.
 
 ## Top-level script
-Here is a recommended top-level node for the top-level script. scripts.leo contains the actual script.
+Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
 
 ```python
-
-@button test-demo @key=Ctrl-9
 
 import leo.plugins.demo as demo_module
 
@@ -206,70 +202,6 @@ Title('Short 5')
 demo.next()
 '''
 ```
-
-## @button test-demo @key=Ctrl-9
-import leo.plugins.demo as demo_module
-# The *same* command/key binding calls both demo-start and demo.next.
-try:
-    if getattr(g.app, 'demo', None):
-        g.app.demo.next()
-    else:
-        g.cls()
-        print('starting MyDemo')
-        demo = MyDemo(c, trace=False)
-        demo.start(script_string=script_string)
-except Exception:
-    g.app.demo = None
-    raise
-```
-
-And here is an example script_string:
-
-```
-
-### class myDemo
-class MyDemo (demo_module.Demo):
-    
-    if 0:
-        def __init__(self, c, trace=False):
-            demo_module.Demo.__init__(self, c, trace)
-                # init the base class.
-    if 0:
-        def setup(self, p=None):
-            demo = self
-            # demo.bind('QtGui', QtGui)
-
-    def setup_script(self):
-        self.delete_widgets()
-
-### script_string
-script_string = '''\
-demo.bind('greeting', 'Hello World')
-w = Image('C:/leo.repo/leo-editor/leo/Icons/SplashScreen.ico')
-demo.retain(w)
-Callout('Callout 1 centered')
-Title('This is title 1')
-###
-Callout('Callout 2 (700, 200)', position=[700, 200])
-Title('This is title 2')
-###
-demo.delete_retained_widgets()
-Text(greeting,
-    font=QtGui.QFont('Verdana', 18),
-    position=(200, 40),
-    size=(100, 200))
-###
-Callout('Callout 3 (200, 300)', position=[200, 300])
-Title('This is title 3')
-###
-Callout('Callout 4 (center, 200)', position=['center', 200])
-Title('This is a much much longer title 4')
-###
-Callout('Callout 5 (700, center)', position=[700, 'center'])
-Title('Short 5')
-###
-demo.next()
-'''
 
 ## Simulate typing
 Simulate typing in the minibuffer:
