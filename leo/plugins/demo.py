@@ -214,25 +214,20 @@ class Demo(object):
         Subclasses may override this.
         '''
     #@+node:ekr.20170128213103.33: *4* demo.start & helpers
-    def start(self, p=None, script_list=None, script_string=None, delim='###'):
-        '''
-        Start a demo whose scripts are given by:
-        script_string is not None:  a single string, with given delim.
-        script_list is not None:    a list of strings,
-        p is not None:              The body texts of a tree of nodes.
-        '''
+    def start(self, script_tree, delim='###'):
+        '''Start a demo. script_tree contains the demo scripts.'''
+        import leo.core.leoNodes as leoNodes
+        p = script_tree
         self.delete_widgets()
-        if script_string:
-            self.script_list = self.parse_script_string(script_string, delim)
-        elif script_list:
-            self.script_list = script_list[:]
-        elif p:
+        if isinstance(p, leoNodes.Position):
             self.script_list = self.create_script_list(p, delim)
-        if self.script_list:
-            self.setup(p)
-            self.next()
+            if self.script_list:
+                self.setup(p)
+                self.next()
+            else:
+                g.trace('empty script tree at', p.h)
         else:
-            g.trace('no script list found')
+            g.trace('script_tree must be a position', repr(p))
             self.end()
     #@+node:ekr.20170129180623.1: *5* demo.create_script_list
     def create_script_list(self, p, delim):

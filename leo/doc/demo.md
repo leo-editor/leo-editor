@@ -81,31 +81,23 @@ Title(text, font=None, pane=None, position=None, stylesheet=None)
 
 
 ## Creating demo lists
-The arguments to demo.start specify the script list in one of three ways: with a *single* string, with a *list* of strings, or with an outline: In practice, using a single list is usually most convenient:
+A **script tree**, a tree of **script nodes**, specifies the script.
 
 ```python
-demo.start(script_string=my_script_string, delim='###')
+demo.start(script_tree, delim='###')
 ```
 
-Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** separates the demo scripts in the string. This documentation assumes the delimiter is the default(`'###'`), as shown here:
+Script nodes may contain multiple demo scripts, separated by a **script delimiter**:
 
 ```python
-script_string = '''\
 Callout('Callout 1')
 Title('Title 1')
 ###
 Callout('Callout 2')
 Title('This is a much much longer title')
-'''
 ```
 
-If the p argument is given, it must be the position of a **script tree**:
-
-```python
-demo.start(p = g.findNodeAnywhere(c, 'my_script_tree'))
-```
-
-The script *list* is composed of the body text of all nodes in script tree, ignoring:
+The **script list** is composed of the body text of all nodes in script tree, ignoring:
 
 - Nodes whose body text contains nothing but whitespace or python comments.
 - `@ignore` nodes.
