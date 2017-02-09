@@ -22,6 +22,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Menus](../doc/demo.md#menus)
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
     - [Setup and teardown](../doc/demo.md#setup-and-teardown)
+    - [Window Position](../doc/demo.md#window-position)
     - [Typing](../doc/demo.md#typing)
 - [History](../doc/demo.md#history)
 
@@ -407,6 +408,13 @@ Subclasses of Demo may override any of the following:
 **demo.teardown()**: Called just before ending the demonstration.
 
 **demo.teardown_script():** Called after executing each demo script.
+
+## Window position
+**demo.set_window_size(width, height)** Set the size of Leo's main window, in pixels.
+
+**demo.set_window_position(x, y):** Move the top-left corner of Leo's main window to x, y, in pixels.
+
+**demo.set_youtube_position()**: Resize and position Leo's main window for YouTube.
 
 ## Typing
 

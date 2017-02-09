@@ -206,7 +206,6 @@ class Demo(object):
     def setup_script(self):
         '''
         Called before running each demo script.
-        p is the root of the tree of demo scripts.
         May be over-ridden in subclasses.
         '''
 
@@ -230,12 +229,15 @@ class Demo(object):
         p = script_tree
         self.delete_widgets()
         if isinstance(p, leoNodes.Position):
-            self.script_list = self.create_script_list(p, delim)
-            if self.script_list:
-                self.setup(p)
-                self.next()
+            if p:
+                self.script_list = self.create_script_list(p, delim)
+                if self.script_list:
+                    self.setup(p)
+                    self.next()
+                else:
+                    g.trace('empty script tree at', p.h)
             else:
-                g.trace('empty script tree at', p.h)
+                g.trace('invalid p')
         else:
             g.trace('script_tree must be a position', repr(p))
             self.end()
@@ -520,6 +522,27 @@ class Demo(object):
                 g.es_exception()
                 g.trace('bad x position', repr(obj))
                 return None
+    #@+node:ekr.20170209164344.1: *4* demo.set_window_size/position
+    def set_window_size(self, width, height):
+        '''Resize Leo's top-most window.'''
+        w = self.c.frame.top
+        while w.parent():
+            w = w.parent()
+        w.resize(width, height)
+            
+    def set_window_position(self, x, y):
+        '''Set the x, y position of the top-most window's top-left corner.'''
+        w = self.c.frame.top
+        while w.parent():
+            w = w.parent()
+        w.move(x, y)
+        
+    def set_youtube_position(self):
+        w = self.c.frame.top
+        while w.parent():
+            w = w.parent()
+        w.resize(1264, 682) # Important.
+        w.move(200, 200) # Arbitrary.
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes
 # When using reload, the correct code is *usually*:
