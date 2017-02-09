@@ -3293,6 +3293,7 @@ print('\n'.join(aList))
 <t tx="ekr.20170209104214.1">if c.isChanged(): c.save()
 &lt;&lt; imports &gt;&gt;
 &lt;&lt; class MyDemo &gt;&gt;
+# Don't use @others here.
 # The *same* command/key binding calls both demo-start and demo.next.
 try:
     if getattr(g.app, 'demo', None):
@@ -3302,7 +3303,7 @@ try:
         c.frame.log.clearTab('Log')
         g.es_print('Starting MyDemo')
         demo = MyDemo(c, trace=False)
-        demo.start(p=g.findNodeAnywhere(c, 'demo-script'))
+        demo.start(p=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
     g.app.demo = None
     raise
