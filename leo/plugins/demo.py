@@ -559,12 +559,14 @@ class Callout(Label):
                 background-color : lightblue;
                 color : black;
             }'''
-        super(self.__class__, self).__init__(text,
-            font=font,
-            pane=pane,
-            position=position,
-            stylesheet=stylesheet,
-        )
+        if g.isPython3:
+            super().__init__(text,
+                font=font, pane=pane,
+                position=position, stylesheet=stylesheet)
+        else:
+            super(self.__class__, self).__init__(text,
+                font=font, pane=pane,
+                position=position, stylesheet=stylesheet)
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
     
@@ -572,7 +574,10 @@ class Image (QtWidgets.QLabel):
         '''Image.__init__.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        super(self.__class__, self).__init__(parent=parent)
+        if g.isPython3:
+            super().__init__(parent=parent)
+        else:
+            super(self.__class__, self).__init__(parent=parent)
         self.init_image(fn, position, size)
         w.show()
         demo.widgets.append(w)
@@ -613,7 +618,10 @@ class Text (QtWidgets.QPlainTextEdit):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        super(self.__class__, self).__init__(text.rstrip(), parent=parent)
+        if g.isPython3:
+            super().__init__(text.rstrip(), parent=parent)
+        else:
+            super(self.__class__, self).__init__(text.rstrip(), parent=parent)
         self.init(font, position, size, stylesheet)
         w.show()
         demo.widgets.append(self)
@@ -658,13 +666,14 @@ class Title(Label):
                 background-color : mistyrose;
                 color : black;
             }'''
-        super(self.__class__, self).__init__(
-            text,
-            font=font,
-            pane=pane,
-            position=position,
-            stylesheet=stylesheet,
-        )
+        if g.isPython3:
+            super().__init__(text,
+                font=font,pane=pane,
+                position=position,stylesheet=stylesheet)
+        else:
+            super(self.__class__, self).__init__(text,
+                font=font,pane=pane,
+                position=position,stylesheet=stylesheet)
         # Must be done *after* initing the base class.
         demo.set_position(w, position or 
             ('center', self.parent().geometry().height() - 50))
