@@ -3303,7 +3303,7 @@ try:
         c.frame.log.clearTab('Log')
         g.es_print('Starting MyDemo')
         demo = MyDemo(c, trace=False)
-        demo.start(p=g.findNodeInTree(c, p, 'demo-script'))
+        demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
     g.app.demo = None
     raise
