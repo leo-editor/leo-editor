@@ -279,10 +279,10 @@
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
 </v>
-<v t="ekr.20170209104214.1"><vh>@button Demo @key=Ctrl-9</vh>
-<v t="ekr.20170209104214.2"><vh>&lt;&lt; class myDemo &gt;&gt;</vh></v>
-<v t="ekr.20170209104214.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170209104214.4"><vh>demo-script</vh></v>
+<v t="ekr.20170209174007.1"><vh>@button Demo @key=Ctrl-9</vh>
+<v t="ekr.20170209174007.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170209174007.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh></v>
+<v t="ekr.20170209174007.4"><vh>demo-script</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3290,7 +3290,7 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170209104214.1">if c.isChanged(): c.save()
+<t tx="ekr.20170209174007.1">if c.isChanged(): c.save()
 &lt;&lt; imports &gt;&gt;
 &lt;&lt; class MyDemo &gt;&gt;
 # Don't use @others here.
@@ -3305,12 +3305,17 @@ try:
         c.k.demoNextKey = c.k.strokeFromSetting('Ctrl-9')
             # Tell k.masterKeyHandler to process Ctrl-9 immediately.
         demo = MyDemo(c, trace=False)
+        p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
         demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
     g.app.demo = None
     raise
 </t>
-<t tx="ekr.20170209104214.2">class MyDemo (demo_module.Demo):
+<t tx="ekr.20170209174007.2">from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+import imp
+imp.reload(demo_module)</t>
+<t tx="ekr.20170209174007.3">class MyDemo (demo_module.Demo):
     
     def setup(self, p=None):
         c = self.c
@@ -3319,6 +3324,7 @@ except Exception:
         p = g.findNodeAnywhere(c, 'Demo Area')
         assert p
         self.root = p.copy()
+        self.set_youtube_position()
         c.selectPosition(p)
         c.redraw()
 
@@ -3331,15 +3337,11 @@ except Exception:
         self.delete_widgets()
         if hasattr(self, 'delta') and self.delta &gt; 0:
             self.set_text_delta(-self.delta)
-        if c.positionExists(self.root, trace=False):
+        if self.root and c.positionExists(self.root, trace=False):
             c.selectPosition(self.root)
             c.redraw()
 </t>
-<t tx="ekr.20170209104214.3">from leo.core.leoQt import QtGui
-import leo.plugins.demo as demo_module
-import imp
-imp.reload(demo_module)</t>
-<t tx="ekr.20170209104214.4">@language python
+<t tx="ekr.20170209174007.4">@language python
 Callout('Hello. This tutorial introduces Leo')
 ###
 Callout("First, I'll increase the text size for easier viewing")
