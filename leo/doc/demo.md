@@ -51,12 +51,12 @@ For example, this demo script executes the insert-node command:
 # Graphics classes
 The demo.py file defines 5 classes that create graphical elements.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
 
-**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane. P
+**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane. The valid arguments for the `pane` argument are `None, 'body', 'log', 'tree`, with `None` being the same as `body`. 
 
 **Callout**: Add a QLabel containing text.
 
 ```python
-Callout(text,font=None, pane=None, position=None, stylesheet=None)
+Callout(text, font=None, pane=None, position=None, stylesheet=None)
 ```
 
 **Image**: Add a QLabel containing an image.
@@ -87,7 +87,7 @@ The arguments to demo.start specify the script list in one of three ways: with a
 demo.start(script_string=my_script_string, delim='###')
 ```
 
-Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** (always shown as `'###'` in this documentation) separates the demo scripts in the string:
+Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** separates the demo scripts in the string. This documentation assumes the deliminter is the default(`'###'`), as shown here:
 
 ```python
 script_string = '''\
