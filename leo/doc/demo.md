@@ -31,7 +31,7 @@ A **presentation** consists of one or more **slides**, created by **demo scripts
 Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. The demo plugin does not interfere with focus or key-handling, so demo scripts can freely call all of Leo's regular scripting API. Demo scripts can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
-- Show graphic elements, including scaled images.
+- Show **graphic elements**, including scaled images, callouts and text areas.
 - Open any Leo menu, selecting particular menu items.
 - Scale font sizes.
 
@@ -48,19 +48,43 @@ For example, this demo script executes the insert-node command:
 
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
+# Graphics classes ***
+
+
+## Callout
+
+**demo.caption(s, pane)** Creates a caption with text s in the indicated pane.
+
+A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+
+**demo.image(pane,fn,center=None,height=None,width=None)**: Overlays an image in a pane.
+
+- `pane`: Valid values are 'body', 'log' or 'tree'.
+- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
+- `height`: Scales the image so it has the given height.
+- `width`: Scales the image i so it has the given width.
+- `center`: If True, centers the image horizontally in the given pane.
+
+## Image
+
+
+## Text
+
+
+## Title
+
+
 # Using demo scripts
 
 
 ## Creating demo lists
-The arguments to demo.start specify the script list in one of three ways: with a *single* string, with a *list* of strings, or with an outline:
-
-In practice, using a single list is usually most convenient:
+The arguments to demo.start specify the script list in one of three ways: with a *single* string, with a *list* of strings, or with an outline: In practice, using a single list is usually most convenient:
 
 ```python
 demo.start(script_string=my_script_string, delim='###')
 ```
 
-Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** (always shown as `'###` in this documentation) separates the demo scripts in the string:
+Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** (always shown as `'###'` in this documentation) separates the demo scripts in the string:
 
 ```python
 script_string = '''\
@@ -75,7 +99,7 @@ Title('This is a much much longer title')
 If the p argument is given, it must be the position of a **script tree**:
 
 ```python
-demo.start(p = g.findNodeAnywhere(c, 'my_script'))
+demo.start(p = g.findNodeAnywhere(c, 'my_script_tree'))
 ```
 
 The script *list* is composed of the body text of all nodes in script tree, ignoring:
@@ -91,14 +115,16 @@ Demo scripts execute in the **demo.namespace** environment. This is a python dic
 - The names of all predefined graphics classes: Callout, Image, Label, Text and Title,
 - The name **demo**, bound to the Demo instance.
 
-At startup, **demo.init_namespace()** creates demo.namespace. Subclasses may override this method. **demo.bind(name, object)** adds one binding to demo.namespace. The following are equivalent:
+At startup, **demo.init_namespace()** creates demo.namespace. Subclasses may override this method.
+
+**demo.bind(name, object)** adds one binding to demo.namespace. The following are equivalent:
 
 ```python
 demo.bind('name', object)
 demo.namespace.update({'name', object})
 ```
 
-demo.namespace *persists* until the end of the demo, so demo scripts can share information.  For example:
+The demo.namespace environment *persists* until the end of the demo, so demo scripts can share information:
 
 ```python
 demo.bind('greeting', hello world')
@@ -110,7 +136,9 @@ Callout(greeting)
 By default, graphics elements are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
 
 ```python
-Callout('Callout 2 (700, 200)', position=[700, 200])
+Callout('Callout 1')
+Callout('Callout 1', position='center') # same as above.
+Callout('Callout 2 ', position=[700, 200])
 Text('Hello world', position=['center', 200])
 Title('This is a subtitle', position=[700, 'center'])
 ```
@@ -343,20 +371,6 @@ This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 i
 **demo.widgets**: A list of references to allocated widgets.
 
 Standard graphics classes add their elements to this list automatically.
-
-## Images
-
-**demo.caption(s, pane)** Creates a caption with text s in the indicated pane.
-
-A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
-
-**demo.image(pane,fn,center=None,height=None,width=None)**: Overlays an image in a pane.
-
-- `pane`: Valid values are 'body', 'log' or 'tree'.
-- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
-- `height`: Scales the image so it has the given height.
-- `width`: Scales the image i so it has the given width.
-- `center`: If True, centers the image horizontally in the given pane.
 
 ## Menus
 
