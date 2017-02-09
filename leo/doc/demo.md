@@ -5,7 +5,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 - [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
 - [Using demo scripts](../doc/demo.md#using-demo-scripts)
-    - [Creating demo lists (to do)](../doc/demo.md#creating-demo-lists-to-do)
+    - [Creating demo lists](../doc/demo.md#creating-demo-lists)
     - [Predefined symbols](../doc/demo.md#predefined-symbols)
     - [Positioning graphics elements](../doc/demo.md#positioning-graphics-elements)
     - [Deleting graphics elements](../doc/demo.md#deleting-graphics-elements)
@@ -51,17 +51,38 @@ For example, this demo script executes the insert-node command:
 # Using demo scripts
 
 
-## Creating demo lists (to do)
-```def start(self, p=None, script_list=None, script_string=None, delim='###'):
-    '''
-    Start a demo whose scripts are given by:
-    script_string is not None:  a single string, with given delim.
-    script_list is not None:    a list of strings,
-    p is not None:              The body texts of a tree of nodes.
-    '''
+## Creating demo lists
+The arguments to demo.start specify the script list in one of three ways: with a *single* string, with a *list* of strings, or with an outline:
+
+In practice, using a single list is usually most convenient:
+
+```python
+demo.start(script_string=my_script_string, delim='###')
 ```
 
-Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
+Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** (always shown as `'###` in this documentation) separates the demo scripts in the string:
+
+```python
+script_string = '''\
+Callout('Callout 1')
+Title('Title 1')
+###
+Callout('Callout 2')
+Title('This is a much much longer title')
+'''
+```
+
+If the p argument is given, it must be the position of a **script tree**:
+
+```python
+demo.start(p = g.findNodeAnywhere(c, 'my_script'))
+```
+
+The script *list* is composed of the body text of all nodes in script tree, ignoring:
+
+- Nodes whose body text contains nothing but whitespace or python comments.
+- `@ignore` nodes.
+- All nodes in an `@ignore-tree` tree.
 
 ## Predefined symbols
 Demo scripts execute in the **demo.namespace** environment. This is a python dict containing:
@@ -107,6 +128,7 @@ Callout('Callout 2')
 ```
 
 **demo.retain(w)** adds widget w to **demo.retained_widgets**.
+
 **demo.delete_retained()** deletes all retained widgets, removes retained items from demo.widgets and clears demo.retained_widgets.
 
 ```python
@@ -224,10 +246,9 @@ demo.wait(1)
 c.endEditing()
 ```
 
-Select all headline text:
+Begin editing a headline and select all headline text:
 
 ```python
-'''Begin editing a headline and select all its text.'''
 c.editHeadline()
 wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
@@ -249,6 +270,18 @@ Text('This is a text area',
     position=(20, 40),
     size=(100, 200),
 )
+```
+
+Add a callout, centered in the body area:
+
+```
+Callout('Hello World')
+```
+
+Add a subtitle, centered just above the minibuffer:
+
+```
+Title('It was the best of times...')
 ```
 
 ## Change the demo namespace
@@ -277,13 +310,10 @@ class MyDemo(Demo):
 ```python
 # Put focus to the tree.
 c.treeWantsFocusNow()
-
 # Put focus to the minibuffer.
 c.minibufferWantsFocusNow()
-
 # Put focus to the body.
 c.bodyWantsFocusNow()
-
 # Put focus in the log pane.
 c.logWantsFocusNow()
 ```
@@ -316,13 +346,11 @@ Standard graphics classes add their elements to this list automatically.
 
 ## Images
 
-**demo.caption(s, pane)**
+**demo.caption(s, pane)** Creates a caption with text s in the indicated pane.
 
-Creates a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
 
-**demo.image(pane,fn,center=None,height=None,width=None)**
-
-Overlays an image in a pane.
+**demo.image(pane,fn,center=None,height=None,width=None)**: Overlays an image in a pane.
 
 - `pane`: Valid values are 'body', 'log' or 'tree'.
 - `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
@@ -332,13 +360,11 @@ Overlays an image in a pane.
 
 ## Menus
 
-**demo.open_menu(menu_name)**
+**demo.open_menu(menu_name)**: Opens the menu whose name is given.
 
-Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
+Don't worry about case or non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
 
-**demo.dismiss_menubar()**
-
-Close the menu opened with demo.open_menu.
+**demo.dismiss_menubar()**: Close the menu opened with demo.open_menu.
 
 ## Magnification and styling
 
@@ -367,7 +393,7 @@ Subclasses of Demo may override any of the following:
 
 **demo.setup(p=None)**: Called before executing the first demo script.
 
-**demo.setup_script(): Called before executing each demo script.
+**demo.setup_script()**: Called before executing each demo script.
 
 **demo.teardown()**: Called just before ending the demonstration.
 
@@ -381,9 +407,8 @@ Subclasses of Demo may override any of the following:
 
 **demo.keys(s, undo=False)**: Simulates typing the string s in the present widget.
 
-**demo.key(setting)**: Types a single key in the present widget.
+**demo.key(setting)**: Types a single key in the present widget. This method does not support undo.
 
-This method does not support undo.
 ```python
    demo.key('Alt-X') # Activate the minibuffer
    demo.key('Ctrl-F') # Execute Leo's Find command
