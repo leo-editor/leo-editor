@@ -156,7 +156,6 @@ class Demo(object):
         if self.script_list:
             # Execute the next script.
             script = self.script_list.pop(0)
-            if self.trace: print(script)
             self.setup_script()
             self.exec_node(script)
             self.teardown_script()
@@ -166,8 +165,9 @@ class Demo(object):
     def exec_node(self, script):
         '''Execute the script in node p.'''
         c = self.c
-        # g.trace(repr(g.splitLines(script)[0]))
-        # g.printDict(self.namespace)
+        if self.trace:
+            g.trace()
+            g.printList(g.splitlines(script))
         try:
             c.executeScript(
                 namespace=self.namespace,
@@ -227,7 +227,7 @@ class Demo(object):
         elif script_list:
             self.script_list = script_list[:]
         elif p:
-            self.script_list = self.create_script_list(p)
+            self.script_list = self.create_script_list(p, delim)
         if self.script_list:
             self.setup(p)
             self.next()
@@ -235,7 +235,7 @@ class Demo(object):
             g.trace('no script list found')
             self.end()
     #@+node:ekr.20170129180623.1: *5* demo.create_script_list
-    def create_script_list(self, p):
+    def create_script_list(self, p, delim):
         '''Create the state_list from the tree of script nodes rooted in p.'''
         c = self.c
         aList = []
@@ -254,7 +254,12 @@ class Demo(object):
                 if script.strip():
                     aList.append(script)
                 p.moveToThreadNext()
-        return aList
+        # Now split each element of the list.
+        # This is a big advance in scripting!
+        result = []
+        for s in aList:
+            result.extend(self.parse_script_string(s, delim))
+        return result
     #@+node:ekr.20170207080029.1: *5* demo.parse_script_string
     def parse_script_string (self, script_string, delim):
         '''
