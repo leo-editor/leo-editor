@@ -87,7 +87,7 @@ The arguments to demo.start specify the script list in one of three ways: with a
 demo.start(script_string=my_script_string, delim='###')
 ```
 
-Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** separates the demo scripts in the string. This documentation assumes the deliminter is the default(`'###'`), as shown here:
+Indeed, individual demo scripts are likely to be short, so using a single string is convenient. The **delimiter** separates the demo scripts in the string. This documentation assumes the delimiter is the default(`'###'`), as shown here:
 
 ```python
 script_string = '''\

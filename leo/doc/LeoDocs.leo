@@ -1345,7 +1345,6 @@
 </v>
 <v t="ekr.20170208123312.1"><vh>demo doc to-do</vh></v>
 <v t="ekr.20170130080532.1"></v>
-<v t="ekr.20170209080411.1"><vh>Table of contents</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20210,29 +20209,6 @@ Added g.input_, but this is not a great solution.
 <t tx="ekr.20170208123312.1">Discuss new methods:
 
 demo.bind</t>
-<t tx="ekr.20170209080411.1">- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
-- [Overview](../doc/demo.md#overview)
-- [Graphics classes](../doc/demo.md#graphics-classes)
-- [Using demo scripts](../doc/demo.md#using-demo-scripts)
-    - [Creating demo lists](../doc/demo.md#creating-demo-lists)
-    - [Predefined symbols](../doc/demo.md#predefined-symbols)
-    - [Positioning graphics elements](../doc/demo.md#positioning-graphics-elements)
-    - [Deleting graphics elements](../doc/demo.md#deleting-graphics-elements)
-    - [Details](../doc/demo.md#details)
-- [Example scripts](../doc/demo.md#example-scripts)
-    - [Top-level script](../doc/demo.md#top-level-script)
-    - [Simulate typing](../doc/demo.md#simulate-typing)
-    - [Add graphics elements](../doc/demo.md#add-graphics-elements)
-    - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
-    - [Switch focus](../doc/demo.md#switch-focus)
-- [Helper methods](../doc/demo.md#helper-methods)
-    - [Ivars](../doc/demo.md#ivars)
-    - [Menus](../doc/demo.md#menus)
-    - [Magnification and styling](../doc/demo.md#magnification-and-styling)
-    - [Setup and teardown](../doc/demo.md#setup-and-teardown)
-    - [Typing](../doc/demo.md#typing)
-- [History](../doc/demo.md#history)
-</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
