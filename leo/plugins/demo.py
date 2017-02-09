@@ -505,46 +505,78 @@ class Demo(object):
 # This code works with both Python 2 and 3.
 #
 # http://stackoverflow.com/questions/9722343/python-super-behavior-not-dependable
-#@+node:ekr.20170207071819.1: *3* class Callout(QLabel)
-class Callout(QtWidgets.QLabel):
-
-    def __init__(self, text, font=None, position=None, stylesheet=None):
+#@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
+class Label (QtWidgets.QLabel):
+    '''A class for user-defined callouts in demo.py.'''
+        
+    def __init__(self, text,
+        font=None, pane=None, position=None, stylesheet=None
+    ):
+        '''
+        Label.__init__. The ctor for all user-defined callout classes.
+        Show the callout in the indicated place.
+        '''
         demo, w = g.app.demo, self
-        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
+        parent = demo.pane_widget(pane)
+        QtWidgets.QLabel.__init__(self, text, parent)
+            # These don't work when using reload. Boo hoo.
+                # super(Label, self).__init__(text, parent) 
+                # super(self.__class__, self) loops!
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
-
+        
+    #@+others
+    #@+node:ekr.20170208210507.1: *4* label.init
     def init(self, font, position, stylesheet):
+        '''Set the attributes of the widget.'''
         demo, w = g.app.demo, self
+        stylesheet = stylesheet or '''\
+            QLabel {
+                border: 2px solid black;
+                background-color : lightgrey;
+                color : black;
+            }'''
+        demo.set_position(w, position or 'center')
+        w.setStyleSheet(stylesheet)
+        w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 16))
+    #@-others
+#@+node:ekr.20170207071819.1: *3* class Callout(Label)
+class Callout(Label):
+
+    def __init__(self, text,
+        font=None, pane=None, position=None, stylesheet=None
+    ):
+        '''Show a callout, centered by default.'''
         stylesheet = stylesheet or '''\
             QLabel {
                 border: 2px solid black;
                 background-color : lightblue;
                 color : black;
             }'''
-        demo.set_position(w, position or 'center')
-        w.setStyleSheet(stylesheet)
-        w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 20))
+        super(self.__class__, self).__init__(text,
+            font=font,
+            pane=pane,
+            position=position,
+            stylesheet=stylesheet,
+        )
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
     
-    def __init__(self, fn, position=None, size=None):
+    def __init__(self, fn, pane=None, position=None, size=None):
         '''Image.__init__.'''
-        self.demo = getattr(g.app, 'demo', None)
-        if self.demo:
-            c = g.app.demo.c
-            super(self.__class__, self).__init__(parent=c.frame.body.widget)
-            self.init_image(fn, position, size)
-            g.app.demo.widgets.append(self)
-        else:
-            g.trace('(Image): no g.app.demo')
+        demo, w = g.app.demo, self
+        parent = demo.pane_widget(pane)
+        super(self.__class__, self).__init__(parent=parent)
+        self.init_image(fn, position, size)
+        w.show()
+        demo.widgets.append(w)
 
     #@+others
     #@+node:ekr.20170208070231.1: *4* image.init_image
     def init_image(self, fn, position, size):
         '''Init the image whose file name fn is given.'''
-        demo, w = self.demo, self
+        demo, w = g.app.demo, self
         fn = demo.resolve_icon_fn(fn)
         if not fn:
             g.trace('can not resolve', fn)
@@ -566,53 +598,26 @@ class Image (QtWidgets.QLabel):
         if position:
             demo.set_position(w)
         w.setPixmap(pixmap)
-        w.show()
     #@-others
-#@+node:ekr.20170206203005.1: *3* class Label (QLabel)
-class Label (QtWidgets.QLabel):
-    '''A class for user-defined callouts in demo.py.'''
-        
-    def __init__(self, text=None, font=None, position=None, stylesheet=None):
-        '''
-        Label.__init__. The ctor for all user-defined callout classes.
-        Show the callout in the indicated place.
-        '''
-        demo, w = g.app.demo, self
-        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
-        self.init(font, position, stylesheet)
-        w.show()
-        g.app.demo.widgets.append(w)
-        
-    def init(self, font, position, stylesheet):
-        '''Actually set the attributes of the widget.'''
-        demo, w = g.app.demo, self
-        stylesheet = stylesheet or '''\
-            QLabel {
-                border: 2px solid black;
-                background-color : lightgrey;
-                color : black;
-            }'''
-        demo.set_position(w, position or 'center')
-        w.setStyleSheet(stylesheet)
-        w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 16))
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
 class Text (QtWidgets.QPlainTextEdit):
     
     def __init__(self, text,
-        font=None, pane=None, position=None, size=None, stylesheet=None,):
+        font=None, pane=None, position=None, size=None, stylesheet=None
+    ):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
-        self.demo = demo = getattr(g.app, 'demo', None)
-        if demo:
-            parent = demo.pane_widget(pane)
-            super(self.__class__, self).__init__(text.rstrip(), parent=parent)
-            self.init(font, position, size, stylesheet)
-            demo.widgets.append(self)
-            
+        demo, w = g.app.demo, self
+        parent = demo.pane_widget(pane)
+        super(self.__class__, self).__init__(text.rstrip(), parent=parent)
+        self.init(font, position, size, stylesheet)
+        w.show()
+        demo.widgets.append(self)
+
     #@+others
     #@+node:ekr.20170208101919.1: *4* text.init
     def init(self, font, position, size, stylesheet):
         '''Init the Text widget.'''
-        demo, w = self.demo, self
+        demo, w = g.app.demo, self
         demo.set_position(w, position)
         if size:
             try:
@@ -633,31 +638,30 @@ class Text (QtWidgets.QPlainTextEdit):
             w.setStyleSheet(stylesheet)
         else:
             w.setFont(font or QtGui.QFont('Verdana', 14))
-        w.show()
     #@-others
-#@+node:ekr.20170207080814.1: *3* class Title(QLabel)
-class Title(QtWidgets.QLabel):
+#@+node:ekr.20170207080814.1: *3* class Title(Label)
+class Title(Label):
     
-    def __init__(self, text, font=None, position=None, stylesheet=None):
+    def __init__(self, text,
+        font=None, pane=None, position=None, stylesheet=None
+    ):
+        '''Show a title, centered, at bottom by default.'''
         demo, w = g.app.demo, self
-        super(self.__class__, self).__init__(text, parent=demo.c.frame.body.widget)
-            # Init the base class.
-        self.init(font, position, stylesheet)
-        w.show()
-        g.app.demo.widgets.append(w)
-        
-    def init(self, font, position, stylesheet):
-        demo, w = g.app.demo, self
-        font = font or QtGui.QFont('DejaVu Sans Mono', 18)
         stylesheet = stylesheet or '''\
             QLabel {
                 border: 1px solid black;
                 background-color : mistyrose;
                 color : black;
             }'''
+        super(self.__class__, self).__init__(
+            text,
+            font=font,
+            pane=pane,
+            position=position,
+            stylesheet=stylesheet,
+        )
+        # Must be done *after* initing the base class.
         position = position or ('center', self.parent().geometry().height() - 50)
-        demo.set_position(self, position)
-        w.setStyleSheet(stylesheet)
-        w.setFont(font)
+        demo.set_position(w, position)
 #@-others
 #@-leo
