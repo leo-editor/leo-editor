@@ -1342,6 +1342,7 @@
 </v>
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
+<v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
 </v>
 <v t="ekr.20170208123312.1"><vh>demo doc to-do</vh></v>
 <v t="ekr.20170130080532.1"></v>
@@ -20209,6 +20210,34 @@ Added g.input_, but this is not a great solution.
 <t tx="ekr.20170208123312.1">Discuss new methods:
 
 demo.bind</t>
+<t tx="ekr.20170209161021.1">@language rest
+@wrap
+
+Thanks for reminding me how important documentation is.
+
+Leo 5.5b1 won't go out the door until docs are revised.
+
+Learn about Leo in 5 minutes:
+
+Leo's unique features:
+
+Organization is ever-present:
+- Sure, you can use outlines to organize scripts.
+- More importantly, you can compose scripts and entire files from outlines.
+
+Control:
+- Scripts can *easily* traverse, search or change outlines.
+- @button nodes create scripts that can be applied to *other* parts of the outline.
+
+Views:
+- Clones focus attention and create new organization within the same outline.
+
+Power:
+- The clone-find commands create clones of all nodes matching a search.
+
+Am I speaking Greek here? Examples needed?
+
+</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
