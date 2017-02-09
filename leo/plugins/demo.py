@@ -66,6 +66,7 @@ class Demo(object):
         # Converting arguments to demo.key.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
         # Other ivars.
+        self.end_on_exception = False # Good for debugging.
         self.retained_widgets = []
             # List of widgets *not* to be deleted by delete_widgets.
         self.script_list = []
@@ -176,6 +177,10 @@ class Demo(object):
             )
         except Exception:
             g.es_exception()
+            g.es_print('script...\n', repr(script))
+            g.es_print('Ending the tutorial...')
+            self.end()
+
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -221,13 +226,13 @@ class Demo(object):
             self.script_list = self.parse_script_string(script_string, delim)
         elif script_list:
             self.script_list = script_list[:]
-        else:
+        elif p:
             self.script_list = self.create_script_list(p)
         if self.script_list:
             self.setup(p)
             self.next()
         else:
-            g.trace('no script tree')
+            g.trace('no script list found')
             self.end()
     #@+node:ekr.20170129180623.1: *5* demo.create_script_list
     def create_script_list(self, p):
@@ -271,6 +276,8 @@ class Demo(object):
                 pass
             else:
                 lines.append(s)
+                # lines.append(s.replace('\\', '\\\\'))
+                    # Experimental: allow escapes.
         if lines:
             aList.append(''.join(lines))
         # g.trace('===== delim', delim) ; g.printList(aList)
@@ -459,13 +466,20 @@ class Demo(object):
     def center(self, w):
         '''Center this widget in its parent.'''
         g_p = w.parent().geometry()
-        x = g_p.width()/2
+        # g_w = w.geometry()
+        # x = g_p.width()/2 - g_w.width()/2
+            # Not great, the real width hasn't been computed.
+        x = 250
         y = g_p.height()/2
         w.move(x, y)
 
     def center_horizontally(self, w, y):
         '''Center w horizontally in its parent, and set its y position.'''
-        x = w.parent().geometry().width()/2
+        # g_p = w.parent().geometry()
+        # g_w = w.geometry()
+        # x = g_p.width()/2 - g_w.width()/2
+            # Not great, the real width hasn't been computed.
+        x = 250
         w.move(x, y)
 
     def center_vertically(self, w, x):
@@ -527,6 +541,7 @@ class Label (QtWidgets.QLabel):
                 # These don't work when using reload. Boo hoo.
                     # super(Label, self).__init__(text, parent) 
                     # super(self.__class__, self) loops!
+        # w.setWordWrap(True)
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
