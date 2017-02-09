@@ -2,10 +2,23 @@
 
 The demo.py plugin helps presenters run dynamic demos from Leo files.
 
+- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
 - [Demo scripts](../doc/demo.md#demo-scripts)
+    - [Creating demo lists (to do)](../doc/demo.md#creating-demo-lists-to-do)
+    - [Predefined symbols and demo.init_namespace](../doc/demo.md#predefined-symbols-and-demoinitnamespace)
+    - [Positioning graphics elements](../doc/demo.md#positioning-graphics-elements)
+    - [Deleting graphics elements](../doc/demo.md#deleting-graphics-elements)
 - [Example scripts](../doc/demo.md#example-scripts)
+    - [Show typing in the minibuffer](../doc/demo.md#show-typing-in-the-minibuffer)
+    - [Show typing in a headline](../doc/demo.md#show-typing-in-a-headline)
+    - [Show an image](../doc/demo.md#show-an-image)
+    - [Show a text area](../doc/demo.md#show-a-text-area)
+    - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
+    - [Switch focus](../doc/demo.md#switch-focus)
+    - [Select all headline text](../doc/demo.md#select-all-headline-text)
 - [Helper methods](../doc/demo.md#helper-methods)
+    - [Ivars](../doc/demo.md#ivars)
     - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
     - [Starting and ending](../doc/demo.md#starting-and-ending)
@@ -16,28 +29,22 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 # Overview
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. 
+A **presentation** consists of one or more **slides**, created by **demo scripts**.
+Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. The demo plugin does not interfere with focus or key-handling, so demo scripts can freely call all of Leo's regular scripting API.
 
-The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
+**Creating the demo**: To start a demo, presenters run a **top-level script**. These scripts instantiate the Demo class and call **demo.start*. As discussed later, demo.start creates demo scripts from its arguments.
 
-To start a demo, presenters run a **top-level script**. Top-level scripts instantiate the Demo class, and then call one of three demo.start_* methods.
+**Controlling the presentation**: The **demo-next** command executes the next demo script.  The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
-This plugin boasts significant advantages compared with Leo's screencast plugin:
-
-- The demo plugin does not interfere with focus or key-handling. As a result, the full power of Leo scripting is available to demo scripts. Few helper methods are needed.
-
-- Demo scripts are mostly descriptive. Subclasses of demo.Demo can define methods that hide implementation and configuration details.
-
-- Demo scripts can insert fixed delays, callouts and subtitles. As a result, demo scripts can be fully automated. There is little need for post-production editing.
+**Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
 # Demo scripts
 
-These methods can:
+Demo scripts can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
-- Overlay a scaled image on the screen.
+- Show graphic elements, including scaled images.
 - Open any Leo menu, selecting particular menu items.
-- Help init graphics classes.
 - Scale font sizes.
 
 For example, this demo script executes the insert-node command:
@@ -47,11 +54,7 @@ For example, this demo script executes the insert-node command:
     demo.keys('insert-node\n')
 ```
 
-Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
-
-**Note**: The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
-
-## ** Creating demo scripts from trees and strings
+## Creating demo lists (to do)
 def start(self, p=None, script_list=None, script_string=None, delim='###'):
     '''
     Start a demo whose scripts are given by:
@@ -60,39 +63,81 @@ def start(self, p=None, script_list=None, script_string=None, delim='###'):
     p is not None:              The body texts of a tree of nodes.
     '''
 
+Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
+
 ## Predefined symbols and demo.init_namespace
 Demo scripts execute in the **demo.namespace** environment. This is a python dict containing:
 
 - c, g and p as usual,
-- the names of all graphics classes: Callout, Image, Label, Text and Title,
-- and the name **demo**, bound to the Demo instance.
+- The names of all predefined graphics classes: Callout, Image, Label, Text and Title,
+- The name **demo**, bound to the Demo instance.
 
-demo.namespace is cleared when a demo starts. It *persists* until the end of the demo.
-
-
-
-As a result, demo scripts can share information.  For example:
-
-```
-demo.bind('greeting', hello world')
-###
-print(greeting)
-```
-
-
-
-Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class.
-
-Subclasses may override **demo.init_namespace()** or add to the initial namespace with:
-
-
-**demo.namespace** is a persistent python dictionsary  
+At startup, **demo.init_namespace()** creates demo.namespace. Subclasses may override this method. **demo.bind(name, object)** adds one binding to demo.namespace. The following are equivalent:
 
 ```python
-demo.namespace.update({
-    'name1': object1,
-    'name2': object2,
-    })
+demo.bind('name', object)
+
+demo.namespace.update({'name', object})
+```
+
+demo.namespace *persists* until the end of the demo, so demo scripts can share information.  For example:
+
+```python
+demo.bind('greeting', hello world')
+###
+Callout(greeting)
+```
+
+## Positioning graphics elements
+By default, graphics elements are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
+
+```python
+Callout('Callout 2 (700, 200)', position=[700, 200])
+
+Text('Hello world', position=['center', 200])
+
+Title('This is a subtitle', position=[700, 'center'])
+```
+
+## Deleting graphics elements
+By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
+
+**demo.delete_widgets()** destroys all the widgets in that list by calling w.deleteLater and clears demo.widgets.
+
+```python
+Callout('Callout 1')
+###
+delete_widgets()
+Callout('Callout 2')
+```
+
+**demo.retain(w)** adds widget w to **demo.retained_widgets**.
+
+**demo.delete_retained()** deletes all retained widgets, removes retained items from demo.widgets and clears demo.retained_widgets.
+
+```python
+
+w = Callout('Callout 42')
+demo.retain(w)
+###
+...
+###
+demo.delete_retained()
+```
+
+**demo.delete_one_widget(w)** calls w.deleteLater() and removes w from demo.widgets and demo.retained_widgets.
+
+
+```python
+w = Image(g.os_path_finalize_join(
+    g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
+demo.user_dict ['splash'] = w
+###
+...
+###
+w = demo.user_dict['splash']
+del demo.user_dict['splash']
+demo.delete_one_widget(w)
 ```
 
 # Example scripts
@@ -132,55 +177,9 @@ Text('This is a text area',
     position=(20, 40),
     size=(100, 200),
 )
-
-## Show a text callout
-```python
-# By default, callouts are centered in the body pane.
-Callout('Callout 1 centered')
-
-# Callouts may be positioned in various ways...
-Callout('Callout 2 (700, 200)', position=[700, 200])
-
-Callout('Callout 4 (center, 200)', position=['center', 200])
-
-Callout('Callout 5 (700, center)', position=[700, 'center'])
 ```
 
-## Show a text Title
-```python
-# By default Titles are centered at the bottom of the body pane.
-# Titles may be positioned just as Callouts are.
-Title('This is title 1')
-```
-
-## Deleting widgets
-By default, all allocated widgets appear in the **demo.widgets** list.
-
-Calling **demo.delete_widgets** deletes all widgets and removes them from the screen.
-
-Widgets can be retained until some later slide using **demo.retain(w):
-
-```python
-
-w = Callout('Callout 42')
-demo.retain(w)
-###
-...
-###
-demo.delete_retained()
-```
-
-Finally, demo scripts can handle deleting of a single widget, as shown:
-
-```python
-w = Image(g.os_path_finalize_join(
-    g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
-demo.retain(w)
-demo.user_dict ['splash'] = w
-###
-demo.delete_one_widget(demo.user_dict.get('splash'))
-
-## Altering the demo namespace
+## Change the demo namespace
 **demo.bind(name, object)** adds an entry to this dictionary.
 ```python
 demo.bind('greeting', 'Hello World')
@@ -235,17 +234,21 @@ Helper methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keywo
 
 ## Ivars
 
-**demo.user_dict**
+**demo.namespace**: The environment in which scripts execute.
 
-This ivar is a Python dictionary that demo scripts may freely use.
+**demo.n1** and **demo.n2** These ivars control the speed of the simulated typing.
 
-**demo.n1** and **demo.n2**
+Demo scripts may change n1 or n2 at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds.
 
-These ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
+**demo.speed**: A multiplier applied to n1 and n2.
 
-**demo.speed**
+This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.
 
-This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.  So using demo.speed factor is the easy way to adjust simulated typing speed.
+**demo.user_dict**:  Python dictionary that demo scripts may freely use.
+
+**demo.widgets**: A list of references to allocated widgets.
+
+Standard graphics classes add their elements to this list automatically.
 
 ## Images
 
@@ -339,9 +342,11 @@ You will find this stylesheet in the node @data
 
 - Demo scripts can not be undone/redone in a single step, unless each demo script makes *itself* undoable.
 
+- The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
+
 - Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
 
-- Chaining from one script to another using demo.next() cause a recursion. This would be a problem only if a presentation had hundreds of demo scripts.
+- Chaining from one script to another using demo.next() in the demo script is valid and harmless.  Yes, this creates a recursive call to demo.next(), but this would be a problem only if a presentation had hundreds of demo scripts.
 
 # Acknowledgements
 
