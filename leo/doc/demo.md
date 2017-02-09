@@ -6,22 +6,19 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 - [Overview](../doc/demo.md#overview)
 - [Demo scripts](../doc/demo.md#demo-scripts)
     - [Creating demo lists (to do)](../doc/demo.md#creating-demo-lists-to-do)
-    - [Predefined symbols and demo.init_namespace](../doc/demo.md#predefined-symbols-and-demoinitnamespace)
+    - [Predefined symbols](../doc/demo.md#predefined-symbols)
     - [Positioning graphics elements](../doc/demo.md#positioning-graphics-elements)
     - [Deleting graphics elements](../doc/demo.md#deleting-graphics-elements)
 - [Example scripts](../doc/demo.md#example-scripts)
-    - [Show typing in the minibuffer](../doc/demo.md#show-typing-in-the-minibuffer)
-    - [Show typing in a headline](../doc/demo.md#show-typing-in-a-headline)
-    - [Show an image](../doc/demo.md#show-an-image)
-    - [Show a text area](../doc/demo.md#show-a-text-area)
+    - [Simulate typing](../doc/demo.md#simulate-typing)
+    - [Add graphics elements](../doc/demo.md#add-graphics-elements)
     - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
     - [Switch focus](../doc/demo.md#switch-focus)
-    - [Select all headline text](../doc/demo.md#select-all-headline-text)
 - [Helper methods](../doc/demo.md#helper-methods)
     - [Ivars](../doc/demo.md#ivars)
     - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
-    - [Starting and ending](../doc/demo.md#starting-and-ending)
+    - [Setup and teardown](../doc/demo.md#setup-and-teardown)
     - [Typing](../doc/demo.md#typing)
 - [Magnification and styling](../doc/demo.md#magnification-and-styling)
 - [Details](../doc/demo.md#details)
@@ -32,7 +29,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 A **presentation** consists of one or more **slides**, created by **demo scripts**.
 Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. The demo plugin does not interfere with focus or key-handling, so demo scripts can freely call all of Leo's regular scripting API.
 
-**Creating the demo**: To start a demo, presenters run a **top-level script**. These scripts instantiate the Demo class and call **demo.start*. As discussed later, demo.start creates demo scripts from its arguments.
+**Creating the demo**: To start a demo, presenters run a **top-level script**. These scripts instantiate the Demo class and call **demo.start**. As discussed later, demo.start creates demo scripts from its arguments.
 
 **Controlling the presentation**: The **demo-next** command executes the next demo script.  The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
@@ -65,7 +62,7 @@ def start(self, p=None, script_list=None, script_string=None, delim='###'):
 
 Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
 
-## Predefined symbols and demo.init_namespace
+## Predefined symbols
 Demo scripts execute in the **demo.namespace** environment. This is a python dict containing:
 
 - c, g and p as usual,
@@ -93,15 +90,12 @@ By default, graphics elements are centered horizontally and vertically in the bo
 
 ```python
 Callout('Callout 2 (700, 200)', position=[700, 200])
-
 Text('Hello world', position=['center', 200])
-
 Title('This is a subtitle', position=[700, 'center'])
 ```
 
 ## Deleting graphics elements
 By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
-
 **demo.delete_widgets()** destroys all the widgets in that list by calling w.deleteLater and clears demo.widgets.
 
 ```python
@@ -112,7 +106,6 @@ Callout('Callout 2')
 ```
 
 **demo.retain(w)** adds widget w to **demo.retained_widgets**.
-
 **demo.delete_retained()** deletes all retained widgets, removes retained items from demo.widgets and clears demo.retained_widgets.
 
 ```python
@@ -127,7 +120,6 @@ demo.delete_retained()
 
 **demo.delete_one_widget(w)** calls w.deleteLater() and removes w from demo.widgets and demo.retained_widgets.
 
-
 ```python
 w = Image(g.os_path_finalize_join(
     g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
@@ -141,9 +133,11 @@ demo.delete_one_widget(w)
 ```
 
 # Example scripts
-Demo scripts may freely use all of Leo's scripting API. The demo plugin does not interfere in any way.
+The demo plugin does not change focus in any way, nor does it interfere with Leo's key handling. As a results, *demo scripts work just like normal Leo scripts*.
 
-## Show typing in the minibuffer
+## Simulate typing
+Simulate typing in the minibuffer:
+
 ```python
 demo.key('Alt+x')
 demo.keys('insert-node')
@@ -151,7 +145,8 @@ demo.wait(2)
 demo.key('\n')
 ```
 
-## Show typing in a headline
+Simulate typing in a headline:
+
 ```python
 c.insertHeadline()
 c.redraw()
@@ -159,18 +154,27 @@ c.editHeadline()
 demo.head_keys('My Headline')
 demo.wait(1)
 c.endEditing()
-
-# wrapper = c.edit_widget(p)
-# wrapper.setSelectionRange(0, len(p.h))
 ```
 
-## Show an image
+Select all headline text:
+
+```python
+'''Begin editing a headline and select all its text.'''
+c.editHeadline()
+wrapper = c.edit_widget(p)
+wrapper.setSelectionRange(0, len(p.h))
+```
+
+## Add graphics elements
+Add an image:
+
 ```python
 Image(g.os_path_finalize_join(
     g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
 ```
 
-## Show a text area
+Add a text area:
+
 ```python
 Text('This is a text area',
     font=QtGui.QFont('Verdana', 14),
@@ -184,7 +188,7 @@ Text('This is a text area',
 ```python
 demo.bind('greeting', 'Hello World')
 ```
-This is equivaent to:
+This is equivalent to:
 ```python
 demo.namespace.update({'greeting': 'Hello World'})
 ```
@@ -214,14 +218,6 @@ c.bodyWantsFocusNow()
 
 # Put focus in the log pane.
 c.logWantsFocusNow()
-```
-
-## Select all headline text
-```python
-'''Begin editing a headline and select all its text.'''
-c.editHeadline()
-wrapper = c.edit_widget(p)
-wrapper.setSelectionRange(0, len(p.h))
 ```
 
 # Helper methods
@@ -276,41 +272,30 @@ Opens the menu whose name is given, ignoring case and any non-alpha characters i
 
 Close the menu opened with demo.open_menu.
 
-## Starting and ending
+## Setup and teardown
+Subclasses of Demo may override any of the following:
 
-**demo.setup(p)**
+**demo.init_namespace**: Creates demo.namespace with default symbols.
 
-May be overridden in subclasses. Called before executing the first demo script.
+**demo.setup(p=None)**: Called before executing the first demo script.
 
-**demo.start(p)**
+**demo.setup_script(): Called before executing each demo script.
 
-Starts a demo. p is the root of demo script tree. 
+**demo.teardown()**: Called just before ending the demonstration.
 
-**demo.end()**
-
-Ends the demo and calls the teardown script. The demo automatically ends after executing the last demo script.
-
-**demo.teardown()**
-
-May be overridden in subclasses. Called when the demo ends.
+**demo.teardown_script():** Called after executing each demo script.
 
 ## Typing
 
-**demo.body_keys(s, undo=False)**
+**demo.body_keys(s, undo=False)**: Simulates typing the string s in the body pane.
 
-Simulates typing the string s in the body pane.
+**demo.head_keys(s, undo=False)**: Simulates typing the string s in the body pane.
 
-**demo.head_keys(s, undo=False)**
+**demo.keys(s, undo=False)**: Simulates typing the string s in the present widget.
 
-Simulates typing the string s in the body pane.
+**demo.key(setting)**: Types a single key in the present widget.
 
-**demo.keys(s, undo=False)**
-
-Simulates typing the string s in the present widget.
-
-**demo.key(setting)**
-
-Types a single key in the present widget. This method does not support undo. Examples:
+This method does not support undo.
 ```python
    demo.key('Alt-X') # Activate the minibuffer
    demo.key('Ctrl-F') # Execute Leo's Find command
@@ -318,9 +303,7 @@ Types a single key in the present widget. This method does not support undo. Exa
 
 # Magnification and styling
 
-**demo.set_text_delta(self, delta, w=None)**
-
-Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
+**demo.set_text_delta(self, delta, w=None)**: Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
@@ -350,7 +333,7 @@ You will find this stylesheet in the node @data
 
 # Acknowledgements
 
-Edward K. Ream wrote this plugin on January 29-31, 2017, using Leo's screencast plugin as a starting point. 
+Edward K. Ream wrote this plugin on January 29 to February 9, 2017, using Leo's screencast plugin as a starting point. 
 
 The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
