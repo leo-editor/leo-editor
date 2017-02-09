@@ -14,7 +14,7 @@ Revised by EKR February 6-7, 2017.
 import random
 import leo.core.leoGlobals as g
 import leo.plugins.qt_events as qt_events
-from leo.core.leoQt import QtGui, QtWidgets # QtCore
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
 #@@language python
 #@@tabwidth -4
@@ -498,44 +498,29 @@ class Demo(object):
                 return None
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes
-#@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
-class Label (QtWidgets.QLabel):
-    '''A class for user-defined callouts in demo.py.'''
-        
-    #@+others
-    #@+node:ekr.20170207074327.1: *4* label.__init__
-    def __init__(self, text=None, font=None, position=None, stylesheet=None):
-        '''
-        Label.__init__. The ctor for all user-defined callout classes.
-        Show the callout in the indicated place.
-        '''
-        c = g.app.demo.c
-        self.demo = g.app.demo
-        QtWidgets.QLabel.__init__(self, parent=c.frame.body.widget)
-            # Init the base class
-        if text:
-            self.setText(text)
-        self._position = position or 'center'
-        self._stylesheet = stylesheet or '''\
+#@+node:ekr.20170207071819.1: *3* class Callout(QLabel)
+class Callout(QtWidgets.QLabel):
+
+    def __init__(self, text, font=None, position=None, stylesheet=None):
+        demo, w = g.app.demo, self
+        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
+            # Init the base class.
+        self.init(font, position, stylesheet)
+        w.show()
+        g.app.demo.widgets.append(w)
+
+    def init(self, font, position, stylesheet):
+        demo, w = g.app.demo, self
+        stylesheet = stylesheet or '''\
             QLabel {
                 border: 2px solid black;
-                background-color : lightgrey;
+                background-color : lightblue;
                 color : black;
             }'''
-        self._font = font or QtGui.QFont('DejaVu Sans Mono', 16)
-        self.init()
-        g.app.demo.widgets.append(self)
-            # Must be done in all subclasses, so we do it here.
-    #@+node:ekr.20170207081055.1: *4* label.init
-    def init(self):
-        '''Actually set the attributes of the widget.'''
-        self.demo.set_position(self, self._position)
-        self.setStyleSheet(self._stylesheet)
-        self.setFont(self._font)
-        self.show()
-
-    #@-others
-#@+node:ekr.20170208065111.1: *3*  class Image (QLabel)
+        demo.set_position(w, position or 'center')
+        w.setStyleSheet(stylesheet)
+        w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 20))
+#@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
     
     def __init__(self, fn, position=None, size=None):
@@ -578,6 +563,34 @@ class Image (QtWidgets.QLabel):
         w.setPixmap(pixmap)
         w.show()
     #@-others
+#@+node:ekr.20170206203005.1: *3* class Label (QLabel)
+class Label (QtWidgets.QLabel):
+    '''A class for user-defined callouts in demo.py.'''
+        
+    def __init__(self, text=None, font=None, position=None, stylesheet=None):
+        '''
+        Label.__init__. The ctor for all user-defined callout classes.
+        Show the callout in the indicated place.
+        '''
+        demo, w = g.app.demo, self
+        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
+            # Init the base class
+        self.init(font, position, stylesheet)
+        w.show()
+        g.app.demo.widgets.append(w)
+        
+    def init(self, font, position, stylesheet):
+        '''Actually set the attributes of the widget.'''
+        demo, w = g.app.demo, self
+        stylesheet = stylesheet or '''\
+            QLabel {
+                border: 2px solid black;
+                background-color : lightgrey;
+                color : black;
+            }'''
+        demo.set_position(w, position or 'center')
+        w.setStyleSheet(stylesheet)
+        w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 16))
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
 class Text (QtWidgets.QPlainTextEdit):
     
@@ -599,7 +612,6 @@ class Text (QtWidgets.QPlainTextEdit):
         '''Init the Text widget.'''
         demo, w = self.demo, self
         demo.set_position(w, position)
-            # position = None centers the widget.
         if size:
             try:
                 height, width = size
@@ -611,57 +623,39 @@ class Text (QtWidgets.QPlainTextEdit):
         else:
             geom = self._parent.geometry()
             w.resize(geom.width(), min(150, geom.height() / 2))
-        # off = QtCore.Qt.ScrollBarAlwaysOff
-        # w.setHorizontalScrollBarPolicy(off)
-        # w.setVerticalScrollBarPolicy(off)
+        if 0:
+            off = QtCore.Qt.ScrollBarAlwaysOff
+            w.setHorizontalScrollBarPolicy(off)
+            w.setVerticalScrollBarPolicy(off)
         if stylesheet:
             w.setStyleSheet(stylesheet)
         else:
             w.setFont(font or QtGui.QFont('Verdana', 14))
         w.show()
     #@-others
-#@+node:ekr.20170207071819.1: *3* class Callout(Label)
-class Callout(Label):
+#@+node:ekr.20170207080814.1: *3* class Title(QLabel)
+class Title(QtWidgets.QLabel):
     
-    def __init__(self, text, position=None):
-        # Init the base class.'''
-        Label.__init__(self, text,
-            font = QtGui.QFont('DejaVu Sans Mono', 20),
-            position = position or 'center',
-            stylesheet = '''\
-                QLabel {
-                    border: 2px solid black;
-                    background-color : lightblue;
-                    color : black;
-                }''')
-#@+node:ekr.20170207080814.1: *3* class Title(Label)
-class Title(Label):
-    
-    def __init__(self, text, position=None):
-        # Init the base class.
-        self.original_position = position
-        Label.__init__(self, text,
-            position = position, # May be changed in init.
-            font = QtGui.QFont('DejaVu Sans Mono', 16),
-            stylesheet = '''\
-                QLabel {
-                    border: 1px solid black;
-                    background-color : mistyrose;
-                    color : black;
-                }'''
-            )
-            
-    def init(self):
-        '''Actually set the attributes of the widget.'''
-        # The Label ctor will set self._position to its default.
-        # We don't want that.
-        self._position = (
-            self.original_position or
-            ('center', self.parent().geometry().height() - 50)
-        )
-        self.demo.set_position(self, self._position)
-        self.setStyleSheet(self._stylesheet)
-        self.setFont(self._font)
-        self.show()
+    def __init__(self, text, font=None, position=None, stylesheet=None):
+        demo, w = g.app.demo, self
+        QtWidgets.QLabel.__init__(self, text, parent=demo.c.frame.body.widget)
+            # Init the base class.
+        self.init(font, position, stylesheet)
+        w.show()
+        g.app.demo.widgets.append(w)
+        
+    def init(self, font, position, stylesheet):
+        demo, w = g.app.demo, self
+        font = font or QtGui.QFont('DejaVu Sans Mono', 18)
+        stylesheet = stylesheet or '''\
+            QLabel {
+                border: 1px solid black;
+                background-color : mistyrose;
+                color : black;
+            }'''
+        position = position or ('center', self.parent().geometry().height() - 50)
+        demo.set_position(self, position)
+        w.setStyleSheet(stylesheet)
+        w.setFont(font)
 #@-others
 #@-leo
