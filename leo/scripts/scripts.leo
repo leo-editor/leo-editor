@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="41" left="1013" height="971" width="904"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -279,16 +279,16 @@
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
 </v>
-<v t="ekr.20170208111343.1"><vh>@button test-demo @key=Ctrl-9</vh>
-<v t="ekr.20170208111343.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170208111343.3"><vh>class myDemo</vh></v>
-<v t="ekr.20170208111343.4"><vh>script_string</vh></v>
+<v t="ekr.20170208175833.1"><vh>@button test-demo @key=Ctrl-9</vh>
+<v t="ekr.20170208175833.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170208175833.3"><vh>class myDemo</vh></v>
+<v t="ekr.20170208175833.4"><vh>script_string</vh></v>
 </v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="3,2"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -3290,7 +3290,7 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170208111343.1">&lt;&lt; imports &gt;&gt;
+<t tx="ekr.20170208175833.1">&lt;&lt; imports &gt;&gt;
 @others
 # The *same* command/key binding calls both demo-start and demo.next.
 try:
@@ -3305,51 +3305,49 @@ except Exception:
     g.app.demo = None
     raise
 </t>
-<t tx="ekr.20170208111343.2">if c.isChanged(): c.save()
+<t tx="ekr.20170208175833.2">if c.isChanged(): c.save()
 import imp
 from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
 imp.reload(demo_module)</t>
-<t tx="ekr.20170208111343.3">class MyDemo (demo_module.Demo):
+<t tx="ekr.20170208175833.3">class MyDemo (demo_module.Demo):
     
-    def __init__(self, c, trace=False):
-        demo_module.Demo.__init__(self, c, trace)
-            # init the base class.
-    
-    def setup(self, p=None):
-        demo = self
-        demo.bind('QtGui', QtGui)
-        demo.bind('callout', demo.module.Callout)
-        demo.bind('image', demo_module.Image)
-        demo.bind('text', demo_module.Text)
-        demo.bind('title', demo.module.Title)
+    if 0:
+        def __init__(self, c, trace=False):
+            demo_module.Demo.__init__(self, c, trace)
+                # init the base class.
+    if 0:
+        def setup(self, p=None):
+            demo = self
+            # demo.bind('QtGui', QtGui)
 
     def setup_script(self):
         self.delete_widgets()
         </t>
-<t tx="ekr.20170208111343.4">script_string = '''\
-w = image('C:/leo.repo/leo-editor/leo/Icons/SplashScreen.ico')
+<t tx="ekr.20170208175833.4">script_string = '''\
+demo.bind('greeting', 'Hello World')
+w = Image('C:/leo.repo/leo-editor/leo/Icons/SplashScreen.ico')
 demo.retain(w)
-callout('Callout 1 centered')
-title('This is title 1')
+Callout('Callout 1 centered')
+Title('This is title 1')
 ###
-callout('Callout 2 (700, 200)', position=[700, 200])
-title('This is title 2')
+Callout('Callout 2 (700, 200)', position=[700, 200])
+Title('This is title 2')
 ###
 demo.delete_retained_widgets()
-text('This is a text area',
-    font=QtGui.QFont('Verdana', 14),
-    position=(20, 40),
+Text(greeting,
+    font=QtGui.QFont('Verdana', 18),
+    position=(200, 40),
     size=(100, 200))
 ###
-callout('Callout 3 (200, 300)', position=[200, 300])
-title('This is title 3')
+Callout('Callout 3 (200, 300)', position=[200, 300])
+Title('This is title 3')
 ###
-# callout('Callout 4 (center, 200)', position=['center', 200])
-# title('This is a much much longer title 4')
+Callout('Callout 4 (center, 200)', position=['center', 200])
+Title('This is a much much longer title 4')
 ###
-# callout('Callout 5 (700, center)', position=[700, 'center'])
-# title('Short 5')
+Callout('Callout 5 (700, center)', position=[700, 'center'])
+Title('Short 5')
 ###
 demo.next()
 '''

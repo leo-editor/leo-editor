@@ -96,6 +96,8 @@ class Demo(object):
             'demo': self,
             'g:': g,
             'p': c.p,
+            'QtGui': QtGui,
+            'QtWidgets': QtWidgets,
             'Callout': Callout,
             'Image': Image,
             'Label': Label,
