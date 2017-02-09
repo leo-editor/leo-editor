@@ -520,10 +520,13 @@ class Label (QtWidgets.QLabel):
         '''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QLabel.__init__(self, text, parent)
-            # These don't work when using reload. Boo hoo.
-                # super(Label, self).__init__(text, parent) 
-                # super(self.__class__, self) loops!
+        if g.isPython3:
+            super().__init__(text, parent)
+        else:
+            QtWidgets.QLabel.__init__(self, text, parent)
+                # These don't work when using reload. Boo hoo.
+                    # super(Label, self).__init__(text, parent) 
+                    # super(self.__class__, self) loops!
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
@@ -663,7 +666,7 @@ class Title(Label):
             stylesheet=stylesheet,
         )
         # Must be done *after* initing the base class.
-        position = position or ('center', self.parent().geometry().height() - 50)
-        demo.set_position(w, position)
+        demo.set_position(w, position or 
+            ('center', self.parent().geometry().height() - 50))
 #@-others
 #@-leo
