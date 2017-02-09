@@ -4,6 +4,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
+- [Graphics classes](../doc/demo.md#graphics-classes)
 - [Using demo scripts](../doc/demo.md#using-demo-scripts)
     - [Creating demo lists](../doc/demo.md#creating-demo-lists)
     - [Predefined symbols](../doc/demo.md#predefined-symbols)
@@ -18,7 +19,6 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Switch focus](../doc/demo.md#switch-focus)
 - [Helper methods](../doc/demo.md#helper-methods)
     - [Ivars](../doc/demo.md#ivars)
-    - [Images](../doc/demo.md#images)
     - [Menus](../doc/demo.md#menus)
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
     - [Setup and teardown](../doc/demo.md#setup-and-teardown)
@@ -48,31 +48,34 @@ For example, this demo script executes the insert-node command:
 
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
-# Graphics classes ***
+# Graphics classes
+The demo.py file defines 5 classes that create graphical elements.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
 
+**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane. P
 
-## Callout
+**Callout**: Add a QLabel containing text.
 
-**demo.caption(s, pane)** Creates a caption with text s in the indicated pane.
+```python
+Callout(text,font=None, pane=None, position=None, stylesheet=None)
+```
 
-A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+**Image**: Add a QLabel containing an image.
 
-**demo.image(pane,fn,center=None,height=None,width=None)**: Overlays an image in a pane.
+```python
+Image(fn, pane=None, position=None, size=None)
+```
 
-- `pane`: Valid values are 'body', 'log' or 'tree'.
-- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
-- `height`: Scales the image so it has the given height.
-- `width`: Scales the image i so it has the given width.
-- `center`: If True, centers the image horizontally in the given pane.
+**Text**: Add a QTextEdit.
 
-## Image
+```python
+Text(text, font=None, pane=None, position=None, size=None, stylesheet=None)
+```
 
+**Title**: Add a QLabel containing text, centered horizontally, positioned near the bottom of the body pane.
 
-## Text
-
-
-## Title
-
+```python
+Title(text, font=None, pane=None, position=None, stylesheet=None)
+```
 
 # Using demo scripts
 
