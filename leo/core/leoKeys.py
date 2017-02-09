@@ -1746,6 +1746,7 @@ class KeyHandlerClass(object):
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
         self.demoNextKey = None # New support for the demo.py plugin.
+        self.demoPrevKey = None # New support for the demo.py plugin.
         self.fullCommandKey = None
         self.universalArgKey = None
         # Used by k.masterKeyHandler...
@@ -2362,6 +2363,7 @@ class KeyHandlerClass(object):
             ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
             ('demoNextKey', 'demo-next'),
+            ('demoPrevKey', 'demo-prev'),
         ):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
@@ -3230,13 +3232,18 @@ class KeyHandlerClass(object):
                     event=event, func=k.keyboardQuit, stroke=stroke)
             return
         # 2017/01/31: Important support for the demo.py plugin.
-        # Shortcut everything so that demo-next won't alter any KeyHandler ivars.
-        if k.demoNextKey and stroke == k.demoNextKey:
-            if getattr(g.app, 'demo', None):
-                g.app.demo.next()
-            else:
-                g.es_print('no demo active')
-            return 
+        demo = getattr(g.app, 'demo', None)
+        if demo:
+            # Shortcut everything so that demo-next or demo-prev
+            # won't alter of our ivars.
+            if k.demoNextKey and stroke == k.demoNextKey:
+                if demo.trace: g.trace('demo-next', stroke)
+                demo.next()
+                return
+            elif k.demoPrevKey and stroke == k.demoPrevKey:
+                if demo.trace: g.trace('demo-prev', stroke)
+                demo.prev()
+                return
         # Always handle modes regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state, stroke))

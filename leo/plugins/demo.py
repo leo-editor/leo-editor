@@ -181,6 +181,16 @@ class Demo(object):
             g.es_print('Ending the tutorial...')
             self.end()
 
+    #@+node:ekr.20170209160057.1: *4* demo.prev
+    def prev(self):
+        '''Execute the next demo script, or call end().'''
+        g.trace('----- not ready yet')
+        # if self.script_list:
+            # # Execute the next script.
+            # script = self.script_list.pop(0)
+            # self.setup_script()
+            # self.exec_node(script)
+            # self.teardown_script()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''

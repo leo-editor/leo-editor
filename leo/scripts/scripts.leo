@@ -3302,6 +3302,8 @@ try:
         g.cls()
         c.frame.log.clearTab('Log')
         g.es_print('Starting MyDemo')
+        c.k.demoNextKey = c.k.strokeFromSetting('Ctrl-9')
+            # Tell k.masterKeyHandler to process Ctrl-9 immediately.
         demo = MyDemo(c, trace=False)
         demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
