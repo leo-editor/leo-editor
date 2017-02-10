@@ -501,11 +501,13 @@ p.b = 'some body text'
 
 This means that devs don't have to do anything "by hand" when creating a demo. *Demos are totally reproducible.*
 
-And one more cool thing. During development, it's fine to move from one slide to the next using demo-next (bound to `Ctrl-9` in the example top-level node). But just before creating our video or slide show, we can define this **teardown_script** method:
+And one more cool thing. During development, it's fine to move from one slide to the next using demo-next (bound to `Ctrl-9` in the example top-level node). But just before creating our video or slide show, we can define **teardown_script**:
 
+```python
 def teardown_script(self):
     self.wait(self.inter_slide_wait)
     self.next()
+```
 
 Instant automation!  Do you see how cool this is?
 
