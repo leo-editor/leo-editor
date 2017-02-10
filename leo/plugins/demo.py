@@ -478,20 +478,18 @@ class Demo(object):
     def center(self, w):
         '''Center this widget in its parent.'''
         g_p = w.parent().geometry()
-        # g_w = w.geometry()
-        # x = g_p.width()/2 - g_w.width()/2
-            # Not great, the real width hasn't been computed.
-        x = 250
+        g_w = w.geometry()
+        w.updateGeometry()
+        x = g_p.width()/2 - g_w.width()/2
         y = g_p.height()/2
         w.move(x, y)
 
     def center_horizontally(self, w, y):
         '''Center w horizontally in its parent, and set its y position.'''
-        # g_p = w.parent().geometry()
-        # g_w = w.geometry()
-        # x = g_p.width()/2 - g_w.width()/2
-            # Not great, the real width hasn't been computed.
-        x = 250
+        g_p = w.parent().geometry()
+        g_w = w.geometry()
+        w.updateGeometry()
+        x = g_p.width()/2 - g_w.width()/2
         w.move(x, y)
 
     def center_vertically(self, w, x):
@@ -601,6 +599,7 @@ class Callout(Label):
         font=None, pane=None, position=None, stylesheet=None
     ):
         '''Show a callout, centered by default.'''
+        demo, w = g.app.demo, self
         stylesheet = stylesheet or '''\
             QLabel {
                 border: 2px solid black;
@@ -615,6 +614,8 @@ class Callout(Label):
             super(self.__class__, self).__init__(text,
                 font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
+        # Do this *after* initing the base class.
+        demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
     
@@ -722,7 +723,7 @@ class Title(Label):
             super(self.__class__, self).__init__(text,
                 font=font,pane=pane,
                 position=position,stylesheet=stylesheet)
-        # Must be done *after* initing the base class.
+        # Do this *after* initing the base class.
         demo.set_position(w, position or 
             ('center', self.parent().geometry().height() - 50))
 #@-others

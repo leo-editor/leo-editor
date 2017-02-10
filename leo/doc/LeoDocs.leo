@@ -1345,12 +1345,6 @@
 <v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
 </v>
 <v t="ekr.20170130080532.1"></v>
-<v t="ekr.20170209163915.1"><vh>Found:camtasia</vh>
-<v t="ekr.20131122055946.16402"></v>
-<v t="ekr.20131122055946.16405"></v>
-<v t="ekr.20131211054925.16388"></v>
-<v t="ekr.20131122055946.16404"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20240,7 +20234,6 @@ Power:
 Am I speaking Greek here? Examples needed?
 
 </t>
-<t tx="ekr.20170209163915.1"># flattened, ignore-case, head, body</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
