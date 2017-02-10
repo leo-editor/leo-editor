@@ -367,7 +367,7 @@ import leo.plugins.demo as demo_module
 Demo = demo_module.Demo
 class MyDemo(Demo):
     def init_namespace(self):
-        super(Demo, self).init_namespace()
+        Demo.init_namespace(self)
         self.namespace.update({
             'MyCallout': MyCallout,
             'MyImage': MyImage,
