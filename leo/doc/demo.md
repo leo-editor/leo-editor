@@ -480,6 +480,34 @@ These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keywor
    demo.key('Ctrl-F') # Execute Leo's Find command
 ```
 
+# Summary
+
+**Demos are programs in disguise**
+
+The [top-level script](../doc/demo.md#top-level-script) is no toy. Although simple, ​the various setup/teardown methods help devs maintain momentum and energy.​ This is important, especially when planning many experiments.
+
+The **setup** method defines the 'delta' ivar, incremented when changing font magnification in Leo's body pane. The **teardown** method restores the original font magnification. The Demo class catches all exceptions, so it can call teardown in all cases.
+
+The **setup_script** method calls demo.delete_widgets(), freeing individual demo scripts from having to do so. See below for a practical use for **teardown_script**.
+
+I want to emphasize something.  Demo scripts can use all parts of Leo's API to "run" Leo automatically. For example, this is one way to create a new node:
+
+```python
+p = c.insertHeadline()
+p.h = 'a headline'
+p.b = 'some body text'
+``
+
+This means that devs don't have to do anything "by hand" when creating a demo. *Demos are totally reproducible.*
+
+And one more cool thing. During development, it's fine to move from one slide to the next using demo-next (bound to `Ctrl-9` in the example top-level node). But just before creating our video or slide show, we can define this **teardown_script** method:
+
+def teardown_script(self):
+    self.wait(self.inter_slide_wait)
+    self.next()
+
+Instant automation!  Do you see how cool this is?
+
 # History
 
 Edward K. Ream wrote and debugged this plugin from January 29 to February 10, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
