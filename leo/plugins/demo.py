@@ -26,7 +26,6 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 @g.command('demo-next')
 def demo_next(self, event=None):
     '''Run the next demo script.'''
-    g.trace(g.callers())
     if getattr(g.app, 'demo', None):
         g.app.demo.next()
     else:
@@ -54,28 +53,39 @@ class Demo(object):
     def __init__(self, c, trace=False):
         '''Ctor for the Demo class.'''
         self.c = c
-        # The *permanent* namespace.
         # pylint: disable=import-self
         import leo.plugins.demo as module
-        self.module = module
-        self.namespace = {} # Set in init_namespace.
-        # Typing params.
-        self.n1 = 0.02 # default minimal typing delay, in seconds.
-        self.n2 = 0.175 # default maximum typing delay, in seconds.
-        self.speed = 1.0 # Amount to multiply wait times.
-        # Converting arguments to demo.key.
+        #
+        self.end_on_exception = False
+            # True: Exceptions call self.end(). Good for debugging.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
-        # Other ivars.
-        self.end_on_exception = False # Good for debugging.
+            # For converting arguments to demo.key...
+        self.module = module
+            # The leo.plugins.demo module.
+        self.n1 = 0.02
+            # Default minimal typing delay, in seconds.
+        self.n2 = 0.175
+            # Default maximum typing delay, in seconds.
+        self.namespace = {}
+            # The namespace for all demo script.
+            # Set in init_namespace, which subclasses may override.
         self.retained_widgets = []
             # List of widgets *not* to be deleted by delete_widgets.
+        self.script_i = 0
+            # Index into self.script_list.
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
+        self.speed = 1.0
+            # Speed multiplier for simulated typing.
         self.trace = trace
-        self.user_dict = {} # For use by scripts.
-        self.widgets = [] # References to (popup) widgets created by this class.
-        # Create *global* demo commands.
+            # True: enable traces in k.masterKeyWidget.
+        self.user_dict = {}
+            # For use by scripts.
+        self.widgets = []
+            # References to all widgets created by this class.
+        #
+        # Init...
         self.init()
         self.init_namespace()
     #@+node:ekr.20170129174128.1: *4* demo.init
@@ -83,8 +93,9 @@ class Demo(object):
         '''Link the global commands to this class.'''
         old_demo = getattr(g.app, 'demo', None)
         if old_demo:
-            old_demo.delete_widgets()
-            g.trace('deleting old demo:', old_demo.__class__.__name__)
+            old_demo.delete_all_widgets()
+            if self.trace: g.trace('deleting old demo:',
+                old_demo.__class__.__name__)
         g.app.demo = self
     #@+node:ekr.20170208124125.1: *4* demo.init_namespace
     def init_namespace(self):
@@ -116,9 +127,13 @@ class Demo(object):
         # g.trace(name, object_, object_.__init__)
         return object_
     #@+node:ekr.20170128213103.40: *4* demo.delete_*
+    def delete_all_widgets(self):
+        '''Delete all widgets.'''
+        self.delete_retained_widgets()
+        self.delete_widgets()
+
     def delete_widgets(self):
-        '''Delete all presently visible widgets.'''
-        # g.trace(self) ; g.printList(self.widgets)
+        '''Delete all widgets in the widget_list, but not retained widgets.'''
         for w in self.widgets:
             if w not in self.retained_widgets:
                 w.deleteLater()
@@ -148,24 +163,12 @@ class Demo(object):
             g.app.demo = None
             self.teardown()
             g.es_print('End of', self.__class__.__name__)
-    #@+node:ekr.20170128213103.30: *4* demo.next & helper
-    def next(self):
-        '''Execute the next demo script, or call end().'''
-        # Don't delete widgets here. Leave that up to the demo scripts!
-        # self.delete_widgets()
-        if self.script_list:
-            # Execute the next script.
-            script = self.script_list.pop(0)
-            self.setup_script()
-            self.exec_node(script)
-            self.teardown_script()
-        else:
-            self.end()
-    #@+node:ekr.20170128213103.31: *5* demo.exec_node
+    #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
+        trace = False and not g.unitTesting
         c = self.c
-        if self.trace:
+        if trace:
             g.trace()
             g.printList(g.splitlines(script))
         try:
@@ -181,16 +184,29 @@ class Demo(object):
             g.es_print('Ending the tutorial...')
             self.end()
 
+    #@+node:ekr.20170128213103.30: *4* demo.next
+    def next(self):
+        '''Execute the next demo script, or call end().'''
+        if self.script_i < len(self.script_list):
+            # Execute the next script.
+            script = self.script_list[self.script_i]
+            self.script_i += 1
+            self.setup_script()
+            self.exec_node(script)
+            self.teardown_script()
+        else:
+            self.end()
     #@+node:ekr.20170209160057.1: *4* demo.prev
     def prev(self):
-        '''Execute the next demo script, or call end().'''
-        g.trace('----- not ready yet')
-        # if self.script_list:
-            # # Execute the next script.
-            # script = self.script_list.pop(0)
-            # self.setup_script()
-            # self.exec_node(script)
-            # self.teardown_script()
+        '''Execute the previous demo script, if any.'''
+        if self.script_i - 1 > 0:
+            self.script_i -= 2
+            script = self.script_list[self.script_i]
+            self.setup_script()
+            self.exec_node(script)
+            self.teardown_script()
+        elif self.trace:
+            g.trace('no previous script')
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -214,8 +230,7 @@ class Demo(object):
         Called when the demo ends.
         Subclasses may override this.
         '''
-        self.delete_retained_widgets()
-        self.delete_widgets()
+        self.delete_all_widgets()
 
     def teardown_script(self):
         '''
