@@ -6,15 +6,15 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 - [Overview](../doc/demo.md#overview)
 - [Graphics classes](../doc/demo.md#graphics-classes)
 - [Using demo scripts](../doc/demo.md#using-demo-scripts)
-    - [Creating demo lists](../doc/demo.md#creating-demo-lists)
+    - [Script trees and lists](../doc/demo.md#script-trees-and-lists)
     - [Predefined symbols](../doc/demo.md#predefined-symbols)
-    - [Positioning graphics elements](../doc/demo.md#positioning-graphics-elements)
-    - [Deleting graphics elements](../doc/demo.md#deleting-graphics-elements)
+    - [Positioning graphics](../doc/demo.md#positioning-graphics)
+    - [Deleting graphics](../doc/demo.md#deleting-graphics)
     - [Details](../doc/demo.md#details)
 - [Example scripts](../doc/demo.md#example-scripts)
     - [Top-level script](../doc/demo.md#top-level-script)
     - [Simulate typing](../doc/demo.md#simulate-typing)
-    - [Add graphics elements](../doc/demo.md#add-graphics-elements)
+    - [Add graphics](../doc/demo.md#add-graphics)
     - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
     - [Switch focus](../doc/demo.md#switch-focus)
 - [Helper methods](../doc/demo.md#helper-methods)
@@ -32,7 +32,7 @@ A **presentation** consists of one or more **slides**, created by **demo scripts
 Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. The demo plugin does not interfere with focus or key-handling, so demo scripts can freely call all of Leo's regular scripting API. Demo scripts can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
-- Show **graphic elements**, including scaled images, callouts and text areas.
+- Show **graphics**, including scaled images, callouts and text areas.
 - Open any Leo menu, selecting particular menu items.
 - Scale font sizes.
 
@@ -47,11 +47,11 @@ For example, this demo script executes the insert-node command:
 
 **Controlling the presentation**: The **demo-next** command executes the next demo script. The **demo-prev** command executes the previous demo. The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
-**Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
+**Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images. These graphics persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
 # Graphics classes
 
-The demo.py file defines 5 classes that create graphical elements.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
+The demo.py file defines 5 classes that create graphics.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
 
 **arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane.
 
@@ -84,7 +84,7 @@ Title(text, font=None, pane=None, position=None, stylesheet=None)
 # Using demo scripts
 
 
-## Creating demo lists
+## Script trees and lists
 
 A **script tree**, a tree of **script nodes**, specifies the script.
 
@@ -102,7 +102,7 @@ Callout('Callout 2')
 Title('This is a much much longer title')
 ```
 
-The **script list** is composed of the body text of all nodes in script tree, ignoring:
+The Demo startup code converts the script tree to a linear **script list**, composed of the body text of all nodes in script tree, ignoring:
 
 - Nodes whose body text contains nothing but whitespace or python comments.
 - `@ignore` nodes.
@@ -133,9 +133,9 @@ demo.bind('greeting', hello world')
 Callout(greeting)
 ```
 
-## Positioning graphics elements
+## Positioning graphics
 
-By default, graphics elements are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
+By default, graphics are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
 
 ```python
 Callout('Callout 1')
@@ -145,7 +145,7 @@ Text('Hello world', position=['center', 200])
 Title('This is a subtitle', position=[700, 'center'])
 ```
 
-## Deleting graphics elements
+## Deleting graphics
 
 By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
 
@@ -320,7 +320,7 @@ wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
 ```
 
-## Add graphics elements
+## Add graphics
 
 Add an image:
 
@@ -411,7 +411,7 @@ This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 i
 
 **demo.widgets**: A list of references to allocated widgets.
 
-Standard graphics classes add their elements to this list automatically.
+Standard graphics classes add themselves to this list automatically.
 
 ## Menus
 
