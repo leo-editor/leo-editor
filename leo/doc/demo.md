@@ -395,7 +395,7 @@ Demo scripts may change n1 or n2 at any time. If both are given, each character 
 
 This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.
 
-**demo.retained_widgets: A list of widgets *not* deleted by demo.delete_widgets()
+**demo.retained_widgets**: A list of widgets *not* deleted by demo.delete_widgets()
 
 **demo.user_dict**:  Python dictionary that demo scripts may freely use.
 
