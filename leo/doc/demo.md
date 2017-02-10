@@ -383,16 +383,19 @@ The valid values for `pane` arguments are the strings, "body", "log" or "tree".
 Helper methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
 
 ## Ivars
-
-**demo.namespace**: The environment in which scripts execute.
+The following discusses only those ivars that demo scripts might change.
 
 **demo.n1** and **demo.n2** These ivars control the speed of the simulated typing.
 
 Demo scripts may change n1 or n2 at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds.
 
+**demo.namespace**: The environment in which scripts execute.
+
 **demo.speed**: A multiplier applied to n1 and n2.
 
 This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.
+
+**demo.retained_widgets: A list of widgets *not* deleted by demo.delete_widgets()
 
 **demo.user_dict**:  Python dictionary that demo scripts may freely use.
 
