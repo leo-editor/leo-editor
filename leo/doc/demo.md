@@ -45,7 +45,7 @@ For example, this demo script executes the insert-node command:
 
 **Creating the demo**: To start a demo, presenters run a **top-level script**. These scripts instantiate the Demo class and call **demo.start**. As discussed later, demo.start creates demo scripts from its arguments.
 
-**Controlling the presentation**: The **demo-next** command executes the next demo script.  The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
+**Controlling the presentation**: The **demo-next** command executes the next demo script. The **demo-prev** command executes the previous demo. The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
@@ -189,6 +189,8 @@ demo.delete_one_widget(w)
 
 - Chaining from one script to another using demo.next() in the demo script is valid and harmless.  Yes, this creates a recursive call to demo.next(), but this would be a problem only if a presentation had hundreds of demo scripts.
 
+- The demo-next command *must* be bound in the top-level script, as shown in the example in scripts.leo. The demo-end and demo-prev commands may be bound in myLeoSettings.leo as usual.
+
 # Example scripts
 The demo plugin does not change focus in any way, nor does it interfere with Leo's key handling. As a results, *demo scripts work just like normal Leo scripts*.
 
@@ -197,21 +199,51 @@ Here is a recommended top-level node for the top-level script, in an `@button My
 
 ```python
 
+# << imports >>
+from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
+import imp
+imp.reload(demo_module)
 
+# << class MyDemo >>
 class MyDemo (demo_module.Demo):
+    
+    def setup(self, p=None):
+        c = self.c
+        self.end_on_exception = True # Good for debugging.
+        self.delta = 0
+        p = g.findNodeAnywhere(c, 'Demo Area')
+        self.root = p.copy() if p else None
+        if p:
+            c.selectPosition(p)
+            c.redraw()
+        self.set_youtube_position()
+
     def setup_script(self):
         self.delete_widgets()
         
-# The *same* command/key binding calls both demo-start and demo.next.
+    def teardown(self):
+        c = self.c
+        self.delete_all_widgets()
+        if hasattr(self, 'delta') and self.delta > 0:
+            self.set_text_delta(-self.delta)
+        if self.root and c.positionExists(self.root, trace=False):
+            c.selectPosition(self.root)
+            c.redraw()
+# Don't use @others here.
 try:
     if getattr(g.app, 'demo', None):
         g.app.demo.next()
     else:
         g.cls()
-        print('starting MyDemo')
+        c.frame.log.clearTab('Log')
+        g.es_print('Starting MyDemo')
+        c.k.demoNextKey = c.k.strokeFromSetting('Ctrl-9')
+            # Tell k.masterKeyHandler to process Ctrl-9 immediately.
+            # Binding demo-next in a setting does *not* work.
         demo = MyDemo(c, trace=False)
-        demo.start(script_string=script_string)
+        p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
+        demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
     g.app.demo = None
     raise
