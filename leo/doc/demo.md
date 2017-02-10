@@ -517,5 +517,5 @@ Instant automation!  Do you see how cool this is?
 
 # History
 
-Edward K. Ream wrote and debugged this plugin from January 29 to February 10, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 10, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
