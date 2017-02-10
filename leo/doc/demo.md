@@ -24,6 +24,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Setup and teardown](../doc/demo.md#setup-and-teardown)
     - [Window Position](../doc/demo.md#window-position)
     - [Typing](../doc/demo.md#typing)
+- [Summary](../doc/demo.md#summary)
 - [History](../doc/demo.md#history)
 
 # Overview
