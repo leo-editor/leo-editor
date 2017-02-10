@@ -497,7 +497,7 @@ I want to emphasize something.  Demo scripts can use all parts of Leo's API to "
 p = c.insertHeadline()
 p.h = 'a headline'
 p.b = 'some body text'
-``
+```
 
 This means that devs don't have to do anything "by hand" when creating a demo. *Demos are totally reproducible.*
 

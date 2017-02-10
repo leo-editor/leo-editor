@@ -1345,7 +1345,6 @@
 <v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
 </v>
 <v t="ekr.20170130080532.1"></v>
-<v t="ekr.20170210095912.1"><vh>cool examples</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20235,27 +20234,6 @@ Power:
 Am I speaking Greek here? Examples needed?
 
 </t>
-<t tx="ekr.20170210095912.1">Creating demos really is programming task. The example top-level script in demo.md is no toy.
-
-The setup method defines the 'delta' ivar, incremented when changing font magnification in Leo's body pane. The teardown method restores the original font magnification. The Demo class catches all exceptions, so it can call teardown in all cases.
-
-The setup_script method calls demo.delete_widgets(), which frees individual demo scripts from having to do so. See below for a practical use for teardown_script.
-
-I want to emphasize something.  Demo scripts can use all parts of Leo's API to "run" Leo automatically. For example, this is one way to create a new node:
-
-p = c.insertHeadline()
-p.h = 'a headline'
-p.b = 'some body text'
-
-This means that devs don't have to do anything "by hand" when creating a demo. Demos are totally reproducible.
-
-One more cool thing. During development, it's fine to move from one slide to the next using demo-next (bound to Ctrl-9 in the example top-level node). Just before creating the video, we can define this teardown_script method:
-
-def teardown_script(self):
-    self.wait(self.inter_slide_wait)
-    self.next()
-
-Instant automation!  Do you see how cool this is?</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
