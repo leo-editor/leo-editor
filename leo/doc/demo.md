@@ -50,9 +50,12 @@ For example, this demo script executes the insert-node command:
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images or other graphics elements. These graphics elements persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
 # Graphics classes
+
 The demo.py file defines 5 classes that create graphical elements.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
 
-**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane. The valid arguments for the `pane` argument are `None, 'body', 'log', 'tree`, with `None` being the same as `body`. 
+**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane.
+
+The valid arguments for the `pane` argument are `None, 'body', 'log', 'tree`. `None` is same as `body`. 
 
 **Callout**: Add a QLabel containing text.
 
@@ -82,6 +85,7 @@ Title(text, font=None, pane=None, position=None, stylesheet=None)
 
 
 ## Creating demo lists
+
 A **script tree**, a tree of **script nodes**, specifies the script.
 
 ```python
@@ -105,6 +109,7 @@ The **script list** is composed of the body text of all nodes in script tree, ig
 - All nodes in an `@ignore-tree` tree.
 
 ## Predefined symbols
+
 Demo scripts execute in the **demo.namespace** environment. This is a python dict containing:
 
 - c, g and p as usual,
@@ -129,6 +134,7 @@ Callout(greeting)
 ```
 
 ## Positioning graphics elements
+
 By default, graphics elements are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
 
 ```python
@@ -140,6 +146,7 @@ Title('This is a subtitle', position=[700, 'center'])
 ```
 
 ## Deleting graphics elements
+
 By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
 
 **demo.delete_widgets()** destroys all the widgets in that list by calling w.deleteLater and clears demo.widgets.
@@ -192,9 +199,11 @@ demo.delete_one_widget(w)
 - The demo-next command *must* be bound in the top-level script, as shown in the example in scripts.leo. The demo-end and demo-prev commands may be bound in myLeoSettings.leo as usual.
 
 # Example scripts
+
 The demo plugin does not change focus in any way, nor does it interfere with Leo's key handling. As a results, *demo scripts work just like normal Leo scripts*.
 
 ## Top-level script
+
 Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
 
 ```python
@@ -282,6 +291,7 @@ demo.next()
 ```
 
 ## Simulate typing
+
 Simulate typing in the minibuffer:
 
 ```python
@@ -311,6 +321,7 @@ wrapper.setSelectionRange(0, len(p.h))
 ```
 
 ## Add graphics elements
+
 Add an image:
 
 ```python
@@ -341,6 +352,7 @@ Title('It was the best of times...')
 ```
 
 ## Change the demo namespace
+
 **demo.bind(name, object)** adds an entry to this dictionary.
 ```python
 demo.bind('greeting', 'Hello World')
@@ -363,6 +375,7 @@ class MyDemo(Demo):
 ```
 
 ## Switch focus
+
 ```python
 # Put focus to the tree.
 c.treeWantsFocusNow()
@@ -378,11 +391,8 @@ c.logWantsFocusNow()
 
 The following sections describe all public ivars and helper methods of the Demo class.
 
-The valid values for `pane` arguments are the strings, "body", "log" or "tree".
-
-Helper methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
-
 ## Ivars
+
 The following discusses only those ivars that demo scripts might change.
 
 **demo.n1** and **demo.n2** These ivars control the speed of the simulated typing.
@@ -432,6 +442,7 @@ You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
 ## Setup and teardown
+
 Subclasses of Demo may override any of the following:
 
 **demo.init_namespace**: Creates demo.namespace with default symbols.
@@ -445,6 +456,7 @@ Subclasses of Demo may override any of the following:
 **demo.teardown_script():** Called after executing each demo script.
 
 ## Window position
+
 **demo.set_window_size(width, height)** Set the size of Leo's main window, in pixels.
 
 **demo.set_window_position(x, y):** Move the top-left corner of Leo's main window to x, y, in pixels.
@@ -461,6 +473,8 @@ Subclasses of Demo may override any of the following:
 
 **demo.key(setting)**: Types a single key in the present widget. This method does not support undo.
 
+These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
+
 ```python
    demo.key('Alt-X') # Activate the minibuffer
    demo.key('Ctrl-F') # Execute Leo's Find command
@@ -468,7 +482,5 @@ Subclasses of Demo may override any of the following:
 
 # History
 
-Edward K. Ream wrote this plugin on January 29 to February 9, 2017, using Leo's screencast plugin as a starting point. 
-
-The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+Edward K. Ream wrote and debugged this plugin from January 29 to February 10, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
