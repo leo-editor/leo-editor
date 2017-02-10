@@ -491,7 +491,9 @@ The **setup** method defines the 'delta' ivar, incremented when changing font ma
 
 The **setup_script** method calls demo.delete_widgets(), freeing individual demo scripts from having to do so. See below for a practical use for **teardown_script**.
 
-I want to emphasize something.  Demo scripts can use all parts of Leo's API to "run" Leo automatically. For example, this is one way to create a new node:
+**demos are reproducible**
+
+Demo scripts can use *all* parts of Leo's API to "run" Leo automatically. For example, this is one way to create a new node:
 
 ```python
 p = c.insertHeadline()
@@ -499,9 +501,11 @@ p.h = 'a headline'
 p.b = 'some body text'
 ```
 
-This means that devs don't have to do anything "by hand" when creating a demo. *Demos are totally reproducible.*
+Presenters don't have to do anything by hand.
 
-And one more cool thing. During development, it's fine to move from one slide to the next using demo-next (bound to `Ctrl-9` in the example top-level node). But just before creating our video or slide show, we can define **teardown_script**:
+**Demos can be fully automated**
+
+During development, it's fine to move from one slide to the next using demo-next (bound to `Ctrl-9` in the example top-level node). But just before creating a video or slide show, devs can define this **teardown_script**:
 
 ```python
 def teardown_script(self):
