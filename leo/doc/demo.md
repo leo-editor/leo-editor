@@ -547,7 +547,7 @@ Edward K. Ream wrote, debugged and documented this plugin from January 29 to Feb
 
 2017/02/11: Added auto-run feature. Fixed bugs re widget visibility.
 
-- Added the auto_run option to demo.start.
+- Added the auto_run option to demo.start and the auto_run ivar.
 - demo.start calls qtApp.processEvents() before each script.
 - demo.delete_* call w.hide() before calling w.deleteLater().
 - demo.wait() calls the new demo.repaint() method.
