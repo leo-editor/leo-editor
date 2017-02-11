@@ -27,7 +27,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 def next_command(self, event=None, chain=False):
     '''Run the next demo script.'''
     if getattr(g.app, 'demo', None):
-        g.app.demo.next_command()
+        g.app.demo.next()
     else:
         g.trace('no demo instance')
         
@@ -35,7 +35,7 @@ def next_command(self, event=None, chain=False):
 def prev_command(self, event=None, chain=False):
     '''Run the next demo script.'''
     if getattr(g.app, 'demo', None):
-        g.app.demo.prev_command()
+        g.app.demo.prev()
     else:
         g.trace('no demo instance')
         
@@ -70,6 +70,8 @@ class Demo(object):
             # True: Exceptions call self.end(). Good for debugging.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
             # For converting arguments to demo.key...
+        self.key_speed = 1.0
+            # Speed multiplier for simulated typing.
         self.module = module
             # The leo.plugins.demo module.
         self.n1 = 0.02
@@ -86,8 +88,6 @@ class Demo(object):
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
-        self.speed = 1.0
-            # Speed multiplier for simulated typing.
         self.trace = trace
             # True: enable traces in k.masterKeyWidget.
         self.user_dict = {}
@@ -177,11 +177,7 @@ class Demo(object):
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
-        trace = False and not g.unitTesting
         c = self.c
-        if trace:
-            g.trace()
-            g.printList(g.splitlines(script))
         try:
             c.executeScript(
                 namespace=self.namespace,
@@ -196,31 +192,41 @@ class Demo(object):
             self.end()
 
     #@+node:ekr.20170128213103.30: *4* demo.next
-    def next(self, chain=True):
+    def next(self, chain=True, wait=None):
         '''Execute the next demo script, or call end().'''
         trace = True
         # g.trace(chain, g.callers(2), self.c.p.h)
-        if chain:
-            self.chain_flag = True
-        elif self.script_i < len(self.script_list):
+        if wait is not None:
+            # if trace: g.trace('WAIT', wait)
+            self.wait(wait)
+        # if chain:
+            # if trace: g.trace('CHAIN start')
+            # self.chain_flag = True
+        # el
+        if self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
-            if trace: self.print_script(script)
+            if trace:
+                self.print_script(script)
             self.script_i += 1
             self.setup_script()
             self.exec_node(script)
             self.teardown_script()
-            if self.chain_flag:
-                self.chain_flag = False
-                self.next(chain=False)
-            if self.script_i >= len(self.script_list):
-                self.end()
-        else:
+            # if self.chain_flag:
+                # if trace: g.trace('CHAIN next')
+                # self.chain_flag = False
+                # self.next(chain=False)
+                # if self.script_i >= len(self.script_list):
+                    # if trace: g.trace('CHAIN end')
+                    # self.end()
+        if self.script_i >= len(self.script_list):
             self.end()
             
-    def next_command(self):
-        self.chain_flag = False
-        self.next(chain=False)
+    next_command = next
+            
+    # def next_command(self):
+        # self.chain_flag = False
+        # self.next(chain=False)
     #@+node:ekr.20170209160057.1: *4* demo.prev
     def prev(self):
         '''Execute the previous demo script, if any.'''
@@ -235,8 +241,10 @@ class Demo(object):
         elif self.trace:
             g.trace('no previous script')
             
-    def prev_command(self):
-        self.prev()
+    prev_command = prev
+            
+    # def prev_command(self):
+        # self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -279,7 +287,7 @@ class Demo(object):
                 if self.script_list:
                     self.setup(p)
                         # There's no great way to recover from exceptions.
-                    self.next_command()
+                    self.next()
                 else:
                     g.trace('empty script tree at', p.h)
             else:
@@ -340,8 +348,8 @@ class Demo(object):
             aList.append(''.join(lines))
         # g.trace('===== delim', delim) ; g.printList(aList)
         return aList
-    #@+node:ekr.20170128213103.43: *4* demo.wait
-    def wait(self, n1=None, n2=None):
+    #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
+    def key_wait(self, speed=None, n1=None, n2=None):
         '''Wait for an interval between n1 and n2, in seconds.'''
         if n1 is None: n1 = self.n1
         if n2 is None: n2 = self.n2
@@ -350,8 +358,108 @@ class Demo(object):
         else:
             n = n1
         if n > 0:
-            n = float(n) / float(self.speed)
+            n = float(n) * float(speed if speed is not None else self.key_speed)
             g.sleep(n)
+
+    def wait(self, seconds):
+        '''Wait for the given number of seconds.'''
+        # self.c.redraw_now()
+        # g.trace('=====', seconds)
+        g.sleep(seconds)
+        
+    #@+node:ekr.20170211045801.1: *3* demo.Debug
+    #@+node:ekr.20170128213103.13: *4* demo.clear_log
+    def clear_log(self):
+        '''Clear the log.'''
+        self.c.frame.log.clearTab('Log')
+    #@+node:ekr.20170211042757.1: *4* demo.print_script
+    def print_script(self, script):
+        '''Pretty print the script for debugging.'''
+        # g.printList(g.splitLines(script))
+        print('\n' + script.strip())
+    #@+node:ekr.20170211045959.1: *3* demo.Images
+    #@+node:ekr.20170208093727.1: *4* demo.resolve_icon_fn
+    def resolve_icon_fn(self, fn):
+        '''Resolve fn relative to the Icons directory.'''
+        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.os_path_finalize_join(dir_, fn)
+        if g.os_path_exists(path):
+            return path
+        else:
+            g.trace('does not exist: %s' % (path))
+            return None
+    #@+node:ekr.20170211045726.1: *3* demo.Keys
+    #@+node:ekr.20170128213103.11: *4* demo.body_keys
+    def body_keys(self, s, speed=None, undo=False):
+        '''Undoably simulate typing in the body pane.'''
+        c = self.c
+        c.bodyWantsFocusNow()
+        p = c.p
+        w = c.frame.body.wrapper.widget
+        if undo:
+            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
+                # oldSel=None, newSel=None, oldYview=None)
+        for ch in s:
+            p.b = p.b + ch
+            w.repaint()
+            self.key_wait(speed=speed)
+    #@+node:ekr.20170128213103.20: *4* demo.head_keys
+    def head_keys(self, s, speed=None, undo=False):
+        '''Undoably simulates typing in the headline.'''
+        c, p = self.c, self.c.p
+        undoType = 'Typing'
+        oldHead = p.h
+        tree = c.frame.tree
+        p.h = ''
+        c.editHeadline()
+        w = tree.edit_widget(p)
+        if undo:
+            undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+            dirtyVnodeList = p.setDirty()
+            c.undoer.afterChangeNodeContents(p, undoType, undoData,
+                dirtyVnodeList=dirtyVnodeList)
+        for ch in s:
+            p.h = p.h + ch
+            tree.repaint() # *not* tree.update.
+            self.key_wait(speed=speed)
+            event = self.new_key_event(ch, w)
+            c.k.masterKeyHandler(event)
+        p.h = s
+        c.redraw()
+    #@+node:ekr.20170128213103.28: *4* demo.key
+    def key(self, ch, speed=None):
+        '''Simulate typing a single key'''
+        c, k = self.c, self.c.k
+        w = g.app.gui.get_focus(c=c, raw=True)
+        self.key_wait(speed=speed)
+        event = self.new_key_event(ch, w)
+        k.masterKeyHandler(event)
+        w.repaint() # Make the character visible immediately.
+    #@+node:ekr.20170128213103.23: *4* demo.keys
+    def keys(self, s, undo=False):
+        '''
+        Simulate typing a string of *plain* keys.
+        Use demo.key(ch) to type any other characters.
+        '''
+        c, p = self.c, self.c.p
+        if undo:
+            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
+        for ch in s:
+            self.key(ch)
+    #@+node:ekr.20170128213103.39: *4* demo.new_key_event
+    def new_key_event(self, shortcut, w):
+        '''Create a LeoKeyEvent for a *raw* shortcut.'''
+        # Using the *input* logic seems best.
+        event = self.filter_.create_key_event(
+            event=None,
+            c=self.c,
+            w=w,
+            ch=shortcut if len(shortcut) is 1 else '',
+            tkKey=None,
+            shortcut=shortcut,
+        )
+        # g.trace('%10r %r' % (shortcut, event))
+        return event
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
     def dismiss_menu_bar(self):
@@ -369,7 +477,20 @@ class Demo(object):
         if menu:
             c.frame.menu.activateMenu(menu_name)
         return menu
-    #@+node:ekr.20170130090031.1: *3* demo.Keys
+    #@+node:ekr.20170211050031.1: *3* demo.Nodes
+    #@+node:ekr.20170211045602.1: *4* demo.insert_node
+    def insert_node(self, headline, end=True, keys=False, speed=None):
+        '''Helper for inserting a node.'''
+        c = self.c
+        p = c.insertHeadline()
+        if keys:
+            self.speed = self.speed if speed is None else speed
+            self.head_keys(headline)
+        else:
+            p.h = headline
+        if end:
+            c.endEditing()
+    #@+node:ekr.20170211045933.1: *3* demo.Text
     #@+node:ekr.20170130184230.1: *4* demo.set_text_delta
     def set_text_delta(self, delta, w=None):
         '''
@@ -389,82 +510,7 @@ class Demo(object):
             w.setStyleSheet(sheet)
         except Exception:
             g.es_exception()
-    #@+node:ekr.20170128213103.11: *4* demo.body_keys
-    def body_keys(self, s, undo=False):
-        '''Undoably simulate typing in the body pane.'''
-        c = self.c
-        c.bodyWantsFocusNow()
-        p = c.p
-        w = c.frame.body.wrapper.widget
-        if undo:
-            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
-                # oldSel=None, newSel=None, oldYview=None)
-        for ch in s:
-            p.b = p.b + ch
-            w.repaint()
-            self.wait()
-    #@+node:ekr.20170128213103.20: *4* demo.head_keys
-    def head_keys(self, s, undo=False):
-        '''Undoably simulates typing in the headline.'''
-        c, p = self.c, self.c.p
-        undoType = 'Typing'
-        oldHead = p.h
-        tree = c.frame.tree
-        p.h = ''
-        c.editHeadline()
-        w = tree.edit_widget(p)
-        if undo:
-            undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
-            dirtyVnodeList = p.setDirty()
-            c.undoer.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList)
-        for ch in s:
-            p.h = p.h + ch
-            tree.repaint() # *not* tree.update.
-            self.wait()
-            event = self.new_key_event(ch, w)
-            c.k.masterKeyHandler(event)
-        p.h = s
-        c.redraw()
-    #@+node:ekr.20170128213103.39: *4* demo.new_key_event
-    def new_key_event(self, shortcut, w):
-        '''Create a LeoKeyEvent for a *raw* shortcut.'''
-        # Using the *input* logic seems best.
-        event = self.filter_.create_key_event(
-            event=None,
-            c=self.c,
-            w=w,
-            ch=shortcut if len(shortcut) is 1 else '',
-            tkKey=None,
-            shortcut=shortcut,
-        )
-        # g.trace('%10r %r' % (shortcut, event))
-        return event
-    #@+node:ekr.20170128213103.28: *4* demo.key
-    def key(self, ch):
-        '''Simulate typing a single key'''
-        c, k = self.c, self.c.k
-        w = g.app.gui.get_focus(c=c, raw=True)
-        self.wait()
-        event = self.new_key_event(ch, w)
-        k.masterKeyHandler(event)
-        w.repaint() # Make the character visible immediately.
-    #@+node:ekr.20170128213103.23: *4* demo.keys
-    def keys(self, s, undo=False):
-        '''
-        Simulate typing a string of *plain* keys.
-        Use demo.key(ch) to type any other characters.
-        '''
-        c, p = self.c, self.c.p
-        if undo:
-            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
-        for ch in s:
-            self.key(ch)
-    #@+node:ekr.20170130090250.1: *3* demo.Utils
-    #@+node:ekr.20170128213103.13: *4* demo.clear_log
-    def clear_log(self):
-        '''Clear the log.'''
-        self.c.frame.log.clearTab('Log')
+    #@+node:ekr.20170211045817.1: *3* demo.Windows
     #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry
     def get_top_geometry(self):
         w = self.c.frame.top
@@ -489,11 +535,6 @@ class Demo(object):
             'tree': c.frame.tree.treeWidget,
         }
         return d.get(pane)
-    #@+node:ekr.20170211042757.1: *4* demo.print_script
-    def print_script(self, script):
-        '''Pretty print the script for debugging.'''
-        # g.printList(g.splitLines(script))
-        print('\n' + script.strip())
     #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
     def repaint_pane(self, pane):
         '''Repaint the given pane.'''
@@ -502,16 +543,6 @@ class Demo(object):
             w.repaint()
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20170208093727.1: *4* demo.resolve_icon_fn
-    def resolve_icon_fn(self, fn):
-        '''Resolve fn relative to the Icons directory.'''
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
-        if g.os_path_exists(path):
-            return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
     #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
     def set_position(self, w, position):
         '''Position w at the given position, or center it.'''
