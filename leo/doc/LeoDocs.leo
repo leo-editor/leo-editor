@@ -1345,7 +1345,6 @@
 <v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
 </v>
 <v t="ekr.20170130080532.1"></v>
-<v t="ekr.20170211083532.1"><vh>Table of contents</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20234,31 +20233,6 @@ Power:
 
 Am I speaking Greek here? Examples needed?
 
-</t>
-<t tx="ekr.20170211083532.1">- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
-- [Overview](../doc/demo.md#overview)
-- [Graphics classes](../doc/demo.md#graphics-classes)
-- [Using demo scripts](../doc/demo.md#using-demo-scripts)
-    - [Script trees and lists](../doc/demo.md#script-trees-and-lists)
-    - [Predefined symbols](../doc/demo.md#predefined-symbols)
-    - [Positioning graphics](../doc/demo.md#positioning-graphics)
-    - [Deleting graphics](../doc/demo.md#deleting-graphics)
-    - [Details](../doc/demo.md#details)
-- [Example scripts](../doc/demo.md#example-scripts)
-    - [Top-level script](../doc/demo.md#top-level-script)
-    - [Simulate typing](../doc/demo.md#simulate-typing)
-    - [Add graphics](../doc/demo.md#add-graphics)
-    - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
-    - [Switch focus](../doc/demo.md#switch-focus)
-- [Helper methods](../doc/demo.md#helper-methods)
-    - [Ivars](../doc/demo.md#ivars)
-    - [Menus](../doc/demo.md#menus)
-    - [Magnification and styling](../doc/demo.md#magnification-and-styling)
-    - [Startup, setup and teardown](../doc/demo.md#startup-setup-and-teardown)
-    - [Window position](../doc/demo.md#window-position)
-    - [Typing](../doc/demo.md#typing)
-- [Summary](../doc/demo.md#summary)
-- [History and change log](../doc/demo.md#history-and-change-log)
 </t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
