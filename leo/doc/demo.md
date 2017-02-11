@@ -521,7 +521,7 @@ Instant automation!  Do you see how cool this is?
 
 Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 11, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
-2017/02/11: Added auto-run feature. Fixed bugs re wiget visibility.
+2017/02/11: Added auto-run feature. Fixed bugs re widget visibility.
 
 - Added the auto_run option to demo.start.
 - demo.start calls qtApp.processEvents() before each script.
