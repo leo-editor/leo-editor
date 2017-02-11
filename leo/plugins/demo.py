@@ -509,18 +509,17 @@ class Demo(object):
             w.setStyleSheet(sheet)
         except Exception:
             g.es_exception()
-    #@+node:ekr.20170211045817.1: *3* demo.Windows
+    #@+node:ekr.20170211045817.1: *3* demo.Windows & Geometry
     #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry
     def get_top_geometry(self):
-        w = self.c.frame.top
-        while w.parent():
-            w = w.parent()
+        top = self.c.frame.top
+        w = getattr(top, 'leo_master', None) or top
         return w.geometry()
 
     def set_top_geometry(self, geometry):
-        r = geometry
-        self.set_window_position(r.x(), r.y())
-        self.set_window_size(r.width(), r.height())
+        top = self.c.frame.top
+        w = getattr(top, 'leo_master', None) or top
+        w.setGeometry(geometry)
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
