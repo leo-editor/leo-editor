@@ -24,15 +24,23 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 # Note: importing this plugin creates the commands.
 
 @g.command('demo-next')
-def demo_next(self, event=None):
+def next_command(self, event=None, chain=False):
     '''Run the next demo script.'''
     if getattr(g.app, 'demo', None):
-        g.app.demo.next()
+        g.app.demo.next_command()
+    else:
+        g.trace('no demo instance')
+        
+@g.command('demo-prev')
+def prev_command(self, event=None, chain=False):
+    '''Run the next demo script.'''
+    if getattr(g.app, 'demo', None):
+        g.app.demo.prev_command()
     else:
         g.trace('no demo instance')
         
 @g.command('demo-end')
-def demo_end(self, event=None):
+def demo_end(self, event=None, chain=False):
     '''End the present demo.'''
     if getattr(g.app, 'demo', None):
         g.app.demo.end()
@@ -56,6 +64,8 @@ class Demo(object):
         # pylint: disable=import-self
         import leo.plugins.demo as module
         #
+        self.chain = False
+            # True: a demo script has called demo.next()
         self.end_on_exception = False
             # True: Exceptions call self.end(). Good for debugging.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
@@ -163,7 +173,7 @@ class Demo(object):
         if g.app.demo:
             g.app.demo = None
             self.teardown()
-            g.es_print('End of', self.__class__.__name__)
+            g.es_print('\nEnd of', self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
@@ -186,17 +196,31 @@ class Demo(object):
             self.end()
 
     #@+node:ekr.20170128213103.30: *4* demo.next
-    def next(self):
+    def next(self, chain=True):
         '''Execute the next demo script, or call end().'''
-        if self.script_i < len(self.script_list):
+        trace = True
+        # g.trace(chain, g.callers(2), self.c.p.h)
+        if chain:
+            self.chain_flag = True
+        elif self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
+            if trace: self.print_script(script)
             self.script_i += 1
             self.setup_script()
             self.exec_node(script)
             self.teardown_script()
+            if self.chain_flag:
+                self.chain_flag = False
+                self.next(chain=False)
+            if self.script_i >= len(self.script_list):
+                self.end()
         else:
             self.end()
+            
+    def next_command(self):
+        self.chain_flag = False
+        self.next(chain=False)
     #@+node:ekr.20170209160057.1: *4* demo.prev
     def prev(self):
         '''Execute the previous demo script, if any.'''
@@ -210,6 +234,9 @@ class Demo(object):
             self.teardown_script()
         elif self.trace:
             g.trace('no previous script')
+            
+    def prev_command(self):
+        self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -252,7 +279,7 @@ class Demo(object):
                 if self.script_list:
                     self.setup(p)
                         # There's no great way to recover from exceptions.
-                    self.next()
+                    self.next_command()
                 else:
                     g.trace('empty script tree at', p.h)
             else:
@@ -323,7 +350,7 @@ class Demo(object):
         else:
             n = n1
         if n > 0:
-            n = n * self.speed
+            n = float(n) / float(self.speed)
             g.sleep(n)
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
@@ -462,6 +489,11 @@ class Demo(object):
             'tree': c.frame.tree.treeWidget,
         }
         return d.get(pane)
+    #@+node:ekr.20170211042757.1: *4* demo.print_script
+    def print_script(self, script):
+        '''Pretty print the script for debugging.'''
+        # g.printList(g.splitLines(script))
+        print('\n' + script.strip())
     #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
     def repaint_pane(self, pane):
         '''Repaint the given pane.'''

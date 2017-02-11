@@ -3238,11 +3238,11 @@ class KeyHandlerClass(object):
             # won't alter of our ivars.
             if k.demoNextKey and stroke == k.demoNextKey:
                 if demo.trace: g.trace('demo-next', stroke)
-                demo.next()
+                demo.next_command()
                 return
             elif k.demoPrevKey and stroke == k.demoPrevKey:
                 if demo.trace: g.trace('demo-prev', stroke)
-                demo.prev()
+                demo.prev_command()
                 return
         # Always handle modes regardless of vim.
         if k.inState():

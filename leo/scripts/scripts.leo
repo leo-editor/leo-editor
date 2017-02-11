@@ -279,10 +279,25 @@
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
 </v>
-<v t="ekr.20170210025021.1"><vh>@button Demo @key=Ctrl-9</vh>
-<v t="ekr.20170210025021.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170210025021.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh></v>
-<v t="ekr.20170210025021.4"><vh>demo-script</vh></v>
+<v t="ekr.20170211044707.1"><vh>@button Demo @key=Ctrl-9</vh>
+<v t="ekr.20170211044707.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170211044707.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
+<v t="ekr.20170211044707.4"><vh>insert_node</vh></v>
+<v t="ekr.20170211044707.5"><vh>setup</vh>
+<v t="ekr.20170211044707.6"><vh>a new node</vh></v>
+<v t="ekr.20170211044707.7"><vh>Another headline</vh></v>
+</v>
+<v t="ekr.20170211044707.8"><vh>setup_script</vh></v>
+<v t="ekr.20170211044707.9"><vh>teardown</vh></v>
+</v>
+<v t="ekr.20170211044707.10"><vh>demo-script</vh>
+<v t="ekr.20170211044707.11"><vh>First</vh></v>
+<v t="ekr.20170211044707.12"><vh>Full featured outliner</vh></v>
+<v t="ekr.20170211044707.13"><vh>Leo's panes</vh></v>
+<v t="ekr.20170211044707.14"><vh>Leo creates scripts from outlines</vh></v>
+<v t="ekr.20170211044707.15"><vh>Clones and cff</vh></v>
+<v t="ekr.20170211044707.16"><vh>Last</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -3290,7 +3305,7 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170210025021.1">if c.isChanged(): c.save()
+<t tx="ekr.20170211044707.1">if c.isChanged(): c.save()
 &lt;&lt; imports &gt;&gt;
 &lt;&lt; class MyDemo &gt;&gt;
 # Don't use @others here.
@@ -3305,52 +3320,92 @@ try:
         c.k.demoNextKey = c.k.strokeFromSetting('Ctrl-9')
             # Tell k.masterKeyHandler to process Ctrl-9 immediately.
             # Binding demo-next in a setting does *not* work.
-        demo = MyDemo(c, trace=False)
+        demo = MyDemo(c)
         p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
         demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
 except Exception:
     g.app.demo = None
     raise
 </t>
-<t tx="ekr.20170210025021.2">from leo.core.leoQt import QtGui
+<t tx="ekr.20170211044707.10">@language python
+</t>
+<t tx="ekr.20170211044707.11">Callout('Hello. This tutorial introduces Leo')
+# Callout("First, I'll increase the text size for easier viewing")
+</t>
+<t tx="ekr.20170211044707.12"># Create, move, promote, demote, hoist.
+demo.speed = 5.0
+demo.retain(Title('Leo is a full featured outliner.'))
+###
+demo.insert_node('a new node', keys=True)
+###
+c.moveOutlineRight()
+###
+demo.insert_node('another headline')
+###
+c.moveOutlineRight()
+demo.delete_retained_widgets()
+</t>
+<t tx="ekr.20170211044707.13"># The body pane shows the text of the selected outline node.</t>
+<t tx="ekr.20170211044707.14"># Section refs, @others, @file
+</t>
+<t tx="ekr.20170211044707.15"></t>
+<t tx="ekr.20170211044707.16"># Callout('Thanks for watching')
+###
+# demo.next()</t>
+<t tx="ekr.20170211044707.2">from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
 import imp
 imp.reload(demo_module)</t>
-<t tx="ekr.20170210025021.3">class MyDemo (demo_module.Demo):
+<t tx="ekr.20170211044707.3">class MyDemo (demo_module.Demo):
     
-    def setup(self, p=None):
-        c = self.c
-        self.end_on_exception = True # Good for debugging.
-        self.delta = 0
-        p = g.findNodeAnywhere(c, 'Demo Area')
-        self.root = p.copy() if p else None
-        if p:
-            c.selectPosition(p)
-            c.redraw()
-        self.set_youtube_position()
-
-    def setup_script(self):
-        self.delete_widgets()
-        
-    def teardown(self):
-        c = self.c
-        self.delete_all_widgets()
-        if hasattr(self, 'delta') and self.delta &gt; 0:
-            self.set_text_delta(-self.delta)
-        if self.root and c.positionExists(self.root, trace=False):
-            c.selectPosition(self.root)
-            c.redraw()
+    @others
 </t>
-<t tx="ekr.20170210025021.4">@language python
-Callout('Hello. This tutorial introduces Leo')
-###
-Callout("First, I'll increase the text size for easier viewing")
-demo.delta += 10
-demo.set_text_delta(10)
-###
-Callout('Thanks for watching this tutorial')
-###
-demo.next()
+<t tx="ekr.20170211044707.4">def insert_node(self, headline, keys=False, end=True):
+    '''Helper for inserting a node.'''
+    c = self.c
+    p = c.insertHeadline()
+    if keys:
+        self.head_keys(headline)
+    else:
+        p.h = headline
+    if end:
+        c.endEditing()</t>
+<t tx="ekr.20170211044707.5">def setup(self, p=None):
+    c = self.c
+    self.end_on_exception = True # Good for debugging.
+    self.delta = 10
+    demo.set_text_delta(10)
+    self.geometry1 = self.get_top_geometry()
+    p = g.findNodeAnywhere(c, 'Demo Area')
+    self.root = p.copy() if p else None
+    if p:
+        p.expand()
+        c.selectPosition(p)
+    c.frame.equalSizedPanes()
+    c.redraw()
+    self.set_youtube_position()
+
+</t>
+<t tx="ekr.20170211044707.6"></t>
+<t tx="ekr.20170211044707.7"></t>
+<t tx="ekr.20170211044707.8">def setup_script(self):
+    self.delete_widgets()
+</t>
+<t tx="ekr.20170211044707.9">def teardown(self):
+    c = self.c
+    self.delete_all_widgets()
+    self.set_top_geometry(self.geometry1)
+    if hasattr(self, 'delta') and self.delta &gt; 0:
+        self.set_text_delta(-self.delta)
+    if self.root and c.positionExists(self.root, trace=False):
+        self.root.deleteAllChildren()
+    p = self.root.next()
+    if p:
+        p.expand()
+        c.selectPosition(p)
+    else:
+        c.selectPosition(self.root)
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>
