@@ -22,10 +22,10 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Menus](../doc/demo.md#menus)
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
     - [Setup and teardown](../doc/demo.md#setup-and-teardown)
-    - [Window Position](../doc/demo.md#window-position)
+    - [Window position](../doc/demo.md#window-position)
     - [Typing](../doc/demo.md#typing)
 - [Summary](../doc/demo.md#summary)
-- [History](../doc/demo.md#history)
+- [History and change log](../doc/demo.md#history-and-change-log)
 
 # Overview
 
@@ -517,7 +517,18 @@ def teardown_script(self):
 
 Instant automation!  Do you see how cool this is?
 
-# History
+# History and change log
 
 Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 11, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+
+2017/02/11: Added auto-run feature. Fixed bugs re wiget update/delete.
+
+- Added the auto_run option to demo.start.
+  demo.start calls g.app.gui.qtApp.processEvents() before each script.
+
+- demo.delete_* call w.hide() before calling w.deleteLater().
+
+- demo.wait() calls the new demo.repaint() method.
+
+- demo.repaint_pane() calls w.viewport().repaint().
 

@@ -64,8 +64,8 @@ class Demo(object):
         # pylint: disable=import-self
         import leo.plugins.demo as module
         #
-        self.chain = False
-            # True: a demo script has called demo.next()
+        self.auto_run = False
+            # True: start calls next until finished.
         self.end_on_exception = False
             # True: Exceptions call self.end(). Good for debugging.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
@@ -136,32 +136,6 @@ class Demo(object):
         self.namespace [name] = object_
         # g.trace(name, object_, object_.__init__)
         return object_
-    #@+node:ekr.20170128213103.40: *4* demo.delete_*
-    def delete_all_widgets(self):
-        '''Delete all widgets.'''
-        self.delete_retained_widgets()
-        self.delete_widgets()
-
-    def delete_widgets(self):
-        '''Delete all widgets in the widget_list, but not retained widgets.'''
-        for w in self.widgets:
-            if w not in self.retained_widgets:
-                w.deleteLater()
-        self.widgets = []
-        
-    def delete_one_widget(self, w):
-        if w in self.widgets:
-            self.widgets.remove(w)
-        if w in self.retained_widgets:
-            self.retained_widgets.remove(w)
-        w.deleteLater()
-
-    def delete_retained_widgets(self):
-        '''Delete all previously retained widgets.'''
-        for w in self.retained_widgets:
-            w.deleteLater()
-        self.retained_widgets = []
-
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''
@@ -172,6 +146,9 @@ class Demo(object):
         # self.delete_widgets()
         if g.app.demo:
             g.app.demo = None
+            # End auto-mode execution.
+            self.script_list = []
+            self.script_i = 0
             self.teardown()
             g.es_print('\nEnd of', self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
@@ -197,12 +174,7 @@ class Demo(object):
         trace = True
         # g.trace(chain, g.callers(2), self.c.p.h)
         if wait is not None:
-            # if trace: g.trace('WAIT', wait)
             self.wait(wait)
-        # if chain:
-            # if trace: g.trace('CHAIN start')
-            # self.chain_flag = True
-        # el
         if self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
@@ -212,13 +184,6 @@ class Demo(object):
             self.setup_script()
             self.exec_node(script)
             self.teardown_script()
-            # if self.chain_flag:
-                # if trace: g.trace('CHAIN next')
-                # self.chain_flag = False
-                # self.next(chain=False)
-                # if self.script_i >= len(self.script_list):
-                    # if trace: g.trace('CHAIN end')
-                    # self.end()
         if self.script_i >= len(self.script_list):
             self.end()
             
@@ -276,7 +241,7 @@ class Demo(object):
         Subclasses may override this.
         '''
     #@+node:ekr.20170128213103.33: *4* demo.start & helpers
-    def start(self, script_tree, delim='###'):
+    def start(self, script_tree, auto_run=False, delim='###'):
         '''Start a demo. script_tree contains the demo scripts.'''
         import leo.core.leoNodes as leoNodes
         p = script_tree
@@ -287,7 +252,13 @@ class Demo(object):
                 if self.script_list:
                     self.setup(p)
                         # There's no great way to recover from exceptions.
-                    self.next()
+                    if auto_run:
+                        while self.script_i < len(self.script_list):
+                            g.app.gui.qtApp.processEvents()
+                                # Helps, but widgets are not deleted.
+                            self.next()
+                    else:
+                        self.next()
                 else:
                     g.trace('empty script tree at', p.h)
             else:
@@ -362,11 +333,9 @@ class Demo(object):
             g.sleep(n)
 
     def wait(self, seconds):
-        '''Wait for the given number of seconds.'''
-        # self.c.redraw_now()
-        # g.trace('=====', seconds)
+        '''Refresh the tree and wait for the given number of seconds.'''
+        self.repaint()
         g.sleep(seconds)
-        
     #@+node:ekr.20170211045801.1: *3* demo.Debug
     #@+node:ekr.20170128213103.13: *4* demo.clear_log
     def clear_log(self):
@@ -377,7 +346,36 @@ class Demo(object):
         '''Pretty print the script for debugging.'''
         # g.printList(g.splitLines(script))
         print('\n' + script.strip())
-    #@+node:ekr.20170211045959.1: *3* demo.Images
+    #@+node:ekr.20170211045959.1: *3* demo.Delete
+    #@+node:ekr.20170128213103.40: *4* demo.delete_*
+    def delete_all_widgets(self):
+        '''Delete all widgets.'''
+        self.delete_retained_widgets()
+        self.delete_widgets()
+
+    def delete_widgets(self):
+        '''Delete all widgets in the widget_list, but not retained widgets.'''
+        for w in self.widgets:
+            if w not in self.retained_widgets:
+                w.hide()
+                w.deleteLater()
+        self.widgets = []
+        
+    def delete_one_widget(self, w):
+        if w in self.widgets:
+            self.widgets.remove(w)
+        if w in self.retained_widgets:
+            self.retained_widgets.remove(w)
+        w.hide()
+        w.deleteLater()
+
+    def delete_retained_widgets(self):
+        '''Delete all previously retained widgets.'''
+        for w in self.retained_widgets:
+            w.hide()
+            w.deleteLater()
+        self.retained_widgets = []
+    #@+node:ekr.20170211071750.1: *3* demo.File names
     #@+node:ekr.20170208093727.1: *4* demo.resolve_icon_fn
     def resolve_icon_fn(self, fn):
         '''Resolve fn relative to the Icons directory.'''
@@ -536,11 +534,15 @@ class Demo(object):
         }
         return d.get(pane)
     #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
+    def repaint(self):
+        '''Repaint the tree widget.'''
+        self.c.frame.tree.treeWidget.viewport().repaint()
+
     def repaint_pane(self, pane):
         '''Repaint the given pane.'''
         w = self.pane_widget(pane)
         if w:
-            w.repaint()
+            w.viewport().repaint()
         else:
             g.trace('bad pane: %s' % (pane))
     #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
