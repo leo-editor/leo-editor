@@ -661,6 +661,7 @@ class Label (QtWidgets.QLabel):
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
         if g.isPython3:
+            # pylint: disable=missing-super-argument
             super().__init__(text, parent)
         else:
             QtWidgets.QLabel.__init__(self, text, parent)
@@ -702,6 +703,7 @@ class Callout(Label):
                 color : black;
             }'''
         if g.isPython3:
+            # pylint: disable=missing-super-argument
             super().__init__(text,
                 font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
@@ -719,6 +721,7 @@ class Image (QtWidgets.QLabel):
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
         if g.isPython3:
+            # pylint: disable=missing-super-argument
             super().__init__(parent=parent)
         else:
             super(self.__class__, self).__init__(parent=parent)
@@ -763,6 +766,7 @@ class Text (QtWidgets.QPlainTextEdit):
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
         if g.isPython3:
+            # pylint: disable=missing-super-argument
             super().__init__(text.rstrip(), parent=parent)
         else:
             super(self.__class__, self).__init__(text.rstrip(), parent=parent)
@@ -811,6 +815,7 @@ class Title(Label):
                 color : black;
             }'''
         if g.isPython3:
+            # pylint: disable=missing-super-argument
             super().__init__(text,
                 font=font,pane=pane,
                 position=position,stylesheet=stylesheet)
