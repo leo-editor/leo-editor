@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -395,6 +395,7 @@
 </v>
 <v t="ekr.20091130111843.6787"><vh>Tutorials</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\tutorial.html</vh></v>
+<v t="ekr.20170211152535.1"><vh>@rst html\tutorial-five-minutes.html</vh></v>
 <v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
 <v t="ekr.20131002211347.6456"><vh>Command names</vh></v>
 <v t="ekr.20131002055813.15973"><vh>Leo's main window</vh></v>
@@ -1345,6 +1346,7 @@
 <v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
 </v>
 <v t="ekr.20170130080532.1"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -6285,8 +6287,21 @@ Leo's Tutorials
     "Leo is a quantum leap for me in terms of how many projects I can manage
     and how much information I can find and organize and store in a
     useful way."---Dan Winkler
+    
+Leo is an outliner. Unique features make Leo a powerful IDE, Personal Information Manager and scripting environment.
 
-Leo looks like other outlining programs, but it is not. This tutorial will get you using Leo quickly, acquainting you with its unique features in one or two hours. It has five parts.
+For an overview, see `Leo in 5 minutes`_.
+
+The first three parts are of general interest:
+
+- `The basics of Leo`_.
+- `Leo as a personal information manager`_
+- `Creating documents with Leo`_
+
+The last two parts are for programmers:
+
+- `Markup and @file nodes`_
+- `Leo's scripting API`_
 
 The first three parts are for all users. They will take about an hour to complete. Part one introduces Leo's basic operations for creating and changing outlines. Part two tells how to use Leo as a Personal Information Manager. Part three tells how to create HTML, PDF, LaTeX and other documents.
 
@@ -20209,10 +20224,6 @@ Added g.input_, but this is not a great solution.
 <t tx="ekr.20170209161021.1">@language rest
 @wrap
 
-Thanks for reminding me how important documentation is.
-
-Leo 5.5b1 won't go out the door until docs are revised.
-
 Learn about Leo in 5 minutes:
 
 Leo's unique features:
@@ -20234,7 +20245,50 @@ Power:
 Am I speaking Greek here? Examples needed?
 
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170211152535.1">################
+Leo in 5 minutes
+################
+
+**Outlines**
+
+Leo is a full-featured outliner and an IDE, with features borrowed from emacs and vim. When Leo reloads an outline, it remembers where you left off.
+
+Outlines consists of **nodes** with **headlines** and **bodies**. The **outline pane** shows nodes. The **body pane** contains the body of the selected node.
+
+**External files**
+
+- @file trees in the outline represent **external files** on your file system. Leo *updates @file nodes* when you change external files outside of Leo.
+
+- When saving an outline, Leo writes all changed @file trees to their external files.
+
+- Leo's **importers** create outlines containing classes, methods and functions from external files. These outlines are great way of studying other programs.
+
+**Scripting and markup**
+
+- Leo's **markup language** consists of `@others` and `&lt;&lt; sections &gt;&gt;`, controls how Leo writes @file trees to external files.
+
+- Any outline node can contain a python script. Three **predefined symbols** give Leo scripts *easy*  access to all the structure and data in the outline.
+
+- The same markup applies to scripts as well as external files. Before executing a script node, Leo **composes** the script from the script node and (depending on markup) some or all of its descendants.
+
+- @button nodes contain scripts that can be **applied to other nodes**.
+
+**Clones**
+
+- Outline nodes can be **cloned**. Cloned nodes are actually the *same* node, but they appear in different places in the outline. Changes to any clone affect all other clones of that node, *including their descendants*. Clones are a powerful organizing tool.
+
+- Leo's **clone-find** commands create clones of all found nodes. The clone-find commands move the newly-created clones so they are all children of an organizer node describing the search.
+
+**Summary**
+
+@file nodes create external files. Guided by markup, Leo writes @file trees to external files. Leo updates @file trees when external files change outside Leo. Leo's importers create outlines from external files.
+
+Leo composes complex scripts from a node and (depending on markup) some or all of its descendants. Leo scripts have access to all data in the outline, including its structure.
+
+Clones are nodes that appear in multiples places within the outline. Leo's clone-find commands gather found nodes together in one place.
+
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
