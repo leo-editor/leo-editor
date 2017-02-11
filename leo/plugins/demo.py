@@ -246,6 +246,7 @@ class Demo(object):
         import leo.core.leoNodes as leoNodes
         p = script_tree
         self.delete_widgets()
+        self.auto_run = auto_run
         if isinstance(p, leoNodes.Position):
             if p:
                 self.script_list = self.create_script_list(p, delim)

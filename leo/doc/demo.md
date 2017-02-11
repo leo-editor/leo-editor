@@ -21,7 +21,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Ivars](../doc/demo.md#ivars)
     - [Menus](../doc/demo.md#menus)
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
-    - [Setup and teardown](../doc/demo.md#setup-and-teardown)
+    - [Startup, setup and teardown](../doc/demo.md#startup-setup-and-teardown)
     - [Window position](../doc/demo.md#window-position)
     - [Typing](../doc/demo.md#typing)
 - [Summary](../doc/demo.md#summary)
@@ -90,7 +90,7 @@ Title(text, font=None, pane=None, position=None, stylesheet=None)
 A **script tree**, a tree of **script nodes**, specifies the script.
 
 ```python
-demo.start(script_tree, delim='###')
+demo.start(script_tree, auto_run=False delim='###')
 ```
 
 Script nodes may contain multiple demo scripts, separated by a **script delimiter**:
@@ -219,12 +219,16 @@ class MyDemo (demo_module.Demo):
     def setup(self, p=None):
         c = self.c
         self.end_on_exception = True # Good for debugging.
-        self.delta = 0
+        self.delta = 10
+        demo.set_text_delta(10)
+        # self.geometry1 = self.get_top_geometry()
         p = g.findNodeAnywhere(c, 'Demo Area')
         self.root = p.copy() if p else None
         if p:
+            p.expand()
             c.selectPosition(p)
-            c.redraw()
+        # c.frame.equalSizedPanes()
+        c.redraw()
         self.set_youtube_position()
 
     def setup_script(self):
@@ -233,11 +237,21 @@ class MyDemo (demo_module.Demo):
     def teardown(self):
         c = self.c
         self.delete_all_widgets()
+        # self.set_top_geometry(self.geometry1)
         if hasattr(self, 'delta') and self.delta > 0:
             self.set_text_delta(-self.delta)
         if self.root and c.positionExists(self.root, trace=False):
-            c.selectPosition(self.root)
-            c.redraw()
+            self.root.deleteAllChildren()
+        p = c.lastTopLevel()
+        p.expand()
+        c.selectPosition(p)
+        c.redraw()
+            
+    def teardown_script(self):
+        if self.auto_run:
+            # Default wait.
+            self.wait(0.5)
+
 # Don't use @others here.
 try:
     if getattr(g.app, 'demo', None):
@@ -251,7 +265,8 @@ try:
             # Binding demo-next in a setting does *not* work.
         demo = MyDemo(c, trace=False)
         p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
-        demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
+        script_tree = g.findNodeInTree(c, p, 'demo-script')
+        demo.start(script_tree, auto_run=False)
 except Exception:
     g.app.demo = None
     raise
@@ -394,7 +409,11 @@ The following sections describe all public ivars and helper methods of the Demo 
 
 The following discusses only those ivars that demo scripts might change.
 
-**demo.n1** and **demo.n2** These ivars control the speed of the simulated typing.
+**demo.auto_run**: A copy of the auto_run argument to demo.startup.
+
+Overridden demo.teardown methods might insert additional delays if auto_run is True.
+
+**demo.n1** and **demo.n2**: These ivars control the speed of the simulated typing.
 
 Demo scripts may change n1 or n2 at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds.
 
@@ -440,7 +459,12 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
-## Setup and teardown
+## Startup, setup and teardown
+
+**demo.start(script_tree, auto_run=False, delim='###')**: Start the demo.
+
+- script_tree:  The root of a tree of script nodes.
+- auto_run:     True: run all script nodes, one after the other.
 
 Subclasses of Demo may override any of the following:
 
