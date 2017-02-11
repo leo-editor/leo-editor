@@ -151,6 +151,7 @@ class Demo(object):
         for w in self.retained_widgets:
             w.deleteLater()
         self.retained_widgets = []
+
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
         '''
@@ -250,6 +251,7 @@ class Demo(object):
                 self.script_list = self.create_script_list(p, delim)
                 if self.script_list:
                     self.setup(p)
+                        # There's no great way to recover from exceptions.
                     self.next()
                 else:
                     g.trace('empty script tree at', p.h)
