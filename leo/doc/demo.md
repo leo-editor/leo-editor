@@ -195,8 +195,6 @@ demo.delete_one_widget(w)
 
 - Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
 
-- Chaining from one script to another using demo.next() in the demo script is valid and harmless.  Yes, this creates a recursive call to demo.next(), but this would be a problem only if a presentation had hundreds of demo scripts.
-
 - The demo-next command *must* be bound in the top-level script, as shown in the example in scripts.leo. The demo-end and demo-prev commands may be bound in myLeoSettings.leo as usual.
 
 # Example scripts
@@ -521,5 +519,5 @@ Instant automation!  Do you see how cool this is?
 
 # History
 
-Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 10, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 11, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
