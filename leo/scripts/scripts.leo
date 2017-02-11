@@ -279,24 +279,21 @@
 </v>
 <v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
 </v>
-<v t="ekr.20170211044707.1"><vh>@button Demo @key=Ctrl-9</vh>
-<v t="ekr.20170211044707.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170211044707.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
-<v t="ekr.20170211044707.4"><vh>insert_node</vh></v>
-<v t="ekr.20170211044707.5"><vh>setup</vh>
-<v t="ekr.20170211044707.6"><vh>a new node</vh></v>
-<v t="ekr.20170211044707.7"><vh>Another headline</vh></v>
+<v t="ekr.20170211083757.1"><vh>@button Demo @key=Ctrl-9</vh>
+<v t="ekr.20170211083757.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170211083757.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
+<v t="ekr.20170211083757.4"><vh>setup</vh></v>
+<v t="ekr.20170211083757.5"><vh>setup_script</vh></v>
+<v t="ekr.20170211083757.6"><vh>teardown</vh></v>
+<v t="ekr.20170211083757.7"><vh>teardown_script</vh></v>
 </v>
-<v t="ekr.20170211044707.8"><vh>setup_script</vh></v>
-<v t="ekr.20170211044707.9"><vh>teardown</vh></v>
-</v>
-<v t="ekr.20170211044707.10"><vh>demo-script</vh>
-<v t="ekr.20170211044707.11"><vh>First</vh></v>
-<v t="ekr.20170211044707.12"><vh>Full featured outliner</vh></v>
-<v t="ekr.20170211044707.13"><vh>Leo's panes</vh></v>
-<v t="ekr.20170211044707.14"><vh>Leo creates scripts from outlines</vh></v>
-<v t="ekr.20170211044707.15"><vh>Clones and cff</vh></v>
-<v t="ekr.20170211044707.16"><vh>Last</vh></v>
+<v t="ekr.20170211083757.8"><vh>demo-script</vh>
+<v t="ekr.20170211083757.9"><vh>First</vh></v>
+<v t="ekr.20170211083757.10"><vh>Full featured outliner</vh></v>
+<v t="ekr.20170211083757.11"><vh>Leo's panes</vh></v>
+<v t="ekr.20170211083757.12"><vh>Leo creates scripts from outlines</vh></v>
+<v t="ekr.20170211083757.13"><vh>Clones and cff</vh></v>
+<v t="ekr.20170211083757.14"><vh>Last</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3305,7 +3302,7 @@ from leo.core.leoQt import QtGui
 aList = sorted([g.u(z) for z in QtGui.QColor().colorNames()])
 print('\n'.join(aList))
 </t>
-<t tx="ekr.20170211044707.1">if c.isChanged(): c.save()
+<t tx="ekr.20170211083757.1">if c.isChanged(): c.save()
 &lt;&lt; imports &gt;&gt;
 &lt;&lt; class MyDemo &gt;&gt;
 # Don't use @others here.
@@ -3322,55 +3319,52 @@ try:
             # Binding demo-next in a setting does *not* work.
         demo = MyDemo(c)
         p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
-        demo.start(script_tree=g.findNodeInTree(c, p, 'demo-script'))
+        script_tree = g.findNodeInTree(c, p, 'demo-script')
+        demo.start(script_tree, auto_run=True)
 except Exception:
     g.app.demo = None
     raise
 </t>
-<t tx="ekr.20170211044707.10">@language python
-</t>
-<t tx="ekr.20170211044707.11">Callout('Hello. This tutorial introduces Leo')
-# Callout("First, I'll increase the text size for easier viewing")
-</t>
-<t tx="ekr.20170211044707.12"># Create, move, promote, demote, hoist.
-demo.speed = 5.0
+<t tx="ekr.20170211083757.10"># Create, move, promote, demote, hoist.
 demo.retain(Title('Leo is a full featured outliner.'))
+demo.wait(1.0)
 ###
-demo.insert_node('a new node', keys=True)
+demo.insert_node('a new node', keys=True, speed=10.0)
 ###
 c.moveOutlineRight()
+###
+# demo.end() # Test of early exit.
 ###
 demo.insert_node('another headline')
 ###
-c.moveOutlineRight()
+demo.insert_node('yet another node')
+###
+p = g.findNodeInTree(c, demo.root, 'a new node')
+assert p, 'a new node'
+c.selectPosition(p)
+demo.wait(0.25)
+###
+c.demote()
+demo.wait(1.0)
+###
 demo.delete_retained_widgets()
 </t>
-<t tx="ekr.20170211044707.13"># The body pane shows the text of the selected outline node.</t>
-<t tx="ekr.20170211044707.14"># Section refs, @others, @file
+<t tx="ekr.20170211083757.11"># The body pane shows the text of the selected outline node.</t>
+<t tx="ekr.20170211083757.12"># Section refs, @others, @file
 </t>
-<t tx="ekr.20170211044707.15"></t>
-<t tx="ekr.20170211044707.16"># Callout('Thanks for watching')
+<t tx="ekr.20170211083757.13"></t>
+<t tx="ekr.20170211083757.14"># Callout('Thanks for watching')
 ###
 # demo.next()</t>
-<t tx="ekr.20170211044707.2">from leo.core.leoQt import QtGui
+<t tx="ekr.20170211083757.2">from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
 import imp
 imp.reload(demo_module)</t>
-<t tx="ekr.20170211044707.3">class MyDemo (demo_module.Demo):
+<t tx="ekr.20170211083757.3">class MyDemo (demo_module.Demo):
     
     @others
 </t>
-<t tx="ekr.20170211044707.4">def insert_node(self, headline, keys=False, end=True):
-    '''Helper for inserting a node.'''
-    c = self.c
-    p = c.insertHeadline()
-    if keys:
-        self.head_keys(headline)
-    else:
-        p.h = headline
-    if end:
-        c.endEditing()</t>
-<t tx="ekr.20170211044707.5">def setup(self, p=None):
+<t tx="ekr.20170211083757.4">def setup(self, p=None):
     c = self.c
     self.end_on_exception = True # Good for debugging.
     self.delta = 10
@@ -3381,31 +3375,35 @@ imp.reload(demo_module)</t>
     if p:
         p.expand()
         c.selectPosition(p)
-    c.frame.equalSizedPanes()
+    # c.frame.equalSizedPanes()
     c.redraw()
     self.set_youtube_position()
-
 </t>
-<t tx="ekr.20170211044707.6"></t>
-<t tx="ekr.20170211044707.7"></t>
-<t tx="ekr.20170211044707.8">def setup_script(self):
+<t tx="ekr.20170211083757.5">def setup_script(self):
     self.delete_widgets()
 </t>
-<t tx="ekr.20170211044707.9">def teardown(self):
+<t tx="ekr.20170211083757.6">def teardown(self):
     c = self.c
     self.delete_all_widgets()
-    self.set_top_geometry(self.geometry1)
+    # self.set_top_geometry(self.geometry1)
     if hasattr(self, 'delta') and self.delta &gt; 0:
         self.set_text_delta(-self.delta)
     if self.root and c.positionExists(self.root, trace=False):
         self.root.deleteAllChildren()
-    p = self.root.next()
-    if p:
-        p.expand()
-        c.selectPosition(p)
-    else:
-        c.selectPosition(self.root)
+    p = c.lastTopLevel()
+    p.expand()
+    c.selectPosition(p)
     c.redraw()
+</t>
+<t tx="ekr.20170211083757.7">def teardown_script(self):
+    if self.auto_run:
+        # Default wait.
+        self.wait(0.5)</t>
+<t tx="ekr.20170211083757.8">@language python
+</t>
+<t tx="ekr.20170211083757.9">Callout('Hello. This tutorial introduces Leo')
+# Callout("First, I'll increase the text size for easier viewing")
+# demo.next(wait=1.0)
 </t>
 </tnodes>
 </leo_file>

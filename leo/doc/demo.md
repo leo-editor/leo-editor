@@ -275,33 +275,29 @@ except Exception:
 And here is an example script_string:
 
 ```python
-script_string = '''\
-demo.bind('greeting', 'Hello World')
-w = Image('C:/leo.repo/leo-editor/leo/Icons/SplashScreen.ico')
-demo.retain(w)
-Callout('Callout 1 centered')
-Title('This is title 1')
+# Create, move, promote, demote, hoist.
+demo.retain(Title('Leo is a full featured outliner.'))
+demo.wait(1.0)
 ###
-Callout('Callout 2 (700, 200)', position=[700, 200])
-Title('This is title 2')
+demo.insert_node('a new node', keys=True, speed=10.0)
+###
+c.moveOutlineRight()
+###
+# demo.end() # Test of early exit.
+###
+demo.insert_node('another headline')
+###
+demo.insert_node('yet another node')
+###
+p = g.findNodeInTree(c, demo.root, 'a new node')
+assert p, 'a new node'
+c.selectPosition(p)
+demo.wait(0.25)
+###
+c.demote()
+demo.wait(1.0)
 ###
 demo.delete_retained_widgets()
-Text(greeting,
-    font=QtGui.QFont('Verdana', 18),
-    position=(200, 40),
-    size=(100, 200))
-###
-Callout('Callout 3 (200, 300)', position=[200, 300])
-Title('This is title 3')
-###
-Callout('Callout 4 (center, 200)', position=['center', 200])
-Title('This is a much much longer title 4')
-###
-Callout('Callout 5 (700, center)', position=[700, 'center'])
-Title('Short 5')
-###
-demo.next()
-'''
 ```
 
 ## Simulate typing
