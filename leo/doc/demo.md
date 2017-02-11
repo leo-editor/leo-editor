@@ -458,9 +458,13 @@ Subclasses of Demo may override any of the following:
 
 ## Window position
 
-**demo.set_window_size(width, height)** Set the size of Leo's main window, in pixels.
+**demo.get_top_geometry()**: Return the geometry of Leo's main window.
+   
+**set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
 
-**demo.set_window_position(x, y):** Move the top-left corner of Leo's main window to x, y, in pixels.
+**demo.set_window_size(width, height)**: Set the size of Leo's main window, in pixels.
+
+**demo.set_window_position(x, y)**: Move the top-left corner of Leo's main window to x, y, in pixels.
 
 **demo.set_youtube_position()**: Resize and position Leo's main window for YouTube.
 

@@ -436,6 +436,17 @@ class Demo(object):
     def clear_log(self):
         '''Clear the log.'''
         self.c.frame.log.clearTab('Log')
+    #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry
+    def get_top_geometry(self):
+        w = self.c.frame.top
+        while w.parent():
+            w = w.parent()
+        return w.geometry()
+
+    def set_top_geometry(self, geometry):
+        r = geometry
+        self.set_window_position(r.x(), r.y())
+        self.set_window_size(r.width(), r.height())
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
