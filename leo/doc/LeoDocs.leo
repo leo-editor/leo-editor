@@ -20360,6 +20360,7 @@ Here is a recommended top-level node for the top-level script, in an `@button My
 '''Create intro slides for screen shots.'''
 if c.isChanged():
     c.save()
+
 # &lt;&lt; imports &gt;&gt;
 from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
@@ -20414,6 +20415,8 @@ def main(c, demo, script_name, auto_run=False, hoist_node=None):
     assert script_tree, repr(script_name)
     demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
     demo.start(script_tree, auto_run=auto_run)
+
+# The top-level of the top-level script...
 
 # The *same* command/key binding calls both demo-start and demo.next.
 if getattr(g.app, 'demo', None):
