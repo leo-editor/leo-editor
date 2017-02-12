@@ -255,6 +255,7 @@ class Demo(object):
         self.delete_widgets()
         self.auto_run = auto_run
         self.initial_geometry = self.get_top_geometry()
+            # Setup may change this.
         if isinstance(p, leoNodes.Position):
             if p:
                 self.script_list = self.create_script_list(p, delim)

@@ -1561,7 +1561,7 @@
 </v>
 <v t="ekr.20170212105226.6"></v>
 <v t="ekr.20170212105226.4"></v>
-<v t="ekr.20170212105226.10"></v>
+<v t="ekr.20170212105226.11"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23795,21 +23795,32 @@ else:
         script_name='intro-slides-script')</t>
 <t tx="ekr.20170212105226.10">@language python
 </t>
-<t tx="ekr.20170212105226.11">outline_x, outline_y = 100, 100
+<t tx="ekr.20170212105226.11">@language python
+
+outline_x, outline_y = 100, 100
 body, tree, log = 'body', 'tree', 'log'
-Title("This is Leo's main window")
+if 0:
+    Title("This is Leo's main window", pane='tree', position=(250, 10),
+        font = QtGui.QFont('DejaVu Sans Mono', 20))
+body_widget = demo.pane_widget('body')
+geom = body_widget.geometry()
 table = (
-    (body, 'Body Pane', 100, 600),
-    (tree, 'Outline Pane', 200, 200),
-    (log,  'Log Pane', 400, 200),
+    # ('minibuffer', 'Minibuffer', 0, 0),
+    (body, 'The Minibuffer (below)', 'center', geom.height()-25),
+    (body, 'The Body Pane', 0, 0),
+    (tree, 'The Outline Pane', 200, 200),
+    (log,  'The Log Pane', 0, 0),
     (tree, '@file node --&gt;', outline_x, outline_y + 20),
     (tree, '@test node --&gt;', outline_x, outline_y + 40),
 )
 for pane, h, x, y in table:
-    Callout(h, pane=pane, position=(x,y))
+    if x and y:
+        Callout(h, pane=pane, position=(x,y))
+    else:
+        Callout(h, pane=pane)
 ###
 demo.next()</t>
-<t tx="ekr.20170212105226.2">from leo.core.leoQt import QtGui
+<t tx="ekr.20170212105226.2">from leo.core.leoQt import QtCore, QtGui
 import leo.plugins.demo as demo_module
 # import imp
 # imp.reload(demo_module)</t>
@@ -23817,8 +23828,11 @@ import leo.plugins.demo as demo_module
     
     @others
 </t>
-<t tx="ekr.20170212105226.4">def setup(self, p=None):
+<t tx="ekr.20170212105226.4">@language python
+
+def setup(self, p=None):
     c = self.c
+    c.frame.log.clearTab('Log')
     self.end_on_exception = True # Good for debugging.
     self.delta = 0
     demo.set_text_delta(self.delta)
@@ -23829,12 +23843,15 @@ import leo.plugins.demo as demo_module
             if child.h. startswith('@@'):
                 child.h = child.h[1:]
         c.hoist()
+    self.set_top_geometry(QtCore.QRect(400, 300, 600, 500))
     c.redraw()
 </t>
 <t tx="ekr.20170212105226.5">def setup_script(self):
     self.delete_widgets()
 </t>
-<t tx="ekr.20170212105226.6">def teardown(self):
+<t tx="ekr.20170212105226.6">@language python
+
+def teardown(self):
     c = self.c
     self.delete_all_widgets()
     if self.delta &gt; 0:
@@ -23845,6 +23862,10 @@ import leo.plugins.demo as demo_module
                 child.h = '@' + child.h
         c.dehoist()
         # c.selectPosition(self.hoist_node)
+    p = g.findTopLevelNode(c, "Slide 1: Leo's main window")
+    if p:
+        c.selectPosition(p)
+    c.contractAllHeadlines()
     c.setChanged(False)
     c.redraw()
 </t>
