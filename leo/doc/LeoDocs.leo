@@ -1369,6 +1369,7 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
+<v t="ekr.20170212103421.13"><vh>Top-level script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20349,6 +20350,111 @@ demo.delete_retained_widgets()
 <t tx="ekr.20170212102122.7"># Callout('Thanks for watching')
 ###
 # demo.next()</t>
+<t tx="ekr.20170212103421.13">
+Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
+
+@language python
+
+```python
+
+'''Create intro slides for screen shots.'''
+# The *same* command/key binding calls both demo-start and demo.next.
+if c.isChanged():
+    c.save()
+&lt;&lt; imports &gt;&gt;
+from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+#
+# Do NOT use @others here.
+#
+# &lt;&lt; class IntroSlides &gt;&gt;
+class IntroSlides (demo_module.Demo):
+    
+    def setup(self, p=None):
+    c = self.c
+    self.end_on_exception = True # Good for debugging.
+    self.delta = 0
+    demo.set_text_delta(self.delta)
+    # self.set_youtube_position()
+    if hasattr(self, 'hoist_node'):
+        c.selectPosition(self.hoist_node)
+        c.hoist()
+    c.redraw()
+
+    def setup_script(self):
+        self.delete_widgets()
+        
+    def teardown(self):
+        c = self.c
+        self.delete_all_widgets()
+        if self.delta &gt; 0:
+            self.set_text_delta(-self.delta)
+        if self.hoist_node:
+            c.selectPosition(self.hoist_node)
+            c.dehoist()
+        c.redraw()
+            
+    def teardown_script(self):
+        if self.auto_run:
+            self.wait(0.5)
+
+# &lt;&lt; main &gt;&gt;
+def main(c, demo, script_name, auto_run=False, hoist_node=None):
+    g.cls()
+    k = c.k
+    class_name = demo.__class__.__name__
+    c.frame.log.clearTab('Log')
+    g.es_print('Starting', class_name)
+    k.demoNextKey = k.strokeFromSetting('Ctrl-9')
+        # Tell k.masterKeyHandler to process Ctrl-9 immediately.
+        # Binding demo-next in a setting does *not* work.
+    h = '@button %s @key=Ctrl-9' % class_name
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    script_tree = g.findNodeInTree(c, p, script_name)
+    assert script_tree, repr(script_name)
+    demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
+    demo.start(script_tree, auto_run=auto_run)
+
+if getattr(g.app, 'demo', None):
+    g.app.demo.next()
+else:
+    demo = IntroSlides(c)
+    main(c, demo,
+        auto_run=False,
+        hoist_node = "Leo's Main Window",
+        script_name='intro-slides-script')
+```
+
+And here is an example script_string:
+
+```python
+# Create, move, promote, demote, hoist.
+demo.retain(Title('Leo is a full featured outliner.'))
+demo.wait(1.0)
+###
+demo.insert_node('a new node', keys=True, speed=10.0)
+###
+c.moveOutlineRight()
+###
+# demo.end() # Test of early exit.
+###
+demo.insert_node('another headline')
+###
+demo.insert_node('yet another node')
+###
+p = g.findNodeInTree(c, demo.root, 'a new node')
+assert p, 'a new node'
+c.selectPosition(p)
+demo.wait(0.25)
+###
+c.demote()
+demo.wait(1.0)
+###
+demo.delete_retained_widgets()
+```
+
+</t>
 <t tx="ekr.20170212105226.1">@language python
 '''Create intro slides for screen shots.'''
 # The *same* command/key binding calls both demo-start and demo.next.
@@ -20407,7 +20513,6 @@ import leo.plugins.demo as demo_module
 </t>
 <t tx="ekr.20170212105226.7">def teardown_script(self):
     if self.auto_run:
-        # Default wait.
         self.wait(0.5)</t>
 <t tx="ekr.20170212105226.8">def main(c, demo, script_name, auto_run=False, hoist_node=None):
     g.cls()

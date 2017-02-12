@@ -205,31 +205,32 @@ The demo plugin does not change focus in any way, nor does it interfere with Leo
 
 Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
 
+
 ```python
 
-# << imports >>
+'''Create intro slides for screen shots.'''
+# The *same* command/key binding calls both demo-start and demo.next.
+if c.isChanged():
+    c.save()
+<< imports >>
 from leo.core.leoQt import QtGui
 import leo.plugins.demo as demo_module
-import imp
-imp.reload(demo_module)
-
-# << class MyDemo >>
-class MyDemo (demo_module.Demo):
+#
+# Do NOT use @others here.
+#
+# << class IntroSlides >>
+class IntroSlides (demo_module.Demo):
     
     def setup(self, p=None):
-        c = self.c
-        self.end_on_exception = True # Good for debugging.
-        self.delta = 10
-        demo.set_text_delta(10)
-        # self.geometry1 = self.get_top_geometry()
-        p = g.findNodeAnywhere(c, 'Demo Area')
-        self.root = p.copy() if p else None
-        if p:
-            p.expand()
-            c.selectPosition(p)
-        # c.frame.equalSizedPanes()
-        c.redraw()
-        self.set_youtube_position()
+    c = self.c
+    self.end_on_exception = True # Good for debugging.
+    self.delta = 0
+    demo.set_text_delta(self.delta)
+    # self.set_youtube_position()
+    if hasattr(self, 'hoist_node'):
+        c.selectPosition(self.hoist_node)
+        c.hoist()
+    c.redraw()
 
     def setup_script(self):
         self.delete_widgets()
@@ -237,39 +238,43 @@ class MyDemo (demo_module.Demo):
     def teardown(self):
         c = self.c
         self.delete_all_widgets()
-        # self.set_top_geometry(self.geometry1)
-        if hasattr(self, 'delta') and self.delta > 0:
+        if self.delta > 0:
             self.set_text_delta(-self.delta)
-        if self.root and c.positionExists(self.root, trace=False):
-            self.root.deleteAllChildren()
-        p = c.lastTopLevel()
-        p.expand()
-        c.selectPosition(p)
+        if self.hoist_node:
+            c.selectPosition(self.hoist_node)
+            c.dehoist()
         c.redraw()
             
     def teardown_script(self):
         if self.auto_run:
-            # Default wait.
             self.wait(0.5)
 
-# Don't use @others here.
-try:
-    if getattr(g.app, 'demo', None):
-        g.app.demo.next()
-    else:
-        g.cls()
-        c.frame.log.clearTab('Log')
-        g.es_print('Starting MyDemo')
-        c.k.demoNextKey = c.k.strokeFromSetting('Ctrl-9')
-            # Tell k.masterKeyHandler to process Ctrl-9 immediately.
-            # Binding demo-next in a setting does *not* work.
-        demo = MyDemo(c, trace=False)
-        p = g.findNodeAnywhere(c, '@button Demo @key=Ctrl-9')
-        script_tree = g.findNodeInTree(c, p, 'demo-script')
-        demo.start(script_tree, auto_run=False)
-except Exception:
-    g.app.demo = None
-    raise
+# << main >>
+def main(c, demo, script_name, auto_run=False, hoist_node=None):
+    g.cls()
+    k = c.k
+    class_name = demo.__class__.__name__
+    c.frame.log.clearTab('Log')
+    g.es_print('Starting', class_name)
+    k.demoNextKey = k.strokeFromSetting('Ctrl-9')
+        # Tell k.masterKeyHandler to process Ctrl-9 immediately.
+        # Binding demo-next in a setting does *not* work.
+    h = '@button %s @key=Ctrl-9' % class_name
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    script_tree = g.findNodeInTree(c, p, script_name)
+    assert script_tree, repr(script_name)
+    demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
+    demo.start(script_tree, auto_run=auto_run)
+
+if getattr(g.app, 'demo', None):
+    g.app.demo.next()
+else:
+    demo = IntroSlides(c)
+    main(c, demo,
+        auto_run=False,
+        hoist_node = "Leo's Main Window",
+        script_name='intro-slides-script')
 ```
 
 And here is an example script_string:
