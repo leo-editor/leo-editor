@@ -153,7 +153,10 @@ class Demo(object):
             g.app.demo = None
             self.script_list = []
             self.script_i = 0
-            self.teardown()
+            try:
+                self.teardown()
+            except Exception:
+                g.es_exception()
             g.es_print('\nEnd of', self.__class__.__name__)
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
@@ -256,8 +259,11 @@ class Demo(object):
             if p:
                 self.script_list = self.create_script_list(p, delim)
                 if self.script_list:
-                    self.setup(p)
-                        # There's no great way to recover from exceptions.
+                    try:
+                        self.setup(p)
+                    except Exception:
+                        g.es_exception()
+                        self.end()
                     if auto_run:
                         while self.script_i < len(self.script_list):
                             g.app.gui.qtApp.processEvents()
