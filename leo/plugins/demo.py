@@ -70,6 +70,9 @@ class Demo(object):
             # True: Exceptions call self.end(). Good for debugging.
         self.filter_ = qt_events.LeoQtEventFilter(c, w=None, tag='demo')
             # For converting arguments to demo.key...
+        self.initial_geometry = None
+            # The original size of the top-level Leo window.
+            # Restored in demo.end()
         self.key_speed = 1.0
             # Speed multiplier for simulated typing.
         self.module = module
@@ -145,8 +148,9 @@ class Demo(object):
         # Don't delete widgets here. Use the teardown method instead.
         # self.delete_widgets()
         if g.app.demo:
-            g.app.demo = None
+            self.set_top_geometry(self.initial_geometry)
             # End auto-mode execution.
+            g.app.demo = None
             self.script_list = []
             self.script_i = 0
             self.teardown()
@@ -247,6 +251,7 @@ class Demo(object):
         p = script_tree
         self.delete_widgets()
         self.auto_run = auto_run
+        self.initial_geometry = self.get_top_geometry()
         if isinstance(p, leoNodes.Position):
             if p:
                 self.script_list = self.create_script_list(p, delim)

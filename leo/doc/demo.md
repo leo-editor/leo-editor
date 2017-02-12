@@ -21,9 +21,9 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Ivars](../doc/demo.md#ivars)
     - [Menus](../doc/demo.md#menus)
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
+    - [Simulated typing](../doc/demo.md#simulated-typing)
     - [Startup, setup and teardown](../doc/demo.md#startup-setup-and-teardown)
     - [Window position](../doc/demo.md#window-position)
-    - [Typing](../doc/demo.md#typing)
 - [Summary](../doc/demo.md#summary)
 - [History and change log](../doc/demo.md#history-and-change-log)
 
@@ -455,9 +455,26 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
+## Simulated typing
+
+**demo.body_keys(s, undo=False)**: Simulates typing the string s in the body pane.
+
+**demo.head_keys(s, undo=False)**: Simulates typing the string s in the body pane.
+
+**demo.keys(s, undo=False)**: Simulates typing the string s in the present widget.
+
+**demo.key(setting)**: Types a single key in the present widget. This method does not support undo.
+
+These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
+
+```python
+   demo.key('Alt-X') # Activate the minibuffer
+   demo.key('Ctrl-F') # Execute Leo's Find command
+```
+
 ## Startup, setup and teardown
 
-**demo.start(script_tree, auto_run=False, delim='###')**: Start the demo.
+**demo.start(script_tree, auto_run=False, delim='###')**: Start the demo, saving the geometry (size and position) of the top-level Leo window. **demo.end** restores this geometry.
 
 - script_tree:  The root of a tree of script nodes.
 - auto_run:     True: run all script nodes, one after the other.
@@ -478,30 +495,13 @@ Subclasses of Demo may override any of the following:
 
 **demo.get_top_geometry()**: Return the geometry of Leo's main window.
    
-**set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
+**demo.set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
 
 **demo.set_window_size(width, height)**: Set the size of Leo's main window, in pixels.
 
 **demo.set_window_position(x, y)**: Move the top-left corner of Leo's main window to x, y, in pixels.
 
 **demo.set_youtube_position()**: Resize and position Leo's main window for YouTube.
-
-## Typing
-
-**demo.body_keys(s, undo=False)**: Simulates typing the string s in the body pane.
-
-**demo.head_keys(s, undo=False)**: Simulates typing the string s in the body pane.
-
-**demo.keys(s, undo=False)**: Simulates typing the string s in the present widget.
-
-**demo.key(setting)**: Types a single key in the present widget. This method does not support undo.
-
-These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
-
-```python
-   demo.key('Alt-X') # Activate the minibuffer
-   demo.key('Ctrl-F') # Execute Leo's Find command
-```
 
 # Summary
 
@@ -539,7 +539,7 @@ Instant automation!  Do you see how cool this is?
 
 # History and change log
 
-Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 11, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 12, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
 **2017/02/11**: Added auto-run feature. Fixed bugs re widget visibility.
 
