@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1344,9 +1344,31 @@
 <v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 <v t="ekr.20170209161021.1"><vh>** Notes for new docs</vh></v>
+<v t="ekr.20170212102122.1"><vh>Old script</vh>
+<v t="ekr.20170212102122.2"><vh>First</vh></v>
+<v t="ekr.20170212102122.3"><vh>Full featured outliner</vh></v>
+<v t="ekr.20170212102122.4"><vh>Leo's panes</vh></v>
+<v t="ekr.20170212102122.5"><vh>Leo creates scripts from outlines</vh></v>
+<v t="ekr.20170212102122.6"><vh>Clones and cff</vh></v>
+<v t="ekr.20170212102122.7"><vh>Last</vh></v>
+</v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20170130080532.1"></v>
+<v t="ekr.20170212105226.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
+<v t="ekr.20170212105226.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170212105226.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
+<v t="ekr.20170212105226.4"><vh>setup</vh></v>
+<v t="ekr.20170212105226.5"><vh>setup_script</vh></v>
+<v t="ekr.20170212105226.6"><vh>teardown</vh></v>
+<v t="ekr.20170212105226.7"><vh>teardown_script</vh></v>
+</v>
+<v t="ekr.20170212105226.8"><vh>&lt;&lt; main &gt;&gt;</vh></v>
+<v t="ekr.20170212105226.9"><vh>Leo's Main Window</vh></v>
+<v t="ekr.20170212105226.10"><vh>intro-slides-script</vh>
+<v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20291,6 +20313,119 @@ Leo composes complex scripts from a node and (depending on markup) some or all o
 Clones are nodes that appear in multiples places within the outline. Leo's clone-find commands gather found nodes together in one place.
 
 </t>
+<t tx="ekr.20170212102122.1"></t>
+<t tx="ekr.20170212102122.2">Callout('Hello. This tutorial introduces Leo')
+# Callout("First, I'll increase the text size for easier viewing")
+# demo.next(wait=1.0)
+</t>
+<t tx="ekr.20170212102122.3"># Create, move, promote, demote, hoist.
+demo.retain(Title('Leo is a full featured outliner.'))
+demo.wait(1.0)
+###
+demo.insert_node('a new node', keys=True, speed=10.0)
+###
+c.moveOutlineRight()
+###
+demo.end() # Test of early exit.
+###
+demo.insert_node('another headline')
+###
+demo.insert_node('yet another node')
+###
+p = g.findNodeInTree(c, demo.root, 'a new node')
+assert p, 'a new node'
+c.selectPosition(p)
+demo.wait(0.25)
+###
+c.demote()
+demo.wait(1.0)
+###
+demo.delete_retained_widgets()
+</t>
+<t tx="ekr.20170212102122.4"># The body pane shows the text of the selected outline node.</t>
+<t tx="ekr.20170212102122.5"># Section refs, @others, @file
+</t>
+<t tx="ekr.20170212102122.6"></t>
+<t tx="ekr.20170212102122.7"># Callout('Thanks for watching')
+###
+# demo.next()</t>
+<t tx="ekr.20170212105226.1">@language python
+'''Create intro slides for screen shots.'''
+# The *same* command/key binding calls both demo-start and demo.next.
+if c.isChanged(): c.save()
+&lt;&lt; imports &gt;&gt;
+#
+# Do NOT use @others here.
+#
+&lt;&lt; class IntroSlides &gt;&gt;
+&lt;&lt; main &gt;&gt;
+if getattr(g.app, 'demo', None):
+    g.app.demo.next()
+else:
+    demo = IntroSlides(c)
+    main(c, demo,
+        auto_run=False,
+        hoist_node = "Leo's Main Window",
+        script_name='intro-slides-script')</t>
+<t tx="ekr.20170212105226.10">@language python
+</t>
+<t tx="ekr.20170212105226.11">Callout("This is Leo's main window")
+
+###
+demo.next()</t>
+<t tx="ekr.20170212105226.2">from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+# import imp
+# imp.reload(demo_module)</t>
+<t tx="ekr.20170212105226.3">class IntroSlides (demo_module.Demo):
+    
+    @others
+</t>
+<t tx="ekr.20170212105226.4">def setup(self, p=None):
+    c = self.c
+    self.end_on_exception = True # Good for debugging.
+    self.delta = 0
+    demo.set_text_delta(self.delta)
+    # self.set_youtube_position()
+    if hasattr(self, 'hoist_node'):
+        c.selectPosition(self.hoist_node)
+        c.hoist()
+    c.redraw()
+</t>
+<t tx="ekr.20170212105226.5">def setup_script(self):
+    self.delete_widgets()
+</t>
+<t tx="ekr.20170212105226.6">def teardown(self):
+    c = self.c
+    self.delete_all_widgets()
+    if self.delta &gt; 0:
+        self.set_text_delta(-self.delta)
+    if self.hoist_node:
+        c.selectPosition(self.hoist_node)
+        c.dehoist()
+    c.redraw()
+</t>
+<t tx="ekr.20170212105226.7">def teardown_script(self):
+    if self.auto_run:
+        # Default wait.
+        self.wait(0.5)</t>
+<t tx="ekr.20170212105226.8">def main(c, demo, script_name, auto_run=False, hoist_node=None):
+    g.cls()
+    k = c.k
+    class_name = demo.__class__.__name__
+    c.frame.log.clearTab('Log')
+    g.es_print('Starting', class_name)
+    k.demoNextKey = k.strokeFromSetting('Ctrl-9')
+        # Tell k.masterKeyHandler to process Ctrl-9 immediately.
+        # Binding demo-next in a setting does *not* work.
+    h = '@button %s @key=Ctrl-9' % class_name
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    script_tree = g.findNodeInTree(c, p, script_name)
+    assert script_tree, repr(script_name)
+    demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
+    demo.start(script_tree, auto_run=auto_run)</t>
+<t tx="ekr.20170212105226.9"></t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
