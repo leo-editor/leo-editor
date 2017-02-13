@@ -123,16 +123,26 @@ class Demo(object):
         self.namespace = {
             'c': c,
             'demo': self,
-            'g:': g,
+            'g': g,
             'p': c.p,
+            # Qt namespaces.
+            'Qt': QtCore.Qt, # Useful, and tricky to get right.
+            'QtCore': QtCore,
             'QtGui': QtGui,
             'QtWidgets': QtWidgets,
+            # Graphic classes.
+            'Arrow': Arrow,
             'Callout': Callout,
             'Image': Image,
             'Label': Label,
             'Text': Text,
             'Title': Title,
         }
+        # Add most ivars.
+        for key, value in self.namespace.items():
+            if not hasattr(self, key) and key not in 'cgp':
+                # g.trace('SET', key, value)
+                setattr(self, key, value)
     #@+node:ekr.20170128222411.1: *3* demo.Control
     #@+node:ekr.20170207090715.1: *4* demo.bind
     def bind(self, name, object_):
@@ -176,7 +186,8 @@ class Demo(object):
             )
         except Exception:
             g.es_exception()
-            g.es_print('script...\n', repr(script))
+            g.es_print('script...')
+            g.printList(g.splitLines(script))
             g.es_print('Ending the tutorial...')
             self.end()
 
@@ -396,8 +407,8 @@ class Demo(object):
             w.deleteLater()
         self.retained_widgets = []
     #@+node:ekr.20170211071750.1: *3* demo.File names
-    #@+node:ekr.20170208093727.1: *4* demo.resolve_icon_fn
-    def resolve_icon_fn(self, fn):
+    #@+node:ekr.20170208093727.1: *4* demo.get_icon_fn
+    def get_icon_fn(self, fn):
         '''Resolve fn relative to the Icons directory.'''
         dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
         path = g.os_path_finalize_join(dir_, fn)
@@ -558,16 +569,33 @@ class Demo(object):
             return geom.x(), geom.y(), geom.width(), geom.height()
         else:
             return None
-    #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry
+    #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry/size
     def get_top_geometry(self):
         top = self.c.frame.top
-        w = getattr(top, 'leo_master', None) or top
-        return w.geometry()
+        widget = getattr(top, 'leo_master', None) or top
+        return widget.geometry()
 
     def set_top_geometry(self, geometry):
         top = self.c.frame.top
-        w = getattr(top, 'leo_master', None) or top
-        w.setGeometry(geometry)
+        widget = getattr(top, 'leo_master', None) or top
+        if isinstance(geometry, QtCore.QRect):
+            widget.setGeometry(geometry)
+        else:
+            x, y, w, h = geometry
+            widget.setGeometry(QtCore.QRect(x, y, w, h))
+
+    def set_top_size(self, height, width):
+        top = self.c.frame.top
+        widget = getattr(top, 'leo_master', None) or top
+        # if isinstance(size, (QtCore.QSize, QtCore.QRect)):
+            # w, h = size.width(), size.height()
+        # else:
+            # w, h = size
+        r = self.get_top_geometry()
+        r.setHeight(height)
+        r.setWidth(width)
+        widget.setGeometry(r)
+        
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
@@ -581,6 +609,10 @@ class Demo(object):
             'tree': c.frame.tree.treeWidget,
         }
         return d.get(pane)
+    #@+node:ekr.20170213090335.1: *4* demo.pane_geometry
+    def pane_geometry(self, pane):
+        w = self.pane_widget(pane)
+        return w.geometry()
     #@+node:ekr.20170128213103.26: *4* demo.repaint_pane
     def repaint(self):
         '''Repaint the tree widget.'''
@@ -604,9 +636,9 @@ class Demo(object):
         except Exception:
             g.es('position must be "center" or a 2-tuple', repr(position))
             return
-        if not isinstance(x, int):
+        if not isinstance(x, (int, float)):
             x = x.strip().lower()
-        if not isinstance(y, int):
+        if not isinstance(y, (int, float)):
             y = y.strip().lower()
         if x == y == 'center':
             self.center(w)
@@ -736,6 +768,31 @@ class Label (QtWidgets.QLabel):
         w.setStyleSheet(stylesheet)
         w.setFont(font or QtGui.QFont('DejaVu Sans Mono', 16))
     #@-others
+#@+node:ekr.20170213092704.1: *3* class Arrow(Label)
+class Arrow(Label):
+
+    def __init__(self, text,
+        font=None, pane=None, position=None, stylesheet=None
+    ):
+        '''Show a callout, centered by default.'''
+        demo, w = g.app.demo, self
+        stylesheet = stylesheet or '''\
+            QLabel {
+                border: 0px solid black;
+                background: transparent;
+                color : black;
+            }'''
+        if g.isPython3:
+            # pylint: disable=missing-super-argument
+            super().__init__(text,
+                font=font, pane=pane,
+                position=position, stylesheet=stylesheet)
+        else:
+            super(self.__class__, self).__init__(text,
+                font=font, pane=pane,
+                position=position, stylesheet=stylesheet)
+        # Do this *after* initing the base class.
+        demo.set_position(w, position or 'center')
 #@+node:ekr.20170207071819.1: *3* class Callout(Label)
 class Callout(Label):
 
@@ -764,7 +821,8 @@ class Callout(Label):
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
     
-    def __init__(self, fn, pane=None, position=None, size=None):
+    def __init__(self, fn,
+        pane=None, magnification=None, position=None, size=None):
         '''Image.__init__.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
@@ -773,36 +831,43 @@ class Image (QtWidgets.QLabel):
             super().__init__(parent=parent)
         else:
             super(self.__class__, self).__init__(parent=parent)
-        self.init_image(fn, position, size)
+        self.init_image(fn, magnification, position, size)
         w.show()
         demo.widgets.append(w)
 
     #@+others
     #@+node:ekr.20170208070231.1: *4* image.init_image
-    def init_image(self, fn, position, size):
+    def init_image(self, fn, magnification, position, size):
         '''Init the image whose file name fn is given.'''
-        demo, w = g.app.demo, self
-        fn = demo.resolve_icon_fn(fn)
+        demo, widget = g.app.demo, self
+        fn = demo.get_icon_fn(fn)
         if not fn:
             g.trace('can not resolve', fn)
             return
         pixmap = QtGui.QPixmap(fn)
         if not pixmap:
             return g.trace('Not a pixmap:', fn)
+        if magnification:
+            if size:
+                h, w = size
+            else:
+                r = pixmap.size()
+                h, w = r.height(), r.width()
+            size = h*magnification, w*magnification
         if size:
             try:
-                height, width = size
-                height = demo.get_int(height)
-                width = demo.get_int(width)
-                if height is not None:
-                    pixmap = pixmap.scaledToHeight(height)
-                if width is not None:
-                    pixmap = pixmap.scaledToWidth(width)
+                h, w = size
+                h = demo.get_int(h)
+                w = demo.get_int(w)
+                if h is not None:
+                    pixmap = pixmap.scaledToHeight(h)
+                if w is not None:
+                    pixmap = pixmap.scaledToWidth(w)
             except ValueError:
                 g.trace('invalid size', repr(size))
         if position:
-            demo.set_position(w)
-        w.setPixmap(pixmap)
+            demo.set_position(widget, position)
+        widget.setPixmap(pixmap)
     #@-others
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
 class Text (QtWidgets.QPlainTextEdit):
