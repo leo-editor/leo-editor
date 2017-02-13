@@ -395,43 +395,6 @@ wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
 ```
 
-## Add graphics
-
-Add an image:
-
-```python
-Image(g.os_path_finalize_join(
-    g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
-```
-
-Add a text area:
-
-```python
-Text('This is a text area',
-    font=QtGui.QFont('Verdana', 14),
-    position=(20, 40),
-    size=(100, 200),
-)
-```
-
-Add a callout, centered in the body area:
-
-```python
-Callout('Hello World')
-```
-
-Add a callout for a headline:
-
-```python
-Head(arrow=False, '<-- @file node', headline='@file leoApp.py', offset=None)
-```
-
-Add a subtitle, centered just above the minibuffer:
-
-```
-Title('It was the best of times...')
-```
-
 ## Change the demo namespace
 
 **demo.bind(name, object)** adds an entry to this dictionary.
@@ -453,6 +416,48 @@ class MyDemo(Demo):
             'MyCallout': MyCallout,
             'MyImage': MyImage,
         })
+```
+
+## Add graphics
+
+Add an image:
+
+```python
+Image(fn=demo.get_icon_fn('box01.png'),
+      position=(20, 30),
+      magnification=2)
+```
+
+Add a text area:
+
+```python
+Text('This is a text area',
+     font=QtGui.QFont('Verdana', 14),
+     position=(20, 40),
+     size=(100, 200),
+)
+```
+
+Add a callout, centered in the body area:
+
+```python
+Callout('Hello World')
+```
+
+Add a callout for a headline:
+
+```python
+Head(arrow=False,
+     '<-- @file node',
+     headline='@file leoApp.py',
+     offset=None,
+)
+```
+
+Add a subtitle, centered just above the minibuffer:
+
+```
+Title('It was the best of times...')
 ```
 
 ## Switch focus
@@ -508,6 +513,12 @@ Don't worry about case or non-alpha characters in menu_name. This method shows a
 
 ## Magnification and styling
 
+**Important**: Imagages may now be scaled using the magnification arg:
+
+```python
+Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
+```
+    
 **demo.set_text_delta(self, delta, w=None)**: Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
@@ -547,8 +558,8 @@ These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keywor
 
 **demo.start(script_tree, auto_run=False, delim='###')**: Start the demo, saving the geometry (size and position) of the top-level Leo window. **demo.end** restores this geometry.
 
-- script_tree:  The root of a tree of script nodes.
-- auto_run:     True: run all script nodes, one after the other.
+- **script_tree**:  The root of a tree of script nodes.
+- **auto_run**:     True: run all script nodes, one after the other.
 
 **demo.get_ratios()**: Returns a tuple of frame ratios.
 
@@ -628,6 +639,7 @@ Edward K. Ream wrote, debugged and documented this plugin from January 29 to Feb
 
 **2017/02/13**: Added new helpers & removed all calls to super.
 
+- Added magnigication keyword arg to Image.
 - Added demo.get_ratios() and demo.set_ratios(ratio1, ratio2).
 - Added demo.headline_geometry(p)
 - Added Head helper.
