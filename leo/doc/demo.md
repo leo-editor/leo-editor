@@ -4,7 +4,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
-- [Graphics classes](../doc/demo.md#graphics-classes)
+- [Graphics classes & helpers](../doc/demo.md#graphics-classes--helpers)
 - [Using demo scripts](../doc/demo.md#using-demo-scripts)
     - [Script trees and lists](../doc/demo.md#script-trees-and-lists)
     - [Predefined symbols](../doc/demo.md#predefined-symbols)
@@ -14,8 +14,8 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 - [Example scripts](../doc/demo.md#example-scripts)
     - [Top-level script](../doc/demo.md#top-level-script)
     - [Simulate typing](../doc/demo.md#simulate-typing)
-    - [Add graphics](../doc/demo.md#add-graphics)
     - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
+    - [Add graphics](../doc/demo.md#add-graphics)
     - [Switch focus](../doc/demo.md#switch-focus)
 - [Helper methods](../doc/demo.md#helper-methods)
     - [Ivars](../doc/demo.md#ivars)
@@ -312,7 +312,6 @@ demo.set_top_size(height=400, width=700)
 demo.set_ratios(0.5, 0.5)
 geom = demo.pane_geometry('body')
 table = (
-    # (body, 'The Minibuffer (below)', 'center', geom.height()-25),
     ('body', 'The Body Pane'),
     ('tree', 'The Outline Pane'),
     ('log',  'The Log Pane'),
@@ -451,11 +450,7 @@ Callout('Hello World')
 Add a callout for a headline:
 
 ```python
-Head(arrow=False,
-     '<-- @file node',
-     headline='@file leoApp.py',
-     offset=None,
-)
+Head(arrow=False, '<-- @file node', headline='@file leoApp.py', offset=None)
 ```
 
 Add a subtitle, centered just above the minibuffer:
@@ -517,7 +512,7 @@ Don't worry about case or non-alpha characters in menu_name. This method shows a
 
 ## Magnification and styling
 
-**Important**: Imagages may now be scaled using the magnification arg:
+**Important**: Images may now be scaled using the magnification arg:
 
 ```python
 Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
@@ -647,7 +642,7 @@ Edward K. Ream wrote, debugged and documented this plugin from January 29 to Feb
 
 **2017/02/13**: Added new helpers & removed all calls to super.
 
-- Added magnigication keyword arg to Image.
+- Added magnification keyword arg to Image.
 - Added demo.get_ratios() and demo.set_ratios(ratio1, ratio2).
 - Added demo.headline_geometry(p)
 - Added Head helper.
