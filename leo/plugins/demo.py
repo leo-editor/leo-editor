@@ -628,7 +628,7 @@ class Demo(object):
     #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
     def set_position(self, w, position):
         '''Position w at the given position, or center it.'''
-        if not position or position == 'center':
+        if not position or position == 'center' or position == (None, None):
             self.center(w)
             return
         try:

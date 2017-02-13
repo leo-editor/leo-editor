@@ -23812,15 +23812,12 @@ body, tree, log = 'body', 'tree', 'log'
 geom = demo.pane_geometry('body')
 table = (
     (body, 'The Minibuffer (below)', 'center', geom.height()-25),
-    (body, 'The Body Pane', 0, 0),
+    (body, 'The Body Pane', None, None, ),
     (tree, 'The Outline Pane', 200, 200),
-    (log,  'The Log Pane', 0, 0),
+    (log,  'The Log Pane', 'center', 'center'),
 )
 for pane, h, x, y in table:
-    if x and y:
-        Callout(h, pane=pane, position=(x,y))
-    else:
-        Callout(h, pane=pane)
+    Callout(h, pane=pane, position=(x,y))
         
 fn = demo.get_icon_fn('box01.png')
 w = Image(fn, position=(20, 30), magnification=2)
