@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1362,10 +1362,11 @@
 <v t="ekr.20170212105226.5"><vh>setup_script</vh></v>
 <v t="ekr.20170212105226.6"><vh>teardown</vh></v>
 <v t="ekr.20170212105226.7"><vh>teardown_script</vh></v>
+<v t="ekr.20170213095345.1"><vh>Head</vh></v>
 </v>
 <v t="ekr.20170212105226.8"><vh>&lt;&lt; main &gt;&gt;</vh></v>
 <v t="ekr.20170212105226.9"><vh>Leo's Main Window</vh>
-<v t="ekr.20031218072017.2608"><vh>@@file ../core/leoApp.py</vh>
+<v t="ekr.20031218072017.2608"><vh>@@file leoApp.py</vh>
 <v t="ekr.20120219194520.10463"><vh>&lt;&lt; imports &gt;&gt; (leoApp)</vh></v>
 <v t="ekr.20161026122804.1"><vh>class IdleTimeManager</vh>
 <v t="ekr.20161026125611.1"><vh>itm.add_callback</vh></v>
@@ -1559,7 +1560,6 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
-<v t="ekr.20170212105226.4"></v>
 <v t="ekr.20170212105226.9"></v>
 <v t="ekr.20170212105226.11"></v>
 </vnodes>
@@ -23779,6 +23779,7 @@ demo.delete_retained_widgets()
 '''Create intro slides for screen shots.'''
 # The *same* command/key binding calls both demo-start and demo.next.
 if c.isChanged(): c.save()
+g.cls()
 &lt;&lt; imports &gt;&gt;
 #
 # Do NOT use @others here.
@@ -23799,27 +23800,16 @@ else:
 </t>
 <t tx="ekr.20170212105226.11">@language python
 
-outline_x, outline_y = 100, 100
+demo.set_top_size(height=500, width=800)
 body, tree, log = 'body', 'tree', 'log'
 table = (
-    ('&lt;-- @file node', '@file ../core/leoApp.py'),
-    ('&lt;-- @test node', '@test init method'),
+    (True, None, '&lt;-- @file node', '@file leoApp.py'),
+    (True, None, '&lt;-- @test node', '@test init method'),
+    (False,  2,    '&lt;-- icon box', '@suite plugins syntax'),
 )
-for label, headline in table:
-    p2 = demo.find_node(headline)
-    if p2:
-        x, y, w, h = demo.headline_geometry(p2)
-        Callout(label, pane='tree', position=(x+w-10, y))
-    else:
-        print('NOT FOUND', headline)
-p2 = demo.find_node('@suite plugins syntax')
-assert p2
-x, y, w, h = demo.headline_geometry(p2)
-Callout('&lt;-- icon box', pane='tree', position=(x+2, y))
-# Title("This is Leo's main window", pane='tree', position=(250, 10),
-    # font = QtGui.QFont('DejaVu Sans Mono', 20))
-body_widget = demo.pane_widget('body')
-geom = body_widget.geometry()
+for arrow, offset, label, headline in table:
+    demo.Head(arrow, label, headline, offset=offset)
+geom = demo.pane_geometry('body')
 table = (
     # ('minibuffer', 'Minibuffer', 0, 0),
     (body, 'The Minibuffer (below)', 'center', geom.height()-25),
@@ -23832,6 +23822,11 @@ for pane, h, x, y in table:
         Callout(h, pane=pane, position=(x,y))
     else:
         Callout(h, pane=pane)
+        
+fn = demo.get_icon_fn('box01.png')
+# fn = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', 'box01.png')
+w = Image(fn, position=(20, 30), magnification=2)
+Callout('&lt;-- An Icon',position=(20+w.width(), w.y()-3))
 ###
 demo.next()</t>
 <t tx="ekr.20170212105226.2">from leo.core.leoQt import QtCore, QtGui
@@ -23846,18 +23841,17 @@ imp.reload(demo_module)</t>
 
 def setup(self, p=None):
     c = self.c
-    # c.frame.log.clearTab('Log')
     self.end_on_exception = True # Good for debugging.
     self.delta = 0
-    demo.set_text_delta(self.delta)
-    # self.set_youtube_position()
+    self.set_text_delta(self.delta)
     if hasattr(self, 'hoist_node'):
         c.selectPosition(self.hoist_node)
         for child in self.hoist_node.children():
             if child.h. startswith('@@'):
                 child.h = child.h[1:]
         c.hoist()
-    self.set_top_geometry(QtCore.QRect(400, 200, 700, 400))
+    self.set_top_geometry((400, 200, 700, 400),)
+        # x, y, width, height, like QRect.
     c.redraw()
 </t>
 <t tx="ekr.20170212105226.5">def setup_script(self):
@@ -24081,7 +24075,19 @@ for fn in files:
         assert ok1 or ok2,'fail: %s' % (fn)
     
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170213095345.1">@language python
+
+def Head(self, arrow, label, headline, offset=None):
+    p2 = demo.find_node(headline)
+    if p2:
+        x, y, w, h = demo.headline_geometry(p2)
+        class_ = self.Arrow if arrow else self.Callout
+        if not offset: offset = w-10
+        class_(label, pane='tree', position=(x+offset, y))
+    else:
+        print('not found', p.h)
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
