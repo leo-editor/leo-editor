@@ -86,6 +86,10 @@ class Demo(object):
             # Set in init_namespace, which subclasses may override.
         self.retained_widgets = []
             # List of widgets *not* to be deleted by delete_widgets.
+        self.root = None
+            # For find_node: The outline to be searched for nodes.
+        self.script_root = None
+            # The root of the script tree.
         self.script_i = 0
             # Index into self.script_list.
         self.script_list = []
@@ -148,9 +152,10 @@ class Demo(object):
         # Don't delete widgets here. Use the teardown method instead.
         # self.delete_widgets()
         if g.app.demo:
-            self.set_top_geometry(self.initial_geometry)
-            # End auto-mode execution.
             g.app.demo = None
+            if getattr(self, 'initial_geometry', None):
+                self.set_top_geometry(self.initial_geometry)
+            # End auto-mode execution.
             self.script_list = []
             self.script_i = 0
             try:
@@ -178,7 +183,7 @@ class Demo(object):
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self, chain=True, wait=None):
         '''Execute the next demo script, or call end().'''
-        trace = True
+        trace = False
         # g.trace(chain, g.callers(2), self.c.p.h)
         if wait is not None:
             self.wait(wait)
@@ -248,10 +253,12 @@ class Demo(object):
         Subclasses may override this.
         '''
     #@+node:ekr.20170128213103.33: *4* demo.start & helpers
-    def start(self, script_tree, auto_run=False, delim='###'):
+    def start(self, script_tree, auto_run=False, delim='###', root=None):
         '''Start a demo. script_tree contains the demo scripts.'''
         import leo.core.leoNodes as leoNodes
         p = script_tree
+        self.root = root and root.copy()
+        self.script_root = script_tree and script_tree.copy()
         self.delete_widgets()
         self.auto_run = auto_run
         self.initial_geometry = self.get_top_geometry()
@@ -489,6 +496,15 @@ class Demo(object):
             c.frame.menu.activateMenu(menu_name)
         return menu
     #@+node:ekr.20170211050031.1: *3* demo.Nodes
+    #@+node:ekr.20170213020527.1: *4* demo.find_node
+    def find_node(self, headline):
+        '''Return the node whose headline is given.'''
+        c = self.c
+        if self.root:
+            p = g.findNodeInTree(c, self.root, headline)
+        else:
+            p = g.findNodeAnywhere(c, headline)
+        return p
     #@+node:ekr.20170211045602.1: *4* demo.insert_node
     def insert_node(self, headline, end=True, keys=False, speed=None):
         '''Helper for inserting a node.'''
@@ -522,6 +538,26 @@ class Demo(object):
         except Exception:
             g.es_exception()
     #@+node:ekr.20170211045817.1: *3* demo.Windows & Geometry
+    #@+node:ekr.20170213021048.1: *4* demo.headline_geomtry
+    def headline_geometry(self, p):
+        '''Return the x, y coordinates of p, for use by demo.set_position.'''
+        tree = self.c.frame.tree
+        item = tree.position2itemDict.get(p.key())
+        if item:
+            treeWidget = tree.treeWidget
+            w = treeWidget.itemWidget(item, 0)
+            if w:
+                geom = w.geometry()
+            else:
+                # Create a temp edit item
+                treeWidget.editItem(item)
+                w = treeWidget.itemWidget(item, 0)
+                geom = w.geometry()
+                # End the editing.
+                treeWidget.closeEditor(w, QtWidgets.QAbstractItemDelegate.NoHint)
+            return geom.x(), geom.y(), geom.width(), geom.height()
+        else:
+            return None
     #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry
     def get_top_geometry(self):
         top = self.c.frame.top

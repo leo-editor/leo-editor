@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1542,8 +1542,8 @@
 <v t="ekr.20150514125218.6"><vh>open-url-under-cursor</vh></v>
 </v>
 </v>
-<v t="ekr.20170212113230.1"><vh>@@test all plugins have top-level init method</vh></v>
-<v t="ekr.20170212113214.1"><vh>@@suite import or test syntax of all plugins</vh>
+<v t="ekr.20170212113230.1"><vh>@@test init method</vh></v>
+<v t="ekr.20170212113214.1"><vh>@@suite plugins syntax</vh>
 <v t="ekr.20170212113214.2"><vh>makePluginsTestSuite</vh></v>
 <v t="ekr.20170212113214.3"><vh>class pluginTestCase</vh>
 <v t="ekr.20170212113214.4"><vh>__init__</vh></v>
@@ -1559,8 +1559,8 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
-<v t="ekr.20170212105226.6"></v>
 <v t="ekr.20170212105226.4"></v>
+<v t="ekr.20170212105226.9"></v>
 <v t="ekr.20170212105226.11"></v>
 </vnodes>
 <tnodes>
@@ -23788,10 +23788,12 @@ if c.isChanged(): c.save()
 if getattr(g.app, 'demo', None):
     g.app.demo.next()
 else:
+    root = g.findTopLevelNode(c, '@button IntroSlides @key=Ctrl-9')
     demo = IntroSlides(c)
     main(c, demo,
         auto_run=False,
         hoist_node = "Leo's Main Window",
+        root = root,
         script_name='intro-slides-script')</t>
 <t tx="ekr.20170212105226.10">@language python
 </t>
@@ -23799,9 +23801,23 @@ else:
 
 outline_x, outline_y = 100, 100
 body, tree, log = 'body', 'tree', 'log'
-if 0:
-    Title("This is Leo's main window", pane='tree', position=(250, 10),
-        font = QtGui.QFont('DejaVu Sans Mono', 20))
+table = (
+    ('&lt;-- @file node', '@file ../core/leoApp.py'),
+    ('&lt;-- @test node', '@test init method'),
+)
+for label, headline in table:
+    p2 = demo.find_node(headline)
+    if p2:
+        x, y, w, h = demo.headline_geometry(p2)
+        Callout(label, pane='tree', position=(x+w-10, y))
+    else:
+        print('NOT FOUND', headline)
+p2 = demo.find_node('@suite plugins syntax')
+assert p2
+x, y, w, h = demo.headline_geometry(p2)
+Callout('&lt;-- icon box', pane='tree', position=(x+2, y))
+# Title("This is Leo's main window", pane='tree', position=(250, 10),
+    # font = QtGui.QFont('DejaVu Sans Mono', 20))
 body_widget = demo.pane_widget('body')
 geom = body_widget.geometry()
 table = (
@@ -23810,8 +23826,6 @@ table = (
     (body, 'The Body Pane', 0, 0),
     (tree, 'The Outline Pane', 200, 200),
     (log,  'The Log Pane', 0, 0),
-    (tree, '@file node --&gt;', outline_x, outline_y + 20),
-    (tree, '@test node --&gt;', outline_x, outline_y + 40),
 )
 for pane, h, x, y in table:
     if x and y:
@@ -23822,8 +23836,8 @@ for pane, h, x, y in table:
 demo.next()</t>
 <t tx="ekr.20170212105226.2">from leo.core.leoQt import QtCore, QtGui
 import leo.plugins.demo as demo_module
-# import imp
-# imp.reload(demo_module)</t>
+import imp
+imp.reload(demo_module)</t>
 <t tx="ekr.20170212105226.3">class IntroSlides (demo_module.Demo):
     
     @others
@@ -23832,7 +23846,7 @@ import leo.plugins.demo as demo_module
 
 def setup(self, p=None):
     c = self.c
-    c.frame.log.clearTab('Log')
+    # c.frame.log.clearTab('Log')
     self.end_on_exception = True # Good for debugging.
     self.delta = 0
     demo.set_text_delta(self.delta)
@@ -23843,7 +23857,7 @@ def setup(self, p=None):
             if child.h. startswith('@@'):
                 child.h = child.h[1:]
         c.hoist()
-    self.set_top_geometry(QtCore.QRect(400, 300, 600, 500))
+    self.set_top_geometry(QtCore.QRect(400, 200, 700, 400))
     c.redraw()
 </t>
 <t tx="ekr.20170212105226.5">def setup_script(self):
@@ -23872,12 +23886,11 @@ def teardown(self):
 <t tx="ekr.20170212105226.7">def teardown_script(self):
     if self.auto_run:
         self.wait(0.5)</t>
-<t tx="ekr.20170212105226.8">def main(c, demo, script_name, auto_run=False, hoist_node=None):
-    g.cls()
+<t tx="ekr.20170212105226.8">def main(c, demo, script_name, auto_run=False, hoist_node=None, root=None):
     k = c.k
     class_name = demo.__class__.__name__
     # c.frame.log.clearTab('Log')
-    g.es_print('Starting', class_name)
+    # g.es_print('Starting', class_name)
     k.demoNextKey = k.strokeFromSetting('Ctrl-9')
         # Tell k.masterKeyHandler to process Ctrl-9 immediately.
         # Binding demo-next in a setting does *not* work.
@@ -23887,7 +23900,7 @@ def teardown(self):
     script_tree = g.findNodeInTree(c, p, script_name)
     assert script_tree, repr(script_name)
     demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
-    demo.start(script_tree, auto_run=auto_run)</t>
+    demo.start(script_tree, auto_run=auto_run, root=root)</t>
 <t tx="ekr.20170212105226.9"></t>
 <t tx="ekr.20170212113214.1">'''Imports all plugins or just tests their syntax,
 epending on a switch in PluginTestCase.runTest.'''
@@ -24068,7 +24081,7 @@ for fn in files:
         assert ok1 or ok2,'fail: %s' % (fn)
     
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

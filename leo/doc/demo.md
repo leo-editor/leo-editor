@@ -254,7 +254,6 @@ def main(c, demo, script_name, auto_run=False, hoist_node=None):
     g.cls()
     k = c.k
     class_name = demo.__class__.__name__
-    c.frame.log.clearTab('Log')
     g.es_print('Starting', class_name)
     k.demoNextKey = k.strokeFromSetting('Ctrl-9')
         # Tell k.masterKeyHandler to process Ctrl-9 immediately.
