@@ -50,7 +50,7 @@ For example, this demo script executes the insert-node command:
 
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images. These graphics persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
-# Graphics classes
+# Graphics classes & helpers
 
 The demo.py file defines 5 classes that create graphics.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
 
@@ -62,6 +62,12 @@ The valid arguments for the `pane` argument are `None, 'body', 'log', 'tree`. `N
 
 ```python
 Callout(text, font=None, pane=None, position=None, stylesheet=None)
+```
+
+**Head**: Add a label to a headline, given only its headline(!).
+
+```python
+Head(arrow, label, headline, offset=None)
 ```
 
 **Image**: Add a QLabel containing an image.
@@ -206,6 +212,7 @@ The demo plugin does not change focus in any way, nor does it interfere with Leo
 Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
 
 
+
 ```python
 
 '''Create intro slides for screen shots.'''
@@ -222,15 +229,21 @@ import leo.plugins.demo as demo_module
 class IntroSlides (demo_module.Demo):
     
     def setup(self, p=None):
-    c = self.c
-    self.end_on_exception = True # Good for debugging.
-    self.delta = 0
-    demo.set_text_delta(self.delta)
-    # self.set_youtube_position()
-    if hasattr(self, 'hoist_node'):
-        c.selectPosition(self.hoist_node)
-        c.hoist()
-    c.redraw()
+        c = self.c
+        self.end_on_exception = True # Good for debugging.
+        self.delta = 0
+        self.ratios = self.get_ratios()
+        self.set_text_delta(self.delta)
+        if hasattr(self, 'hoist_node'):
+            c.selectPosition(self.hoist_node)
+            for child in self.hoist_node.children():
+                if child.h. startswith('@@'):
+                    child.h = child.h[1:]
+                    child.clearDirty()
+            c.hoist()
+        self.set_top_geometry((400, 200, 700, 400),)
+            # x, y, width, height, like QRect.
+        c.redraw()
 
     def setup_script(self):
         self.delete_widgets()
@@ -241,8 +254,18 @@ class IntroSlides (demo_module.Demo):
         if self.delta > 0:
             self.set_text_delta(-self.delta)
         if self.hoist_node:
-            c.selectPosition(self.hoist_node)
+            for child in self.hoist_node.children():
+                if child.h. startswith('@'):
+                    child.h = '@' + child.h
             c.dehoist()
+            # c.selectPosition(self.hoist_node)
+        p = g.findTopLevelNode(c, "Slide 1: Leo's main window")
+        if p:
+            c.selectPosition(p)
+        ratio1, ratio2 = self.ratios
+        self.set_ratios(ratio1, ratio2)
+        c.contractAllHeadlines()
+        c.setChanged(False)
         c.redraw()
             
     def teardown_script(self):
@@ -279,7 +302,42 @@ else:
         script_name='intro-slides-script')
 ```
 
-And here is an example script_string:
+
+And are two example script_string. The first creates two screenshots, with lots of callouts.
+
+
+
+```python
+demo.set_top_size(height=400, width=700)
+demo.set_ratios(0.5, 0.5)
+geom = demo.pane_geometry('body')
+table = (
+    # (body, 'The Minibuffer (below)', 'center', geom.height()-25),
+    ('body', 'The Body Pane'),
+    ('tree', 'The Outline Pane'),
+    ('log',  'The Log Pane'), # too low.
+)
+for pane, h in table:
+    Callout(h, pane=pane) # , position=(x,y)
+###
+demo.set_top_size(height=500, width=800)
+table = (
+    (False, 0, '<-- @file node', '@file leoApp.py'),
+    (False, 0, '<-- @test node', '@test init method'),
+    (False, 2, '<-- icon box', '@suite plugins syntax'),
+)
+for arrow, offset, label, headline in table:
+    Head(arrow, label, headline, offset=offset)
+w = Image(fn=demo.get_icon_fn('box01.png'),
+    position=(20, 30), magnification=2)
+Callout('<-- An Icon',position=(20+w.width(), w.y()-3))
+###
+demo.next()
+```
+
+
+The second example script_string adds and demotes nodes:
+
 
 ```python
 # Create, move, promote, demote, hoist.
@@ -486,6 +544,10 @@ These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keywor
 - script_tree:  The root of a tree of script nodes.
 - auto_run:     True: run all script nodes, one after the other.
 
+**demo.get_ratios()**: Returns a tuple of frame ratios.
+
+**demo.set_ratios(ratio1, ratio2)**: Set the body/outline ratio to ratio1 and the tree/log ratio to ratio2.
+
 Subclasses of Demo may override any of the following:
 
 **demo.init_namespace**: Creates demo.namespace with default symbols.
@@ -499,6 +561,8 @@ Subclasses of Demo may override any of the following:
 **demo.teardown_script():** Called after executing each demo script.
 
 ## Window position
+
+**demo.headline_geometry(p)**: Return the x, y coordinates of p, for use by demo.set_position.
 
 **demo.get_top_geometry()**: Return the geometry of Leo's main window.
    
@@ -546,7 +610,7 @@ Instant automation!  Do you see how cool this is?
 
 # History and change log
 
-Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 12, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 14, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
 
 **2017/02/11**: Added auto-run feature. Fixed bugs re widget visibility.
 
@@ -555,4 +619,11 @@ Edward K. Ream wrote, debugged and documented this plugin from January 29 to Feb
 - demo.delete_* call w.hide() before calling w.deleteLater().
 - demo.wait() calls the new demo.repaint() method.
 - demo.repaint_pane() calls w.viewport().repaint().
+
+**2017/02/13**: Added new helpers & removed all calls to super.
+
+- Added demo.get_ratios() and demo.set_ratios(ratio1, ratio2).
+- Added demo.headline_geometry(p)
+- Added Head helper.
+- Added all Graphics classes and helpers to demo.namespace.
 

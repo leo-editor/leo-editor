@@ -1352,9 +1352,9 @@
 <v t="ekr.20170212102122.6"><vh>Clones and cff</vh></v>
 <v t="ekr.20170212102122.7"><vh>Last</vh></v>
 </v>
+<v t="ekr.20170213143631.1"><vh>Stand-alone slide</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20170130080532.1"></v>
 <v t="ekr.20170212105226.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
 <v t="ekr.20170212105226.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170212105226.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
@@ -1560,10 +1560,9 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
-<v t="ekr.20170212105226.3"></v>
 <v t="ekr.20170212105226.9"></v>
 <v t="ekr.20170212105226.11"></v>
-<v t="ekr.20170213143631.1"><vh>Stand-alone slide</vh></v>
+<v t="ekr.20170130080532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
