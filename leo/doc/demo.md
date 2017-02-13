@@ -303,7 +303,7 @@ else:
 ```
 
 
-And are two example script_string. The first creates two screenshots, with lots of callouts.
+Here are two example script_string. The first creates two screenshots, with lots of callouts.
 
 
 
@@ -416,8 +416,14 @@ Text('This is a text area',
 
 Add a callout, centered in the body area:
 
-```
+```python
 Callout('Hello World')
+```
+
+Add a callout for a headline:
+
+```python
+Head(arrow=False, '<-- @file node', headline='@file leoApp.py', offset=None)
 ```
 
 Add a subtitle, centered just above the minibuffer:
