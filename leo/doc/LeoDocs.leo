@@ -23801,7 +23801,6 @@ else:
 <t tx="ekr.20170212105226.11">@language python
 
 demo.set_top_size(height=500, width=800)
-body, tree, log = 'body', 'tree', 'log'
 table = (
     (True, None, '&lt;-- @file node', '@file leoApp.py'),
     (True, None, '&lt;-- @test node', '@test init method'),
@@ -23809,9 +23808,9 @@ table = (
 )
 for arrow, offset, label, headline in table:
     demo.Head(arrow, label, headline, offset=offset)
+body, tree, log = 'body', 'tree', 'log'
 geom = demo.pane_geometry('body')
 table = (
-    # ('minibuffer', 'Minibuffer', 0, 0),
     (body, 'The Minibuffer (below)', 'center', geom.height()-25),
     (body, 'The Body Pane', 0, 0),
     (tree, 'The Outline Pane', 200, 200),
@@ -23824,7 +23823,6 @@ for pane, h, x, y in table:
         Callout(h, pane=pane)
         
 fn = demo.get_icon_fn('box01.png')
-# fn = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', 'box01.png')
 w = Image(fn, position=(20, 30), magnification=2)
 Callout('&lt;-- An Icon',position=(20+w.width(), w.y()-3))
 ###
