@@ -133,6 +133,7 @@ class Demo(object):
             # Graphic classes.
             'Arrow': Arrow,
             'Callout': Callout,
+            'Head': Head,
             'Image': Image,
             'Label': Label,
             'Text': Text,
@@ -159,20 +160,17 @@ class Demo(object):
         End this slideshow and call teardown().
         This will be called several times if demo scripts call demo.next().
         '''
-        # Don't delete widgets here. Use the teardown method instead.
-        # self.delete_widgets()
         if g.app.demo:
-            g.app.demo = None
-            if getattr(self, 'initial_geometry', None):
-                self.set_top_geometry(self.initial_geometry)
-            # End auto-mode execution.
-            self.script_list = []
-            self.script_i = 0
             try:
+                if getattr(self, 'initial_geometry', None):
+                    self.set_top_geometry(self.initial_geometry)
+                self.script_list = []
+                self.script_i = 0
                 self.teardown()
             except Exception:
                 g.es_exception()
-            g.es_print('\nEnd of', self.__class__.__name__)
+            g.app.demo = None
+            g.es_print('End demo')
     #@+node:ekr.20170128213103.31: *4* demo.exec_node
     def exec_node(self, script):
         '''Execute the script in node p.'''
@@ -628,7 +626,7 @@ class Demo(object):
     #@+node:ekr.20170206112010.1: *4* demo.set_position & helpers
     def set_position(self, w, position):
         '''Position w at the given position, or center it.'''
-        if not position or position == 'center' or position == (None, None):
+        if not position or position == 'center':
             self.center(w)
             return
         try:
@@ -636,10 +634,16 @@ class Demo(object):
         except Exception:
             g.es('position must be "center" or a 2-tuple', repr(position))
             return
-        if not isinstance(x, (int, float)):
+        # Convert x and y as needed.
+        if x is None:
+            x = 'center'
+        elif not isinstance(x, (int, float)):
             x = x.strip().lower()
-        if not isinstance(y, (int, float)):
+        if y is None:
+            y = 'center'
+        elif not isinstance(y, (int, float)):
             y = y.strip().lower()
+        # Handle x and y.
         if x == y == 'center':
             self.center(w)
         elif x == 'center':
@@ -695,6 +699,17 @@ class Demo(object):
                 g.es_exception()
                 g.trace('bad x position', repr(obj))
                 return None
+    #@+node:ekr.20170213145241.1: *4* demo.get/set_ratios
+    def get_ratios(self):
+        '''Return the two pane ratios.'''
+        f = self.c.frame
+        return  f.ratio,  f.secondary_ratio
+        
+    def set_ratios(self, ratio1, ratio2):
+        '''Set the two pane ratios.'''
+        f = self.c.frame
+        f.divideLeoSplitter1(ratio1)
+        f.divideLeoSplitter2(ratio2)
     #@+node:ekr.20170209164344.1: *4* demo.set_window_size/position
     def set_window_size(self, width, height):
         '''Resize Leo's top-most window.'''
@@ -717,7 +732,7 @@ class Demo(object):
         w.resize(1264, 682) # Important.
         w.move(200, 200) # Arbitrary.
     #@-others
-#@+node:ekr.20170208045907.1: ** Graphics classes
+#@+node:ekr.20170208045907.1: ** Graphics classes & helpers
 # When using reload, the correct code is *usually*:
 #
 #   super(self.__class__, self).__init__(...)
@@ -740,14 +755,7 @@ class Label (QtWidgets.QLabel):
         '''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(text, parent)
-        else:
-            QtWidgets.QLabel.__init__(self, text, parent)
-                # These don't work when using reload. Boo hoo.
-                    # super(Label, self).__init__(text, parent) 
-                    # super(self.__class__, self) loops!
+        QtWidgets.QLabel.__init__(self, text, parent)
         # w.setWordWrap(True)
         self.init(font, position, stylesheet)
         w.show()
@@ -782,14 +790,7 @@ class Arrow(Label):
                 background: transparent;
                 color : black;
             }'''
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(text,
-                font=font, pane=pane,
-                position=position, stylesheet=stylesheet)
-        else:
-            super(self.__class__, self).__init__(text,
-                font=font, pane=pane,
+        Label.__init__(self, text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
@@ -807,14 +808,7 @@ class Callout(Label):
                 background-color : lightblue;
                 color : black;
             }'''
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(text,
-                font=font, pane=pane,
-                position=position, stylesheet=stylesheet)
-        else:
-            super(self.__class__, self).__init__(text,
-                font=font, pane=pane,
+        Label.__init__(self, text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
@@ -826,11 +820,7 @@ class Image (QtWidgets.QLabel):
         '''Image.__init__.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(parent=parent)
-        else:
-            super(self.__class__, self).__init__(parent=parent)
+        QtWidgets.QLabel.__init__(self, parent=parent)
         self.init_image(fn, magnification, position, size)
         w.show()
         demo.widgets.append(w)
@@ -878,11 +868,7 @@ class Text (QtWidgets.QPlainTextEdit):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(text.rstrip(), parent=parent)
-        else:
-            super(self.__class__, self).__init__(text.rstrip(), parent=parent)
+        QtWidgets.QPlainTextEdit.__init__(self, text.rstrip(), parent=parent)
         self.init(font, position, size, stylesheet)
         w.show()
         demo.widgets.append(self)
@@ -927,17 +913,25 @@ class Title(Label):
                 background-color : mistyrose;
                 color : black;
             }'''
-        if g.isPython3:
-            # pylint: disable=missing-super-argument
-            super().__init__(text,
-                font=font,pane=pane,
-                position=position,stylesheet=stylesheet)
-        else:
-            super(self.__class__, self).__init__(text,
-                font=font,pane=pane,
-                position=position,stylesheet=stylesheet)
+        Label.__init__(self, text, font=font, pane=pane,
+                position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 
             ('center', self.parent().geometry().height() - 50))
+#@+node:ekr.20170213132024.1: *3* Head
+#@@language python
+
+def Head(arrow, label, headline, offset=None):
+    '''Add a callout to a headline.'''
+    demo = g.app.demo
+    if demo:
+        p = demo.find_node(headline)
+        if p:
+            x, y, w, h = demo.headline_geometry(p)
+            class_ = Arrow if arrow else Callout
+            if not offset: offset = w-10
+            class_(label, pane='tree', position=(x+offset, y))
+        else:
+            print('not found', p.h)
 #@-others
 #@-leo

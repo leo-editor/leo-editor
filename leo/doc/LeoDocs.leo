@@ -176,7 +176,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -1362,7 +1362,6 @@
 <v t="ekr.20170212105226.5"><vh>setup_script</vh></v>
 <v t="ekr.20170212105226.6"><vh>teardown</vh></v>
 <v t="ekr.20170212105226.7"><vh>teardown_script</vh></v>
-<v t="ekr.20170213095345.1"><vh>Head</vh></v>
 </v>
 <v t="ekr.20170212105226.8"><vh>&lt;&lt; main &gt;&gt;</vh></v>
 <v t="ekr.20170212105226.9"><vh>Leo's Main Window</vh>
@@ -1543,6 +1542,7 @@
 <v t="ekr.20150514125218.6"><vh>open-url-under-cursor</vh></v>
 </v>
 </v>
+<v t="ekr.20170213112231.1"><vh>New Node</vh></v>
 <v t="ekr.20170212113230.1"><vh>@@test init method</vh></v>
 <v t="ekr.20170212113214.1"><vh>@@suite plugins syntax</vh>
 <v t="ekr.20170212113214.2"><vh>makePluginsTestSuite</vh></v>
@@ -1560,8 +1560,10 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
+<v t="ekr.20170212105226.3"></v>
 <v t="ekr.20170212105226.9"></v>
 <v t="ekr.20170212105226.11"></v>
+<v t="ekr.20170213143631.1"><vh>Stand-alone slide</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22207,10 +22209,7 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">- Add screen shot (of top-level script) in demo.py docs
-
-* Revise tutorials: the less said, the better.
-
+<t tx="ekr.20161207045325.1">* Revise tutorials: the less said, the better.
 - Insert to-be-documented mail items
 - What setting allows automatic pyflakes?
 
@@ -23800,27 +23799,33 @@ else:
 </t>
 <t tx="ekr.20170212105226.11">@language python
 
-demo.set_top_size(height=500, width=800)
-table = (
-    (True, None, '&lt;-- @file node', '@file leoApp.py'),
-    (True, None, '&lt;-- @test node', '@test init method'),
-    (False,  2,    '&lt;-- icon box', '@suite plugins syntax'),
-)
-for arrow, offset, label, headline in table:
-    demo.Head(arrow, label, headline, offset=offset)
-body, tree, log = 'body', 'tree', 'log'
+# Doesn't work in the demo framework!
+# w = QtWidgets.QFrame()
+# w.show()
+###
+
+demo.set_top_size(height=400, width=700)
+demo.set_ratios(0.5, 0.5)
 geom = demo.pane_geometry('body')
 table = (
-    (body, 'The Minibuffer (below)', 'center', geom.height()-25),
-    (body, 'The Body Pane', None, None, ),
-    (tree, 'The Outline Pane', 200, 200),
-    (log,  'The Log Pane', 'center', 'center'),
+    # (body, 'The Minibuffer (below)', 'center', geom.height()-25),
+    ('body', 'The Body Pane'),
+    ('tree', 'The Outline Pane'),
+    ('log',  'The Log Pane'), # too low.
 )
-for pane, h, x, y in table:
-    Callout(h, pane=pane, position=(x,y))
-        
-fn = demo.get_icon_fn('box01.png')
-w = Image(fn, position=(20, 30), magnification=2)
+for pane, h in table:
+    Callout(h, pane=pane) # , position=(x,y)
+###
+demo.set_top_size(height=500, width=800)
+table = (
+    (False, 0, '&lt;-- @file node', '@file leoApp.py'),
+    (False, 0, '&lt;-- @test node', '@test init method'),
+    (False, 2, '&lt;-- icon box', '@suite plugins syntax'),
+)
+for arrow, offset, label, headline in table:
+    Head(arrow, label, headline, offset=offset)
+w = Image(fn=demo.get_icon_fn('box01.png'),
+    position=(20, 30), magnification=2)
 Callout('&lt;-- An Icon',position=(20+w.width(), w.y()-3))
 ###
 demo.next()</t>
@@ -23838,12 +23843,14 @@ def setup(self, p=None):
     c = self.c
     self.end_on_exception = True # Good for debugging.
     self.delta = 0
+    self.ratios = self.get_ratios()
     self.set_text_delta(self.delta)
     if hasattr(self, 'hoist_node'):
         c.selectPosition(self.hoist_node)
         for child in self.hoist_node.children():
             if child.h. startswith('@@'):
                 child.h = child.h[1:]
+                child.clearDirty()
         c.hoist()
     self.set_top_geometry((400, 200, 700, 400),)
         # x, y, width, height, like QRect.
@@ -23868,6 +23875,8 @@ def teardown(self):
     p = g.findTopLevelNode(c, "Slide 1: Leo's main window")
     if p:
         c.selectPosition(p)
+    ratio1, ratio2 = self.ratios
+    self.set_ratios(ratio1, ratio2)
     c.contractAllHeadlines()
     c.setChanged(False)
     c.redraw()
@@ -24070,19 +24079,13 @@ for fn in files:
         assert ok1 or ok2,'fail: %s' % (fn)
     
 </t>
-<t tx="ekr.20170213095345.1">@language python
+<t tx="ekr.20170213112231.1"></t>
+<t tx="ekr.20170213143631.1">from leo.core.leoQt import QtWidgets
 
-def Head(self, arrow, label, headline, offset=None):
-    p2 = demo.find_node(headline)
-    if p2:
-        x, y, w, h = demo.headline_geometry(p2)
-        class_ = self.Arrow if arrow else self.Callout
-        if not offset: offset = w-10
-        class_(label, pane='tree', position=(x+offset, y))
-    else:
-        print('not found', p.h)
-</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+w = QtWidgets.QFrame()
+w.show()
+g.sleep(10)</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
