@@ -23,7 +23,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
     - [Magnification and styling](../doc/demo.md#magnification-and-styling)
     - [Simulated typing](../doc/demo.md#simulated-typing)
     - [Startup, setup and teardown](../doc/demo.md#startup-setup-and-teardown)
-    - [Window position](../doc/demo.md#window-position)
+    - [Window position and ratios](../doc/demo.md#window-position-and-ratios)
 - [Summary](../doc/demo.md#summary)
 - [History and change log](../doc/demo.md#history-and-change-log)
 
@@ -315,10 +315,10 @@ table = (
     # (body, 'The Minibuffer (below)', 'center', geom.height()-25),
     ('body', 'The Body Pane'),
     ('tree', 'The Outline Pane'),
-    ('log',  'The Log Pane'), # too low.
+    ('log',  'The Log Pane'),
 )
 for pane, h in table:
-    Callout(h, pane=pane) # , position=(x,y)
+    Callout(h, pane=pane)
 ###
 demo.set_top_size(height=500, width=800)
 table = (
@@ -328,9 +328,8 @@ table = (
 )
 for arrow, offset, label, headline in table:
     Head(arrow, label, headline, offset=offset)
-w = Image(fn=demo.get_icon_fn('box01.png'),
-    position=(20, 30), magnification=2)
-Callout('<-- An Icon',position=(20+w.width(), w.y()-3))
+w = Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
+Callout('<-- An Icon', position=(20+w.width(), w.y()-3))
 ###
 demo.next()
 ```
@@ -398,15 +397,20 @@ wrapper.setSelectionRange(0, len(p.h))
 ## Change the demo namespace
 
 **demo.bind(name, object)** adds an entry to this dictionary.
+
 ```python
 demo.bind('greeting', 'Hello World')
 ```
+
 This is equivalent to:
+
 ```python
 demo.namespace.update({'greeting': 'Hello World'})
 ```
-demo.init_namespace() initializes demo.namespace at the start of the demo. Subclasses may override init.namespace for complete control of the scripting environment:
-```
+
+**demo.init_namespace()**: Initializes demo.namespace at the start of the demo. Subclasses may override init.namespace for complete control of the scripting environment:
+
+```python
 import leo.plugins.demo as demo_module
 Demo = demo_module.Demo
 class MyDemo(Demo):
@@ -577,11 +581,15 @@ Subclasses of Demo may override any of the following:
 
 **demo.teardown_script():** Called after executing each demo script.
 
-## Window position
+## Window position and ratios
 
 **demo.headline_geometry(p)**: Return the x, y coordinates of p, for use by demo.set_position.
 
+**demo.get_ratios()**: Returns a tuple (ratio1, ratio2), where ratio1 is the body/outline ratio and ratio2 is the tree/log ratio. Each ratio is a float between 0 and 1.0.
+
 **demo.get_top_geometry()**: Return the geometry of Leo's main window.
+
+**demo.set_ratios(ratio1, ratio2)**: Restores the body/outline and tree/log ratios.
    
 **demo.set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
 
