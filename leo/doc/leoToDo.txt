@@ -9,15 +9,22 @@
 org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
 - Steal everything useful from org mode:
-    - Agenda.
+    - Agenda: an agenda plugin.
+    - Tables: a tables plugin.
     - Text drawers replace uA's.
     - Rendering of Latex, etc. in Leo's body pane.
     - Better support for shell console & scripts.
     - Better support for make, C, C++, Java, etc.
+    - Support for org-mode results. Invention needed.
     
 - Support .org files and .org.leo files.
 
 The results will be better, because of Leo's API, DOM and python language.
+
+Questions:
+- Can org mode compose external files and scripts?
+- Does org mode have untangle?
+
 .. @+node:ekr.20170128161249.1: ** Next projects
 @language rest
 @wrap
