@@ -18382,6 +18382,387 @@ Leo composes complex scripts from a node and (depending on markup) some or all o
 
 Clones are nodes that appear in multiples places within the outline. Leo's clone-find commands gather found nodes together in one place.
 
+.. @+node:ekr.20170216014459.1: *3* @rst html\tutorial-programming.html
+@wrap
+
+.. |---| unicode:: U+02015 .. for quotes
+   :trim:
+   
+####################
+Programming with Leo
+####################
+
+    "We who use Leo know that it is a breakthrough tool and a whole new way
+    of writing code."---Joe Orr
+
+Now we come to the programming features that distinguish Leo from other programming environments. Several kinds of nodes create external files. This tutorial discusses four of them: @clean, @file, @edit and @auto. @clean is recommended for most purposes.
+
+Please study this section carefully if you intend to use Leo for programming. If you get stuck, please `ask for help <https://groups.google.com/forum/#!forum/leo-editor>`_ immediately.
+
+.. contents::
+    :depth: 3
+.. @+node:ekr.20170216014459.2: *4* Using @clean
+.. tutorial-programming.html
+
+.. index::
+    pair: @clean; Tutorial
+
+Leo creates **external files** (files on your file system) from **@clean nodes** and their *descendant* nodes. Examples::
+
+    @clean spam.py
+    @clean ../foo.c
+    @clean ~/bar.py
+
+A single Leo outline may contain many @clean nodes. Leo outlines are like project files in other IDE's (Integrated Development Environments).
+
+.. index::
+    pair: Import Script; Tutorial
+    pair: import-file command; Tutorial
+
+Leo's import-file command creates a single @clean tree using the same importers that @auto uses. When importing several files it is more convenient to use a **import script**. Leo's `Scripting Tutorial <tutorial-scripting.html>`_ discusses such scripts.
+.. @+node:ekr.20170216014459.3: *5* Example
+.. index::
+    pair: Markup; Tutorial
+    
+Simple text markup tells Leo how to create an external file from an
+@clean node and its descendants. Let's look at a step-by-step example:
+
+1. Create a new outline node whose headline is::
+
+    @clean myfile.py
+
+2. Type this in the body of the @clean node::
+    
+    @language python
+    @tabwidth -4
+    << docstring >>
+    @others
+    if __name__ == '__main__':
+        main()
+
+3. Create a child of the @clean node whose headline is::
+   
+   << docstring >>
+
+4. Type this in the child's body text::
+
+        '''This is the docstring for the myfile module.'''
+    
+5. Create another child of the @clean node whose headline is::
+
+        main
+    
+6. Type this in the body of the node::
+
+        def main():
+            print('hello from main')
+        
+7. Save the outline as myfile.leo. This creates myfile.py automatically.
+   
+8. Quit Leo.
+
+9. Open myfile.py in your favorite text editor. You will see::
+
+        '''This is the docstring for the myfile module.'''
+        def main():
+            print('hello from main')
+        if __name__ == '__main__':
+            main()
+
+Usually you will edit myfile.py from Leo, but Leo can update the outline
+from changes you make in the text editor!
+
+10. In your text editor, change the line::
+
+        print('hello from main')
+        
+to::
+
+        print('hello AGAIN from main')
+        
+11. Save myfile.py and quit your text editor.
+
+12. Open myfile.leo. Leo reports that the 'main' node has been changed. It's body text is now::
+    
+        def main():
+            print('hello AGAIN from main')
+        
+Automatic updates of @clean nodes is an important feature of Leo. We'll see
+how this works later. But first, the next section discusses Leo's markup in
+detail.
+.. @+node:ekr.20170216014459.4: *5* Markup
+.. index::
+    pair: Section Name; Tutorial
+    pair: Section Definition Node; Tutorial
+    pair: Section Reference; Tutorial
+    pair: Expansion; Tutorial
+    pair: Markup; Tutorial
+    pair: @others; Tutorial
+    
+This section discusses Leo's markup. This markup tells how to create
+external files from @clean trees.
+
+**Essential Terms**:
+
+- A **section name** is any text of the form: << any text >>.
+  (>> must not appear in "any text".)
+
+- A **section definition node** is any node whose headline starts with a
+  section name.
+
+- A **section reference** is a section name that appears in body text.
+
+| Leo creates external files containing @others directives by writing the *expansion* of the @clean node.
+| The **expansion** of *any* node is the node's body text after making these text **substitutions**:
+
+1. Leo replaces @others with the *expansion* of all descendant nodes
+   **except** section definition nodes. That's how @others got its name.
+
+2. Leo replaces section references by the *expansion* of the body text of
+   the corresponding section definition node.
+   
+Whitespace is significant before @others and section references. Leo adds
+the leading whitespace appearing before each @others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  For example, here is a cute trick::
+
+    if 1:
+        << a section >>
+    if 0:
+        @others
+
+**Notes**:
+
+- Neither whitespace nor capitalization are important in section names.
+  The following section names are equivalent::
+  
+      << a section >>
+      <<ASection>>
+
+- Any node may contain a *single* @others directive. No node may contain more
+  than one @others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+  
+.. index::
+    pair: Orphan Node; Tutorial
+
+- An **orphan node** is a descendant of an @clean node not included in any
+  substitution. Leo refuses to write external files containing orphan
+  nodes. Instead, Leo writes the @clean tree to the .leo file itself,
+  thereby preserving all data.
+
+**Example 1**: The body of the @clean node for a typical Python module will
+look something like::
+
+    '''A docstring.'''
+    << imports >>
+    @others
+    if __name__ == '__main__':
+        main()
+        
+**Example 2**:  Here is a typical Python class definition in Leo::
+
+    class MyClass:
+        '''A docstring.'''
+        @others
+.. @+node:ekr.20170216014459.5: *5* Updating @clean trees
+Leo 5.1 introduced the ability to update @clean trees from changes made to the corresponding external file. This is one of the most important developments in Leo's history. Previously, Leo could perform such updates only if the external file contained **sentinel lines**, comment lines corresponding to Leo markup that indicated outline structure.
+
+.. index::
+    pair: Mulder/Ream update algorithm; Tutorial
+    pair: Update algorithm; Tutorial
+    
+The update algorithm is a clever three-way diff/merge of lines computed
+from the outline and the external files. You don't have to know how it
+works in order to use Leo. It is `explained here <http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm>`_.
+
+In most cases, the update algorithm "just works". However, there is one
+edge case that you should be aware of.
+
+**Ambiguous lines** are lines that could be placed either at the end of a
+node or at the beginning of the following node. The update algorithm must
+**guess** where to place such lines--there simply is not enough data to
+know for sure. The algorithm always places ambiguous lines at the end of
+the previous node because it's more common to add lines to the end of
+nodes.
+
+The update algorithm is **sound** because guesses do not affect the
+resulting external file. That is, the contents of the external file will be
+the same whether an ambiguous line is placed at the end of one node or the
+beginning of the next.
+
+The exact placement of ambiguous lines may not matter as far as the
+contents of the external files is concerned, but it will certainly matter
+to you! You will want lines placed in their proper nodes.
+
+Happily, Leo reports which nodes have been updated. You can override
+guesses manually by moving lines to a new node. Once you save the outline,
+the lines will no longer become ambiguous. The next time the update
+algorithm runs, it will no longer have to guess where the lines belong!
+.. @+node:ekr.20170216014459.6: *4* Using @file
+.. index::
+    pair: @file; Tutorial
+    pair: sentinel lines; Tutorial
+
+Before Leo 5.1, the recommended way to create external files was with **@file trees**. @file trees use the same markup as @clean trees.
+
+The only difference between @clean and @file is that @file insert **sentinel lines** into external files. Sentinel lines are comments corresponding to markup. Sentinel lines *explicitly* represent structure.
+
+Sentinel comments greatly simplify the update algorithm. There are no ambiguous lines @file trees! @file nodes are especially useful when everyone in a project uses Leo. Leo's sources use @file trees for the convenience of Leo developers.
+
+@file is recommended if you seldom share files with others. Nevertheless,
+most people will prefer to use @clean instead of @file. For example,
+changing::
+
+    @clean myfile.py
+    
+to::
+
+    @file myfile.py
+    
+in the earlier example will create the file myfile.py whose contents looks something like this::
+
+    #@+leo-ver=5-thin
+    #@+node:ekr.20131023081456.2537: * @file myfile.py
+    #@@language python
+    #@@tabwidth -4
+    #@+<< docstring >>
+    #@+node:ekr.20131023081456.2538: ** << docstring >>
+    '''This is the docstring for this python module.'''
+    #@-<< docstring >>
+    #@+others
+    #@+node:ekr.20131023081456.2539: ** main
+    def main():
+        print('hello from main')
+    #@-others
+    if __name__ == '__main__':
+        main()
+    #@-leo
+    
+Not pleasant to look at. However, sentinel lines won't bother you if you
+seldom change the external file outside Leo. For example, Leo's developers
+use @file nodes for Leo's own sources.
+.. @+node:ekr.20170216014459.7: *4* Summary: @clean vs @file
+This tutorial discussed @clean first for three reasons:
+
+1. To avoid making excuses for sentinel lines.
+
+2. To brag about the @clean update algorithm.
+
+3. It is often more convenient to avoid sentinels. For example, when I study other people's code I do the following:
+
+- Create a `git <http://git-scm.com/>`_ repo of the directory to be studied, adding all the source files and doing an initial commit.
+  
+- Use an `import script <tutorial-scripting.html#import-scripts>`_ to create the desired @clean nodes.
+
+- Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
+
+- Use git diff to ensure that no important changes have been made while importing the nodes.
+
+- Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code.
+
+Using @clean is an essential part of this work flow. The diffs would be much harder to read if I had imported files into @file trees instead.
+
+Nevertheless, there are advantages to using @file instead of @clean. All these advantages arise because external files created by @file contain explicit outline structure.
+
+1. Leo can read @file trees more quickly and without guesses. There is never any need for you to move ambiguous lines from one node to another.
+   
+2. Sentinels allow you to share structure simply by sending the external file. This is an overwhelming advantage for Leo's developers.
+   
+3. A minor advantage: @file makes Leo files smaller. Leo stores the entire @clean *tree* in the .leo file, but only stores the top-level @file *node* in the .leo file.
+   
+In short: use @clean for most purposes. Use @file when all developers in a project use Leo.
+.. @+node:ekr.20170216014459.8: *4* Using @edit
+.. index::
+    pair: @edit; Tutorial
+
+Use @edit instead of @clean to place the entire contents of an external file into a single outline node. Leo writes no sentinel when writing @edit files.
+.. @+node:ekr.20170216014459.9: *4* Using @auto
+Use @auto instead of @clear when you expect other people to make substantial changes to an external file without using Leo.
+
+.. index::
+    pair: @auto; Tutorial
+    pair: Importer; Tutorial
+
+When reading @auto files, Leo **importers** create an outline from the external file. Importers create nodes for each class, method and function in the external file.
+
+Notes:
+
+- Leo determines the language using the file's extension.
+
+- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript, Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
+
+- If no importer exists for a file, Leo reads the entire file into an @edit node.
+.. @+node:ekr.20170216014459.10: *5* Using @persistence
+.. index::
+    pair: gnx; Tutorial
+    pair: uA; Tutorial
+    pair: @persistence; Tutorial
+
+With @clean and @file, Leo can store **persistent data** in nodes. This information consists of the node's **gnx** (Global Node Index) and the node's **uA**, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx's make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.
+
+.. To do: links to further discussion of gnx and uA.
+
+By default, Leo's importers preserve neither gnx's nor uA's. This makes imported @auto trees second class citizens. To remedy this, if an outline contains an @persistence node, Leo will save data in the @persistence tree that allows Leo to recover gnx's and uA's when re-reading @auto files later. This allows clone links and uA's to persist.
+
+@persistence is an optional feature. The stored data is akin to bookmarks. The data can "break" (become inaccessible) if the structure (including class/method/function names) changes. However, the data will typically break infrequently. To disable this feature, just delete an existing @persistence node or change @persistence to @@persistence.
+.. @+node:ekr.20170216014459.11: *4* Directives
+You now know enough to create external files and to choose between @clean and @file. The following sections discuss directives affecting external files.
+.. @+node:ekr.20170216014459.12: *5* Using @path
+.. index::
+    pair: \@path; Tutorial
+
+Rather than specifying long paths in @file nodes, you can specify a path in
+an ancestor @path node.
+
+For example, suppose three nodes have the following headlines::
+
+    @path a
+        @path b
+            @file c/d.py
+
+The @file node creates the file a/b/c/d.py
+
+Within @path and @<file> paths, ``{{exp}}`` gets evaluated with c, g, p, os and sys predefined.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+.. @+node:ekr.20170216014459.13: *5* Using @first and @last
+.. index::
+    pair: @first; Tutorial
+    pair: @last; Tutorial
+
+The @first directive forces lines to appear before the first sentinel of a
+external file. For example::
+
+    @first #! /usr/bin/env python
+    @first # -*- coding: utf-8 -*-
+
+Similarly, @last forces lines to appear after the last sentinel.
+
+The @first and @last directives aren't necessary within @clean trees, but
+they are allowed within @clean trees.
+.. @+node:ekr.20170216014459.14: *4* Summary
+- @clean, @file, @edit and @auto trees create external files. @clean is recommended for most purposes.
+
+- When writing @clean, @file and @auto trees, Leo replaces @others and section references with their expansions.
+  
+- A **section name** is any text of the form: ``<< any text >>``.
+
+- A **section definition node** is a node whose headline starts with a section name.
+
+- A **section reference** is a section name in body text.
+
+- @edit reads an entire external file into the body text of the @edit node.
+
+- @auto imports an external file into an outline, creating nodes for functions, methods and classes. @persistence nodes optionally save gnx's and uA's of @auto trees in a semi-permanent way.
+  
+- @first places lines before the first sentinel lines of a file.
+
+- @path specifies a common prefix for file names of @clean, @file, @edit and @auto nodes.
+
+- leo/core/LeoPyRef.leo contains all of Leo's core source code.
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
 @first # -*- coding: utf-8 -*-
