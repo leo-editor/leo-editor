@@ -6653,12 +6653,23 @@ def openUrl(p):
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
+    # This can be called outside Leo's command logic, so catch all exceptions.
+    try:
+        return openUrlHelper(event, url)
+    except Exception:
+        g.es_exception()
+        return None
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
+def openUrlHelper(event, url=None):
+    '''Open the URL under the cursor.  Return it for unit testing.'''
     trace = False and not g.unitTesting
     if trace: g.trace(event, url)
     c = getattr(event, 'c', None)
     if not c: return None
     w = getattr(event, 'w', c.frame.body.wrapper)
-    if not w: return None
+    if not g.app.gui.isTextWrapper(w):
+        g.internalError('must be a text wrapper', w)
+        return None
     setattr(event, 'widget', w)
     # Part 1: get the url.
     if url is None:

@@ -1115,7 +1115,9 @@ if QtWidgets: # NOQA
                 w = QtWidgets.QTextBrowser()
 
                 def handleClick(url, w=w):
-                    event = g.Bunch(c=c, w=w)
+                    import leo.plugins.qt_text as qt_text
+                    wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+                    event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)
                     
                 # if self.w and hasattr(self.w, 'anchorClicked'):
