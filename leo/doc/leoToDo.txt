@@ -21,10 +21,12 @@ org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
 The results will be better, because of Leo's API, DOM and python language.
 
-Questions:
-- Can org mode compose external files and scripts?
-- Does org mode have untangle?
+Leo's body pane must be able to hide characters and render pictures within the pane.
 
+One way to hide characters is to use an invisible font:
+https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
+http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
+The drawback is that Leo would have to distribute that font, and users would have to install the font.
 .. @+node:ekr.20170128161249.1: ** Next projects
 @language rest
 @wrap

@@ -21724,8 +21724,9 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">*** Revise scripting, pim and rst3 tutorials: the less said the better.
-- 
+<t tx="ekr.20161207045325.1">* Eliminate poor videos.
+
+*** Revise scripting, pim and rst3 tutorials: the less said the better.
 
 * Replace bold defs by links.
 - Add icons images.
