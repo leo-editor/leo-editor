@@ -6478,6 +6478,7 @@ class Commands(object):
         return p
     #@+node:ekr.20040311094927: *5* c.nullPosition
     def nullPosition(self):
+        '''Return a null position. This *must* be a position, not None.'''
         # c = self
         return leoNodes.Position(None)
     #@+node:ekr.20040307104131.3: *5* c.positionExists
