@@ -2499,7 +2499,7 @@ class LoadManager(object):
                 p = g.findNodeAnywhere(c, "Leo's cheat sheet")
                 if p:
                     c.selectPosition(p, enableRedrawFlag=False)
-                    # p.expand()
+                    p.expand()
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
                 c.setChanged(False)
