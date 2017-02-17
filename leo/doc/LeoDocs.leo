@@ -14742,9 +14742,9 @@ Preliminaries
 #############
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    
-   A Brief Summary of Leo &lt;preface&gt;
+   preface
    testimonials
    acknowledgements
    license
