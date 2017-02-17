@@ -2668,10 +2668,10 @@ show_doc_parts_as_paragraphs = True
 Scripting Leo with Python
 #########################
 
-    "Leo a way to make a "living" document. A document built out of
-    discrete parts that can be re-organized on the fly to meet the needs of
-    a varying audience... just the possibility of keeping system
-    maintenance scripts in the IT manual is mind boggling."---David Nichols
+..  "Leo a way to make a "living" document. A document built out of
+..  discrete parts that can be re-organized on the fly to meet the needs of
+..  a varying audience... just the possibility of keeping system
+..  maintenance scripts in the IT manual is mind boggling."---David Nichols
 
 This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;http://docs.python.org/2/tutorial/&gt;`_. Jacob Peck has written a more `informal scripting tutorial &lt;http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/&gt;`_.
 
@@ -7076,15 +7076,15 @@ Leo's Tutorials
 
 .. _`Python`: http://www.python.org/
 
-    "Leo should either replace or greatly augment the development tools
-    that I use."---Zak Greant
+..  "Leo should either replace or greatly augment the development tools
+..  that I use."---Zak Greant
 
-    "Leo is a quantum leap for me in terms of how many projects I can manage
-    and how much information I can find and organize and store in a
-    useful way."---Dan Winkler
-    
-    "We who use Leo know that it is a breakthrough tool and a whole new way
-    of writing code."---Joe Orr
+..  "Leo is a quantum leap for me in terms of how many projects I can manage
+..  and how much information I can find and organize and store in a
+..  useful way."---Dan Winkler
+
+..  "We who use Leo know that it is a breakthrough tool and a whole new way
+..  of writing code."---Joe Orr
     
 Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager and scripting environment. The first three tutorials are for everone:
 
@@ -14971,8 +14971,8 @@ You will get something like the following::
 Leo in 10 minutes
 ##################
 
-    "Edward...you've come up with perhaps the most powerful new concept in
-    code manipulation since VI and Emacs."---David McNab
+..  "Edward...you've come up with perhaps the most powerful new concept in
+..  code manipulation since VI and Emacs."---David McNab
     
 This chapter introduces Leo's most important features and terminology.
 
@@ -14986,16 +14986,16 @@ This chapter introduces Leo's most important features and terminology.
 Using Leo as a Personal Information Manager
 ###########################################
 
-    "Cloning is pure genius!"---Michael Manti
+..  "Cloning is pure genius!"---Michael Manti
 
-    "If you are like me, you have a kind of knowledge base with infos
-    gathered over time. And you have projects, where you use some of those
-    infos. Now, with conventional outliners you begin to double these
-    infos, because you want to have the infos needed for the project with
-    your project. With Leo you can do this too, but if you change text in
-    one place **it is updated in the other place too!** This is a feature I
-    did not see with any other outliner (and I tried a few). Amazing! Leo
-    directly supports the way I work!"---F. Geiger
+..  "If you are like me, you have a kind of knowledge base with infos
+..  gathered over time. And you have projects, where you use some of those
+..  infos. Now, with conventional outliners you begin to double these
+..  infos, because you want to have the infos needed for the project with
+..  your project. With Leo you can do this too, but if you change text in
+..  one place **it is updated in the other place too!** This is a feature I
+..  did not see with any other outliner (and I tried a few). Amazing! Leo
+..  directly supports the way I work!"---F. Geiger
 
 This chapter tells how you can use Leo as a Personal Information Manager. It introduces `clones`_: one of Leo's most unusual and powerful features for organizing data.
 
@@ -15022,10 +15022,10 @@ Creating Documents with the rst3 Command
 .. _`rST primer`: http://sphinx-doc.org/rest.html
 .. _`first tutorial`: tutorial-basics.html
 
-    "I am a huge fan of Leo. I think it's quite possibly the most
-    revolutionary programming tool I have ever used and it (along with the
-    Python language) has utterly changed my view of programming (indeed of
-    writing) forever."---Shakeeb Alireza
+..  "I am a huge fan of Leo. I think it's quite possibly the most
+..  revolutionary programming tool I have ever used and it (along with the
+..  Python language) has utterly changed my view of programming (indeed of
+..  writing) forever."---Shakeeb Alireza
     
 Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST) or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.
 
