@@ -382,7 +382,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -436,7 +436,7 @@
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
-<v t="ekr.20160304081437.8"><vh>Offray Cárdenas Luna</vh></v>
+<v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
 </v>
@@ -2764,7 +2764,8 @@ Important files:
 
 - leo_toc.html.txt contains a list of all file to be included.
 </t>
-<t tx="ekr.20040414172218.4">################
+<t tx="ekr.20040414172218.4">
+################
 Acknowledgements
 ################
 
@@ -17855,7 +17856,7 @@ Terry, your setup is probably more flexible, but I haven't had any problems with
 
 I forgot to mention that the viewrendered plug-in doesn't display math correctly.  I'm not sure what the problem is, I remember trying to figure it out a while back, but I never got anywhere.  It's not really a big problem though, I have scripts to compile nodes to html/pdfs and open them in firefox/pdf reader; math works fine that way.
 
-===== offray
+===== Offray
 
 Is not properly Leo, but is python related, tailored for math and with a web interface and has leo bindings, check IPython: http://ipython.org/
 
@@ -20732,9 +20733,7 @@ Leo is a wild success on this score. I foresaw none of these developments 20 yea
 
 Edward K. Ream
 </t>
-<t tx="ekr.20160304081437.8">Offray Cárdenas Luna
-
-This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
+<t tx="ekr.20160304081437.8">This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
 
 &gt; Leo's clones let you organize any data as you want, even if all folds are collapsed.
 
@@ -23670,7 +23669,7 @@ Leo is a uniquely powerful scripting environment, for at least four reasons:
 Leo has hundreds of commands, described in `Leo's Command Reference`_. Commands may be executed via `key bindings`_ or *by name* via `Leo's minibuffer`_, similar to the `Emacs minibuffer`_.
 </t>
 <t tx="ekr.20170216171126.1"># flattened, word, ignore-case, head</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
