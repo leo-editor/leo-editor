@@ -174,7 +174,7 @@ html_last_updated_fmt = '%b %d, %Y'
 html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-## html_sidebars = {'FAQ':'noSideBar.txt'} ### raises TemplateNotFound exception.
+## html_sidebars = {'FAQ':'noSideBar.txt'} # raises TemplateNotFound exception.
 
     # * localtoc.html – a fine-grained table of contents of the current document
     # * globaltoc.html – a coarse-grained table of contents for the whole documentation set, collapsed
