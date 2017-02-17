@@ -18339,49 +18339,370 @@ demo = demo.Demo(c, color=color, subtitle_color=sub_color, trace=False)
 demo.delete_widgets()
 demo.start(script_list = table)
 .. @+node:ekr.20170215100221.1: ** Unused docs
-.. @+node:ekr.20170215100225.1: *3* @rst html\tutorial-five-minutes.html
-################
-Leo in 5 minutes
-################
+.. @+node:ekr.20170217031210.1: *3* COPY @file html/index.html
+@first <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+@first "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+@first <!-- This is Leo's home page -->
 
-**Outlines**
+@language html
+@tabwidth -2
 
-Leo is a full-featured outliner and an IDE, with features borrowed from emacs and vim. When Leo reloads an outline, it remembers where you left off.
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    << head >>
+</head>
+<body>
+  << div top nav >>
+  <div class="document">
+    <div class="documentwrapper">
+      <div class="bodywrapper">
+        <div class="body">
+          << div main section >>
+        </div>
+      </div>
+    </div>
+    << sidebar >>
+    <div class="clearer"></div>
+  </div>
+  << div bottom nav >>
+  << div footer >>
+</body>
+</html>
+.. @+node:ekr.20170217031210.2: *4* << head >> (home page)
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-Outlines consists of **nodes** with **headlines** and **bodies**. The **outline pane** shows nodes. The **body pane** contains the body of the selected node.
+<title>Leo's Home Page</title>
+<link rel="stylesheet" href="_static/default.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
-**External files**
+<!-- scale screen-shot to fit parent container -->
+<style type="text/css">
+img { max-width:100%; max-height:100%; }
+</style>
 
-- @file trees in the outline represent **external files** on your file system. Leo *updates @file nodes* when you change external files outside of Leo.
+<!--
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+    URL_ROOT:    '',
+    VERSION:     '5.4',
+    COLLAPSE_MODINDEX: false,
+    FILE_SUFFIX: '.html',
+    HAS_SOURCE:  false
+  };
+</script>
+-->
+<< flattr head >>
 
-- When saving an outline, Leo writes all changed @file trees to their external files.
+<< feed2js stylesheet >>
 
-- Leo's **importers** create outlines containing classes, methods and functions from external files. These outlines are great way of studying other programs.
+<!-- <script type="text/javascript" src="_static/jquery.js"></script>-->
+<!-- <script type="text/javascript" src="_static/doctools.js"></script>-->
+<link rel="top" title="Leo 5.4 documentation" href="index.html" />
+<link rel="Users Guide" title="Leo&#8217;s Users Guide" href="leo_toc.html" />
+<!-- <link rel="prev" title="Using Leo's Commands" href="commands.html" />--> 
 
-**Scripting and markup**
+<script type="text/javascript">
+function search(event) {
+  if (event === null || (event.keyCode || event.which) === 13) {
+    window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+  }
+}
+</script>
+.. @+node:ekr.20170217031210.3: *5* << flattr head >>
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */
+</script>
+.. @+node:ekr.20170217031210.4: *5* << feed2js stylesheet >>
+<style type="text/css" media="all">
 
-- Leo's **markup language** consists of `@others` and `<< sections >>`, controls how Leo writes @file trees to external files.
+<!-- See: http://feed2js.org/index.php?s=style -->
 
-- Any outline node can contain a python script. Three **predefined symbols** give Leo scripts *easy*  access to all the structure and data in the outline.
+.rss_box {
+    width:   0px;
+    padding: 0px;
+    border:  0px solid white;
+    margin:  0px;
+}
 
-- The same markup applies to scripts as well as external files. Before executing a script node, Leo **composes** the script from the script node and (depending on markup) some or all of its descendants.
+.rss_title {
+    visibility:hidden;
+    line-height: 0px;
+}
 
-- @button nodes contain scripts that can be **applied to other nodes**.
+.rss_items {
+    font-size: 80%;
+}
 
-**Clones**
+</style>
+.. @+node:ekr.20170217031210.5: *4* << div top nav >>
+<div class="related">
+  <h3>Navigation</h3>
+  <ul>
+    <li class="right" style="margin-right: 10px">
+      <a href="genindex.html" title="General Index"
+         accesskey="I">index</a></li>
+    <li class="right" >
+      <a href="glossary.html" title="Glossary"
+         accesskey="G">glossary</a> |</li>
+    <li class="right" >
+      <a href="leo_toc.html" title="Users Guide"
+         accesskey="N">contents</a> |</li>
+    <li><a href="leo_toc.html">Leo 5.4 documentation</a></li>
+    <!--  &raquo; -->
+  </ul>
+</div>
+.. @+node:ekr.20170217031210.6: *4* << div main section >> (home page)
+<div class="section" id="Leo&#8217;s Home page">
 
-- Outline nodes can be **cloned**. Cloned nodes are actually the *same* node, but they appear in different places in the outline. Changes to any clone affect all other clones of that node, *including their descendants*. Clones are a powerful organizing tool.
+    <h1>Leo&#8217;s Home Page</h1>
+    << Leo is... >>
+    << Leo Google group & postcard >>
+    << screenshot >>
+    << embed leo-editor >>
+</div>
+.. @+node:ekr.20170217031210.7: *5* << Leo is... >>
+<p><blockquote>
+  "Leo is a revolutionary step in the right direction for programming."&#8213;Brian Takita
+</blockquote>
 
-- Leo's **clone-find** commands create clones of all found nodes. The clone-find commands move the newly-created clones so they are all children of an organizer node describing the search.
+<blockquote> "Leo is the best IDE that I have had the pleasure to use. It
+has totally changed not only the way that I program, but also the way that
+I store and organize all of the information that I need for the job that I
+do."&#8213;Ian Mulvany
+</blockquote>
 
-**Summary**
+<blockquote>
+"When first I opened Leo, it was out of curiosity. But having used it, I'll
+never go back. They'll have to pry Leo out of my cold, dead fingers!"&#8213;Travers A. Hough
+</blockquote>
+<p>
+Leo is a
+<a href="https://en.wikipedia.org/wiki/Personal_information_manager">PIM</a>, 
+<a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a>
+and outliner that
+<strong>accelerates the work flow</strong>
+of programmers, authors and web designers.
+Leo's unique features <strong>organize data in a revolutionary way</strong>:
+<li>
+  Leo outlines are views on an underlying
+  <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">graph</a>.
+<li>
+  Outline nodes can reside in <strong>many</strong> places within a single outline.</li>
+<li>
+  Leo is fully scriptable in <a HREF="http://www.python.org/">Python</a>.</li>
+<li>
+  Leo scripts have full access to Leo's source code and all outline data.</li>
+<li>
+  <a href="tutorial-programming.html">Outline-oriented markup</a> generates
+  <a href="tutorial-basics.html#creating-external-files-with-file-and-all">external files</a>
+  from outlines.</li>
+</p>
+<p>
+  <a href="preliminaries.html#preface">
+    <strong>Learn why Leo is special</strong></a>.
+  <br>
+  <a href="tutorial.html">
+    <strong>Learn about Leo in 10 minutes</strong></a>.
+</p>
+<p>
+Furthermore:
+</p>
+<li>
+Leo is <a href="http://www.opensource.org/"><i>Open Software</i></a>,
+written in pure <a HREF="http://www.python.org/">Python</a>.
+<li>
+Leo is a <a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt</a>
+app that runs on Linux, Windows and MacOS.</li>
+<li>
+Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
+  <a href="http://www.xemacs.org/">xemacs</a>,
+  <a href="http://www.vim.org/">vim</a>, and
+  <a href="http://ipython.org/">ipython</a>.</li>
+</p>
+.. @+node:ekr.20170217031210.8: *5* << Leo Google group & postcard >>
+<p>
+<strong>We welcome your questions and comments!</strong>
+<br>
+Ask us anything at the medium traffic
+<a href="http://groups.google.com/group/leo-editor"><strong>leo-editor Google Group</strong></a>.
+<br>
+If you use Leo, please
+<a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top">
+  <strong>send us a postcard</strong></a>, telling how you use Leo. Thanks!
+</p>
 
-@file nodes create external files. Guided by markup, Leo writes @file trees to external files. Leo updates @file trees when external files change outside Leo. Leo's importers create outlines from external files.
+<!--
+<p>Here are the most recent discussions...</p>
+<script language="JavaScript"
+  src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&chan=title&num=5&desc=0&date=y&targ=y"
+  type="text/javascript">
+</script>
+-->
+.. @+node:ekr.20170217031210.9: *5* << screenshot >>
+<p>Here is a screenshot of Leo's main window:</p>
 
-Leo composes complex scripts from a node and (depending on markup) some or all of its descendants. Leo scripts have access to all data in the outline, including its structure.
+<!-- actual size: 1152 x 648 -->
+<img class="screenshot"
+    src="screen-shots/leo-workbook.png"
+    alt="ScreenShot"/>
 
-Clones are nodes that appear in multiples places within the outline. Leo's clone-find commands gather found nodes together in one place.
+<!-- <img class="screenshot"
+    src="screen-shots/render-svg-sources.png"
+    width="791.2px" height="692.8px"
+    alt="ScreenShot"/>
+-->
+.. @+node:ekr.20170217031210.10: *5* << embed leo-editor >>
+<!-- This works --
+<iframe id="forum_embed"
+    src="javascript:void(0)"
+    scrolling="yes"
+    frameborder="1"
+    width="900"
+    height="700">
+</iframe>
+<script type="text/javascript">
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/leo-editor'
+     + '&showsearch=true&showpopout=true&showtabs=true'
+     + '&parenturl=' + encodeURIComponent(window.location.href);
+</script>
+-->
+.. @+node:ekr.20170217031210.11: *4* << sidebar >> (home page)
+<div class="sphinxsidebar">
+    <div class="sphinxsidebarwrapper">
+        << sidebar contents >>
+    </div>
+</div>
+.. @+node:ekr.20170217031210.12: *5* << sidebar contents >> (home page)
+@language html
 
+<p class="logo"><a href="leo_toc.html">
+  <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/></a>
+</p>
+
+<p>
+  <a class="reference external" href="leo_toc.html">Table of contents</a>: click the lion!
+</p>
+<p>
+<form>
+  <!-- background-color:skyblue3 -->
+  <!-- border-style:solid;border-color:#87CEEB -->
+  <input type="button"
+    style="background-color:#6CA6CD;"
+    value="Download Leo"
+    onClick="window.location.href='download.html'">
+</form>
+</p>
+
+<a class="reference external" href="screencasts.html">
+  Videos about Leo</a><br>
+
+<!---
+<a href="http://www.youtube.com/watch?v=Zu6J-J0qFi0">
+  Introductory video</a><br>
+<a href="https://vimeo.com/77720098 ">
+  Bookmarks plugin video</a><br>
+-->
+  
+<a class="reference external" href="tutorial.html">
+  Leo's Tutorial</a><br>
+
+<a class="reference external" href="leo_toc.html">
+  Leo's Documentation</a><br>
+  
+<a class="reference external" href="http:screen-shots.html">
+  Screen shots of Leo</a><br>
+  
+<a class="reference external" href="testimonials.html">
+  Quotes from Leo&#8217;s Users</a><br>
+  
+<a class="reference external" href="slides.html">
+  Tutorial Slide Shows</a><br>
+  
+<a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&uio=d4">
+  #leo IRC</a><br>
+
+<a class="reference external" href="http://groups.google.com/group/leo-editor">
+  leo-editor: Google Groups</a><br>
+  
+<a class="reference external" href="https://github.com/leo-editor">
+  leo-editor: GitHub</a><br>
+  
+<a class="reference external" href="https://github.com/leo-editor/snippets">
+  leo-editor: Code Snippets</a><br>
+
+<a class="reference external" href="https://github.com/leo-editor/leo-editor/issues">
+  Report a bug</a><br>
+  
+<a class="reference external" href="http://leo.zwiki.org">
+  Leo&#8217;s Wiki</a><br>
+  
+<a class="reference external" href="http://leo-editor.readthedocs.org/en/latest/">
+  Leo&#8217;s API documentation</a><br>
+  
+<a class="reference external" href="http://www.mind-mapping.org/">
+  Mind Mapping</a><br>
+
+<a class="reference external" href="leoLinks.html">
+  More links...</a><br>
+  
+</p>
+<p>
+<div id="searchbox" style="">
+  <h3>Search</h3>
+    <input id='q' type="text" name="q" onkeypress="search(event)">
+  <div><button onclick="search(null)">Google search</button></div>
+  <div class="searchtip" style="font-size: 90%">
+    Use quotes for "@file" and similar symbols.
+  </div>
+</div>
+</p>
+
+<p>Leo: Leonine Editor with Outlines</p>
+
+<p>Written by <a HREF="ekr.html">Edward K. Ream</a>
+<< flattr icon >>
+</p>
+.. @+node:ekr.20170217031210.13: *6* << flattr icon >>
+<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+href="http://leoeditor.com"></a>
+<noscript>
+<a href="http://flattr.com/thing/410073/Leo" target="_blank">
+<img src="http://api.flattr.com/button/flattr-badge-large.png"
+alt="Flattr this" title="Flattr this" border="0" />
+</a>
+</noscript>
+.. @+node:ekr.20170217031210.14: *4* << div bottom nav >>
+<div class="related">
+  <h3>Navigation</h3>
+  <ul>
+    <li class="right" style="margin-right: 10px">
+      <a href="genindex.html" title="General Index"
+         >index</a></li>
+    <li class="right" >
+      <a href="glossary.html" title="Glossary"
+         accesskey="G">glossary</a> |</li>
+    <li class="right" >
+      <a href="leo_toc.html" title="Users Guide"
+         >contents</a> |</li>
+
+    <li><a href="leo_toc.html">Leo 5.3 documentation</a></li> 
+  </ul>
+</div>
+.. @+node:ekr.20170217031210.15: *4* << div footer >>
+<div class="footer">
+  &copy; Copyright 1997-2016, Edward K. Ream.
+  Last updated on May 1, 2016.
+  Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+</div>
 .. @+node:ekr.20170216014459.1: *3* @rst html\tutorial-programming.html
 @wrap
 

@@ -68,9 +68,7 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683">@language rest
-@wrap
-</t>
+<t tx="ekr.20131019184243.16683"></t>
 <t tx="ekr.20131019184243.16685"></t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 

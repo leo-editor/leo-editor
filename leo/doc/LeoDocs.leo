@@ -1536,13 +1536,12 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20170216170958.1"><vh>@auto-md html/test_doc.md</vh></v>
 <v t="ekr.20170216171126.1"><vh>Found:@auto-md</vh>
 <v t="ekr.20161120073038.1"></v>
 <v t="ekr.20170130080532.1"></v>
 <v t="ekr.20170202125807.1"></v>
 </v>
-<v t="ekr.20170216170958.1"></v>
+<v t="ekr.20170216170958.1"><vh>@auto-md html/test_doc.md</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14341,11 +14340,10 @@ These commands discuss special topics::
     help-for-sessions
 
 </t>
-<t tx="ekr.20131002055813.15973">Here is a slightly reduced screenshot of Leo's main window:
+<t tx="ekr.20131002055813.15973">Here is a screenshot of Leo's main window:
 
-.. image:: screen-shots/render-svg-sources.png
+.. image:: screen-shots/leo-workbook.png
    :alt: Screenshot
-   :scale: 80 %
    
 .. index::
     pair: Body pane; Tutorial
@@ -21728,7 +21726,7 @@ if p:
 <t tx="ekr.20161207045325.1">*** Revise scripting, pim and rst3 tutorials: the less said the better.
 
 * Replace bold defs by links.
-- Add icons image.
+- Add icons images.
 
 - Insert to-be-documented mail items
 - What setting allows automatic pyflakes?
