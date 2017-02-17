@@ -2664,9 +2664,9 @@ show_doc_parts_as_paragraphs = True
 .. |---| unicode:: U+02015 .. for quotes
    :trim:
 
-#########################
-Scripting Leo with Python
-#########################
+########################
+Leo's Python API and DOM
+########################
 
 ..  "Leo a way to make a "living" document. A document built out of
 ..  discrete parts that can be re-organized on the fly to meet the needs of
@@ -7091,18 +7091,18 @@ Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Person
 .. toctree::
     :maxdepth: 1
     
-    Leo in 10 minutes: Leo's most important features    &lt;tutorial-basics&gt;
-    Leo as a PIM: clones, abbreviations and links       &lt;tutorial-pim&gt;
-    Creating docs from outlines                         &lt;tutorial-rst3&gt;
+    tutorial-basics
+    tutorial-pim
+    tutorial-rst3
     
 The last tutorial is for programmers:
 
 .. toctree::
     :maxdepth: 1
 
-    Leo's scripting API and DOM     &lt;tutorial-scripting&gt;
+    tutorial-scripting
 
-Please feel free to `ask for help &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_ at any time.
+Ask for help at `leo-editor &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_.
 
 </t>
 <t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language. There are a set of "importers" in leoImport.py, all based on the baseScannerClass class. You can define your own importer by creating a subclass. This shouldn't be too difficult: baseScannerClass is supposed to do almost all the work. With luck, your subclass might be very simple, as with class cScanner.
@@ -14744,7 +14744,7 @@ Preliminaries
 .. toctree::
    :maxdepth: 2
    
-   A brief summary of Leo &lt;preface&gt;
+   A Brief Summary of Leo &lt;preface&gt;
    testimonials
    acknowledgements
    license
@@ -14968,7 +14968,7 @@ You will get something like the following::
    &lt;br /&gt;
 
 ##################
-Leo in 10 minutes
+Leo in 10 Minutes
 ##################
 
 ..  "Edward...you've come up with perhaps the most powerful new concept in
@@ -15010,7 +15010,7 @@ This chapter tells how you can use Leo as a Personal Information Manager. It int
    &lt;br /&gt;
 
 ########################################
-Creating Documents with the rst3 Command
+Creating Documents from Outlines
 ########################################
 
 .. _`LaTeX`:    http://www.latex-project.org/
