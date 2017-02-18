@@ -6986,11 +6986,11 @@ class Commands(object):
     def selectPosition(self, p, enableRedrawFlag=True):
         """Select a new position."""
         trace = False and not g.unitTesting
-        trace_no_p = True
+        trace_no_p = True and not g.app.batchMode
             # A serious error.
         c = self; cc = c.chapterController
         if not p:
-            if trace_no_p: g.trace('===== no p', g.callers())
+            if trace and trace_no_p: g.trace('===== no p', g.callers())
             return
         # 2016/04/20: check cc.selectChapterLockout.
         if cc and not cc.selectChapterLockout:

@@ -1662,8 +1662,13 @@ class LoadManager(object):
             g.es_debug("FAILED g.app.config.getString(setting='default_leo_file')")
             fn = g.os_path_finalize('~/.leo/workbook.leo')
         fn = g.os_path_finalize(fn)
-        if not fn: return
-        if g.os_path_exists(fn):
+        if not fn:
+            return None
+        elif g.unitTesting or g.app.batchMode:
+            # 2017/02/18: unit tests must not create a workbook.
+            # Neither should batch mode operation.
+            return None
+        elif g.os_path_exists(fn):
             return fn
         elif g.os_path_isabs(fn):
             # Create the file.
@@ -2480,9 +2485,9 @@ class LoadManager(object):
         # Create an empty frame.
         fn = lm.computeWorkbookFileName()
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-        # Open the cheatsheet.
-        if not g.os_path_exists(fn):
-            # Paste the contents of CheetSheet.leo into c1.
+        # Open the cheatsheet, but not in batch mode.
+        if not g.app.batchMode and not g.os_path_exists(fn):
+            # Paste the contents of CheetSheet.leo into c.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
                 for p2 in c2.rootPosition().self_and_siblings():

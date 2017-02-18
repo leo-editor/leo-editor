@@ -1772,7 +1772,8 @@ class LeoTree(object):
             # New in Leo 4.4.1.
         c.frame.clearStatusLine()
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
-        c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
+        if p and p.v:
+            c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
         if traceTime:
             delta_t = time.time() - t1
             if delta_t > 0.1:
