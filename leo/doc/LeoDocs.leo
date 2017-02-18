@@ -23001,43 +23001,7 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
 <t tx="ekr.20170218002336.1"># flattened, ignore-case, head, body</t>
 <t tx="ekr.20170218003504.1">Leo: an ouliner, IDE, computing environment and data organzier
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Finally, Leo is a data organizer
-
-Leo is uniquely powerful because of several unique underlying technologies:
-
-1. 
-
-Leo's unique data organizing features supports software development
-
-With Leo, 
-
-It is also an extremely powerful scripting environment, with other applications:
-
-Scientific programming research: Leo supports `Reproducible Research`_ in several ways discussed below.
-
-
-Acknowlegements
-
-.. _`documentation for org mode`: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
-
-Parts of this introduction are taken more or less directly from the excellent `documentation for org mode`_.</t>
+</t>
 <t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
 
     - Scientific research increasingly involves the use of computational tools. Successful communication and verification of research results requires that this code is distributed together with results and explanatory prose.
@@ -23054,8 +23018,6 @@ This quote above is taken from an excellent `summary of org mode`_. Leo and `Ema
 - Leo's Python scripting is *fully* integrated with outlines.
 - Leo has a Python API, giving scripts easy access to all outline/DAG structure and data.
 - Leo supports what LP would call `untangling`_, using an `algorithm`_ hard to duplicate in org mode.
-
-What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
 
 </t>
 <t tx="ekr.20170218012235.1">
@@ -23121,7 +23083,8 @@ Emacs isn't written in org mode, and it would not be easy to do so.
 
 As a result, Leo can easily simulate any org mode feature, but the reverse is not true.
 </t>
-<t tx="ekr.20170218022741.1"></t>
+<t tx="ekr.20170218022741.1">What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
+</t>
 <t tx="ekr.20170218023347.1">They summarize the uses and implications of a compendium as follows:
 
     It encapsulates the actual work of the author, not just an abridged version suitable for publication;
