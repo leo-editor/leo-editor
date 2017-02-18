@@ -124,7 +124,10 @@ class LeoQtEventFilter(QtCore.QObject):
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 qevent = event
                 event = self.create_key_event(event, c, w, ch, tkKey, shortcut)
-                k.masterKeyHandler(event)
+                try:
+                    k.masterKeyHandler(event)
+                except Exception:
+                    g.es_exception()
                 if g.app.gui.insert_char_flag:
                     # if trace and traceKey: g.trace('*** insert_char_flag',event.text())
                     g.trace('*** insert_char_flag', qevent.text())
