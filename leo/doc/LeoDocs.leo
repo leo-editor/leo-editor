@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1501,6 +1501,55 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20170218002336.1"><vh>Found:.. contents</vh>
+<v t="ekr.20050831184021.4"></v>
+<v t="ekr.20131008041326.16140"></v>
+<v t="ekr.20050830115714"></v>
+<v t="ekr.20131008041326.16203"></v>
+<v t="ekr.20131008041326.16222"></v>
+<v t="ekr.20131008041326.16094"></v>
+<v t="ekr.20131008041326.16241"></v>
+<v t="ekr.20040403171740"></v>
+<v t="ekr.20150323161357.1"></v>
+<v t="ekr.20050901101608.4"></v>
+<v t="ekr.20050818163826"></v>
+<v t="ekr.20050912125144.1"></v>
+<v t="ekr.20050901101608.2"></v>
+<v t="ekr.20150318110552.10"></v>
+<v t="ekr.20150318110552.18"></v>
+<v t="ekr.20150323185514.1"></v>
+<v t="ekr.20150318110552.29"></v>
+<v t="ekr.20150318110552.39"></v>
+<v t="ekr.20150318110552.43"></v>
+<v t="ekr.20150318110552.57"></v>
+<v t="ekr.20131015091948.16784"></v>
+<v t="ekr.20131009065148.31760"></v>
+<v t="ekr.20140810085801.18232"></v>
+<v t="ekr.20061025065357.1"></v>
+<v t="TL.20080804095315.2"></v>
+<v t="ekr.20060430221745.1"></v>
+<v t="ekr.20080203101507.1"></v>
+<v t="ekr.20060612103240"></v>
+<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20070317033759.1"></v>
+<v t="ekr.20070628083442.1"></v>
+<v t="ekr.20150312080344.68"></v>
+<v t="ekr.20150318110552.66"></v>
+<v t="ekr.20060913164304.1"></v>
+<v t="ekr.20060527105617"></v>
+<v t="ekr.20131008041326.16341"></v>
+<v t="ekr.20101025080245.5791"></v>
+</v>
+<v t="ekr.20131017174814.17479"></v>
+<v t="ekr.20170218003504.1"><vh>*** Leo vs org mode</vh>
+<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
+<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
+<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
+<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
+<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
+<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14831,8 +14880,10 @@ Leo in 10 Minutes
     
 This chapter introduces Leo's most important features and terminology.
 
-.. contents::
+.. contents:: Chapter Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20131008041326.16222">.. |---| unicode:: U+02015 .. for quotes
    :trim:
@@ -15857,6 +15908,7 @@ A Brief Summary of Leo
 
 .. Use full links here so links are active in LeoDocs.leo
 
+.. _`Emacs`: https://www.gnu.org/software/emacs/
 .. _`Leo's tutorial`: http://leoeditor.com/tutorial.html
 .. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
 .. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
@@ -15873,9 +15925,9 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 
 **Leo is:**
 
-- A fully-featured IDE, with emacs-like features.
+- A fully-featured IDE, with many features inspired by `Emacs`_.
 - An outliner. Everything in Leo is an outline.
-- A Personal Information Manager.
+- A data manager, data manager and personal information manager.
 - A powerful scripting environment.
 - A tool for organizing and studying computer code.
 - Extensible via a simple plugin architecture.
@@ -22947,7 +22999,140 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170218002336.1"># flattened, ignore-case, head, body</t>
+<t tx="ekr.20170218003504.1">Leo: an ouliner, IDE, computing environment and data organzier
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Finally, Leo is a data organizer
+
+Leo is uniquely powerful because of several unique underlying technologies:
+
+1. 
+
+Leo's unique data organizing features supports software development
+
+With Leo, 
+
+It is also an extremely powerful scripting environment, with other applications:
+
+Scientific programming research: Leo supports `Reproducible Research`_ in several ways discussed below.
+
+
+Acknowlegements
+
+.. _`documentation for org mode`: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
+
+Parts of this introduction are taken more or less directly from the excellent `documentation for org mode`_.</t>
+<t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
+
+    - Scientific research increasingly involves the use of computational tools. Successful communication and verification of research results requires that this code is distributed together with results and explanatory prose.
+
+    - In software development the exchange of ideas is accomplished through both code and prose; code provides concrete implementation while prose provides higher level explanation. Without proper documentation, the usability and future extensibility of computational tools are compromised.
+
+    - In pedagogical environments it is important for descriptions of algorithms or techniques to go hand-in-hand with implementations and example output. These environments include in-class presentations, published books and articles, online tutorials, and experiential blogs with accompanying instructions." 
+
+This quote above is taken from an excellent `summary of org mode`_. Leo and `Emacs org mode` share similar goals. But Leo is fundamentally more powerful than org mode, and will remain so. Indeed, Leo's is based underlying technologies completely missing from org mode:
+
+- Leo outlines are based on `Directed Acyclic Graphs` (DAGs), not trees (or plain text).
+- Leo's outlines are true Python objects, with unique, persistent identities.
+- Leo scripting is based on Python, not elisp.
+- Leo's Python scripting is *fully* integrated with outlines.
+- Leo has a Python API, giving scripts easy access to all outline/DAG structure and data.
+- Leo supports what LP would call `untangling`_, using an `algorithm`_ hard to duplicate in org mode.
+
+What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
+
+</t>
+<t tx="ekr.20170218012235.1">
+"A research project typically relies upon components such as:
+
+    The data being studied;
+    Details of calculations and code used in data analysis;
+    Methodological conventions and assumptions;
+    Decisions among alternate analytic paths.
+
+However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
+
+A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
+</t>
+<t tx="ekr.20170218012332.1">Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
+
+**LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
+
+**Scripting**: Leo is fundamentally more powerful than org mode scripting:
+
+1. Unlike org mode, Leo's outline nodes are true Python objects, *easily* accessible via Leo's Python `API`_. Furthermore, Leo scripting is based on Python and Python's standard library, not elisp and Emacs-specific code. Leo scripts can be run outside of Leo.
+
+2. Leo can `compose`_ both external files and scripts using the same `markup`_. Unlike org mode, Leo's markup applies *everywhere* and is fully integrated with Leo's outline structure. As a result, it is complete natural to compose external files or scripts (experiments) from a suboutline. For example: this defines an external file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    &lt;&lt; imports &gt;&gt;
+    @others
+    # That's all, folks
+    @language python
+    @tabwidth
+    
+And this this defines the top-level part of a script::
+
+@language python
+
+    @langauge python
+    '''My script'''
+    &lt;&lt; imports &gt;&gt;
+    class Controller:
+        # Child nodes define the methods of this class.
+        @others
+    Controller(c).run # Yes, c *is* defined.
+
+@language rest
+    
+There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
+
+**Data model**: Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones. Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
+
+</t>
+<t tx="ekr.20170218021648.1">
+Leo scripts can execute code in other languages, such as shell, C# and java. 
+
+Emacs isn't written in org mode, and it would not be easy to do so.
+
+- Org mode is based on text. Leo is based on true python objects.
+- Org mode nodes have no real identity. Leo nodes have unique persistent gnx's.
+- Org mode outlines are simple trees. Leo outlines are DAGs.
+- Org mode is unsuitable as an IDE. Leo excels as an IDE.
+- Org mode scripts require special syntax. Leo scripts do not.
+- Org mode does not compose external files and scripts from outlines. Leo does.
+
+As a result, Leo can easily simulate any org mode feature, but the reverse is not true.
+</t>
+<t tx="ekr.20170218022741.1"></t>
+<t tx="ekr.20170218023347.1">They summarize the uses and implications of a compendium as follows:
+
+    It encapsulates the actual work of the author, not just an abridged version suitable for publication;
+    It can display different levels of detail in derived documents;
+    The computations included in it can be re-run by an interested reader, potentially with different inputs;
+    It contains explicit computational details that make it easier for an interested reader to adapt and extend the methods;
+    It enables programmatic construction of plots and tables;
+    Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
+
+Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
