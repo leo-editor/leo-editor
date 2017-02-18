@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1501,54 +1501,53 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20170218002336.1"><vh>Found:.. contents</vh>
-<v t="ekr.20050831184021.4"></v>
-<v t="ekr.20131008041326.16140"></v>
-<v t="ekr.20050830115714"></v>
-<v t="ekr.20131008041326.16203"></v>
-<v t="ekr.20131008041326.16222"></v>
-<v t="ekr.20131008041326.16094"></v>
-<v t="ekr.20131008041326.16241"></v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20150323161357.1"></v>
-<v t="ekr.20050901101608.4"></v>
-<v t="ekr.20050818163826"></v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20050901101608.2"></v>
-<v t="ekr.20150318110552.10"></v>
-<v t="ekr.20150318110552.18"></v>
-<v t="ekr.20150323185514.1"></v>
-<v t="ekr.20150318110552.29"></v>
-<v t="ekr.20150318110552.39"></v>
-<v t="ekr.20150318110552.43"></v>
-<v t="ekr.20150318110552.57"></v>
-<v t="ekr.20131015091948.16784"></v>
-<v t="ekr.20131009065148.31760"></v>
-<v t="ekr.20140810085801.18232"></v>
-<v t="ekr.20061025065357.1"></v>
-<v t="TL.20080804095315.2"></v>
-<v t="ekr.20060430221745.1"></v>
-<v t="ekr.20080203101507.1"></v>
-<v t="ekr.20060612103240"></v>
-<v t="ekr.20131007143750.16070"></v>
-<v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20070317033759.1"></v>
-<v t="ekr.20070628083442.1"></v>
-<v t="ekr.20150312080344.68"></v>
-<v t="ekr.20150318110552.66"></v>
-<v t="ekr.20060913164304.1"></v>
-<v t="ekr.20060527105617"></v>
-<v t="ekr.20131008041326.16341"></v>
-<v t="ekr.20101025080245.5791"></v>
-</v>
-<v t="ekr.20131017174814.17479"></v>
-<v t="ekr.20170218003504.1"><vh>*** Leo vs org mode</vh>
+<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
 <v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
 <v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
 <v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
 <v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
 <v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20170218002336.1"><vh>Found:.. contents</vh>
+<v t="ekr.20131008041326.16341"></v>
+<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20150312080344.68"></v>
+<v t="ekr.20131008041326.16094"></v>
+<v t="ekr.20131008041326.16140"></v>
+<v t="ekr.20050831184021.4"></v>
+<v t="ekr.20131009065148.31760"></v>
+<v t="ekr.20140810085801.18232"></v>
+<v t="ekr.20101025080245.5791"></v>
+<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20060430221745.1"></v>
+<v t="ekr.20050901101608.2"></v>
+<v t="ekr.20050901101608.4"></v>
+<v t="ekr.20060527105617"></v>
+<v t="ekr.20061025065357.1"></v>
+<v t="ekr.20050830115714"></v>
+<v t="ekr.20080203101507.1"></v>
+<v t="ekr.20070317033759.1"></v>
+<v t="ekr.20050912125144.1"></v>
+<v t="ekr.20050818163826"></v>
+<v t="ekr.20131015091948.16784"></v>
+<v t="ekr.20131008041326.16203"></v>
+<v t="ekr.20131008041326.16222"></v>
+<v t="ekr.20131008041326.16241"></v>
+<v t="ekr.20040403171740"></v>
+<v t="ekr.20070628083442.1"></v>
+<v t="TL.20080804095315.2"></v>
+<v t="ekr.20060612103240"></v>
+<v t="ekr.20060913164304.1"></v>
+<v t="ekr.20150318110552.10"></v>
+<v t="ekr.20150318110552.18"></v>
+<v t="ekr.20150323185514.1"></v>
+<v t="ekr.20150318110552.29"></v>
+<v t="ekr.20150323161357.1"></v>
+<v t="ekr.20150318110552.39"></v>
+<v t="ekr.20150318110552.43"></v>
+<v t="ekr.20150318110552.57"></v>
+<v t="ekr.20150318110552.66"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1875,8 +1874,10 @@ This chapter discusses these topics:
 - How to import and export vim's .otl files.
 - How to install and use stand-alone vim-like bindings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes, located in the leoSettings.leo file, under the "@settings" node in the myLeoSettings.leo file
 
@@ -2693,8 +2694,10 @@ Three predefined symbols, **c**, **g** and **p** give Leo scripts easy access to
 
 **Further study**: The `scripting portion`_ of `Leo's cheat sheet`_ contains more information about scripting.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand, which calls the "command1" and "command2" hook routines for the given label. c.doCommand catches all exceptions thrown by the command::
 
@@ -3070,8 +3073,10 @@ This chapter covers advanced settings and features of the rst3 command. It is fo
 
 *Are you sure you want to read this chapter?* The tutorial covers everything most people need to know about the rst3 command. Leo's own documentation uses none of the features discussed here.
 
-.. contents::
+.. contents:: Contents
     :depth: 4
+    :local:
+
 </t>
 <t tx="ekr.20050818163826.10">The rst3 command defines a code-block rST directive. The primary purpose of this directive is to show formatted source code.
 
@@ -3448,8 +3453,10 @@ This is Leo's Frequently Asked Questions document.
 
 .. index:: FAQ
 
-.. contents::
+.. contents:: Contents
     :depth: 4
+    :local:
+
 </t>
 <t tx="ekr.20050830115714.1"></t>
 <t tx="ekr.20050830115714.10">The encoding used in the file being imported doesn't match the encoding in effect for Leo. Use the @encoding directive_ in an ancestor of the node_ selected when doing the Import command_ to specify the encoding of file to be imported.
@@ -3838,8 +3845,10 @@ What People are Saying about Leo
 
    &lt;br /&gt;
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
@@ -3913,8 +3922,10 @@ This chapter lists almost all of Leo's commands. It starts with a discussion of 
     rectangle-  rectangle commands
     toggle-     toggle settings commands
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20050901101608.4">################
 Customizing Leo
@@ -3922,8 +3933,10 @@ Customizing Leo
 
 This chapter discusses how to customize Leo using the plugins and other means. See `Specifying settings`_ for a description of how to change Leo's settings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20050902105852">Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured documentation." I had known of literate programming since the mid 1980's, but I never understood how to make it work for me. In November 1995 I started thinking about programming in earnest. Over the holidays I mused about making programs more understandable. </t>
 <t tx="ekr.20050902105852.1">In January 1996 the fog of confusion suddenly cleared. I summarized my thinking with the phrase, **web are outlines in disguise**. I suspected that outline views were the key to programming, but many details remained obscure.
@@ -4259,8 +4272,10 @@ This chapter discusses the plugins contained in leoPlugins.leo. These plugins ar
 
 The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes`_. Script buttons are extraordinarily useful.
 
-.. contents::
+.. contents:: Contents
     :depth: 5
+    :local:
+
 </t>
 <t tx="ekr.20050912125735.363">The dyna_menu plugin is a remarkable body of work by 'e'. This plugin creates a dyna_menu menu from which you can execute commands. You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
 </t>
@@ -4369,8 +4384,10 @@ Controlling Syntax Coloring
 
 This chapter discusses the settings to control Leo's syntax colorer. This chapter also discusses how to extend Leo's colorizer by creating xml language descriptions files and corresponding Python files. **Important**: this material is for those who want to support Leo's colorizing code. To use Leo's colorizers you only need to know about syntax-coloring settings.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
@@ -4834,8 +4851,10 @@ Be aware of the distinction between **Leo-specific** scripts and **general** scr
 Leo-specific scripts access data in the Leo outline in which they are contained;
 general scripts do not.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20060527112801">The following settings in leoSettings.leo control debugger operation. The settings shown here will be assumed to be in effect throughout this chapter::
 
@@ -4895,8 +4914,10 @@ Writing plugins is like writing any other Leo script.  See
 
 The rest of this chapters discusses topics related specifically to plugins.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20060620094033"></t>
 <t tx="ekr.20060620094033.1"></t>
@@ -5147,8 +5168,10 @@ Using ZODB with Leo
 
 This chapter discusses how to write Leo scripts that store and retrieve data using `ZODB`_.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 </t>
 <t tx="ekr.20060913165542.1"></t>
 <t tx="ekr.20060913165542.2">This function inits the zodb. pathToZodbStorage is the full path to the zodb storage file. You can call g.init_zodb as many times as you like. Only the first call for any path actually does anything: subsequent calls for a previously opened path simply return the same value as the first call.
@@ -5510,8 +5533,10 @@ Leo and Emacs
 
 This chapter several topics relating to the Emacs editor.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 </t>
 <t tx="ekr.20061025070825.1">The leoPymacs module is intended to be called from Emacs using pymacs.  It contains the following top-level functions:
 
@@ -5792,8 +5817,10 @@ Python programs running independently of Leo. Let us call such a program a
 - the contents of any .leo file,
 - the commander of any .leo file.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 
 </t>
 <t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows::
@@ -6049,8 +6076,10 @@ appears in the console.
 
 test/unitTest.leo contains many examples of using @test and @suite nodes.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 </t>
 <t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test commands convert the body text of @test nodes into a unit test automatically. That is, Leo's unit test commands automatically create a unittest.TestCase instances which run the body text of the @test node. For example, let us consider one of Leo's actual unit tests. The headline is::
 
@@ -6366,8 +6395,10 @@ Scripts can delete icons from the presently selected node using the following me
 ILeo: Leo's IPython Bridge
 ##########################
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 </t>
 <t tx="ekr.20080218154129">Leo 4.4.7 final was released February 18, 2008.  This release added ipython plugin, the result of an excellent collaboration between EKR and Ville M. Vainio.
 </t>
@@ -8711,8 +8742,9 @@ False:
 What's New in Leo
 ##################
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
 </t>
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
@@ -14554,8 +14586,10 @@ Leo's Cheat Sheet
 .. _`userAttributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 .. _`Customizing Leo`: customizing.html
 
-.. contents::
+.. contents:: Contents
     :depth: 4
+    :local:
+
 </t>
 <t tx="ekr.20131007143750.16074">This section lists the ivars, properties, functions and methods most commonly used in Leo scripts.
 
@@ -14645,15 +14679,19 @@ Ctrl-left-clicking any URL opens the URL.
 Preliminaries
 #############
 
+.. Use maxdepth 1 to emphasize top-level entries.
+
+**Contents**
+
 .. toctree::
    :maxdepth: 1
-   
+
    preface
    testimonials
    acknowledgements
    license
 
-.. ..  :titlesonly: </t>
+</t>
 <t tx="ekr.20131008041326.16080">Do *not* nest any @rst nodes.</t>
 <t tx="ekr.20131008041326.16082">.. |---| unicode:: U+02015
    :trim:
@@ -14697,8 +14735,10 @@ This chapter tells how to install and run Leo on Windows or Linux.
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
-.. contents::
+.. contents:: Contents
     :depth: 4
+    :local:
+
     
 </t>
 <t tx="ekr.20131008041326.16099">###################
@@ -14744,8 +14784,10 @@ Running Leo
 
 This chapter tells how to run Leo and discusses Leo's command-line options.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
     
 </t>
 <t tx="ekr.20131008041326.16151">You can run Leo from a Python interpreter as follows::
@@ -14880,7 +14922,7 @@ Leo in 10 Minutes
     
 This chapter introduces Leo's most important features and terminology.
 
-.. contents:: Chapter Contents
+.. contents:: Contents
     :depth: 3
     :local:
 
@@ -14905,8 +14947,10 @@ Using Leo as a Personal Information Manager
 
 This chapter tells how you can use Leo as a Personal Information Manager. It introduces `clones`_: one of Leo's most unusual and powerful features for organizing data.
 
-.. contents::
+.. contents:: Contents
     :depth: 2
+    :local:
+
 </t>
 <t tx="ekr.20131008041326.16241">.. |---| unicode:: U+02015 .. for quotes
    :trim:
@@ -14943,8 +14987,10 @@ The tutorial covers only the basic features of the rst3 command. This is enough 
 
 CheatSheet.leo contains an expanded version of the example used in this tutorial. You can open CheatSheet.leo from Leo's help menu.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20131008041326.16253">Leo 4.9 final was released June 21, 2011.  This release completely switches over to Qt.
 
@@ -14965,8 +15011,10 @@ Appendices
 
    &lt;br /&gt;
    
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20131009050634.17610"></t>
 <t tx="ekr.20131009050634.17616"></t>
@@ -14986,8 +15034,10 @@ Directives Reference
 
    &lt;br /&gt;
 
-.. contents::
+.. contents:: Contents
     :depth: 4
+    :local:
+
 </t>
 <t tx="ekr.20131009065148.31760">#########################
 Exploring Leo's Code Base
@@ -15010,8 +15060,10 @@ It's actually very easy! Try it. You'll see.
 
 Reading this chapter should take about 20 minutes.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20131009100732.16737">.. index::
     pair: URL; Tutorial
@@ -15707,8 +15759,9 @@ This chapter covers miscellaneous topics related to Leo scripts.
 
 You might call this a FAQ for scripts...
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
 </t>
 <t tx="ekr.20131015104133.16763"></t>
 <t tx="ekr.20131015104133.16766">#####################################
@@ -17064,8 +17117,10 @@ This is the theory of operation of Leo's vim mode, contained in
 leo/core/leoVim.py. It discusses everything you need to understand the code
 and to add new vim commands.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20140810153947.6747">- Cursor motions: ^,$,0,b,e,f,F,gg,gG,j,h,k,l,t,T,w.
 - The gb,ge,gh commands are synonyms for 0,$,^.
@@ -18385,8 +18440,10 @@ This chapter discusses the most important milestones in history of Leo and summa
 
 One of Leo's most important developments, @button, came directly from e's dyna_menu plugin. The exact date seems lost, but it certainly existed by Leo 4.3.
 
-.. contents::
+.. contents:: Contents
     :depth: 3
+    :local:
+
 </t>
 <t tx="ekr.20150313053238.40">Missing modules can cause installation problems. If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file as described at `How to install Leo on Windows`_. However you are installing Leo, be sure to `run Leo in a console`_. because as a last resort Leo prints error messages to the console.
 
@@ -18486,14 +18543,14 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
 </t>
 <t tx="ekr.20150318043636.16"></t>
 <t tx="ekr.20150318043636.17"></t>
-<t tx="ekr.20150318110552.10">.. contents::
-    :local:
+<t tx="ekr.20150318110552.10">.. contents:: Contents
     :depth: 3
+    :local:
     
 </t>
-<t tx="ekr.20150318110552.18">.. contents::
-    :local:
-    :depth: 2</t>
+<t tx="ekr.20150318110552.18">.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20150318110552.20">Leo supports unlimited undo and redo with the ``undo`` (Ctrl-Z) and ``redo`` (Ctrl-Shift-Z) commands. Think of actions that may be undone or redone as a string of beads. A "bead pointer" points to the present bead. Performing an operation creates a new bead after the present bead and removes all following beads. Undoing an operation moves the bead pointer backwards; redoing an operation moves the bead pointer forwards. The ``undo`` command is disabled when the bead pointer moves in front of the first bead; the ``redo`` command is disabled when the bead pointer points to the last bead.
 
 The @string undo_granularity setting controls the granularity of undo. There are four possible values:
@@ -18619,9 +18676,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``cycle-editor-focus``
     Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
-<t tx="ekr.20150318110552.29">.. contents::
-    :local:
-    :depth: 2</t>
+<t tx="ekr.20150318110552.29">.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20150318110552.30">``file-open-by-name``
     Gets the name of a Leo outline from the minibuffer and opens it. File name completion is supported.
 ``new (Ctrl-N)``
@@ -18830,9 +18887,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Execute the last command entered from the minibuffer.
 
 </t>
-<t tx="ekr.20150318110552.39">.. contents::
-    :local:
-    :depth: 2</t>
+<t tx="ekr.20150318110552.39">.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20150318110552.40">The following commands trigger event hooks::
 
     click-click-box
@@ -18910,9 +18967,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     resize-to-screen
     tab-detach
 </t>
-<t tx="ekr.20150318110552.43">.. contents::
-    :local:
-    :depth: 2</t>
+<t tx="ekr.20150318110552.43">.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20150318110552.44">``clone-node (Ctrl-\`)`` (Grave accent, not a single quote)
     Creates a clone as the immediate sibling of a selected node.
 ``clone-node-to-last-node``
@@ -19130,9 +19187,9 @@ Associated settings:
     scroll-outline-right
 
 </t>
-<t tx="ekr.20150318110552.57">.. contents::
-    :local:
-    :depth: 2</t>
+<t tx="ekr.20150318110552.57">.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20150318110552.59">Basic searches:
 
 ``start-search (Ctrl-F)``
@@ -19320,9 +19377,9 @@ The following commands enable, disable or toggle various settings::
     toggle-sparse-move
     toggle-split-direction
 </t>
-<t tx="ekr.20150318110552.66">.. contents::
-    :local:
+<t tx="ekr.20150318110552.66">.. contents:: Contents
     :depth: 2
+    :local:
 
 ``cascade-windows``
     Cascades all Leo windows.
@@ -19789,9 +19846,9 @@ Placing the cursor immediately before the first "I", holding shift and moving it
 </t>
 <t tx="ekr.20150323161357.1">``print-bindings`` prints a complete list of the bindings in effect.
 
-.. contents::
-    :local:
+.. contents:: Contents
     :depth: 2
+    :local:
 
 </t>
 <t tx="ekr.20150323161357.2">When focus is in the outline pane::
@@ -19857,9 +19914,9 @@ The following commands emulate the `Emacs macro commands`_::
     macro-save-all
     macro-start-recording
 </t>
-<t tx="ekr.20150323185514.1">.. contents::
-    :local:
+<t tx="ekr.20150323185514.1">.. contents:: Contents
     :depth: 2
+    :local:
 </t>
 <t tx="ekr.20150323185611.1">The following commands typically work like the corresponding Emacs command. For details about any command use ``F11 (help-for-command)``::
 
@@ -23001,7 +23058,8 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
 <t tx="ekr.20170218002336.1"># flattened, ignore-case, head, body</t>
 <t tx="ekr.20170218003504.1">Leo: an ouliner, IDE, computing environment and data organzier
-</t>
+
+Use a cooperative, conciliatory tone, not a compative, competitive tone.</t>
 <t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
 
     - Scientific research increasingly involves the use of computational tools. Successful communication and verification of research results requires that this code is distributed together with results and explanatory prose.
