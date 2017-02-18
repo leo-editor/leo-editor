@@ -1365,6 +1365,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('insert-newline')
     def insertNewLine(self, event):
         '''Insert a newline at the cursor.'''
+        self.insertNewlineBase(event)
+        
+    insertNewline = insertNewLine
+
+    def insertNewlineBase(self, event):
+        '''A helper that can be monkey-patched by tables.py plugin.'''
+        # Note: insertNewlineHelper already exists.
         c, k = self.c, self.c.k
         w = self.editWidget(event)
         if not w:
@@ -1380,8 +1387,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.setInputState('insert')
         k.showStateAndMode()
         self.endCommand()
-
-    insertNewline = insertNewLine
     #@+node:ekr.20150514063305.263: *4* insertNewLineAndTab
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event):

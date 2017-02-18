@@ -3420,11 +3420,11 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
+        trace = False and not g.unitTesting
+        verbose = False
         k = self; c = k.c
         w = event and event.widget
         name = c.widget_name(w)
-        trace = False and not g.unitTesting
-        verbose = False
         if trace and verbose:
             g.trace('widget_name', name, 'stroke', stroke,
             'enable alt-ctrl', self.enable_alt_ctrl_bindings)
