@@ -1627,6 +1627,27 @@ def isTextWidget(w):
 def isTextWrapper(w):
     return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ekr.20170219173203.1: *3* g.callback
+def callback(func):
+    '''
+    A global decorator that protects Leo against crashes in callbacks.
+    
+    This is the recommended way of defining all callback.
+        
+        @g.callback
+        def a_callback(...):
+            c = event.get('c')
+            ...
+    '''
+
+    def callback_wrapper(*args, **keys):
+        '''Callback for the @g.callback decorator.'''
+        try:
+            return func(*args, **keys)
+        except Exception:
+            g.es_exception()
+
+    return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
 def check_cmd_instance_dict(c, g):
     '''
