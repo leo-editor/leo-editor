@@ -6486,6 +6486,7 @@ class Commands(object):
         In fact, there are no longer any calls to this method in Leo's core.
         '''
         # c = self
+        g.trace('This method is deprecated. Instead, just use None.')
         return None
         # return leoNodes.Position(None)
         
