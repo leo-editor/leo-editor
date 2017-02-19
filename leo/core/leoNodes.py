@@ -458,14 +458,14 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 return
         # Next, look for all .md files in the tree.
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -494,7 +494,7 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
@@ -504,7 +504,7 @@ class Position(object):
             if predicate(p):
                 if p.v not in seen:
                     seen.add(p.v)
-                    yield p
+                    yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()

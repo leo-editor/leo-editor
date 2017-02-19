@@ -6311,7 +6311,7 @@ class Commands(object):
         p = c.rootPosition()
         while p:
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -6338,7 +6338,7 @@ class Commands(object):
         while p:
             if p.v not in seen and predicate(p):
                 seen.add(p.v)
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -6372,7 +6372,7 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p
+            yield p.copy() # 2017/02/19
             p.safeMoveToThreadNext()
         # raise stopIteration
     #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters

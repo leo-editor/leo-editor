@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1511,6 +1511,7 @@
 <v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
+<v t="ekr.20040403171740"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15333,25 +15334,20 @@ Commanders and positions define several `Python generators &lt;https://wiki.pyth
     for p in c.all_positions():
         print(' '*p.level()+p.h)
         
-All of Leo's generators yield a **single** position, *not* a list! The following creates an actual list::
+**New in Leo 5.5**: All of Leo's generators yielding positions automatically yield copies of those positions. The following works as expected::
+
+    aList = [p for p in c.all_positions()]
+
+There is no longer any need to do this::
 
     aList = [p.copy() for p in c.all_positions()]
     
-The p.copy() method returns a *separate* position that does not change when p changes. The call to p.copy() above is required.  This will not work:
-
-    bad_list = [p for p in c.all_positions()] # Wrong!
+**New in Leo 5.5**: Positions can be None. All of these tests work::
     
-Generators yield the **empty position**, with p.v = None when they are finished, so all all the positions in bad_list will be the same, empty, position.
-
-The *only* proper ways to test for empty positions are::
-
-    if not p:       # Right
-    if not p.v:     # Right
-    
-The following will not work::
-
-    if p is not None # Wrong!
-    if p is None:    # Wrong!
+    if not p:        # Correct, pre Leo 5.5.
+    if not p.v:      # Correct, pre Leo 5.5
+    if p is not None # Correct, Leo 5.5 and later.
+    if p is None:    # Correct, Leo 5.5 and later.
 </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
@@ -23150,7 +23146,7 @@ Show how to compose results:
 - You want clone-find commands
 
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
