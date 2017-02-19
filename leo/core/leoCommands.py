@@ -865,9 +865,11 @@ class Commands(object):
     #@+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
     def executeScriptHelper(self, args, define_g, define_name, namespace, script):
         c = self
-        p = c.p.copy() # *Always* use c.p and pass c.p to script.
-        c.setCurrentDirectoryFromContext(p)
-        
+        if c.p:
+            p = c.p.copy() # *Always* use c.p and pass c.p to script.
+            c.setCurrentDirectoryFromContext(p)
+        else:
+            p = None
         # Do NOT define a subfunction here!
         #
         # On some, python 2.x versions it causes exec to cause a syntax error
@@ -5210,7 +5212,8 @@ class Commands(object):
         Returns a dict containing the results, including defaults.
         '''
         trace = False and not g.unitTesting
-        c = self ; p = p or c.p
+        c = self
+        p = p or c.p
         # Set defaults
         language = c.target_language and c.target_language.lower()
         lang_dict = {
@@ -5679,7 +5682,10 @@ class Commands(object):
         '''Redraw the screen immediately.'''
         trace = False and not g.unitTesting
         c = self
-        if not p: p = c.p or c.rootPosition()
+        if not p:
+            p = c.p or c.rootPosition()
+        if not p:
+            return
         c.expandAllAncestors(p)
         if p:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
@@ -6382,7 +6388,8 @@ class Commands(object):
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
         else:
-            return c.nullPosition()
+            return c.rootPosition()
+            ### return c.nullPosition()
     # For compatibiility with old scripts.
 
     currentVnode = currentPosition
@@ -6480,7 +6487,10 @@ class Commands(object):
     def nullPosition(self):
         '''Return a null position. This *must* be a position, not None.'''
         # c = self
+        return None
         return leoNodes.Position(None)
+        # raise StopIteration
+
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -6536,7 +6546,8 @@ class Commands(object):
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
-            return c.nullPosition()
+            return None ###
+            ### return c.nullPosition()
     # For compatibiility with old scripts.
 
     rootVnode = rootPosition

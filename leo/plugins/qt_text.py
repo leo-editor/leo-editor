@@ -36,7 +36,7 @@ class QTextMixin(object):
         if name == '1':
             w.leo_p = None # Will be set when the second editor is created.
         else:
-            w.leo_p = p.copy()
+            w.leo_p = p and p.copy()
         w.leo_active = True
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
         w.leo_bodyBar = None

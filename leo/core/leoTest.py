@@ -47,8 +47,10 @@ class EditBodyTestCase(unittest.TestCase):
         self.parent = parent.copy()
         self.before = before.copy()
         self.after = after.copy()
-        self.sel = sel.copy() # Two lines giving the selection range in tk coordinates.
-        self.ins = ins.copy() # One line giving the insert point in tk coordinate.
+        self.sel = sel and sel.copy()
+            # Two lines giving the selection range in tk coordinates.
+        self.ins = ins and ins.copy()
+            # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
         # g.trace('parent',parent.h)
         # g.trace('before',before.h)

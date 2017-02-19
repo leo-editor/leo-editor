@@ -2240,7 +2240,7 @@ class NullTree(LeoTree):
     #@+node:ekr.20070228163350.2: *4* edit_widget (NullTree)
     def edit_widget(self, p):
         d = self.editWidgetsDict
-        if not p.v:
+        if not p or not p.v:
             return None
         w = d.get(p.v)
         if not w:

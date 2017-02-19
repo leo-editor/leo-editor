@@ -1768,7 +1768,6 @@ class FileCommands(object):
         # Make only one copy for all calls.
         self.currentPosition = c.p
         self.rootPosition = c.rootPosition()
-        # self.topPosition     = c.topPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.
