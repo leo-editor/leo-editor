@@ -3632,7 +3632,7 @@ class KeyHandlerClass(object):
         # if k.regx.iter:
             # try:
                 # k.regXKey = char
-                # k.regx.iter.next() # EKR: next() may throw StopIteration.
+                # k.regx.iter.next()
             # except StopIteration:
                 # pass
             # return

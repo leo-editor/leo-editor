@@ -6264,16 +6264,14 @@ class Commands(object):
         c = self
         for p in c.all_positions():
             yield p.v
-        # raise StopIteration
 
     def all_unique_nodes(self):
         '''A generator returning each vnode of the outline.'''
         c = self
         for p in c.all_unique_positions():
             yield p.v
-        # raise StopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_tnodes_iter = all_nodes
     all_vnodes_iter = all_nodes
     all_unique_tnodes_iter = all_unique_nodes
@@ -6282,13 +6280,12 @@ class Commands(object):
     def all_positions(self):
         '''A generator return all positions of the outline, in outline order.'''
         c = self
-        p = c.rootPosition() # Make one copy.
+        p = c.rootPosition()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToThreadNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20161120121226.1: *4* c.all_roots
@@ -6349,18 +6346,17 @@ class Commands(object):
         Returns only the first position for each vnode.
         '''
         c = self
-        p = c.rootPosition() # Make one copy.
+        p = c.rootPosition()
         seen = set()
         while p:
             if p.v in seen:
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p.copy() # Major bug fix: 2016/10/02
+                yield p.copy()
                 p.moveToThreadNext()
-        # raise StopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *4* c.safe_all_positions
@@ -6372,9 +6368,8 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p.copy() # 2017/02/19
+            yield p.copy()
             p.safeMoveToThreadNext()
-        # raise stopIteration
     #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
