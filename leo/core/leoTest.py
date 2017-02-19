@@ -1457,7 +1457,7 @@ class TestManager(object):
         return result
     #@+node:ekr.20051104075904.27: *4* TM.findChildrenOf
     def findChildrenOf(self, root):
-        return [p.copy() for p in root.children()]
+        return list(root.children())
     #@+node:ekr.20120220070422.10423: *4* TM.findNodeAnywhere
     def findNodeAnywhere(self, headline, breakOnError=False):
         # tm = self
@@ -1489,7 +1489,7 @@ class TestManager(object):
         return None
     #@+node:ekr.20051104075904.28: *4* TM.findSubnodesOf
     def findSubnodesOf(self, root):
-        return [p.copy() for p in root.subtree()]
+        return list(root.subtree())
     #@+node:ekr.20051104075904.91: *4* TM.getAllPluginFilenames
     def getAllPluginFilenames(self):
         path = g.os_path_join(g.app.loadDir, "..", "plugins")

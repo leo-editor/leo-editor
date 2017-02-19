@@ -712,7 +712,7 @@ class AtFile(object):
         '''
         at = self
         # Find the unvisited nodes.
-        aList = [z.copy() for z in root.subtree() if not z.isVisited()]
+        aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
             r = at.createResurrectedNodesNode()
             assert r not in aList
@@ -3194,7 +3194,7 @@ class AtFile(object):
         '''Save the outline if only persistence data nodes are dirty.'''
         trace = False and not g.unitTesting
         c = self.c
-        changed_positions = [p.copy() for p in c.all_unique_positions() if p.v.isDirty()]
+        changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
         at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
         if at_persistence:
             changed_positions = [p for p in changed_positions

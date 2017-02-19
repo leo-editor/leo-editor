@@ -1711,8 +1711,6 @@ class LeoTree(object):
         c.setCurrentPosition(p)
             # Important: do this *before* setting text,
             # so that the colorizer will have the proper c.p.
-        ### colorizer = c.frame.body.colorizer
-        ### colorizer.init(p, s) # init *first*.
         w.setAllText(s)
         if trace and trace_time:
             t3 = time.time()

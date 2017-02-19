@@ -619,8 +619,9 @@ class FileCommands(object):
     #@+node:ekr.20080410115129.1: *6* checkPaste
     def checkPaste(self, parent, p):
         '''Return True if p may be pasted as a child of parent.'''
-        if not parent: return True
-        parents = [z.copy() for z in parent.self_and_parents()]
+        if not parent:
+            return True
+        parents = list(parent.self_and_parents())
         for p in p.self_and_subtree():
             for z in parents:
                 # g.trace(p.h,id(p.v),id(z.v))
@@ -782,7 +783,7 @@ class FileCommands(object):
     #@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
         fc = self; c = fc.c
-        aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+        aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20120212220616.10537: *6* fc.readExternalFiles

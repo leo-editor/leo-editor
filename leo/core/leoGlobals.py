@@ -3417,12 +3417,11 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     - `maxp`: part of recursion, don't set explicitly
     """
     if depth == 0:
-        nds = c.rootPosition().self_and_siblings()
+        nds = list(c.rootPosition().self_and_siblings())
         unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
         # drop empty parts so "-->node name" works
     else:
-        nds = p.children()
-    nds = [i.copy() for i in nds]
+        nds = list(p.children())
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []

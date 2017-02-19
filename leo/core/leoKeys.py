@@ -1421,9 +1421,6 @@ class GetArg(object):
         c, k = ga.c, ga.k
         state = k.getState('getArg')
         c.check_event(event)
-        # Remember these events also.
-        ### if c.macroCommands.recordingMacro and state > 0:
-        ###    c.macroCommands.startRecordingMacro(event)
         char = event and event.char or ''
         if state > 0:
             k.setLossage(char, stroke)
@@ -2195,7 +2192,7 @@ class KeyHandlerClass(object):
         # k = self
         if not shortcut:
             return False
-            ### return True # #327: binding to None clears previous bindings.
+            # return True # #327: binding to None clears previous bindings.
         assert g.isStroke(shortcut)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
@@ -3225,11 +3222,10 @@ class KeyHandlerClass(object):
             'state', state, 'state2', k.unboundKeyAction)
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            ### For now, leave this support in place.
             if hasattr(c, 'screenCastController') and c.screenCastController:
                 c.screenCastController.quit()
             k.masterCommand(commandName='keyboard-quit',
-                    event=event, func=k.keyboardQuit, stroke=stroke)
+                event=event, func=k.keyboardQuit, stroke=stroke)
             return
         # 2017/01/31: Important support for the demo.py plugin.
         demo = getattr(g.app, 'demo', None)
@@ -3467,8 +3463,6 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
-        ### Not necessary, and makes life hard for the demo plugin.
-            # assert g.isStroke(stroke), repr(stroke)
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
         if state in ('getArg', 'full-command'):
@@ -3619,23 +3613,12 @@ class KeyHandlerClass(object):
                 stroke, repr(ch), func and func.__name__))
         if inserted:
             k.setLossage(ch, stroke)
-        # We *must not* interfere with the global state in the macro class.
-        ###
-        # if c.macroCommands.recordingMacro:
-        #    c.macroCommands.startRecordingMacro(event)
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
             return
         if special: # Don't pass these on.
             return
-        # if k.regx.iter:
-            # try:
-                # k.regXKey = char
-                # k.regx.iter.next()
-            # except StopIteration:
-                # pass
-            # return
         if k.abbrevOn:
             expanded = c.abbrevCommands.expandAbbrev(event, stroke)
             if expanded: return
@@ -4658,14 +4641,11 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU(self, event, stroke):
         k = self
-        ### c = k.c
         ch = event and event.char or ''
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
         if ch == '(':
             k.clearState()
             k.resetLabel()
-            ### c.macroCommands.startKbdMacro(event)
-            ### c.macroCommands.callLastKeyboardMacro(event)
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo(object):

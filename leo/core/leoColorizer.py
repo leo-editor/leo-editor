@@ -402,7 +402,7 @@ class JEditColorizer(BaseColorizer):
             ('p', self.match_url_p, True),
             ('t', self.match_url_t, True),
             ('w', self.match_url_w, True),
-            ### ('<', self.match_image, True),
+            # ('<', self.match_image, True),
             ('<', self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),

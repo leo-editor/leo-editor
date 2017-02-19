@@ -272,7 +272,6 @@ class Commands(object):
         import leo.commands.helpCommands as helpCommands
         import leo.commands.keyCommands as keyCommands
         import leo.commands.killBufferCommands as killBufferCommands
-        ### import leo.commands.macroCommands as macroCommands
         import leo.commands.rectangleCommands as rectangleCommands
         import leo.commands.spellCommands as spellCommands
         # Other subcommanders.
@@ -313,7 +312,6 @@ class Commands(object):
         self.helpCommands       = helpCommands.HelpCommandsClass(c)
         self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
-        ### self.macroCommands      = macroCommands.MacroCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
         # Other objects

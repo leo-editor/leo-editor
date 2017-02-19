@@ -400,7 +400,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         To rerun the command, just mark two nodes again.
         '''
         c = self.c
-        aList = [z.copy() for z in c.all_unique_positions() if z.isMarked()]
+        aList = [z for z in c.all_unique_positions() if z.isMarked()]
         if len(aList) == 2:
             p1, p2 = aList[0], aList[1]
             lines1 = g.splitLines(p1.b.rstrip()+'\n')
