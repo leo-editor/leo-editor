@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -641,7 +641,6 @@
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
 <v t="ekr.20131014050027.16801"><vh>Positions and vnodes</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
-<v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
 <v t="ekr.20150312080344.12"><vh>wrappers vs. widgets</vh></v>
 <v t="ekr.20131016021541.16893"><vh>Summary</vh></v>
 <v t="ekr.20131017051340.16732"><vh>@rst-ignore-tree scripting examples</vh>
@@ -1468,6 +1467,8 @@
 <v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
 <v t="ekr.20170123084609.20"><vh>Added BackgroundProcessManager class</vh></v>
 <v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
+<v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
+<v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
@@ -1512,6 +1513,7 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20040403171740"></v>
+<v t="ekr.20170219082627.1"><vh>**revise cheat sheet</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15333,21 +15335,16 @@ Commanders and positions define several `Python generators &lt;https://wiki.pyth
 
     for p in c.all_positions():
         print(' '*p.level()+p.h)
-        
-**New in Leo 5.5**: All of Leo's generators yielding positions automatically yield copies of those positions. The following works as expected::
 
-    aList = [p for p in c.all_positions()]
-
-There is no longer any need to do this::
-
-    aList = [p.copy() for p in c.all_positions()]
+.. index::
+    pair: Invalid positions; Tutorial
     
-**New in Leo 5.5**: Positions can be None. All of these tests work::
+Scripts may capture positions like this::
+
+    aList = list(c.all_positions())
     
-    if not p:        # Correct, pre Leo 5.5.
-    if not p.v:      # Correct, pre Leo 5.5
-    if p is not None # Correct, Leo 5.5 and later.
-    if p is None:    # Correct, Leo 5.5 and later.
+**Warning**: stored positions become invalid when outline changes. **c.positionExists(p)** is True if p is valid in c's outline.
+    
 </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
@@ -15444,19 +15441,6 @@ Because of clones, the *same* node may appear at *multiple positions* in the out
 
 For any position p, **p.b** is the node's body text, **p.h** is the node's headline and **p.u** is the node's `user attributes`_, and **p.v** is the position's vnode. Similarly, for any vnode v, **v.b** is the node's body text, **v.h** is the node's headline and **v.u** is the node's user attributes. 
 
-**positions become invalid when outline structure changes**. Scripts *must not* store positions for later use if the outline can change in the meantime. **c.positionExists(p)** returns True if p is still valid in c's outline.
-</t>
-<t tx="ekr.20131014053720.16809">.. index::
-    pair: Capturing Positions; Tutorial
-    pair: p.copy(); Tutorial
-    
-Positions become invalid whenever nodes are inserted, deleted or moved.
-
-It is valid to capture positions, *provided* that the outline does not changed while the captured positions are being used. Like this::
-
-    aList = [p.copy() for p in c.all_positions()]
-        # aList is valid only until the outline changes.
-        
 </t>
 <t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many disabled), that do repetitive chores. Here is one, @button promote-child-bodies, from LeoDocs.leo::
 
@@ -15741,8 +15725,6 @@ Downloading, Installing &amp; Running Leo
 - Positions provide easy access to vnodes.
 - Positions become invalid when outline nodes are inserted, deleted or moved.
 - Generators visit all or parts of the outline, in a specified order.
-- Generators yield a *single* position whose value constantly changes.
-- p.copy() yields a new position that does not change when p changes.
 </t>
 <t tx="ekr.20131016083406.16724">@language python
 '''Run sphinx make clean ; make html.'''
@@ -23146,7 +23128,26 @@ Show how to compose results:
 - You want clone-find commands
 
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170219074525.1">All of Leo's generators yielding positions automatically yield copies of those positions. The following works as expected::
+
+    aList = [p for p in c.all_positions()]
+
+There is no longer any need to do this::
+
+    aList = [p.copy() for p in c.all_positions()]
+
+Of course, copied positions will typically become invalid when the outline changes, so some care is needed.
+</t>
+<t tx="ekr.20170219074554.1">As a result, all of these tests work as expected.
+    
+    if not p:        # Correct, pre Leo 5.5.
+    if not p.v:      # Correct, pre Leo 5.5
+    if p is not None # Correct, Leo 5.5 and later.
+    if p is None:    # Correct, Leo 5.5 and later.
+</t>
+<t tx="ekr.20170219082627.1">p.moveTo* methods change positions.
+Document p.copy()</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
