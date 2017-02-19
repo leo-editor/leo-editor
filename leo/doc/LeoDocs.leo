@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1496,7 +1496,6 @@
 <v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
 </v>
-<v t="ekr.20131015104133.16763"></v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
@@ -1504,50 +1503,13 @@
 <v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
 <v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
 <v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
+<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
 <v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
 <v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
 <v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
+<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
+<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
-</v>
-<v t="ekr.20170218002336.1"><vh>Found:.. contents</vh>
-<v t="ekr.20131008041326.16341"></v>
-<v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20150312080344.68"></v>
-<v t="ekr.20131008041326.16094"></v>
-<v t="ekr.20131008041326.16140"></v>
-<v t="ekr.20050831184021.4"></v>
-<v t="ekr.20131009065148.31760"></v>
-<v t="ekr.20140810085801.18232"></v>
-<v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20131007143750.16070"></v>
-<v t="ekr.20060430221745.1"></v>
-<v t="ekr.20050901101608.2"></v>
-<v t="ekr.20050901101608.4"></v>
-<v t="ekr.20060527105617"></v>
-<v t="ekr.20061025065357.1"></v>
-<v t="ekr.20050830115714"></v>
-<v t="ekr.20080203101507.1"></v>
-<v t="ekr.20070317033759.1"></v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20050818163826"></v>
-<v t="ekr.20131015091948.16784"></v>
-<v t="ekr.20131008041326.16203"></v>
-<v t="ekr.20131008041326.16222"></v>
-<v t="ekr.20131008041326.16241"></v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20070628083442.1"></v>
-<v t="TL.20080804095315.2"></v>
-<v t="ekr.20060612103240"></v>
-<v t="ekr.20060913164304.1"></v>
-<v t="ekr.20150318110552.10"></v>
-<v t="ekr.20150318110552.18"></v>
-<v t="ekr.20150323185514.1"></v>
-<v t="ekr.20150318110552.29"></v>
-<v t="ekr.20150323161357.1"></v>
-<v t="ekr.20150318110552.39"></v>
-<v t="ekr.20150318110552.43"></v>
-<v t="ekr.20150318110552.57"></v>
-<v t="ekr.20150318110552.66"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -21563,6 +21525,7 @@ if p:
 - Add images to show enlarged icons.
 
 - Insert to-be-documented mail items
+
 </t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
@@ -21848,7 +21811,7 @@ print("table = (\n    %s\n)" % '\n    '.join(table))
 </t>
 <t tx="ekr.20170123084701.1">As a result, the horrible big text hack is no longer needed.
 </t>
-<t tx="ekr.20170123085934.1">Leo 5.5b1 January 30, 2017
+<t tx="ekr.20170123085934.1">Leo 5.5b1 February 28, 2017
 
 [Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -23056,10 +23019,12 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
-<t tx="ekr.20170218002336.1"># flattened, ignore-case, head, body</t>
 <t tx="ekr.20170218003504.1">Leo: an ouliner, IDE, computing environment and data organzier
 
-Use a cooperative, conciliatory tone, not a compative, competitive tone.</t>
+Use a cooperative, conciliatory tone, not a compative, competitive tone.
+
+- Plans for 2017.
+</t>
 <t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
 
     - Scientific research increasingly involves the use of computational tools. Successful communication and verification of research results requires that this code is distributed together with results and explanatory prose.
@@ -23142,7 +23107,9 @@ Emacs isn't written in org mode, and it would not be easy to do so.
 As a result, Leo can easily simulate any org mode feature, but the reverse is not true.
 </t>
 <t tx="ekr.20170218022741.1">What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
-</t>
+
+
+Outlines mayh contain files, scripts, data, results, docs.</t>
 <t tx="ekr.20170218023347.1">They summarize the uses and implications of a compendium as follows:
 
     It encapsulates the actual work of the author, not just an abridged version suitable for publication;
@@ -23153,6 +23120,36 @@ As a result, Leo can easily simulate any org mode feature, but the reverse is no
     Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
 
 Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.</t>
+<t tx="ekr.20170218123059.1">Show how scripts can invoke other scripts.
+
+Show how to compose results:
+    - With pickle?</t>
+<t tx="ekr.20170218123106.1">- Support for .org.leo files.
+
+- p.drawer property.
+
+- What to do about org-mode code blocks.
+
+- How good is the org-mode import/export code?
+
+- agenda.py plugin (improve existing todo.py plugin.)
+- tables.py plugin</t>
+<t tx="ekr.20170218123124.1">Feature table
+
+- Want Python and its libs.
+
+- You develop software, including scientific software and scripts:
+    Org-mode's script delims make it impossible to develop large software.
+    
+- You want to treat an outline as a programmable database.
+    - Leo *is* a db. Outlines can represent db queries.
+
+- You have hundreds of files to manage.
+    - Leo has a fast caching scheme.
+    
+- You want clone-find commands
+
+</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

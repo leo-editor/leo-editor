@@ -3,7 +3,7 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170211190548.1: ** ** The plan
+.. @+node:ekr.20170211190548.1: ** ** The plan for 2017
 @language rest
 @wrap
 org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
@@ -18,8 +18,6 @@ org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
     - Support for org-mode results. Invention needed.
     
 - Support .org files and .org.leo files.
-
-The results will be better, because of Leo's API, DOM and python language.
 
 Leo's body pane must be able to hide characters and render pictures within the pane.
 
