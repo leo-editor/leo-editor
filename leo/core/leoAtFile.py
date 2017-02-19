@@ -813,7 +813,7 @@ class AtFile(object):
         p = root.copy()
         scanned_tnodes = set()
         c.init_error_dialogs()
-        after = p.nodeAfterTree() if partialFlag else c.nullPosition()
+        after = p.nodeAfterTree() if partialFlag else None
         while p and p != after:
             gnx = p.gnx
             #skip clones
@@ -3041,7 +3041,7 @@ class AtFile(object):
             # Write dirty nodes in the entire outline.
             root = c.rootPosition()
             p = c.rootPosition()
-            after = c.nullPosition()
+            after = None
         at.clearAllOrphanBits(p)
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():

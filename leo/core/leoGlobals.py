@@ -2329,7 +2329,7 @@ def findReference(c, name, root):
                 if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
                     return p2
     # g.trace("not found:",name,root)
-    return c.nullPosition()
+    return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
@@ -6188,26 +6188,26 @@ def findNodeInChildren(c, p, headline):
     for p in p.children():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findNodeInTree(c, p, headline):
     """Search for a node in v's tree matching the given headline."""
     for p in p.subtree():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findNodeAnywhere(c, headline):
     for p in c.all_unique_positions():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findTopLevelNode(c, headline):
     for p in c.rootPosition().self_and_siblings():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 #@+node:EKR.20040614071102.1: *3* g.getScript & helper
 def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinels=True):
     '''

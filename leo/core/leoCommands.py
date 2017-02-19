@@ -44,8 +44,8 @@ class Commands(object):
         if trace and not g.trace_startup:
             t1 = time.time()
         # Official ivars.
-        self._currentPosition = self.nullPosition()
-        self._topPosition = self.nullPosition()
+        self._currentPosition = None
+        self._topPosition = None
         self.frame = None
         self.gui = gui or g.app.gui
         self.ipythonController = None
@@ -3494,7 +3494,7 @@ class Commands(object):
         if not g.app.validate_outline:
             return True
         root = c.rootPosition()
-        parent = c.nullPosition()
+        parent = None
         if root:
             return root.validateOutlineWithParent(parent)
         else:
@@ -6389,9 +6389,8 @@ class Commands(object):
             return c._currentPosition.copy()
         else:
             return c.rootPosition()
-            ### return c.nullPosition()
-    # For compatibiility with old scripts.
 
+    # For compatibiility with old scripts...
     currentVnode = currentPosition
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p):
@@ -6485,12 +6484,16 @@ class Commands(object):
         return p
     #@+node:ekr.20040311094927: *5* c.nullPosition
     def nullPosition(self):
-        '''Return a null position. This *must* be a position, not None.'''
+        '''
+        New in Leo 5.5: Return None.
+        Using empty positions masks problems in program logic.
+        
+        In fact, there are no longer any calls to this method in Leo's core.
+        '''
         # c = self
         return None
-        return leoNodes.Position(None)
-        # raise StopIteration
-
+        # return leoNodes.Position(None)
+        
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -6546,10 +6549,9 @@ class Commands(object):
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
-            return None ###
-            ### return c.nullPosition()
-    # For compatibiility with old scripts.
-
+            return None
+            
+    # For compatibiility with old scripts...
     rootVnode = rootPosition
     findRootPosition = rootPosition
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
@@ -6644,7 +6646,7 @@ class Commands(object):
         # v.parents includes the hidden root node.
         if not stack:
             # a VNode not in the tree
-            return c.nullPosition()
+            return None
         v, n = stack.pop()
         p = leoNodes.Position(v, n, stack)
         return p
@@ -6814,7 +6816,7 @@ class Commands(object):
         if c._topPosition:
             return c._topPosition.copy()
         else:
-            return c.nullPosition()
+            return None
 
     def setTopPosition(self, p):
         """Set the root positioin."""
@@ -6822,9 +6824,9 @@ class Commands(object):
         if p:
             c._topPosition = p.copy()
         else:
-            c._topPosition = c.nullPosition()
-    # Define these for compatibiility with old scripts.
+            c._topPosition = None
 
+    # Define these for compatibiility with old scripts...
     topVnode = topPosition
     setTopVnode = setTopPosition
     #@+node:ekr.20031218072017.3404: *5* c.trimTrailingLines

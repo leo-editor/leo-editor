@@ -1569,17 +1569,17 @@ class LocalConfigManager(object):
     def findSettingsPosition(self, setting):
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
-        c = self.c
+        # c = self.c
         root = self.settingsRoot()
         if not root:
-            return c.nullPosition()
+            return None
         setting = munge(setting)
         for p in root.subtree():
             #BJ munge will return None if a headstring is empty
             h = munge(p.h) or ''
             if h.startswith(setting):
                 return p.copy()
-        return c.nullPosition()
+        return None
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
     def settingsRoot(self):
         '''Return the position of the @settings tree.'''
@@ -1587,7 +1587,7 @@ class LocalConfigManager(object):
         for p in c.all_unique_positions():
             if p.h.rstrip() == "@settings":
                 return p.copy()
-        return c.nullPosition()
+        return None
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
     #@+at Only the following need to be defined.

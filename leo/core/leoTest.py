@@ -1469,7 +1469,7 @@ class TestManager(object):
         if False and breakOnError: # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
-        return c.nullPosition()
+        return None
     #@+node:ekr.20051104075904.29: *4* TM.findNodeInRootTree
     def findRootNode(self, p):
         """Return the root of p's tree."""
@@ -1480,13 +1480,13 @@ class TestManager(object):
     def findNodeInTree(self, p, headline, startswith=False):
         """Search for a node in p's tree matching the given headline."""
         # tm = self
-        c = self.c
+        # c = self.c
         h = headline.strip().lower()
         for p in p.subtree():
             h2 = p.h.strip().lower()
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
-        return c.nullPosition()
+        return None
     #@+node:ekr.20051104075904.28: *4* TM.findSubnodesOf
     def findSubnodesOf(self, root):
         return [p.copy() for p in root.subtree()]
