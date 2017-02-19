@@ -511,7 +511,7 @@ class RstCommands(object):
         '''Write all @rst nodes.'''
         t1 = time.time()
         self.rst_nodes = []
-        self.initSettings(self.c.p)
+        self.n_written = 0
         self.processTopTree(self.c.p)
         t2 = time.time()
         g.es_print('rst3: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
@@ -544,10 +544,10 @@ class RstCommands(object):
         after = p.nodeAfterTree()
         while p and p != after:
             h = p.h.strip()
-            if g.match_word(h, 0, '@rst-ignore'):
-                p.moveToThreadNext()
-            elif g.match_word(h, 0, '@rst-ignore-tree'):
+            if g.match_word(h, 0, '@rst-ignore-tree'):
                 p.moveToNodeAfterTree()
+            elif g.match_word(h, 0, '@rst-ignore'):
+                p.moveToThreadNext()
             elif g.match_word(h, 0, "@rst"):
                 self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
@@ -581,6 +581,7 @@ class RstCommands(object):
         self.n_written += 1
         self.topNode = p.copy()
         self.topLevel = p.level()
+        self.initSettings(p.copy()) # 2017/02/19
         if toString:
             ext = ext or '.html' # 2010/08/12: Unit test found this.
         else:
@@ -1233,7 +1234,6 @@ class RstCommands(object):
         Init all settings for a command rooted in p.
         There is no need to create self.d0 again.
         '''
-        self.n_written = 0
         self.scriptSettingsDict = script_d or {}
         self.init_write(p)
         self.preprocessTree(p)
