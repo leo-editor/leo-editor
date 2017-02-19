@@ -3421,8 +3421,8 @@ class KeyHandlerClass(object):
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
         trace = False and not g.unitTesting
-        verbose = False
-        k = self; c = k.c
+        verbose = True
+        c, k = self.c, self
         w = event and event.widget
         name = c.widget_name(w)
         if trace and verbose:

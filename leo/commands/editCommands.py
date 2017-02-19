@@ -1646,8 +1646,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = oldSel
         ch = '\n'
         if trace:
-            s = w.widget.toPlainText()
-            g.trace(i, j, len(s), w)
+            # s = w.widget.toPlainText()
+            g.trace('sel', i, j, g.callers())
         if i != j:
             # No auto-indent if there is selected text.
             w.delete(i, j)

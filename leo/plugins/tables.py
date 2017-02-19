@@ -20,6 +20,13 @@ def table_align(self, event=None):
     controller = c and getattr(c, 'tableController')
     if controller:
         controller.align()
+
+@g.command('table-toggle-enabled')
+def table_toggle_enabled(self, event=None):
+    c = event.get('c')
+    controller = c and getattr(c, 'tableController')
+    if controller:
+        controller.toggle()
 #@+node:ekr.20170217164730.1: *3* tables.py:init
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -43,6 +50,8 @@ class TableController (object):
     def __init__ (self, c):
         '''Ctor for TableController class.'''
         self.c = c
+        self.ec = c.editCommands
+        self.enabled = True
         # Monkey-patch k.handleDefaultChar
         self.old_handleDefaultChar = c.k.handleDefaultChar
         c.k.handleDefaultChar = self.default_key_handler
@@ -51,35 +60,135 @@ class TableController (object):
         c.editCommands.insertNewlineBase = self.insert_newline
 
     #@+others
+    #@+node:ekr.20170218142054.1: *3* table.abort
+    def abort(self):
+        '''undo all monkey-patches.'''
+        g.es_print('exiting table.py plugin')
+        c, ec = self.c, self.ec
+        c.tableController = None
+        c.k.handleDefaultChar = self.old_handleDefaultChar
+        ec.insertNewlineBase = self.old_insert_newline
     #@+node:ekr.20170218073117.1: *3* table.default_key_handler
-
     def default_key_handler(self, event, stroke):
         '''
         TableController: Override k.old_handleDefaultChar.
         
-        key     stroke.s
-        |       bar
-        -       minus
-        tab     Tab
-        return  Never gets sent to us.
+        Important: the code must use event.ch, not stroke.
         '''
-        # c = self.c
-        s = stroke and stroke.s.lower()
-        if s in ('bar', 'minus', 'tab'):
-            g.trace(s)
-        # Call the base handler.
-        self.old_handleDefaultChar(event, stroke)
+        w = self.ec.editWidget(event)
+        ch = event.char
+        i, s, lines = self.get_table(ch, w)
+        if lines:
+            self.put(ch, event)
+            ### Not yet: self.update()
+        else:
+            self.put(ch, event)
+
+    #@+node:ekr.20170218130241.1: *3* table.get_table
+    def get_table(self, ch, w):
+        '''Return i, lines, if w's insert point is inside a table.'''
+        trace = True and not g.unitTesting
+        trace_entry = True
+        trace_fail = True
+        trace_lines = True
+        s = w.getAllText()
+        lines = g.splitLines(s)
+        ins = w.getInsertPoint()
+        i_row1, i_col1 = g.convertPythonIndexToRowCol(s, ins)
+        s1 = lines[i_row1] if i_row1 < len(lines) else ''
+        starts_row1 = ch in ('|', 'return') and not s1[:i_col1].strip()
+        if trace and trace_entry:
+            g.trace('=====', repr(ch), i_row1, starts_row1, repr(s1))
+            g.printList(lines) 
+        if self.enabled and g.isTextWrapper(w):
+            i1, i2 = None, None
+            for i, s in enumerate(lines):
+                is_row = s.strip().startswith('|')
+                if trace and trace_lines: g.trace(i, is_row, repr(i1), repr(i2), repr(s))
+                if i == i_row1:
+                    if is_row or starts_row1:
+                        if i1 is None:
+                            i1 = i2 = i # Selected line starts the table.
+                        else:
+                            pass # Table head already found.
+                    elif i1 is None:
+                        if trace and trace_fail: g.trace('not in table')
+                        return -1, s1, []
+                    else:
+                        # Selected line ends the table.
+                        if trace:
+                            g.trace('FOUND1', i1, i)
+                            g.printList(lines[i1:i])
+                        return i_row1, s1, lines[i1:i]
+                elif is_row:
+                    if i1 is None:
+                        i1 = i2 = i # Row i starts the head.
+                    elif i > i_row1:
+                        i2 = i # Row i extends the tail
+                    else:
+                        pass # Table head already found.
+                else:
+                    if i1 is None:
+                        pass # Table head not yet found.
+                    elif i < i_row1:
+                        i1 = None # Forget previous tables.
+                        i2 = None
+                    else:
+                        # Selected line ends the table.
+                        if trace:
+                            g.trace('FOUND2', i1, i)
+                            g.printList(lines[i1:i])
+                        return i_row1, s1, lines[i1:i]
+            # The end of the enumeration.
+            if i_row1 == len(lines) and starts_row1 and not i1:
+                g.trace('FOUND-end', i1, i)
+                return i_row1, s1, [s1]
+            elif i1 is None or i2 is None:
+                if trace and trace_fail: g.trace('end', repr(i1), repr(i2))
+                return -1, s1, []
+            else: 
+                # Last line ends the table.
+                if trace:
+                    g.trace('FOUND3', i1)
+                    g.printList(lines[i1:])
+                return i_row1, s1, lines[i1:len(lines)]
+        else:
+            if trace and trace_fail: g.trace('not enabled')
+            return -1, s1, []
     #@+node:ekr.20170218075243.1: *3* table.insert_newline
     def insert_newline(self, event):
         '''TableController: override c.editCommands.insertNewLine.'''
-        c = self.c
-        ec = c.editCommands
-        w = ec.editWidget(event)
-        g.trace(g.isTextWrapper(w), event)
-        if g.isTextWrapper(w):
-            pass
-        # Call the original handler.
-        self.old_insert_newline(event)
+        w = self.ec.editWidget(event)
+        i, s, lines = self.get_table('return', w)
+        if lines:
+            self.put('\n', event)
+            self.put('|', event)
+        else:
+            self.put('\n', event)
+    #@+node:ekr.20170218135553.1: *3* table.put
+    def put (self, ch, event):
+        '''
+        Insert the given ch into w.
+        ch must be valid as stroke.s
+        '''
+        try:
+            # Patch the event.
+            event.char = ch
+            event.stroke = g.KeyStroke(ch)
+            self.old_handleDefaultChar(event, stroke=None)
+        except Exception:
+            g.es_exception()
+            self.abort()
+    #@+node:ekr.20170218125521.1: *3* table.toggle
+    def toggle(self, event=None):
+        '''Toggle enabling.'''
+        self.enabled = not self.enabled
+    #@+node:ekr.20170218134104.1: *3* table.update (not used)
+    # def update(self, event, i, lines, stroke):
+        
+        # ### Temp
+        # # self.old_handleDefaultChar(event, stroke)
+        # self.put(ch, w)
     #@-others
 #@-others
 #@@language python
