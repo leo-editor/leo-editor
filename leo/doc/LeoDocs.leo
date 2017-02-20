@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1512,6 +1512,8 @@
 <v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
+<v t="ekr.20050830115714"></v>
+<v t="ekr.20091111112709.6672"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3604,7 +3606,7 @@ The body text of @file foo.pl might be::
 
     @first #/usr/bin/perl
 
-Leo recognizes the @first directive_ only at the start of the body text of @file nodes. No text may precede @first directives_. More than one @first directive may exist, like this::
+\@first directives must be the *very first* lines of @file nodes. More than one @first directive may exist, like this::
 
     @first #! /usr/bin/env python
     @first # more comments.
@@ -5257,7 +5259,7 @@ This will work **provided** that no other zodb connection is ever opened while t
 
 Note that this ivar can not be set using settings in leoSettings.leo because Leo uses g.app.use_psyco before processing configuration settings.
 </t>
-<t tx="ekr.20060917130130">Add the following to the start of your scripts::
+<t tx="ekr.20060917130130">Add the following as the *very first line* of your scripts::
 
     @first # -*- coding: utf-8 -*-
 
@@ -7189,10 +7191,7 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
     pair: @&lt;file&gt; node; Glossary
 
 \@&lt;file&gt; node
-    A node whose headline starts with
-    @asis, @clean, @edit, @file, @shadow, @thin, or their longer forms.
-    We often refer to outline nodes by the directives they contain.
-    For example, an @file node is a node whose headline starts with @file, etc.
+    A node whose headline starts with @asis, @clean, @edit, @file, @shadow, @thin, or their longer forms. We often refer to outline nodes by the directives they contain. For example, an @file node is a node whose headline starts with @file, etc.
 
 .. index::
     pair:  @all; Glossary
@@ -7211,10 +7210,7 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 
 \@auto &lt;filename&gt;
 
-    Imports an external file into the Leo outline, splitting the file into
-    pieces if an importer exists for the give filetype. Importers presently
-    exist for the following languages: C, C++, C#, HTML, INI files, Java, PHP,
-    Pascal, Python and XML.
+    Imports an external file into the Leo outline, splitting the file into pieces if an importer exists for the give filetype. Importers presently exist for the following languages: C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
 
 .. index::
     pair: @c; Glossary
@@ -7239,8 +7235,7 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 
 \@clean
 
-    Creates an external file without sentinels. Section references and the
-    @all and @others directives are valid in @clean trees.
+    Creates an external file without sentinels. Section references and the @all and @others directives are valid in @clean trees.
 
 \@color
 
@@ -7287,20 +7282,14 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 
 \@file &lt;filename&gt;
 
-    Creates an external file containing sentinels. When writing @file
-    trees, Leo expands section references and @all and @others directives.
-
-    **Important**: @file is the recommended way to create and edit most files.
-    Using @file trees is **highly recommended** when sharing external files in
-    a collaborative environment.
+    Creates an external file containing sentinels. When writing @file trees, Leo expands section references and @all and @others directives. **Important**: @file is the recommended way to create and edit most files. Using @file trees is **highly recommended** when sharing external files in a collaborative environment.
 
 .. index::
     pair: @first; Glossary
 
 \@first &lt;text&gt;
 
-    The @first directive allows you to place one or more lines at the very start of an
-    external file, before the first sentinel. For example::
+    The @first directive allows you to place one or more lines at the *very start* of an external file, before the first sentinel. The @first directive must appear at the *very start* of body text. For example::
 
 	    @first #! /usr/bin/env python
 
@@ -7316,16 +7305,14 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 
 \@language &lt;language name&gt;
 
-    Specifies the source language, which affects syntax coloring and the
-    comments delimiters used in external files and syntax coloring.
+    Specifies the source language, which affects syntax coloring and the comments delimiters used in external files and syntax coloring.
 
 .. index::
     pair: @last; Glossary
 
 \@last &lt;text&gt;
 
-    Allows you to place lines at the very end of external files, after the last
-    sentinel. For example::
+    Allows you to place lines at the very end of external files, after the last sentinel. This directive must appear at the *very end* of body text. For example::
 
         @first &lt;?php
         ...
@@ -7886,7 +7873,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 \@first &lt;text&gt;
 
     Places lines at the very start of an external file, before any Leo
-    sentinels. @first lines must be the very first lines in an @&lt;file&gt; node.
+    sentinels. @first lines must be the *very first* lines in an @&lt;file&gt; node.
     More then one @first lines may appear.
 
     This creates two first lines, a shebang line and a Python encoding line::
@@ -7953,7 +7940,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
     Places lines at the very end of external files.
 
-    This directive must occur at the very end of top-level @&lt;file&gt; nodes. More
+    This directive must occur at the *very end* of top-level @&lt;file&gt; nodes. More
     than one @last directive may exist. For example::
 
         @first &lt;?php
@@ -14436,7 +14423,7 @@ The **@wrap** and **@nowrap** enable or disable line wrapping in the body pane::
     @nowrap
     @wrap
     
-The **@first** directive ensures that lines appear at the very start of an external file. See the next section. Multiple @first directives are allowed, and these directives must be the *very first* lines of body text::
+The **@first** directive ensures that lines appear at the very start of an external file. See the next section. Multiple @first directives are allowed. These directives must be the *very first* lines of body text::
 
     @first # -*- coding: utf-8 -*-
     @first #! /usr/bin/env python
@@ -21499,6 +21486,8 @@ if p:
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1">* Mention viewrendered plugin in tutorials.
 
+* Empasize that @first must be first, and @last must be last.
+
 - Add images to show enlarged icons.
 
 - Insert to-be-documented mail items
@@ -23147,7 +23136,7 @@ Of course, copied positions will typically become invalid when the outline chang
     if p is not None # Correct, Leo 5.5 and later.
     if p is None:    # Correct, Leo 5.5 and later.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
