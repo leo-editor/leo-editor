@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1234,9 +1234,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
-<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3186,48 +3183,6 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-</t>
-<t tx="ekr.20100131171342.5483">import os
-import sys
-
-trace = False
-
-python_interp = sys.executable
-test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","..")
-
-leo_file   = g.os_path_join(src_path,"launchLeo.py")
-batch_file = g.os_path_join(test_path,"batchTest.py")
-test_file  = g.os_path_join(test_path,"createdFile.txt")
-
-# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
-
-if 1:
-    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
-else:
-    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
-
-@others
-
-if trace:
-    print('@test batch mode: loadDir: %s' % g.app.loadDir)
-
-removeFile(test_file)
-os.system(command)
-
-assert(g.os_path_exists(test_file))
-</t>
-<t tx="ekr.20100131171342.5484">def removeFile(path):
-
-    trace = False
-
-    if os.path.exists(test_file):
-        if trace:
-            print("@test batch mode: removeFile: deleting",test_file)
-        os.remove(test_file)
-    else:
-        if trace:
-            print("@test batch mode: removeFile: not found:",test_file)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\

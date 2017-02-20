@@ -2067,14 +2067,19 @@ class RecursiveImportController(object):
         if trace: g.trace(sorted(files))
         dirs, files2 = [], []
         for f in files:
-            path = g.os_path_join(dir_, f, expanduser=False)
-            if trace: g.trace('is_file', g.os_path_isfile(path), path)
-            if g.os_path_isfile(path):
-                name, ext = g.os_path_splitext(f)
-                if ext in self.theTypes:
-                    files2.append(path)
-            elif self.recursive:
-                dirs.append(path)
+            path = f
+            try: # Fix #408.
+                path = g.os_path_join(dir_, f, expanduser=False)
+                if trace: g.trace('is_file', g.os_path_isfile(path), path)
+                if g.os_path_isfile(path):
+                    name, ext = g.os_path_splitext(f)
+                    if ext in self.theTypes:
+                        files2.append(path)
+                elif self.recursive:
+                    dirs.append(path)
+            except Exception:
+                g.es_print('Exception computing', path)
+                g.es_exception()
         if files2 or dirs:
             child = root.insertAsLastChild()
             child.h = dir_
@@ -2087,11 +2092,15 @@ class RecursiveImportController(object):
                 files2 = [files2[0]]
             if self.kind == '@edit':
                 for fn in files2:
-                    parent = child or root
-                    p = parent.insertAsLastChild()
-                    p.h = fn.replace('\\', '/')
-                    s, e = g.readFileIntoString(fn, encoding='utf-8', kind=self.kind)
-                    p.b = s
+                    try: # Fix #408
+                        parent = child or root
+                        p = parent.insertAsLastChild()
+                        p.h = fn.replace('\\', '/')
+                        s, e = g.readFileIntoString(fn, encoding='utf-8', kind=self.kind)
+                        p.b = s
+                    except Exception:
+                        g.es_print('Exception importing', fn)
+                        g.es_exception()
             elif self.kind == '@auto':
                 for fn in files2:
                     parent = child or root
@@ -2099,9 +2108,16 @@ class RecursiveImportController(object):
                     p.h = fn.replace('\\', '/')
                     p.clearDirty()
             else:
-                c.importCommands.importFilesCommand(files2, '@file',
-                    redrawFlag=False, shortFn=True)
-                    # '@auto','@clean','@nosent' cause problems.
+                root = c.p
+                for fn in files2:
+                    c.selectPosition(root)
+                    try: # Fix #408.
+                        c.importCommands.importFilesCommand(
+                            [fn], '@file', redrawFlag=False, shortFn=True)
+                            # '@auto','@clean','@nosent' cause problems.
+                    except Exception:
+                        g.es_print('Exception importing', fn)
+                        g.es_exception()
         if dirs:
             for dir_ in sorted(dirs):
                 self.import_dir(dir_, child)
