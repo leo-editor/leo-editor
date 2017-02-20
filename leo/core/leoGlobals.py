@@ -3388,6 +3388,39 @@ def find_word(s, word, i=0):
             i += len(word)
         assert progress < i
     return -1
+#@+node:ekr.20170220103251.1: *3* g.findRootWithPredicate
+def findRootsWithPredicate(c, root, predicate):
+    '''
+    Commands often want to find one or more **roots**, given a position p.
+    A root is the position of any node matching a predicate.
+    
+    This function formalizes the search order used by the pylint, pyflakes and
+    the rst3 commands, returning a list of zero or more found roots.
+    '''
+    roots = set()
+    # 1. Search p's tree.
+    for p in root.self_and_subtree():
+        if predicate(p):
+            roots.add(p.copy())
+    if roots:
+        return list(roots)
+    # 2. Look up the tree.
+    for p in root.parents():
+        if predicate(p):
+            return [p.copy()]
+    # 3. Expand the search if root is a clone.
+    clones = []
+    for p in root.self_and_parents():
+        if p.isCloned():
+            clones.append(p.v)
+    if clones:
+        for p in c.all_positions():
+            if predicate(p):
+                # Match if any node in p's tree matches any clone.
+                for p2 in p.self_and_subtree():
+                    if p2.v in clones:
+                        return [p.copy()]
+    return []
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helper
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
