@@ -1844,15 +1844,15 @@ class JEditColorizer(BaseColorizer):
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
-        # if False and tag != 'url':
-            # # Allow URL's *everywhere*.
-            # j = min(j, len(s))
-            # while i < j:
-                # if s[i].lower() in 'fh': # file|ftp|http|https
-                    # n = self.match_any_url(s, i)
-                    # i += max(1, n)
-                # else:
-                    # i += 1
+        if tag != 'url':
+            # Allow URL's *everywhere*.
+            j = min(j, len(s))
+            while i < j:
+                if s[i].lower() in 'fh': # file|ftp|http|https
+                    n = self.match_any_url(s, i)
+                    i += max(1, n)
+                else:
+                    i += 1
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     def mainLoop(self, n, s):
         '''Colorize a *single* line s, starting in state n.'''
