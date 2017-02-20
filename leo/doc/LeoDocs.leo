@@ -1512,12 +1512,6 @@
 <v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20170220112050.1"><vh>recent files</vh>
-<v t="ekr.20050830115714"></v>
-<v t="ekr.20091111112709.6672"></v>
-<v t="ekr.20100804133903.7250"></v>
-</v>
-<v t="ekr.20131008041326.16140"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21489,19 +21483,17 @@ if p:
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1">* Mention viewrendered plugin in tutorials.
 
-* Document predicates.
-* Document helpers for deleting outline nodes.
-
-* Empasize that @first must be first, and @last must be last.
+Cheat sheet:
+    - predicates.
+    - helper for deleting outline nodes.
+    - p.moveTo* methods change positions.
+    - p.copy()
+    - Revise docs for generators.
 
 - Add images to show enlarged icons.
 
 - Insert to-be-documented mail items
-
-- Revise cheat sheet:
-    - p.moveTo* methods change positions.
-    - Document p.copy()
-    - Revise documentation for generators.</t>
+</t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
 **Executive Summary**
@@ -23142,7 +23134,6 @@ Of course, copied positions will typically become invalid when the outline chang
     if p is not None # Correct, Leo 5.5 and later.
     if p is None:    # Correct, Leo 5.5 and later.
 </t>
-<t tx="ekr.20170220112050.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
