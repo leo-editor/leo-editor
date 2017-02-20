@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1517,6 +1517,7 @@
 <v t="ekr.20091111112709.6672"></v>
 <v t="ekr.20100804133903.7250"></v>
 </v>
+<v t="ekr.20131008041326.16140"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -17800,13 +17801,12 @@ It's super important to deal with new ideas *instantly* but *without* greatly in
 <t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
 automatically when Leo first starts.
 
-The typical usage is to start Leo with the --session-save
---session-restore command-line options, open several Leo files and exit.
+The typical usage is to start Leo with the ``--session-save --session-restore`` command-line options, open several Leo files and exit.
 
 The next time Leo is started with those options, the files will be
 open, and the nodes focused as when the previous session ended.
 
-Leo stores session state in ~/.leo/leo.session
+Leo stores session state in ``~/.leo/leo.session``
 </t>
 <t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
@@ -18731,7 +18731,7 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``session-snapshot-save``
     Saves a snapshot of the present session to the leo.session file.
 
-**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read @session nodes from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
+**About sessions**: An @session node specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. The ``--session-save`` and ``--session-restore`` command-line options write and read ``@session nodes`` from the leo.session file. The next time Leo is started with those options, the files will be open, and the nodes focused as when the previous session ended.
 </t>
 <t tx="ekr.20150318110552.34">.. _`Idle`: http://en.wikipedia.org/wiki/IDLE_%28Python%29
 .. _`Open Office`: https://www.openoffice.org/
@@ -23143,7 +23143,7 @@ Of course, copied positions will typically become invalid when the outline chang
     if p is None:    # Correct, Leo 5.5 and later.
 </t>
 <t tx="ekr.20170220112050.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
