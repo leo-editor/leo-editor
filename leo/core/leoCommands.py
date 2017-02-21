@@ -661,13 +661,11 @@ class Commands(object):
     #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
     #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
     @cmd('reload-settings')
-    @cmd('reload-abbreviations')
     def reloadSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
         self.reloadSettingsHelper(all=False)
         
     @cmd('reload-all-settings')
-    @cmd('reload-all-abbreviations')
     def reloadAllSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
         self.reloadSettingsHelper(all=True)
