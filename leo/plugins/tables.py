@@ -141,7 +141,7 @@ class TableController (object):
                         return i_row1, s1, lines[i1:i]
             # The end of the enumeration.
             if i_row1 == len(lines) and starts_row1 and not i1:
-                g.trace('FOUND-end', i1, i)
+                g.trace('FOUND-end', i1)
                 return i_row1, s1, [s1]
             elif i1 is None or i2 is None:
                 if trace and trace_fail: g.trace('end', repr(i1), repr(i2))
