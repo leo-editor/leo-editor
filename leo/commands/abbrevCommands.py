@@ -49,17 +49,23 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self):
         '''AbbrevCommandsClass.finishCreate.'''
-        c = self.c
-        self.init_settings()
-        self.init_abbrev()
-        self.init_tree_abbrev()
-        self.init_env()
+        self.reload_settings()
         if 0: # Annoying.
+            c = self.c
             if (not g.app.initing and not g.unitTesting and
                 not g.app.batchMode and not c.gui.isNullGui
             ):
                 g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
-    #@+node:ekr.20150514043850.6: *5* abbrev.init_abbrev
+    #@+node:ekr.20170221035644.1: *5* abbrev.reload_settings & helpers
+    def reload_settings(self):
+        '''Reload all abbreviation settings.'''
+        self.abbrevs = {}
+        self.init_settings()
+        self.init_abbrev()
+        self.init_tree_abbrev()
+        self.init_env()
+
+    #@+node:ekr.20150514043850.6: *6* abbrev.init_abbrev
     def init_abbrev(self):
         '''
         Init the user abbreviations from @data global-abbreviations
@@ -95,7 +101,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if c.config.getString("abbreviations-next-placeholder"):
             self.addAbbrevHelper("%s=__NEXT_PLACEHOLDER" %
                 c.config.getString("abbreviations-next-placeholder"), 'global')
-    #@+node:ekr.20150514043850.7: *5* abbrev.init_env
+    #@+node:ekr.20150514043850.7: *6* abbrev.init_env
     def init_env(self):
         '''
         Init c.abbrev_subst_env by executing the contents of the
@@ -131,7 +137,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         else:
             c.abbrev_subst_start = False
-    #@+node:ekr.20150514043850.8: *5* abbrev.init_settings
+    #@+node:ekr.20150514043850.8: *6* abbrev.init_settings
     def init_settings(self):
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
@@ -148,7 +154,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
         self.subst_env = c.config.getData('abbreviations-subst-env', strip_data=False)
-    #@+node:ekr.20150514043850.9: *5* abbrev.init_tree_abbrev
+    #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
         trace = False
@@ -203,9 +209,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             else:
                 g.trace(fn, sorted(d.keys()))
         self.tree_abbrevs_d = d
-    #@+node:ekr.20150514043850.10: *4* abbrev.reloadAbbreviations
-    def reloadAbbreviations(self):
-        '''Reload all abbreviations from all files.'''
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''
@@ -691,6 +694,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.25: *4* abbrev.addAbbrevHelper
     def addAbbrevHelper(self, s, tag=''):
         '''Enter the abbreviation 's' into the self.abbrevs dict.'''
+        trace = False and not g.unitTesting
         if not s.strip():
             return
         try:
@@ -705,6 +709,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if old and old != val and not g.unitTesting:
                 g.es_print('redefining abbreviation', name,
                     '\nfrom', repr(old), 'to', repr(val))
+            if trace:
+                val1 = val if val.find('\n') == -1 else g.splitLines(val)[0]+'...'
+                g.trace('%12s %r' % (name, g.truncate(val1,80)))
             d[name] = val, tag
         except ValueError:
             g.es_print('bad abbreviation: %s' % s)
@@ -719,7 +726,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         '''List all abbreviations.'''
         d = self.abbrevs
         if d:
-            g.es('Abbreviations...')
+            g.es_print('Abbreviations...')
             keys = list(d.keys())
             keys.sort()
             for name in keys:
@@ -727,9 +734,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 val = val.replace('\n', '\\n')
                 tag = tag or ''
                 tag = tag + ': ' if tag else ''
-                g.es('', '%s%s=%s' % (tag, name, val))
+                g.es_print('', '%s%s=%s' % (tag, name, val))
         else:
-            g.es('No present abbreviations')
+            g.es_print('No present abbreviations')
     #@+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
     def toggleAbbrevMode(self, event=None):

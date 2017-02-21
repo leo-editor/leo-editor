@@ -6248,6 +6248,789 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+.. @+node:ekr.20170221033229.1: ** Unused files
+.. @+node:ekr.20150514040234.1: *3* COPY  ../commands/registerCommands.py
+@first # -*- coding: utf-8 -*-
+'''Leo's register commands.'''
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+
+def cmd(name):
+    '''Command decorator for the RegisterCommandsClass class.'''
+    return g.new_cmd_decorator(name, ['c', 'registerCommands',])
+
+@others
+.. @+node:ekr.20160514120143.1: *4* class RegisterCommandsClass
+class RegisterCommandsClass(BaseEditCommandsClass):
+    '''Create registers a-z and the corresponding Emacs commands.'''
+    @others
+.. @+node:ekr.20150514063305.463: *5* register.ctor
+def __init__(self, c):
+    '''Ctor for RegisterCommandsClass class.'''
+    # pylint: disable=super-init-not-called
+    self.c = c
+    self.methodDict, self.helpDict = self.addRegisterItems()
+    # Init these here to keep pylint happy.
+    self.method = None
+    self.registerMode = 0 # Must be an int.
+    self.registers = g.app.globalRegisters
+.. @+node:ekr.20150514063305.465: *5* register.addRegisterItems
+def addRegisterItems(self):
+    methodDict = {
+        '+': self.incrementRegister,
+        ' ': self.pointToRegister,
+        'a': self.appendToRegister,
+        'i': self.insertRegister,
+        'j': self.jumpToRegister,
+        # 'n':        self.numberToRegister,
+        'p': self.prependToRegister,
+        'r': self.copyRectangleToRegister,
+        's': self.copyToRegister,
+        'v': self.viewRegister,
+    }
+    helpDict = {
+        's': 'copy to register',
+        'i': 'insert from register',
+        '+': 'increment register',
+        'n': 'number to register',
+        'p': 'prepend to register',
+        'a': 'append to register',
+        ' ': 'point to register',
+        'j': 'jump to register',
+        'r': 'rectangle to register',
+        'v': 'view register',
+    }
+    return methodDict, helpDict
+.. @+node:ekr.20150514063305.466: *5* register.checkBodySelection
+def checkBodySelection(self, warning='No text selected'):
+    return self._chckSel(event=None, warning=warning)
+.. @+node:ekr.20150514063305.467: *5* register.Entries
+.. @+node:ekr.20150514063305.468: *6* appendToRegister
+@cmd('register-append-to')
+def appendToRegister(self, event):
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'append-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Append to Register: ')
+        k.setState(tag, 1, self.appendToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                key = char.lower()
+                val = self.registers.get(key, '')
+                val = val + w.getSelectedText()
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.469: *6* prependToRegister
+@cmd('register-prepend-to')
+def prependToRegister(self, event):
+    '''Prompt for a register name and prepend the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'prepend-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Prepend to Register: ')
+        k.setState(tag, 1, self.prependToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                key = char.lower()
+                val = self.registers.get(key, '')
+                val = w.getSelectedText() + val
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.470: *6* copyRectangleToRegister
+@cmd('register-copy-rectangle-to')
+def copyRectangleToRegister(self, event):
+    '''
+    Prompt for a register name and append the rectangle defined by selected
+    text to the register's contents.
+    '''
+    c, k = self.c, self.c.k
+    state = k.getState('copy-rect-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        self.w = self.editWidget(event)
+        if self.w:
+            k.commandName = 'copy-rectangle-to-register'
+            k.setLabelBlue('Copy Rectangle To Register: ')
+            k.setState('copy-rect-to-reg', 1, self.copyRectangleToRegister)
+    elif self.checkBodySelection('No rectangle selected'):
+        k.clearState()
+        if char.isalpha():
+            key = char.lower()
+            w = self.w
+            c.widgetWantsFocusNow(w)
+            r1, r2, r3, r4 = self.getRectanglePoints(w)
+            rect = []
+            while r1 <= r3:
+                txt = w.get('%s.%s' % (r1, r2), '%s.%s' % (r1, r4))
+                rect.append(txt)
+                r1 = r1 + 1
+            self.registers[key] = rect
+            k.setLabelGrey('Register %s = %s' % (key, repr(rect)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.471: *6* copyToRegister
+@cmd('register-copy-to')
+def copyToRegister(self, event):
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+    c, k = self.c, self.c.k
+    tag = 'copy-to-register'
+    state = k.getState(tag)
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = tag
+        k.setLabelBlue('Copy to Register: ')
+        k.setState(tag, 1, self.copyToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if char.isalpha():
+                key = char.lower()
+                w = c.frame.body.wrapper
+                c.bodyWantsFocus()
+                val = w.getSelectedText()
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.472: *6* incrementRegister
+@cmd('register-increment')
+def incrementRegister(self, event):
+    '''Prompt for a register name and increment its value if it has a numeric value.'''
+    c, k = self.c, self.c.k
+    state = k.getState('increment-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.setLabelBlue('Increment register: ')
+        k.setState('increment-reg', 1, self.incrementRegister)
+    else:
+        k.clearState()
+        if self.checkIfRectangle(event):
+            pass # Error message is in the label.
+        elif char.isalpha():
+            key = char.lower()
+            val = self.registers.get(key, 0)
+            try:
+                val = str(int(val) + 1)
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+            except ValueError:
+                k.setLabelGrey("Can't increment register %s = %s" % (key, val))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.473: *6* insertRegister
+@cmd('register-insert')
+def insertRegister(self, event):
+    '''Prompt for a register name and and insert the value of another register into its contents.'''
+    c, k = self.c, self.c.k
+    state = k.getState('insert-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'insert-register'
+        k.setLabelBlue('Insert register: ')
+        k.setState('insert-reg', 1, self.insertRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            key = char.lower()
+            val = self.registers.get(key)
+            if val:
+                if isinstance(val, list):
+                    c.rectangleCommands.yankRectangle(val)
+                else:
+                    i = w.getInsertPoint()
+                    w.insert(i, val)
+                k.setLabelGrey('Inserted register %s' % key)
+            else:
+                k.setLabelGrey('Register %s is empty' % key)
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.474: *6* jumpToRegister
+@cmd('register-jump-to')
+def jumpToRegister(self, event):
+    '''Prompt for a register name and set the insert point to the value in its register.'''
+    c, k = self.c, self.c.k
+    state = k.getState('jump-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.setLabelBlue('Jump to register: ')
+        k.setState('jump-to-reg', 1, self.jumpToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            if self.checkIfRectangle(event): return
+            key = char.lower()
+            val = self.registers.get(key)
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            if val:
+                try:
+                    w.setInsertPoint(val)
+                    k.setLabelGrey('At %s' % repr(val))
+                except Exception:
+                    k.setLabelGrey('Register %s is not a valid location' % key)
+            else:
+                k.setLabelGrey('Register %s is empty' % key)
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.475: *6* numberToRegister (not used)
+@
+C-u number C-x r n reg
+    Store number into register reg (number-to-register).
+C-u number C-x r + reg
+    Increment the number in register reg by number (increment-register).
+C-x r g reg
+    Insert the number from register reg into the buffer.
+@c
+
+def numberToRegister(self, event):
+    k = self.c.k
+    state = k.getState('number-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'number-to-register'
+        k.setLabelBlue('Number to register: ')
+        k.setState('number-to-reg', 1, self.numberToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            # self.registers[char.lower()] = str(0)
+            k.setLabelGrey('number-to-register not ready yet.')
+        else:
+            k.setLabelGrey('Register must be a letter')
+.. @+node:ekr.20150514063305.476: *6* pointToRegister
+@cmd('register-point-to')
+def pointToRegister(self, event):
+    '''Prompt for a register name and put a value indicating the insert point in the register.'''
+    c, k = self.c, self.c.k
+    state = k.getState('point-to-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'point-to-register'
+        k.setLabelBlue('Point to register: ')
+        k.setState('point-to-reg', 1, self.pointToRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            w = c.frame.body.wrapper
+            c.bodyWantsFocus()
+            key = char.lower()
+            val = w.getInsertPoint()
+            self.registers[key] = val
+            k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514063305.477: *6* viewRegister
+@cmd('register-view')
+def viewRegister(self, event):
+    '''Prompt for a register name and print its contents.'''
+    c, k = self.c, self.c.k
+    state = k.getState('view-reg')
+    char = event and event.char or ''
+    if state == 0:
+        k.commandName = 'view-register'
+        k.setLabelBlue('View register: ')
+        k.setState('view-reg', 1, self.viewRegister)
+    else:
+        k.clearState()
+        if char.isalpha():
+            key = char.lower()
+            val = self.registers.get(key)
+            k.setLabelGrey('Register %s = %s' % (key, repr(val)))
+        else:
+            k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+.. @+node:ekr.20150514043714.12: *5* register.checkIfRectangle
+def checkIfRectangle(self, event):
+    k = self.c.k
+    key = event and event.char.lower() or ''
+    val = self.registers.get(key)
+    if isinstance(val, list):
+        k.clearState()
+        k.setLabelGrey("Register contains Rectangle, not text")
+        return True
+    else:
+        return False
+.. @+node:ekr.20150514040144.1: *3* COPY ../commands/macroCommands.py
+@first # -*- coding: utf-8 -*-
+'''Leo's macros commands.'''
+<< imports >>
+
+def cmd(name):
+    '''Command decorator for the MacroCommandsClass class.'''
+    return g.new_cmd_decorator(name, ['c', 'macroCommands',])
+
+@others
+.. @+node:ekr.20150514050425.1: *4* << imports >> (macroCommands.py)
+import leo.core.leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+.. @+node:ekr.20160514120837.1: *4* class MacroCommandsClass
+class MacroCommandsClass(BaseEditCommandsClass):
+    '''Records, plays, saves and restores keyboard macros.'''
+    @others
+.. @+node:ekr.20150514063305.432: *5* macro.ctor
+def __init__(self, c):
+    '''Ctor for MacroCommandsClass class.'''
+    # pylint: disable=super-init-not-called
+    self.c = c
+    self.lastMacro = None
+    self.macros = []
+    self.macro = []
+    self.namedMacros = {}
+    # Important: we must not interfere with k.state in startRecordingMacro!
+    self.recordingMacro = False
+.. @+node:ekr.20150514063305.434: *5* callLastMacro
+# Called from universal-command.
+
+@cmd('macro-call-last')
+def callLastMacro(self, event=None):
+    '''Call the last recorded keyboard macro.'''
+    # g.trace(self.lastMacro)
+    if self.lastMacro:
+        self.executeMacro(self.lastMacro)
+.. @+node:ekr.20150514063305.435: *5* callNamedMacro
+@cmd('macro-call')
+def callNamedMacro(self, event):
+    '''Prompts for a macro name, then executes it.'''
+    k = self.c.k
+    k.setLabelBlue('Call macro named: ')
+    k.get1Arg(event, handler=self.callNamedMacro1)
+        
+def callNamedMacro1(self, event):
+    k = self.c.k
+    macro = self.namedMacros.get(k.arg)
+    # Must do this first!
+    k.clearState()
+    if macro:
+        self.executeMacro(macro)
+    else:
+        g.es('no macro named %s' % k.arg)
+        k.resetLabel()
+.. @+node:ekr.20150514063305.436: *5* completeMacroDef
+def completeMacroDef(self, name, macro):
+    '''
+    Add the macro to the list of macros, and add the macro's name to
+    c.commandsDict.
+    '''
+    # Called from loadFile and nameLastMacro.
+    trace = False and not g.unitTesting
+    c = self.c
+    if trace:
+        g.trace('macro::%s' % (name))
+        for event in macro:
+            g.trace(event.stroke)
+
+    def func(event, macro=macro):
+        return self.executeMacro(macro)
+
+    if name in c.commandsDict:
+        g.es_print('over-riding command: %s' % (name))
+    else:
+        g.es_print('loaded: %s' % (name))
+    c.commandsDict[name] = func
+    self.namedMacros[name] = macro
+.. @+node:ekr.20150514063305.437: *5* endMacro
+@cmd('macro-end-recording')
+def endMacro(self, event=None):
+    '''Stops recording a macro.'''
+    k = self.c.k
+    self.recordingMacro = False
+        # Tell k.masterKeyHandler and k.masterCommandHandler we are done.
+    if self.macro:
+        # self.macro = self.macro [: -4]
+        self.macros.insert(0, self.macro)
+        self.lastMacro = self.macro[:]
+        self.macro = []
+        k.setLabelBlue('Keyboard macro defined, not named')
+        # g.es('Keyboard macro defined, not named')
+    else:
+        k.setLabelBlue('Empty keyboard macro')
+        # g.es('Empty keyboard macro')
+.. @+node:ekr.20150514063305.438: *5* executeMacro
+def executeMacro(self, macro):
+    trace = False and not g.unitTesting
+    c, k = self.c, self.c.k
+    c.bodyWantsFocus()
+    for event in macro:
+        if trace: g.trace(repr(event))
+        k.masterKeyHandler(event)
+.. @+node:ekr.20150514063305.439: *5* getMacrosNode
+def getMacrosNode(self):
+    '''Return the position of the @macros node.'''
+    c = self.c
+    for p in c.all_unique_positions():
+        if p.h == '@macros':
+            return p
+    # Not found.
+    for p in c.all_unique_positions():
+        if p.h == '@settings':
+            # Create as the last child of the @settings node.
+            p2 = p.insertAsLastChild()
+            break
+    else:
+        # Create as the root node.
+        oldRoot = c.rootPosition()
+        p2 = oldRoot.insertAfter()
+        p2.moveToRoot(oldRoot)
+    c.setHeadString(p2, '@macros')
+    g.es_print('Created: %s' % p2.h)
+    c.redraw()
+    return p2
+.. @+node:ekr.20150514063305.440: *5* getWidgetName
+def getWidgetName(self, obj):
+    if not obj:
+        return ''
+    if hasattr(obj, 'objectName'):
+        return obj.objectName()
+    if hasattr(obj, 'widget'):
+        if hasattr(obj.widget, 'objectName'):
+            return obj.widget.objectName()
+    return ''
+.. @+node:ekr.20150514063305.441: *5* loadMacros
+@cmd('macro-load-all')
+def loadMacros(self, event=None):
+    '''Load macros from the @macros node.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    create_event = g.app.gui.create_key_event
+    p = self.getMacrosNode()
+
+    def oops(message):
+        g.trace(message)
+
+    lines = g.splitLines(p.b)
+    i = 0
+    macro = []; name = None
+    while i < len(lines):
+        progress = i
+        s = lines[i].strip()
+        i += 1
+        if s.startswith('::') and s.endswith('::'):
+            name = s[2: -2]
+            if name:
+                macro = []
+                while i < len(lines):
+                    s = lines[i].strip()
+                    if trace: g.trace(repr(name), repr(s))
+                    if s:
+                        stroke = s
+                        char = c.k.stroke2char(stroke)
+                        w = c.frame.body.wrapper
+                        macro.append(create_event(c, char, stroke, w))
+                        i += 1
+                    else: break
+                # Create the entries.
+                if macro:
+                    self.completeMacroDef(name, macro)
+                    macro = []; name = None
+                else:
+                    oops('empty expansion for %s' % (name))
+        elif s:
+            if s.startswith('#') or s.startswith('@'):
+                pass
+            else:
+                oops('ignoring line: %s' % (repr(s)))
+        else: pass
+        assert progress < i
+    # finish of the last macro.
+    if macro:
+        self.completeMacroDef(name, macro)
+.. @+node:ekr.20150514063305.442: *5* nameLastMacro
+@cmd('macro-name-last')
+def nameLastMacro(self, event):
+    '''Prompts for the name to be given to the last recorded macro.'''
+    k = self.c.k
+    k.setLabelBlue('Name of macro: ')
+    k.get1Arg(event, handler=self.nameLastMacro1)
+        
+def nameLastMacro1(self, event):
+    k = self.c.k
+    k.clearState()
+    name = k.arg
+    self.completeMacroDef(name, self.lastMacro)
+    k.setLabelGrey('Macro defined: %s' % name)
+
+.. @+node:ekr.20150514063305.443: *5* printMacros & printLastMacro
+@cmd('macro-print-all')
+def printMacros(self, event=None):
+    '''Prints the name and definition of all named macros.'''
+    names = list(self.namedMacros.keys())
+    if names:
+        names.sort()
+        print('macros', names)
+        # g.es('\n'.join(names),tabName='Macros')
+    else:
+        g.es('no macros')
+
+@cmd('macro-print-last')
+def printLastMacro(self, event=None):
+    '''Print the last (unnamed) macro.'''
+    if self.lastMacro:
+        for event in self.lastMacro:
+            g.es(repr(event.stroke))
+.. @+node:ekr.20150514063305.444: *5* saveMacros
+@cmd('macro-save-all')
+def saveMacros(self, event=None):
+    '''Store macros in the @macros node..'''
+    p = self.getMacrosNode()
+    result = []
+    # g.trace(list(self.namedMacros.keys()))
+    for name in self.namedMacros:
+        macro = self.namedMacros.get(name)
+        result.append('::%s::' % (name))
+        for event in macro:
+            if 0:
+                w_name = self.getWidgetName(event.w)
+                result.append('%s::%s::%s' % (repr(event.char), event.stroke, w_name))
+            result.append(event.stroke)
+        result.append('') # Blank line terminates
+    p.b = '\n'.join(result)
+.. @+node:ekr.20150514063305.445: *5* startRecordingMacro
+@cmd('macro-start-recording')
+def startRecordingMacro(self, event):
+    '''Start recording or continue to record a macro.'''
+    trace = False and not g.unitTesting
+    k = self.c.k
+    if event:
+        if self.recordingMacro:
+            if trace: g.trace('stroke', event.stroke)
+            self.macro.append(event)
+        else:
+            self.recordingMacro = True
+            k.setLabelBlue('Recording macro. ctrl-g to end...', protect=True)
+            # g.es('Recording macro. ctrl-g to end...')
+    else:
+        g.trace('can not happen: no event')
+.. @+node:ekr.20170123092100.1: *3* COPY ../plugins/qt_big_text.py
+"""Leo aware Qt Dialog for delaying loading of big text"""
+import leo.core.leoGlobals as g
+from leo.core.leoQt import QtWidgets
+import leo.plugins.qt_text as qt_text
+@others
+@language python
+@tabwidth -4
+@pagewidth 70
+.. @+node:ekr.20170123092100.2: *4* class BigTextController
+class BigTextController(object):
+    @others
+.. @+node:ekr.20170123092100.3: *5* btc.__init__
+def __init__(self, c):
+    '''Ctor for BigTextController.'''
+    self.active_flag = None # True: warning text/buttons are visible.
+    self.c = c
+    self.inhibit = set() # Set of inhibited vnodes.
+    self.layout = None
+    self.old_p = None
+    self.old_w = None # A LeoQTextBrowser.
+    self.p = None
+    self.parent = None
+    self.s = None
+    self.w = None
+.. @+node:ekr.20170123092100.4: *5* btc.add_buttons
+def add_buttons(self, old_p, p):
+    '''Init the big text controller for node p.'''
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    parent = w.parent() # A QWidget
+    layout = parent.layout()
+    # Set ivars
+    self.active_flag = True
+    self.layout = layout
+    self.old_p = old_p
+    self.old_w = w # A LeoQTextBrowser.
+    self.p = p
+    self.parent = parent
+    self.s = p.b
+    self.widgets = {}
+        # Keys are strings, values are buttons.
+    if p.v not in self.inhibit:
+        self.create_widgets()
+            # Create the big-text widgets.
+    # g.trace('----- (LeoBigTextDialog)',len(self.s),self.w)
+.. @+node:ekr.20170123092100.5: *5* btc.create_widgets
+def create_widgets(self):
+    '''Create the big-text buttons and text warning area.'''
+    c = self.c
+    self.active_flag = True
+    warning = self.warning_message()
+    if 1: # essential
+        self.old_w.setPlainText(self.p.b)
+    else: # can lose data.
+        self.old_w.setPlainText(
+            '@nocolor-node\n\nBig text not loaded: %s characters. Limit is %s' % (
+            len(self.p.b), c.max_pre_loaded_body_chars))
+    self.w = w = QtWidgets.QWidget() # No parent needed.
+    layout = QtWidgets.QVBoxLayout() # No parent needed.
+    w.setLayout(layout)
+    w.text = tw = QtWidgets.QTextBrowser()
+    tw.setText(warning)
+    tw.setObjectName('bigtextwarning')
+    self.widgets['bigtextwarning'] = tw
+    layout.addWidget(tw)
+    table = [
+            ('remove', 'Remove These Buttons', self.remove),
+            ('load_nc', 'Load Text With @killcolor', self.load_nc),
+            ('more', 'Double limit for this session', self.more),
+            ('copy', 'Copy body to clipboard', self.copy),
+    ]
+    if self.s.startswith('@killcolor'):
+        del table[1]
+    for key, label, func in table:
+        self.widgets[key] = button = QtWidgets.QPushButton(label)
+        layout.addWidget(button)
+
+        def button_callback(checked, func=func):
+            func()
+
+        button.clicked.connect(button_callback)
+    # layout.addItem(QtWidgets.QSpacerItem(
+        # 10, 10, vPolicy=QtWidgets.QSizePolicy.Expanding))
+    self.layout.addWidget(w)
+    w.show()
+.. @+node:ekr.20170123092100.6: *5* btc.copy
+def copy(self):
+    '''Copy self.s (c.p.b) to the clipboard.'''
+    g.app.gui.replaceClipboardWith(self.s)
+.. @+node:ekr.20170123092100.7: *5* btc.go_away
+def go_away(self):
+    '''Delete all buttons and self.'''
+    # g.trace(self.w or 'None')
+    self.active_flag = False
+    c = self.c
+    if self.w:
+        # Does not work.
+        # self.old_w.setPlainText(self.p.b)
+        self.layout.removeWidget(self.w)
+        self.w.deleteLater()
+        self.w = None
+    c.bodyWantsFocusNow()
+.. @+node:ekr.20170123092100.8: *5* btc.is_qt_body
+def is_qt_body(self):
+    '''Return True if the body widget is a QTextEdit.'''
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    val = isinstance(w, qt_text.LeoQTextBrowser)
+        # c.frame.body.wrapper.widget is a LeoQTextBrowser.
+        # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
+    # g.trace(self.c.shortFileName(),val)
+    return val
+.. @+node:ekr.20170123092100.9: *5* btc.is_big_text
+def is_big_text(self, p):
+    '''True if p.b is large and the text widget supports big text buttons.'''
+    c = self.c
+    if c.max_pre_loaded_body_chars > 0:
+        wrapper = c.frame.body.wrapper
+        w = wrapper and wrapper.widget
+        val = w and len(p.b) > c.max_pre_loaded_body_chars
+    else:
+        val = False
+    # g.trace(c.shortFileName(),p.h,val)
+    return val
+.. @+node:ekr.20170123092100.10: *5* btc.load_nc
+def load_nc(self):
+    '''Load the big text with a leading @killcolor directive.'''
+    c, p = self.c, self.c.p
+    if not c.positionExists(p):
+        return
+    self.wait_message()
+    # Recreate the entire select code.
+    tag = "@killcolor\n"
+    if not p.b.startswith(tag):
+        p.b = tag + p.b
+    w = self.c.frame.body.wrapper
+    self.go_away()
+    w.setInsertPoint(0)
+    w.seeInsertPoint()
+    c.bodyWantsFocusNow()
+    c.recolor_now()
+.. @+node:ekr.20170123092100.11: *5* btc.more
+def more(self):
+    '''
+    Double the big text limit for this session.
+    Load the text if the text is less than this limit.
+    '''
+    c = self.c
+    c.max_pre_loaded_body_chars *= 2
+    if len(c.p.b) < c.max_pre_loaded_body_chars:
+        self.wait_message()
+        self.inhibit.add(c.p.v)
+        self.go_away()
+        c.selectPosition(self.p)
+    else:
+        tw = self.widgets.get('bigtextwarning')
+        tw.setText(self.warning_message())
+        g.es('limit is now: %s' % c.max_pre_loaded_body_chars)
+.. @+node:ekr.20170123092100.12: *5* btc.remove
+def remove(self):
+    '''Remove the buttons and inhibit them hereafter.'''
+    c = self.c
+    self.inhibit.add(c.p.v)
+    self.go_away()
+.. @+node:ekr.20170123092100.13: *5* btc.should_add_buttons
+def should_add_buttons(self, old_p, p):
+    '''Return True if big-text buttons should be added.'''
+    if g.app.unitTesting:
+        return False # Don't add buttons during testing.
+    if self.c.undoer.undoing:
+        return False # Suppress buttons during undo.
+    if self.active_flag:
+        return False # Buttons already created.
+    if p.v in self.inhibit:
+        return False # Buttons are inhibited for this vnode.
+    return self.is_big_text(p) and self.is_qt_body()
+.. @+node:ekr.20170123092100.14: *5* btc.should_go_away
+def should_go_away(self, p):
+    '''Return True if big-text buttons should be removed.'''
+    if self.c.undoer.undoing:
+        return False # Suppress buttons during undo.
+    else:
+        return self.active_flag and not self.is_big_text(p)
+.. @+node:ekr.20170123092100.15: *5* btc.wait_message
+def wait_message(self):
+    '''Issue a message asking the user to wait until all text loads.'''
+    g.es(
+        "Loading large text, please wait\n"
+        "until scrollbar stops shrinking", color='red')
+.. @+node:ekr.20170123092100.16: *5* btc.warning_message
+def warning_message(self):
+    '''Return the warning message.'''
+    c = self.c
+    s = '''\
+Loading big text: %s characters. Limit is %s.
+
+Beware of a Qt bug: You will **lose data** if you change the text
+before it is fully loaded (before the scrollbar stops moving).
+
+To disable these buttons set @int max-pre-loaded-body-chars = 0
+'''
+    s = s.rstrip() % (len(self.s), c.max_pre_loaded_body_chars)
+    return g.adjustTripleString(s, c.tab_width)
 .. @+node:ekr.20161022035203.1: ** Test code: do not delete
 .. @+node:ekr.20150530203147.1: *3* @@button TEST PTB
 r'''The script to test AddTokensToTree class.'''
@@ -22974,460 +23757,6 @@ def numberCommand9(self, event):
 .. @+node:ekr.20170123145629.9: *7* @item macro-&load-&all
 .. @+node:ekr.20170123145629.10: *7* @item macro-&print-all
 .. @+node:ekr.20170123145629.11: *7* @item macro-&save-all
-.. @+node:ekr.20150514040144.1: *3* COPY ../commands/macroCommands.py
-@first # -*- coding: utf-8 -*-
-'''Leo's macros commands.'''
-<< imports >>
-
-def cmd(name):
-    '''Command decorator for the MacroCommandsClass class.'''
-    return g.new_cmd_decorator(name, ['c', 'macroCommands',])
-
-@others
-.. @+node:ekr.20150514050425.1: *4* << imports >> (macroCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-.. @+node:ekr.20160514120837.1: *4* class MacroCommandsClass
-class MacroCommandsClass(BaseEditCommandsClass):
-    '''Records, plays, saves and restores keyboard macros.'''
-    @others
-.. @+node:ekr.20150514063305.432: *5* macro.ctor
-def __init__(self, c):
-    '''Ctor for MacroCommandsClass class.'''
-    # pylint: disable=super-init-not-called
-    self.c = c
-    self.lastMacro = None
-    self.macros = []
-    self.macro = []
-    self.namedMacros = {}
-    # Important: we must not interfere with k.state in startRecordingMacro!
-    self.recordingMacro = False
-.. @+node:ekr.20150514063305.434: *5* callLastMacro
-# Called from universal-command.
-
-@cmd('macro-call-last')
-def callLastMacro(self, event=None):
-    '''Call the last recorded keyboard macro.'''
-    # g.trace(self.lastMacro)
-    if self.lastMacro:
-        self.executeMacro(self.lastMacro)
-.. @+node:ekr.20150514063305.435: *5* callNamedMacro
-@cmd('macro-call')
-def callNamedMacro(self, event):
-    '''Prompts for a macro name, then executes it.'''
-    k = self.c.k
-    k.setLabelBlue('Call macro named: ')
-    k.get1Arg(event, handler=self.callNamedMacro1)
-        
-def callNamedMacro1(self, event):
-    k = self.c.k
-    macro = self.namedMacros.get(k.arg)
-    # Must do this first!
-    k.clearState()
-    if macro:
-        self.executeMacro(macro)
-    else:
-        g.es('no macro named %s' % k.arg)
-        k.resetLabel()
-.. @+node:ekr.20150514063305.436: *5* completeMacroDef
-def completeMacroDef(self, name, macro):
-    '''
-    Add the macro to the list of macros, and add the macro's name to
-    c.commandsDict.
-    '''
-    # Called from loadFile and nameLastMacro.
-    trace = False and not g.unitTesting
-    c = self.c
-    if trace:
-        g.trace('macro::%s' % (name))
-        for event in macro:
-            g.trace(event.stroke)
-
-    def func(event, macro=macro):
-        return self.executeMacro(macro)
-
-    if name in c.commandsDict:
-        g.es_print('over-riding command: %s' % (name))
-    else:
-        g.es_print('loaded: %s' % (name))
-    c.commandsDict[name] = func
-    self.namedMacros[name] = macro
-.. @+node:ekr.20150514063305.437: *5* endMacro
-@cmd('macro-end-recording')
-def endMacro(self, event=None):
-    '''Stops recording a macro.'''
-    k = self.c.k
-    self.recordingMacro = False
-        # Tell k.masterKeyHandler and k.masterCommandHandler we are done.
-    if self.macro:
-        # self.macro = self.macro [: -4]
-        self.macros.insert(0, self.macro)
-        self.lastMacro = self.macro[:]
-        self.macro = []
-        k.setLabelBlue('Keyboard macro defined, not named')
-        # g.es('Keyboard macro defined, not named')
-    else:
-        k.setLabelBlue('Empty keyboard macro')
-        # g.es('Empty keyboard macro')
-.. @+node:ekr.20150514063305.438: *5* executeMacro
-def executeMacro(self, macro):
-    trace = False and not g.unitTesting
-    c, k = self.c, self.c.k
-    c.bodyWantsFocus()
-    for event in macro:
-        if trace: g.trace(repr(event))
-        k.masterKeyHandler(event)
-.. @+node:ekr.20150514063305.439: *5* getMacrosNode
-def getMacrosNode(self):
-    '''Return the position of the @macros node.'''
-    c = self.c
-    for p in c.all_unique_positions():
-        if p.h == '@macros':
-            return p
-    # Not found.
-    for p in c.all_unique_positions():
-        if p.h == '@settings':
-            # Create as the last child of the @settings node.
-            p2 = p.insertAsLastChild()
-            break
-    else:
-        # Create as the root node.
-        oldRoot = c.rootPosition()
-        p2 = oldRoot.insertAfter()
-        p2.moveToRoot(oldRoot)
-    c.setHeadString(p2, '@macros')
-    g.es_print('Created: %s' % p2.h)
-    c.redraw()
-    return p2
-.. @+node:ekr.20150514063305.440: *5* getWidgetName
-def getWidgetName(self, obj):
-    if not obj:
-        return ''
-    if hasattr(obj, 'objectName'):
-        return obj.objectName()
-    if hasattr(obj, 'widget'):
-        if hasattr(obj.widget, 'objectName'):
-            return obj.widget.objectName()
-    return ''
-.. @+node:ekr.20150514063305.441: *5* loadMacros
-@cmd('macro-load-all')
-def loadMacros(self, event=None):
-    '''Load macros from the @macros node.'''
-    trace = False and not g.unitTesting
-    c = self.c
-    create_event = g.app.gui.create_key_event
-    p = self.getMacrosNode()
-
-    def oops(message):
-        g.trace(message)
-
-    lines = g.splitLines(p.b)
-    i = 0
-    macro = []; name = None
-    while i < len(lines):
-        progress = i
-        s = lines[i].strip()
-        i += 1
-        if s.startswith('::') and s.endswith('::'):
-            name = s[2: -2]
-            if name:
-                macro = []
-                while i < len(lines):
-                    s = lines[i].strip()
-                    if trace: g.trace(repr(name), repr(s))
-                    if s:
-                        stroke = s
-                        char = c.k.stroke2char(stroke)
-                        w = c.frame.body.wrapper
-                        macro.append(create_event(c, char, stroke, w))
-                        i += 1
-                    else: break
-                # Create the entries.
-                if macro:
-                    self.completeMacroDef(name, macro)
-                    macro = []; name = None
-                else:
-                    oops('empty expansion for %s' % (name))
-        elif s:
-            if s.startswith('#') or s.startswith('@'):
-                pass
-            else:
-                oops('ignoring line: %s' % (repr(s)))
-        else: pass
-        assert progress < i
-    # finish of the last macro.
-    if macro:
-        self.completeMacroDef(name, macro)
-.. @+node:ekr.20150514063305.442: *5* nameLastMacro
-@cmd('macro-name-last')
-def nameLastMacro(self, event):
-    '''Prompts for the name to be given to the last recorded macro.'''
-    k = self.c.k
-    k.setLabelBlue('Name of macro: ')
-    k.get1Arg(event, handler=self.nameLastMacro1)
-        
-def nameLastMacro1(self, event):
-    k = self.c.k
-    k.clearState()
-    name = k.arg
-    self.completeMacroDef(name, self.lastMacro)
-    k.setLabelGrey('Macro defined: %s' % name)
-
-.. @+node:ekr.20150514063305.443: *5* printMacros & printLastMacro
-@cmd('macro-print-all')
-def printMacros(self, event=None):
-    '''Prints the name and definition of all named macros.'''
-    names = list(self.namedMacros.keys())
-    if names:
-        names.sort()
-        print('macros', names)
-        # g.es('\n'.join(names),tabName='Macros')
-    else:
-        g.es('no macros')
-
-@cmd('macro-print-last')
-def printLastMacro(self, event=None):
-    '''Print the last (unnamed) macro.'''
-    if self.lastMacro:
-        for event in self.lastMacro:
-            g.es(repr(event.stroke))
-.. @+node:ekr.20150514063305.444: *5* saveMacros
-@cmd('macro-save-all')
-def saveMacros(self, event=None):
-    '''Store macros in the @macros node..'''
-    p = self.getMacrosNode()
-    result = []
-    # g.trace(list(self.namedMacros.keys()))
-    for name in self.namedMacros:
-        macro = self.namedMacros.get(name)
-        result.append('::%s::' % (name))
-        for event in macro:
-            if 0:
-                w_name = self.getWidgetName(event.w)
-                result.append('%s::%s::%s' % (repr(event.char), event.stroke, w_name))
-            result.append(event.stroke)
-        result.append('') # Blank line terminates
-    p.b = '\n'.join(result)
-.. @+node:ekr.20150514063305.445: *5* startRecordingMacro
-@cmd('macro-start-recording')
-def startRecordingMacro(self, event):
-    '''Start recording or continue to record a macro.'''
-    trace = False and not g.unitTesting
-    k = self.c.k
-    if event:
-        if self.recordingMacro:
-            if trace: g.trace('stroke', event.stroke)
-            self.macro.append(event)
-        else:
-            self.recordingMacro = True
-            k.setLabelBlue('Recording macro. ctrl-g to end...', protect=True)
-            # g.es('Recording macro. ctrl-g to end...')
-    else:
-        g.trace('can not happen: no event')
-.. @+node:ekr.20170123092100.1: *3* COPY ../plugins/qt_big_text.py
-"""Leo aware Qt Dialog for delaying loading of big text"""
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtWidgets
-import leo.plugins.qt_text as qt_text
-@others
-@language python
-@tabwidth -4
-@pagewidth 70
-.. @+node:ekr.20170123092100.2: *4* class BigTextController
-class BigTextController(object):
-    @others
-.. @+node:ekr.20170123092100.3: *5* btc.__init__
-def __init__(self, c):
-    '''Ctor for BigTextController.'''
-    self.active_flag = None # True: warning text/buttons are visible.
-    self.c = c
-    self.inhibit = set() # Set of inhibited vnodes.
-    self.layout = None
-    self.old_p = None
-    self.old_w = None # A LeoQTextBrowser.
-    self.p = None
-    self.parent = None
-    self.s = None
-    self.w = None
-.. @+node:ekr.20170123092100.4: *5* btc.add_buttons
-def add_buttons(self, old_p, p):
-    '''Init the big text controller for node p.'''
-    c = self.c
-    w = c.frame.body.wrapper.widget
-    parent = w.parent() # A QWidget
-    layout = parent.layout()
-    # Set ivars
-    self.active_flag = True
-    self.layout = layout
-    self.old_p = old_p
-    self.old_w = w # A LeoQTextBrowser.
-    self.p = p
-    self.parent = parent
-    self.s = p.b
-    self.widgets = {}
-        # Keys are strings, values are buttons.
-    if p.v not in self.inhibit:
-        self.create_widgets()
-            # Create the big-text widgets.
-    # g.trace('----- (LeoBigTextDialog)',len(self.s),self.w)
-.. @+node:ekr.20170123092100.5: *5* btc.create_widgets
-def create_widgets(self):
-    '''Create the big-text buttons and text warning area.'''
-    c = self.c
-    self.active_flag = True
-    warning = self.warning_message()
-    if 1: # essential
-        self.old_w.setPlainText(self.p.b)
-    else: # can lose data.
-        self.old_w.setPlainText(
-            '@nocolor-node\n\nBig text not loaded: %s characters. Limit is %s' % (
-            len(self.p.b), c.max_pre_loaded_body_chars))
-    self.w = w = QtWidgets.QWidget() # No parent needed.
-    layout = QtWidgets.QVBoxLayout() # No parent needed.
-    w.setLayout(layout)
-    w.text = tw = QtWidgets.QTextBrowser()
-    tw.setText(warning)
-    tw.setObjectName('bigtextwarning')
-    self.widgets['bigtextwarning'] = tw
-    layout.addWidget(tw)
-    table = [
-            ('remove', 'Remove These Buttons', self.remove),
-            ('load_nc', 'Load Text With @killcolor', self.load_nc),
-            ('more', 'Double limit for this session', self.more),
-            ('copy', 'Copy body to clipboard', self.copy),
-    ]
-    if self.s.startswith('@killcolor'):
-        del table[1]
-    for key, label, func in table:
-        self.widgets[key] = button = QtWidgets.QPushButton(label)
-        layout.addWidget(button)
-
-        def button_callback(checked, func=func):
-            func()
-
-        button.clicked.connect(button_callback)
-    # layout.addItem(QtWidgets.QSpacerItem(
-        # 10, 10, vPolicy=QtWidgets.QSizePolicy.Expanding))
-    self.layout.addWidget(w)
-    w.show()
-.. @+node:ekr.20170123092100.6: *5* btc.copy
-def copy(self):
-    '''Copy self.s (c.p.b) to the clipboard.'''
-    g.app.gui.replaceClipboardWith(self.s)
-.. @+node:ekr.20170123092100.7: *5* btc.go_away
-def go_away(self):
-    '''Delete all buttons and self.'''
-    # g.trace(self.w or 'None')
-    self.active_flag = False
-    c = self.c
-    if self.w:
-        # Does not work.
-        # self.old_w.setPlainText(self.p.b)
-        self.layout.removeWidget(self.w)
-        self.w.deleteLater()
-        self.w = None
-    c.bodyWantsFocusNow()
-.. @+node:ekr.20170123092100.8: *5* btc.is_qt_body
-def is_qt_body(self):
-    '''Return True if the body widget is a QTextEdit.'''
-    c = self.c
-    w = c.frame.body.wrapper.widget
-    val = isinstance(w, qt_text.LeoQTextBrowser)
-        # c.frame.body.wrapper.widget is a LeoQTextBrowser.
-        # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-    # g.trace(self.c.shortFileName(),val)
-    return val
-.. @+node:ekr.20170123092100.9: *5* btc.is_big_text
-def is_big_text(self, p):
-    '''True if p.b is large and the text widget supports big text buttons.'''
-    c = self.c
-    if c.max_pre_loaded_body_chars > 0:
-        wrapper = c.frame.body.wrapper
-        w = wrapper and wrapper.widget
-        val = w and len(p.b) > c.max_pre_loaded_body_chars
-    else:
-        val = False
-    # g.trace(c.shortFileName(),p.h,val)
-    return val
-.. @+node:ekr.20170123092100.10: *5* btc.load_nc
-def load_nc(self):
-    '''Load the big text with a leading @killcolor directive.'''
-    c, p = self.c, self.c.p
-    if not c.positionExists(p):
-        return
-    self.wait_message()
-    # Recreate the entire select code.
-    tag = "@killcolor\n"
-    if not p.b.startswith(tag):
-        p.b = tag + p.b
-    w = self.c.frame.body.wrapper
-    self.go_away()
-    w.setInsertPoint(0)
-    w.seeInsertPoint()
-    c.bodyWantsFocusNow()
-    c.recolor_now()
-.. @+node:ekr.20170123092100.11: *5* btc.more
-def more(self):
-    '''
-    Double the big text limit for this session.
-    Load the text if the text is less than this limit.
-    '''
-    c = self.c
-    c.max_pre_loaded_body_chars *= 2
-    if len(c.p.b) < c.max_pre_loaded_body_chars:
-        self.wait_message()
-        self.inhibit.add(c.p.v)
-        self.go_away()
-        c.selectPosition(self.p)
-    else:
-        tw = self.widgets.get('bigtextwarning')
-        tw.setText(self.warning_message())
-        g.es('limit is now: %s' % c.max_pre_loaded_body_chars)
-.. @+node:ekr.20170123092100.12: *5* btc.remove
-def remove(self):
-    '''Remove the buttons and inhibit them hereafter.'''
-    c = self.c
-    self.inhibit.add(c.p.v)
-    self.go_away()
-.. @+node:ekr.20170123092100.13: *5* btc.should_add_buttons
-def should_add_buttons(self, old_p, p):
-    '''Return True if big-text buttons should be added.'''
-    if g.app.unitTesting:
-        return False # Don't add buttons during testing.
-    if self.c.undoer.undoing:
-        return False # Suppress buttons during undo.
-    if self.active_flag:
-        return False # Buttons already created.
-    if p.v in self.inhibit:
-        return False # Buttons are inhibited for this vnode.
-    return self.is_big_text(p) and self.is_qt_body()
-.. @+node:ekr.20170123092100.14: *5* btc.should_go_away
-def should_go_away(self, p):
-    '''Return True if big-text buttons should be removed.'''
-    if self.c.undoer.undoing:
-        return False # Suppress buttons during undo.
-    else:
-        return self.active_flag and not self.is_big_text(p)
-.. @+node:ekr.20170123092100.15: *5* btc.wait_message
-def wait_message(self):
-    '''Issue a message asking the user to wait until all text loads.'''
-    g.es(
-        "Loading large text, please wait\n"
-        "until scrollbar stops shrinking", color='red')
-.. @+node:ekr.20170123092100.16: *5* btc.warning_message
-def warning_message(self):
-    '''Return the warning message.'''
-    c = self.c
-    s = '''\
-Loading big text: %s characters. Limit is %s.
-
-Beware of a Qt bug: You will **lose data** if you change the text
-before it is fully loaded (before the scrollbar stops moving).
-
-To disable these buttons set @int max-pre-loaded-body-chars = 0
-'''
-    s = s.rstrip() % (len(self.s), c.max_pre_loaded_body_chars)
-    return g.adjustTripleString(s, c.tab_width)
 .. @+node:ekr.20150312225028.9: *3* Existing autocompleter (keep)
 .. @+node:ekr.20150312225028.10: *4* completeSelf (not used yet)
 def completeSelf (self):

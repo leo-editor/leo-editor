@@ -314,6 +314,34 @@ class Commands(object):
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
+        # Create the list of subcommanders.
+        self.subCommanders = [
+            self.abbrevCommands,
+            self.atFileCommands,
+            self.chapterController,
+            self.controlCommands,
+            self.convertCommands,
+            self.debugCommands,
+            self.editCommands,
+            self.editFileCommands,
+            self.fileCommands,
+            self.findCommands,
+            self.gotoCommands,
+            self.helpCommands,
+            self.importCommands,
+            self.keyHandler,
+            self.keyHandlerCommands,
+            self.killBufferCommands,
+            self.persistenceController,
+            self.printingController,
+            self.rectangleCommands,
+            self.rstCommands,
+            self.shadowController,
+            self.spellCommands,
+            self.tangleCommands,
+            self.testManager,
+            self.vimCommands,
+        ]
         # Other objects
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
@@ -630,7 +658,56 @@ class Commands(object):
             repr(event), g.callers()))
         test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke), repr(expected), repr(got)))
-    #@+node:ekr.20031218072017.2818: *3* c.Command handlers
+    #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
+    #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
+    @cmd('reload-settings')
+    @cmd('reload-abbreviations')
+    def reloadSettings(self, event=None):
+        '''Reload all static abbreviations from all config files.'''
+        self.reloadSettingsHelper(all=False)
+        
+    @cmd('reload-all-settings')
+    @cmd('reload-all-abbreviations')
+    def reloadAllSettings(self, event=None):
+        '''Reload all static abbreviations from all config files.'''
+        self.reloadSettingsHelper(all=True)
+    #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
+    def reloadSettingsHelper(self, all):
+        '''Reload settings in all commanders, or just self.'''
+        lm = g.app.loadManager
+        commanders = g.app.commanders() if all else [self]
+        lm.readGlobalSettingsFiles()
+            # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+        for c in commanders:
+            changed = c.isChanged()
+            previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+                # Read the local file, using a null gui.
+            c.initSettings(previousSettings)
+                # Init the config classes.
+            c.initConfigSettings()
+                # Init the commander config ivars.
+            c.reloadSubcommanderSettings()
+                # Reload settings in all subcommanders.
+            c.setChanged(changed)
+                # Restore the changed bit.
+            c.redraw()
+                # Redraw so a pasted temp node isn't visible
+    #@+node:ekr.20170221040621.1: *5* c.reloadSubcommanderSettings
+    def reloadSubcommanderSettings(self):
+        '''
+        Reload settings in all subcommanders that have either a
+        reload_settings or reloadSettings method.
+        '''
+        trace = False and not g.unitTesting
+        c = self
+        for subcommander in c.subCommanders:
+            for ivar in ('reloadSettings', 'reload_settings'):
+                func = getattr(subcommander, ivar, None)
+                if func:
+                    if trace:
+                        g.es_print('reloading settings in',
+                            subcommander.__class__.__name__)
+                    func()
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')

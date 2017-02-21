@@ -1846,9 +1846,6 @@ class KeyHandlerClass(object):
             'open-rectangle',
             'string-rectangle',
             'yank-rectangle',
-            # RegisterCommandsClass
-            'jump-to-register',
-            'point-to-register',
             # SearchCommandsClass
             'change',
             'change-then-find',
@@ -1976,11 +1973,6 @@ class KeyHandlerClass(object):
             'toggle-find-reverse-option',
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
-            # RegisterCommandsClass
-            'append-to-register',
-            'copy-to-register',
-            'insert-register',
-            'prepend-to-register',
         ]
     #@+node:ekr.20070123085931: *5* k.defineSpecialKeys
     def defineSpecialKeys(self):
