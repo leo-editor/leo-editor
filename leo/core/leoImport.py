@@ -1455,16 +1455,22 @@ class LeoImportCommands(object):
             d = g.app.language_extension_dict
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        # g.trace(language,ext,parser and parser.__name__)
+        # g.trace(language, ext, parser and parser.__name__ or '<NO PARSER>')
         if parser:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
             p.b = ''
-            parser(p, s)
-            c.undoer.afterChangeTree(p, 'parse-body', bunch)
-            p.expand()
-            c.selectPosition(p)
-            c.redraw()
+            try:
+                parser(p, s)
+                c.undoer.afterChangeTree(p, 'parse-body', bunch)
+                p.expand()
+                c.selectPosition(p)
+                c.redraw()
+            except Exception:
+                g.es_exception()
+                p.b = s
+        else:
+            g.es_print('parse-body: no parser for @language %s' % (language or 'None'))
     #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
     def body_parser_for_ext(self, ext):
         '''A factory returning a body parser function for the given file extension.'''
