@@ -3437,17 +3437,26 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         return True, maxdepth, maxp
 
     def moveToP(c, p):
-        if trace: g.trace(p and p.h)
-        c.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
-        c.frame.bringToFront()
+        
+        def focus_callback(timer, c=c, p=p.copy()):
+            '''Idle-time handler for g.recursiveUNLSearch'''
+            c.expandAllAncestors(p)
+            c.selectPosition(p)
+            c.redraw_now()
+            c.frame.bringToFront()
+            timer.stop()
 
+        timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
+        if timer: timer.start()
+        
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
         soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
+        if trace: g.trace('FOUND', maxp and maxp.h)
         moveToP(c, maxp)
+    elif trace:
+        g.trace('NOT FOUND', '-->'.join(unlList))
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
@@ -6668,6 +6677,36 @@ def handleUrl(url, c=None, p=None):
     except Exception:
         g.es("exception opening", leo_path)
         g.es_exception()
+#@+node:ekr.20170221063527.1: *3* g.handleUnl
+def handleUnl(unl, c):
+    '''Handle a Leo UNL. This must *never* open a browser.'''
+    trace = False and not g.unitTesting
+    if not unl.strip():
+        return
+    # py--lint: disable=no-member
+    # unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    # unl = unquote(unl)
+    i = unl.find('#')
+    if i == -1:
+        # Move to the unl in *this* commander.
+        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        return
+    # path#unl
+    path, unl = unl.split('#', 1)
+    if not path.lower().endswith('.leo') or not os.path.exists(path):
+        return
+    # End editing in *this* outline, so typing in the new outline works.
+    c.endEditing()
+    c.redraw_now()
+    if g.unitTesting:
+        g.app.unitTestDict['g.openWithFileName'] = path
+    else:
+        if trace: g.trace('\nPATH: %r\n UNL: %r' % (path, unl))
+        c2 = g.openWithFileName(path, old_c=c)
+        if c2 and unl:
+            g.recursiveUNLSearch(unl.split("-->"), c2, soft_idx=True)
+        if c2:
+            c2.bringToFront()
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):
     '''Return true if url *looks* like a valid url.'''
