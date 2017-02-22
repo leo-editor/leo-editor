@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1499,6 +1499,7 @@
 </v>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
+<v t="ekr.20170222105535.1"><vh>Lewis's suggestions</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
@@ -23134,7 +23135,63 @@ Of course, copied positions will typically become invalid when the outline chang
     if p is not None # Correct, Leo 5.5 and later.
     if p is None:    # Correct, Leo 5.5 and later.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170222105535.1">May I suggest some improvements to the installation documents? They are not general in nature but quite specific, just as you requested.
+At each change I will argue the case for changes which are beyond mere typos.
+
+At http://leoeditor.com/getting-started.html &gt; Installing Leo http://leoeditor.com/installing.html
+
+Installing Leo
+Change first sentence to:
+"This chapter tells how to install and run Leo on Windows, Linux or MacOS."
+Don't leave out the Mac users :)
+
+Dependencies
+Change "PyQt. You may download PyQt4 or PyQt5." to "PyQt4 or PyQt5."
+Cleaner, with less duplicate links.
+
+Update the obsolete Sphinx link to 'http://www.sphinx-doc.org/en/stable/'
+
+Installing Packages
+Delete - "Leo requires the Python and PyQt packages. The PyEnchant package is optional. Leo uses a customized version of PythonTidy, there is no need to install PythonTidy."
+Duplicate of statements in dependencies about Python and PyQt. PyEnchant is already mentioned above. I don't think there is any need to mention PythonTidy.
+
+Delete "Download the PyEnchant package from: http://pythonhosted.org/pyenchant/download.html."
+Redundant - there are already 2 previous links to PyEnchant.
+
+Contributing to Leo with git
+I have a longer argument for change here but it's in accordance with promoting Git :)
+Improve the guidance for reader at heading level. If you really want your users to use git, then don't offer suggestions to another method in the git section. It is quite irrelevant to the 'Contributing to Leo with git' heading.
+Once you have the reader at the section on git, stay focussed on git alone, and wax lyrical about it if you like.
+
+Specific Heading "Installing Leo with git"
+Again, do you really want more Leo users to use git? If yes then move it from the advanced 'Contributing to Leo with git' heading and have a dedicated "Installing Leo with git" heading. I suggest locating it well up near the top of the Contents headings. In the current layout the topic of git is is at the very end of a long installation page. "Installing Leo with git" should be simple and very focussed.
+
+Here is the proposed heading order:
+Downloading Leo
+    Snapshots
+
+Installing Leo
+    Dependencies
+    Installing packages
+    Installing Leo itself
+        Installing Leo on Windows
+            Using the single-click installer
+            Installing from sources (Windows)
+            Creating Windows file associations
+        Installing Leo with git
+        Installing Leo on Linux
+            Installing from a debian package
+            Installing from sources (Linux)
+        Installing Leo on MacOs 10.7 (Lion) and later
+    Contributing to Leo with git*
+
+* Again, "Contributing to Leo with git"
+Delete "However, you can get a nightly snapshot of Leo’s git repository (without installing git) from http://www.greygreen.org/leo/"
+The links to greygreen.org are obsolete, and already covered at http://leoeditor.com/download.html#snapshots.
+
+Optional: consider moving 'Contributing to Leo with git' to another place - Advanced?
+It has nothing to do with installation. It is a relatively advanced topic and should be solely about the requirements if you want to contribute to Leo.</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
