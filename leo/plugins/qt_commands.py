@@ -113,8 +113,9 @@ def style_reload(event):
     This replaces execution of the `stylesheet & source` node in settings files.
     """
     c = event.get('c')
-    if c:
-        c.styleSheetManager.reload_style_sheets()
+    if c and c.styleSheetManager:
+        c.reloadSettings()
+            # Call ssm.reload_settings after reloading all settings.
 #@+node:ekr.20140918124632.17892: *3* style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):

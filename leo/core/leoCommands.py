@@ -350,6 +350,7 @@ class Commands(object):
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+            self.subCommanders.append(self.styleSheetManager)
         else:
             self.styleSheetManager = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings

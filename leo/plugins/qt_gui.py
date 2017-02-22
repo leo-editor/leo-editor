@@ -1650,18 +1650,16 @@ class StyleSheetManager(object):
         w = self.get_master_widget()
         sheet = w.styleSheet()
         print('style sheet for: %s...\n\n%s' % (w, sheet))
-    #@+node:ekr.20140912110338.19370: *3* ssm.reload_style_sheets
-    def reload_style_sheets(self):
-        '''The main line of the style-reload command.'''
-        c = self.c
-        lm = g.app.loadManager
-        # Reread *all* settings.
-        lm.readGlobalSettingsFiles()
-        fn = c.shortFileName()
-        if fn not in ('leoSettings.leo', 'myLeoSettings.leo'):
-            shortcuts, settings = lm.createSettingsDicts(c, localFlag=True)
-            c.config.settingsDict.update(settings)
-        # Recompute and apply the stylesheet.
+    #@+node:ekr.20170222051716.1: *3* ssm.reload_settings
+    def reload_settings(self):
+        '''
+        Recompute and apply the stylesheet.
+        
+        The name "reload_settings" makes this an official reload settings
+        method. The reload-settings command calls all such methods
+        automatically after re-reading all settings files.
+        '''
+        # g.trace('(StyleSheetManager)')
         sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
