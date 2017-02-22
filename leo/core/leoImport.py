@@ -42,26 +42,19 @@ class FreeMindImporter(object):
         '''ctor for FreeMind Importer class.'''
         self.c = c
         self.count = 0
-        # self.outline_dict = {}
         self.d = {}
 
     #@+others
-    #@+node:ekr.20160503191518.2: *3* freemind.add_children_as_nodes
-    def add_children_as_nodes(self, node_id_to_add, parent_id):
-
-        c, d = self.c, self.d
-        for p in c.p.self_and_subtree():
-            if p.h == parent_id:
-                parent = p
-                break
-        else:
-            g.trace('===== fail', parent_id)
-            return
-        child = parent.insertAsLastChild()
-        child.h = node_id_to_add
-        child.b = d[node_id_to_add]['string']
-        for child_id in d[node_id_to_add]['children']:
-            self.add_children_as_nodes(child_id, node_id_to_add)
+    #@+node:ekr.20170222084048.1: *3* freemind.add_children
+    def add_children(self, parent, element):
+        '''
+        parent is the parent position, element is the parent element.
+        Recursively add all the child elements as descendants of parent_p.
+        '''
+        child_p = parent.insertAsLastChild()
+        child_p.h = element.get('text', '').strip() or element.tag or 'No text'
+        for child in element:
+            self.add_children(child_p, child)
     #@+node:ekr.20160503125844.1: *3* freemind.create_outline
     def create_outline(self, path):
         '''Create a tree of nodes from a FreeMind file.'''
@@ -72,61 +65,30 @@ class FreeMindImporter(object):
             self.import_file(path)
             c.undoer.afterInsertNode(c.p, 'Import', undoData)
         except Exception:
-            g.es_print('Invalid FreeMind file', g.shortFileName(path))
+            g.es_print('Exception importing FreeMind file', g.shortFileName(path))
+            g.es_exception()
         return c.p
-    #@+node:ekr.20160503191518.3: *3* freemind.element_to_node
-    def element_to_node(self, parent_node, element):
-
-        d = self.d
-        self.count += 1
-        n = str(self.count)
-        children = list(element.iterchildren())
-        if not children:
-            return
-        d[n] = {}
-        d[parent_node]['children'].append(n)
-        if list(children[0].iterchildren()):
-            d[n]['string'] = list(children[0].iterchildren())[0].text
-        else:
-            d[n]['string'] = children[0].text
-        d[n]['children'] = list()
-        if len(children) > 1:
-            for child in children[1].iterchildren():
-                self.element_to_node(n, child)
     #@+node:ekr.20160503191518.4: *3* freemind.import_file
     def import_file(self, path):
         '''The main line of the FreeMindImporter class.'''
-        c, d = self.c, self.d
-        max_chars_in_header = 80
-        # 1: Import into the dict.
-        htmltree = lxml.html.parse(path)
-        root = htmltree.getroot()
-        body = root.findall('body')[0]
-        d['0'] = {}
-        d['0']['children'] = []
-        children = list(body.iterchildren())
-        d[str(self.count)]['string'] = list(children[0].iterchildren())[0].text
-        d[str(self.count)]['children'] = []
-        for item in list(children[1].iterchildren()):
-            self.element_to_node('0', item)
-        # 2: Create new node & select it.
-        p = c.lastTopLevel().insertAfter()
-        c.selectPosition(p)
-        # 3: Create the outline from the dict.
-        c.p.h = '0'
-        c.p.b = d['0']['string']
-        for child_id in d['0']['children']:
-            self.add_children_as_nodes(child_id, '0')
-        # 4: Set headines.
-        for p in c.p.self_and_subtree():
-            lines = p.b.splitlines()
-            if len(lines) == 1 and len(lines[0]) < max_chars_in_header:
-                # g.trace(p.h, '-->', p.b.splitlines()[0])
-                p.h = p.b.splitlines()[0]
-                p.b = ""
-            elif lines: # Only if we haven't seen this node.
-                p.h = "@node_with_long_text"
-        c.redraw()
+        c = self.c
+        if g.os_path_exists(path):
+            sfn = g.shortFileName(path)
+            htmltree = lxml.html.parse(path)
+            root = htmltree.getroot()
+            body = root.findall('body')[0]
+            if body is None:
+                g.error('no body in: %s' % sfn)
+            else:
+                root_p = c.lastTopLevel().insertAfter()
+                root_p.h = g.shortFileName(path)
+                for child in body:
+                    if child != body:
+                        self.add_children(root_p, child)
+                c.selectPosition(root_p)
+                c.redraw()
+        else:
+            g.error('file not found: %s' % sfn)
     #@+node:ekr.20160503145113.1: *3* freemind.import_files
     def import_files(self, files):
         '''Import a list of FreeMind (.mmap) files.'''
