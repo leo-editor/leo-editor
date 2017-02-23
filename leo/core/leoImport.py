@@ -51,10 +51,14 @@ class FreeMindImporter(object):
         parent is the parent position, element is the parent element.
         Recursively add all the child elements as descendants of parent_p.
         '''
-        child_p = parent.insertAsLastChild()
-        child_p.h = element.get('text', '').strip() or element.tag or 'No text'
+        p = parent.insertAsLastChild()
+        attrib_text = element.attrib.get('text','').strip()
+        text = element.text or ''
+        # g.trace('text: %10r attrib.text: %r' % (text, attrib_text))
+        p.h = attrib_text or element.tag
+        p.b = text
         for child in element:
-            self.add_children(child_p, child)
+            self.add_children(p, child)
     #@+node:ekr.20160503125844.1: *3* freemind.create_outline
     def create_outline(self, path):
         '''Create a tree of nodes from a FreeMind file.'''
@@ -72,8 +76,8 @@ class FreeMindImporter(object):
     def import_file(self, path):
         '''The main line of the FreeMindImporter class.'''
         c = self.c
+        sfn = g.shortFileName(path)
         if g.os_path_exists(path):
-            sfn = g.shortFileName(path)
             htmltree = lxml.html.parse(path)
             root = htmltree.getroot()
             body = root.findall('body')[0]
