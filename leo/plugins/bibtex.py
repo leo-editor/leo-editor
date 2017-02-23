@@ -63,27 +63,27 @@ BibTeX file.
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
-
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 # 2017/02/23: Rewritten by EKR
-
 #@+<< define templates dict>>
 #@+node:timo.20050215183130: ** <<define templates dict>>
+#@@nobeautify
+
 templates = {
-    '@article':'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
-    '@book':'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
-    '@booklet':'title        = {}',
-    '@conference':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
-    '@inbook':'author       = {},\ntitle        = {},\nchapter      = {},\npublisher    = {},\nyear         = ',
-    '@incollection':'author       = {},\ntitle        = {},\nbooktitle    = {},\npublisher    = {},\nyear         = ',
-    '@inproceedings':'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
-    '@manual':'title        = {},',
-    '@mastersthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
-    '@misc':'',
-    '@phdthesis':'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
-    '@proceedings':'title        = {},\nyear         = ',
-    '@techreport':'author       = {},\ntitle        = {},\ninstitution  = {},\nyear         = ',
-    '@unpublished':'author       = {},\ntitle        = {},\nnote         = {}'
+    '@article':         'author       = {},\ntitle        = {},\njournal      = {},\nyear         = ',
+    '@book':            'author       = {},\ntitle        = {},\npublisher    = {},\nyear         = ',
+    '@booklet':         'title        = {}',
+    '@conference':      'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
+    '@inbook':          'author       = {},\ntitle        = {},\nchapter      = {},\npublisher    = {},\nyear         = ',
+    '@incollection':    'author       = {},\ntitle        = {},\nbooktitle    = {},\npublisher    = {},\nyear         = ',
+    '@inproceedings':   'author       = {},\ntitle        = {},\nbooktitle    = {},\nyear         = ',
+    '@manual':          'title        = {},',
+    '@mastersthesis':   'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
+    '@misc':            '',
+    '@phdthesis':       'author       = {},\ntitle        = {},\nschool       = {},\nyear         = ',
+    '@proceedings':     'title        = {},\nyear         = ',
+    '@techreport':      'author       = {},\ntitle        = {},\ninstitution  = {},\nyear         = ',
+    '@unpublished':     'author       = {},\ntitle        = {},\nnote         = {}'
 }
 #@-<< define templates dict>>
 entrytypes = list(templates.keys())
@@ -111,12 +111,12 @@ def init():
     ok = not g.app.unitTesting
     if ok:
         # Register the handlers...
-        g.registerHandler("headdclick1",onIconDoubleClick)
-        g.registerHandler("headkey2",onHeadKey)
+        g.registerHandler("headdclick1", onIconDoubleClick)
+        g.registerHandler("headkey2", onHeadKey)
         g.plugin_signon(__name__)
     return ok
 #@+node:timo.20050215222802: ** onHeadKey
-def onHeadKey(tag,keywords):
+def onHeadKey(tag, keywords):
     """
     Write template for the entry in body pane.
 
@@ -132,7 +132,7 @@ def onHeadKey(tag,keywords):
     if not p: return
     h = p.h.strip()
     i = h.find(' ')
-    kind = h[:i]
+    kind = h[: i]
     if kind in templates.keys() and not p.b.strip():
         # Fix bug 142: plugin overwrites body text.
         # Iterate on p2, not p!
@@ -148,7 +148,7 @@ def onHeadKey(tag,keywords):
 # path is the current dir, or the place @folder points to
 # this should probably be changed to @path or so.
 
-def onIconDoubleClick(tag,keywords):
+def onIconDoubleClick(tag, keywords):
     """
     Read or write a bibtex file when the node is double-clicked.
 
@@ -160,7 +160,7 @@ def onIconDoubleClick(tag,keywords):
     if not c or not p:
         return
     h = p.h.strip()
-    if g.match_word(h,0,"@bibtex"):
+    if g.match_word(h, 0, "@bibtex"):
         base = g.os_path_dirname(c.fileName() or '')
         fn = g.os_path_finalize_join(base, h[8:])
         if p.hasChildren():
@@ -170,33 +170,30 @@ def onIconDoubleClick(tag,keywords):
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(c, fn, p):
     '''Import a BibTeX file into a @bibtex tree.'''
-    trace = False and not g.unitTesting
     root = p.copy()
     g.es('reading:', fn)
     s = g.readFileIntoEncodedString(fn)
+        # Read the encoded bytes for g.getEncoding()
     if not s or not s.strip():
         return
-    e = g.getEncoding(p, s)
-    s = g.toUnicode(s, encoding=e)
-    if trace:
-        g.trace('encoding', e)
-        g.trace(repr(s))
-    aList, entries, strings = [],[],[]
+    encoding = g.getEncoding(p, s)
+    s = g.toUnicode(s, encoding=encoding)
+    aList, entries, strings = [], [], []
         # aList is a list of tuples (h,b).
-    s = '\n'+''.join([z.lstrip() for z in g.splitLines(s)])
+    s = '\n' + ''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
-        kind,rest = line[:6],line[7:].strip()
+        kind, rest = line[: 6], line[7:].strip()
         if kind == 'string':
-            strings.append(rest[:-1] + '\n')
+            strings.append(rest[: -1] + '\n')
         else:
-            i = min(line.find(','),line.find('\n'))
-            h = '@' + line[:i]
-            h = h.replace('{',' ').replace('(',' ').replace('\n','')
-            b = line[i+1:].rstrip().lstrip('\n')[:-1]
-            entries.append((h,b),)
+            i = min(line.find(','), line.find('\n'))
+            h = '@' + line[: i]
+            h = h.replace('{', ' ').replace('(', ' ').replace('\n', '')
+            b = line[i + 1:].rstrip().lstrip('\n')[: -1]
+            entries.append((h, b),)
     if strings:
-        h,b = '@string',''.join(strings)
-        aList.append((h,b),)
+        h, b = '@string', ''.join(strings)
+        aList.append((h, b),)
     aList.extend(entries)
     for h, b in aList:
         p = root.insertAsLastChild()
@@ -206,8 +203,7 @@ def readBibTexFileIntoTree(c, fn, p):
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(c, fn, root):
     """Write root's *subtree* to bibFile."""
-    strings, entries = [],[]
-    e = g.getEncoding(root, s=u'')
+    strings, entries = [], []
     for p in root.subtree():
         h = p.h
         if h.lower() == '@string':
@@ -215,14 +211,15 @@ def writeTreeAsBibTex(c, fn, root):
                 for z in g.splitLines(p.b) if z.strip()])
         else:
             i = h.find(' ')
-            kind,rest = h[:i].lower(),h[i+1:].rstrip()
+            kind, rest = h[: i].lower(), h[i + 1:].rstrip()
             if kind in entrytypes:
-                entries.append('%s{%s,\n%s}\n\n' % (kind,rest,p.b.rstrip()))
+                entries.append('%s{%s,\n%s}\n\n' % (kind, rest, p.b.rstrip()))
     if strings or entries:
         g.es('writing:', fn)
-        with open(fn,'wb') as f:
+        encoding=g.getEncoding(root)
+        with open(fn, 'wb') as f:
             s = ''.join(strings + entries)
-            f.write(g.toEncodedString(s, encoding=e))
+            f.write(g.toEncodedString(s,encoding=encoding))
 #@-others
 #@@language python
 #@@tabwidth -4

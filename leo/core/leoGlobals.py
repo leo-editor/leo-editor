@@ -2957,11 +2957,11 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@+node:ekr.20170223093758.1: *3* g.getEncoding (New in Leo 5.5)
-def getEncoding(p, s):
+def getEncoding(p, s=None):
     '''Return the encoding in effect at p and string s.'''
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
-    if not e:
+    if s and s.strip() and not e:
         e = 'utf-8'
         if sys.platform.startswith('win'):
             try:

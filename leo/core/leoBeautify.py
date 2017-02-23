@@ -114,7 +114,7 @@ def beautifyPythonTree(event):
             g.es_print('beautified total %s node%s in %4.2f sec.' % (
                 pp.n_changed_nodes, g.plural(pp.n_changed_nodes), t2 - t1))
 #@+node:ekr.20150528091356.1: **  top-level functions (leoBeautifier.py)
-#@+node:ekr.20170202095153.1: *3* compare_ast (new)
+#@+node:ekr.20170202095153.1: *3* compare_ast (diabled)
 # http://stackoverflow.com/questions/3312989/
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
  
