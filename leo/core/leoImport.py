@@ -1699,18 +1699,14 @@ class LeoImportCommands(object):
         return s
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (leoImport)
     def setEncoding(self, p=None, atAuto=False):
-        # c.scanAllDirectives checks the encoding. It may return None.
         c = self.c
-        if not p: p = c.p
-        theDict = c.scanAllDirectives(p)
-        encoding = theDict.get("encoding")
+        encoding = g.getEncoding(p or c.p)
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
         elif atAuto:
             self.encoding = c.config.default_at_auto_file_encoding
         else:
             self.encoding = 'utf-8'
-        # g.trace(self.encoding)
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter(object):
