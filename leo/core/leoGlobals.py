@@ -2802,16 +2802,19 @@ def set_language(s, i, issue_errors_flag=False):
 #@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
 def setDefaultDirectory(c, p, importing=False):
     ''' Return a default directory by scanning @path directives.'''
-    name = p.anyAtFileNodeName()
-    if name:
-        # An absolute path overrides everything.
-        d = g.os_path_dirname(name)
-        if d and g.os_path_isabs(d):
-            return d
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-        # Returns g.getBaseDirectory(c) by default.
-        # However, g.getBaseDirectory can return ''
+    if p:
+        name = p.anyAtFileNodeName()
+        if name:
+            # An absolute path overrides everything.
+            d = g.os_path_dirname(name)
+            if d and g.os_path_isabs(d):
+                return d
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+            # Returns g.getBaseDirectory(c) by default.
+            # However, g.getBaseDirectory can return ''
+    else:
+        path = None
     if path:
         path = g.os_path_finalize(path)
     else:
@@ -2956,9 +2959,19 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
-#@+node:ekr.20170223093758.1: *3* g.getEncoding (New in Leo 5.5)
-def getEncoding(p, s=None):
-    '''Return the encoding in effect at p and string s.'''
+#@+node:ekr.20170223093758.1: *3* g.getEncodingAt (New in Leo 5.5)
+def getEncodingAt(p, s=None):
+    '''
+    Return the encoding in effect at p and/or for string s.
+
+    Read logic:  s is not None.
+    Write logic: s is None.
+    '''
+    # A BOM overrides everything.
+    if s:
+        e, junk_s = g.stripBOM(s)
+        if e:
+            return e
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if s and s.strip() and not e:

@@ -861,10 +861,10 @@ class Undoer(object):
         u = self; c = u.c; w = c.frame.body.wrapper
         return g.Bunch(
             oldChanged=c.isChanged(),
-            oldDirty=p.isDirty(),
-            oldMarked=p.isMarked(),
+            oldDirty=p and p.isDirty(),
+            oldMarked=p and p.isMarked(),
             oldSel=w and w.getSelectionRange() or None,
-            p=p.copy(),
+            p=p and p.copy(),
         )
     #@+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
     # Translation does not affect these routines.

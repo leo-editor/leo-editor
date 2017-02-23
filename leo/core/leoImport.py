@@ -795,7 +795,10 @@ class LeoImportCommands(object):
         if g.is_binary_external_file(fileName):
             # Fix bug 1185409 importing binary files puts binary content in body editor.
             # Create an @url node.
-            p = parent.insertAsLastChild()
+            if parent:
+                p = parent.insertAsLastChild()
+            else:
+                p = c.lastTopLevel().insertAfter()
             p.h = '@url file://%s' % fileName
             if trace: g.trace('binary file:', fileName)
             return
@@ -836,12 +839,15 @@ class LeoImportCommands(object):
     #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
-        u = self.c.undoer
+        c, u = self.c, self.c.undoer
         if atAuto:
             if atAutoKind:
                 # We have found a match between ext and an @auto importer.
                 undoData = u.beforeInsertNode(parent)
-                p = parent.insertAsLastChild()
+                if parent:
+                    p = parent.insertAsLastChild()
+                else:
+                    p = c.lastTopLevel().insertAfter()
                 p.initHeadString(atAutoKind + ' ' + fileName)
                 u.afterInsertNode(p, 'Import', undoData)
             else:
@@ -849,7 +855,10 @@ class LeoImportCommands(object):
                 p.setBodyString('')
         else:
             undoData = u.beforeInsertNode(parent)
-            p = parent.insertAsLastChild()
+            if parent:
+                p = parent.insertAsLastChild()
+            else:
+                p = c.lastTopLevel().insertAfter()
             if self.treeType in ('@clean', '@file', '@nosent'):
                 p.initHeadString('%s %s' % (self.treeType, fileName))
             elif self.treeType is None:
@@ -1030,9 +1039,10 @@ class LeoImportCommands(object):
         self.treeType = treeType
         if len(files) == 2:
             current = self.createImportParent(current, files)
+        parent = current if len(files) > 1 else None
         for fn in files:
             g.setGlobalOpenDir(fn)
-            p = self.createOutline(fn, current)
+            p = self.createOutline(fn, parent=parent)
             if p: # createOutline may fail.
                 if not g.unitTesting:
                     g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1371,7 +1381,7 @@ class LeoImportCommands(object):
         '''Scan the text of an unknown file type.'''
         c = self.c
         changed = c.isChanged()
-        body = '' if atAuto else '@ignore\n'
+        body = ''
         if ext in ('.html', '.htm'): body += '@language html\n'
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
         else:
@@ -1700,7 +1710,7 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (leoImport)
     def setEncoding(self, p=None, atAuto=False):
         c = self.c
-        encoding = g.getEncoding(p or c.p)
+        encoding = g.getEncodingAt(p or c.p)
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
         elif atAuto:
