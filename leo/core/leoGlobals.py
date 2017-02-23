@@ -3157,16 +3157,15 @@ def openWithFileName(fileName, old_c=None, gui=None):
 def readFileIntoEncodedString(fn, silent=False):
     '''Return the raw contents of the file whose full path is fn.'''
     try:
-        f = open(fn, 'rb')
-        s = f.read()
-        f.close()
-        return s
+        with open(fn, 'rb') as f:
+            return f.read()
     except IOError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
-        g.error('readFileIntoEncodedString: unexpected exception reading %s' % (fn))
-        g.es_exception()
+        if not silent:
+            g.error('readFileIntoEncodedString: exception reading %s' % (fn))
+            g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString(fn,
