@@ -53,10 +53,12 @@ class FreeMindImporter(object):
         '''
         p = parent.insertAsLastChild()
         attrib_text = element.attrib.get('text','').strip()
+        tag = element.tag if g.isString(element.tag) else ''
         text = element.text or ''
-        # g.trace('text: %10r attrib.text: %r' % (text, attrib_text))
-        p.h = attrib_text or element.tag
-        p.b = text
+        if not tag: text = text.strip()
+        # g.trace('tag: %5r text: %10r attrib.text: %r' % (tag, text, attrib_text))
+        p.h = attrib_text or tag or 'Comment'
+        p.b = text if text.strip() else ''
         for child in element:
             self.add_children(p, child)
     #@+node:ekr.20160503125844.1: *3* freemind.create_outline
