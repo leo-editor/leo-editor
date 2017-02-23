@@ -3189,6 +3189,8 @@ def readFileIntoString(fn,
         s = f.read()
         f.close()
         if raw or not s:
+            # Fix #391.
+            s = g.toUnicode(s)
             return s, e
         # New in Leo 4.11: check for unicode BOM first.
         e, s = g.stripBOM(s)
