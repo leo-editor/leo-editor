@@ -80,6 +80,7 @@ else:
 # import functools
 import imp
 import inspect
+import locale
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
@@ -2955,6 +2956,19 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
+#@+node:ekr.20170223093758.1: *3* g.getEncoding (New in Leo 5.5)
+def getEncoding(p, s):
+    '''Return the encoding in effect at p and string s.'''
+    aList = g.get_directives_dict_list(p)
+    e = g.scanAtEncodingDirectives(aList)
+    if not e:
+        e = 'utf-8'
+        if sys.platform.startswith('win'):
+            try:
+                s.decode(e, 'strict')
+            except Exception:
+                e = locale.getpreferredencoding()
+    return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
 def guessExternalEditor(c=None):
     """ Return a 'sensible' external editor """
@@ -3139,21 +3153,6 @@ def openWithFileName(fileName, old_c=None, gui=None):
     returns the commander of the newly-opened outline.
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
-#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
-def readFileIntoUnicodeString(fn, silent=False):
-    '''Return the raw contents of the file whose full path is fn.'''
-    try:
-        f = open(fn, 'rb')
-        s = f.read()
-        f.close()
-        return g.toUnicode(s)
-    except IOError:
-        if not silent:
-            g.error('can not open', fn)
-    except Exception:
-        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
-        g.es_exception()
-    return None
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn, silent=False):
     '''Return the raw contents of the file whose full path is fn.'''
@@ -3185,13 +3184,13 @@ def readFileIntoString(fn,
     '''
     try:
         e = None
-        f = open(fn, mode)
-        s = f.read()
-        f.close()
-        if raw or not s:
-            # Fix #391.
-            s = g.toUnicode(s)
-            return s, e
+        with open(fn, mode) as f:
+            s = f.read()
+        # Fix #391.
+        if not s:
+            return g.u(''), None
+        elif raw:
+            return s, None
         # New in Leo 4.11: check for unicode BOM first.
         e, s = g.stripBOM(s)
         if not e:
@@ -3213,6 +3212,20 @@ def readFileIntoString(fn,
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
     return None, None
+#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
+def readFileIntoUnicodeString(fn, encoding=None, silent=False):
+    '''Return the raw contents of the file whose full path is fn.'''
+    try:
+        with open(fn, 'rb') as f:
+            s = f.read()
+            return g.toUnicode(s, encoding=encoding)
+    except IOError:
+        if not silent:
+            g.error('can not open', fn)
+    except Exception:
+        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
+        g.es_exception()
+    return None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
 # 

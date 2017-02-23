@@ -63,8 +63,6 @@ BibTeX file.
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
-import locale
-import sys
 
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 # 2017/02/23: Rewritten by EKR
@@ -107,19 +105,6 @@ entrytypes.append('@string')
 # - Syntax highligting
 #@-<< to do >>
 #@+others
-#@+node:ekr.20170223063718.1: ** getEncoding
-def getEncoding(p, s):
-    '''Return the encoding in effect at p and string s.'''
-    aList = g.get_directives_dict_list(p)
-    e = g.scanAtEncodingDirectives(aList)
-    if not e:
-        e = 'utf-8'
-        if sys.platform.startswith('win'):
-            try:
-                s.decode(e, 'strict')
-            except Exception:
-                e = locale.getpreferredencoding()
-    return e
 #@+node:ekr.20100128073941.5370: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -192,7 +177,7 @@ def readBibTexFileIntoTree(c, fn, p):
     s = g.readFileIntoEncodedString(fn)
     if not s or not s.strip():
         return
-    e = getEncoding(p, s)
+    e = g.getEncoding(p, s)
     s = g.toUnicode(s, encoding=e)
     if trace:
         g.trace('encoding', e)
