@@ -22,7 +22,7 @@ outline::
       author = {A. Uthor},
       year = 1999
 
-creates the following 'biblio.bib' files::
+creates the following 'biblio.bib' file::
 
     @book{key,
     author = {A. Uthor},
@@ -63,6 +63,7 @@ BibTeX file.
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
+import sys
 
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 __version__ = '0.7'
@@ -142,6 +143,20 @@ entrytypes.append('@string')
 # 
 #@-<< to do >>
 #@+others
+#@+node:ekr.20170223063718.1: ** getEncoding
+def getEncoding(p, s):
+    '''Return the encoding in effect at p.'''
+    aList = g.get_directives_dict_list(p)
+    e = g.scanAtEncodingDirectives(aList)
+    if not e:
+        e = 'utf-8'
+        if sys.platform.startswith('win'):
+            try:
+                s.decode(e, 'strict')
+            except Exception:
+                # g.es_exception()
+                e = 'cp1252'
+    return e
 #@+node:ekr.20100128073941.5370: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -198,28 +213,30 @@ def onIconDoubleClick(tag,keywords):
         return
     h = p.h.strip()
     if g.match_word(h,0,"@bibtex"):
-        fn = g.os_path_finalize_join(g.os_path_dirname(c.fileName() or ''),h[8:])
+        base = g.os_path_dirname(c.fileName() or '')
+        fn = g.os_path_finalize_join(base, h[8:])
         if p.hasChildren():
-            bibFile = open(fn,'w')
-            writeTreeAsBibTex(bibFile,p,c)
-            bibFile.close()
-            g.es('wrote: %s' % fn)
+            g.es('writing:', fn)
+            writeTreeAsBibTex(c, fn, p)
         else:
-            try:
-                bibFile = open(fn,'r')
-            except IOError:
-                g.es('not found: %s' % fn,color='red')
-                return
-            g.es('reading: ' + fn)
-            readBibTexFileIntoTree(bibFile,c)
-            bibFile.close()
+            g.es('reading:', fn)
+            readBibTexFileIntoTree(c, fn, p)
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
-def readBibTexFileIntoTree(bibFile, c):
+def readBibTexFileIntoTree(c, fn, p):
     '''Import a BibTeX file into a @bibtex tree.'''
-    bibList,entries, strings = [],[],[]
-        # bibList is a list of tuples (h,b).
-    s = '\n'+''.join([z.lstrip() for z in bibFile.readlines()])
-    s = g.toUnicode(s)
+    trace = False and not g.unitTesting
+    root = p.copy()
+    s = g.readFileIntoEncodedString(fn)
+    if not s or not s.strip():
+        return
+    e = getEncoding(p, s)
+    s = g.toUnicode(s, encoding=e)
+    if trace:
+        g.trace('encoding', e)
+        g.trace(repr(s))
+    aList, entries, strings = [],[],[]
+        # aList is a list of tuples (h,b).
+    s = '\n'+''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
         kind,rest = line[:6],line[7:].strip()
         if kind == 'string':
@@ -232,19 +249,17 @@ def readBibTexFileIntoTree(bibFile, c):
             entries.append((h,b),)
     if strings:
         h,b = '@string',''.join(strings)
-        bibList.append((h,b),)
-    bibList.extend(entries)
-    for h,b in bibList:
-        p = c.p.insertAsLastChild()
-        p.b,p.h = b,h
-    c.p.expand()
+        aList.append((h,b),)
+    aList.extend(entries)
+    for h, b in aList:
+        p = root.insertAsLastChild()
+        p.b, p.h = b, h
+    root.expand()
     c.redraw()
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
-def writeTreeAsBibTex(bibFile,root,c):
+def writeTreeAsBibTex(c, fn, root):
     """Write root's *subtree* to bibFile."""
     trace = False and not g.unitTesting
-    # d = c.scanAllDirectives(p=root)
-    # encoding = d.get("encoding",g.app.config.default_derived_file_encoding)
     strings,entries = [],[]
     for p in root.subtree():
         h = p.h
@@ -256,14 +271,15 @@ def writeTreeAsBibTex(bibFile,root,c):
             kind,rest = h[:i].lower(),h[i+1:].rstrip()
             if kind in entrytypes:
                 entries.append('%s{%s,\n%s}\n\n' % (kind,rest,p.b.rstrip()))
-    if strings:
-        s = ''.join(strings)
-        if trace: g.trace('strings...\n%s' % s)
-        bibFile.write(s)
-    if entries:
-        s = ''.join(entries)
-        if trace: g.trace('entries...\n%s' % s)
-        bibFile.write(s)
+    with open(fn,'w') as f:
+        if strings:
+            s = ''.join(strings)
+            if trace: g.trace('strings...\n%s' % s)
+            f.write(s)
+        if entries:
+            s = ''.join(entries)
+            if trace: g.trace('entries...\n%s' % s)
+            f.write(s)
 #@-others
 #@@language python
 #@@tabwidth -4
