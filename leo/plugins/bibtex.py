@@ -164,16 +164,15 @@ def onIconDoubleClick(tag,keywords):
         base = g.os_path_dirname(c.fileName() or '')
         fn = g.os_path_finalize_join(base, h[8:])
         if p.hasChildren():
-            g.es('writing:', fn)
             writeTreeAsBibTex(c, fn, p)
         else:
-            g.es('reading:', fn)
             readBibTexFileIntoTree(c, fn, p)
 #@+node:timo.20050214174623.1: ** readBibTexFileIntoTree
 def readBibTexFileIntoTree(c, fn, p):
     '''Import a BibTeX file into a @bibtex tree.'''
     trace = False and not g.unitTesting
     root = p.copy()
+    g.es('reading:', fn)
     s = g.readFileIntoEncodedString(fn)
     if not s or not s.strip():
         return
@@ -207,8 +206,7 @@ def readBibTexFileIntoTree(c, fn, p):
 #@+node:timo.20050213160555.7: ** writeTreeAsBibTex
 def writeTreeAsBibTex(c, fn, root):
     """Write root's *subtree* to bibFile."""
-    trace = False and not g.unitTesting
-    strings,entries = [],[]
+    strings, entries = [],[]
     e = g.getEncoding(root, s=u'')
     for p in root.subtree():
         h = p.h
@@ -220,14 +218,10 @@ def writeTreeAsBibTex(c, fn, root):
             kind,rest = h[:i].lower(),h[i+1:].rstrip()
             if kind in entrytypes:
                 entries.append('%s{%s,\n%s}\n\n' % (kind,rest,p.b.rstrip()))
-    with open(fn,'wb') as f:
-        if strings:
-            s = ''.join(strings)
-            if trace: g.trace('strings...\n%s' % s)
-            f.write(g.toEncodedString(s, encoding=e))
-        if entries:
-            s = ''.join(entries)
-            if trace: g.trace('entries...\n%s' % s)
+    if strings or entries:
+        g.es('writing:', fn)
+        with open(fn,'wb') as f:
+            s = ''.join(strings + entries)
             f.write(g.toEncodedString(s, encoding=e))
 #@-others
 #@@language python
