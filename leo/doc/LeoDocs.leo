@@ -22987,11 +22987,10 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
-<t tx="ekr.20170218003504.1">Leo: an ouliner, IDE, computing environment and data organzier
+<t tx="ekr.20170218003504.1">- Plans for 2017.
 
-Use a cooperative, conciliatory tone, not a compative, competitive tone.
+- Scripting for scientists.
 
-- Plans for 2017.
 </t>
 <t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
 
