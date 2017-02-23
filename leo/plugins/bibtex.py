@@ -209,6 +209,7 @@ def writeTreeAsBibTex(c, fn, root):
     """Write root's *subtree* to bibFile."""
     trace = False and not g.unitTesting
     strings,entries = [],[]
+    e = g.getEncoding(root, s=u'')
     for p in root.subtree():
         h = p.h
         if h.lower() == '@string':
@@ -219,15 +220,15 @@ def writeTreeAsBibTex(c, fn, root):
             kind,rest = h[:i].lower(),h[i+1:].rstrip()
             if kind in entrytypes:
                 entries.append('%s{%s,\n%s}\n\n' % (kind,rest,p.b.rstrip()))
-    with open(fn,'w') as f:
+    with open(fn,'wb') as f:
         if strings:
             s = ''.join(strings)
             if trace: g.trace('strings...\n%s' % s)
-            f.write(s)
+            f.write(g.toEncodedString(s, encoding=e))
         if entries:
             s = ''.join(entries)
             if trace: g.trace('entries...\n%s' % s)
-            f.write(s)
+            f.write(g.toEncodedString(s, encoding=e))
 #@-others
 #@@language python
 #@@tabwidth -4
