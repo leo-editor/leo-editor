@@ -63,47 +63,12 @@ BibTeX file.
 '''
 #@-<< docstring >>
 import leo.core.leoGlobals as g
+import locale
 import sys
 
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
-__version__ = '0.7'
-#@+<< change log >>
-#@+node:timo.20050213160555.2: ** <<change log>>
-#@@nocolor-node
-#@@wrap
-#@+at
-# 
-# 0.1 Timo Honkasalo 2005/02/13
-# - @bibtex nodes introduced, writing the contents in a BibTeX format.
-# 
-# 0.2 Timo Honkasalo 2005/02/14
-# - Importing BibTeX files added.
-# 
-# 0.3 Timo Honkasalo 2005/02/15
-# - Automatic inserting of templates when new entries are created.
-# 
-# 0.4 Timo Honkasalo 2005/03/02
-# 
-# - Some changes in writeTreeAsBibTex (better format), added entrytypes in
-#   globals.
-# - Greatly simplified and enhanced the performance of readBibTexFileIntoTree.
-# - Fixed parsing of files in readBibTexFileIntoTree: they are now split at '\n@'
-#   (whitespace stripped) instead of '@', so that fields may contain '@' (like a
-#   'mailto' field most likely would).
-# - Changed <<write template>> to move cursor to the entry point of first field
-#   (16 columns right).
-# - Bugfix: templates now include commas after each field
-# 
-# 0.5 EKR: 2014/12/11: This plugin now works with Python 3.
-# - Use p, not v, for positions.
-# - Improved messages and cleaned up code.
-# 
-# 0.6 EKR: Rewrote the docstring.
-# 0.7 EKR:
-# - Rewrote readBibTexFileIntoTree & writeTreeAsBibTex.
-# - Fixed bug 142 (in onHeadKey)
-#   https://github.com/leo-editor/leo-editor/issues/142
-#@-<< change log >>
+# 2017/02/23: Rewritten by EKR
+
 #@+<< define templates dict>>
 #@+node:timo.20050215183130: ** <<define templates dict>>
 templates = {
@@ -140,12 +105,11 @@ entrytypes.append('@string')
 # - Expanding strings
 # - Syntax checking
 # - Syntax highligting
-# 
 #@-<< to do >>
 #@+others
 #@+node:ekr.20170223063718.1: ** getEncoding
 def getEncoding(p, s):
-    '''Return the encoding in effect at p.'''
+    '''Return the encoding in effect at p and string s.'''
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if not e:
@@ -154,8 +118,7 @@ def getEncoding(p, s):
             try:
                 s.decode(e, 'strict')
             except Exception:
-                # g.es_exception()
-                e = 'cp1252'
+                e = locale.getpreferredencoding()
     return e
 #@+node:ekr.20100128073941.5370: ** init
 def init():
