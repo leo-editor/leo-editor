@@ -2063,7 +2063,8 @@ class VNodeBase(object):
         return self.findAtFileName(names)
 
     def atFileNodeName(self):
-        names = ("@file",)
+        names = ("@file", "@thin")
+            # Fix #403.
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName(self):
