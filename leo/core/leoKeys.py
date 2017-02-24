@@ -2382,7 +2382,7 @@ class KeyHandlerClass(object):
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict & helper
+    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
         trace = False and not g.unitTesting
@@ -4282,11 +4282,13 @@ class KeyHandlerClass(object):
                 # This is not accurate: LeoQtEventFilter retains
                 # the spelling of Alt-Ctrl keys because of the
                 # @bool enable_alt_ctrl_bindings setting.
-        # Special case the gang of four, plus 'Escape',
+        # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
         d = {
             'BackSpace': '\b',
             'Escape': 'Escape',
             'Linefeed': '\r',
+            'PageDn': 'Next', # Fix #416.
+            'PageUp': 'Prior', # Fix #416.
             'Return': '\n',
             'Tab': '\t',
         }
