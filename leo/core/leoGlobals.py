@@ -2975,12 +2975,14 @@ def getEncodingAt(p, s=None):
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if s and s.strip() and not e:
-        e = 'utf-8'
         if sys.platform.startswith('win'):
             try:
-                s.decode(e, 'strict')
+                s.decode('utf-8', 'strict')
+                e = 'utf-8'
             except Exception:
                 e = locale.getpreferredencoding()
+        else:
+            e = 'utf-8'
     return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
 def guessExternalEditor(c=None):
