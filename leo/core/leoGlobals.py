@@ -3184,27 +3184,26 @@ def readFileIntoEncodedString(fn, silent=False):
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString(fn,
-    encoding='utf-8',
-    kind=None,
-    mode='rb',
-    raw=False,
-    silent=False,
+    encoding='utf-8', # BOM may override this.
+    kind=None, # @file, @edit, ...
 ):
     '''Return the contents of the file whose full path is fn.
 
     Return (s,e)
     s is the string, converted to unicode, or None if there was an error.
-    e the encoding line for Python files: it is usually None.
+    e is the encoding of s, computed in the following order:
+    - The BOM encoding if the file starts with a BOM mark.
+    - The encoding given in the # -*- coding: utf-8 -*- line for python files.
+    - The encoding given by the 'encoding' keyword arg.
+    - None, which typically means 'utf-8'.
     '''
     try:
         e = None
-        with open(fn, mode) as f:
+        with open(fn, 'rb') as f:
             s = f.read()
         # Fix #391.
         if not s:
             return g.u(''), None
-        elif raw:
-            return s, None
         # New in Leo 4.11: check for unicode BOM first.
         e, s = g.stripBOM(s)
         if not e:
@@ -3216,12 +3215,10 @@ def readFileIntoString(fn,
         return s, e
     except IOError:
         # Translate 'can not open' and kind, but not fn.
-        # g.trace(g.callers(5))
-        if not silent:
-            if kind:
-                g.error('can not open', '', kind, fn)
-            else:
-                g.error('can not open', fn)
+        if kind:
+            g.error('can not open', '', kind, fn)
+        else:
+            g.error('can not open', fn)
     except Exception:
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()

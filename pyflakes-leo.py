@@ -21,7 +21,7 @@ import optparse
 import sys
 import time
 #@+others
-#@+node:ekr.20160518000549.10: ** main
+#@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
     '''Call run on all tables in tables_table.'''    
     t1 = time.time()
@@ -29,7 +29,7 @@ def main(files):
         # Report the file name.
         assert g.os_path_exists(fn), fn
         sfn = g.shortFileName(fn)
-        s = g.readFileIntoEncodedString(fn, silent=False)
+        s = g.readFileIntoEncodedString(fn)
         if s and s.strip():
             r = reporter.Reporter(
                 errorStream=sys.stderr,

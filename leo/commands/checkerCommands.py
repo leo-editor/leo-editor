@@ -192,7 +192,7 @@ class PyflakesCommand(object):
         for fn in sorted(paths):
             # Report the file name.
             sfn = g.shortFileName(fn)
-            s = g.readFileIntoEncodedString(fn, silent=False)
+            s = g.readFileIntoEncodedString(fn)
             if s.strip():
                 g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.

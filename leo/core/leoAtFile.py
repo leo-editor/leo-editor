@@ -4405,7 +4405,8 @@ class AtFile(object):
         if s1 is None:
             g.internalError('empty compare file: %s' % path1)
             return False
-        s2, e2 = g.readFileIntoString(path2, mode='rb', raw=True)
+        s2 = g.readFileIntoEncodedString(path2)
+        e2 = None
         if s2 is None:
             g.internalError('empty compare file: %s' % path2)
             return False

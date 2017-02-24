@@ -2040,7 +2040,7 @@ class RecursiveImportController(object):
         self.recursive = not one_file
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-    #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir
+    #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir (RecursiveImportController)
     def import_dir(self, dir_, root):
         '''Import selected files from dir_, a directory.'''
         trace = False and not g.unitTesting
@@ -2079,7 +2079,7 @@ class RecursiveImportController(object):
                         parent = child or root
                         p = parent.insertAsLastChild()
                         p.h = fn.replace('\\', '/')
-                        s, e = g.readFileIntoString(fn, encoding='utf-8', kind=self.kind)
+                        s, e = g.readFileIntoString(fn, kind=self.kind)
                         p.b = s
                     except Exception:
                         g.es_print('Exception importing', fn)
