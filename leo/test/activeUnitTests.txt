@@ -20381,9 +20381,9 @@ finally:
 table = (
     ( 50,'c.'),
     (  3,'p.ins'),
-    ( 20,'g.print'),
+    ( 17,'g.print'),
 )
-
+g.pr
 ac = c.k.autoCompleter
 ac.w = c.frame.body.wrapper
 

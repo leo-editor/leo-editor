@@ -1924,6 +1924,86 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
+#@+node:ekr.20041224080039: *4* g.printDict & dictToString
+def printDict(d, tag='', verbose=True, indent=''):
+    '''Pretty print a Python dict using g.pr.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n, len(key))
+        g.pr('%s...{' % (tag) if tag else '{')
+        for key in sorted(d):
+            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
+        g.pr('}')
+    else:
+        g.pr('%s...{}' % (tag) if tag else '{}')
+
+def dictToString(d, tag=None, verbose=True, indent=''):
+    '''Pretty print a Python dict to a string.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n, len(key))
+        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
+            for key in sorted(d)]
+        s = '\n'.join(lines)
+        if tag:
+            return '%s...{\n%s}\n' % (tag, s)
+        else:
+            return '{\n%s}\n' % (s)
+    else:
+        return '%s...{}' % (tag) if tag else '{}'
+#@+node:ekr.20041126060136: *4* g.printList & listToString
+def printList(aList, tag=None, sort=False, indent=''):
+    if not aList:
+        if tag: g.pr('%s...[]' % tag)
+        else: g.pr('[]')
+        return
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    if tag: g.pr('%s...[' % tag)
+    else: g.pr('[')
+    for e in bList:
+        g.pr('%s%s' % (indent, repr(e).strip()))
+    g.pr(']')
+
+def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
+    if not aList:
+        if tag: return '%s...{}' % tag
+        else: return '[]'
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
+    s = '\n'.join(lines)
+    if toRepr: s = repr(s)
+    if tag:
+        return '[%s...\n%s\n]' % (tag, s)
+    else:
+        return '[\n%s\n]' % s
+#@+node:ekr.20050819064157: *4* g.printObj & toString
+def printObj(obj, tag=None, sort=False, verbose=True, indent=''):
+    if isinstance(obj, (list, tuple)):
+        g.printList(obj, tag, sort, indent)
+    elif isinstance(obj, dict):
+        g.printDict(obj, tag, verbose, indent)
+    else:
+        g.pr('%s%s' % (indent, repr(obj).strip()))
+
+def toString(obj, tag=None, sort=False, verbose=True, indent=''):
+    if isinstance(obj, (list, tuple)):
+        return g.listToString(obj, tag, sort, indent)
+    elif isinstance(obj, dict):
+        return g.dictToString(obj, tag, verbose, indent)
+    else:
+        return '%s%s' % (indent, repr(obj).strip())
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
     dots=True, # Show level dots in Sherlock traces.
@@ -2201,22 +2281,18 @@ def printGcVerbose(tag=''):
     g.pr("%s: %d new, %d total objects" % (tag, len(newObjects), len(objects)))
     g.pr('-' * 40)
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
-#@+node:ekr.20031218072017.3134: *4* g.clear_stats
-def clear_stats():
+#@+node:ekr.20031218072017.3134: *4* g.clearStats
+def clearStats():
     g.trace()
     g.app.statsDict = {}
-
-clearStats = clear_stats
-#@+node:ekr.20031218072017.3135: *4* g.print_stats
-def print_stats(name=None):
+#@+node:ekr.20031218072017.3135: *4* g.printStats
+def printStats(name=None):
     if name:
         if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
     g.printDict(g.app.statsDict, tag='statistics at %s' % name)
-
-printStats = print_stats
 #@+node:ekr.20031218072017.3136: *4* g.stat
 def stat(name=None):
     """Increments the statistic for name in g.app.statsDict
@@ -5459,95 +5535,9 @@ def prettyPrintType(obj):
         if t.startswith("<type '"): t = t[7:]
         if t.endswith("'>"): t = t[: -2]
         return t
-#@+node:ekr.20041224080039: *3* g.print_dict & dictToString
-def print_dict(d, tag='', verbose=True, indent=''):
-    '''Pretty print a Python dict using g.pr.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        g.pr('%s...{' % (tag) if tag else '{')
-        for key in sorted(d):
-            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
-        g.pr('}')
-    else:
-        g.pr('%s...{}' % (tag) if tag else '{}')
-
-printDict = print_dict
-
-def dictToString(d, tag=None, verbose=True, indent=''):
-    '''Pretty print a Python dict to a string.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
-            for key in sorted(d)]
-        s = '\n'.join(lines)
-        if tag:
-            return '%s...{\n%s}\n' % (tag, s)
-        else:
-            return '{\n%s}\n' % (s)
-    else:
-        return '%s...{}' % (tag) if tag else '{}'
-#@+node:ekr.20041126060136: *3* g.print_list & listToString
-def print_list(aList, tag=None, sort=False, indent=''):
-    if not aList:
-        if tag: g.pr('%s...[]' % tag)
-        else: g.pr('[]')
-        return
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    if tag: g.pr('%s...[' % tag)
-    else: g.pr('[')
-    for e in bList:
-        g.pr('%s%s' % (indent, repr(e).strip()))
-    g.pr(']')
-
-printList = print_list
-
-def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
-    if not aList:
-        if tag: return '%s...{}' % tag
-        else: return '[]'
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
-    s = '\n'.join(lines)
-    if toRepr: s = repr(s)
-    if tag:
-        return '[%s...\n%s\n]' % (tag, s)
-    else:
-        return '[%s]' % s
-#@+node:ekr.20050819064157: *3* g.print_obj & toString
-def print_obj(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        g.print_list(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        g.print_dict(obj, tag, verbose, indent)
-    else:
-        g.pr('%s%s' % (indent, repr(obj).strip()))
-
-def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        return g.listToString(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        return g.dictToString(obj, tag, verbose, indent)
-    else:
-        return '%s%s' % (indent, repr(obj).strip())
-#@+node:ekr.20041122153823: *3* g.print_stack (printStack)
-def print_stack():
+#@+node:ekr.20041122153823: *3* g.printStack
+def printStack():
     traceback.print_stack()
-
-printStack = print_stack
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
     bindings = window.bind()
