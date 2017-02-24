@@ -61,4 +61,6 @@ importer_dict = {
     'class': Ini_Importer,
     'extensions': ['.ini',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

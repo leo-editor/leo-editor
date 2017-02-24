@@ -48,4 +48,6 @@ writer_dict = {
     'class': JSON_Writer,
     'extensions': ['.json',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

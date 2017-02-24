@@ -151,4 +151,6 @@ importer_dict = {
     'class': JS_Importer,
     'extensions': ['.js',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -425,4 +425,6 @@ writer_dict = {
     'class': Export_IPYNB,
     'extensions': ['.ipynb',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

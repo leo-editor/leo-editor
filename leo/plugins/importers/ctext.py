@@ -100,4 +100,6 @@ importer_dict = {
     '@auto': ['@auto-ctext',],
     'class': CText_Importer,
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

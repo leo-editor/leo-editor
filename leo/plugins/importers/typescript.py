@@ -109,4 +109,6 @@ importer_dict = {
     'class': TS_Importer,
     'extensions': ['.ts',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

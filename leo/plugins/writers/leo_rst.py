@@ -63,4 +63,6 @@ writer_dict = {
     'class': RstWriter,
     'extensions': ['.rst', '.rest',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

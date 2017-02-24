@@ -21,4 +21,6 @@ importer_dict = {
     'class': Html_Importer,
     'extensions': ['.html', '.htm',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

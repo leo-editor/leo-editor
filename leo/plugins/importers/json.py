@@ -152,4 +152,6 @@ importer_dict = {
     'class': JSON_Scanner,
     'extensions': ['.json',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

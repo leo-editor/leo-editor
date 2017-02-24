@@ -393,4 +393,6 @@ importer_dict = {
     'class': Import_IPYNB,
     'extensions': ['.ipynb',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

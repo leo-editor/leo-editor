@@ -524,4 +524,6 @@ importer_dict = {
     'extensions': ['.py', '.pyw', '.pyi'],
         # mypy uses .pyi extension.
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

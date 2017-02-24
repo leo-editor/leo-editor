@@ -40,4 +40,7 @@ class BaseWriter(object):
         else:
             return []
     #@-others
+
+#@@language python
+#@@tabwidth -4
 #@-leo

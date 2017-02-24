@@ -31,4 +31,6 @@ writer_dict = {
     'class': OtlWriter,
     'extensions': ['.otl',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo
