@@ -2975,7 +2975,8 @@ def getEncodingAt(p, s=None):
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if s and s.strip() and not e:
-        if sys.platform.startswith('win'):
+        ###
+        if False and sys.platform.startswith('win'):
             try:
                 s.decode('utf-8', 'strict')
                 e = 'utf-8'
