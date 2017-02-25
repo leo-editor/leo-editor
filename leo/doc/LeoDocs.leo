@@ -9399,10 +9399,7 @@ This plugin adds time required, progress and priority settings for nodes. With
 the @project tag a branch can display progress and time required with dynamic
 hierarchical updates.
 
-For full documentation see:
-
-  - http://leo.zwiki.org/ToDo 
-  - http://leo.zwiki.org/tododoc.html
+For more documentation see: http://leo.zwiki.org/tododoc.
 
 </t>
 <t tx="ekr.20101113063552.9410">Creates a window for *live* rendering of rst, html, etc.  Qt only.
