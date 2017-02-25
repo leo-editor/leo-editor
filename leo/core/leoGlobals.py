@@ -3545,6 +3545,9 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             '''Idle-time handler for g.recursiveUNLSearch'''
             c.expandAllAncestors(p)
             c.selectPosition(p)
+            if p.hasChildren():
+                p.expand()
+                # n = min(3, p.numberOfChildren())
             c.redraw_now()
             c.frame.bringToFront()
             timer.stop()
@@ -6510,6 +6513,8 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
             ok = False
     return s, ok
 #@+node:ekr.20120311151914.9916: ** g.Urls
+unl_regex = re.compile(r'\bunl:.*$')
+
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
@@ -6599,8 +6604,7 @@ def handleUrl(url, c=None, p=None):
     '''
     trace = False and not g.unitTesting
     verbose = True
-    # g.trace(url,g.callers())
-    if 1:
+    if 1: # To restrict scope of pylint disable.
         # pylint: disable=no-member
         unquote = urllib.parse.unquote if isPython3 else urllib.unquote
     if c and not p:
@@ -6698,11 +6702,13 @@ def handleUrl(url, c=None, p=None):
 def handleUnl(unl, c):
     '''Handle a Leo UNL. This must *never* open a browser.'''
     trace = False and not g.unitTesting
-    if not unl.strip():
+    if not unl:
         return
-    # py--lint: disable=no-member
-    # unquote = urllib.parse.unquote if isPython3 else urllib.unquote
-    # unl = unquote(unl)
+    if unl.lower().startswith('unl:'):
+        unl = unl[4:]
+    unl = unl.strip()
+    if not unl:
+        return
     i = unl.find('#')
     if i == -1:
         # Move to the unl in *this* commander.
@@ -6710,7 +6716,36 @@ def handleUnl(unl, c):
         return
     # path#unl
     path, unl = unl.split('#', 1)
-    if not path.lower().endswith('.leo') or not os.path.exists(path):
+    # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
+    if not path:
+        # Move to the unl in *this* commander.
+        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        return
+    if c:
+        base = g.os_path_dirname(c.fileName())
+        c_path = g.os_path_finalize_join(base, path)
+    else:
+        c_path = None
+    # Look for the file in various places.
+    table = (
+        c_path,
+        g.os_path_finalize_join(g.app.loadDir, '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
+        g.app.loadDir,
+        g.app.homeDir,
+    )
+    for path2 in table:
+        # if trace: g.trace('searching', repr(path2))
+        if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
+            path = path2
+            break
+    else:
+        g.es_print('path not found', repr(path))
         return
     # End editing in *this* outline, so typing in the new outline works.
     c.endEditing()
@@ -6720,8 +6755,8 @@ def handleUnl(unl, c):
     else:
         if trace: g.trace('\nPATH: %r\n UNL: %r' % (path, unl))
         c2 = g.openWithFileName(path, old_c=c)
-        if c2 and unl:
-            g.recursiveUNLSearch(unl.split("-->"), c2, soft_idx=True)
+        if unl:
+            g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
         if c2:
             c2.bringToFront()
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
@@ -6770,10 +6805,10 @@ def openUrlOnClick(event, url=None):
         return None
 #@+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(event, url=None):
-    '''Open the URL under the cursor.  Return it for unit testing.'''
+    '''Open the UNL or URL under the cursor.  Return it for unit testing.'''
     trace = False and not g.unitTesting
-    if trace: g.trace(event, url)
     c = getattr(event, 'c', None)
+    if trace: g.trace(event, url, c)
     if not c: return None
     w = getattr(event, 'w', c.frame.body.wrapper)
     if not g.app.gui.isTextWrapper(w):
@@ -6797,6 +6832,14 @@ def openUrlHelper(event, url=None):
                 url = match.group()
                 if g.isValidUrl(url):
                     break
+        else:
+            # Look for the unl:
+            for match in g.unl_regex.finditer(line):
+                # Don't open if we click after the unl.
+                if match.start() <= col < match.end():
+                    unl = match.group()
+                    g.handleUnl(unl, c)
+                    return
     elif not g.isString(url):
         url = url.toString()
     if url and g.isValidUrl(url):

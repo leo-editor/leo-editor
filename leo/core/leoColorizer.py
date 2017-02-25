@@ -401,6 +401,7 @@ class JEditColorizer(BaseColorizer):
             ('n', self.match_url_n, True),
             ('p', self.match_url_p, True),
             ('t', self.match_url_t, True),
+            ('u', self.match_unl, True),
             ('w', self.match_url_w, True),
             # ('<', self.match_image, True),
             ('<', self.match_section_ref, True), # Called **first**.
@@ -1150,7 +1151,15 @@ class JEditColorizer(BaseColorizer):
                 return j - i
             else:
                 return 0
-    #@+node:ekr.20110605121601.18608: *5* jedit.match_url_any/f/h  (new)
+    #@+node:ekr.20170225103140.1: *5* jedit.match_unl
+    def match_unl(self, s, i):
+        if g.match(s.lower(), i, 'unl:'):
+            j = len(s[i:].rstrip())
+            self.colorRangeWithTag(s, i, j, 'url')
+            return j
+        else:
+            return 0
+    #@+node:ekr.20110605121601.18608: *5* jedit.match_url_any/f/h
     # Fix bug 893230: URL coloring does not work for many Internet protocols.
     # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
     url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
@@ -1162,7 +1171,6 @@ class JEditColorizer(BaseColorizer):
     url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
     url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
     kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-    # url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
     url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 
     def match_any_url(self, s, i):
@@ -1845,11 +1853,17 @@ class JEditColorizer(BaseColorizer):
                     ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
         if tag != 'url':
-            # Allow URL's *everywhere*.
+            # Allow UNL's and URL's *everywhere*.
             j = min(j, len(s))
             while i < j:
-                if s[i].lower() in 'fh': # file|ftp|http|https
+                ch = s[i].lower()
+                if ch == 'u':
+                    n = self.match_unl(s, i)
+                    # if n > 0: g.trace('found unl', s[i:i+n])
+                    i += max(1, n)
+                elif ch in 'fh': # file|ftp|http|https
                     n = self.match_any_url(s, i)
+                    # if n > 0: g.trace('found url', s[i:i+n])
                     i += max(1, n)
                 else:
                     i += 1

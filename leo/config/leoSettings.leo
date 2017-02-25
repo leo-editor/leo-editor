@@ -12222,6 +12222,8 @@ else:
 
 # UNLs
 
+\b(unl:.*#).*\n
+\b(unl:).*\n
 \b(file://.*--&gt;)\S+\b
 \b(https?://.*--&gt;)\S+\b
 
