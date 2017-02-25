@@ -296,7 +296,7 @@
 <v t="ekr.20170211083757.14"><vh>Last</vh></v>
 </v>
 </v>
-<v t="ekr.20170212105552.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
+<v t="ekr.20170212105552.1"><vh>@@button IntroSlides @key=Ctrl-9</vh>
 <v t="ekr.20170212105552.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170212105552.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
 <v t="ekr.20170212105552.4"><vh>setup</vh></v>
@@ -310,6 +310,7 @@
 <v t="ekr.20170212105552.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
+<v t="ekr.20170225023738.1"><vh>@button test-http</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -3497,5 +3498,29 @@ import leo.plugins.demo as demo_module
     demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
     demo.start(script_tree, auto_run=auto_run)</t>
 <t tx="ekr.20170212105552.9"></t>
+<t tx="ekr.20170225023738.1">'''
+Web development involves endless reloading of pages.  It gets old really fast.
+
+This @button allows me to fiddle with the .css and javascript for mod_http
+itself without having to reload Leo. Oh so useful. I can just change the
+settings in myLeoSettings and hit Ctrl-p to re-execute the button. 
+
+This trick doesn't work when changing mod_http.py itself, but most of
+the work involved the css and javascript.
+
+This pattern could be useful to other web developers.
+'''
+
+# g.cls()
+if c.isChanged():
+    c.save()
+# *Always* use the most current settings.
+g.app.pluginsController.loadOnePlugin(
+    'leo.plugins.mod_http',
+    tag='open0',
+    verbose=False)
+g.app.loadManager.readGlobalSettingsFiles()
+g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')
+</t>
 </tnodes>
 </leo_file>
