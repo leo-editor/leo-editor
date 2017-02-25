@@ -1022,20 +1022,19 @@ if QtWidgets: # NOQA
             assert pc.w
             if s:
                 pc.show()
-            # Show text only if we have docutils and only if we have rst or md language.
             if got_docutils:
-                force = keywords.get('force')
                 colorizer = c.frame.body.colorizer
                 language = colorizer.scanLanguageDirectives(p)
                 if trace: g.trace(language)
-                if force or language in ('rst', 'rest', 'markdown', 'md'):
-                    if not isHtml:
-                        s = pc.convert_to_html(s)
-                    pc.set_html(s, w)
-                else:
-                    w.setPlainText('')
+                # Fix #420: viewrendered does not render some nodes
+                    # User's (rightly) complained, so don't be clever here.
+                    # force = keywords.get('force')
+                    # force or language in ('rst', 'rest', 'markdown', 'md'):
+                if not isHtml:
+                    s = pc.convert_to_html(s)
+                pc.set_html(s, w)
             else:
-                w.setPlainText('')
+                w.setPlainText(s)
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
         def convert_to_html(self, s):
             '''Convert s to html using docutils.'''
