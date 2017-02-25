@@ -6958,8 +6958,7 @@ class Commands(object):
                 vr = pc.loadOnePlugin(name)
                 break
         else:
-            vr = pc.loadOnePlugin('viewrendered3.py')
-                # The new default.
+            vr = pc.loadOnePlugin('viewrendered.py')
         if g.unitTesting:
             assert vr # For unit testing.
         if vr:
