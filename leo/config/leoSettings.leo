@@ -27,6 +27,7 @@
 <v t="ekr.20110612074140.16415"><vh>run</vh></v>
 </v>
 <v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
+<v t="ekr.20140912105440.19376"><vh>@@button reload-styles</vh></v>
 </v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
 <v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
@@ -59,8 +60,6 @@
 <v t="ekr.20140918165611.38050"><vh>@button color-wheel</vh></v>
 <v t="tbrown.20140609102412.32428"><vh>@button pick-color-name</vh></v>
 <v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
-<v t="ekr.20140912105440.19376"><vh>@button reload-styles</vh></v>
-<v t="ekr.20161003155658.1"><vh>@button test-http</vh></v>
 </v>
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
@@ -136,7 +135,7 @@
 </v>
 </v>
 <v t="ekr.20170208063946.1"><vh>demo;;</vh>
-<v t="ekr.20170208063901.1"><vh>@button MyDemo @key=Ctrl-9</vh>
+<v t="ekr.20170208063901.1"><vh>@@button MyDemo @key=Ctrl-9</vh>
 <v t="ekr.20170208063901.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170208063901.3"><vh>script_string</vh></v>
 <v t="ekr.20170208063901.4"><vh>class myDemo</vh></v>
@@ -4551,6 +4550,9 @@ viewrendered.py
 
 # Alphabetical list of all Leo plugins.
 
+# Note: This list may be out of date. leo/plugins contains all official plugins.
+# Note: Leo loads all qt_*.py files automatically when the qt gui is in effect.
+
 # active_path.py
 # add_directives.py
 # at_folder.py
@@ -4559,6 +4561,7 @@ viewrendered.py
 # attrib_edit.py
 # backlink.py
 # bibtex.py
+# bigdash.py
 # bookmarks.py
 # bzr_qcommands.py
 # chapter_hoist.py
@@ -4569,7 +4572,6 @@ viewrendered.py
 # cursesGui.py
 # datenodes.py
 # debugger_pudb.py
-# detect_urls.py
 # dragdropgoodies.py
 # dtest.py
 # dump_globals.py
@@ -4578,6 +4580,7 @@ viewrendered.py
 # expfolder.py
 # FileActions.py
 # free_layout.py
+    # loaded automatically
 # ftp.py
 # geotag.py
 # gitarchive.py
@@ -4598,7 +4601,9 @@ viewrendered.py
 # leoremote.py
 # leoscreen.py
 # lineNumbers.py
+# livecode.py
 # macros.py
+# markup_inline.py
 # maximizeNewWindows.py
 # mime.py
 # mnplugins.py
@@ -4614,6 +4619,7 @@ viewrendered.py
 # multifile.py
 # nav_qt.py
 # nested_splitter.py
+    # loaded automatically.
 # niceNosent.py
 # nodeActions.py
 # nodediff.py
@@ -4624,17 +4630,17 @@ viewrendered.py
 # outline_export.py
 # paste_as_headlines.py
 # plugins_menu.py
-# pluginsTest.py
 # pretty_print.py
 # projectwizard.py
 # python_terminal.py
+# QNCalendarWidget.py
 # qt_quicksearch.py
-# qtframecommands.py
 # quickMove.py
 # quicksearch.py
 # quit_leo.py
 # read_only_nodes.py
 # redirect_to_log.py
+# richtext.py
 # rss.py
 # rst3.py
 # run_nodes.py
@@ -4660,6 +4666,7 @@ viewrendered.py
 # trace_tags.py
 # valuespace.py
 # viewrendered.py
+# viewrendered2.py
 # vim.py
 # wikiview.py
 # word_count.py
@@ -11236,30 +11243,6 @@ code {
     font-family: "Monospace";
     font-size: 150%; /* 20pt; */
 }</t>
-<t tx="ekr.20161003155658.1">'''
-Web development involves endless reloading of pages.  It gets old really fast.
-
-This @button allows me to fiddle with the .css and javascript for mod_http
-itself without having to reload Leo. Oh so useful. I can just change the
-settings in myLeoSettings and hit Ctrl-p to re-execute the button. 
-
-This trick doesn't work when changing mod_http.py itself, but most of
-the work involved the css and javascript.
-
-This pattern could be useful to other web developers.
-'''
-
-# g.cls()
-if c.isChanged():
-    c.save()
-# *Always* use the most current settings.
-g.app.pluginsController.loadOnePlugin(
-    'leo.plugins.mod_http',
-    tag='open0',
-    verbose=False)
-g.app.loadManager.readGlobalSettingsFiles()
-g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')
-</t>
 <t tx="ekr.20161006072026.1"></t>
 <t tx="ekr.20161006072041.1">Import &amp;Tabbed File...</t>
 <t tx="ekr.20161006072143.1">Import &amp;FreeMind Files...</t>
