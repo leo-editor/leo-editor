@@ -12222,23 +12222,30 @@ else:
 
 # UNLs
 
-\b(unl:.*#).*\n
-\b(unl:).*\n
-\b(file://.*--&gt;)\S+\b
-\b(https?://.*--&gt;)\S+\b
+\bunl:(//.*#.*--&gt;).*
+\bunl:(//.*#).*
+\bunl:(//.*--&gt;).*
+\bunl:(//).*
+# \bfile:(//.*--&gt;)\S+\b
+# \bhttps?:(//.*--&gt;)\S+\b
+
+# regular urls
+
+\bhttps?:(//.*/)\w+\b
+\bfile:(//.*/)\w+\b
 
 # restructuredText `Visible text &lt;http://invisible.url/here&gt;`
 
 (`)\S+(\s*&lt;https?://\S+&gt;`_)
 (`)\S+(\s*&lt;file://\S+&gt;`_)
 
-# regular urls
-
-\b(https?://.*/)\w+\b
-\b(file://.*/)\w+\b
-
 # Test patterns: see http://pythex.org/
 
+# unl://leoSettings.leo#@settings--&gt;Plugins--&gt;wikiview plugin
+# unl://@settings--&gt;Plugins--&gt;wikiview plugin--&gt;@bool wikiview-active = True
+# unl://#@settings--&gt;Plugins--&gt;wikiview plugin--&gt;@bool wikiview-active = True
+# unl://#@settings--&gt;Plugins--&gt;wikiview plugin--&gt;@bool wikiview-active
+# unl://#@settings--&gt;Plugins--&gt;wikiview plugin
 # file://#some--&gt;headlines--&gt;mynode
 # http://#some--&gt;headlines--&gt;mynode
 # https://#some--&gt;headlines--&gt;mynode

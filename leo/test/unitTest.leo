@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.58" body_secondary_ratio="0.81">
-	<global_window_position top="54" left="600" height="941" width="1080"/>
+	<global_window_position top="75" left="320" height="941" width="1210"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1234,6 +1234,7 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3707,6 +3708,25 @@ s = '''\
 
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20120307133953.3947">import sys
+if sys.platform.startswith('win'):
+    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(fn1),fn1
+    file_, http, unl = 'file://', 'http://', 'unl:' + '//'
+    table = (
+        (file_ + fn1,                           ['os_startfile']),
+        (http + 'writemonkey.com/index.php',    ['browser']),
+        (unl + fn1 + '#Leo 4.10 Release notes', ['g.recursiveUNLSearch']),
+        (unl + '#--&gt;Before 4.10 b1',            ['g.recursiveUNLSearch']),
+    )
+    d = g.app.unitTestDict
+    for url,aList in table:
+        d = g.app.unitTestDict = {}
+        g.handleUrl(c=c,p=c.p,url=url)
+        for kind in aList:
+            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
+                kind,url,g.dictToString(d))
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>

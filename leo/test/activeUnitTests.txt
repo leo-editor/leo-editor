@@ -11511,19 +11511,20 @@ import sys
 if sys.platform.startswith('win'):
     fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
     assert g.os_path_exists(fn1),fn1
-    url1 = 'file://' + fn1 + '#Leo 4.10 Release notes'
+    file_, http, unl = 'file://', 'http://', 'unl:' + '//'
     table = (
-        (r'file://C:/prog/test.sh',             ['os_startfile']),
-        (r'file://C:/prog',                     ['os_startfile']),
-        (r'http://writemonkey.com/index.php',   ['browser']),
-        (url1,                                  ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
-        (r'#-->Before 4.10 b1',                 ['g.recursiveUNLSearch']),
+        (file_ + fn1,                           ['os_startfile']),
+        (http + 'writemonkey.com/index.php',    ['browser']),
+        (unl + fn1 + '#Leo 4.10 Release notes', ['g.recursiveUNLSearch']),
+        (unl + '#-->Before 4.10 b1',            ['g.recursiveUNLSearch']),
     )
+    d = g.app.unitTestDict
     for url,aList in table:
+        d = g.app.unitTestDict = {}
         g.handleUrl(c=c,p=c.p,url=url)
         for kind in aList:
-            assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
-                kind,url)
+            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
+                kind,url,g.dictToString(d))
 #@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 

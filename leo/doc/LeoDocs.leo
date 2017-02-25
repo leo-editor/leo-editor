@@ -710,6 +710,7 @@
 <v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20101113063552.9398"><vh>Summary</vh></v>
+<v t="ekr.20170225035122.1"><vh>** new entries ****************</vh></v>
 <v t="ekr.20101113063552.9528"><vh>Gui-independent plugins</vh>
 <v t="ekr.20101113063552.9412"><vh>Commands &amp; directives</vh>
 <v t="ekr.20101113063552.9413"><vh>add_directives.py</vh></v>
@@ -779,6 +780,7 @@
 <v t="ekr.20101113063552.9473"><vh>mod_http.py</vh></v>
 </v>
 <v t="ekr.20101113063552.9474"><vh>Slideshows and screenshots</vh>
+<v t="ekr.20170225081012.1"><vh>demo.py</vh></v>
 <v t="ekr.20101113063552.9475"><vh>screenshots.py</vh></v>
 <v t="ekr.20101113063552.9463"><vh>slideshow.py</vh></v>
 </v>
@@ -789,9 +791,7 @@
 <v t="ekr.20101113063552.9480"><vh>leo_to_rtf.py</vh></v>
 </v>
 <v t="ekr.20101113063552.9482"><vh>User interface</vh>
-<v t="ekr.20101113063552.9483"><vh>UNL.py</vh></v>
 <v t="ekr.20101113063552.9484"><vh>chapter_hoist.py</vh></v>
-<v t="ekr.20101113063552.9485"><vh>detect_urls.py</vh></v>
 <v t="ekr.20101113063552.9486"><vh>EditAttributes.py</vh></v>
 <v t="ekr.20101113063552.9487"><vh>interact.py</vh></v>
 <v t="ekr.20101113063552.9488"><vh>maximizeNewWindows.py</vh></v>
@@ -799,6 +799,7 @@
 <v t="ekr.20101113063552.9794"><vh>plugins_menu.py</vh></v>
 <v t="ekr.20101113063552.9491"><vh>redirect_to_log.py</vh></v>
 <v t="ekr.20101113063552.9492"><vh>scripts_menu.py</vh></v>
+<v t="ekr.20101113063552.9483"><vh>UNL.py</vh></v>
 <v t="ekr.20101113063552.9493"><vh>zenity_file_dialogs.py</vh></v>
 </v>
 </v>
@@ -1470,6 +1471,9 @@
 <v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
 <v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
 </v>
+<v t="ekr.20170225082023.1"><vh>Documentation</vh>
+<v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
+</v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
@@ -1513,6 +1517,8 @@
 <v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
+<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20050912125144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8956,24 +8962,31 @@ controller(c).run()
     Manages BibTeX files with Leo.
 ``bigdash.py``
     Creates a global search window.
+``bookmarks.py``
+    Mangages bookmarks using a separate pane.
 ``bzr_qcommands.py``
     Adds a context menu to each node containing all the commands in the bzr Qt
     interface. Bzr is invoked based on the path of the current node.
 ``chapter_hoist.py``
     Creates hoist buttons.
+``codewisecompleter.py``
+    Uses the ctags database to provide an autocompletion list.
 ``colorize_headlines.py``
     Manipulates appearance of individual tree widget items.
 ``contextmenu.py``
     Defines various useful actions for context menus (Qt only).
+``ctagscompleter.py``
+    Uses ctags to provide an autocompletion list.
 ``datenodes.py``
     Allows users to insert headlines containing dates.
 ``debugger_pudb.py``
     Makes g.pdb() enter the Pudb debugger instead of pdb.
-``detect_urls.py``
-    Colorizes URLs everywhere in a node's body on node selection or saving.
-    Double clicking on any URL launches it in the default browser.
+``demo.py``
+    Creates slides or interactive demos.
 ``dtest.py``
     Sends code to the doctest module and reports the result.
+``dragdropgoodies``
+    Dumps files dropped into Leo.
 ``dump_globals.py``
     Dumps Python globals at startup.
 ``EditAttributes.py``
@@ -8987,8 +9000,12 @@ controller(c).run()
 ``FileActions.py``
     Defines actions taken when double-clicking on @&lt;file&gt; nodes and
     supports @file-ref nodes.
+``ftp.py``
+    Supports uploading of files via ftp.
 ``geotag.py``
     Tags nodes with latitude and longitude.
+``gitarchive.py``
+    Stores snapshots of outline in git.
 ``graphcanvas.py``
     Adds a graph layout for nodes in a tab.
     Requires Qt and the backlink.py plugin.
@@ -8999,9 +9016,8 @@ controller(c).run()
     puts the __init__ method (ctor) into the body of the class node.
 ``interact.py``
     Adds buttons so Leo can interact with command line environments.
-``ipython.py``
-    Creates a two-way communication (bridge) between Leo
-    scripts and IPython running in the console from which Leo was launched.
+``jinjarender.py``
+    Renders @jinja nodes.
 ``leo_interface.py``
     Allows the user to browse XML documents in Leo.
 ``leo_pdf.py``
@@ -9014,8 +9030,15 @@ controller(c).run()
 ``leocursor.py``
     Creates a LeoCursor object that can walk around a Leo outline and decode
     attributes from nodes.
+``leofeeds.py``
+    Reads from rss, atom or other sources.
+.. Not a plugin: leofts.py.
+``leomail.py``
+    Sync local mailbox files over to Leo.
 ``leomylyn.py``
     Provides a "Mylyn" like experience for Leo.
+``leoOPML.py``
+    Read and write .leo files in OPML.
 ``leoremote.py``
     Remote control for Leo.
 ``leoscreen.py``
@@ -9026,6 +9049,8 @@ controller(c).run()
     Creates a live code-evaluation pane.
 ``macros.py``
     Creates new nodes containing parameterized section references.
+``markup_inline.py``
+    Adds commands that create bold, italic or underlined text.
 ``maximizeNewWindows.py``
     Maximizes all new windows.
 ``mime.py``
@@ -9035,7 +9060,7 @@ controller(c).run()
 ``mod_framesize.py``
     Sets a hard coded frame size.
 ``mod_http.py``
-    A minimal http plugin for Leo, based on AsyncHttpServer.py.
+    An http plugin for Leo, based on AsyncHttpServer.py.
 ``mod_read_dir_outline.py``
     Allows Leo to read a complete directory tree into a Leo outline. Converts
     directories into headlines and puts the list of file names into bodies.
@@ -9052,9 +9077,15 @@ controller(c).run()
     with exactly one newline, replaces all tabs with spaces, and
     adds a newline before class and functions in the derived file.
 ``nodeActions.py``
-    Allows the definition of double-click actions.   
+    Allows the definition of double-click actions.
+``nodediff.py``
+    Provides commands to run text diffs on node bodies within Leo.
 ``nodeTags.py``
     Provides node tagging capabilities to Leo.
+``nodewatch.py``
+    Adds scriptable @nodewatch nodes.
+``notebook.py``
+    Adds a QML notebook.
 ``open_shell.py``
     Creates an 'Extensions' menu containing two commands:
     Open Console Window and Open Explorer.
@@ -9066,10 +9097,12 @@ controller(c).run()
     Creates a Plugins menu and adds all actives plugins to it.
 ``pretty_print.py``
     Customizes pretty printing.   
-``printing.py``
-    Supports printing for the Qt gui.
 ``projectwizard.py``
     Creates a wizard that creates @auto nodes.
+``python_terminal.py``
+    Embeds an python interpreter in Leo's log pane.
+``QNCalendarWidgets.py``
+    Adds a calandar widget.
 ``quickMove.py``
     Creates buttons to move nodes quickly to other nodes.
 ``quicksearch.py``
@@ -9080,6 +9113,11 @@ controller(c).run()
     Creates and updates @read-only nodes.
 ``redirect_to_log.py``
     Sends all output to the log pane.
+.. _`CKEditor`: http://ckeditor.com/
+``richtext.py``
+    Enables rich text using the `CKEditor`_ editor.
+``rss.py``
+    Adds rss reader features to Leo.
 ``run_nodes.py``
     Runs a program and interface Leos through its input/output/error streams.   
 ``screen_capture.py``
@@ -9090,10 +9128,10 @@ controller(c).run()
     Sends output from the Execute Script command to the end of the body pane.
 ``scripts_menu.py``
     Creates a Scripts menu for LeoPy.leo.
-``scrolledmessage.py``
-    Provides a Scrolled Message Dialog service for Qt.
 ``setHomeDirectory.py``
     Sets g.app.homeDir to a hard-coded path.
+``sftp.py``
+    Adds @edit-like functionality for remote files over SFTP.
 ``slideshow.py``
     Support slideshows in Leo outlines.
 ``spydershell.py``
@@ -9103,6 +9141,10 @@ controller(c).run()
     Launches (starts) a file given by a headline when double-clicking the icon.
 ``stickynotes.py``
     Adds simple "sticky notes" feature (popout editors) for Qt gui.
+``systray.py``
+    Adds Leo to the system tray.
+``threadutil.py``
+    Adds utilities for asynchronous operation of commands.
 ``timestamp.py``
     Manages attributes containing node creation/modification/viewed times.
 ``todo.py``
@@ -9126,6 +9168,8 @@ controller(c).run()
     An alternate/enhanced version of viewrendered.py.
 ``vim.py``
     Enables two-way communication with VIM.
+``wikiview.py``
+    Hides/shows parts of urls in the body editor.
 ``word_count.py``
     Counts characters, words, lines, and paragraphs in the body pane.
 ``word_export.py``
@@ -9133,6 +9177,8 @@ controller(c).run()
     the selected outline to a Word document, starting Word if necessary.
 ``xemacs.py``
     Allows you to edit nodes in emacs/xemacs.
+``xml_edit.py``
+    Adds commands for importing and exporting xml to and from Leo outlines.
 ``xsltWithNodes.py``
     Adds the Outline:XSLT menu containing XSLT-related commands.
 ``zenity_file_dialogs.py``
@@ -10623,12 +10669,6 @@ This plugin puts two buttons in the icon area: a button called 'Save Hoist' and 
 
 Requires at least version 0.19 of mod_scripting.
 
-</t>
-<t tx="ekr.20101113063552.9485">Colorizes URLs everywhere in node's body on node selection or saving. Double click on any URL launches it in default browser.
-
-URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
-
-Related plugin:  contextmenu.py
 </t>
 <t tx="ekr.20101113063552.9486">Lets the user to associate text with a specific node.
 
@@ -15179,7 +15219,9 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 - `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
 - `viewrendered.py`_ creates the rendering pane and renders content in it.
 </t>
-<t tx="ekr.20131009100732.19039">Open bookmarks in a list, and show bookmarks in a pane.
+<t tx="ekr.20131009100732.19039">.. leoPlugins.leo#Plugins--&gt;Files and nodes--&gt;@file bookmarks.py
+
+Open bookmarks in a list, and show bookmarks in a pane.
 </t>
 <t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
@@ -21481,6 +21523,8 @@ if p:
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1">* Mention viewrendered plugin in tutorials.
 
+* Better docs for {{script}}
+
 ***** Document typing completion.
 
 * TDD for Leo.
@@ -23197,6 +23241,155 @@ The links to greygreen.org are obsolete, and already covered at http://leoeditor
 
 Optional: consider moving 'Contributing to Leo with git' to another place - Advanced?
 It has nothing to do with installation. It is a relatively advanced topic and should be solely about the requirements if you want to contribute to Leo.</t>
+<t tx="ekr.20170225035122.1">User Interface
+
+    ``bookmarks.py``
+        Mangages bookmarks using a separate pane.
+        
+    ``dragdropgoodies``
+        Dumps files dropped into Leo.
+        
+    ``python_terminal.py``
+        Embeds an python interpreter in Leo's log pane.
+        
+    ``QNCalendarWidgets.py``
+        Adds a calandar widget.
+        
+    ``richtext.py``
+        Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
+        
+    ``systray.py``
+        Adds Leo to the system tray.
+        
+    ``wikiview.py``
+        Hides/shows parts of urls in the body editor.
+        
+Files and nodes
+
+    ``jinjarender.py``
+        Renders @jinja nodes.
+        
+    ``leoOPML.py``
+        Read and write .leo files in OPML.
+            
+    ``notebook.py``
+        Adds a QML notebook.
+    
+    
+Commands and directives
+    
+    ``codewisecompleter.py``
+        Uses the ctags database to provide an autocompletion list.
+        
+    ``ctagscompleter.py``
+        Uses ctags to provide an autocompletion list.
+        
+    ``ftp.py``
+        Supports uploading of files via ftp.
+        
+    ``gitarchive.py``
+        Stores snapshots of outline in git.
+    
+
+    ``leofeeds.py``
+        Reads from rss, atom or other sources.
+    
+    ``leomail.py``
+        Sync local mailbox files over to Leo.
+    
+    ``markup_inline.py``
+        Adds commands that create bold, italic or underlined text.
+        
+    ``nodediff.py``
+        Provides commands to run text diffs on node bodies within Leo.
+    
+    ``sftp.py``
+        Adds @edit-like functionality for remote files over SFTP.
+
+    ``threadutil.py``
+        Adds utilities for asynchronous operation of commands.
+
+    ``xml_edit.py``
+        Adds commands for importing and exporting xml to and from Leo outlines.</t>
+<t tx="ekr.20170225081012.1">A plugin that makes making Leo demos easy. See `this page &lt;https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md&gt;`_ for complete documentation. **Important**: This plugin largely replaces screenshots.py and slideshow.py.
+</t>
+<t tx="ekr.20170225082023.1"></t>
+<t tx="ekr.20170225082028.1">Slideshows, screencasts &amp; screenshots
+
+    ``demo.py``
+        Creates slides, screen shots and slide shows, largely replacing
+        screencast.py, screenshots.py and slideshow.py
+
+User Interface
+
+    ``bookmarks.py``
+        Mangages bookmarks using a separate pane.
+        
+    ``dragdropgoodies``
+        Dumps files dropped into Leo.
+        
+    ``python_terminal.py``
+        Embeds an python interpreter in Leo's log pane.
+        
+    ``QNCalendarWidgets.py``
+        Adds a calandar widget.
+        
+    ``richtext.py``
+        Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
+        
+    ``systray.py``
+        Adds Leo to the system tray.
+        
+    ``wikiview.py``
+        Hides/shows parts of urls in the body editor.
+        
+Files and nodes
+
+    ``jinjarender.py``
+        Renders @jinja nodes.
+        
+    ``leoOPML.py``
+        Read and write .leo files in OPML.
+            
+    ``notebook.py``
+        Adds a QML notebook.
+    
+    
+Commands and directives
+    
+    ``codewisecompleter.py``
+        Uses the ctags database to provide an autocompletion list.
+        
+    ``ctagscompleter.py``
+        Uses ctags to provide an autocompletion list.
+        
+    ``ftp.py``
+        Supports uploading of files via ftp.
+        
+    ``gitarchive.py``
+        Stores snapshots of outline in git.
+    
+
+    ``leofeeds.py``
+        Reads from rss, atom or other sources.
+    
+    ``leomail.py``
+        Sync local mailbox files over to Leo.
+    
+    ``markup_inline.py``
+        Adds commands that create bold, italic or underlined text.
+        
+    ``nodediff.py``
+        Provides commands to run text diffs on node bodies within Leo.
+    
+    ``sftp.py``
+        Adds @edit-like functionality for remote files over SFTP.
+
+    ``threadutil.py``
+        Adds utilities for asynchronous operation of commands.
+
+    ``xml_edit.py``
+        Adds commands for importing and exporting xml to and from Leo outlines.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

@@ -133,7 +133,7 @@ class WikiView(object):
     def parse_options(self):
         '''Return leadins, patterns from @data wikiview-link-patterns'''
         c = self.c
-        # unl:leoSettings.leo#@settings-->Plugins-->wikiview plugin
+        # unl://leoSettings.leo#@settings-->Plugins-->wikiview plugin
         data = c.config.getData('wikiview-link-patterns')
         leadins, patterns = [], []
         for s in data:
@@ -156,8 +156,8 @@ class WikiView(object):
     def hide(self, tag, kwargs, force=False):
         '''Hide all wikiview tags. Now done in the colorizer.'''
         trace = False and not g.unitTesting
-        trace_parts = False
-        trace_pats = True
+        trace_parts = True
+        trace_pats = False
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
@@ -170,7 +170,7 @@ class WikiView(object):
         for urlpat in self.urlpats:
             if trace and trace_pats: g.trace(repr(urlpat))
             for m in urlpat.finditer(s):
-                if trace: g.trace('FOUND', urlpat, m.start(0), repr(m.group(0)))
+                if trace: g.trace('FOUND', urlpat.pattern, m.start(0), repr(m.group(0)))
                 for group_n, group in enumerate(m.groups()):
                     if group is None:
                         continue

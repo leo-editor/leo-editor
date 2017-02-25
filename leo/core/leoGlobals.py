@@ -1950,9 +1950,9 @@ def dictToString(d, tag=None, verbose=True, indent=''):
             for key in sorted(d)]
         s = '\n'.join(lines)
         if tag:
-            return '%s...{\n%s}\n' % (tag, s)
+            return '%s...{\n%s\n}\n' % (tag, s)
         else:
-            return '{\n%s}\n' % (s)
+            return '{\n%s\n}\n' % (s)
     else:
         return '%s...{}' % (tag) if tag else '{}'
 #@+node:ekr.20041126060136: *4* g.printList & listToString
@@ -6609,6 +6609,8 @@ def handleUrl(url, c=None, p=None):
         unquote = urllib.parse.unquote if isPython3 else urllib.unquote
     if c and not p:
         p = c.p
+    if url.lower().startswith('unl:' + '//'):
+        return g.handleUnl(url, c)
     if url.startswith('@url'):
         url = url[4:].lstrip()
     try:
@@ -6642,36 +6644,38 @@ def handleUrl(url, c=None, p=None):
             g.trace('parsed.netloc', netloc)
             g.trace('parsed.path  ', path)
             g.trace('parsed.scheme', repr(scheme))
-        if c and scheme in ('', 'file'):
-            if not leo_path:
-                if '-->' in path:
-                    g.recursiveUNLSearch(
-                        unquote(path).split("-->"),
-                        c,
-                        soft_idx=True)
-                    return
-                if not path and fragment:
-                    g.recursiveUNLSearch(
-                        unquote(fragment).split("-->"),
-                        c,
-                        soft_idx=True)
-                    return
-            # .leo file
-            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # Immediately end editing,
-                # so that typing in the new window works properly.
-                c.endEditing()
-                c.redraw_now()
-                if g.unitTesting:
-                    g.app.unitTestDict['g.openWithFileName'] = leo_path
-                else:
-                    c2 = g.openWithFileName(leo_path, old_c=c)
-                    # with UNL after path
-                    if c2 and fragment:
-                        g.recursiveUNLSearch(fragment.split("-->"), c2, soft_idx=True)
-                    if c2:
-                        c2.bringToFront()
-                        return
+        # Now done in g.handleUnl.
+        ###
+        # if c and scheme in ('', 'file'):
+            # if not leo_path:
+                # if '-->' in path:
+                    # g.recursiveUNLSearch(
+                        # unquote(path).split("-->"),
+                        # c,
+                        # soft_idx=True)
+                    # return
+                # if not path and fragment:
+                    # g.recursiveUNLSearch(
+                        # unquote(fragment).split("-->"),
+                        # c,
+                        # soft_idx=True)
+                    # return
+            # # .leo file
+            # if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
+                # # Immediately end editing,
+                # # so that typing in the new window works properly.
+                # c.endEditing()
+                # c.redraw_now()
+                # if g.unitTesting:
+                    # g.app.unitTestDict['g.openWithFileName'] = leo_path
+                # else:
+                    # c2 = g.openWithFileName(leo_path, old_c=c)
+                    # # with UNL after path
+                    # if c2 and fragment:
+                        # g.recursiveUNLSearch(fragment.split("-->"), c2, soft_idx=True)
+                    # if c2:
+                        # c2.bringToFront()
+                        # return
         # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
         # Use g.os_startfile for *all* files.
         if scheme in ('', 'file'):
@@ -6704,8 +6708,8 @@ def handleUnl(unl, c):
     trace = False and not g.unitTesting
     if not unl:
         return
-    if unl.lower().startswith('unl:'):
-        unl = unl[4:]
+    if unl.lower().startswith('unl://'):
+        unl = unl[6:]
     unl = unl.strip()
     if not unl:
         return
@@ -6751,7 +6755,7 @@ def handleUnl(unl, c):
     c.endEditing()
     c.redraw_now()
     if g.unitTesting:
-        g.app.unitTestDict['g.openWithFileName'] = path
+        g.app.unitTestDict['g.recursiveUNLSearch'] = path
     else:
         if trace: g.trace('\nPATH: %r\n UNL: %r' % (path, unl))
         c2 = g.openWithFileName(path, old_c=c)

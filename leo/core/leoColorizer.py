@@ -1153,8 +1153,9 @@ class JEditColorizer(BaseColorizer):
                 return 0
     #@+node:ekr.20170225103140.1: *5* jedit.match_unl
     def match_unl(self, s, i):
-        if g.match(s.lower(), i, 'unl:'):
-            j = len(s[i:].rstrip())
+        if g.match(s.lower(), i, 'unl://'):
+            j = len(s)
+            # g.trace(repr(s[i:j]))
             self.colorRangeWithTag(s, i, j, 'url')
             return j
         else:
