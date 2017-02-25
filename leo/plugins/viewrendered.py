@@ -1014,7 +1014,6 @@ if QtWidgets: # NOQA
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
-            c, p = pc.c, pc.c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
             # Do this regardless of whether we show the widget or not.
@@ -1023,12 +1022,12 @@ if QtWidgets: # NOQA
             if s:
                 pc.show()
             if got_docutils:
-                colorizer = c.frame.body.colorizer
-                language = colorizer.scanLanguageDirectives(p)
-                if trace: g.trace(language)
                 # Fix #420: viewrendered does not render some nodes
-                    # User's (rightly) complained, so don't be clever here.
+                # Users (rightly) complained, so don't be clever here:
+                    # c, p = pc.c, pc.c.p
                     # force = keywords.get('force')
+                    # colorizer = c.frame.body.colorizer
+                    # language = colorizer.scanLanguageDirectives(p)
                     # force or language in ('rst', 'rest', 'markdown', 'md'):
                 if not isHtml:
                     s = pc.convert_to_html(s)
