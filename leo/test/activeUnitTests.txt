@@ -11509,14 +11509,22 @@ assert val,'no val' # This can be different on different platforms.
 #@+node:ekr.20120307133953.3947: *4* @test g.handleUrl
 import sys
 if sys.platform.startswith('win'):
-    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
-    assert g.os_path_exists(fn1),fn1
-    file_, http, unl = 'file://', 'http://', 'unl:' + '//'
+    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+    fn1 = 'LeoDocs.leo#'
+    fn2 = 'doc/LeoDocs.leo#'
+    unl2 = '@settings-->Plugins-->wikiview plugin'
+    unl3 = '@settings-->Plugins-->wikiview%20plugin'
     table = (
-        (file_ + fn1,                           ['os_startfile']),
-        (http + 'writemonkey.com/index.php',    ['browser']),
-        (unl + fn1 + '#Leo 4.10 Release notes', ['g.recursiveUNLSearch']),
-        (unl + '#-->Before 4.10 b1',            ['g.recursiveUNLSearch']),
+        (http + 'writemonkey.com/index.php', ['browser']),
+        (file_ + 'x.py',        ['os_startfile']),
+        (file_ + fn1,           ['g.recursiveUNLSearch']),
+        (file_ + fn2,           ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + unl2,           ['g.recursiveUNLSearch']),
+        (unl1 + unl3,           ['g.recursiveUNLSearch']),
     )
     d = g.app.unitTestDict
     for url,aList in table:

@@ -386,7 +386,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -3711,14 +3711,22 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20120307133953.3947">import sys
 if sys.platform.startswith('win'):
-    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
-    assert g.os_path_exists(fn1),fn1
-    file_, http, unl = 'file://', 'http://', 'unl:' + '//'
+    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+    fn1 = 'LeoDocs.leo#'
+    fn2 = 'doc/LeoDocs.leo#'
+    unl2 = '@settings--&gt;Plugins--&gt;wikiview plugin'
+    unl3 = '@settings--&gt;Plugins--&gt;wikiview%20plugin'
     table = (
-        (file_ + fn1,                           ['os_startfile']),
-        (http + 'writemonkey.com/index.php',    ['browser']),
-        (unl + fn1 + '#Leo 4.10 Release notes', ['g.recursiveUNLSearch']),
-        (unl + '#--&gt;Before 4.10 b1',            ['g.recursiveUNLSearch']),
+        (http + 'writemonkey.com/index.php', ['browser']),
+        (file_ + 'x.py',        ['os_startfile']),
+        (file_ + fn1,           ['g.recursiveUNLSearch']),
+        (file_ + fn2,           ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + unl2,           ['g.recursiveUNLSearch']),
+        (unl1 + unl3,           ['g.recursiveUNLSearch']),
     )
     d = g.app.unitTestDict
     for url,aList in table:

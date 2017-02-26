@@ -6517,6 +6517,16 @@ unl_regex = re.compile(r'\bunl:.*$')
 
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
+def unquoteUrl(url):
+    '''
+    Replace special characters (especially %20, by their equivalent).
+    
+    This function handles 2/3 issues and suppresses pylint complaints.
+    '''
+    # pylint: disable=no-member
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    return unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn, c=None, p=None):
     '''
@@ -6594,132 +6604,109 @@ def getUrlFromNode(p):
             if trace: g.trace('in table', s)
             return s
     return None
-#@+node:tbrown.20090219095555.63: *3* g.handleUrl
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url, c=None, p=None):
-    '''
-    Open an url. Most browsers should handle these:
-        ftp://ftp.uu.net/public/whatever.
+    '''Open a url or a unl.'''
+    if c and not p:
+        p = c.p
+    urll = url.lower()
+    if urll.startswith('@url'):
+        url = url[4:].lstrip()
+    if urll.startswith('unl:' + '//'):
+        return g.handleUnl(url, c)
+    elif urll.startswith('file://') and url.find('-->') > -1:
+        # Restore support for unl's that start with file://
+        return g.handleUnl(url, c)
+    else:
+        try:
+            return g.handleUrlHelper(url, c, p)
+        except Exception:
+            g.es_print("exception opening", repr(url))
+            g.es_exception()
+            return None
+#@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
+def handleUrlHelper(url, c, p):
+    '''Open a url.  Most browsers should handle:
+        ftp://ftp.uu.net/public/whatever
         http://localhost/MySiteUnderDevelopment/index.html
         file:///home/me/todolist.html
     '''
     trace = False and not g.unitTesting
-    verbose = True
-    if 1: # To restrict scope of pylint disable.
-        # pylint: disable=no-member
-        unquote = urllib.parse.unquote if isPython3 else urllib.unquote
-    if c and not p:
-        p = c.p
-    if url.lower().startswith('unl:' + '//'):
-        return g.handleUnl(url, c)
-    if url.startswith('@url'):
-        url = url[4:].lstrip()
-    try:
-        tag = 'file://'
-        if url.startswith(tag) and not url.startswith(tag + '#'):
-            # Finalize the path *before* parsing the url.
-            url = g.computeFileUrl(url, c=c, p=p)
-        parsed = urlparse.urlparse(url)
-        # py-lint: disable=E1103
-        # E1103: Instance of 'ParseResult' has no 'fragment' member
-        # E1103: Instance of 'ParseResult' has no 'netloc' member
-        # E1103: Instance of 'ParseResult' has no 'path' member
-        # E1103: Instance of 'ParseResult' has no 'scheme' member
-        fragment = parsed.fragment
-        netloc = parsed.netloc
-        path = parsed.path
-        scheme = parsed.scheme
-        if netloc:
-            leo_path = os.path.join(netloc, path)
-            # "readme.txt" gets parsed into .netloc...
+    tag = 'file://'
+    original_url = url
+    if url.startswith(tag) and not url.startswith(tag + '#'):
+        # Finalize the path *before* parsing the url.
+        url = g.computeFileUrl(url, c=c, p=p)
+    parsed = urlparse.urlparse(url)
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    else:
+        leo_path = parsed.path
+    if leo_path.endswith('\\'): leo_path = leo_path[: -1]
+    if leo_path.endswith('/'): leo_path = leo_path[: -1]
+    if trace:
+        g.traceUrl(c, leo_path, parsed, url)
+    if parsed.scheme == 'file' and leo_path.endswith('.leo'):
+        g.handleUnl(original_url, c)
+    elif parsed.scheme in ('', 'file'):
+        unquote_path = g.unquoteUrl(leo_path)
+        if g.unitTesting:
+            g.app.unitTestDict['os_startfile'] = unquote_path
+        elif g.os_path_exists(leo_path):
+            if trace: g.trace('g.os_startfile(%s)' % unquote_path)
+            g.os_startfile(unquote_path)
         else:
-            leo_path = path
-        if leo_path.endswith('\\'): leo_path = leo_path[: -1]
-        if leo_path.endswith('/'): leo_path = leo_path[: -1]
-        if trace and verbose:
-            print()
-            g.trace('url          ', url)
-            g.trace('c.frame.title', c.frame.title)
-            g.trace('leo_path     ', leo_path)
-            g.trace('parsed.fragment', fragment)
-            g.trace('parsed.netloc', netloc)
-            g.trace('parsed.path  ', path)
-            g.trace('parsed.scheme', repr(scheme))
-        # Now done in g.handleUnl.
-        ###
-        # if c and scheme in ('', 'file'):
-            # if not leo_path:
-                # if '-->' in path:
-                    # g.recursiveUNLSearch(
-                        # unquote(path).split("-->"),
-                        # c,
-                        # soft_idx=True)
-                    # return
-                # if not path and fragment:
-                    # g.recursiveUNLSearch(
-                        # unquote(fragment).split("-->"),
-                        # c,
-                        # soft_idx=True)
-                    # return
-            # # .leo file
-            # if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # # Immediately end editing,
-                # # so that typing in the new window works properly.
-                # c.endEditing()
-                # c.redraw_now()
-                # if g.unitTesting:
-                    # g.app.unitTestDict['g.openWithFileName'] = leo_path
-                # else:
-                    # c2 = g.openWithFileName(leo_path, old_c=c)
-                    # # with UNL after path
-                    # if c2 and fragment:
-                        # g.recursiveUNLSearch(fragment.split("-->"), c2, soft_idx=True)
-                    # if c2:
-                        # c2.bringToFront()
-                        # return
-        # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
-        # Use g.os_startfile for *all* files.
-        if scheme in ('', 'file'):
-            if g.unitTesting:
-                leo_path = unquote(leo_path)
-                g.app.unitTestDict['os_startfile'] = leo_path
-            elif g.os_path_exists(leo_path):
-                if trace: g.trace('g.os_startfile(%s)' % (leo_path))
-                leo_path = unquote(leo_path)
-                g.os_startfile(leo_path)
-            else:
-                g.es("File '%s' does not exist" % leo_path)
+            g.es("File '%s' does not exist" % leo_path)
+    else:
+        import webbrowser
+        if trace: g.trace('webbrowser.open(%s)' % (url))
+        if g.unitTesting:
+            g.app.unitTestDict['browser'] = url
         else:
-            import webbrowser
-            if trace: g.trace('webbrowser.open(%s)' % (url))
-            if g.unitTesting:
-                g.app.unitTestDict['browser'] = url
-            else:
-                # Mozilla throws a weird exception, then opens the file!
-                try:
-                    webbrowser.open(url)
-                except Exception:
-                    pass
-    except Exception:
-        g.es("exception opening", leo_path)
-        g.es_exception()
+            # Mozilla throws a weird exception, then opens the file!
+            try:
+                webbrowser.open(url)
+            except Exception:
+                pass
+#@+node:ekr.20170226060816.1: *4* g.traceUrl
+def traceUrl(c, path, parsed, url):
+
+    print()
+    g.trace('url          ', url)
+    g.trace('c.frame.title', c.frame.title)
+    g.trace('path         ', path)
+    g.trace('parsed.fragment', parsed.fragment)
+    g.trace('parsed.netloc', parsed.netloc)
+    g.trace('parsed.path  ', parsed.path)
+    g.trace('parsed.scheme', repr(parsed.scheme))
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl, c):
     '''Handle a Leo UNL. This must *never* open a browser.'''
     trace = False and not g.unitTesting
     if not unl:
         return
-    if unl.lower().startswith('unl://'):
+    unll = unl.lower()
+    if unll.startswith('unl:' + '//'):
         unl = unl[6:]
+    elif unll.startswith('file://'):
+        unl = unl[7:]
     unl = unl.strip()
     if not unl:
+        if trace: g.trace('empty unl')
         return
-    i = unl.find('#')
-    if i == -1:
+    unl = g.unquoteUrl(unl)
+    # Compute path and unl.
+    if unl.find('#') == -1 and unl.find('-->') == -1:
+        # The path is the entire unl.
+        path, unl = unl, None
+    elif unl.find('#') == -1:
+        # The path is empty.
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
         return
-    # path#unl
-    path, unl = unl.split('#', 1)
+    else:
+        path, unl = unl.split('#', 1)
     # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
     if not path:
         # Move to the unl in *this* commander.

@@ -12226,8 +12226,8 @@ else:
 \bunl:(//.*#).*
 \bunl:(//.*--&gt;).*
 \bunl:(//).*
-# \bfile:(//.*--&gt;)\S+\b
-# \bhttps?:(//.*--&gt;)\S+\b
+\bfile:(//.*--&gt;)\S+\b
+\bhttps?:(//.*--&gt;)\S+\b
 
 # regular urls
 
