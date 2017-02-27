@@ -6762,7 +6762,7 @@ def isValidUrl(url):
         'mailto', 'mms', 'news', 'nntp', 'prospero', 'rsync', 'rtsp', 'rtspu',
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
-    if url.lower().startswith('unl:' + '//') or url.startswith('#-->'):
+    if url.lower().startswith('unl:' + '//') or url.startswith('#'):
         # All Leo UNL's.
         return True
     elif url.startswith('@'):
