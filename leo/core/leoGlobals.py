@@ -6615,10 +6615,11 @@ def handleUrl(url, c=None, p=None):
     urll = url.lower()
     if urll.startswith('@url'):
         url = url[4:].lstrip()
-    if urll.startswith('unl:' + '//'):
-        return g.handleUnl(url, c)
-    elif urll.startswith('file://') and url.find('-->') > -1:
-        # Restore support for unl's that start with file://
+    if (
+        urll.startswith('unl:' + '//') or
+        urll.startswith('file://') and url.find('-->') > -1 or
+        urll.startswith('#')
+    ):
         return g.handleUnl(url, c)
     else:
         try:
