@@ -875,7 +875,7 @@ class ScriptingController(object):
                 s = s.strip()
         if 1: # Not great, but spaces, etc. interfere with tab completion.
             # 2011/10/16 *do* allow '@' sign.
-            chars = g.toUnicode(string.ascii_letters + string.digits + '@')
+            chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
             aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
             s = ''.join(aList)
             s = s.replace('--', '-')
