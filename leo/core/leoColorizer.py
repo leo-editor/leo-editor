@@ -55,7 +55,7 @@ class BaseColorizer(object):
         elif trace:
             g.trace('no p')
     #@+node:ekr.20170127142001.2: *4* bc.scanLanguageDirectives & helpers
-    def scanLanguageDirectives(self, p):
+    def scanLanguageDirectives(self, p, use_default=True):
         '''Return language based on the directives in p's ancestors.'''
         trace = False and not g.unitTesting
         c = self.c
@@ -73,9 +73,12 @@ class BaseColorizer(object):
                 if trace: g.trace(repr(language), 'found 2 -----', p.h)
                 return language
         #  Get the language from the nearest ancestor @<file> node.
-        language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        language = g.getLanguageFromAncestorAtFileNode(root)
+        if not language and use_default:
+            language = c.target_language
         if trace: g.trace(repr(language), 'default -----', p.h)
         return language
+
     #@+node:ekr.20170201150505.1: *5* bc.findAllValidLanguageDirectives
     def findAllValidLanguageDirectives(self, p):
         '''Return list of all valid @language directives in p.b'''

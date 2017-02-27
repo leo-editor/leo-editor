@@ -1132,6 +1132,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
+            trace = False and not g.unitTesting
             c, h, pc = self.c, p.h, self
             if h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
@@ -1140,7 +1141,9 @@ if QtWidgets: # NOQA
                     return word
             # 2016/03/25: Honor @language
             colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p)
+            language = colorizer.scanLanguageDirectives(p, use_default=False)
+                # Fix #344: don't use c.target_language as a default.
+            if trace: g.trace(repr(language))
             if got_markdown and language in ('md', 'markdown'):
                 return language
             elif got_docutils and language in ('rest', 'rst'):
