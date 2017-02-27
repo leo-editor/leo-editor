@@ -71,6 +71,9 @@ class chapterHoist(object):
             c.dehoist()
             return 'break'
 
+        # Fix #426 with a kludge that satisfies k.registerCommand.
+        dehoistCallback.__name__ = 'wrapper: dehoist'
+
         b = sc.createIconButton(
             args=None,
             text='dehoist',

@@ -3086,6 +3086,7 @@ class KeyHandlerClass(object):
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
+            # g.trace('f.__name__', f.__name__, 'func.__name__', func.__name__)
         assert not g.isStroke(shortcut)
         c.commandsDict[commandName] = func
         if shortcut:
