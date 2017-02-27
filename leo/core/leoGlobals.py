@@ -6291,7 +6291,12 @@ def findTopLevelNode(c, headline):
             return p.copy()
     return None
 #@+node:EKR.20040614071102.1: *3* g.getScript & helper
-def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinels=True):
+def getScript(c, p,
+    useSelectedText=True,
+    forcePythonSentinels=True,
+    useSentinels=True,
+    is_executable=True, # True: disallow multiple @language directives.
+):
     '''
     Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
@@ -6312,7 +6317,8 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
-        s = g.extractExecutableString(c, p, s)
+        if is_executable: # Fix #429.
+            s = g.extractExecutableString(c, p, s)
         if s.strip():
             # This causes too many special cases.
             # if not g.unitTesting and forceEncoding:
@@ -6349,8 +6355,8 @@ def extractExecutableString(c, p, s):
     if g.unitTesting:
         return s # Regretable, but necessary.
 
-    language = 'python'
-    # language = g.scanForAtLanguage(c, p)
+    language = g.scanForAtLanguage(c, p)
+        # Fix bug #429: Goto global line number -> "can not execute multiple languages"
     pattern = re.compile(r'\s*@language\s+(\w+)')
     skipping = set_skipping(language)
     prev_language = None if skipping else language
