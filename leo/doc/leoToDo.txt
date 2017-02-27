@@ -4,6 +4,8 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20170219180704.1: ** Leo 5.5
+print-real-plugins: Needed to generate docs.
+
 @auto bugs:
 - cancelling @auto write creates orphan nodes!
 - Cloned @auto nodes duplicates section references!
