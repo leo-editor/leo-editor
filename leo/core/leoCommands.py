@@ -689,7 +689,7 @@ class Commands(object):
                 # Reload settings in all subcommanders.
             c.setChanged(changed)
                 # Restore the changed bit.
-            c.redraw()
+            # c.redraw()
                 # Redraw so a pasted temp node isn't visible
     #@+node:ekr.20170221040621.1: *5* c.reloadSubcommanderSettings
     def reloadSubcommanderSettings(self):
@@ -3254,7 +3254,9 @@ class Commands(object):
             undoData = c.undoer.beforeInsertNode(c.p,
                 pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
         c.validateOutline()
-        c.checkOutline()
+        if not tempOutline:
+            # Fix #427: Don't check for duplicate vnodes.
+            c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.

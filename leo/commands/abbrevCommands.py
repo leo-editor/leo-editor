@@ -157,31 +157,47 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
-        trace = False
-        verbose = True
+        trace = False and not g.unitTesting
+        trace_dict = False
+        trace_return = False
         c = self.c
         fn = c.shortFileName()
-        d = {} # Keys are abbreviation names. Values are (xml) strings.
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
-            # if trace and verbose: g.trace('no root',fn)
+            # if trace and trace_return: g.trace('no root',fn)
             return
         if not c.p:
             c.selectPosition(root)
         if not c.p:
-            if trace and verbose: g.trace('no c.p', fn)
+            if trace and trace_return: g.trace('no c.p', fn)
             return
         tree_s = c.config.getOutlineData('tree-abbreviations')
         if not tree_s:
-            if trace and verbose: g.trace('no tree_s', fn)
+            if trace and trace_return: g.trace('no tree_s', fn)
             return
-        if trace and verbose: g.trace(fn, len(tree_s or ''))
         # Expand the tree so we can traverse it.
         if not c.canPasteOutline(tree_s):
-            if trace and verbose: g.trace('bad copied outline', fn)
+            if trace: g.trace('bad copied outline', fn)
             return
         c.fileCommands.leo_file_encoding = 'utf-8'
+        # As part of #427, disable all redraws.
+        try:
+            g.app.disable_redraw = True
+            d = {}
+            self.init_tree_abbrev_helper(d, tree_s)
+            self.tree_abbrevs_d = d
+        finally:
+            g.app.disable_redraw = False
+        if trace and trace_dict:
+            g.trace(fn)
+            for key in sorted(d.keys()):
+                g.trace(key, '...\n\n', d.get(key))
+    #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
+    def init_tree_abbrev_helper(self, d, tree_s):
+        
+        trace = False and not g.unitTesting
+        c = self.c
         old_p = c.p.copy()
         p = c.pasteOutline(s=tree_s, redrawFlag=False, undoFlag=False, tempOutline=True)
         if not p: return g.trace('no pasted node')
@@ -192,23 +208,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     if child.h.strip() == abbrev_name:
                         c.selectPosition(child)
                         abbrev_s = c.fileCommands.putLeoOutline()
-                        if trace and verbose:
-                            g.trace('define', abbrev_name, len(abbrev_s))
-                            # g.trace('define',abbrev_name,'\n\n',abbrev_s)
+                        if trace: g.trace('define', abbrev_name, len(abbrev_s))
                         d[abbrev_name] = abbrev_s
                         break
                 else:
                     g.trace('no definition for %s' % abbrev_name)
         p.doDelete(newNode=old_p)
         c.selectPosition(old_p)
-        if trace and (d or verbose):
-            if verbose:
-                g.trace(fn)
-                for key in sorted(d.keys()):
-                    g.trace(key, '...\n\n', d.get(key))
-            else:
-                g.trace(fn, sorted(d.keys()))
-        self.tree_abbrevs_d = d
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''
@@ -371,6 +377,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.selectPosition(p)
             c.promote(undoFlag=False)
             p.doDelete()
+            c.redraw(old_p) # 2017/02/27: required.
         else:
             g.trace('paste failed')
     #@+node:ekr.20150514043850.14: *4* abbrev.find_place_holder
