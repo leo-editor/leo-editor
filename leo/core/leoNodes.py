@@ -780,7 +780,9 @@ class Position(object):
                     # g.recursiveUNLFind  and sf.copy_to_my_settings undo this replacement.
         UNL = '-->'.join(reversed(aList))
         if with_proto:
-            return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+            # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+            s = "unl:" + "//%s#%s" % (self.v.context.fileName(), UNL)
+            return s.replace(' ', '%20')
         elif with_file:
             return ("%s#%s" % (self.v.context.fileName(), UNL))
         else:
