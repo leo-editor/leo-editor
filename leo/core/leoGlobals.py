@@ -6580,6 +6580,9 @@ def getUrlFromNode(p):
     table = [p.h, g.splitLines(p.b)[0] if p.b else '']
     table = [s[4:] if g.match_word(s, 0, '@url') else s for s in table]
     table = [s.strip() for s in table if s.strip()]
+    if trace:
+        g.trace()
+        g.printList(table)
     # First, check for url's with an explicit scheme.
     for s in table:
         if g.isValidUrl(s):
@@ -6758,7 +6761,7 @@ def isValidUrl(url):
         'mailto', 'mms', 'news', 'nntp', 'prospero', 'rsync', 'rtsp', 'rtspu',
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
-    if url.startswith('#-->'):
+    if url.lower().startswith('unl:' + '//') or url.startswith('#-->'):
         # All Leo UNL's.
         return True
     elif url.startswith('@'):
