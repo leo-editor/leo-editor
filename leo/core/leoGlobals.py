@@ -6290,22 +6290,17 @@ def findTopLevelNode(c, headline):
         if p.h.strip() == headline.strip():
             return p.copy()
     return None
-#@+node:EKR.20040614071102.1: *3* g.getScript & helper
+#@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c, p,
     useSelectedText=True,
     forcePythonSentinels=True,
     useSentinels=True,
-    is_executable=True, # True: disallow multiple @language directives.
 ):
     '''
     Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
     p is not the current node or if there is no text selection.
     '''
-    # New in Leo 4.6 b2: use a pristine AtFile handler
-    # so there can be no conflict with c.atFileCommands.
-    import leo.core.leoAtFile as leoAtFile
-    at = leoAtFile.AtFile(c)
     w = c.frame.body.wrapper
     if not p: p = c.p
     try:
@@ -6317,40 +6312,51 @@ def getScript(c, p,
             s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
-        if is_executable: # Fix #429.
-            s = g.extractExecutableString(c, p, s)
-        if s.strip():
-            # This causes too many special cases.
-            # if not g.unitTesting and forceEncoding:
-                # aList = g.get_directives_dict_list(p)
-                # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
-                # s = g.insertCodingLine(encoding,s)
-            g.app.scriptDict["script1"] = s
-            # Important: converts unicode to utf-8 encoded strings.
-            script = at.writeFromString(p.copy(), s,
-                forcePythonSentinels=forcePythonSentinels,
-                useSentinels=useSentinels)
-            script = script.replace("\r\n", "\n") # Use brute force.
-            # Important, the script is an **encoded string**, not a unicode string.
-            g.app.scriptDict["script2"] = script
-        else: script = ''
+        s = g.extractExecutableString(c, p, s)
+        script = g.composeScript(c, p, s,
+                    forcePythonSentinels=forcePythonSentinels,
+                    useSentinels=useSentinels)
     except Exception:
         g.es_print("unexpected exception in g.getScript")
         g.es_exception()
         script = ''
     return script
+#@+node:ekr.20170228082641.1: *4* g.composeScript (new in Leo 5.5)
+def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
+    '''Compose a script from p.b.'''
+    # Use a pristine AtFile handler so there can be no conflict with c.atFileCommands.
+    ### import leo.core.leoAtFile as leoAtFile
+    ### at = leoAtFile.AtFile(c)
+    # This causes too many special cases.
+    # if not g.unitTesting and forceEncoding:
+        # aList = g.get_directives_dict_list(p)
+        # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+        # s = g.insertCodingLine(encoding,s)
+    if s.strip():
+        at = c.atFileCommands
+        g.app.scriptDict["script1"] = s
+        # Important: converts unicode to utf-8 encoded strings.
+        script = at.writeFromString(p.copy(), s,
+            forcePythonSentinels=forcePythonSentinels,
+            useSentinels=useSentinels)
+        script = script.replace("\r\n", "\n") # Use brute force.
+        # Important, the script is an **encoded string**, not a unicode string.
+        g.app.scriptDict["script2"] = script
+        return script
+    else:
+        return ''
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c, p, s):
+def extractExecutableString(c, p, s, language='python'):
     '''
-    Return all lines under control of @language python, assuming @language
-    python is in effect initially. Ignore all lines under control of any
-    other @language directive.
+    Return all lines for the given language.
+    
+    Ignore all lines under control of any other @language directive.
     '''
     if g.unitTesting:
         return s # Regretable, but necessary.
 
     # Assume @language python by default.
-    language = 'python'
+    if not language: language = 'python'
     pattern = re.compile(r'\s*@language\s+(\w+)')
     result = []
     for line in g.splitLines(s):
