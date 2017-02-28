@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1442,44 +1442,67 @@
 <v t="ekr.20170124024347.1"><vh>#311: Simplified Leo's argument logic</vh></v>
 </v>
 <v t="ekr.20170123084609.8"><vh>Bugs</vh>
-<v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
 <v t="ekr.20170123084609.14"><vh>#325: Simplify the organization of commands</vh></v>
+<v t="ekr.20170228101933.21"><vh>#340: finish (for 5.5) reload-settings</vh></v>
+<v t="ekr.20170228101933.2"><vh>#343: (unicode problems in file names)</vh></v>
+<v t="ekr.20170228101933.50"><vh>#344: @string view-rendered-default-kind not functional</vh></v>
 <v t="ekr.20170123084609.17"><vh>#348: (CDATA errors)</vh></v>
 <v t="ekr.20170205185641.4"><vh>#367: goto-script problems</vh></v>
 <v t="ekr.20170205185641.5"><vh>#371: support multiple languages in scripts</vh></v>
 <v t="ekr.20170124015707.1"><vh>#374: Leo can confuse directives with decorators</vh></v>
 <v t="ekr.20170205185641.6"><vh>#375: improve jedit.setTag</vh></v>
 <v t="ekr.20170205185641.7"><vh>#380: New colorizer doesn't update properly...</vh></v>
+<v t="ekr.20170228101933.17"><vh>#381: (default importer encoding problems)</vh></v>
 <v t="ekr.20170205185641.8"><vh>#387: New file is marked as changed</vh></v>
 <v t="ekr.20170205185641.9"><vh>#388: wikiview plugin</vh></v>
 <v t="ekr.20170205185641.10"><vh>#389: syntax coloring changes</vh></v>
+<v t="ekr.20170228101933.14"><vh>#391: Read File Into Node" with empty file</vh></v>
 <v t="ekr.20170205190147.1"><vh>#392: @auto-rst file.txt: -rst ignored on read</vh></v>
 <v t="ekr.20170205185641.11"><vh>#395: beautify-node can hang</vh></v>
 <v t="ekr.20170205185641.12"><vh>#396: Show images in Leo's body pane </vh></v>
 <v t="ekr.20170206095132.1"><vh>#402: python's input statement hangs Leo</vh></v>
+<v t="ekr.20170228101933.19"><vh>#403: goto-global-line error</vh></v>
+<v t="ekr.20170228101933.9"><vh>#408: c.recursiveImport uncaught exception...</vh></v>
+<v t="ekr.20170228101933.8"><vh>#409: urls no longer colored</vh></v>
+<v t="ekr.20170228101933.51"><vh>#426: console registerCommand - Chapter_hoist plugin</vh></v>
+<v t="ekr.20170228101933.49"><vh>#427: multiple vnodes...</vh></v>
+<v t="ekr.20170228101933.52"><vh>#429: goto line number...</vh></v>
+<v t="ekr.20170228101933.15"><vh>Disabled compare_ast</vh></v>
 <v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh></v>
 <v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
 <v t="ekr.20170123084609.16"><vh>Fixed crash in autocomplete (with backspace key?)</vh></v>
 <v t="ekr.20170205201047.1"><vh>Fixed crash in elisp importer</vh></v>
 <v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
+<v t="ekr.20170228101933.16"><vh>Fixed several importer bugs</vh></v>
+<v t="ekr.20170228101933.7"><vh>re: catch exceptions in callbacks</vh></v>
+<v t="ekr.20170228101933.6"><vh>re: fixed bug in rst3 command</vh></v>
+<v t="ekr.20170228101933.3"><vh>re: problem when ~/.leo/workbook.leo does not exist</vh></v>
 </v>
 <v t="ekr.20170123084609.18"><vh>Code</vh>
-<v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
 <v t="ekr.20170123084609.20"><vh>Added BackgroundProcessManager class</vh></v>
+<v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
+<v t="ekr.20170228101933.10"><vh>Added g.findRootWithPredicate</vh></v>
 <v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
+<v t="ekr.20170228101933.5"><vh>All generators now copy positions</vh></v>
 <v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
+<v t="ekr.20170228101933.12"><vh>Created g.handleUnl</vh></v>
 <v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
+<v t="ekr.20170228101933.13"><vh>Rewrote FreeMindImporter class</vh></v>
+<v t="ekr.20170228101933.18"><vh>Simplified Leo's read/write helpers</vh></v>
+<v t="ekr.20170228101933.4"><vh>Use None for nullPosition</vh></v>
 </v>
 <v t="ekr.20170225082023.1"><vh>Documentation</vh>
 <v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
+<v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
 <v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
+<v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
 <v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
-<v t="ekr.20170123084609.25"><vh>You can open leoDist.leo from the File menu</vh></v>
+<v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
 </v>
 <v t="ekr.20170123084609.2"><vh>Scripts</vh>
 <v t="ekr.20170123084609.3"><vh>\@button make-importer</vh></v>
@@ -22037,6 +22060,8 @@ That is, prepend p.b[0] with markdown section markup, if appropriate.
     
 - Removed all macro-* commands.
 
+- Removed all register-* commands.
+
 - Removed the following commands:
     advertised-undo
     digit-argument
@@ -22292,7 +22317,7 @@ Added @bool color-doc-parts-as-rest
 The only changes were to match_doc_part and its restarter.
 </t>
 <t tx="ekr.20170205185641.3">https://github.com/leo-editor/leo-editor/issues/257
-chapter-select-forward and chapter-select-back
+
 </t>
 <t tx="ekr.20170205185641.4">https://github.com/leo-editor/leo-editor/issues/367
 
@@ -23401,6 +23426,151 @@ Commands and directives
 ​Good catch.  Furthermore, @enabled-plugins nodes in "local" .leo files only add to the enabled plugins in myLeoSettings.leo.
 
 I'll add language to this effect in several places.</t>
+<t tx="ekr.20170228101933.10">@language rest
+@wrap
+
+Added g.findRootWithPredicate, an important helper.
+Used it to greatly rst.processTopTree, pyflakes.run, and pylint.run.
+This improves the rst3 command
+
+@language python
+</t>
+<t tx="ekr.20170228101933.12">@language rest
+@wrap
+
+Fixed a horrible bug in g.handleUrl that opened a file browser by mistake. All tests pass.
+
+- Add g.handleUnl, that can never open a browser.
+- g.recursiveUNLSearch selects the desired at idle time.
+- sf.find_setting no longer puts up a wonky dialog.
+- sf.find_setting calls g.handleUnl instead of g.handleUrl.
+- sf.copy_to_my_settings copies the settings tree only if it doesn't exist.
+
+@language python
+
+</t>
+<t tx="ekr.20170228101933.13">The new code works, and is much simpler than the old.</t>
+<t tx="ekr.20170228101933.14">https://github.com/leo-editor/leo-editor/issues/391
+</t>
+<t tx="ekr.20170228101933.15">It suffers from mysterious bugs.</t>
+<t tx="ekr.20170228101933.16">- Passing parent=None to ic.createOutline puts the imported node as the last top-level node.
+  Changed ic.create_top_node, ic.setDefaultDirectory and undo.createCommonBunch.
+  
+- g.getEncodingAt now uses a BOM if it exists. No warning is given.
+
+- ic.scanUnknownFileType no longer adds @ignore. No idea why it ever did.
+</t>
+<t tx="ekr.20170228101933.17">https://github.com/leo-editor/leo-editor/issues/381
+
+Added g.getEncodingAt(p)</t>
+<t tx="ekr.20170228101933.18">@language rest
+@wrap
+
+An important simplification of the leoGlobals functions that read files into strings. All tests pass.
+    
+Most calls to g.readFileIntoString and g.readFileIntoEncodedString contain no keyword args.
+    
+1. Removed the 'mode' and 'raw' keyword args from g.readFileIntoString.
+    g.readFileIntoString is the most important helper.  Simplifying it helps a lot.
+
+2. at.compareFiles calls g.readFileIntoEncodedString instead of g.readFileIntoString(raw=True)
+
+3. Removed  keyword args with default values:
+    - leoImport.py:  Removed unnecessary encoding arg from call to readFileIntoString.
+    - Removed unnecessary "silent" args in two call to g.readFileIntoEncodedString
+@language python
+</t>
+<t tx="ekr.20170228101933.19">https://github.com/leo-editor/leo-editor/issues/403
+
+The fix was to v.atFileNodeName.  It must recognize @thin as an @file node.
+</t>
+<t tx="ekr.20170228101933.2">https://github.com/leo-editor/leo-editor/issues/343
+Exception creating path" error when evaluating a path with accents in a @clean expression
+
+The fix was to g.os_path_expandExpression.
+
+</t>
+<t tx="ekr.20170228101933.20">@language rest
+@wrap
+
+Ctrl-click on UNL's goes to the UNL. This already existed, as an Easter Egg for file:// url's.
+
+leoSettings.leo:
+- Added two new patterns to @data wikiview-link-patterns.
+
+leoColorizer.py:
+- Added jedit.match_unl.
+- Added support for unl's at end of jedit.colorRangeWithTag.
+
+leoGlobals.py:
+- g.recursiveUNLSearch expands found node if it has children.
+- g.handleUnl looks for files in various places.
+- g.openUrlHelper adds support for UNLs.
+
+wikiview.py:
+- Added a unl linking to the plugins settings. So cool.
+
+@language python
+</t>
+<t tx="ekr.20170228101933.21">https://github.com/leo-editor/leo-editor/issues/340
+
+Added reload-settings command. This does style-reload automatically.
+</t>
+<t tx="ekr.20170228101933.3">Changed LM.openEmptyWorkBook and LM.computeWorkbookFileName.</t>
+<t tx="ekr.20170228101933.4">Most changed methods are in the startup logic:
+    
+*.injectIvars
+c.redraw
+NullTree.edit_widget
+QtStatusLineClass.update
+    
+And a few others:
+    
+c.executeScriptHelper
+EditBodyTestCase.ctor</t>
+<t tx="ekr.20170228101933.49">https://github.com/leo-editor/leo-editor/issues/427
+
+Fixed #427: multiple vnodes with (same) gnx... All tests pass.
+
+- c.pasteOutline does not call c.checkOutline when tempOutline is True.
+
+Also fixed several tree-drawing problems:
+
+- Refactored abbrev.init_tree_abbrev to suppress unwanted redraws.
+- Fixed an unrelated bug in abbrev.paste_tree. It must redraw the tree.
+- c.reloadSettingsHelper no longer redraws the tree.
+</t>
+<t tx="ekr.20170228101933.5"></t>
+<t tx="ekr.20170228101933.50">https://github.com/leo-editor/leo-editor/issues/344
+
+This setting *was* used: @string view-rendered-default-kind
+
+- Added "use_default" keyword arg to BaseColorizer.scanLanguageDirectives.
+- vr.get_kind sets use_default to False, and uses the setting by default.
+</t>
+<t tx="ekr.20170228101933.51">https://github.com/leo-editor/leo-editor/issues/426
+
+Added a kludge in dehoistCallback that satisfies k.registerCommand.
+</t>
+<t tx="ekr.20170228101933.52">https://github.com/leo-editor/leo-editor/issues/429
+
+- goto.get_external_file_with_sentinels now calls the new g.composeScript.
+
+- Rewrote g.extractExecutableString. It now returns all lines under control of a given language.
+</t>
+<t tx="ekr.20170228101933.6">The proper place to init settings is in write_rst_tree.
+rst.rst3 simply inits the file count, n_written
+</t>
+<t tx="ekr.20170228101933.7">g.openUrlOnClick now catches all exception.
+
+More generally, added @g.callback decorator, which does the same.</t>
+<t tx="ekr.20170228101933.8">https://github.com/leo-editor/leo-editor/issues/409
+
+The fix was to restore disabled code in jedit.colorRangeWithTag.
+</t>
+<t tx="ekr.20170228101933.9">c.recursiveImport uncaught exception on broken (linux) symlinks
+https://github.com/leo-editor/leo-editor/issues/408
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
