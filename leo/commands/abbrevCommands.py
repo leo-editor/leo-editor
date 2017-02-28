@@ -36,6 +36,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.dynaregex = re.compile(# For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
+        self.n_regex = re.compile(r'(?<!\\)\\n') # to replace \\n but not \\\\n
         self.expanding = False # True: expanding abbreviations.
         self.event = None
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
@@ -711,7 +712,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
             if val.endswith('\n'): val = val[: -1]
-            val = val.replace('\\n', '\n')
+            val = self.n_regex.sub('\n', val).replace('\\\\n', '\\n')
             old, tag = d.get(name, (None, None),)
             if old and old != val and not g.unitTesting:
                 g.es_print('redefining abbreviation', name,
