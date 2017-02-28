@@ -6324,14 +6324,11 @@ def getScript(c, p,
 #@+node:ekr.20170228082641.1: *4* g.composeScript (new in Leo 5.5)
 def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
     '''Compose a script from p.b.'''
-    # Use a pristine AtFile handler so there can be no conflict with c.atFileCommands.
-    ### import leo.core.leoAtFile as leoAtFile
-    ### at = leoAtFile.AtFile(c)
     # This causes too many special cases.
-    # if not g.unitTesting and forceEncoding:
-        # aList = g.get_directives_dict_list(p)
-        # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
-        # s = g.insertCodingLine(encoding,s)
+        # if not g.unitTesting and forceEncoding:
+            # aList = g.get_directives_dict_list(p)
+            # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+            # s = g.insertCodingLine(encoding,s)
     if s.strip():
         at = c.atFileCommands
         g.app.scriptDict["script1"] = s
@@ -6348,7 +6345,7 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
 def extractExecutableString(c, p, s, language='python'):
     '''
-    Return all lines for the given language.
+    Return all lines for the given @language directive.
     
     Ignore all lines under control of any other @language directive.
     '''
