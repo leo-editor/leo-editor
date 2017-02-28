@@ -6342,41 +6342,22 @@ def getScript(c, p,
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
 def extractExecutableString(c, p, s):
     '''
-    Return s suitable for execution:
-        
-    - Remove all @language rest and @language md/markdown parts.
-    - Give an error and truncate if multiple executable languages are found.
+    Return all lines under control of @language python, assuming @language
+    python is in effect initially. Ignore all lines under control of any
+    other @language directive.
     '''
-
-    # https://github.com/leo-editor/leo-editor/issues/371
-    def set_skipping(language):
-        return language in ('md', 'markdown', 'plain', 'rest')
-        
     if g.unitTesting:
         return s # Regretable, but necessary.
 
-    language = g.scanForAtLanguage(c, p)
-        # Fix bug #429: Goto global line number -> "can not execute multiple languages"
+    # Assume @language python by default.
+    language = 'python'
     pattern = re.compile(r'\s*@language\s+(\w+)')
-    skipping = set_skipping(language)
-    prev_language = None if skipping else language
     result = []
     for line in g.splitLines(s):
         m = pattern.match(line)
         if m: # Found an @language directive.
             language = m.group(1)
-            skipping = set_skipping(language)
-            if skipping:
-                pass
-            elif prev_language and language == prev_language:
-                pass
-            elif prev_language:
-                g.error('can not execute multiple languages')
-                g.es('ignoring @language %s and all following lines' % language)
-                break
-            else:
-                prev_language = language
-        if not skipping:
+        elif language == 'python':
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
