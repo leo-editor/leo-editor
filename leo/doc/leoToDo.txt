@@ -37,6 +37,10 @@ org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
 - Emulate/ use pyzo server
 
+A short prototype of @jupyter
+https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
+Appears to work only with Python 2.
+
 .. @+node:ekr.20170219180512.1: *3* Invisible fonts
 One way to hide characters is to use an invisible font:
 https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
