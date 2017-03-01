@@ -446,13 +446,13 @@
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
+<v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
 <v t="ekr.20170206073747.6"><vh>Installing Leo on Linux</vh>
 <v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
 <v t="ekr.20170206073747.8"><vh>Installing from sources (Linux)</vh></v>
 </v>
-</v>
 <v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-<v t="ekr.20170206073747.10"><vh>Contributing to Leo with git</vh></v>
+</v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -1559,7 +1559,6 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 <v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
 </v>
-<v t="ekr.20170222105535.1"><vh>** Lewis's suggestions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11137,9 +11136,7 @@ Leo's scripting environment takes full advantage of outline structure:
 [[Category:Free software programmed in Python]]
 [[Category:Outliners]]
 </t>
-<t tx="ekr.20101125062332.5090">Leo requires the `Python`_ and `PyQt`_ packages. The `PyEnchant`_ package is optional. Leo uses a customized version of `PythonTidy`_, there is no need to install PythonTidy.
-
-**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
+<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
 **PyQt**: `PyQt`_ provides Leo's widgets.
 
@@ -11149,8 +11146,6 @@ Leo's scripting environment takes full advantage of outline structure:
 **Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
-
-* Download the PyEnchant package from: http://pythonhosted.org/pyenchant/download.html.
 
 There is an executable installer for Windows users.
 </t>
@@ -14758,7 +14753,7 @@ Installing Leo
 
 .. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
-This chapter tells how to install and run Leo on Windows or Linux.
+This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
@@ -17304,12 +17299,12 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
 .. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
-.. _`Sphinx`:     http://sphinx.pocoo.org/
+.. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
 
 Leo's minimal dependencies are:
 
 * `Python`_ 2.6 or later, including all Python 3.x versions.
-* `PyQt`_. You may download `PyQt4`_ or `PyQt5`_.
+* `PyQt4`_ or `PyQt5`_.
 
 The following packages are optional, but recommended:
 
@@ -22310,9 +22305,7 @@ But the fix should actually be safe enough, because only startup code is affecte
 <t tx="ekr.20170206073747.10">.. _`git`: https://git-scm.com/
 
 **Important**: This section tells how to set up `git`_ so that you can grab
-the latest sources using ``git clone``. However, you can get a nightly
-snapshot of Leo's git repository (without installing git) from
-http://www.greygreen.org/leo/
+the latest sources using ``git clone``.
 
 Many users will want to track the development version of Leo, in order to stay
 on top of the latest features and bug fixes. Running the development version is
@@ -22330,7 +22323,6 @@ Leo.
 
 And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from GitHub, run git pull.
-
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -23175,59 +23167,6 @@ And a few others:
     
     c.executeScriptHelper
     EditBodyTestCase.ctor</t>
-<t tx="ekr.20170222105535.1">At http://leoeditor.com/getting-started.html &gt; Installing Leo http://leoeditor.com/installing.html
-
-Installing Leo
-Change first sentence to:
-"This chapter tells how to install and run Leo on Windows, Linux or MacOS."
-Don't leave out the Mac users :)
-
-Dependencies
-Change "PyQt. You may download PyQt4 or PyQt5." to "PyQt4 or PyQt5."
-Cleaner, with less duplicate links.
-
-Update the obsolete Sphinx link to 'http://www.sphinx-doc.org/en/stable/'
-
-Installing Packages
-Delete - "Leo requires the Python and PyQt packages. The PyEnchant package is optional. Leo uses a customized version of PythonTidy, there is no need to install PythonTidy."
-Duplicate of statements in dependencies about Python and PyQt. PyEnchant is already mentioned above. I don't think there is any need to mention PythonTidy.
-
-Delete "Download the PyEnchant package from: http://pythonhosted.org/pyenchant/download.html."
-Redundant - there are already 2 previous links to PyEnchant.
-
-Contributing to Leo with git
-I have a longer argument for change here but it's in accordance with promoting Git :)
-Improve the guidance for reader at heading level. If you really want your users to use git, then don't offer suggestions to another method in the git section. It is quite irrelevant to the 'Contributing to Leo with git' heading.
-Once you have the reader at the section on git, stay focused on git alone, and wax lyrical about it if you like.
-
-Specific Heading "Installing Leo with git"
-Again, do you really want more Leo users to use git? If yes then move it from the advanced 'Contributing to Leo with git' heading and have a dedicated "Installing Leo with git" heading. I suggest locating it well up near the top of the Contents headings. In the current layout the topic of git is is at the very end of a long installation page. "Installing Leo with git" should be simple and very focused.
-
-Here is the proposed heading order:
-Downloading Leo
-    Snapshots
-
-Installing Leo
-    Dependencies
-    Installing packages
-    Installing Leo itself
-        Installing Leo on Windows
-            Using the single-click installer
-            Installing from sources (Windows)
-            Creating Windows file associations
-        Installing Leo with git
-        Installing Leo on Linux
-            Installing from a debian package
-            Installing from sources (Linux)
-        Installing Leo on MacOs 10.7 (Lion) and later
-    Contributing to Leo with git*
-
-* Again, "Contributing to Leo with git"
-Delete "However, you can get a nightly snapshot of Leo’s git repository (without installing git) from http://www.greygreen.org/leo/"
-The links to greygreen.org are obsolete, and already covered at http://leoeditor.com/download.html#snapshots.
-
-Optional: consider moving 'Contributing to Leo with git' to another place - Advanced?
-It has nothing to do with installation. It is a relatively advanced topic and should be solely about the requirements if you want to contribute to Leo.</t>
 <t tx="ekr.20170225035122.1">User Interface
 
     ``bookmarks.py``
