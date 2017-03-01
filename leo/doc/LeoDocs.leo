@@ -490,14 +490,15 @@
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
-<v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
-<v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
-<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
-<v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
-<v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
-<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
 <v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
+<v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
 <v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
+<v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
+<v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
+<v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
+<v t="ekr.20170228103914.1"><vh>When may I delete clones safely?</vh></v>
+<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
+<v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
 </v>
 <v t="ekr.20101025080245.6084"><vh>Leo in Shared environments</vh>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
@@ -520,6 +521,7 @@
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
+<v t="ekr.20170131092936.1"><vh>How can I create and use markdown files?</vh></v>
 <v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
@@ -548,6 +550,7 @@
 <v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
 <v t="ekr.20131211054925.16388"><vh>Tips for improving audio</vh></v>
 </v>
+<v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
 <v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
@@ -1429,10 +1432,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20170123090814.1"></v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20050912125144.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1487,13 +1486,11 @@
 <v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
 <v t="ekr.20170228101933.10"><vh>Added g.findRootWithPredicate</vh></v>
 <v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
-<v t="ekr.20170228101933.5"><vh>All generators now copy positions</vh></v>
 <v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
 <v t="ekr.20170228101933.12"><vh>Created g.handleUnl</vh></v>
 <v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
 <v t="ekr.20170228101933.13"><vh>Rewrote FreeMindImporter class</vh></v>
 <v t="ekr.20170228101933.18"><vh>Simplified Leo's read/write helpers</vh></v>
-<v t="ekr.20170228101933.4"><vh>Use None for nullPosition</vh></v>
 </v>
 <v t="ekr.20170225082023.1"><vh>Documentation</vh>
 <v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
@@ -1513,17 +1510,8 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
 </v>
-<v t="ekr.20170123084609.2"><vh>Scripts</vh>
-<v t="ekr.20170123084609.3"><vh>\@button make-importer</vh></v>
-<v t="ekr.20170123084609.4"><vh>\@button make-md-heads</vh></v>
-<v t="ekr.20170123084609.5"><vh>\@button make-md-toc</vh></v>
-<v t="ekr.20170123084609.6"><vh>\@button make-table</vh></v>
-<v t="ekr.20170123084609.7"><vh>\@button make-test</vh></v>
-</v>
 </v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170228104721.1"><vh>** Update the scripting docs to reflect the new cleaner code</vh></v>
-<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
 <v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
 <v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
@@ -1536,20 +1524,14 @@
 </v>
 <v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
 </v>
-<v t="ekr.20170301013517.1"><vh>** Add to FAQ</vh>
-<v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
-<v t="ekr.20170228103914.1"><vh>FAQ: using clones safely</vh></v>
-<v t="ekr.20170228104217.1"><vh>FAQ: favorite abbreviations</vh></v>
-</v>
 <v t="ekr.20170301013308.1"><vh>** Fix doc problems</vh>
-<v t="ekr.20170222105535.1"><vh>Lewis's suggestions</vh></v>
 <v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
 <v t="ekr.20170228105638.1"><vh>2</vh></v>
 </v>
 <v t="ekr.20170228105717.1"><vh>Demo.py (changed .md file)</vh></v>
-<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
 <v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
+<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
 </v>
 <v t="ekr.20170228105154.1"><vh>** Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
@@ -1575,7 +1557,9 @@
 <v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
 </v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
+<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
 </v>
+<v t="ekr.20170222105535.1"><vh>** Lewis's suggestions</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -9020,7 +9004,7 @@ controller(c).run()
 ``bigdash.py``
     Creates a global search window.
 ``bookmarks.py``
-    Mangages bookmarks using a separate pane.
+    Manages bookmarks using a separate pane.
 ``bzr_qcommands.py``
     Adds a context menu to each node containing all the commands in the bzr Qt
     interface. Bzr is invoked based on the path of the current node.
@@ -9159,7 +9143,7 @@ controller(c).run()
 ``python_terminal.py``
     Embeds an python interpreter in Leo's log pane.
 ``QNCalendarWidgets.py``
-    Adds a calandar widget.
+    Adds a calendar widget.
 ``quickMove.py``
     Creates buttons to move nodes quickly to other nodes.
 ``quicksearch.py``
@@ -15424,6 +15408,8 @@ Scripts may capture positions like this::
     aList = list(c.all_positions())
     
 **Warning**: stored positions become invalid when outline changes. **c.positionExists(p)** is True if p is valid in c's outline.
+
+**New in Leo 5.5**: All generators now yield *copies* of positions.
     
 </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
@@ -15830,6 +15816,7 @@ if aList:
 
     bookmarks.py:       Manages URL's used as bookmarks.
     contextmenu.py:     Creates context menus for headlines.
+    demo.py:            Creates demos and slides.
     mod_scripting.py:   Supports @button and @command nodes.
     quicksearch.py:     Adds Nav tab for searching.
     todo.py:            To-do lists and simple project management.
@@ -15838,6 +15825,7 @@ if aList:
                         Automatically loaded by Leo's help commands.
                         Supports @graphics-script, @image, @html,
                         @movie and @svg nodes.
+    vim.py &amp; xemacs.py  Interface with vim and xemacs.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
 reading LeoDocs.leo.</t>
@@ -16073,7 +16061,7 @@ The Leonine World
 
     self: The instance of unittest.TestCase
 </t>
-<t tx="ekr.20131019061259.16687">::
+<t tx="ekr.20131019061259.16687">These generators yield *copies* of positions::
 
     c.all_positions()
     c.all_unique_positions()
@@ -21730,7 +21718,6 @@ leoGlobals.py:
 - g.idleTimeHookHandler is now a stub. It just prints a warning.
   The original has been moved to the attic (leoNotes.txt).
 </t>
-<t tx="ekr.20170123084609.2">All these scripts may be found in scripts.leo.</t>
 <t tx="ekr.20170123084609.20">https://groups.google.com/d/msg/leo-editor/kmj7wQq7qTk/5U9hSTswBQAJ
 
 The singleton g.app.backgroundProcessManager instance of the BackgroundProcessManager (BPM) class handles all details of running separate processes in the background without blocking Leo.
@@ -21769,12 +21756,6 @@ def nearest_roots(self, predicate=None):
     '''
 </t>
 <t tx="ekr.20170123084609.29"></t>
-<t tx="ekr.20170123084609.3">Make a new @@file importers/x.py file.
-
-This button created most of Leo's new importers.
-
-https://groups.google.com/d/msg/leo-editor/n88M258SyJg/D7IMQW9ZCgAJ
-</t>
 <t tx="ekr.20170123084609.30">https://groups.google.com/d/msg/leo-editor/8moMUEOOgWA/HE0cl-aADQAJ
 
 Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
@@ -21800,66 +21781,6 @@ Furthermore, the existing unit tests for the markup importer do check imported s
 Importing markdown files containing underlined sections could only pass typical perfect import checks if existing underlining were somehow retained.  That's a bad idea.  Instead, Leo's markdown importer now implicitly converts all sections to '#' markup.  In essence, the markup disappears from the outline, to be automagically reinserted when Leo writes the outline.
 
 This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
-</t>
-<t tx="ekr.20170123084609.4">https://groups.google.com/d/msg/leo-editor/R7Hjtrp6puE/mxNirzjeCQAJ
-
-Create markdown headers throughout the nearest .md outline.
-
-This is useful when creating stand-alone .md files. I used it to create
-https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md
-
-
-That is, prepend p.b[0] with markdown section markup, if appropriate.
-</t>
-<t tx="ekr.20170123084609.5">Make a markdown table of contents from an @auto-md node.
-</t>
-<t tx="ekr.20170123084609.6">Create a table of expected headlines in a unit test.
-
-To use this script, select the root of the tree containing the expected
-results. After running this, copy the table from the console.
-
-**Details**
-
-The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
-
-The outline of such tests is:
-@language python
-
-s = r'''
-The input, maybe many lines.
-'''
-table = ( a list of expected headlines )
-try:
-    c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-    if 1: # Verify that the test produces the expected headlines.
-      p2 = c.p.firstChild().firstChild()
-      for h in table:
-          assert p2.h == h, (p2.h, h)
-          p2.moveToThreadNext()
-finally:
-    if 1: # clean up
-        p.deleteAllChildren()
-        
-@language rest
-If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used @button make-table, now also in scripts.leo:
-@language python
-
-'''
-Create a table of expected headlines in a unit test.
-
-To use this script, select the root of the tree containing the expected
-results. After running this, copy the table from the console.
-'''
-g.cls()
-# Proper escapes are tricky.
-table = [
-    '"%s",' % p.h.replace('\\', '\\\\').replace('"', '\\"')
-        for p in c.p.subtree()
-]
-print("table = (\n    %s\n)" % '\n    '.join(table))
-
-</t>
-<t tx="ekr.20170123084609.7">Make an @test node for the importer whose name is given.
 </t>
 <t tx="ekr.20170123084609.8"></t>
 <t tx="ekr.20170123084609.9">A recent in doPlainChar change to handle #14 ruined bracket matching.
@@ -22258,9 +22179,12 @@ https://github.com/leo-editor/leo-editor/issues/332
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
 <t tx="ekr.20170130190843.1"></t>
-<t tx="ekr.20170131092936.1">- Use @auto-md.
+<t tx="ekr.20170131092936.1">Here are some tips:
+
+- Use @auto-md to create your file.
 - Optional: change @language md to @language rest.
-- Use @button make-md-toc in LeoDocs.leo.
+  At present, syntax coloring for markdown is feeble.
+- Use @button make-md-toc in LeoDocs.leo to generate a table of contents from the selected outline.
 </t>
 <t tx="ekr.20170203055137.1">https://github.com/leo-editor/leo-editor/issues/368
 
@@ -23180,7 +23104,7 @@ As a result, Leo can easily simulate any org mode feature, but the reverse is no
 <t tx="ekr.20170218022741.1">What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
 
 
-Outlines mayh contain files, scripts, data, results, docs.</t>
+Outlines may contain files, scripts, data, results, docs.</t>
 <t tx="ekr.20170218023347.1">They summarize the uses and implications of a compendium as follows:
 
     It encapsulates the actual work of the author, not just an abridged version suitable for publication;
@@ -23239,11 +23163,19 @@ Of course, copied positions will typically become invalid when the outline chang
     if p is None:    # Correct, Leo 5.5 and later.
 
 Now that these tests "just work", there is no need to document them in the scripting tutorial.
-</t>
-<t tx="ekr.20170222105535.1">May I suggest some improvements to the installation documents? They are not general in nature but quite specific, just as you requested.
-At each change I will argue the case for changes which are beyond mere typos.
 
-At http://leoeditor.com/getting-started.html &gt; Installing Leo http://leoeditor.com/installing.html
+Most changed methods are in the startup logic:
+    
+    *.injectIvars
+    c.redraw
+    NullTree.edit_widget
+    QtStatusLineClass.update
+    
+And a few others:
+    
+    c.executeScriptHelper
+    EditBodyTestCase.ctor</t>
+<t tx="ekr.20170222105535.1">At http://leoeditor.com/getting-started.html &gt; Installing Leo http://leoeditor.com/installing.html
 
 Installing Leo
 Change first sentence to:
@@ -23266,10 +23198,10 @@ Redundant - there are already 2 previous links to PyEnchant.
 Contributing to Leo with git
 I have a longer argument for change here but it's in accordance with promoting Git :)
 Improve the guidance for reader at heading level. If you really want your users to use git, then don't offer suggestions to another method in the git section. It is quite irrelevant to the 'Contributing to Leo with git' heading.
-Once you have the reader at the section on git, stay focussed on git alone, and wax lyrical about it if you like.
+Once you have the reader at the section on git, stay focused on git alone, and wax lyrical about it if you like.
 
 Specific Heading "Installing Leo with git"
-Again, do you really want more Leo users to use git? If yes then move it from the advanced 'Contributing to Leo with git' heading and have a dedicated "Installing Leo with git" heading. I suggest locating it well up near the top of the Contents headings. In the current layout the topic of git is is at the very end of a long installation page. "Installing Leo with git" should be simple and very focussed.
+Again, do you really want more Leo users to use git? If yes then move it from the advanced 'Contributing to Leo with git' heading and have a dedicated "Installing Leo with git" heading. I suggest locating it well up near the top of the Contents headings. In the current layout the topic of git is is at the very end of a long installation page. "Installing Leo with git" should be simple and very focused.
 
 Here is the proposed heading order:
 Downloading Leo
@@ -23299,7 +23231,7 @@ It has nothing to do with installation. It is a relatively advanced topic and sh
 <t tx="ekr.20170225035122.1">User Interface
 
     ``bookmarks.py``
-        Mangages bookmarks using a separate pane.
+        Manages bookmarks using a separate pane.
         
     ``dragdropgoodies``
         Dumps files dropped into Leo.
@@ -23308,7 +23240,7 @@ It has nothing to do with installation. It is a relatively advanced topic and sh
         Embeds an python interpreter in Leo's log pane.
         
     ``QNCalendarWidgets.py``
-        Adds a calandar widget.
+        Adds a calendar widget.
         
     ``richtext.py``
         Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
@@ -23378,7 +23310,7 @@ Commands and directives
 User Interface
 
     ``bookmarks.py``
-        Mangages bookmarks using a separate pane.
+        Manages bookmarks using a separate pane.
         
     ``dragdropgoodies``
         Dumps files dropped into Leo.
@@ -23387,7 +23319,7 @@ User Interface
         Embeds an python interpreter in Leo's log pane.
         
     ``QNCalendarWidgets.py``
-        Adds a calandar widget.
+        Adds a calendar widget.
         
     ``richtext.py``
         Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
@@ -23506,19 +23438,13 @@ def findRootsWithPredicate(c, root, predicate):
                     if p2.v in clones:
                         return [p.copy()]
     return []</t>
-<t tx="ekr.20170228101933.12">@language rest
-@wrap
-
-Fixed a horrible bug in g.handleUrl that opened a file browser by mistake. All tests pass.
+<t tx="ekr.20170228101933.12">Fixed a horrible bug in g.handleUrl that opened a file browser by mistake. All tests pass.
 
 - Add g.handleUnl, that can never open a browser.
 - g.recursiveUNLSearch selects the desired at idle time.
 - sf.find_setting no longer puts up a wonky dialog.
 - sf.find_setting calls g.handleUnl instead of g.handleUrl.
 - sf.copy_to_my_settings copies the settings tree only if it doesn't exist.
-
-@language python
-
 </t>
 <t tx="ekr.20170228101933.13">The new code works, and is much simpler than the old.</t>
 <t tx="ekr.20170228101933.14">https://github.com/leo-editor/leo-editor/issues/391
@@ -23534,10 +23460,7 @@ Fixed a horrible bug in g.handleUrl that opened a file browser by mistake. All t
 <t tx="ekr.20170228101933.17">https://github.com/leo-editor/leo-editor/issues/381
 
 Added g.getEncodingAt(p)</t>
-<t tx="ekr.20170228101933.18">@language rest
-@wrap
-
-An important simplification of the leoGlobals functions that read files into strings. All tests pass.
+<t tx="ekr.20170228101933.18">An important simplification of the leoGlobals functions that read files into strings. All tests pass.
     
 Most calls to g.readFileIntoString and g.readFileIntoEncodedString contain no keyword args.
     
@@ -23549,7 +23472,7 @@ Most calls to g.readFileIntoString and g.readFileIntoEncodedString contain no ke
 3. Removed  keyword args with default values:
     - leoImport.py:  Removed unnecessary encoding arg from call to readFileIntoString.
     - Removed unnecessary "silent" args in two call to g.readFileIntoEncodedString
-@language python
+
 </t>
 <t tx="ekr.20170228101933.19">https://github.com/leo-editor/leo-editor/issues/403
 
@@ -23561,10 +23484,7 @@ Exception creating path" error when evaluating a path with accents in a @clean e
 The fix was to g.os_path_expandExpression.
 
 </t>
-<t tx="ekr.20170228101933.20">@language rest
-@wrap
-
-Ctrl-click on UNL's goes to the UNL. This already existed, as an Easter Egg for file:// url's.
+<t tx="ekr.20170228101933.20">Ctrl-click on UNL's goes to the UNL. This already existed, as an Easter Egg for file:// url's.
 
 leoSettings.leo:
 - Added two new patterns to @data wikiview-link-patterns.
@@ -23580,25 +23500,12 @@ leoGlobals.py:
 
 wikiview.py:
 - Added a unl linking to the plugins settings. So cool.
-
-@language python
 </t>
 <t tx="ekr.20170228101933.21">https://github.com/leo-editor/leo-editor/issues/340
 
 Added reload-settings command. This does style-reload automatically.
 </t>
 <t tx="ekr.20170228101933.3">Changed LM.openEmptyWorkBook and LM.computeWorkbookFileName.</t>
-<t tx="ekr.20170228101933.4">Most changed methods are in the startup logic:
-    
-*.injectIvars
-c.redraw
-NullTree.edit_widget
-QtStatusLineClass.update
-    
-And a few others:
-    
-c.executeScriptHelper
-EditBodyTestCase.ctor</t>
 <t tx="ekr.20170228101933.49">https://github.com/leo-editor/leo-editor/issues/427
 
 Fixed #427: multiple vnodes with (same) gnx... All tests pass.
@@ -23611,7 +23518,6 @@ Also fixed several tree-drawing problems:
 - Fixed an unrelated bug in abbrev.paste_tree. It must redraw the tree.
 - c.reloadSettingsHelper no longer redraws the tree.
 </t>
-<t tx="ekr.20170228101933.5"></t>
 <t tx="ekr.20170228101933.50">https://github.com/leo-editor/leo-editor/issues/344
 
 This setting *was* used: @string view-rendered-default-kind
@@ -23642,11 +23548,7 @@ The fix was to restore disabled code in jedit.colorRangeWithTag.
 <t tx="ekr.20170228101933.9">c.recursiveImport uncaught exception on broken (linux) symlinks
 https://github.com/leo-editor/leo-editor/issues/408
 </t>
-<t tx="ekr.20170228103914.1">I suspect lots of people don't use clones because they seem too mysterious.
-
-This post will be pre-writing for FAQ and tutorial discussions of clones. It's really, really easy.
-
-Q: When can I delete a clone safely?
+<t tx="ekr.20170228103914.1">Q: When can I delete a clone safely?
 
 A: Any time! The only time you can "lose" data is when you delete a non-cloned node, save your work and exit Leo.
 
@@ -23661,47 +23563,25 @@ Not really.  If you move any node out "underneath" an @file (@clean, etc) node, 
 I hope this encourages more people to use clones.  Leo's clone-find commands are something that every Leo programmers should be using every day.</t>
 <t tx="ekr.20170228104028.1"></t>
 <t tx="ekr.20170228104123.1"></t>
-<t tx="ekr.20170228104217.1">EKR
+<t tx="ekr.20170228104217.1">Edward Ream:
 
 alp;;=@language python\n
 alr;;=@language rest\n@wrap\n
 date;;={|{import time;x=time.asctime()}|}
 trace;;=trace = &lt;|bool|&gt; and not g.unitTesting
 
-John Lunzer
+John Lunzer:
 
 hl;;={|{x=c.p.h}|}
 es;;=g.es(contents,color='&lt;|color|&gt;')
 ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
 
-Rob (Largo84)
+Rob (Largo84):
 
 ol;;=&lt;ol&gt;\n    &lt;li&gt;&lt;|item|&gt;&lt;/li&gt;\n&lt;/ol&gt;
 li;;=&lt;li&gt;&lt;|ITEM|&gt;&lt;/li&gt;
 link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
 enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}</t>
-<t tx="ekr.20170228104721.1">**Replace c.nullPosition() with None**
-
-- Leo's core code now uses None instead of c.nullPosition(). c.p can be None during startup, which necessitated a few new guards. As a result, the following are all valid tests:
-
-    if not p:        # Correct, pre-Leo 5.5.
-    if not p.v:      # Correct, pre-Leo 5.5
-    if p is not None # Correct, Leo 5.5 and later.
-    if p is None:    # Correct, Leo 5.5 and later.
-
-Now that these tests "just work", there is no need to document them in the scripting tutorial.
-
-**All generators yield copies of positions**
-
-As of today, all generators works as expected. Scripts can capture positions as follows:
-
-    aList = list(c.any_generator())
-    aList = list(p.any_generator())
-
-There is no need to discuss the previously-required patterns:
-
-    aList = [z.copy() for z in c.any_generator()]
-    aList = [z.copy() for z in p.any_generator()]</t>
 <t tx="ekr.20170228105154.1">For preface?</t>
 <t tx="ekr.20170228105219.1">&gt; Perhaps [ A Brief Summary of Leo] should be rewritten in the org-mode intro style, but that's for some other time.
 
@@ -23782,13 +23662,13 @@ Alt-X chapter-remove &lt;enter&gt; Nothing happens.
 
 Also, focus does not remain on the selected chapter, or on selecting  the main chapter icon - focus returns to where you were in the non-chapter part of the leo outline.
 Example: select Chapters icon bar: Two (you are in chapter Two), now select Chapters icon bar: main (You aren't taken to the main @chapter top node)
-This focus switching behaviour is unexpected.</t>
+This focus switching behavior is unexpected.</t>
 <t tx="ekr.20170228105638.1">And further about Chapter commands at "Using Chapters" http://leoeditor.com/outlines.html#using-chapters
 
 The chapter-move-node-to ... prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
 chapter-move-node-to-Two &lt;enter&gt; Nothing happens
 
-The Chapters icon bar: lists the chapters in random order, not the order under the @Chapters node. This appears disorganised and I haven't found any way to reorder them.
+The Chapters icon bar: lists the chapters in random order, not the order under the @Chapters node. This appears disorganized and I haven't found any way to reorder them.
 </t>
 <t tx="ekr.20170228105717.1">Demo scripts have full access to nodes in the slides! Let's make the demo script entirely descriptive using a new (not written yet) demo.headline_position helper:
 
@@ -23817,7 +23697,7 @@ set
 
 @bool tree-declutter = True
 
-then craete a @settings node
+then create a @settings node
 
 @data tree-declutter-patterns
 
@@ -23898,12 +23778,12 @@ There is no executable installer in leo-5.4.zip (9.3MB) There is no other execut
 
 Second - If I go from the homepage to [Download Leo] http://leoeditor.com/download.html
 A few obsolete links here. Good news - the snapshot links at 2. are up to date :)
-Leo’s core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible (Suggestion - remove this does a newbie really need this detail?). Almost all of the time, downloading Leo’s latest sources from GitHub (Suggestion - remove these Giuthub links. They are too early, and take you to git with NO instructions) is going to give you code that is more stable than the most recent latest stable release. Stable releases become outdated almost immediately. (Suggestion - again, remove stable release links. They are duplicates, increasing maintenance)
-If you are just checking Leo out, feel free to use the latest stable release download if it makes you feel more secure, but once you’ve decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent nightly snapshot, (Suggestion - again, remove obsolete release links. They are duplicates, increasing maintenance) or even better, Leo’s latest sources from GitHub (Suggestion - again, remove Github links. They are duplicates, increasing maintenance).... [snip]
+Leo’s core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible (Suggestion - remove this does a newbie really need this detail?). Almost all of the time, downloading Leo’s latest sources from GitHub (Suggestion - remove these Github links. They are too early, and take you to git with NO instructions) is going to give you code that is more stable than the most recent latest stable release. Stable releases become outdated almost immediately. (Suggestion - again, remove stable release links. They are duplicates, increasing maintenance)
+If you are just checking Leo out, feel free to use the latest stable release download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent nightly snapshot, (Suggestion - again, remove obsolete release links. They are duplicates, increasing maintenance) or even better, Leo’s latest sources from GitHub (Suggestion - again, remove Github links. They are duplicates, increasing maintenance).... [snip]
 
 Surely most newbies would follow this advice as it appears simple. Simple is good, the least threatening, and free of suggestions to use git. However it is not explicit about what to download. You need to go down to the 5.4-final folder for a windows executable installer. It's here that Ross went to 'Quick install' and ended up with ver 5.2 Leo. Suggestion - focus on the latest Leo you know and love, and archive the old versions. Users won't go to 'Archive' would they? surely not ;)
 
-Suggestion - If you really want to encourage people to use Git maybe a more focussed page would help the take-up. Hey, you even encouraged me to use it!
+Suggestion - If you really want to encourage people to use Git maybe a more focused page would help the take-up. Hey, you even encouraged me to use it!
 
 Hope you appreciate my comments. I found it hard to get all this down as I almost got a headache discovering the duplicate sections etc. I don't envy anyone doing docs.
 This is always a hard issue to deal with and I look forward to your comments and any other comments from Leo users.</t>
@@ -23934,11 +23814,10 @@ The new code contains the following improvements:
 - helper for deleting outline nodes.
 - p.moveTo* methods change positions.
 - p.copy()
-- Revise docs for generators.</t>
+</t>
 <t tx="ekr.20170301013308.1">* Better docs for {{script}}
     Remove os.curdir from example!</t>
 <t tx="ekr.20170301013432.1"></t>
-<t tx="ekr.20170301013517.1"></t>
 <t tx="ekr.20170301014023.1">This should be in the docstring.
 
 I propose making a modest change to the wikiview settings in
