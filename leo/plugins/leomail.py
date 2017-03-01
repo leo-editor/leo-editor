@@ -1,91 +1,103 @@
 #@+leo-ver=5-thin
 #@+node:ville.20110125222411.10536: * @file leomail.py
 #@+<< docstring >>
-#@+node:ville.20110125222411.10537: ** << docstring >>
-''' Sync local mailbox files over to Leo
+#@+node:ekr.20170228181049.1: ** << docstring >>
+'''
+Sync local mailbox files over to Leo.
 
+Creates mail-refresh command, which can only be applied to @mbox nodes of the form:
 
+    @mbox <path to .mbox file>
+    
+The command parses the .mbox file and creates a separate node for each thread.
+
+Replies to the original messages become children of that message.
 '''
 #@-<< docstring >>
-
-__version__ = '0.0'
-#@+<< version history >>
-#@+node:ville.20110125222411.10538: ** << version history >>
-#@@killcolor
-#@+at
-# 
-# Put notes about each version here.
-#@-<< version history >>
-
 #@+<< imports >>
 #@+node:ville.20110125222411.10539: ** << imports >>
 import leo.core.leoGlobals as g
+import mailbox
 
-import sys
-
-isPython3 = sys.version_info >= (3,0,0)
-
-if isPython3:
+if g.isPython3:
     from html.parser import HTMLParser
 else:
     from HTMLParser import HTMLParser
-
 #@-<< imports >>
 
 #@+others
 #@+node:ville.20110125222411.10540: ** init
 def init ():
-    ok = True
-
-    if ok:
-        g.plugin_signon(__name__)
-
-    return ok
-#@+node:ville.20110125222411.10546: ** mail_refresh
-import mailbox
-
-#@+<< stripping >>
-#@+node:ville.20110125222411.10547: *3* << stripping >>
-
-class MLStripper(HTMLParser):
-    # pylint: disable=super-init-not-called
-    # pylint: disable=abstract-method
-    def __init__(self):
-        self.reset()
-        self.fed = []
-    def handle_data(self, d):
-        self.fed.append(d)
-    def get_data(self):
-        return ''.join(self.fed)
-
-def strip_tags(html):
-    s = MLStripper()
-    s.feed(html)
-    return s.get_data()
-#@-<< stripping >>
-
-def emit_message(c, p, message):
-    for part in message.walk():
-        part.get_content_maintype()
-        pl = part.get_payload(decode = True)
-        p2 = p.insertAfter()
-        bo = strip_tags(pl)
-        p2.h = '%s [%s]' % (message['subject'], message['from'])
-        p2.b = bo
-
+    g.plugin_signon(__name__)
+    return True
+#@+node:ville.20110125222411.10546: ** mail_refresh & helpers
 @g.command('mail-refresh')
 def mail_refresh(event):
     c = event['c']
     p = c.p
-    assert p.h.startswith('@mbox')
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    mb = path + "/" + p.h.split(None,1)[1]
-    folder = mailbox.mbox(mb)
-    g.es(folder)
-    r = p.insertAsLastChild()
-    for message in folder:        
-        emit_message(c,r, message)
-    c.redraw()
+    if p.h.startswith('@mbox'):
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        h = p.h[5:].strip()
+        mb = g.os_path_finalize_join(path, h)
+        if g.os_path_exists(mb):
+            n = 0
+            root = p.copy()
+            parent = None
+            for message in mailbox.mbox(mb):    
+                n += 1
+                parent = emit_message(c, parent, root, message)
+            c.redraw()
+            g.es_print('created %s messages in %s threads' % (
+                n, root.numberOfChildren()))
+        else:
+            g.trace('not found', mb)
+    else:
+        g.es_print('Please select an @mbox node.')
+#@+node:ekr.20170228150606.1: *3* class MLStripper
+class MLStripper(HTMLParser):
+
+    # pylint: disable=abstract-method
+    
+    def __init__(self):
+        HTMLParser.__init__(self)
+            # Can't use plain super in Python 2.
+        self.reset()
+        self.fed = []
+
+    def handle_data(self, data):
+        self.fed.append(data)
+
+    def get_data(self):
+        return ''.join(self.fed)
+#@+node:ekr.20170228150717.1: *3* emit_message
+def emit_message(c, parent, root, message):
+    '''Create all the children of p.'''
+    for part in message.walk():
+        part.get_content_maintype()
+        payload = part.get_payload()
+        subject = g.toUnicode(message.get('subject'))
+        from_ = g.toUnicode(message.get('from'))
+        if parent and subject.lower().startswith ('re:'):
+            p = parent.insertAsLastChild()
+        else:
+            p = parent = root.insertAsLastChild()
+        payload = g.toUnicode(payload)
+        p.h = '%s [%s]' % (subject, from_)
+        p.b = g.toUnicode(strip_tags(payload))
+        return parent
+#@+node:ekr.20170228150636.1: *3* strip_tags
+def strip_tags(obj):
+    stripper = MLStripper()
+    if isinstance(obj, list):
+        # Python 3: obj may be an email.message object.
+        # https://docs.python.org/2/library/email.message.html
+        s = ''.join([z.as_string(False) for z in obj])
+            # False: don't include headers.
+    else:
+        s = obj
+    stripper.feed(s)
+    return stripper.get_data()
 #@-others
+
 #@-leo
