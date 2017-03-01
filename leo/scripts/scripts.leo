@@ -206,41 +206,20 @@
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e372e323271017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20160923132650.1"><vh>Recent</vh>
-<v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
 <v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
-<v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
-<v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
-<v t="ekr.20161006092435.3"><vh>check</vh></v>
-<v t="ekr.20161006092435.4"><vh>dump_stack</vh></v>
-<v t="ekr.20161006092435.5"><vh>lws</vh></v>
-<v t="ekr.20161006092435.6"><vh>scan</vh></v>
-<v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
-<v t="ekr.20161006092435.8"><vh>undent</vh></v>
-</v>
-</v>
-<v t="ekr.20161017063308.1"><vh>script: find problems in pylint-leo-rc.txt</vh></v>
+<v t="ekr.20161017063308.1"><vh>Find problems in pylint-leo-rc.txt</vh></v>
 <v t="ekr.20161023110345.1"><vh>Scripts used in studying #325</vh>
 <v t="ekr.20161023051437.1"><vh>Script: set headlines to command names</vh></v>
 <v t="ekr.20161023051453.1"><vh>Script: inject functions into commander</vh></v>
 <v t="ekr.20161023044018.1"><vh>Script: find all calls to commander methods</vh></v>
 <v t="ekr.20161023110341.1"><vh>Script: find all external calls to commander</vh></v>
 </v>
-<v t="ekr.20170120105953.1"><vh>import-ipynb</vh>
-<v t="ekr.20170120105953.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170120110948.2"><vh>Change body.x to body.wrapper.x</vh>
+<v t="ekr.20170120110948.3"><vh>test</vh></v>
 </v>
+<v t="ekr.20170120110948.4"><vh>Print Qt color names</vh></v>
+<v t="ekr.20170301022829.1"><vh>@ignore buttons</vh>
 <v t="ekr.20170120110015.1"><vh>@ignore importer scripts</vh>
-<v t="ekr.20161031130627.1"><vh>@@button pep8 @key=Ctrl-5</vh>
-<v t="ekr.20161031130627.2"><vh>class Pep8</vh>
-<v t="ekr.20161031130627.3"><vh>change_all &amp; helpers</vh>
-<v t="ekr.20161031130627.4"><vh>change_body</vh></v>
-<v t="ekr.20161031130627.5"><vh>change_headline</vh></v>
-</v>
-<v t="ekr.20161031130627.6"><vh>get_name</vh></v>
-<v t="ekr.20161031130627.7"><vh>run</vh></v>
-<v t="ekr.20161031130627.8"><vh>to_pep8</vh></v>
-</v>
-<v t="ekr.20161031130627.9"><vh>clear</vh></v>
-</v>
 <v t="ekr.20161120175101.1"><vh>@button make-md-heads</vh>
 <v t="ekr.20161120175101.2"><vh>markup</vh></v>
 </v>
@@ -274,12 +253,30 @@
 <v t="ekr.20161204063803.4"><vh>make_toc</vh></v>
 </v>
 </v>
-<v t="ekr.20170120110948.2"><vh>Script: change body.x to body.wrapper.x</vh>
-<v t="ekr.20170120110948.3"><vh>test</vh></v>
+<v t="ekr.20161031130627.1"><vh>@button pep8 @key=Ctrl-5</vh>
+<v t="ekr.20161031130627.2"><vh>class Pep8</vh>
+<v t="ekr.20161031130627.3"><vh>change_all &amp; helpers</vh>
+<v t="ekr.20161031130627.4"><vh>change_body</vh></v>
+<v t="ekr.20161031130627.5"><vh>change_headline</vh></v>
 </v>
-<v t="ekr.20170120110948.4"><vh>Script: print Qt color names</vh></v>
+<v t="ekr.20161031130627.6"><vh>get_name</vh></v>
+<v t="ekr.20161031130627.7"><vh>run</vh></v>
+<v t="ekr.20161031130627.8"><vh>to_pep8</vh></v>
 </v>
-<v t="ekr.20170211083757.1"><vh>@@@button Demo @key=Ctrl-9</vh>
+<v t="ekr.20161031130627.9"><vh>clear</vh></v>
+</v>
+<v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
+<v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
+<v t="ekr.20161006092435.3"><vh>check</vh></v>
+<v t="ekr.20161006092435.4"><vh>dump_stack</vh></v>
+<v t="ekr.20161006092435.5"><vh>lws</vh></v>
+<v t="ekr.20161006092435.6"><vh>scan</vh></v>
+<v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
+<v t="ekr.20161006092435.8"><vh>undent</vh></v>
+</v>
+</v>
+<v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
+<v t="ekr.20170211083757.1"><vh>@button Demo @key=Ctrl-9</vh>
 <v t="ekr.20170211083757.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170211083757.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
 <v t="ekr.20170211083757.4"><vh>setup</vh></v>
@@ -296,7 +293,7 @@
 <v t="ekr.20170211083757.14"><vh>Last</vh></v>
 </v>
 </v>
-<v t="ekr.20170212105552.1"><vh>@@button IntroSlides @key=Ctrl-9</vh>
+<v t="ekr.20170212105552.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
 <v t="ekr.20170212105552.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170212105552.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
 <v t="ekr.20170212105552.4"><vh>setup</vh></v>
@@ -311,6 +308,9 @@
 </v>
 </v>
 <v t="ekr.20170225023738.1"><vh>@button test-http</vh></v>
+</v>
+<v t="ekr.20170301014329.1"><vh>@button cycling syntax coloring</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -3244,25 +3244,6 @@ unl: Scanning &amp; Replacing...--&gt;stringToList &amp; listToString--&gt;strin
 gnx: ekr.20161206070323.71
 unl: Scanning &amp; Replacing...--&gt;stringToList &amp; listToString--&gt;listToString
 </t>
-<t tx="ekr.20170120105953.1">g.cls()
-import nbformat
-from traitlets.config import Config
-from nbconvert import HTMLExporter
-from urllib.request import urlopen
-url = 'http://jakevdp.github.com/downloads/notebooks/XKCD_plots.ipynb'
-s = urlopen(url).read().decode()
-nb = nbformat.reads(s, as_version=4)
-e = HTMLExporter()
-(body, resources) = e.from_notebook_node(nb)
-p = c.p.insertAfter()
-p.h = '@html'
-p.b = body
-c.selectPosition(p)
-c.redraw()</t>
-<t tx="ekr.20170120105953.2">import nbformat
-from traitlets.config import Config
-from nbconvert import HTMLExporter
-from urllib.request import urlopen</t>
 <t tx="ekr.20170120110015.1"></t>
 <t tx="ekr.20170120110948.2">'''
 A script to replace body.x with body.wrapper.x for all x in the WrapperAPI.
@@ -3522,5 +3503,24 @@ g.app.pluginsController.loadOnePlugin(
 g.app.loadManager.readGlobalSettingsFiles()
 g.handleUrl('http://127.0.0.1:8130/leoPlugins.leo')
 </t>
+<t tx="ekr.20170301014329.1">'''Cycle syntax coloring when there are multiple @langauge directives in a node.'''
+# Original by Terry Brown, Revised by EKR.
+while not p.isRoot():
+    if p.b.strip().startswith("@language "):
+        lines = g.splitLines(p.b)
+        words = lines[0].split()
+        # Careful: don't treat comments as languages.
+        if len(words) &gt; 2 and words[2][0].isalpha():
+            # Cycle the languages on line 1.
+            line0 = '%s %s %s\n' % (words[0], ' '.join(words[2:]), words[1])
+            p.b = line0 + ''.join(lines[1:])
+            c.selectVisBack()
+            c.selectVisNext()
+            break
+    p.moveToParent()
+else:
+    g.es("No ambiguous @language directive found")
+</t>
+<t tx="ekr.20170301022829.1"></t>
 </tnodes>
 </leo_file>

@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1499,6 +1499,7 @@
 <v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
+<v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
 <v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
 <v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
@@ -1521,39 +1522,38 @@
 </v>
 </v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
+<v t="ekr.20170228104721.1"><vh>** Update the scripting docs to reflect the new cleaner code</vh></v>
+<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
+<v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
 <v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
 <v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
 <v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
 </v>
+<v t="ekr.20170301013432.1"><vh>TDD</vh>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
-<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
-<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
 <v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
-<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
-<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
 </v>
+<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
+</v>
+<v t="ekr.20170301013517.1"><vh>** Add to FAQ</vh>
 <v t="ekr.20170131092936.1"><vh>FAQ: Using markdown files</vh></v>
-<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
-<v t="ekr.20170222105535.1"><vh>Lewis's suggestions</vh></v>
-<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170228103914.1"><vh>FAQ: using clones safely</vh></v>
 <v t="ekr.20170228104217.1"><vh>FAQ: favorite abbreviations</vh></v>
-<v t="ekr.20170228104721.1"><vh>Update the scripting docs to reflect the new cleaner code</vh></v>
-<v t="ekr.20170228105154.1"><vh>Leo will challenge org mode</vh>
-<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
-<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
 </v>
+<v t="ekr.20170301013308.1"><vh>** Fix doc problems</vh>
+<v t="ekr.20170222105535.1"><vh>Lewis's suggestions</vh></v>
+<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
 <v t="ekr.20170228105638.1"><vh>2</vh></v>
 </v>
-<v t="ekr.20170228105717.1"><vh>Using demo.py</vh>
-<v t="ekr.20170228105723.1"><vh>1</vh></v>
-<v t="ekr.20170228105855.1"><vh>2</vh></v>
+<v t="ekr.20170228105717.1"><vh>Demo.py (changed .md file)</vh></v>
+<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
+<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
 </v>
-<v t="ekr.20170228122954.1"><vh>Terry: headlines as body titles</vh></v>
-<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
+<v t="ekr.20170228105154.1"><vh>** Leo and org mode</vh>
+<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
+<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
 <v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
 <v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
 <v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
@@ -1565,9 +1565,17 @@
 <v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20170228130456.1"><vh>Script: cycling syntax coloring</vh></v>
-<v t="ekr.20170228131107.1"><vh>Document new wikiview settings</vh></v>
-<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
+</v>
+<v t="ekr.20170301014119.1"><vh>** Cool pictures</vh>
+<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
+</v>
+<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
+<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
+<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
+<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
+</v>
+<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
+<v t="ekr.20170228122954.1"><vh>Terry: headlines as body titles</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -21571,32 +21579,9 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">* Mention viewrendered plugin in tutorials.
-
-* Document unl://
-
-* Better docs for {{script}}
-    Remove os.curdir from example!
-    
-* Better documentation for tree abbreviations, both here and leoSettings.leo.
-
-***** Document typing completion.
-
-* TDD for Leo.
-
-* Are chapters will documented: @chapters, @chapter, etc.
-
-Cheat sheet:
-    - TDD for Leo.
-    - predicates.
-    - helper for deleting outline nodes.
-    - p.moveTo* methods change positions.
-    - p.copy()
-    - Revise docs for generators.
+<t tx="ekr.20161207045325.1">
 
 - Add images to show enlarged icons.
-
-- Insert to-be-documented mail items
 </t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
@@ -23806,78 +23791,7 @@ chapter-move-node-to-Two &lt;enter&gt; Nothing happens
 
 The Chapters icon bar: lists the chapters in random order, not the order under the @Chapters node. This appears disorganised and I haven't found any way to reorder them.
 </t>
-<t tx="ekr.20170228105717.1"></t>
-<t tx="ekr.20170228105723.1">This is so cool. LeoDocs.leo now contains this top-level script:
-
-    @button IntroSlides @key=Ctrl-9
-
-It creates the slide introducing Leo's main window. It, and others like it, will live permanently in LeoDocs.leo.
-
-Each slide in the intro-slides-script tree will create a slide.  At present, there is only one node, called "Slide 1: Leo's main window".  Here it is:
-
-@language python
-
-    outline_x, outline_y = 100, 100
-    body, tree, log = 'body', 'tree', 'log'
-    Title("This is Leo's main window")
-    table = (
-        (body, 'Body Pane', 100, 600),
-        (tree, 'Outline Pane', 200, 200),
-        (log,  'Log Pane', 400, 200),
-        (tree, '@file node --&gt;', outline_x, outline_y + 20),
-        (tree, '@test node --&gt;', outline_x, outline_y + 40),
-    )
-    for pane, h, x, y in table:
-        Callout(h, pane=pane, position=(x,y))
-    ###
-    demo.next(
-    
-@language rest
-@wrap
-
-Right now the constants are wrong.  I'm going to add a "show click" feature to demo.py that will show where to put the callouts.
-
-The setup and teardown methods are wonderfully useful. Here setup:
-
-    def setup(self, p=None):
-        c = self.c
-        self.end_on_exception = True # Good for debugging.
-        self.delta = 0
-        demo.set_text_delta(self.delta)
-        if hasattr(self, 'hoist_node'):
-            c.selectPosition(self.hoist_node)
-            for child in self.hoist_node.children():
-                if child.h. startswith('@@'):
-                    child.h = child.h[1:]
-            c.hoist()
-        c.redraw()
-
-And here is its companion, teardown:
-
-    def teardown(self):
-        c = self.c
-        self.delete_all_widgets()
-        if self.delta &gt; 0:
-            self.set_text_delta(-self.delta)
-        if self.hoist_node:
-            for child in self.hoist_node.children():
-                if child.h. startswith('@'):
-                    child.h = '@' + child.h
-            c.dehoist()
-            # c.selectPosition(self.hoist_node)
-        c.setChanged(False)
-        c.redraw()
-
-These hoist and dehoist, and replace @@ nodes with @ nodes when showing the demo.
-
-This is a great example of executable docs. It's so much simpler than slideshow.py.</t>
-<t tx="ekr.20170228105855.1">&gt; Summary: Making slides is inherently futzy.
-
-​Aha. Not necessarily!
-
-The present demo script computes offsets of callouts "by hand".  But why do that? Slides are not pixels!
-
-Demo scripts have full access to nodes in the slides! Let's make the demo script entirely descriptive using a new (not written yet) demo.headline_position helper:
+<t tx="ekr.20170228105717.1">Demo scripts have full access to nodes in the slides! Let's make the demo script entirely descriptive using a new (not written yet) demo.headline_position helper:
 
     p2 = g.findNodeInTree(c, demo.root, '@file whatever')
     position = demo.headline_position(p2))
@@ -23888,9 +23802,7 @@ Do you see?  The description doesn't change when the outline changes!
 
 This is a big step forward. It means there is little or no cost in modifying screen shots. Just rerun the script.
 
-Edward
-
-P.S. We will also want helpers to set the various pane ratios.  These ratios do not affect callout descriptions, but they do ensure that the actual appearance of slides do not depend on initial conditions.</t>
+We will also want helpers to set the various pane ratios.  These ratios do not affect callout descriptions, but they do ensure that the actual appearance of slides do not depend on initial conditions.</t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
 <t tx="ekr.20170228112407.1">https://github.com/satishgoda/leo-editor-tutorial
@@ -23989,25 +23901,79 @@ was :-)
 
 More discussion here:
 https://github.com/leo-editor/leo-editor/issues/14</t>
-<t tx="ekr.20170228130456.1">@button cycle
+<t tx="ekr.20170228131720.1">https://groups.google.com/d/msg/leo-editor/977CdHGy1Bs/-ChUMidzEQAJ
+===== There are several discussions not copied here.
 
-nd = p
-while not p.isRoot():
-    if p.b.strip().startswith("@language "):
-        lines = p.b.strip().split('\n', 1)
-        words = lines[0].split()
-        current = words[1]
-        words[1:] = words[2:]
-        words.append(current)
-        p.b = '\n'.join([' '.join(words)]+lines[1:])
-        c.selectVisBack()
-        c.selectVisNext()
-        c.redraw()
-        break
-    p = p.parent()
-else:
-    g.es("None found")</t>
-<t tx="ekr.20170228131107.1">This should be in the docstring.
+In response to some of the installation documentation issues raised at binary installer.
+I hope you will bear with me as I suggest some improvements to the install procedures. I know you have the view that "Instead, installing the latest version of Leo using git will likely be much simpler, especially after installing Anaconda first.
+In the time you have spent futzing with installers, you could have installed Anaconda and git, and even learned the rudiments of git."
+
+However this isn't what a newbie is encouraged to do when they correctly go to Leos docs and try to install.
+
+First - at Downloading, Installing &amp; Running Leo ( http://leoeditor.com/getting-started.html )
+ &gt; Downloading Leo http://leoeditor.com/download.html
+Installing Leo
+  &gt; Installing Leo itself ( http://leoeditor.com/installing.html#installing-leo-itself ) is actually an obsolete duplicate of Downloading Leo. Some of it's links are very out of date.
+I think you can remove 'Installing Leo itself' from the docs.
+
+Here are reasons why it is obsolete (and why Todd and Ross are maybe frustrated..... )
+My suggestions are in italics, and explain why it's best to remove this section:
+
+ 1. Download the latest stable release from SourceForge. This release contains an executable installer. This release will usually be a bit out of date.
+    (the stable release link here is out of date. It goes to http://sourceforge.net/projects/leo/files/Leo/4.11%20final/ which resolves to https://sourceforge.net/projects/leo/files/
+There is no executable installer in leo-5.4.zip (9.3MB) There is no other executable installer here unless you got to the 5.4-final folder.)
+    Suggestion - remove the extra link to Sourceforge.net - It serves no purpose relevant to installing Leo.
+
+ 2. Download a nightly snapshot from Leo’s snapshots page. This page contains .zip archives of Leo’s code from 1, 2, 5, 10, 30 and 90 days ago.
+ Suggestion - remove the extra link to snapshots. The link should be updated from http://www.greygreen.org/leo/ to http://leoeditor.com/download.html#snapshots
+
+ 3. Download Leo’s latest sources from GitHub using git. Installing git is easy, and once set up this is the easiest way to get the latest version of Leo’s code:
+
+
+Second - If I go from the homepage to [Download Leo] http://leoeditor.com/download.html
+A few obsolete links here. Good news - the snapshot links at 2. are up to date :)
+Leo’s core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible (Suggestion - remove this does a newbie really need this detail?). Almost all of the time, downloading Leo’s latest sources from GitHub (Suggestion - remove these Giuthub links. They are too early, and take you to git with NO instructions) is going to give you code that is more stable than the most recent latest stable release. Stable releases become outdated almost immediately. (Suggestion - again, remove stable release links. They are duplicates, increasing maintenance)
+If you are just checking Leo out, feel free to use the latest stable release download if it makes you feel more secure, but once you’ve decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent nightly snapshot, (Suggestion - again, remove obsolete release links. They are duplicates, increasing maintenance) or even better, Leo’s latest sources from GitHub (Suggestion - again, remove Github links. They are duplicates, increasing maintenance).... [snip]
+
+Surely most newbies would follow this advice as it appears simple. Simple is good, the least threatening, and free of suggestions to use git. However it is not explicit about what to download. You need to go down to the 5.4-final folder for a windows executable installer. It's here that Ross went to 'Quick install' and ended up with ver 5.2 Leo. Suggestion - focus on the latest Leo you know and love, and archive the old versions. Users won't go to 'Archive' would they? surely not ;)
+
+Suggestion - If you really want to encourage people to use Git maybe a more focussed page would help the take-up. Hey, you even encouraged me to use it!
+
+Hope you appreciate my comments. I found it hard to get all this down as I almost got a headache discovering the duplicate sections etc. I don't envy anyone doing docs.
+This is always a hard issue to deal with and I look forward to your comments and any other comments from Leo users.</t>
+<t tx="ekr.20170228182610.1">The leomail plugin reads .mbox mail archive files into a tree of Leo nodes. This saves a lot of work.
+
+Google "&lt;your favorite mail client&gt; archive to mbox" for instructions on generating .mbox files.
+
+The new code contains the following improvements:
+
+1. It works with both Python 2 and 3. The old code could corrupt .leo files by including strings that the sax parser barfed on. The new code appears safe to use. The conversion involved tricky details in libraries, as well as the usual cursed bytes/string/unicode issues.
+
+2. The new code organizes messages by threads.  Messages that start with "re:" become children of the node that started the thread.
+
+3. Better warning and informational messages, and a better docstring.</t>
+<t tx="ekr.20170301012855.1">- Document typing completion.
+
+- Mention viewrendered plugin in the tutorials.
+
+- TDD in Leo.
+
+- Document chapters in PIM chapter.
+
+- Document abbreviations in PIM chapter.
+    - And in leoSettings.leo.
+</t>
+<t tx="ekr.20170301013129.1">- TDD for Leo.
+- predicates.
+- helper for deleting outline nodes.
+- p.moveTo* methods change positions.
+- p.copy()
+- Revise docs for generators.</t>
+<t tx="ekr.20170301013308.1">* Better docs for {{script}}
+    Remove os.curdir from example!</t>
+<t tx="ekr.20170301013432.1"></t>
+<t tx="ekr.20170301013517.1"></t>
+<t tx="ekr.20170301014023.1">This should be in the docstring.
 
 I propose making a modest change to the wikiview settings in
 
@@ -24057,47 +24023,8 @@ Recent revs fix #388 in the color branch.
 Note: The latest pushed code does not work because it uses an intermediate format for  @data nodes. This will be fixed later today.
 
 The new work is in the color branch. It will merge into the trunk in the next day or so.</t>
-<t tx="ekr.20170228131720.1">https://groups.google.com/d/msg/leo-editor/977CdHGy1Bs/-ChUMidzEQAJ
-===== There are several discussions not copied here.
-
-In response to some of the installation documentation issues raised at binary installer.
-I hope you will bear with me as I suggest some improvements to the install procedures. I know you have the view that "Instead, installing the latest version of Leo using git will likely be much simpler, especially after installing Anaconda first.
-In the time you have spent futzing with installers, you could have installed Anaconda and git, and even learned the rudiments of git."
-
-However this isn't what a newbie is encouraged to do when they correctly go to Leos docs and try to install.
-
-First - at Downloading, Installing &amp; Running Leo ( http://leoeditor.com/getting-started.html )
- &gt; Downloading Leo http://leoeditor.com/download.html
-Installing Leo
-  &gt; Installing Leo itself ( http://leoeditor.com/installing.html#installing-leo-itself ) is actually an obsolete duplicate of Downloading Leo. Some of it's links are very out of date.
-I think you can remove 'Installing Leo itself' from the docs.
-
-Here are reasons why it is obsolete (and why Todd and Ross are maybe frustrated..... )
-My suggestions are in italics, and explain why it's best to remove this section:
-
- 1. Download the latest stable release from SourceForge. This release contains an executable installer. This release will usually be a bit out of date.
-    (the stable release link here is out of date. It goes to http://sourceforge.net/projects/leo/files/Leo/4.11%20final/ which resolves to https://sourceforge.net/projects/leo/files/
-There is no executable installer in leo-5.4.zip (9.3MB) There is no other executable installer here unless you got to the 5.4-final folder.)
-    Suggestion - remove the extra link to Sourceforge.net - It serves no purpose relevant to installing Leo.
-
- 2. Download a nightly snapshot from Leo’s snapshots page. This page contains .zip archives of Leo’s code from 1, 2, 5, 10, 30 and 90 days ago.
- Suggestion - remove the extra link to snapshots. The link should be updated from http://www.greygreen.org/leo/ to http://leoeditor.com/download.html#snapshots
-
- 3. Download Leo’s latest sources from GitHub using git. Installing git is easy, and once set up this is the easiest way to get the latest version of Leo’s code:
-
-
-Second - If I go from the homepage to [Download Leo] http://leoeditor.com/download.html
-A few obsolete links here. Good news - the snapshot links at 2. are up to date :)
-Leo’s core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible (Suggestion - remove this does a newbie really need this detail?). Almost all of the time, downloading Leo’s latest sources from GitHub (Suggestion - remove these Giuthub links. They are too early, and take you to git with NO instructions) is going to give you code that is more stable than the most recent latest stable release. Stable releases become outdated almost immediately. (Suggestion - again, remove stable release links. They are duplicates, increasing maintenance)
-If you are just checking Leo out, feel free to use the latest stable release download if it makes you feel more secure, but once you’ve decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent nightly snapshot, (Suggestion - again, remove obsolete release links. They are duplicates, increasing maintenance) or even better, Leo’s latest sources from GitHub (Suggestion - again, remove Github links. They are duplicates, increasing maintenance).... [snip]
-
-Surely most newbies would follow this advice as it appears simple. Simple is good, the least threatening, and free of suggestions to use git. However it is not explicit about what to download. You need to go down to the 5.4-final folder for a windows executable installer. It's here that Ross went to 'Quick install' and ended up with ver 5.2 Leo. Suggestion - focus on the latest Leo you know and love, and archive the old versions. Users won't go to 'Archive' would they? surely not ;)
-
-Suggestion - If you really want to encourage people to use Git maybe a more focussed page would help the take-up. Hey, you even encouraged me to use it!
-
-Hope you appreciate my comments. I found it hard to get all this down as I almost got a headache discovering the duplicate sections etc. I don't envy anyone doing docs.
-This is always a hard issue to deal with and I look forward to your comments and any other comments from Leo users.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170301014119.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
