@@ -23563,25 +23563,26 @@ Not really.  If you move any node out "underneath" an @file (@clean, etc) node, 
 I hope this encourages more people to use clones.  Leo's clone-find commands are something that every Leo programmers should be using every day.</t>
 <t tx="ekr.20170228104028.1"></t>
 <t tx="ekr.20170228104123.1"></t>
-<t tx="ekr.20170228104217.1">Edward Ream:
+<t tx="ekr.20170228104217.1">Edward Ream::
 
-alp;;=@language python\n
-alr;;=@language rest\n@wrap\n
-date;;={|{import time;x=time.asctime()}|}
-trace;;=trace = &lt;|bool|&gt; and not g.unitTesting
+    alp;;=@language python\n
+    alr;;=@language rest\n@wrap\n
+    date;;={|{import time;x=time.asctime()}|}
+    trace;;=trace = &lt;|bool|&gt; and not g.unitTesting
 
-John Lunzer:
+John Lunzer::
 
-hl;;={|{x=c.p.h}|}
-es;;=g.es(contents,color='&lt;|color|&gt;')
-ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+    hl;;={|{x=c.p.h}|}
+    es;;=g.es(contents,color='&lt;|color|&gt;')
+    ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
 
-Rob (Largo84):
+Rob (Largo84)::
 
-ol;;=&lt;ol&gt;\n    &lt;li&gt;&lt;|item|&gt;&lt;/li&gt;\n&lt;/ol&gt;
-li;;=&lt;li&gt;&lt;|ITEM|&gt;&lt;/li&gt;
-link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
-enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}</t>
+    ol;;=&lt;ol&gt;\n    &lt;li&gt;&lt;|item|&gt;&lt;/li&gt;\n&lt;/ol&gt;
+    li;;=&lt;li&gt;&lt;|ITEM|&gt;&lt;/li&gt;
+    link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
+    enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}
+</t>
 <t tx="ekr.20170228105154.1">For preface?</t>
 <t tx="ekr.20170228105219.1">&gt; Perhaps [ A Brief Summary of Leo] should be rewritten in the org-mode intro style, but that's for some other time.
 
