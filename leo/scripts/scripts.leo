@@ -219,6 +219,63 @@
 </v>
 <v t="ekr.20170120110948.4"><vh>Print Qt color names</vh></v>
 <v t="ekr.20170301022829.1"><vh>@ignore buttons</vh>
+<v t="ekr.20170301014329.1"><vh>@button cycling syntax coloring</vh></v>
+<v t="ekr.20170211083757.1"><vh>@button Demo @key=Ctrl-9</vh>
+<v t="ekr.20170211083757.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170211083757.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
+<v t="ekr.20170211083757.4"><vh>setup</vh></v>
+<v t="ekr.20170211083757.5"><vh>setup_script</vh></v>
+<v t="ekr.20170211083757.6"><vh>teardown</vh></v>
+<v t="ekr.20170211083757.7"><vh>teardown_script</vh></v>
+</v>
+<v t="ekr.20170211083757.8"><vh>demo-script</vh>
+<v t="ekr.20170211083757.9"><vh>First</vh></v>
+<v t="ekr.20170211083757.10"><vh>Full featured outliner</vh></v>
+<v t="ekr.20170211083757.11"><vh>Leo's panes</vh></v>
+<v t="ekr.20170211083757.12"><vh>Leo creates scripts from outlines</vh></v>
+<v t="ekr.20170211083757.13"><vh>Clones and cff</vh></v>
+<v t="ekr.20170211083757.14"><vh>Last</vh></v>
+</v>
+</v>
+<v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
+<v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
+<v t="ekr.20161006092435.3"><vh>check</vh></v>
+<v t="ekr.20161006092435.4"><vh>dump_stack</vh></v>
+<v t="ekr.20161006092435.5"><vh>lws</vh></v>
+<v t="ekr.20161006092435.6"><vh>scan</vh></v>
+<v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
+<v t="ekr.20161006092435.8"><vh>undent</vh></v>
+</v>
+</v>
+<v t="ekr.20170301023612.1"><vh>@button insert headlines as comments</vh></v>
+<v t="ekr.20170212105552.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
+<v t="ekr.20170212105552.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20170212105552.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
+<v t="ekr.20170212105552.4"><vh>setup</vh></v>
+<v t="ekr.20170212105552.5"><vh>setup_script</vh></v>
+<v t="ekr.20170212105552.6"><vh>teardown</vh></v>
+<v t="ekr.20170212105552.7"><vh>teardown_script</vh></v>
+</v>
+<v t="ekr.20170212105552.8"><vh>&lt;&lt; main &gt;&gt;</vh></v>
+<v t="ekr.20170212105552.9"><vh>Leo's Main Window</vh></v>
+<v t="ekr.20170212105552.10"><vh>intro-slides-script</vh>
+<v t="ekr.20170212105552.11"><vh>Slide 1: Leo's main window</vh></v>
+</v>
+</v>
+<v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
+<v t="ekr.20161031130627.1"><vh>@button pep8 @key=Ctrl-5</vh>
+<v t="ekr.20161031130627.2"><vh>class Pep8</vh>
+<v t="ekr.20161031130627.3"><vh>change_all &amp; helpers</vh>
+<v t="ekr.20161031130627.4"><vh>change_body</vh></v>
+<v t="ekr.20161031130627.5"><vh>change_headline</vh></v>
+</v>
+<v t="ekr.20161031130627.6"><vh>get_name</vh></v>
+<v t="ekr.20161031130627.7"><vh>run</vh></v>
+<v t="ekr.20161031130627.8"><vh>to_pep8</vh></v>
+</v>
+<v t="ekr.20161031130627.9"><vh>clear</vh></v>
+</v>
+<v t="ekr.20170225023738.1"><vh>@button test-http</vh></v>
 <v t="ekr.20170120110015.1"><vh>@ignore importer scripts</vh>
 <v t="ekr.20161120175101.1"><vh>@button make-md-heads</vh>
 <v t="ekr.20161120175101.2"><vh>markup</vh></v>
@@ -253,63 +310,7 @@
 <v t="ekr.20161204063803.4"><vh>make_toc</vh></v>
 </v>
 </v>
-<v t="ekr.20161031130627.1"><vh>@button pep8 @key=Ctrl-5</vh>
-<v t="ekr.20161031130627.2"><vh>class Pep8</vh>
-<v t="ekr.20161031130627.3"><vh>change_all &amp; helpers</vh>
-<v t="ekr.20161031130627.4"><vh>change_body</vh></v>
-<v t="ekr.20161031130627.5"><vh>change_headline</vh></v>
 </v>
-<v t="ekr.20161031130627.6"><vh>get_name</vh></v>
-<v t="ekr.20161031130627.7"><vh>run</vh></v>
-<v t="ekr.20161031130627.8"><vh>to_pep8</vh></v>
-</v>
-<v t="ekr.20161031130627.9"><vh>clear</vh></v>
-</v>
-<v t="ekr.20161006092435.1"><vh>@button import-tab-files</vh>
-<v t="ekr.20161006092435.2"><vh>class TabImporter</vh>
-<v t="ekr.20161006092435.3"><vh>check</vh></v>
-<v t="ekr.20161006092435.4"><vh>dump_stack</vh></v>
-<v t="ekr.20161006092435.5"><vh>lws</vh></v>
-<v t="ekr.20161006092435.6"><vh>scan</vh></v>
-<v t="ekr.20161006092435.7"><vh>scan_helper</vh></v>
-<v t="ekr.20161006092435.8"><vh>undent</vh></v>
-</v>
-</v>
-<v t="ekr.20160923132656.1"><vh>@button introspect</vh></v>
-<v t="ekr.20170211083757.1"><vh>@button Demo @key=Ctrl-9</vh>
-<v t="ekr.20170211083757.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170211083757.3"><vh>&lt;&lt; class myDemo &gt;&gt;</vh>
-<v t="ekr.20170211083757.4"><vh>setup</vh></v>
-<v t="ekr.20170211083757.5"><vh>setup_script</vh></v>
-<v t="ekr.20170211083757.6"><vh>teardown</vh></v>
-<v t="ekr.20170211083757.7"><vh>teardown_script</vh></v>
-</v>
-<v t="ekr.20170211083757.8"><vh>demo-script</vh>
-<v t="ekr.20170211083757.9"><vh>First</vh></v>
-<v t="ekr.20170211083757.10"><vh>Full featured outliner</vh></v>
-<v t="ekr.20170211083757.11"><vh>Leo's panes</vh></v>
-<v t="ekr.20170211083757.12"><vh>Leo creates scripts from outlines</vh></v>
-<v t="ekr.20170211083757.13"><vh>Clones and cff</vh></v>
-<v t="ekr.20170211083757.14"><vh>Last</vh></v>
-</v>
-</v>
-<v t="ekr.20170212105552.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
-<v t="ekr.20170212105552.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20170212105552.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
-<v t="ekr.20170212105552.4"><vh>setup</vh></v>
-<v t="ekr.20170212105552.5"><vh>setup_script</vh></v>
-<v t="ekr.20170212105552.6"><vh>teardown</vh></v>
-<v t="ekr.20170212105552.7"><vh>teardown_script</vh></v>
-</v>
-<v t="ekr.20170212105552.8"><vh>&lt;&lt; main &gt;&gt;</vh></v>
-<v t="ekr.20170212105552.9"><vh>Leo's Main Window</vh></v>
-<v t="ekr.20170212105552.10"><vh>intro-slides-script</vh>
-<v t="ekr.20170212105552.11"><vh>Slide 1: Leo's main window</vh></v>
-</v>
-</v>
-<v t="ekr.20170225023738.1"><vh>@button test-http</vh></v>
-</v>
-<v t="ekr.20170301014329.1"><vh>@button cycling syntax coloring</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3521,6 +3522,36 @@ while not p.isRoot():
 else:
     g.es("No ambiguous @language directive found")
 </t>
-<t tx="ekr.20170301022829.1"></t>
+<t tx="ekr.20170301022829.1"># Please don't ignore these :-)</t>
+<t tx="ekr.20170301023612.1">'''
+    insert / update headlines as comments in @nosent R code
+    https://gist.github.com/tbnorth/eb913fcab82f6a4b37734b5156543308
+'''
+# By Terry Brown
+headlines = []
+for nd in p.self_and_subtree():
+    if nd.h and nd.h[0] == '@' or nd.b and nd.b[0] == '@':
+        continue
+    headlines.append(nd.h)
+    lines = nd.b.split('\n')
+    if lines and lines[0].startswith('### '):
+        del lines[0]
+    if lines and lines[0].strip():
+        lines[0: 0] = [""]
+    lines[0: 0] = [
+        "### %s %s" % (nd.h, "#" * (80 - len(nd.h) - 5)),
+    ]
+    if '.coffee' in p.h:
+        lines[0: 0] = [""]
+    if lines[-1].strip():
+        lines.append("")
+    if lines[-2].strip():
+        lines.append("")
+    b = '\n'.join(lines)
+    if nd.b != b:
+        nd.b = b
+g.es('\n'.join(headlines))
+c.redraw()
+</t>
 </tnodes>
 </leo_file>
