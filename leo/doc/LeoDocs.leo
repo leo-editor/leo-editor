@@ -21579,9 +21579,9 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">
+<t tx="ekr.20161207045325.1">- Add images to show enlarged icons.
 
-- Add images to show enlarged icons.
+- Ask for cool graphics.
 </t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
