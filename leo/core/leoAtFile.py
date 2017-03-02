@@ -9,8 +9,8 @@
 import leo.core.leoGlobals as g
 import leo.core.leoBeautify as leoBeautify
 import leo.core.leoNodes as leoNodes
-import glob
-import importlib
+# import glob
+# import importlib
 import os
 import re
 import sys
@@ -126,9 +126,6 @@ class AtFile(object):
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # Dicts for writers plugins
-        self.atAutoWritersDict = {}
-        self.writersDispatchDict = {}
         # User options.
         if allow_at_auto_sections is None:
             self.allow_at_auto_sections = c.config.getBool(
@@ -143,101 +140,6 @@ class AtFile(object):
             'underindent-escape-string') or '\\-'
         self.dispatch_dict = self.defineDispatchDict()
             # Define the dispatch dictionary used by scanText4.
-        self.createWritersData()
-            # Create atAutoWritersDict and writersDispatchDict
-    #@+node:ekr.20140728040812.17990: *5* at.createWritersData & helper
-    def createWritersData(self):
-        '''Create the data structures describing writer plugins.'''
-        trace = False # and not g.unitTesting
-        trace = trace and 'createWritersData' not in g.app.debug_dict
-        if trace:
-            # Suppress multiple traces.
-            g.app.debug_dict['createWritersData'] = True
-        at = self
-        at.writersDispatchDict = {}
-        at.atAutoWritersDict = {}
-        plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
-        plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
-        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
-            pattern = g.os_path_finalize_join(g.app.loadDir,
-                '..', 'plugins', 'writers', '*.py')
-            for fn in glob.glob(pattern):
-                sfn = g.shortFileName(fn)
-                if sfn != '__init__.py':
-                    try:
-                        # Important: use importlib to give imported modules their fully qualified names.
-                        m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
-                        at.parse_writer_dict(sfn, m)
-                    except Exception:
-                        g.es_exception()
-                        g.warning('can not import leo.plugins.writers.%s' % sfn)
-        if trace:
-            g.trace('at.writersDispatchDict')
-            g.printDict(at.writersDispatchDict)
-            g.trace('at.atAutoWritersDict')
-            g.printDict(at.atAutoWritersDict)
-        # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-            #
-            # def report(message, kind, folder, name):
-            # if trace: g.trace('%7s: %5s %9s %s' % (
-                # message, kind, folder, name))
-            #
-            # seen = set()
-            # folder = 'writers'
-            # pattern = g.os_path_finalize_join(path, '*.py')
-            # path = g.os_path_finalize_join(plugins, folder)
-            # for fn in glob.glob(pattern):
-                # sfn = g.shortFileName(fn)
-                # if g.os_path_exists(fn) and sfn != '__init__.py':
-                    # moduleName = sfn[: -3]
-                    # if moduleName:
-                        # data = (folder, sfn)
-                        # if data in seen:
-                            # report('seen', kind, folder, sfn)
-                        # else:
-                            # m = g.importFromPath(moduleName, path) # Uses imp.
-                            # if m:
-                                # seen.add(data)
-                                # at.parse_writer_dict(sfn, m)
-                                # report('loaded', kind, folder, m.__name__)
-                            # else:
-                                # report('error', kind, folder, sfn)
-                # # else: report('skipped',kind,folder,sfn)
-    #@+node:ekr.20140728040812.17991: *6* at.parse_writer_dict
-    def parse_writer_dict(self, sfn, m):
-        '''
-        Set entries in at.writersDispatchDict and at.atAutoWritersDict using
-        entries in m.writers_dict.
-        '''
-        at = self
-        writer_d = getattr(m, 'writer_dict', None)
-        if writer_d:
-            at_auto = writer_d.get('@auto', [])
-            scanner_class = writer_d.get('class', None)
-            extensions = writer_d.get('extensions', [])
-            if at_auto:
-                # Make entries for each @auto type.
-                d = self.atAutoWritersDict
-                for s in at_auto:
-                    aClass = d.get(s)
-                    if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %s class %s in %s:' % (
-                            sfn, s, aClass.__name__, m.__file__))
-                    else:
-                        d[s] = scanner_class
-                        g.app.atAutoNames.add(s)
-            if extensions:
-                # Make entries for each extension.
-                d = at.writersDispatchDict
-                for ext in extensions:
-                    aClass = d.get(ext)
-                    if aClass and aClass != scanner_class:
-                        g.trace('%s: duplicate %s class' % (sfn, ext),
-                            aClass, scanner_class)
-                    else:
-                        d[ext] = scanner_class
-        elif sfn not in ('basewriter.py',):
-            g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
     #@+node:ekr.20041005105605.9: *5* at.defineDispatchDict
     #@@nobeautify
 
@@ -3327,7 +3229,7 @@ class AtFile(object):
         '''A factory returning a writer function for the given kind of @auto directive.'''
         trace = False # and g.unitTesting
         at = self
-        d = at.atAutoWritersDict
+        d = g.app.atAutoWritersDict
         # if trace: g.trace(g.shortFileName(root.h), '\n'+','.join(sorted(d)))
         for key in d.keys():
             aClass = d.get(key)
@@ -3355,7 +3257,7 @@ class AtFile(object):
         '''A factory returning a writer function for the given file extension.'''
         trace = False # and not g.unitTesting
         at = self
-        d = at.writersDispatchDict
+        d = g.app.writersDispatchDict
         aClass = d.get(ext)
         # if trace: g.trace('ext', ext, 'aClass', repr(aClass), '\n'+','.join(sorted(d)))
         if aClass:

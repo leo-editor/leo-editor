@@ -21905,7 +21905,7 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()
-#@+node:ekr.20140712142620.4458: *3* leoPersistence tests
+#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone)
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -22132,7 +22132,20 @@ def spam():
 #@+node:ekr.20140712142620.4563: *5* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4564: *4* @auto-rst test_rst.py
+#@+node:ekr.20170302110925.1: *4* @@test pd.prepass
+# This was part of the ill-fated leoViews project.
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    h = '@persistence'
+    p1 = pd.find_at_persistence_node()
+    assert p1
+    p2 = pd.has_at_persistence_node()
+    assert p1 == p2,(p1,p2)
+    print(p1.h)
+    pd.prepass(p2)
 #@+node:ekr.20140716115306.4345: *4* @@test pd.recovery_ua_for_gnx
 pd = c.persistenceController
 at_persistence = pd.find_at_persistence_node()

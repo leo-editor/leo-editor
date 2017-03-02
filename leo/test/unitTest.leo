@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.58" body_secondary_ratio="0.81">
-	<global_window_position top="75" left="320" height="941" width="1210"/>
+	<global_window_position top="121" left="491" height="941" width="1210"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -46,201 +46,7 @@
 <v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
 </v>
 </v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh>
-<v t="edward.20150612083734.1"><vh>@data:#@auto</vh></v>
-<v t="edward.20150612083734.2"><vh>@data:#@auto</vh>
-<v t="edward.20150612083734.3"><vh>@gnxs</vh></v>
-</v>
-<v t="edward.20150612083734.4"><vh>@data:#@auto</vh></v>
-<v t="edward.20150612083734.5"><vh>@data:#@auto</vh>
-<v t="edward.20150612083734.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150625052701.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
-<v t="ekr.20150625134618.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150625091937.3"><vh>@data:@auto ../test/at-auto-unit-test.py</vh>
-<v t="ekr.20170115052827.8"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626093952.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20161205045751.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626100832.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20170115052826.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626101730.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20170115052825.9"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150626102601.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20170115052825.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160403143348.1"><vh>@data:@auto unittest/at-auto-section-ref-test.py</vh>
-<v t="ekr.20160403143348.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160403143351.1"><vh>@data:@auto unittest/at-auto-test.py</vh>
-<v t="ekr.20160403143351.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160917122402.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20160917122402.2"><vh>@data:#@auto</vh>
-<v t="ekr.20160917122402.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20160917122402.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20160917122402.5"><vh>@data:#@auto</vh>
-<v t="ekr.20160917122402.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161124021953.210"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161124021953.211"><vh>@data:#@auto</vh>
-<v t="ekr.20161124021953.212"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161124021953.213"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161124021953.214"><vh>@data:#@auto</vh>
-<v t="ekr.20161124021953.215"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161130053017.1"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
-<v t="ekr.20161205045751.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161204034537.1"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
-<v t="ekr.20161205045751.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221063636.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221063636.209"><vh>@data:#@auto</vh>
-<v t="ekr.20161221063636.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221063636.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221063636.212"><vh>@data:#@auto</vh>
-<v t="ekr.20161221063636.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221065120.206"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221065120.207"><vh>@data:#@auto</vh>
-<v t="ekr.20161221065120.208"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221065120.209"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221065120.210"><vh>@data:#@auto</vh>
-<v t="ekr.20161221065120.211"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221092134.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221092134.209"><vh>@data:#@auto</vh>
-<v t="ekr.20161221092134.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161221092134.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161221092134.212"><vh>@data:#@auto</vh>
-<v t="ekr.20161221092134.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161222123640.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161222123640.209"><vh>@data:#@auto</vh>
-<v t="ekr.20161222123640.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161222123640.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161222123640.212"><vh>@data:#@auto</vh>
-<v t="ekr.20161222123640.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161223153752.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161223153752.2"><vh>@data:#@auto</vh>
-<v t="ekr.20161223153752.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161223153752.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161223153752.5"><vh>@data:#@auto</vh>
-<v t="ekr.20161223153752.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161228071942.1"><vh>@data:@auto c:\test\bug-354-test.py</vh>
-<v t="ekr.20161228071942.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161231115527.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161231115527.209"><vh>@data:#@auto</vh>
-<v t="ekr.20161231115527.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20161231115527.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20161231115527.212"><vh>@data:#@auto</vh>
-<v t="ekr.20161231115527.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170101131741.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170101131741.209"><vh>@data:#@auto</vh>
-<v t="ekr.20170101131741.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170101131741.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170101131741.212"><vh>@data:#@auto</vh>
-<v t="ekr.20170101131741.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170101134125.206"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170101134125.207"><vh>@data:#@auto</vh>
-<v t="ekr.20170101134125.208"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170101134125.209"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170101134125.210"><vh>@data:#@auto</vh>
-<v t="ekr.20170101134125.211"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170105122417.209"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170105122417.210"><vh>@data:#@auto</vh>
-<v t="ekr.20170105122417.211"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170105122417.212"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170105122417.213"><vh>@data:#@auto</vh>
-<v t="ekr.20170105122417.214"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111118.206"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111118.207"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111118.208"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111118.209"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111118.210"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111118.211"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111251.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111251.209"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111251.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111251.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111251.212"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111251.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111807.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111807.2"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111807.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170112111807.4"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170112111807.5"><vh>@data:#@auto</vh>
-<v t="ekr.20170112111807.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170113162522.206"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170113162522.207"><vh>@data:#@auto</vh>
-<v t="ekr.20170113162522.208"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170113162522.209"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170113162522.210"><vh>@data:#@auto</vh>
-<v t="ekr.20170113162522.211"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114055202.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114055202.209"><vh>@data:#@auto</vh>
-<v t="ekr.20170114055202.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114055202.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114055202.212"><vh>@data:#@auto</vh>
-<v t="ekr.20170114055202.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114075949.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114075949.209"><vh>@data:#@auto</vh>
-<v t="ekr.20170114075949.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114075949.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114075949.212"><vh>@data:#@auto</vh>
-<v t="ekr.20170114075949.213"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114200459.415"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114200459.416"><vh>@data:#@auto</vh>
-<v t="ekr.20170114200459.417"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170114200500.1"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170114200500.2"><vh>@data:#@auto</vh>
-<v t="ekr.20170114200500.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170115052812.208"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170115052812.209"><vh>@data:#@auto</vh>
-<v t="ekr.20170115052812.210"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20170115052812.211"><vh>@data:#@auto</vh></v>
-<v t="ekr.20170115052812.212"><vh>@data:#@auto</vh>
-<v t="ekr.20170115052812.213"><vh>@gnxs</vh></v>
-</v>
-</v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
@@ -386,7 +192,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1257,24 +1063,6 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
-</t>
-<t tx="edward.20150612083734.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="edward.20150612083734.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="edward.20150612083734.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="edward.20150612083734.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="edward.20150612083734.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="edward.20150612083734.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
@@ -4200,13 +3988,6 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150625052701.1">gnx: ekr.20080904084223.1
-</t>
-<t tx="ekr.20150625091937.3">gnx: ekr.20110610122533.3407
-</t>
-<t tx="ekr.20150625134618.1">gnx: ekr.20150625134601.13
-unl: at_auto_child
-</t>
 <t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -4231,12 +4012,6 @@ else:
             assert n == 9, n
             break
 </t>
-<t tx="ekr.20150626093952.1">gnx: ekr.20150626093745.1
-</t>
-<t tx="ekr.20150626100832.1">gnx: ekr.20150626100719.1
-</t>
-<t tx="ekr.20150626101730.1">gnx: ekr.20150626101627.1
-</t>
 <t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -4257,8 +4032,6 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 7, n
             break
-</t>
-<t tx="ekr.20150626102601.1">gnx: ekr.20150626101842.1
 </t>
 <t tx="ekr.20150919073819.1">class aClass:
     def __init__(self):
@@ -4623,18 +4396,6 @@ def __init__(self, s: Type) -&gt; None:
 @others
 # Last line: line 6
 </t>
-<t tx="ekr.20160403143348.1">gnx: ekr.20111214104615.3942
-</t>
-<t tx="ekr.20160403143348.2">gnx: ekr.20160403142841.9
-unl: at-auto-section-ref-test declarations
-</t>
-<t tx="ekr.20160403143351.1">gnx: ekr.20090704085350.5056
-</t>
-<t tx="ekr.20160403143351.2">gnx: ekr.20160403142841.10
-unl: spam
-gnx: ekr.20160403142841.11
-unl: eggs
-</t>
 <t tx="ekr.20160403143643.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -4851,24 +4612,6 @@ The next section is empty. It must not be deleted.
 Section 3, line 1
 
 '''
-</t>
-<t tx="ekr.20160917122402.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20160917122402.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20160917122402.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20160917122402.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20160917122402.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20160917122402.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
 table = (
@@ -7726,24 +7469,6 @@ finally:
         c.redraw()
 
 </t>
-<t tx="ekr.20161124021953.210">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161124021953.211">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161124021953.212">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161124021953.213">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161124021953.214">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161124021953.215">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20161124040933.1"></t>
 <t tx="ekr.20161124040933.2">@tabwidth 4 # Required
 s = '''\
@@ -8120,8 +7845,6 @@ See what we did there - one more '#' - this is a subnode.
 '''
 ic = c.importCommands
 ic.ctextUnitTest(p,fileName='@auto-ctext test.txt',s=s,showTree=True)</t>
-<t tx="ekr.20161130053017.1">gnx: ekr.20161130052935.1
-</t>
 <t tx="ekr.20161130053149.1">Leading text in root node of subtree
 
 Etc. etc.
@@ -8532,8 +8255,6 @@ Warning: this node is ignored when writing this file.
 
 @language md
 @tabwidth -4
-</t>
-<t tx="ekr.20161204034537.1">gnx: ekr.20161130041921.1
 </t>
 <t tx="ekr.20161204035447.20">&lt;?php
 @others
@@ -9673,15 +9394,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161205045751.1">gnx: ekr.20161205045639.17
-unl: A level one node
-gnx: ekr.20161205045639.18
-unl: Another level one node
-gnx: ekr.20161205045639.19
-unl: Another level one node--&gt;A level 2 node
-</t>
-<t tx="ekr.20161205045751.2"></t>
-<t tx="ekr.20161205045751.3"></t>
 <t tx="ekr.20161206135449.10">&lt;?php
 @others
 @language php
@@ -9898,24 +9610,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161221063636.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221063636.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221063636.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161221063636.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221063636.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221063636.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20161221063734.10">&lt;?php
 @others
 @language php
@@ -9928,24 +9622,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161221065120.206">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221065120.207">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221065120.208">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161221065120.209">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221065120.210">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221065120.211">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20161221065216.7">&lt;?php
 @others
@@ -9998,24 +9674,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161221092134.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221092134.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161221092134.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161221092134.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221092134.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161221092134.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20161221092230.10">&lt;?php
 @others
@@ -10125,24 +9783,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20161222123640.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161222123640.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161222123640.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161222123640.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161222123640.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161222123640.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20161222123751.3">&lt;?php
 @others
 @language php
@@ -10155,24 +9795,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20161223153752.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161223153752.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161223153752.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161223153752.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161223153752.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161223153752.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20161223153848.1">&lt;?php
 @others
@@ -10538,9 +10160,6 @@ else:
 @tabwidth -4
 @others
 </t>
-<t tx="ekr.20161228071942.1">gnx: ekr.20161228071915.1
-</t>
-<t tx="ekr.20161228071942.2"></t>
 <t tx="ekr.20161228072352.1">if isPython3: # g.not defined yet.
     def u(s):
         '''Return s, converted to unicode from Qt widgets.'''
@@ -10553,24 +10172,6 @@ else:
         return builtins.unicode(s) # Suppress pyflakes complaint.
     def ue(s, encoding):
         return builtins.unicode(s, encoding)
-</t>
-<t tx="ekr.20161231115527.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161231115527.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20161231115527.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20161231115527.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161231115527.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20161231115527.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20161231115630.10">&lt;?php
 @others
@@ -10598,24 +10199,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170101131741.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170101131741.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170101131741.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170101131741.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170101131741.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170101131741.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20170101131839.10">&lt;?php
 @others
 @language php
@@ -10628,24 +10211,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170101134125.206">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170101134125.207">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170101134125.208">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170101134125.209">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170101134125.210">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170101134125.211">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20170101134221.7">&lt;?php
 @others
@@ -10661,24 +10226,6 @@ EOT;
 ?&gt;
 </t>
 <t tx="ekr.20170101134417.1"></t>
-<t tx="ekr.20170105122417.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170105122417.210">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170105122417.211">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170105122417.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170105122417.213">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170105122417.214">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20170105122516.10">&lt;?php
 @others
 @language php
@@ -10691,42 +10238,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170112111118.206">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111118.207">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111118.208">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170112111118.209">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111118.210">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111118.211">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20170112111251.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111251.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111251.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170112111251.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111251.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111251.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20170112111339.7">&lt;?php
 @others
@@ -10741,24 +10252,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170112111807.1">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111807.2">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170112111807.3">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170112111807.4">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111807.5">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170112111807.6">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20170112111900.10">&lt;?php
 @others
 @language php
@@ -10771,24 +10264,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170113162522.206">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170113162522.207">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170113162522.208">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170113162522.209">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170113162522.210">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170113162522.211">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20170113162613.7">&lt;?php
 @others
@@ -10803,24 +10278,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170114055202.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114055202.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114055202.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170114055202.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114055202.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114055202.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20170114055256.3">&lt;?php
 @others
 @language php
@@ -10833,24 +10290,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170114075949.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114075949.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114075949.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170114075949.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114075949.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114075949.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
 </t>
 <t tx="ekr.20170114080041.1">&lt;?php
 @others
@@ -10865,24 +10304,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170114200459.415">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114200459.416">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170114200459.417">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170114200500.1">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114200500.2">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170114200500.3">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
 <t tx="ekr.20170114200550.3">&lt;?php
 @others
 @language php
@@ -10895,52 +10316,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170115052812.208">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170115052812.209">gnx: ekr.20090627070131.4975
-</t>
-<t tx="ekr.20170115052812.210">gnx: ekr.20090627070131.4976
-unl: spam
-gnx: ekr.20090627070131.4977
-unl: cheese
-</t>
-<t tx="ekr.20170115052812.211">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170115052812.212">gnx: ekr.20100801125533.5788
-</t>
-<t tx="ekr.20170115052812.213">gnx: ekr.20100801125533.5789
-unl: spam
-gnx: ekr.20100801125533.5790
-unl: cheese
-</t>
-<t tx="ekr.20170115052825.2">gnx: ekr.20161202200225.5
-unl: section 1
-gnx: ekr.20161202200225.6
-unl: section 2
-</t>
-<t tx="ekr.20170115052825.9">gnx: ekr.20151009114144.13
-unl: section 1
-gnx: ekr.20151009114144.14
-unl: section 2
-</t>
-<t tx="ekr.20170115052826.4">gnx: ekr.20151009114144.15
-unl: section 1
-gnx: ekr.20151009114144.16
-unl: section 2
-</t>
-<t tx="ekr.20170115052827.8">gnx: ekr.20161202200225.7
-unl: class class1
-gnx: ekr.20161202200225.8
-unl: class class1--&gt;class1_method1
-gnx: ekr.20161202200225.9
-unl: class class1--&gt;class1_method2
-gnx: ekr.20161202200225.10
-unl: class class2
-gnx: ekr.20161202200225.11
-unl: class class2--&gt;class2_method1
-gnx: ekr.20161202200225.12
-unl: class class2--&gt;class2_method2
 </t>
 <t tx="ekr.20170115052901.10">&lt;?php
 @others

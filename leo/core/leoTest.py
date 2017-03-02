@@ -684,12 +684,13 @@ class TestManager(object):
                     'entire' if all else 'selected'))
         finally:
             c.setChanged(changed) # Restore changed state.
-            if g.app.unitTestDict.get('restoreSelectedNode', True):
+            g.unitTesting = g.app.unitTesting = False
+            if True: # g.app.unitTestDict.get('restoreSelectedNode', True):
+                # This is more natural, and more useful.
                 c.contractAllHeadlines()
                 c.redraw(p1)
             else:
                 c.recolor() # Needed when coloring is disabled in unit tests.
-            g.unitTesting = g.app.unitTesting = False
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
         s = '''

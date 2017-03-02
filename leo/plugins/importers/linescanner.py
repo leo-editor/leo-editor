@@ -436,15 +436,12 @@ class Importer(object):
                             line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
     #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
-    def run(self, s, parent, parse_body=False, prepass=False):
+    def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
         if trace: g.trace('='*20, self.name)
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
-        if prepass:
-            g.trace('(Importer) Can not happen, prepass is True')
-            return True, [] # Don't split any nodes.
         self.root = root = parent.copy()
         self.file_s = s
         # Init the error/status info.

@@ -11,6 +11,7 @@ try:
 except ImportError:
     import __builtin__ as builtins # Python 2.
 import glob
+import importlib
 import os
 import optparse
 import string
@@ -247,6 +248,16 @@ class LeoApp(object):
         self.commandInterruptFlag = False
             # True: command within a command.
         #@-<< LeoApp: global controller/manager objects >>
+        #@+<< LeoApp: global reader/writer data >>
+        #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
+        # From leoAtFile.py.
+        self.atAutoWritersDict = {}
+        self.writersDispatchDict = {}
+        # From leoImport.py
+        self.atAutoDict = {}
+            # Keys are @auto names, values are scanner classes.
+        self.classDispatchDict = {}
+        #@-<< LeoApp: global reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
         self.already_open_files = []
@@ -1059,6 +1070,82 @@ class LeoApp(object):
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
+    #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
+    #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
+    def checkForOpenFile(self, c, fn):
+        '''Warn if fn is already open and add fn to already_open_files list.'''
+        d, tag = g.app.db, 'open-leo-files'
+        if g.app.reverting:
+            # Fix #302: revert to saved doesn't reset external file change monitoring
+            g.app.already_open_files = []
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+            return
+        aList = g.app.db.get(tag) or []
+        if fn in aList:
+            # The file may be open in another copy of Leo, or not:
+            # another Leo may have been killed prematurely.
+            # Put the file on the global list.
+            # A dialog will warn the user such files later.
+            if fn not in g.app.already_open_files:
+                g.es('may be open in another Leo:', color='red')
+                g.es(fn)
+                g.app.already_open_files.append(fn)
+        else:
+            g.app.rememberOpenFile(fn)
+    #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
+    def forgetOpenFile(self, fn, force=False):
+        '''Forget the open file, so that is no longer considered open.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        d, tag = g.app.db, 'open-leo-files'
+        if not d or not fn:
+            # Fix https://github.com/leo-editor/leo-editor/issues/69
+            return
+        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
+            return
+        aList = d.get(tag) or []
+        if fn in aList:
+            aList.remove(fn)
+            if trace:
+                print('forgetOpenFile: %s' % g.shortFileName(fn))
+                # for z in aList:
+                #    print('  %s' % (z))
+            d[tag] = aList
+        else:
+            if trace: print('forgetOpenFile: did not remove: %s' % (fn))
+    #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
+    def rememberOpenFile(self, fn):
+        trace = False and not g.unitTesting
+        d, tag = g.app.db, 'open-leo-files'
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+            pass
+        elif g.app.preReadFlag:
+            pass
+        else:
+            aList = d.get(tag) or []
+            # It's proper to add duplicates to this list.
+            aList.append(fn)
+            if trace:
+                # Trace doesn't work well while initing.
+                print('rememberOpenFile:added: %s' % (fn))
+                for z in aList:
+                    print('  %s' % (z))
+            d[tag] = aList
+    #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
+    def runAlreadyOpenDialog(self, c):
+        '''Warn about possibly already-open files.'''
+        # g.trace(g.app.already_open_files)
+        if g.app.already_open_files:
+            aList = sorted(set(g.app.already_open_files))
+            g.app.already_open_files = []
+            g.app.gui.dismiss_splash_screen()
+            message = (
+                'The following files may already be open\n'
+                'in another copy of Leo:\n\n' +
+                '\n'.join(aList))
+            g.app.gui.runAskOkDialog(c,
+                title='Already Open Files',
+                message=message,
+                text="Ok")
     #@+node:ekr.20031218072017.1732: *3* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
@@ -1122,6 +1209,54 @@ class LeoApp(object):
                 break
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
+    #@+node:ekr.20140727180847.17985: *3* app.scanner_for_at_auto
+    def scanner_for_at_auto(self, c, p):
+        '''A factory returning a scanner function for p, an @auto node.'''
+        trace = False and not g.unitTesting
+        d = g.app.atAutoDict
+        if trace: g.trace('\n'.join(sorted(d.keys())))
+        for key in d.keys():
+            # pylint: disable=cell-var-from-loop
+            aClass = d.get(key)
+            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
+            if aClass and g.match_word(p.h, 0, key):
+                if trace: g.trace('found', aClass.__name__)
+
+                def scanner_for_at_auto_cb(atAuto, c, parent, s):
+                    try:
+                        ic = c.importCommands
+                        scanner = aClass(importCommands=ic, atAuto=atAuto)
+                        return scanner.run(s, parent)
+                    except Exception:
+                        g.es_print('Exception running', aClass.__name__)
+                        g.es_exception()
+                        return None
+
+                if trace: g.trace('found', p.h)
+                return scanner_for_at_auto_cb
+        if trace: g.trace('not found', p.h, sorted(d.keys()))
+        return None
+    #@+node:ekr.20140130172810.15471: *3* app.scanner_for_ext
+    def scanner_for_ext(self, c, ext):
+        '''A factory returning a scanner function for the given file extension.'''
+        trace = False and not g.unitTesting
+        aClass = g.app.classDispatchDict.get(ext)
+        if trace: g.trace(ext, aClass.__name__)
+        if aClass:
+
+            def scanner_for_ext_cb(atAuto, c, parent, s):
+                try:
+                    ic = c.importCommands
+                    scanner = aClass(importCommands=ic, atAuto=atAuto)
+                    return scanner.run(s, parent)
+                except Exception:
+                    g.es_print('Exception running', aClass.__name__)
+                    g.es_exception()
+                    return None
+
+            return scanner_for_ext_cb
+        else:
+            return None
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
         trace = False and not g.unitTesting
@@ -1333,82 +1468,6 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
-    #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
-    #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
-    def checkForOpenFile(self, c, fn):
-        '''Warn if fn is already open and add fn to already_open_files list.'''
-        d, tag = g.app.db, 'open-leo-files'
-        if g.app.reverting:
-            # Fix #302: revert to saved doesn't reset external file change monitoring
-            g.app.already_open_files = []
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
-            return
-        aList = g.app.db.get(tag) or []
-        if fn in aList:
-            # The file may be open in another copy of Leo, or not:
-            # another Leo may have been killed prematurely.
-            # Put the file on the global list.
-            # A dialog will warn the user such files later.
-            if fn not in g.app.already_open_files:
-                g.es('may be open in another Leo:', color='red')
-                g.es(fn)
-                g.app.already_open_files.append(fn)
-        else:
-            g.app.rememberOpenFile(fn)
-    #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile(self, fn, force=False):
-        '''Forget the open file, so that is no longer considered open.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        d, tag = g.app.db, 'open-leo-files'
-        if not d or not fn:
-            # Fix https://github.com/leo-editor/leo-editor/issues/69
-            return
-        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
-            return
-        aList = d.get(tag) or []
-        if fn in aList:
-            aList.remove(fn)
-            if trace:
-                print('forgetOpenFile: %s' % g.shortFileName(fn))
-                # for z in aList:
-                #    print('  %s' % (z))
-            d[tag] = aList
-        else:
-            if trace: print('forgetOpenFile: did not remove: %s' % (fn))
-    #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
-    def rememberOpenFile(self, fn):
-        trace = False and not g.unitTesting
-        d, tag = g.app.db, 'open-leo-files'
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
-            pass
-        elif g.app.preReadFlag:
-            pass
-        else:
-            aList = d.get(tag) or []
-            # It's proper to add duplicates to this list.
-            aList.append(fn)
-            if trace:
-                # Trace doesn't work well while initing.
-                print('rememberOpenFile:added: %s' % (fn))
-                for z in aList:
-                    print('  %s' % (z))
-            d[tag] = aList
-    #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
-    def runAlreadyOpenDialog(self, c):
-        '''Warn about possibly already-open files.'''
-        # g.trace(g.app.already_open_files)
-        if g.app.already_open_files:
-            aList = sorted(set(g.app.already_open_files))
-            g.app.already_open_files = []
-            g.app.gui.dismiss_splash_screen()
-            message = (
-                'The following files may already be open\n'
-                'in another copy of Leo:\n\n' +
-                '\n'.join(aList))
-            g.app.gui.runAskOkDialog(c,
-                title='Already Open Files',
-                message=message,
-                text="Ok")
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager(object):
@@ -2009,6 +2068,7 @@ class LoadManager(object):
         lm = self
         lm.computeStandardDirectories()
         lm.adjustSysPath()
+            # A do-nothing.
         # Scan the options as early as possible.
         lm.options = options = lm.scanOptions(fileName, pymacs)
             # also sets lm.files.
@@ -2034,6 +2094,156 @@ class LoadManager(object):
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon() # Set app.signon/signon2 for commanders.
+    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers (new)
+    def createAllImporetersData(self):
+        '''
+        New in Leo 5.5:
+
+        Create global data structures describing importers and writers.
+        '''
+        assert g.app.loadDir
+            # This is the only data required.
+        self.createWritersData()
+            # Was an AtFile method.
+        self.createImporterData()
+            # Was a LeoImportCommands method.
+    #@+node:ekr.20140724064952.18037: *6* LM.createImporterData & helper
+    def createImporterData(self):
+        '''Create the data structures describing importer plugins.'''
+        trace = False and not g.unitTesting
+        trace_exception = False
+        # Allow plugins to be defined in ~/.leo/plugins.
+        plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
+        plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+            pattern = g.os_path_finalize_join(
+                g.app.loadDir, '..', 'plugins', 'importers', '*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if sfn != '__init__.py':
+                    try:
+                        module_name = sfn[: -3]
+                        # Important: use importlib to give imported modules
+                        # their fully qualified names.
+                        m = importlib.import_module(
+                            'leo.plugins.importers.%s' % module_name)
+                        self.parse_importer_dict(sfn, m)
+                    except Exception:
+                        if trace and trace_exception:
+                            g.es_exception()
+                        g.warning('can not import leo.plugins.importers.%s' % (
+                            module_name))
+    #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
+    def parse_importer_dict(self, sfn, m):
+        '''
+        Set entries in g.app.classDispatchDict, g.app.atAutoDict and
+        g.app.atAutoNames using entries in m.importer_dict.
+        '''
+        trace = False and not g.unitTesting
+        importer_d = getattr(m, 'importer_dict', None)
+        if importer_d:
+            at_auto = importer_d.get('@auto', [])
+            scanner_class = importer_d.get('class', None)
+            scanner_name = scanner_class.__name__
+            extensions = importer_d.get('extensions', [])
+            if trace:
+                g.trace('===== %s: %s' % (sfn, scanner_name))
+                if extensions: g.trace(', '.join(extensions))
+            if at_auto:
+                # Make entries for each @auto type.
+                d = g.app.atAutoDict
+                for s in at_auto:
+                    aClass = d.get(s)
+                    if aClass and aClass != scanner_class:
+                        g.trace('duplicate %5s class: %s in %s' % (
+                            s, aClass.__name__, m.__file__))
+                    else:
+                        d[s] = scanner_class
+                        g.app.atAutoDict[s] = scanner_class
+                        g.app.atAutoNames.add(s)
+                        if trace: g.trace(s)
+            if extensions:
+                # Make entries for each extension.
+                d = g.app.classDispatchDict
+                for ext in extensions:
+                    aClass = d.get(ext)
+                    if aClass and aClass != scanner_class:
+                        g.trace('duplicate %s class: %s in %s' % (
+                           ext, aClass.__name__, m.__file__))
+                    else:
+                        d[ext] = scanner_class
+        elif sfn not in (
+            # These are base classes, not real plugins.
+            'basescanner.py',
+            'linescanner.py',
+        ):
+            g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
+    #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper
+    def createWritersData(self):
+        '''Create the data structures describing writer plugins.'''
+        trace = False # and not g.unitTesting
+        trace = trace and 'createWritersData' not in g.app.debug_dict
+        if trace:
+            # Suppress multiple traces.
+            g.app.debug_dict['createWritersData'] = True
+        g.app.writersDispatchDict = {}
+        g.app.atAutoWritersDict = {}
+        plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
+        plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+        for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+            pattern = g.os_path_finalize_join(g.app.loadDir,
+                '..', 'plugins', 'writers', '*.py')
+            for fn in glob.glob(pattern):
+                sfn = g.shortFileName(fn)
+                if sfn != '__init__.py':
+                    try:
+                        # Important: use importlib to give imported modules their fully qualified names.
+                        m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
+                        self.parse_writer_dict(sfn, m)
+                    except Exception:
+                        g.es_exception()
+                        g.warning('can not import leo.plugins.writers.%s' % sfn)
+        if trace:
+            g.trace('LM.writersDispatchDict')
+            g.printDict(g.app.writersDispatchDict)
+            g.trace('LM.atAutoWritersDict')
+            g.printDict(g.app.atAutoWritersDict)
+        # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+     
+    #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
+    def parse_writer_dict(self, sfn, m):
+        '''
+        Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
+        using entries in m.writers_dict.
+        '''
+        writer_d = getattr(m, 'writer_dict', None)
+        if writer_d:
+            at_auto = writer_d.get('@auto', [])
+            scanner_class = writer_d.get('class', None)
+            extensions = writer_d.get('extensions', [])
+            if at_auto:
+                # Make entries for each @auto type.
+                d = g.app.atAutoWritersDict
+                for s in at_auto:
+                    aClass = d.get(s)
+                    if aClass and aClass != scanner_class:
+                        g.trace('%s: duplicate %s class %s in %s:' % (
+                            sfn, s, aClass.__name__, m.__file__))
+                    else:
+                        d[s] = scanner_class
+                        g.app.atAutoNames.add(s)
+            if extensions:
+                # Make entries for each extension.
+                d = g.app.writersDispatchDict
+                for ext in extensions:
+                    aClass = d.get(ext)
+                    if aClass and aClass != scanner_class:
+                        g.trace('%s: duplicate %s class' % (sfn, ext),
+                            aClass, scanner_class)
+                    else:
+                        d[ext] = scanner_class
+        elif sfn not in ('basewriter.py',):
+            g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
     def createGui(self, pymacs):
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -2105,6 +2315,8 @@ class LoadManager(object):
     def initApp(self, verbose):
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug()
+        self.createAllImporetersData()
+            # Can be done early. Uses only g.app.loadDir
         assert g.app.loadManager
         import leo.core.leoBackground as leoBackground
         import leo.core.leoConfig as leoConfig
