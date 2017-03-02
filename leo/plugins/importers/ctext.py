@@ -53,7 +53,7 @@ class CText_Importer(Importer):
         node.b = '\n'.join(lines).strip('\n') + '\n'
         lines[:] = []
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
-    def run(self, s, parent, parse_body=False, prepass=False):
+    def run(self, s, parent, parse_body=False):
         '''Override Importer.run()'''
         c = self.c
         root = parent.copy()

@@ -59,14 +59,13 @@ class Import_IPYNB(object):
         c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.run
-    def run(self, s, parent, parse_body=False, prepass=False):
+    def run(self, s, parent, parse_body=False):
         '''
         @auto entry point. Called by code in leoImport.py.
         '''
         c = self.c
         fn = parent.atAutoNodeName()
-        # g.trace(prepass, fn)
-        if c and fn and not prepass:
+        if c and fn:
             changed = c.isChanged()
             self.import_file(fn, parent)
             # Similar to Importer.run.
