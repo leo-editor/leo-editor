@@ -2057,6 +2057,8 @@ class SettingsFinder(object):
         path, unl = unl.split('#', 1)
         # Undo the replacements made in p.getUNL.
         path = path.replace("file://", "")
+        path = path.replace("unl://", "")
+            # Fix #434: Potential bug in settings
         unl = unl.replace('%20', ' ').split("-->")
         tail = []
         if which > 1: # copying parent or grandparent but select leaf later
@@ -2066,6 +2068,8 @@ class SettingsFinder(object):
         my_settings_c.save() # if it didn't exist before, save required
         settings = g.findNodeAnywhere(my_settings_c, '@settings')
         c2 = g.app.loadManager.openSettingsFile(path)
+        if not c2:
+            return '' # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
         if found:
             if trace: g.trace('FOUND', unl)

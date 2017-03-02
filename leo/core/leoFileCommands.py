@@ -1232,6 +1232,9 @@ class FileCommands(object):
     #@+node:ekr.20060919110638.14: *5* fc.parse_leo_file
     def parse_leo_file(self, theFile, inputFileName, silent, inClipboard, s=None):
         c = self.c
+        # Fix #434: Potential bug in settings.
+        if not theFile and not s:
+            return None
         try:
             if g.isPython3:
                 if theFile:
@@ -1273,9 +1276,9 @@ class FileCommands(object):
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
-        if dump: fc.dumpSaxTree(saxRoot, dummy=True)
         # Pass two: create the tree of vnodes from the intermediate nodes.
         if saxRoot:
+            if dump: fc.dumpSaxTree(saxRoot, dummy=True)
             parent_v = c.hiddenRootNode
             children = fc.createSaxChildren(saxRoot, parent_v)
             assert c.hiddenRootNode.children == children
