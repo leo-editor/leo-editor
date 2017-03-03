@@ -23757,6 +23757,7 @@ The new code contains the following improvements:
 - helper for deleting outline nodes.
 - p.moveTo* methods change positions.
 - p.copy()
+- Discuss useful (new) functions and buttons.
 </t>
 <t tx="ekr.20170301013308.1">* Better docs for {{script}}
     Remove os.curdir from example!</t>
