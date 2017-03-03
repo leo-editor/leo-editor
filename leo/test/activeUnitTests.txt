@@ -1942,12 +1942,12 @@ else:
 # The length of this node should remain constant.
 
 assert len(p.b) == 175,len(p.b)
-#@+node:ekr.20071113201736: *4* @test zz restore the screen
+#@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoAtFile tests')
 #@+node:ekr.20101021205258.6011: *4* at.Directives & directories
@@ -4738,12 +4738,12 @@ c.selectPosition(p) # Sets body text.
 
 if
 IF
-#@+node:ekr.20090615053403.4957: *4* @test zz restore the screen
+#@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
@@ -5353,12 +5353,12 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
-#@+node:ekr.20071113201833: *4* @test zz restore the screen
+#@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoCommands tests')
 #@+node:ekr.20071113194216: *3* leoConfig
@@ -5468,12 +5468,12 @@ elif sys.platform== 'darwin':
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 assert c.page_width == c.config.getInt('page_width'),c.page_width
-#@+node:ekr.20071113201854: *4* @test zz restore the screen
+#@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoConfig tests')
 #@+node:ekr.20100131171342.5592: *3* leoDialogs
@@ -6083,13 +6083,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111084046.1: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
 #@+node:ekr.20081111084046.2: *4*  Commands C-E
 #@+node:ekr.20111104171708.3847: *5* @test c-to-python
 import leo.core.leoBeautify as leoBeautify
@@ -7070,12 +7063,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111082931.1: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20120212130242.3942: *5* data
 #@+node:ekr.20120212130242.3948: *6* a
 #@+node:ekr.20120212130242.3949: *7* b
@@ -7778,18 +7765,7 @@ this is the last sentence.
 This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
-#@+node:ekr.20081111084046.3: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20110610122533.3369: *5* goto-global-line tests
-#@+node:ekr.20110610122533.3405: *6* @@test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode'] = False
 #@+node:ekr.20100212072149.5341: *6* @test c.goToScriptLineNumber
 child = g.findNodeInChildren(c, p, 'syntax-error')
 assert child, 'no child'
@@ -9168,13 +9144,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111084046.4: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
 #@+node:ekr.20110118082508.3729: *5* reformat-paragraph tests
 #@+node:ekr.20110118082508.3793: *6* @test reformat-paragraph list 1 of 5
 # Required when running tests externally
@@ -9992,7 +9961,9 @@ for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWO
     assert i == 5, 'Expected 5, got: %d' % i
 #@+node:ekr.20100131180007.5453: *5* @test dynamicExpandHelper
 # A totally wimpy test.
-c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
+# And it somehow prints a newline to the console.
+if 0:
+    c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
 #@+node:ekr.20061104172236.5: *5* @test extendHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
@@ -10646,22 +10617,14 @@ try:
     assert p.b == body
 finally:
     c.setBodyString(p,'')
-#@+node:ekr.20060131102450: *5* print end of typing and undo tests
-print('\nEnd of typing and undo tests')
-#@+node:ekr.20051109143831: *5* @test zz restore the screen
+#@+node:ekr.20060131102450: *5* @test zz print end of typing tests
+print('\nEnd of typing tests')
+#@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractAllHeadlines()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-
-#@+node:ekr.20070306091949: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoEditCommands tests.')
 #@+node:ekr.20061001114637: *3* leoFileCommands
@@ -10959,12 +10922,12 @@ else:
     assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
     # old gnxs:
     # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
-#@+node:ekr.20071113202045: *4* @test zz restore the screen
+#@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoFileCommands tests.')
 #@+node:ekr.20071113193527: *3* leoFind
@@ -11034,14 +10997,14 @@ else:
     for command in table:
         c.k.simulateCommand(command)
         c.k.simulateCommand(command)
-#@+node:ekr.20071113202153: *4* @test zz restore the screen
+#@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoFind tests.')
+print('\nEnd of leoFind tests.')
 #@+node:ekr.20071113194424: *3* leoFrame
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
@@ -11218,14 +11181,14 @@ else:
     assert d.get(tag) is True
 #@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
-#@+node:ekr.20071113202153.1: *4* @test zz restore the screen
+#@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoFrame tests.')
+print('\nEnd of leoFrame tests.')
 #@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
@@ -12020,14 +11983,14 @@ else:
 
 for ivar in ('c','g','p'):
     assert ivar in dir()
-#@+node:ekr.20071113202153.2: *4* @test zz restore the screen
+#@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoGlobals tests.')
+print('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
@@ -12122,14 +12085,14 @@ else:
         filter_obj.eventFilter(w,e)
         # Assert that handleUnboundChar actually ignored it.
         assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
-#@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoGui tests.')
+print('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
@@ -20336,12 +20299,12 @@ for base, result, s in table:
         new_state.parens == parens and
         new_state.context == context)
     assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
-#@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
+#@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoImport tests.')
 #@+node:ekr.20100131171342.5604: *3* leoKeys
@@ -20479,14 +20442,14 @@ table = (
 for setting, result in table:
     val = c.k.strokeFromSetting(setting)
     assert val==result,'Expected %s, Got %s' % (result,val)
-#@+node:ekr.20100131171342.5609: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoKeys tests.')
+print('\nEnd of leoKeys tests.')
 #@+node:ekr.20071113194424.1: *3* leoNodes
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
@@ -21297,12 +21260,12 @@ import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
-#@+node:ekr.20071113202452: *4* @test zz restore the screen
+#@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
@@ -27586,12 +27549,12 @@ after
 #@+node:ekr.20050518071251.4: *7* selection
 2.0
 2.16
-#@+node:ekr.20071113202510: *4* @test zz restore the screen
+#@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
 #@+node:ekr.20140802074328.4471: *3* leoVim.py
@@ -28108,18 +28071,19 @@ for fn in files:
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
-#@+node:ekr.20100131171342.5501: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = c.testManager.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
+if 0: # No longer needed.
+    c.contractAllHeadlines()
+    h = 'All unit tests'
+    p = c.testManager.findNodeAnywhere(h)
+    if p:
+        p.expand()
+        g.app.unitTestDict['restoreSelectedNode']=False
+        c.selectPosition(p)
+        c.redraw()
 
 print('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
@@ -28130,18 +28094,19 @@ if hasattr(tree,'redrawCount'):
 if 0:
     print('calls to jedit.setTag: %s' %
         c.frame.body.colorizer.highlighter.colorer.n_setTag)
-#@+node:ekr.20081111150402.11: ** @test zz restore the screen
+#@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.selectPosition(p)
-c.contractParent()
-c.selectPosition(p.parent())
-if 0: # Do not do this! It would changed unitTest.leo!
-    c.save() # Only good way to save the present expansion/selection state.
-g.app.unitTestDict['restoreSelectedNode']=False
-c.bodyWantsFocus()
-
+if 0:
+    c.selectPosition(p)
+    c.contractParent()
+    c.selectPosition(p.parent())
+    # Do not do this! It would changed unitTest.leo!
+        # c.save()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.bodyWantsFocus()
+    
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
@@ -28154,6 +28119,7 @@ if 0:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
+
 c.k.simulateCommand(':q!')
 #@-all
 #@-leo

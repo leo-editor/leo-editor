@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.58" body_secondary_ratio="0.81">
-	<global_window_position top="121" left="491" height="941" width="1210"/>
+	<global_window_position top="59" left="491" height="1003" width="1210"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -46,7 +46,20 @@
 <v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
 </v>
 </v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh>
+<v t="ekr.20170303055633.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20170303055633.10"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170303055634.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
+<v t="ekr.20170303055634.8"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170303055634.9"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
+<v t="ekr.20170303055634.16"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170303055634.17"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
+<v t="ekr.20170303055635.11"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
@@ -192,7 +205,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1031,7 +1044,7 @@
 <v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
-<v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
@@ -3928,8 +3941,8 @@ for fn in glob.glob(pattern):
 <t tx="ekr.20140724164600.4590"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoImport tests.')
 </t>
@@ -10691,6 +10704,42 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20170303055633.1">gnx: ekr.20150626101842.1
+</t>
+<t tx="ekr.20170303055633.10">gnx: ekr.20170303055401.4
+unl: section 1
+gnx: ekr.20170303055401.5
+unl: section 2
+</t>
+<t tx="ekr.20170303055634.1">gnx: ekr.20150626101627.1
+</t>
+<t tx="ekr.20170303055634.16">gnx: ekr.20170303055401.19
+unl: section 1
+gnx: ekr.20170303055401.20
+unl: section 2
+</t>
+<t tx="ekr.20170303055634.17">gnx: ekr.20110610122533.3407
+</t>
+<t tx="ekr.20170303055634.8">gnx: ekr.20170303055401.17
+unl: section 1
+gnx: ekr.20170303055401.18
+unl: section 2
+</t>
+<t tx="ekr.20170303055634.9">gnx: ekr.20150626100719.1
+</t>
+<t tx="ekr.20170303055635.11">gnx: ekr.20170303055401.8
+unl: class class1
+gnx: ekr.20170303055401.9
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170303055401.10
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170303055401.11
+unl: class class2
+gnx: ekr.20170303055401.12
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170303055401.13
+unl: class class2--&gt;class2_method2
 </t>
 </tnodes>
 </leo_file>
