@@ -3127,6 +3127,17 @@ class Commands(object):
         )
         c2.redraw()
         return c2
+    #@+node:ekr.20170303113048.1: *5* c.openLeoThemes
+    @cmd('open-themes-leo')
+    def openLeoThemes(self, event=None):
+        '''Open themes.leo in a new Leo window.'''
+        c = self
+        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'config', 'themes.leo')
+        if g.os_path_exists(fn):
+            return g.openWithFileName(fn, old_c=c)
+        else:
+            g.es('file not found: %s' % fn)
+            return None
     #@+node:ekr.20131213072223.19441: *5* c.openLeoTOC
     @cmd('open-online-toc')
     def openLeoTOC(self, event=None):
