@@ -713,6 +713,8 @@ class LeoImportCommands(object):
         '''Create an outline by importing a file or string.'''
         trace = False and not g.unitTesting
         c = self.c
+        self.treeType = '@file'
+            # Fix #352.
         fileName = self.get_import_filename(fileName, parent)
         if g.is_binary_external_file(fileName):
             # Fix bug 1185409 importing binary files puts binary content in body editor.
@@ -763,6 +765,7 @@ class LeoImportCommands(object):
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
         c, u = self.c, self.c.undoer
+        # g.trace('===== self.treeType', repr(self.treeType))
         if atAuto:
             if atAutoKind:
                 # We have found a match between ext and an @auto importer.
@@ -914,7 +917,7 @@ class LeoImportCommands(object):
         if not c or not current or not files:
             return
         self.tab_width = c.getTabWidth(current)
-        self.treeType = treeType
+        self.treeType = treeType or '@file'
         if len(files) == 2:
             current = self.createImportParent(current, files)
         parent = current if len(files) > 1 else None
@@ -1420,6 +1423,8 @@ class LeoImportCommands(object):
         '''
         trace = False
         c = self.c; h = p.h; old_root = p.copy()
+        self.treeType = '@file'
+            # Fix #352.
         oldChanged = c.changed
         # A hack.  Let unit tests set the kill-check flag first.
         d = g.app.unitTestDict
@@ -1908,7 +1913,7 @@ class MORE_Importer(object):
 class RecursiveImportController(object):
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
-    #@+node:ekr.20130823083943.12615: *3* ctor
+    #@+node:ekr.20130823083943.12615: *3* ctor (RecursiveImportController)
     def __init__(self, c, kind, one_file=False, safe_at_file=True, theTypes=None):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
@@ -2289,7 +2294,7 @@ class RecursiveImportController(object):
                     c.selectPosition(root)
                     changed = True
                     break
-    #@+node:ekr.20130823083943.12613: *3* run
+    #@+node:ekr.20130823083943.12613: *3* run (RecursiveImportController)
     def run(self, dir_):
         '''Import all the .py files in dir_.'''
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):

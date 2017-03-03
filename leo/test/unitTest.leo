@@ -192,7 +192,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -506,6 +506,9 @@
 <v t="ekr.20170115052901.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20170115052901.11"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20170302201859.3"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170302201859.4"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -544,16 +547,7 @@
 <v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
 <v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
 <v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh>
-<v t="ekr.20170122040158.23"><vh>@@file c:/leo.repo/leo-editor/leo/test/python top-level later decl</vh>
-<v t="ekr.20170122040158.24"><vh>Declarations</vh></v>
-<v t="ekr.20170122040158.25"><vh>merge_value</vh></v>
-<v t="ekr.20170122040158.26"><vh>class MainDisplay</vh>
-<v t="ekr.20170122040158.27"><vh>save_file</vh></v>
-</v>
-<v t="ekr.20170122040158.28"><vh>retab</vh></v>
-</v>
-</v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
 <v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
 <v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
 <v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
@@ -1041,6 +1035,7 @@
 </v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
+<v t="ekr.20090529141856.4718"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -10684,39 +10679,18 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20170122040158.23">#!/usr/bin/env python3
-
+<t tx="ekr.20170302201859.3">&lt;?php
 @others
-@language python
+@language php
 @tabwidth -4
 </t>
-<t tx="ekr.20170122040158.24">import os
-import re
-
-</t>
-<t tx="ekr.20170122040158.25">def merge_value(v1, v2):
-    return v
-
-</t>
-<t tx="ekr.20170122040158.26">class MainDisplay(object):
-
-    @others
-# This line should be included at the end of the class node.
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-</t>
-<t tx="ekr.20170122040158.27">def save_file(self):
-    """Write the file out to disk."""
-    with open(self.save_name, "w") as f:
-        for newline in newlines:
-            f.write(newline)
-
-</t>
-<t tx="ekr.20170122040158.28">def retab(s, tabsize):
-    return ''.join(pieces)
-
-if __name__=="__main__":
-    main()
+<t tx="ekr.20170302201859.4">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
 </tnodes>
 </leo_file>
