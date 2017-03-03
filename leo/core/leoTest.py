@@ -240,7 +240,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
         self.old_p = c.p
-    #@+node:ekr.20051104075904.82: *3* importExport
+    #@+node:ekr.20051104075904.82: *3* importExport (importExportTestCase)
     def importExport(self):
         c = self.c; p = self.p
         g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
@@ -666,17 +666,21 @@ class TestManager(object):
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
-                if trace: g.trace('no found: running raw body')
+                if trace: g.trace('not found: running raw body')
                 test = tm.makeTestCase(c.p, setup_script)
                 if test:
                     suite.addTest(test)
                     found = True
             if found:
-                res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+                runner = unittest.TextTestRunner(
+                    failfast=g.app.failFast,
+                    verbosity=verbosity,
+                )
+                result = runner.run(suite)
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'
-                    archive = [(t.p.gnx, trace2) for(t, trace2) in res.errors]
+                    archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
                     c.cacher.db[key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
@@ -929,7 +933,7 @@ class TestManager(object):
         theType = h1[1: j]
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
-            "@asis",), "bad type: %s" % type
+            "@asis",), "bad type: %s" % theType
         thinFile = theType == "@thin"
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":

@@ -100,6 +100,8 @@ class LeoApp(object):
             # True: run Leo in diff mode.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
+        self.failFast = False
+            # True: Use the failfast option in unit tests.
         self.gui = None
             # The gui class.
         self.guiArgName = None
@@ -1510,6 +1512,7 @@ class LoadManager(object):
             self.windowSize = None
         # Ivars of *other* classes corresponding to command-line arguments...
             # g.app.batchMode           Set in createNullGuiWithScript
+            # g.app.failFast            --fail-fast
             # g.app.gui = None          The gui class.
             # g.app.guiArgName          The gui name given in --gui option.
             # g.app.qt_use_tabs
@@ -2362,6 +2365,8 @@ class LoadManager(object):
             help='start fullscreen')
         add('--ipython', action='store_true', dest='use_ipython',
             help='enable ipython support')
+        add('--fail-fast', action='store_true', dest='fail_fast',
+            help='stop unit tests after the first failure')
         add('--gui',
             help='gui to use (qt/qttabs)')
         add('--load-type', dest='load_type',
@@ -2406,6 +2411,9 @@ class LoadManager(object):
         # --debug
         g.app.debug = options.debug
         # if g.app.debug: g.trace_startup = True
+        # --fail-fast
+        if options.fail_fast:
+            g.app.failFast = True
         # --git-diff
         if options.diff:
             g.app.diff = options.diff
