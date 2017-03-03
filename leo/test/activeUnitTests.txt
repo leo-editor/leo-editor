@@ -7780,10 +7780,11 @@ finally:
 def spam:
     pass
 #@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
+import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
+elif sys.platform.startswith('win'):
     trace = False
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
@@ -7800,6 +7801,8 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 7, n
             break
+else:
+    self.skipTest('Skip on Linux')
 #@+node:ekr.20150626101643.1: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7843,10 +7846,11 @@ else:
             assert n == 5, n
             break
 #@+node:ekr.20150625101047.1: *6* @test find_file_line: @auto-py
+import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
+elif sys.platform.startswith('win'):
     trace = False
     root = p.parent().parent()
     # h = '@auto unittest/at-auto-line-number-test.py'
@@ -7865,6 +7869,8 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
+else:
+    self.skipTest('Skip on Linux')
 #@+node:ekr.20150626093653.1: *6* @@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:

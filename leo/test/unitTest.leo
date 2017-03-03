@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.58" body_secondary_ratio="0.81">
-	<global_window_position top="59" left="491" height="1003" width="1210"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -51,10 +51,10 @@
 <v t="ekr.20170303055633.10"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20170303055634.8"><vh>@gnxs</vh></v>
+<v t="edward.20170303061453.7"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.9"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20170303055634.16"><vh>@gnxs</vh></v>
+<v t="edward.20170303061454.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.17"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
 <v t="ekr.20170303055635.11"><vh>@gnxs</vh></v>
@@ -205,7 +205,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1072,6 +1072,16 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="edward.20170303061453.7">gnx: edward.20160416174241.15
+unl: section 1
+gnx: edward.20160416174241.16
+unl: section 2
+</t>
+<t tx="edward.20170303061454.1">gnx: edward.20160416174241.17
+unl: section 1
+gnx: edward.20160416174241.18
+unl: section 2
+</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
@@ -1464,7 +1474,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -4020,10 +4030,11 @@ else:
             assert n == 9, n
             break
 </t>
-<t tx="ekr.20150626101920.1"># Not valid for external tests: uses @&lt;file&gt; node.
+<t tx="ekr.20150626101920.1">import sys
+# Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
+elif sys.platform.startswith('win'):
     trace = False
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
@@ -4040,6 +4051,8 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 7, n
             break
+else:
+    self.skipTest('Skip on Linux')
 </t>
 <t tx="ekr.20150919073819.1">class aClass:
     def __init__(self):
@@ -10714,17 +10727,7 @@ unl: section 2
 </t>
 <t tx="ekr.20170303055634.1">gnx: ekr.20150626101627.1
 </t>
-<t tx="ekr.20170303055634.16">gnx: ekr.20170303055401.19
-unl: section 1
-gnx: ekr.20170303055401.20
-unl: section 2
-</t>
 <t tx="ekr.20170303055634.17">gnx: ekr.20110610122533.3407
-</t>
-<t tx="ekr.20170303055634.8">gnx: ekr.20170303055401.17
-unl: section 1
-gnx: ekr.20170303055401.18
-unl: section 2
 </t>
 <t tx="ekr.20170303055634.9">gnx: ekr.20150626100719.1
 </t>
