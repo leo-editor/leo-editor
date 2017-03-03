@@ -3500,13 +3500,15 @@ def findRootsWithPredicate(c, root, predicate):
     This function formalizes the search order used by the pylint, pyflakes and
     the rst3 commands, returning a list of zero or more found roots.
     '''
-    roots = set()
+    seen = []
+    roots = []
     # 1. Search p's tree.
     for p in root.self_and_subtree():
-        if predicate(p):
-            roots.add(p.copy())
+        if predicate(p) and p.v not in seen:
+            seen.append(p.v)
+            roots.append(p.copy())
     if roots:
-        return list(roots)
+        return roots
     # 2. Look up the tree.
     for p in root.parents():
         if predicate(p):
