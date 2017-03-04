@@ -922,14 +922,19 @@ class LeoImportCommands(object):
             current = self.createImportParent(current, files)
         parent = current if len(files) > 1 else None
         for fn in files:
-            g.setGlobalOpenDir(fn)
-            p = self.createOutline(fn, parent=parent)
-            if p: # createOutline may fail.
-                if not g.unitTesting:
-                    g.blue("imported", g.shortFileName(fn) if shortFn else fn)
-                p.contract()
-                p.setDirty()
-                c.setChanged(True)
+            # 2017/03/04: Report exceptions here, not in the caller.
+            try:
+                g.setGlobalOpenDir(fn)
+                p = self.createOutline(fn, parent=parent)
+                if p: # createOutline may fail.
+                    if not g.unitTesting:
+                        g.blue("imported", g.shortFileName(fn) if shortFn else fn)
+                    p.contract()
+                    p.setDirty()
+                    c.setChanged(True)
+            except Exception:
+                g.es_print('Exception importing', fn)
+                g.es_exception()
         c.validateOutline()
         current.expand()
         if redrawFlag:
@@ -1974,16 +1979,11 @@ class RecursiveImportController(object):
                     p.h = fn.replace('\\', '/')
                     p.clearDirty()
             else:
-                root = c.p
-                for fn in files2:
-                    c.selectPosition(root)
-                    try: # Fix #408.
-                        c.importCommands.importFilesCommand(
-                            [fn], '@file', redrawFlag=False, shortFn=True)
-                            # '@auto','@clean','@nosent' cause problems.
-                    except Exception:
-                        g.es_print('Exception importing', fn)
-                        g.es_exception()
+                c.importCommands.importFilesCommand(
+                    files2,
+                    '@file', # '@auto','@clean','@nosent' cause problems.
+                    redrawFlag=False,
+                    shortFn=True)
         if dirs:
             for dir_ in sorted(dirs):
                 self.import_dir(dir_, child)
@@ -2282,18 +2282,10 @@ class RecursiveImportController(object):
     def remove_empty_nodes(self, p):
         c = self.c
         root = p.copy()
-        # Restart the scan once a node is deleted.
-        # This is not a significant performance issue.
-        changed = True
-        while changed:
-            changed = False
-            for p in root.self_and_subtree():
-                if not p.b and not p.hasChildren():
-                    # g.trace('** deleting',p.h)
-                    p.doDelete()
-                    c.selectPosition(root)
-                    changed = True
-                    break
+        c.deletePositionsInList([
+            z.copy() for z in root.self_and_subtree()
+                if not p.b and not p.hasChildren()
+        ])
     #@+node:ekr.20130823083943.12613: *3* run (RecursiveImportController)
     def run(self, dir_):
         '''Import all the .py files in dir_.'''
