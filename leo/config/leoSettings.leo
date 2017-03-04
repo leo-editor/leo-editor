@@ -2200,7 +2200,6 @@
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20170304074559.2"><vh>About themes</vh></v>
 <v t="ekr.20170304074559.3"><vh>@theme ekr_dark theme</vh>
-<v t="ekr.20170304074559.4"><vh>@data qt-gui-user-style-sheet</vh></v>
 <v t="ekr.20170304074559.5"><vh>settings</vh>
 <v t="ekr.20170304074559.6"><vh>Brackets</vh>
 <v t="ekr.20170304074559.7"><vh>@color flash-brackets-background-color = blue</vh></v>
@@ -2420,6 +2419,9 @@
 <v t="ekr.20170304074559.184"><vh>@bool color_theme_is_dark = True</vh></v>
 </v>
 </v>
+<v t="ekr.20170304084615.1"><vh>style sheet</vh>
+<v t="ekr.20170304074559.4"><vh>@data qt-gui-user-style-sheet</vh></v>
+</v>
 </v>
 <v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
 <v t="ekr.20170304074559.186"><vh>settings</vh>
@@ -2542,8 +2544,10 @@
 </v>
 <v t="ekr.20170304074559.288"><vh>@ignore Spare parts</vh></v>
 </v>
+<v t="ekr.20170304084601.1"><vh>style sheets</vh>
 <v t="ekr.20170304074559.289"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304074559.290"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
 </v>
 <v t="ekr.20170304074559.291"><vh>@theme leo_dark theme 1</vh>
 <v t="ekr.20170304074559.292"><vh>settings</vh>
@@ -2615,8 +2619,10 @@
 <v t="ekr.20170304074559.379"><vh>@ignore border</vh></v>
 </v>
 </v>
+<v t="ekr.20170304084533.1"><vh>style sheets</vh>
 <v t="ekr.20170304074559.380"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304074559.381"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
 </v>
 <v t="ekr.20170304074559.382"><vh>@theme leo_dark theme 2</vh>
 <v t="ekr.20170304074559.383"><vh>settings</vh>
@@ -2688,8 +2694,10 @@
 <v t="ekr.20170304074559.470"><vh>@ignore border</vh></v>
 </v>
 </v>
+<v t="ekr.20170304084545.1"><vh>style sheets</vh>
 <v t="ekr.20170304074559.471"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304074559.472"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -14935,6 +14943,10 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20170304074559.98"></t>
 <t tx="ekr.20170304074559.99">EKR: was None.
  #859900</t>
+<t tx="ekr.20170304084533.1">@language css</t>
+<t tx="ekr.20170304084545.1">@language css</t>
+<t tx="ekr.20170304084601.1">@language css</t>
+<t tx="ekr.20170304084615.1">@language css</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
