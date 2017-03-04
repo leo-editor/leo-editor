@@ -348,6 +348,7 @@
 <v t="ekr.20170303131049.1"><vh>section</vh></v>
 </v>
 </v>
+<v t="ekr.20170304101818.1"><vh>About this file</vh></v>
 <v t="ekr.20170304084711.1"><vh>Themes</vh>
 <v t="ekr.20170304084711.2"><vh>About themes</vh></v>
 <v t="ekr.20170304084711.3"><vh>@theme ekr_dark theme</vh>
@@ -570,7 +571,7 @@
 <v t="ekr.20170304084711.183"><vh>@bool color_theme_is_dark = True</vh></v>
 </v>
 </v>
-<v t="ekr.20170304084711.184"><vh>style sheet</vh>
+<v t="ekr.20170304102043.1"><vh>style sheet</vh>
 <v t="ekr.20170304084711.185"><vh>@data qt-gui-user-style-sheet</vh></v>
 </v>
 </v>
@@ -695,7 +696,7 @@
 </v>
 <v t="ekr.20170304084711.289"><vh>@ignore Spare parts</vh></v>
 </v>
-<v t="ekr.20170304084711.290"><vh>style sheets</vh>
+<v t="ekr.20170304084711.290"><vh>generated style sheets</vh>
 <v t="ekr.20170304084711.291"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304084711.292"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
@@ -770,7 +771,7 @@
 <v t="ekr.20170304084711.381"><vh>@ignore border</vh></v>
 </v>
 </v>
-<v t="ekr.20170304084711.382"><vh>style sheets</vh>
+<v t="ekr.20170304084711.382"><vh>generated style sheets</vh>
 <v t="ekr.20170304084711.383"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304084711.384"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
@@ -845,7 +846,7 @@
 <v t="ekr.20170304084711.473"><vh>@ignore border</vh></v>
 </v>
 </v>
-<v t="ekr.20170304084711.474"><vh>style sheets</vh>
+<v t="ekr.20170304084711.474"><vh>generated style sheets</vh>
 <v t="ekr.20170304084711.475"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20170304084711.476"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
@@ -3345,7 +3346,6 @@ solarized-base1
 <t tx="ekr.20170304084711.182">Name of the theme, used to find icon files</t>
 <t tx="ekr.20170304084711.183">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20170304084711.184">@language css</t>
 <t tx="ekr.20170304084711.185">QMenuBar {
     font-family: DejaVu Sans Mono;
     font-size:   12pt;
@@ -6475,5 +6475,11 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20170304084711.98">EKR: was None.
  #859900</t>
 <t tx="ekr.20170304084711.99"></t>
+<t tx="ekr.20170304101818.1">@language rest
+@wrap
+
+This file is primarily for those who develop themes. All others may simply copy themes from leoSetttings.leo to myLeoSettings.leo.
+</t>
+<t tx="ekr.20170304102043.1">@language css</t>
 </tnodes>
 </leo_file>
