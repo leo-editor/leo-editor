@@ -349,7 +349,6 @@
 <v t="ekr.20170303131049.1"><vh>section</vh></v>
 </v>
 </v>
-<v t="ekr.20170304052654.1"><vh>@@button copy-theme</vh></v>
 </v>
 <v t="ekr.20170303125521.1"></v>
 <v t="ekr.20170304051620.1"><vh>Themes</vh>
@@ -1202,12 +1201,6 @@ gray90: #E5E5E5
 <t tx="ekr.20170304051808.1"></t>
 <t tx="ekr.20170304051834.1"></t>
 <t tx="ekr.20170304051901.1"></t>
-<t tx="ekr.20170304052654.1">'''
-Copy the selected @ignore (name) theme tree to
-the last node of the @setttings tree in myLeoSettings.leo,
-removing the @ignore in doing so.
-'''
-</t>
 <t tx="ekr.20170304053743.1">A **theme** is a combination of settings, stylesheets and optional icons.
 
 Two stylesheets control Leo's look and feel:
