@@ -361,7 +361,9 @@ class Py_Importer(Importer):
         and sets self.skip so that the next line to be handled is a class/def line.
         '''
         assert self.skip == 0
-        # This is tricky. Don't test for *ending* context.
+        if prev_state.context:
+            # Only test for docstrings, not [{(.
+            return False
         line = lines[i]
         m = self.decorator_pattern.match(line)
         if m and m.group(1) not in g.globalDirectiveList:
