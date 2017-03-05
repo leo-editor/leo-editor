@@ -880,7 +880,7 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
-        trace_all = False
+        trace_all = False # or parent.h.endswith('__init__.py')
         trace_lines = True # Trace failures, regardless of trace.
         trace_status = True
         if g.app.suppressImportChecks:
@@ -938,6 +938,8 @@ class Importer(object):
         if ok and t2 - t1 > 2.0:
             print('')
             g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
+        if trace and trace_status:
+            g.trace('Ok:', ok, g.shortFileName(parent.h))
         return ok
     #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
     def clean_blank_lines(self, lines):
@@ -1144,9 +1146,7 @@ class Importer(object):
         ws = self.common_lws(lines)
         if trace:
             g.trace('common_lws:', repr(ws))
-            print('===== lines...')
-            for z in lines:
-                print(repr(z))
+            g.printList(lines)
         result = []
         for s in lines:
             if s.startswith(ws):
@@ -1161,9 +1161,8 @@ class Importer(object):
                     g.computeWidth(ws, self.tab_width),
                     s.lstrip()))
         if trace:
-            print('----- result...')
-            for z in result:
-                print(repr(z))
+            g.trace('----- result...')
+            g.printList(result)
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):

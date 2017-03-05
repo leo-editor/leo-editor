@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="143" left="450" height="771" width="1149"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
+	<global_window_position top="82" left="409" height="771" width="1149"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -205,7 +205,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1047,8 +1047,6 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
-<v t="ekr.20090529141856.4718"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3514,33 +3512,6 @@ s = '''\
 
 
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20120307133953.3947">import sys
-if sys.platform.startswith('win'):
-    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
-    fn1 = 'LeoDocs.leo#'
-    fn2 = 'doc/LeoDocs.leo#'
-    unl2 = '@settings--&gt;Plugins--&gt;wikiview plugin'
-    unl3 = '@settings--&gt;Plugins--&gt;wikiview%20plugin'
-    table = (
-        (http + 'writemonkey.com/index.php', ['browser']),
-        (file_ + 'x.py',        ['os_startfile']),
-        (file_ + fn1,           ['g.recursiveUNLSearch']),
-        (file_ + fn2,           ['g.recursiveUNLSearch']),
-        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
-        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
-        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
-        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
-        (unl1 + unl2,           ['g.recursiveUNLSearch']),
-        (unl1 + unl3,           ['g.recursiveUNLSearch']),
-    )
-    d = g.app.unitTestDict
-    for url,aList in table:
-        d = g.app.unitTestDict = {}
-        g.handleUrl(c=c,p=c.p,url=url)
-        for kind in aList:
-            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
-                kind,url,g.dictToString(d))
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>
@@ -10351,21 +10322,7 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170122032242.1">if 0: # Preamble...
-    # g.cls()
-    if c.isChanged(): c.save()
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands 
-s = """
+<t tx="ekr.20170122032242.1">s = """
 @base_task(
     targets=['img/who_map.png', 'img/who_map.pdf'],
     file_dep=[data_path('phyto')],
@@ -10375,14 +10332,12 @@ def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
 table = (
-    (1, 'Declarations'),
-        # Poor, but passes perfect import.
     (1, 'make_map'),
 )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
-    ic.pythonUnitTest(p,s=s,showTree=True)
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
     assert root.h.startswith('@@'), root.h

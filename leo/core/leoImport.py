@@ -1918,7 +1918,7 @@ class MORE_Importer(object):
 class RecursiveImportController(object):
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
-    #@+node:ekr.20130823083943.12615: *3* ctor (RecursiveImportController)
+    #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
     def __init__(self, c, kind, one_file=False, safe_at_file=True, theTypes=None):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
@@ -1928,7 +1928,7 @@ class RecursiveImportController(object):
         self.recursive = not one_file
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-    #@+node:ekr.20130823083943.12597: *3* Pass 1: import_dir (RecursiveImportController)
+    #@+node:ekr.20130823083943.12597: *3* ric.Pass 1: import_dir (RecursiveImportController)
     def import_dir(self, dir_, root):
         '''Import selected files from dir_, a directory.'''
         trace = False and not g.unitTesting
@@ -1987,9 +1987,11 @@ class RecursiveImportController(object):
         if dirs:
             for dir_ in sorted(dirs):
                 self.import_dir(dir_, child)
-    #@+node:ekr.20130823083943.12598: *3* Pass 2: clean_all & helpers
+    #@+node:ekr.20170304161145.1: *3* ric.Pass 2: clean_all & helpers (no longer used)
     def clean_all(self, dir_, p):
         '''Clean all imported nodes. This takes a lot of time.'''
+        # Warning: this happens after perfect import checks.
+        # Mistakes here could be serious.
         trace = False and not g.unitTesting
         t1 = time.time()
         prev_dir = None
@@ -2016,7 +2018,7 @@ class RecursiveImportController(object):
                     self.clean(p, ext)
         t2 = time.time()
         if trace: g.trace('%2.2f sec' % (t2-t1))
-    #@+node:ekr.20130823083943.12599: *4* clean
+    #@+node:ekr.20170304161145.2: *4* ric.clean
     def clean(self, p, ext):
         '''
         - Move a shebang line from the first child to the root.
@@ -2033,7 +2035,8 @@ class RecursiveImportController(object):
                 p.h = p.h[len(tag):].strip()
                 break
         self.move_shebang_line(root)
-        self.move_doc_string(root)
+        # A bad idea.
+            # self.move_doc_string(root)
         self.rename_decls(root)
         for p in root.self_and_subtree():
             self.clean_blank_lines(p)
@@ -2055,7 +2058,7 @@ class RecursiveImportController(object):
                 self.merge_extra_nodes(p)
             for p in root.subtree():
                 self.move_decorator_lines(p)
-    #@+node:ekr.20130823083943.12600: *4* clean_blank_lines
+    #@+node:ekr.20170304161145.3: *4* ric.clean_blank_lines
     def clean_blank_lines(self, p):
         '''Remove leading and trailing blank lines from all nodes.'''
         s = p.b
@@ -2072,7 +2075,7 @@ class RecursiveImportController(object):
         if not s.endswith('\n'): s = s + '\n'
         if s != p.b:
             p.b = s
-    #@+node:ekr.20130823083943.12601: *4* merge_comment_nodes
+    #@+node:ekr.20170304161145.4: *4* ric.merge_comment_nodes
     def merge_comment_nodes(self, p, delim):
         '''Merge a node containing nothing but comments with the next node.'''
         if not p.hasChildren() and p.hasNext() and p.h.strip().startswith(delim):
@@ -2081,7 +2084,7 @@ class RecursiveImportController(object):
             b = b + ('\n' if b.endswith('\n') else '\n\n')
             p2.b = b + p2.b
             p.doDelete(p2)
-    #@+node:ekr.20130823083943.12602: *4* merge_extra_nodes
+    #@+node:ekr.20170304161145.5: *4* ric.merge_extra_nodes
     def merge_extra_nodes(self, p):
         '''Merge a node containing no class or def lines with the previous node'''
         s = p.b
@@ -2095,7 +2098,7 @@ class RecursiveImportController(object):
             nl = '\n' if s.endswith('\n') else '\n\n'
             p2.b = p2.b + nl + s
             p.doDelete(p2)
-    #@+node:ekr.20130823083943.12603: *4* move_decorator_lines (RecursiveImportController)
+    #@+node:ekr.20170304161145.6: *4* ric.move_decorator_lines (RecursiveImportController)
     def move_decorator_lines(self, p):
         '''Move trailing decorator lines to the next node.'''
         trace = False and not g.unitTesting
@@ -2131,9 +2134,10 @@ class RecursiveImportController(object):
         p.b = head
         p2.b = tail + nl + p2.b
         return True
-    #@+node:ekr.20130823083943.12604: *4* move_doc_string
+    #@+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
     def move_doc_string(self, root):
         '''Move a leading docstring in the first child to the root node.'''
+        return # This is completely misguided
         # To do: copy comments before docstring
         p = root.firstChild()
         s = p and p.b or ''
@@ -2180,7 +2184,7 @@ class RecursiveImportController(object):
             root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
         else:
             root.b = doc + nl + root.b
-    #@+node:ekr.20130823083943.12605: *4* move_shebang_line
+    #@+node:ekr.20170304161145.8: *4* ric.move_shebang_line
     def move_shebang_line(self, root):
         '''Move a shebang line from the first child to the root.'''
         p = root.firstChild()
@@ -2190,7 +2194,7 @@ class RecursiveImportController(object):
             nl = '\n\n' if root.b.strip() else ''
             root.b = '@first ' + lines[0] + nl + root.b
             p.b = ''.join(lines[1:])
-    #@+node:ekr.20130823083943.12606: *4* rename_decls
+    #@+node:ekr.20170304161145.9: *4* ric.rename_decls
     def rename_decls(self, root):
         '''Use a section reference for declarations.'''
         p = root.firstChild()
@@ -2209,7 +2213,7 @@ class RecursiveImportController(object):
         else:
             nl = '' if i == 0 else '\n'
             root.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
-    #@+node:ekr.20130823083943.12607: *3* Pass 3: post_process & helpers
+    #@+node:ekr.20130823083943.12607: *3* ric.Pass 3: post_process & helpers
     def post_process(self, p, prefix):
         '''
         Traverse p's tree, replacing all nodes that start with prefix
@@ -2227,32 +2231,32 @@ class RecursiveImportController(object):
         if trace:
             t2 = time.time()
             g.trace('%2.2f sec' % (t2-t1))
-    #@+node:ekr.20130823083943.12608: *4* clear_dirty_bits
+    #@+node:ekr.20130823083943.12608: *4* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
         c.setChanged(False)
         for p in p.self_and_subtree():
             p.clearDirty()
-    #@+node:ekr.20130823083943.12609: *4* dump_headlines
+    #@+node:ekr.20130823083943.12609: *4* ric.dump_headlines
     def dump_headlines(self, p):
         # show all headlines.
         for p in p.self_and_subtree():
             print(p.h)
-    #@+node:ekr.20130823083943.12610: *4* fix_back_slashes
+    #@+node:ekr.20130823083943.12610: *4* ric.fix_back_slashes
     def fix_back_slashes(self, p):
         '''Convert backslash to slash in all headlines.'''
         for p in p.self_and_subtree():
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.h = s
-    #@+node:ekr.20130823083943.12611: *4* minimize_headlines
+    #@+node:ekr.20130823083943.12611: *4* ric.minimize_headlines
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
         trace = False and not g.unitTesting
         # This could only happen during testing.
-        if p.h.startswith('@'):
-            if trace: g.trace('** skipping: %s' % (p.h))
-            return
+        # if False and p.h.startswith('@'):
+            # if trace: g.trace('** skipping: %s' % (p.h))
+            # return
         h2 = p.h[len(prefix):].strip()
         ends_with_ext = any([h2.endswith(z) for z in self.theTypes])
         if p.h == prefix:
@@ -2278,7 +2282,7 @@ class RecursiveImportController(object):
             prefix2 = prefix2 + h2
             for p in p.children():
                 self.minimize_headlines(p, prefix2)
-    #@+node:ekr.20130823083943.12612: *4* remove_empty_nodes
+    #@+node:ekr.20130823083943.12612: *4* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
         c = self.c
         root = p.copy()
@@ -2286,7 +2290,7 @@ class RecursiveImportController(object):
             z.copy() for z in root.self_and_subtree()
                 if not p.b and not p.hasChildren()
         ])
-    #@+node:ekr.20130823083943.12613: *3* run (RecursiveImportController)
+    #@+node:ekr.20130823083943.12613: *3* ric.run (RecursiveImportController)
     def run(self, dir_):
         '''Import all the .py files in dir_.'''
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
@@ -2306,8 +2310,9 @@ class RecursiveImportController(object):
             self.import_dir(dir_, root.copy())
             for p in root.self_and_subtree():
                 n += 1
-            if self.kind not in ('@auto', '@edit'):
-                self.clean_all(dir_, root.copy())
+            # The importers should do this.
+                # if self.kind not in ('@auto', '@edit'):
+                    # self.clean_all(dir_, root.copy())
             self.post_process(root.copy(), dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:

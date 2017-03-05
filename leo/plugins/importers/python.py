@@ -102,11 +102,12 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False # and g.unitTesting
+        trace = False and g.unitTesting
         tail_p = None
         prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
         stack = [target, target]
+        self.decorator_lines = []
         self.inject_lines_ivar(parent)
         lines = g.splitLines(s)
         self.skip = 0
@@ -117,6 +118,8 @@ class Py_Importer(Importer):
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
+            elif self.starts_decorator(i, lines, new_state):
+                pass # Sets self.skip and self.decorator_lines.
             elif self.starts_block(i, lines, new_state, prev_state, stack):
                 first = False
                 tail_p = None
@@ -242,50 +245,14 @@ class Py_Importer(Importer):
                 g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return h
-    #@+node:ekr.20161117060359.1: *4* python_i.move_decorators & helpers
-    def move_decorators(self, new_p, prev_p):
-        '''
-        Move decorators from the end of prev_p to the start of new_state.p.
-        These lines may be on the other side of @others.
-        '''
-        if new_p.v == prev_p.v:
-            return
-        prev_lines = self.get_lines(prev_p)
-        new_lines = self.get_lines(new_p)
-        moved_lines = []
-        if prev_lines and self.is_at_others(prev_lines[-1]):
-            at_others_line = prev_lines.pop()
-        else:
-            at_others_line = None
-        while prev_lines:
-            line = prev_lines[-1]
-            if self.is_decorator(line):
-                prev_lines.pop()
-                moved_lines.append(line)
-            else:
-                break
-        if at_others_line:
-            prev_lines.append(at_others_line)
-        if moved_lines:
-            self.set_lines(new_p, list(reversed(moved_lines)) + new_lines)
-    #@+node:ekr.20161117080504.1: *5* def python_i.is_at_others/is_decorator
-    at_others_pattern = re.compile(r'^\s*@others$')
-
-    def is_at_others(self, line):
-        '''True if line is @others'''
-        return self.at_others_pattern.match(line)
-
-    decorator_pattern = re.compile(r'^\s*@(.*)$')
-
-    def is_decorator(self, line):
-        '''True if line is a python decorator, not a Leo directive.'''
-        m = self.decorator_pattern.match(line)
-        return m and m.group(1) not in g.globalDirectiveList
     #@+node:ekr.20161222123105.1: *4* python_i.promote_last_lines
     def promote_last_lines(self, parent):
         '''python_i.promote_last_lines.'''
-        # last = parent.lastNode()
-        # g.trace(last and last.h or '<no last node>')
+        trace = False and not g.unitTesting
+        last = parent.lastNode()
+        if trace:
+            g.trace(last and last.h)
+            g.printList(self.get_lines(last))
     #@+node:ekr.20161222112801.1: *4* python_i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         '''
@@ -326,11 +293,10 @@ class Py_Importer(Importer):
     #@+node:ekr.20161116034633.7: *4* python_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False # and g.unitTesting
+        trace = False and g.unitTesting
         assert not prev_state.in_context(), prev_state
         line = lines[i]
         top = stack[-1]
-        prev_p = top.p.copy()
         if trace:
             g.trace('line', repr(line))
             g.trace('top_state', top.state)
@@ -347,14 +313,14 @@ class Py_Importer(Importer):
         top = stack[-1]
         parent = top.p
         self.gen_ref(line, parent, top)
-        h = self.clean_headline(line) 
+        h = self.clean_headline(line)
         child = self.create_child_node(parent, line, h)
+        self.prepend_lines(child, self.decorator_lines)
+        if trace: g.printList(self.get_lines(child))
+        self.decorator_lines = []
         target = PythonTarget(child, new_state)
         target.kind = 'class' if h.startswith('class') else 'def'
         stack.append(target)
-        # Handle previous decorators.
-        new_p = stack[-1].p.copy()
-        self.move_decorators(new_p, prev_p)
     #@+node:ekr.20161116040557.1: *4* python_i.starts_block
     starts_pattern = re.compile(r'\s*(class|def)\s+')
         # Matches lines that apparently start a class or def.
@@ -362,7 +328,7 @@ class Py_Importer(Importer):
     def starts_block(self, i, lines, new_state, prev_state, stack):
         '''True if the line startswith class or def outside any context.'''
         # pylint: disable=arguments-differ
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
         if prev_state.in_context():
             return False
         line = lines[i]
@@ -384,6 +350,34 @@ class Py_Importer(Importer):
                 g.trace(prev_indent, new_state.indent, repr(line))
                 g.trace('@others', top.at_others_flag)
             return True
+    #@+node:ekr.20170305105047.1: *4* python_i.starts_decorator
+    decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
+
+    def starts_decorator(self, i, lines, prev_state):
+        '''
+        True if the line looks like a decorator outside any context.
+        
+        Puts the entire decorator into the self.decorator_lines list,
+        and sets self.skip so that the next line to be handled is a class/def line.
+        '''
+        assert self.skip == 0
+        # This is tricky. Don't test for *ending* context.
+        line = lines[i]
+        m = self.decorator_pattern.match(line)
+        if m and m.group(1) not in g.globalDirectiveList:
+            # Fix #360: allow multiline matches
+            # Carefully skip all lines until a class/def.
+            self.decorator_lines = [line]
+            for i, line in enumerate(lines[i+1:]):
+                new_state = self.scan_line(line, prev_state)
+                m = self.starts_pattern.match(line)
+                if m and not new_state.in_context():
+                    return True
+                else:
+                    self.decorator_lines.append(line)
+                    self.skip += 1
+                    prev_state = new_state
+        return False       
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
         '''

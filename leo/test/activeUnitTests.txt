@@ -16023,20 +16023,6 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20170122032242.1: *6* @test python bug #360
-if 0: # Preamble...
-    # g.cls()
-    if c.isChanged(): c.save()
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands 
 s = """
 @base_task(
     targets=['img/who_map.png', 'img/who_map.pdf'],
@@ -16047,14 +16033,12 @@ def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
 table = (
-    (1, 'Declarations'),
-        # Poor, but passes perfect import.
     (1, 'make_map'),
 )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
-    ic.pythonUnitTest(p,s=s,showTree=True)
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
     assert root.h.startswith('@@'), root.h
