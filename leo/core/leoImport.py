@@ -2250,18 +2250,23 @@ class RecursiveImportController(object):
             if s != p.h:
                 p.h = s
     #@+node:ekr.20130823083943.12611: *4* ric.minimize_headlines
+    file_pattern = re.compile(r'^(@auto|@clean|@edit|@file|@nosent)')
+
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
         trace = False and not g.unitTesting
-        # This could only happen during testing.
-        # if False and p.h.startswith('@'):
-            # if trace: g.trace('** skipping: %s' % (p.h))
-            # return
-        h2 = p.h[len(prefix):].strip()
+        if trace: g.trace(p.h)
+        m = self.file_pattern.match(p.h)
+        if m:
+            h = p.h[len(m.group(1)):].strip()
+            # g.trace('MATCH:', repr(m.group(1)), '==>', repr(h))
+        else:
+            h = p.h
+        h2 = h[len(prefix):].strip()
         ends_with_ext = any([h2.endswith(z) for z in self.theTypes])
-        if p.h == prefix:
-            if trace: g.trace('@path %s' % (p.h))
-            p.h = '@path %s' % (p.h)
+        if h == prefix:
+            if trace: g.trace('@path %s' % (h))
+            p.h = '@path %s' % (h)
             for p in p.children():
                 self.minimize_headlines(p, prefix)
         elif h2.find('/') <= 0 and ends_with_ext:
