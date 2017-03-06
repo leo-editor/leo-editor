@@ -1480,6 +1480,7 @@ class GlobalConfigManager(object):
         D default settings
         F loaded .leo File
         M myLeoSettings.leo
+        @ @button, @command, @mode.
         '''
         lm = g.app.loadManager
         suppressKind = ('shortcut', 'shortcuts', 'openwithtable')

@@ -715,7 +715,7 @@ class ScriptingController(object):
             args=args,
             func=commonCommandCallback,
             h=p.h,
-            pane='all',
+            pane='button', # Fix bug 416: use 'button', NOT 'command', and NOT 'all'
             source_c=p.v.context,
             tag='global @command')
     #@+node:ekr.20150401130313.1: *3* sc.Scripts, individual
@@ -762,7 +762,7 @@ class ScriptingController(object):
             args=args,
             func=atCommandCallback,
             h=p.h,
-            pane='all',
+            pane='button', # Fix # 416.
             source_c=p.v.context,
             tag='local @command')
         g.app.config.atLocalCommandsList.append(p.copy())
@@ -981,10 +981,12 @@ class ScriptingController(object):
     def registerAllCommands(self, args, func, h, pane, source_c=None, tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
         trace = False and not g.unitTesting
+        trace_name = False
         c, k = self.c, self.c.k
         shortcut = self.getShortcut(h)
+        if trace: g.trace('pane', pane, 'shortcut', shortcut, h)
         s = self.cleanButtonText(h)
-        if trace:
+        if trace and trace_name:
             if hasattr(func, '__name__'):
                 g.trace(func.__name__, func.__doc__)
             else:

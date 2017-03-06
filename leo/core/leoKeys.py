@@ -2205,7 +2205,6 @@ class KeyHandlerClass(object):
         '''
         k = self; c = k.c
         lm = g.app.loadManager
-        g.trace(stroke)
         if 0:
             # This does not fix 327: Create a way to unbind bindings
             assert stroke in (None, 'None', 'none') or g.isStroke(stroke), repr(stroke)
@@ -2674,7 +2673,7 @@ class KeyHandlerClass(object):
     [D] default binding
     [F] loaded .leo File
     [M] myLeoSettings.leo
-    [@] mode
+    [@] @mode, @button, @command
 
     '''
         if not d: return g.es('no bindings')
@@ -2725,7 +2724,7 @@ class KeyHandlerClass(object):
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            # g.trace(key,kind)
+            # g.trace('%10s %s' % (key, repr(kind)))
             letter = lm.computeBindingLetter(kind)
             pane = '%s: ' % (pane) if pane else ''
             left = pane + key # pane and shortcut fields
@@ -3355,14 +3354,15 @@ class KeyHandlerClass(object):
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
+        trace_dict = True
         verbose = True
         k = self; w_name = k.c.widget_name(w)
-        # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
             return None
-        if trace: g.trace('w_name', repr(w_name), 'stroke', stroke, 'w', w,
+        if trace: g.trace('===== w_name', repr(w_name), 'stroke', stroke,
+            # 'w', w,
             'isTextWrapper(w)', g.isTextWrapper(w))
         for key, name in (
             # Order here is similar to bindtags order.
@@ -3379,6 +3379,13 @@ class KeyHandlerClass(object):
             ('text', None),
             ('all', None),
         ):
+            if trace and trace_dict:
+                d = k.masterBindingsDict.get(key, {})
+                g.trace('key:', key)
+                if d:
+                    g.trace('d.get(%s)' % (stroke))
+                    g.trace(d.get(stroke))
+                
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
@@ -3402,7 +3409,7 @@ class KeyHandlerClass(object):
                         if key == 'text' and name == 'head' and si.commandName in table:
                             if trace: g.trace('***** special case', si.commandName)
                         else:
-                            if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            if trace: g.trace('key: %7s name: %6s  found: %s = %s' % (
                                 key, name, repr(si.stroke), si.commandName))
                             return si
         return None

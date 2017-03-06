@@ -1773,7 +1773,10 @@ class LoadManager(object):
         for letter, kind2 in table:
             if kind.lower().endswith(kind2.lower()):
                 return letter
-        return 'D' if kind.find('mode') == -1 else '@'
+        if kind == 'register-command' or kind.find('mode') > -1:
+            return '@'
+        else:
+            return 'D'
     #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
     def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
         '''Merge the settings dicts from c's outline into *new copies of*
