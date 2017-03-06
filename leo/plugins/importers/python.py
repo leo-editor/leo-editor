@@ -248,11 +248,24 @@ class Py_Importer(Importer):
     #@+node:ekr.20161222123105.1: *4* python_i.promote_last_lines
     def promote_last_lines(self, parent):
         '''python_i.promote_last_lines.'''
-        trace = False and not g.unitTesting
         last = parent.lastNode()
-        if trace:
-            g.trace(last and last.h)
-            g.printList(self.get_lines(last))
+        if not last or last.h == 'Declarations':
+            return
+        if last.parent() != parent:
+            return # The indentation would be wrong.
+        lines = self.get_lines(last)
+        prev_state = self.state_class()
+        if_pattern = re.compile(r'^\s*if\b')
+        # Scan for a top-level if statement.
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            m = if_pattern.match(line)
+            if m and not prev_state.context and new_state.indent == 0:
+                self.set_lines(last, lines[:i])
+                self.extend_lines(parent, lines[i:])
+                break
+            else:
+                prev_state = new_state
     #@+node:ekr.20161222112801.1: *4* python_i.promote_trailing_underindented_lines
     def promote_trailing_underindented_lines(self, parent):
         '''

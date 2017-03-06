@@ -16054,6 +16054,46 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20170306041801.1: *6* @test python bug @390
+s = """\
+import sys
+
+class Foo():
+    pass
+    
+a = 2
+
+def main(self):
+    pass
+
+if __name__ == '__main__':
+    main()
+"""
+table = (
+    (1, 'Declarations'),
+    (1, 'class Foo'),
+    (1, 'main'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        assert root.b.find("if __name__ == '__main__':") > -1
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161115063144.4: *6* @test python bug 603720
 @tabwidth -4
     # Required when running unit tests externally.
@@ -16814,6 +16854,23 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20170306052710.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python overindent def--no following def
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20170306052710.2: *8* class aClass
+class aClass:
+    @others
+#@+node:ekr.20170306052710.3: *9* def1
+def def1(self):
+    pass
+
+if False or g.unitTesting:
+
+    def pr(*args,**keys): # reportMismatch test
+        g.es_print(color='blue',*args,**keys)
+
+    pr('input...')
 #@+node:ekr.20161115063144.23: *6* @test python overindent def--one following def
 @tabwidth -4
     # Required when running unit tests externally.
