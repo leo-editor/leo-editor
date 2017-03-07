@@ -1526,7 +1526,7 @@ class StyleSheetManager(object):
             g.es_print('no icon found for:', setting)
             return None
         else:
-            g.es_print('Setting not found: @string %s' % setting)
+            # Not an error.
             return None
     #@+node:ekr.20140916170549.19551: *3* ssm.get_data
     def get_data(self, setting):
