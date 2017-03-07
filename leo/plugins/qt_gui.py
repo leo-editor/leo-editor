@@ -1316,7 +1316,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
     def expand_css_constants(self, sheet, font_size_delta=None):
         '''Expand @ settings into their corresponding constants.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_color = False
         trace_replace = False
         trace_result = True
