@@ -2199,6 +2199,27 @@
 </v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20170304074559.2"><vh>About themes</vh></v>
+<v t="ekr.20170304074559.26"><vh>About solarized colors</vh>
+<v t="ekr.20170307055039.1"><vh>Reference</vh></v>
+<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
+<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
+</v>
+</v>
 <v t="ekr.20170304074559.3"><vh>@theme ekr_dark theme</vh>
 <v t="ekr.20170304074559.5"><vh>settings</vh>
 <v t="ekr.20170304074559.6"><vh>Brackets</vh>
@@ -2206,6 +2227,9 @@
 <v t="ekr.20170304074559.8"><vh>@color flash-brackets-foreground-color = red</vh></v>
 <v t="ekr.20170304074559.9"><vh>@int flash-brackets-count = 4</vh></v>
 <v t="ekr.20170304074559.10"><vh>@int flash-brackets-delay = 75</vh></v>
+</v>
+<v t="ekr.20170304074559.45"><vh>Buttons</vh>
+<v t="ekr.20170304074559.46"><vh>@string qt-button-color = lightSteelBlue</vh></v>
 </v>
 <v t="ekr.20170304074559.11"><vh>Font templates</vh>
 <v t="ekr.20170304074559.12"><vh>@string checkbox-font-size = 16pt</vh></v>
@@ -2224,110 +2248,7 @@
 <v t="ekr.20170304074559.24"><vh>@string focused-border-width = 3px</vh></v>
 </v>
 <v t="ekr.20170304074559.25"><vh>colors</vh>
-<v t="ekr.20170304074559.26"><vh>Solarized colors (Reference)</vh>
-<v t="ekr.20170304074559.27"><vh>Colors</vh>
-<v t="ekr.20170304074559.28"><vh>Color definitions</vh>
-<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
-</v>
-<v t="ekr.20170304074559.45"><vh>Buttons</vh>
-<v t="ekr.20170304074559.46"><vh>@string qt-button-color = lightSteelBlue</vh></v>
-</v>
-<v t="ekr.20170304074559.47"><vh>@ignore Colors: unthemed only</vh>
-<v t="ekr.20170304074559.48"><vh>Body pane colors</vh>
-<v t="ekr.20170304074559.49"><vh>@color body_cursor_background_color = white</vh></v>
-<v t="ekr.20170304074559.50"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.51"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20170304074559.52"><vh>@color command_mode_bg_color = None</vh></v>
-<v t="ekr.20170304074559.53"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20170304074559.54"><vh>@color insert_mode_bg_color = white</vh></v>
-<v t="ekr.20170304074559.55"><vh>@color insert_mode_fg_color = None</vh></v>
-<v t="ekr.20170304074559.56"><vh>@color overwrite_mode_bg_color = white</vh></v>
-<v t="ekr.20170304074559.57"><vh>@color overwrite_mode_fg_color = None</vh></v>
-<v t="ekr.20170304074559.58"><vh>@color unselected_body_bg_color =  white</vh></v>
-<v t="ekr.20170304074559.59"><vh>@color unselected_body_fg_color = None</vh></v>
-<v t="ekr.20170304074559.60"><vh>@ignore Body pane colors new overrides</vh>
-<v t="ekr.20170304074559.61"><vh>@color body-bg = black</vh></v>
-<v t="ekr.20170304074559.62"><vh>@color body-fg = white</vh></v>
-<v t="ekr.20170304074559.63"><vh>@color body-sel-fg = white</vh></v>
-<v t="ekr.20170304074559.64"><vh>@color body-sel-bg = blue</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.65"><vh>Focus border settings</vh>
-<v t="ekr.20170304074559.66"><vh>@bool use_focus_border = False</vh></v>
-<v t="ekr.20170304074559.67"><vh>@bool use_body_focus_border = True</vh></v>
-<v t="ekr.20170304074559.68"><vh>@int focus_border_width = 5</vh></v>
-<v t="ekr.20170304074559.69"><vh>@color focus_border_color = blue</vh></v>
-<v t="ekr.20170304074559.70"><vh>@color focus_border_command_state_color = red</vh></v>
-<v t="ekr.20170304074559.71"><vh>@color focus_border_overwrite_state_color = green</vh></v>
-</v>
-<v t="ekr.20170304074559.72"><vh>Minibuffer colors</vh>
-<v t="ekr.20170304074559.73"><vh>@color minibuffer-background-color = lightblue</vh></v>
-<v t="ekr.20170304074559.74"><vh>@color minibuffer-foreground-color = black</vh></v>
-<v t="ekr.20170304074559.75"><vh>@color minibuffer-error-color = red</vh></v>
-<v t="ekr.20170304074559.76"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
-</v>
-<v t="ekr.20170304074559.77"><vh>Rendering pane</vh>
-<v t="ekr.20170304074559.78"><vh>@color rendering-pane-background-color = white</vh></v>
-</v>
-<v t="ekr.20170304074559.79"><vh>Syntax coloring (unthemed)</vh>
-<v t="ekr.20170304074559.80"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20170304074559.81"><vh>@string target_language = python</vh></v>
-<v t="ekr.20170304074559.82"><vh>Default syntax coloring colors</vh>
-<v t="ekr.20170304074559.83"><vh>Colors for jEdit constructs</vh>
-<v t="ekr.20170304074559.84"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20170304074559.85"><vh>@color comment1_color = firebrick3</vh></v>
-<v t="ekr.20170304074559.86"><vh>@color comment2_color = firebrick3</vh></v>
-<v t="ekr.20170304074559.87"><vh>@color comment3_color = firebrick3</vh></v>
-<v t="ekr.20170304074559.88"><vh>@color comment4_color = firebrick3</vh></v>
-<v t="ekr.20170304074559.89"><vh>@color keyword1_color = blue</vh></v>
-<v t="ekr.20170304074559.90"><vh>@color keyword2_color = blue</vh></v>
-<v t="ekr.20170304074559.91"><vh>@color keyword3_color = blue</vh></v>
-<v t="ekr.20170304074559.92"><vh>@color keyword4_color = blue</vh></v>
-<v t="ekr.20170304074559.93"><vh>@color label_color = red</vh></v>
-<v t="ekr.20170304074559.94"><vh>@color literal1_color = #00aa00</vh></v>
-<v t="ekr.20170304074559.95"><vh>@color literal2_color = #00aa00</vh></v>
-<v t="ekr.20170304074559.96"><vh>@color literal3_color = #00aa00</vh></v>
-<v t="ekr.20170304074559.97"><vh>@color literal4_color = #00aa00</vh></v>
-<v t="ekr.20170304074559.98"><vh>@color markup_color = black</vh></v>
-<v t="ekr.20170304074559.99"><vh>@color operator_color = None</vh></v>
-<v t="ekr.20170304074559.100"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170304074559.101"><vh>@color tab_color = red</vh></v>
-</v>
-<v t="ekr.20170304074559.102"><vh>Colors for Leo constructs</vh>
-<v t="ekr.20170304074559.103"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170304074559.104"><vh>@color leo_keyword_color = #859900</vh></v>
-<v t="ekr.20170304074559.105"><vh>@color section_name_brackets_color = blue</vh></v>
-<v t="ekr.20170304074559.106"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170304074559.107"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20170304074559.108"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20170304074559.109"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170304074559.110"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.111"><vh>Language-specific syntax coloring colors</vh>
-<v t="ekr.20170304074559.112"><vh>html</vh>
-<v t="ekr.20170304074559.113"><vh>@color html_markup_color = blue</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20170304074559.26"></v>
 <v t="ekr.20170304074559.114"><vh>colors, in style-sheet</vh>
 <v t="ekr.20170304074559.115"><vh>Body</vh>
 <v t="ekr.20170304074559.116"><vh>@color body-bg = @solarized-base03</vh></v>
@@ -11677,47 +11598,17 @@ To enable a theme:
 - *Select* one of the @theme trees below.
 - *Copy* the @theme tree to myLeoSettings.leo.
 - *Move* the copied tree so it is the *last* child node of the @settings tree.
-- Select menu Settings&gt;Reload Styles.
-- Test by opening another Leo outline.
+- *Test* by opening another Leo outline.
 
-**Important**: You may need to disable existing `@color` and `@data qt-gui-plugin-style-sheet` nodes in myLeoSettings.leo by deleting them or moving them out of the @settings tree.
+**Important Notes**:
+
+1. In order for theme settings to take effect, you may need to disable existing `@color` and `@data qt-gui-plugin-style-sheet` nodes in myLeoSettings.leo. Do this by deleting them or moving them out of the @settings tree.
+
+2. Leo does not define solorized colors. Themes that use solarized colors should clone or copy the "Solarized color definitions" tree below into the theme's @stylesheet tree.
 </t>
 <t tx="ekr.20170304074559.10"></t>
-<t tx="ekr.20170304074559.100"></t>
-<t tx="ekr.20170304074559.101"></t>
-<t tx="ekr.20170304074559.102"></t>
-<t tx="ekr.20170304074559.103">The color of text in doc parts.
-
-was firebrick3. now comment1_color
-</t>
-<t tx="ekr.20170304074559.104">The color of Leo keywords such as @ignore, @color, etc.
-
-Was #00aa00.
-
-Now literal1_color = #859900</t>
-<t tx="ekr.20170304074559.105"></t>
-<t tx="ekr.20170304074559.106">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
-
-was red. Now comment1_color</t>
-<t tx="ekr.20170304074559.107">The background color that represents spaces when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20170304074559.108">The foreground color that represents tabs when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20170304074559.109">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
-
-Was red. Now now comment1_color</t>
 <t tx="ekr.20170304074559.11">You can change all font sizes at once by changing @font-size, or set -body,
 -tree and -log settings to individual 'XXpt' values.</t>
-<t tx="ekr.20170304074559.110"></t>
-<t tx="ekr.20170304074559.111"></t>
-<t tx="ekr.20170304074559.112"></t>
-<t tx="ekr.20170304074559.113"></t>
 <t tx="ekr.20170304074559.114"></t>
 <t tx="ekr.20170304074559.115"></t>
 <t tx="ekr.20170304074559.116"></t>
@@ -11890,56 +11781,11 @@ Icons go in the Icons subdirectory of the theme's **theme folder**. Leo looks fo
 <t tx="ekr.20170304074559.25"></t>
 <t tx="ekr.20170304074559.258"></t>
 <t tx="ekr.20170304074559.259">Name of the theme, used to find icon files</t>
-<t tx="ekr.20170304074559.26">For both light and dark
-=======================
+<t tx="ekr.20170304074559.26">The @color nodes in the "Solarized color definitions" tree define color names for stylesheets.  Themes that use solarized colors should clone or copy the "Solarized color definitions" tree into the theme's @stylesheet tree.
 
-blue      #268bd2
-cyan      #2aa198 
-green     #859900
-magenta   #d33682
-orange    #cb4b16
-red       #dc322f
-violet    #6c71c4
-yellow    #b58900
+For example, stylesheets can use @solarized-red instead of #dc322f.
 
-
-blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
-cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
-green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
-magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
-orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
-red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
-violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
-yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
-
-
-base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
-base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
-base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
-base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
-base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
-base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
-base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
-base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
-
-Dark
-====
-
-    base1 optional emphasized content (keywords)
-  * base0 default (body text)
-    
-    base01 comments
-    base02 background highlights (selected background)
-  * base03 background
-    
-Light
-=====
-
-    base01 optional emphasized content (keywords)
-  * base00 default (body text)
-    base1 comments
-    base2 background highlights (selected background)
-  * base3 background
+You probably don't need to touch these, although you could add new color names of your own.  It would not make sense to change the definitions of the solarized-* colors.
 </t>
 <t tx="ekr.20170304074559.260">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
@@ -12082,11 +11928,6 @@ QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget, QTextEdit:hover#ric
 
 QWidget { font-size: 16px }
 </t>
-<t tx="ekr.20170304074559.28">These are definitions of colors not defined by default, so
-you can refer to "solarized-red" as "@solarized-red" instead
-of "#dc322f".  You probably don't need to touch these, although
-you could add new color names of your own.  It would not make
-sense to change the definitions of the solarized-* colors.</t>
 <t tx="ekr.20170304074559.280">/* The body pane */
 QTextEdit#richTextEdit {
     font-family: @font-family-body;
@@ -14273,7 +14114,6 @@ XXQMenuBar {
 }
 
 *[name~='preview'] { color: green; }</t>
-<t tx="ekr.20170304074559.47"></t>
 <t tx="ekr.20170304074559.470">/* unneeded alternative active pane highlighting */
 QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
   border-style: @focused-border-style;
@@ -14815,138 +14655,66 @@ QLineEdit#status2 {
             border-style: solid;
         }
 </t>
-<t tx="ekr.20170304074559.48"></t>
-<t tx="ekr.20170304074559.49">Background color for the cursor in body text.
-
-</t>
 <t tx="ekr.20170304074559.5"></t>
-<t tx="ekr.20170304074559.50">
-
-Foreground color for the cursor in body text.
-
-</t>
-<t tx="ekr.20170304074559.51">Color of insertion cursor
-
-</t>
-<t tx="ekr.20170304074559.52">Overrides body_text_background_color.
-
-was None.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.
-
-Solarized light background: base3  #fdf6e3</t>
-<t tx="ekr.20170304074559.53">Overrides body_text_foreground_color.
-
-Previouly, did not work, due to bug in qtBody.setEditorColors
-
-Solarized light body text: base00: #657b83</t>
-<t tx="ekr.20170304074559.54">Overrides body_text_background_color.
-
-was white.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.
-
-Solarized light background: base3  #fdf6e3
-</t>
-<t tx="ekr.20170304074559.55">Overrides body_text_foreground_color.
-
-Previouly, did not work, due to bug in qtBody.setEditorColors
-
-Solarized light body text: base00: #657b83</t>
-<t tx="ekr.20170304074559.56">Overrides body_text_background_color.
-
-wheat1
-PeachPuff1
-LemonChiffon1
-cornsilk1
-honeydew1
-LavenderBlush1
-azure2
-aquamarine1
-
-was azure2
-
-Solarized light background: base3  #fdf6e3</t>
-<t tx="ekr.20170304074559.57">Overrides body_text_foreground_color.
-
-Previouly, did not work, due to bug in qtBody.setEditorColors.
-
-Solarized light body text: base00: #657b83</t>
-<t tx="ekr.20170304074559.58">@nocolor-node
-
-#ffffef Light blue
-#f2fdff Same as log pane background.
-
-was #f2fdff
-
-Solarized dark background:  base03 #002b36
-
-base1 #93a1a1
-base2 #eee8d5
-base3 #fdf6e3</t>
-<t tx="ekr.20170304074559.59">was None
-
-Solarized dark body text: base0 #839496</t>
 <t tx="ekr.20170304074559.6"></t>
-<t tx="ekr.20170304074559.60"></t>
-<t tx="ekr.20170304074559.61"></t>
-<t tx="ekr.20170304074559.62"></t>
-<t tx="ekr.20170304074559.63"></t>
-<t tx="ekr.20170304074559.64"></t>
-<t tx="ekr.20170304074559.65"></t>
-<t tx="ekr.20170304074559.66"></t>
-<t tx="ekr.20170304074559.67"></t>
-<t tx="ekr.20170304074559.68"></t>
-<t tx="ekr.20170304074559.69"></t>
 <t tx="ekr.20170304074559.7"></t>
-<t tx="ekr.20170304074559.70"></t>
-<t tx="ekr.20170304074559.71"></t>
-<t tx="ekr.20170304074559.72"></t>
-<t tx="ekr.20170304074559.73">lightblue</t>
-<t tx="ekr.20170304074559.74"></t>
-<t tx="ekr.20170304074559.75"></t>
-<t tx="ekr.20170304074559.76"></t>
-<t tx="ekr.20170304074559.77"></t>
-<t tx="ekr.20170304074559.78">Beige: 	#F5F5DC</t>
-<t tx="ekr.20170304074559.79"></t>
 <t tx="ekr.20170304074559.8">DodgerBlue</t>
-<t tx="ekr.20170304074559.80"></t>
-<t tx="ekr.20170304074559.81">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20170304074559.82"></t>
-<t tx="ekr.20170304074559.83"></t>
-<t tx="ekr.20170304074559.84"></t>
-<t tx="ekr.20170304074559.85"></t>
-<t tx="ekr.20170304074559.86"></t>
-<t tx="ekr.20170304074559.87"></t>
-<t tx="ekr.20170304074559.88"></t>
-<t tx="ekr.20170304074559.89"></t>
 <t tx="ekr.20170304074559.9"></t>
-<t tx="ekr.20170304074559.90"></t>
-<t tx="ekr.20170304074559.91"></t>
-<t tx="ekr.20170304074559.92"></t>
-<t tx="ekr.20170304074559.93"></t>
-<t tx="ekr.20170304074559.94">#00aa00 (Idle comment green)
-
-</t>
-<t tx="ekr.20170304074559.95"></t>
-<t tx="ekr.20170304074559.96"></t>
-<t tx="ekr.20170304074559.97"></t>
-<t tx="ekr.20170304074559.98"></t>
-<t tx="ekr.20170304074559.99">EKR: was None.
- #859900</t>
 <t tx="ekr.20170304084533.1">@language css</t>
 <t tx="ekr.20170304084545.1">@language css</t>
 <t tx="ekr.20170304084601.1">@language css</t>
 <t tx="ekr.20170304084615.1">@language css</t>
+<t tx="ekr.20170307055039.1">For both light and dark
+=======================
+
+blue      #268bd2
+cyan      #2aa198 
+green     #859900
+magenta   #d33682
+orange    #cb4b16
+red       #dc322f
+violet    #6c71c4
+yellow    #b58900
+
+
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+
+
+base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

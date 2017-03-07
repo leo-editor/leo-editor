@@ -339,66 +339,6 @@
 <v t="ekr.20170304061433.290"><vh>@color url_color = #6c71c4</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20170303125521.1"><vh>@button make-theme</vh>
-<v t="ekr.20170303153025.1"><vh>class MakeTheme</vh>
-<v t="ekr.20170304070212.1"><vh>find</vh></v>
-<v t="ekr.20170303130218.1"><vh>head</vh></v>
-<v t="ekr.20170303153127.1"><vh>make</vh></v>
-<v t="ekr.20170303131049.1"><vh>section</vh></v>
-</v>
-</v>
-<v t="ekr.20170304101818.1"><vh>About this file</vh></v>
-<v t="ekr.20170304084711.1"><vh>Themes</vh>
-<v t="ekr.20170304084711.2"><vh>About themes</vh></v>
-<v t="ekr.20170304084711.3"><vh>@theme ekr_dark theme</vh>
-<v t="ekr.20170304084711.4"><vh>settings</vh>
-<v t="ekr.20170304084711.5"><vh>Brackets</vh>
-<v t="ekr.20170304084711.6"><vh>@color flash-brackets-background-color = blue</vh></v>
-<v t="ekr.20170304084711.7"><vh>@color flash-brackets-foreground-color = red</vh></v>
-<v t="ekr.20170304084711.8"><vh>@int flash-brackets-count = 4</vh></v>
-<v t="ekr.20170304084711.9"><vh>@int flash-brackets-delay = 75</vh></v>
-</v>
-<v t="ekr.20170304084711.10"><vh>Font templates</vh>
-<v t="ekr.20170304084711.11"><vh>@string checkbox-font-size = 16pt</vh></v>
-<v t="ekr.20170304084711.12"><vh>@string find-font-size = 16pt</vh></v>
-<v t="ekr.20170304084711.13"><vh>@string font-family = DejaVu Sans Mono </vh></v>
-<v t="ekr.20170304084711.14"><vh>@string font-size = 16pt</vh></v>
-<v t="ekr.20170304084711.15"><vh>@string font-size-body = @font-size</vh></v>
-<v t="ekr.20170304084711.16"><vh>@string font-size-tree = @font-size</vh></v>
-<v t="ekr.20170304084711.17"><vh>@string font-size-log = @font-size</vh></v>
-<v t="ekr.20170304084711.18"><vh>@find-font-size = 16pt</vh></v>
-</v>
-<v t="ekr.20170304084711.19"><vh>@string status-font-size = 16pt</vh></v>
-<v t="ekr.20170304084711.20"><vh>border</vh>
-<v t="ekr.20170304084711.21"><vh>@bool use_focus_border = False</vh></v>
-<v t="ekr.20170304084711.22"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170304084711.23"><vh>@string focused-border-width = 3px</vh></v>
-</v>
-<v t="ekr.20170304084711.24"><vh>colors</vh>
-<v t="ekr.20170304084711.25"><vh>Solarized colors (Reference)</vh>
-<v t="ekr.20170304084711.26"><vh>Colors</vh>
-<v t="ekr.20170304084711.27"><vh>Color definitions</vh>
-<v t="ekr.20170304084711.28"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304084711.29"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304084711.30"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304084711.31"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304084711.32"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304084711.33"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304084711.34"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304084711.35"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304084711.36"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304084711.37"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304084711.38"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304084711.39"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304084711.40"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304084711.41"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304084711.42"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304084711.43"><vh>@color solarized-green = #859900</vh></v>
-</v>
-<v t="ekr.20170304084711.44"><vh>Buttons</vh>
-<v t="ekr.20170304084711.45"><vh>@string qt-button-color = lightSteelBlue</vh></v>
-</v>
 <v t="ekr.20170304084711.46"><vh>@ignore Colors: unthemed only</vh>
 <v t="ekr.20170304084711.47"><vh>Body pane colors</vh>
 <v t="ekr.20170304084711.48"><vh>@color body_cursor_background_color = white</vh></v>
@@ -479,7 +419,67 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170303125521.1"><vh>@button make-theme</vh>
+<v t="ekr.20170303153025.1"><vh>class MakeTheme</vh>
+<v t="ekr.20170304070212.1"><vh>find</vh></v>
+<v t="ekr.20170303130218.1"><vh>head</vh></v>
+<v t="ekr.20170303153127.1"><vh>make</vh></v>
+<v t="ekr.20170303131049.1"><vh>section</vh></v>
 </v>
+</v>
+<v t="ekr.20170304101818.1"><vh>About this file</vh></v>
+<v t="ekr.20170304084711.1"><vh>Themes</vh>
+<v t="ekr.20170304084711.2"><vh>About themes</vh></v>
+<v t="ekr.20170304084711.25"><vh>About solarized colors</vh>
+<v t="ekr.20170307054505.1"><vh>Reference</vh></v>
+<v t="ekr.20170304084711.27"><vh>Solarized color definitions</vh>
+<v t="ekr.20170304084711.28"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20170304084711.29"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20170304084711.30"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20170304084711.31"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20170304084711.32"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20170304084711.33"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20170304084711.34"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20170304084711.35"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20170304084711.36"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20170304084711.37"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20170304084711.38"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20170304084711.39"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20170304084711.40"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20170304084711.41"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20170304084711.42"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20170304084711.43"><vh>@color solarized-green = #859900</vh></v>
+</v>
+</v>
+<v t="ekr.20170304084711.3"><vh>@theme ekr_dark theme</vh>
+<v t="ekr.20170304084711.4"><vh>settings</vh>
+<v t="ekr.20170304084711.5"><vh>Brackets</vh>
+<v t="ekr.20170304084711.6"><vh>@color flash-brackets-background-color = blue</vh></v>
+<v t="ekr.20170304084711.7"><vh>@color flash-brackets-foreground-color = red</vh></v>
+<v t="ekr.20170304084711.8"><vh>@int flash-brackets-count = 4</vh></v>
+<v t="ekr.20170304084711.9"><vh>@int flash-brackets-delay = 75</vh></v>
+</v>
+<v t="ekr.20170304084711.44"><vh>Buttons</vh>
+<v t="ekr.20170304084711.45"><vh>@string qt-button-color = lightSteelBlue</vh></v>
+</v>
+<v t="ekr.20170304084711.10"><vh>Font templates</vh>
+<v t="ekr.20170304084711.11"><vh>@string checkbox-font-size = 16pt</vh></v>
+<v t="ekr.20170304084711.12"><vh>@string find-font-size = 16pt</vh></v>
+<v t="ekr.20170304084711.13"><vh>@string font-family = DejaVu Sans Mono </vh></v>
+<v t="ekr.20170304084711.14"><vh>@string font-size = 16pt</vh></v>
+<v t="ekr.20170304084711.15"><vh>@string font-size-body = @font-size</vh></v>
+<v t="ekr.20170304084711.16"><vh>@string font-size-tree = @font-size</vh></v>
+<v t="ekr.20170304084711.17"><vh>@string font-size-log = @font-size</vh></v>
+<v t="ekr.20170304084711.18"><vh>@find-font-size = 16pt</vh></v>
+</v>
+<v t="ekr.20170304084711.19"><vh>@string status-font-size = 16pt</vh></v>
+<v t="ekr.20170304084711.20"><vh>border</vh>
+<v t="ekr.20170304084711.21"><vh>@bool use_focus_border = False</vh></v>
+<v t="ekr.20170304084711.22"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170304084711.23"><vh>@string focused-border-width = 3px</vh></v>
+</v>
+<v t="ekr.20170304084711.24"><vh>colors</vh>
+<v t="ekr.20170304084711.25"></v>
 <v t="ekr.20170304084711.113"><vh>colors, in style-sheet</vh>
 <v t="ekr.20170304084711.114"><vh>Body</vh>
 <v t="ekr.20170304084711.115"><vh>@color body-bg = @solarized-base03</vh></v>
@@ -3206,10 +3206,13 @@ To enable a theme:
 - *Select* one of the @theme trees below.
 - *Copy* the @theme tree to myLeoSettings.leo.
 - *Move* the copied tree so it is the *last* child node of the @settings tree.
-- Select menu Settings&gt;Reload Styles.
-- Test by opening another Leo outline.
+- *Test* by opening another Leo outline.
 
-**Important**: You may need to disable existing `@color` and `@data qt-gui-plugin-style-sheet` nodes in myLeoSettings.leo by deleting them or moving them out of the @settings tree.
+**Important Notes**:
+
+1. In order for theme settings to take effect, you may need to disable existing `@color` and `@data qt-gui-plugin-style-sheet` nodes in myLeoSettings.leo. Do this by deleting them or moving them out of the @settings tree.
+
+2. Leo does not define solorized colors. Themes that use solarized colors should clone or copy the "Solarized color definitions" tree below into the theme's @stylesheet tree.
 </t>
 <t tx="ekr.20170304084711.10">You can change all font sizes at once by changing @font-size, or set -body,
 -tree and -log settings to individual 'XXpt' values.</t>
@@ -3453,59 +3456,13 @@ Icons go in the Icons subdirectory of the theme's **theme folder**. Leo looks fo
 <t tx="ekr.20170304084711.227"></t>
 <t tx="ekr.20170304084711.23"></t>
 <t tx="ekr.20170304084711.24"></t>
-<t tx="ekr.20170304084711.25">For both light and dark
-=======================
+<t tx="ekr.20170304084711.25">The @color nodes in the "Solarized color definitions" tree define color names for stylesheets.  Themes that use solarized colors should clone or copy the "Solarized color definitions" tree into the theme's @stylesheet tree.
 
-blue      #268bd2
-cyan      #2aa198 
-green     #859900
-magenta   #d33682
-orange    #cb4b16
-red       #dc322f
-violet    #6c71c4
-yellow    #b58900
+For example, stylesheets can use @solarized-red instead of #dc322f.
 
-
-blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
-cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
-green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
-magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
-orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
-red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
-violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
-yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
-
-
-base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
-base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
-base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
-base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
-base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
-base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
-base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
-base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
-
-Dark
-====
-
-    base1 optional emphasized content (keywords)
-  * base0 default (body text)
-    
-    base01 comments
-    base02 background highlights (selected background)
-  * base03 background
-    
-Light
-=====
-
-    base01 optional emphasized content (keywords)
-  * base00 default (body text)
-    base1 comments
-    base2 background highlights (selected background)
-  * base3 background
+You probably don't need to touch these, although you could add new color names of your own.  It would not make sense to change the definitions of the solarized-* colors.
 </t>
 <t tx="ekr.20170304084711.259"></t>
-<t tx="ekr.20170304084711.26"></t>
 <t tx="ekr.20170304084711.260">Name of the theme, used to find icon files</t>
 <t tx="ekr.20170304084711.261">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
@@ -3581,11 +3538,7 @@ QLineEdit#status2 {
     border-color: @solarized-base02;
 }</t>
 <t tx="ekr.20170304084711.269">QLineEdit { border: none; padding: 3px; }</t>
-<t tx="ekr.20170304084711.27">These are definitions of colors not defined by default, so
-you can refer to "solarized-red" as "@solarized-red" instead
-of "#dc322f".  You probably don't need to touch these, although
-you could add new color names of your own.  It would not make
-sense to change the definitions of the solarized-* colors.</t>
+<t tx="ekr.20170304084711.27"></t>
 <t tx="ekr.20170304084711.270">QLabel { color: @solarized-base1; }</t>
 <t tx="ekr.20170304084711.271">QPushButton { color: @text-foreground; background: @bg-gradient; }
 QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }</t>
@@ -5628,7 +5581,7 @@ QLineEdit#status2 {
 }</t>
 <t tx="ekr.20170304084711.458">QLineEdit { border: none; padding: 3px; }</t>
 <t tx="ekr.20170304084711.459">QLabel { color: @solarized-base1; }</t>
-<t tx="ekr.20170304084711.46"></t>
+<t tx="ekr.20170304084711.46"># Was in solarized colors section.</t>
 <t tx="ekr.20170304084711.460">QPushButton { color: @text-foreground; background: @bg-gradient; }
 QPushButton:hover { color: @button-hover-fg; background: @bg-gradient-hover; }</t>
 <t tx="ekr.20170304084711.461">QTabBar::tab { color: @text-foreground; 
@@ -6481,5 +6434,56 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 This file is primarily for those who develop themes. All others may simply copy themes from leoSetttings.leo to myLeoSettings.leo.
 </t>
 <t tx="ekr.20170304102043.1">@language css</t>
+<t tx="ekr.20170307054505.1">For both light and dark
+=======================
+
+blue      #268bd2
+cyan      #2aa198 
+green     #859900
+magenta   #d33682
+orange    #cb4b16
+red       #dc322f
+violet    #6c71c4
+yellow    #b58900
+
+
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+
+
+base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
 </tnodes>
 </leo_file>
