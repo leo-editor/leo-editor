@@ -1316,15 +1316,20 @@ class StyleSheetManager(object):
     #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
     def expand_css_constants(self, sheet, font_size_delta=None):
         '''Expand @ settings into their corresponding constants.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         trace_color = False
+        trace_replace = False
         trace_result = True
+        trace_to_do = False
         c = self.c
         whine = None
         # Warn once if the stylesheet uses old style style-sheet comment
         constants, deltas = self.adjust_sizes(font_size_delta)
         passes = 10
         to_do = self.find_constants_referenced(sheet)
+        if trace and trace_to_do:
+            g.trace()
+            g.printList(to_do)
         changed = True
         sheet = self.set_indicator_paths(sheet)
         while passes and to_do and changed:
@@ -1352,11 +1357,17 @@ class StyleSheetManager(object):
                         value = '%s /* %s */' % (value, key)
                         if trace and trace_color: g.trace('found color', key, value)
                 if value:
+                    if trace and trace_replace:
+                        if const.find('tree-') > -1:
+                            g.trace('replace: %20s %s' % (const, value))
+                    # NOTE: The main style sheet represents @ by AT in comments,
+                    # to suppress this substitition, which we must do to avoid
+                    # improperly nested comments, which would ruin the style sheet!
                     sheet = re.sub(
                         const + "(?![-A-Za-z0-9_])",
-                        # don't replace shorter constants occuring in larger
+                            # don't replace shorter constants occuring in larger
                         value,
-                        sheet
+                        sheet,
                     )
                     changed = True
                 else:
@@ -1456,9 +1467,7 @@ class StyleSheetManager(object):
             print("Ten levels of recursion processing styles, abandoned.")
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
-    #@+node:ekr.20150617090104.1: *4* ssm.set_indicator_paths
-    r_path = re.compile(r'\bimage: @tree-image-(open|closed)')
-
+    #@+node:ekr.20150617090104.1: *4* ssm.set_indicator_paths & helper
     def set_indicator_paths(self, sheet):
         '''
         In the stylesheet, replace (if they exist)::
@@ -1480,27 +1489,45 @@ class StyleSheetManager(object):
 
         Return the updated stylesheet.
         '''
-        c = self.c
-        for mo in re.finditer(self.r_path, sheet):
-            setting = 'tree-image-%s' % mo.group(1)
-            s = c.config.getString(setting)
-            if s:
-                table = (
-                    g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', s),
-                    g.os_path_finalize_join('~', s),
-                )
-                for path in table:
-                    if g.os_path_exists(path):
-                        old = mo.group(0)
-                        new = 'image: url(%s)' % path
-                        sheet = sheet.replace(old, new)
-                        break
-                else:
-                    g.es_print('file not found: %s' % (path), color='red')
-                    g.es_print('in setting: %s' % setting)
-            else:
-                g.es_print('Referenced setting not found: @string %s' % setting)
+        trace = False and not g.unitTesting
+        close_path = self.get_indicator_path('tree-image-closed')
+        open_path = self.get_indicator_path('tree-image-open')
+        # Make all substitutions in the stylesheet.
+        table = (
+            (open_path,  re.compile(r'\bimage:\s*@tree-image-open', re.IGNORECASE)),
+            (open_path,  re.compile(r'\bimage:\s*at-tree-image-open', re.IGNORECASE)),
+            (close_path, re.compile(r'\bimage:\s*@tree-image-closed', re.IGNORECASE)),
+            (close_path, re.compile(r'\bimage:\s*at-tree-image-closed', re.IGNORECASE)),
+        )
+        if trace:
+            g.trace('open path: ', repr(open_path))
+            g.trace('close_path:', repr(close_path))
+        for path, pattern in table:
+            for mo in pattern.finditer(sheet):
+                old = mo.group(0)
+                new = 'image: url(%s)' % path
+                if trace: g.trace('found', old)
+                sheet = sheet.replace(old, new)
         return sheet
+    #@+node:ekr.20170307083738.1: *5* ssm.get_indicator_path
+    def get_indicator_path(self, setting):
+        '''Return the path to the open/close indicator icon.'''
+        c = self.c
+        s = c.config.getString(setting)
+        if s:
+            table = (
+                g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', s),
+                g.os_path_finalize_join('~', s),
+            )
+            for path in table:
+                if g.os_path_exists(path):
+                    return path.replace('\\','/')
+                        # Required on Windows.
+            g.es_print('no icon found for:', setting)
+            return None
+        else:
+            g.es_print('Setting not found: @string %s' % setting)
+            return None
     #@+node:ekr.20140916170549.19551: *3* ssm.get_data
     def get_data(self, setting):
         '''Return the value of the @data node for the setting.'''
@@ -1693,6 +1720,8 @@ class StyleSheetManager(object):
                 else:
                     sheet = '\n'.join(sheet)
             if sheet and sheet.strip():
+                line0 = '\n/* ===== From %s ===== */\n\n' % (name)
+                sheet = line0 + sheet
                 sheets.append(sheet)
         if sheets:
             sheet = "\n".join(sheets)
