@@ -342,7 +342,7 @@ class ScriptingController(object):
             # True: create Run Script button.
         self.createScriptButtonButton = getBool('scripting-create-script-button-button')
             # True: create Script Button button.
-        self.maxButtonSize = c.config.getInt('scripting-max-button-size')
+        self.maxButtonSize = c.config.getInt('scripting-max-button-size') or 18
             # Maximum length of button names.
         if not iconBar:
             self.iconBar = c.frame.getIconBarObject()
