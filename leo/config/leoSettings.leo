@@ -2424,6 +2424,7 @@
 </v>
 <v t="ekr.20170304074559.292"><vh>settings</vh>
 <v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
+<v t="ekr.20170308082507.1"><vh>colors</vh>
 <v t="ekr.20170304074559.294"><vh>Body pane colors</vh>
 <v t="ekr.20170304074559.295"><vh>@color body_text_background_color = #002b36</vh></v>
 <v t="ekr.20170304074559.296"><vh>@color unselected_body_bg_color = #002b36</vh></v>
@@ -2461,6 +2462,11 @@
 <v t="ekr.20170308061334.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
 </v>
 </v>
+<v t="ekr.20170308082458.1"><vh>gradients</vh>
+<v t="ekr.20170308082458.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170308082458.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+</v>
 <v t="ekr.20170304074559.413"></v>
 <v t="ekr.20170304074559.353"><vh>theme settings</vh>
 <v t="ekr.20170304074559.354"><vh>@string color_theme = leo_dark_1</vh></v>
@@ -2487,6 +2493,7 @@
 </v>
 <v t="ekr.20170304074559.383"><vh>settings</vh>
 <v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
+<v t="ekr.20170308082535.1"><vh>colors</vh>
 <v t="ekr.20170304074559.385"><vh>Body pane colors</vh>
 <v t="ekr.20170304074559.386"><vh>@color body_text_background_color = #002b36</vh></v>
 <v t="ekr.20170304074559.387"><vh>@color unselected_body_bg_color = #002b36</vh></v>
@@ -2522,6 +2529,11 @@
 <v t="ekr.20170304074559.399"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
 <v t="ekr.20170304074559.400"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="ekr.20170304074559.401"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+</v>
+<v t="ekr.20170308082541.1"><vh>gradients</vh>
+<v t="ekr.20170308082541.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170308082541.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
 </v>
 </v>
 <v t="ekr.20170304074559.413"></v>
@@ -11519,6 +11531,10 @@ To enable a theme:
 - *Copy* the entire @theme tree to myLeoSettings.leo.
 - *Move* the copied tree to the *end* of the @settings tree.
 - *Test* by opening another Leo outline.
+
+To disable a theme:
+- Move the entire @theme node out of the @settings tree *or*
+- Change the headline to @ignore @theme...
 </t>
 <t tx="ekr.20170304074559.114"></t>
 <t tx="ekr.20170304074559.115"></t>
@@ -11785,13 +11801,13 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
 <t tx="ekr.20170304074559.270">/* ===== Buttons ===== */
 
 QPushButton {
-    color: @text-foreground;
     background: @bg-gradient;
+    color:      @text-foreground;
 }
 
 QPushButton:hover {
-    color: @button-hover-fg;
     background: @bg-gradient-hover;
+    color:      @button-hover-fg;
 }</t>
 <t tx="ekr.20170304074559.271">/* ===== Tab bar ===== */
 
@@ -11815,10 +11831,10 @@ QTabBar::tab:hover {
 <t tx="ekr.20170304074559.272">/* ===== Menues ===== */
 
 QMenu {
-    color: @text-foreground-bright;
+    color:      @text-foreground-bright;
 }
 QMenu::item:selected {
-    color: @button-hover-fg;
+    color:      @button-hover-fg;
     background: @bg-gradient-hover;
 }
 
@@ -12211,8 +12227,13 @@ QTabBar::tab:hover {
 <t tx="ekr.20170304074559.368">/* ===== Menus ===== */
 
 QMenu {
-    color: @text-foreground-bright;
+    color:      @text-foreground-bright;
 }
+QMenu::item:selected {
+    color:      @button-hover-fg;
+    background: @bg-gradient-hover;
+}
+
 QMenuBar::item:hover {
     background: white;
     color:      red;
@@ -12686,6 +12707,11 @@ QTabBar::tab:hover {
 QMenu {
     color:      @text-foreground-bright;
 }
+QMenu::item:selected {
+    color:      @button-hover-fg;
+    background: @bg-gradient-hover;
+}
+
 QMenuBar::item:hover {
     background: white;
     color:      red;
@@ -13007,6 +13033,14 @@ QPushButton:hover {
 }
 
 </t>
+<t tx="ekr.20170308082458.1"></t>
+<t tx="ekr.20170308082458.2"></t>
+<t tx="ekr.20170308082458.3"></t>
+<t tx="ekr.20170308082507.1"></t>
+<t tx="ekr.20170308082535.1"></t>
+<t tx="ekr.20170308082541.1"></t>
+<t tx="ekr.20170308082541.2"></t>
+<t tx="ekr.20170308082541.3"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
