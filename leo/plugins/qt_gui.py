@@ -1318,7 +1318,6 @@ class StyleSheetManager(object):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
         trace_color = False
-        trace_replace = False
         trace_result = True
         trace_to_do = False
         c = self.c
@@ -1351,19 +1350,19 @@ class StyleSheetManager(object):
                         # lowercase, without '@','-','_', etc.
                     value = c.config.settingsDict.get(key)
                     if value is not None:
-                        value = '%s /* %s */' % (g.u(value.val), key)
+                        # New in Leo 5.5: Do NOT add comments here.
+                        # They RUIN style sheets if they appear in a nested comment!
+                            # value = '%s /* %s */' % (g.u(value.val), key)
+                        value = g.u(value.val)
                     elif key in self.color_db:
+                        # New in Leo 5.5: Do NOT add comments here.
+                        # They RUIN style sheets if they appear in a nested comment!
                         value = self.color_db.get(key)
-                        value = '%s /* %s */' % (value, key)
+                            # value = '%s /* %s */' % (value, key)
                         if trace and trace_color: g.trace('found color', key, value)
                 if value:
-                    if trace and trace_replace:
-                        if const.find('tree-') > -1:
-                            g.trace('replace: %20s %s' % (const, value))
-                    # NOTE: The main style sheet represents @ by AT in comments,
-                    # to suppress this substitition, which we must do to avoid
-                    # improperly nested comments, which would ruin the style sheet!
                     sheet = re.sub(
+                        ### '\b%s\b' % (const),
                         const + "(?![-A-Za-z0-9_])",
                             # don't replace shorter constants occuring in larger
                         value,
