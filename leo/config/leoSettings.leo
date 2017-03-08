@@ -1001,7 +1001,6 @@
 <v t="ekr.20151225193848.1"><vh>@item open-leoPy-leo</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
-<v t="ekr.20170303113448.1"><vh>@item open-themes-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
@@ -11519,7 +11518,6 @@ def title(text, **keys):
     w = demo_module.Title(text, **keys)
 </t>
 <t tx="ekr.20170208063946.1"></t>
-<t tx="ekr.20170303113448.1">Open &amp;themes.leo</t>
 <t tx="ekr.20170304074559.1">@language rest
 @wrap
 
