@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1432,88 +1432,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
-<v t="ekr.20170123090348.1"><vh>Most important features</vh>
-<v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
-<v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
-<v t="ekr.20170124034150.1"><vh>Greatly improved javascript and perl importers</vh></v>
-<v t="ekr.20170205185641.2"><vh>Optionally colorize doc parts using rST</vh></v>
-<v t="ekr.20170124014606.1"><vh>#371: execute-script supports multiple @languages direcitves</vh></v>
-<v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
-<v t="ekr.20170123084609.26"><vh>#328: The pylint command now runs in the background</vh></v>
-<v t="ekr.20170124024347.1"><vh>#311: Simplified Leo's argument logic</vh></v>
-</v>
-<v t="ekr.20170123084609.8"><vh>Bugs</vh>
-<v t="ekr.20170123084609.14"><vh>#325: Simplify the organization of commands</vh></v>
-<v t="ekr.20170228101933.21"><vh>#340: finish (for 5.5) reload-settings</vh></v>
-<v t="ekr.20170228101933.2"><vh>#343: (unicode problems in file names)</vh></v>
-<v t="ekr.20170228101933.50"><vh>#344: @string view-rendered-default-kind not functional</vh></v>
-<v t="ekr.20170123084609.17"><vh>#348: (CDATA errors)</vh></v>
-<v t="ekr.20170205185641.4"><vh>#367: goto-script problems</vh></v>
-<v t="ekr.20170205185641.5"><vh>#371: support multiple languages in scripts</vh></v>
-<v t="ekr.20170124015707.1"><vh>#374: Leo can confuse directives with decorators</vh></v>
-<v t="ekr.20170205185641.6"><vh>#375: improve jedit.setTag</vh></v>
-<v t="ekr.20170205185641.7"><vh>#380: New colorizer doesn't update properly...</vh></v>
-<v t="ekr.20170228101933.17"><vh>#381: (default importer encoding problems)</vh></v>
-<v t="ekr.20170205185641.8"><vh>#387: New file is marked as changed</vh></v>
-<v t="ekr.20170205185641.9"><vh>#388: wikiview plugin</vh></v>
-<v t="ekr.20170205185641.10"><vh>#389: syntax coloring changes</vh></v>
-<v t="ekr.20170228101933.14"><vh>#391: Read File Into Node" with empty file</vh></v>
-<v t="ekr.20170205190147.1"><vh>#392: @auto-rst file.txt: -rst ignored on read</vh></v>
-<v t="ekr.20170205185641.11"><vh>#395: beautify-node can hang</vh></v>
-<v t="ekr.20170205185641.12"><vh>#396: Show images in Leo's body pane </vh></v>
-<v t="ekr.20170206095132.1"><vh>#402: python's input statement hangs Leo</vh></v>
-<v t="ekr.20170228101933.19"><vh>#403: goto-global-line error</vh></v>
-<v t="ekr.20170228101933.9"><vh>#408: c.recursiveImport uncaught exception...</vh></v>
-<v t="ekr.20170228101933.8"><vh>#409: urls no longer colored</vh></v>
-<v t="ekr.20170228101933.51"><vh>#426: console registerCommand - Chapter_hoist plugin</vh></v>
-<v t="ekr.20170228101933.49"><vh>#427: multiple vnodes...</vh></v>
-<v t="ekr.20170228101933.52"><vh>#429: goto line number...</vh></v>
-<v t="ekr.20170303051729.1"><vh>#430: rst import...</vh></v>
-<v t="ekr.20170228101933.15"><vh>Disabled compare_ast</vh></v>
-<v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
-<v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh></v>
-<v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
-<v t="ekr.20170123084609.16"><vh>Fixed crash in autocomplete (with backspace key?)</vh></v>
-<v t="ekr.20170205201047.1"><vh>Fixed crash in elisp importer</vh></v>
-<v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
-<v t="ekr.20170228101933.16"><vh>Fixed several importer bugs</vh></v>
-<v t="ekr.20170228101933.7"><vh>re: catch exceptions in callbacks</vh></v>
-<v t="ekr.20170228101933.6"><vh>re: fixed bug in rst3 command</vh></v>
-<v t="ekr.20170228101933.3"><vh>re: problem when ~/.leo/workbook.leo does not exist</vh></v>
-<v t="ekr.20170303063731.1"><vh>g.findRootWithPredicate preserves node order</vh></v>
-</v>
-<v t="ekr.20170123084609.18"><vh>Code</vh>
-<v t="ekr.20170123084609.20"><vh>Added BackgroundProcessManager class</vh></v>
-<v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
-<v t="ekr.20170228101933.10"><vh>Added g.findRootWithPredicate</vh></v>
-<v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
-<v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
-<v t="ekr.20170228101933.12"><vh>Created g.handleUnl</vh></v>
-<v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
-<v t="ekr.20170228101933.13"><vh>Rewrote FreeMindImporter class</vh></v>
-<v t="ekr.20170228101933.18"><vh>Simplified Leo's read/write helpers</vh></v>
-</v>
-<v t="ekr.20170225082023.1"><vh>Documentation</vh>
-<v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
-</v>
-<v t="ekr.20170123084609.22"><vh>Features</vh>
-<v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
-<v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
-<v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
-<v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
-<v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
-<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
-<v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
-<v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
-<v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
-<v t="ekr.20170228104123.1"><vh>reload-settings and reload-all-settings</vh></v>
-<v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
-<v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
-<v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
-<v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
-</v>
-</v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
 <v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
@@ -1562,6 +1480,96 @@
 <v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 <v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+</v>
+<v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
+<v t="ekr.20170123090348.1"><vh>Most important features</vh>
+<v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
+<v t="ekr.20170123084609.24"><vh>Optionally run pyflakes when saving files</vh></v>
+<v t="ekr.20170124034150.1"><vh>Greatly improved javascript and perl importers</vh></v>
+<v t="ekr.20170205185641.2"><vh>Optionally colorize doc parts using rST</vh></v>
+<v t="ekr.20170124014606.1"><vh>#371: execute-script supports multiple @languages direcitves</vh></v>
+<v t="ekr.20170124020217.1"><vh>#334: Rewrote all of Leo's importers</vh></v>
+<v t="ekr.20170123084609.26"><vh>#328: The pylint command now runs in the background</vh></v>
+<v t="ekr.20170124024347.1"><vh>#311: Simplified Leo's argument logic</vh></v>
+</v>
+<v t="ekr.20170123084609.8"><vh>Bugs</vh>
+<v t="ekr.20170123084609.14"><vh>#325: Simplify the organization of commands</vh></v>
+<v t="ekr.20170228101933.21"><vh>#340: finish (for 5.5) reload-settings</vh></v>
+<v t="ekr.20170228101933.2"><vh>#343: (unicode problems in file names)</vh></v>
+<v t="ekr.20170228101933.50"><vh>#344: @string view-rendered-default-kind not functional</vh></v>
+<v t="ekr.20170123084609.17"><vh>#348: (CDATA errors)</vh></v>
+<v t="ekr.20170308145129.169"><vh>#350: themes not working as documented</vh></v>
+<v t="ekr.20170308145129.59"><vh>#352: Importer unit tests create both @clean and @file</vh></v>
+<v t="ekr.20170205185641.4"><vh>#367: goto-script problems</vh></v>
+<v t="ekr.20170205185641.5"><vh>#371: support multiple languages in scripts</vh></v>
+<v t="ekr.20170124015707.1"><vh>#374: Leo can confuse directives with decorators</vh></v>
+<v t="ekr.20170205185641.6"><vh>#375: improve jedit.setTag</vh></v>
+<v t="ekr.20170205185641.7"><vh>#380: New colorizer doesn't update properly...</vh></v>
+<v t="ekr.20170228101933.17"><vh>#381: (default importer encoding problems)</vh></v>
+<v t="ekr.20170205185641.8"><vh>#387: New file is marked as changed</vh></v>
+<v t="ekr.20170205185641.9"><vh>#388: wikiview plugin</vh></v>
+<v t="ekr.20170205185641.10"><vh>#389: syntax coloring changes</vh></v>
+<v t="ekr.20170228101933.14"><vh>#391: Read File Into Node" with empty file</vh></v>
+<v t="ekr.20170205190147.1"><vh>#392: @auto-rst file.txt: -rst ignored on read</vh></v>
+<v t="ekr.20170205185641.11"><vh>#395: beautify-node can hang</vh></v>
+<v t="ekr.20170205185641.12"><vh>#396: Show images in Leo's body pane </vh></v>
+<v t="ekr.20170206095132.1"><vh>#402: python's input statement hangs Leo</vh></v>
+<v t="ekr.20170228101933.19"><vh>#403: goto-global-line error</vh></v>
+<v t="ekr.20170228101933.9"><vh>#408: c.recursiveImport uncaught exception...</vh></v>
+<v t="ekr.20170228101933.8"><vh>#409: urls no longer colored</vh></v>
+<v t="ekr.20170308145129.2"><vh>#416: PageUp binding problem</vh></v>
+<v t="ekr.20170228101933.51"><vh>#426: console registerCommand - Chapter_hoist plugin</vh></v>
+<v t="ekr.20170228101933.49"><vh>#427: multiple vnodes...</vh></v>
+<v t="ekr.20170228101933.52"><vh>#429: goto line number...</vh></v>
+<v t="ekr.20170303051729.1"><vh>#430: rst import...</vh></v>
+<v t="ekr.20170308145129.32"><vh>#431: Simplify importer tables</vh></v>
+<v t="ekr.20170308145129.13"><vh>#434: Potential bug in settings</vh></v>
+<v t="ekr.20170308145129.49"><vh>Added --fail-fast option</vh></v>
+<v t="ekr.20170228101933.15"><vh>Disabled compare_ast</vh></v>
+<v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
+<v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh></v>
+<v t="ekr.20170228101933.6"><vh>Fixed bug in rst3 command</vh></v>
+<v t="ekr.20170123084609.12"><vh>Fixed crash after ! in tab completion</vh></v>
+<v t="ekr.20170123084609.16"><vh>Fixed crash in autocomplete (with backspace key?)</vh></v>
+<v t="ekr.20170205201047.1"><vh>Fixed crash in elisp importer</vh></v>
+<v t="ekr.20170123084609.11"><vh>Fixed date in About Leo dialog</vh></v>
+<v t="ekr.20170228101933.3"><vh>Fixed problem when ~/.leo/workbook.leo does not exist</vh></v>
+<v t="ekr.20170308145129.141"><vh>Fixed recursive import problems</vh></v>
+<v t="ekr.20170228101933.16"><vh>Fixed several importer bugs</vh></v>
+<v t="ekr.20170303063731.1"><vh>g.findRootWithPredicate preserves node order</vh></v>
+<v t="ekr.20170228101933.7"><vh>g.openUrlOnClick now catches all exceptions</vh></v>
+<v t="ekr.20170308145129.132"><vh>The pylint command now runs files in the expected order</vh></v>
+</v>
+<v t="ekr.20170123084609.18"><vh>Code</vh>
+<v t="ekr.20170123084609.20"><vh>Added BackgroundProcessManager class</vh></v>
+<v t="ekr.20170123084609.28"><vh>Added four new generators</vh></v>
+<v t="ekr.20170228101933.10"><vh>Added g.findRootWithPredicate</vh></v>
+<v t="ekr.20170123084609.19"><vh>Added IdleTimeManager</vh></v>
+<v t="ekr.20170219074525.1"><vh>All generators yield copies of positions</vh></v>
+<v t="ekr.20170228101933.12"><vh>Created g.handleUnl</vh></v>
+<v t="ekr.20170219074554.1"><vh>Replaced c.nullPosition() by None</vh></v>
+<v t="ekr.20170228101933.13"><vh>Rewrote FreeMindImporter class</vh></v>
+<v t="ekr.20170228101933.18"><vh>Simplified Leo's read/write helpers</vh></v>
+</v>
+<v t="ekr.20170225082023.1"><vh>Documentation</vh>
+<v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
+</v>
+<v t="ekr.20170123084609.22"><vh>Features</vh>
+<v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
+<v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
+<v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
+<v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
+<v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
+<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
+<v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
+<v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
+<v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
+<v t="ekr.20170228104123.1"><vh>reload-settings and reload-all-settings</vh></v>
+<v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
+<v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
+<v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
+<v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -23820,7 +23828,60 @@ rst import: titles with different underline characters on same level.
 <t tx="ekr.20170303063731.1">This was an irritating hangnail that affected, for example, the pylint command.</t>
 <t tx="ekr.20170303113742.1">It opens leo/config/themes.leo.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170308145129.13">https://github.com/leo-editor/leo-editor/issues/434
+
+Added a guard to fc.parse_leo_file. This is defensive coding.
+
+Changed sf.copy_to_my_settings to reflect recent changes to p.getUnl.
+</t>
+<t tx="ekr.20170308145129.132">g.findRootsWithPredicate now preserves node order.</t>
+<t tx="ekr.20170308145129.141">The new code uses the new importer code to clean nodes.</t>
+<t tx="ekr.20170308145129.169">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/350
+
+ssm.expand_css_constants no longer adds constants.
+
+@language python
+</t>
+<t tx="ekr.20170308145129.2">https://github.com/leo-editor/leo-editor/issues/416
+
+The fix, as expected, was to k.stroke2char.
+</t>
+<t tx="ekr.20170308145129.32">https://github.com/leo-editor/leo-editor/issues/431
+
+Create importer/writer tables only once, during startup. All tests pass.
+This resulted in a cascade of simplifications.
+
+Moved ivars and methods from leoAtFile.py and leoImport.py into the LeoApp class:
+- Added atAutoWritersDict, writersDispatchDict, atAutoDict and classDispatchDict ivars.
+- Added createAllImporetersData and its two helpers.
+- Added scanner_for_at_auto and scanner_for_ext.
+
+leoPersistence.py:
+- Moved ConvertController class to the attic.
+- Moved pd.convert_at_file_to_at_auto to the attic.
+- Moved pd.prepass &amp; helper to the attic.
+  As a result, the prepass argument to the importers is no more.
+  
+leoTest.py:
+- All unit tests now restore the screen when done.
+
+leo/plugins/linescanner.py:
+- Removed the prepass keyword arg and related logic from i.run.
+
+plugins/qt_frame.py:
+- Added a disbled trace to createAtFileNode code, called from the drag/drop logic.
+</t>
+<t tx="ekr.20170308145129.49">Added --fail-fast command-line option: sets failfast option in unit tests.
+</t>
+<t tx="ekr.20170308145129.59">https://github.com/leo-editor/leo-editor/issues/352
+Importer unit tests create both @clean and @file
+
+The fix was disappointingly simple: just init ic.treeType in ic.createOutline and ic.scannerUnitTest.
+</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
