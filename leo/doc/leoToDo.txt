@@ -3,17 +3,10 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170219180704.1: ** Leo 5.5
-print-real-plugins: Needed to generate docs.
-
-@auto bugs:
-- cancelling @auto write creates orphan nodes!
-- Cloned @auto nodes duplicates section references!
-- See ekr.leo
-    
-Bug: Refresh from disk can jump around the screen.
-
-- rst3 command should find roots of cloned nodes.
+.. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
+Fix @auto bugs:
+- Cancelling @auto write creates orphan nodes.
+- Cloned @auto nodes duplicates section references.
 
 Improve Ctrl-up/down:
 - Ctrl-Down should insert a blank line if at the bottom.
