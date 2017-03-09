@@ -11679,6 +11679,8 @@ node headings, and click the reload-style button.
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20170304074559.261">/*
 @language css
+
+leo_dark theme 0
 */</t>
 <t tx="ekr.20170304074559.263">/* ===== widgets ===== */
 
@@ -12110,6 +12112,8 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="ekr.20170304074559.355"></t>
 <t tx="ekr.20170304074559.356">/*
 @language css
+
+leo_dark theme 1
 */</t>
 <t tx="ekr.20170304074559.36"></t>
 <t tx="ekr.20170304074559.360">/* ===== Body pane ===== */
@@ -12447,6 +12451,8 @@ Background color must also be specified for either setting to take effect.</t>
 Background must also be specified for either setting to take effect.</t>
 <t tx="ekr.20170304074559.4">/*
 @language css
+
+ekr_dark theme
 */
 
 QMenuBar {
@@ -12592,6 +12598,8 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="ekr.20170304074559.446"></t>
 <t tx="ekr.20170304074559.447">/*
 @language css
+
+leo_dark theme 2
 */</t>
 <t tx="ekr.20170304074559.451">/* ===== Body Editor ===== */
 
