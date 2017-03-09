@@ -423,6 +423,7 @@
 <v t="ekr.20131025044901.17144"><vh>Steve Litt</vh></v>
 <v t="ekr.20141210095600.11"><vh>Dave Williams</vh></v>
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
+<v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -1576,7 +1577,6 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 </v>
-<v t="ekr.20170130080532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23834,7 +23834,7 @@ leo/plugins/linescanner.py:
 - Removed the prepass keyword arg and related logic from i.run.
 
 plugins/qt_frame.py:
-- Added a disbled trace to createAtFileNode code, called from the drag/drop logic.
+- Added a disabled trace to createAtFileNode code, called from the drag/drop logic.
 </t>
 <t tx="ekr.20170308145129.49">Added --fail-fast command-line option: sets failfast option in unit tests.
 </t>
@@ -23854,6 +23854,17 @@ The fix was disappointingly simple: just init ic.treeType in ic.createOutline an
 <t tx="ekr.20170309061547.1"></t>
 <t tx="ekr.20170309061815.1"></t>
 <t tx="ekr.20170309062939.1"></t>
+<t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
+
+Most recently I've been focusing on one facet, abstraction and program "units". I define a "unit" as a part of the program that is considered a piece onto itself which can be labeled and referred to as a whole. Perhaps, as a daily Leo user, this is easy to think about because Leo does its best to coerce programmers and programs into looking at programming through this lens.
+
+Most tools do not ignore this concept all together. Most programming environments have some sort of "outline" window which allows you to view the structure of a program at a higher level. As I have experienced it this "outline" view is always dictated by the features of a language (ex. outline divided up at module, class, function levels). In addition most tools incorporate "code folding" to help a programmer focus on language specific programming units (again, ex. folding at class and function definitions). 
+
+Leo takes this concept to its limit. Leo offers language agnostic abstraction at arbitrary levels. It allows a programmer to structure their program outside of the confines of the programming paradigms of the language they're programming in. Of course it still helps to use the language specific "units" as a guide, in fact this is what Leo does upon import to create an initial outline structure from programs originating outside of Leo. 
+
+I can't ignore the freedom of arbitrary abstraction, and I've come to rely upon it so much that I struggle to use non-Leo environments. It is well known that the human brain has a limited working memory. The act of programming stretches working memory to it's limit. Leo provides an environment in which a program can seamlessly be restructured to fit within the bounds of a programmers individual working memory. 
+
+I realize this is a "why" and not a "how" and that this doesn't help anyone get better acquainted with Leo. But, as a programmer if you've ever felt frustrated with the organizational constructs of the language you're working in you might be surprised to realize that after using Leo it wasn't the language that was the problem, but a lack of tools to organize your programs in a way that makes sense to you.</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
