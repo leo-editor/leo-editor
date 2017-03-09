@@ -1432,56 +1432,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
-<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
-<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
-<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
-</v>
-<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
-</v>
-<v t="ekr.20170301013308.1"><vh>** Fix doc problems</vh>
-<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
-<v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
-<v t="ekr.20170228105638.1"><vh>2</vh></v>
-</v>
-<v t="ekr.20170228105717.1"><vh>Demo.py (changed .md file)</vh></v>
-<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
-<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
-</v>
-<v t="ekr.20170228105154.1"><vh>** Leo and org mode</vh>
-<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
-<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
-<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
-<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
-<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
-<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
-<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
-<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
-<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
-</v>
-</v>
-<v t="ekr.20170301014119.1"><vh>** Cool pictures</vh>
-<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
-</v>
-<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
-<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
-<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
-<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
-<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
-</v>
-<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
-</v>
-<v t="ekr.20070628083442.1"></v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
-<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
-<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
-</v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1571,6 +1521,56 @@
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
 <v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
 </v>
+</v>
+<v t="ekr.20070628083442.1"></v>
+<v t="ekr.20050912125144.1"></v>
+<v t="ekr.20161207045325.1"><vh>** To do</vh>
+<v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
+<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
+<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
+</v>
+<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
+</v>
+<v t="ekr.20170301013308.1"><vh>** Fix doc problems</vh>
+<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
+<v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
+<v t="ekr.20170228105638.1"><vh>2</vh></v>
+</v>
+<v t="ekr.20170228105717.1"><vh>Demo.py (changed .md file)</vh></v>
+<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
+<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
+</v>
+<v t="ekr.20170228105154.1"><vh>** Leo and org mode</vh>
+<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
+<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
+<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
+<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
+<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
+<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
+<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
+<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
+<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
+<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
+<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
+<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+</v>
+</v>
+<v t="ekr.20170301014119.1"><vh>** Cool pictures</vh>
+<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
+</v>
+<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
+<v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
+<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
+<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+</v>
+<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
+<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
+<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
+<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
+</v>
+<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 </vnodes>
 <tnodes>

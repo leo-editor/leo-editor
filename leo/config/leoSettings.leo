@@ -435,6 +435,7 @@
 <v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
 <v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
 <v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 <v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
 <v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
 <v t="ekr.20140915194122.19463"><vh>Plugins</vh>
@@ -448,7 +449,6 @@
 <v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
 <v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
 <v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
-<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
 </v>
 </v>
 <v t="ekr.20150620100951.1"><vh>User Qt Gui style sheet</vh>
@@ -2216,6 +2216,7 @@
 </v>
 </v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
+<v t="ekr.20140912072521.19160"></v>
 <v t="ekr.20170304074559.3"><vh>@theme ekr_dark theme</vh>
 <v t="ekr.20170308024355.1"><vh>settings</vh>
 <v t="ekr.20170304074559.5"><vh>style sheet settings</vh>
@@ -2320,7 +2321,6 @@
 </v>
 <v t="ekr.20170304074559.182"><vh>Theme settings (not in style sheet)</vh>
 <v t="ekr.20170304074559.184"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20170304074559.22"><vh>@bool use_focus_border = False</vh></v>
 <v t="ekr.20170304074559.183"><vh>@string color_theme = ekr_dark</vh></v>
 <v t="ekr.20170304074559.161"><vh>colors, not in style sheet</vh>
 <v t="ekr.20170304074559.162"><vh>@color log_error_color = #dc322f</vh></v>
@@ -2345,8 +2345,7 @@
 <v t="ekr.20170304074559.288"><vh>@ignore Spare parts</vh></v>
 <v t="ekr.20170304074559.186"><vh>settings</vh>
 <v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
-<v t="ekr.20170304074559.214"><vh>border</vh>
-<v t="ekr.20170304074559.215"><vh>@bool use_focus_border = False</vh></v>
+<v t="ekr.20170304074559.214"><vh>@ignore border</vh>
 <v t="ekr.20170304074559.216"><vh>@string focused-border-style = solid</vh></v>
 <v t="ekr.20170304074559.217"><vh>@string focused-border-width = 3px</vh></v>
 <v t="ekr.20170304074559.218"><vh>@color focused-border-focus-color = red</vh></v>
@@ -2423,6 +2422,13 @@
 </v>
 <v t="ekr.20170304074559.292"><vh>settings</vh>
 <v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
+<v t="ekr.20170309055108.1"><vh>@ignore border</vh>
+<v t="ekr.20170309055108.2"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170309055108.3"><vh>@string focused-border-width = 3px</vh></v>
+<v t="ekr.20170309055108.4"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170309055108.5"><vh>@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170309055108.6"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
 <v t="ekr.20170308082507.1"><vh>colors</vh>
 <v t="ekr.20170304074559.294"><vh>Body pane colors</vh>
 <v t="ekr.20170304074559.295"><vh>@color body_text_background_color = #002b36</vh></v>
@@ -2492,6 +2498,13 @@
 </v>
 <v t="ekr.20170304074559.383"><vh>settings</vh>
 <v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
+<v t="ekr.20170309055240.1"><vh>@ignore border</vh>
+<v t="ekr.20170309055240.2"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170309055240.3"><vh>@string focused-border-width = 3px</vh></v>
+<v t="ekr.20170309055240.4"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170309055240.5"><vh>@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170309055240.6"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
 <v t="ekr.20170308082535.1"><vh>colors</vh>
 <v t="ekr.20170304074559.385"><vh>Body pane colors</vh>
 <v t="ekr.20170304074559.386"><vh>@color body_text_background_color = #002b36</vh></v>
@@ -2604,8 +2617,8 @@ The following integer values are supported:
 vertical: body pane on the botton
 </t>
 <t tx="edward.20150614045745.1">QWidget#body-text-renderer {
-    color: @render-fg;
-    background-color: @render-bg;
+    color:              @render-fg;
+    background-color:   @render-bg;
 }</t>
 <t tx="edward.20150614045858.1"></t>
 <t tx="edward.20150614045915.1"></t>
@@ -10123,19 +10136,19 @@ QFrame {
 ----- */
 
 QScrollArea {
-    background-color: @scroll-area-bg;
+    background-color:   @scroll-area-bg;
 }
 
 QTabbedWidget {
-    background-color: @tabbed-widget-bg;
+    background-color:   @tabbed-widget-bg;
 }
 
 QTabBar::tab {
-    background: @unselected-tab-bg;
+    background:         @unselected-tab-bg;
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-    background: @selected-tab-bg;
+    background:         @selected-tab-bg;
 }
 
 QStackedWidget {
@@ -10156,7 +10169,7 @@ QSplitter::handle {
 }
 
 QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
+    background-color:   @splitter-hover-bg;
 }
 </t>
 <t tx="ekr.20140915194122.19473">/* Status areas. */
@@ -10187,9 +10200,9 @@ QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail
 
 QTreeWidget {
     /* Outline pane defaults. */
-    border-style:       @focused-border-style;
-    border-width:       @focused-border-width; 
-    border-color:       @focused-border-unfocus-color; 
+    border-style:               @focused-border-style;
+    border-width:               @focused-border-width; 
+    border-color:               @focused-border-unfocus-color; 
     color:                      @tree-fg;
     background-color:           @tree-bg;
     font-family:                @tree-font-family;
@@ -10212,9 +10225,9 @@ QTreeWidget QLineEdit {
 }
 
 QTreeWidget:focus {
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
+  border-style:         @focused-border-style;
+  border-width:         @focused-border-width; 
+  border-color:         @focused-border-focus-color; 
 }
 
 QTreeWidget::item:selected {
@@ -11648,16 +11661,11 @@ node headings, and click the reload-style button.
 <t tx="ekr.20170304074559.211">(some body text here so there's something to see)</t>
 <t tx="ekr.20170304074559.212"></t>
 <t tx="ekr.20170304074559.213"></t>
-<t tx="ekr.20170304074559.214">Note: Must have:
-    @bool use_focus_border = False
-    @focused-border-style = solid
-</t>
-<t tx="ekr.20170304074559.215"></t>
+<t tx="ekr.20170304074559.214"></t>
 <t tx="ekr.20170304074559.216"></t>
 <t tx="ekr.20170304074559.217"></t>
 <t tx="ekr.20170304074559.218">Was cyan</t>
 <t tx="ekr.20170304074559.219"></t>
-<t tx="ekr.20170304074559.22"></t>
 <t tx="ekr.20170304074559.220"></t>
 <t tx="ekr.20170304074559.221"></t>
 <t tx="ekr.20170304074559.222"></t>
@@ -13039,6 +13047,18 @@ QPushButton:hover {
 <t tx="ekr.20170308082541.1"></t>
 <t tx="ekr.20170308082541.2"></t>
 <t tx="ekr.20170308082541.3"></t>
+<t tx="ekr.20170309055108.1"></t>
+<t tx="ekr.20170309055108.2"></t>
+<t tx="ekr.20170309055108.3"></t>
+<t tx="ekr.20170309055108.4">Was cyan</t>
+<t tx="ekr.20170309055108.5"></t>
+<t tx="ekr.20170309055108.6"></t>
+<t tx="ekr.20170309055240.1"></t>
+<t tx="ekr.20170309055240.2"></t>
+<t tx="ekr.20170309055240.3"></t>
+<t tx="ekr.20170309055240.4">Was cyan</t>
+<t tx="ekr.20170309055240.5"></t>
+<t tx="ekr.20170309055240.6"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -194,7 +194,8 @@ class Commands(object):
         self.target_language = "python"
         self.untangle_batch_flag = False
         self.use_body_focus_border = True
-        self.use_focus_border = False
+        # self.use_focus_border = False
+            # Replaced by style-sheet entries.
         self.vim_mode = False
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars(self):
@@ -549,7 +550,8 @@ class Commands(object):
         c.smart_tab = getBool('smart_tab')
         c.tab_width = getInt('tab_width') or -4
         c.use_body_focus_border = getBool('use_body_focus_border', default=True)
-        c.use_focus_border = getBool('use_focus_border', default=True)
+        # c.use_focus_border = getBool('use_focus_border', default=True)
+            # Not used: replaced by stylesheet settings.
         c.verbose_check_outline = getBool('verbose_check_outline', default=False)
         c.vim_mode = getBool('vim_mode', default=False)
         c.write_script_file = getBool('write_script_file')
