@@ -12976,7 +12976,7 @@ random background colors which are appropriate etc.</t>
 <t tx="ekr.20170309112554.76">/*
 @language css
 
-leo_dark theme: a minor modification of leo_dark theme 0.
+windows leo_dark theme: a minor modification of leo_dark theme 0.
 
 */</t>
 <t tx="ekr.20170309112554.77">/* ===== active pane highlighting ===== */
