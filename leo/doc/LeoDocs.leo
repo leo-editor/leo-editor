@@ -1577,6 +1577,7 @@
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 </v>
+<v t="ekr.20170301013432.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
