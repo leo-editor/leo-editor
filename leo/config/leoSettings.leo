@@ -6331,11 +6331,11 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21867">Outline To &amp;Noweb...</t>
 <t tx="ekr.20131213135427.21868">&amp;Remove Sentinels...</t>
 <t tx="ekr.20131213135427.21869">&amp;Weave...</t>
-<t tx="ekr.20131213135427.21871">Open &amp;CheatSheet.leo</t>
-<t tx="ekr.20131213135427.21872">Open Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.21873">Open leo&amp;Plugins.leo</t>
-<t tx="ekr.20131213135427.21874">Open &amp;quickstart.leo</t>
-<t tx="ekr.20131213135427.21875">Open scr&amp;ipts.leo</t>
+<t tx="ekr.20131213135427.21871">&amp;CheatSheet.leo</t>
+<t tx="ekr.20131213135427.21872">Leo&amp;Docs.leo</t>
+<t tx="ekr.20131213135427.21873">leo&amp;Plugins.leo</t>
+<t tx="ekr.20131213135427.21874">&amp;quickstart.leo</t>
+<t tx="ekr.20131213135427.21875">scr&amp;ipts.leo</t>
 <t tx="ekr.20131213135427.21876"></t>
 <t tx="ekr.20131213135427.21877">E&amp;xit</t>
 <t tx="ekr.20131213135427.21878"></t>
@@ -10693,9 +10693,9 @@ QFrame#gutter {
 <t tx="ekr.20150710065036.1">True: start-search (F3) automatically loads the Find Pattern.</t>
 <t tx="ekr.20150710084507.1">True: raise a dialog warning about Python errors when writing files.</t>
 <t tx="ekr.20150711073509.1"></t>
-<t tx="ekr.20151225094956.1">Open &amp;unittest.leo</t>
+<t tx="ekr.20151225094956.1">&amp;unittest.leo</t>
 <t tx="ekr.20151225142626.1"></t>
-<t tx="ekr.20151225193848.1">Open leoP&amp;y.leo</t>
+<t tx="ekr.20151225193848.1">leoP&amp;y.leo</t>
 <t tx="ekr.20160112111247.1"># Lines to be inserted at the start of each stub file.
 
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
@@ -11395,7 +11395,7 @@ The OSX shortcuts posted by karstenw at the link below solved all of my keycode 
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 <t tx="ekr.20161021095001.1">True: run Pyflakes on each saved files, but only if it has been changed.</t>
-<t tx="ekr.20161025090757.1">Open Leo&amp;Dist.leo</t>
+<t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
 # A list tree abbreviation names.
