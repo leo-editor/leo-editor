@@ -3,37 +3,43 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170128161249.1: ** Next projects
+.. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
+Fix @auto bugs:
+- Cancelling @auto write creates orphan nodes.
+- Cloned @auto nodes duplicates section references.
+
+Improve Ctrl-up/down:
+- Ctrl-Down should insert a blank line if at the bottom.
+- Ctrl-Up should insert a blank line if at the top.
+.. @+node:ekr.20170211190548.1: ** ** The plan for 2017
 @language rest
 @wrap
+org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
-Docs
-- Scripting docs: the less said the better.
+- Steal everything useful from org mode:
+    - Agenda: an agenda plugin.
+    - Tables: a tables plugin.
+    - Text drawers replace uA's.
+    - Rendering of Latex, etc. in Leo's body pane.
+    - Better support for shell console & scripts.
+    - Better support for make, C, C++, Java, etc.
+    - Support for org-mode results. Invention needed.
+    - Leo's body pane must be able to hide characters and
+      render pictures within the pane.
+    - Support .org files and .org.leo files.
 
-Bugs
-- elisp importer fails
+- Emulate/ use pyzo server
 
-.leo.org files
-    - Study and use org-mode
+A short prototype of @jupyter
+https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
+Appears to work only with Python 2.
 
-pyzo server
-.. @+node:ekr.20170128165109.1: *3* *** elisp importer fails
-Exception running Elisp_Importer
-Traceback (most recent call last):
-  File "c:\leo.repo\leo-editor\leo\core\leoImport.py", line 936, in scanner_for_ext_cb
-    return scanner.run(s, parent, prepass=prepass)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 450, in run
-    self.generate_nodes(s, parent)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 514, in generate_nodes
-    self.gen_lines(s, parent)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 583, in gen_lines
-    tail_p = self.end_block(line, new_state, stack)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 629, in end_block
-    self.cut_stack(new_state, stack)
-  File "c:\leo.repo\leo-editor\leo\plugins\importers\linescanner.py", line 606, in cut_stack
-    assert len(stack) > 1, stack # <
-AssertionError: [Target: Elisp_ScanState context: '' parens: 0 @others: 1 refs: 0 p: demo-it.el]
-imported C:/leo.repo/demo-it/demo-it.el
+.. @+node:ekr.20170219180512.1: *3* Invisible fonts
+One way to hide characters is to use an invisible font:
+https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
+http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
+
+The drawback is that Leo would have to distribute that font, and users would have to install the font.
 .. @+node:ekr.20170125104430.1: ** From Jon N
 @language rest
 @wrap
@@ -200,43 +206,13 @@ I would try something like this:
 
 [7] http://fossil.wanderinghorse.net/repos/fwiki/index.cgi/wiki/README
 [8] https://docs.google.com/document/d/1fXViveNhDbiXgCuE7QDXQOKeFzf2qNUkBEgiUvoqFN4/view
-.. @+node:ekr.20161231072434.1: ** Bugs
-- @auto bugs:
-    1. cancelling @auto write creates orphan nodes!
-    2. Cloned @auto nodes duplicates section references!
-    - See ekr.leo
-    
-- Bug: Refresh from disk can jump around the screen.
-
-- Problems with Alt-G: goto-global-line.
-
-- Bug: # line 294: compare_ast **sometimes** gets into an unbounded loop.
-.. @+node:ekr.20111010162047.15678: *3* ?? Imports should put @first/@last directives in root node
-Especially:
-    - Shebang line.
-    - Python encoding line.
-    
-- @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *4* @@@nosent ../test/at-auto-at-first-test.py
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-def spam():
-    pass
-    
-# This is the last line.
-.. @+node:ekr.20161027202809.1: ** Important
-@language rest
-@wrap
-
-* Rewrite scripting tutorial
-* Mention viewrendered plugin in tutorials.
-
-* Leo and Jupyter notebooks.
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 
 * Allow key unbinding.
+
+- Unit tests should preserve find state.
+  The find command doesn't seem to work after unit tests.
 .. @+node:ekr.20160515143329.1: *3* @listen(channel_name)
 .. @+node:ekr.20160515143249.1: *3* @subcommander
 Registers subcommander

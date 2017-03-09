@@ -3027,6 +3027,8 @@ class BaseTangleCommands(object):
         """
         c = self.c
         self.init_directive_ivars()
+        if not p:
+            p = c.p
         if p:
             s = p.b
             #@+<< Collect @first attributes >>

@@ -55,4 +55,6 @@ writer_dict = {
     'class': MarkdownWriter,
     'extensions': ['.md',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

@@ -1,56 +1,39 @@
-#Leo's demo.py plugin
+# Leo's demo.py plugin
 
 The demo.py plugin helps presenters run dynamic demos from Leo files.
 
+- [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
-- [Demo scripts](../doc/demo.md#demo-scripts)
+- [Graphics classes & helpers](../doc/demo.md#graphics-classes--helpers)
+- [Using demo scripts](../doc/demo.md#using-demo-scripts)
+    - [Script trees and lists](../doc/demo.md#script-trees-and-lists)
+    - [Predefined symbols](../doc/demo.md#predefined-symbols)
+    - [Positioning graphics](../doc/demo.md#positioning-graphics)
+    - [Deleting graphics](../doc/demo.md#deleting-graphics)
+    - [Details](../doc/demo.md#details)
 - [Example scripts](../doc/demo.md#example-scripts)
+    - [Top-level script](../doc/demo.md#top-level-script)
+    - [Simulate typing](../doc/demo.md#simulate-typing)
+    - [Change the demo namespace](../doc/demo.md#change-the-demo-namespace)
+    - [Add graphics](../doc/demo.md#add-graphics)
+    - [Switch focus](../doc/demo.md#switch-focus)
 - [Helper methods](../doc/demo.md#helper-methods)
-    - [Images](../doc/demo.md#images)
+    - [Ivars](../doc/demo.md#ivars)
     - [Menus](../doc/demo.md#menus)
-    - [Starting and ending](../doc/demo.md#starting-and-ending)
-    - [Typing](../doc/demo.md#typing)
-- [Magnification and styling](../doc/demo.md#magnification-and-styling)
-- [Details](../doc/demo.md#details)
-- [Acknowledgements](../doc/demo.md#acknowledgements)
+    - [Magnification and styling](../doc/demo.md#magnification-and-styling)
+    - [Simulated typing](../doc/demo.md#simulated-typing)
+    - [Startup, setup and teardown](../doc/demo.md#startup-setup-and-teardown)
+    - [Window position and ratios](../doc/demo.md#window-position-and-ratios)
+- [Summary](../doc/demo.md#summary)
+- [History and change log](../doc/demo.md#history-and-change-log)
 
-#Overview
+# Overview
 
-A **script tree**, a tree of **demo scripts**, controls the demo. Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. 
-
-The **demo-next** command executes the next demo script.  The plugin ends the presentation just after executing the last demo script. The **demo-end** command ends the demo early.
-
-To start a demo, presenters run a **top-level script**. Top-level scripts instantiate the Demo class, and then call demo.start(p), where p is the root of the script tree. For example:
-```python
-import leo.plugins.demo as demo
-
-class Demo_1(demo.Demo):
-    
-    def setup(self, p):
-        fn = 'c:/demos/demo1.leo'
-        demo.user_dict['c'] = g.openWithFileName(fn, old_c=c)
-        
-    def teardown():
-        c = demo.user_dict.get('c')
-        if c: c.close()
-
-Demo_1(c).start(g.findNodeInTree(c, p, 'demo1-commands'))
-```
-
-This plugin boasts significant advantages compared with Leo's screencast plugin:
-
-- The demo plugin does not interfere with focus or key-handling. As a result, the full power of Leo scripting is available to demo scripts. Few helper methods are needed.
-
-- Demo scripts can (and should) be descriptive. Subclasses of demo.Demo can define methods that hide implementation and configuration details.
-
-- Demo scripts can insert fixed delays, callouts and subtitles. As a result, demo scripts can be fully automated. There is little need for post-production editing.
-
-#Demo scripts
-
-Demo scripts have access to c, g and p as usual.  Demo scripts also have access to the predefined **demo** variable, bound to the Demo instance. This allows demo scripts to use all the **helper methods** in the Demo class. These methods can:
+A **presentation** consists of one or more **slides**, created by **demo scripts**.
+Demo scripts free the presenter from having to type correctly or remember sequences of desired actions. The demo plugin does not interfere with focus or key-handling, so demo scripts can freely call all of Leo's regular scripting API. Demo scripts can:
 
 - Simulate typing in headlines, body text, the minibuffer, or anywhere else.
-- Overlay a scaled image on the screen.
+- Show **graphics**, including scaled images, callouts and text areas.
 - Open any Leo menu, selecting particular menu items.
 - Scale font sizes.
 
@@ -61,14 +44,329 @@ For example, this demo script executes the insert-node command:
     demo.keys('insert-node\n')
 ```
 
-Within the script tree, **@ignore** and **@ignore-tree** work as expected. The demo-script command ignores any nodes whose headline starts with `@ignore`, and ignores entire trees whose root node's headline starts with `@ignore-tree`.
+**Creating the demo**: To start a demo, presenters run a **top-level script**. These scripts instantiate the Demo class and call **demo.start**. As discussed later, demo.start creates demo scripts from its arguments.
 
-**Note**: The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
+**Controlling the presentation**: The **demo-next** command executes the next demo script. The **demo-prev** command executes the previous demo. The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
-#Example scripts
-Demo scripts may freely use all of Leo's scripting API. The demo plugin does not interfere in any way.
+**Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images. These graphics persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
 
-##Show typing in the minibuffer
+# Graphics classes & helpers
+
+The demo.py file defines 5 classes that create graphics.  All classes add the created widget to demo.widgets, ensuring that the widget remains visible.
+
+**arguments**: All classes have defaults, shown below, that subclasses may change.  Unless noted, position=None centers the widget in the middle of the body pane.
+
+The valid arguments for the `pane` argument are `None, 'body', 'log', 'tree`. `None` is same as `body`. 
+
+**Callout**: Add a QLabel containing text.
+
+```python
+Callout(text, font=None, pane=None, position=None, stylesheet=None)
+```
+
+**Head**: Add a label to a headline, given only its headline(!).
+
+```python
+Head(arrow, label, headline, offset=None)
+```
+
+**Image**: Add a QLabel containing an image.
+
+```python
+Image(fn, pane=None, position=None, size=None)
+```
+
+**Text**: Add a QTextEdit.
+
+```python
+Text(text, font=None, pane=None, position=None, size=None, stylesheet=None)
+```
+
+**Title**: Add a QLabel containing text, centered horizontally, positioned near the bottom of the body pane.
+
+```python
+Title(text, font=None, pane=None, position=None, stylesheet=None)
+```
+
+# Using demo scripts
+
+
+## Script trees and lists
+
+A **script tree**, a tree of **script nodes**, specifies the script.
+
+```python
+demo.start(script_tree, auto_run=False delim='###')
+```
+
+Script nodes may contain multiple demo scripts, separated by a **script delimiter**:
+
+```python
+Callout('Callout 1')
+Title('Title 1')
+###
+Callout('Callout 2')
+Title('This is a much much longer title')
+```
+
+The Demo startup code converts the script tree to a linear **script list**, composed of the body text of all nodes in script tree, ignoring:
+
+- Nodes whose body text contains nothing but whitespace or python comments.
+- `@ignore` nodes.
+- All nodes in an `@ignore-tree` tree.
+
+## Predefined symbols
+
+Demo scripts execute in the **demo.namespace** environment. This is a python dict containing:
+
+- c, g and p as usual,
+- The names of all predefined graphics classes: Callout, Image, Label, Text and Title,
+- The name **demo**, bound to the Demo instance.
+
+At startup, **demo.init_namespace()** creates demo.namespace. Subclasses may override this method.
+
+**demo.bind(name, object)** adds one binding to demo.namespace. The following are equivalent:
+
+```python
+demo.bind('name', object)
+demo.namespace.update({'name', object})
+```
+
+The demo.namespace environment *persists* until the end of the demo, so demo scripts can share information:
+
+```python
+demo.bind('greeting', hello world')
+###
+Callout(greeting)
+```
+
+## Positioning graphics
+
+By default, graphics are centered horizontally and vertically in the body pane.  The **position** keyword arg positions a graphic explicitly.
+
+```python
+Callout('Callout 1')
+Callout('Callout 1', position='center') # same as above.
+Callout('Callout 2 ', position=[700, 200])
+Text('Hello world', position=['center', 200])
+Title('This is a subtitle', position=[700, 'center'])
+```
+
+## Deleting graphics
+
+By default, **demo.widgets** contains references to all allocated widgets. Without these references, Python's garbage collector would destroy the widgets.
+
+**demo.delete_widgets()** destroys all the widgets in that list by calling w.deleteLater and clears demo.widgets.
+
+```python
+Callout('Callout 1')
+###
+delete_widgets()
+Callout('Callout 2')
+```
+
+**demo.retain(w)** adds widget w to **demo.retained_widgets**.
+
+**demo.delete_retained()** deletes all retained widgets, removes retained items from demo.widgets and clears demo.retained_widgets.
+
+```python
+
+w = Callout('Callout 42')
+demo.retain(w)
+###
+...
+###
+demo.delete_retained()
+```
+
+**demo.delete_one_widget(w)** calls w.deleteLater() and removes w from demo.widgets and demo.retained_widgets.
+
+```python
+w = Image(g.os_path_finalize_join(
+    g.app.loadDir, '..', 'Icons', 'SplashScreen.ico'))
+demo.user_dict ['splash'] = w
+###
+...
+###
+w = demo.user_dict['splash']
+del demo.user_dict['splash']
+demo.delete_one_widget(w)
+```
+
+## Details
+
+- Demo scripts can not be undone/redone in a single step, unless each demo script makes *itself* undoable.
+
+- The demo-next command executes demo scripts *in the present outline*. Demo scripts may create new outlines, thereby changing the meaning of c. It is up to each demo script to handle such complications.
+
+- Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
+
+- The demo-next command *must* be bound in the top-level script, as shown in the example in scripts.leo. The demo-end and demo-prev commands may be bound in myLeoSettings.leo as usual.
+
+# Example scripts
+
+The demo plugin does not change focus in any way, nor does it interfere with Leo's key handling. As a results, *demo scripts work just like normal Leo scripts*.
+
+## Top-level script
+
+Here is a recommended top-level node for the top-level script, in an `@button MyDemo @key=Ctrl-9` node. scripts.leo contains the actual script.
+
+
+
+```python
+
+'''Create intro slides for screen shots.'''
+if c.isChanged():
+    c.save()
+
+# << imports >>
+from leo.core.leoQt import QtGui
+import leo.plugins.demo as demo_module
+
+# Do NOT use @others here.
+
+# << class IntroSlides >>
+class IntroSlides (demo_module.Demo):
+    
+    def setup(self, p=None):
+        c = self.c
+        self.end_on_exception = True # Good for debugging.
+        self.delta = 0
+        self.ratios = self.get_ratios()
+        self.set_text_delta(self.delta)
+        if hasattr(self, 'hoist_node'):
+            c.selectPosition(self.hoist_node)
+            for child in self.hoist_node.children():
+                if child.h. startswith('@@'):
+                    child.h = child.h[1:]
+                    child.clearDirty()
+            c.hoist()
+        self.set_top_geometry((400, 200, 700, 400),)
+            # x, y, width, height, like QRect.
+        c.redraw()
+
+    def setup_script(self):
+        self.delete_widgets()
+        
+    def teardown(self):
+        c = self.c
+        self.delete_all_widgets()
+        if self.delta > 0:
+            self.set_text_delta(-self.delta)
+        if self.hoist_node:
+            for child in self.hoist_node.children():
+                if child.h. startswith('@'):
+                    child.h = '@' + child.h
+            c.dehoist()
+            # c.selectPosition(self.hoist_node)
+        p = g.findTopLevelNode(c, "Slide 1: Leo's main window")
+        if p:
+            c.selectPosition(p)
+        ratio1, ratio2 = self.ratios
+        self.set_ratios(ratio1, ratio2)
+        c.contractAllHeadlines()
+        c.setChanged(False)
+        c.redraw()
+            
+    def teardown_script(self):
+        if self.auto_run:
+            self.wait(0.5)
+
+# << main >>
+def main(c, demo, script_name, auto_run=False, hoist_node=None):
+    g.cls()
+    k = c.k
+    class_name = demo.__class__.__name__
+    g.es_print('Starting', class_name)
+    k.demoNextKey = k.strokeFromSetting('Ctrl-9')
+        # Tell k.masterKeyHandler to process Ctrl-9 immediately.
+        # Binding demo-next in a setting does *not* work.
+    h = '@button %s @key=Ctrl-9' % class_name
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    script_tree = g.findNodeInTree(c, p, script_name)
+    assert script_tree, repr(script_name)
+    demo.hoist_node = hoist_node and g.findNodeInTree(c, p, hoist_node)
+    demo.start(script_tree, auto_run=auto_run)
+
+# The top-level of the top-level script...
+
+# The *same* command/key binding calls both demo-start and demo.next.
+if getattr(g.app, 'demo', None):
+    g.app.demo.next()
+else:
+    demo = IntroSlides(c)
+    main(c, demo,
+        auto_run=False,
+        hoist_node = "Leo's Main Window",
+        script_name='intro-slides-script')
+```
+
+
+Here are two example script_string. The first creates two screenshots, with lots of callouts.
+
+
+
+```python
+demo.set_top_size(height=400, width=700)
+demo.set_ratios(0.5, 0.5)
+geom = demo.pane_geometry('body')
+table = (
+    ('body', 'The Body Pane'),
+    ('tree', 'The Outline Pane'),
+    ('log',  'The Log Pane'),
+)
+for pane, h in table:
+    Callout(h, pane=pane)
+###
+demo.set_top_size(height=500, width=800)
+table = (
+    (False, 0, '<-- @file node', '@file leoApp.py'),
+    (False, 0, '<-- @test node', '@test init method'),
+    (False, 2, '<-- icon box', '@suite plugins syntax'),
+)
+for arrow, offset, label, headline in table:
+    Head(arrow, label, headline, offset=offset)
+w = Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
+Callout('<-- An Icon', position=(20+w.width(), w.y()-3))
+###
+demo.next()
+```
+
+
+The second example script_string adds and demotes nodes:
+
+
+```python
+# Create, move, promote, demote, hoist.
+demo.retain(Title('Leo is a full featured outliner.'))
+demo.wait(1.0)
+###
+demo.insert_node('a new node', keys=True, speed=10.0)
+###
+c.moveOutlineRight()
+###
+# demo.end() # Test of early exit.
+###
+demo.insert_node('another headline')
+###
+demo.insert_node('yet another node')
+###
+p = g.findNodeInTree(c, demo.root, 'a new node')
+assert p, 'a new node'
+c.selectPosition(p)
+demo.wait(0.25)
+###
+c.demote()
+demo.wait(1.0)
+###
+demo.delete_retained_widgets()
+```
+
+## Simulate typing
+
+Simulate typing in the minibuffer:
+
 ```python
 demo.key('Alt+x')
 demo.keys('insert-node')
@@ -76,135 +374,151 @@ demo.wait(2)
 demo.key('\n')
 ```
 
-##Show typing in a headline
-```
+Simulate typing in a headline:
+
+```python
 c.insertHeadline()
 c.redraw()
 c.editHeadline()
 demo.head_keys('My Headline')
 demo.wait(1)
 c.endEditing()
-
-# wrapper = c.edit_widget(p)
-# wrapper.setSelectionRange(0, len(p.h))
 ```
 
-##Switching focus
+Begin editing a headline and select all headline text:
+
 ```python
-# Put focus to the tree.
-c.treeWantsFocusNow()
-
-# Put focus to the minibuffer.
-c.minibufferWantsFocusNow()
-
-# Put focus to the body.
-c.bodyWantsFocusNow()
-
-# Put focus in the log pane.
-c.logWantsFocusNow()
-```
-
-##Select all headline text
-```python
-'''Begin editing a headline and select all its text.'''
 c.editHeadline()
 wrapper = c.edit_widget(p)
 wrapper.setSelectionRange(0, len(p.h))
 ```
 
-#Helper methods
+## Change the demo namespace
+
+**demo.bind(name, object)** adds an entry to this dictionary.
+
+```python
+demo.bind('greeting', 'Hello World')
+```
+
+This is equivalent to:
+
+```python
+demo.namespace.update({'greeting': 'Hello World'})
+```
+
+**demo.init_namespace()**: Initializes demo.namespace at the start of the demo. Subclasses may override init.namespace for complete control of the scripting environment:
+
+```python
+import leo.plugins.demo as demo_module
+Demo = demo_module.Demo
+class MyDemo(Demo):
+    def init_namespace(self):
+        Demo.init_namespace(self)
+        self.namespace.update({
+            'MyCallout': MyCallout,
+            'MyImage': MyImage,
+        })
+```
+
+## Add graphics
+
+Add an image:
+
+```python
+Image(fn=demo.get_icon_fn('box01.png'),
+      position=(20, 30),
+      magnification=2)
+```
+
+Add a text area:
+
+```python
+Text('This is a text area',
+     font=QtGui.QFont('Verdana', 14),
+     position=(20, 40),
+     size=(100, 200),
+)
+```
+
+Add a callout, centered in the body area:
+
+```python
+Callout('Hello World')
+```
+
+Add a callout for a headline:
+
+```python
+Head(arrow=False, '<-- @file node', headline='@file leoApp.py', offset=None)
+```
+
+Add a subtitle, centered just above the minibuffer:
+
+```
+Title('It was the best of times...')
+```
+
+## Switch focus
+
+```python
+# Put focus to the tree.
+c.treeWantsFocusNow()
+# Put focus to the minibuffer.
+c.minibufferWantsFocusNow()
+# Put focus to the body.
+c.bodyWantsFocusNow()
+# Put focus in the log pane.
+c.logWantsFocusNow()
+```
+
+# Helper methods
 
 The following sections describe all public ivars and helper methods of the Demo class.
 
-The valid values for `pane` arguments are the strings, "body", "log" or "tree".
+## Ivars
 
-Helper methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
+The following discusses only those ivars that demo scripts might change.
 
-##Ivars
+**demo.auto_run**: A copy of the auto_run argument to demo.startup.
 
-**demo.user_dict**
+Overridden demo.teardown methods might insert additional delays if auto_run is True.
 
-This ivar is a Python dictionary that demo scripts may freely use.
+**demo.n1** and **demo.n2**: These ivars control the speed of the simulated typing.
 
-**demo.n1** and **demo.n2**
+Demo scripts may change n1 or n2 at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds.
 
-These ivars determine the speed of the simulated typing provided by the following methods. Demo scripts may change either at any time. If both are given, each character is followed by a wait of between n1 and n2 seconds. If n2 is None, the wait is exactly n1. The default values are 0.02 and 0.175 seconds, respectively.
+**demo.namespace**: The environment in which scripts execute.
 
-**demo.speed**
+**demo.speed**: A multiplier applied to n1 and n2.
 
-This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.  So using demo.speed factor is the easy way to adjust simulated typing speed.
+This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.
 
-##Images
+**demo.retained_widgets**: A list of widgets *not* deleted by demo.delete_widgets()
 
-**demo.caption(s, pane)**
+**demo.user_dict**:  Python dictionary that demo scripts may freely use.
 
-Creates a caption with text s in the indicated pane. A **caption** is a text area that overlays part of Leo's screen. By default, captions have a distinctive yellow background. The appearance of captions can be changed using Qt stylesheets. See below.
+**demo.widgets**: A list of references to allocated widgets.
 
-**demo.image(pane,fn,center=None,height=None,width=None)**
+Standard graphics classes add themselves to this list automatically.
 
-Overlays an image in a pane.
+## Menus
 
-- `pane`: Valid values are 'body', 'log' or 'tree'.
-- `fn`: The path to the image file, relative to the leo/Icons directory for relative paths.
-- `height`: Scales the image so it has the given height.
-- `width`: Scales the image i so it has the given width.
-- `center`: If True, centers the image horizontally in the given pane.
+**demo.open_menu(menu_name)**: Opens the menu whose name is given.
 
-##Menus
+Don't worry about case or non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
 
-**demo.open_menu(menu_name)**
+**demo.dismiss_menubar()**: Close the menu opened with demo.open_menu.
 
-Opens the menu whose name is given, ignoring case and any non-alpha characters in menu_name. This method shows all parent menus, so demo.open_menu('cursorback') suffices to show the `Cmds\:Cursor/Selection\:Cursor Back...` menu.
+## Magnification and styling
 
-**demo.dismiss_menubar()**
+**Important**: Images may now be scaled using the magnification arg:
 
-Close the menu opened with demo.open_menu.
-
-##Starting and ending
-
-**demo.setup(p)**
-
-May be overridden in subclasses. Called before executing the first demo script.
-
-**demo.start(p)**
-
-Starts a demo. p is the root of demo script tree. 
-
-**demo.end()**
-
-Ends the demo and calls the teardown script. The demo automatically ends after executing the last demo script.
-
-**demo.teardown()**
-
-May be overridden in subclasses. Called when the demo ends.
-
-##Typing
-
-**demo.body_keys(s, undo=False)**
-
-Simulates typing the string s in the body pane.
-
-**demo.head_keys(s, undo=False)**
-
-Simulates typing the string s in the body pane.
-
-**demo.keys(s, undo=False)**
-
-Simulates typing the string s in the present widget.
-
-**demo.key(setting)**
-
-Types a single key in the present widget. This method does not support undo. Examples:
 ```python
-   demo.key('Alt-X') # Activate the minibuffer
-   demo.key('Ctrl-F') # Execute Leo's Find command
+Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
 ```
-
-#Magnification and styling
-
-**demo.set_text_delta(self, delta, w=None)**
-
-Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
+    
+**demo.set_text_delta(self, delta, w=None)**: Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
 following stylesheet::
@@ -222,17 +536,115 @@ following stylesheet::
 You will find this stylesheet in the node @data
 ``qt-gui-plugin-style-sheet`` in leoSettings.leo or myLeoSettings.leo.
 
-#Details
+## Simulated typing
 
-- Demo scripts can not be undone/redone in a single step, unless each demo script makes *itself* undoable.
+**demo.body_keys(s, undo=False)**: Simulates typing the string s in the body pane.
 
-- Leo's undo command is limited to the presently selected outline. If a demo script opens another outline, there is no *automatic* way of selecting the previous outline.
+**demo.head_keys(s, undo=False)**: Simulates typing the string s in the body pane.
 
-- Chaining from one script to another using demo.next() cause a recursion. This would be a problem only if a presentation had hundreds of demo scripts.
+**demo.keys(s, undo=False)**: Simulates typing the string s in the present widget.
 
-#Acknowledgements
+**demo.key(setting)**: Types a single key in the present widget. This method does not support undo.
 
-Edward K. Ream wrote this plugin on January 29-31, 2017, using Leo's screencast plugin as a starting point. 
+These methods call `c.undoer.setUndoTypingParams(...)` only if the `undo` keyword argument is True.  Methods without an `undo` argument do not support undo .
 
-The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+```python
+   demo.key('Alt-X') # Activate the minibuffer
+   demo.key('Ctrl-F') # Execute Leo's Find command
+```
+
+## Startup, setup and teardown
+
+**demo.start(script_tree, auto_run=False, delim='###')**: Start the demo, saving the geometry (size and position) of the top-level Leo window. **demo.end** restores this geometry.
+
+- **script_tree**:  The root of a tree of script nodes.
+- **auto_run**:     True: run all script nodes, one after the other.
+
+**demo.get_ratios()**: Returns a tuple of frame ratios.
+
+**demo.set_ratios(ratio1, ratio2)**: Set the body/outline ratio to ratio1 and the tree/log ratio to ratio2.
+
+Subclasses of Demo may override any of the following:
+
+**demo.init_namespace**: Creates demo.namespace with default symbols.
+
+**demo.setup(p=None)**: Called before executing the first demo script.
+
+**demo.setup_script()**: Called before executing each demo script.
+
+**demo.teardown()**: Called just before ending the demonstration.
+
+**demo.teardown_script():** Called after executing each demo script.
+
+## Window position and ratios
+
+**demo.headline_geometry(p)**: Return the x, y coordinates of p, for use by demo.set_position.
+
+**demo.get_ratios()**: Returns a tuple (ratio1, ratio2), where ratio1 is the body/outline ratio and ratio2 is the tree/log ratio. Each ratio is a float between 0 and 1.0.
+
+**demo.get_top_geometry()**: Return the geometry of Leo's main window.
+
+**demo.set_ratios(ratio1, ratio2)**: Restores the body/outline and tree/log ratios.
+   
+**demo.set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
+
+**demo.set_window_size(width, height)**: Set the size of Leo's main window, in pixels.
+
+**demo.set_window_position(x, y)**: Move the top-left corner of Leo's main window to x, y, in pixels.
+
+**demo.set_youtube_position()**: Resize and position Leo's main window for YouTube.
+
+# Summary
+
+**Demos are programs in disguise**
+
+The [top-level script](../doc/demo.md#top-level-script) is no toy. Although simple, ​the various setup/teardown methods help devs maintain momentum and energy.​ This is important, especially when planning many experiments.
+
+The **setup** method defines the 'delta' ivar, incremented when changing font magnification in Leo's body pane. The **teardown** method restores the original font magnification. The Demo class catches all exceptions, so it can call teardown in all cases.
+
+The **setup_script** method calls demo.delete_widgets(), freeing individual demo scripts from having to do so. See below for a practical use for **teardown_script**.
+
+**Demos are reproducible**
+
+Demo scripts can use *all* parts of Leo's API to "run" Leo automatically. For example, this is one way to create a new node:
+
+```python
+p = c.insertHeadline()
+p.h = 'a headline'
+p.b = 'some body text'
+```
+
+Presenters don't have to do anything by hand.
+
+**Demos can be fully automated**
+
+During development, it's fine to move from one slide to the next using `Ctrl-9` (demo-next) But just before creating a video or slide show, devs can define this **teardown_script**:
+
+```python
+def teardown_script(self):
+    self.wait(self.inter_slide_wait)
+    self.next()
+```
+
+Instant automation!  Do you see how cool this is?
+
+# History and change log
+
+Edward K. Ream wrote, debugged and documented this plugin from January 29 to February 14, 2017. The [demo-it](https://github.com/howardabrams/demo-it/blob/master/demo-it.org) inspired this plugin. Or perhaps the screencast plugin inspired demo-it.
+
+**2017/02/11**: Added auto-run feature. Fixed bugs re widget visibility.
+
+- Added the auto_run option to demo.start and the auto_run ivar.
+- demo.start calls qtApp.processEvents() before each script.
+- demo.delete_* call w.hide() before calling w.deleteLater().
+- demo.wait() calls the new demo.repaint() method.
+- demo.repaint_pane() calls w.viewport().repaint().
+
+**2017/02/13**: Added new helpers & removed all calls to super.
+
+- Added magnification keyword arg to Image.
+- Added demo.get_ratios() and demo.set_ratios(ratio1, ratio2).
+- Added demo.headline_geometry(p)
+- Added Head helper.
+- Added all Graphics classes and helpers to demo.namespace.
 

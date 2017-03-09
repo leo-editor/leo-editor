@@ -124,7 +124,10 @@ class LeoQtEventFilter(QtCore.QObject):
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 qevent = event
                 event = self.create_key_event(event, c, w, ch, tkKey, shortcut)
-                k.masterKeyHandler(event)
+                try:
+                    k.masterKeyHandler(event)
+                except Exception:
+                    g.es_exception()
                 if g.app.gui.insert_char_flag:
                     # if trace and traceKey: g.trace('*** insert_char_flag',event.text())
                     g.trace('*** insert_char_flag', qevent.text())
@@ -141,7 +144,8 @@ class LeoQtEventFilter(QtCore.QObject):
             # Trace non-key events.
             self.traceEvent(obj, event, tkKey, override)
         return override
-    #@+node:ekr.20110605195119.16937: *3* filter.create_key_event
+    #@+node:ekr.20120204061120.10088: *3* filter.Key construction
+    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
     def create_key_event(self, event, c, w, ch, tkKey, shortcut):
         trace = False and not g.unitTesting; verbose = False
         if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
@@ -181,7 +185,6 @@ class LeoQtEventFilter(QtCore.QObject):
         if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch), repr(shortcut), ch in string.printable))
         return leoGui.LeoKeyEvent(c, char, event, shortcut, w, x, y, x_root, y_root)
-    #@+node:ekr.20120204061120.10088: *3* filter.Key construction
     #@+node:ekr.20110605121601.18543: *4* filter.toTkKey & helpers (must not change!)
     def toTkKey(self, event):
         '''

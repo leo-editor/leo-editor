@@ -1,4 +1,4 @@
-#Table of contents
+# Table of contents
 1. [The grand overview](importers.md#the-grand-overview)
 2. [The new importers vs. the old](importers.md#the-new-importers-vs-the-old)
 3. [The Importer class](importers.md#the-importer-class)
@@ -16,7 +16,7 @@
     3. [Scanning strings and comments](importers.md#scanning-strings-and-comments)
 7. [Conclusion](importers.md#conclusion)
 
-#The grand overview
+# The grand overview
 This file documents Leo's importers.
 You can view this file on-line [here](https://github.com/leo-editor/leo-editor/tree/master/leo/doc/importers.md). These docs are intended solely to help you read the code. For details, consult the code.
 
@@ -49,7 +49,7 @@ Languages that *don't* have strings, comments, etc. typically *do* have structur
 
 Importers for the org-mode and otl (vim-outline) file formats are easiest of all. They have neither complex syntax nor multi-line patterns to contend with. Languages such as the ipynb (Jupyter Notebook) and json are driven by what are, in essence, nested python dictionaries.  The json importer is straightforward, the ipynb isn't.
 
-#The new importers vs. the old
+# The new importers vs. the old
 Leo's new importers are fundamentally simpler than the old.
 
 The old importers attempted to parse their languages *character-by-character*. Only whole lines can be assigned to nodes, so the importers had to adjust the results of the parse to line boundaries. This was an extremely complex process, filled with error-prone index adjustments.
@@ -60,7 +60,7 @@ The old importers handled nested language constructs by recursively rescanning t
 
 The old importers kept strict track of indentation.  This preserved indentation, but required a complex code-generation infrastructure. The new importers handle indentation implicitly.  As a result, the new importers can *regularize* leading whitespace for most languages. Python requires that leading whitespace be preserved, but this too is done quite simply.
 
-#The Importer class
+# The Importer class
 All but the simplest importers are subclasses of the Importer class, in leo/plugins/importers/linescanner.py. The Importer class defines default methods that subclasses that subclasses are (usually) free to override.
 
 **`i.run`** is the top-level driver code. It calls each stage of a **five-stage pipeline**. Few importers will need to override `i.run`.
@@ -77,7 +77,7 @@ Stage 4, **`i.check`**, performs perfect import checks. The rst and markdown imp
 
 The following sections discuss `i.gen_lines`, the line-oriented API, and how importers indent lines properly.
 
-##i.gen lines & helpers
+## i.gen lines & helpers
 **`i.gen_lines`** is the first stage of the pipeline. It allocates lines from the input file to outline nodes, creating those nodes as needed. Several importers override this method, or its helpers. These helpers are important, but they won't be discussed here. If you're interested, consult the source code.
 
 **`i.scan_line`** is an optional helper for importers having strings, comments, etc. It calls `i.scan_dict` for every character of a line, returning a `ScanState` object describing the state at the *end* of the line just scanned. Few importers override `i.scan_line`. Instead, subclasses override **`i.update`**, as described [later](importers.md#scanstate-protocols).
@@ -90,7 +90,7 @@ Importers for languages that have more complex syntax override `i.get_new_dict`.
 
 **`i.get_dict`** caches scanning dicts.  It returns a cached table if available, calling `i.new_dict` only if the dictionary for a language/context pair is not already in the cache. Subclasses should never need to override `i.get_dict`.
 
-##The line-oriented API
+## The line-oriented API
 The line-oriented API fixes a huge performance bug. Concatenating strings to p.b directly created larger and larger strings. As a result, it was an `O(N**2)` algorithm. In contrast, concatenating strings to a list is an `O(N)` algorithm.
 
 In stage 1, **`i.create_child_node`** calls **`i.inject_lines_ivar(p)`** to inject the `p.v._import_lines` attribute into the vnode.
@@ -99,7 +99,7 @@ In stages 1 and 2, high-level methods such as **`i.add_line(p, s)`** and **`i.ex
 
 In stage 3, **`i.finalize`** sets `p.b = ''.join(p.v._import_lines)` for all created nodes and then deletes all `v._import_lines` attributes.
 
-##Indentation
+## Indentation
 **Strict** languages are languages like python for which leading whitespace (lws) is particularly important.
 
 Stage 1 never changes lws. However, stage 1 *can* create indented `@others` and section references. When Leo eventually writes the file, such lws will affect the indentation of the output file.
@@ -110,19 +110,19 @@ Only stage 2 removes lws. **`i.undent`** does this, using the following trick. I
 
 **Important**: The net effect of the code is to *regularize* indentation for non-strict languages. Source files for languages like xml, html and javascript can have *randomly indented* lines. There is no way to preserve random indentation in a Leonine way, and no *reason* to do so. Converting source code to a typical Leo outline improves the code markedly.
 
-#The ScanState classes
+# The ScanState classes
 ScanState classes are needed only for importers for languages containing strings, comments, etc. When present, the ScanState class consists of a mandatory **`context`** ivar, and optional ivars counting indentation level and bracket levels.
 
 It's clearer to define a custom ScanState level for each importer. Subclassing the base ScanState class in linescanner.py would be more confusing and more clumsy.
 
 ScanState classes are short and simple. The following sections define the interface between the ScanState classes and the Importer classes.
 
-##ScanState.context
+## ScanState.context
 The ScanState.context ivar is `''` (an empty string) when the present scanning index ``i`` is outside any string, comment, etc. Otherwise, the context ivar is a copy of the string that starts the string, comment, etc. We say that the importer is **in a context** when the scanner is inside a string, comment or regex.
 
 Context can generally be ignored for languages that only count brackets.  Examples are C and Javascript.  In that case, the counts at the *end* of the line are accurate, *regardless* of whether the line ends in a context! In contrast, importers that use patterns to discover block structure must take care that the pattern matches fail when the *previous* line ends in a context.  It's just that simple.
 
-##ScanState.level()
+## ScanState.level()
 Unless an importer completely overrides `i.gen_lines`, each `ScanState` class must define a state.level() method. The `level` method must return either an int or a tuple of ints. This allows *all* importers to make the following comparison:
 
 ```python
@@ -132,7 +132,7 @@ if new_state.level() > prev_state.level():
 
 Most states will use one or more bracket counts to define levels.  Others, like python, will use indentation counts. Some states always return 0.
 
-##ScanState protocols
+## ScanState protocols
 The following protocols are needed only when the importer uses the base `i.scan_line` method. In that case...
 
 1. The ScanState class should have a ctor with the following signature:
@@ -159,17 +159,17 @@ where data is the 6-tuple returned from `i.scan_line`, namely:
 
 The `ScanState.update` method should set all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
 
-#Using @button make-importer
+# Using @button make-importer
 This script appears in both scripts.leo and leoPlugins.leo. To use this script, simply change the constants (strings) in the root `@button` node and run the script.
 
 The script creates an `@@file` node for the new importer. When you are ready, change `@@file` to `@file`. The file contains an `X_Importer` class (a subclass of the base `Importer` class) and a stand-alone `X_ScanState` class. Search for `###` for places that you may want to customize.
 
 Not all importers need a `ScanState` class.  In that case, just delete the `ScanState` class and set `state_class = None` when initing the base Importer class in `X_Importer`.
 
-#Notes
+# Notes
 
 
-##Recognizing multi-line patterns
+## Recognizing multi-line patterns
 `i.gen_lines` now supports skip counts, using the `skip` ivar. Skip counts allow pattern matching to be done naturally.
 
 The new coding pattern encourages *multi-line* pattern matching.  This can drastically simplify code. `i.gen_lines` remains straightforward:
@@ -197,7 +197,7 @@ The new coding pattern encourages *multi-line* pattern matching.  This can drast
         prev_state = new_state
 ```
 
-##The python importer must count brackets
+## The python importer must count brackets
 The Python importer must count parens, curly-brackets and square-brackets. Keeping track of indentation is not enough, because of code such as this:
 
 ```python
@@ -211,7 +211,7 @@ tabLevels = 4
 
 This is valid code, no matter what kind of indentation is used in the dict. As a result, `i.scan_dict` now keeps track of brackets for all languages.
 
-##Scanning strings and comments
+## Scanning strings and comments
 Is there some way to scan comments and strings quickly while using the line-oriented scanning code? Using a dedicated "quick string-scanning mode" might speed up the scan compared to calling i.scan_dict for every character.
 
 In fact, a dedicated scanner would hardly speed up the scan at all, because `i.scan_dict` is very fast. Worse, such a scheme would complicate `x.gen_lines`. Indeed, if `i.scan_dict` scanned the comment or string completely, it might return an index `i` that is *past* the line that `x.gen_lines` is handling.  Somehow, `x.gen_lines` would have to re-sync to the next complete line. That would be complex and slow.
@@ -220,7 +220,7 @@ In fact, a dedicated scanner would hardly speed up the scan at all, because `i.s
 
 But to repeat, there is not much reason actually to have `i.scan_table` go into "quick scan mode". Scanning is already fast enough.
 
-#Conclusion
+# Conclusion
 This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
  
 Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation! When studying code for the first time, focus on seeing the shape of the outline. What files have many classes? What classes are complex?

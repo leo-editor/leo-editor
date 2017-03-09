@@ -36,7 +36,7 @@ class QTextMixin(object):
         if name == '1':
             w.leo_p = None # Will be set when the second editor is created.
         else:
-            w.leo_p = p.copy()
+            w.leo_p = p and p.copy()
         w.leo_active = True
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
         w.leo_bodyBar = None
@@ -942,7 +942,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 #@+node:ekr.20110605121601.18103: ** class QScintillaWrapper(QTextMixin)
 class QScintillaWrapper(QTextMixin):
-    '''A wrapper for QsciSinctilla supporting the high-level interface.
+    '''A wrapper for QsciScintilla supporting the high-level interface.
 
     This widget will likely always be less capable the QTextEditWrapper.
     To do:

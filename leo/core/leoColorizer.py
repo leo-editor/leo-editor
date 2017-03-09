@@ -6,7 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import leo.core.leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore,
+from leo.core.leoQt import Qsci, QtGui, QtWidgets # isQt5, QtCore
 # try:
     # import builtins # Python 3
 # except ImportError:
@@ -55,7 +55,7 @@ class BaseColorizer(object):
         elif trace:
             g.trace('no p')
     #@+node:ekr.20170127142001.2: *4* bc.scanLanguageDirectives & helpers
-    def scanLanguageDirectives(self, p):
+    def scanLanguageDirectives(self, p, use_default=True):
         '''Return language based on the directives in p's ancestors.'''
         trace = False and not g.unitTesting
         c = self.c
@@ -73,9 +73,12 @@ class BaseColorizer(object):
                 if trace: g.trace(repr(language), 'found 2 -----', p.h)
                 return language
         #  Get the language from the nearest ancestor @<file> node.
-        language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        language = g.getLanguageFromAncestorAtFileNode(root)
+        if not language and use_default:
+            language = c.target_language
         if trace: g.trace(repr(language), 'default -----', p.h)
         return language
+
     #@+node:ekr.20170201150505.1: *5* bc.findAllValidLanguageDirectives
     def findAllValidLanguageDirectives(self, p):
         '''Return list of all valid @language directives in p.b'''
@@ -401,7 +404,9 @@ class JEditColorizer(BaseColorizer):
             ('n', self.match_url_n, True),
             ('p', self.match_url_p, True),
             ('t', self.match_url_t, True),
+            ('u', self.match_unl, True),
             ('w', self.match_url_w, True),
+            # ('<', self.match_image, True),
             ('<', self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
@@ -1031,6 +1036,28 @@ class JEditColorizer(BaseColorizer):
         else:
             self.colorRangeWithTag(s, 0, len(s), 'docpart')
             return len(s)
+    #@+node:ekr.20170204072452.1: *5* jedit.match_image
+    image_url = re.compile(r'^\s*<\s*img\s+.*src=\"(.*)\".*>\s*$')
+
+    def match_image(self, s, i):
+        '''Matcher for <img...>'''
+        m = self.image_url.match(s,i) 
+        if m:
+            self.image_src = src = m.group(1)
+            j = len(src)
+            doc = self.highlighter.document()
+            block_n = self.currentBlockNumber()
+            text_block = doc.findBlockByNumber(block_n)
+            g.trace('block_n: %2s %s' % (block_n, repr(s)))
+            g.trace('block text: %s' % repr(text_block.text()))
+                # How to get the cursor of the colorized line.
+                    # body = self.c.frame.body
+                    # s = body.wrapper.getAllText()
+                    # wrapper.delete(0, j)
+                    # cursor.insertHtml(src)
+            return j
+        else:
+            return 0
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
     def match_leo_keywords(self, s, i):
         '''Succeed if s[i:] is a Leo keyword.'''
@@ -1127,7 +1154,16 @@ class JEditColorizer(BaseColorizer):
                 return j - i
             else:
                 return 0
-    #@+node:ekr.20110605121601.18608: *5* jedit.match_url_any/f/h  (new)
+    #@+node:ekr.20170225103140.1: *5* jedit.match_unl
+    def match_unl(self, s, i):
+        if g.match(s.lower(), i, 'unl://'):
+            j = len(s)
+            # g.trace(repr(s[i:j]))
+            self.colorRangeWithTag(s, i, j, 'url')
+            return j
+        else:
+            return 0
+    #@+node:ekr.20110605121601.18608: *5* jedit.match_url_any/f/h
     # Fix bug 893230: URL coloring does not work for many Internet protocols.
     # Added support for: gopher, mailto, news, nntp, prospero, telnet, wais
     url_regex_f = re.compile(r"""(file|ftp)://[^\s'"]+[\w=/]""")
@@ -1139,7 +1175,6 @@ class JEditColorizer(BaseColorizer):
     url_regex_t = re.compile(r"""telnet://[^\s'"]+[\w=/]""")
     url_regex_w = re.compile(r"""wais://[^\s'"]+[\w=/]""")
     kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
-    # url_regex   = re.compile(r"""(file|ftp|http|https)://[^\s'"]+[\w=/]""")
     url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 
     def match_any_url(self, s, i):
@@ -1175,11 +1210,10 @@ class JEditColorizer(BaseColorizer):
         n = self.match_compiled_regexp_helper(s, i, regexp)
         if n > 0:
             j = i + n
-            assert(j - i == n)
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
-            return j - i
+            return n
         else:
             return 0
     #@+node:ekr.20110605121601.18610: *5* jedit.match_compiled_regexp_helper
@@ -1605,6 +1639,16 @@ class JEditColorizer(BaseColorizer):
             self.trace_match(kind, s, i, j2)
             return j2 - i
         else: return 0
+    #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
+    def match_wiki_pattern(self, s, i, pattern):
+        '''Show or hide a regex pattern managed by the wikiview plugin.'''
+        m = pattern.match(s,i)
+        if m:
+            n = len(m.group(0))
+            self.colorRangeWithTag(s, i, i + n, 'url')
+            return n
+        else:
+            return 0
     #@+node:ekr.20110605121601.18626: *4* jedit.match_word_and_regexp
     def match_word_and_regexp(self, s, i,
         kind1='', word='',
@@ -1785,7 +1829,6 @@ class JEditColorizer(BaseColorizer):
                     s2 = repr(s[i: i + 17 - 2] + '...')
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (delegate, tag)), i, j, s2, g.callers(2)))
-            # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -1799,10 +1842,9 @@ class JEditColorizer(BaseColorizer):
                         # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n; break
                 else:
-                    # New in Leo 4.6: Use the default chars for everything else.
-                    # New in Leo 4.8 devel: use the *delegate's* default characters if possible.
+                    # Use the default chars for everything else.
+                    # Use the *delegate's* default characters if possible.
                     default_tag = self.attributesDict.get('default')
-                    # g.trace(default_tag)
                     self.setTag(default_tag or tag, s, i, i + 1)
                     i += 1
                 assert i > progress
@@ -1815,11 +1857,17 @@ class JEditColorizer(BaseColorizer):
                     ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
         if tag != 'url':
-            # Allow URL's *everywhere*.
+            # Allow UNL's and URL's *everywhere*.
             j = min(j, len(s))
             while i < j:
-                if s[i].lower() in 'fh': # file|ftp|http|https
+                ch = s[i].lower()
+                if ch == 'u':
+                    n = self.match_unl(s, i)
+                    # if n > 0: g.trace('found unl', s[i:i+n])
+                    i += max(1, n)
+                elif ch in 'fh': # file|ftp|http|https
                     n = self.match_any_url(s, i)
+                    # if n > 0: g.trace('found url', s[i:i+n])
                     i += max(1, n)
                 else:
                     i += 1
@@ -1864,6 +1912,7 @@ class JEditColorizer(BaseColorizer):
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
+        if trace: g.trace('==========', repr(s))
         if p.v != self.old_v:
             self.updateSyntaxColorer(p) # Force a full recolor
             assert self.language
@@ -1925,6 +1974,29 @@ class JEditColorizer(BaseColorizer):
             return name
         else:
             return 'no-language'
+    #@+node:ekr.20170205055743.1: *3* jedit.set_wikiview_patterns
+    def set_wikiview_patterns(self, leadins, patterns):
+        '''
+        Init the colorizer so it will *skip* all patterns.
+        The wikiview plugin calls this method.
+        '''
+        d = self.rulesDict
+        for leadins_list, pattern in zip(leadins, patterns):
+            # g.trace('%3s %s' % (leadins_list, pattern))
+            for ch in leadins_list:
+                
+                def wiki_rule(self, s, i, pattern=pattern):
+                    '''Bind pattern and leadin for jedit.match_wiki_pattern.'''
+                    return self.match_wiki_pattern(s, i, pattern)
+                
+                aList = d.get(ch, [])
+                if wiki_rule not in aList:
+                    aList.insert(0, wiki_rule)
+                    d [ch] = aList
+        self.rulesDict = d
+        # g.trace('===== f') ; g.printList(d.get('f'))
+        # g.trace('===== h') ; g.printList(d.get('h'))
+        # g.trace('===== `') ; g.printList(d.get('`'))
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''

@@ -274,7 +274,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event):
-                ### g.trace(g.callers()) ###
                 self.parent().show()
                 QtWidgets.QLineEdit.focusInEvent(self, event)
                     # EKR: 2014/06/28: Call the base class method.
@@ -1704,7 +1703,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if name == '1':
             w.leo_p = None # Will be set when the second editor is created.
         else:
-            w.leo_p = p.copy()
+            w.leo_p = p and p.copy()
         w.leo_active = True
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
@@ -2182,6 +2181,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def update(self):
             if g.app.killed: return
             c = self.c; body = c.frame.body
+            if not c.p:
+                return
             # te is a QTextEdit.
             # 2010/02/19: Fix bug 525090
             # An added editor window doesn't display line/col
@@ -3918,7 +3919,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             u.afterInsertNode(p2, undoType, undoData)
             c.selectPosition(p2)
             return True # The original .leo file has changed.
-    #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers
+    #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers (QTreeWidget)
     def createAtFileNode(self, fn, p, s):
         '''
         Set p's headline, body text and possibly descendants
@@ -3926,10 +3927,12 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
         If the file is an thin file, create an @file tree.
         Othewise, create an @auto tree.
-        If all else fails, create an @auto node.
+        If all else fails, create an @edit node.
 
         Give a warning if a node with the same headline already exists.
         '''
+        trace = False and not g.unitTesting
+        if trace: g.trace('=====', g.callers())
         c = self.c
         c.init_error_dialogs()
         if self.isLeoFile(fn, s):
@@ -4012,11 +4015,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p.h = abs_fn[len(prefix):].strip()
         else:
             p.h = '@url file://%s' % fn
-    #@+node:ekr.20110605121601.18377: *9* isAutoFile
+    #@+node:ekr.20110605121601.18377: *9* isAutoFile (LeoQTreeWidget)
     def isAutoFile(self, fn):
         '''Return true if fn (a file name) can be parsed with an @auto parser.'''
-        c = self.c
-        d = c.importCommands.classDispatchDict
+        d = g.app.classDispatchDict
         junk, ext = g.os_path_splitext(fn)
         return d.get(ext)
     #@+node:ekr.20120309075544.9881: *9* isBinaryFile

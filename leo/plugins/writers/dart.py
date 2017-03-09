@@ -29,4 +29,6 @@ writer_dict = {
     'class': DartWriter,
     'extensions': ['.dart',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

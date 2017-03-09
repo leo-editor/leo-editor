@@ -320,4 +320,6 @@ importer_dict = {
     'class': CS_Importer,
     'extensions': ['.coffee', ],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

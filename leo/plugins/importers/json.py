@@ -58,12 +58,10 @@ class JSON_Scanner:
         '''Issue a message.'''
         g.es_print(s)
     #@+node:ekr.20160504092347.1: *3* json.run
-    def run(self, s, parent, parse_body=False, prepass=False):
+    def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         c = self.c
         changed = c.isChanged()
-        if prepass:
-            return False, []
         ok = self.scan(s, parent)
         # g.app.unitTestDict['result'] = ok
         if self.atAuto and ok:
@@ -152,4 +150,6 @@ importer_dict = {
     'class': JSON_Scanner,
     'extensions': ['.json',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

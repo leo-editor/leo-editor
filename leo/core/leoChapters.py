@@ -360,7 +360,6 @@ class ChapterController(object):
             chapterName, binding = self.parseHeadline(p)
             if chapterName and p.v not in seen:
                 seen.add(p.v)
-                ### result.append(chapterName)
                 if chapterName != sel_name:
                     result.append(chapterName)
                 if chapterName not in cc.chaptersDict:

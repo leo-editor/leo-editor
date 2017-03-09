@@ -34,4 +34,6 @@ writer_dict = {
     'class': OrgModeWriter,
     'extensions': ['.org',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

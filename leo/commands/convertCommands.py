@@ -484,7 +484,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.ivars = []
                 # List of ivars to be converted to self.ivar
             self.get_user_types()
-        #@+node:ekr.20150514063305.162: *6* get_user_types
+        #@+node:ekr.20150514063305.162: *6* get_user_types (C_To_Python)
         def get_user_types(self):
             c = self.c
             self.class_list = c.config.getData('c-to-python-class-list') or []

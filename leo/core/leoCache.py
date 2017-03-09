@@ -142,6 +142,9 @@ class Cacher(object):
         if top:
             if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
+        if not aList:
+            if trace: g.trace('no list')
+            return
         h, b, gnx, children = aList
         if h is not None:
             v = parent_v

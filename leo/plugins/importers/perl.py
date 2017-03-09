@@ -175,4 +175,6 @@ importer_dict = {
     'class': Perl_Importer,
     'extensions': ['.pl',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

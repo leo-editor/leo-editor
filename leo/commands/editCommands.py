@@ -400,7 +400,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         To rerun the command, just mark two nodes again.
         '''
         c = self.c
-        aList = [z.copy() for z in c.all_unique_positions() if z.isMarked()]
+        aList = [z for z in c.all_unique_positions() if z.isMarked()]
         if len(aList) == 2:
             p1, p2 = aList[0], aList[1]
             lines1 = g.splitLines(p1.b.rstrip()+'\n')
@@ -1365,6 +1365,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('insert-newline')
     def insertNewLine(self, event):
         '''Insert a newline at the cursor.'''
+        self.insertNewlineBase(event)
+        
+    insertNewline = insertNewLine
+
+    def insertNewlineBase(self, event):
+        '''A helper that can be monkey-patched by tables.py plugin.'''
+        # Note: insertNewlineHelper already exists.
         c, k = self.c, self.c.k
         w = self.editWidget(event)
         if not w:
@@ -1380,8 +1387,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.setInputState('insert')
         k.showStateAndMode()
         self.endCommand()
-
-    insertNewline = insertNewLine
     #@+node:ekr.20150514063305.263: *4* insertNewLineAndTab
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event):
@@ -1641,8 +1646,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = oldSel
         ch = '\n'
         if trace:
-            s = w.widget.toPlainText()
-            g.trace(i, j, len(s), w)
+            # s = w.widget.toPlainText()
+            g.trace('sel', i, j, g.callers())
         if i != j:
             # No auto-indent if there is selected text.
             w.delete(i, j)

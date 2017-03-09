@@ -1014,7 +1014,6 @@ if QtWidgets: # NOQA
         def update_rst(self, s, keywords):
             '''Update rst in the vr pane.'''
             pc = self
-            c, p = pc.c, pc.c.p
             s = s.strip().strip('"""').strip("'''").strip()
             isHtml = s.startswith('<') and not s.startswith('<<')
             # Do this regardless of whether we show the widget or not.
@@ -1022,20 +1021,19 @@ if QtWidgets: # NOQA
             assert pc.w
             if s:
                 pc.show()
-            # Show text only if we have docutils and only if we have rst or md language.
             if got_docutils:
-                force = keywords.get('force')
-                colorizer = c.frame.body.colorizer
-                language = colorizer.scanLanguageDirectives(p)
-                if trace: g.trace(language)
-                if force or language in ('rst', 'rest', 'markdown', 'md'):
-                    if not isHtml:
-                        s = pc.convert_to_html(s)
-                    pc.set_html(s, w)
-                else:
-                    w.setPlainText('')
+                # Fix #420: viewrendered does not render some nodes
+                # Users (rightly) complained, so don't be clever here:
+                    # c, p = pc.c, pc.c.p
+                    # force = keywords.get('force')
+                    # colorizer = c.frame.body.colorizer
+                    # language = colorizer.scanLanguageDirectives(p)
+                    # force or language in ('rst', 'rest', 'markdown', 'md'):
+                if not isHtml:
+                    s = pc.convert_to_html(s)
+                pc.set_html(s, w)
             else:
-                w.setPlainText('')
+                w.setPlainText(s)
         #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
         def convert_to_html(self, s):
             '''Convert s to html using docutils.'''
@@ -1115,7 +1113,9 @@ if QtWidgets: # NOQA
                 w = QtWidgets.QTextBrowser()
 
                 def handleClick(url, w=w):
-                    event = g.Bunch(c=c, w=w)
+                    import leo.plugins.qt_text as qt_text
+                    wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+                    event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)
                     
                 # if self.w and hasattr(self.w, 'anchorClicked'):
@@ -1132,6 +1132,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
+            trace = False and not g.unitTesting
             c, h, pc = self.c, p.h, self
             if h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
@@ -1140,7 +1141,9 @@ if QtWidgets: # NOQA
                     return word
             # 2016/03/25: Honor @language
             colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p)
+            language = colorizer.scanLanguageDirectives(p, use_default=False)
+                # Fix #344: don't use c.target_language as a default.
+            if trace: g.trace(repr(language))
             if got_markdown and language in ('md', 'markdown'):
                 return language
             elif got_docutils and language in ('rest', 'rst'):

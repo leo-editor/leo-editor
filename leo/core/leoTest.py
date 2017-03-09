@@ -47,8 +47,10 @@ class EditBodyTestCase(unittest.TestCase):
         self.parent = parent.copy()
         self.before = before.copy()
         self.after = after.copy()
-        self.sel = sel.copy() # Two lines giving the selection range in tk coordinates.
-        self.ins = ins.copy() # One line giving the insert point in tk coordinate.
+        self.sel = sel and sel.copy()
+            # Two lines giving the selection range in tk coordinates.
+        self.ins = ins and ins.copy()
+            # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
         # g.trace('parent',parent.h)
         # g.trace('before',before.h)
@@ -238,7 +240,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
         self.old_p = c.p
-    #@+node:ekr.20051104075904.82: *3* importExport
+    #@+node:ekr.20051104075904.82: *3* importExport (importExportTestCase)
     def importExport(self):
         c = self.c; p = self.p
         g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
@@ -432,7 +434,7 @@ class LinterTable():
     def get_files_for_scope(self, scope, fn):
         '''Return a list of absolute filenames for external linters.'''
         d = {
-            'all':      [self.core, self.commands, self.external, self.plugins, self.modes],
+            'all':      [self.core, self.commands, self.external, self.plugins], #  self.modes
             'commands': [self.commands],
             'core':     [self.core, self.commands, self.external, self.gui_plugins],
             'external': [self.external],
@@ -664,17 +666,21 @@ class TestManager(object):
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
-                if trace: g.trace('no found: running raw body')
+                if trace: g.trace('not found: running raw body')
                 test = tm.makeTestCase(c.p, setup_script)
                 if test:
                     suite.addTest(test)
                     found = True
             if found:
-                res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+                runner = unittest.TextTestRunner(
+                    failfast=g.app.failFast,
+                    verbosity=verbosity,
+                )
+                result = runner.run(suite)
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'
-                    archive = [(t.p.gnx, trace2) for(t, trace2) in res.errors]
+                    archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
                     c.cacher.db[key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
@@ -682,12 +688,13 @@ class TestManager(object):
                     'entire' if all else 'selected'))
         finally:
             c.setChanged(changed) # Restore changed state.
-            if g.app.unitTestDict.get('restoreSelectedNode', True):
+            g.unitTesting = g.app.unitTesting = False
+            if True: # g.app.unitTestDict.get('restoreSelectedNode', True):
+                # This is more natural, and more useful.
                 c.contractAllHeadlines()
                 c.redraw(p1)
             else:
                 c.recolor() # Needed when coloring is disabled in unit tests.
-            g.unitTesting = g.app.unitTesting = False
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
         s = '''
@@ -926,7 +933,7 @@ class TestManager(object):
         theType = h1[1: j]
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
-            "@asis",), "bad type: %s" % type
+            "@asis",), "bad type: %s" % theType
         thinFile = theType == "@thin"
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
@@ -1455,7 +1462,7 @@ class TestManager(object):
         return result
     #@+node:ekr.20051104075904.27: *4* TM.findChildrenOf
     def findChildrenOf(self, root):
-        return [p.copy() for p in root.children()]
+        return list(root.children())
     #@+node:ekr.20120220070422.10423: *4* TM.findNodeAnywhere
     def findNodeAnywhere(self, headline, breakOnError=False):
         # tm = self
@@ -1467,7 +1474,7 @@ class TestManager(object):
         if False and breakOnError: # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
-        return c.nullPosition()
+        return None
     #@+node:ekr.20051104075904.29: *4* TM.findNodeInRootTree
     def findRootNode(self, p):
         """Return the root of p's tree."""
@@ -1478,16 +1485,16 @@ class TestManager(object):
     def findNodeInTree(self, p, headline, startswith=False):
         """Search for a node in p's tree matching the given headline."""
         # tm = self
-        c = self.c
+        # c = self.c
         h = headline.strip().lower()
         for p in p.subtree():
             h2 = p.h.strip().lower()
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
-        return c.nullPosition()
+        return None
     #@+node:ekr.20051104075904.28: *4* TM.findSubnodesOf
     def findSubnodesOf(self, root):
-        return [p.copy() for p in root.subtree()]
+        return list(root.subtree())
     #@+node:ekr.20051104075904.91: *4* TM.getAllPluginFilenames
     def getAllPluginFilenames(self):
         path = g.os_path_join(g.app.loadDir, "..", "plugins")

@@ -1,42 +1,6 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20170123053151.1: ** re #375: improve jedit.setTag
-https://github.com/leo-editor/leo-editor/issues/375
-.. @+node:ekr.20170125061207.1: ** re #371: support multiple languages in scripts
-https://github.com/leo-editor/leo-editor/issues/371
-
-# The fix was to extractExecutableString
-.. @+node:ekr.20170124115212.1: ** re #380: New colorizer doesn't update properly...
-https://github.com/leo-editor/leo-editor/issues/380
-New colorizing code doesn't update properly after changing @language directives. 
-.. @+node:ekr.20170131035450.1: ** re #387: New file is marked as changed
-https://github.com/leo-editor/leo-editor/issues/387
-
-The problem:
-
-abbrev.init_tree_abbrev changes the outline's changed indicator (*) during startup.
-Simply reversing this in c.new causes the * to flip back and forth.
-
-The changes were a bit tricky:
-    
-- init_tree_abbrev calls c.pasteOutline(...,redrawFlag=False)
-- pasteOutline calls c.setChanged(True, redrawFlag=redrawFlag)
-- c.new calls c.setChanged(False)
-- Added redrawFlag keyword arg to c.setChanged.
-  When this is false, c.setChanged does not alter the outline's changed indicator.
-  
-Suppressing the change indicator is a bit dangerous.
-It could be very confusing if the indicator gets out of sync with reality.
-But the fix should actually be safe enough, because only startup code is affected.
-
-@language python
-.. @+node:ekr.20170125111328.1: ** re: #389: syntax coloring changes
-https://github.com/leo-editor/leo-editor/issues/389
-
-See the checkin log for details.
-.. @+node:ekr.20170202041220.1: ** re: colorize doc parts as rST
-# The only changes were to match_doc_part and its restarter.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

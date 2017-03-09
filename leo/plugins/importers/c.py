@@ -209,4 +209,6 @@ importer_dict = {
     'class': C_Importer,
     'extensions': ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

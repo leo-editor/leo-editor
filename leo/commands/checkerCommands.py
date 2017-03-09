@@ -192,7 +192,7 @@ class PyflakesCommand(object):
         for fn in sorted(paths):
             # Report the file name.
             sfn = g.shortFileName(fn)
-            s = g.readFileIntoEncodedString(fn, silent=False)
+            s = g.readFileIntoEncodedString(fn)
             if s.strip():
                 g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
@@ -209,7 +209,14 @@ class PyflakesCommand(object):
                 errors = api.check(s, sfn, r)
                 total_errors += errors
         return total_errors
-    #@+node:ekr.20160516072613.3: *3* pyflakes.find
+    #@+node:ekr.20170220114553.1: *3* pyflakes.finalize (new)
+    def finalize(self, p):
+        
+        aList = g.get_directives_dict_list(p)
+        path = self.c.scanAtPathDirectives(aList)
+        fn = p.anyAtFileNodeName()
+        return g.os_path_finalize_join(path, fn)
+    #@+node:ekr.20160516072613.3: *3* pyflakes.find (no longer used)
     def find(self, p):
         '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
         c = self.c
@@ -233,28 +240,14 @@ class PyflakesCommand(object):
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        # Run pyflakes on all Python @<file> nodes in root's tree.
         t1 = time.time()
-        found = False
-        for p in root.self_and_subtree():
-            found |= self.find(p)
-        # Look up the tree if no @<file> nodes were found.
-        if not found:
-            for p in root.parents():
-                if self.find(p):
-                    found = True
-                    break
-        # If still not found, expand the search if root is a clone.
-        if not found:
-            isCloned = any([p.isCloned() for p in root.self_and_parents()])
-            if isCloned:
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode():
-                        isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                        if isAncestor and self.find(p):
-                            break
-        paths = list(set(self.seen))
-        if paths:
+        
+        def predicate(p):
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+            
+        roots = g.findRootsWithPredicate(c, root, predicate)
+        if root:
+            paths = [self.finalize(z) for z in roots]
             # These messages are important for clarity.
             log_flag = not force
             total_errors = self.check_all(log_flag, paths)
@@ -335,28 +328,14 @@ class PylintCommand(object):
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
             sys.path.append(leo_path)
-        # Run lint on all Python @<file> nodes in root's tree.
         t1 = time.time()
-        found = False
-        for p in root.self_and_subtree():
-            found |= self.check(p, rc_fn)
-        # Look up the tree if no @<file> nodes were found.
-        if not found:
-            for p in root.parents():
-                if self.check(p, rc_fn):
-                    found = True
-                    break
-        # If still not found, expand the search if root is a clone.
-        if not found:
-            isCloned = any([p.isCloned() for p in root.self_and_parents()])
-            # g.trace(isCloned,root.h)
-            if isCloned:
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode():
-                        isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                        # g.trace(isAncestor,p.h)
-                        if isAncestor and self.check(p, rc_fn):
-                            break
+
+        def predicate(p):
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+            
+        roots = g.findRootsWithPredicate(c, root, predicate)
+        for p in roots:
+            self.check(p, rc_fn)
         if self.wait:
             g.es_print('pylint done %s' % g.timeSince(t1))
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint

@@ -1,10 +1,6 @@
+.. rst3: filename: html\leo_toc.html
 
-.. Leo documentation documentation master file, created by
-.. sphinx-quickstart on Mon Mar 30 16:39:02 2009.
-.. You can adapt this file completely to your liking, but it should at least
-.. contain the root `toctree` directive.
-
-.. 2013/10/08: This page now *does* generate the real TOC.
+.. This is the table of contents for Leo's documentation.
 
 Leo's Documentation Page
 ========================
@@ -34,7 +30,7 @@ Leo's Documentation Page
    :maxdepth: 2
 
    screencasts
-   Tutorial <tutorial>
+   Tutorials <tutorial>
    Users Guide <usersguide>
    leoandotherprograms
    intermediatetopics
@@ -57,4 +53,3 @@ Leo's Documentation Page
 
 `Leo's home page`_.
 
-    

@@ -415,25 +415,21 @@ class Position(object):
         p = self
         p = p.firstChild()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
     def following_siblings(self):
         '''Yield all siblings positions that follow p, not including p.'''
         p = self
-        # 2014/06/29: This extra copy is not needed: p.next() creates a copy.
-        # p = p.copy() # Always include the original node.
         p = p.next()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
     def nearest_roots(self, predicate=None):
@@ -458,14 +454,14 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 return
         # Next, look for all .md files in the tree.
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -494,7 +490,7 @@ class Position(object):
         p1 = self
         for p in p1.self_and_parents():
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 return
         # Next, look for all unique .md files in the tree.
         seen = set()
@@ -504,7 +500,7 @@ class Position(object):
             if predicate(p):
                 if p.v not in seen:
                     seen.add(p.v)
-                    yield p
+                    yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -529,11 +525,10 @@ class Position(object):
         p = self
         p = p.parent()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToParent()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
     def self_and_parents(self):
@@ -541,11 +536,10 @@ class Position(object):
         p = self
         p = p.copy()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToParent()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self):
@@ -555,11 +549,10 @@ class Position(object):
         while p.hasBack():
             p.moveToBack()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self):
@@ -568,11 +561,10 @@ class Position(object):
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToThreadNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self):
@@ -582,11 +574,10 @@ class Position(object):
         after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToThreadNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes(self):
@@ -610,10 +601,9 @@ class Position(object):
             if p.v not in seen:
                 seen.add(p.v)
                 # Fixed bug 1255208: p.unique_subtree returns vnodes, not positions.
-                yield p.copy() # Major bug fix: 2016/10/02
-        # raise stopIteration
-    # Compatibility with old code.
+                yield p.copy()
 
+    # Compatibility with old code...
     subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
@@ -782,13 +772,17 @@ class Position(object):
                     if i.h == p.h:
                         count = count + 1
                 aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
+                    # g.recursiveUNLFind and sf.copy_to_my_settings undo this replacement.
                 if count:
                     aList[-1] = aList[-1] + "," + str(count)
             else:
                 aList.append(i.h.replace('-->', '--%3E'))
+                    # g.recursiveUNLFind  and sf.copy_to_my_settings undo this replacement.
         UNL = '-->'.join(reversed(aList))
         if with_proto:
-            return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+            # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+            s = "unl:" + "//%s#%s" % (self.v.context.fileName(), UNL)
+            return s.replace(' ', '%20')
         elif with_file:
             return ("%s#%s" % (self.v.context.fileName(), UNL))
         else:
@@ -1927,7 +1921,6 @@ class PosList(list):
                     t1.__next__()
                 else:
                     t1.next()
-                # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
                 res.append(pc)
@@ -2072,7 +2065,8 @@ class VNodeBase(object):
         return self.findAtFileName(names)
 
     def atFileNodeName(self):
-        names = ("@file",)
+        names = ("@file", "@thin")
+            # Fix #403.
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName(self):

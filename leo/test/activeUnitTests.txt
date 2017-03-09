@@ -744,7 +744,7 @@ ivars = (
     # Subcommanders...
     'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
     # Positions...
-    '_currentPosition','_topPosition',
+    '_currentPosition', # '_topPosition',
     # '_rootPosition'
     # Data structures...
     'hoistStack',
@@ -1942,12 +1942,12 @@ else:
 # The length of this node should remain constant.
 
 assert len(p.b) == 175,len(p.b)
-#@+node:ekr.20071113201736: *4* @test zz restore the screen
+#@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoAtFile tests')
 #@+node:ekr.20101021205258.6011: *4* at.Directives & directories
@@ -4738,12 +4738,12 @@ c.selectPosition(p) # Sets body text.
 
 if
 IF
-#@+node:ekr.20090615053403.4957: *4* @test zz restore the screen
+#@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
@@ -5353,12 +5353,12 @@ for obj,val in table:
     val2 = g.isCallable(obj)
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
-#@+node:ekr.20071113201833: *4* @test zz restore the screen
+#@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoCommands tests')
 #@+node:ekr.20071113194216: *3* leoConfig
@@ -5468,12 +5468,12 @@ elif sys.platform== 'darwin':
 
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 assert c.page_width == c.config.getInt('page_width'),c.page_width
-#@+node:ekr.20071113201854: *4* @test zz restore the screen
+#@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoConfig tests')
 #@+node:ekr.20100131171342.5592: *3* leoDialogs
@@ -6083,13 +6083,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111084046.1: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
 #@+node:ekr.20081111084046.2: *4*  Commands C-E
 #@+node:ekr.20111104171708.3847: *5* @test c-to-python
 import leo.core.leoBeautify as leoBeautify
@@ -7070,12 +7063,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111082931.1: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20120212130242.3942: *5* data
 #@+node:ekr.20120212130242.3948: *6* a
 #@+node:ekr.20120212130242.3949: *7* b
@@ -7778,18 +7765,7 @@ this is the last sentence.
 This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
-#@+node:ekr.20081111084046.3: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20110610122533.3369: *5* goto-global-line tests
-#@+node:ekr.20110610122533.3405: *6* @@test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode'] = False
 #@+node:ekr.20100212072149.5341: *6* @test c.goToScriptLineNumber
 child = g.findNodeInChildren(c, p, 'syntax-error')
 assert child, 'no child'
@@ -7804,10 +7780,11 @@ finally:
 def spam:
     pass
 #@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
+import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
+elif sys.platform.startswith('win'):
     trace = False
     h = '@auto unittest/at-auto-md-line-number-test.md'
     root = g.findNodeAnywhere(c, h)
@@ -7824,6 +7801,8 @@ else:
             if trace: print('not found: %s' % n)
             assert n == 7, n
             break
+else:
+    self.skipTest('Skip on Linux')
 #@+node:ekr.20150626101643.1: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7867,10 +7846,11 @@ else:
             assert n == 5, n
             break
 #@+node:ekr.20150625101047.1: *6* @test find_file_line: @auto-py
+import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
+elif sys.platform.startswith('win'):
     trace = False
     root = p.parent().parent()
     # h = '@auto unittest/at-auto-line-number-test.py'
@@ -7889,6 +7869,8 @@ else:
             assert n == 13, n
             if trace: print('not found: %s' % n)
             break
+else:
+    self.skipTest('Skip on Linux')
 #@+node:ekr.20150626093653.1: *6* @@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -9168,13 +9150,6 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20081111084046.4: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
 #@+node:ekr.20110118082508.3729: *5* reformat-paragraph tests
 #@+node:ekr.20110118082508.3793: *6* @test reformat-paragraph list 1 of 5
 # Required when running tests externally
@@ -9992,7 +9967,9 @@ for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWO
     assert i == 5, 'Expected 5, got: %d' % i
 #@+node:ekr.20100131180007.5453: *5* @test dynamicExpandHelper
 # A totally wimpy test.
-c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
+# And it somehow prints a newline to the console.
+if 0:
+    c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
 #@+node:ekr.20061104172236.5: *5* @test extendHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
@@ -10646,22 +10623,14 @@ try:
     assert p.b == body
 finally:
     c.setBodyString(p,'')
-#@+node:ekr.20060131102450: *5* print end of typing and undo tests
-print('\nEnd of typing and undo tests')
-#@+node:ekr.20051109143831: *5* @test zz restore the screen
+#@+node:ekr.20060131102450: *5* @test zz print end of typing tests
+print('\nEnd of typing tests')
+#@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractAllHeadlines()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-
-#@+node:ekr.20070306091949: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoEditCommands tests.')
 #@+node:ekr.20061001114637: *3* leoFileCommands
@@ -10959,12 +10928,12 @@ else:
     assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
     # old gnxs:
     # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
-#@+node:ekr.20071113202045: *4* @test zz restore the screen
+#@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoFileCommands tests.')
 #@+node:ekr.20071113193527: *3* leoFind
@@ -11034,14 +11003,14 @@ else:
     for command in table:
         c.k.simulateCommand(command)
         c.k.simulateCommand(command)
-#@+node:ekr.20071113202153: *4* @test zz restore the screen
+#@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoFind tests.')
+print('\nEnd of leoFind tests.')
 #@+node:ekr.20071113194424: *3* leoFrame
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
@@ -11218,14 +11187,14 @@ else:
     assert d.get(tag) is True
 #@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
-#@+node:ekr.20071113202153.1: *4* @test zz restore the screen
+#@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoFrame tests.')
+print('\nEnd of leoFrame tests.')
 #@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
@@ -11509,21 +11478,30 @@ assert val,'no val' # This can be different on different platforms.
 #@+node:ekr.20120307133953.3947: *4* @test g.handleUrl
 import sys
 if sys.platform.startswith('win'):
-    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
-    assert g.os_path_exists(fn1),fn1
-    url1 = 'file://' + fn1 + '#Leo 4.10 Release notes'
+    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+    fn1 = 'LeoDocs.leo#'
+    fn2 = 'doc/LeoDocs.leo#'
+    unl2 = '@settings-->Plugins-->wikiview plugin'
+    unl3 = '@settings-->Plugins-->wikiview%20plugin'
     table = (
-        (r'file://C:/prog/test.sh',             ['os_startfile']),
-        (r'file://C:/prog',                     ['os_startfile']),
-        (r'http://writemonkey.com/index.php',   ['browser']),
-        (url1,                                  ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
-        (r'#-->Before 4.10 b1',                 ['g.recursiveUNLSearch']),
+        (http + 'writemonkey.com/index.php', ['browser']),
+        (file_ + 'x.py',        ['os_startfile']),
+        (file_ + fn1,           ['g.recursiveUNLSearch']),
+        (file_ + fn2,           ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + unl2,           ['g.recursiveUNLSearch']),
+        (unl1 + unl3,           ['g.recursiveUNLSearch']),
     )
+    d = g.app.unitTestDict
     for url,aList in table:
+        d = g.app.unitTestDict = {}
         g.handleUrl(c=c,p=c.p,url=url)
         for kind in aList:
-            assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
-                kind,url)
+            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
+                kind,url,g.dictToString(d))
 #@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 
@@ -12011,14 +11989,14 @@ else:
 
 for ivar in ('c','g','p'):
     assert ivar in dir()
-#@+node:ekr.20071113202153.2: *4* @test zz restore the screen
+#@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoGlobals tests.')
+print('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
@@ -12113,14 +12091,14 @@ else:
         filter_obj.eventFilter(w,e)
         # Assert that handleUnboundChar actually ignored it.
         assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
-#@+node:ekr.20100131171342.5603: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoGui tests.')
+print('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
@@ -15408,6 +15386,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20170302201859.3: *7* @@file c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170302201859.4: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -16032,20 +16023,6 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20170122032242.1: *6* @test python bug #360
-if 0: # Preamble...
-    # g.cls()
-    if c.isChanged(): c.save()
-    import leo.core.leoImport as leoImport
-    import leo.plugins.importers.linescanner as linescanner
-    import leo.plugins.importers.python
-    # Reload all.
-    import imp
-    imp.reload(leo.plugins.importers.linescanner)
-    imp.reload(leo.plugins.importers.python)
-    imp.reload(leoImport)
-    ic = leoImport.LeoImportCommands(c)
-else:
-    ic = c.importCommands 
 s = """
 @base_task(
     targets=['img/who_map.png', 'img/who_map.pdf'],
@@ -16056,14 +16033,12 @@ def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
 table = (
-    (1, 'Declarations'),
-        # Poor, but passes perfect import.
     (1, 'make_map'),
 )
 try:
     test_node = p.copy()
     test_node.deleteAllChildren()
-    ic.pythonUnitTest(p,s=s,showTree=True)
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
     after = p.nodeAfterTree()
     root = p.lastChild()
     assert root.h.startswith('@@'), root.h
@@ -16075,6 +16050,46 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20170306041801.1: *6* @test python bug @390
+s = """\
+import sys
+
+class Foo():
+    pass
+    
+a = 2
+
+def main(self):
+    pass
+
+if __name__ == '__main__':
+    main()
+"""
+table = (
+    (1, 'Declarations'),
+    (1, 'class Foo'),
+    (1, 'main'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        assert root.b.find("if __name__ == '__main__':") > -1
     if 1:
         test_node.deleteAllChildren()
 finally:
@@ -16839,6 +16854,23 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20170306052710.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python overindent def--no following def
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20170306052710.2: *8* class aClass
+class aClass:
+    @others
+#@+node:ekr.20170306052710.3: *9* def1
+def def1(self):
+    pass
+
+if False or g.unitTesting:
+
+    def pr(*args,**keys): # reportMismatch test
+        g.es_print(color='blue',*args,**keys)
+
+    pr('input...')
 #@+node:ekr.20161115063144.23: *6* @test python overindent def--one following def
 @tabwidth -4
     # Required when running unit tests externally.
@@ -17034,40 +17066,6 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20170122040158.23: *7* @@file c:/leo.repo/leo-editor/leo/test/python top-level later decl
-#!/usr/bin/env python3
-
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20170122040158.24: *8* Declarations
-import os
-import re
-
-#@+node:ekr.20170122040158.25: *8* merge_value
-def merge_value(v1, v2):
-    return v
-
-#@+node:ekr.20170122040158.26: *8* class MainDisplay
-class MainDisplay(object):
-
-    @others
-# This line should be included at the end of the class node.
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-#@+node:ekr.20170122040158.27: *9* save_file
-def save_file(self):
-    """Write the file out to disk."""
-    with open(self.save_name, "w") as f:
-        for newline in newlines:
-            f.write(newline)
-
-#@+node:ekr.20170122040158.28: *8* retab
-def retab(s, tabsize):
-    return ''.join(pieces)
-
-if __name__=="__main__":
-    main()
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
@@ -20348,12 +20346,12 @@ for base, result, s in table:
         new_state.parens == parens and
         new_state.context == context)
     assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
-#@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
+#@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoImport tests.')
 #@+node:ekr.20100131171342.5604: *3* leoKeys
@@ -20381,9 +20379,9 @@ finally:
 table = (
     ( 50,'c.'),
     (  3,'p.ins'),
-    ( 20,'g.print'),
+    ( 17,'g.print'),
 )
-
+g.pr
 ac = c.k.autoCompleter
 ac.w = c.frame.body.wrapper
 
@@ -20491,14 +20489,14 @@ table = (
 for setting, result in table:
     val = c.k.strokeFromSetting(setting)
     assert val==result,'Expected %s, Got %s' % (result,val)
-#@+node:ekr.20100131171342.5609: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
-# print('\nEnd of leoKeys tests.')
+print('\nEnd of leoKeys tests.')
 #@+node:ekr.20071113194424.1: *3* leoNodes
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
@@ -21309,12 +21307,12 @@ import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
-#@+node:ekr.20071113202452: *4* @test zz restore the screen
+#@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
@@ -21896,7 +21894,7 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()
-#@+node:ekr.20140712142620.4458: *3* leoPersistence tests
+#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone)
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -22123,7 +22121,20 @@ def spam():
 #@+node:ekr.20140712142620.4563: *5* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4564: *4* @auto-rst test_rst.py
+#@+node:ekr.20170302110925.1: *4* @@test pd.prepass
+# This was part of the ill-fated leoViews project.
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+else:
+    pd = c.persistenceController
+    h = '@persistence'
+    p1 = pd.find_at_persistence_node()
+    assert p1
+    p2 = pd.has_at_persistence_node()
+    assert p1 == p2,(p1,p2)
+    print(p1.h)
+    pd.prepass(p2)
 #@+node:ekr.20140716115306.4345: *4* @@test pd.recovery_ua_for_gnx
 pd = c.persistenceController
 at_persistence = pd.find_at_persistence_node()
@@ -27585,12 +27596,12 @@ after
 #@+node:ekr.20050518071251.4: *7* selection
 2.0
 2.16
-#@+node:ekr.20071113202510: *4* @test zz restore the screen
+#@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
 #@+node:ekr.20140802074328.4471: *3* leoVim.py
@@ -28107,18 +28118,19 @@ for fn in files:
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
-#@+node:ekr.20100131171342.5501: *4* @test zz restore the screen
+#@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = c.testManager.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
+if 0: # No longer needed.
+    c.contractAllHeadlines()
+    h = 'All unit tests'
+    p = c.testManager.findNodeAnywhere(h)
+    if p:
+        p.expand()
+        g.app.unitTestDict['restoreSelectedNode']=False
+        c.selectPosition(p)
+        c.redraw()
 
 print('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
@@ -28129,18 +28141,19 @@ if hasattr(tree,'redrawCount'):
 if 0:
     print('calls to jedit.setTag: %s' %
         c.frame.body.colorizer.highlighter.colorer.n_setTag)
-#@+node:ekr.20081111150402.11: ** @test zz restore the screen
+#@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.selectPosition(p)
-c.contractParent()
-c.selectPosition(p.parent())
-if 0: # Do not do this! It would changed unitTest.leo!
-    c.save() # Only good way to save the present expansion/selection state.
-g.app.unitTestDict['restoreSelectedNode']=False
-c.bodyWantsFocus()
-
+if 0:
+    c.selectPosition(p)
+    c.contractParent()
+    c.selectPosition(p.parent())
+    # Do not do this! It would changed unitTest.leo!
+        # c.save()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.bodyWantsFocus()
+    
 # Print does not work: it is redirected.
 g.es('all unit tests done',color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
@@ -28153,6 +28166,7 @@ if 0:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
+
 c.k.simulateCommand(':q!')
 #@-all
 #@-leo

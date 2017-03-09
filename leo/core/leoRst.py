@@ -511,25 +511,27 @@ class RstCommands(object):
         '''Write all @rst nodes.'''
         t1 = time.time()
         self.rst_nodes = []
-        self.initSettings(self.c.p)
+        self.n_written = 0
         self.processTopTree(self.c.p)
         t2 = time.time()
         g.es_print('rst3: %s files in %4.2f sec.' % (self.n_written, t2 - t1))
         return self.rst_nodes # A list of positions.
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p, justOneFile=False):
-        current = p.copy()
-        # This strange looking code looks up and down the tree for @rst nodes.
-        for p in current.self_and_parents():
-            h = p.h
-            if h.startswith('@rst') and not h.startswith('@rst-'):
-                self.processTree(p, ext=None, toString=False, justOneFile=justOneFile)
-                break
-            elif h.startswith('@slides'):
-                self.processTree(p, ext=None, toString=False, justOneFile=False)
-                break
+        '''Find and handle all @rst and @slides node associated with p.'''
+        
+        def predicate(p):
+            h = p and p.h or ''
+            return (
+                h.startswith('@rst') and not h.startswith('@rst-') or
+                h.startswith('@slides'))
+            
+        roots = g.findRootsWithPredicate(self.c, p, predicate)
+        if roots:
+            for p in roots:
+                self.processTree(p, ext = None, toString = False, justOneFile = justOneFile)
         else:
-            self.processTree(current, ext=None, toString=False, justOneFile=justOneFile)
+            g.warning('No @rst or @slides nodes in', p.h)
     #@+node:ekr.20090502071837.63: *5* rst.processTree
     def processTree(self, p, ext=None, toString=False, justOneFile=False):
         '''
@@ -538,22 +540,20 @@ class RstCommands(object):
         '''
         trace = False and not g.unitTesting
         if trace: g.trace(p.h)
-        found = False
         self.stringOutput = ''
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:
             h = p.h.strip()
-            if g.match_word(h, 0, '@rst-ignore'):
-                p.moveToThreadNext()
-            elif g.match_word(h, 0, '@rst-ignore-tree'):
+            if g.match_word(h, 0, '@rst-ignore-tree'):
                 p.moveToNodeAfterTree()
+            elif g.match_word(h, 0, '@rst-ignore'):
+                p.moveToThreadNext()
             elif g.match_word(h, 0, "@rst"):
                 self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
                     if trace: g.trace('found: %s', p.h)
-                    found = True
                     self.write_rst_tree(p, ext, fn, toString=toString, justOneFile=justOneFile)
                     if toString:
                         return p.copy(), self.stringOutput
@@ -562,11 +562,9 @@ class RstCommands(object):
                     p.moveToThreadNext()
             elif g.match(h, 0, "@slides"):
                 self.write_slides(p)
-                found = True
                 p.moveToNodeAfterTree()
-            else: p.moveToThreadNext()
-        if not found:
-            g.warning('No @rst or @slides nodes in selected tree')
+            else:
+                p.moveToThreadNext()
         return None, None
     #@+node:ekr.20090502071837.64: *5* rst.write_rst_tree
     def write_rst_tree(self, p, ext, fn, toString=False, justOneFile=False):
@@ -581,6 +579,7 @@ class RstCommands(object):
         self.n_written += 1
         self.topNode = p.copy()
         self.topLevel = p.level()
+        self.initSettings(p.copy()) # 2017/02/19
         if toString:
             ext = ext or '.html' # 2010/08/12: Unit test found this.
         else:
@@ -1233,7 +1232,6 @@ class RstCommands(object):
         Init all settings for a command rooted in p.
         There is no need to create self.d0 again.
         '''
-        self.n_written = 0
         self.scriptSettingsDict = script_d or {}
         self.init_write(p)
         self.preprocessTree(p)

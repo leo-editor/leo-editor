@@ -34,4 +34,6 @@ writer_dict = {
     '@auto': ['@auto-ctext',],
     'class': CTextWriter,
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

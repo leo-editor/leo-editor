@@ -11,16 +11,29 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# 2014/02/14: -----> Replaced cr/lf by lf.
+# -- General configuration -----------------------------------------------------
 
-import sys, os
+# import sys, os
+
+# 2017/02/16: http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
+# The suffix of source filenames.
+try:
+    from recommonmark.parser import CommonMarkParser
+    
+    source_parsers = {
+        '.md': CommonMarkParser,
+    }
+    source_suffix = ['.html.txt', '.md'] # possible: '.rst',
+    print('===== conf.py: .md files enabled') 
+except ImportError:
+    source_suffix = '.html.txt'
+    print('===== conf.py: .md files NOT enabled') 
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.append(os.path.abspath('.'))
 
-# -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -28,9 +41,6 @@ extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-# The suffix of source filenames.
-source_suffix = '.html.txt'
 
 # The encoding of source files.
 #source_encoding = 'utf-8'
@@ -164,7 +174,7 @@ html_last_updated_fmt = '%b %d, %Y'
 html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-## html_sidebars = {'FAQ':'noSideBar.txt'} ### raises TemplateNotFound exception.
+## html_sidebars = {'FAQ':'noSideBar.txt'} # raises TemplateNotFound exception.
 
     # * localtoc.html – a fine-grained table of contents of the current document
     # * globaltoc.html – a coarse-grained table of contents for the whole documentation set, collapsed

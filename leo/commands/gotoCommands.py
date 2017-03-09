@@ -294,28 +294,27 @@ class GoToCommands(object):
         Return the result of writing the file *with* sentinels, even if the
         external file would normally *not* have sentinels.
         '''
-        at, c = self.c.atFileCommands, self.c
+        c = self.c
         if root.isAtAutoNode():
-            # We must treat @auto nodes specially because
+            # Special case @auto nodes: 
             # Leo does not write sentinels in the root @auto node.
-            # at.writeOneAtAutoNode handle's all kinds of @auto nodes.
+            at = c.atFileCommands
             ok = at.writeOneAtAutoNode(
-                root,
-                toString=True,
-                force=True,
-                trialWrite=False,
-                forceSentinels=True)
+                        root,
+                        toString=True,
+                        force=True,
+                        trialWrite=False,
+                        forceSentinels=True,
+            )
             return ok and at.stringOutput or ''
         else:
-            return g.getScript(
-                c,
-                root,
-                useSelectedText=False,
-                forcePythonSentinels=False,
-                    # Fix #247: @language c breaks goto-global-line.
-                    # self.get_delims returns language-specific delims,
-                    # so this code must do so too.
-                useSentinels=True)
+            return g.composeScript( # Fix # 429.
+                        c = c,
+                        p = root,
+                        s = root.b,
+                        forcePythonSentinels=False, # See #247.
+                        useSentinels=True)
+
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''

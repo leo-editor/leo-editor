@@ -1421,9 +1421,6 @@ class GetArg(object):
         c, k = ga.c, ga.k
         state = k.getState('getArg')
         c.check_event(event)
-        # Remember these events also.
-        ### if c.macroCommands.recordingMacro and state > 0:
-        ###    c.macroCommands.startRecordingMacro(event)
         char = event and event.char or ''
         if state > 0:
             k.setLossage(char, stroke)
@@ -1746,6 +1743,7 @@ class KeyHandlerClass(object):
         self.abortAllModesKey = None
         self.autoCompleteForceKey = None
         self.demoNextKey = None # New support for the demo.py plugin.
+        self.demoPrevKey = None # New support for the demo.py plugin.
         self.fullCommandKey = None
         self.universalArgKey = None
         # Used by k.masterKeyHandler...
@@ -1848,9 +1846,6 @@ class KeyHandlerClass(object):
             'open-rectangle',
             'string-rectangle',
             'yank-rectangle',
-            # RegisterCommandsClass
-            'jump-to-register',
-            'point-to-register',
             # SearchCommandsClass
             'change',
             'change-then-find',
@@ -1978,11 +1973,6 @@ class KeyHandlerClass(object):
             'toggle-find-reverse-option',
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
-            # RegisterCommandsClass
-            'append-to-register',
-            'copy-to-register',
-            'insert-register',
-            'prepend-to-register',
         ]
     #@+node:ekr.20070123085931: *5* k.defineSpecialKeys
     def defineSpecialKeys(self):
@@ -2194,7 +2184,7 @@ class KeyHandlerClass(object):
         # k = self
         if not shortcut:
             return False
-            ### return True # #327: binding to None clears previous bindings.
+            # return True # #327: binding to None clears previous bindings.
         assert g.isStroke(shortcut)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
@@ -2215,7 +2205,6 @@ class KeyHandlerClass(object):
         '''
         k = self; c = k.c
         lm = g.app.loadManager
-        g.trace(stroke)
         if 0:
             # This does not fix 327: Create a way to unbind bindings
             assert stroke in (None, 'None', 'none') or g.isStroke(stroke), repr(stroke)
@@ -2362,6 +2351,7 @@ class KeyHandlerClass(object):
             ('universalArgKey', 'universal-argument'),
             ('autoCompleteForceKey', 'auto-complete-force'),
             ('demoNextKey', 'demo-next'),
+            ('demoPrevKey', 'demo-prev'),
         ):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
@@ -2391,7 +2381,7 @@ class KeyHandlerClass(object):
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict & helper
+    #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
         trace = False and not g.unitTesting
@@ -2511,27 +2501,19 @@ class KeyHandlerClass(object):
     def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
         '''Handle 'full-command' (alt-x) mode.'''
         trace = False and not g.unitTesting
-        # trace_event = True
         verbose = False
         try:
             k = self; c = k.c
-            ### recording = c.macroCommands.recordingMacro
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
             ch = char = event and event.char or ''
             stroke = event and event.stroke or None
-            if trace:
-                g.trace('state', state, repr(char)) ### 'recording', recording, 
-            ###
-            # if recording:
-                # c.macroCommands.startRecordingMacro(event)
+            if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
                 k.mb_event = event # Save the full event for later.
-                # if trace and trace_event:
-                    # g.trace(k.mb_event.w, 'hasSelection', k.mb_event.w.hasSelection())
                 k.setState('full-command', 1, handler=k.fullCommand)
                 prompt = helpPrompt if help else k.altX_prompt
                 k.setLabelBlue(prompt)
@@ -2691,7 +2673,7 @@ class KeyHandlerClass(object):
     [D] default binding
     [F] loaded .leo File
     [M] myLeoSettings.leo
-    [@] mode
+    [@] @mode, @button, @command
 
     '''
         if not d: return g.es('no bindings')
@@ -2742,7 +2724,7 @@ class KeyHandlerClass(object):
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            # g.trace(key,kind)
+            # g.trace('%10s %s' % (key, repr(kind)))
             letter = lm.computeBindingLetter(kind)
             pane = '%s: ' % (pane) if pane else ''
             left = pane + key # pane and shortcut fields
@@ -3103,6 +3085,7 @@ class KeyHandlerClass(object):
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
+            # g.trace('f.__name__', f.__name__, 'func.__name__', func.__name__)
         assert not g.isStroke(shortcut)
         c.commandsDict[commandName] = func
         if shortcut:
@@ -3231,20 +3214,24 @@ class KeyHandlerClass(object):
             'state', state, 'state2', k.unboundKeyAction)
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            ### For now, leave this support in place.
             if hasattr(c, 'screenCastController') and c.screenCastController:
                 c.screenCastController.quit()
             k.masterCommand(commandName='keyboard-quit',
-                    event=event, func=k.keyboardQuit, stroke=stroke)
+                event=event, func=k.keyboardQuit, stroke=stroke)
             return
         # 2017/01/31: Important support for the demo.py plugin.
-        # Shortcut everything so that demo-next won't alter any KeyHandler ivars.
-        if k.demoNextKey and stroke == k.demoNextKey:
-            if getattr(g.app, 'demo', None):
-                g.app.demo.next()
-            else:
-                g.es_print('no demo active')
-            return 
+        demo = getattr(g.app, 'demo', None)
+        if demo:
+            # Shortcut everything so that demo-next or demo-prev
+            # won't alter of our ivars.
+            if k.demoNextKey and stroke == k.demoNextKey:
+                if demo.trace: g.trace('demo-next', stroke)
+                demo.next_command()
+                return
+            elif k.demoPrevKey and stroke == k.demoPrevKey:
+                if demo.trace: g.trace('demo-prev', stroke)
+                demo.prev_command()
+                return
         # Always handle modes regardless of vim.
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state, stroke))
@@ -3367,14 +3354,15 @@ class KeyHandlerClass(object):
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
+        trace_dict = True
         verbose = True
         k = self; w_name = k.c.widget_name(w)
-        # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
             return None
-        if trace: g.trace('w_name', repr(w_name), 'stroke', stroke, 'w', w,
+        if trace: g.trace('===== w_name', repr(w_name), 'stroke', stroke,
+            # 'w', w,
             'isTextWrapper(w)', g.isTextWrapper(w))
         for key, name in (
             # Order here is similar to bindtags order.
@@ -3391,6 +3379,13 @@ class KeyHandlerClass(object):
             ('text', None),
             ('all', None),
         ):
+            if trace and trace_dict:
+                d = k.masterBindingsDict.get(key, {})
+                g.trace('key:', key)
+                if d:
+                    g.trace('d.get(%s)' % (stroke))
+                    g.trace(d.get(stroke))
+                
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
@@ -3414,18 +3409,18 @@ class KeyHandlerClass(object):
                         if key == 'text' and name == 'head' and si.commandName in table:
                             if trace: g.trace('***** special case', si.commandName)
                         else:
-                            if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
+                            if trace: g.trace('key: %7s name: %6s  found: %s = %s' % (
                                 key, name, repr(si.stroke), si.commandName))
                             return si
         return None
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
-        k = self; c = k.c
+        trace = False and not g.unitTesting
+        verbose = True
+        c, k = self.c, self
         w = event and event.widget
         name = c.widget_name(w)
-        trace = False and not g.unitTesting
-        verbose = False
         if trace and verbose:
             g.trace('widget_name', name, 'stroke', stroke,
             'enable alt-ctrl', self.enable_alt_ctrl_bindings)
@@ -3468,8 +3463,6 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
-        ### Not necessary, and makes life hard for the demo plugin.
-            # assert g.isStroke(stroke), repr(stroke)
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
         if state in ('getArg', 'full-command'):
@@ -3620,23 +3613,12 @@ class KeyHandlerClass(object):
                 stroke, repr(ch), func and func.__name__))
         if inserted:
             k.setLossage(ch, stroke)
-        # We *must not* interfere with the global state in the macro class.
-        ###
-        # if c.macroCommands.recordingMacro:
-        #    c.macroCommands.startRecordingMacro(event)
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
             return
         if special: # Don't pass these on.
             return
-        # if k.regx.iter:
-            # try:
-                # k.regXKey = char
-                # k.regx.iter.next() # EKR: next() may throw StopIteration.
-            # except StopIteration:
-                # pass
-            # return
         if k.abbrevOn:
             expanded = c.abbrevCommands.expandAbbrev(event, stroke)
             if expanded: return
@@ -4308,11 +4290,13 @@ class KeyHandlerClass(object):
                 # This is not accurate: LeoQtEventFilter retains
                 # the spelling of Alt-Ctrl keys because of the
                 # @bool enable_alt_ctrl_bindings setting.
-        # Special case the gang of four, plus 'Escape',
+        # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
         d = {
             'BackSpace': '\b',
             'Escape': 'Escape',
             'Linefeed': '\r',
+            'PageDn': 'Next', # Fix #416.
+            'PageUp': 'Prior', # Fix #416.
             'Return': '\n',
             'Tab': '\t',
         }
@@ -4659,14 +4643,11 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU(self, event, stroke):
         k = self
-        ### c = k.c
         ch = event and event.char or ''
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
         if ch == '(':
             k.clearState()
             k.resetLabel()
-            ### c.macroCommands.startKbdMacro(event)
-            ### c.macroCommands.callLastKeyboardMacro(event)
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo(object):

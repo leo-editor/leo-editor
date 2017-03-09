@@ -7,7 +7,7 @@ from __future__ import print_function
 import leo.core.leoGlobals as g
 import binascii
 import pickle
-import time
+# import time
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 @g.command('at-file-to-at-auto')
@@ -21,152 +21,6 @@ def view_pack_command(event):
     c = event.get('c')
     if c and c.persistenceController:
         c.persistenceController.clean()
-#@+node:ekr.20140711111623.17795: ** class ConvertController
-class ConvertController(object):
-    '''A class to convert @file trees to @auto trees.'''
-
-    def __init__(self, c, p):
-        self.c = c
-        # self.ic = c.importCommands
-        self.pd = c.persistenceController
-        self.root = p.copy()
-    #@+others
-    #@+node:ekr.20140711111623.17796: *3* cc.delete_at_data_nodes
-    def delete_at_data_nodes(self, root):
-        '''Delete all @data nodes pertaining to root.'''
-        cc = self
-        pd = cc.pd
-        while True:
-            p = pd.has_at_data_node(root)
-            if not p: break
-            p.doDelete()
-    #@+node:ekr.20140711111623.17797: *3* cc.import_from_string
-    def import_from_string(self, s):
-        '''Import from s into a temp outline.'''
-        cc = self # (ConvertController)
-        c = cc.c
-        ic = c.importCommands
-        root = cc.root
-        language = g.scanForAtLanguage(c, root)
-        ext = '.' + g.app.language_extension_dict.get(language)
-        scanner = ic.scanner_for_ext(ext)
-        # g.trace(language,ext,scanner.__name__)
-        p = root.insertAfter()
-        ok = scanner(atAuto=True, parent=p, s=s)
-        p.h = root.h.replace('@file', '@auto' if ok else '@@auto')
-        return ok, p
-    #@+node:ekr.20140711111623.17798: *3* cc.run
-    def run(self):
-        '''Convert an @file tree to @auto tree.'''
-        trace = True and not g.unitTesting
-        trace_s = False
-        cc = self
-        c = cc.c
-        root, pd = cc.root, c.persistenceController
-        # set the expected imported headline for all vnodes.
-        t1 = time.time()
-        cc.set_expected_imported_headlines(root)
-        t2 = time.time()
-        # Delete all previous @data nodes for this tree.
-        cc.delete_at_data_nodes(root)
-        t3 = time.time()
-        # Ensure that all nodes of the tree are regularized.
-        ok = pd.prepass(root)
-        t4 = time.time()
-        if not ok:
-            g.es_print('Can not convert', root.h, color='red')
-            if trace: g.trace(
-                '\n  set_expected_imported_headlines: %4.2f sec' % (t2 - t1),
-                # '\n  delete_at_data_nodes:          %4.2f sec' % (t3-t2),
-                '\n  prepass:                         %4.2f sec' % (t4 - t3),
-                '\n  total:                           %4.2f sec' % (t4 - t1))
-            return
-        # Create the appropriate @data node.
-        at_auto_view = pd.update_before_write_foreign_file(root)
-        t5 = time.time()
-        # Write the @file node as if it were an @auto node.
-        s = cc.strip_sentinels()
-        t6 = time.time()
-        if trace and trace_s:
-            g.trace('source file...\n', s)
-        # Import the @auto string.
-        ok, p = cc.import_from_string(s)
-        t7 = time.time()
-        if ok:
-            # Change at_auto_view.b so it matches p.gnx.
-            at_auto_view.b = pd.at_data_body(p)
-            # Recreate the organizer nodes, headlines, etc.
-            pd.update_after_read_foreign_file(p)
-            t8 = time.time()
-            # if not ok:
-                # p.h = '@@' + p.h
-                # g.trace('restoring original @auto file')
-                # ok,p = cc.import_from_string(s)
-                # if ok:
-                    # p.h = '@@' + p.h + ' (restored)'
-                    # if p.next():
-                        # p.moveAfter(p.next())
-            t9 = time.time()
-        else:
-            t8 = t9 = time.time()
-        if trace: g.trace(
-            '\n  set_expected_imported_headlines: %4.2f sec' % (t2 - t1),
-            # '\n  delete_at_data_nodes:          %4.2f sec' % (t3-t2),
-            '\n  prepass:                         %4.2f sec' % (t4 - t3),
-            '\n  update_before_write_foreign_file:%4.2f sec' % (t5 - t4),
-            '\n  strip_sentinels:                 %4.2f sec' % (t6 - t5),
-            '\n  import_from_string:              %4.2f sec' % (t7 - t6),
-            '\n  update_after_read_foreign_file   %4.2f sec' % (t8 - t7),
-            '\n  import_from_string (restore)     %4.2f sec' % (t9 - t8),
-            '\n  total:                           %4.2f sec' % (t9 - t1))
-        if p:
-            c.selectPosition(p)
-        c.redraw()
-    #@+node:ekr.20140711111623.17799: *3* cc.set_expected_imported_headlines
-    def set_expected_imported_headlines(self, root):
-        '''Set v._imported_headline for every vnode.'''
-        trace = False and not g.unitTesting
-        cc = self
-        c = cc.c
-        ic = cc.c.importCommands
-        language = g.scanForAtLanguage(c, root)
-        ext = '.' + g.app.language_extension_dict.get(language)
-        aClass = ic.classDispatchDict.get(ext)
-        scanner = aClass(importCommands=ic, atAuto=True)
-        # Duplicate the fn logic from ic.createOutline.
-        theDir = g.setDefaultDirectory(c, root, importing=True)
-        fn = c.os_path_finalize_join(theDir, root.h)
-        fn = root.h.replace('\\', '/')
-        junk, fn = g.os_path_split(fn)
-        fn, junk = g.os_path_splitext(fn)
-        if aClass and hasattr(scanner, 'headlineForNode'):
-            for p in root.subtree():
-                if not hasattr(p.v, '_imported_headline'):
-                    h = scanner.headlineForNode(fn, p)
-                    setattr(p.v, '_imported_headline', h)
-                    if trace and h != p.h:
-                        g.trace('==>', h) # p.h,'==>',h
-    #@+node:ekr.20140711111623.17800: *3* cc.strip_sentinels
-    def strip_sentinels(self):
-        '''Write the file to a string without headlines or sentinels.'''
-        trace = False and not g.unitTesting
-        cc = self
-        at = cc.c.atFileCommands
-        # ok = at.writeOneAtAutoNode(cc.root,
-            # toString=True,force=True,trialWrite=True)
-        at.errors = 0
-        at.write(cc.root,
-            kind='@file',
-            nosentinels=True,
-            perfectImportFlag=False,
-            scriptWrite=False,
-            thinFile=True,
-            toString=True)
-        ok = at.errors == 0
-        s = at.stringOutput
-        if trace: g.trace('ok:', ok, 's:...\n' + s)
-        return s
-    #@-others
 #@+node:ekr.20140711111623.17790: ** class PersistenceDataController
 class PersistenceDataController(object):
     #@+<< docstring >>
@@ -220,12 +74,6 @@ class PersistenceDataController(object):
                     g.es_print('deleting:', p.h)
                 c.deletePositionsInList(delete_list)
                 c.redraw()
-    #@+node:ekr.20140711111623.17794: *4* pd.convert_at_file_to_at_auto
-    def convert_at_file_to_at_auto(self, root):
-        if root.isAtFileNode():
-            ConvertController(self.c, root).run()
-        else:
-            g.es_print('not an @file node:', root.h)
     #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file & helpers
     def update_before_write_foreign_file(self, root):
         '''
@@ -385,50 +233,6 @@ class PersistenceDataController(object):
                     g.trace('no match for gnx:', repr(gnx), 'unl:', unl)
             elif trace:
                 g.trace('unexpected child of @uas node', at_ua)
-    #@+node:ekr.20140131101641.15495: *3* pd.prepass & helper
-    def prepass(self, root):
-        '''Make sure root's tree has no hard-to-handle nodes.'''
-        c, pd = self.c, self
-        ic = c.importCommands
-        ic.tab_width = c.getTabWidth()
-        language = g.scanForAtLanguage(c, root)
-        ext = g.app.language_extension_dict.get(language)
-        if not ext: return
-        if not ext.startswith('.'): ext = '.' + ext
-        scanner = ic.scanner_for_ext(ext)
-        if not scanner:
-            g.trace('no scanner for', root.h)
-            return True # Pretend all went well.
-        # Pass 1: determine the nodes to be inserted.
-        ok, parts_list = True, []
-        for p in root.subtree():
-            ok2, parts = pd.regularize_node(p, scanner)
-            ok = ok and (ok2 or parts)
-            if parts: parts_list.append(parts)
-        # Pass 2: actually insert the nodes.
-        if ok:
-            for parts in reversed(parts_list):
-                p0 = None
-                for part in reversed(parts):
-                    i1, i2, headline, p = part
-                    if p0 is None:
-                        p0 = p
-                    else:
-                        assert p == p0, (p, p0)
-                    s = p.b
-                    g.trace(p.h, '-->', headline)
-                    p2 = p.insertAfter()
-                    p2.b = s[i1: i2]
-                    p2.h = headline
-                p0.doDelete()
-        return ok
-    #@+node:ekr.20140131101641.15496: *4* pd.regularize_node
-    def regularize_node(self, p, scanner):
-        '''Regularize node p so that it will not cause problems.'''
-        ok, parts = scanner(atAuto=True, parent=p, s=p.b, prepass=True)
-        if not ok and not parts:
-            g.es_print('please regularize:', p.h)
-        return ok, parts
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
     # Note: the unl of p relative to p is simply p.h,

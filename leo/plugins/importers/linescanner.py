@@ -159,10 +159,16 @@ class Importer(object):
     # All code in passes 1 and 2 *must* use this API to change body text.
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert not p.b, repr(p.b)
-        assert hasattr(p.v, '_import_lines'), repr(p)
         assert s, g.callers()
         assert g.isString(s), repr(s)
+        assert not p.b, repr(p.b)
+        assert hasattr(p.v, '_import_lines'), repr(p)
+        # This might happen doing parse-body on a node p with children.
+        # However, perfect import would surely fail, so the solution
+        # must be to check for children in parse-body.
+        # if not hasattr(p.v, '_import_lines'):
+            # p.v._import_lines = p.b
+            # p.b = ''
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -172,7 +178,13 @@ class Importer(object):
         p.v._import_lines.extend(list(lines))
 
     def get_lines(self, p):
-        return  p.v._import_lines
+        # This can happen doing parse-body on a node p with children.
+        # However, perfect import would surely fail, so the solution
+        # must be to check for children in parse-body.
+        # if not hasattr(p.v, '_import_lines'):
+            # p.v._import_lines = p.b
+            # p.b = ''
+        return p.v._import_lines
         
     def has_lines(self, p):
         return hasattr(p.v, '_import_lines')
@@ -424,15 +436,12 @@ class Importer(object):
                             line, context, new_state.context, prev_state, new_state))
     #@+node:ekr.20161108165530.1: *3* i.The pipeline
     #@+node:ekr.20161108131153.10: *4* i.run (driver) & helers
-    def run(self, s, parent, parse_body=False, prepass=False):
+    def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
         if trace: g.trace('='*20, self.name)
         if trace: g.trace('=' * 10, parent.h)
         c = self.c
-        if prepass:
-            g.trace('(Importer) Can not happen, prepass is True')
-            return True, [] # Don't split any nodes.
         self.root = root = parent.copy()
         self.file_s = s
         # Init the error/status info.
@@ -450,7 +459,10 @@ class Importer(object):
         self.generate_nodes(s, parent)
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
-        ok = self.errors == 0 and self.check(s, parent)
+        if parse_body:
+            ok = self.errors == 0 # Work around problems with directives.
+        else:
+            ok = self.errors == 0 and self.check(s, parent)
         g.app.unitTestDict['result'] = ok
         # Insert an @ignore directive if there were any serious problems.
         if not ok:
@@ -662,7 +674,7 @@ class Importer(object):
             g.trace('===== %r' % line)
         except Exception:
             g.trace('     top.p: %s' % g.toEncodedString(top.p.h))
-        print('len(stack): %s' % len(stack))
+        # print('len(stack): %s' % len(stack))
         print(' new_state: %s' % new_state)
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
@@ -837,8 +849,10 @@ class Importer(object):
         ]
         if self.parse_body:
             pass
-        else:
+        elif self.has_lines(parent):
             self.extend_lines(parent, table)
+        else:
+            self.set_lines(parent, table)
     #@+node:ekr.20161110042020.1: *5* i.finalize_ivars
     def finalize_ivars(self, parent):
         '''
@@ -866,7 +880,7 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
-        trace_all = False
+        trace_all = False # or parent.h.endswith('__init__.py')
         trace_lines = True # Trace failures, regardless of trace.
         trace_status = True
         if g.app.suppressImportChecks:
@@ -924,6 +938,8 @@ class Importer(object):
         if ok and t2 - t1 > 2.0:
             print('')
             g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
+        if trace and trace_status:
+            g.trace('Ok:', ok, g.shortFileName(parent.h))
         return ok
     #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
     def clean_blank_lines(self, lines):
@@ -1130,9 +1146,7 @@ class Importer(object):
         ws = self.common_lws(lines)
         if trace:
             g.trace('common_lws:', repr(ws))
-            print('===== lines...')
-            for z in lines:
-                print(repr(z))
+            g.printList(lines)
         result = []
         for s in lines:
             if s.startswith(ws):
@@ -1147,9 +1161,8 @@ class Importer(object):
                     g.computeWidth(ws, self.tab_width),
                     s.lstrip()))
         if trace:
-            print('----- result...')
-            for z in result:
-                print(repr(z))
+            g.trace('----- result...')
+            g.printList(result)
         return result
     #@+node:ekr.20161108131153.20: *5* i.common_lws
     def common_lws(self, lines):

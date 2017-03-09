@@ -9,7 +9,7 @@ import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 # Used by writers.leo_rst as well as in this file.
-underlines = '*=-^~"+!$%&(),./:;<>?@[\\]_`{|}#'
+underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
     # All valid rst underlines, with '#' *last*, so it is effectively reserved.
 #@+others
 #@+node:ekr.20161127192007.2: ** class Rst_Importer
@@ -172,7 +172,9 @@ class Rst_Importer(Importer):
         '''Create a new node, with the given headline.'''
         self.find_parent(level=level, h=headline)
     #@+node:ekr.20161129045020.1: *4* rst_i.ch_level
-    rst_seen = {'#': 1,}
+    rst_seen = {}
+        # Fix # 430. Per RagBlufThim.
+        # Was {'#': 1,}
     rst_level = 0 # A trick.
 
     def ch_level(self, ch):
@@ -228,6 +230,7 @@ class Rst_ScanState:
     #@-others
 #@-others
 importer_dict = {
+    '@auto': ['@auto-rst',], # Fix #392: @auto-rst file.txt: -rst ignored on read
     'class': Rst_Importer,
     'extensions': ['.rst', '.rest'],
 }

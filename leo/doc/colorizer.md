@@ -1,4 +1,4 @@
-#About Leo's colorizer code
+# About Leo's colorizer code
 The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
 
 The line-oriented jEdit colorizer defines one or more *restarter* methods for each pattern matcher that could possibly match across line boundaries. The colorizer uses a separate restarter method for all combinations of arguments that can be passed to the jEdit pattern matchers. Restarters freeze bindings for the generic restarter methods.

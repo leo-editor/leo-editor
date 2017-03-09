@@ -80,6 +80,7 @@ else:
 # import functools
 import imp
 import inspect
+import locale
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
@@ -1627,6 +1628,27 @@ def isTextWidget(w):
 def isTextWrapper(w):
     return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ekr.20170219173203.1: *3* g.callback
+def callback(func):
+    '''
+    A global decorator that protects Leo against crashes in callbacks.
+    
+    This is the recommended way of defining all callback.
+        
+        @g.callback
+        def a_callback(...):
+            c = event.get('c')
+            ...
+    '''
+
+    def callback_wrapper(*args, **keys):
+        '''Callback for the @g.callback decorator.'''
+        try:
+            return func(*args, **keys)
+        except Exception:
+            g.es_exception()
+
+    return callback_wrapper
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
 def check_cmd_instance_dict(c, g):
     '''
@@ -1902,6 +1924,86 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
+#@+node:ekr.20041224080039: *4* g.printDict & dictToString
+def printDict(d, tag='', verbose=True, indent=''):
+    '''Pretty print a Python dict using g.pr.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n, len(key))
+        g.pr('%s...{' % (tag) if tag else '{')
+        for key in sorted(d):
+            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
+        g.pr('}')
+    else:
+        g.pr('%s...{}' % (tag) if tag else '{}')
+
+def dictToString(d, tag=None, verbose=True, indent=''):
+    '''Pretty print a Python dict to a string.'''
+    if d:
+        n = 6
+        for key in sorted(d):
+            if g.isString(key):
+                n = max(n, len(key))
+        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
+            for key in sorted(d)]
+        s = '\n'.join(lines)
+        if tag:
+            return '%s...{\n%s\n}\n' % (tag, s)
+        else:
+            return '{\n%s\n}\n' % (s)
+    else:
+        return '%s...{}' % (tag) if tag else '{}'
+#@+node:ekr.20041126060136: *4* g.printList & listToString
+def printList(aList, tag=None, sort=False, indent=''):
+    if not aList:
+        if tag: g.pr('%s...[]' % tag)
+        else: g.pr('[]')
+        return
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    if tag: g.pr('%s...[' % tag)
+    else: g.pr('[')
+    for e in bList:
+        g.pr('%s%s' % (indent, repr(e).strip()))
+    g.pr(']')
+
+def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
+    if not aList:
+        if tag: return '%s...{}' % tag
+        else: return '[]'
+    if sort:
+        bList = aList[:] # Sort a copy!
+        bList.sort()
+    else:
+        bList = aList
+    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
+    s = '\n'.join(lines)
+    if toRepr: s = repr(s)
+    if tag:
+        return '[%s...\n%s\n]' % (tag, s)
+    else:
+        return '[\n%s\n]' % s
+#@+node:ekr.20050819064157: *4* g.printObj & toString
+def printObj(obj, tag=None, sort=False, verbose=True, indent=''):
+    if isinstance(obj, (list, tuple)):
+        g.printList(obj, tag, sort, indent)
+    elif isinstance(obj, dict):
+        g.printDict(obj, tag, verbose, indent)
+    else:
+        g.pr('%s%s' % (indent, repr(obj).strip()))
+
+def toString(obj, tag=None, sort=False, verbose=True, indent=''):
+    if isinstance(obj, (list, tuple)):
+        return g.listToString(obj, tag, sort, indent)
+    elif isinstance(obj, dict):
+        return g.dictToString(obj, tag, verbose, indent)
+    else:
+        return '%s%s' % (indent, repr(obj).strip())
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
     dots=True, # Show level dots in Sherlock traces.
@@ -2179,22 +2281,18 @@ def printGcVerbose(tag=''):
     g.pr("%s: %d new, %d total objects" % (tag, len(newObjects), len(objects)))
     g.pr('-' * 40)
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
-#@+node:ekr.20031218072017.3134: *4* g.clear_stats
-def clear_stats():
+#@+node:ekr.20031218072017.3134: *4* g.clearStats
+def clearStats():
     g.trace()
     g.app.statsDict = {}
-
-clearStats = clear_stats
-#@+node:ekr.20031218072017.3135: *4* g.print_stats
-def print_stats(name=None):
+#@+node:ekr.20031218072017.3135: *4* g.printStats
+def printStats(name=None):
     if name:
         if not isString(name):
             name = repr(name)
     else:
         name = g._callerName(n=2) # Get caller name 2 levels back.
     g.printDict(g.app.statsDict, tag='statistics at %s' % name)
-
-printStats = print_stats
 #@+node:ekr.20031218072017.3136: *4* g.stat
 def stat(name=None):
     """Increments the statistic for name in g.app.statsDict
@@ -2329,7 +2427,7 @@ def findReference(c, name, root):
                 if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
                     return p2
     # g.trace("not found:",name,root)
-    return c.nullPosition()
+    return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
@@ -2780,16 +2878,19 @@ def set_language(s, i, issue_errors_flag=False):
 #@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
 def setDefaultDirectory(c, p, importing=False):
     ''' Return a default directory by scanning @path directives.'''
-    name = p.anyAtFileNodeName()
-    if name:
-        # An absolute path overrides everything.
-        d = g.os_path_dirname(name)
-        if d and g.os_path_isabs(d):
-            return d
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-        # Returns g.getBaseDirectory(c) by default.
-        # However, g.getBaseDirectory can return ''
+    if p:
+        name = p.anyAtFileNodeName()
+        if name:
+            # An absolute path overrides everything.
+            d = g.os_path_dirname(name)
+            if d and g.os_path_isabs(d):
+                return d
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+            # Returns g.getBaseDirectory(c) by default.
+            # However, g.getBaseDirectory can return ''
+    else:
+        path = None
     if path:
         path = g.os_path_finalize(path)
     else:
@@ -2934,6 +3035,32 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
+#@+node:ekr.20170223093758.1: *3* g.getEncodingAt (New in Leo 5.5)
+def getEncodingAt(p, s=None):
+    '''
+    Return the encoding in effect at p and/or for string s.
+
+    Read logic:  s is not None.
+    Write logic: s is None.
+    '''
+    # A BOM overrides everything.
+    if s:
+        e, junk_s = g.stripBOM(s)
+        if e:
+            return e
+    aList = g.get_directives_dict_list(p)
+    e = g.scanAtEncodingDirectives(aList)
+    if s and s.strip() and not e:
+        ###
+        if False and sys.platform.startswith('win'):
+            try:
+                s.decode('utf-8', 'strict')
+                e = 'utf-8'
+            except Exception:
+                e = locale.getpreferredencoding()
+        else:
+            e = 'utf-8'
+    return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
 def guessExternalEditor(c=None):
     """ Return a 'sensible' external editor """
@@ -3118,57 +3245,42 @@ def openWithFileName(fileName, old_c=None, gui=None):
     returns the commander of the newly-opened outline.
     """
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
-#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
-def readFileIntoUnicodeString(fn, silent=False):
-    '''Return the raw contents of the file whose full path is fn.'''
-    try:
-        f = open(fn, 'rb')
-        s = f.read()
-        f.close()
-        return g.toUnicode(s)
-    except IOError:
-        if not silent:
-            g.error('can not open', fn)
-    except Exception:
-        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
-        g.es_exception()
-    return None
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn, silent=False):
     '''Return the raw contents of the file whose full path is fn.'''
     try:
-        f = open(fn, 'rb')
-        s = f.read()
-        f.close()
-        return s
+        with open(fn, 'rb') as f:
+            return f.read()
     except IOError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
-        g.error('readFileIntoEncodedString: unexpected exception reading %s' % (fn))
-        g.es_exception()
+        if not silent:
+            g.error('readFileIntoEncodedString: exception reading %s' % (fn))
+            g.es_exception()
     return None
 #@+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString(fn,
-    encoding='utf-8',
-    kind=None,
-    mode='rb',
-    raw=False,
-    silent=False,
+    encoding='utf-8', # BOM may override this.
+    kind=None, # @file, @edit, ...
 ):
     '''Return the contents of the file whose full path is fn.
 
     Return (s,e)
     s is the string, converted to unicode, or None if there was an error.
-    e the encoding line for Python files: it is usually None.
+    e is the encoding of s, computed in the following order:
+    - The BOM encoding if the file starts with a BOM mark.
+    - The encoding given in the # -*- coding: utf-8 -*- line for python files.
+    - The encoding given by the 'encoding' keyword arg.
+    - None, which typically means 'utf-8'.
     '''
     try:
         e = None
-        f = open(fn, mode)
-        s = f.read()
-        f.close()
-        if raw or not s:
-            return s, e
+        with open(fn, 'rb') as f:
+            s = f.read()
+        # Fix #391.
+        if not s:
+            return g.u(''), None
         # New in Leo 4.11: check for unicode BOM first.
         e, s = g.stripBOM(s)
         if not e:
@@ -3180,16 +3292,28 @@ def readFileIntoString(fn,
         return s, e
     except IOError:
         # Translate 'can not open' and kind, but not fn.
-        # g.trace(g.callers(5))
-        if not silent:
-            if kind:
-                g.error('can not open', '', kind, fn)
-            else:
-                g.error('can not open', fn)
+        if kind:
+            g.error('can not open', '', kind, fn)
+        else:
+            g.error('can not open', fn)
     except Exception:
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
     return None, None
+#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
+def readFileIntoUnicodeString(fn, encoding=None, silent=False):
+    '''Return the raw contents of the file whose full path is fn.'''
+    try:
+        with open(fn, 'rb') as f:
+            s = f.read()
+            return g.toUnicode(s, encoding=encoding)
+    except IOError:
+        if not silent:
+            g.error('can not open', fn)
+    except Exception:
+        g.error('readFileIntoUnicodeString: unexpected exception reading %s' % (fn))
+        g.es_exception()
+    return None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
 # 
@@ -3367,6 +3491,41 @@ def find_word(s, word, i=0):
             i += len(word)
         assert progress < i
     return -1
+#@+node:ekr.20170220103251.1: *3* g.findRootWithPredicate
+def findRootsWithPredicate(c, root, predicate):
+    '''
+    Commands often want to find one or more **roots**, given a position p.
+    A root is the position of any node matching a predicate.
+    
+    This function formalizes the search order used by the pylint, pyflakes and
+    the rst3 commands, returning a list of zero or more found roots.
+    '''
+    seen = []
+    roots = []
+    # 1. Search p's tree.
+    for p in root.self_and_subtree():
+        if predicate(p) and p.v not in seen:
+            seen.append(p.v)
+            roots.append(p.copy())
+    if roots:
+        return roots
+    # 2. Look up the tree.
+    for p in root.parents():
+        if predicate(p):
+            return [p.copy()]
+    # 3. Expand the search if root is a clone.
+    clones = []
+    for p in root.self_and_parents():
+        if p.isCloned():
+            clones.append(p.v)
+    if clones:
+        for p in c.all_positions():
+            if predicate(p):
+                # Match if any node in p's tree matches any clone.
+                for p2 in p.self_and_subtree():
+                    if p2.v in clones:
+                        return [p.copy()]
+    return []
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helper
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
@@ -3383,17 +3542,29 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         return True, maxdepth, maxp
 
     def moveToP(c, p):
-        if trace: g.trace(p and p.h)
-        c.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
-        c.frame.bringToFront()
+        
+        def focus_callback(timer, c=c, p=p.copy()):
+            '''Idle-time handler for g.recursiveUNLSearch'''
+            c.expandAllAncestors(p)
+            c.selectPosition(p)
+            if p.hasChildren():
+                p.expand()
+                # n = min(3, p.numberOfChildren())
+            c.redraw_now()
+            c.frame.bringToFront()
+            timer.stop()
 
+        timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
+        if timer: timer.start()
+        
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
         soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
+        if trace: g.trace('FOUND', maxp and maxp.h)
         moveToP(c, maxp)
+    elif trace:
+        g.trace('NOT FOUND', '-->'.join(unlList))
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
@@ -3417,12 +3588,11 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     - `maxp`: part of recursion, don't set explicitly
     """
     if depth == 0:
-        nds = c.rootPosition().self_and_siblings()
+        nds = list(c.rootPosition().self_and_siblings())
         unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
         # drop empty parts so "-->node name" works
     else:
-        nds = p.children()
-    nds = [i.copy() for i in nds]
+        nds = list(p.children())
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
@@ -5370,95 +5540,9 @@ def prettyPrintType(obj):
         if t.startswith("<type '"): t = t[7:]
         if t.endswith("'>"): t = t[: -2]
         return t
-#@+node:ekr.20041224080039: *3* g.print_dict & dictToString
-def print_dict(d, tag='', verbose=True, indent=''):
-    '''Pretty print a Python dict using g.pr.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        g.pr('%s...{' % (tag) if tag else '{')
-        for key in sorted(d):
-            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
-        g.pr('}')
-    else:
-        g.pr('%s...{}' % (tag) if tag else '{}')
-
-printDict = print_dict
-
-def dictToString(d, tag=None, verbose=True, indent=''):
-    '''Pretty print a Python dict to a string.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
-            for key in sorted(d)]
-        s = '\n'.join(lines)
-        if tag:
-            return '%s...{\n%s}\n' % (tag, s)
-        else:
-            return '{\n%s}\n' % (s)
-    else:
-        return '%s...{}' % (tag) if tag else '{}'
-#@+node:ekr.20041126060136: *3* g.print_list & listToString
-def print_list(aList, tag=None, sort=False, indent=''):
-    if not aList:
-        if tag: g.pr('%s...[]' % tag)
-        else: g.pr('[]')
-        return
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    if tag: g.pr('%s...[' % tag)
-    else: g.pr('[')
-    for e in bList:
-        g.pr('%s%s' % (indent, repr(e).strip()))
-    g.pr(']')
-
-printList = print_list
-
-def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
-    if not aList:
-        if tag: return '%s...{}' % tag
-        else: return '[]'
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
-    s = '\n'.join(lines)
-    if toRepr: s = repr(s)
-    if tag:
-        return '[%s...\n%s\n]' % (tag, s)
-    else:
-        return '[%s]' % s
-#@+node:ekr.20050819064157: *3* g.print_obj & toString
-def print_obj(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        g.print_list(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        g.print_dict(obj, tag, verbose, indent)
-    else:
-        g.pr('%s%s' % (indent, repr(obj).strip()))
-
-def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        return g.listToString(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        return g.dictToString(obj, tag, verbose, indent)
-    else:
-        return '%s%s' % (indent, repr(obj).strip())
-#@+node:ekr.20041122153823: *3* g.print_stack (printStack)
-def print_stack():
+#@+node:ekr.20041122153823: *3* g.printStack
+def printStack():
     traceback.print_stack()
-
-printStack = print_stack
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
     bindings = window.bind()
@@ -5725,6 +5809,30 @@ def init_zodb(pathToZodbStorage, verbose=True):
             g.es_exception()
         init_zodb_failed[pathToZodbStorage] = True
         return None
+#@+node:ekr.20170206080908.1: *3* g.input_
+def input_(message='', c=None):
+    '''
+    Safely execute python's input statement.
+    
+    c.executeScriptHelper binds 'input' to be a wrapper that calls g.input_
+    with c and handler bound properly.
+    '''
+    if False: # c and app and not app.gui.isNullGui:
+        # Use the minibuffer.
+        
+        def handler(event, c=c):
+            c.k.resetLabel()
+            return c.k.arg
+
+        k = c.k
+        k.setLabelBlue(message)
+        return k.getArg(event=None, completion=False, handler=handler)
+    else:
+        # Prompt for input from the console, assuming there is one.
+        # pylint: disable=no-member
+        from leo.core.leoQt import QtCore
+        QtCore.pyqtRemoveInputHook()
+        return input(message)
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'
@@ -6164,37 +6272,37 @@ def findNodeInChildren(c, p, headline):
     for p in p.children():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findNodeInTree(c, p, headline):
     """Search for a node in v's tree matching the given headline."""
     for p in p.subtree():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findNodeAnywhere(c, headline):
     for p in c.all_unique_positions():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
+    return None
 
 def findTopLevelNode(c, headline):
     for p in c.rootPosition().self_and_siblings():
         if p.h.strip() == headline.strip():
             return p.copy()
-    return c.nullPosition()
-#@+node:EKR.20040614071102.1: *3* g.getScript & helper
-def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinels=True):
+    return None
+#@+node:EKR.20040614071102.1: *3* g.getScript & helpers
+def getScript(c, p,
+    useSelectedText=True,
+    forcePythonSentinels=True,
+    useSentinels=True,
+):
     '''
     Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
     p is not the current node or if there is no text selection.
     '''
-    # New in Leo 4.6 b2: use a pristine AtFile handler
-    # so there can be no conflict with c.atFileCommands.
-    import leo.core.leoAtFile as leoAtFile
-    at = leoAtFile.AtFile(c)
     w = c.frame.body.wrapper
     if not p: p = c.p
     try:
@@ -6207,64 +6315,54 @@ def getScript(c, p, useSelectedText=True, forcePythonSentinels=True, useSentinel
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
         s = g.extractExecutableString(c, p, s)
-        if s.strip():
-            # This causes too many special cases.
-            # if not g.unitTesting and forceEncoding:
-                # aList = g.get_directives_dict_list(p)
-                # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
-                # s = g.insertCodingLine(encoding,s)
-            g.app.scriptDict["script1"] = s
-            # Important: converts unicode to utf-8 encoded strings.
-            script = at.writeFromString(p.copy(), s,
-                forcePythonSentinels=forcePythonSentinels,
-                useSentinels=useSentinels)
-            script = script.replace("\r\n", "\n") # Use brute force.
-            # Important, the script is an **encoded string**, not a unicode string.
-            g.app.scriptDict["script2"] = script
-        else: script = ''
+        script = g.composeScript(c, p, s,
+                    forcePythonSentinels=forcePythonSentinels,
+                    useSentinels=useSentinels)
     except Exception:
         g.es_print("unexpected exception in g.getScript")
         g.es_exception()
         script = ''
     return script
+#@+node:ekr.20170228082641.1: *4* g.composeScript (new in Leo 5.5)
+def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
+    '''Compose a script from p.b.'''
+    # This causes too many special cases.
+        # if not g.unitTesting and forceEncoding:
+            # aList = g.get_directives_dict_list(p)
+            # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+            # s = g.insertCodingLine(encoding,s)
+    if s.strip():
+        at = c.atFileCommands
+        g.app.scriptDict["script1"] = s
+        # Important: converts unicode to utf-8 encoded strings.
+        script = at.writeFromString(p.copy(), s,
+            forcePythonSentinels=forcePythonSentinels,
+            useSentinels=useSentinels)
+        script = script.replace("\r\n", "\n") # Use brute force.
+        # Important, the script is an **encoded string**, not a unicode string.
+        g.app.scriptDict["script2"] = script
+        return script
+    else:
+        return ''
 #@+node:ekr.20170123074946.1: *4* g.extractExecutableString
-def extractExecutableString(c, p, s):
+def extractExecutableString(c, p, s, language='python'):
     '''
-    Return s suitable for execution:
-        
-    - Remove all @language rest and @language md/markdown parts.
-    - Give an error and truncate if multiple executable languages are found.
+    Return all lines for the given @language directive.
+    
+    Ignore all lines under control of any other @language directive.
     '''
-
-    # https://github.com/leo-editor/leo-editor/issues/371
-    def set_skipping(language):
-        return language in ('md', 'markdown', 'plain', 'rest')
-        
     if g.unitTesting:
         return s # Regretable, but necessary.
 
-    language = 'python'
-    # language = g.scanForAtLanguage(c, p)
+    # Assume @language python by default.
+    if not language: language = 'python'
     pattern = re.compile(r'\s*@language\s+(\w+)')
-    skipping = set_skipping(language)
-    prev_language = None if skipping else language
     result = []
     for line in g.splitLines(s):
         m = pattern.match(line)
         if m: # Found an @language directive.
             language = m.group(1)
-            skipping = set_skipping(language)
-            if skipping:
-                pass
-            elif prev_language and language == prev_language:
-                pass
-            elif prev_language:
-                g.error('can not execute multiple languages')
-                g.es('ignoring @language %s and all following lines' % language)
-                break
-            else:
-                prev_language = language
-        if not skipping:
+        elif language == 'python':
             result.append(line)
     return ''.join(result)
 #@+node:ekr.20060624085200: *3* g.handleScriptException
@@ -6407,8 +6505,20 @@ def toUnicodeWithErrorCode(s, encoding, reportErrors=False):
             ok = False
     return s, ok
 #@+node:ekr.20120311151914.9916: ** g.Urls
+unl_regex = re.compile(r'\bunl:.*$')
+
 kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
+#@+node:ekr.20170226093349.1: *3* g.unquoteUrl
+def unquoteUrl(url):
+    '''
+    Replace special characters (especially %20, by their equivalent).
+    
+    This function handles 2/3 issues and suppresses pylint complaints.
+    '''
+    # pylint: disable=no-member
+    unquote = urllib.parse.unquote if isPython3 else urllib.unquote
+    return unquote(url)
 #@+node:ekr.20120320053907.9776: *3* g.computeFileUrl
 def computeFileUrl(fn, c=None, p=None):
     '''
@@ -6462,6 +6572,9 @@ def getUrlFromNode(p):
     table = [p.h, g.splitLines(p.b)[0] if p.b else '']
     table = [s[4:] if g.match_word(s, 0, '@url') else s for s in table]
     table = [s.strip() for s in table if s.strip()]
+    if trace:
+        g.trace()
+        g.printList(table)
     # First, check for url's with an explicit scheme.
     for s in table:
         if g.isValidUrl(s):
@@ -6486,111 +6599,153 @@ def getUrlFromNode(p):
             if trace: g.trace('in table', s)
             return s
     return None
-#@+node:tbrown.20090219095555.63: *3* g.handleUrl
+#@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
 def handleUrl(url, c=None, p=None):
-    '''
-    Open an url. Most browsers should handle these:
-        ftp://ftp.uu.net/public/whatever.
+    '''Open a url or a unl.'''
+    if c and not p:
+        p = c.p
+    urll = url.lower()
+    if urll.startswith('@url'):
+        url = url[4:].lstrip()
+    if (
+        urll.startswith('unl:' + '//') or
+        urll.startswith('file://') and url.find('-->') > -1 or
+        urll.startswith('#')
+    ):
+        return g.handleUnl(url, c)
+    else:
+        try:
+            return g.handleUrlHelper(url, c, p)
+        except Exception:
+            g.es_print("exception opening", repr(url))
+            g.es_exception()
+            return None
+#@+node:ekr.20170226054459.1: *4* g.handleUrlHelper
+def handleUrlHelper(url, c, p):
+    '''Open a url.  Most browsers should handle:
+        ftp://ftp.uu.net/public/whatever
         http://localhost/MySiteUnderDevelopment/index.html
         file:///home/me/todolist.html
     '''
     trace = False and not g.unitTesting
-    verbose = True
-    # g.trace(url,g.callers())
-    if 1:
-        # pylint: disable=no-member
-        unquote = urllib.parse.unquote if isPython3 else urllib.unquote
-    if c and not p:
-        p = c.p
-    if url.startswith('@url'):
-        url = url[4:].lstrip()
-    try:
-        tag = 'file://'
-        if url.startswith(tag) and not url.startswith(tag + '#'):
-            # Finalize the path *before* parsing the url.
-            url = g.computeFileUrl(url, c=c, p=p)
-        parsed = urlparse.urlparse(url)
-        # py-lint: disable=E1103
-        # E1103: Instance of 'ParseResult' has no 'fragment' member
-        # E1103: Instance of 'ParseResult' has no 'netloc' member
-        # E1103: Instance of 'ParseResult' has no 'path' member
-        # E1103: Instance of 'ParseResult' has no 'scheme' member
-        fragment = parsed.fragment
-        netloc = parsed.netloc
-        path = parsed.path
-        scheme = parsed.scheme
-        if netloc:
-            leo_path = os.path.join(netloc, path)
-            # "readme.txt" gets parsed into .netloc...
+    tag = 'file://'
+    original_url = url
+    if url.startswith(tag) and not url.startswith(tag + '#'):
+        # Finalize the path *before* parsing the url.
+        url = g.computeFileUrl(url, c=c, p=p)
+    parsed = urlparse.urlparse(url)
+    if parsed.netloc:
+        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # "readme.txt" gets parsed into .netloc...
+    else:
+        leo_path = parsed.path
+    if leo_path.endswith('\\'): leo_path = leo_path[: -1]
+    if leo_path.endswith('/'): leo_path = leo_path[: -1]
+    if trace:
+        g.traceUrl(c, leo_path, parsed, url)
+    if parsed.scheme == 'file' and leo_path.endswith('.leo'):
+        g.handleUnl(original_url, c)
+    elif parsed.scheme in ('', 'file'):
+        unquote_path = g.unquoteUrl(leo_path)
+        if g.unitTesting:
+            g.app.unitTestDict['os_startfile'] = unquote_path
+        elif g.os_path_exists(leo_path):
+            if trace: g.trace('g.os_startfile(%s)' % unquote_path)
+            g.os_startfile(unquote_path)
         else:
-            leo_path = path
-        if leo_path.endswith('\\'): leo_path = leo_path[: -1]
-        if leo_path.endswith('/'): leo_path = leo_path[: -1]
-        if trace and verbose:
-            print()
-            g.trace('url          ', url)
-            g.trace('c.frame.title', c.frame.title)
-            g.trace('leo_path     ', leo_path)
-            g.trace('parsed.fragment', fragment)
-            g.trace('parsed.netloc', netloc)
-            g.trace('parsed.path  ', path)
-            g.trace('parsed.scheme', repr(scheme))
-        if c and scheme in ('', 'file'):
-            if not leo_path:
-                if '-->' in path:
-                    g.recursiveUNLSearch(
-                        unquote(path).split("-->"),
-                        c,
-                        soft_idx=True)
-                    return
-                if not path and fragment:
-                    g.recursiveUNLSearch(
-                        unquote(fragment).split("-->"),
-                        c,
-                        soft_idx=True)
-                    return
-            # .leo file
-            if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
-                # Immediately end editing,
-                # so that typing in the new window works properly.
-                c.endEditing()
-                c.redraw_now()
-                if g.unitTesting:
-                    g.app.unitTestDict['g.openWithFileName'] = leo_path
-                else:
-                    c2 = g.openWithFileName(leo_path, old_c=c)
-                    # with UNL after path
-                    if c2 and fragment:
-                        g.recursiveUNLSearch(fragment.split("-->"), c2, soft_idx=True)
-                    if c2:
-                        c2.bringToFront()
-                        return
-        # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
-        # Use g.os_startfile for *all* files.
-        if scheme in ('', 'file'):
-            if g.unitTesting:
-                leo_path = unquote(leo_path)
-                g.app.unitTestDict['os_startfile'] = leo_path
-            elif g.os_path_exists(leo_path):
-                if trace: g.trace('g.os_startfile(%s)' % (leo_path))
-                leo_path = unquote(leo_path)
-                g.os_startfile(leo_path)
-            else:
-                g.es("File '%s' does not exist" % leo_path)
+            g.es("File '%s' does not exist" % leo_path)
+    else:
+        import webbrowser
+        if trace: g.trace('webbrowser.open(%s)' % (url))
+        if g.unitTesting:
+            g.app.unitTestDict['browser'] = url
         else:
-            import webbrowser
-            if trace: g.trace('webbrowser.open(%s)' % (url))
-            if g.unitTesting:
-                g.app.unitTestDict['browser'] = url
-            else:
-                # Mozilla throws a weird exception, then opens the file!
-                try:
-                    webbrowser.open(url)
-                except Exception:
-                    pass
-    except Exception:
-        g.es("exception opening", leo_path)
-        g.es_exception()
+            # Mozilla throws a weird exception, then opens the file!
+            try:
+                webbrowser.open(url)
+            except Exception:
+                pass
+#@+node:ekr.20170226060816.1: *4* g.traceUrl
+def traceUrl(c, path, parsed, url):
+
+    print()
+    g.trace('url          ', url)
+    g.trace('c.frame.title', c.frame.title)
+    g.trace('path         ', path)
+    g.trace('parsed.fragment', parsed.fragment)
+    g.trace('parsed.netloc', parsed.netloc)
+    g.trace('parsed.path  ', parsed.path)
+    g.trace('parsed.scheme', repr(parsed.scheme))
+#@+node:ekr.20170221063527.1: *3* g.handleUnl
+def handleUnl(unl, c):
+    '''Handle a Leo UNL. This must *never* open a browser.'''
+    trace = False and not g.unitTesting
+    if not unl:
+        return
+    unll = unl.lower()
+    if unll.startswith('unl:' + '//'):
+        unl = unl[6:]
+    elif unll.startswith('file://'):
+        unl = unl[7:]
+    unl = unl.strip()
+    if not unl:
+        if trace: g.trace('empty unl')
+        return
+    unl = g.unquoteUrl(unl)
+    # Compute path and unl.
+    if unl.find('#') == -1 and unl.find('-->') == -1:
+        # The path is the entire unl.
+        path, unl = unl, None
+    elif unl.find('#') == -1:
+        # The path is empty.
+        # Move to the unl in *this* commander.
+        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        return
+    else:
+        path, unl = unl.split('#', 1)
+    # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
+    if not path:
+        # Move to the unl in *this* commander.
+        g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
+        return
+    if c:
+        base = g.os_path_dirname(c.fileName())
+        c_path = g.os_path_finalize_join(base, path)
+    else:
+        c_path = None
+    # Look for the file in various places.
+    table = (
+        c_path,
+        g.os_path_finalize_join(g.app.loadDir, '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', '..', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'core', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'config', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'dist', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'doc', path),
+        g.os_path_finalize_join(g.app.loadDir, '..', 'test', path),
+        g.app.loadDir,
+        g.app.homeDir,
+    )
+    for path2 in table:
+        # if trace: g.trace('searching', repr(path2))
+        if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
+            path = path2
+            break
+    else:
+        g.es_print('path not found', repr(path))
+        return
+    # End editing in *this* outline, so typing in the new outline works.
+    c.endEditing()
+    c.redraw_now()
+    if g.unitTesting:
+        g.app.unitTestDict['g.recursiveUNLSearch'] = path
+    else:
+        if trace: g.trace('\nPATH: %r\n UNL: %r' % (path, unl))
+        c2 = g.openWithFileName(path, old_c=c)
+        if unl:
+            g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
+        if c2:
+            c2.bringToFront()
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):
     '''Return true if url *looks* like a valid url.'''
@@ -6599,7 +6754,7 @@ def isValidUrl(url):
         'mailto', 'mms', 'news', 'nntp', 'prospero', 'rsync', 'rtsp', 'rtspu',
         'sftp', 'shttp', 'sip', 'sips', 'snews', 'svn', 'svn+ssh', 'telnet', 'wais',
     )
-    if url.startswith('#-->'):
+    if url.lower().startswith('unl:' + '//') or url.startswith('#'):
         # All Leo UNL's.
         return True
     elif url.startswith('@'):
@@ -6629,12 +6784,23 @@ def openUrl(p):
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
+    # This can be called outside Leo's command logic, so catch all exceptions.
+    try:
+        return openUrlHelper(event, url)
+    except Exception:
+        g.es_exception()
+        return None
+#@+node:ekr.20170216091704.1: *4* g.openUrlHelper
+def openUrlHelper(event, url=None):
+    '''Open the UNL or URL under the cursor.  Return it for unit testing.'''
     trace = False and not g.unitTesting
-    if trace: g.trace(event, url)
     c = getattr(event, 'c', None)
+    if trace: g.trace(event, url, c)
     if not c: return None
     w = getattr(event, 'w', c.frame.body.wrapper)
-    if not w: return None
+    if not g.app.gui.isTextWrapper(w):
+        g.internalError('must be a text wrapper', w)
+        return None
     setattr(event, 'widget', w)
     # Part 1: get the url.
     if url is None:
@@ -6653,6 +6819,14 @@ def openUrlOnClick(event, url=None):
                 url = match.group()
                 if g.isValidUrl(url):
                     break
+        else:
+            # Look for the unl:
+            for match in g.unl_regex.finditer(line):
+                # Don't open if we click after the unl.
+                if match.start() <= col < match.end():
+                    unl = match.group()
+                    g.handleUnl(unl, c)
+                    return
     elif not g.isString(url):
         url = url.toString()
     if url and g.isValidUrl(url):

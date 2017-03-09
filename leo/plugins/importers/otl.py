@@ -88,4 +88,6 @@ importer_dict = {
     'class': Otl_Importer,
     'extensions': ['.otl',],
 }
+#@@language python
+#@@tabwidth -4
 #@-leo

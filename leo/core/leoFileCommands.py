@@ -619,8 +619,9 @@ class FileCommands(object):
     #@+node:ekr.20080410115129.1: *6* checkPaste
     def checkPaste(self, parent, p):
         '''Return True if p may be pasted as a child of parent.'''
-        if not parent: return True
-        parents = [z.copy() for z in parent.self_and_parents()]
+        if not parent:
+            return True
+        parents = list(parent.self_and_parents())
         for p in p.self_and_subtree():
             for z in parents:
                 # g.trace(p.h,id(p.v),id(z.v))
@@ -782,7 +783,7 @@ class FileCommands(object):
     #@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
         fc = self; c = fc.c
-        aList = [z.copy() for z in c.all_positions() if z.isDirty()]
+        aList = [z for z in c.all_positions() if z.isDirty()]
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20120212220616.10537: *6* fc.readExternalFiles
@@ -909,30 +910,32 @@ class FileCommands(object):
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
-        trace = False and not g.unitTesting
-        verbose = True
+        trace = True and not g.unitTesting
+        trace_dict = False
+        trace_expanded = False
+        trace_marks = False
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
-            if trace and verbose: g.trace('t.dict', resultDict)
+            if trace and trace_dict: g.trace('t.dict', resultDict)
             for gnx in resultDict:
                 tref = self.canonicalTnodeIndex(gnx)
                 v = self.gnxDict.get(tref)
                 if v:
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = 1
-                elif verbose:
+                elif trace:
                     g.error(
                         'restoreDescendantAttributes: '
                         'can not find VNode (duA): gnx = %s' % (gnx))
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
-            if trace and verbose: g.trace('v.dict', resultDict)
+            if trace and trace_dict: g.trace('v.dict', resultDict)
             for key in resultDict:
                 v = self.resolveArchivedPosition(key, root_v)
                 if v:
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = 1
-                elif verbose:
+                elif trace:
                     g.error(
                         'restoreDescendantAttributes: '
                         'can not find VNode (duA): archivedPosition: %s, root_v: %s' % (
@@ -944,18 +947,24 @@ class FileCommands(object):
             if v:
                 expanded[v] = v
                 # if trace: g.trace('expanded',v)
-            elif verbose:
+            elif trace and trace_expanded:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (expanded): gnx = %s, tref: %s' % (gnx, tref))
+                # This doesn't help, because it is never written.
+                # The real answer would be to delete the "offending" uA.
+                    # self.descendentExpandedList.remove(gnx)
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
             if v: marks[v] = v
-            elif verbose:
+            elif trace and trace_marks:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (marks): gnx = %s tref: %s' % (gnx, tref))
+                # This doesn't help, because it is never written.
+                # The real answer would be to delete the "offending" uA.
+                    # self.descendentMarksList.remove(gnx)
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
             for p in c.all_unique_positions():
@@ -1223,6 +1232,9 @@ class FileCommands(object):
     #@+node:ekr.20060919110638.14: *5* fc.parse_leo_file
     def parse_leo_file(self, theFile, inputFileName, silent, inClipboard, s=None):
         c = self.c
+        # Fix #434: Potential bug in settings.
+        if not theFile and not s:
+            return None
         try:
             if g.isPython3:
                 if theFile:
@@ -1264,9 +1276,9 @@ class FileCommands(object):
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
-        if dump: fc.dumpSaxTree(saxRoot, dummy=True)
         # Pass two: create the tree of vnodes from the intermediate nodes.
         if saxRoot:
+            if dump: fc.dumpSaxTree(saxRoot, dummy=True)
             parent_v = c.hiddenRootNode
             children = fc.createSaxChildren(saxRoot, parent_v)
             assert c.hiddenRootNode.children == children
@@ -1760,7 +1772,6 @@ class FileCommands(object):
         # Make only one copy for all calls.
         self.currentPosition = c.p
         self.rootPosition = c.rootPosition()
-        # self.topPosition     = c.topPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
             self.putVnode(self.currentPosition) # Write only current tree.

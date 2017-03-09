@@ -44,8 +44,8 @@ class Commands(object):
         if trace and not g.trace_startup:
             t1 = time.time()
         # Official ivars.
-        self._currentPosition = self.nullPosition()
-        self._topPosition = self.nullPosition()
+        self._currentPosition = None
+        self._topPosition = None
         self.frame = None
         self.gui = gui or g.app.gui
         self.ipythonController = None
@@ -272,7 +272,6 @@ class Commands(object):
         import leo.commands.helpCommands as helpCommands
         import leo.commands.keyCommands as keyCommands
         import leo.commands.killBufferCommands as killBufferCommands
-        ### import leo.commands.macroCommands as macroCommands
         import leo.commands.rectangleCommands as rectangleCommands
         import leo.commands.spellCommands as spellCommands
         # Other subcommanders.
@@ -313,9 +312,36 @@ class Commands(object):
         self.helpCommands       = helpCommands.HelpCommandsClass(c)
         self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
-        ### self.macroCommands      = macroCommands.MacroCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
+        # Create the list of subcommanders.
+        self.subCommanders = [
+            self.abbrevCommands,
+            self.atFileCommands,
+            self.chapterController,
+            self.controlCommands,
+            self.convertCommands,
+            self.debugCommands,
+            self.editCommands,
+            self.editFileCommands,
+            self.fileCommands,
+            self.findCommands,
+            self.gotoCommands,
+            self.helpCommands,
+            self.importCommands,
+            self.keyHandler,
+            self.keyHandlerCommands,
+            self.killBufferCommands,
+            self.persistenceController,
+            self.printingController,
+            self.rectangleCommands,
+            self.rstCommands,
+            self.shadowController,
+            self.spellCommands,
+            self.tangleCommands,
+            self.testManager,
+            self.vimCommands,
+        ]
         # Other objects
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
@@ -324,6 +350,7 @@ class Commands(object):
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+            self.subCommanders.append(self.styleSheetManager)
         else:
             self.styleSheetManager = None
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
@@ -632,7 +659,54 @@ class Commands(object):
             repr(event), g.callers()))
         test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
                 repr(stroke), repr(expected), repr(got)))
-    #@+node:ekr.20031218072017.2818: *3* c.Command handlers
+    #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
+    #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
+    @cmd('reload-settings')
+    def reloadSettings(self, event=None):
+        '''Reload all static abbreviations from all config files.'''
+        self.reloadSettingsHelper(all=False)
+        
+    @cmd('reload-all-settings')
+    def reloadAllSettings(self, event=None):
+        '''Reload all static abbreviations from all config files.'''
+        self.reloadSettingsHelper(all=True)
+    #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
+    def reloadSettingsHelper(self, all):
+        '''Reload settings in all commanders, or just self.'''
+        lm = g.app.loadManager
+        commanders = g.app.commanders() if all else [self]
+        lm.readGlobalSettingsFiles()
+            # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+        for c in commanders:
+            changed = c.isChanged()
+            previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+                # Read the local file, using a null gui.
+            c.initSettings(previousSettings)
+                # Init the config classes.
+            c.initConfigSettings()
+                # Init the commander config ivars.
+            c.reloadSubcommanderSettings()
+                # Reload settings in all subcommanders.
+            c.setChanged(changed)
+                # Restore the changed bit.
+            # c.redraw()
+                # Redraw so a pasted temp node isn't visible
+    #@+node:ekr.20170221040621.1: *5* c.reloadSubcommanderSettings
+    def reloadSubcommanderSettings(self):
+        '''
+        Reload settings in all subcommanders that have either a
+        reload_settings or reloadSettings method.
+        '''
+        trace = False and not g.unitTesting
+        c = self
+        for subcommander in c.subCommanders:
+            for ivar in ('reloadSettings', 'reload_settings'):
+                func = getattr(subcommander, ivar, None)
+                if func:
+                    if trace:
+                        g.es_print('reloading settings in',
+                            subcommander.__class__.__name__)
+                    func()
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')
@@ -865,9 +939,21 @@ class Commands(object):
     #@+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
     def executeScriptHelper(self, args, define_g, define_name, namespace, script):
         c = self
-        p = c.p.copy() # *Always* use c.p and pass c.p to script.
-        c.setCurrentDirectoryFromContext(p)
-        d = {'c': c, 'g': g, 'p': p} if define_g else {}
+        if c.p:
+            p = c.p.copy() # *Always* use c.p and pass c.p to script.
+            c.setCurrentDirectoryFromContext(p)
+        else:
+            p = None
+        # Do NOT define a subfunction here!
+        #
+        # On some, python 2.x versions it causes exec to cause a syntax error
+        # Workarounds that avoid the syntax error hurt performance.
+        # See http://stackoverflow.com/questions/4484872.
+
+            # def g_input_wrapper(message, c=c):
+                # return g.input_(message, c=c)
+        
+        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
         if namespace: d.update(namespace)
@@ -2170,7 +2256,6 @@ class Commands(object):
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
         trace = False and not g.unitTesting
-        # trace_time = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
         if trace:
             highlighter = c.frame.body.colorizer.highlighter
@@ -3168,7 +3253,9 @@ class Commands(object):
             undoData = c.undoer.beforeInsertNode(c.p,
                 pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
         c.validateOutline()
-        c.checkOutline()
+        if not tempOutline:
+            # Fix #427: Don't check for duplicate vnodes.
+            c.checkOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.
@@ -3482,7 +3569,7 @@ class Commands(object):
         if not g.app.validate_outline:
             return True
         root = c.rootPosition()
-        parent = c.nullPosition()
+        parent = None
         if root:
             return root.validateOutlineWithParent(parent)
         else:
@@ -5200,7 +5287,8 @@ class Commands(object):
         Returns a dict containing the results, including defaults.
         '''
         trace = False and not g.unitTesting
-        c = self ; p = p or c.p
+        c = self
+        p = p or c.p
         # Set defaults
         language = c.target_language and c.target_language.lower()
         lang_dict = {
@@ -5669,7 +5757,10 @@ class Commands(object):
         '''Redraw the screen immediately.'''
         trace = False and not g.unitTesting
         c = self
-        if not p: p = c.p or c.rootPosition()
+        if not p:
+            p = c.p or c.rootPosition()
+        if not p:
+            return
         c.expandAllAncestors(p)
         if p:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
@@ -6248,16 +6339,14 @@ class Commands(object):
         c = self
         for p in c.all_positions():
             yield p.v
-        # raise StopIteration
 
     def all_unique_nodes(self):
         '''A generator returning each vnode of the outline.'''
         c = self
         for p in c.all_unique_positions():
             yield p.v
-        # raise StopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_tnodes_iter = all_nodes
     all_vnodes_iter = all_nodes
     all_unique_tnodes_iter = all_unique_nodes
@@ -6266,13 +6355,12 @@ class Commands(object):
     def all_positions(self):
         '''A generator return all positions of the outline, in outline order.'''
         c = self
-        p = c.rootPosition() # Make one copy.
+        p = c.rootPosition()
         while p:
-            yield p.copy() # Major bug fix: 2016/10/02
+            yield p.copy()
             p.moveToThreadNext()
-        # raise stopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_positions_iter = all_positions
     allNodes_iter = all_positions
     #@+node:ekr.20161120121226.1: *4* c.all_roots
@@ -6295,7 +6383,7 @@ class Commands(object):
         p = c.rootPosition()
         while p:
             if predicate(p):
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -6322,7 +6410,7 @@ class Commands(object):
         while p:
             if p.v not in seen and predicate(p):
                 seen.add(p.v)
-                yield p
+                yield p.copy() # 2017/02/19
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -6333,18 +6421,17 @@ class Commands(object):
         Returns only the first position for each vnode.
         '''
         c = self
-        p = c.rootPosition() # Make one copy.
+        p = c.rootPosition()
         seen = set()
         while p:
             if p.v in seen:
                 p.moveToNodeAfterTree()
             else:
                 seen.add(p.v)
-                yield p.copy() # Major bug fix: 2016/10/02
+                yield p.copy()
                 p.moveToThreadNext()
-        # raise StopIteration
-    # Compatibility with old code.
 
+    # Compatibility with old code...
     all_positions_with_unique_tnodes_iter = all_unique_positions
     all_positions_with_unique_vnodes_iter = all_unique_positions
     #@+node:ekr.20150316175921.5: *4* c.safe_all_positions
@@ -6356,9 +6443,8 @@ class Commands(object):
         c = self
         p = c.rootPosition() # Make one copy.
         while p:
-            yield p
+            yield p.copy()
             p.safeMoveToThreadNext()
-        # raise stopIteration
     #@+node:ekr.20031218072017.2982: *3* c.Getters & Setters
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
@@ -6372,9 +6458,9 @@ class Commands(object):
             # New in Leo 4.4.2: *always* return a copy.
             return c._currentPosition.copy()
         else:
-            return c.nullPosition()
-    # For compatibiility with old scripts.
+            return c.rootPosition()
 
+    # For compatibiility with old scripts...
     currentVnode = currentPosition
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p):
@@ -6468,8 +6554,17 @@ class Commands(object):
         return p
     #@+node:ekr.20040311094927: *5* c.nullPosition
     def nullPosition(self):
+        '''
+        New in Leo 5.5: Return None.
+        Using empty positions masks problems in program logic.
+        
+        In fact, there are no longer any calls to this method in Leo's core.
+        '''
         # c = self
-        return leoNodes.Position(None)
+        g.trace('This method is deprecated. Instead, just use None.')
+        return None
+        # return leoNodes.Position(None)
+        
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -6525,9 +6620,9 @@ class Commands(object):
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
-            return c.nullPosition()
-    # For compatibiility with old scripts.
-
+            return None
+            
+    # For compatibiility with old scripts...
     rootVnode = rootPosition
     findRootPosition = rootPosition
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
@@ -6622,7 +6717,7 @@ class Commands(object):
         # v.parents includes the hidden root node.
         if not stack:
             # a VNode not in the tree
-            return c.nullPosition()
+            return None
         v, n = stack.pop()
         p = leoNodes.Position(v, n, stack)
         return p
@@ -6792,7 +6887,7 @@ class Commands(object):
         if c._topPosition:
             return c._topPosition.copy()
         else:
-            return c.nullPosition()
+            return None
 
     def setTopPosition(self, p):
         """Set the root positioin."""
@@ -6800,9 +6895,9 @@ class Commands(object):
         if p:
             c._topPosition = p.copy()
         else:
-            c._topPosition = c.nullPosition()
-    # Define these for compatibiility with old scripts.
+            c._topPosition = None
 
+    # Define these for compatibiility with old scripts...
     topVnode = topPosition
     setTopVnode = setTopPosition
     #@+node:ekr.20031218072017.3404: *5* c.trimTrailingLines
@@ -6864,8 +6959,7 @@ class Commands(object):
                 vr = pc.loadOnePlugin(name)
                 break
         else:
-            vr = pc.loadOnePlugin('viewrendered3.py')
-                # The new default.
+            vr = pc.loadOnePlugin('viewrendered.py')
         if g.unitTesting:
             assert vr # For unit testing.
         if vr:
@@ -6975,11 +7069,11 @@ class Commands(object):
     def selectPosition(self, p, enableRedrawFlag=True):
         """Select a new position."""
         trace = False and not g.unitTesting
-        trace_no_p = True
+        trace_no_p = True and not g.app.batchMode
             # A serious error.
         c = self; cc = c.chapterController
         if not p:
-            if trace_no_p: g.trace('===== no p', g.callers())
+            if trace and trace_no_p: g.trace('===== no p', g.callers())
             return
         # 2016/04/20: check cc.selectChapterLockout.
         if cc and not cc.selectChapterLockout:
