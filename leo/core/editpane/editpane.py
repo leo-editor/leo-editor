@@ -11,7 +11,7 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 if g.isPython3:
-    from importlib import reload
+    from importlib import import_module
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
@@ -284,21 +284,20 @@ class LeoEditPane(QtWidgets.QWidget):
     def load_modules(self):
         """load_modules - load modules to find widgets
         """
-
         module_dir = os.path.dirname(__file__)
         names = [os.path.splitext(i) for i in os.listdir(module_dir)
                  if os.path.isfile(os.path.join(module_dir, i))]
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
-            print(name)
-            # find = imp.find_module(name, [module_dir])
             try:
-                # modules.append(imp.load_module(name, *find))
-                exec "import %s" % name
-                modules.append(locals()[name])
+                if g.isPython3:
+                    modules.append(import_module('leo.core.editpane.'+name))
+                else:
+                    exec ( "import %s" % name )  # parens for Python 3 syntax
+                    modules.append(locals()[name])
             except ImportError:
                 pass
-        
+
         self.modules = []
         self.widget_classes = []
         for module in modules:
