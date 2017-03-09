@@ -1525,10 +1525,8 @@
 </v>
 <v t="ekr.20070628083442.1"></v>
 <v t="ekr.20050912125144.1"></v>
+<v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170309061547.1"><vh>* Links</vh>
-<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
-</v>
 <v t="ekr.20170301013129.1"><vh>* Cheat sheet</vh></v>
 <v t="ekr.20170309061815.1"><vh>* FAQ</vh>
 <v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
@@ -1565,15 +1563,17 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
+<v t="ekr.20170309072043.1"><vh>* Leo and testing</vh>
+<v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
+<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
+<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+</v>
+</v>
 <v t="ekr.20170309061107.1"><vh>* Reference</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
 <v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
 <v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
-<v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
-<v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
-<v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
-</v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
 </v>
@@ -16585,6 +16585,7 @@ More resources:
 - Leo's `wikipedia page`_.
 - A page about `literate programming`_.
 - Joe Orr's `Leo's resource page`_ containing XSLT stylesheets for Leo.
+- Satish Goda's `Leo tutorial &lt;https://github.com/satishgoda/leo-editor-tutorial&gt;`_.
 - The `Mind Mapping`_ page.
 - A `web viewer`_ page for .leo files.
 - `Icons`_ telling the world that you used Leo.
@@ -23652,7 +23653,6 @@ PX 40
 ITALIC 1
 WEIGHT Bold
 </t>
-<t tx="ekr.20170228123147.1">https://github.com/satishgoda/leo-editor-tutorial/tree/master/workflows/plantuml</t>
 <t tx="ekr.20170228124856.1">https://groups.google.com/d/msg/leo-editor/L4EAfY7NJbw/NgSv5zSDEwAJ
 
 This is buggy.
@@ -23851,7 +23851,6 @@ The fix was disappointingly simple: just init ic.treeType in ic.createOutline an
 <t tx="ekr.20170309061107.1"></t>
 <t tx="ekr.20170309061222.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
-<t tx="ekr.20170309061547.1"></t>
 <t tx="ekr.20170309061815.1"></t>
 <t tx="ekr.20170309062939.1"></t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
@@ -23865,6 +23864,7 @@ Leo takes this concept to its limit. Leo offers language agnostic abstraction at
 I can't ignore the freedom of arbitrary abstraction, and I've come to rely upon it so much that I struggle to use non-Leo environments. It is well known that the human brain has a limited working memory. The act of programming stretches working memory to it's limit. Leo provides an environment in which a program can seamlessly be restructured to fit within the bounds of a programmers individual working memory. 
 
 I realize this is a "why" and not a "how" and that this doesn't help anyone get better acquainted with Leo. But, as a programmer if you've ever felt frustrated with the organizational constructs of the language you're working in you might be surprised to realize that after using Leo it wasn't the language that was the problem, but a lack of tools to organize your programs in a way that makes sense to you.</t>
+<t tx="ekr.20170309072043.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
