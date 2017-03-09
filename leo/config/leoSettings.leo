@@ -2323,7 +2323,6 @@
 </v>
 </v>
 <v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
-<v t="ekr.20170304074559.288"><vh>@ignore Spare parts</vh></v>
 <v t="ekr.20170304074559.186"><vh>settings</vh>
 <v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
 <v t="ekr.20170304074559.214"><vh>@ignore border</vh>
@@ -2398,9 +2397,6 @@
 </v>
 </v>
 <v t="ekr.20170304074559.291"><vh>@theme leo_dark theme 1</vh>
-<v t="ekr.20170304074559.378"><vh>@ignore Spare parts</vh>
-<v t="ekr.20170304074559.379"><vh>@ignore border</vh></v>
-</v>
 <v t="ekr.20170304074559.292"><vh>settings</vh>
 <v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
 <v t="ekr.20170309055108.1"><vh>@ignore border</vh>
@@ -2474,9 +2470,6 @@
 </v>
 </v>
 <v t="ekr.20170304074559.382"><vh>@theme leo_dark theme 2</vh>
-<v t="ekr.20170304074559.469"><vh>@ignore Spare parts</vh>
-<v t="ekr.20170304074559.470"><vh>@ignore border</vh></v>
-</v>
 <v t="ekr.20170304074559.383"><vh>settings</vh>
 <v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
 <v t="ekr.20170309055240.1"><vh>@ignore border</vh>
@@ -11587,11 +11580,11 @@ leo_dark theme 0
 <t tx="ekr.20170304074559.263">/* ===== widgets ===== */
 
 QLabel {
-    color: @solarized-base1;
+    color:          @solarized-base1;
 }
 QLineEdit {
-    border:     none;
-    padding:    3px;
+    border:         none;
+    padding:        3px;
 }
 QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
     border:         none;
@@ -11611,96 +11604,103 @@ QWidget#body-text-renderer {
 </t>
 <t tx="ekr.20170304074559.264">/* ===== The body pane ===== */
 QTextEdit#richTextEdit {
-    font-family: @font-family-body; /* font-family: Courier New; */
-    font-size: @font-size-body;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-
-    background-color: @solarized-base03;
-    color: @text-foreground; /* bodytextforegroundcolor; */
-    selection-color: @solarized-base03;
+    background-color:           @solarized-base03;
+    color:                      @text-foreground;
+    font-family:                @font-family-body;
+    font-size:                  @font-size-body;
+    font-weight:                normal; /* normal,bold,100,..,900 */
+    font-style:                 normal; /* normal,italic,oblique */
+    selection-color:            @solarized-base03;
     selection-background-color: @solarized-yellow;
-}</t>
+}
+</t>
 <t tx="ekr.20170304074559.265">/* ===== Tree Widgets ===== */
 
 QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    /* font-family: SansSerif; */
-    font-family: @font-family-tree;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    font-family: @font-family-tree;
-    font-size: @font-size-tree;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */ 
+    /* Selected items, but NOT editing items.*/
+    font-family:    @font-family-tree;
+    font-size:      @font-size-tree;
+    font-weight:    normal; /* normal,bold,100,..,900 */
+    font-style:     normal; /* normal, italic,oblique */
 }
+QTreeWidget QLineEdit {
+    /* Headline edit widgets */
+    font-family:    @font-family-tree;
+    font-size:      @font-size-tree;
+    font-weight:    normal; /* normal,bold,100,..,900 */
+    font-style:     normal; /* normal, italic,oblique */ 
+}
+QTreeWidget::selected {
+    background:     @solarized-green;
+    color:          @solarized-base03; 
+}
+QTreeWidget::active:selected {
+    background:     @solarized-yellow;
+    color:          @solarized-base03; 
+}
+
+/* ===== Tree Views ===== */
 
 QTreeView {
     /* These apply to the selected item, but not to editing items.*/
-    background-color: @solarized-base03;
-    color: @solarized-base0;
-    selection-color: @solarized-orange;
+    background-color:           @solarized-base03;
+    color:                      @solarized-base0;
+    selection-color:            @solarized-orange;
     selection-background-color: @solarized-base03;
-    show-decoration-selected: 0;
- }
- 
-QTreeWidget::selected {
-    background: @solarized-green; color: @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background: @solarized-yellow; color: @solarized-base03; 
+    show-decoration-selected:   0;
 }
 QTreeView::item:selected {
-    background: @solarized-green; color: @solarized-base03; 
+    background:                 @solarized-green;
+    color:                      @solarized-base03; 
 }
 QTreeView::item:active:selected {
-    background: @solarized-yellow; color: @solarized-base03; 
+    background:                 @solarized-yellow;
+    color:                      @solarized-base03; 
 }
-
-/* Headline edit widgets */
 QTreeView QLineEdit {
-    color: @solarized-base03;
-    background-color: @solarized-yellow;
-    selection-color: @solarized-base3;
+    /* Headline edit widgets */
+    color:                      @solarized-base03;
+    background-color:           @solarized-yellow;
+    selection-color:            @solarized-base3;
     selection-background-color: @solarized-blue;  
+}
+QTreeView::branch:closed:has-children{
+    image:                      @tree-image-closed;
+}
+QTreeView::branch:open:has-children{
+    image:                      @tree-image-open;
 }
 </t>
 <t tx="ekr.20170304074559.266">/* ===== Log panes ===== */
 
 QTextEdit#log-widget {
-    background-color:   @log_text_background_color; /* solarized dark */
-    color:              @log_text_foreground_color; /* solarized dark */
-    font-family:        @font-family-log; /* font-family: Courier New; */
-    font-size:          @font-size-log;
-    font-style:         normal; /* normal, italic,oblique */
-    font-weight:        normal; /* normal,bold,100,..,900 */
+    background-color:           @log_text_background_color;
+    color:                      @log_text_foreground_color;
+    font-family:                @font-family-log;
+    font-size:                  @font-size-log;
+    font-style:                 normal; /* normal, italic,oblique */
+    font-weight:                normal; /* normal,bold,100,..,900 */
     selection-background-color: blue;
-    selection-color:    white;
+    selection-color:            white;
 }
 </t>
 <t tx="ekr.20170304074559.267">/* ===== Mini-buffer ===== */
 
 QLineEdit#lineEdit {
-    color:              @minibuffer_foreground_color;
-    background-color:   @minibuffer_background_color;
-    font-family:        @font-family;
-    font-size:          12px;
-    font-weight:        normal; /* normal,bold,100,..,900 */
-    font-style:         normal; /* normal,italic,oblique */
-    selection-color:    red;
+    color:                      @minibuffer_foreground_color;
+    background-color:           @minibuffer_background_color;
+    font-family:                @font-family;
+    font-size:                  @font-size;
+    font-weight:                normal; /* normal,bold,100,..,900 */
+    font-style:                 normal; /* normal,italic,oblique */
+    selection-color:            red;
     selection-background-color: lightgrey;
 }
-
 QLabel#minibufferLabel {
-    color: @solarized-violet;
+    color:              @solarized-violet;
 }
 QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
+    background-color:   @minibuffer_warning_color;
 }
 QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     color:              @minibuffer_error_color;
@@ -11722,8 +11722,8 @@ QPushButton:hover {
 <t tx="ekr.20170304074559.271">/* ===== Tab bar ===== */
 
 QTabBar::tab { 
-   margin-right: 5px;
-   padding: 2px; 
+   margin-right:    5px;
+   padding:         2px; 
 }
 QTabBar::tab {
     background:     @bg-gradient;
@@ -11796,18 +11796,12 @@ QSplitter::handle:hover {
 </t>
 <t tx="ekr.20170304074559.285">/* ===== Status line ===== */
 
-QLineEdit#status1 {
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-
+QLineEdit#status1,
 QLineEdit#status2 {
     background-color:   @solarized-base03;
     border-color:       @solarized-base02;
-    border-width:       1px;
     border-style:       solid;
+    border-width:       1px;
 }
 
 </t>
@@ -11838,95 +11832,6 @@ QLineEdit#status2 {
     text-decoration: @bookmarks_current_decoration;
 }
 </t>
-<t tx="ekr.20170304074559.288">/*
-@language css
-*/
-
-/* START: dark styles for non-dark desktop theme */
-/*
-QWidget { color: @solarized-base1; background-color: @solarized-base03; 
-  border-color: @solarized-base1;
-}
-
-QScrollBar::add-page, QScrollBar::sub-page { 
-    background: @solarized-base03; }
-    
-QScrollBar::add-line { background: red; 
-  border: 1px solid red ; color: red }
-  
-QScrollBar::handle { background: @solarized-base01; 
-  border: 1px solid @solarized-base02;  }
-*/
-/* END: dark styles for non-dark desktop theme */
-
-
-/* 
-QSpinBox::up-button { background: @text-background; }
-QSpinBox::up-arrow { 
-  background: @text-background;
-  color: @text-foreground; 
-  image: url(:/images/up_arrow.png);
-} */
-
-
-
-/* needs work
-QSpinBox::up-button { background-color: @solarized-base03; }
-QSpinBox::up-arrow { background-color: @solarized-base03; color: @solarized-base1; }
-*/
-
-QWidget[style_class~='focused_pane'] {
-    border-color: orange;
-    border-width: 3px;
-    border-style: solid;
-}
-QWidget[style_class~='unfocused_pane'] {
-    border-color: blue;
-    border-width: 3px;
-    border-style: solid;
-}
-
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    /* background-color: white; */
-    border-style: solid;
-}
-
-QTextEdit {
-    font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-XXQToolButton {
-    /* background-color: #fdf5f5;  A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 8px;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-*[name~='preview'] { color: green; }</t>
 <t tx="ekr.20170304074559.29"></t>
 <t tx="ekr.20170304074559.291">Sublime Text 2-like dark theme.
 </t>
@@ -12029,56 +11934,61 @@ QTextEdit#richTextEdit {
     font-weight:                normal; /* normal,bold,100,..,900 */
 }
 </t>
-<t tx="ekr.20170304074559.361">/* ===== Tree ===== */
+<t tx="ekr.20170304074559.361">/* ===== Tree Widgets ===== */
 
 QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
+    /* Selected items, but NOT edit items.*/
     font-family:    @font-family-tree;
     font-size:      16px;
     font-weight:    normal; /* normal,bold,100,..,900 */
     font-style:     normal; /* normal, italic,oblique */
 }
-
-/* Headline edit widgets */
 QTreeWidget QLineEdit View{
-    font-family: @font-family-tree;
-    font-size: 16px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */ 
+    /* Headline edit widgets */
+    font-family:    @font-family-tree;
+    font-size:      16px;
+    font-weight:    normal; /* normal,bold,100,..,900 */
+    font-style:     normal; /* normal, italic,oblique */ 
 }
-
 QTreeWidget::selected {
-    background: @solarized-green;
-    color:      @solarized-base03; 
+    background:     @solarized-green;
+    color:          @solarized-base03; 
 }
 QTreeWidget::active:selected {
-    background: @solarized-yellow;
-    color:      @solarized-base03; 
-}
-QTreeView::item:selected {
-    background: @solarized-green;
-    color:      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background: @solarized-yellow;
-    color:      @solarized-base03; 
+    background:     @solarized-yellow;
+    color:          @solarized-base03; 
 }
 
-/* Headline edit widgets */
-QTreeView QLineEdit {
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
+/* ===== Tree Views ===== */
 
 QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
+    /* Selected items, but NOT edit items.*/
     background-color:           @solarized-base03;
     color:                      @solarized-base0;
     selection-color:            @solarized-orange;
     selection-background-color: @solarized-base03;
     show-decoration-selected:   0;
+}
+QTreeView QLineEdit {
+    /* Headline edit widgets */
+    color:                      @solarized-base03;
+    background-color:           @solarized-yellow;
+    selection-color:            @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
+QTreeView::item:selected {
+    background:                 @solarized-green;
+    color:                      @solarized-base03; 
+}
+QTreeView::item:active:selected {
+    background:                 @solarized-yellow;
+    color:                      @solarized-base03; 
+}
+QTreeView::branch:closed:has-children{
+    image:                      @tree-image-closed;
+}
+QTreeView::branch:open:has-children{
+    image:                      @tree-image-open;
 }
 </t>
 <t tx="ekr.20170304074559.362">/* ===== The log panes ===== */
@@ -12099,7 +12009,7 @@ QLineEdit#lineEdit {
     background-color:           @solarized-base03;
     color:                      red; 
     font-family:                @font-family;
-    font-size:                  12px;
+    font-size:                  @font-size;
     font-weight:                normal; /* normal,bold,100,..,900 */
     font-style:                 normal; /* normal,italic,oblique */
     selection-color:            red;
@@ -12128,11 +12038,11 @@ QTabBar::tab {
     padding:        2px; 
 }
 QTabBar::tab:selected {
-    color:      @solarized-green;
+    color:          @solarized-green;
 } 
 QTabBar::tab:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
+    background:     @bg-gradient-hover;
+    color:          @button-hover-fg;
 }</t>
 <t tx="ekr.20170304074559.368">/* ===== Menus ===== */
 
@@ -12197,108 +12107,6 @@ QLineEdit#status1, QLineEdit#status2 {
     border-color:       @solarized-base02;
     border-style:       solid;
     border-width:       1px;
-}
-</t>
-<t tx="ekr.20170304074559.378">/*
-@language css
-*/
-
-/* START: dark styles for non-dark desktop theme */
-/*
-QWidget { color: @solarized-base1; background-color: @solarized-base03; 
-  border-color: @solarized-base1;
-}
-
-QScrollBar::add-page, QScrollBar::sub-page { 
-    background: @solarized-base03; }
-    
-QScrollBar::add-line { background: red; 
-  border: 1px solid red ; color: red }
-  
-QScrollBar::handle { background: @solarized-base01; 
-  border: 1px solid @solarized-base02;  }
-*/
-/* END: dark styles for non-dark desktop theme */
-
-/* 
-QSpinBox::up-button { background: @text-background; }
-QSpinBox::up-arrow { 
-  background: @text-background;
-  color: @text-foreground; 
-  image: url(:/images/up_arrow.png);
-} */
-
-/* needs work
-QSpinBox::up-button { background-color: @solarized-base03; }
-QSpinBox::up-arrow { background-color: @solarized-base03; color: @solarized-base1; }
-*/
-
-QWidget[style_class~='focused_pane'] {
-    border-color: orange;
-    border-width: 3px;
-    border-style: solid;
-}
-QWidget[style_class~='unfocused_pane'] {
-    border-color: blue;
-    border-width: 3px;
-    border-style: solid;
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    /* background-color: white; */
-    border-style: solid;
-}
-
-
-
-
-QTextEdit {
-    font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-
-
-XXQToolButton {
-    /* background-color: #fdf5f5;  A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 8px;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-*[name~='preview'] { color: green; }</t>
-<t tx="ekr.20170304074559.379">/* unneeded alternative active pane highlighting */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
 }
 </t>
 <t tx="ekr.20170304074559.38"></t>
@@ -12456,24 +12264,22 @@ QTextEdit#richTextEdit {
     selection-background-color: @solarized-yellow;
 }
 </t>
-<t tx="ekr.20170304074559.452">/* ===== Tree ===== */
+<t tx="ekr.20170304074559.452">/* ===== Tree Widgets ===== */
 
 QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
+    /* Selected items, but NOT edit items.*/
     font-family:    @font-family-tree;
     font-size:      @font-size-other;
     font-weight:    normal; /* normal,bold,100,..,900 */
     font-style:     normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
+}
 QTreeWidget QLineEdit View{
+    /* Headline edit widgets */
     font-family:    @font-family-tree;
     font-size:      @font-size-other;
     font-weight:    normal; /* normal,bold,100,..,900 */
     font-style:     normal; /* normal, italic,oblique */ 
 }
-
 QTreeWidget::selected {
     background:                 @solarized-green;
     color:                      @solarized-base03; 
@@ -12483,8 +12289,10 @@ QTreeWidget::active:selected {
     color:                      @solarized-base03; 
 }
 
+/* ===== Tree Views ===== */
+
 QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
+    /* Selected items, but NOT edit items.*/
     background-color:           @solarized-base03;
     color:                      @solarized-base0;
     selection-color:            @solarized-orange;
@@ -12499,13 +12307,18 @@ QTreeView::item:active:selected {
     background:                 @solarized-yellow;
     color:                      @solarized-base03; 
 }
-
-/* Headline edit widgets */
 QTreeView QLineEdit {
+    /* Headline edit widgets */
     background-color:           @solarized-yellow;
     color:                      @solarized-base03;
     selection-color:            @solarized-base3;
     selection-background-color: @solarized-blue;  
+}
+QTreeView::branch:closed:has-children{
+    image:                      @tree-image-closed;
+}
+QTreeView::branch:open:has-children{
+    image:                      @tree-image-open;
 }
 </t>
 <t tx="ekr.20170304074559.453">/* ===== Log panes ===== */
@@ -12527,7 +12340,7 @@ QLineEdit#lineEdit {
     background-color:           @solarized-base03;
     color:                      red; 
     font-family:                @font-family;
-    font-size:                  12px;
+    font-size:                  @font-size;
     font-weight:                normal; /* normal,bold,100,..,900 */
     font-style:                 normal; /* normal,italic,oblique */
     selection-color:            red;
@@ -12598,7 +12411,8 @@ QScrollBar::horizontal {
 QScrollBar::vertical {
     width: 7px;
 }
-QScrollBar::add-page, QScrollBar::sub-page {
+QScrollBar::add-page,
+QScrollBar::sub-page {
     background:     @solarized-base03;
 }
 QScrollBar::handle { 
@@ -12610,122 +12424,18 @@ QScrollBar::handle:hover {
     color:          @solarized-base0;
 }
 /* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line, QScrollBar::sub-line { 
+QScrollBar::add-line,
+QScrollBar::sub-line { 
     background:     @solarized-base01;
     color:          @solarized-base01;
 }
 </t>
-<t tx="ekr.20170304074559.468">QLineEdit#status1, QLineEdit#status2 {
+<t tx="ekr.20170304074559.468">QLineEdit#status1,
+QLineEdit#status2 {
     background-color:   @solarized-base03;
     border-color:       @solarized-base02;
     border-style:       solid;
     border-width:       1px;
-}
-</t>
-<t tx="ekr.20170304074559.469">/*
-@language css
-*/
-
-/* START: dark styles for non-dark desktop theme */
-/*
-QWidget { color: @solarized-base1; background-color: @solarized-base03; 
-  border-color: @solarized-base1;
-}
-
-QScrollBar::add-page, QScrollBar::sub-page { 
-    background: @solarized-base03; }
-    
-QScrollBar::add-line { background: red; 
-  border: 1px solid red ; color: red }
-  
-QScrollBar::handle { background: @solarized-base01; 
-  border: 1px solid @solarized-base02;  }
-*/
-/* END: dark styles for non-dark desktop theme */
-
-
-/* 
-QSpinBox::up-button { background: @text-background; }
-QSpinBox::up-arrow { 
-  background: @text-background;
-  color: @text-foreground; 
-  image: url(:/images/up_arrow.png);
-} */
-
-
-
-/* needs work
-QSpinBox::up-button { background-color: @solarized-base03; }
-QSpinBox::up-arrow { background-color: @solarized-base03; color: @solarized-base1; }
-*/
-
-QWidget[style_class~='focused_pane'] {
-    border-color: orange;
-    border-width: 3px;
-    border-style: solid;
-}
-QWidget[style_class~='unfocused_pane'] {
-    border-color: blue;
-    border-width: 3px;
-    border-style: solid;
-}
-
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    /* background-color: white; */
-    border-style: solid;
-}
-
-
-
-
-QTextEdit {
-    font-family: DejaVu Sans Mono;
-    font-size: 16px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-
-
-XXQToolButton {
-    /* background-color: #fdf5f5;  A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-    font-size: 8px;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-*[name~='preview'] { color: green; }</t>
-<t tx="ekr.20170304074559.470">/* unneeded alternative active pane highlighting */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
 }
 </t>
 <t tx="ekr.20170307055039.1">For both light and dark
@@ -12780,18 +12490,24 @@ Light
   * base3 background
 </t>
 <t tx="ekr.20170308051519.1">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+QTextEdit#log-widget,
+LeoQTreeWidget#treeWidget,
+QTextEdit#richTextEdit { 
     border-color:   @focused-border-unfocus-color; 
     border-style:   @focused-border-style;
     border-width:   @focused-border-width; 
 }
 
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+QTextEdit:focus#log-widget,
+LeoQTreeWidget:focus#treeWidget,
+QTextEdit:focus#richTextEdit { 
     border-color:   @focused-border-focus-color; 
 }
 
-QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget, QTextEdit:hover#richTextEdit { 
-  border-color:     @focused-border-hover-color; 
+QTextEdit:hover#log-widget,
+LeoQTreeWidget:hover#treeWidget,
+QTextEdit:hover#richTextEdit { 
+    border-color:   @focused-border-hover-color; 
 }
 </t>
 <t tx="ekr.20170308055019.1">/* ===== Widgets ===== */
@@ -12803,11 +12519,11 @@ QWidget {
     font-size:          16px;
 }
 QLabel {
-    color: @solarized-base1;
+    color:              @solarized-base1;
 }
 QLineEdit {
-    border: none;
-    padding: 3px;
+    border:         none;
+    padding:        3px;
 }
 QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
     border:         none;
@@ -12980,33 +12696,40 @@ windows leo_dark theme: a minor modification of leo_dark theme 0.
 
 */</t>
 <t tx="ekr.20170309112554.77">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+QTextEdit#log-widget,
+LeoQTreeWidget#treeWidget,
+QTextEdit#richTextEdit { 
     border-color:   @focused-border-unfocus-color; 
     border-style:   @focused-border-style;
     border-width:   @focused-border-width; 
 }
 
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+QTextEdit:focus#log-widget,
+LeoQTreeWidget:focus#treeWidget,
+QTextEdit:focus#richTextEdit { 
     border-color:   @focused-border-focus-color; 
 }
 
-QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget, QTextEdit:hover#richTextEdit { 
+QTextEdit:hover#log-widget,
+LeoQTreeWidget:hover#treeWidget,
+QTextEdit:hover#richTextEdit { 
   border-color:     @focused-border-hover-color; 
 }
 </t>
 <t tx="ekr.20170309112554.78">/* ===== The body pane ===== */
-QTextEdit#richTextEdit {
-    font-family: @font-family-body; /* font-family: Courier New; */
-    font-size: @font-size-body;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
 
-    background-color: @solarized-base03;
-    color: @text-foreground; /* bodytextforegroundcolor; */
-    selection-color: @solarized-base03;
+QTextEdit#richTextEdit {
+    background-color:           @solarized-base03;
+    color:                      @text-foreground;
+    font-family:                @font-family-body;
+    font-size:                  @font-size-body;
+    font-weight:                normal; /* normal,bold,100,..,900 */
+    font-style:                 normal; /* normal,italic,oblique */
+    selection-color:            @solarized-base03;
     selection-background-color: @solarized-yellow;
 }</t>
 <t tx="ekr.20170309112554.79">/* ===== bookmarks plugin styling ===== */
+
 #show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
@@ -13083,21 +12806,21 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170309112554.83">/* ===== Mini-buffer ===== */
 
 QLineEdit#lineEdit {
-    color:              @minibuffer_foreground_color;
-    background-color:   @minibuffer_background_color;
-    font-family:        @font-family;
-    font-size:          12px;
-    font-weight:        normal; /* normal,bold,100,..,900 */
-    font-style:         normal; /* normal,italic,oblique */
-    selection-color:    red;
+    color:                      @minibuffer_foreground_color;
+    background-color:           @minibuffer_background_color;
+    font-family:                @font-family;
+    font-size:                  @font-size;
+    font-weight:                normal; /* normal,bold,100,..,900 */
+    font-style:                 normal; /* normal,italic,oblique */
+    selection-color:            red;
     selection-background-color: lightgrey;
 }
 
 QLabel#minibufferLabel {
-    color: @solarized-violet;
+    color:              @solarized-violet;
 }
 QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
+    background-color:   @minibuffer_warning_color;
 }
 QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     color:              @minibuffer_error_color;
@@ -13106,18 +12829,13 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
 </t>
 <t tx="ekr.20170309112554.84">/* ===== Status line ===== */
 
-QLineEdit#status1 {
+QLineEdit#status1,
+QLineEdit#status2 
+{
     background-color:   @solarized-base03;
     border-color:       @solarized-base02;
     border-style:       solid;
     border-width:       1px;
-}
-
-QLineEdit#status2 {
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-width:       1px;
-    border-style:       solid;
 }
 
 </t>
@@ -13129,7 +12847,8 @@ QScrollBar::horizontal {
 QScrollBar::vertical {
      width: 7px;
 }
-QScrollBar::add-page, QScrollBar::sub-page {
+QScrollBar::add-page,
+QScrollBar::sub-page {
     background: @solarized-base03;
 }
 QScrollBar::handle { 
@@ -13141,7 +12860,8 @@ QScrollBar::handle:hover {
   color:        @solarized-base0;
 }
 /* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line, QScrollBar::sub-line { 
+QScrollBar::add-line,
+QScrollBar::sub-line { 
   background:   @solarized-base01;
   color:        @solarized-base01;
 }</t>
@@ -13157,8 +12877,8 @@ QSplitter::handle:hover {
 <t tx="ekr.20170309112554.87">/* ===== Tab bar ===== */
 
 QTabBar::tab { 
-   margin-right: 5px;
-   padding: 2px; 
+   margin-right:    5px;
+   padding:         2px; 
 }
 QTabBar::tab {
     background:     @bg-gradient;
@@ -13176,50 +12896,48 @@ QTabBar::tab:hover {
 <t tx="ekr.20170309112554.88">/* ===== Tree Widgets ===== */
 
 QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    /* font-family: SansSerif; */
+    /* Selected items, but NOT edit items.*/
     font-family: @font-family-tree;
     font-size: @font-size-tree;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
+}
 QTreeWidget QLineEdit {
+    /* Headline edit widgets */
     font-family: @font-family-tree;
     font-size: @font-size-tree;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */ 
 }
-
-QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color: @solarized-base03;
-    color: @solarized-base0;
-    selection-color: @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected: 0;
- }
- 
 QTreeWidget::selected {
     background: @solarized-green; color: @solarized-base03; 
 }
 QTreeWidget::active:selected {
     background: @solarized-yellow; color: @solarized-base03; 
 }
+
+/* ===== Tree Views ===== */
+
+QTreeView {
+    /* Selected items, but NOT edit items.*/
+    background-color: @solarized-base03;
+    color: @solarized-base0;
+    selection-color: @solarized-orange;
+    selection-background-color: @solarized-base03;
+    show-decoration-selected: 0;
+}
+QTreeView QLineEdit {
+    /* Headline edit widgets */
+    color: @solarized-base03;
+    background-color: @solarized-yellow;
+    selection-color: @solarized-base3;
+    selection-background-color: @solarized-blue;  
+}
 QTreeView::item:selected {
     background: @solarized-green; color: @solarized-base03; 
 }
 QTreeView::item:active:selected {
     background: @solarized-yellow; color: @solarized-base03; 
-}
-
-/* Headline edit widgets */
-QTreeView QLineEdit {
-    color: @solarized-base03;
-    background-color: @solarized-yellow;
-    selection-color: @solarized-base3;
-    selection-background-color: @solarized-blue;  
 }
 </t>
 <t tx="ekr.20170309112554.89">/* ===== widgets ===== */
