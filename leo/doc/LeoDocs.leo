@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1525,24 +1525,31 @@
 <v t="ekr.20070628083442.1"></v>
 <v t="ekr.20050912125144.1"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170301012855.1"><vh>** Missing documentation</vh>
-<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170309061547.1"><vh>* Links</vh>
+<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
+</v>
+<v t="ekr.20170301013129.1"><vh>* Cheat sheet</vh></v>
+<v t="ekr.20170309061815.1"><vh>* FAQ</vh>
+<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
+</v>
+<v t="ekr.20170309061023.1"><vh>* Tutorials</vh>
+<v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
+<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
+<v t="ekr.20170309060910.1"><vh>** PIM</vh></v>
+<v t="ekr.20170309060814.1"><vh>Mention VR plugin</vh></v>
+<v t="ekr.20170309060758.1"><vh>Document typing completion</vh></v>
 <v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
 <v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
 </v>
 <v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
-</v>
-<v t="ekr.20170301013308.1"><vh>** Fix doc problems</vh>
-<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
 <v t="ekr.20170228105638.1"><vh>2</vh></v>
 </v>
-<v t="ekr.20170228105717.1"><vh>Demo.py (changed .md file)</vh></v>
-<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
-<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
 </v>
-<v t="ekr.20170228105154.1"><vh>** Leo and org mode</vh>
+<v t="ekr.20170309061222.1"><vh>* Scripting reference</vh>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+</v>
+<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
 <v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
 <v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
@@ -1557,21 +1564,19 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
-<v t="ekr.20170301014119.1"><vh>** Cool pictures</vh>
-<v t="ekr.20170228123147.1"><vh>Cool: Satish Leo and plantuml</vh></v>
-</v>
-<v t="ekr.20170301013129.1"><vh>** Improve cheat sheet</vh></v>
+<v t="ekr.20170309061107.1"><vh>* Reference</vh>
+<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
+<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
+<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
+<v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
 <v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 <v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
 </v>
-<v t="ekr.20170130190843.1"><vh>Code Academy</vh>
-<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
-<v t="ekr.20170124032638.1"><vh>Code Academy: Prefer using lists of strings to large strings</vh></v>
-<v t="ekr.20161216132929.1"><vh>Looking over Edward's shoulder</vh></v>
-</v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
+</v>
+<v t="ekr.20170130080532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21574,10 +21579,7 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">- Add images to show enlarged icons.
-
-- Ask for cool graphics.
-</t>
+<t tx="ekr.20161207045325.1"></t>
 <t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
 
 **Executive Summary**
@@ -21683,7 +21685,6 @@ There is no way to alter this sequence ;-) How many times have we given up just 
 **That which we learn, we learn by doing**
 
 Reading about and thinking about are useful, but not nearly good enough.  That is why students must have a project that is important to them.  The project will put them into action.</t>
-<t tx="ekr.20161216132929.1"></t>
 <t tx="ekr.20170123084609.11"></t>
 <t tx="ekr.20170123084609.12"> File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 414, in auto_completer_state_handler
     kind), color='red')
@@ -22167,26 +22168,12 @@ With this preamble, I can run the tests after changing the otl plugin without re
 
 @language rest
 Using this @test node, I can modify the regex and see the results instantly. This saved about 20+ seconds per coding iteration, a gigantic win. </t>
-<t tx="ekr.20170124032638.1">Previously, i.check was string-oriented.  It passed strings to all its helpers.  Each helper then immediately called g.splitLines to convert the string to a list, created a result list, and then returned ''.join(result).
-
-This is crazy. Besides being clumsy, the code creates large numbers of large strings.  The gc will have to recycle them all!
-
-Now, i.check splits lines once, on entry, and thereafter does all checking using lists of lines. This is much faster, and stresses the gc much less.
-
-Because python "interns" strings, creating a new list of strings creates new strings only if those strings have never before been seen (in the present gc generation). The lists consist of short strings, so they are much more likely to be interned.
-
-Lists themselves are just lists of references to strings. For example, rearranging a list of strings never generates any new strings!
-
-In short, using lists of (short) strings is fundamentally better than splitting and joining large strings. Furthermore, using lists of strings usually simplifies the code, thanks to python's superb list comprehensions. If you don't grok comprehensions, you are missing one of python's most powerful and beautiful features.
-
-Adapted from a discussion here: https://groups.google.com/d/msg/leo-editor/YGmXbd2-Xpo/vjfR_MkMCwAJ</t>
 <t tx="ekr.20170124034150.1">https://groups.google.com/d/msg/leo-editor/RDi2jffWjzI/K-mh4H5QBQAJ
 
 https://github.com/leo-editor/leo-editor/issues/332
 
 The new javascript and perl importers know *nothing* about parsing. They know only about how to scan tokens accurately. The importers copy only entire lines from the text file to Leo nodes. As a result, the new importers much more reliable than previous importers.
 </t>
-<t tx="ekr.20170130190843.1"></t>
 <t tx="ekr.20170131092936.1">Here are some tips:
 
 - Use @auto-md to create your file.
@@ -23623,18 +23610,6 @@ chapter-move-node-to-Two &lt;enter&gt; Nothing happens
 
 The Chapters icon bar: lists the chapters in random order, not the order under the @Chapters node. This appears disorganized and I haven't found any way to reorder them.
 </t>
-<t tx="ekr.20170228105717.1">Demo scripts have full access to nodes in the slides! Let's make the demo script entirely descriptive using a new (not written yet) demo.headline_position helper:
-
-    p2 = g.findNodeInTree(c, demo.root, '@file whatever')
-    position = demo.headline_position(p2))
-
-    Callout("Here is an @file node", position=position)
-
-Do you see?  The description doesn't change when the outline changes!
-
-This is a big step forward. It means there is little or no cost in modifying screen shots. Just rerun the script.
-
-We will also want helpers to set the various pane ratios.  These ratios do not affect callout descriptions, but they do ensure that the actual appearance of slides do not depend on initial conditions.</t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
 <t tx="ekr.20170228112407.1">https://github.com/satishgoda/leo-editor-tutorial
@@ -23751,17 +23726,6 @@ The new code contains the following improvements:
 2. The new code organizes messages by threads.  Messages that start with "re:" become children of the node that started the thread.
 
 3. Better warning and informational messages, and a better docstring.</t>
-<t tx="ekr.20170301012855.1">- Document typing completion.
-
-- Mention viewrendered plugin in the tutorials.
-
-- TDD in Leo.
-
-- Document chapters in PIM chapter.
-
-- Document abbreviations in PIM chapter.
-    - And in leoSettings.leo.
-</t>
 <t tx="ekr.20170301013129.1">- TDD for Leo.
 - predicates.
 - helper for deleting outline nodes.
@@ -23769,8 +23733,6 @@ The new code contains the following improvements:
 - p.copy()
 - Discuss useful (new) functions and buttons.
 </t>
-<t tx="ekr.20170301013308.1">* Better docs for {{script}}
-    Remove os.curdir from example!</t>
 <t tx="ekr.20170301013432.1"></t>
 <t tx="ekr.20170301014023.1">This should be in the docstring.
 
@@ -23822,7 +23784,6 @@ Recent revs fix #388 in the color branch.
 Note: The latest pushed code does not work because it uses an intermediate format for  @data nodes. This will be fixed later today.
 
 The new work is in the color branch. It will merge into the trunk in the next day or so.</t>
-<t tx="ekr.20170301014119.1"></t>
 <t tx="ekr.20170303051729.1">https://github.com/leo-editor/leo-editor/issues/430
 rst import: titles with different underline characters on same level.
 </t>
@@ -23882,7 +23843,18 @@ Importer unit tests create both @clean and @file
 
 The fix was disappointingly simple: just init ic.treeType in ic.createOutline and ic.scannerUnitTest.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170309060758.1"></t>
+<t tx="ekr.20170309060814.1"></t>
+<t tx="ekr.20170309060910.1">Document chapters and abbreviations
+</t>
+<t tx="ekr.20170309061023.1"></t>
+<t tx="ekr.20170309061107.1"></t>
+<t tx="ekr.20170309061222.1"></t>
+<t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
+<t tx="ekr.20170309061547.1"></t>
+<t tx="ekr.20170309061815.1"></t>
+<t tx="ekr.20170309062939.1"></t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

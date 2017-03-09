@@ -578,7 +578,7 @@ Subclasses of Demo may override any of the following:
 
 ## Window position and ratios
 
-**demo.headline_geometry(p)**: Return the x, y coordinates of p, for use by demo.set_position.
+**demo.headline_geometry(p)**: Return the x, y, height, width coordinates of p, for use by demo.set_geometry.
 
 **demo.get_ratios()**: Returns a tuple (ratio1, ratio2), where ratio1 is the body/outline ratio and ratio2 is the tree/log ratio. Each ratio is a float between 0 and 1.0.
 
@@ -615,6 +615,10 @@ p.b = 'some body text'
 ```
 
 Presenters don't have to do anything by hand.
+
+**Demos can be descriptive**
+
+Demo scripts have full access to nodes in the slides. Using methods such as demo.headline_geometry, it's easy to write scripts that descriptive, rather than dependent on size and position of individual slides.
 
 **Demos can be fully automated**
 
