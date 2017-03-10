@@ -2330,6 +2330,7 @@
 <v t="ekr.20170304074559.413"></v>
 <v t="ekr.20170310072814.73"><vh>zz settings overrides (windows ekr dark)</vh>
 <v t="ekr.20170310072814.74"><vh>@string focused-border-width = 5px</vh></v>
+<v t="ekr.20170310083459.1"><vh>@string font-size = 16pt</vh></v>
 <v t="ekr.20170310072814.75"><vh>@string font-size-body = 16pt</vh></v>
 <v t="ekr.20170310072814.76"><vh>@string font-size-tree = 16pt</vh></v>
 <v t="ekr.20170310072814.77"><vh>@string font-size-log = 16pt</vh></v>
@@ -4493,7 +4494,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="4,2">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -13032,6 +13033,7 @@ QWidget#body-text-renderer {
 }
 </t>
 <t tx="ekr.20170310082759.1"></t>
+<t tx="ekr.20170310083459.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
