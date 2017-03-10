@@ -4492,7 +4492,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,2">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="4,3">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -12651,15 +12651,8 @@ QPushButton:hover {
 
 These themes are deprecated because they don't use a common base theme. As a result, it is difficult to understand the differences between them.
 
-No further work is planned on any of these themes.</t>
-<t tx="ekr.20170310072814.1">Same as @theme leo_dark theme 0, except for the following:
-
-    @string font-size-body = 14pt
-    @string font-size-log = 14pt
-    @string font-size-tree = 18pt
-    All border settings.
-    All stylesheet entries in zz overrides.
-</t>
+No further work is planned on any deprecated theme.</t>
+<t tx="ekr.20170310072814.1">Same as @theme base dark, except for overrides in zz nodes.</t>
 <t tx="ekr.20170310072814.10">Here you can edit the colors by Leo, just edit the
 node headings, and click the reload-style button.
 </t>
