@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.47" body_secondary_ratio="0.62">
-	<global_window_position top="120" left="685" height="912" width="1156"/>
+	<global_window_position top="146" left="813" height="912" width="1156"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2271,34 +2271,34 @@
 </v>
 </v>
 <v t="ekr.20170304074559.413"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170304074559.414"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170304074559.415"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170304074559.416"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.417"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.418"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170304074559.419"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170304074559.420"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170304074559.421"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170304074559.422"><vh>@color url_color = #6c71c4</vh></v>
+<v t="ekr.20170310102041.1"><vh>Colors for Leo constructs (all themes)</vh>
+<v t="ekr.20170310102041.2"><vh>@color doc_part_color = #d33682</vh></v>
+<v t="ekr.20170310102041.3"><vh>@color leo_keyword_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.4"><vh>@color section_name_brackets_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.5"><vh>@color section_name_color = #d33682</vh></v>
+<v t="ekr.20170310102041.6"><vh>@color show_invisibles_space_color = #d33682</vh></v>
+<v t="ekr.20170310102041.7"><vh>@color show_invisibles_tab_color = red</vh></v>
+<v t="ekr.20170310102041.8"><vh>@color undefined_section_name_color = #d33682</vh></v>
+<v t="ekr.20170310102041.9"><vh>@color url_color = #6c71c4</vh></v>
 </v>
-<v t="ekr.20170304074559.423"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170304074559.424"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170304074559.425"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170304074559.426"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170304074559.427"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170304074559.428"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170304074559.429"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.430"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.431"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.432"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.433"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170304074559.434"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170304074559.435"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170304074559.436"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170304074559.437"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170304074559.438"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170304074559.439"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170304074559.440"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20170310102041.10"><vh>Colors for jEdit constructs (all themes)</vh>
+<v t="ekr.20170310102041.11"><vh>@color blank_color = #d33682</vh></v>
+<v t="ekr.20170310102041.12"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20170310102041.13"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20170310102041.14"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20170310102041.15"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20170310102041.16"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.17"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.18"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.19"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.20"><vh>@color literal1_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.21"><vh>@color literal2_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.22"><vh>@color literal3_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.23"><vh>@color literal4_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.24"><vh>@color markup_color = #eee8d5</vh></v>
+<v t="ekr.20170310102041.25"><vh>@color operator_color = #eee8d5</vh></v>
+<v t="ekr.20170310102041.26"><vh>@color plain null color = None</vh></v>
+<v t="ekr.20170310102041.27"><vh>@color tab_color = red</vh></v>
 </v>
 </v>
 <v t="ekr.20170310072826.73"><vh>theme settings (base dark)</vh>
@@ -4703,7 +4703,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,2">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -12422,61 +12422,10 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="ekr.20170304074559.410"></t>
 <t tx="ekr.20170304074559.411"></t>
 <t tx="ekr.20170304074559.412"></t>
-<t tx="ekr.20170304074559.413"></t>
-<t tx="ekr.20170304074559.414">@language rest
-@wrap
-
-Note: Do not use @-constants here.</t>
-<t tx="ekr.20170304074559.415">The color of text in doc parts.
-
-was firebrick3. now comment1_color
-</t>
-<t tx="ekr.20170304074559.416">The color of Leo keywords such as @ignore, @color, etc.
-
-Was #00aa00.
-Now solarized-blue
-</t>
-<t tx="ekr.20170304074559.417">Was blue, now solarized-blue
-</t>
-<t tx="ekr.20170304074559.418">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
-
-was red. Now comment1_color</t>
-<t tx="ekr.20170304074559.419">The background color that represents spaces when Show Invisibles mode is in effect.
-
-solarized-magenta</t>
+<t tx="ekr.20170304074559.413"># All colors are solarized colors, except for 'red', 'white', etc.</t>
 <t tx="ekr.20170304074559.42"></t>
-<t tx="ekr.20170304074559.420">The foreground color that represents tabs when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20170304074559.421">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
-
-Was red. Now now comment1_color</t>
-<t tx="ekr.20170304074559.422"></t>
-<t tx="ekr.20170304074559.423">Note: Do not use @-constants here.</t>
-<t tx="ekr.20170304074559.424">solarized-magenta
-</t>
-<t tx="ekr.20170304074559.425"></t>
-<t tx="ekr.20170304074559.426"></t>
-<t tx="ekr.20170304074559.427"></t>
-<t tx="ekr.20170304074559.428"></t>
-<t tx="ekr.20170304074559.429"></t>
 <t tx="ekr.20170304074559.43"></t>
-<t tx="ekr.20170304074559.430"></t>
-<t tx="ekr.20170304074559.431"></t>
-<t tx="ekr.20170304074559.432"></t>
-<t tx="ekr.20170304074559.433">#00aa00 (Idle comment green)
-
-</t>
-<t tx="ekr.20170304074559.434"></t>
-<t tx="ekr.20170304074559.435"></t>
-<t tx="ekr.20170304074559.436"></t>
-<t tx="ekr.20170304074559.437"></t>
-<t tx="ekr.20170304074559.438">base2     #eee8d5</t>
-<t tx="ekr.20170304074559.439"></t>
 <t tx="ekr.20170304074559.44"></t>
-<t tx="ekr.20170304074559.440"></t>
 <t tx="ekr.20170304074559.444"></t>
 <t tx="ekr.20170304074559.445"></t>
 <t tx="ekr.20170304074559.446"></t>
@@ -14054,6 +14003,46 @@ QTreeView::item:selected,
 QTreeView::item:active:selected {
     background: @solarized-base01; /* one step darker than backround */
 }
+</t>
+<t tx="ekr.20170310102041.1">@language rest
+@wrap
+
+Note: Do not use @-constants here.</t>
+<t tx="ekr.20170310102041.10">Note: Do not use @-constants here.</t>
+<t tx="ekr.20170310102041.11">solarized-magenta
+</t>
+<t tx="ekr.20170310102041.12">solarized-magenta</t>
+<t tx="ekr.20170310102041.13">solarized-magenta</t>
+<t tx="ekr.20170310102041.14">solarized-magenta</t>
+<t tx="ekr.20170310102041.15">solarized-magenta</t>
+<t tx="ekr.20170310102041.16">solarized-blue
+</t>
+<t tx="ekr.20170310102041.17">solarized-blue
+</t>
+<t tx="ekr.20170310102041.18">solarized-blue
+</t>
+<t tx="ekr.20170310102041.19">solarized-blue
+</t>
+<t tx="ekr.20170310102041.2">solarized-magenta</t>
+<t tx="ekr.20170310102041.20">solarized-cyan</t>
+<t tx="ekr.20170310102041.21">solarized-cyan</t>
+<t tx="ekr.20170310102041.22">solarized-cyan</t>
+<t tx="ekr.20170310102041.23">solarized-cyan</t>
+<t tx="ekr.20170310102041.24">solarized-base2
+</t>
+<t tx="ekr.20170310102041.25">solarized-base2
+</t>
+<t tx="ekr.20170310102041.26"></t>
+<t tx="ekr.20170310102041.27"></t>
+<t tx="ekr.20170310102041.3">solarized-blue
+</t>
+<t tx="ekr.20170310102041.4">solarized-blue
+</t>
+<t tx="ekr.20170310102041.5">solarized-magenta</t>
+<t tx="ekr.20170310102041.6">solarized-magenta</t>
+<t tx="ekr.20170310102041.7"></t>
+<t tx="ekr.20170310102041.8">solarized-magenta</t>
+<t tx="ekr.20170310102041.9">Solarized violet
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
