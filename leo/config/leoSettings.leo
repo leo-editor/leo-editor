@@ -2251,6 +2251,7 @@
 <v t="ekr.20170310072814.30"><vh>@string font-family-tree = @font-family</vh></v>
 <v t="ekr.20170310072814.31"><vh>@string font-family-body = @font-family</vh></v>
 <v t="ekr.20170310072814.32"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20170310082759.1"><vh>@string font-size = 12pt</vh></v>
 <v t="ekr.20170310072814.33"><vh>@string font-size-body = 12pt</vh></v>
 <v t="ekr.20170310072814.34"><vh>@string font-size-tree = 12pt</vh></v>
 <v t="ekr.20170310072814.35"><vh>@string font-size-log = 12pt</vh></v>
@@ -4492,7 +4493,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,3">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -13023,13 +13024,14 @@ QWidget {
     background-color:   @solarized-base03; 
     border-color:       @solarized-base1; 
     color:              @solarized-base1;
-    font-size:          16px;
+    font-size:          @font-size;
 }
 QWidget#body-text-renderer {
     background-color:   white;
     color:              black;
 }
 </t>
+<t tx="ekr.20170310082759.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
