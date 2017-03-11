@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.47" body_secondary_ratio="0.62">
-	<global_window_position top="146" left="813" height="912" width="1156"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -4703,7 +4703,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -6960,16 +6960,16 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22343"></t>
 <t tx="ekr.20131213135427.22344">&amp;About Leo</t>
 <t tx="ekr.20131213135427.22345"></t>
-<t tx="ekr.20131213135427.22346">Open &amp;Home Page</t>
-<t tx="ekr.20131213135427.22347">Open Table of &amp;Contents</t>
-<t tx="ekr.20131213135427.22348">Open &amp;Users Guide</t>
-<t tx="ekr.20131213135427.22349">Open Text &amp;Tutorials</t>
-<t tx="ekr.20131213135427.22350">Open &amp;Video Tutorials</t>
+<t tx="ekr.20131213135427.22346">&amp;Home Page</t>
+<t tx="ekr.20131213135427.22347">Table of &amp;Contents</t>
+<t tx="ekr.20131213135427.22348">&amp;Users Guide</t>
+<t tx="ekr.20131213135427.22349">Text &amp;Tutorials</t>
+<t tx="ekr.20131213135427.22350">&amp;Video Tutorials</t>
 <t tx="ekr.20131213135427.22351"></t>
 <t tx="ekr.20131213135427.22352"></t>
-<t tx="ekr.20131213135427.22353">Open &amp;CheatSheet.leo</t>
-<t tx="ekr.20131213135427.22354">Open Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.22355">Open &amp;quickstart.leo</t>
+<t tx="ekr.20131213135427.22353">&amp;CheatSheet.leo</t>
+<t tx="ekr.20131213135427.22354">Leo&amp;Docs.leo</t>
+<t tx="ekr.20131213135427.22355">&amp;quickstart.leo</t>
 <t tx="ekr.20131213135427.22356"></t>
 <t tx="ekr.20131213135427.22357"></t>
 <t tx="ekr.20131213135427.22358"></t>
