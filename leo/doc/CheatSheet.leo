@@ -42,8 +42,11 @@
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
 <v t="ekr.20131019184243.16698"><vh>vnode class</vh></v>
 <v t="ekr.20131019184243.16699"><vh>position class</vh></v>
-<v t="ekr.20131019184243.16700"><vh>leo.core.leoGlobals module</vh></v>
+<v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
+<v t="ekr.20170311121600.1"><vh>Deleting nodes</vh></v>
+<v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 </v>
+<v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
 <v t="ekr.20131030071311.18723"><vh>The rst3 tutorial</vh>
 <v t="ekr.20131030071311.18732"><vh>@rst ~/myDocument.html</vh>
@@ -68,7 +71,8 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683"></t>
+<t tx="ekr.20131019184243.16683">@wrap
+</t>
 <t tx="ekr.20131019184243.16685"></t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 
@@ -844,6 +848,49 @@ Expansion of section names and @others:
     @file {{os.path.abspath(os.curdir)}}/abc.py
     
 refers to the file abc.py in (absolute path of) the current directory.
+</t>
+<t tx="ekr.20170311121600.1">c.deletePositionsInList(aList, callback=None) safely deletes all the
+positions in aList.
+
+Deleting multiple outline nodes is tricky, because the positions of the
+to-be-deleted nodes will change as previous nodes are deleted.
+
+</t>
+<t tx="ekr.20170311121717.1">- Use imp.reload to reload all changed modules.
+- Make sure to *instantiate* any changed objects.
+- See "Unit testing with Leo" for full details.
+</t>
+<t tx="ekr.20170311122518.1">Usage: launchLeo.py [options] file1, file2, ...
+    
+    Options:
+      -h, --help            show this help message and exit
+      --debug               enable debug mode
+      --diff                use Leo as an external git diff
+      --fullscreen          start fullscreen
+      --ipython             enable ipython support
+      --fail-fast           stop unit tests after the first failure
+      --gui=GUI             gui to use (qt/qttabs)
+      --load-type=LOAD_TYPE
+                            @&lt;file&gt; type for loading non-outlines from command
+                            line
+      --maximized           start maximized
+      --minimized           start minimized
+      --no-cache            disable reading of cached files
+      --no-plugins          disable all plugins
+      --no-splash           disable the splash screen
+      --screen-shot=SCREENSHOT_FN
+                            take a screen shot and then exit
+      --script=SCRIPT       execute a script and then exit
+      --script-window=SCRIPT_WINDOW
+                            open a window for scripts
+      --select=SELECT       headline or gnx of node to select
+      --session-restore     restore previously saved session tabs at startup
+      --session-save        save session tabs on exit
+      --silent              disable all log messages
+      --trace-plugins       trace imports of plugins
+      -v, --version         print version number and exit
+      --window-size=WINDOW_SIZE
+                            initial window size (height x width)
 </t>
 </tnodes>
 </leo_file>

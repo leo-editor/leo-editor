@@ -1083,7 +1083,7 @@
 <v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
 <v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
 <v t="ekr.20120229094652.15125"><vh>Using @mark-for-unit-tests</vh></v>
-<v t="ekr.20170301013432.1"><vh>Test Driven development in Leo</vh></v>
+<v t="ekr.20170301013432.1"><vh>Test driven development in Leo</vh></v>
 <v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
 <v t="ekr.20080729064227.6"><vh>\@button timer</vh></v>
 <v t="ekr.20080729064227.7"><vh>\@button profile</vh></v>
@@ -1192,6 +1192,8 @@
 <v t="ekr.20131019061259.16690"><vh>vnode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
+<v t="ekr.20170311120214.1"><vh>Test driven development</vh></v>
+<v t="ekr.20170311121256.1"><vh>Deleting nodes</vh></v>
 </v>
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
 </v>
@@ -1529,7 +1531,6 @@
 <v t="ekr.20050912125144.1"></v>
 <v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170301013129.1"><vh>* Cheat sheet</vh></v>
 <v t="ekr.20170309061023.1"><vh>* Tutorials</vh>
 <v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
 <v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
@@ -1562,7 +1563,6 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
-<v t="ekr.20170309072043.1"><vh>* Leo and testing</vh></v>
 <v t="ekr.20170309061107.1"><vh>* Reference</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
 <v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
@@ -1570,9 +1570,7 @@
 <v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
-<v t="ekr.20170311080611.1"><vh>New acknowledgements</vh></v>
 </v>
-<v t="ekr.20050831195331.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -2822,7 +2820,7 @@ Leo owes much of its visual design to MORE, possibly the most elegant computer p
 The following deserve special thanks:
 
 - David Brock wrote TSyntaxMemo, used in early versions of Leo.
-- Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py.
+- Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py. He also pushes back against my foolish ideas.
 - e inspired @button nodes, a truly brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
@@ -2831,6 +2829,7 @@ The following deserve special thanks:
 - The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
 - Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
+- Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
@@ -2851,7 +2850,7 @@ Special thanks to my family. My brother, David Speed Ream, tested Leo and made m
 
 The following people reported bugs, answered questions, and made suggestions for improving Leo:
 
-Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown, Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe Elza, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P. Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis, Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli, Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin Montcrieffe, Will Munslow, Chad Netzer, Derick van Niekerk, Jeff Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson, Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck, Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley, Wim Wijnders, Dan Winkler, Vadim Zeitlin.
+Alex Abacus, Shakeeb Alireze, Steve Allen, Bruce Arnold, Chris Barker, Dennis Benzinger, David Boddie, Jason Breti, Eric Brown, Terry Brown, Darius Clarke, Martin Clifford, Jason Cunliffe, Josef Dalcolmo, Gil Dev, Bill Drissel, Wenshan Du, Allen Edwards, Chris Elliot, Dethe Elza, Reinhard Engle, Mark Engleberg, Roger Erens, Stephen Ferg, Tom Fetherston, Tomaz Ficko, Niklas Frykholm, Fred Gansevles, Jonathan M. Gilligan, Zak Greant, Thomas Guettler, Romain Guy, Dave Hein, Tiago Castro Henriques, Gary Herron, Steve Holden, Klass Holwerda, Matthias Huening, Robert Hustead, John Jacob, Paul Jaros, Christopher P. Jobling, Eric S. Johansson, Garold Johnson, James Kerwin, Nicola Larosa, David LeBlanc, Chris Liechti, Steve Litt, Martin v. Löwis, Robert Low, Fredrik Lundh, Michael Manti, Alex Martelli, Marcus A. Martin, Gidion May, David McNab, Frank Merenda, Martin Montcrieffe, Will Munslow, Lewis Neal, Chad Netzer, Derick van Niekerk, Jeff Nowland, Naud Olivier, Joe Orr, Marc-Antoine Parent, Paul Paterson, Sean Shaleh Perry, Tim Peters, David Priest, Gary Poster, Scott Powell, Bruce Rafnel, Walter H. Rauser, Olivier Ravard, David Speed Ream, Rich Ries, Aharon Robbins, Guido van Rossum, David Rowe, Davide Salomoni, Steven Schaefer,Johannes Schöön, Wolfram Schwenzer, Casey Wong Kam Shun, Gil Shwartz, Jim Sizelove, Paul Snively, Jurjen Stellingwerff, Phil Straus, David Szent-Györgyi, Kent Tenney, Jeffrey Thompson, Gabriel Valiente, Jim Vickroy, Tony Vignaux, Tom van Vleck, Kevin Walzer, Ying-Chao Wang, Cliff Wells, Dan Wharton, John Wiegley, Wim Wijnders, Dan Winkler, Vadim Zeitlin.
 
 The following have contributed plugins to Leo:
 
@@ -16098,10 +16097,11 @@ to associate persistent data with vnodes. For details see the section about
     p.h: same as p.v.h.
     p.u: same as p.v.u.
 
-**Getters**::
+**Getters** These return *new positions*::
 
     p.back()
     p.children()
+    p.copy()
     p.firstChild()
     p.hasBack()
     p.hasChildren()
@@ -16502,7 +16502,11 @@ More: Associate leo files
       --diff                use Leo as an external git diff
       --fullscreen          start fullscreen
       --ipython             enable ipython support
+      --fail-fast           stop unit tests after the first failure
       --gui=GUI             gui to use (qt/qttabs)
+      --load-type=LOAD_TYPE
+                            @&lt;file&gt; type for loading non-outlines from command
+                            line
       --maximized           start maximized
       --minimized           start minimized
       --no-cache            disable reading of cached files
@@ -16521,7 +16525,7 @@ More: Associate leo files
       -v, --version         print version number and exit
       --window-size=WINDOW_SIZE
                             initial window size (height x width)
-    </t>
+</t>
 <t tx="ekr.20131028213522.17150"></t>
 <t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to actually get an html file that can be loaded into a word processor to output an .odt or .docx file for example.
 
@@ -21557,7 +21561,8 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1"></t>
+<t tx="ekr.20161207045325.1">Release notes: Discuss useful (new) functions and buttons.
+</t>
 <t tx="ekr.20161207052511.1">Let us think of lessons not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations. They can even be cryptic. This attitude arises from two principles:
 
 1. The less said, the better.
@@ -23618,13 +23623,6 @@ The new code contains the following improvements:
 2. The new code organizes messages by threads.  Messages that start with "re:" become children of the node that started the thread.
 
 3. Better warning and informational messages, and a better docstring.</t>
-<t tx="ekr.20170301013129.1">- TDD for Leo.
-- predicates.
-- helper for deleting outline nodes.
-- p.moveTo* methods change positions.
-- p.copy()
-- Discuss useful (new) functions and buttons.
-</t>
 <t tx="ekr.20170301013432.1">Test Driven Development (TDD) takes a bit of setup, but the initial investment repays itself many times over. To use TDD with Leo, start @test nodes with **preamble code**. As explained below, the preamble will do the following:
 
 1. Optional: save the present outline if it has been changed.
@@ -23812,12 +23810,12 @@ Leo takes this concept to its limit. Leo offers language agnostic abstraction at
 I can't ignore the freedom of arbitrary abstraction, and I've come to rely upon it so much that I struggle to use non-Leo environments. It is well known that the human brain has a limited working memory. The act of programming stretches working memory to it's limit. Leo provides an environment in which a program can seamlessly be restructured to fit within the bounds of a programmers individual working memory. 
 
 I realize this is a "why" and not a "how" and that this doesn't help anyone get better acquainted with Leo. But, as a programmer if you've ever felt frustrated with the organizational constructs of the language you're working in you might be surprised to realize that after using Leo it wasn't the language that was the problem, but a lack of tools to organize your programs in a way that makes sense to you.</t>
-<t tx="ekr.20170309072043.1"></t>
 <t tx="ekr.20170311055647.1">Thanks to Tsuchi Noko for these.</t>
-<t tx="ekr.20170311080611.1">- Reinhard Engle, for encouraging me simplify Leo's code.
-- Terry Brown, for pushing back against hasty ideas.
-- Lewis Neal, for improving Leo's documentation.
-- Tsuchi Noko, for creating transparent icons.</t>
+<t tx="ekr.20170311120214.1">- Use `imp.reload &lt;https://docs.python.org/3/library/imp.html&gt;`_ to reload all changed modules.
+- Make sure to *instantiate* any changed objects.
+- See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
+</t>
+<t tx="ekr.20170311121256.1">Deleting multiple outline nodes is tricky, because the positions of the to-be-deleted nodes will change as previous nodes are deleted. `c.deletePositionsInList(aList, callback=None)` safely deletes all the positions in aList.</t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
