@@ -12134,6 +12134,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12180,6 +12181,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12228,6 +12230,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -12279,6 +12282,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12330,6 +12334,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -12372,6 +12377,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12414,6 +12420,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12454,6 +12461,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -13527,6 +13535,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.elisp)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -13895,6 +13904,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -13950,6 +13960,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14034,6 +14045,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14074,6 +14086,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14345,6 +14358,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.pascal)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14523,6 +14537,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.perl)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15453,6 +15468,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15548,6 +15564,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15609,6 +15626,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -15675,6 +15693,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -15728,6 +15747,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -16154,6 +16174,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16201,6 +16222,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16277,6 +16299,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16410,6 +16433,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16462,6 +16486,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16523,6 +16548,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16611,6 +16637,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16689,6 +16716,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16907,6 +16935,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17011,6 +17040,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17121,6 +17151,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17744,6 +17775,7 @@ if 0:
     imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
     # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
@@ -18282,8 +18314,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 try:
@@ -19086,8 +19118,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19144,8 +19176,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19211,8 +19243,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19283,8 +19315,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19331,6 +19363,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19442,6 +19475,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19522,6 +19556,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19563,6 +19598,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19638,6 +19674,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands

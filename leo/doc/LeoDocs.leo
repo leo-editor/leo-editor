@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1567,6 +1567,7 @@
 <v t="ekr.20170301013432.1"><vh>** TDD for Leo</vh>
 <v t="ekr.20161207050504.1"><vh>Test-Driven development in Leo</vh></v>
 <v t="ekr.20170124031347.1"><vh>Code Academy: Test-Driven Development in Leo</vh></v>
+<v t="ekr.20170311053547.1"><vh>@test TDD for importers</vh></v>
 </v>
 </v>
 <v t="ekr.20170309061107.1"><vh>* Reference</vh>
@@ -21582,7 +21583,9 @@ if p:
             pass
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1"></t>
-<t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity.  True test-driven development is possible, here and now, in Leo.
+<t tx="ekr.20161207050504.1">Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity
+
+True test-driven development is possible, here and now, in Leo.
 
 **Executive Summary**
 
@@ -23734,7 +23737,62 @@ The new code contains the following improvements:
 - p.copy()
 - Discuss useful (new) functions and buttons.
 </t>
-<t tx="ekr.20170301013432.1"></t>
+<t tx="ekr.20170301013432.1">Here's how to use TDD (Test Driven Development) in Leo.
+
+1. Start @test nodes with a **preamble** that reloads modules and instantiates objects under test.
+
+
+
+Using reload has made a big difference in my unit testing. I can run tests repeatedly in unitTest.leo, even after I have changed (in leoPy.leo) the code being tested. This workflow doubles my testing productivity
+
+True test-driven development is possible, here and now, in Leo.
+
+**Executive Summary**
+
+1. **Preamble** code in @test nodes calls imp.reload(x) to reload all modules x affected by the tests. 
+
+2. Calling imp.reload is not enough. Test code must create new instances of all classes being tested.
+
+**Example**
+
+Here is the beginning of @test elisp importer::
+
+    if 1: # Preamble
+        # The preamble...
+        g.cls()
+        if c.isChanged(): c.save()
+        # import leo
+        import leo.core.leoImport as leoImport
+        import leo.plugins.importers.linescanner as linescanner
+        import leo.plugins.importers.elisp
+        # Reload all.
+        import imp
+        imp.reload(leo.plugins.importers.linescanner)
+        imp.reload(leo.plugins.importers.elisp)
+        imp.reload(leoImport)
+        # instantiate the class
+        ic = leoImport.LeoImportCommands(c)
+    else: # Run the test in "production mode".
+        ic = c.importCommands
+    # run the test.
+    ic.elispUnitTest(p,s=s,showTree=True)
+
+**Using imp reload**
+
+As you can see, the test imports and reloads three modules. The test uses leoImport, so it too must be reloaded even though leoImport.py itself doesn't change.
+
+Calling imp.reload *is not enough*. imp.reload *doesn't change existing objects*. You must create (instantiate) a new object to test. That's what this line of the preamble does:
+
+    ic = leoImport.LeoImportCommands(c)
+
+That's all there is to it.
+
+**Summary**
+
+A **preamble** in each @test node makes it possible to re-run tests when without reloading Leo even when the code under test changes. Creating a preamble is an investment that quickly pays off.
+
+When creating several related unit tests, cutting and pasting the preamble from previous unit tests usually suffices. Fancy @button scripts that create preamble code are not required, but might be useful if you are creating lots of tests at once.
+</t>
 <t tx="ekr.20170301014023.1">This should be in the docstring.
 
 I propose making a modest change to the wikiview settings in
@@ -23866,7 +23924,60 @@ I can't ignore the freedom of arbitrary abstraction, and I've come to rely upon 
 
 I realize this is a "why" and not a "how" and that this doesn't help anyone get better acquainted with Leo. But, as a programmer if you've ever felt frustrated with the organizational constructs of the language you're working in you might be surprised to realize that after using Leo it wasn't the language that was the problem, but a lack of tools to organize your programs in a way that makes sense to you.</t>
 <t tx="ekr.20170309072043.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170311053547.1"># The global tables seem to have broken TDD.
+if 1: # Preamble
+    import imp
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.python
+    imp.reload(leo.plugins.importers.linescanner)
+    imp.reload(leo.plugins.importers.python)
+    imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
+    ic = leoImport.LeoImportCommands(c)
+
+
+s = """\
+import sys
+
+class Foo():
+    pass
+    
+a = 2
+
+def main(self):
+    pass
+
+if __name__ == '__main__':
+    main()
+"""
+table = (
+    (1, 'Declarations'),
+    (1, 'class Foo'),
+    (1, 'main'),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands .pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+        assert root.b.find("if __name__ == '__main__':") &gt; -1
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

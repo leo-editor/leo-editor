@@ -205,7 +205,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+expanded="ekr.20090529141856.4784,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -264,6 +265,57 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
+<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
+<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
+<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
+<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
+<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
+<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
+<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
+<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
+<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
+<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh>
+<v t="ekr.20170306052710.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/python overindent def--no following def</vh>
+<v t="ekr.20170306052710.2"><vh>class aClass</vh>
+<v t="ekr.20170306052710.3"><vh>def1</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
+<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
+<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
+<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
+<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -524,57 +576,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
-<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
-<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
-<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
-<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
-<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
-<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
-<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
-<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
-<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
-<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
-<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
-<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh>
-<v t="ekr.20170306052710.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/python overindent def--no following def</vh>
-<v t="ekr.20170306052710.2"><vh>class aClass</vh>
-<v t="ekr.20170306052710.3"><vh>def1</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
-<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
-<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
-<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
-<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
-<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
-</v>
+<v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
@@ -1029,7 +1031,7 @@
 <v t="ekr.20161216141315.1"><vh>@test markdown importer-@@-section-name</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784" a="E"><vh>Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
@@ -1053,9 +1055,6 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
-<v t="ekr.20170306041801.1"></v>
-<v t="ekr.20161115063144.22"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1556,6 +1555,7 @@ suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1602,6 +1602,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1650,6 +1651,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -1701,6 +1703,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1752,6 +1755,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -1794,6 +1798,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1836,6 +1841,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1876,6 +1882,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -1979,6 +1986,7 @@ if sys.platform.lower().startswith('win'):
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.elisp)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -2030,6 +2038,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.pascal)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -2104,6 +2113,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -2144,6 +2154,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -2196,6 +2207,7 @@ if sys.platform.lower().startswith('win'):
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -2264,6 +2276,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -2487,6 +2500,7 @@ c.contractAllHeadlines()
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -2568,6 +2582,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -2648,6 +2663,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -2689,6 +2705,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -4509,6 +4526,7 @@ if 0:
     imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
     # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
@@ -4557,8 +4575,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 try:
@@ -5819,6 +5837,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -5871,6 +5890,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -5932,6 +5952,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -6020,6 +6041,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -6198,6 +6220,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -6356,6 +6379,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -6885,6 +6909,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -6991,6 +7016,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -7038,6 +7064,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -7147,6 +7174,7 @@ else:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -7344,6 +7372,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.perl)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -7521,8 +7550,8 @@ finally:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -7615,8 +7644,8 @@ section 3, line 1
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -7684,8 +7713,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -7735,6 +7764,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -9450,8 +9480,8 @@ EOT;
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -9517,6 +9547,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -9702,6 +9733,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -9824,6 +9856,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -10018,6 +10051,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -10098,6 +10132,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -10374,6 +10409,7 @@ finally:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 

@@ -2145,7 +2145,7 @@ class LoadManager(object):
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
         '''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         importer_d = getattr(m, 'importer_dict', None)
         if importer_d:
             at_auto = importer_d.get('@auto', [])
@@ -2160,7 +2160,7 @@ class LoadManager(object):
                 d = g.app.atAutoDict
                 for s in at_auto:
                     aClass = d.get(s)
-                    if aClass and aClass != scanner_class:
+                    if False: ### aClass and aClass != scanner_class:
                         g.trace('duplicate %5s class: %s in %s' % (
                             s, aClass.__name__, m.__file__))
                     else:
@@ -2173,7 +2173,7 @@ class LoadManager(object):
                 d = g.app.classDispatchDict
                 for ext in extensions:
                     aClass = d.get(ext)
-                    if aClass and aClass != scanner_class:
+                    if False: ### aClass and aClass != scanner_class:
                         g.trace('duplicate %s class: %s in %s' % (
                            ext, aClass.__name__, m.__file__))
                     else:
