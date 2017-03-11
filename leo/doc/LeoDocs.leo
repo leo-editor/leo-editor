@@ -389,6 +389,9 @@
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 <v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 <v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
+<v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
+<v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
+</v>
 </v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
@@ -491,6 +494,7 @@
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
 </v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
+<v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
 <v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
 <v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
 <v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
@@ -1166,9 +1170,6 @@
 <v t="ekr.20131019035402.17573"><vh>@rst html\leonine-world.html</vh></v>
 </v>
 </v>
-<v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
-<v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
-</v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
 <v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
 <v t="ekr.20131019061259.16693"><vh>Key bindings</vh>
@@ -1529,9 +1530,6 @@
 <v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
 <v t="ekr.20170301013129.1"><vh>* Cheat sheet</vh></v>
-<v t="ekr.20170309061815.1"><vh>* FAQ</vh>
-<v t="ekr.20161207052511.1"><vh>Code Academy: how to learn Leo, or python, or anything</vh></v>
-</v>
 <v t="ekr.20170309061023.1"><vh>* Tutorials</vh>
 <v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
 <v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
@@ -1572,9 +1570,9 @@
 <v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
 </v>
-</v>
 <v t="ekr.20170311080611.1"><vh>New acknowledgements</vh></v>
-<v t="ekr.20070628083442.1"></v>
+</v>
+<v t="ekr.20050831195331.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21560,28 +21558,26 @@ if p:
             pass
     return ''.join(result)</t>
 <t tx="ekr.20161207045325.1"></t>
-<t tx="ekr.20161207052511.1">Let's think of the Code Academy not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations.  They can even be cryptic.  This attitude arises from two principles:
+<t tx="ekr.20161207052511.1">Let us think of lessons not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations. They can even be cryptic. This attitude arises from two principles:
 
 1. The less said, the better.
 2. Invite people to learn for themselves.
 
-**Puzzles for the Code Academy**
+**Pick something that interests you**
 
-1. Pick a real, worthy, programming task that you (the student) personally want/need to do in Leo.
+Pick a real, worthy, programming task that you (the student) personally want/need to do in Leo. *This step is essential*! It is *useless* to try to learn in a vacuum.
 
-*This step is essential*! It is *useless* to try to learn in a vacuum.
+EKR's first python program was C2Py. leoAttic.txt contains the original version. Leo's c-to-python commands contained revised code.
 
-EKR's first python program was C2Py. scripts.leo contains the original version. Leo's c-to-python commands contained revised code.
-
-2. Overcome fear of crashes and mistakes.
+**Overcome fear of crashes and mistakes**
 
 - Run Leo from a console.
 - Single-step through your code with g.pdb()
 - Deliberately put a crasher in your code and see what happens.
 
-The only way to hard crash Leo is to pass bad pointers to PyQt.  Python should catch all other problems.  If it doesn't, report a bug to the python people ;-)
+The only way to hard crash Leo is to pass bad pointers to PyQt. Python should catch all other problems. If it doesn't, report a bug to the python people ;-)
 
-3. Discover how Leo's code works:
+**Discover how Leo's code works**
 
 - Where is Leo's source code? Hint: look for leoPy.leo in LeoDocs.leo.
 - Look at Leo's demote command.
@@ -21592,7 +21588,7 @@ The only way to hard crash Leo is to pass bad pointers to PyQt.  Python should c
 - Use the cff command to find all definitions of x.
 - Use the cff command to find all uses of x.
 
-4. Start using Leo for real:
+**Start using Leo for real**
 
 - Add a new command using @button.
 - Create an external file containing your real-world project.
@@ -21602,21 +21598,17 @@ The only way to hard crash Leo is to pass bad pointers to PyQt.  Python should c
 
 **Attitude**
 
-Students should always feel free to ask for help, but struggle teaches us the most. 
+Students should always feel free to ask for help, but struggle teaches us the most. **It doesn't matter how long it takes to learn something**. In our culture, we value quickness. But that is a trap. All learning builds momentum:
 
-It's about attitude. **It doesn't matter how long it takes to learn something**.
+- Put 10 units of effort in, get 1 unit of results out.
+- Put 1 in, get 1 out.
+- Put 1 in, get 10 out.
 
-In our culture, we value quickness. But that is a trap. The typical learning progression builds momentum:
-
-- Put 10 units of effort in, get 1 unit of results out
-- Put 1 in, get 1 out
-- Put 1 in, get 10 out
-
-There is no way to alter this sequence ;-) How many times have we given up just because things were not easy or clear at first?
+There is no other way! How many times have we given up just because things were not easy or clear at first?
 
 **That which we learn, we learn by doing**
 
-Reading about and thinking about are useful, but not nearly good enough.  That is why students must have a project that is important to them.  The project will put them into action.</t>
+Reading about (and thinking about) are useful, but not good enough. That is why students must have a project that is important to them.  The project will put them into action.</t>
 <t tx="ekr.20170123084609.11"></t>
 <t tx="ekr.20170123084609.12"> File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 414, in auto_completer_state_handler
     kind), color='red')
@@ -23808,7 +23800,6 @@ The fix was disappointingly simple: just init ic.treeType in ic.createOutline an
 <t tx="ekr.20170309061107.1"></t>
 <t tx="ekr.20170309061222.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
-<t tx="ekr.20170309061815.1"></t>
 <t tx="ekr.20170309062939.1"></t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
 
