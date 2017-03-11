@@ -1531,23 +1531,6 @@
 <v t="ekr.20050912125144.1"></v>
 <v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170309061023.1"><vh>* Tutorials</vh>
-<v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
-<v t="ekr.20170228131720.1"><vh>Lewis: installation docs</vh></v>
-<v t="ekr.20170309060910.1"><vh>** PIM</vh></v>
-<v t="ekr.20170309060814.1"><vh>Mention VR plugin</vh></v>
-<v t="ekr.20170309060758.1"><vh>Document typing completion</vh></v>
-<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
-<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
-</v>
-<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
-<v t="ekr.20170228105606.1"><vh>Updated chapters docs</vh>
-<v t="ekr.20170228105638.1"><vh>2</vh></v>
-</v>
-</v>
-<v t="ekr.20170309061222.1"><vh>* Scripting reference</vh>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
-</v>
 <v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
 <v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
@@ -1563,13 +1546,29 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
+<v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
+<v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
+<v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
+<v t="ekr.20170228112407.1"><vh>Notes on Leo Learning (Satish Goda)</vh></v>
+</v>
 <v t="ekr.20170309061107.1"><vh>* Reference</vh>
 <v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
 <v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
 <v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
 <v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
 <v t="ekr.20170215014532.1"><vh>From external files</vh></v>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170228105606.1"><vh>Ref: Update chapters docs</vh>
+<v t="ekr.20170228105638.1"><vh>2</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20170228105606.1"></v>
+<v t="ekr.20170311125404.1"><vh>PIM tutorial</vh>
+<v t="ekr.20170311125320.1"><vh>PIM: Document abbreviations</vh></v>
+<v t="ekr.20170311125619.1"><vh>PIM: Document chapters</vh></v>
+<v t="ekr.20170309060814.1"><vh>PIM: Mention VR plugin</vh></v>
+<v t="ekr.20170309060758.1"><vh>PIM: Document typing completion</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -23572,46 +23571,6 @@ was :-)
 
 More discussion here:
 https://github.com/leo-editor/leo-editor/issues/14</t>
-<t tx="ekr.20170228131720.1">https://groups.google.com/d/msg/leo-editor/977CdHGy1Bs/-ChUMidzEQAJ
-===== There are several discussions not copied here.
-
-In response to some of the installation documentation issues raised at binary installer.
-I hope you will bear with me as I suggest some improvements to the install procedures. I know you have the view that "Instead, installing the latest version of Leo using git will likely be much simpler, especially after installing Anaconda first.
-In the time you have spent futzing with installers, you could have installed Anaconda and git, and even learned the rudiments of git."
-
-However this isn't what a newbie is encouraged to do when they correctly go to Leos docs and try to install.
-
-First - at Downloading, Installing &amp; Running Leo ( http://leoeditor.com/getting-started.html )
- &gt; Downloading Leo http://leoeditor.com/download.html
-Installing Leo
-  &gt; Installing Leo itself ( http://leoeditor.com/installing.html#installing-leo-itself ) is actually an obsolete duplicate of Downloading Leo. Some of it's links are very out of date.
-I think you can remove 'Installing Leo itself' from the docs.
-
-Here are reasons why it is obsolete (and why Todd and Ross are maybe frustrated..... )
-My suggestions are in italics, and explain why it's best to remove this section:
-
- 1. Download the latest stable release from SourceForge. This release contains an executable installer. This release will usually be a bit out of date.
-    (the stable release link here is out of date. It goes to http://sourceforge.net/projects/leo/files/Leo/4.11%20final/ which resolves to https://sourceforge.net/projects/leo/files/
-There is no executable installer in leo-5.4.zip (9.3MB) There is no other executable installer here unless you got to the 5.4-final folder.)
-    Suggestion - remove the extra link to Sourceforge.net - It serves no purpose relevant to installing Leo.
-
- 2. Download a nightly snapshot from Leo’s snapshots page. This page contains .zip archives of Leo’s code from 1, 2, 5, 10, 30 and 90 days ago.
- Suggestion - remove the extra link to snapshots. The link should be updated from http://www.greygreen.org/leo/ to http://leoeditor.com/download.html#snapshots
-
- 3. Download Leo’s latest sources from GitHub using git. Installing git is easy, and once set up this is the easiest way to get the latest version of Leo’s code:
-
-
-Second - If I go from the homepage to [Download Leo] http://leoeditor.com/download.html
-A few obsolete links here. Good news - the snapshot links at 2. are up to date :)
-Leo’s core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible (Suggestion - remove this does a newbie really need this detail?). Almost all of the time, downloading Leo’s latest sources from GitHub (Suggestion - remove these Github links. They are too early, and take you to git with NO instructions) is going to give you code that is more stable than the most recent latest stable release. Stable releases become outdated almost immediately. (Suggestion - again, remove stable release links. They are duplicates, increasing maintenance)
-If you are just checking Leo out, feel free to use the latest stable release download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent nightly snapshot, (Suggestion - again, remove obsolete release links. They are duplicates, increasing maintenance) or even better, Leo’s latest sources from GitHub (Suggestion - again, remove Github links. They are duplicates, increasing maintenance).... [snip]
-
-Surely most newbies would follow this advice as it appears simple. Simple is good, the least threatening, and free of suggestions to use git. However it is not explicit about what to download. You need to go down to the 5.4-final folder for a windows executable installer. It's here that Ross went to 'Quick install' and ended up with ver 5.2 Leo. Suggestion - focus on the latest Leo you know and love, and archive the old versions. Users won't go to 'Archive' would they? surely not ;)
-
-Suggestion - If you really want to encourage people to use Git maybe a more focused page would help the take-up. Hey, you even encouraged me to use it!
-
-Hope you appreciate my comments. I found it hard to get all this down as I almost got a headache discovering the duplicate sections etc. I don't envy anyone doing docs.
-This is always a hard issue to deal with and I look forward to your comments and any other comments from Leo users.</t>
 <t tx="ekr.20170228182610.1">The leomail plugin reads .mbox mail archive files into a tree of Leo nodes. This saves a lot of work.
 
 Google "&lt;your favorite mail client&gt; archive to mbox" for instructions on generating .mbox files.
@@ -23792,11 +23751,7 @@ The fix was disappointingly simple: just init ic.treeType in ic.createOutline an
 </t>
 <t tx="ekr.20170309060758.1"></t>
 <t tx="ekr.20170309060814.1"></t>
-<t tx="ekr.20170309060910.1">Document chapters and abbreviations
-</t>
-<t tx="ekr.20170309061023.1"></t>
 <t tx="ekr.20170309061107.1"></t>
-<t tx="ekr.20170309061222.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
 <t tx="ekr.20170309062939.1"></t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
@@ -23816,6 +23771,9 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 - See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
 </t>
 <t tx="ekr.20170311121256.1">Deleting multiple outline nodes is tricky, because the positions of the to-be-deleted nodes will change as previous nodes are deleted. `c.deletePositionsInList(aList, callback=None)` safely deletes all the positions in aList.</t>
+<t tx="ekr.20170311125320.1"></t>
+<t tx="ekr.20170311125404.1"></t>
+<t tx="ekr.20170311125619.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
