@@ -220,7 +220,7 @@
 </v>
 <v t="ekr.20140912075503.19292"><vh>Colors for headlines that *are* being edited</vh>
 <v t="ekr.20140912075503.19293"><vh>@color head-fg = black</vh></v>
-<v t="ekr.20140912075503.19294"><vh>@color head-bg = pink</vh></v>
+<v t="ekr.20140912075503.19294"><vh>@color head-bg = white</vh></v>
 <v t="ekr.20140912075503.19295"><vh>@color head-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19296"><vh>@color head-sel-bg = blue</vh></v>
 </v>
