@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1521,6 +1521,7 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
 <v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
+<v t="ekr.20170311055647.1"><vh>Added leo/Icons/transparent folders and icons</vh></v>
 </v>
 </v>
 <v t="ekr.20070628083442.1"></v>
@@ -11798,32 +11799,13 @@ write_intermediate_file = True
 Downloading Leo
 ###############
 
-.. links
+We recommend using `git &lt;https://git-scm.com/&gt;`_ to download Leo. Using git gives you the latest, thoroughly tested code. With git, you can review all the new features and update when you decide. Git also makes it easy to revert to previous versions when problems arise.
 
-.. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/
-.. _`nightly snapshot`: http://www.greygreen.org/leo/
-.. _`SourceForge`: https://sourceforge.net
-.. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
-.. _`GitHub`: https://github.com/leo-editor
-.. _`git`: http://git-scm.com/
+- To install using git, follow the instructions at `Installing Leo with git &lt;http://leoeditor.com/installing.html#installing-leo-with-git&gt;`_.
 
-Leo's core code is always being improved and developed. Unit-testing ensures that the daily commits are as bug-free as possible. Almost all of the time, downloading `Leo's latest sources`_ from `GitHub`_  is going to give you code that is **more stable** than the most recent `latest stable release`_.  *Stable releases become outdated almost immediately*.
+- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot &lt;http://leoeditor.com/download.html#snapshots&gt;`_.
 
-If you are just checking Leo out, feel free to use the `latest stable release`_ download if it makes you feel more secure, but once you've decided to work with Leo on a regular basis, we highly recommend regularly keeping your installation up to date with the most recent `nightly snapshot`_, or even better, `Leo's latest sources`_ from `GitHub`_ .
-
-To summarize, you may get Leo in three ways:
-
-1. Download the `latest stable release`_ from `SourceForge`_. This release contains an executable installer. This release will usually be a bit out of date.
-
-2. Download `snapshots`_ (see below) from github. You can get the very latest development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago.
-   
-3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once git is installed, getting the latest version of Leo is very easy::
-   
-        git clone https://github.com/leo-editor/leo-editor.git (http access)
-    
-   or::
-
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
+- If you want a stable release download from `SourceForge &lt;https://sourceforge.net/projects/leo/files/Leo/&gt;`_. Remember that it *won't* have the latest features and bug fixes.
 </t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
@@ -23977,7 +23959,8 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170311055647.1">Thanks to Tsuchi Noko for these.</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
@@ -24021,7 +24004,7 @@ os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
-<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from github, no account required.  The downloaded file will have a name like::
+<t tx="tbrown.20140412113009.50227">.zip snapshots can be downloaded directly from `GitHub &lt;https://github.com/leo-editor&gt;`_. No account is required.  The downloaded file will have a name like::
 
   leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
 
