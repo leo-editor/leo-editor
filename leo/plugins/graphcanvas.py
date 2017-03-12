@@ -48,7 +48,7 @@ except Exception:
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic, isQt5
 
 pygraphviz = None
 if not pydot:
@@ -204,15 +204,17 @@ class GraphicsView(QtWidgets.QGraphicsView):
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
 
+        distance = event.angleDelta().y() if isQt5 else event.delta()
+
         if int(event.modifiers() & QtConst.ControlModifier):
 
-            scale = 1.+0.1*(event.delta() / 120)
+            scale = 1.+0.1*(distance / 120)
 
             self.scale(scale, scale)
 
         elif int(event.modifiers() & QtConst.AltModifier):
 
-            self.glue.scale_centers(event.delta() / 120)
+            self.glue.scale_centers(distance / 120)
 
         else:
 
