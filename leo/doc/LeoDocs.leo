@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -621,6 +621,7 @@
 <v t="ekr.20131018100353.16706"><vh>Clones accelerate work flow by creating views</vh></v>
 <v t="ekr.20131009100732.16760"><vh>Using abbreviations and templates</vh></v>
 <v t="ekr.20131009100732.16737"><vh>Using URLs</vh></v>
+<v t="ekr.20170312083548.1"><vh>Using Chapters</vh></v>
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
@@ -849,7 +850,10 @@
 </v>
 <v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
 <v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
-<v t="ekr.20131001100335.15946"><vh>Executing commands from the minibuffer</vh></v>
+<v t="ekr.20131001100335.15946"><vh>Executing commands from the minibuffer</vh>
+<v t="ekr.20170312085351.1"><vh>Typing completion</vh></v>
+<v t="ekr.20170312085434.1"><vh>Filename completion</vh></v>
+</v>
 <v t="ekr.20170215102815.1"><vh>Most important commands</vh>
 <v t="ekr.20131004191204.16079"><vh>File operations &amp; sessions</vh></v>
 <v t="ekr.20150315132217.3"><vh>Switching focus</vh></v>
@@ -1565,12 +1569,10 @@
 </v>
 </v>
 <v t="ekr.20170228105606.1"></v>
-<v t="ekr.20170311125404.1"><vh>PIM tutorial</vh>
-<v t="ekr.20170311125320.1"><vh>PIM: Document abbreviations</vh></v>
-<v t="ekr.20170311125619.1"><vh>PIM: Document chapters</vh></v>
-<v t="ekr.20170309060814.1"><vh>PIM: Mention VR plugin</vh></v>
-<v t="ekr.20170309060758.1"><vh>PIM: Document typing completion</vh></v>
-</v>
+<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20131008041326.16222"></v>
+<v t="ekr.20131001100335.15946"></v>
+<v t="ekr.20170215105125.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3934,16 +3936,6 @@ Leo's Commands Reference
 ########################
 
 This chapter lists almost all of Leo's commands. It starts with a discussion of the Emacs-like minibuffer.
-
-**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use. The following prefixes help find commands by name:: 
-
-    clone-find  clone-find commands
-    file-       file commands
-    find-       find commands
-    isearch-    incremental search commands
-    print-      print commands
-    rectangle-  rectangle commands
-    toggle-     toggle settings commands
 
 .. contents:: Contents
     :depth: 3
@@ -14252,42 +14244,44 @@ For more information, see Leo's `configuration guide`_.
 
 Every Leo command has a **command name**. In this document, keystrokes that invoke a command will be followed by the command name in parentheses. For example, ``Ctrl-S (save-file)`` saves a Leo file.
 
+**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use. The following prefixes help find commands by name:: 
+
+    clone-find  clone-find commands
+    file-       file commands
+    find-       find commands
+    isearch-    incremental search commands
+    print-      print commands
+    rectangle-  rectangle commands
+    sort-       sort commands
+    toggle-     toggle settings commands
+    
+Here are the commands that pertain to executing commands:
+
 ``Alt-X (full-command)``
     Executes any other command by typing its full name.
-
-You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you can avoid most typing using **tab completion**. With tab completion, *there is no need to remember the exact names of Leo’s commands*.
-
-For example, suppose you want to print out the list of Leo’s commands. You might remember only that there are several related commands and that they all start with "print". Just type ``&lt;Alt-X&gt;pri&lt;Tab&gt;``
-
-You will see ``print-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``pri``. The Completion tab in the log pane shows all the commands that start with ``print-``.
-
-Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
-
-Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
-
-**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use.
-
-**Opening files using filename completion**
-
-``file-open-by-name``
-    Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
     
-**Command history**:
-
 ``Ctrl-P (repeat-complex-command``
     Repeats the last command entered by name in the minibuffer.
-``UpArrow`` (in the minibuffer)
+    
+When in the minibuffer, the following keys are treated in special ways:
+
+``&lt;Return&gt;``
+    Executes the command.
+
+``&lt;Tab&gt;``
+    Shows all valid completions.
+
+``&lt;BackSpace&gt;``
+    Shows more completions.
+    
+``Ctrl-G``
+    Exits the minibuffer and puts focus in the body pane.
+    
+``UpArrow``
     Moves backward through command history. The first ``UpArrow`` is the same as ``Ctrl-P``.
-``DownArrow`` (in the minibuffer)
+
+``DownArrow``
     Moves forward through command history.
-
-**Summary**:
-
-- ``&lt;Return&gt;`` executes the command.
-- ``&lt;Tab&gt;`` shows all valid completions.
-- ``&lt;BackSpace&gt;`` shows more alternatives.
-- ``Ctrl-G`` exits the minibuffer and puts focus in the body pane.
-- ``UpArrow`` and ``DownArrow`` in the minibuffer cycle through command history.
 </t>
 <t tx="ekr.20131001100335.15947">``F1 (help)``
     Shows a help message appears in the viewrendered pane. Alt-0 (vr-toggle) hides or shows this pane.
@@ -14690,6 +14684,8 @@ Leo expands abbreviations as you type.
 - Abbreviations can also insert the result of executing code.
     
 Ctrl-left-clicking any URL opens the URL.
+
+@chapter trees denote chapters. Activating a chapter shows only the nodes in that chapter.
 </t>
 <t tx="ekr.20131008041326.16079">#############
 Preliminaries
@@ -19151,13 +19147,19 @@ Holding down Alt before releasing the node will force insertion as a child of th
 ``file-diff-files``
     Creates a node and puts the diff between 2 files into it. 
 </t>
-<t tx="ekr.20150318110552.55">Chapters are sub-outlines rooted in an @chapter node. Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter shows all outline nodes.
+<t tx="ekr.20150318110552.55">@chapter trees define chapters. Selecting a chapter makes only those nodes in the chapter visible, much like a hoist. The ``main`` chapter represents the entire outline. Selecting the ``main`` chapter shows all outline nodes.
 
 ``chapter-select-main``
     Selects the main chapter.
     
 ``chapter-select-&lt;chapter-name&gt;``
     Each @chapter node in the outline creates a corresponding chapter-select command.
+    
+``chapter-next``
+    Selects the next chapter.
+    
+``chapter-back``
+    Selects the previous chapter.
 
 Associated settings:
 
@@ -22803,11 +22805,63 @@ Leo's Documentation Page
 <t tx="ekr.20170215103337.1"></t>
 <t tx="ekr.20170215105125.1">.. _`Leo's Command Reference`: commands.html
 .. _`Leo's minibuffer`: commands.html#executing-commands-from-the-minibuffer
+.. _`typing completion`: commands.html#executing-commands-from-the-minibuffer
 .. _`key bindings`: commands.html#key-reference
 .. _`Emacs minibuffer`: https://www.gnu.org/software/emacs/manual/html_node/emacs/Minibuffer.html 
 
+Leo has hundreds of commands, described in `Leo's Command Reference`_. **Very important**: You can (and should) ignore most of these commands at first. You execute commands using `key bindings`_ or *by name* in `Leo's minibuffer`_, similar to the `Emacs minibuffer`_.
 
-Leo has hundreds of commands, described in `Leo's Command Reference`_. Commands may be executed via `key bindings`_ or *by name* via `Leo's minibuffer`_, similar to the `Emacs minibuffer`_.
+You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you should use **typing completion** to avoid most typing. For example, you can execute the sort-lines commands this way::
+
+    &lt;Alt-X&gt;so&lt;Tab&gt;
+    
+Now the minibuffer will list common prefix of all commands that start with "so", namely::
+
+    sort-
+    
+After typing l&lt;Tab&gt; the minibuffer will contain::
+
+    sort-lines
+    
+Now, just type &lt;Return&gt; to execute the command.  Typing completion quickly becomes second nature.
+
+**Very important**: There is no need to remember the exact names of Leo’s commands. Instead, you only need to remember a few common command prefixes, such as::
+
+    clone-find  clone-find commands
+    file-       file commands
+    find-       find commands
+    isearch-    incremental search commands
+    print-      print commands
+    sort-       sort commands
+    toggle-     toggle settings commands
+    
+The following commands pertain to the minibuffer itself:
+    
+``Alt-X (full-command)``
+    Executes any other command by typing its full name.
+    
+``Ctrl-P (repeat-complex-command``
+    Repeats the last command entered by name in the minibuffer.
+    
+When in the minibuffer, the following keys are treated in special ways:
+
+``&lt;Return&gt;``
+    Executes the command.
+
+``&lt;Tab&gt;``
+    Shows all valid completions.
+
+``&lt;BackSpace&gt;``
+    Shows more completions.
+    
+``Ctrl-G``
+    Exits the minibuffer and puts focus in the body pane.
+    
+``UpArrow``
+    Moves backward through command history. The first ``UpArrow`` is the same as ``Ctrl-P``.
+
+``DownArrow``
+    Moves forward through command history.
 </t>
 <t tx="ekr.20170217093636.1">Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
 
@@ -23748,8 +23802,6 @@ Importer unit tests create both @clean and @file
 
 The fix was disappointingly simple: just init ic.treeType in ic.createOutline and ic.scannerUnitTest.
 </t>
-<t tx="ekr.20170309060758.1"></t>
-<t tx="ekr.20170309060814.1"></t>
 <t tx="ekr.20170309061107.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
 <t tx="ekr.20170309062939.1"></t>
@@ -23770,11 +23822,35 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 - See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
 </t>
 <t tx="ekr.20170311121256.1">Deleting multiple outline nodes is tricky, because the positions of the to-be-deleted nodes will change as previous nodes are deleted. `c.deletePositionsInList(aList, callback=None)` safely deletes all the positions in aList.</t>
-<t tx="ekr.20170311125320.1"></t>
-<t tx="ekr.20170311125404.1"></t>
-<t tx="ekr.20170311125619.1"></t>
 <t tx="ekr.20170311203840.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170312083548.1">.. index::
+    pair: Chapter; Tutorial
+    pair: @chapter; Tutorial
+
+@chapter trees denote a **chapter**. You can **activate** a chapter from the icon area, or with chapter-select commands. Activating a chapter makes only those nodes in the chapter visible. The ``main`` chapter represents the entire outline. Activating the ``main`` chapter shows all outline nodes.
+
+``chapter-select-main``
+    Selects the main chapter.
+    
+``chapter-select-&lt;chapter-name&gt;``
+    Selects a chapter by name.
+</t>
+<t tx="ekr.20170312085351.1">**Very Important**: Leo has hundreds of commands, but because of tab completion you do not have to remember, or even *know about* any of them.  Feel free to ignore commands that you don't use.
+
+You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you can avoid most typing using **tab completion**. With tab completion, *there is no need to remember the exact names of Leo’s commands*.
+
+For example, suppose you want to print out the list of Leo’s commands. You might remember only that there are several related commands and that they all start with "print". Just type ``&lt;Alt-X&gt;pri&lt;Tab&gt;``
+
+You will see ``print-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``pri``. The Completion tab in the log pane shows all the commands that start with ``print-``.
+
+Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
+
+Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
+</t>
+<t tx="ekr.20170312085434.1">``file-open-by-name``
+    Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
