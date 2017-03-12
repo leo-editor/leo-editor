@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1546,6 +1546,7 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
+<v t="ekr.20170311203840.1"><vh>* Release notes: Discuss useful (new) functions and buttons.</vh></v>
 <v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
 <v t="ekr.20170203055237.1"><vh>#356: Scripting documentation for new users of leoeditor</vh>
 <v t="ekr.20170203060220.1"><vh>Original issue</vh></v>
@@ -21560,8 +21561,7 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1">Release notes: Discuss useful (new) functions and buttons.
-</t>
+<t tx="ekr.20161207045325.1"></t>
 <t tx="ekr.20161207052511.1">Let us think of lessons not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations. They can even be cryptic. This attitude arises from two principles:
 
 1. The less said, the better.
@@ -23483,7 +23483,6 @@ Conclusion: It may still be true, in some limited areas, that Leo can do things 
    @chapter One
    @chapter Two
 
-
 Either the "Using Chapters" http://leoeditor.com/outlines.html#using-chapters documentation is out of date or some of the commands are broken.
 
 - The chapter-create command creates an @chapter node and populates it with a single node.
@@ -23774,7 +23773,8 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 <t tx="ekr.20170311125320.1"></t>
 <t tx="ekr.20170311125404.1"></t>
 <t tx="ekr.20170311125619.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170311203840.1"></t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
