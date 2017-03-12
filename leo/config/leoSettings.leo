@@ -2217,7 +2217,7 @@
 </v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20140912072521.19160"></v>
-<v t="ekr.20170310072826.1"><vh>@theme base dark theme</vh>
+<v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
 <v t="ekr.20170310072826.2"><vh>settings (base dark)</vh>
 <v t="ekr.20170310072814.3"><vh>style sheet settings (base dark)</vh>
 <v t="ekr.20170310072814.4"><vh>border settings (base dark)</vh>
@@ -2324,7 +2324,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20170310100532.1"><vh>@theme windows ekr dark theme</vh>
+<v t="ekr.20170312082833.1"><vh>@theme windows ekr light</vh>
+<v t="ekr.20170312082833.2"><vh>@string focused-border-unfocus-color = @solarized-base2</vh></v>
+<v t="ekr.20140912072521.19160"></v>
+<v t="ekr.20170312082833.3"><vh>@data qt-gui-user-style-sheet</vh></v>
+</v>
+<v t="ekr.20170310100532.1"><vh>@theme windows ekr dark</vh>
 <v t="ekr.20170310100532.2"><vh>settings</vh>
 <v t="ekr.20170310100532.3"><vh>style sheet settings (base dark)</vh>
 <v t="ekr.20170310100532.4"><vh>border settings (base dark)</vh>
@@ -2439,7 +2444,7 @@
 <v t="ekr.20170310100532.98"><vh>zz overrides</vh></v>
 </v>
 </v>
-<v t="ekr.20170310095804.1"><vh>@theme linux ekr dark theme</vh>
+<v t="ekr.20170310095804.1"><vh>@theme linux ekr dark</vh>
 <v t="ekr.20170310095804.2"><vh>settings</vh>
 <v t="ekr.20170310095804.3"><vh>style sheet settings (base dark)</vh>
 <v t="ekr.20170310095804.4"><vh>border settings (base dark)</vh>
@@ -2554,7 +2559,7 @@
 <v t="ekr.20170310095804.98"><vh>zz overrides (linux ekr dark)</vh></v>
 </v>
 </v>
-<v t="ekr.20170310063446.1"><vh>Deprecated themes</vh>
+<v t="ekr.20170310063446.1"><vh>Monolithic themes</vh>
 <v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
 <v t="ekr.20170304074559.186"><vh>settings</vh>
 <v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
@@ -12809,9 +12814,9 @@ QPushButton:hover {
 <t tx="ekr.20170310063446.1">@language rest
 @wrap
 
-These themes are deprecated because they don't use a common base theme. As a result, it is difficult to understand the differences between them.
+The differences between these themes are not confined to "zz" nodes, as is true of most of the other themes in this file. As a result, it is difficult to understand the differences between them.
 
-No further work is planned on any deprecated theme.</t>
+No further work is planned on these themes.</t>
 <t tx="ekr.20170310072814.10">Here you can edit the colors by Leo, just edit the
 node headings, and click the reload-style button.
 </t>
@@ -14043,6 +14048,69 @@ Note: Do not use @-constants here.</t>
 <t tx="ekr.20170310102041.7"></t>
 <t tx="ekr.20170310102041.8">solarized-magenta</t>
 <t tx="ekr.20170310102041.9">Solarized violet
+</t>
+<t tx="ekr.20170312082833.1">This theme uses the default qt-gui-plugin-style-sheet.</t>
+<t tx="ekr.20170312082833.2"></t>
+<t tx="ekr.20170312082833.3">/*
+@language css EKR: qt-gui-user-style-sheet
+*/
+
+/*
+    solarized-base3 (lightest) provides contrast in the main window.
+    QWidget styling is useful for testing, and not much else.
+*/
+
+/* Defaults */
+QWidget, QFrame {
+    background: @solarized-base2;
+}
+QLabel, QScrollBar, QStatusBar {
+    background:     lightgrey;
+}
+
+/* Widgets */
+/* ===== covered by defaults.
+QCheckBox,  QComboBox, QGroupBox, QPushButton, QRadioButton,
+QLineEdit,
+QTabBar, QTabWidget, QToolBar,
+{
+    background:     @solarized-base2;
+}
+===== */
+
+/* ===== Not used
+QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
+    border:         none;
+    margin-right:   5px;
+    padding:        3px;
+}
+===== */
+
+QTextEdit#log-widget {
+    background:         @LightSteelBlue1;
+    /* border-color interferes with border coloring. */
+}
+QTreeView,
+QTreeWidget,
+QTextEdit#richTextEdit {
+    background-color:   @solarized-base2;
+    /* border-color interferes with border coloring. */
+    /* border-color:           @solarized-base2;  */
+}
+
+/* Menu Bar and menus */
+QMenu,
+QMenuBar,
+QMenu::item,
+QMenuBar::item {
+    background:         @solarized-base2;
+}
+QMenu::item:selected,
+QMenuBar::item:selected,
+QMenuBar::item:pressed {
+    background:         @LightSteelBlue1;
+    color: black;
+}
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
