@@ -1002,10 +1002,10 @@ class Importer(object):
         '''Show both s1 and s2.'''
         print('===== s1: %s' % parent.h)
         for i, s in enumerate(lines1):
-            print('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i+1, s))
         print('===== s2')
         for i, s in enumerate(lines2):
-            print('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i+1, s))
     #@+node:ekr.20161108131153.6: *5* i.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''
