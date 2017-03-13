@@ -153,6 +153,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not d:
             d = self.createFindDialog(c)
             self.globalFindDialog = d
+        d.setStyleSheet(c.active_stylesheet)
         # Set the commander's FindTabManager.
         assert g.app.globalFindTabManager
         c.ftm = g.app.globalFindTabManager
@@ -302,6 +303,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not init:
             init = datetime.datetime.now()
         d = b(c.frame.top, message=message, init=init, step_min=step_min)
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         c.in_qt_dialog = True
         val = d.exec_()
@@ -331,6 +333,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
         d = QtWidgets.QInputDialog()
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         d.setLabelText(message)
         if cancelButtonText:
@@ -354,6 +357,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting: return None
         d = QtWidgets.QInputDialog()
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         d.setLabelText(message)
         d.setTextValue(default)
@@ -372,6 +376,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
@@ -392,6 +397,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)
@@ -431,6 +437,7 @@ class LeoQtGui(leoGui.LeoGui):
         if no_all:
             buttons |= b.NoToAll
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         d.setStandardButtons(buttons)
         d.setWindowTitle(title)
         if message: d.setText(message)
@@ -464,6 +471,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = None
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
+        dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
         if multiple:
             c.in_qt_dialog = True
@@ -516,6 +524,7 @@ class LeoQtGui(leoGui.LeoGui):
             parent = None
             filter_ = self.makeFilter(filetypes)
             d = QtWidgets.QFileDialog()
+            d.setStyleSheet(c.active_stylesheet)
             self.attachLeoIcon(d)
             c.in_qt_dialog = True
             obj = d.getSaveFileName(
