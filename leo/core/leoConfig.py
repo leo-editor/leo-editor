@@ -2072,11 +2072,13 @@ class SettingsFinder(object):
         if not c2:
             return '' # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
-        if found:
-            if trace: g.trace('FOUND', unl)
-            dest = maxp.get_UNL()
+        if not found:
+            # this can't happen because we're only called by find_setting() which
+            # only calls us if the source node is found
+            if trace: g.trace('NOT FOUND', unl)
+            g.es("Failed to find source node, developer error, please report")
         else:
-            if trace: g.trace('CREATING', unl)
+            if trace: g.trace('COPYING', unl)
             nd = settings.insertAsLastChild()
             dest = nd.get_UNL()
             self.copy_recursively(maxp, nd)
