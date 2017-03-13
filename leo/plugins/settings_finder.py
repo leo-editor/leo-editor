@@ -165,17 +165,36 @@ class SettingsFinder(object):
             g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
             g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')
         )):
+
             msg = ("The setting '@{specific}' is in the Leo global configuration "
             "file 'leoSettings.leo'\nand should be copied to "
             "'myLeoSettings.leo' before editing.\n"
-            "It may make more sense to copy a group or category of settings.\n\n"
-            "Please enter 1, 2, 3, or 4:\n"
+            "It may make more sense to copy a group or category of settings.\nIf "
+            "'myLeoSettings.leo' contains duplicate settings, the last definition "
+            "is used."
+            "\n\nChoice:\n"
             "1. just select the node in 'leoSettings.leo', I will decide how much\n"
             "   to copy into 'myLeoSettings.leo' (Recommended).\n"
-            "2. copy the one setting, '@{specific}'\n"
-            "3. copy the setting group, '{group}'\n"
-            "4. copy the whole setting category, '{category}'\n"
-            ).format(specific=setting.lstrip('@'),
+            "2. copy the one setting, '@{specific}'\n")
+
+            # get the settings already defined in myLeoSettings
+            my_settings_c = self.c.openMyLeoSettings()
+            _, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
+            # find this setting's node
+            path, src_unl = unl.split('#', 1)
+            path = path.replace("file://", "").replace("unl://", "")
+            src_unl = src_unl.replace('%20', ' ').split("-->")
+            c2 = g.app.loadManager.openSettingsFile(path)
+            found, maxdepth, maxp = g.recursiveUNLFind(src_unl, c2)
+            # scan this setting's group and category for conflicts
+            up = maxp.parent()
+            if up and self.no_conflict(up, settingsDict):
+                msg += "3. copy the setting group, '{group}'\n"
+                up = up.parent()
+                if up and self.no_conflict(up, settingsDict):
+                    msg += "4. copy the whole setting category, '{category}'\n"
+
+            msg = msg.format(specific=setting.lstrip('@'),
                 group=unl.split('-->')[-2].split(':', 1)[0].replace('%20', ' '),
                 category=unl.split('-->')[-3].split(':', 1)[0].replace('%20', ' '))
             which = g.app.gui.runAskOkCancelNumberDialog(
@@ -205,6 +224,23 @@ class SettingsFinder(object):
         g.command(name)(f)
         self.callbacks[name] = f
         return name
+    #@+node:tbnorth.20170313094519.1: *3* sf.no_conflict
+    def no_conflict(self, p, settings):
+        """no_conflict - check for settings defined under p already in settings
+
+        :param position p: node in settings tree
+        :param SettingsDict settings: settings already defined
+        :return: True if no conflicts
+        """
+        keys = settings.keys()
+        for nd in p.subtree_iter():
+            if nd.h.startswith('@') and not nd.h.startswith('@@'):
+                name = nd.h.split()
+                if len(name) > 1:
+                    name = g.app.config.canonicalizeSettingName(name[1])
+                    if name in keys:
+                        return False
+        return True
     #@+node:tbrown.20150818161651.8: *3* sf.settings_find_undefined
     @g.command("settings-find-undefined")
     def settings_find_undefined(self, event):
