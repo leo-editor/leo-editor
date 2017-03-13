@@ -2115,28 +2115,26 @@ class SettingsFinder(object):
             g.os_path_realpath(value.path) == g.os_path_realpath(g.os_path_join(
             g.app.loadManager.computeGlobalConfigDir(), 'leoSettings.leo')
         )):
-            if 1: # Just do the recommended thing.
-                unl = self.copy_to_my_settings(unl, which=2)
-            else: # This is way too wonky.
-                msg = ("The setting '@{specific}' is in the Leo global configuration "
-                "file 'leoSettings.leo'\nand should probably be copied to "
-                "'myLeoSettings.leo' before editing.\n"
-                "It may make more sense to copy a group or category of settings.\n\n"
-                "Please enter 1, 2, 3, or 4:\n"
-                "1. copy the one setting, '@{specific}'\n"
-                "2. copy the setting group, '{group}' (Recommended)\n"
-                "3. copy the setting whole category, '{category}'\n"
-                "4. edit the setting in 'leoSettings.leo' anyway\n"
-                ).format(specific=setting.lstrip('@'),
-                    group=unl.split('-->')[-2].split(':', 1)[0].replace('%20', ' '),
-                    category=unl.split('-->')[-3].split(':', 1)[0].replace('%20', ' '))
-                which = g.app.gui.runAskOkCancelNumberDialog(
-                    self.c, "Copy setting?", message=msg)
-                if which is None:
-                    return
-                which = int(which) # was float
-                if which < 4:
-                    unl = self.copy_to_my_settings(unl, which)
+            msg = ("The setting '@{specific}' is in the Leo global configuration "
+            "file 'leoSettings.leo'\nand should be copied to "
+            "'myLeoSettings.leo' before editing.\n"
+            "It may make more sense to copy a group or category of settings.\n\n"
+            "Please enter 1, 2, 3, or 4:\n"
+            "1. just select the node in 'leoSettings.leo', I will decide how much\n"
+            "   to copy into 'myLeoSettings.leo' (Recommended).\n"
+            "2. copy the one setting, '@{specific}'\n"
+            "3. copy the setting group, '{group}'\n"
+            "4. copy the whole setting category, '{category}'\n"
+            ).format(specific=setting.lstrip('@'),
+                group=unl.split('-->')[-2].split(':', 1)[0].replace('%20', ' '),
+                category=unl.split('-->')[-3].split(':', 1)[0].replace('%20', ' '))
+            which = g.app.gui.runAskOkCancelNumberDialog(
+                self.c, "Copy setting?", message=msg)
+            if which is None:
+                return
+            which = int(which) # was float
+            if which > 1:
+                unl = self.copy_to_my_settings(unl, which-1)
         if unl:
             # g.es("Selecting %s" % unl)
             g.handleUnl(unl, c=self.c)
