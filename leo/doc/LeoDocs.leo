@@ -648,6 +648,8 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 </v>
 <v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
+<v t="ekr.20170313111502.1"><vh>Create outline nodes</vh></v>
+<v t="ekr.20170313111626.1"><vh>Generate an output file from nodes</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
 <v t="ekr.20131014050027.16801"><vh>Positions and vnodes</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
@@ -15454,7 +15456,7 @@ for p in c.all_positions():
 
 Here is the obligatory "Hello World!" script::
 
-    g.es('Hello World!')
+    g.es('Hello World!') # g.es prints all its arguments to the log pane.
     
 In more detail:
 
@@ -15462,12 +15464,7 @@ In more detail:
 2. Put g.es('hello, world!') in the node's body text.
 3. Select the node and type Ctrl-B.
 
-Notes:
-
-- If text is selected, execute-script executes only the selected text.
-- g.es prints its arguments to Leo's log pane.
-
-..  You can use Ctrl-B even if you are reading this in leoDocs.leo!
+**Important** If text is selected, execute-script executes only the selected text. If you are in LeoDocs.leo, you can run the script from this node.
 </t>
 <t tx="ekr.20131014050027.16801">.. index::
     pair: Position; Tutorial
@@ -23770,7 +23767,48 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
 <t tx="ekr.20170312085434.1">``file-open-by-name``
     Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170313111502.1">@language python
+
+This script creates an outline node as the last top-level node::
+
+    p = c.lastTopLevel().insertAfter()
+    p.h = 'my new node'
+    c.redraw(p) # Selects the new node.
+    
+This script creates multiple nodes, with different headlines::
+
+    parent = c.lastTopLevel().insertAfter()
+    parent.h = 'New nodes'
+    table = (
+        ('First node', 'Body text for first node'),
+        ('Node 2',     'Body text for node 2'),
+        ('Last Node',  'Body text for last node\nLine 2'),
+    )
+    for headline, body in table:
+        child = parent.insertAsLastChild()
+        child.b = body.rstrip() + '\n' # Ensure exactly one trailing newline.
+        child.h = headline
+    c.selectPosition(parent) # Another way to select nodes.
+    c.redraw()
+
+This script creates a node containing today's date in the body text::
+
+    import time
+    p = c.lastTopLevel().insertAfter()
+    p.h = "Today's date"
+    p.b = time.strftime("%Y/%m/%d")
+    c.redraw(p)
+</t>
+<t tx="ekr.20170313111626.1">The script writes the body text of the presently selected node to ~/leo_output_file.txt and then prints it to the log pane::
+
+    fn = g.os_path_finalize_join(g.app.homeDir, 'leo_output_file.txt')
+    with open(fn, 'w') as f:
+        f.write(c.p.b)
+    with open(fn, 'r') as f:
+        for line in f.readlines():
+            g.es(line.rstrip())
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
