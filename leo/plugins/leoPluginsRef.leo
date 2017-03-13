@@ -11,6 +11,7 @@
 <vnodes>
 <v t="ekr.20160122104302.1"><vh>Startup</vh>
 <v t="ekr.20160510132151.1"><vh>@button backup</vh></v>
+<v t="ekr.20170203054655.1"><vh>@ignore unused buttons</vh>
 <v t="ekr.20161122014821.1"><vh>@button make-importer</vh>
 <v t="ekr.20161122020451.1"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
 <v t="ekr.20161122020932.1"><vh>copy_tree</vh></v>
@@ -79,6 +80,7 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
@@ -106,7 +108,7 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005803000000302e3371017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
@@ -267,6 +269,7 @@
 <v t="ville.20110125222411.10536"><vh>@file leomail.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
+<v t="ekr.20170128213103.1"><vh>@file demo.py</vh></v>
 <v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
@@ -285,6 +288,7 @@
 <v t="tbrown.20130930160706.23451"><vh>@file markup_inline.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
+<v t="ekr.20170217164004.1"><vh>@file tables.py</vh></v>
 </v>
 <v t="ekr.20121126102050.10134"><vh>Threading</vh>
 <v t="ekr.20121126095734.12418"><vh>@file threadutil.py</vh></v>
@@ -296,6 +300,7 @@
 <v t="ekr.20061023141638"><vh>@url 'file:./../doc/leoDocs.leo#Users Guide--&gt;Basics--&gt;Customizing Leo'</vh></v>
 </v>
 </v>
+<v t="ekr.20160519123329.1"><vh>@edit QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
@@ -303,9 +308,9 @@
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
-<v t="ekr.20160519123329.1"><vh>@edit QNCalendarWidget.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
+<v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file wikiview.py</vh></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
@@ -346,7 +351,7 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
-<t tx="edream.110203113231.618" _bklnk="7d71002858010000007971014b0058050000006c696e6b7371025d710358010000007871044b00580400000074797065710558080000006e6f6465526563747106752e">@language python
+<t tx="edream.110203113231.618">@language python
 @tabwidth -4
 @pagewidth 80
 
@@ -570,10 +575,9 @@ To activate the rst3 plugin, do the following:
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.
 </t>
 <t tx="ekr.20160122104302.1">@nosearch</t>
-<t tx="ekr.20160122104357.1">run-pylint
+<t tx="ekr.20160122104357.1">pylint
 beautify-node
 beautify-tree
-cfa-code
 </t>
 <t tx="ekr.20160122104400.1"></t>
 <t tx="ekr.20160412101537.1">'''Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb'''
@@ -968,14 +972,13 @@ assert p, h
 @others
 Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
-<t tx="ekr.20160412103110.1">def run(self, s, parent, parse_body=False, prepass=False):
+<t tx="ekr.20160412103110.1">def run(self, s, parent, parse_body=False):
     '''
     @auto entry point. Called by code in leoImport.py.
     '''
     c = self.c
     fn = parent.atAutoNodeName()
-    # g.trace(prepass, fn)
-    if c and fn and not prepass:
+    if c and fn:
         changed = c.isChanged()
         self.import_file(fn, parent)
         # Similar to Importer.run.
@@ -1304,6 +1307,7 @@ if 0: # A more complex example, for the C language.
     # self.squares += delta_s
     return i
 </t>
+<t tx="ekr.20170203054655.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
