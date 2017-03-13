@@ -125,18 +125,17 @@ class SettingsFinder(object):
         if not c2:
             return '' # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
-        if found:
-            if trace: g.trace('FOUND', unl)
-            dest = maxp.get_UNL()
-        else:
-            if trace: g.trace('CREATING', unl)
-            nd = settings.insertAsLastChild()
-            dest = nd.get_UNL()
-            self.copy_recursively(maxp, nd)
-            my_settings_c.redraw()
-            shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
-            self.c.config.settingsDict.update(settingsDict)
-            my_settings_c.config.settingsDict.update(settingsDict)
+
+        if trace: g.trace('COPYING', unl)
+        nd = settings.insertAsLastChild()
+        dest = nd.get_UNL()
+        self.copy_recursively(maxp, nd)
+        my_settings_c.setChanged()
+        my_settings_c.redraw()
+        shortcutsDict, settingsDict = g.app.loadManager.createSettingsDicts(my_settings_c, False)
+        self.c.config.settingsDict.update(settingsDict)
+        my_settings_c.config.settingsDict.update(settingsDict)
+
         if trace: g.trace('-->'.join([dest] + tail))
         return '-->'.join([dest] + tail)
     #@+node:tbrown.20150818161651.6: *3* sf.find_setting
@@ -145,7 +144,7 @@ class SettingsFinder(object):
         key = g.app.config.canonicalizeSettingName(setting)
         value = self.c.config.settingsDict.get(key)
         which = None
-        while value and g.isString(value.val) and value.val.startswith('g@'):
+        while value and g.isString(value.val) and value.val.startswith('@'):
             msg = ("The relevant setting, '@{specific}', is using the value of "
             "a more general setting, '{general}'.  Would you like to edit the "
             "more specific setting, '@{specific}', or the more general setting, "
@@ -184,8 +183,8 @@ class SettingsFinder(object):
             if which is None:
                 return
             which = int(which)
-            if which < 4:
-                unl = self.copy_to_my_settings(unl, which)
+            if which > 1:
+                unl = self.copy_to_my_settings(unl, which-1)
         if unl:
             g.handleUnl(unl, c=self.c)
     #@+node:tbrown.20150818161651.7: *3* sf.get_command
