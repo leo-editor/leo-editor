@@ -14065,6 +14065,12 @@ Note: Do not use @-constants here.</t>
 QWidget, QFrame {
     background: @solarized-base2;
 }
+QDialog {
+    background:     lightgrey;
+}
+QDialog &gt; QLabel {
+    font-size:      12pt;
+}
 QLabel, QScrollBar, QStatusBar {
     background:     lightgrey;
 }
