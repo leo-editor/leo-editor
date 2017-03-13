@@ -4478,6 +4478,7 @@ mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
+settings_finder.py
 stickynotes.py
 todo.py
 viewrendered.py
@@ -4584,6 +4585,7 @@ viewrendered.py
 # script_io_to_body.py
 # scripts_menu.py
 # setHomeDirectory.py
+# settings_finder.py
 # sftp.py
 # slideshow.py
 # spydershell.py
