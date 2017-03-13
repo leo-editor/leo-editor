@@ -1444,6 +1444,35 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20050912125144.1"></v>
+<v t="ekr.20101112045055.5064"
+expanded="ekr.20111018061632.15913,"></v>
+<v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20161207045325.1"><vh>** To do</vh>
+<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
+<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
+<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
+<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
+<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
+<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
+<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
+<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
+<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
+<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
+<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
+<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
+<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+</v>
+</v>
+<v t="ekr.20170309061107.1"><vh>* Reference (6)</vh>
+<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
+<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
+<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
+<v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
+<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
+<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
+</v>
+</v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1518,56 +1547,25 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
-<v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
-<v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
 <v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
+<v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
+<v t="ekr.20170203060220.1"><vh>#356: Scripting docs for hew users</vh></v>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
-<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
-<v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
-<v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
-<v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
-<v t="ekr.20170228104123.1"><vh>reload-settings and reload-all-settings</vh></v>
-<v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
-<v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
-<v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
 <v t="ekr.20170311055647.1"><vh>Added leo/Icons/transparent folders and icons</vh></v>
-</v>
-</v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20101112045055.5064"
-expanded="ekr.20111018061632.15913,"></v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
-<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
-<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
-<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
-<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
-<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
-<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
-<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
-<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
-<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+<v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
+<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
+<v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
+<v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
+<v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
+<v t="ekr.20170228104123.1"><vh>reload-settings and reload-all-settings</vh></v>
+<v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
+<v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
+<v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 </v>
 <v t="ekr.20170311203840.1"><vh>* Release notes: Discuss useful (new) functions and buttons.</vh></v>
-<v t="ekr.20170309062939.1"><vh>Add images to show enlarged icons</vh></v>
-<v t="ekr.20170309061107.1"><vh>* Reference</vh>
-<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
-<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
-<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
-<v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
-<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
-</v>
-</v>
-<v t="ekr.20170203060220.1"><vh>#356: Scripting docs for hew users</vh></v>
-<v t="ekr.20040403171740"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22078,17 +22076,7 @@ Furthermore, there seems to be no listing of Leo's most important ivars, c.frame
 
 Important: It is often good design to put multiple classes in a single module, so as to be able to hide implementation details. For example, most classes in leoColorizer.py may be renamed freely. More importantly, those classes can be changed at will, or even deleted. Within a module, helper classes can be added without affecting other modules in any way.
 </t>
-<t tx="ekr.20170203060220.1">A modified tutorial could be something like this, *with runnable examples*.
-
-- your first script ... helloworld
-- create an outline node
-- clone an outline node
-- create five outline nodes, each with a different name
-- populate node bodies with dynamic values (e.g., current date)
-- generate an output html or text file of the nodes you just created
-
-Each of the above examples could just gloss over the internal architecture, (but still reference architecture with links elsewhere in the documentation.
-</t>
+<t tx="ekr.20170203060220.1">The scripting tutorial contains a few more examples before jumping into the details.</t>
 <t tx="ekr.20170205185641.10">https://github.com/leo-editor/leo-editor/issues/389
 
 See the checkin log for details.
@@ -23721,7 +23709,6 @@ The fix was disappointingly simple: just init ic.treeType in ic.createOutline an
 </t>
 <t tx="ekr.20170309061107.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
-<t tx="ekr.20170309062939.1"></t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
 
 Most recently I've been focusing on one facet, abstraction and program "units". I define a "unit" as a part of the program that is considered a piece onto itself which can be labeled and referred to as a whole. Perhaps, as a daily Leo user, this is easy to think about because Leo does its best to coerce programmers and programs into looking at programming through this lens.
