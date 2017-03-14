@@ -692,6 +692,7 @@
 </v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
+<v t="ekr.20170228112643.1"><vh>Decluttering headlines</vh></v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
@@ -1552,6 +1553,7 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 </v>
+<v t="ekr.20101111175617.5037"></v>
 <v t="ekr.20161207045325.1"><vh>** To do</vh>
 <v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
@@ -1572,7 +1574,6 @@
 <v t="ekr.20170301014023.1"><vh>* New wikiview settings</vh></v>
 <v t="ekr.20170309061458.1"><vh>* Better docs for {{script}}</vh></v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
-<v t="ekr.20170228112643.1"><vh>* Document declutter</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8822,11 +8823,9 @@ Important files:
   document: leo_toc.html.txt.
 
 </t>
-<t tx="ekr.20101111175617.14683">def getDocString(self,p):
-
+<t tx="ekr.20101111175617.14683">def getDocString(self, p):
     '''Return the docstring of the @&lt;file&gt; node p.'''
-
-    trace = False # p.h.find('@file rClick.py') &gt; -1
+    trace = False
     if trace: g.trace('='*20)
     for p2 in p.self_and_subtree():
         s = p2.b
@@ -8842,74 +8841,52 @@ Important files:
         return ''
 </t>
 <t tx="ekr.20101111175617.24328">def openLeoPlugins(self):
-
-    fn = g.os_path_finalize_join(
-        g.app.loadDir,'..','plugins','leoPlugins.leo')
-
-    ok,frame = g.openWithFileName(fn,
-        old_c=self.c,enableLog=True,
-        gui=None,readAtFileNodesFlag=True)
-
-    if ok:
-        return frame.c
-    else:
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins','leoPlugins.leo')
+    c = g.openWithFileName(fn, old_c=self.c, gui=None,)
+    if not c:
         g.error('can not open leoPlugins.leo')
-        return None
+    return c
 </t>
-<t tx="ekr.20101111175617.5037" str_atime="1376412919.0">@language python
+<t tx="ekr.20101111175617.5037" str_atime="1376412919.0">'''
+Creates an outline containing most docstrings from leoPlugins.leo.
 
-'''Creates an outline containing most docstrings from leoPlugins.leo.
-
-Documentation for some docstrings are suppressed.'''
+Some docstrings are suppressed.
+'''
 
 @others
-
 controller(c).run()
+@language python
 </t>
 <t tx="ekr.20101111175617.56915" str_atime="1376412768.0">class controller:
 
     def __init__ (self,c):
         self.c = c
-        self.trace = False
 
     @others
 </t>
 <t tx="ekr.20101111175617.5787">def run(self):
-
     c = self.c
     new_c = self.openLeoPlugins()
     if not new_c: return
-
     # Create the top-level output node.
     output = c.p.insertAfter()
     output.h = 'get-docstrings-output'
     output.b = '@language rest\n'
-
     # Scan the descendants of the Plugins node.
     root = g.findNodeAnywhere(new_c,'Plugins')
     if root:
-        if self.trace: print('='*20)
         self.createSummary(output,root)
         self.createDocs(output,root)
-        c.frame.bringToFront() # new_c.close()
+        g.app.selectLeoWindow(c)
         c.redraw()
     else:
         g.error('no Plugins node')
-
-
-
-@language python
-
-@language python
-
-@language python
 </t>
 <t tx="ekr.20101112045055.13354">def createSummary (self,output,root):
 
     summary = output.insertAsLastChild()
     summary.h = 'Summary'
     result = []
-
     for p in root.children():
         if self.allowDir(p):
             for p2 in p.subtree():
@@ -8920,7 +8897,6 @@ controller(c).run()
                     if s:
                         if not s.endswith('.'): s = s + '.'
                         result.append('%s\n%s\n\n' % (h,s))
-
     # Sort by plugin name, ignoring case.
     def lower(s): return s.lower()
     result.sort(key=lower)
@@ -8928,16 +8904,17 @@ controller(c).run()
 </t>
 <t tx="ekr.20101112045055.13355">def createDocs (self,output,root):
 
-     for p in root.children():
+    trace = False
+    for p in root.children():
         if self.allowDir(p):
-            if self.trace: print('\n**',p.h)
+            if trace: print('\n**',p.h)
             child = output.insertAsLastChild()
             child.h = p.h
             for p2 in p.subtree():
                 if self.allowFile(p2):
                     h = p2.anyAtFileNodeName()
                     s = self.getDocString(p2)
-                    if self.trace: print('%5s %s' % (len(s),h))
+                    if trace: print('%5s %s' % (len(s),h))
                     child2 = child.insertAsLastChild()
                     child2.h = h
                     child2.b = "%s\n\n" % s.strip()
@@ -8958,14 +8935,12 @@ controller(c).run()
 
     lines =  g.splitLines(s.strip())
     if not lines: return ''
-
     result = []
     for s in lines:
         if s.strip():
             result.append('   '+s)
         else:
             break
-
     return ''.join(result)
 </t>
 <t tx="ekr.20101112045055.5065" str_atime="1376412774.0">http://www.greygreen.org/tmp/plugins.html</t>
@@ -8975,7 +8950,7 @@ controller(c).run()
 
     aList = (
         # Suppressed files.
-        '@file bookmarks.py',       # Replaced by better @url.
+        # '@file bookmarks.py',
         '@file rst3.py',            # Replaced by core rst3 command.
         '@file stickynotes_plus.py', # Experimental version of stickynotes
         '@file testnode.py',        # Replaced by @edit.
@@ -23142,7 +23117,15 @@ There may be more ;-)
 Conclusion: It may still be true, in some limited areas, that Leo can do things that can even be thought in org mode.  However, that statement is no longer generally true, and I'll remove it from all future documentation.</t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
-<t tx="ekr.20170228112643.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. This reduces screen space. The setting: `@bool tree-declutter = True` enables decluttering. The setting, `@data tree-declutter-patterns` should contain patterns like::
+<t tx="ekr.20170228112643.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. The setting::
+
+     @bool tree-declutter = True
+     
+enables decluttering. The @data node::
+
+    @data tree-declutter-patterns
+    
+should contain `regular expression patterns &lt;https://docs.python.org/2/library/re.html&gt;`_ like::
 
     # remove @clean and use an icon
     RULE ^@clean (.*)
