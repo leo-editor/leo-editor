@@ -2780,7 +2780,6 @@
 </v>
 </v>
 </v>
-<v t="tbrown.20141101105337.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

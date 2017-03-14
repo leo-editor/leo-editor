@@ -977,7 +977,6 @@
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
-<v t="ekr.20160410043905.1"><vh>Path expressions</vh></v>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh>
 <v t="ekr.20160410045234.1"><vh>\@auto sanity checks</vh></v>
@@ -987,6 +986,7 @@
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
 <v t="ekr.20160410044518.1"><vh>\@nosent &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
+<v t="ekr.20160410043905.1"><vh>Path expressions</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
@@ -1570,10 +1570,9 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
-<v t="ekr.20170226101715.1"><vh>* Clarify how @enabled-plugins work</vh></v>
-<v t="ekr.20170309061458.1"><vh>* Better docs for {{script}}</vh></v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
 </v>
+<v t="ekr.20170226101715.1"><vh>* Clarify how @enabled-plugins work</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -8070,13 +8069,6 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
    If no @path directives are in effect, the default path prefix is
    the directory containing the .leo file.
-
-   Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following
-   symbols known: c, g, p, os and sys.  For example::
-
-       @file {{os.path.abspath(os.curdir)}}/abc.py
-
-   refers to the file abc.py in (absolute path of) the current directory.
    
 .. index::
     pair: @persistence; Reference
@@ -20472,11 +20464,7 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``.  For example::
-
-    @file {{os.path.abspath(os.curdir)}}/abc.py
-    
-refers to the file abc.py in (absolute path of) the current directory.
+<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``. You should rarely need this feature. File names are relative to the directory containing the .leo file.
 </t>
 <t tx="ekr.20160410044518.1">.. index::
     pair: @nosent; Reference
@@ -23297,7 +23285,6 @@ Importer unit tests create both @clean and @file
 
 The fix was disappointingly simple: just init ic.treeType in ic.createOutline and ic.scannerUnitTest.
 </t>
-<t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
 
 Most recently I've been focusing on one facet, abstraction and program "units". I define a "unit" as a part of the program that is considered a piece onto itself which can be labeled and referred to as a whole. Perhaps, as a daily Leo user, this is easy to think about because Leo does its best to coerce programmers and programs into looking at programming through this lens.
