@@ -1571,11 +1571,9 @@
 </v>
 </v>
 <v t="ekr.20170226101715.1"><vh>* Clarify how @enabled-plugins work</vh></v>
-<v t="ekr.20170301014023.1"><vh>* New wikiview settings</vh></v>
 <v t="ekr.20170309061458.1"><vh>* Better docs for {{script}}</vh></v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
 </v>
-<v t="EKR.20040524104904.211"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23240,56 +23238,6 @@ Preamble code reload changed modules using imp.reload(). Preamble code must also
 
 When creating several related unit tests, cutting and pasting the preamble from previous unit tests is usually good enough. @button scripts that create preamble code might be useful if you create lots of tests at once.
 </t>
-<t tx="ekr.20170301014023.1">This should be in the docstring.
-
-I propose making a modest change to the wikiview settings in
-
-    @data wikiview-link-patterns
-
-Every pattern must start with and match a unique lead-in character.
-
-The lead-in character is the first character of the pattern, excluding a leading "\b", open parens and (maybe) other escapes.
-
-Unique lead-ins necessitates splitting some patterns. This is not a problem! Unique lead-ins greatly speed the colorizer. The extra patterns do not slow the colorizer at all.
-
-Here are suggested (and tested) patterns.
-
-Patterns for UNLs
-
-    \b(file://.*--&gt;)\S+\b
-    \b(https?://.*--&gt;)\S+\b
-
-For example: file://#some--&gt;headlines--&gt;mynode yields mynode.
-
-The lead-in characters for these patterns are f and h, respectively.
-
-Patterns for reStructuredText
-
-    `\S+(\s*&lt;https?://\S+&gt;`_)
-    `\S+(\s*&lt;file://\S+&gt;`_)
-
-For example, `Visible text &lt;http://invisible.url/here&gt;` yields Visible text.
-
-The lead-in character is ` in both patterns.
-
-Patterns for regular URLs
-
-    \bhttps?:(//.*/)\w+\b
-    \bfile:(//.*/)\w+\b
-
-For example, file://www.google.com/search yields file:search.
-
-The lead-in characters are h and f, respectively.
-
-Summary
-
-The proposed patterns have been tested here. Comments, improvements and corrections are welcome.
-
-Recent revs fix #388 in the color branch.
-
-Note: The latest pushed code does not work because it uses an intermediate format for  @data nodes. This will be fixed later today.
-
-The new work is in the color branch. It will merge into the trunk in the next day or so.</t>
 <t tx="ekr.20170303051729.1">https://github.com/leo-editor/leo-editor/issues/430
 rst import: titles with different underline characters on same level.
 </t>
