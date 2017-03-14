@@ -365,14 +365,13 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064"
-expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -604,7 +603,12 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20170215105125.1"><vh>Commands</vh></v>
 <v t="ekr.20170215031129.1"><vh>Outlines and clones</vh></v>
 <v t="ekr.20131004064408.16020"><vh>Leo directives</vh></v>
-<v t="ekr.20131003040744.18221"><vh>External files: @file, @clean and markup</vh></v>
+<v t="ekr.20131003040744.18221"><vh>External files</vh>
+<v t="ekr.20170314060847.1"><vh>\@file</vh></v>
+<v t="ekr.20170314060926.1"><vh>Markup</vh></v>
+<v t="ekr.20170314061000.1"><vh>\@clean</vh></v>
+<v t="ekr.20170314061022.1"><vh>\@all</vh></v>
+</v>
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
 <v t="ekr.20131009100732.19038"><vh>Plugins</vh></v>
 <v t="ekr.20170215082032.1"><vh>Scripting basics</vh>
@@ -1445,34 +1449,8 @@ expanded="ekr.20111018061632.15913,"><vh>@file plugin_catalog.py</vh></v>
 </v>
 </v>
 <v t="ekr.20050912125144.1"></v>
-<v t="ekr.20101112045055.5064"
-expanded="ekr.20111018061632.15913,"></v>
+<v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20161207045325.1"><vh>** To do</vh>
-<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
-<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
-<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
-<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
-<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
-<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
-<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
-<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
-<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
-<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
-</v>
-</v>
-<v t="ekr.20170309061107.1"><vh>* Reference (6)</vh>
-<v t="ekr.20170228112643.1"><vh>Document declutter</vh></v>
-<v t="ekr.20170226101715.1"><vh>Clarify how @enabled-plugins work</vh></v>
-<v t="ekr.20170301014023.1"><vh>New wikiview settings</vh></v>
-<v t="ekr.20170309061458.1"><vh>Better docs for {{script}}</vh></v>
-<v t="ekr.20170215014532.1"><vh>From external files</vh></v>
-<v t="ekr.20170203055137.1"><vh>#368: Document which names in Leo can (and can't) be changed</vh></v>
-</v>
-</v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1552,9 +1530,11 @@ expanded="ekr.20111018061632.15913,"></v>
 <v t="ekr.20170203060220.1"><vh>#356: Scripting docs for hew users</vh></v>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
+<v t="ekr.20170313152439.1"><vh>Added decluttering of headlines</vh></v>
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
 <v t="ekr.20170311055647.1"><vh>Added leo/Icons/transparent folders and icons</vh></v>
 <v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
+<v t="ekr.20170313151821.1"><vh>Added several new scripts and @button nodes to scripts.leo</vh></v>
 <v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
 <v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
 <v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
@@ -1565,7 +1545,30 @@ expanded="ekr.20111018061632.15913,"></v>
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 </v>
-<v t="ekr.20170311203840.1"><vh>* Release notes: Discuss useful (new) functions and buttons.</vh></v>
+<v t="ekr.20161207045325.1"><vh>** To do</vh>
+<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
+<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
+<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
+<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
+<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
+<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
+<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
+<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
+<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
+<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
+<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
+<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
+<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
+</v>
+</v>
+<v t="ekr.20170226101715.1"><vh>* Clarify how @enabled-plugins work</vh></v>
+<v t="ekr.20170301014023.1"><vh>* New wikiview settings</vh></v>
+<v t="ekr.20170309061458.1"><vh>* Better docs for {{script}}</vh></v>
+<v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170228112643.1"><vh>* Document declutter</vh></v>
+</v>
+<v t="ekr.20170314055745.1"><vh>* Update plugins docs</vh></v>
+<v t="ekr.20050912125144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7528,6 +7531,12 @@ Directive
 
     A keyword, preceded by an '@' sign, in body text that controls Leo's
     operation. The keyword is empty for the @ directive.
+    
+    
+.. index::
+    pair: Dirty Node; Glossary
+
+    A node whose headline or body text has changed.
 
 .. index::
     pair: Doc part; Glossary
@@ -7767,6 +7776,7 @@ Section reference
 
 .. index::
     pair: Sentinel; Glossary
+    pair: Sentinel Lines; Glossary
 
 Sentinel
 
@@ -14390,45 +14400,7 @@ Regardless of focus, ``Alt-arrow`` select outline nodes:
 
 The first two entries of the ``Edit`` menu show what the next undo or redo operation will be.
 </t>
-<t tx="ekr.20131003040744.18221">.. _`programming tutorial`: tutorial-programming.html
-.. _`Using @clean nodes`: tutorial-programming.html#using-clean
-
-.. index::
-    pair: @file node; Tutorial
-
-An **@file node** is a node whose headline starts with `@file` followed by a path to an external file. **@file trees** represent **external files** on your file system. Leo updates @file nodes when you change external files outside of Leo. When saving an outline, Leo writes all changed @file trees to their external files::
-
-    @file leoNodes.py
-    @file ../../notes.txt
-    
-Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
-
-There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file::
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    &lt;&lt; imports &gt;&gt;
-    @others
-    # That's all, folks
-    @language python
-    @tabwidth
-    
-Child nodes must define the &lt;&lt; import &gt;&gt; node and the methods of the Controller class.
-
-When writing this file, Leo writes the first two lines::
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    
-followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
-
-When writing **file trees**, Leo writes **sentinel comments** into external files. These comments represent outline structure. When writing an @file tree to a .leo file, Leo writes only the root @file node. To avoid sentinels, use **@clean** instead of @file::
-
-    @clean leoNodes.py
-    @clean ../../notes.txt
-    
-There is a small cost to @clean: Leo writes the entire @clean tree to the .leo file.
-
+<t tx="ekr.20131003040744.18221">Leo outlines can refer to **external files**, files on your file system. Leo quickly loads the files when opening Leo outlines. The following sections discuss only the basics.  See `Leo's Reference Guide &lt;directives.html&gt;`_ for full details.
 </t>
 <t tx="ekr.20131004064408.16020">.. index::
    pair: Directive; Tutorial
@@ -14707,12 +14679,11 @@ Leo's Users Guide
 
 .. _`Leo Tutorial`: tutorial.html
 
-    "I have been absolutely seduced by Leo over the past few days. I tell
-    you, I can not put it down. I feel like a kid with a shiny new
-    bike...I'm already bursting with new ways I'd like to use the tool in
-    the future."---Lyn Adams Headley
+..  "I have been absolutely seduced by Leo over the past few days. I tell
+..  you, I can not put it down. I feel like a kid with a shiny new
+..  bike...I'm already bursting with new ways I'd like to use the tool in
+..  the future."---Lyn Adams Headley
 
-    
 This is Leo's Users Guide. It covers additional material not covered in the
 `Leo Tutorial`_.
 
@@ -22631,28 +22602,6 @@ w = QtWidgets.QFrame()
 w.show()
 g.app.permanentScriptDict ['stand-alone-frame'] = w
 </t>
-<t tx="ekr.20170215014532.1">.. index::
-    pair: Dirty node; Tutorial
-
-Leo reads external files automatically when you open Leo outline, and writes all **dirty** (changed) external files when you save any Leo outline.
-
-.. index::
-    pair: @all; Tutorial
-    pair: Outline Order; Tutorial
-
-The **@all** directive tells Leo to write the **@file tree** (the @file node and all its descendants) to the external file in **outline order**, the order in which the nodes appear in the outline pane when all nodes are expanded. Non-programmers will typically use the @all directive; programmers typically use the @others directive, as discussed in the `programming tutorial`_. The @all directive may appear anywhere in the body text of the root @file node.
-
-The @all directivive is designed for "catch-all" files, like todo.txt or notes.txt or whatever. Such files are assumed to contain a random collection of nodes, so there is no language in effect and no real comment delimiters.
-
-.. index::
-    pair: Sentinel Comments; Tutorial
-    pair: Sentinel Lines; Tutorial
-
-When writing @file nodes, Leo adds **sentinel comments** to external files. Sentinels embed Leo's outline structure into external files. If you don't want sentinels in your sources, skip head to the `Using @clean nodes`_, part of Leo's `programming tutorial`_.
-
-.. Leo's **importers** create outlines containing classes, methods and functions from external files. These outlines are great way of studying other programs.
-
-</t>
 <t tx="ekr.20170215031129.1">.. _`full-featured outliner`: commands.html#outline-commands
 
 Leo is a `full-featured outliner`_, with commands to insert, delete, move, hoist, promote and demote nodes.
@@ -23470,42 +23419,28 @@ There may be more ;-)
 Conclusion: It may still be true, in some limited areas, that Leo can do things that can even be thought in org mode.  However, that statement is no longer generally true, and I'll remove it from all future documentation.</t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
-<t tx="ekr.20170228112643.1">Not sure the headline abbreviation thing really addresses the OP's idea, although it could make @clean appear as @fileclean when not being edited. But for newcomers, that might be more confusing than helpful - if they started entering @fileclean. It's more typical use is to make @clean appear as an icon, a document with a C on it, to reduce screen space use by directives like @clean. Maybe that addresses the OP's idea as it's a file icon.
+<t tx="ekr.20170228112643.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. This reduces screen space. The setting: `@bool tree-declutter = True` enables decluttering. The setting, `@data tree-declutter-patterns` should contain patterns like::
 
-Here's instructions for using it I wrote in response to a recent question:
-
-Search for tree-declutter in leoSettings.leo.
-
-set
-
-@bool tree-declutter = True
-
-then create a @settings node
-
-@data tree-declutter-patterns
-
-can contain patterns like:
-
-# remove @clean and use an icon
-RULE ^@clean (.*)
-REPLACE \1
-ICON file_icons/file_clean.png
-
-# show the last part of long filenames
-RULE ^.{1,1000}([/\\])(.{25})
-REPLACE …\1\2
-
-# if the node name starts with 'peacock node DEMO', make a mess of it
-RULE ^(peacock node DEMO)
-REPLACE LOOK: \1
-ICON Tango/16x16/emotes/face-grin.png
-ICON Tango/16x16/emotes/face-wink.png
-FG @solarized-magenta
-BG white
-FONT Times
-PX 40
-ITALIC 1
-WEIGHT Bold
+    # remove @clean and use an icon
+    RULE ^@clean (.*)
+    REPLACE \1
+    ICON file_icons/file_clean.png
+    
+    # show the last part of long filenames
+    RULE ^.{1,1000}([/\\])(.{25})
+    REPLACE …\1\2
+    
+    # if the node name starts with 'peacock node DEMO', make a mess of it
+    RULE ^(peacock node DEMO)
+    REPLACE LOOK: \1
+    ICON Tango/16x16/emotes/face-grin.png
+    ICON Tango/16x16/emotes/face-wink.png
+    FG @solarized-magenta
+    BG white
+    FONT Times
+    PX 40
+    ITALIC 1
+    WEIGHT Bold
 </t>
 <t tx="ekr.20170228124856.1">https://groups.google.com/d/msg/leo-editor/L4EAfY7NJbw/NgSv5zSDEwAJ
 
@@ -23707,7 +23642,6 @@ Importer unit tests create both @clean and @file
 
 The fix was disappointingly simple: just init ic.treeType in ic.createOutline and ic.scannerUnitTest.
 </t>
-<t tx="ekr.20170309061107.1"></t>
 <t tx="ekr.20170309061458.1">Remove os.curdir from example!</t>
 <t tx="ekr.20170309071256.1">Lately I've been thinking about programming in general. My thoughts have centered on the limits of the human brain to understand computer programs. This was triggered by watching `Inventing on Principle &lt;https://www.youtube.com/watch?v=PUv66718DII&gt;`_. It's a daunting multifaceted concept which I'm sure people spend their entire lives pondering.
 
@@ -23726,7 +23660,6 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 - See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
 </t>
 <t tx="ekr.20170311121256.1">Deleting multiple outline nodes is tricky, because the positions of the to-be-deleted nodes will change as previous nodes are deleted. `c.deletePositionsInList(aList, callback=None)` safely deletes all the positions in aList.</t>
-<t tx="ekr.20170311203840.1"></t>
 <t tx="ekr.20170312083548.1">.. index::
     pair: Chapter; Tutorial
     pair: @chapter; Tutorial
@@ -23795,7 +23728,80 @@ This script creates a node containing today's date in the body text::
         for line in f.readlines():
             g.es(line.rstrip())
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170313151821.1">See The "What's new in this file" node in scripts.leo for details.</t>
+<t tx="ekr.20170313152439.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. This reduces screen space. The setting: `@bool tree-declutter = True` enables decluttering. The setting, `@data tree-declutter-patterns` should contain patterns like::
+
+    # remove @clean and use an icon
+    RULE ^@clean (.*)
+    REPLACE \1
+    ICON file_icons/file_clean.png
+    
+    # show the last part of long filenames
+    RULE ^.{1,1000}([/\\])(.{25})
+    REPLACE …\1\2
+    
+    # if the node name starts with 'peacock node DEMO', make a mess of it
+    RULE ^(peacock node DEMO)
+    REPLACE LOOK: \1
+    ICON Tango/16x16/emotes/face-grin.png
+    ICON Tango/16x16/emotes/face-wink.png
+    FG @solarized-magenta
+    BG white
+    FONT Times
+    PX 40
+    ITALIC 1
+    WEIGHT Bold
+</t>
+<t tx="ekr.20170314055745.1">* Add settings_finder plugin</t>
+<t tx="ekr.20170314060847.1">.. index::
+    pair: @file node; Tutorial
+
+An **@file node** is a node whose headline starts with `@file` followed by a path to an external file::
+
+    @file leoNodes.py
+    @file ../../notes.txt
+
+The @file node and its descendants represent an external file. Leo updates @file nodes when you change external files outside of Leo. When saving an outline, Leo writes all changed @file trees to their external files.</t>
+<t tx="ekr.20170314060926.1">.. index::
+    pair: Markup; Tutorial
+
+Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
+
+There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    &lt;&lt; imports &gt;&gt;
+    @others
+    # That's all, folks
+    @language python
+    @tabwidth
+    
+Child nodes must define the &lt;&lt; import &gt;&gt; node and the methods of the Controller class.
+
+When writing this file, Leo writes the first two lines::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    
+followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.</t>
+<t tx="ekr.20170314061000.1">.. index::
+    pair: @clean; Tutorial
+
+When writing **file trees**, Leo writes **sentinel comments** into external files. These comments represent outline structure. When writing an @file tree to a .leo file, Leo writes only the root @file node. To avoid sentinels, use **@clean** instead of @file::
+
+    @clean leoNodes.py
+    @clean ../../notes.txt
+    
+There is a small cost to @clean: Leo saves the entire @clean tree in the .leo file.
+</t>
+<t tx="ekr.20170314061022.1">.. index::
+    pair: @all; Tutorial
+    pair: Outline Order; Tutorial
+
+The **@all** directive tells Leo to write the nodes of an **@file tree** to the external file, *ignoring* all markup. As a result, Leo writes nodes to the file in **outline order**, the order in which they appear in the outline when all nodes are expanded.
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
