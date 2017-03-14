@@ -726,27 +726,37 @@
 <v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20101113063552.9398"><vh>Summary</vh></v>
-<v t="ekr.20170225035122.1"><vh>** new entries ****************</vh></v>
 <v t="ekr.20101113063552.9528"><vh>Gui-independent plugins</vh>
 <v t="ekr.20101113063552.9412"><vh>Commands &amp; directives</vh>
 <v t="ekr.20101113063552.9413"><vh>add_directives.py</vh></v>
 <v t="ekr.20101113063552.9414"><vh>bzr_qcommands.py</vh></v>
+<v t="ekr.20170314091824.1"><vh>codewisecompleter.py</vh></v>
+<v t="ekr.20170314091826.1"><vh>ctagscompleter.py</vh></v>
 <v t="ekr.20101113063552.9415"><vh>empty_leo_file.py</vh></v>
+<v t="ekr.20170314091927.1"><vh>ftp.py</vh></v>
+<v t="ekr.20170314091958.1"><vh>gitarchive.py</vh></v>
 <v t="ekr.20101113063552.9416"><vh>import_cisco_config.py</vh></v>
 <v t="ekr.20101113063552.9417"><vh>initinclass.py</vh></v>
+<v t="ekr.20170314092023.1"><vh>leofeeds.py</vh></v>
+<v t="ekr.20170314092041.1"><vh>leomail.py</vh></v>
 <v t="ekr.20101113063552.9418"><vh>leo_interface.py</vh></v>
 <v t="ekr.20101113063552.9419"><vh>lineNumbers.py</vh></v>
 <v t="ekr.20101113063552.9420"><vh>macros.py</vh></v>
+<v t="ekr.20170314092107.1"><vh>markup_inline.py</vh></v>
 <v t="ekr.20101113063552.9421"><vh>mod_autosave.py</vh></v>
 <v t="ekr.20101113063552.9422"><vh>mod_read_dir_outline.py</vh></v>
 <v t="ekr.20101113063552.9423"><vh>mod_timestamp.py</vh></v>
 <v t="ekr.20101113063552.9798"><vh>nodeActions.py</vh></v>
+<v t="ekr.20170314092126.1"><vh>nodediff.py</vh></v>
 <v t="ekr.20101113063552.9425"><vh>outline_export.py</vh></v>
 <v t="ekr.20101113063552.9426"><vh>paste_as_headlines.py</vh></v>
 <v t="ekr.20101113063552.9427"><vh>pretty_print.py</vh></v>
 <v t="ekr.20101113063552.9428"><vh>quickMove.py</vh></v>
 <v t="ekr.20101113063552.9429"><vh>setHomeDirectory.py</vh></v>
+<v t="ekr.20170314092144.1"><vh>sftp.py</vh></v>
+<v t="ekr.20170314092158.1"><vh>threadutil.py</vh></v>
 <v t="ekr.20101113063552.9430"><vh>word_count.py</vh></v>
+<v t="ekr.20170314092222.1"><vh>xml_edit</vh></v>
 </v>
 <v t="ekr.20101113063552.9431"><vh>Debugging</vh>
 <v t="ekr.20101113063552.9432"><vh>debugger_pudb.py</vh></v>
@@ -775,10 +785,13 @@
 <v t="ekr.20101113063552.9454"><vh>expfolder.py</vh></v>
 <v t="ekr.20101113063552.9455"><vh>FileActions.py</vh></v>
 <v t="ekr.20101113063552.9456"><vh>geotag.py</vh></v>
+<v t="ekr.20170314091501.1"><vh>injarnder.py</vh></v>
 <v t="ekr.20101113063552.9457"><vh>leocursor.py</vh></v>
+<v t="ekr.20170314091526.1"><vh>leoOPML.py</vh></v>
 <v t="ekr.20101113063552.9458"><vh>mime.py</vh></v>
 <v t="ekr.20101113063552.9459"><vh>multifile.py</vh></v>
 <v t="ekr.20101113063552.9460"><vh>niceNosent.py</vh></v>
+<v t="ekr.20170314091627.1"><vh>notebook.py</vh></v>
 <v t="ekr.20101113063552.9461"><vh>read_only_nodes.py</vh></v>
 <v t="ekr.20101113063552.9462"><vh>run_nodes.py</vh></v>
 <v t="ekr.20101113063552.9464"><vh>startfile.py</vh></v>
@@ -825,33 +838,30 @@
 <v t="ekr.20131009100732.19039"><vh>bookmarks.py</vh></v>
 <v t="ekr.20101113063552.9401"><vh>colorize_headlines.py</vh></v>
 <v t="ekr.20101113063552.9402"><vh>contextmenu.py</vh></v>
+<v t="ekr.20170314090749.1"><vh>dragdropgoodies.py</vh></v>
 <v t="ekr.20101113063552.9411"><vh>graphcanvas.py</vh></v>
 <v t="ekr.20130815102041.15628"><vh>leomylyn.py</vh></v>
 <v t="ekr.20141105055521.5"><vh>livecode.py</vh></v>
 <v t="ekr.20101113063552.9403"><vh>nav_qt.py</vh></v>
-<v t="ekr.20141105055521.6"><vh>nodetags.py</vh>
-<v t="ekr.20141105085003.7"><vh>API</vh></v>
-<v t="ekr.20141105085003.8"><vh>UI</vh></v>
-<v t="ekr.20141105085003.10"><vh>Tag Limitation</vh></v>
-</v>
+<v t="ekr.20141105055521.6"><vh>nodetags.py</vh></v>
 <v t="ekr.20130815102041.15618"><vh>printing.py</vh></v>
 <v t="ekr.20101113063552.9404"><vh>projectwizard.py</vh></v>
+<v t="ekr.20170314090824.1"><vh>python_terminal.py</vh></v>
+<v t="ekr.20170314090914.1"><vh>QNCalendarWidgets</vh></v>
 <v t="ekr.20101113063552.9405"><vh>quicksearch.py</vh></v>
+<v t="ekr.20170314091002.1"><vh>richtext.py</vh></v>
 <v t="ekr.20130815102041.15630"><vh>screen_capture.py</vh></v>
 <v t="ekr.20130815102041.15631"><vh>screencast.py</vh></v>
 <v t="ekr.20101113063552.9406"><vh>scrolledmessage.py</vh></v>
+<v t="ekr.20170314091035.1"><vh>settings_finder.py</vh></v>
 <v t="ekr.20101113063552.9407"><vh>spydershell.py</vh></v>
 <v t="ekr.20101113063552.9408"><vh>stickynotes.py</vh></v>
+<v t="ekr.20170314091127.1"><vh>systray.py</vh></v>
 <v t="ekr.20101113063552.9409"><vh>todo.py</vh></v>
 <v t="ekr.20131009100732.19040"><vh>valuespace.py</vh></v>
 <v t="ekr.20101113063552.9410"><vh>viewrendered.py</vh></v>
-<v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh>
-<v t="ekr.20141105085003.12"><vh>Why a better viewrendered plugin?</vh></v>
-<v t="ekr.20141105085003.13"><vh>Objectives</vh></v>
-<v t="ekr.20141105085003.14"><vh>Implementation</vh></v>
-<v t="ekr.20141105085003.15"><vh>Issues / Limitations</vh></v>
-<v t="ekr.20141105085003.16"><vh>Future</vh></v>
-</v>
+<v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh></v>
+<v t="ekr.20170314091206.1"><vh>wikiview.py</vh></v>
 </v>
 </v>
 </v>
@@ -1448,8 +1458,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20101112045055.5064"></v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -1522,7 +1530,7 @@
 <v t="ekr.20170228101933.18"><vh>Simplified Leo's read/write helpers</vh></v>
 </v>
 <v t="ekr.20170225082023.1"><vh>Documentation</vh>
-<v t="ekr.20170225082028.1"><vh>Added missing documentation for plugins</vh></v>
+<v t="ekr.20170225035122.1"><vh>Added new entries to the plugins documentation</vh></v>
 </v>
 <v t="ekr.20170123084609.22"><vh>Features</vh>
 <v t="ekr.20170205185641.3"><vh>#257: chapter-select-forward/back</vh></v>
@@ -1567,8 +1575,6 @@
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
 <v t="ekr.20170228112643.1"><vh>* Document declutter</vh></v>
 </v>
-<v t="ekr.20170314055745.1"><vh>* Update plugins docs</vh></v>
-<v t="ekr.20050912125144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -4276,12 +4282,9 @@ The getBool 'default' argument to getBool specifies the value to be returned if 
 Plugins
 #######
 
-.. _`Using @button nodes`:  tutorial-scripting#using-button-nodes
-.. _`Writing Plugins`:  writingPlugins.html
+This chapter discusses the plugins contained in leoPlugins.leo. These plugins are part of Leo's official distribution. The next chapter, `Writing Plugins &lt;writingPlugins.html&gt;`_, tells how to write plugins.
 
-This chapter discusses the plugins contained in leoPlugins.leo. These plugins are part of Leo's official distribution. The next chapter, `Writing Plugins`_, tells how to write plugins.
-
-The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes`_. Script buttons are extraordinarily useful.
+The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes &lt;tutorial-scripting#using-button-nodes&gt;`_. Script buttons are extraordinarily useful.
 
 .. contents:: Contents
     :depth: 5
@@ -6222,9 +6225,7 @@ The **Great Graph Aha**: Leo outlines can represent arbitrary directed graphs. T
     Added 'clear-all-marks' hook
     Added graphed.py plugin
 </t>
-<t tx="ekr.20070814104719" str_atime="1376412994.0">.. _`Specifying settings`: customizing.html#specifying-settings
-
-You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded). See `Specifying settings`_ for full details of settings files.
+<t tx="ekr.20070814104719" str_atime="1376412994.0">You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded). See `Specifying settings &lt;customizing.html#specifying-settings&gt;`_ for full details of settings files.
 
 The body text of the @enabled-plugins node contains a list of enabled plugins. Notes:
 
@@ -8992,8 +8993,12 @@ controller(c).run()
     )
     return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
 </t>
-<t tx="ekr.20101113063552.9398" str_atime="1376413523.0">``active_path.py``
+<t tx="ekr.20101113063552.9398" str_atime="1376413523.0">.. Complete as of Leo 5.5.
+
+``active_path.py``
     Synchronizes @path nodes with folders.
+``bookmarks.py``
+    Manages bookmarks using a separate pane.
 ``add_directives.py``
     Allows users to define new @directives.
 ``at_folder.py``
@@ -9031,6 +9036,8 @@ controller(c).run()
     Makes g.pdb() enter the Pudb debugger instead of pdb.
 ``demo.py``
     Creates slides or interactive demos.
+``dragdropgoodies``
+    Dumps files dropped into Leo.
 ``dtest.py``
     Sends code to the doctest module and reports the result.
 ``dragdropgoodies``
@@ -9066,6 +9073,8 @@ controller(c).run()
     Adds buttons so Leo can interact with command line environments.
 ``jinjarender.py``
     Renders @jinja nodes.
+``leofeeds.py``
+    Reads from rss, atom or other sources.
 ``leo_interface.py``
     Allows the user to browse XML documents in Leo.
 ``leo_pdf.py``
@@ -9520,16 +9529,13 @@ will look something like:
 **Heading**
 
 `This` is **really** a line of text.
-
 </t>
 <t tx="ekr.20101113063552.9411">Adds a graph layout for nodes in a tab. Requires Qt and the backlink.py plugin.
 
 </t>
 <t tx="ekr.20101113063552.9412"></t>
 <t tx="ekr.20101113063552.9413">Allows users to define new @directives.</t>
-<t tx="ekr.20101113063552.9414">Adds a context menu to each node containing all the commands in the bzr Qt interface. Bzr is invoked based on the path of the current node.
-
-**Requires contextmenu.py.**
+<t tx="ekr.20101113063552.9414">Adds a context menu to each node containing all the commands in the bzr Qt interface. Bzr is invoked based on the path of the current node. **Requires contextmenu.py.**
 
 </t>
 <t tx="ekr.20101113063552.9415">Allows Leo to open any empty file as a minimal .leo file.
@@ -17285,210 +17291,17 @@ is easy, but::
 
 is not.
 </t>
-<t tx="ekr.20141105055521.6">Provides node tagging capabilities to Leo
-
-By Jacob M. Peck
+<t tx="ekr.20141105055521.6">Provides node tagging capabilities to Leo. See the docstring for details. By Jacob M. Peck.
 
 </t>
-<t tx="ekr.20141105055521.7">https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
+<t tx="ekr.20141105055521.7">An alternative to the viewrendered plugin.  See the plugin's docstring for details, as well as these two posts:
+
+https://groups.google.com/d/msg/leo-editor/3dH_NSQ4TsQ/ueVewAn50ZcJ
 
 https://groups.google.com/d/msg/leo-editor/BDzmytlSegw/C0IbSz0US54J
 
-As mentioned in my previous post I'll attempt to elaborate on the plugin
-I've used to make Leo more useful to me, in case it is useful for others
-also. Apologies for the very long post, but I wanted get get all its
-features and warts exposed here to get some feedback on whether others see
-this as useful or that this is only valuable to me. If it's useful to
-others then it may be worth polishing up quite a bit.
 </t>
-<t tx="ekr.20141105055521.8">Creates a global search window
-
-Use the global-search command to show this window. To restore the original appearance of the window, type help.
-
-Requires the whoosh library ('easy_install whoosh') to do full text searches.
-</t>
-<t tx="ekr.20141105085003.10">The API is unlimited in tagging abilities.  If you do not wish to use
-the UI, then the API may be used to tag nodes with any arbitrary
-strings.  The UI, however, due to searching capabilities, may *not* be
-used to tag (or search for) nodes with tags containing the special
-search characters, `&amp;|-^`.  The UI also cannot search for tags of
-zero-length, and it automatically removes surrounding whitespace
-(calling .strip()).
-</t>
-<t tx="ekr.20141105085003.12">I like to use reStructuredText (reST) for all of my note-taking, idea
-development, project and task management and automation of desktop
-activities (e.g. initiating a backup). You could say it is the control
-center of my daily activities, including calculating and showing dashboards
-of where I am and where I'm going.
-
-This means I need a tool which seamlessly shows me the full-fidelity
-browser-rendered version of what I am writing and be able to print my notes
-for meetings, cut and paste nicely formatted output to my office e-mails
-and documents, as well as show some of the material as a slideshow.
-
-The existing *viewrendered* plugin couldn't seem to do what I needed
-(especially math) and I was almost ready to abandon Leo again. This time I
-bit the bullet and created a more capable renderer in viewrendered2 (VR2).
-Initially I made a plugin that rendered, on demand, to my normal web
-browser. This worked well, but I really thought live rendering like
-"viewrendered" would be better, and for that I needed close control over
-scroll positions etc. that I couldn't get with an external browser. So the
-plugin became much more complex as I merged it with the existing
-viewrendered plugin, but was ultimately more powerful and useful to me.
-
-</t>
-<t tx="ekr.20141105085003.13">* Show a "full" html representation of any reST node or tree, without an
-  @rst root node, including more features than the existing viewrendered
-  plugin::
-
-      proper html layout
-      math (mathjax, etc.)
-      clickable URLs
-      clickable hyperlinks within the page (e.g. TOC)
-      good quality zoom
-      cut and paste html with ctl-C
-      s5 slideshows
-      javascript
-      svg images
-      configurable css
-
-* Allow showing of node tree rather than just the current node. This can
-  give a better overview perspective of the tree contents.
-
-* Be able to lock the rendering on the root node of a tree, to view the
-  effect editing a sub-node within the larger html document.
-
-* Provide proper rendering of any combination of node types in a tree, so long as
-  they have been properly designated by @language directives (i.e. reST, text,
-  code, css, ...).
-
-* Allow viewing (and printing) of an entire source file from an @file type
-  root node.
-
-* Be able to *export* any of these renderings to a full web-browser to take advantage
-  of the large rendering window (especially for slideshows, as well as printing, saving output.
-  
-* Be able to integrate automatically executed code nodes intermingled with
-  reST nodes to provide an automatic calculation-based "Notebook" or "Report"
-  type output.
-
-* Don't increase the dependencies of Leo.
-</t>
-<t tx="ekr.20141105085003.14">VR2 is implemented mostly as an ~600 line expansion of the update_rst
-method in the viewrendered.py plugin. The text-oriented class used for
-rendering in VR1 has been replaced by the QWebView class which provides the
-full rendering functionality of a real web-browser. To make this flexible,
-a toolbar has been attached to the top with a few controls.
-
-Because I wanted to retain compatibility with VR1, I created the
-viewrendered2.py plugin, but retained all the class naming which occurred
-within VR1. This means that it remains compatible with the existing
-mechanisms (like free_layout) of showing and creating panes for VR1. I
-tried this with an expectation that it would fail, but it appears to work
-without any unintended side-effects.
-
-Tooltips have been added where Qt allows, with the philosophy that a user
-shouldn't need a manual to use this pane.
-
-VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
-
-</t>
-<t tx="ekr.20141105085003.15">I use VR2 every few minutes every working day. However, VR2 is likely to
-still have a lot of rough edges and, in particular, bugs that show up with
-different work flows or css folder layouts etc. In fact, VR2 is still a
-work in progress and therefore still being fiddled with, so bugs creep in
-regularly.
-
-But overall, my perception of its deficiencies are:
-
-* Does not handle reST headings within the node bodies well (sometimes very
-  slow render, blocking Leo).
-
-* VR2 attempts to reconcile reST headings that originate from explicit
-  headings within the nodes against reST headings that are
-  automatically generated by the node hierarchy. In many cases, this
-  is impossible, resulting in many errors which drastically slows down
-  rendering. - Recommend not using headings within the nodes
-  themselves, leaving the node hierarchy to do this automatically.
-
-* If the node triggers one of the special viewrendered node header types
-  (@md, @image, @movie, @html) VR2 simply defaults to the old handlers for
-  those types. This means it jumps back to whatever pane type VR1 uses, so
-  the features of VR2 disappear. I suspect that VR2 could incorporate these
-  types into the new version and retain these new features. I should look
-  at that.
-    
-* Doesn't integrate with rst3 plugin, especially honouring @others etc.
-  There are some conflicts in objectives, so this may never be fully
-  resolved. It would probably make sense for rst3 settings to get used for
-  VR2 as well, along with additional VR2 specific settings. Currently, VR2
-  has its own @settings-style settings. The rst3 code is not used.
-  
-* For slideshow purposes, a patch to docutils s5_writer is required to be
-  able to handle an arbitrary hierarchy of nodes (forces all headings to
-  start a new slide). Otherwise, only the 2nd level nodes (from the root)
-  force a new slide.
-  
-* The integration of VR2 code into the existing viewrendered plugin code is
-  rudimentary. I took the shortcut of not trying to understand this code
-  well and confining my integration to the rst rendering only. Better
-  integration would be a good future step.
-
-With the plugin being able to execute javascript etc. there may be some
-form of security issue, but I can't see it myself (given that Leo can
-execute arbitrary python code anyway).
-</t>
-<t tx="ekr.20141105085003.16">- Expand the export button if pandoc is installed, adding optional
-  output formats such as docx, odt, plus additional slideshow formats.
-
-- Use new reST functionality to replace other media viewrendered methods
-  for images, svg, movies, etc. * Integrate better with rst3?
-</t>
-<t tx="ekr.20141105085003.7">This plugin registers a controller object to c.theTagController, which
-provides the following API::
-
-    tc = c.theTagController
-    tc.get_all_tags()
-        # return a list of all tags used in the current
-        # outline, automatically updated to be consistent
-    tc.get_tagged_nodes('foo')
-        # return a list of positions tagged 'foo'
-    tc.get_tags(p)
-        # return a list of tags applied to the node at
-        # position p; returns [] if node has no tags
-    tc.add_tag(p, 'bar') # add the tag 'bar' to the node at position p
-    tc.remove_tag(p, 'baz')
-        # remove the tag 'baz' from p if it is in the tag list
-
-Internally, tags are stored in `p.v.unknownAttributes['__node_tags']` as
-a set.
-</t>
-<t tx="ekr.20141105085003.8">The "Tags" tab in the Log pane is the UI for this plugin.  The bar at
-the top is a search bar, editable to allow complex search queries.  It
-is pre-populated with all existing tags in the outline, and remembers
-your custom searches within the given session.  It also acts double duty
-as an input box for the add (+) button, which adds the contents of the
-search bar as a tag to the currently selected node.
-
-The list box in the middle is a list of headlines of nodes which contain
-the tag(s) defined by the current search string.  These are clickable,
-and doing so will center the focus in the outline pane on the selected node.
-
-Below the list box is a dynamic display of tags on the currently
-selected node.  Left-clicking on any of these will populate the search
-bar with that tag, allowing you to explore similarly tagged nodes.
-Right-clicking on a tag will remove it from the currently selected node.
-
-The status line at the bottom is purely informational.
-
-The tag browser has set-algebra querying possible.  Users may search for
-strings like 'foo&amp;bar', to get nodes with both tags foo and bar, or
-'foo|bar' to get nodes with either or both.  Set difference (-) and
-symmetric set difference (^) are supported as well.  These queries are
-left-associative, meaning they are read from left to right, with no
-other precedence.  Parentheses are not supported. See below for more
-details.
-
+<t tx="ekr.20141105055521.8">Creates a global search window. Use the global-search command to show this window. To restore the original appearance of the window, type help. Requires the whoosh library ('easy_install whoosh') to do full text searches.
 </t>
 <t tx="ekr.20141108064630.10">Leo makes it easy to create and run unit tests from individual outline nodes or trees. A node whose headline starts with @test defines a unit test. The body text of the @test node contains a **self-contained** unit test. For example, this creates a complete unit test::
 
@@ -23003,155 +22816,66 @@ And a few others:
     
     c.executeScriptHelper
     EditBodyTestCase.ctor</t>
-<t tx="ekr.20170225035122.1">User Interface
+<t tx="ekr.20170225035122.1">Slideshows, screencasts &amp; screenshots
 
-    ``bookmarks.py``
-        Manages bookmarks using a separate pane.
-        
-    ``dragdropgoodies``
-        Dumps files dropped into Leo.
-        
-    ``python_terminal.py``
-        Embeds an python interpreter in Leo's log pane.
-        
-    ``QNCalendarWidgets.py``
-        Adds a calendar widget.
-        
-    ``richtext.py``
-        Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
-        
-    ``systray.py``
-        Adds Leo to the system tray.
-        
-    ``wikiview.py``
-        Hides/shows parts of urls in the body editor.
-        
-Files and nodes
-
-    ``jinjarender.py``
-        Renders @jinja nodes.
-        
-    ``leoOPML.py``
-        Read and write .leo files in OPML.
-            
-    ``notebook.py``
-        Adds a QML notebook.
-    
-    
-Commands and directives
-    
-    ``codewisecompleter.py``
-        Uses the ctags database to provide an autocompletion list.
-        
-    ``ctagscompleter.py``
-        Uses ctags to provide an autocompletion list.
-        
-    ``ftp.py``
-        Supports uploading of files via ftp.
-        
-    ``gitarchive.py``
-        Stores snapshots of outline in git.
-    
-
-    ``leofeeds.py``
-        Reads from rss, atom or other sources.
-    
-    ``leomail.py``
-        Sync local mailbox files over to Leo.
-    
-    ``markup_inline.py``
-        Adds commands that create bold, italic or underlined text.
-        
-    ``nodediff.py``
-        Provides commands to run text diffs on node bodies within Leo.
-    
-    ``sftp.py``
-        Adds @edit-like functionality for remote files over SFTP.
-
-    ``threadutil.py``
-        Adds utilities for asynchronous operation of commands.
-
-    ``xml_edit.py``
-        Adds commands for importing and exporting xml to and from Leo outlines.</t>
-<t tx="ekr.20170225081012.1">A plugin that makes making Leo demos easy. See `this page &lt;https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md&gt;`_ for complete documentation. **Important**: This plugin largely replaces screenshots.py and slideshow.py.
-</t>
-<t tx="ekr.20170225082023.1"></t>
-<t tx="ekr.20170225082028.1">Slideshows, screencasts &amp; screenshots
-
-    ``demo.py``
-        Creates slides, screen shots and slide shows, largely replacing
-        screencast.py, screenshots.py and slideshow.py
+``demo.py``
+    Creates slides, screen shots and slide shows, replacing screencast.py, screenshots.py and slideshow.py
 
 User Interface
 
-    ``bookmarks.py``
-        Manages bookmarks using a separate pane.
-        
-    ``dragdropgoodies``
-        Dumps files dropped into Leo.
-        
-    ``python_terminal.py``
-        Embeds an python interpreter in Leo's log pane.
-        
-    ``QNCalendarWidgets.py``
-        Adds a calendar widget.
-        
-    ``richtext.py``
-        Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
-        
-    ``systray.py``
-        Adds Leo to the system tray.
-        
-    ``wikiview.py``
-        Hides/shows parts of urls in the body editor.
+``bookmarks.py``
+    Manages bookmarks using a separate pane.
+``dragdropgoodies``
+    Dumps files dropped into Leo.
+``python_terminal.py``
+    Embeds an python interpreter in Leo's log pane.
+``QNCalendarWidgets.py``
+    Adds a calendar widget.
+``richtext.py``
+    Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
+``settings_finder.py``
+    Adds the Edit Settings menu tree to the Settings menu.
+``systray.py``
+    Adds Leo to the system tray.
+``wikiview.py``
+    Hides/shows parts of urls in the body editor.
         
 Files and nodes
 
-    ``jinjarender.py``
-        Renders @jinja nodes.
-        
-    ``leoOPML.py``
-        Read and write .leo files in OPML.
-            
-    ``notebook.py``
-        Adds a QML notebook.
-    
-    
+``jinjarender.py``
+    Renders @jinja nodes.
+``leoOPML.py``
+    Read and write .leo files in OPML.
+``notebook.py``
+    Adds a QML notebook.
+
 Commands and directives
-    
-    ``codewisecompleter.py``
-        Uses the ctags database to provide an autocompletion list.
-        
-    ``ctagscompleter.py``
-        Uses ctags to provide an autocompletion list.
-        
-    ``ftp.py``
-        Supports uploading of files via ftp.
-        
-    ``gitarchive.py``
-        Stores snapshots of outline in git.
-    
 
-    ``leofeeds.py``
-        Reads from rss, atom or other sources.
-    
-    ``leomail.py``
-        Sync local mailbox files over to Leo.
-    
-    ``markup_inline.py``
-        Adds commands that create bold, italic or underlined text.
-        
-    ``nodediff.py``
-        Provides commands to run text diffs on node bodies within Leo.
-    
-    ``sftp.py``
-        Adds @edit-like functionality for remote files over SFTP.
-
-    ``threadutil.py``
-        Adds utilities for asynchronous operation of commands.
-
-    ``xml_edit.py``
-        Adds commands for importing and exporting xml to and from Leo outlines.</t>
+``codewisecompleter.py``
+    Uses the ctags database to provide an autocompletion list.
+``ctagscompleter.py``
+    Uses ctags to provide an autocompletion list.
+``ftp.py``
+    Supports uploading of files via ftp.
+``gitarchive.py``
+    Stores snapshots of outline in git.
+``leofeeds.py``
+    Reads from rss, atom or other sources.
+``leomail.py``
+    Sync local mailbox files over to Leo.
+``markup_inline.py``
+    Adds commands that create bold, italic or underlined text.
+``nodediff.py``
+    Provides commands to run text diffs on node bodies within Leo.
+``sftp.py``
+    Adds @edit-like functionality for remote files over SFTP.
+``threadutil.py``
+    Adds utilities for asynchronous operation of commands.
+``xml_edit.py``
+    Adds commands for importing and exporting xml to and from Leo outlines.</t>
+<t tx="ekr.20170225081012.1">A plugin that makes making Leo demos easy. See `this page &lt;https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md&gt;`_ for complete documentation. **Important**: This plugin largely replaces screenshots.py and slideshow.py.
+</t>
+<t tx="ekr.20170225082023.1"></t>
 <t tx="ekr.20170226101715.1">&gt; ​There's nothing there stating that "whenever you put an @enabled-plugins node at myLeoSettings.leo (or at x.leo), its contents overrides all that was previously set at the @enabled-plugins node in leoSettings.leo".
 
 ​Good catch.  Furthermore, @enabled-plugins nodes in "local" .leo files only add to the enabled plugins in myLeoSettings.leo.
@@ -23752,7 +23476,6 @@ This script creates a node containing today's date in the body text::
     ITALIC 1
     WEIGHT Bold
 </t>
-<t tx="ekr.20170314055745.1">* Add settings_finder plugin</t>
 <t tx="ekr.20170314060847.1">.. index::
     pair: @file node; Tutorial
 
@@ -23800,6 +23523,42 @@ There is a small cost to @clean: Leo saves the entire @clean tree in the .leo fi
     pair: Outline Order; Tutorial
 
 The **@all** directive tells Leo to write the nodes of an **@file tree** to the external file, *ignoring* all markup. As a result, Leo writes nodes to the file in **outline order**, the order in which they appear in the outline when all nodes are expanded.
+</t>
+<t tx="ekr.20170314090749.1">Dumps files dropped into Leo.</t>
+<t tx="ekr.20170314090824.1">Embeds an python interpreter in Leo's log pane.</t>
+<t tx="ekr.20170314090914.1">Adds a calendar widget in the log area.
+</t>
+<t tx="ekr.20170314091002.1">Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
+</t>
+<t tx="ekr.20170314091035.1">Adds the Edit Settings menu tree to the Settings menu.</t>
+<t tx="ekr.20170314091127.1">Adds Leo to the system tray.</t>
+<t tx="ekr.20170314091206.1">Hides/shows parts of urls in the body editor.</t>
+<t tx="ekr.20170314091501.1">Renders @jinja nodes.
+</t>
+<t tx="ekr.20170314091526.1">Read and write .leo files in ` OPML &lt;https://en.wikipedia.org/wiki/OPML&gt;`_.
+</t>
+<t tx="ekr.20170314091627.1">Edit several nodes at once, in a pannable "notebook" view.</t>
+<t tx="ekr.20170314091824.1">Uses the ctags database to provide an autocompletion list.
+</t>
+<t tx="ekr.20170314091826.1">Uses ctags to provide an autocompletion list.
+</t>
+<t tx="ekr.20170314091927.1">Supports uploading of files via ftp.
+</t>
+<t tx="ekr.20170314091958.1">Stores snapshots of outline in git.
+</t>
+<t tx="ekr.20170314092023.1">Reads from rss, atom or other sources.
+</t>
+<t tx="ekr.20170314092041.1">Sync local mailbox files over to Leo.
+</t>
+<t tx="ekr.20170314092107.1">Adds commands that create bold, italic or underlined text.
+</t>
+<t tx="ekr.20170314092126.1">Provides commands to run text diffs on node bodies within Leo.
+</t>
+<t tx="ekr.20170314092144.1">Adds @edit-like functionality for remote files over SFTP.
+</t>
+<t tx="ekr.20170314092158.1">Adds utilities for asynchronous operation of commands.
+</t>
+<t tx="ekr.20170314092222.1">Adds commands for importing and exporting xml to and from Leo outlines.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
