@@ -1554,7 +1554,6 @@
 </v>
 </v>
 <v t="ekr.20101111175617.5037"></v>
-<v t="ekr.20161207045325.1"><vh>** To do</vh>
 <v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
 <v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
@@ -1571,8 +1570,6 @@
 </v>
 </v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
-</v>
-<v t="ekr.20170226101715.1"><vh>* Clarify how @enabled-plugins work</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21296,7 +21293,6 @@ if p:
         else:
             pass
     return ''.join(result)</t>
-<t tx="ekr.20161207045325.1"></t>
 <t tx="ekr.20161207052511.1">Let us think of lessons not as explanations, but as puzzles to be solved by the student. The puzzles themselves need no lengthy explanations. They can even be cryptic. This attitude arises from two principles:
 
 1. The less said, the better.
@@ -22837,11 +22833,6 @@ Commands and directives
 <t tx="ekr.20170225081012.1">A plugin that makes making Leo demos easy. See `this page &lt;https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md&gt;`_ for complete documentation. **Important**: This plugin largely replaces screenshots.py and slideshow.py.
 </t>
 <t tx="ekr.20170225082023.1"></t>
-<t tx="ekr.20170226101715.1">&gt; ​There's nothing there stating that "whenever you put an @enabled-plugins node at myLeoSettings.leo (or at x.leo), its contents overrides all that was previously set at the @enabled-plugins node in leoSettings.leo".
-
-​Good catch.  Furthermore, @enabled-plugins nodes in "local" .leo files only add to the enabled plugins in myLeoSettings.leo.
-
-I'll add language to this effect in several places.</t>
 <t tx="ekr.20170228101933.10">@language rest
 
 Added g.findRootWithPredicate, an important helper. Used it to greatly rst.processTopTree, pyflakes.run, and pylint.run. This improves the rst3 command
