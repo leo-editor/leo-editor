@@ -1458,7 +1458,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
