@@ -1570,6 +1570,8 @@
 </v>
 </v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20131015104133.16763"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15703,7 +15705,8 @@ Downloading, Installing &amp; Running Leo
 - Positions provide easy access to vnodes.
 - Positions become invalid when outline nodes are inserted, deleted or moved.
 - Generators visit all or parts of the outline, in a specified order.
-</t>
+
+For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
 <t tx="ekr.20131016083406.16724">@language python
 '''Run sphinx make clean ; make html.'''
 import os

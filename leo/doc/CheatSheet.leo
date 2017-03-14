@@ -45,6 +45,7 @@
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
 <v t="ekr.20170311121600.1"><vh>Deleting nodes</vh></v>
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
+<v t="ekr.20170314163011.1"><vh>Official names and ivars</vh></v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -69,6 +70,7 @@
 <v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
 <v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
 </v>
+<v t="ekr.20131019184243.16694"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">@wrap
@@ -892,5 +894,6 @@ to-be-deleted nodes will change as previous nodes are deleted.
       --window-size=WINDOW_SIZE
                             initial window size (height x width)
 </t>
+<t tx="ekr.20170314163011.1"></t>
 </tnodes>
 </leo_file>
