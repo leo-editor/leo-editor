@@ -1575,6 +1575,7 @@
 <v t="ekr.20170309061458.1"><vh>* Better docs for {{script}}</vh></v>
 <v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
 </v>
+<v t="EKR.20040524104904.211"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
