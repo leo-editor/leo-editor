@@ -1554,6 +1554,7 @@
 </v>
 </v>
 <v t="ekr.20101111175617.5037"></v>
+<v t="ekr.20050912125144.1"></v>
 <v t="ekr.20170228105154.1"><vh>----- Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
 <v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
@@ -1569,6 +1570,8 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
+<v t="ekr.20141108064630.13"></v>
+<v t="ekr.20131007143750.16074"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -17368,7 +17371,12 @@ Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe
 
 Leo executes scripts with c and g predefined.
 
-g is the leo.core.leoGlobal. Use g to access any function or class in leo/core/leoGlobals.py.
+g is the leo.core.leoGlobal. Use g to access any function or class in leo/core/leoGlobals.py::
+
+    g.app                   A LeoApp instance.
+    g.app.gui               A LeoGui instance. 
+    g.app.pluginsController A LeoPluginsController instance.
+    g.app.*                 Leo's global variables.
 
 c is the Commander object for the present outline. Commander objects define **subcommanders** corresponding to files in leo/core and leo/commands::
 
@@ -23467,9 +23475,10 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 </t>
 <t tx="ekr.20170315020214.1">**Ivars**::
 
-    g.app       The **application object**, an instance of the LeoApp class.
-    g.app.gui   The LeoGui object describing Leo's gui.
-    g.app.*     Leo's global variables.
+    g.app                   A LeoApp instance.
+    g.app.gui               A LeoGui instance. 
+    g.app.pluginsController A LeoPluginsController instance.
+    g.app.*                 Leo's global variables.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

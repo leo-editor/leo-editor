@@ -940,9 +940,10 @@ refers to the file abc.py in (absolute path of) the current directory.
 </t>
 <t tx="ekr.20170315015836.1">Ivars:
 
-    g.app       The **application object**, an instance of the LeoApp class.
-    g.app.gui   The LeoGui object describing Leo's gui.
-    g.app.*     Leo's global variables.
+    g.app                   A LeoApp instance.
+    g.app.gui               A LeoGui instance. 
+    g.app.pluginsController A LeoPluginsController instance.
+    g.app.*                 Leo's global variables.
 </t>
 </tnodes>
 </leo_file>
