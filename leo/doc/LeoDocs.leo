@@ -1309,39 +1309,10 @@
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20170123090814.1"><vh>What's new in Leo 5.5</vh>
-<v t="ekr.20170123090841.2"><vh>Highlights</vh>
-<v t="ekr.20170123090841.3"><vh>Optionally run pyflakes when saving files</vh></v>
-<v t="ekr.20170123090841.4"><vh>Fixed huge performance bug in syntax coloring</vh></v>
-<v t="ekr.20170123090841.5"><vh>The pylint command now runs in a separate process</vh></v>
-</v>
-<v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh>
-<v t="ekr.20170123090841.7"><vh>at-button make-importer</vh></v>
-<v t="ekr.20170123090841.8"><vh>at-button make-md-heads</vh></v>
-<v t="ekr.20170123090841.9"><vh>at-button make-md-toc</vh></v>
-<v t="ekr.20170123090841.10"><vh>at-button make-table</vh></v>
-<v t="ekr.20170123090841.11"><vh>at-button make-test</vh></v>
-</v>
-<v t="ekr.20170123090841.12"><vh>Bugs</vh>
-<v t="ekr.20170123090841.13"><vh>Fixed bug in bracket matching</vh></v>
-<v t="ekr.20170123090841.15"><vh>Fixed date in About Leo dialog</vh></v>
-<v t="ekr.20170123090841.16"><vh>Fixed crash after ! in tab completion</vh></v>
-<v t="ekr.20170123090841.17"><vh>Fixed attribute error in To_Python.go</vh></v>
-<v t="ekr.20170123090841.18"><vh>Completed #325 Simplify the organization of commands</vh></v>
-<v t="ekr.20170123090841.19"><vh>Fixed crasher in ac.insert_string</vh></v>
-<v t="ekr.20170123090841.20"><vh>crash in autocomplete (with backspace key?)</vh></v>
-<v t="ekr.20170123090841.21"><vh>Fixed #348 (CDATA errors)</vh></v>
-</v>
-<v t="ekr.20170123090841.22"><vh>Code</vh>
-<v t="ekr.20170123090841.23"><vh>Added four new generators</vh></v>
-<v t="ekr.20170123090841.24"><vh>Created singleton BackgroundProcessManager</vh></v>
-<v t="ekr.20170123090841.25"><vh>Integrated idle-hook processing into the IdleTimeManager</vh></v>
-</v>
-<v t="ekr.20170123090841.26"><vh>Features</vh>
-<v t="ekr.20170123090841.27"><vh>You can open leoDist.leo from the File menu</vh></v>
-<v t="ekr.20170123090841.28"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
-<v t="ekr.20170123090841.29"><vh>Allow script abbreviations in headlines</vh></v>
-<v t="ekr.20170123090841.30"><vh>The markdown importer now regularizes sections</vh></v>
-</v>
+<v t="ekr.20170123090841.2"><vh>Highlights</vh></v>
+<v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh></v>
+<v t="ekr.20170123090841.22"><vh>Code</vh></v>
+<v t="ekr.20170123090841.26"><vh>Features</vh></v>
 </v>
 <v t="ekr.20161014053105.1"><vh>What's new in Leo 5.4</vh>
 <v t="ekr.20161014053127.1"><vh>Highlights</vh></v>
@@ -1460,6 +1431,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20161014053105.1"></v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -1555,7 +1527,7 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 </v>
-<v t="ekr.20061025065357.1"></v>
+<v t="ekr.20170315090444.1"><vh>** New settings</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21474,7 +21446,8 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - Syntax coloring is 20x faster than before.
   The "big-text" hack is no longer needed.
-- All of Leo's importers have been rewritten and simplified.
+- Leo's importers are now line/token oriented, allowing them
+  to handle languages like javascript more robustly.
 - New perl and javascript importers.
 - Pylint now runs in the background.
 - Pyflakes can optionally check each file as it is written.
@@ -21496,166 +21469,26 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 </t>
 <t tx="ekr.20170123090348.1"></t>
 <t tx="ekr.20170123090814.1"></t>
-<t tx="ekr.20170123090841.10">Create a table of expected headlines in a unit test.
-
-To use this script, select the root of the tree containing the expected
-results. After running this, copy the table from the console.
-
-**Details**
-
-The present generation of unit tests not only verify perfect import, but ensure that the outline has expected structure, more or less.
-
-The outline of such tests is::
-
-    s = r'''
-    The input, maybe many lines.
-    '''
-    table = ( a list of expected headlines )
-    try:
-        c.importCommands.coffeeScriptUnitTest(p,s=s,showTree=True)
-        if 1: # Verify that the test produces the expected headlines.
-          p2 = c.p.firstChild().firstChild()
-          for h in table:
-              assert p2.h == h, (p2.h, h)
-              p2.moveToThreadNext()
-    finally:
-        if 1: # clean up
-            p.deleteAllChildren()
-    
-If the test produces a large outline, it would be unbearable to create the table by hand.  Instead, I used the following, now in scripts.leo:
+<t tx="ekr.20170123090841.2">- Optionally run pyflakes when saving files.
+- Fixed huge performance bug in syntax coloring. The horrible big text hack is no longer needed.
+- Leo no longer hangs waiting for the pylint command to finish.
 </t>
-<t tx="ekr.20170123090841.11">Make an @test node for the importer whose name is given.
+<t tx="ekr.20170123090841.22">- Added four new generators: c.all_roots, c.all_unique_roots, p.nearest_roots and p.nearest.
+- Created singleton BackgroundProcessManager
+- Integrated idle-hook processing into the IdleTimeManager
 </t>
-<t tx="ekr.20170123090841.12"></t>
-<t tx="ekr.20170123090841.13">A recent in doPlainChar change to handle #14 ruined bracket matching.
-</t>
-<t tx="ekr.20170123090841.15"></t>
-<t tx="ekr.20170123090841.16">::
-
-    File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 414, in auto_completer_state_handler
-        kind), color='red')
-    TypeError: putStatusLine() got an unexpected keyword argument 'color'
-</t>
-<t tx="ekr.20170123090841.17"></t>
-<t tx="ekr.20170123090841.18">https://github.com/leo-editor/leo-editor/issues/325
-</t>
-<t tx="ekr.20170123090841.19">Replaced several assert by returns if the assert isn't satisfied.
-
-I thought I was doing ctrl-h::
-
-    Traceback (most recent call last):
-      File "c:\leo.repo\leo-editor\leo\core\leoGlobals.py", line 1711, in wrapper
-        func(self, event=event)
-      File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 266, in showCalltips
-        self.calltip()
-      File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 452, in calltip
-        self.calltip_fail(prefix)
-      File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 460, in calltip_fail
-        self.insert_string('(')
-      File "c:\leo.repo\leo-editor\leo\core\leoKeys.py", line 861, in insert_string
-        i = w.getInsertPoint()
-    AttributeError: 'LeoQtTree' object has no attribute 'getInsertPoint'
-</t>
-<t tx="ekr.20170123090841.2"></t>
-<t tx="ekr.20170123090841.20"></t>
-<t tx="ekr.20170123090841.21">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/348
-XML CDATA Sections not preserved on round-trip save
-
-@language python
-</t>
-<t tx="ekr.20170123090841.22"></t>
-<t tx="ekr.20170123090841.23">c.all_roots, c.all_unique_roots, p.nearest_roots, p.nearest_unique_roots (aka p.nearest)
-
-Useful for finding nodes on which to run commands.
-
-def nearest_roots(self, predicate=None):
-    '''
-    A generator yielding all the root positions "near" p1 = self that
-    satisfy the given predicate. p.isAnyAtFileNode is the default
-    predicate.
-    
-    The search first proceeds up the p's tree. If a root is found, this
-    generator yields just that root.
-    
-    Otherwise, the generator yields all nodes in p.subtree() that satisfy
-    the predicate. Once a root is found, the generator skips its subtree.
-    '''
-</t>
-<t tx="ekr.20170123090841.24">Fixed all recently discussed problems with background processing:
-
-- Renamed BackgroundManager to BackgroundProcessManager.
-- Created singleton BPM instance, g.app.backgroundProcessManager.
-- The BPM now maintains a queue of g.Bunch's describing each process.
-- The BPM sends output to the originating log pane if possible.
-- The 'pylint' and 'pylint-kill' commands now use the BPM.
-</t>
-<t tx="ekr.20170123090841.25">Integrated idle-hook processing into the IdleTimeManager:
-
-leoApp.py:
-
-- ITM.on_idle now handles idle-hooks.
-- Removed g.app.idle_timer.
-- 'idle' hooks called if and only if g.app.idle_time_hooks_enabled is True.
-- Only one timer is ever started by Leo: g.app.idle_time_manager_timer.
-- Removed call to g.enableIdleTimeHook in at the end of LM.doPostPluginsInit.
-  It is not needed: g.app.idle_time_hooks_enabled is True initially.
-- The enable/disable/toggle-idle-time-events commands now just set g.app.idle_time_hooks_enabled.
-
-leoGlobals.py:
-
-- g.enable/disableIdleTimeHook now just set g.app.idle_time_hooks_enabled.
-  They remain for compatibility only.
-- g.idleTimeHookHandler is now a stub. It just prints a warning.
-  The original has been moved to the attic (leoNotes.txt).
-
-</t>
-<t tx="ekr.20170123090841.26"></t>
-<t tx="ekr.20170123090841.27"></t>
-<t tx="ekr.20170123090841.28"></t>
-<t tx="ekr.20170123090841.29"></t>
-<t tx="ekr.20170123090841.3"></t>
-<t tx="ekr.20170123090841.30">Leo's markdown importer converts all sections to use '#' markup. The technical justification appears at the bottom of the page for #342. The rest of this post explains the change from a user's point of view.
-
-tl;dr: Converting all sections to '#' markup is Leonine, simplest and best. Only existing .md files that Leo didn't write could be changed.  If such changes don't work for you, just insert @ignore yourself when git or diff reports differences.
-
-Imo, this change is fully justified:
-
-1. It is more Leonine.
-
-When creating and changing .md files from within Leo, @auto-md works much more smoothly.  Indeed, as I have just verified, converting an @nosent x.md file to @auto-md x.md "just works".
-
-There is absolutely no reason to use underlined sections when using Leo.  The headlines proclaim the section structure far better than flat text of any kind, whether ### section name or underlined section names.
-
-2. Perfect import check should not wag the dog.
-
-The markdown importer is one of the simplest of all.  The possibility of dropping data seems remote.  Requiring a typical perfect import check to pass would preclude regularizing section markup.  It's just that simple.
-
-Furthermore, the existing unit tests for the markup importer do check imported section structure, albeit imperfectly That should suffice for now. In the unlikely event that real problems are reported, these after-the-fact unit tests can be improved.
-
-**Summary**
-
-Importing markdown files containing underlined sections could only pass typical perfect import checks if existing underlining were somehow retained.  That's a bad idea.  Instead, Leo's markdown importer now implicitly converts all sections to '#' markup.  In essence, the markup disappears from the outline, to be automagically reinserted when Leo writes the outline.
-
-This new scheme can change existing .md files, but only files that Leo didn't write.  If that is inconvenient for you, just add @ignore yourself.
-</t>
-<t tx="ekr.20170123090841.4">As a result, the horrible (big text) hack is no longer needed.
-</t>
-<t tx="ekr.20170123090841.5">Leo no longer hangs waiting for this command to finish.
-https://github.com/leo-editor/leo-editor/issues/328
-</t>
-<t tx="ekr.20170123090841.6"></t>
-<t tx="ekr.20170123090841.7">Make a new @@file importers/x.py file.
-
-This button created most of Leo's new importers.
-</t>
-<t tx="ekr.20170123090841.8">Create markdown headers throughout the nearest .md outline.
-
-That is, prepend p.b[0] with markdown section markup, if appropriate.
-</t>
-<t tx="ekr.20170123090841.9">Make a markdown table of contents from an @auto-md node.
+<t tx="ekr.20170123090841.26">- You can open all important .leo files from the File menu.
+- &lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99.
+- Script abbreviations are allowed in headlines.
+- The markdown importer now regularizes sections.</t>
+<t tx="ekr.20170123090841.6">- at-button make-importer
+  Make a new @@file importers/x.py file.
+- at-button make-md-heads
+  Create markdown headers throughout the nearest .md outline.
+- at-button make-md-toc
+  Make a markdown table of contents from an @auto-md node.
+- at-button make-table
+  Create a table of expected headlines in a unit test.
 </t>
 <t tx="ekr.20170123152852.1">https://github.com/leo-editor/leo-editor/issues/379
 
@@ -23314,6 +23147,7 @@ In contrast, org mode is completely text oriented:
 - Org mode's API is limited to parsing body text.
 - Org mode simulates a DOM with text filters.
 </t>
+<t tx="ekr.20170315090444.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
