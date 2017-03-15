@@ -38,14 +38,12 @@
 </v>
 <v t="ekr.20131019184243.16694"><vh>Scripting</vh>
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
-<v t="ekr.20131019184243.16696"><vh>Generators</vh></v>
+<v t="ekr.20170315015836.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
-<v t="ekr.20131019184243.16698"><vh>vnode class</vh></v>
-<v t="ekr.20131019184243.16699"><vh>position class</vh></v>
+<v t="ekr.20131019184243.16698"><vh>VNode class</vh></v>
+<v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
-<v t="ekr.20170311121600.1"><vh>Deleting nodes</vh></v>
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
-<v t="ekr.20170314163011.1"><vh>Official names and ivars</vh></v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -315,7 +313,9 @@ By default, the file's extension determines the importer:
 For full details, see Leo's Directives reference:
 http://leoeditor.com/directives.html
     </t>
-<t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
+<t tx="ekr.20131019184243.16694">@wrap
+
+This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
@@ -333,26 +333,31 @@ http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/</t>
 
     self: The instance of unittest.TestCase
 </t>
-<t tx="ekr.20131019184243.16696">::
+<t tx="ekr.20131019184243.16697">Ivars:
+
+    c.config                c's configuration object
+    c.frame                 c's outer frame, a leoFrame instance.
+    c.undoer                c's undo handler.
+    c.user_dict             A temporary dict for use of scripts and plugins.
+    
+Generators:
 
     c.all_positions()
     c.all_unique_positions()
-    p.children()
-    p.parents()
-    p.self_and_parents()
-    p.self_and_siblings()
-    p.following_siblings()
-    p.subtree()
-    p.self_and_subtree()
-</t>
-<t tx="ekr.20131019184243.16697">::
+    
+New in Leo 5.5: All generators yield distinct positions.
+    
+Most useful methods:
 
-    c.frame         c's outer frame, a leoFrame instance.
-    c.user_dict     a temporary dict for use of scripts and plugins.
-    c.redraw()
+    c.isChanged()
+    c.deletePositionsInList(aList, callback=None)
+                            # safely deletes all the positions in aList.
     c.positionExists(p)
-
-Here is a partial list of the **official ivars** of any leoFrame f::
+    c.redraw(p=None)        # Redraw the screen. Select p if given.
+    c.save()                # Save the present outline.
+    c.selectPosition()
+    
+**Official ivars** of any leoFrame f:
 
     f.c                     is the frame’s commander.
     f.body                  is a leoBody instance.
@@ -364,23 +369,36 @@ Here is a partial list of the **official ivars** of any leoFrame f::
     
 Use autocompletion to explore these objects!
 </t>
-<t tx="ekr.20131019184243.16698">::
+<t tx="ekr.20131019184243.16698">Ivars:
 
-    v.b: v's body text.
-    v.h: v's headline text.
-    v.u: v.unknownAttributes, a persistent Python dictionary.
+    v.b:    v's body text.
+    v.gnx:  v's gnx.
+    v.h:    v's headline text.
+    v.u:    v.unknownAttributes, a persistent Python dictionary.
     
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see:
 http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 </t>
-<t tx="ekr.20131019184243.16699">**Properties**::
+<t tx="ekr.20131019184243.16699">**Properties**:
 
     p.b: same as p.v.b.
     p.h: same as p.v.h.
     p.u: same as p.v.u.
+    
+**Generators**:
 
-**Getters**::
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and_siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+    
+New in Leo 5.5: All generators yield distinct positions.
+
+**Getters**:
 
     p.back()
     p.children()
@@ -413,12 +431,12 @@ http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-
     p.visBack()
     p.visNext()
     
-**Setters**::
+**Setters**:
 
     p.setDirty()
     p.setMarked()
 
-**Operations on nodes**::
+**Operations on nodes**:
 
     p.clone()
     p.contract()
@@ -432,7 +450,7 @@ http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-
     p.moveToRoot(oldRoot=None)
         # oldRoot **must** be the old root position if it exists.
         
-**Moving positions**
+**Moving positions**:
 
 The following move positions *themselves*: they change the node to which a
 position refers. They do *not* change outline structure in any way! Use
@@ -458,7 +476,7 @@ these when generators are not flexible enough::
 </t>
 <t tx="ekr.20131019184243.16700">For full details, see @file leoGlobals.py in LeoPyRef.leo.
 
-**g vars**::
+**g vars**:
 
     g.app
     g.app.gui
@@ -466,11 +484,11 @@ these when generators are not flexible enough::
     g.unitTesting
     g.user_dict  # a temporary dict for use of scripts and plugins.
     
-**g decorator**::
+**g decorator**:
 
     @g.command(command-name)
     
-**g functions** (the most interesting: there are many more in leoGlobals.py)::
+**g functions** (the most interesting: there are many more in leoGlobals.py):
     
     g.angleBrackets()
     g.app.commanders()
@@ -851,13 +869,6 @@ Expansion of section names and @others:
     
 refers to the file abc.py in (absolute path of) the current directory.
 </t>
-<t tx="ekr.20170311121600.1">c.deletePositionsInList(aList, callback=None) safely deletes all the
-positions in aList.
-
-Deleting multiple outline nodes is tricky, because the positions of the
-to-be-deleted nodes will change as previous nodes are deleted.
-
-</t>
 <t tx="ekr.20170311121717.1">- Use imp.reload to reload all changed modules.
 - Make sure to *instantiate* any changed objects.
 - See "Unit testing with Leo" for full details.
@@ -894,6 +905,11 @@ to-be-deleted nodes will change as previous nodes are deleted.
       --window-size=WINDOW_SIZE
                             initial window size (height x width)
 </t>
-<t tx="ekr.20170314163011.1"></t>
+<t tx="ekr.20170315015836.1">Ivars:
+
+    g.app       The **application object**, an instance of the LeoApp class.
+    g.app.gui   The LeoGui object describing Leo's gui.
+    g.app.*     Leo's global variables.
+</t>
 </tnodes>
 </leo_file>

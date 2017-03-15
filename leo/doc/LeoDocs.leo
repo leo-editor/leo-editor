@@ -1209,13 +1209,13 @@
 <v t="ekr.20160410103017.1"><vh>Sections</vh></v>
 <v t="ekr.20131007143750.16074"><vh>Scripting</vh>
 <v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
-<v t="ekr.20131019061259.16687"><vh>Generators</vh></v>
+<v t="ekr.20170315020214.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019061259.16688"><vh>Commands class</vh></v>
-<v t="ekr.20131019061259.16690"><vh>vnode class</vh></v>
-<v t="ekr.20131019061259.16691"><vh>position class</vh></v>
+<v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
+<v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
 <v t="ekr.20170311120214.1"><vh>Test driven development</vh></v>
-<v t="ekr.20170311121256.1"><vh>Deleting nodes</vh></v>
+<v t="ekr.20170314164228.1"><vh>About names</vh></v>
 </v>
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
 </v>
@@ -1554,7 +1554,7 @@
 </v>
 </v>
 <v t="ekr.20101111175617.5037"></v>
-<v t="ekr.20170228105154.1"><vh>* Leo and org mode</vh>
+<v t="ekr.20170228105154.1"><vh>----- Leo and org mode</vh>
 <v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
 <v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
 <v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
@@ -1569,9 +1569,11 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
-<v t="ekr.20170203055137.1"><vh>* #368: Document which names in Leo can (and can't) be changed</vh></v>
+<v t="ekr.20170203055137.1"><vh>----- #368: Document which names in Leo can (and can't) be changed</vh></v>
 <v t="ekr.20131007143750.16070"></v>
-<v t="ekr.20131015104133.16763"></v>
+<v t="ekr.20170314164228.1"></v>
+<v t="ekr.20131007143750.16074"></v>
+<v t="ekr.20141108064630.13"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14519,22 +14521,12 @@ This sections assumes you are *thoroughly* familiar with `Leo's tutorial`_.
 <t tx="ekr.20131007143750.16070">#################
 Leo's Cheat Sheet
 #################
-
-.. |br| raw:: html
-
-   &lt;br /&gt;
    
 **Important**: The easiest way to find documentation is to search LeoDocs.leo.
-   
-.. _`Directives reference`: directives.html
-.. _`Commands Reference`: commands.html
-.. _`userAttributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
-.. _`Customizing Leo`: customizing.html
 
 .. contents:: Contents
     :depth: 4
     :local:
-
 </t>
 <t tx="ekr.20131007143750.16074">This section lists the ivars, properties, functions and methods most commonly used in Leo scripts.
 
@@ -15348,7 +15340,9 @@ Plugins and scripts may call the c.frame.canvas.createCanvas method to create a 
         w.configure(bg='yellow')
     log.selectTab(tag)
 </t>
-<t tx="ekr.20131012191145.16789">For any commander c:
+<t tx="ekr.20131012191145.16789">.. in writingPlugins.html
+
+For any commander c:
 
 +------------------------------+--------------------------------------------+
 | **Property**                 | **Value**                                  |
@@ -15482,7 +15476,7 @@ Adding the Shift key modifier to any of the keys above moves the cursor and exte
 </t>
 <t tx="ekr.20131015035606.16786">Directives starting with '@ in the leftmost column
     
-See the `Directives reference`_ for full details::
+See the `Directives reference &lt;directives.html&gt;`_ for full details::
 
     @                       # starts doc part
     @c                      # ends doc part
@@ -15586,7 +15580,7 @@ You can also specify importers *explicitly* as follows::
     
 **Important**: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatically generate section headings corresponding to Leo's outline level. Body text of the top-level @auto node is ignored.
     
-See the `Directives reference`_ for full details.
+See the `Directives reference &lt;directives.html&gt;`_ for full details.
     
 </t>
 <t tx="ekr.20131015035606.16800">When focus is in the outline::
@@ -15607,7 +15601,7 @@ Regardless of focus::
     Ctrl-R (move-outline-right)
     Ctrl-U (move-outline-up)
 </t>
-<t tx="ekr.20131015035606.16801">For much more information, see the `Commands Reference`_.
+<t tx="ekr.20131015035606.16801">For much more information, see the `Commands Reference &lt;commands.html&gt;`_.
 
 Copy/Paste (text)::
 
@@ -15976,10 +15970,59 @@ The Leonine World
 
     self: The instance of unittest.TestCase
 </t>
-<t tx="ekr.20131019061259.16687">These generators yield *copies* of positions::
+<t tx="ekr.20131019061259.16688">**Ivars**::
+
+    c.config                c's configuration object
+    c.frame                 c's outer frame, a leoFrame instance.
+    c.undoer                c's undo handler.
+    c.user_dict             A temporary dict for use of scripts and plugins.
+    
+**Generators** (New in Leo 5.5: All generators yield distinct positions)::
 
     c.all_positions()
     c.all_unique_positions()
+    
+**Most useful methods**::
+
+    c.isChanged()
+    c.deletePositionsInList(aList, callback=None)
+                            # safely deletes all the positions in aList.
+    c.positionExists(p)
+    c.redraw(p=None)        # Redraw the screen. Select p if given.
+    c.save()                # Save the present outline.
+    c.selectPosition()
+    
+**Official ivars** of any leoFrame f::
+
+    f.c                     is the frame’s commander.
+    f.body                  is a leoBody instance.
+    f.body.bodyCtl          is a leoQTextEditWidget instance.
+    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+    f.log                   is a leoLog instance.
+    f.tree                  is a leoQtTree instance.
+    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+    
+Use autocompletion to explore these objects!
+</t>
+<t tx="ekr.20131019061259.16690">**Ivars**::
+
+    v.b:    v's body text.
+    v.gnx   v's gnx.
+    v.h:    v's headline text.
+    v.u:    v.unknownAttributes, a persistent Python dictionary.
+    
+v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
+to associate persistent data with vnodes. For details see the section about
+`userAttributes &lt;customizing.html#adding-extensible-attributes-to-nodes-and-leo-files&gt;`_ in the `Customizing Leo &lt;customizing.html&gt;`_ chapter.
+</t>
+<t tx="ekr.20131019061259.16691">**Properties**::
+
+    p.b: same as p.v.b.
+    p.h: same as p.v.h.
+    p.u: same as p.v.u.
+    
+**Generators** (New in Leo 5.5: All generators yield distinct positions)::
+
     p.children()
     p.parents()
     p.self_and_parents()
@@ -15987,41 +16030,6 @@ The Leonine World
     p.following_siblings()
     p.subtree()
     p.self_and_subtree()
-</t>
-<t tx="ekr.20131019061259.16688">::
-
-    c.frame         c's outer frame, a leoFrame instance.
-    c.user_dict     a temporary dict for use of scripts and plugins.
-    c.redraw()
-    c.positionExists(p)
-
-Here is a partial list of the **official ivars** of any leoFrame f::
-
-    f.c                     is the frame’s commander.
-    f.body                  is a leoBody instance.
-    f.body.wrapper          is a leoQTextEditWidget instance.
-    f.body.wrapper.widget   is a LeoQTextBrowser(QTextBrowser) instance.
-    f.log                   is a leoLog instance.
-    f.tree                  is a leoQtTree instance.
-    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
-    
-Use autocompletion to explore these objects!
-</t>
-<t tx="ekr.20131019061259.16690">::
-
-    v.b: v's body text.
-    v.h: v's headline text.
-    v.u: v.unknownAttributes, a persistent Python dictionary.
-    
-v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
-to associate persistent data with vnodes. For details see the section about
-`userAttributes`_ in the `Customizing Leo`_ chapter.
-</t>
-<t tx="ekr.20131019061259.16691">**Properties**::
-
-    p.b: same as p.v.b.
-    p.h: same as p.v.h.
-    p.u: same as p.v.u.
 
 **Getters** These return *new positions*::
 
@@ -17330,7 +17338,9 @@ Yeah! No more "pushd ..\path\to\data\folder &amp;&amp; python ..\path\to\code\fo
 
 Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe for Windowed mode (no log messages to console) and console mode respectively.
 </t>
-<t tx="ekr.20141108064630.13">I am going through something similar Matt Wilkie went through in this post https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
+<t tx="ekr.20141108064630.13">.. in FAQ
+
+I am going through something similar Matt Wilkie went through in this post https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
 
 Basically I can find interesting functions in LeoPyRef.leo but I don't know how to access them from my new leo scripts.
 
@@ -21814,7 +21824,6 @@ The new javascript and perl importers know *nothing* about parsing. They know on
 </t>
 <t tx="ekr.20170203055137.1">https://github.com/leo-editor/leo-editor/issues/368
 
-The general principle is that names used outside their defining module usually can't be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py. Otoh, names used only within a single file (python module), usually can be changed. This includes class names. This distinction is usually clear to me (perhaps after a cff command), but this is an implementor's distinction, not something that would be clear to a newbie, or a casual script writer.
 
 Furthermore, there seems to be no listing of Leo's most important ivars, c.frame, frame.body, body.widget and body.wrapper, etc. along with the names of Leo's subcommanders. These are burned into my memory. All users should know about them.
 
@@ -23037,7 +23046,7 @@ Rob (Largo84)::
     link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
     enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}
 </t>
-<t tx="ekr.20170228105154.1">For preface?</t>
+<t tx="ekr.20170228105154.1"></t>
 <t tx="ekr.20170228105219.1">&gt; Perhaps [ A Brief Summary of Leo] should be rewritten in the org-mode intro style, but that's for some other time.
 
 Actually, now is the time.
@@ -23295,7 +23304,6 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 - Make sure to *instantiate* any changed objects.
 - See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
 </t>
-<t tx="ekr.20170311121256.1">Deleting multiple outline nodes is tricky, because the positions of the to-be-deleted nodes will change as previous nodes are deleted. `c.deletePositionsInList(aList, callback=None)` safely deletes all the positions in aList.</t>
 <t tx="ekr.20170312083548.1">.. index::
     pair: Chapter; Tutorial
     pair: @chapter; Tutorial
@@ -23471,6 +23479,14 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 <t tx="ekr.20170314092158.1">Adds utilities for asynchronous operation of commands.
 </t>
 <t tx="ekr.20170314092222.1">Adds commands for importing and exporting xml to and from Leo outlines.
+</t>
+<t tx="ekr.20170314164228.1">Scripts may safely assume that few names defined in Leo's core will ever change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
+</t>
+<t tx="ekr.20170315020214.1">**Ivars**::
+
+    g.app       The **application object**, an instance of the LeoApp class.
+    g.app.gui   The LeoGui object describing Leo's gui.
+    g.app.*     Leo's global variables.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
