@@ -9,7 +9,7 @@ __version__ = "1.2"
 #@+node:ekr.20111104210837.9691: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = g.app.unitTesting
+    ok = not g.app.unitTesting
         # Not for unit testing: overrides core methods.
     if ok:
         # Register the handlers...
@@ -18,6 +18,7 @@ def init():
     return ok
 #@+node:edream.110203113231.920: ** onCommand
 def onCommand(tag, keywords):
+    # g.trace(keywords)
     if keywords.get("label") == "equalsizedpanes":
         g.es("over-riding Equal Sized Panes")
         return "override" # Anything other than None overrides.
