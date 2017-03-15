@@ -1569,11 +1569,6 @@
 <v t="ekr.20170218021648.1"><vh>Summary</vh></v>
 </v>
 </v>
-<v t="ekr.20170203055137.1"><vh>----- #368: Document which names in Leo can (and can't) be changed</vh></v>
-<v t="ekr.20131007143750.16070"></v>
-<v t="ekr.20170314164228.1"></v>
-<v t="ekr.20131007143750.16074"></v>
-<v t="ekr.20141108064630.13"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15977,6 +15972,37 @@ The Leonine World
     c.undoer                c's undo handler.
     c.user_dict             A temporary dict for use of scripts and plugins.
     
+**SubCommanders**::
+
+    # In leo/core...
+    c.atFileCommands
+    c.chapterController
+    c.fileCommands
+    c.findCommands
+    c.importCommands
+    c.keyHandler = c.k
+    c.persistenceController
+    c.printingController
+    c.rstCommands
+    c.shadowController
+    c.tangleCommands
+    c.testManager
+    c.vimCommands
+
+    # In leo/commands...
+    c.abbrevCommands
+    c.controlCommands
+    c.convertCommands
+    c.debugCommands
+    c.editCommands
+    c.editFileCommands
+    c.gotoCommands
+    c.helpCommands
+    c.keyHandlerCommands
+    c.killBufferCommands
+    c.rectangleCommands
+    c.spellCommands
+    
 **Generators** (New in Leo 5.5: All generators yield distinct positions)::
 
     c.all_positions()
@@ -17340,78 +17366,42 @@ Works for Leo too -- with the existing setup.py. It creates leo.exe and leoc.exe
 </t>
 <t tx="ekr.20141108064630.13">.. in FAQ
 
-I am going through something similar Matt Wilkie went through in this post https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J
+Leo executes scripts with c and g predefined.
 
-Basically I can find interesting functions in LeoPyRef.leo but I don't know how to access them from my new leo scripts.
+g is the leo.core.leoGlobal. Use g to access any function or class in leo/core/leoGlobals.py.
 
-I don't get the difference when I have to call them using g.Functionname(), c.functionname(), or when those wont do.
+c is the Commander object for the present outline. Commander objects define **subcommanders** corresponding to files in leo/core and leo/commands::
 
-How can I call the function "insertIconFromFile"? How can I know how to call functions found in LeoPyRef.leo?
+    # in leo/core...
+    c.atFileCommands
+    c.chapterController
+    c.fileCommands
+    c.findCommands
+    c.importCommands
+    c.keyHandler = c.k
+    c.persistenceController
+    c.printingController
+    c.rstCommands
+    c.shadowController
+    c.tangleCommands
+    c.testManager
+    c.vimCommands
 
------
+    # In leo/commands...
+    c.abbrevCommands
+    c.controlCommands
+    c.convertCommands
+    c.debugCommands
+    c.editCommands
+    c.editFileCommands
+    c.gotoCommands
+    c.helpCommands
+    c.keyHandlerCommands
+    c.killBufferCommands
+    c.rectangleCommands
+    c.spellCommands
 
-Ok, in order to print icons, the code is this::
-
-    c.editCommands.insertIconFromFile(path)
-
-I'm quoting from this Leo manual
-http://leoeditor.com/scripting.html#important-objects,
-http://leoeditor.com/scripting.html#inserting-and-deleting-icons
-
-Although I still have a mess on which functions can be called how, and where to find the list of classes that can be called such as "editCommands" and the rest that they might exist. Thanks!
-
-I suppose you could say that there is no general solution, but the situation isn't really all that difficult.
-
-Start with c. We know what that is: it is a commander object representing an open outline.
-
-There are **official ivars** of c, all referring to wrapper classes defined in leoFrame.py::
-
-    c.frame         an instance of leoFrame.
-    c.frame.tree    an instance of  leoTree.
-    c.frame.body    an instance of leoBody.
-    c.frame.log     an instance of leoLog.
-
-The tree, body and log objects have a *wrapper* object::
-
-    c.frame.tree.wrapper
-    c.frame.body.wrapper
-    c.frame.log.wrapper
-
-For the actual wrapper interface, see::
-
-    leoPyRef.leo#Code--&gt;Qt gui--&gt;@file ../plugins/qt_text.py--&gt;
-    class QTextEditWrapper(QTextMixin)--&gt;qtew.High-level interface
-
-This interface applies to all high-level text widgets, including the log and body classes. 
-
-These wrapper classes have a widget ivar, which is a reference to the corresponding Qt widget object.  For example::
-
-    import PyQt4.QtGui as QtGui
-    w =3D c.frame.body.wrapper.widget
-    g.es(w)
-    g.es(isinstance(w,QtGui.QTextBrowser)
-
-yields::
-
-    (LeoQTextBrowser) 62418136
-    True
-
-As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
-
-See http://leoeditor.com/tutorial-scripting.html#wrappers-vs-widgets for a discussion of wrappers versus actual widgets.
-
-==== Terry
-
-I'm not aware of a general solution to the problem of finding the various pieces of Leo's class structure. Basically there are all these classes defined in the source, and instances of these are attached to each other in a hierarchical network (with loops).
-
-I've written an introspection function which lists the methods and instance variables (and class variables) of an arbitrary object by name and by type. I should release it. It builds its lists in a Leo outline, so you can navigate around that outline and expand nodes by introspection as needed.
-
-It occurs to me that the same code could be used to search Leo's runtime object hierarchy for you, i.e. you enter 'insertIconFromFile' and it recursively searches for it.
-
------
-
-I didn't really finish the above para. The problem is that it's hard to guess what the names of the attachment points are, and the attaching is done in a variety of places, sometimes by factory functions which further obscure linkages. Not a fault with Leo, just the way programs work. So the tool I've written may be the best approach to mapping Leo's runtime structure. Another thing it could do, try and map 'major' classes, or at least classes from leo.core.* - i.e. ignore the built in types.
-</t>
+Scripts can gain access to all of the code in these files via these subcommanders. For example, c.k is an instance of the LeoKeys class in leo/core/leoKeys.py.</t>
 <t tx="ekr.20141108064630.14">If I want to use leo to make mathematical notes, how can I type in some special mathematical symbols? Or is there a good way to make mathematical notes using leo?
 
 ===== Terry
@@ -21821,13 +21811,6 @@ The new javascript and perl importers know *nothing* about parsing. They know on
 - Optional: change @language md to @language rest.
   At present, syntax coloring for markdown is feeble.
 - Use @button make-md-toc in LeoDocs.leo to generate a table of contents from the selected outline.
-</t>
-<t tx="ekr.20170203055137.1">https://github.com/leo-editor/leo-editor/issues/368
-
-
-Furthermore, there seems to be no listing of Leo's most important ivars, c.frame, frame.body, body.widget and body.wrapper, etc. along with the names of Leo's subcommanders. These are burned into my memory. All users should know about them.
-
-Important: It is often good design to put multiple classes in a single module, so as to be able to hide implementation details. For example, most classes in leoColorizer.py may be renamed freely. More importantly, those classes can be changed at will, or even deleted. Within a module, helper classes can be added without affecting other modules in any way.
 </t>
 <t tx="ekr.20170203060220.1">The scripting tutorial contains a few more examples before jumping into the details.</t>
 <t tx="ekr.20170205185641.10">https://github.com/leo-editor/leo-editor/issues/389

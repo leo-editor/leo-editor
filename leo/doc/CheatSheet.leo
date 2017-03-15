@@ -340,6 +340,39 @@ http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/</t>
     c.undoer                c's undo handler.
     c.user_dict             A temporary dict for use of scripts and plugins.
     
+SubCommanders:
+
+    # in leo/core...
+    c.atFileCommands
+    c.chapterController
+    c.fileCommands
+    c.findCommands
+    c.importCommands
+    c.keyHandler = c.k
+    c.persistenceController
+    c.printingController
+    c.rstCommands
+    c.shadowController
+    c.tangleCommands
+    c.testManager
+    c.vimCommands
+
+    # In leo/commands...
+    c.abbrevCommands
+    c.controlCommands
+    c.convertCommands
+    c.debugCommands
+    c.editCommands
+    c.editFileCommands
+    c.gotoCommands
+    c.helpCommands
+    c.keyHandlerCommands
+    c.killBufferCommands
+    c.rectangleCommands
+    c.spellCommands
+    
+For example, c.k is an instance of the LeoKeys class in leo/core/leoKeys.py.
+    
 Generators:
 
     c.all_positions()
