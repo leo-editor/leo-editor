@@ -10211,11 +10211,11 @@ QLabel#minibufferLabel {
 
 /* ----- Minibuffer ----- */
 
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+QLineEdit#lineEdit[style_class='minibuffer_warning'] {
     background-color: @minibuffer_warning_color;
 }
 
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+QLineEdit#lineEdit[style_class='minibuffer_error'] {
     color: @minibuffer_error_color;
     background-color: @minibuffer_warning_color;
 }
@@ -10235,7 +10235,7 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     text-decoration:    @bookmarks_base_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
     color:              @bookmarks_children_color;
     font-family:        @bookmarks_children_family;
     font-size:          @bookmarks_children_size;
@@ -10243,7 +10243,7 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     text-decoration:    @bookmarks_children_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
     font-size:          @bookmarks_expanded_size;
     color:              @bookmarks_expanded_color;
     font-style:         @bookmarks_expanded_style;
@@ -10251,7 +10251,7 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     text-decoration:    @bookmarks_expanded_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
     font-size:          @bookmarks_current_size;
     color:              @bookmarks_current_color;
     font-style:         @bookmarks_expanded_style;
@@ -10387,8 +10387,8 @@ QSplitter::handle:hover {
 }
 </t>
 <t tx="ekr.20140915194122.19473">/* Status areas. */
-
-QLineEdit#status1, QLineEdit#status2 {
+QLineEdit#status1,
+QLineEdit#status2 {
     background-color:   @status-bg;
     color:              @status-fg;
     border-color:       @status-border-color;
@@ -10400,12 +10400,13 @@ QLineEdit#status1, QLineEdit#status2 {
     font-style:         @status-font-style;
 }
 
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
+QLineEdit#status1[style_class='info'],
+QLineEdit#status2[style_class='info'] {
     background-color:   @find-found-bg;
     color:              @find-found-fg;
 }
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
+QLineEdit#status1[style_class='fail'],
+QLineEdit#status2[style_class='fail'] {
     background-color:   @find-not-found-bg;
     color:              @find-not-found-fg;
 }
@@ -10479,15 +10480,15 @@ QTreeView::branch:open:has-children{
 </t>
 <t tx="ekr.20140915194122.19475">/* Vim mode borders... */
 
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
+QTextEdit#richTextEdit[vim_state="vim_normal"] {
   border: @vim-mode-normal-border;
 }
 
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
+QTextEdit#richTextEdit[vim_state="vim_insert"] {
   border: @vim-mode-insert-border;
 }
 
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
+QTextEdit#richTextEdit[vim_state="vim_visual"] {
   border: @vim-mode-visual-border;
 }
 </t>
@@ -11939,10 +11940,10 @@ QLineEdit#lineEdit {
 QLabel#minibufferLabel {
     color:              @solarized-violet;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+QLineEdit#lineEdit[style_class='minibuffer_warning'] {
     background-color:   @minibuffer_warning_color;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+QLineEdit#lineEdit[style_class='minibuffer_error'] {
     color:              @minibuffer_error_color;
     background-color:   @minibuffer_warning_color;
 }
@@ -12053,19 +12054,19 @@ QLineEdit#status2 {
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
     font-size: @bookmarks_expanded_size;
     color: @bookmarks_expanded_color;
     font-weight: @bookmarks_expanded_weight;
     text-decoration: @bookmarks_expanded_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
     font-size: @bookmarks_current_size;
     color: @bookmarks_current_color;
     font-weight: @bookmarks_current_weight;
@@ -12927,19 +12928,19 @@ QTextEdit#richTextEdit {
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
     font-size: @bookmarks_expanded_size;
     color: @bookmarks_expanded_color;
     font-weight: @bookmarks_expanded_weight;
     text-decoration: @bookmarks_expanded_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
     font-size: @bookmarks_current_size;
     color: @bookmarks_current_color;
     font-weight: @bookmarks_current_weight;
@@ -13008,10 +13009,10 @@ QLineEdit#lineEdit {
 QLabel#minibufferLabel {
     color:              @solarized-violet;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+QLineEdit#lineEdit[style_class='minibuffer_warning'] {
     background-color:   @minibuffer_warning_color;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+QLineEdit#lineEdit[style_class='minibuffer_error'] {
     color:              @minibuffer_error_color;
     background-color:   @minibuffer_warning_color;
 }
@@ -13332,19 +13333,19 @@ QTextEdit#richTextEdit {
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
     font-size: @bookmarks_expanded_size;
     color: @bookmarks_expanded_color;
     font-weight: @bookmarks_expanded_weight;
     text-decoration: @bookmarks_expanded_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
     font-size: @bookmarks_current_size;
     color: @bookmarks_current_color;
     font-weight: @bookmarks_current_weight;
@@ -13414,10 +13415,10 @@ QLineEdit#lineEdit {
 QLabel#minibufferLabel {
     color:              @solarized-violet;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+QLineEdit#lineEdit[style_class='minibuffer_warning'] {
     background-color:   @minibuffer_warning_color;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+QLineEdit#lineEdit[style_class='minibuffer_error'] {
     color:              @minibuffer_error_color;
     background-color:   @minibuffer_warning_color;
 }
@@ -13757,19 +13758,19 @@ QTextEdit#richTextEdit {
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
     font-size: @bookmarks_expanded_size;
     color: @bookmarks_expanded_color;
     font-weight: @bookmarks_expanded_weight;
     text-decoration: @bookmarks_expanded_decoration;
 }
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
     font-size: @bookmarks_current_size;
     color: @bookmarks_current_color;
     font-weight: @bookmarks_current_weight;
@@ -13839,10 +13840,10 @@ QLineEdit#lineEdit {
 QLabel#minibufferLabel {
     color:              @solarized-violet;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+QLineEdit#lineEdit[style_class='minibuffer_warning'] {
     background-color:   @minibuffer_warning_color;
 }
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+QLineEdit#lineEdit[style_class='minibuffer_error'] {
     color:              @minibuffer_error_color;
     background-color:   @minibuffer_warning_color;
 }
