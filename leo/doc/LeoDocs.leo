@@ -999,6 +999,7 @@
 <v t="ekr.20131008041326.16100"><vh>@rst html/leoandotherprograms.html</vh></v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
+<v t="ekr.20170315072706.1"><vh>Leo vs org mode</vh></v>
 <v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
@@ -1459,6 +1460,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1553,25 +1555,7 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 </v>
-<v t="ekr.20101111175617.5037"></v>
-<v t="ekr.20050912125144.1"></v>
-<v t="ekr.20170228105154.1"><vh>----- Leo and org mode</vh>
-<v t="ekr.20170228105219.1"><vh>Post 1</vh></v>
-<v t="ekr.20170228105319.1"><vh>Leo and org mode</vh></v>
-<v t="ekr.20170218003504.1"><vh>*** Leo and org mode</vh>
-<v t="ekr.20170218012230.1"><vh>Introduction</vh></v>
-<v t="ekr.20170218022741.1"><vh>What is Leo</vh></v>
-<v t="ekr.20170218123124.1"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20170218012332.1"><vh>Underlying technologies</vh></v>
-<v t="ekr.20170218012235.1"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20170218023347.1"><vh>Reproducible research</vh></v>
-<v t="ekr.20170218123059.1"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20170218123106.1"><vh>Plans for 2017</vh></v>
-<v t="ekr.20170218021648.1"><vh>Summary</vh></v>
-</v>
-</v>
-<v t="ekr.20141108064630.13"></v>
-<v t="ekr.20131007143750.16074"></v>
+<v t="ekr.20061025065357.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -5538,9 +5522,9 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 <t tx="ekr.20061021164213">Set @bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.
 </t>
 <t tx="ekr.20061025065357"></t>
-<t tx="ekr.20061025065357.1">#############
-Leo and Emacs
-#############
+<t tx="ekr.20061025065357.1">#################################
+Leo and Emacs, including org mode
+#################################
 
 This chapter several topics relating to the Emacs editor.
 
@@ -15889,7 +15873,7 @@ A Brief Summary of Leo
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
-Leo is a fundamentally different way of using and organizing data, programs and scripts. Leo has been under active development for 15 years with an active `group of developers and users`_.
+Leo is a fundamentally different way of using and organizing data, programs and scripts. Leo has been under active development for 20+ years with an active `group of developers and users`_.
 
 **Leo is:**
 
@@ -15917,11 +15901,11 @@ Leo *completely integrates* Python scripting and outlines. Simulating the follow
 - @test and @suite scripts create unit tests automatically.
 - @button scripts apply scripts to outline data.
 
-These features combine to create a `Leonine`_ way of programming and organizing. 
-You won't learn all about Leo in a day or two. `Leo's tutorial`_ explains the basic features.
-You can learn more advanced features later. Please `ask for help`_ immediately if you get stuck.
+These features combine to create a `Leonine`_ way of programming and
+organizing. You won't learn all about Leo in a day or two. `Leo's
+tutorial`_ explains the basic features. You can learn more advanced
+features later. Please `ask for help`_ immediately if you get stuck.
 
-.. `Next`_, Leo's users tell, in their own words, why they think Leo is something truly special...
 </t>
 <t tx="ekr.20131018100353.16706">Clones can greatly accelerate your work flow. To start a project, clone nodes related to the project and drag them at or near the top level, where you can get at them easily. When the project is complete, just delete the clones. This work flow is surprisingly effective:
 
@@ -22613,139 +22597,6 @@ When a single completion is shown, typing '?' will show the docstring for a meth
     g.toUnicode(            g.toUnicode(s, encoding, reportErrors=False
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value</t>
-<t tx="ekr.20170218003504.1">- Plans for 2017.
-
-- Scripting for scientists.
-
-</t>
-<t tx="ekr.20170218012230.1">    "There are a variety of settings in which it is desirable to mix prose, code, data, and computational results in a single document.
-
-    - Scientific research increasingly involves the use of computational tools. Successful communication and verification of research results requires that this code is distributed together with results and explanatory prose.
-
-    - In software development the exchange of ideas is accomplished through both code and prose; code provides concrete implementation while prose provides higher level explanation. Without proper documentation, the usability and future extensibility of computational tools are compromised.
-
-    - In pedagogical environments it is important for descriptions of algorithms or techniques to go hand-in-hand with implementations and example output. These environments include in-class presentations, published books and articles, online tutorials, and experiential blogs with accompanying instructions." 
-
-This quote above is taken from an excellent `summary of org mode`_. Leo and `Emacs org mode` share similar goals. But Leo is fundamentally more powerful than org mode, and will remain so. Indeed, Leo's is based underlying technologies completely missing from org mode:
-
-- Leo outlines are based on `Directed Acyclic Graphs` (DAGs), not trees (or plain text).
-- Leo's outlines are true Python objects, with unique, persistent identities.
-- Leo scripting is based on Python, not elisp.
-- Leo's Python scripting is *fully* integrated with outlines.
-- Leo has a Python API, giving scripts easy access to all outline/DAG structure and data.
-- Leo supports what LP would call `untangling`_, using an `algorithm`_ hard to duplicate in org mode.
-
-</t>
-<t tx="ekr.20170218012235.1">
-"A research project typically relies upon components such as:
-
-    The data being studied;
-    Details of calculations and code used in data analysis;
-    Methodological conventions and assumptions;
-    Decisions among alternate analytic paths.
-
-However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
-
-A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
-</t>
-<t tx="ekr.20170218012332.1">@language rest
-@wrap
-
-Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
-
-**LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
-
-**Scripting**: Leo is fundamentally more powerful than org mode scripting:
-
-1. Unlike org mode, Leo's outline nodes are true Python objects, *easily* accessible via Leo's Python `API`_. Furthermore, Leo scripting is based on Python and Python's standard library, not elisp and Emacs-specific code. Leo scripts can be run outside of Leo.
-
-2. Leo can `compose`_ both external files and scripts using the same `markup`_. Unlike org mode, Leo's markup applies *everywhere* and is fully integrated with Leo's outline structure. As a result, it is complete natural to compose external files or scripts (experiments) from a suboutline. For example: this defines an external file::
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    &lt;&lt; imports &gt;&gt;
-    @others
-    # That's all, folks
-    @language python
-    @tabwidth
-    
-And this this defines the top-level part of a script::
-
-@language python
-
-    @langauge python
-    '''My script'''
-    &lt;&lt; imports &gt;&gt;
-    class Controller:
-        # Child nodes define the methods of this class.
-        @others
-    Controller(c).run # Yes, c *is* defined.
-
-@language rest
-    
-There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
-
-**Data model**: Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones. Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
-
-</t>
-<t tx="ekr.20170218021648.1">
-Leo scripts can execute code in other languages, such as shell, C# and java. 
-
-Emacs isn't written in org mode, and it would not be easy to do so.
-
-- Org mode is based on text. Leo is based on true python objects.
-- Org mode nodes have no real identity. Leo nodes have unique persistent gnx's.
-- Org mode outlines are simple trees. Leo outlines are DAGs.
-- Org mode is unsuitable as an IDE. Leo excels as an IDE.
-- Org mode scripts require special syntax. Leo scripts do not.
-- Org mode does not compose external files and scripts from outlines. Leo does.
-
-As a result, Leo can easily simulate any org mode feature, but the reverse is not true.
-</t>
-<t tx="ekr.20170218022741.1">What is Leo, exactly? Well, for starters, Leo is a full-featured outliner. Leo is also an `IDE`_, a tool for creating, documenting and managing large software projects, such as Leo itself. Leo is also a `Python`_ scripting environment. Leo's scripting and IDE features are *fully* integrated with outlines. Furthermore, Leo's outline nodes may appear in multiple places within the same outline. This makes Leo a superb data organizer. It's possible, and natural, to treat Leo outlines as if they were databases or database queries.
-
-
-Outlines may contain files, scripts, data, results, docs.</t>
-<t tx="ekr.20170218023347.1">They summarize the uses and implications of a compendium as follows:
-
-    It encapsulates the actual work of the author, not just an abridged version suitable for publication;
-    It can display different levels of detail in derived documents;
-    The computations included in it can be re-run by an interested reader, potentially with different inputs;
-    It contains explicit computational details that make it easier for an interested reader to adapt and extend the methods;
-    It enables programmatic construction of plots and tables;
-    Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
-
-Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.</t>
-<t tx="ekr.20170218123059.1">Show how scripts can invoke other scripts.
-
-Show how to compose results:
-    - With pickle?</t>
-<t tx="ekr.20170218123106.1">- Support for .org.leo files.
-
-- p.drawer property.
-
-- What to do about org-mode code blocks.
-
-- How good is the org-mode import/export code?
-
-- agenda.py plugin (improve existing todo.py plugin.)
-- tables.py plugin</t>
-<t tx="ekr.20170218123124.1">Feature table
-
-- Want Python and its libs.
-
-- You develop software, including scientific software and scripts:
-    Org-mode's script delims make it impossible to develop large software.
-    
-- You want to treat an outline as a programmable database.
-    - Leo *is* a db. Outlines can represent db queries.
-
-- You have hundreds of files to manage.
-    - Leo has a fast caching scheme.
-    
-- You want clone-find commands
-
-</t>
 <t tx="ekr.20170219074525.1">All of Leo's generators yielding positions automatically yield copies of those positions. The following works as expected::
 
     aList = [p for p in c.all_positions()]
@@ -23037,65 +22888,6 @@ Rob (Largo84)::
     link;;=&lt;a href="&lt;|URL|&gt;" target="_blank"&gt;&lt;|TEXT|&gt;&lt;/a&gt;
     enum;;=\begin{enumerate}\n    \item &lt;|item|&gt;\n\end{enumerate}
 </t>
-<t tx="ekr.20170228105154.1"></t>
-<t tx="ekr.20170228105219.1">&gt; Perhaps [ A Brief Summary of Leo] should be rewritten in the org-mode intro style, but that's for some other time.
-
-Actually, now is the time.
-
-My competitive juices are flowing. The new intro will directly challenge org mode. It will do this by showing, with numerous examples, why Leo is already superior to org mode for scientific computation. Scientists can design there own Leonine sub-outlines that represent computations and operations.
-
-@button, Leo's API and Leo's DOM, combined with python scripting, are much more convenient and powerful than org-mode.  Simplicity and generality are more important than a org-mode features.  Leo most definitely has the chops to support reproducible research, or any other buzzword one wants to use.
-
-Leo 5.5 will have an execute-script-in-common-namespace command. This can be added with only a few lines of code. It's needed to simulate pyzo/jupyter/org mode calculations.
-
-Leo 5.5 will also have a show-drawer command. It will pop up a window showing a special 'core-drawer' uA. Saving the popup will update the uA.  No need for changes to Leo's body pane.
-
-Furthermore, Leo is already vastly superior to org mode for software development, with features like automatic untangle (updating @&lt;file&gt; nodes), automatic tangle when saving .leo files, clone-find commands, clones, etc, Heh. Whenever I make this kind of list, I inevitably forget things. Like @test, @suite, @button, scripting API, etc. etc.!
-
-So Reinhard's criticisms are bearing fruit. I'll be emphasizing the problems Leo is designed to solve.  These big tasks are Leo's main purpose. Sure, you can use Leo for keeping track of your record collection.  Leo let's you do simple things simply.  But you can also do complex things simply and flexibly. Things like designing a suite of long-running experiments, documenting them, and ensuring that all code is transparent to reviewers.  Or developing software like Leo itself. All using Python and its libraries, not elisp and emacs-only libraries.
-
-I'll be using mostly prose, as I have just done, combined with code snippets.
-
-Edward
-
-P. S. The easy way to simulate org-mode's window, and improve upon it, will be to allow Leo's body pane to contain multiple, vertically aligned panes.  Like this:
-
-Overall body pane:
-
-pane 1
------ (separator)
-pane 2
------ (separator)
-pane 3
-...
-
-Users will be able to see the various panes without intervening headlines, although separators may show headlines.  Only one of the panes will be active.  It is the "real" body pane.  This can be done in a plugin, I suspect. It will not happen for Leo 5.5, however.</t>
-<t tx="ekr.20170228105319.1">A brief comparison of Leo and org mode.
-
-Org mode has these strengths:
-
-- Drawers: visible, pure text, easily extensible uA's.
-- Agendas and tables.
-- In-pane rendering of Latex and special symbols.
-- Support for multiple source languages, including shell scripts, C, etc.
-- Code blocks, with arguments.
-- Result blocks.
-
-Leo will have all of the above this year. Leo has its own strengths:
-
-- Automatic tangling when saving files.
-- @others, missing from org mode's noweb markup.
-- Untangling: automatic update of @file nodes. Completely missing from org mode.
-  In essence, all org mode files are @nosent files.
-- Importers. There are importers, but apparently none for programming languages.
-- Clones and especially clone-find commands.
-- API: org mode does have a hacking api. It's oriented towards parsing body text.
-- DOM: org mode simulates a DOM with filters. Org mode data is fundamentally text.
-- Python scripting, including a python plugin architecture.
-
-There may be more ;-)
-
-Conclusion: It may still be true, in some limited areas, that Leo can do things that can even be thought in org mode.  However, that statement is no longer generally true, and I'll remove it from all future documentation.</t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
 <t tx="ekr.20170228112643.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. The setting::
@@ -23479,6 +23271,48 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
     g.app.gui               A LeoGui instance. 
     g.app.pluginsController A LeoPluginsController instance.
     g.app.*                 Leo's global variables.
+</t>
+<t tx="ekr.20170315072706.1">Leo and `Emacs org mode &lt;http://orgmode.org/&gt;`_ share similar goals. Org mode has many strengths related to non-programming tasks:
+
+- Drawers: visible, pure text, easily extensible uA's.
+- Agendas and tables.
+- In-pane rendering of Latex and special symbols.
+- Support for multiple source languages, including shell scripts, C, etc.
+- Code blocks, with arguments.
+- Result blocks.
+
+But org mode is unsuitable for software development. Org mode's code block syntax::
+
+    #+NAME: &lt;name&gt;
+    #+BEGIN_SRC &lt;language&gt; &lt;switches&gt; &lt;header arguments&gt;
+        &lt;body&gt;
+    #+END_SRC
+    
+would be unbearable in source files.
+
+More generally, org mode lacks the following Leonine features:
+
+- Automatic tangling when saving files.
+- Automatic untangling when loading files.
+- @others
+- Importers for programming languages.
+- Clones and especially Leo's clone-find commands. 
+- A full Python API and DOM, including generators.
+- @command, @button, @test.
+
+.. _`algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+.. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+Leo's is based on technologies missing from org mode:
+
+- Clones require that outlines be `Directed Acyclic Graphs`_.
+- Leo updates @clean trees using an `algorithm`_ that could not be duplicated in org mode.
+- Leo's outlines are true Python objects, with unique, persistent identities.
+
+In contrast, org mode is completely text oriented:
+
+- Org mode's API is limited to parsing body text.
+- Org mode simulates a DOM with text filters.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

@@ -40,6 +40,129 @@ https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
 http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
 
 The drawback is that Leo would have to distribute that font, and users would have to install the font.
+.. @+node:ekr.20170315071752.1: ** Leo 5.6 and org mode
+- Leo scripting for scientists.
+
+- (Maybe) execute-script-in-common-namespace command. It's needed to simulate pyzo/jupyter/org mode calculations.
+
+- show-drawer command. It will pop up a window showing a special 'core-drawer' uA. Saving the popup will update the uA.  No need for changes to Leo's body pane.
+
+The easy way to simulate org-mode's window, and improve upon it, will be to allow Leo's body pane to contain multiple, vertically aligned panes.  Like this:
+
+    Overall body pane:
+    
+    pane 1
+    ----- (separator)
+    pane 2
+    ----- (separator)
+    pane 3
+    ...
+
+Users will be able to see the various panes without intervening headlines, although separators may show headlines.  Only one of the panes will be active.  It is the "real" body pane.  This can be done in a plugin.
+.. @+node:ekr.20170315081957.2: *3* Consider using Leo if...
+Feature table
+
+- Want Python and its libs.
+
+- You develop software, including scientific software and scripts:
+    Org-mode's script delims make it impossible to develop large software.
+    
+- You want to treat an outline as a programmable database.
+    - Leo *is* a db. Outlines can represent db queries.
+
+- You have hundreds of files to manage.
+    - Leo has a fast caching scheme.
+    
+- You want clone-find commands
+
+.. @+node:ekr.20170315081957.3: *3* Leo as a compendium
+
+"A research project typically relies upon components such as:
+
+    The data being studied;
+    Details of calculations and code used in data analysis;
+    Methodological conventions and assumptions;
+    Decisions among alternate analytic paths.
+
+However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
+
+A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
+.. @+node:ekr.20170315081957.4: *3* Reproducible research
+They summarize the uses and implications of a compendium as follows:
+
+    It encapsulates the actual work of the author, not just an abridged version suitable for publication;
+    It can display different levels of detail in derived documents;
+    The computations included in it can be re-run by an interested reader, potentially with different inputs;
+    It contains explicit computational details that make it easier for an interested reader to adapt and extend the methods;
+    It enables programmatic construction of plots and tables;
+    Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
+
+Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.
+.. @+node:ekr.20170315081957.5: *3* Scripting for scientists
+Show how scripts can invoke other scripts.
+
+Show how to compose results:
+    - With pickle?
+.. @+node:ekr.20170315081957.6: *3* Plans for 2017
+- Support for .org.leo files.
+
+- p.drawer property.
+
+- What to do about org-mode code blocks.
+
+- How good is the org-mode import/export code?
+
+- agenda.py plugin (improve existing todo.py plugin.)
+- tables.py plugin
+.. @+node:ekr.20170315081957.7: *3* Underlying technologies
+@language rest
+@wrap
+
+
+
+
+
+.. @+node:ekr.20170315081957.8: *4* LP and RR
+Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
+
+**LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
+.. @+node:ekr.20170315081957.9: *4* Scripting
+@language rest
+@wrap
+
+Leo is fundamentally more powerful than org mode scripting:
+
+1. Unlike org mode, Leo's outline nodes are true Python objects, *easily* accessible via Leo's Python `API`_. Furthermore, Leo scripting is based on Python and Python's standard library, not elisp and Emacs-specific code. Leo scripts can be run outside of Leo.
+
+2. Leo can `compose`_ both external files and scripts using the same `markup`_. Unlike org mode, Leo's markup applies *everywhere* and is fully integrated with Leo's outline structure. As a result, it is complete natural to compose external files or scripts (experiments) from a suboutline. For example: this defines an external file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    << imports >>
+    @others
+    # That's all, folks
+    @language python
+    @tabwidth
+    
+And this this defines the top-level part of a script::
+
+@language python
+
+    @langauge python
+    '''My script'''
+    << imports >>
+    class Controller:
+        # Child nodes define the methods of this class.
+        @others
+    Controller(c).run # Yes, c *is* defined.
+
+@language rest
+    
+There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
+.. @+node:ekr.20170315081957.10: *4* Data model
+Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones.
+
+Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
 .. @+node:ekr.20170125104430.1: ** From Jon N
 @language rest
 @wrap
