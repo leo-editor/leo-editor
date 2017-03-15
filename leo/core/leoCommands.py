@@ -32,7 +32,18 @@ def cmd(name):
 #@+others
 #@+node:ekr.20160514120615.1: ** class Commands
 class Commands(object):
-    """A class that implements most of Leo's commands."""
+    """
+    A per-outline class that implements most of Leo's commands. The
+    "c" predefined object is an instance of this class. 
+    
+    c.initObjects() creates sucommanders corresponding to files in the
+    leo/core and leo/commands. All of Leo's core code is accessible
+    via this class and its subcommanders.
+    
+    g.app.pluginsController is Leo's plugins controller. Many plugins
+    inject controllers objects into the Commands class. These are
+    another kind of subcommander.
+    """
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
