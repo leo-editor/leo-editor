@@ -228,12 +228,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         verbose = True
         c = self.c
         w = self.editWidget(event, forceFocus=False)
-        if not w: return False
+        if not w:
+            return False
         ch = self.get_ch(event, stroke, w)
         if not ch: return False
         if trace and verbose:
-            print('')
-            g.trace('ch: %r stroke: %r' % (ch, stroke))
+            g.trace('ch: %5r stroke.s: %12r w: %s' % (
+                ch, stroke.s, g.app.gui.widget_name(w)))
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
@@ -245,8 +246,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.root = c.p
             self.last_hit = c.p.copy()
             self.expand_tree(w, i, j, val, word)
-            c.frame.body.forceFullRecolor()
-            c.bodyWantsFocusNow()
         else:
             # Never expand a search for text matches.
             place_holder = '__NEXT_PLACEHOLDER' in val
@@ -259,8 +258,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.trace('expand_search: %s last_hit: %s' % (
                     expand_search, self.last_hit))
             self.expand_text(w, i, j, val, word, expand_search)
-            c.frame.body.forceFullRecolor()
-            c.bodyWantsFocusNow()
             # Restore the selection range.
             if self.save_ins:
                 if trace:  g.trace('sel: %s ins: %s' % (
@@ -353,8 +350,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
         if trace:
-            for z in old_p.self_and_subtree():
-                g.trace(z.h)
+            g.trace()
+            g.printList([z.h for z in old_p.self_and_subtree()])
         # Original code.  Probably unwise to change it.
         do_placeholder = False
         for p in old_p.self_and_subtree():
@@ -387,7 +384,22 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
+        trace = False and not g.unitTesting
         c = self.c
+        # Do #438: Search for placeholder in headline.
+        s = p.h
+        if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
+            if trace: g.trace(repr(s))
+            new_s, i, j = self.next_place(s, offset=0)
+            if i is not None:
+                if trace: g.trace('found in headline', p.h)
+                p.h = new_s
+                c.redraw(p)
+                c.editHeadline()
+                w = c.edit_widget(p)
+                if trace: g.trace(w)
+                w.setSelectionRange(i, j, insert=j)
+                return True
         s = p.b
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s, i, j = self.next_place(s, offset=0)
@@ -412,8 +424,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 # Keep the scroll point if possible.
                 w.setYScrollPosition(scroll)
                 w.seeInsertPoint()
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
             return True
         else:
+            c.frame.body.forceFullRecolor()
+            c.bodyWantsFocusNow()
             return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
@@ -476,7 +492,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             re.escape(c.abbrev_subst_end),
         ))
         changed = False
-        if trace: g.trace('===== p', p.h)
+        if trace: g.trace(p.h)
         # Perform at most one scripting substition.
         m = pattern.match(p.h)
         if m:
@@ -527,7 +543,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return (s2,start,end) where s2 is s without the <| and |>,
         and start, end are the positions of the beginning and end of block.
         """
-        trace = False
+        trace = False and not g.unitTesting
         c = self.c
         new_pos = s.find(c.abbrev_place_start, offset)
         new_end = s.find(c.abbrev_place_end, offset)
@@ -539,13 +555,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if new_pos < 0 or new_end < 0:
             if trace: g.trace('new_pos', new_pos, 'new_end', new_end)
             return s, None, None
+        if trace: g.trace(new_pos, new_end, offset)
         start = new_pos
         place_holder_delim = s[new_pos: new_end + len(c.abbrev_place_end)]
         place_holder = place_holder_delim[
             len(c.abbrev_place_start): -len(c.abbrev_place_end)]
         s2 = s[: start] + place_holder + s[start + len(place_holder_delim):]
         end = start + len(place_holder)
-        if trace: g.trace(start, end, g.callers())
+        if trace: g.trace('Found', start, end, repr(s2))
         return s2, start, end
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self):
@@ -564,6 +581,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_abbrev_name
     def replace_abbrev_name(self, w, i, j, s):
         '''Replace the abbreviation name by s.'''
+        name = g.app.gui.widget_name(w)
+        # g.trace(i, j, name, repr(s))
         c = self.c
         if i == j:
             abbrev = ''
@@ -572,8 +591,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.delete(i, j)
         if s is not None:
             w.insert(i, s)
-        oldSel = j, j
-        c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
+        if not name.startswith('head'):
+            # Fix part of #438. Don't leave the headline.
+            oldSel = j, j
+            c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence
