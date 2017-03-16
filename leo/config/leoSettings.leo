@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="136" left="827" height="930" width="912"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1453,8 +1453,9 @@
 <v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
 </v>
 <v t="ekr.20131213135427.22266"><vh>@menu &amp;Text Commands</vh>
-<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify</vh></v>
-<v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;all</vh></v>
+<v t="ekr.20170316105542.1"><vh>@item beautify-&amp;c</vh></v>
+<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-node</vh></v>
+<v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;tree</vh></v>
 <v t="ekr.20131213135427.22269"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22270"><vh>@item center-&amp;line</vh></v>
 <v t="ekr.20131213135427.22271"><vh>@item center-&amp;region</vh></v>
@@ -1476,7 +1477,6 @@
 <v t="ekr.20131213135427.22287"><vh>@item &amp;sort-lines</vh></v>
 </v>
 <v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank And Kill</vh>
-<v t="ekr.20131213135427.22307"><vh>@item &amp;buffer-kill</vh></v>
 <v t="ekr.20131213135427.22308"><vh>@item &amp;rectangle-kill</vh></v>
 <v t="ekr.20131213135427.22309"><vh>@item r&amp;ectangle-yank</vh></v>
 <v t="ekr.20131213135427.22310"><vh>@item -</vh></v>
@@ -1528,7 +1528,7 @@
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
 <v t="ekr.20141112072219.1"><vh>@item focus-to-&amp;find</vh></v>
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
-<v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell</vh></v>
+<v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
@@ -4318,7 +4318,6 @@ redo                        = Shift-Ctrl-Z
 
 dabbrev-completion  = Alt-Ctrl-slash
 dabbrev-expands     = Alt-slash
-macro-call-last     = Alt-Ctrl-M
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
@@ -4709,7 +4708,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -6927,7 +6926,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22294"></t>
 <t tx="ekr.20131213135427.22295"></t>
 <t tx="ekr.20131213135427.22306"></t>
-<t tx="ekr.20131213135427.22307"></t>
 <t tx="ekr.20131213135427.22308"></t>
 <t tx="ekr.20131213135427.22309"></t>
 <t tx="ekr.20131213135427.22310"></t>
@@ -7008,7 +7006,6 @@ abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
 abbrev-kill-all                     = None
-# advertised-undo                   = Ctrl-underscore
 auto-complete                       = None
 back-char                           = Ctrl-b
 back-char-extend-selection          = None
@@ -7064,7 +7061,6 @@ delete-indentation                  = Alt-asciicircum
 delete-node                         = Shift-Ctrl-BkSp
 delete-spaces                       = Alt-backslash
 demote                              = Ctrl-}
-# digit-argument                    = None
 directory-make                      = None
 directory-remove                    = None
 downcase-region                     = None
@@ -7382,7 +7378,6 @@ add-comments                        = None
 add-editor                          = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
-advertised-undo                     = None
 auto-complete                       = None
 auto-complete-force                 = None
 back-char                           = None
@@ -7466,7 +7461,6 @@ delete-node                         = None
 delete-spaces                       = None
 delete-word                         = None
 demote                              = None
-digit-argument                      = None
 directory-make                      = None
 directory-remove                    = None
 disable-autocompleter               = None
@@ -7650,10 +7644,6 @@ kill-sentence                       = None
 kill-to-end-of-line                 = None
 kill-word                           = None
 line-number                         = None
-macro-call-last                     = None
-macro-end-recording                 = None
-macro-name-last                     = None
-macro-start-recording               = None
 mark                                = None
 mark-changed-items                  = None
 mark-subheads                       = None
@@ -11525,7 +11515,6 @@ redo                        = Shift-Ctrl-Z
 
 dabbrev-completion  = Meta-Ctrl-slash
 dabbrev-expands     = Meta-slash
-macro-call-last     = Meta-Ctrl-M
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
@@ -14119,6 +14108,7 @@ QMenuBar::item:pressed {
     color: black;
 }
 </t>
+<t tx="ekr.20170316105542.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
