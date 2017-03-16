@@ -473,17 +473,6 @@
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
-<v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
-<v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
-<v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
-<v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
-<v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
-<v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
-<v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
-<v t="ekr.20110531155858.20564"><vh>How do I set selection colors?</vh></v>
-<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
-<v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
-</v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's GitHub site?</vh></v>
@@ -492,6 +481,18 @@
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
+</v>
+<v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
+<v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
+<v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
+<v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
+<v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
+<v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
+<v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
+<v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
+<v t="ekr.20110531155858.20564"><vh>How do I set selection colors?</vh></v>
+<v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
+<v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
@@ -536,7 +537,6 @@
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
-<v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
@@ -20129,25 +20129,13 @@ For Windows 10, do the following (it may be a bit different for Windows 8):
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.3">https://groups.google.com/d/msg/leo-editor/B3_1e9k69oQ/cLKXFq_fXw8J
+<t tx="ekr.20160304081437.3">To enable a theme:
 
-I've played a bit with my theme since I wanted a dark one in order to save my eyes. Here is a screenshot: https://lh3.googleusercontent.com/-kb-RnBVq8zU/VIlThQ9MGuI/AAAAAAAAAD8/j-AAOKiHvFI/s1600/leo-dark-ubuntu.png
-
-It's pretty straightforward to get it:
-
-- Install this nice theme: http://gnome-look.org/content/show.php/HackStation?content=167255
-
-- Override Leo's qt style sheet by adding an empty @data qt-gui-plugin-style-sheet to your @settings
-
-- The only settings that are not handled by qt are the log pane text colors, so add them::
-
-    @color log_text_foreground_color = #93a1a1
-    @color log_error_color = #dc322f
-    @color log_warning_color = #268bd2
-
-Finally, I've made a pack of transparent icons to be used more generically:
-
-    @string color_theme = transparent</t>
+- *Select* one of the @theme trees in leoSettings.leo.
+- *Copy* the entire @theme tree to myLeoSettings.leo.
+- *Move* the copied tree to the *end* of the @settings tree.
+- *Test* by restarting Leo.
+</t>
 <t tx="ekr.20160304081437.4">https://groups.google.com/d/msg/leo-editor/LePOMe_ckeg/_UasKCKP6NMJ
 
 Some time ago there were a discussion about Leo in virtualenv.

@@ -11755,7 +11755,7 @@ To enable a theme:
 - *Select* one of the @theme trees below.
 - *Copy* the entire @theme tree to myLeoSettings.leo.
 - *Move* the copied tree to the *end* of the @settings tree.
-- *Test* by opening another Leo outline.
+- *Test* by restarting Leo.
 
 To disable a theme:
 - Move the entire @theme node out of the @settings tree *or*
