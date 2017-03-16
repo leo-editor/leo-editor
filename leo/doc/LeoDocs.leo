@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1313,6 +1313,7 @@
 <v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh></v>
 <v t="ekr.20170123090841.22"><vh>Code</vh></v>
 <v t="ekr.20170123090841.26"><vh>Features</vh></v>
+<v t="ekr.20170316061456.1"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20161014053105.1"><vh>What's new in Leo 5.4</vh>
 <v t="ekr.20161014053127.1"><vh>Highlights</vh></v>
@@ -1431,7 +1432,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161014053105.1"></v>
 <v t="ekr.20170123090814.1"></v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
@@ -1511,23 +1511,23 @@
 <v t="ekr.20170228112247.1"><vh>#349: Added --load-type=LOAD_TYPE command-line option</vh></v>
 <v t="ekr.20170203060220.1"><vh>#356: Scripting docs for hew users</vh></v>
 <v t="ekr.20170123152852.1"><vh>#379: Removed many never-used commands</vh></v>
+<v t="ekr.20170123084609.29"><vh>#438: Allow script abbreviations in headlines</vh></v>
 <v t="ekr.20170123084609.27"><vh>&lt;Alt-X&gt;99 is the same as &lt;Alt-G&gt;99</vh></v>
 <v t="ekr.20170313152439.1"><vh>Added decluttering of headlines</vh></v>
 <v t="ekr.20170228125816.1"><vh>Added justify-toggle-auto and autojustify-on-at-start</vh></v>
 <v t="ekr.20170311055647.1"><vh>Added leo/Icons/transparent folders and icons</vh></v>
 <v t="ekr.20170303113742.1"><vh>Added open-themes-leo command and corresponding menu item</vh></v>
 <v t="ekr.20170313151821.1"><vh>Added several new scripts and @button nodes to scripts.leo</vh></v>
-<v t="ekr.20170123084609.29"><vh>Allow script abbreviations in headlines</vh></v>
 <v t="ekr.20170123084609.25"><vh>leoDist.leo appears in the File menu</vh></v>
 <v t="ekr.20170228104028.1"><vh>New unl:// links replace file:// syntax</vh></v>
 <v t="ekr.20170228101933.20"><vh>re: Make UNL links active</vh></v>
-<v t="ekr.20170228104123.1"><vh>reload-settings and reload-all-settings</vh></v>
+<v t="ekr.20170228104123.1"><vh>Added reload-settings and reload-all-settings commands</vh></v>
 <v t="ekr.20170228182610.1"><vh>Rewrote leomail plugin</vh></v>
 <v t="ekr.20170123084609.30"><vh>The markdown importer now regularizes sections</vh></v>
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
+<v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
-<v t="ekr.20170315090444.1"><vh>** New settings</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -9009,7 +9009,9 @@ controller(c).run()
     attributes from nodes.
 ``leofeeds.py``
     Reads from rss, atom or other sources.
+
 .. Not a plugin: leofts.py.
+
 ``leomail.py``
     Sync local mailbox files over to Leo.
 ``leomylyn.py``
@@ -9090,9 +9092,8 @@ controller(c).run()
     Creates and updates @read-only nodes.
 ``redirect_to_log.py``
     Sends all output to the log pane.
-.. _`CKEditor`: http://ckeditor.com/
 ``richtext.py``
-    Enables rich text using the `CKEditor`_ editor.
+    Enables rich text using the `CKEditor &lt;http://ckeditor.com/&gt;`_ editor.
 ``rss.py``
     Adds rss reader features to Leo.
 ``run_nodes.py``
@@ -23147,8 +23148,25 @@ In contrast, org mode is completely text oriented:
 - Org mode's API is limited to parsing body text.
 - Org mode simulates a DOM with text filters.
 </t>
-<t tx="ekr.20170315090444.1"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170316061434.1">Settings:
+
+- @bool autojustify-on-at-start
+- @bool color-doc-parts-as-rest
+- @bool run-pyflakes-on-write
+- @bool tree-declutter = True
+- @data tree-declutter-patterns
+
+Command-line options::
+
+    --load-type=LOAD_TYPE
+</t>
+<t tx="ekr.20170316061456.1">- @bool autojustify-on-at-start
+- @bool color-doc-parts-as-rest
+- @bool run-pyflakes-on-write
+- @bool tree-declutter = True
+- @data tree-declutter-patterns
+- --load-type=LOAD_TYPE</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
