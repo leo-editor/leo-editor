@@ -22531,7 +22531,6 @@ g.findRootWithPredicate now formalizes and regularizes this search process.  For
     
 @language python
 
-
     def predicate(p):
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
        
@@ -22860,14 +22859,9 @@ Changed sf.copy_to_my_settings to reflect recent changes to p.getUnl.
 </t>
 <t tx="ekr.20170308145129.132">g.findRootsWithPredicate now preserves node order.</t>
 <t tx="ekr.20170308145129.141">The new code uses the new importer code to clean nodes.</t>
-<t tx="ekr.20170308145129.169">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/350
+<t tx="ekr.20170308145129.169">https://github.com/leo-editor/leo-editor/issues/350
 
 ssm.expand_css_constants no longer adds constants.
-
-@language python
 </t>
 <t tx="ekr.20170308145129.2">https://github.com/leo-editor/leo-editor/issues/416
 
