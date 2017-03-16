@@ -10987,8 +10987,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
 | caption =
 | developer = Edward K. Ream
-| latest_release_version = 5.4
-| latest_release_date = {{release date and age|2016|04|02}}
+| latest_release_version = 5.5
+| latest_release_date = {{release date and age|2017|03|16}}
 | operating_system = [[Cross-platform]]
 | genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
 | license = [[Python (programming language)|Python]] License
@@ -21797,15 +21797,15 @@ Then run::
 </t>
 <t tx="ekr.20170206073747.8">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.4.
+into a folder in your home directory, say ~/leo-5.5.
 
 You now have several choices.
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.4 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.5 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.4
+    cd ~/leo-5.5
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
