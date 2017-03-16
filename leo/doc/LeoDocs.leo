@@ -1313,7 +1313,8 @@
 <v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh></v>
 <v t="ekr.20170123090841.22"><vh>Code</vh></v>
 <v t="ekr.20170123090841.26"><vh>Features</vh></v>
-<v t="ekr.20170316061456.1"><vh>Settings and command-line options</vh></v>
+<v t="ekr.20170316061456.1"><vh>Settings</vh></v>
+<v t="ekr.20170316063618.1"><vh>Command-line options</vh></v>
 </v>
 <v t="ekr.20161014053105.1"><vh>What's new in Leo 5.4</vh>
 <v t="ekr.20161014053127.1"><vh>Highlights</vh></v>
@@ -1476,7 +1477,6 @@
 <v t="ekr.20170303051729.1"><vh>#430: rst import...</vh></v>
 <v t="ekr.20170308145129.32"><vh>#431: Simplify importer tables</vh></v>
 <v t="ekr.20170308145129.13"><vh>#434: Potential bug in settings</vh></v>
-<v t="ekr.20170308145129.49"><vh>Added --fail-fast option</vh></v>
 <v t="ekr.20170228101933.15"><vh>Disabled compare_ast</vh></v>
 <v t="ekr.20170123084609.13"><vh>Fixed attribute error in To_Python.go</vh></v>
 <v t="ekr.20170123084609.9"><vh>Fixed bug in bracket matching</vh></v>
@@ -21435,7 +21435,7 @@ I don't think I have ever misunderstood a class as badly as I have misunderstood
 
 The performance bug created by calling QSyntaxHighlighter explicitly caused a "series of unfortunate events" ;-) Seeing the speed pyzo's pure python syntax colorer was the key breakthrough.
 </t>
-<t tx="ekr.20170123085934.1">Leo 5.5b1 February 28, 2017
+<t tx="ekr.20170123085934.1">Leo 5.5b1 March 16, 2017
 
 [Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -22898,8 +22898,6 @@ leo/plugins/linescanner.py:
 plugins/qt_frame.py:
 - Added a disabled trace to createAtFileNode code, called from the drag/drop logic.
 </t>
-<t tx="ekr.20170308145129.49">Added --fail-fast command-line option: sets failfast option in unit tests.
-</t>
 <t tx="ekr.20170308145129.59">https://github.com/leo-editor/leo-editor/issues/352
 Importer unit tests create both @clean and @file
 
@@ -23159,13 +23157,19 @@ In contrast, org mode is completely text oriented:
 Command-line options::
 
     --load-type=LOAD_TYPE
+    --fail-fast             # sets failfast option in unit tests.
 </t>
 <t tx="ekr.20170316061456.1">- @bool autojustify-on-at-start
 - @bool color-doc-parts-as-rest
 - @bool run-pyflakes-on-write
 - @bool tree-declutter = True
 - @data tree-declutter-patterns
-- --load-type=LOAD_TYPE</t>
+</t>
+<t tx="ekr.20170316063618.1">::
+
+    --load-type=LOAD_TYPE
+    --fail-fast             # sets failfast option in unit tests.
+</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
