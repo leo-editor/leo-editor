@@ -16462,7 +16462,7 @@ More Leo Resources
 .. _`Icons`:                http://leoeditor.com/icons.html
 .. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
 .. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
-.. _`Leo's resource page`:  http://www.jserv.com/jk_orr/xml/leo.htm
+.. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
 .. _`Mind Mapping`:         http://www.mind-mapping.org/
 .. _`bookmarks plugin video`: https://vimeo.com/77720098 
 .. _`literate programming`: http://www.literateprogramming.com/
@@ -16483,7 +16483,7 @@ More resources:
 - Jacob Peck's `scripting tutorial`_.
 - Leo's `wikipedia page`_.
 - A page about `literate programming`_.
-- Joe Orr's `Leo's resource page`_ containing XSLT stylesheets for Leo.
+- Joe Orr's `Leo page viewer`_.
 - Satish Goda's `Leo tutorial &lt;https://github.com/satishgoda/leo-editor-tutorial&gt;`_.
 - The `Mind Mapping`_ page.
 - A `web viewer`_ page for .leo files.
