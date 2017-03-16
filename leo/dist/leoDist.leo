@@ -756,8 +756,9 @@ g.es_print('done') # '@button make-leo done')
 <t tx="ekr.20101027070126.1662">def run (self):
     '''The top-level logic.'''
     g.cls()
-    leoVersion.create_commit_timestamp_json()
-        # Create leo/core/commit_timestamp.json.
+    # No longer exists. Done by git hooks.
+        # leoVersion.create_commit_timestamp_json()
+            # Create leo/core/commit_timestamp.json.
     self.clean_spellpyx()
     self.make_manifest()
     files = self.clean_manifest()
