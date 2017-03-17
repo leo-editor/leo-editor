@@ -732,7 +732,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.5' ##version
+version = '5.5b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1053,7 +1053,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.5/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.5b1/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
