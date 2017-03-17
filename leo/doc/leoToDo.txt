@@ -4,6 +4,8 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
+** Improve Spell: split camelcase words and ignore capitalization, except for all-caps words.
+
 Fix @auto bugs:
 - Cancelling @auto write creates orphan nodes.
 - Cloned @auto nodes duplicates section references.

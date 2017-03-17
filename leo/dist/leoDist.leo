@@ -2895,7 +2895,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
-Run pyinstaller:
+Run pyinstaller on both Windows and Linux:
 - Delete leo-editor/dist and leo-editor/build folders first.
 - Run pyinstaller2 launchLeo-unified.spec.
 - Test a *copy* of the result so .pyo files are not added to the package)

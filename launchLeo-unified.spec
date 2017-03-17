@@ -261,21 +261,12 @@ def define_datas():
     # ext('.jif','leo/doc/html'),
     # ext('.py','leo/doc/html'),
     # ext('.txt','leo/doc/html'),
-    # User-selectable icons.
-        # icons('leo/Icons/Tango/16x16/actions'),
-        # icons('leo/Icons/Tango/16x16/animations'),
-        # icons('leo/Icons/Tango/16x16/apps'),
-        # icons('leo/Icons/Tango/16x16/categories'),
-        # icons('leo/Icons/Tango/16x16/devices'),
-        # icons('leo/Icons/Tango/16x16/emblems'),
-        # icons('leo/Icons/Tango/16x16/emotes'),
-        # icons('leo/Icons/Tango/16x16/mimetypes'),
-        # icons('leo/Icons/Tango/16x16/places'),
-        # icons('leo/Icons/Tango/16x16/status'),
     # leo/extensions...
         ext('.py', 'leo/extensions'),
         all('leo/extensions/hooks'),
     # leo/external...
+        ext('.cfg', 'leo/external'),
+        ext('.md', 'leo/external'),
         ext('.leo', 'leo/external'),
         ext('.py', 'leo/external'),
         ext('.txt', 'leo/external'),
