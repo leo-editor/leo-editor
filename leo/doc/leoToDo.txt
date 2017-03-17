@@ -4,8 +4,6 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
-** Improve Spell: split camelcase words and ignore capitalization, except for all-caps words.
-
 Fix @auto bugs:
 - Cancelling @auto write creates orphan nodes.
 - Cloned @auto nodes duplicates section references.
@@ -13,11 +11,26 @@ Fix @auto bugs:
 Improve Ctrl-up/down:
 - Ctrl-Down should insert a blank line if at the bottom.
 - Ctrl-Up should insert a blank line if at the top.
-.. @+node:ekr.20170211190548.1: ** ** The plan for 2017
+.. @+node:ekr.20170219180512.1: *3* Invisible fonts
+One way to hide characters is to use an invisible font:
+https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
+http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
+
+The drawback is that Leo would have to distribute that font, and users would have to install the font.
+.. @+node:ekr.20170211190548.1: *3* Leo and org mode
 @language rest
 @wrap
-org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
+- Better support for org-mode:
+    - p.drawer and p.results properties.
+
+- Emulate/ use pyzo server.
+
+A short prototype of @jupyter
+https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
+Appears to work only with Python 2.
+
+.. @+node:ekr.20170317120838.1: *4* Steal from org mode
 - Steal everything useful from org mode:
     - Agenda: an agenda plugin.
     - Tables: a tables plugin.
@@ -29,20 +42,7 @@ org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
     - Leo's body pane must be able to hide characters and
       render pictures within the pane.
     - Support .org files and .org.leo files.
-
-- Emulate/ use pyzo server
-
-A short prototype of @jupyter
-https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
-Appears to work only with Python 2.
-
-.. @+node:ekr.20170219180512.1: *3* Invisible fonts
-One way to hide characters is to use an invisible font:
-https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
-http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
-
-The drawback is that Leo would have to distribute that font, and users would have to install the font.
-.. @+node:ekr.20170315071752.1: ** Leo 5.6 and org mode
+.. @+node:ekr.20170315071752.1: *4* Org mode docs
 - Leo scripting for scientists.
 
 - (Maybe) execute-script-in-common-namespace command. It's needed to simulate pyzo/jupyter/org mode calculations.
@@ -61,7 +61,7 @@ The easy way to simulate org-mode's window, and improve upon it, will be to allo
     ...
 
 Users will be able to see the various panes without intervening headlines, although separators may show headlines.  Only one of the panes will be active.  It is the "real" body pane.  This can be done in a plugin.
-.. @+node:ekr.20170315081957.2: *3* Consider using Leo if...
+.. @+node:ekr.20170315081957.2: *5* Consider using Leo if...
 Feature table
 
 - Want Python and its libs.
@@ -77,7 +77,7 @@ Feature table
     
 - You want clone-find commands
 
-.. @+node:ekr.20170315081957.3: *3* Leo as a compendium
+.. @+node:ekr.20170315081957.3: *5* Leo as a compendium
 
 "A research project typically relies upon components such as:
 
@@ -89,7 +89,7 @@ Feature table
 However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
 
 A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
-.. @+node:ekr.20170315081957.4: *3* Reproducible research
+.. @+node:ekr.20170315081957.4: *5* Reproducible research
 They summarize the uses and implications of a compendium as follows:
 
     It encapsulates the actual work of the author, not just an abridged version suitable for publication;
@@ -100,12 +100,12 @@ They summarize the uses and implications of a compendium as follows:
     Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
 
 Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.
-.. @+node:ekr.20170315081957.5: *3* Scripting for scientists
+.. @+node:ekr.20170315081957.5: *5* Scripting for scientists
 Show how scripts can invoke other scripts.
 
 Show how to compose results:
     - With pickle?
-.. @+node:ekr.20170315081957.6: *3* Plans for 2017
+.. @+node:ekr.20170315081957.6: *5* Plans for 2017
 - Support for .org.leo files.
 
 - p.drawer property.
@@ -116,7 +116,7 @@ Show how to compose results:
 
 - agenda.py plugin (improve existing todo.py plugin.)
 - tables.py plugin
-.. @+node:ekr.20170315081957.7: *3* Underlying technologies
+.. @+node:ekr.20170315081957.7: *5* Underlying technologies
 @language rest
 @wrap
 
@@ -124,11 +124,11 @@ Show how to compose results:
 
 
 
-.. @+node:ekr.20170315081957.8: *4* LP and RR
+.. @+node:ekr.20170315081957.8: *6* LP and RR
 Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
 
 **LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
-.. @+node:ekr.20170315081957.9: *4* Scripting
+.. @+node:ekr.20170315081957.9: *6* Scripting
 @language rest
 @wrap
 
@@ -161,11 +161,11 @@ And this this defines the top-level part of a script::
 @language rest
     
 There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
-.. @+node:ekr.20170315081957.10: *4* Data model
+.. @+node:ekr.20170315081957.10: *6* Data model
 Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones.
 
 Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
-.. @+node:ekr.20170125104430.1: ** From Jon N
+.. @+node:ekr.20170125104430.1: *3* From Jon N
 @language rest
 @wrap
 
@@ -187,11 +187,11 @@ Anyway, here's what I have. I am currently using two @command nodes
     @command myCtrlHome @key=Ctrl+Home
     @command myCtrlEnd @key=Ctrl+End
 with content like below (merged a bit from two nodes for 'clarity')
-.. @+node:ekr.20170125104502.1: *3* Declarations
+.. @+node:ekr.20170125104502.1: *4* Declarations
 ​
 from leo.core.leoQt import QtCore
 
-.. @+node:ekr.20170125104502.2: *3* cursorToEndOfPane
+.. @+node:ekr.20170125104502.2: *4* cursorToEndOfPane
 def cursorToEndOfPane():
     """ move the text cursor to the last character visible in the body pane
     """
@@ -218,7 +218,7 @@ def cursorToEndOfPane():
    
     c.bodyWantsFocusNow()
    
-.. @+node:ekr.20170125104502.3: *3* cursorToTopOfPane
+.. @+node:ekr.20170125104502.3: *4* cursorToTopOfPane
 def cursorToTopOfPane():
     """ move the text cursor to the first character visible in the body pane
     """
@@ -240,7 +240,7 @@ def cursorToTopOfPane():
 
 # arrive here with 'Ctrl-Home' the first entry in lossage
 # XXX for now, assume we have pressed more than three keys...
-.. @+node:ekr.20170125104502.4: *3* doMyCtrlHomeKey
+.. @+node:ekr.20170125104502.4: *4* doMyCtrlHomeKey
 def doMyCtrlHomeKey():
     if g.app.lossage[1][1] == "Ctrl+Home":
         if g.app.lossage[2][1] == "Ctrl+Home":
@@ -257,7 +257,7 @@ doMyCtrlHomeKey()
 
 # arrive here with 'Ctrl-End' the first entry in lossage
 # XXX for now, assume we have pressed more than three keys...
-.. @+node:ekr.20170125104502.5: *3* doCtrlEndKey
+.. @+node:ekr.20170125104502.5: *4* doCtrlEndKey
 def doCtrlEndKey():
     showLossage()
     if g.app.lossage[1][1] == "Ctrl+End":
@@ -273,7 +273,7 @@ def doCtrlEndKey():
 
 
 doCtrlEndKey()
-.. @+node:ekr.20170122010350.1: ** Fossil videos & ideas
+.. @+node:ekr.20170122010350.1: *3* Fossil videos & ideas
 ​Richard Hipp, Fossil and SQLite author, makes that distinction and about
 the "pile of files" database (like the .git folder) instead of the single
 file approach[2]. There is a lot of querying capabilities of the last one,
