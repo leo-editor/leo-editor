@@ -551,7 +551,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             new_pos = s.find(c.abbrev_place_start)
             new_end = s.find(c.abbrev_place_end)
             if not (new_pos < 0 or new_end < 0):
-                g.es("Found placeholder earlier in body")
+                g.es("Found earlier placeholder")
         if new_pos < 0 or new_end < 0:
             if trace: g.trace('new_pos', new_pos, 'new_end', new_end)
             return s, None, None
