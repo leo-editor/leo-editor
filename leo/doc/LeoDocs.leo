@@ -368,10 +368,11 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -5476,7 +5477,7 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
     forward-end-word-extend-selection
 </t>
 <t tx="ekr.20061010121944">def createRecentFiles(self):
-    '''Trye to reate .leoRecentFiles.txt in
+    '''Try to create .leoRecentFiles.txt in
     - the users home directory first,
     - Leo's config directory second.'''
     for theDir in (g.app.homeLeoDir, g.app.globalConfigDir):
@@ -11988,7 +11989,7 @@ We recommend using `git &lt;https://git-scm.com/&gt;`_ to download Leo. Using gi
         # A g.TypedDict containing the merger of default settings,
         # settings in leoSettings.leo and settings in myLeoSettings.leo
     self.globalShortcutsDict = None
-        # A g.TypedDictOfLists containg the merger of shortcuts in
+        # A g.TypedDictOfLists containing the merger of shortcuts in
         # leoSettings.leo and settings in myLeoSettings.leo.
     # LoadManager ivars corresponding to user options....
     self.files = []
@@ -12752,7 +12753,7 @@ else:
     return ok and c or None
 </t>
 <t tx="ekr.20120223062418.10393">def loadLocalFile(self, fn, gui, old_c):
-    '''Completely read a file, creating the corresonding outline.
+    '''Completely read a file, creating the corresponding outline.
 
     1. If fn is an existing .leo file (possibly zipped), read it twice:
     the first time with a NullGui to discover settings,
@@ -12760,7 +12761,7 @@ else:
 
     2. If fn is an external file:
     get settings from the leoSettings.leo and myLeoSetting.leo, then
-    create a "wrapper" outline continain an @file node for the external file.
+    create a "wrapper" outline containing an @file node for the external file.
 
     3. If fn is empty:
     get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
@@ -12983,7 +12984,7 @@ else:
     isLeoSettings = g.shortFileName(fn).lower() == 'leosettings.leo'
     exists = g.os_path_exists(fn)
     if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
-        # Open the file usinging a null gui.
+        # Open the file using a null gui.
         try:
             g.app.preReadFlag = True
             c = lm.openSettingsFile(fn)
@@ -13191,7 +13192,7 @@ def isZippedFile(self, fn):
                     # acts as a flag for the need to create the menu
                 c.add_command(menu.getMenu(baseName), label=dirName,
                     command=recentFilesCallback, underline=0)
-            else: # single occurence, no submenu
+            else: # single occurrence, no submenu
                 c.add_command(recentFilesMenu, label=baseName,
                     command=recentFilesCallback, underline=0)
         else: # original behavior
@@ -13713,7 +13714,7 @@ def define_language_extension_dict(self):
         "pl1"           : "pl1",
         "plain"         : "txt",
         "plsql"         : "sql", # qt02537 2005-05-27
-        # "pop11"       : "p", # Conflicts with pascall.
+        # "pop11"       : "p", # Conflicts with pascal.
         "postscript"    : "ps",
         "povray"        : "pov",
         "prolog"        : "pro",
@@ -20938,9 +20939,9 @@ self.validate_outline = False
 <t tx="ekr.20161028035902.1">self.atPathInBodyWarning = None
     # Set by get_directives_dict.
 self.menuWarningsGiven = False
-    # True: supress warnings in menu code.
+    # True: suppress warnings in menu code.
 self.unicodeErrorGiven = True
-    # True: suppres unicode tracebacks.
+    # True: suppress unicode tracebacks.
 </t>
 <t tx="ekr.20161028035924.1">self.extensionsDir = None
     # The leo/extensions directory
@@ -21023,7 +21024,7 @@ self.inBridge = False
 self.inScript = False
     # True: executing a script.
 self.initing = True
-    # True: we are initiing the app.
+    # True: we are initing the app.
 self.killed = False
     # True: we are about to destroy the root window.
 self.openingSettingsFile = False
@@ -21994,7 +21995,7 @@ def teardown(self):
     demo.start(script_tree, auto_run=auto_run, root=root)</t>
 <t tx="ekr.20170212105226.9"></t>
 <t tx="ekr.20170212113214.1">'''Imports all plugins or just tests their syntax,
-epending on a switch in PluginTestCase.runTest.'''
+depending on a switch in PluginTestCase.runTest.'''
 
 import glob
 import sys
@@ -22068,7 +22069,7 @@ suite = makePluginsTestSuite(c)
     ignore = (
         # Read error.
         'chinese_menu',
-        # Unfinished/obsolute gui's.
+        # Unfinished/absolute gui's.
         'gtkDialogs','gtkGui','ironPython','ironPythonGui',
         'swing_gui','tkGui','wxGui','temacs',
         # Tk-only.
@@ -23150,7 +23151,7 @@ Command-line options::
     --load-type=LOAD_TYPE
     --fail-fast             # sets failfast option in unit tests.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

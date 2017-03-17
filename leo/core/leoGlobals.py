@@ -4718,6 +4718,21 @@ def stripBrackets(s):
     if s.endswith('>'):
         s = s[: -1]
     return s
+#@+node:ekr.20170317101100.1: *4* g.unCamel
+def unCamel(s):
+    '''Return a list of sub-words in camelCased string s.'''
+    result, word = [], []
+    for ch in s:
+        if ch.isalpha() and ch.isupper():
+            if word: result.append(''.join(word))
+            word = [ch]
+        elif ch.isalpha():
+            word.append(ch)
+        elif word:
+            result.append(''.join(word))
+            word = []
+    if word: result.append(''.join(word))
+    return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):

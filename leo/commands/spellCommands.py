@@ -107,6 +107,7 @@ class EnchantClass(object):
         # Use only a single copy of the dict.
         g.app.spellDict = self.d
     #@+node:ekr.20150514063305.517: *3* processWord
+
     def processWord(self, word):
         """
         Check the word. Return None if the word is properly spelled.
@@ -116,6 +117,24 @@ class EnchantClass(object):
         if not d:
             return None
         elif d.check(word):
+            return None
+        # Speed doesn't matter here. The more we find, the more convenient.
+        word = ''.join([i for i in word if not i.isdigit()])
+            # Remove all digits.
+        if d.check(word) or d.check(word.lower()):
+            return None 
+        if word.find('_') > -1:
+            # Snake case.
+            words = word.split('_')
+            for word2 in words:
+                if not d.check(word2) and not d.check(word2.lower()):
+                    return d.suggest(word)
+            return None
+        words = g.unCamel(word)
+        if words:
+            for word2 in words:
+                if not d.check(word2) and not d.check(word2.lower()):
+                    return d.suggest(word)
             return None
         else:
             return d.suggest(word)

@@ -492,7 +492,7 @@ Demo scripts may change n1 or n2 at any time. If both are given, each character 
 
 **demo.speed**: A multiplier applied to n1 and n2.
 
-This ivar is initially 1.0.  The demo.wait method multiplies both the n1 nd n2 ivars by the speed factor before waiting.
+This ivar is initially 1.0.  The demo.wait method multiplies both the n1 and n2 ivars by the speed factor before waiting.
 
 **demo.retained_widgets**: A list of widgets *not* deleted by demo.delete_widgets()
 
