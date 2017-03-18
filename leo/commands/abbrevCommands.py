@@ -228,17 +228,23 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         verbose = True
         c = self.c
         w = self.editWidget(event, forceFocus=False)
+        w_name = g.app.gui.widget_name(w)
         if not w:
             return False
         ch = self.get_ch(event, stroke, w)
         if not ch: return False
         if trace and verbose:
-            g.trace('ch: %5r stroke.s: %12r w: %s' % (
-                ch, stroke.s, g.app.gui.widget_name(w)))
+            g.trace('ch: %5r stroke.s: %12r w: %s %s %s' % (
+                ch, stroke and stroke.s, id(w), w_name , c.p.h))
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
-            if word: break
+            if word:
+                # Fix another part of #438.
+                c.endEditing()
+                if trace: g.trace('FOUND tag: %r word: %r val: %r %s' % (
+                    tag, word, val, c.p.h))
+                break
         else:
             return False
         c.abbrev_subst_env['_abr'] = word
@@ -256,7 +262,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 expand_search = False
             if trace:
                 g.trace('expand_search: %s last_hit: %s' % (
-                    expand_search, self.last_hit))
+                    expand_search, self.last_hit and self.last_hit.h))
             self.expand_text(w, i, j, val, word, expand_search)
             # Restore the selection range.
             if self.save_ins:
@@ -317,12 +323,16 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.12: *4* abbrev.expand_text
     def expand_text(self, w, i, j, val, word, expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
+        trace = False and not g.unitTesting
         c = self.c
         if word == c.config.getString("abbreviations-next-placeholder"):
             val = ''
             do_placeholder = True
         else:
             val, do_placeholder = self.make_script_substitutions(i, j, val)
+        if trace:
+            g.trace('i: %s j: %s val: %r word: %r w: %s %s %s' % (
+                i, j, val, word, id(w), g.app.gui.widget_name(w), c.p.h))
         self.replace_abbrev_name(w, i, j, val)
         # Search to the end.  We may have been called via a tree abbrev.
         p = c.p.copy()
@@ -397,7 +407,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 c.redraw(p)
                 c.editHeadline()
                 w = c.edit_widget(p)
-                if trace: g.trace(w)
+                if trace: g.trace(id(w))
                 w.setSelectionRange(i, j, insert=j)
                 return True
         s = p.b
@@ -524,7 +534,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             val, tag = self.abbrevs.get(word, (None, None))
         if val:
             # Require a word match if the abbreviation is itself a word.
-            if ch in ' \t\n': word = word.rstrip()
+            if ch in ' \t\n':
+                word = word.rstrip()
             if word.isalnum() and word[0].isalpha():
                 if i == 0 or s[i - 1] in ' \t\n':
                     return i, tag, word, val
