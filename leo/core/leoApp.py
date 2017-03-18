@@ -2264,7 +2264,7 @@ class LoadManager(object):
                 g.app.createDefaultGui(__file__)
             else:
                 # This can happen when launching Leo from IPython.
-                g.trace('g.app.gui', g.app.gui)
+                g.trace('g.app.gui', g.app.gui, g.callers())
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
