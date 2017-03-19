@@ -226,7 +226,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         '''
         trace = False and not g.unitTesting
         verbose = True
-        c = self.c
+        c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
         if not w:
@@ -235,22 +235,28 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if not ch: return False
         if trace and verbose:
             g.trace('ch: %5r stroke.s: %12r w: %s %s %s' % (
-                ch, stroke and stroke.s, id(w), w_name , c.p.h))
+                ch, stroke and stroke.s, id(w), w_name , p.h))
         s, i, j, prefixes = self.get_prefixes(w)
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
             if word:
                 # Fix another part of #438.
-                c.endEditing()
+                if w_name.startswith('head'):
+                    if val == '__NEXT_PLACEHOLDER':
+                        i = w.getInsertPoint()
+                        if i > 0:
+                            w.delete(i-1)
+                            p.h = w.getAllText()
+                    c.endEditing()
                 if trace: g.trace('FOUND tag: %r word: %r val: %r %s' % (
-                    tag, word, val, c.p.h))
+                    tag, word, val, p.h))
                 break
         else:
             return False
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
-            self.root = c.p
-            self.last_hit = c.p.copy()
+            self.root = p.copy()
+            self.last_hit = p.copy()
             self.expand_tree(w, i, j, val, word)
         else:
             # Never expand a search for text matches.
@@ -524,12 +530,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
     def match_prefix(self, ch, i, j, prefix, s):
-        
+        trace = False and not g.unitTesting
         i = j - len(prefix)
         word = g.toUnicode(prefix) + g.toUnicode(ch)
         tag = 'tree'
         val = self.tree_abbrevs_d.get(word)
-        # if val: g.trace('*****',word,'...\n\n',len(val))
+        if trace: g.trace('word: %r val: %r' % (word, val))
         if not val:
             val, tag = self.abbrevs.get(word, (None, None))
         if val:
@@ -538,15 +544,15 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 word = word.rstrip()
             if word.isalnum() and word[0].isalpha():
                 if i == 0 or s[i - 1] in ' \t\n':
-                    return i, tag, word, val
+                    pass
                 else:
                     i -= 1
-                    return i, tag, word, val # 2016/12/31.
-            else:
-                return i, tag, word, val
+                    word, val = None, None # 2017/03/19.
         else:
             i -= 1
-            return i, tag, None, None
+            word, val = None, None
+        if trace: g.trace('returns %s word: %r val: %r' % (i, word, val))
+        return i, tag, word, val
     #@+node:ekr.20150514043850.16: *4* abbrev.next_place
     def next_place(self, s, offset=0):
         """

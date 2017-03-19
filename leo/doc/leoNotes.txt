@@ -18250,6 +18250,17 @@ sub_color = QtGui.QColor('mistyrose')
 demo = demo.Demo(c, color=color, subtitle_color=sub_color, trace=False)
 demo.delete_widgets()
 demo.start(script_list = table)
+.. @+node:ekr.20170317101032.1: *3* test g.unCamel
+g.cls()
+
+table = (
+    'abcXyz',
+    'AbcXyz',
+    'abcXyzW',
+)
+for s in table:
+    print(s)
+    g.printList(g.unCamel(s))
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 @language python
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
