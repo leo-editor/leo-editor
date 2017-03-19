@@ -11,12 +11,6 @@ Fix @auto bugs:
 Improve Ctrl-up/down:
 - Ctrl-Down should insert a blank line if at the bottom.
 - Ctrl-Up should insert a blank line if at the top.
-.. @+node:ekr.20170219180512.1: *3* Invisible fonts
-One way to hide characters is to use an invisible font:
-https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
-http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
-
-The drawback is that Leo would have to distribute that font, and users would have to install the font.
 .. @+node:ekr.20170211190548.1: *3* Leo and org mode
 @language rest
 @wrap
@@ -165,7 +159,7 @@ There is no need to put this inside wonky org-mode markup. The @language python 
 Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones.
 
 Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
-.. @+node:ekr.20170125104430.1: *3* From Jon N
+.. @+node:ekr.20170125104430.1: *3* Key issues (Jon N)
 @language rest
 @wrap
 
@@ -331,6 +325,14 @@ I would try something like this:
 
 [7] http://fossil.wanderinghorse.net/repos/fwiki/index.cgi/wiki/README
 [8] https://docs.google.com/document/d/1fXViveNhDbiXgCuE7QDXQOKeFzf2qNUkBEgiUvoqFN4/view
+.. @+node:ekr.20161231072737.1: *3* Improve code
+- check pid logic in BPM.
+
+- p.b & p.h setters should check that s is a string.
+
+- Create leoFind wrappers:
+    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
+    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
 .. @+node:ekr.20161231072528.1: ** Maybe
 - reload-abbreviations command.
 
@@ -339,8 +341,6 @@ I would try something like this:
 - Unit tests should preserve find state.
   The find command doesn't seem to work after unit tests.
 .. @+node:ekr.20160515143329.1: *3* @listen(channel_name)
-.. @+node:ekr.20160515143249.1: *3* @subcommander
-Registers subcommander
 .. @+node:ekr.20160325152551.1: *3* Add new, simple, rst/md commands
 - Use # to prevent headlines from being included.
 - Use some, but not all, rst3 settings.
@@ -415,44 +415,6 @@ The so-called Easter-Egg interface creates new panes from the gui.
 A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
-.. @+node:ekr.20160227134532.1: *3* Command shell in Python
-# http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
-
-Add shell window, perhaps in viewrendered plugin.
-
-# The following program will a system and display output immediately on screen:
-
-#!/usr/bin/python
-import subprocess
-import sys
-cmd = 'ls' # "/usr/sbin/netstat -p tcp -f inet"
-
-p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
-if 0:
-    while True:
-        out = p.stderr.read(1)
-        out = g.toUnicode(out)
-        if out == '' and p.poll() != None:
-            break
-        if out != '':
-            # sys.stdout.write(out)
-            # sys.stdout.flush()
-            g.es(out)
-.. @+node:ekr.20110605121601.18839: *3* Create color picker
-createColorPicker
-.. @+node:ekr.20170120111812.474: *3* Diff using Leo
-https://groups.google.com/forum/#!topic/leo-editor/ZKP-X2kCc9s
-.. @+node:ekr.20161231072737.1: *3* Improve code
-- check pid logic in BPM.
-
-- p.b & p.h setters should check that s is a string.
-
-- Use regex in g.match.  Add g.match_any.
-    pattern = '|'.join([r"\b%s\b" z for z in args])
-
-- Create leoFind wrappers:
-    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
-    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
 .. @+node:ekr.20161019020710.1: *3* Improve pylint
 - enable more pylint checks
 - pylint command should ensure that the leo directory is on the path.
@@ -465,7 +427,6 @@ https://groups.google.com/forum/#!topic/leo-editor/ZKP-X2kCc9s
     - Some key to shift back to the nav pane.
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
-.. @+node:ekr.20150801060026.1: *3* leotutor.leo
 .. @+node:ekr.20161205102034.1: *3* Maybe: Temp vim modes
 The idea is to be able to define the dot easily.
 
@@ -490,8 +451,6 @@ But... leoTest.leo defines several other subclasses of unittest.TestCase besides
 I'm not in a hurry to do any of this, since the present importer cases work.  Still it's a good idea to keep these ideas in the back of our minds. This kind of simplification could be useful when creating other kinds of unit tests.
 .. @+node:ekr.20161106074940.1: *3* Maybe: Visualize massive git changes
 This is likely impossible, but git contains all history...
-.. @+node:ekr.20170120114350.1: *3* Post: What you missed by not following leo-editor
-.. @+node:ekr.20170120114716.1: *3* reload-abbreviations
 .. @+node:ekr.20160327111800.1: *3* Support jedi auto-completion (& valuespace)
 - jedi is available in the
 - Can we use live code inside Leo?
