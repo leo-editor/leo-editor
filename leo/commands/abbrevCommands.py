@@ -247,9 +247,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                         if i > 0:
                             w.delete(i-1)
                             p.h = w.getAllText()
-                    c.endEditing()
-                if trace: g.trace('FOUND tag: %r word: %r val: %r %s' % (
-                    tag, word, val, p.h))
+                    # Do not call c.endEditing here.
+                if trace: g.trace('FOUND tag: %r word: %r' % (tag, word))
                 break
         else:
             return False
@@ -272,7 +271,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.expand_text(w, i, j, val, word, expand_search)
             # Restore the selection range.
             if self.save_ins:
-                if trace:  g.trace('sel: %s ins: %s' % (
+                if trace:  g.trace('RESTORE sel: %s ins: %s' % (
                     self.save_sel, self.save_ins))
                 ins = self.save_ins
                 # pylint: disable=unpacking-non-sequence
@@ -339,7 +338,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if trace:
             g.trace('i: %s j: %s val: %r word: %r w: %s %s %s' % (
                 i, j, val, word, id(w), g.app.gui.widget_name(w), c.p.h))
-        self.replace_abbrev_name(w, i, j, val)
+        self.replace_selection(w, i, j, val)
         # Search to the end.  We may have been called via a tree abbrev.
         p = c.p.copy()
         if expand_search:
@@ -362,7 +361,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return g.trace('bad copied outline: %s' % tree_s)
         old_p = c.p.copy()
         bunch = u.beforeChangeTree(old_p)
-        self.replace_abbrev_name(w, i, j, None)
+        self.replace_selection(w, i, j, None)
         self.paste_tree(old_p, tree_s)
         # Make all script substitutions first.
         if trace:
@@ -595,11 +594,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 changed = changed or changed2
             if changed:
                 c.undoer.afterChangeTree(c.p, 'tree-post-abbreviation', bunch)
-    #@+node:ekr.20150514043850.18: *4* abbrev.replace_abbrev_name
-    def replace_abbrev_name(self, w, i, j, s):
-        '''Replace the abbreviation name by s.'''
-        name = g.app.gui.widget_name(w)
-        # g.trace(i, j, name, repr(s))
+    #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
+    def replace_selection(self, w, i, j, s):
+        '''Replace w[i:j] by s.'''
+        trace = False and not g.unitTesting
+        w_name = g.app.gui.widget_name(w)
+        if trace: g.trace(i, j, w_name, repr(s))
         c = self.c
         if i == j:
             abbrev = ''
@@ -608,7 +608,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.delete(i, j)
         if s is not None:
             w.insert(i, s)
-        if not name.startswith('head'):
+        if not w_name.startswith('head'):
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
             c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
@@ -618,9 +618,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             i, j = self.save_sel
             ins = self.save_ins
             delta = len(s) - len(abbrev)
-            # g.trace('abbrev',abbrev,'s',repr(s),'delta',delta)
             self.save_sel = i + delta, j + delta
             self.save_ins = ins + delta
+            if trace: g.trace('SAVE SEL: %r SAVE_INS %r:' % (self.save_ins, self.save_sel))
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
     #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
