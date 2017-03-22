@@ -17,9 +17,7 @@ Add commands to show color wheel and font picker.
 - Similar to @button nodes in leoSettings.leo.
 
 - check pid logic in BPM.
-
 - p.b & p.h setters should check that s is a string.
-
 - Create leoFind wrappers:
     - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
     - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText

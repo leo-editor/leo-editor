@@ -368,11 +368,10 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -383,8 +382,11 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20140216125129.16666"><vh>Additonal web pages</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
-<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
-<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
+<v t="ekr.20170322084431.1"><vh>Leo's main window</vh></v>
+<v t="ekr.20170322084657.1"><vh>A dark theme</vh></v>
+<v t="ekr.20090811090022.14453"><vh>Leo's main window on Linux</vh></v>
+<v t="ekr.20090811090022.14452"><vh>Leo's rendering pane</vh></v>
+<v t="ekr.20170322084909.1"><vh>Using Leo to manage a PhD thesis</vh></v>
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
@@ -6933,7 +6935,10 @@ http://vvtools.googlecode.com/files/Leodocumentation.pdf
 </t>
 <t tx="ekr.20090706042206.14718">Most people will find using @clean trees to be most useful. Use @auto-rst, @auto-vimoutline or @auto-org when using rST, vimoutline or Emacs org mode files.
 </t>
-<t tx="ekr.20090711120622.10447">################
+<t tx="ekr.20090711120622.10447">@language rest
+@wrap
+
+################
 Leo screen shots
 ################
 
@@ -6981,26 +6986,12 @@ Leo screen shots
     app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
         n1, n2, n3, guiVersion, sysVersion)
 </t>
-<t tx="ekr.20090811090022.14452">.. |leoQtMainWindow|    image:: screen-shots/leo-main-window.png
-
-Here is Leo's main window on Windows 7 showing
-the outline pane (1),
-the body pane (2),
-the minibuffer (3),
-the log pane, showing the find tab (4).
-
-The body pane shows the contents of the presently selected node in the outline pane.
-
-|leoQtMainWindow|
-
-.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
-
-.. |renderRST|      image:: screen-shots/render-rst.png
+<t tx="ekr.20090811090022.14452">.. |renderRST|      image:: screen-shots/render-rst.png
 .. |renderSVGref|   image:: screen-shots/render-svg-movie.png
 .. |renderSVGsrc|   image:: screen-shots/render-svg-sources.png
 .. |renderSplash|   image:: screen-shots/render-splash-screen.png
 
-The following screenshots show Leo's rendering pane.  It can render `reStructuredText`_:
+The following screenshots show Leo's rendering pane.  This pane can render `reStructuredText &lt;http://docutils.sourceforge.net/rst.html&gt;`_:
 
 |renderRST|
 
@@ -7022,6 +7013,7 @@ The rendering pane can show pictures, music and movies.  Here we see Leo's splas
 Here is Leo's main window as it appears on Linux:
 
 |LinuxMainWindow|
+
 </t>
 <t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts using the node in leoSettings.leo called::
 
@@ -23151,7 +23143,26 @@ Command-line options::
     --load-type=LOAD_TYPE
     --fail-fast             # sets failfast option in unit tests.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170322084431.1">.. |leoQtMainWindow| image:: screen-shots/leo-main-window.png
+
+Here is Leo's main window on Windows 7 showing the outline pane (1), the body pane (2), the minibuffer (3), the log pane, showing the find tab (4).
+
+The body pane shows the contents of the presently selected node in the outline pane.
+
+|leoQtMainWindow|</t>
+<t tx="ekr.20170322084657.1">.. |emacsConfig| image:: screen-shots/emacs-config.png
+
+Here is an example of a dark theme, showing how to manage Emacs config files with Leo.
+
+|emacsConfig|
+</t>
+<t tx="ekr.20170322084909.1">.. |leo-thesis| image:: screen-shots/leo-thesis.png
+
+`This page &lt;http://mutabit.com/offray/static/blog/output/posts/on-deepness-and-complexity-of-ipython-documents.html&gt;`_ describes this screen shot in detail.
+
+|leo-thesis|
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
