@@ -3,7 +3,7 @@
 ;@@language nsi
 
 ;##version
-!define version         "5.5b1"
+!define version         "5.5"
 
 !include MUI2.nsh
 !include nsDialogs.nsh

@@ -159,7 +159,7 @@
 </v>
 <v t="ekr.20160428153901.1"><vh>Leo 5.3-final</vh></v>
 <v t="ekr.20161015114905.1"><vh>Leo 5.4-final</vh></v>
-<v t="ekr.20170316113823.1"><vh>Leo 5.5-b1</vh>
+<v t="ekr.20170316113823.1"><vh>Leo 5.5</vh>
 <v t="ekr.20170316113823.2"><vh>Most important features</vh>
 <v t="ekr.20170316113823.3"><vh>Fixed huge performance bug in syntax coloring</vh></v>
 <v t="ekr.20170316113823.4"><vh>Optionally run pyflakes when saving files</vh></v>
@@ -401,9 +401,9 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.5b1 March 16, 2017
+<t tx="EKR.20040519090846.9">Leo 5.5 March 23, 2017
 
-[Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
 
@@ -690,10 +690,6 @@ import leo.core.leoVersion as leoVersion</t>
     os.remove(fn)
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
-
-- Create Release on SourceForge: http://sourceforge.net/projects/leo/
-    - Make sure to upload readme.md and Readme-quick-install.txt.
-- Announcements
 </t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
 <t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
@@ -732,7 +728,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.5b1' ##version
+version = '5.5' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1053,7 +1049,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.5b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.5/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -3205,9 +3201,9 @@ end</t>
 <t tx="ekr.20170316104916.1">- Create Release on SourceForge: http://sourceforge.net/projects/leo/
     - Make sure to upload readme.md and Readme-quick-install.txt.
 </t>
-<t tx="ekr.20170316113823.1">Leo 5.5b1 March 16, 2017
+<t tx="ekr.20170316113823.1">Leo 5.5 March 23, 2017
 
-[Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
 

@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="136" left="827" height="930" width="912"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -3013,9 +3013,7 @@ This is Leo's main settings file.  It specifies settings used to customize Leo.
 
 The headline of each node indicates its type.
 
-The body text of most nodes contain comments. However, the body text of @font
-and @shortcuts nodes contain settings. See the children of this node for
-details.
+The body text of most nodes contain comments. However, the body text of @data, @font and @shortcuts nodes contain settings. See the children of this node for details.
 </t>
 <t tx="ekr.20041119035704">These nodes describe the type, name and value of a single setting. Their
 headlines have the form::
@@ -4708,7 +4706,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.

@@ -2789,7 +2789,7 @@
 </v>
 <v t="ekr.20161022060314.52"><vh>Settings</vh></v>
 </v>
-<v t="ekr.20170316113933.1"><vh>5.5b1</vh>
+<v t="ekr.20170316113933.1"><vh>5.5 fast colorizing, new importers, TDD</vh>
 <v t="ekr.20170316113933.2"><vh>Most important features</vh>
 <v t="ekr.20170316113933.3"><vh>Fixed huge performance bug in syntax coloring</vh></v>
 <v t="ekr.20170316113933.4"><vh>Optionally run pyflakes when saving files</vh></v>
@@ -21844,9 +21844,9 @@ The fix was to add '@pre-format' to lists in writeHeadlineHelper and initHeadlin
 
 These nodes have been tagged with #286.
 </t>
-<t tx="ekr.20170316113933.1">Leo 5.5b1 March 16, 2017
+<t tx="ekr.20170316113933.1">Leo 5.5 March 23, 2017
 
-[Leo](http://leoeditor.com/) 5.5b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
 
