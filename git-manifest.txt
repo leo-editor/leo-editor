@@ -2805,8 +2805,10 @@ leo/doc/html/leoLinks.html
 leo/doc/html/leo_rst.css
 leo/doc/html/leo_toc.html.txt
 leo/doc/html/make.bat
+leo/doc/html/screen-shots/emacs-config.png
 leo/doc/html/screen-shots/leo-main-window.png
 leo/doc/html/screen-shots/leo-qt-main-window-linux.png
+leo/doc/html/screen-shots/leo-thesis.png
 leo/doc/html/screen-shots/leo-workbook.png
 leo/doc/html/screen-shots/render-rst.png
 leo/doc/html/screen-shots/render-splash-screen.png

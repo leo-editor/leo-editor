@@ -211,8 +211,10 @@ File "C:\leo.repo\leo-editor\leo\doc\html\silver_city.css"
 File "C:\leo.repo\leo-editor\leo\doc\html\techReport.html"
 
 SetOutPath $INSTDIR\leo\doc\html\screen-shots
+File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\emacs-config.png"
 File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\leo-main-window.png"
 File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\leo-qt-main-window-linux.png"
+File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\leo-thesis.png"
 File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\leo-workbook.png"
 File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\render-rst.png"
 File "C:\leo.repo\leo-editor\leo\doc\html\screen-shots\render-splash-screen.png"
