@@ -2781,25 +2781,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070925144552"></v>
-<v t="ekr.20170323100047.1"><vh>changed menus</vh>
-<v t="ekr.20170323100358.1"><vh>From File menu</vh>
-<v t="ekr.20131213135427.21872"></v>
-<v t="ekr.20161025090757.1"></v>
-<v t="ekr.20131213135427.21873"></v>
-<v t="ekr.20151225193848.1"></v>
-<v t="ekr.20170323095822.1"></v>
-<v t="ekr.20170323095724.1"></v>
-</v>
-<v t="ekr.20170323100324.1"><vh>From settings menu</vh>
-<v t="ekr.20131213135427.21953"></v>
-<v t="ekr.20131213135427.21954"></v>
-<v t="ekr.20131213135427.21955"></v>
-</v>
-<v t="ekr.20170323100417.1"><vh>From help menu</vh>
-<v t="ekr.20131213135427.22354"></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14130,11 +14111,6 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
 <t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
 </t>
-<t tx="ekr.20170323100047.1">
-</t>
-<t tx="ekr.20170323100324.1"></t>
-<t tx="ekr.20170323100358.1"></t>
-<t tx="ekr.20170323100417.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
