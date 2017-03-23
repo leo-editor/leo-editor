@@ -2855,6 +2855,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 </t>
 <t tx="ekr.20161015091353.3">- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
    This must be done *soon* after the release's actual commit.
+   There is a "Draft New Release" button at the top-right of the page.
 
 - Update version number on Leo's wikipedia site:
   http://en.wikipedia.org/wiki/Leo_%28editor%29
@@ -2863,7 +2864,6 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-   **Paste SourceForge announcement to leo-editor announcement &amp; blog post**.
 
 - Announce to leo-editor: **Paste source-forge announcement**.
 
