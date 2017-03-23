@@ -995,12 +995,14 @@
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20151225142626.1"><vh>@menu Open &amp;Leo File</vh>
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.21872"><vh>@item open-leoDocs-leo</vh></v>
-<v t="ekr.20161025090757.1"><vh>@item open-leoDist-leo</vh></v>
-<v t="ekr.20131213135427.21873"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20151225193848.1"><vh>@item open-leoPy-leo</vh></v>
+<v t="ekr.20131213135427.21872"><vh>@item open-leo-docs-leo</vh></v>
+<v t="ekr.20161025090757.1"><vh>@item open-leo-dist-leo</vh></v>
+<v t="ekr.20131213135427.21873"><vh>@item open-leo-plugins-leo</vh></v>
+<v t="ekr.20151225193848.1"><vh>@item open-leo-py-leo</vh></v>
+<v t="ekr.20170323095822.1"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
@@ -1170,7 +1172,7 @@
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
 <v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21953"><vh>@item open-leoSettings-leo</vh></v>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
@@ -1540,9 +1542,8 @@
 <v t="ekr.20131213135427.22349"><vh>@item open-online-tutorials</vh></v>
 <v t="ekr.20131213135427.22350"><vh>@item open-online-videos</vh></v>
 <v t="ekr.20131213135427.22351"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22352"><vh>To files</vh></v>
 <v t="ekr.20131213135427.22353"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22354"><vh>@item open-leoDocs-leo</vh></v>
+<v t="ekr.20131213135427.22354"><vh>@item open-leo-docs-leo</vh></v>
 <v t="ekr.20131213135427.22355"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.22356"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22357"><vh>@item *help</vh></v>
@@ -2778,6 +2779,25 @@
 <v t="ekr.20170308061934.1"><vh>widgets</vh></v>
 </v>
 </v>
+</v>
+</v>
+<v t="ekr.20070925144552"></v>
+<v t="ekr.20170323100047.1"><vh>changed menus</vh>
+<v t="ekr.20170323100358.1"><vh>From File menu</vh>
+<v t="ekr.20131213135427.21872"></v>
+<v t="ekr.20161025090757.1"></v>
+<v t="ekr.20131213135427.21873"></v>
+<v t="ekr.20151225193848.1"></v>
+<v t="ekr.20170323095822.1"></v>
+<v t="ekr.20170323095724.1"></v>
+</v>
+<v t="ekr.20170323100324.1"><vh>From settings menu</vh>
+<v t="ekr.20131213135427.21953"></v>
+<v t="ekr.20131213135427.21954"></v>
+<v t="ekr.20131213135427.21955"></v>
+</v>
+<v t="ekr.20170323100417.1"><vh>From help menu</vh>
+<v t="ekr.20131213135427.22354"></v>
 </v>
 </v>
 </vnodes>
@@ -6645,9 +6665,10 @@ Alt+Ctrl+N set-find-node-only
 Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.21951"></t>
 <t tx="ekr.20131213135427.21952"></t>
-<t tx="ekr.20131213135427.21953">Open Global Settings</t>
-<t tx="ekr.20131213135427.21954">Open &amp;Personal Settings</t>
-<t tx="ekr.20131213135427.21955">Open &amp;Local Settings</t>
+<t tx="ekr.20131213135427.21953">&amp;leoSettings.leo</t>
+<t tx="ekr.20131213135427.21954">&amp;myLeoSettings.leo
+</t>
+<t tx="ekr.20131213135427.21955">Find &amp;Local @settings Tree</t>
 <t tx="ekr.20131213135427.21956"></t>
 <t tx="ekr.20131213135427.21957"></t>
 <t tx="ekr.20131213135427.21958"></t>
@@ -6968,7 +6989,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22349">Text &amp;Tutorials</t>
 <t tx="ekr.20131213135427.22350">&amp;Video Tutorials</t>
 <t tx="ekr.20131213135427.22351"></t>
-<t tx="ekr.20131213135427.22352"></t>
 <t tx="ekr.20131213135427.22353">&amp;CheatSheet.leo</t>
 <t tx="ekr.20131213135427.22354">Leo&amp;Docs.leo</t>
 <t tx="ekr.20131213135427.22355">&amp;quickstart.leo</t>
@@ -14107,6 +14127,14 @@ QMenuBar::item:pressed {
 }
 </t>
 <t tx="ekr.20170316105542.1"></t>
+<t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
+<t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
+</t>
+<t tx="ekr.20170323100047.1">
+</t>
+<t tx="ekr.20170323100324.1"></t>
+<t tx="ekr.20170323100358.1"></t>
+<t tx="ekr.20170323100417.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

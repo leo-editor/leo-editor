@@ -3082,6 +3082,7 @@ class Commands(object):
             return None
 
     @cmd('open-myLeoSettings-leo')
+    @cmd('my-leo-settings-leo')
     def openMyLeoSettings(self, event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
         c, lm = self, g.app.loadManager
