@@ -3368,7 +3368,10 @@ def setGlobalOpenDir(fileName):
         # g.es('current directory:',g.app.globalOpenDir)
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
 def shortFileName(fileName, n=None):
-    if n is None or n < 1:
+    '''Return the base name of a path.'''
+    if not fileName:
+        return ''
+    elif n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
         # return '\\'.join(fileName.split('\\')[-n:])
