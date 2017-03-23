@@ -309,7 +309,7 @@
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
 <v t="ekr.20161020040946.1"><vh>Test</vh></v>
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
-<v t="ekr.20170316104916.1"><vh>Create distribution</vh></v>
+<v t="ekr.20170316104916.1"><vh>Create release</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
 </v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
@@ -2891,13 +2891,17 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
-Run pyinstaller on both Windows and Linux:
-- Delete leo-editor/dist and leo-editor/build folders first.
-- Run pyinstaller2 launchLeo-unified.spec.
+Run pyinstaller on Windows:
+- (optional) Delete leo-editor/dist and leo-editor/build folders.
+- Run pyinstaller2 launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
-- Compress the folder:
-    - Windows: Leo_&lt;version&gt;_Win.zip.
-    - Linux:   Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
+- Compress the folder to Leo_&lt;version&gt;_Win.zip.
+    
+Run pyinstaller on Linux:
+- (optional) Delete leo-editor/dist and leo-editor/build folders.
+- Run pyinstaller2 launchLeo-unified.spec
+- Test a *copy* of the result so .pyo files are not added to the package)
+- Compress the folder to Leo_&lt;version&gt;_Linux_64_bit.tar.gz.
 </t>
 <t tx="ekr.20161015114905.1">Leo 5.4-final   October 22, 2016
 
@@ -2955,7 +2959,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - Create a full (annotated) tag: do not use the -f option.
 
-    tag: git tag -a 5.4 -m "Added 5.4 tag"
+    git tag -a 5.xxx -m "Added 5.xxx tag"
     git push --follow-tags
 </t>
 <t tx="ekr.20161024113526.1">@language rest
