@@ -2962,7 +2962,8 @@ class Commands(object):
         email = "edreamleo@gmail.com"
         g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
     #@+node:ekr.20031218072017.2940: *5* c.leoDocumentation
-    @cmd('open-leoDocs-leo')
+    @cmd('open-leo-docs-leo')
+    @cmd('leo-docs-leo')
     def leoDocumentation(self, event=None):
         '''Open LeoDocs.leo in a new Leo window.'''
         c = self
@@ -2985,6 +2986,7 @@ class Commands(object):
             g.es("not found:", url)
     #@+node:ekr.20090628075121.5994: *5* c.leoQuickStart
     @cmd('open-quickstart-leo')
+    @cmd('leo-quickstart-leo')
     def leoQuickStart(self, event=None):
         '''Open quickstart.leo in a new Leo window.'''
         c = self; name = "quickstart.leo"
@@ -2996,6 +2998,7 @@ class Commands(object):
         g.es("not found:", name)
     #@+node:ekr.20131028155339.17096: *5* c.openCheatSheet
     @cmd('open-cheat-sheet-leo')
+    @cmd('leo-cheat-sheet')
     def openCheatSheet(self, event=None, redraw=True):
         '''Open leo/doc/cheatSheet.leo'''
         c = self
@@ -3014,7 +3017,8 @@ class Commands(object):
             g.es('file not found: %s' % fn)
             return None
     #@+node:ekr.20161025090405.1: *5* c.openLeoDist
-    @cmd('open-leoDist-leo')
+    @cmd('open-leo-dist-leo')
+    @cmd('leo-dist-leo')
     def openLeoDist(self, event=None):
         '''Open leoDist.leo in a new Leo window.'''
         c = self
@@ -3025,7 +3029,8 @@ class Commands(object):
             if c2: return
         g.es("not found:", name)
     #@+node:ekr.20050130152008: *5* c.openLeoPlugins
-    @cmd('open-leoPlugins-leo')
+    @cmd('open-leo-plugins-leo')
+    @cmd('leo-plugins-leo')
     def openLeoPlugins(self, event=None):
         '''Open leoPlugins.leo in a new Leo window.'''
         c = self
@@ -3038,7 +3043,8 @@ class Commands(object):
                 if c2: return
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20151225193723.1: *5* c.openLeoPy
-    @cmd('open-leoPy-leo')
+    @cmd('open-leo-py-leo')
+    @cmd('leo-py-leo')
     def openLeoPy(self, event=None):
         '''Open leoPy.leo in a new Leo window.'''
         c = self
@@ -3052,6 +3058,7 @@ class Commands(object):
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20061018094539: *5* c.openLeoScripts
     @cmd('open-scripts-leo')
+    @cmd('leo-scripts-leo')
     def openLeoScripts(self, event=None):
         '''Open scripts.leo.'''
         c = self
@@ -3062,7 +3069,8 @@ class Commands(object):
             if c2: return
         g.es('not found:', fileName)
     #@+node:ekr.20031218072017.2943: *5* c.openLeoSettings & c.openMyLeoSettings & helper
-    @cmd('open-leoSettings-leo')
+    @cmd('open-leo-settings-leo')
+    @cmd('leo-settings-leo')
     def openLeoSettings(self, event=None):
         '''Open leoSettings.leo in a new Leo window.'''
         c, lm = self, g.app.loadManager
@@ -3181,6 +3189,7 @@ class Commands(object):
             g.es("not found:", url)
     #@+node:ekr.20151225095102.1: *5* c.openUnittest
     @cmd('open-unittest-leo')
+    @cmd('leo-unittest-leo')
     def openUnittest(self, event=None):
         '''Open unittest.leo.'''
         c = self
