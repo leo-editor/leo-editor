@@ -4,6 +4,15 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
+.. @+node:ekr.20170324083526.1: *3* Improve VR plugin
+@language rest
+@wrap
+
+1. At present, the VR pane renders an entire node the same way, namely as indicated by the first @language directive.​ Instead, the VR plugin should be re-architected to that it composes its results from multiple pieces (delimited by @language) in the same node. Not a huge thing, but it makes the rendering compatible in spirit of (the hidden relationships in) the body pane.
+
+2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
+
+3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
 .. @+node:ekr.20170320052551.1: *3* First
 Fix javascript importer bugs
 - Make sure whitespace stripping doesn't put @language at end of line.
