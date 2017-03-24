@@ -875,6 +875,7 @@ if QtWidgets: # NOQA
                 w = pc.ensure_text_widget()
                 pc.show()
                 w.setPlainText(s)
+                c.bodyWantsFocusNow()
             else:
                 if pc.must_change_widget(QtWebKitWidgets.QWebView):
                     w = QtWebKitWidgets.QWebView()
@@ -890,6 +891,7 @@ if QtWidgets: # NOQA
                 s = self.create_latex_html(s)
                 w.setHtml(s)
                 w.show()
+                c.bodyWantsFocusNow()
            
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
