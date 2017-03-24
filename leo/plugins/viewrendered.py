@@ -867,9 +867,10 @@ if QtWidgets: # NOQA
         #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
         def update_latex(self, s, keywords):
             '''Update latex in the vr pane.'''
+            import sys
             pc = self
             c = pc.c
-            if g.isPython3:
+            if g.isPython3 and sys.platform.startswith('win'):
                 g.es_print('latex rendering not ready for Python 3')
                 w = pc.ensure_text_widget()
                 pc.show()
@@ -893,7 +894,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             c = self.c
             html = cgi.escape(s)
             template = latex_template % (html)
