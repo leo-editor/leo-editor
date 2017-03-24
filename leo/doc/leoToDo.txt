@@ -13,7 +13,13 @@
 2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
 
 3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
-.. @+node:ekr.20170320052551.1: *3* First
+.. @+node:ekr.20170320052551.1: *3* 5.6: First
+Bug: colorize markdown properly.
+
+Enhancement: Command abbreviations:
+    x;;!=full-command
+    x;;!=<Alt-X>
+
 Fix javascript importer bugs
 - Make sure whitespace stripping doesn't put @language at end of line.
 
@@ -33,7 +39,6 @@ Add commands to show color wheel and font picker.
 - Create leoFind wrappers:
     - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
     - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
-
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap
