@@ -2,6 +2,8 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 import time  # temporary for debugging
+
+from signal_manager import SignalManager
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -42,6 +44,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         if QtWidgets.QApplication.focusWidget() == self:
             DBG("text changed, focused")
             self.lep.text_changed(self.toPlainText())
+
         else:
             DBG("text changed, NOT focused")
     def update_position(self, p):

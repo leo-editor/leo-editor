@@ -4,6 +4,7 @@ def DBG(text):
     :param str text: text to print
     """
     print("LEP: %s" % text)
+
 import imp
 import os
 
@@ -12,6 +13,8 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 if g.isPython3:
     from importlib import import_module
+
+from signal_manager import SignalManager
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
@@ -57,7 +60,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.handlers = [
             ('select1', self._before_select),
             ('select2', self._after_select),
-            ('bodykey2', self._after_body_key),
+            # ('bodykey2', self._after_body_key),
         ]
         self._register_handlers()
     def _add_checkbox(self, text, state_changed, tooltip, checked=True,
@@ -98,7 +101,7 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setContentsMargins(0, 0, 0, 0)
         w.layout().setSpacing(0)
         return w
-    def _after_body_key(self, tag, keywords):
+    def _after_body_key(self, p):  # tag, keywords):
         """_after_body_key - after Leo selects another node
 
         FIXME: although class EditCommandsClass-->insert &
@@ -112,14 +115,14 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: None
         """
 
-        c = keywords['c']
-        if c != self.c:
-            return None
+        #X c = keywords['c']
+        #X if c != self.c:
+        #X     return None
 
         DBG("after body key")
 
         if self.update:
-            self.update_position(keywords['p'])
+            self.update_position(p)  # keywords['p'])
 
         return None
     def _after_select(self, tag, keywords):
@@ -177,6 +180,7 @@ class LeoEditPane(QtWidgets.QWidget):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
+        SignalManager._signal_connect(self.c, 'body_changed', self._after_body_key)
     def _build_layout(self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
@@ -386,7 +390,10 @@ class LeoEditPane(QtWidgets.QWidget):
         p = self.get_position()
         p.b = new_text
 
+        SignalManager._signal_emit(self.c, 'body_changed', p)
+
         for lep in self.c._LEPs:
+            break
             if lep == self:
                 if self.update and self.mode != 'edit':
                     # don't update the edit part, could be infinite loop
