@@ -17,8 +17,6 @@
 @language rest
 @wrap
 
-check pid logic in leoBackground.py
-
 p.b & p.h setters should check that s is a string.
 
 Create leoFind wrappers:

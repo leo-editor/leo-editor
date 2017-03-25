@@ -91,15 +91,17 @@ class BackgroundProcessManager(object):
         trace = False and not g.unitTesting
         trace_inactive = False
         trace_running = False
-        if self.pid or self.process_queue:
+        if self.pid:
             if self.pid.poll() is not None:
                 if trace: self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
             elif trace and trace_running:
                 self.put_log('running: %s' % id(self.pid))
+        elif self.process_queue:
+            self.start_next() # Start the next process.
         elif trace and trace_inactive:
-            self.put_log('%s inactive' % self.data.kind)
+            self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
     #@+node:ekr.20161028063557.1: *4* bm.end
     def end(self):
         '''End the present process.'''
