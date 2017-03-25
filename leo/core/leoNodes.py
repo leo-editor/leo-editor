@@ -2495,19 +2495,36 @@ class VNodeBase(object):
             # 2011/03/21: w may not support the high-level interface.
             pass
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
+    unicode_warning_given = False
+
     def setBodyString(self, s):
         v = self
-        # if not g.isUnicode(s):
-            # g.trace('converting to unicode', type(s), repr(s), g.callers(10))
-        v._bodyString = g.toUnicode(s, reportErrors=True)
+        if g.isUnicode(s):
+            v._bodyString = s
+        else:
+            try:
+                v._bodyString = g.toUnicode(s, reportErrors=True)
+            except Exception:
+                if not self.unicode_warning_given:
+                    self.unicode_warning_given = True
+                    g.internalError(s)
+                    g.es_exception()
 
     def setHeadString(self, s):
-        # fn = self.context.shortFileName()
-        # g.trace(fn,self.fileIndex,s,g.callers())
-        v = self
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
-        v._headString = g.toUnicode(s, reportErrors=True).replace('\n', '')
+        v = self
+        if g.isUnicode(s):
+            v._headString = s.replace('\n','')
+        else:
+            try:
+                s = g.toUnicode(s, reportErrors=True)
+                v._headString = s.replace('\n','')
+            except Exception:
+                if not self.unicode_warning_given:
+                    self.unicode_warning_given = True
+                    g.internalError(s)
+                    g.es_exception()
 
     initBodyString = setBodyString
     initHeadString = setHeadString
