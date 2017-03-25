@@ -14,25 +14,23 @@
 
 3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
 .. @+node:ekr.20170320052551.1: *3* 5.6: First
-Bug: colorize markdown properly.
+@language rest
+@wrap
 
-Enhancement: Command abbreviations:
+=== Enhancement: Command abbreviations:
     x;;!=full-command
     x;;!=<Alt-X>
 
-Fix javascript importer bugs
+=== Fix javascript importer bugs
 - Make sure whitespace stripping doesn't put @language at end of line.
 
-Fix @auto bugs:
+=== Fix @auto bugs:
 - Cancelling @auto write creates orphan nodes.
 - Cloned @auto nodes duplicates section references.
 
 Improve Ctrl-up/down:
 - Ctrl-Down should insert a blank line if at the bottom.
 - Ctrl-Up should insert a blank line if at the top.
-
-Add commands to show color wheel and font picker.
-- Similar to @button nodes in leoSettings.leo.
 
 - check pid logic in BPM.
 - p.b & p.h setters should check that s is a string.

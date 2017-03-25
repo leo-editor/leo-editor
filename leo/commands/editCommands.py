@@ -324,31 +324,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         # Note: this assumes that tree.startDrag has already been called.
         c.frame.tree.endDrag(event)
-    #@+node:ekr.20150514063305.204: *3* color & font
-    #@+node:ekr.20150514063305.205: *4* show-colors
-    @cmd('show-colors')
-    def showColors(self, event):
-        '''Open a tab in the log pane showing various color pickers.'''
-        c = self.c
-        log = c.frame.log
-        tabName = 'Colors'
-        if log.frameDict.get(tabName):
-            log.selectTab(tabName)
-        else:
-            log.selectTab(tabName)
-            log.createColorPicker(tabName)
-    #@+node:ekr.20150514063305.206: *4* editCommands.show-fonts & helpers
-    @cmd('show-fonts')
-    def showFonts(self, event):
-        '''Open a tab in the log pane showing a font picker.'''
-        c = self.c
-        log = c.frame.log
-        tabName = 'Fonts'
-        if log.frameDict.get(tabName):
-            log.selectTab(tabName)
-        else:
-            log.selectTab(tabName)
-            log.createFontPicker(tabName)
     #@+node:ekr.20150514063305.207: *3* comment column...
     #@+node:ekr.20150514063305.208: *4* setCommentColumn
     @cmd('set-comment-column')

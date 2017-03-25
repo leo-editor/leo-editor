@@ -10533,20 +10533,7 @@ Don't change these unless you are aware of the consequences</t>
 Show a color wheel.
 Writes the selected color to the clipboard.
 '''
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-picker = QtWidgets.QColorDialog()
-try:
-    text = QtWidgets.QApplication.clipboard().text()
-    color = QtGui.QColor(text)
-    picker.setCurrentColor(color)
-except ValueError:
-    pass
-if not picker.exec_():
-    g.es("No color selected")
-else:
-    text = picker.selectedColor().name()
-    g.es("copied to clipboard:", text)
-    QtWidgets.QApplication.clipboard().setText(text)
+c.k.simulateCommand('show-color-wheel')
 </t>
 <t tx="ekr.20140922124047.19516"></t>
 <t tx="ekr.20140922124047.19517"></t>
@@ -14446,61 +14433,10 @@ else:
 Create a combo box in the icon area that shows color names.
 It writes the selected color name to the clipboard.
 '''
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-import leo.core.leoColor as leoColor
-template = '''
-QComboBox {
-    background-color: %s;
-    selection-background-color: %s;
-    selection-color: black;
-}''' 
-ivar = 'leo_settings_color_picker'
-if getattr(c, ivar, None):
-    g.es('The color picker already exists in the icon bar.')
-else:
-    color_list = []
-    box = QtWidgets.QComboBox()
-
-    def onActivated(n,*args,**keys):
-        icon = box.itemIcon(n)
-        color = color_list[n]
-        sheet = template % (color,color)
-        box.setStyleSheet(sheet)
-        g.es("copied to clipboard:", color)
-        QtWidgets.QApplication.clipboard().setText(color)
-        
-    box.activated.connect(onActivated)
-    color_db = leoColor.leo_color_database
-    for key in sorted(color_db):
-        if not key.startswith('grey'): # Use gray, not grey.
-            val = color_db.get(key)
-            if val:
-                color = QtGui.QColor(val)
-                color_list.append(val)
-                pixmap = QtGui.QPixmap(40,40)
-                pixmap.fill(color)
-                icon = QtGui.QIcon(pixmap)
-                box.addItem(icon,key)
-    c.frame.iconBar.addWidget(box)
-    setattr(c,ivar,True) # Do this last, so errors don't prevent re-execution.
+c.k.simulateCommand('show-color-names')
 </t>
 <t tx="tbrown.20140609102412.32430">'''Show a dialog for picking fonts.'''
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-
-picker = QtWidgets.QFontDialog()
-text = QtWidgets.QApplication.clipboard().text()
-try:
-    font = QtGui.QFont(text)
-    picker.setCurrentFont(font)
-except ValueError:
-    pass
-
-if not picker.exec_():
-    g.es("No font selected")
-else:
-    text = picker.selectedFont().family()
-    g.es('copied to clipboard:', text)
-    QtWidgets.QApplication.clipboard().setText(text)
+c.k.simulateCommand('show-fonts')
 </t>
 <t tx="tbrown.20140814090009.57475"></t>
 <t tx="tbrown.20140814090009.57476">Reload Styles</t>

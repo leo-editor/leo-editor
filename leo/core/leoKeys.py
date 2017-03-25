@@ -3130,20 +3130,11 @@ class KeyHandlerClass(object):
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
         '''Execute a Leo command by name.'''
         k = self; c = k.c
-        commandName = commandName.strip()
-        if not commandName: return
-        aList = commandName.split(None)
-        if len(aList) == 1:
-            k.givenArgs = []
-        else:
-            commandName = aList[0]
-            k.givenArgs = aList[1:]
-        # g.trace(commandName,k.givenArgs)
-        func = c.commandsDict.get(commandName)
+        func = self.commandExists(commandName)
         if func:
             # g.trace(commandName,func.__name__)
             if event:
@@ -3157,12 +3148,28 @@ class KeyHandlerClass(object):
                 return k.funcReturn
             else:
                 return None
+        elif g.app.unitTesting:
+            raise AttributeError
         else:
-            if g.app.unitTesting:
-                raise AttributeError
+            g.error('simulateCommand: no command for %s' % (commandName))
+            return None
+    #@+node:ekr.20170324143353.1: *5* k.commandExists
+    def commandExists(self, commandName):
+        '''Return the command handler for the given command name, or None.'''
+        c, k = self.c, self
+        commandName = commandName.strip()
+        if commandName:
+            aList = commandName.split(None)
+            if len(aList) == 1:
+                k.givenArgs = []
             else:
-                g.error('simulateCommand: no command for %s' % (commandName))
-                return None
+                commandName = aList[0]
+                k.givenArgs = aList[1:]
+            # g.trace(commandName,k.givenArgs)
+            func = c.commandsDict.get(commandName)
+            return func
+        else:
+            return None
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'
