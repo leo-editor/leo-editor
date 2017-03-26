@@ -20,14 +20,6 @@
 Improve Ctrl-up/down?
 - Ctrl-Down should insert a blank line if at the bottom.
 - Ctrl-Up should insert a blank line if at the top.
-.. @+node:ekr.20170324115046.1: *4* #386: colorize markdown properly
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/386
-The markdown colorizer is (and has been) kinda useless
-
-@language python
 .. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
 https://github.com/leo-editor/leo-editor/issues/414
 .. @+node:ekr.20170325045220.1: *4* #441: Fix bugs in javascript importer
