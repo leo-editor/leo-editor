@@ -1282,11 +1282,14 @@ class Commands(object):
         p.setDirty()
         c.validateOutline()
         return p
-    #@+node:ekr.20031218072017.1824: *6* c.dedentBody
+    #@+node:ekr.20031218072017.1824: *6* c.dedentBody (unindent-region)
     @cmd('unindent-region')
     def dedentBody(self, event=None):
         '''Remove one tab's worth of indentation from all presently selected lines.'''
         c, undoType = self, 'Unindent'
+        w = c.frame.body.wrapper
+        sel_1, sel_2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
         tab_width = c.getTabWidth(c.p)
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         changed, result = False, []
@@ -1297,7 +1300,12 @@ class Commands(object):
             result.append(s)
         if changed:
             result = ''.join(result)
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                ins = max(0, ins - abs(tab_width))
+                oldSel = ins, ins
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
     #@+node:ekr.20110530124245.18238: *6* c.extract...
     #@+node:ekr.20110530124245.18239: *7* c.extract & helpers
     @cmd('extract')
@@ -1467,6 +1475,9 @@ class Commands(object):
         specifies the column to indent to.
         '''
         c, undoType = self, 'Indent Region'
+        w = c.frame.body.wrapper
+        sel_1, sel_2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
         tab_width = c.getTabWidth(c.p)
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         changed, result = False, []
@@ -1476,8 +1487,13 @@ class Commands(object):
             if s != line: changed = True
             result.append(s)
         if changed:
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                ins += tab_width
+                oldSel = ins, ins
             result = ''.join(result)
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
     #@+node:ekr.20050312114529: *6* c.insert/removeComments
     #@+node:ekr.20131103054650.16535: *7* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
@@ -1961,7 +1977,7 @@ class Commands(object):
         # Make sure we never scroll horizontally.
         w.setXScrollPosition(0)
     #@+node:ekr.20031218072017.1838: *6* c.updateBodyPane (handles changeNodeContents)
-    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
+    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         '''Handle changed text in the body pane.'''
         c, p = self, self.p
         body = c.frame.body
@@ -1971,9 +1987,13 @@ class Commands(object):
         head = head or ''
         middle = middle or ''
         tail = tail or ''
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-        newSel = i, j
+        if preserveSel:
+            # Leo 5.6: just use the computed oldSel.
+            i, j = oldSel
+        else:
+            i = len(head)
+            j = max(i, len(head) + len(middle) - 1)
+            newSel = i, j
         body.wrapper.setSelectionRange(i, j)
         # This handles the undo.
         body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
