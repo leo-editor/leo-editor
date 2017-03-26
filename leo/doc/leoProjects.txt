@@ -11,7 +11,7 @@ All changes made to leo/modes/md.py
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
-These commands now insert blank lines when the selected line/lines are at the top/bottom of the body pane.
+These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
