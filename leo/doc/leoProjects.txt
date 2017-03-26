@@ -14,6 +14,15 @@ The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
 These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
+.. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/448
+
+If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
+
+This took only a few lines of code in abbrev.expandAbbrev.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
