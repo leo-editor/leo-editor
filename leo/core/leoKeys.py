@@ -1340,8 +1340,9 @@ class GetArg(object):
             ga.show_tab_list(ga.cycling_tabList)
         else:
             # Restart.
-            if trace: g.trace('2: RESTART: %r: tabList[0]: %r' % (
-                s, tabList and tabList[0] or '<none>'))
+            if trace:
+                g.trace('2: RESTART: %r:' % (s))
+                g.printList(tabList)
             ga.show_tab_list(tabList)
             ga.cycling_tabList = tabList[:]
             ga.cycling_prefix = common_prefix
@@ -1599,26 +1600,26 @@ class GetArg(object):
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
     def show_tab_list(ga, tabList):
         '''Show the tab list in the log tab.'''
-        trace = False and not g.unitTesting
         k = ga.k
         ga.log.clearTab(ga.tabName)
         d = k.computeInverseBindingDict()
         data, legend, n = [], False, 0
         for commandName in tabList:
             dataList = d.get(commandName, [])
-            if trace:
-                g.trace(commandName)
-                g.printList(dataList)
-            for z in dataList:
-                pane, key = z
-                s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
-                s1b = k.prettyPrintKey(key)
-                s1 = s1a + s1b
-                s2 = ga.command_source(commandName)
-                if s2 != ' ': legend = True
-                s3 = commandName
-                data.append((s1, s2, s3),)
-                n = max(n, len(s1))
+            if dataList:
+                for z in dataList:
+                    pane, key = z
+                    s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
+                    s1b = k.prettyPrintKey(key)
+                    s1 = s1a + s1b
+                    s2 = ga.command_source(commandName)
+                    if s2 != ' ': legend = True
+                    s3 = commandName
+                    data.append((s1, s2, s3),)
+                    n = max(n, len(s1))
+            else:
+                # Bug fix: 2017/03/26
+                data.append(('',' ', commandName),)
         aList = ['%*s %s %s' % (-n, z1, z2, z3) for z1, z2, z3 in data]
         if legend:
             aList.extend([
