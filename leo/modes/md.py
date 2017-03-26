@@ -2,6 +2,7 @@
 # This file is in the public domain.
 
 # Properties for md mode.
+# Important: most of this file is actually an html colorizer.
 properties = {
     "commentEnd": "-->",
     "commentStart": "<!--",
@@ -155,6 +156,30 @@ keywordsDictDict = {
 
 # Rules for md_main ruleset.
 
+def md_star_emphasis1(colorer,s,i):
+    # issue 386.
+    # print('md_underscore_emphasis1',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def md_star_emphasis2(colorer,s,i):
+    # issue 386.
+    # print('md_star_emphasis2',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def md_underscore_emphasis1(colorer,s,i):
+    # issue 386.
+    # print('md_underscore_emphasis1',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="_[^_]+_",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def md_underscore_emphasis2(colorer,s,i):
+    # issue 386.
+    # print('md_underscore_emphasis2',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="__[^_]+__",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
 def md_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
@@ -190,6 +215,8 @@ def md_rule5(colorer, s, i):
 
 # Rules dict for md_main ruleset.
 rulesDict1 = {
+    "*": [md_star_emphasis2, md_star_emphasis1], # issue 386. Order important
+    "_": [md_underscore_emphasis2, md_underscore_emphasis1], # issue 386. Order important.
     " ": [md_rule4,],
     "<": [md_rule0,md_rule1,md_rule2,md_rule3,md_rule5,],
 }
