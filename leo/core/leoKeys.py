@@ -1277,7 +1277,7 @@ class GetArg(object):
         c = ga.c
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
-            if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+            if trace: g.trace('len(ga.tabList)', len(tabList))
             # command = ga.get_label()
             common_prefix, tabList = ga.compute_tab_list(tabList)
             if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
@@ -1285,6 +1285,7 @@ class GetArg(object):
             if trace:
                 g.trace('len(tabList): %s common_prefix: %r cycling_prefix: %r' % (
                     len(tabList), common_prefix, ga.cycling_prefix))
+                g.printList(tabList)
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1 and ga.do_tab_callback():
@@ -1598,12 +1599,16 @@ class GetArg(object):
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
     def show_tab_list(ga, tabList):
         '''Show the tab list in the log tab.'''
+        trace = False and not g.unitTesting
         k = ga.k
         ga.log.clearTab(ga.tabName)
         d = k.computeInverseBindingDict()
         data, legend, n = [], False, 0
         for commandName in tabList:
-            dataList = d.get(commandName, [('', ''),])
+            dataList = d.get(commandName, [])
+            if trace:
+                g.trace(commandName)
+                g.printList(dataList)
             for z in dataList:
                 pane, key = z
                 s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
@@ -2139,7 +2144,9 @@ class KeyHandlerClass(object):
         tag gives the source of the binding.
 
         '''
-        trace = False and not g.unitTesting and (shortcut == 'F1' or commandName == 'help')
+        trace = False and not g.unitTesting
+            # and commandName.startswith('move-lines')
+            # and (shortcut == 'F1' or commandName == 'help')
         trace_list = False
         k = self
         if not k.check_bind_key(commandName, pane, shortcut):
@@ -4148,18 +4155,18 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self):
-        k = self; d = {}
-        # keys are minibuffer command names, values are shortcuts.
+        k = self
+        d = {}
+            # keys are minibuffer command names, values are shortcuts.
         for stroke in k.bindingsDict.keys():
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
             for si in aList:
                 assert g.isShortcutInfo(si), si
-                shortcutList = d.get(si.commandName, [])
-                # The shortcutList consists of tuples (pane,stroke).
-                # k.inverseBindingDict has values consisting of these tuples.
+                shortcutList = k.bindingsDict.get(si.commandName, [])
+                    # Bug fix: 2017/03/26.
                 aList = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
-                        # Important: only si.pane is required below.
+                    # Important: only si.pane is required below.
                 for si in aList:
                     assert g.isShortcutInfo(si), si
                     pane = '%s:' % (si.pane)

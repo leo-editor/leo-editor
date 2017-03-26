@@ -4683,6 +4683,7 @@ def itemsMatchingPrefixInList(s, aList, matchEmptyPrefix=False):
     '''This method returns a sorted list items of aList whose prefix is s.
 
     It also returns the longest common prefix of all the matches.'''
+    trace = False and not g.unitTesting
     if s:
         pmatches = [a for a in aList if a.startswith(s)]
     elif matchEmptyPrefix:
@@ -4693,7 +4694,9 @@ def itemsMatchingPrefixInList(s, aList, matchEmptyPrefix=False):
         common_prefix = reduce(g.longestCommonPrefix, pmatches)
     else:
         common_prefix = ''
-    # g.trace(repr(s),len(pmatches))
+    if trace:
+        g.trace(repr(s))
+        g.printList(pmatches)
     return pmatches, common_prefix
 #@+node:ekr.20090516135452.5776: *4* g.removeLeading/Trailing
 # Warning: g.removeTrailingWs already exists.
