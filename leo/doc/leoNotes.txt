@@ -20340,6 +20340,125 @@ def openLeoThemes(self, event=None):
     else:
         g.es('file not found: %s' % fn)
         return None
+.. @+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane 
+https://github.com/leo-editor/leo-editor/issues/396
+
+.. @+node:ekr.20170302151109.1: *4* ** Notes
+@language rest
+@wrap
+
+Unicode 'object replacement character': u+FFFC
+
+QTextDocument may be helpful: http://doc.qt.io/qt-5/qtextdocument.html
+See QTextDocument.MetaInformation: http://doc.qt.io/qt-5/qtextdocument.html#MetaInformation-enum
+
+http://stackoverflow.com/questions/3254652/
+several-ways-of-placing-an-image-in-a-qtextedit
+
+http://doc.qt.io/qt-5/qtextdocument.html#resource
+
+QVariant QTextDocument::resource(int type, const QUrl &name) const
+
+Returns data of the specified type from the resource with the given name.
+
+This function is called by the rich text engine to request data that isn't directly stored by QTextDocument, but still associated with it. For example, images are referenced indirectly by the name attribute of a QTextImageFormat object.
+
+Resources are cached internally in the document. If a resource can not be found in the cache, loadResource is called to try to load the resource. loadResource should then use addResource to add the resource to the cache.
+.. @+node:ekr.20170203105538.1: *4* Test inserting picture (new)
+# https://github.com/leo-editor/leo-editor/issues/396
+g.cls()
+images = [i for i in range(len(p.b)) if ord(p.b[i]) > 128]
+if images:
+    print('images at', images)
+else:
+    table = (
+        'application-x-leo-outline.png',
+        'LeoDoc.ico',
+    )    
+    for image in table:
+        path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+        assert g.os_path_exists(path), repr(path)
+        c.frame.body.wrapper.setInsertPoint(len(p.b))
+        if 0:
+            format = QtGui.QTextImageFormat()
+            format.setName(path)
+            cursor = cursor = body.widget.textCursor()
+            cursor.insertImage(format)
+        c.frame.body.widget.insertHtml('<img src="%s">' % path)
+            # style="width:40px;height:80px;"
+    for i, ch in enumerate(p.b):
+        if ord(ch) > 128: print('new', i, ord(ch))
+#
+#￼￼
+.. @+node:ekr.20170204110006.1: *4* test3 insert an image
+g.cls()
+from leo.core.leoQt import QtGui
+body = c.frame.body
+table = ('box01.bmp','box02.bmp','box03.bmp',)
+d = g.app.permanentScriptDict
+images = d.get('images', [])
+for image in table:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+    assert g.os_path_exists(path), repr(path)
+    image = QtGui.QImage(path)
+    images.append(image)
+    body.wrapper.setInsertPoint(len(p.b))
+    cursor = body.widget.textCursor()
+    cursor.insertImage(image)
+for i, ch in enumerate(p.b):
+    if ord(ch) > 128: print('new', i, ord(ch))
+d ['images'] = images
+#
+#
+.. @+node:ekr.20170204140521.1: *4* clear g.app.permanentScriptDict 
+g.printDict(g.app.permanentScriptDict)
+g.app.permanentScriptDict = {}
+.. @+node:ekr.20170204135338.1: *4* @@button show-images
+from leo.core.leoQt import QtCore
+d = g.app.permanentScriptDict
+name_index = d.get('name_index', 0)
+names = ['leo_image%s' % (i) for i in range(name_index)]
+# print('image names', names)
+widget = c.frame.body.widget
+doc = widget.document()
+for i, name in enumerate(names):
+    image = doc.resource(doc.ImageResource, QtCore.QUrl(name))
+    print(name, image)
+.. @+node:ekr.20170204105958.1: *4* test2 insert an image
+g.cls()
+from leo.core.leoQt import QtGui
+body = c.frame.body
+table = (
+    'application-x-leo-outline.png',
+    'LeoDoc.ico',
+)
+g.app.permanentScriptDict = {}
+d = g.app.permanentScriptDict
+images = d.get('images', [])
+cursors = d.get('cursors', [])
+name_index = d.get('name_index', 0)
+for image in table:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons', image)
+    assert g.os_path_exists(path), repr(path)
+    image = QtGui.QImage(path)
+    print(image.format().name())
+    images.append(image)
+    body.wrapper.setInsertPoint(len(p.b))
+    cursor = body.widget.textCursor()
+    #name = 'leo_image%s' % name_index
+    #name_index += 1
+    cursor.insertImage(image) ### , name)
+    cursors.append(cursor)
+for i, ch in enumerate(p.b):
+    if ord(ch) > 128: print('new', i, ord(ch))
+d ['images'] = images
+d ['cursors'] = cursors
+d ['name_index'] = name_index
+g.app.permanentScriptDict = d
+g.printDict(d)
+#
+#￼￼￼
+#￼
 .. @-all
 .. @@nosearch
 .. @-leo

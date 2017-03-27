@@ -253,14 +253,15 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             return False
         # 448: Add abbreviations for commands.
-        val, tag = self.abbrevs.get(word, (None, None))
-        if val and c.k.commandExists(val):
-            if trace: g.trace(word, '==>', val)
-            # Execute the command directly, so as not to call this method recursively.
-            commandName = val
-            func = c.commandsDict.get(commandName)
-            c.doCommand(func, commandName, event)
-            return
+        if 0: # This is not worth documenting.
+            val, tag = self.abbrevs.get(word, (None, None))
+            if val and c.k.commandExists(val):
+                if trace: g.trace(word, '==>', val)
+                # Execute the command directly, so as not to call this method recursively.
+                commandName = val
+                func = c.commandsDict.get(commandName)
+                c.doCommand(func, commandName, event)
+                return
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
             self.root = p.copy()

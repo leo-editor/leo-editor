@@ -6,6 +6,11 @@
 .. @+node:ekr.20170324115046.1: *4* #386: colorize markdown properly
 https://github.com/leo-editor/leo-editor/issues/386
 All changes made to leo/modes/md.py
+.. @+node:ekr.20170315103331.1: *4* #438: Tree abbreviation placeholders in headlines...
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/438
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
@@ -32,6 +37,13 @@ This took only a few lines of code in abbrev.expandAbbrev.
 https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
 
 The indent-region and unindent-region just move the insert point if there is no text selected.
+.. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
+at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
+All tests pass.
+
+- It says "Cancel (No To All)".
+- Added cancelMessage keyword arg to x.promptForDangerousWrite.
+- Use keyword args in LeoFrame.promptForSave and ns_do_context.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
