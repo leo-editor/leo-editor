@@ -38,6 +38,11 @@ def emit(source, signal_name, *args, **kwargs):
         obj_to_lock = None
 
     for listener in source._signal_data.listeners[signal_name]:
+        try:
+            if listener.__self__._signal_data.locked:
+                continue
+        except AttributeError:
+            pass
         response = listener(*args, **kwargs)
         if response == MsgSignalHandled:
             break

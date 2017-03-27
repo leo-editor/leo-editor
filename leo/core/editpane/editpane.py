@@ -115,9 +115,6 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: None
         """
 
-        if sig.is_locked(self):
-            return
-
         p = self.c.vnode2position(v)
 
         DBG("after body key")
@@ -445,7 +442,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
 
         DBG("update view position")
-        if self.mode != 'edit':
+        if self.update and self.mode != 'edit':
             self.view_widget.update_position(p)
 
     def render(self, checked):
