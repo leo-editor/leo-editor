@@ -231,6 +231,8 @@ class GoToCommands(object):
                 g.warning('only', len(lines), 'lines')
             else:
                 g.warning('line', n, 'not found')
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine('goto-global-line not found: %s' % (n))
         # Put the cursor on the last line of body text.
         w.setInsertPoint(len(root.b))
         c.bodyWantsFocus()
@@ -373,6 +375,8 @@ class GoToCommands(object):
         if trace:
             i, j = g.getLine(s, ins)
             g.trace('%2s %2s %15s %s' % (n, n2, p.h, repr(s[i: j])))
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine('goto-global-line found: %s' % (n2))
         w.setInsertPoint(ins)
         c.bodyWantsFocus()
         w.seeInsertPoint()
