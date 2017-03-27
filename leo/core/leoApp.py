@@ -1233,7 +1233,9 @@ class LeoApp(object):
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
-
+                        
+                scanner_for_at_auto_cb.scanner_name = aClass.__name__
+                    # For traces in ic.createOutline.
                 if trace: g.trace('found', p.h)
                 return scanner_for_at_auto_cb
         if trace: g.trace('not found', p.h, sorted(d.keys()))
@@ -1255,7 +1257,9 @@ class LeoApp(object):
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
-
+                    
+            scanner_for_ext_cb.scanner_name = aClass.__name__
+                # For traces in ic.createOutline.
             return scanner_for_ext_cb
         else:
             return None

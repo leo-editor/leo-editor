@@ -711,7 +711,7 @@ class LeoImportCommands(object):
         atAuto=False, atShadow=False, s=None, ext=None
     ):
         '''Create an outline by importing a file or string.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         self.treeType = '@file'
             # Fix #352.
@@ -739,7 +739,8 @@ class LeoImportCommands(object):
         # Get the scanning function.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
-        if trace: g.trace(ext, p.h, func)
+        if trace: g.trace('%8s %20s %20s %s' % (
+            ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.w', '.xxx'), (ext, p.h)
