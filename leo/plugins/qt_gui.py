@@ -390,7 +390,8 @@ class LeoQtGui(leoGui.LeoGui):
         yesMessage="&Yes",
         noMessage="&No",
         yesToAllMessage=None,
-        defaultButton="Yes"
+        defaultButton="Yes",
+        cancelMessage=None,
     ):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
@@ -404,7 +405,10 @@ class LeoQtGui(leoGui.LeoGui):
         yes = d.addButton(yesMessage, b.YesRole)
         no = d.addButton(noMessage, b.NoRole)
         yesToAll = d.addButton(yesToAllMessage, b.YesRole) if yesToAllMessage else None
-        cancel = d.addButton(b.Cancel)
+        if cancelMessage:
+            cancel = d.addButton(cancelMessage, b.RejectRole)
+        else:
+            cancel = d.addButton(b.Cancel)
         if defaultButton == "Yes": d.setDefaultButton(yes)
         elif defaultButton == "No": d.setDefaultButton(no)
         else: d.setDefaultButton(cancel)

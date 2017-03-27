@@ -291,8 +291,10 @@ class FreeLayoutController(object):
             if self.c.config.getData("free-layout-layout"):
                 g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
             layout = self.get_top_splitter().get_saveable_layout()
-            name = g.app.gui.runAskOkCancelStringDialog(self.c, "Save layout",
-                "Name for layout?")
+            name = g.app.gui.runAskOkCancelStringDialog(self.c,
+                title="Save layout",
+                message="Name for layout?",
+            )
             if name:
                 self.c.db['_ns_layout'] = name
                 d = g.app.db.get('ns_layouts', {})

@@ -5033,9 +5033,11 @@ class AtFile(object):
                 g.tr('Overwrite this file?'))
         if trace: g.trace(c.shortFileName(), fileName, g.callers())
         result = g.app.gui.runAskYesNoCancelDialog(c,
-                title='Overwrite existing file?',
-                yesToAllMessage="Yes To &All",
-                message=message)
+            title='Overwrite existing file?',
+            yesToAllMessage="Yes To &All",
+            message=message,
+            cancelMessage="&Cancel (No To All)",
+        )
         if at.canCancelFlag:
             # We are in the writeAll logic so these flags can be set.
             if result == 'cancel':
