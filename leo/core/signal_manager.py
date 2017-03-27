@@ -12,6 +12,7 @@ from collections import defaultdict
 class SignalData:
     def __init__(self):
         self.listeners = defaultdict(lambda: list())
+        self.emitters = []
         self.locked = False
 
 
@@ -49,6 +50,19 @@ def connect(source, signal_name, listener):
     _setup(source)
     source._signal_data.listeners[signal_name].append(listener)
 
+    if hasattr(listener, '__self__'):
+        obj = listener.__self__
+        _setup(obj)
+        obj._signal_data.emitters.append(source)
+
+def disconnect_all(listener):
+    """Disconnect from all signals"""
+    for emitter in listener._signal_data.emitters:
+        for signal in emitter._signal_data.listeners:
+            emitter._signal_data.listeners[signal] = [
+                i for i in emitter._signal_data.listeners[signal]
+                if getattr(i, '__self__', None) != listener
+            ]
 def is_locked(obj):
     return hasattr(obj, '_signal_data') and obj._signal_data.locked
 

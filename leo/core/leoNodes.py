@@ -5,6 +5,7 @@ use_zodb = False
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
 import leo.core.leoGlobals as g
+import leo.core.signal_manager as sig
 # if g.app and g.app.use_psyco:
     # # g.pr("enabled psyco classes",__file__)
     # try: from psyco.classes import *
@@ -2500,6 +2501,7 @@ class VNodeBase(object):
         # if not g.isUnicode(s):
             # g.trace('converting to unicode', type(s), repr(s), g.callers(10))
         v._bodyString = g.toUnicode(s, reportErrors=True)
+        sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
         # fn = self.context.shortFileName()

@@ -31,10 +31,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
-        #X p = self.lep.get_position()
-        #X p.b = self.toPlainText()
-        #X self.lep.c.redraw()
-
     def new_position(self, p):
         """new_position - update for new position
 

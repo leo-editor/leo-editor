@@ -1,20 +1,21 @@
+import imp
+import os
+
+import leo.core.leoGlobals as g
+from leo.core.leoNodes import vnode
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+
+if g.isPython3:
+    from importlib import import_module
+
+import leo.core.signal_manager as sig
+
 def DBG(text):
     """DBG - temporary debugging function
 
     :param str text: text to print
     """
     print("LEP: %s" % text)
-
-import imp
-import os
-
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-
-if g.isPython3:
-    from importlib import import_module
-
-import signal_manager as sig
 
 class LeoEditPane(QtWidgets.QWidget):
     """
@@ -30,9 +31,6 @@ class LeoEditPane(QtWidgets.QWidget):
         super(LeoEditPane, self).__init__(*args, **kwargs)
 
         self.c = c
-        if not hasattr(self.c, '_LEPs'):
-            self.c._LEPs = []
-        self.c._LEPs.append(self)
         p = p or self.c.p
         self.mode = mode
 
@@ -60,7 +58,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.handlers = [
             ('select1', self._before_select),
             ('select2', self._after_select),
-            ('bodykey2', self._after_body_key),
+            # ('bodykey2', self._after_body_key),
         ]
         self._register_handlers()
 
@@ -122,7 +120,9 @@ class LeoEditPane(QtWidgets.QWidget):
             if c != self.c:
                 return None
             p = keywords['p']
-        else:  # signal
+        elif isinstance(tag, vnode):  # signal with vnode
+            p = self.c.vnode2position(tag)
+        else:  # signal with position
             if sig.is_locked(self):
                 return
             p = tag
@@ -285,7 +285,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         do_close = QtWidgets.QWidget.close(self)
         if do_close:
-            self.c._LEPs.remove(self)
+            sig.disconnect_all(self)
             DBG("unregister handlers\n")
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
@@ -415,16 +415,6 @@ class LeoEditPane(QtWidgets.QWidget):
         p.b = new_text
 
         sig.emit(self.c, 'body_changed', p, _sig_lock=self)
-
-        for lep in self.c._LEPs:
-            break
-            if lep == self:
-                if self.update and self.mode != 'edit':
-                    # don't update the edit part, could be infinite loop
-                    self.update_position_view(p)
-            else:
-                lep.update_position(lep.get_position())
-
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
