@@ -66,6 +66,13 @@ def disconnect_all(listener):
 def is_locked(obj):
     return hasattr(obj, '_signal_data') and obj._signal_data.locked
 
+def lock(obj):
+    _setup(obj)
+    obj._signal_data.locked = True
+
+def unlock(obj):
+    _setup(obj)
+    obj._signal_data.locked = False
 class SignalManager(object):
     """SignalManager - light weight signal management mixin."""
 

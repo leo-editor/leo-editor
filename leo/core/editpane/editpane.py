@@ -101,7 +101,7 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setSpacing(0)
         return w
 
-    def _after_body_key(self, tag, keywords={}):
+    def _after_body_key(self, v):
         """_after_body_key - after Leo selects another node
 
         FIXME: although class EditCommandsClass-->insert &
@@ -115,17 +115,10 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: None
         """
 
-        if isinstance(tag, str):  # Leo hook
-            c = keywords['c']
-            if c != self.c:
-                return None
-            p = keywords['p']
-        elif isinstance(tag, vnode):  # signal with vnode
-            p = self.c.vnode2position(tag)
-        else:  # signal with position
-            if sig.is_locked(self):
-                return
-            p = tag
+        if sig.is_locked(self):
+            return
+
+        p = self.c.vnode2position(v)
 
         DBG("after body key")
 
@@ -412,9 +405,10 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # Update p.b
         p = self.get_position()
-        p.b = new_text
-
-        sig.emit(self.c, 'body_changed', p, _sig_lock=self)
+        sig.lock(self)
+        p.b = new_text  # triggers 'body_changed' signal from c
+        self.update_position_view(p)  # as we're ignoring signals
+        sig.unlock(self)
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
