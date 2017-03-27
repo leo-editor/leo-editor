@@ -711,7 +711,7 @@ class LeoImportCommands(object):
         atAuto=False, atShadow=False, s=None, ext=None
     ):
         '''Create an outline by importing a file or string.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         self.treeType = '@file'
             # Fix #352.
@@ -765,10 +765,15 @@ class LeoImportCommands(object):
     #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
+        trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
-        # g.trace('===== self.treeType', repr(self.treeType))
+        if trace: g.trace('atAuto: %5r atAutoKind: %r parent: %s' % (
+            atAuto, atAutoKind, parent and parent.h))
         if atAuto:
             if atAutoKind:
+                # scannerUnitTest uses this code.
+                if not g.unitTesting:
+                    g.trace('===== atAutoKind', atAutoKind, g.callers())
                 # We have found a match between ext and an @auto importer.
                 undoData = u.beforeInsertNode(parent)
                 if parent:
@@ -834,6 +839,9 @@ class LeoImportCommands(object):
         if trace: g.trace('1', atAuto, self.treeType, fileName)
         atAutoKind = None
         if not atAuto and kind != '@auto':
+            # scannerUnitTest uses this code.
+            if not g.unitTesting:
+                g.trace('===== SET atAutoKind', g.callers())
             # Not yet an @auto node.
             # Set atAutoKind if there is an @auto importer for ext.
             aClass = g.app.classDispatchDict.get(ext)
