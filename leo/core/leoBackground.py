@@ -10,8 +10,8 @@ import subprocess
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager(object):
-    #@+<< BPL docstring>>
-    #@+node:ekr.20161029063227.1: *3* << BPL docstring>>
+    #@+<< BPM docstring>>
+    #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
     '''
     #@@language rest
     #@@wrap
@@ -48,7 +48,7 @@ class BackgroundProcessManager(object):
     You can run as many of these process as you like, without involving the BPM
     in any way.
     '''
-    #@-<< BPL docstring>>
+    #@-<< BPM docstring>>
     
     # Use self.put_log, not g.es or g.es_print!
     

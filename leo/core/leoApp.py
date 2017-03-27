@@ -2139,13 +2139,18 @@ class LoadManager(object):
                             g.es_exception()
                         g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
+        if trace:
+            g.trace('g.app.atAutoDict')
+            g.printDict(g.app.atAutoDict)
+            g.trace('g.app.classDispatchDict')
+            g.printDict(g.app.classDispatchDict)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
         '''
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
         importer_d = getattr(m, 'importer_dict', None)
         if importer_d:
             at_auto = importer_d.get('@auto', [])
@@ -2153,8 +2158,7 @@ class LoadManager(object):
             scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
             if trace:
-                g.trace('===== %s: %s' % (sfn, scanner_name))
-                if extensions: g.trace(', '.join(extensions))
+                g.trace('%20s: %20s %s' % (sfn, scanner_name, ', '.join(extensions)))
             if at_auto:
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict

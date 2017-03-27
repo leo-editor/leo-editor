@@ -275,7 +275,7 @@ class LeoImportCommands(object):
     For more information, see leo/plugins/importers/howto.txt.
     '''
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* ic.__init__ & helpers
+    #@+node:ekr.20031218072017.3207: *3* ic.__init__
     def __init__(self, c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
