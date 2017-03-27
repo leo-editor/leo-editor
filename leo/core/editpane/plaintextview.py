@@ -12,6 +12,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.c = c
         self.lep = lep
         self.setStyleSheet("* {background: #998; color: #222; }")
+
     def new_position(self, p):
         """new_position - update for new position
 
@@ -21,6 +22,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
             self.setText(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
         else:
             self.setText(p.b)
+
     def update_position(self, p):
         """update_position - update for current position
 
@@ -31,6 +33,8 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.new_position(p)
         self.horizontalScrollBar().setValue(h)
         self.verticalScrollBar().setValue(v)
+
+
 class LEP_PlainTextViewB(LEP_PlainTextView):
     """LEP_PlainTextViewB - copy of LEP_PlainTextView with different
     background color to test multiple viewers
@@ -40,3 +44,6 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
         """set up"""
         super(LEP_PlainTextViewB, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.setStyleSheet("* {background: #899; color: #222; }")
+
+
+

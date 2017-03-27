@@ -12,6 +12,7 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         super(LEP_WebEngineView, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
+
     def new_position(self, p):
         """new_position - update for new position
 
@@ -21,6 +22,7 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
             self.setHtml(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
         else:
             self.setHtml(p.b)
+
     def update_position(self, p):
         """update_position - update for current position
 
@@ -31,3 +33,6 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         self.new_position(p)
         # self.horizontalScrollBar().setValue(h)
         # self.verticalScrollBar().setValue(v)
+
+
+

@@ -14,7 +14,8 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 if g.isPython3:
     from importlib import import_module
 
-from signal_manager import SignalManager
+import signal_manager as sig
+
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
@@ -56,13 +57,13 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.set_mode(self.mode)
 
-        # do this last, max. chance of not registering broken handler
         self.handlers = [
             ('select1', self._before_select),
             ('select2', self._after_select),
-            # ('bodykey2', self._after_body_key),
+            ('bodykey2', self._after_body_key),
         ]
         self._register_handlers()
+
     def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
@@ -101,7 +102,8 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setContentsMargins(0, 0, 0, 0)
         w.layout().setSpacing(0)
         return w
-    def _after_body_key(self, p):  # tag, keywords):
+
+    def _after_body_key(self, tag, keywords={}):
         """_after_body_key - after Leo selects another node
 
         FIXME: although class EditCommandsClass-->insert &
@@ -115,16 +117,23 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: None
         """
 
-        #X c = keywords['c']
-        #X if c != self.c:
-        #X     return None
+        if isinstance(tag, str):  # Leo hook
+            c = keywords['c']
+            if c != self.c:
+                return None
+            p = keywords['p']
+        else:  # signal
+            if sig.is_locked(self):
+                return
+            p = tag
 
         DBG("after body key")
 
         if self.update:
-            self.update_position(p)  # keywords['p'])
+            self.update_position(p)
 
         return None
+
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node
 
@@ -143,6 +152,7 @@ class LeoEditPane(QtWidgets.QWidget):
             self.new_position(keywords['new_p'])
 
         return None
+
     def _before_select(self, tag, keywords):
         """_before_select - before Leo selects another node
 
@@ -164,6 +174,7 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("before select")
 
         return None
+
     def _find_gnx_node(self, gnx):
         '''Return the first position having the given gnx.'''
         if self.c.p.gnx == gnx:
@@ -173,6 +184,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 return p
         g.es("Edit/View pane couldn't find node")
         return None
+
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
         """
@@ -180,7 +192,8 @@ class LeoEditPane(QtWidgets.QWidget):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
-        SignalManager._signal_connect(self.c, 'body_changed', self._after_body_key)
+        sig.connect(self.c, 'body_changed', self._after_body_key)
+
     def _build_layout(self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
@@ -246,16 +259,19 @@ class LeoEditPane(QtWidgets.QWidget):
         self.goto = one_shot or bool(state)
         self.state_changed()
         self.goto = bool(state)
+
     def change_recurse(self, state, one_shot=False):
         self.recurse = one_shot or bool(state)
         self.state_changed()
         self.recurse = bool(state)
+
     def change_track(self, state, one_shot=False):
         self.track = one_shot or bool(state)
         if self.track:
             p = self.c.p
             self.new_position(p)
         self.track = bool(state)
+
     def change_update(self, state, one_shot=False):
         self.update = one_shot or bool(state)
         if self.update:
@@ -263,6 +279,7 @@ class LeoEditPane(QtWidgets.QWidget):
             if p is not None:
                 self.new_position(p)
         self.update = bool(state)
+
     def close(self):
         """close - clean up
         """
@@ -273,18 +290,22 @@ class LeoEditPane(QtWidgets.QWidget):
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
         return do_close
+
     def edit_widget_focus(self):
         """edit_widget_focus - edit widget got focus"""
         if self.goto:
             self.goto_node()
+
     def get_position(self):
         """get_position - get current position"""
         return self._find_gnx_node(self.gnx)
+
     def goto_node(self):
         """goto_node - goto node being edited / viewed"""
         p = self.get_position()
         if p and p != self.c.p:
             self.c.selectPosition(p)
+
     def load_modules(self):
         """load_modules - load modules to find widgets
         """
@@ -311,7 +332,7 @@ class LeoEditPane(QtWidgets.QWidget):
                     if module not in self.modules:
                         self.modules.append(module)
                     self.widget_classes.append(value)
-                    
+
     def misc_menu(self):
         """build menu on Action button"""
 
@@ -333,6 +354,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 act.triggered.connect(cb)
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
+
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
@@ -346,6 +368,7 @@ class LeoEditPane(QtWidgets.QWidget):
             act.setChecked(mode == self.mode)
             menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
+
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
@@ -358,6 +381,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.new_position_edit(p)
         self.new_position_view(p)
+
     def new_position_edit(self, p):
         """new_position_edit - update editor for new position
 
@@ -390,7 +414,7 @@ class LeoEditPane(QtWidgets.QWidget):
         p = self.get_position()
         p.b = new_text
 
-        SignalManager._signal_emit(self.c, 'body_changed', p)
+        sig.emit(self.c, 'body_changed', p, _sig_lock=self)
 
         for lep in self.c._LEPs:
             break
@@ -400,6 +424,7 @@ class LeoEditPane(QtWidgets.QWidget):
                     self.update_position_view(p)
             else:
                 lep.update_position(lep.get_position())
+
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
@@ -412,6 +437,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.update_position_edit(p)
         self.update_position_view(p)
+
     def update_position_edit(self, p):
         """update_position_edit - update editor for current position
 
@@ -424,6 +450,7 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("update edit position")
         if self.mode != 'view':
             self.edit_widget.update_position(p)
+
     def update_position_view(self, p):
         """update_position_view - update viewer for current position
 
@@ -436,9 +463,9 @@ class LeoEditPane(QtWidgets.QWidget):
         DBG("update view position")
         if self.mode != 'edit':
             self.view_widget.update_position(p)
+
     def render(self, checked):
         pass
-
 
     def set_widget(self, widget_class=None, lep_type='TEXT'):
         """set_widget - set edit or view widget
@@ -473,6 +500,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.mode = mode
         self.btn_mode.setText(u"%s\u25BE" % mode.title())
         self.state_changed()
+
     def state_changed(self):
         """state_changed - control state has changed
         """
@@ -491,3 +519,6 @@ class LeoEditPane(QtWidgets.QWidget):
            self.view_frame.show()
 
         self.update_position(self.c.p)
+
+
+

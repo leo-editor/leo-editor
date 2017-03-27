@@ -3,13 +3,13 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 import time  # temporary for debugging
 
-from signal_manager import SignalManager
 def DBG(text):
     """DBG - temporary debugging function
 
     :param str text: text to print
     """
     print("LEP: %s" % text)
+
 class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
     """
@@ -21,6 +21,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
+
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -33,12 +34,14 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         #X p = self.lep.get_position()
         #X p.b = self.toPlainText()
         #X self.lep.c.redraw()
+
     def new_position(self, p):
         """new_position - update for new position
 
         :param Leo position p: new position
         """
         self.setText(p.b)
+
     def text_changed(self):
         """text_changed - text editor text changed"""
         if QtWidgets.QApplication.focusWidget() == self:
@@ -47,6 +50,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
 
         else:
             DBG("text changed, NOT focused")
+
     def update_position(self, p):
         """update_position - update for current position
 
@@ -54,6 +58,8 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         """
         DBG("update editor position")
         self.setText(p.b)
+
+
 class LEP_PlainTextEditB(LEP_PlainTextEdit):
     """LEP_PlainTextEditB - copy of LEP_PlainTextEdit with different
     background color to test multiple edtitors
@@ -63,3 +69,6 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
         """set up"""
         super(LEP_PlainTextEditB, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.setStyleSheet("* {background: #989; color: #222; }")
+
+
+

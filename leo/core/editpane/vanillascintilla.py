@@ -15,6 +15,7 @@ def DBG(text):
     :param str text: text to print
     """
     print("LEP: %s" % text)
+
 class LEP_VanillaScintilla(Qsci.QsciScintilla):
     lep_type = "EDITOR"
     lep_name = "Vanilla Scintilla"
@@ -37,6 +38,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
 
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
+
     def focusInEvent (self, event):
         Qsci.QsciScintilla.focusInEvent(self, event)
         DBG("focusin()")
@@ -49,12 +51,14 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         #X p = self.lep.get_position()
         #X p.b = self.text()
         #X self.lep.c.redraw()
+
     def new_position(self, p):
         """new_position - update for new position
 
         :param Leo position p: new position
         """
         self.setText(p.b)
+
     def text_changed(self):
         """text_changed - text editor text changed"""
         if QtWidgets.QApplication.focusWidget() == self:
@@ -62,6 +66,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
             self.lep.text_changed(self.text())
         else:
             DBG("text changed, NOT focused")
+
     def update_position(self, p):
         """update_position - update for current position
 
@@ -69,3 +74,6 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         """
         DBG("update editor position")
         self.setText(p.b)
+
+
+

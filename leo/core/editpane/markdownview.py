@@ -4,6 +4,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 import markdown
 from webkitview import LEP_WebKitView as HtmlView
 from plaintextview import LEP_PlainTextView as TextView
+
 def to_html(text):
     """to_html - convert to HTML
 
@@ -19,8 +20,9 @@ def to_html(text):
             'markdown.extensions.codehilite',
         ]
     )
+
 class LEP_MarkdownView(HtmlView):
-    """LEP_MarkdownView - 
+    """LEP_MarkdownView -
     """
     lep_type = "MARKDOWN"
     lep_name = "Markdown(.py) View"
@@ -29,6 +31,7 @@ class LEP_MarkdownView(HtmlView):
         super(LEP_MarkdownView, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
+
     def new_position(self, p):
         """new_position - update for new position
 
@@ -38,6 +41,7 @@ class LEP_MarkdownView(HtmlView):
             self.setHtml(to_html(g.getScript(self.c, p, useSelectedText=False, useSentinels=False)))
         else:
             self.setHtml(to_html(p.b))
+
     def update_position(self, p):
         """update_position - update for current position
 
@@ -49,6 +53,7 @@ class LEP_MarkdownView(HtmlView):
         # self.horizontalScrollBar().setValue(h)
         # self.verticalScrollBar().setValue(v)
 
+
 class LEP_MarkdownHtmlView(TextView):
     """LEP_MarkdownHtmlView - view the HTML for markdown
     """
@@ -59,6 +64,7 @@ class LEP_MarkdownHtmlView(TextView):
         super(LEP_MarkdownHtmlView, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.c = c
         self.lep = lep
+
     def new_position(self, p):
         """new_position - update for new position
 
@@ -68,3 +74,6 @@ class LEP_MarkdownHtmlView(TextView):
             self.setPlainText(to_html(g.getScript(self.c, p, useSelectedText=False, useSentinels=False)))
         else:
             self.setPlainText(to_html(p.b))
+
+
+
