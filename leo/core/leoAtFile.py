@@ -786,20 +786,19 @@ class AtFile(object):
     def readOneAtAutoNode(self, fileName, p):
         '''Read an @auto file into p.'''
         trace = (False or g.app.debug) and not g.unitTesting
-        # if trace: g.trace(fileName)
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
         if not g.os_path_exists(fileName):
-            g.error('not found: @auto %s' % (fileName))
+            g.error('not found: %r' % (p.h))
             return
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
         s, ok, fileKey = c.cacher.readFile(fileName, p)
         if ok:
-            if trace: g.trace('***** using cached nodes', p.h)
+            if trace: g.trace('unchanged:', p.h)
             # Even if the file is in the cache, the @persistence node may be different.
             if c.persistenceController:
                 c.persistenceController.update_after_read_foreign_file(p)
@@ -810,8 +809,10 @@ class AtFile(object):
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
-            # 2012/04/09: catch failed asserts in the import code.
-            ic.createOutline(fileName, parent=p.copy(), atAuto=True)
+            p = ic.createOutline(fileName, parent=p.copy(), atAuto=True)
+            c.selectPosition(p)
+                # Fix bug #451:
+                # refresh-from-disk doesn't always restore focus to the correct node.
         except AssertionError:
             ic.errors += 1
         except Exception:
@@ -819,13 +820,10 @@ class AtFile(object):
             g.es_print('Unexpected exception importing', fileName)
             g.es_exception()
         if ic.errors:
-            # Read the entire file into the node.
             g.error('errors inhibited read @auto %s' % (fileName))
-            if 0:
-                g.es_print('reading entire file into @auto node.')
-                at.readOneAtEditNode(fileName, p)
         elif c.persistenceController:
             c.persistenceController.update_after_read_foreign_file(p)
+        # Finish.
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)

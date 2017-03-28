@@ -44,6 +44,7 @@ All tests pass.
 - It says "Cancel (No To All)".
 - Added cancelMessage keyword arg to x.promptForDangerousWrite.
 - Use keyword args in LeoFrame.promptForSave and ns_do_context.
+.. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @-all
 .. @@nosearch
 .. @@killbeautify
