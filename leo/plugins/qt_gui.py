@@ -609,7 +609,8 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
-    deactivated_name = ''
+    # deactivated_name = ''
+    deactivated_widget = None
 
     def onDeactivateEvent(self, event, c, obj, tag):
         '''
@@ -617,10 +618,17 @@ class LeoQtGui(leoGui.LeoGui):
         Called several times for each window activation.
         '''
         trace = (False or g.app.trace_focus) and not g.unitTesting
-        if trace:
-            g.trace(g.app.gui.get_focus())
+        w = self.get_focus()
+        w_name = w and w.objectName()
+        if trace: g.trace(repr(w_name))
         self.active = False
             # Used only by c.idle_focus_helper.
+        if 1: # Leo 5.6: Recover from missing focus.
+            # Careful: never save headline widgets.
+            if w_name == 'headline':
+                self.deactivated_widget = c.frame.tree.treeWidget
+            else:
+                self.deactivated_widget = w if w_name else None
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and not self.deactivated_name:
@@ -639,22 +647,26 @@ class LeoQtGui(leoGui.LeoGui):
         Called several times for each window activation.
         '''
         trace = (False or g.app.trace_focus) and not g.unitTesting
-        if not g.app.gui:
-            return
-        w = g.app.gui.get_focus()
-        if trace: g.trace(w and g.app.gui.widget_name(w))
+        w = self.get_focus() or self.deactivated_widget
+        self.deactivated_widget = None
+        w_name = w and w.objectName()
+        # if trace: g.trace(repr(w_name))
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
         if c.exists and c.vimCommands and not self.active and not g.app.killed: 
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
-        if 1: # Leo 5.6: Attempt to recover from missing focus.
-            # This should be done in c.idle_focus_handler.
-            if not w:
-                if trace: g.trace('===== FOCUS TO BODY')
-                c.bodyWantsFocus()
-                c.outerUpdate()
+        if 1:
+            # Leo 5.6: Recover from missing focus.
+            # c.idle_focus_handler can't do this.
+            if w and w_name in ('log-widget', 'richTextEdit', 'treeWidget'):
+                # Restore focus **only** to body or tree
+                if trace: g.trace('==>', w_name)
+                c.widgetWantsFocusNow(w)
+            else:
+                if trace: g.trace(repr(w_name), '==> BODY')
+                c.bodyWantsFocusNow()   
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:

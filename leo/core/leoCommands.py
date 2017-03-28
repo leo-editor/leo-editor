@@ -455,8 +455,8 @@ class Commands(object):
             return
         w = g.app.gui.get_focus(at_idle = True)
         if g.app.gui.active:
-            if trace:
-                self.trace_idle_focus(w)
+            # Always call trace_idle_focus.
+            self.trace_idle_focus(w)
             if w and self.is_unusual_focus(w):
                 if trace:
                     w_class = w and w.__class__.__name__
@@ -493,7 +493,7 @@ class Commands(object):
             return not isinstance(w, table)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
     last_unusual_focus = None
-    last_no_focus = False
+    # last_no_focus = False
 
     def trace_idle_focus(self, w):
         '''Trace the focus for w, minimizing chatter.'''
@@ -507,8 +507,8 @@ class Commands(object):
             qt_frame.LeoQTreeWidget,
         )
         count = c.idle_focus_count
-        w_class = w and w.__class__.__name__
         if w:
+            w_class = w and w.__class__.__name__
             c.last_no_focus = False
             if self.is_unusual_focus(w):
                 g.trace('%s unusual focus: %s' % (count, w_class))
@@ -519,11 +519,8 @@ class Commands(object):
                         g.trace('%s known focus: %s' % (count, w_class))
                 elif trace:
                     g.trace('%s unknown focus: %s' % (count, w_class))
-        # elif active:
-            # g.trace('%s no focus -> body' % (count))
-        # el
-        elif not c.last_no_focus:
-            c.last_no_focus = True
+        else:
+            # c.last_no_focus = True
             g.trace('%s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
