@@ -20340,7 +20340,7 @@ def openLeoThemes(self, event=None):
     else:
         g.es('file not found: %s' % fn)
         return None
-.. @+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane 
+.. @+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane
 https://github.com/leo-editor/leo-editor/issues/396
 
 .. @+node:ekr.20170302151109.1: *4* ** Notes
@@ -20410,7 +20410,7 @@ for i, ch in enumerate(p.b):
 d ['images'] = images
 #
 #
-.. @+node:ekr.20170204140521.1: *4* clear g.app.permanentScriptDict 
+.. @+node:ekr.20170204140521.1: *4* clear g.app.permanentScriptDict
 g.printDict(g.app.permanentScriptDict)
 g.app.permanentScriptDict = {}
 .. @+node:ekr.20170204135338.1: *4* @@button show-images
@@ -20459,6 +20459,5529 @@ g.printDict(d)
 #
 #￼￼￼
 #￼
+.. @+node:ekr.20170317181456.1: ** @ignore @path ../external/yoton
+# Copyright (C) 2013 Almar Klein
+#
+# Yoton is distributed under the terms of the (new) BSD License.
+# The full license can be found in 'license.txt'.
+.. @+node:ekr.20170317181518.1: *3* @file clientserver.py
+@first # -*- coding: utf-8 -*-
+<< docstring >>
+<< imports >>
+@others
+if __name__ == '__main__':
+    main()
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317182008.1: *4* << docstring >>
+""" yoton.clientserver.py
+
+Yoton comes with a small framework to setup a request-reply pattern
+using a client-server model (over a non-persistent connection), 
+similar to telnet. This allows one process to easily ask small pieces 
+of information from another process.
+
+To create a server, create a class that inherits from 
+yoton.RequestServer and implement its handle_request() method.
+
+A client process can simply use the yoton.do_request function. 
+Example: ``yoton.do_request('www.google.com:80', 'GET http/1.1\\r\\n')``
+
+The client server model is implemented using one function and one class:
+yoton.do_request and yoton.RequestServer.
+
+Details
+-------
+
+The server implements a request/reply pattern by listening at a socket. 
+Similar to telnet, each request is handled using a connection 
+and the socket is closed after the response is send. 
+
+The request server can setup to run in the main thread, or can be started 
+using its own thread. In the latter case, one can easily create multiple
+servers in a single process, that listen on different ports.
+
+"""
+.. @+node:ekr.20170317181654.1: *4* << imports >> clientserver.py
+import leo.core.leoGlobals as g
+# import os
+# import sys
+import socket
+import threading
+import time
+# from select import select  # to determine wheter a socket can receive data
+# from yoton import basestring, str
+# from yoton.misc import basestring, bytes, str, long
+from yoton.misc import split_address, getErrorMsg
+from yoton.core import send_all, recv_all
+.. @+node:ekr.20170317181654.2: *4* class RequestServer
+class RequestServer(threading.Thread):
+    """ RequestServer(address, async=False, verbose=0)
+    
+    Setup a simple server that handles requests similar to a telnet server, 
+    or asyncore. Starting the server using run() will run the server in
+    the calling thread. Starting the server using start() will run the
+    server in a separate thread.
+    
+    To create a server, subclass this class and re-implement the 
+    handle_request method. It accepts a request and should return a 
+    reply. This server assumes utf-8 encoded messages.
+    
+    Parameters
+    ----------
+    address : str
+        Should be of the shape hostname:port. 
+    async : bool
+        If True, handles each incoming connection in a separate thread.
+        This might be advantageous if a the handle_request() method 
+        takes a long time to execute.
+    verbose : bool
+        If True, print a message each time a connection is accepted.
+    
+    Notes on hostname
+    -----------------
+    The hostname can be:
+      * The IP address, or the string hostname of this computer. 
+      * 'localhost': the connections is only visible from this computer. 
+        Also some low level networking layers are bypassed, which results
+        in a faster connection. The other context should also connect to
+        'localhost'.
+      * 'publichost': the connection is visible by other computers on the 
+        same network. 
+    
+    """ 
+    
+    @others
+.. @+node:ekr.20170317181654.3: *5* __init__
+def __init__(self, address, async=False, verbose=0):
+    threading.Thread.__init__(self)
+    
+    # Store whether to handle requests asynchronously
+    self._async = async
+    
+    # Verbosity
+    self._verbose = verbose
+    
+    # Determine host and port (assume tcp)
+    protocol, host, port = split_address(address)
+    
+    # Create socket. Apply SO_REUSEADDR when binding, so that a 
+    # improperly closed socket on the same port will not prevent 
+    # us connecting.
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
+    # Bind (can raise error is port is not available)
+    s.bind((host,port))
+    
+    # Store socket instance
+    self._bsd_socket = s
+    
+    # To stop serving
+    self._stop_me = False
+    
+    # Make deamon
+    self.setDaemon(True)
+
+
+.. @+node:ekr.20170317181654.4: *5* start
+def start(self):
+    """ start()
+    Start the server in a separate thread.
+    """ 
+    self._stop_me = False
+    threading.Thread.start(self)
+
+
+.. @+node:ekr.20170317181654.5: *5* stop
+def stop(self):
+    """ stop()
+    Stop the server.
+    """
+    self._stop_me = True
+
+
+.. @+node:ekr.20170317181654.6: *5* run
+def run(self):
+    """ run()
+    The server's main loop. 
+    """
+    
+    # Get socket instance
+    s = self._bsd_socket
+    
+    # Notify
+    hostname, port = s.getsockname()
+    if self._verbose:
+        print('Yoton: hosting at %s, port %i' % (hostname, port))
+    
+    # Tell the socket it is a host, accept multiple
+    s.listen(1)
+    
+    # Set timeout so that we can check _stop_me from time to time
+    self._bsd_socket.settimeout(0.25)
+    
+    # Enter main loop
+    while not self._stop_me:
+        try:
+            s, addr = self._bsd_socket.accept()
+        except socket.timeout:
+            pass
+        except InterruptedError:
+            pass
+        else:
+            # Show handling?
+            if self._verbose:
+                print('handling request from: '+ g.u(addr)) ### str(addr))
+            # Handle request
+            if self._async :
+                rh = SocketHandler(self, s)
+                rh.start()
+            else:
+                self._handle_connection(s)
+    
+    # Close down
+    try:
+        self._bsd_socket.close()
+    except socket.error:
+        pass
+
+
+.. @+node:ekr.20170317181654.7: *5* _handle_connection
+def _handle_connection(self, s):
+    """ _handle_connection(s)
+    Handle an incoming connection. 
+    """ 
+    try:
+        self._really_handle_connection(s)
+    except Exception:
+        print('Error handling request:')
+        print(getErrorMsg())
+
+
+.. @+node:ekr.20170317181654.8: *5* _really_handle_connection
+def _really_handle_connection(self, s):
+    """ _really_handle_connection(s)
+    Really handle an incoming connection.
+    """ 
+    # Get request
+    request = recv_all(s, True)
+    if request is None:
+        return
+    
+    # Get reply
+    reply = self.handle_request(request)
+    
+    # Test
+    ### if not isinstance(reply, basestring):
+    if not g.isString(reply):
+        raise ValueError('handle_request() should return a string.')
+    
+    # Send reply
+    send_all(s, reply, True)
+    
+    # Close the socket
+    try:
+        s.close()
+    except socket.error:
+        pass
+
+.. @+node:ekr.20170317181654.9: *5* handle_request
+def handle_request(self, request):
+    """ handle_request(request)
+    
+    Return a reply, given the request. Overload this method to create
+    a server.
+    
+    De standard implementation echos the request, waits one second 
+    when receiving 'wait' and stop the server when receiving 'stop'.
+    
+    """
+    # Special cases
+    if request == 'wait':
+        time.sleep(1.0)
+    elif request == 'stop':
+        self._stop_me = True
+    
+    # Echo
+    return 'Requested: ' + request
+
+
+.. @+node:ekr.20170317181654.10: *4* class SocketHandler
+class SocketHandler(threading.Thread):
+    """ SocketHandler(server, s)
+    Simple thread that handles a connection. 
+    """
+    @others
+.. @+node:ekr.20170317181654.11: *5* __init__
+def __init__(self, server, s):
+    threading.Thread.__init__(self)
+    self._server = server
+    self._bsd_socket = s
+
+.. @+node:ekr.20170317181654.12: *5* run
+def run(self):
+    self._server._handle_connection(self._bsd_socket)
+
+
+
+.. @+node:ekr.20170317181654.13: *4* do_request
+def do_request(address, request, timeout=-1):
+    """ do_request(address, request, timeout=-1)
+    
+    Do a request at the server at the specified address. The server can
+    be a yoton.RequestServer, or any other server listening on a socket
+    and following a REQ/REP pattern, such as html or telnet. For example:
+    ``html = do_request('www.google.com:80', 'GET http/1.1\\r\\n')``
+    
+    Parameters
+    ----------
+    address : str
+        Should be of the shape hostname:port. 
+    request : string
+        The request to make.
+    timeout : float
+        If larger than 0, will wait that many seconds for the respons, and
+        return None if timed out.
+    
+    Notes on hostname
+    -----------------
+    The hostname can be:
+      * The IP address, or the string hostname of this computer. 
+      * 'localhost': the connections is only visible from this computer. 
+        Also some low level networking layers are bypassed, which results
+        in a faster connection. The other context should also connect to
+        'localhost'.
+      * 'publichost': the connection is visible by other computers on the 
+        same network.
+    
+    """
+    
+    # Determine host (assume tcp)
+    protocol, host, port = split_address(address)
+    
+    # Check request
+    # if not isinstance(request, basestring):
+    if not g.isString(request):
+        raise ValueError('request should be a string.')
+    
+    # Check timeout
+    if timeout is None:
+        timeout = -1
+    
+    # Create socket and connect
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.connect((host,port))
+    except socket.error:
+        raise RuntimeError('No server is listening at the given port.')
+    
+    # Send request
+    send_all(s, request, True)
+    
+    # Receive reply    
+    reply = recv_all(s, timeout)
+    
+    # Close socket
+    try:
+        s.close()
+    except socket.error:
+        pass
+    
+    # Done
+    return reply
+
+
+.. @+node:ekr.20170317182228.1: *4* main
+def main():
+    
+    trace = False
+
+    class Lala(RequestServer):
+        def handle_request(self, req):
+            print('REQ:',repr(req))
+            return "The current time is %i" % time.time()
+        
+    s = Lala('localhost:test', 0, 1)
+    s.start()
+    if trace:
+        print(do_request('localhost:test', 'wait', 5))
+        for i in range(10):
+            print(do_request('localhost:test', 'hi'+g.u(i))) ### str(i)))
+    # do_request('localhost:test', 'wait'); do_request('localhost:test', 'hi');
+.. @+node:ekr.20170317181623.1: *3* @file connection.py
+@first # -*- coding: utf-8 -*-
+<< imports >>
+# pylint: disable=notimplemented-raised
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317181715.1: *4* << imports >> connection.py
+import leo.core.leoGlobals as g
+import os
+# import sys
+# import time
+import threading
+
+import yoton
+# from yoton.misc import basestring, bytes, str
+# from yoton.misc import Property, getErrorMsg, UID
+# from yoton.misc import basestring, Property
+from yoton.misc import Property
+
+# Minimum timout
+TIMEOUT_MIN = 0.5
+
+# For the status
+STATUS_CLOSED = 0
+STATUS_CLOSING = 1
+STATUS_WAITING = 2
+STATUS_HOSTING = 3
+STATUS_CONNECTED = 4
+STATUSMAP = ['closed', 'closing', 'waiting', 'hosting', 'connected', ]
+
+# Reasons to stop the connection
+STOP_DEFAULT_REASON = 'Closed on command.'
+STOP_UNSPECIFIED_PROBLEM = 'Unspecified problem'
+STOP_INVALID_REASON = 'Invalid stop reason specified (must be string).'
+STOP_TIMEOUT = "Connection timed out." # Can be used by user
+STOP_HANDSHAKE_TIMEOUT = "Handshake timed out."
+STOP_HANDSHAKE_FAILED = "Handshake failed."
+STOP_HANDSHAKE_SELF = "Handshake failed (context cannot connect to self)."
+STOP_CLOSED_FROM_THERE = "Closed from other end."
+.. @+node:ekr.20170317181715.2: *4* class ConnectionCollection
+class ConnectionCollection(list):
+    """ ContextConnectionCollection()
+    
+    A list class that allows indexing using the name of the required
+    Connection instance.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181715.3: *5* __getitem__
+def __getitem__(self, key):
+    # if isinstance(key, basestring):
+    if g.isString(key):
+        if not key:
+            raise KeyError('An empty string is not a valid key.')
+        for c in self:
+            if c.name == key:
+                return c
+        else:
+            raise KeyError('No connection know by the name %s' % key)
+    else:
+        return list.__getitem__(self, key)
+
+
+
+.. @+node:ekr.20170317181715.4: *4* class Connection
+class Connection(object):
+    """ Connection(context, name='')
+    
+    Abstract base class for a connection between two Context objects.
+    This base class defines the full interface; subclasses only need
+    to implement a few private methods.
+    
+    The connection classes are intended as a simple interface for the 
+    user, for example to query port number, and be notified of timeouts 
+    and closing of the connection. 
+    
+    All connection instances are intended for one-time use. To make
+    a new connection, instantiate a new Connection object. After
+    instantiation, either _bind() or _connect() should be called.
+    
+    """
+    
+    @others
+#         if True:
+#             tmp = STATUSMAP[old_status]
+#             sys.__stdout__.write("Yoton: %s connection closed: %s" % (tmp, reason))
+#             sys.__stdout__.flush()
+    
+    
+    ## Methods to overload
+    
+    def _bind(self, hostname, port, max_tries):
+        raise NotImplemented
+        
+    def _connect(self, hostname, port, timeout):
+        raise NotImplemented
+    
+    def _flush(self, timeout):
+        raise NotImplemented
+    
+    def _notify_other_end_of_closing(self):
+        raise NotImplemented
+    
+    def _send_package(self, package):
+        raise NotImplemented
+    
+    def _inject_package(self, package):
+        raise NotImplemented
+    
+    def _set_status(self, status):
+        """ Used to change the status. Subclasses can reimplement this 
+        to get the desired behavior.
+        """ 
+        self._lock.acquire()
+        try:
+            
+            # Store status
+            self._status = status
+            
+            # Notify user ++
+            if (status > 0) and self._context._verbose:
+                action = STATUSMAP[status]
+                print("Yoton: %s at %s:%s." % (action, self._hostname1, self._port1))
+        
+        finally:
+            self._lock.release()
+
+
+## More ideas for connections
+
+.. @+node:ekr.20170317181715.5: *5* __init__
+def __init__(self, context, name=''):
+    
+    # Store context and name
+    self._context = context
+    self._name = name
+    
+    # Init hostname and port
+    self._hostname1 = ''
+    self._hostname2 = ''
+    self._port1 = 0
+    self._port2 = 0
+    
+    # Init id and pid of target context (set during handshake)
+    # We can easily retrieve our own id and pid; no need to store
+    self._id2 = 0
+    self._pid2 = 0
+    
+    # Timeout value (if no data is received for this long, 
+    # the timedout signal is fired). Because we do not know the timeout
+    # that the other side uses, we apply a minimum timeout.
+    self._timeout = TIMEOUT_MIN
+    
+    # Create signals
+    self._timedout_signal = yoton.Signal()
+    self._closed_signal = yoton.Signal()
+    
+    # Lock to make setting and getting the status thread safe
+    self._lock = threading.RLock()
+    
+    # Init variables to disconnected state
+    self._set_status(0)
+
+
+## Properties
+
+
+.. @+node:ekr.20170317181715.6: *5* hostname1
+@property
+def hostname1(self):
+    """ Get the hostname corresponding to this end of the connection.
+    """
+    return self._hostname1
+
+
+.. @+node:ekr.20170317181715.7: *5* hostname2
+@property
+def hostname2(self):
+    """ Get the hostname for the other end of this connection.
+    Is empty string if not connected.
+    """
+    return self._hostname2
+
+
+.. @+node:ekr.20170317181715.8: *5* port1
+@property
+def port1(self):
+    """ Get the port number corresponding to this end of the connection.
+    When binding, use this port to connect the other context.
+    """
+    return self._port1
+
+
+.. @+node:ekr.20170317181715.9: *5* port2
+@property
+def port2(self):
+    """ Get the port number for the other end of the connection.
+    Is zero when not connected.
+    """
+    return self._port2
+
+
+.. @+node:ekr.20170317181715.10: *5* id1
+@property
+def id1(self):
+    """ The id of the context on this side of the connection.
+    """
+    return self._context._id
+
+
+.. @+node:ekr.20170317181715.11: *5* id2
+@property
+def id2(self):
+    """ The id of the context on the other side of the connection.
+    """
+    return self._id2
+
+
+.. @+node:ekr.20170317181715.12: *5* pid1
+@property
+def pid1(self):
+    """ The pid of the context on this side of the connection.
+    (hint: os.getpid())
+    """
+    return os.getpid()
+
+
+.. @+node:ekr.20170317181715.13: *5* pid2
+@property
+def pid2(self):
+    """ The pid of the context on the other side of the connection.
+    """
+    return self._pid2
+
+
+.. @+node:ekr.20170317181715.14: *5* is_alive
+@property
+def is_alive(self):
+    """ Get whether this connection instance is alive (i.e. either 
+    waiting or connected, and not in the process of closing).
+    """
+    self._lock.acquire()
+    try:
+        return self._status >= 2
+    finally:
+        self._lock.release()
+
+
+.. @+node:ekr.20170317181715.15: *5* is_connected
+@property
+def is_connected(self):
+    """ Get whether this connection instance is connected.
+    """
+    self._lock.acquire()
+    try:
+        return self._status >= 3
+    finally:
+        self._lock.release()
+
+
+.. @+node:ekr.20170317181715.16: *5* is_waiting
+@property
+def is_waiting(self):
+    """ Get whether this connection instance is waiting for a connection. 
+    This is the state after using bind() and before another context 
+    connects to it.
+    """
+    self._lock.acquire()
+    try:
+        return self._status == 2
+    finally:
+        self._lock.release()
+
+
+.. @+node:ekr.20170317181715.17: *5* closed
+@property
+def closed(self):
+    """ Signal emitted when the connection closes. The first argument
+    is the ContextConnection instance, the second argument is the 
+    reason for the disconnection (as a string).
+    """
+    return self._closed_signal
+
+
+.. @+node:ekr.20170317181715.18: *5* timeout
+@Property   
+def timeout():
+    """ Set/get the amount of seconds that no data is received from
+    the other side after which the timedout signal is emitted. 
+    """ 
+    def fget(self):
+        return self._timeout
+    def fset(self, value):
+        if not isinstance(value, (int,float)):
+            raise ValueError('timeout must be a number.')
+        if value < TIMEOUT_MIN:
+            raise ValueError('timeout must be at least %1.2f.' % TIMEOUT_MIN)
+        self._timeout = value
+    return locals()
+
+
+.. @+node:ekr.20170317181715.19: *5* timedout
+@property
+def timedout(self):
+    """ This signal is emitted when no data has been received for 
+    over 'timeout' seconds. This can mean that the connection is unstable, 
+    or that the other end is running extension code.
+    
+    Handlers are called with two arguments: the ContextConnection 
+    instance, and a boolean. The latter is True when the connection
+    times out, and False when data is received again.
+    """
+    return self._timedout_signal
+
+
+.. @+node:ekr.20170317181715.20: *5* name
+@Property   
+def name():
+    """ Set/get the name that this connection is known by. This name
+    can be used to obtain the instance using the Context.connections 
+    property. The name can be used in networks in which each context
+    has a particular role, to easier distinguish between the different
+    connections. Other than that, the name has no function.
+    """ 
+    def fget(self):
+        return self._name
+    def fset(self, value):
+        # if not isinstance(value, basestring):
+        if not g.isString(value):
+            raise ValueError('name must be a string.')
+        self._name = value
+    return locals()
+
+
+## Public methods
+
+
+.. @+node:ekr.20170317181715.21: *5* flush
+def flush(self, timeout=3.0):
+    """ flush(timeout=3.0)
+    
+    Wait until all pending packages are send. An error
+    is raised when the timeout passes while doing so.
+    
+    """
+    return self._flush(timeout)
+
+
+.. @+node:ekr.20170317181715.22: *5* close
+def close(self, reason=None):
+    """ close(reason=None)
+    
+    Close the connection, disconnecting the two contexts and 
+    stopping all trafic. If the connection was waiting for a 
+    connection, it stops waiting.
+    
+    Optionally, a reason for closing can be specified. A closed
+    connection cannot be reused.
+    
+    """
+    
+    # No reason, user invoked close
+    if reason is None:
+        reason = STOP_DEFAULT_REASON
+    
+    # If already closed or closing, do nothing
+    if self._status in [STATUS_CLOSED, STATUS_CLOSING]:
+        return
+    
+    # Go!
+    return self._general_close_method(reason, True)
+
+
+.. @+node:ekr.20170317181715.23: *5* close_on_problem
+def close_on_problem(self, reason=None):
+    """ close_on_problem(reason=None)
+    
+    Disconnect the connection, stopping all trafic. If it was
+    waiting for a connection, we stop waiting.
+    
+    Optionally, a reason for stopping can be specified. This is highly
+    recommended in case the connection is closed due to a problem.
+    
+    In contrast to the normal close() method, this method does not
+    try to notify the other end of the closing.
+    
+    """
+    
+    # No reason, some unspecified problem
+    if reason is None:
+        reason = STOP_UNSPECIFIED_PROBLEM
+    
+    # If already closed (status==0), do nothing
+    if self._status == STATUS_CLOSED:
+        return
+    
+    # If a connecion problem occurs during closing, we close the connection
+    # so that flush will not block.
+    # The closing that is now in progress will emit the event, so we
+    # do not need to go into the _general_close_method().
+    if self._status == STATUS_CLOSING:
+        self._set_status(STATUS_CLOSED)
+        return
+    
+    # Go!
+    return self._general_close_method(reason, False)
+
+
+.. @+node:ekr.20170317181715.24: *5* _general_close_method
+def _general_close_method(self, reason, send_stop_message):
+    """ general close method used by both close() and close_on_problem()
+    """
+    
+    # Remember current status. Set status to closing, which means that
+    # the connection is still alive but cannot be closed again.
+    old_status = self._status
+    self._set_status(STATUS_CLOSING)
+    
+    # Check reason
+    # if not isinstance(reason, basestring):  
+    if not g.isString(reason):      
+        reason = STOP_INVALID_REASON
+    
+    # Tell other end to close?
+    if send_stop_message and self.is_connected:
+        self._notify_other_end_of_closing()
+    
+    # Close socket and set attributes to None
+    self._set_status(STATUS_CLOSED)
+    
+    # Notify user, but only once
+    self.closed.emit(self, reason)
+    
+    # Notify user ++
+    if self._context._verbose:
+        tmp = STATUSMAP[old_status]
+        print("Yoton: %s connection closed: %s" % (tmp, reason))
+.. @+node:ekr.20170317181715.25: *4* class InterConnection
+class InterConnection(Connection):
+    """ InterConnection(context, hostname, port, name='')
+    
+    Not implemented.
+    
+    Communication between two processes on the same machine can also
+    be implemented via a memory mapped file or a pype. Would there
+    be an advantage over the TcpConnection?
+    
+    
+    """
+    pass
+
+
+
+.. @+node:ekr.20170317181715.26: *4* class UDPConnection
+class UDPConnection(Connection):
+    """ UDPConnection(context, hostname, port, name='')
+    
+    Not implemented.
+    
+    Communication can also be done over UDP, but need protocol on top
+    of UDP to make the connection robust. Is there a reason to implement
+    this if we have Tcp?
+    
+    """
+    pass
+.. @+node:ekr.20170317181758.1: *3* @file context.py
+@first # -*- coding: utf-8 -*-
+""" Module yoton.context
+
+Defines the context class.
+
+"""
+<< imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317181809.1: *4* << imports >> context.py
+import leo.core.leoGlobals as g
+
+# import os, sys, time
+import threading
+
+# from yoton import core
+from yoton import connection
+# from yoton.misc import basestring, bytes, str, xrange, split_address
+# from yoton.misc import Property, getErrorMsg, UID, PackageQueue
+from yoton.misc import UID, PackageQueue, split_address
+from yoton.core import Package, BUF_MAX_LEN
+from yoton.core import SLOT_CONTEXT
+
+from yoton.connection import ConnectionCollection # , Connection
+from yoton.connection_tcp import TcpConnection
+from yoton.connection_itc import ItcConnection
+.. @+node:ekr.20170317181809.2: *4* class Context
+class Context(object):
+    """ Context(verbose=0, queue_params=None)
+    
+    A context represents a node in the network. It can connect to 
+    multiple other contexts (using a yoton.Connection. 
+    These other contexts can be in 
+    another process on the same machine, or on another machine
+    connected via a network or the internet.
+    
+    This class represents a context that can be used by channel instances
+    to communicate to other channels in the network. (Thus the name.)
+    
+    The context is the entity that queue routes the packages produced 
+    by the channels to the other context in the network, where
+    the packages are distributed to the right channels. A context queues
+    packages while it is not connected to any other context.
+    
+    If messages are send on a channel registered at this context while
+    the context is not connected, the messages are stored by the
+    context and will be send to the first connecting context.
+    
+    Example 1
+    ---------
+    # Create context and bind to a port on localhost
+    context = yoton.Context()
+    context.bind('localhost:11111')
+    # Create a channel and send a message
+    pub = yoton.PubChannel(context, 'test')
+    pub.send('Hello world!')
+    
+    Example 2
+    ---------
+    # Create context and connect to the port on localhost
+    context = yoton.Context()
+    context.connect('localhost:11111')
+    # Create a channel and receive a message
+    sub = yoton.SubChannel(context, 'test')
+    print(sub.recv() # Will print 'Hello world!'
+    
+    Queue params
+    ------------
+    The queue_params parameter allows one to specify the package queues
+    used in the system. It is recommended to use the same parameters
+    for every context in the network. The value of queue_params should
+    be a 2-element tuple specifying queue size and discard mode. The
+    latter can be 'old' (default) or 'new', meaning that if the queue
+    is full, either the oldest or newest messages are discarted.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181809.3: *5* __init__
+def __init__(self, verbose=0, queue_params=None):
+    
+    # Whether or not to write status information
+    self._verbose = verbose
+    
+    # Store queue parameters
+    if queue_params is None:
+        queue_params = BUF_MAX_LEN, 'old'
+    if not (isinstance(queue_params, tuple) and len(queue_params) == 2):
+        raise ValueError('queue_params should be a 2-element tuple.')
+    self._queue_params = queue_params
+    
+    # Create unique key to identify this context
+    self._id = UID().get_int()
+    
+    # Channels currently registered. Maps slots to channel instance.
+    self._sending_channels = {}
+    self._receiving_channels = {}
+    
+    # The list of connections
+    self._connections = []
+    self._connections_lock = threading.RLock()
+    
+    # Queue used during startup to collect packages
+    # This queue is also subject to the _connections_lock
+    self._startupQueue = PackageQueue(*queue_params)
+    
+    # For numbering and routing the packages
+    self._send_seq = 0
+    self._recv_seq = 0
+    self._source_map = {}
+
+
+.. @+node:ekr.20170317181809.4: *5* close
+def close(self):
+    """ close()
+    
+    Close the context in a nice way, by closing all connections
+    and all channels.
+    
+    Closing a connection means disconnecting two contexts. Closing
+    a channel means disasociating a channel from its context. 
+    Unlike connections and channels, a Context instance can be reused 
+    after closing (although this might not always the best strategy).
+    
+    """
+    
+    # Close all connections (also the waiting connections!)
+    for c in self.connections_all:
+        c.close('Closed by the context.')
+    
+    # Close all channels
+    self.close_channels()
+
+
+.. @+node:ekr.20170317181809.5: *5* close_channels
+def close_channels(self):
+    """ close_channels()
+    
+    Close all channels associated with this context. This does
+    not close the connections. See also close().
+    
+    """
+    
+    # Get all channels
+    channels1 = [c for c in self._sending_channels.values()]
+    channels2 = [c for c in self._receiving_channels.values()]
+    
+    # Close all channels
+    for c in set(channels1+channels2):
+        c.close()
+
+
+## Properties
+
+.. @+node:ekr.20170317181809.6: *5* connections_all
+@property
+def connections_all(self):
+    """ Get a list of all Connection instances currently
+    associated with this context, including pending connections 
+    (connections waiting for another end to connect).
+    In addition to normal list indexing, the connections objects can be
+    queried from this list using their name.
+    """
+    
+    # Lock
+    self._connections_lock.acquire()
+    try:
+        return [c for c in self._connections if c.is_alive]
+    finally:
+        self._connections_lock.release()
+
+
+.. @+node:ekr.20170317181809.7: *5* connections
+@property
+def connections(self):
+    """ Get a list of the Connection instances currently
+    active for this context. 
+    In addition to normal list indexing, the connections objects can be
+    queried  from this list using their name.
+    """        
+    # Lock
+    self._connections_lock.acquire()
+    
+    try:
+        
+        # Clean up any dead connections
+        copy = ConnectionCollection()
+        to_remove = []
+        for c in self._connections:
+            if not c.is_alive:
+                to_remove.append(c)
+            elif c.is_connected:
+                copy.append(c)
+        
+        # Clean
+        for c in to_remove:
+            self._connections.remove(c)
+        
+        # Return copy
+        return copy
+    
+    finally:
+        self._connections_lock.release()
+
+
+.. @+node:ekr.20170317181809.8: *5* connection_count
+@property
+def connection_count(self):
+    """ Get the number of connected contexts. Can be used as a boolean
+    to check if the context is connected to any other context.
+    """
+    return len(self.connections)
+
+
+.. @+node:ekr.20170317181809.9: *5* id
+@property
+def id(self):
+    """ The 8-byte UID of this context.
+    """
+    return self._id
+
+
+## Public methods
+
+
+.. @+node:ekr.20170317181809.10: *5* bind
+def bind(self, address, max_tries=1, name=''):
+    """ bind(address, max_tries=1, name='')
+    
+    Setup a connection with another Context, by being the host.
+    This method starts a thread that waits for incoming connections.
+    Error messages are printed when an attemped connect fails. the
+    thread keeps trying until a successful connection is made, or until
+    the connection is closed.
+    
+    Returns a Connection instance that represents the
+    connection to the other context. These connection objects 
+    can also be obtained via the Context.connections property.
+    
+    Parameters
+    ----------
+    address : str
+        Should be of the shape hostname:port. The port should be an
+        integer number between 1024 and 2**16. If port does not 
+        represent a number, a valid port number is created using a 
+        hash function.
+    max_tries : int
+        The number of ports to try; starting from the given port, 
+        subsequent ports are tried until a free port is available. 
+        The final port can be obtained using the 'port' property of
+        the returned Connection instance.
+    name : string
+        The name for the created Connection instance. It can
+        be used as a key in the connections property.
+    
+    Notes on hostname
+    -----------------
+    The hostname can be:
+      * The IP address, or the string hostname of this computer. 
+      * 'localhost': the connections is only visible from this computer. 
+        Also some low level networking layers are bypassed, which results
+        in a faster connection. The other context should also connect to
+        'localhost'.
+      * 'publichost': the connection is visible by other computers on the 
+        same network. Optionally an integer index can be appended if
+        the machine has multiple IP addresses (see socket.gethostbyname_ex).
+    
+    """ 
+    
+    # Trigger cleanup of closed connections
+    if 1:
+        # pylint: disable=pointless-statement
+        self.connections
+    
+    # Split address in protocol, real hostname and port number
+    protocol, hostname, port = split_address(address)
+    
+    # Based on protocol, instantiate connection class (currently only tcp)
+    if False:#protocol == 'itc':
+        connection = ItcConnection(self, name)
+    else:
+        connection = TcpConnection(self, name)
+    
+    # Bind connection
+    connection._bind(hostname, port, max_tries)
+    
+    # Save connection instance
+    self._connections_lock.acquire()
+    try:
+        # Push packages from startup queue
+        while len(self._startupQueue):
+            connection._inject_package(self._startupQueue.pop())
+        # Add connection object to list of connections
+        self._connections.append(connection)
+    finally:
+        self._connections_lock.release()
+    
+    # Return Connection instance
+    return connection
+.. @+node:ekr.20170317181809.11: *5* connect
+def connect(self, address, timeout=1.0, name=''):
+    """ connect(self, address, timeout=1.0, name='')
+    
+    Setup a connection with another context, by connection to a 
+    hosting context. An error is raised when the connection could
+    not be made.
+    
+    Returns a Connection instance that represents the
+    connection to the other context. These connection objects 
+    can also be obtained via the Context.connections property.
+    
+    Parameters
+    ----------
+    address : str
+        Should be of the shape hostname:port. The port should be an
+        integer number between 1024 and 2**16. If port does not 
+        represent a number, a valid port number is created using a 
+        hash function.
+    max_tries : int
+        The number of ports to try; starting from the given port, 
+        subsequent ports are tried until a free port is available. 
+        The final port can be obtained using the 'port' property of
+        the returned Connection instance.
+    name : string
+        The name for the created Connection instance. It can
+        be used as a key in the connections property.
+    
+    Notes on hostname
+    -----------------
+    The hostname can be:
+      * The IP address, or the string hostname of this computer. 
+      * 'localhost': the connection is only visible from this computer. 
+        Also some low level networking layers are bypassed, which results
+        in a faster connection. The other context should also host as
+        'localhost'.
+      * 'publichost': the connection is visible by other computers on the 
+        same network. Optionally an integer index can be appended if
+        the machine has multiple IP addresses (see socket.gethostbyname_ex).
+    
+    """
+    
+    # Trigger cleanup of closed connections
+    if 1:
+        # pylint: disable=pointless-statement
+        self.connections
+    
+    # Split address in protocol, real hostname and port number
+    protocol, hostname, port = split_address(address)
+    
+    # Based on protocol, instantiate connection class (currently only tcp)
+    if False:#protocol == 'itc':
+        connection = ItcConnection(self, name)
+    else:
+        connection = TcpConnection(self, name)
+    
+    # Create new connection and connect it
+    connection._connect(hostname, port, timeout)
+    
+    # Save connection instance
+    self._connections_lock.acquire()
+    try:
+        # Push packages from startup queue
+        while self._startupQueue:
+            connection._inject_package(self._startupQueue.pop())
+        # Add connection object to list of connections
+        self._connections.append(connection)
+    finally:
+        self._connections_lock.release()
+    
+    # Send message in the network to signal a new connection
+    bb = 'NEW_CONNECTION'.encode('utf-8')
+    p = Package(bb, SLOT_CONTEXT, self._id, 0,0,0,0)
+    self._send_package(p)
+    
+    # Return Connection instance
+    return connection
+
+
+.. @+node:ekr.20170317181809.12: *5* flush
+def flush(self, timeout=5.0):
+    """ flush(timeout=5.0)
+    
+    Wait until all pending messages are send. This will flush all
+    messages posted from the calling thread. However, it is not
+    guaranteed that no new messages are posted from another thread.
+    
+    Raises an error when the flushing times out.
+    
+    """
+    # Flush all connections
+    for c in self.connections:
+        c.flush(timeout)
+    
+    # Done (backward compatibility)
+    return True
+
+
+## Private methods used by the Channel classes
+
+
+.. @+node:ekr.20170317181809.13: *5* _register_sending_channel
+def _register_sending_channel(self, channel, slot, slotname=''):
+    """ _register_sending_channel(channel, slot, slotname='')
+    
+    The channel objects use this method to register themselves 
+    at a particular slot.
+    
+    """ 
+    
+    # Check if this slot is free
+    if slot in self._sending_channels:
+        raise ValueError("Slot not free: " + g.u(slotname)) ### str(slotname))
+    
+    # Register
+    self._sending_channels[slot] = channel
+
+
+.. @+node:ekr.20170317181809.14: *5* _register_receiving_channel
+def _register_receiving_channel(self, channel, slot, slotname=''):
+    """ _register_receiving_channel(channel, slot, slotname='')
+    
+    The channel objects use this method to register themselves 
+    at a particular slot.
+    
+    """ 
+    
+    # Check if this slot is free
+    if slot in self._receiving_channels:
+        raise ValueError("Slot not free: " + g.u(slotname)) ### str(slotname))
+    
+    # Register
+    self._receiving_channels[slot] = channel
+
+
+.. @+node:ekr.20170317181809.15: *5* _unregister_channel
+def _unregister_channel(self, channel):
+    """ _unregister_channel(channel)
+    
+    Unregisters the given channel. That channel can no longer
+    receive messages, and should no longer send messages.
+    
+    """
+    for D in [self._receiving_channels, self._sending_channels]:            
+        for key in [key for key in D.keys()]:
+            if D[key] == channel:
+                D.pop(key)
+
+
+## Private methods to pass packages between context and io-threads
+
+
+.. @+node:ekr.20170317181809.16: *5* _send_package
+def _send_package(self, package):
+    """ _send_package(package)
+    
+    Used by the channels to send a package into the network.
+    This method routes the package to all currentlt connected
+    connections. If there are none, the packages is queued at
+    the context.
+    
+    """
+    
+    # Add number
+    self._send_seq += 1
+    package._source_seq = self._send_seq
+    
+    # Send to all connections, or queue if there are none
+    self._connections_lock.acquire()
+    try:
+        ok = False
+        for c in self._connections:
+            if c.is_alive: # Waiting or connected
+                c._send_package(package)
+                ok = True
+        # Should we queue the package?
+        if not ok:
+            self._startupQueue.push(package)
+    finally:
+        self._connections_lock.release()
+
+
+.. @+node:ekr.20170317181809.17: *5* _recv_package
+def _recv_package(self, package, connection):
+    """ _recv_package(package, connection)
+    
+    Used by the connections to receive a package at this
+    context. The package is distributed to all connections
+    except the calling one. The package is also distributed
+    to the right channel (if applicable).
+    
+    """
+    
+    # Get slot
+    slot = package._slot
+    
+    # Init what to do with the package
+    send_further = False
+    deposit_here = False
+    
+    # Get what to do with the package
+    last_seq = self._source_map.get(package._source_id, 0)
+    if last_seq < package._source_seq:
+        # Update source map
+        self._source_map[package._source_id] = package._source_seq
+        if package._dest_id == 0:
+            # Add to both lists, first attach seq nr
+            self._recv_seq += 1
+            package._recv_seq = self._recv_seq
+            send_further, deposit_here = True, True
+        elif package._dest_id == self._id:
+            # Add only to process list, first attach seq nr
+            self._recv_seq += 1
+            package._recv_seq = self._recv_seq
+            deposit_here = True
+        else:
+            # Send package to connected nodes
+            send_further = True
+    
+    
+    # Send package to other context (over all alive connections)
+    if send_further:
+        self._connections_lock.acquire()
+        try:
+            for c in self._connections:
+                if c is connection or not c.is_alive:
+                    continue
+                c._send_package(package)
+        finally:
+            self._connections_lock.release()
+    
+    
+    # Process package here or pass to channel
+    if deposit_here:
+        if slot == SLOT_CONTEXT:
+            # Context-to-context messaging;
+            # A slot starting with a space reprsents the context 
+            self._recv_context_package(package)
+        else:
+            # Give package to a channel (if applicable)
+            channel = self._receiving_channels.get(slot, None)
+            if channel is not None:
+                channel._recv_package(package)
+
+
+.. @+node:ekr.20170317181809.18: *5* _recv_context_package
+def _recv_context_package(self, package):
+    """ _recv_context_package(package)
+    
+    Process a package addressed at the context itself. This is how
+    the context handles higher-level connection tasks.
+    
+    """ 
+    
+    # Get message: context messages are always utf-8 encoded strings
+    message = package._data.decode('utf-8')
+    
+    if message == 'CLOSE_CONNECTION':
+        # Close the connection. Check which one of our connections is
+        # connected with the context that send this message.
+        self._connections_lock.acquire()
+        try:
+            for c in self.connections:
+                if c.is_connected and c.id2 == package._source_id:
+                    c.close(connection.STOP_CLOSED_FROM_THERE, False)
+        finally:
+            self._connections_lock.release()
+    
+    elif message == 'NEW_CONNECTION':
+        # Resend all status channels
+        for channel in self._sending_channels.values():
+            if hasattr(channel, '_current_message') and hasattr(channel, 'send_last'):
+                channel.send_last()
+    
+    else:
+        print('Yoton: Received unknown context message: '+message)
+.. @+node:ekr.20170317181823.1: *3* @file core.py
+@first # -*- coding: utf-8 -*-
+<< imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317181832.1: *4* << imports >> core.py
+import leo.core.leoGlobals as g
+assert g
+import time
+import sys
+import struct
+import socket
+# import threading
+#import select  # to determine wheter a socket can receive data
+
+if sys.platform.startswith('java'):  # Jython
+    from select import cpython_compatible_select as select, error as SelectErr
+else:
+    from select import select, error as SelectErr
+
+# import yoton
+# from yoton.misc import basestring, bytes, str
+# from yoton.misc import Property, getErrorMsg
+
+## Constants
+
+# Error code for interruptions
+try:
+    from errno import EINTR
+except ImportError:
+    EINTR = None
+
+# Queue size
+BUF_MAX_LEN = 10000
+
+# Define buffer size. For recv 4096 or 8192 chunk size is recommended.
+# For sending, in principle as large as possible, but prevent too much
+# message copying.
+BUFFER_SIZE_IN = 2**13
+BUFFER_SIZE_OUT = 1*2**20
+
+# Reserved slots (slot 0 does not exist, so we can test "if slot: ")
+# The actual slots start counting from 8.
+# SLOT_TEST = 3 -> Deprecated
+SLOT_CONTEXT = 2
+SLOT_DUMMY = 1
+
+# Struct header packing
+HEADER_FORMAT = '<QQQQQQQ'
+HEADER_SIZE = struct.calcsize(HEADER_FORMAT)
+
+# Constant for control bytes
+CONTROL_BYTES = struct.unpack('<Q', 'YOTON   '.encode('utf-8'))[0]
+
+.. @+node:ekr.20170317183106.1: *4* Helpers
+.. @+node:ekr.20170317181832.2: *5* can_send
+def can_send(s, timeout=0.0):
+    """ can_send(bsd_socket, timeout=0.0)
+    
+    Given a socket, uses select() to determine whether it can be used
+    for sending. This function can deal with system interrupts.
+    
+    """
+    while True:
+        try:
+            can_recv, can_send, tmp = select([], [s], [], timeout)
+            break
+        except SelectErr:
+            # Skip errors caused by interruptions.
+            type, value, tb = sys.exc_info()
+            del tb
+            if value.args[0] != EINTR:
+                raise
+    return bool(can_send)
+
+
+.. @+node:ekr.20170317181832.3: *5* can_recv
+def can_recv(s, timeout=0.0):
+    """ can_recv(bsd_socket, timeout=0.0)
+    
+    Given a socket, uses select() to determine whether it can be used
+    for receiving. This function can deal with system interrupts.
+    
+    """
+    while True:
+        try:
+            can_recv, can_send, tmp = select([s], [], [], timeout)
+            break
+        except SelectErr:
+            # Skip errors caused by interruptions.
+            type, value, tb = sys.exc_info()
+            del tb
+            if value.args[0] != EINTR:
+                raise
+    return bool(can_recv)
+
+
+.. @+node:ekr.20170317181832.4: *5* send_all
+def send_all(s, text, stutdown_after_sending=True):
+    """ send_all(socket, text, stutdown_after_sending=True)
+    
+    Send all text to the socket. Used during handshaking and in
+    the clientserver module.
+    
+    If stutdown_after_sending, the socket is shut down. Some protocols
+    rely on this.
+    
+    It is made sure that the text ends with a CRLF double-newline code.
+    
+    """
+    
+    # Ensure closing chars
+    if not text.endswith('\r\n'):
+        text += '\r\n'
+    
+    # Make bytes
+    bb = text.encode('utf-8')
+    
+    # Send all bytes
+    try:
+        s.sendall(bb)
+    except socket.error:
+        return -1 # Socket closed down badly
+    
+    # Shutdown connection nicely from here
+    if stutdown_after_sending:
+        try:
+            s.shutdown(socket.SHUT_WR)
+        except socket.error:
+            pass
+
+
+.. @+node:ekr.20170317181832.5: *5* recv_all
+def recv_all(s, timeout=-1, end_at_crlf=True):
+    """ recv_all(socket, timeout=-1, end_at_crlf=True)
+    
+    Receive text from the socket (untill socket receiving is shut down).
+    Used during handshaking and in the clientserver module.
+    
+    If end_at_crlf, a message is also ended at a CRLF double-newline code,
+    and a shutdown is not necessary. This takes a tiny bit longer.
+    
+    """ 
+    
+    # Init parts (start with one byte, such that len(parts) is always >= 2
+    parts = [' '.encode('ascii'),]
+    
+    # Determine number of bytes to get per recv
+    nbytesToGet = BUFFER_SIZE_IN
+    if end_at_crlf:
+        nbytesToGet = 1
+    
+    # Set end bytes
+    end_bytes = '\r\n'.encode('ascii')
+    
+    # Set max time
+    if timeout <= 0:
+        timeout = 2**32
+    maxtime = time.time() + timeout
+    
+    # Receive data
+    while True:
+        
+        # Receive if we can
+        if can_recv(s):
+            
+            # Get part
+            try:
+                part = s.recv(nbytesToGet)
+                parts.append(part)
+            except socket.error:
+                return None # Socket closed down badly
+            
+            # Detect end by shutdown (EOF)
+            if not part:
+                break
+            
+            # Detect end by \r\n
+            if end_at_crlf and (parts[-2] + parts[-1]).endswith(end_bytes):
+                break
+        
+        else:
+            # Sleep
+            time.sleep(0.01)
+            
+            # Check time
+            if time.time() > maxtime:
+                bb  = bytes().join(parts[1:])
+                return bb.decode('utf-8', 'ignore')
+    
+    # Combine parts (discared first (dummy) part)
+    bb = bytes().join(parts[1:])
+    
+    # Try returning as Unicode
+    try:
+        return bb.decode('utf-8','ignore')
+    except UnicodeError:
+        return '<UnicodeError>'
+
+
+## Package class
+
+
+.. @+node:ekr.20170317181832.6: *4* class Package
+class Package(object):
+    """ Package(data, slot, source_id, source_seq, dest_id, dest_seq, recv_seq)
+    
+    Represents a package of bytes to be send from one Context instance 
+    to another. A package consists of a header and the encoded message.
+    
+    To make this class as fast as reasonably possible, its interface
+    is rather minimalistic and few convenience stuff is implemented.
+    
+    Parameters
+    ----------
+    data : bytes
+        The message itself.
+    slot : long
+        The slot at which the package is directed. The integer is a hash of
+        a string slot name.
+    source_id : long
+        The id of the context that sent this package.
+    source_seq : long
+        The sequence number of this package, counted at the sending context.
+        Together with source_id, this fully identifies a package.
+    dest_id : long (default 0)
+        The id of the package that this package replies to. 
+    dest_seq : long (default 0)
+        The sequence number of the package that this package replies to.
+    recv_seq : long (default 0)
+        The sequence number of this package counted at the receiving context.
+        This is used to synchronize channels.
+    
+    When send, the header is composed of four control bytes, the slot,
+    the source_id, source_seq, dest_id and dest_seq.
+    
+    Notes
+    -----
+    A package should always have content. Packages without content are only 
+    used for low-level communication between two ContextConnection instances. 
+    The source_seq is then used as the signal. All other package attributes
+    are ignored.
+    
+    """
+    
+    # The __slots__ makes instances of this class consume < 20% of memory
+    # Note that this only works for new style classes.
+    # This is important because many packages can exist at the same time 
+    # if a receiver cant keep up with a sender. Further, although Python's
+    # garbage collector collects the objects after they're "consumed", 
+    # it does not release the memory, because it hopes to reuse it in
+    # an efficient way later.
+    __slots__ = [   '_data', '_slot', 
+                    '_source_id', '_source_seq', 
+                    '_dest_id', '_dest_seq',
+                    '_recv_seq']   
+    
+    @others
+# Constant Package instances (source_seq represents the signal)
+PACKAGE_HEARTBEAT   = Package(bytes(), SLOT_DUMMY, 0, 0, 0, 0, 0)
+PACKAGE_CLOSE       = Package(bytes(), SLOT_DUMMY, 0, 1, 0, 0, 0)
+.. @+node:ekr.20170317181832.7: *5* __init__
+def __init__(self, data, slot, 
+            source_id, source_seq, dest_id, dest_seq, recv_seq):
+    self._data = data
+    self._slot = slot
+    #
+    self._source_id = source_id
+    self._source_seq = source_seq
+    self._dest_id = dest_id
+    self._dest_seq = dest_seq
+    self._recv_seq = recv_seq
+
+
+.. @+node:ekr.20170317181832.8: *5* parts
+def parts(self):
+    """ parts()
+    
+    Get list of bytes that represents this package.
+    By not concatenating the header and content parts, 
+    we prevent unnecesary copying of data.
+    
+    """
+    
+    # Obtain header
+    L = len(self._data)
+    header = struct.pack(HEADER_FORMAT, CONTROL_BYTES, self._slot,
+                        self._source_id, self._source_seq, 
+                        self._dest_id, self._dest_seq, 
+                        L)
+    
+    # Return header and message
+    return header, self._data
+
+
+.. @+node:ekr.20170317181832.9: *5* __str__
+def __str__(self):
+    """ Representation of the package. Mainly for debugging. """
+    return 'At slot %i: %s' % (self._slot, repr(self._data))
+
+
+.. @+node:ekr.20170317181832.10: *5* from_header
+@classmethod
+def from_header(cls, header):
+    """ from_header(header)
+    
+    Create a package (without data) from the header of a message.
+    Returns (package, data_length). If the header is invalid (checked
+    using the four control bytes) this method returns (None, None).
+    
+    """
+    # Unpack
+    tmp = struct.unpack(HEADER_FORMAT, header)
+    CTRL, slot, source_id, source_seq, dest_id, dest_seq, L = tmp
+    # Create package
+    p = Package(None, slot, source_id, source_seq, dest_id, dest_seq, 0)
+    # Return
+    if CTRL == CONTROL_BYTES:
+        return p, L
+    else:
+        return None, None
+
+
+.. @+node:ekr.20170317181843.1: *3* @file events.py
+@first # -*- coding: utf-8 -*-
+<< docstring >>
+<< imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317183149.1: *4* << docstring >>
+""" Module yoton.events
+
+Yoton comes with a simple event system to enable event-driven applications.
+
+All channels are capable of running without the event system, but some
+channels have limitations. See the documentation of the channels for 
+more information. Note that signals only work if events are processed.
+
+"""
+
+# This code is loosely based on the event system of Visvis and on the
+# signals system of Qt.
+
+# Note: Python has a buildin module (sched) that does some of the things
+# here. Hoever, only since Python3.3 is this buildin functionality 
+# thread safe. And we need thread safety!
+
+
+.. @+node:ekr.20170317181855.1: *4* << imports >> events.py
+import leo.core.leoGlobals as g
+assert g
+# import os, sys, time
+import threading
+import time
+import weakref
+# import yoton
+from yoton.misc import Property, getErrorMsg, PackageQueue
+
+
+
+.. @+node:ekr.20170317181855.2: *4* class CallableObject
+class CallableObject(object):
+    """ CallableObject(callable)
+    
+    A class to hold a callable. If it is a plain function, its reference
+    is held (because it might be a closure). If it is a method, we keep
+    the function name and a weak reference to the object. In this way,
+    having for instance a signal bound to a method, the object is not
+    prevented from being cleaned up.
+    
+    """
+    __slots__ = ['_ob', '_func']  # Use __slots__ to reduce memory footprint
+    
+    @others
+.. @+node:ekr.20170317181855.3: *5* __init__
+def __init__(self, c):
+    
+    # Check
+    if not hasattr(c, '__call__'):
+        raise ValueError('Error: given callback is not callable.')
+    
+    # Store funcion and object
+    if hasattr(c, '__self__'):
+        # Method, store object and method name
+        self._ob = weakref.ref(c.__self__)
+        self._func = c.__func__.__name__
+    elif hasattr(c, 'im_self'): 
+        # Method in older Python
+        self._ob = weakref.ref(c.im_self)
+        self._func = c.im_func.__name__
+    else:
+        # Plain function
+        self._func = c
+        self._ob = None
+
+.. @+node:ekr.20170317181855.4: *5* isdead
+def isdead(self):
+    """ Get whether the weak ref is dead. 
+    """
+    if self._ob:
+        # Method
+        return self._ob() is None
+    else:
+        return False
+
+.. @+node:ekr.20170317181855.5: *5* compare
+def compare(self, other):
+    """ compare this instance with another.
+    """
+    if self._ob and other._ob:
+        return (self._ob() is other._ob()) and (self._func == other._func)
+    elif not (self._ob or other._ob):
+        return self._func == other._func
+    else:
+        return False
+.. @+node:ekr.20170317181855.6: *5* __str__
+def __str__(self):
+    return self._func.__str__()
+.. @+node:ekr.20170317181855.7: *5* call
+def call(self, *args, **kwargs):
+    """ call(*args, **kwargs)
+    Call the callable. Exceptions are caught and printed.
+    """
+    if self.isdead():
+        return
+    # Get function
+    try:
+        if self._ob:
+            func = getattr(self._ob(), self._func)
+        else:
+            func = self._func
+    except Exception:
+        return
+    # Call it
+    try:
+        return func(*args, **kwargs)
+    except Exception:
+        print('Exception while handling event:')
+        print(getErrorMsg())
+.. @+node:ekr.20170317181855.8: *4* class Event
+class Event(object):
+    """ Event(callable, *args, **kwargs)
+    
+    An Event instance represents something that is going to be done.
+    It consists of a callable and arguments to call it with.
+    
+    Instances of this class populate the event queue.
+    
+    """
+    __slots__ = ['_callable', '_args', '_kwargs', '_timeout'] 
+    @others
+.. @+node:ekr.20170317181855.9: *5* __init__
+def __init__(self, callable, *args, **kwargs):
+    if isinstance(callable, CallableObject):
+        self._callable = callable
+    else:
+        self._callable = CallableObject(callable)
+    self._args = args
+    self._kwargs = kwargs
+
+.. @+node:ekr.20170317181855.10: *5* dispatch
+def dispatch(self):
+    """ dispatch()
+    Call the callable with the arguments and keyword-arguments specified
+    at initialization.
+    """
+    self._callable.call(*self._args, **self._kwargs)
+
+.. @+node:ekr.20170317181855.11: *5* _on_timeout
+def _on_timeout(self):
+    """ This is what theTimerThread calls. 
+    """
+    app.post_event(self)
+
+
+
+.. @+node:ekr.20170317181855.12: *4* class Signal
+class Signal:
+    """ Signal()
+    
+    The purpose of a signal is to provide an interface to bind/unbind 
+    to events and to fire them. 
+    
+    One can bind() or unbind() a callable to the signal. When emitted, an
+    event is created for each bound handler. Therefore, the event loop
+    must run for signals to work.
+    
+    Some signals call the handlers using additional arguments to 
+    specify specific information.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181855.13: *5* __init__
+def __init__(self):
+    self._handlers = []
+
+.. @+node:ekr.20170317181855.14: *5* type
+@property
+def type(self):
+    """ The type (__class__) of this event. 
+    """
+    return self.__class__
+
+
+.. @+node:ekr.20170317181855.15: *5* bind
+def bind(self, func):
+    """ bind(func)
+    
+    Add an eventhandler to this event.             
+    
+    The callback/handler (func) must be a callable. It is called
+    with one argument: the event instance, which can contain 
+    additional information about the event.
+    
+    """
+    
+    # make callable object (checks whether func is callable)
+    cnew = CallableObject(func)
+    
+    # check -> warn
+    for c in self._handlers:
+        if cnew.compare(c):
+            print("Warning: handler %s already present for %s" %(func, self))
+            return
+    
+    # add the handler
+    self._handlers.append(cnew)
+
+
+.. @+node:ekr.20170317181855.16: *5* unbind
+def unbind(self, func=None):
+    """ unbind(func=None)
+    
+    Unsubscribe a handler, If func is None, remove all handlers.  
+    
+    """
+    if func is None:
+        self._handlers[:] = []
+    else:
+        cref = CallableObject(func)
+        for c in [c for c in self._handlers]:
+            # remove if callable matches func or object is destroyed
+            if c.compare(cref) or c.isdead():  
+                self._handlers.remove( c )
+
+
+.. @+node:ekr.20170317181855.17: *5* emit
+def emit(self, *args, **kwargs):
+    """ emit(*args, **kwargs)
+    
+    Emit the signal, calling all bound callbacks with *args and **kwargs.
+    An event is queues for each callback registered to this signal.
+    Therefore it is safe to call this method from another thread.
+    
+    """
+    
+    # Add an event for each callback
+    toremove = []
+    for func in self._handlers:
+        if func.isdead():
+            toremove.append(func)
+        else:
+            event = Event(func, *args, **kwargs)
+            app.post_event(event)
+    
+    # Remove dead ones
+    for func in toremove:
+        self._handlers.remove(func)
+
+
+.. @+node:ekr.20170317181855.18: *5* emit_now
+def emit_now(self, *args, **kwargs):
+    """ emit_now(*args, **kwargs)
+    
+    Emit the signal *now*. All handlers are called from the calling
+    thread. Beware, this should only be done from the same thread
+    that runs the event loop.
+    
+    """
+    
+    # Add an event for each callback
+    toremove = []
+    for func in self._handlers:
+        if func.isdead():
+            toremove.append(func)
+        else:
+            func.call(*args, **kwargs)
+    
+    # Remove dead ones
+    for func in toremove:
+        self._handlers.remove(func)
+
+
+
+.. @+node:ekr.20170317181855.19: *4* class TheTimerThread
+class TheTimerThread(threading.Thread):
+    """ TheTimerThread is a singleton thread that is used by all timers
+    and delayed events to wait for a while (in a separate thread) and then
+    post an event to the event-queue. By sharing a single thread timers
+    stay lightweight and there is no time spend on initializing or tearing
+    down threads. The downside is that when there are a lot of timers running
+    at the same time, adding a timer may become a bit inefficient because
+    the registered objects must be sorted each time an object is added.
+    """
+    @others
+# Instantiate and start the single timer thread
+# We can do this as long as we do not wait for the threat, and the threat
+# does not do any imports:
+# http://docs.python.org/library/threading.html#importing-in-threaded-code
+theTimerThread = TheTimerThread()
+theTimerThread.start()
+
+
+
+.. @+node:ekr.20170317181855.20: *5* __init__
+def __init__(self):
+    threading.Thread.__init__(self)
+    self.setDaemon(True)
+    self._exit = False
+    self._timers = []
+    self._somethingChanged = False
+    self._condition = threading.Condition(threading.Lock())
+
+.. @+node:ekr.20170317181855.21: *5* stop
+def stop(self, timeout=1.0):
+    self._exit = True
+    self._condition.acquire()
+    try:
+        self._condition.notify()
+    finally:
+        self._condition.release()
+    self.join(timeout)
+
+.. @+node:ekr.20170317181855.22: *5* add
+def add(self, timer):
+    """ add(timer)
+    Add item to the list of objects to track. The object should
+    have a _timeout attribute, representing the time.time() at which 
+    it runs out, and an _on_timeout() method to call when it does. 
+    """
+    # Check
+    if not (hasattr(timer, '_timeout') and hasattr(timer, '_on_timeout')):
+        raise ValueError('Cannot add this object to theTimerThread.')
+    # Add item
+    self._condition.acquire()
+    try:
+        if timer not in self._timers:
+            self._timers.append(timer)
+            self._sort()
+            self._somethingChanged = True
+        self._condition.notify()
+    finally:
+        self._condition.release()
+
+.. @+node:ekr.20170317181855.23: *5* _sort
+def _sort(self):
+    self._timers = sorted(self._timers, 
+            key=lambda x: x._timeout, reverse=True)
+
+.. @+node:ekr.20170317181855.24: *5* discard
+def discard(self, timer):
+    """Stop the timer if it hasn't finished yet"""
+    self._condition.acquire()
+    try:
+        if timer in self._timers:
+            self._timers.remove(timer)
+        self._somethingChanged = True
+        self._condition.notify()
+    finally:
+        self._condition.release()
+
+.. @+node:ekr.20170317181855.25: *5* run
+def run(self):
+    self._condition.acquire()
+    try:
+        self._mainloop()
+    finally:
+        self._condition.release()
+
+.. @+node:ekr.20170317181855.26: *5* _mainloop
+def _mainloop(self):
+    while not self._exit:
+        
+        # Set flag
+        self._somethingChanged = False
+        
+        # Wait here, in wait() the undelying lock is released
+        if self._timers:
+            timer = self._timers[-1]
+            timeout = timer._timeout - time.time()
+            if timeout > 0:
+                self._condition.wait(timeout)
+        else:
+            timer = None
+            self._condition.wait()
+        
+        # Here the lock has been re-acquired. Take action?
+        if self._exit:
+            break
+        if (timer is not None) and (not self._somethingChanged):
+            if timer._on_timeout():
+                self._sort()  # Keep and resort
+            else:
+                self._timers.pop() # Pop
+
+.. @+node:ekr.20170317181855.27: *4* class Timer
+class Timer(Signal):
+    """ Timer(interval=1.0, oneshot=True) 
+    
+    Timer class. You can bind callbacks to the timer. The timer is 
+    fired when it runs out of time. 
+    
+    Parameters
+    ----------
+    interval : number
+        The interval of the timer in seconds.
+    oneshot : bool
+        Whether the timer should do a single shot, or run continuously.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181855.28: *5* __init__
+def __init__(self, interval=1.0, oneshot=True):
+    Signal.__init__(self)
+    
+    # store Timer specific properties        
+    self.interval = interval
+    self.oneshot = oneshot
+    #
+    self._timeout = 0
+
+
+.. @+node:ekr.20170317181855.29: *5* interval
+@Property
+def interval():
+    """ Set/get the timer's interval in seconds.
+    """
+    def fget(self):
+        return self._interval
+    def fset(self, value):
+        if not isinstance(value, (int, float)):
+            raise ValueError('interval must be a float or integer.')
+        if value <= 0:
+            raise ValueError('interval must be larger than 0.')
+        self._interval = float(value)
+    return locals()
+.. @+node:ekr.20170317181855.30: *5* oneshot
+@Property
+def oneshot():
+    """ Set/get whether this is a oneshot timer. If not is runs
+    continuously.
+    """
+    def fget(self):
+        return self._oneshot
+    def fset(self, value):
+        self._oneshot = bool(value)
+    return locals()
+
+.. @+node:ekr.20170317181855.31: *5* running
+@property
+def running(self):
+    """ Get whether the timer is running. 
+    """
+    return self._timeout > 0
+.. @+node:ekr.20170317181855.32: *5* start
+def start(self, interval=None, oneshot=None):
+    """ start(interval=None, oneshot=None)
+    
+    Start the timer. If interval or oneshot are not given, 
+    their current values are used.
+    
+    """
+    # set properties?
+    if interval is not None:
+        self.interval = interval
+    if oneshot is not None:
+        self.oneshot = oneshot
+    
+    # put on
+    self._timeout = time.time() + self.interval
+    theTimerThread.add(self)
+
+.. @+node:ekr.20170317181855.33: *5* stop
+def stop(self):
+    """ stop()
+    
+    Stop the timer from running. 
+    
+    """
+    theTimerThread.discard(self)
+    self._timeout = 0
+.. @+node:ekr.20170317181855.34: *5* _on_timeout
+def _on_timeout(self):
+    """ Method to call when the timer finishes. Called from 
+    event-loop-thread.
+    """
+    # Emit signal
+    self.emit()
+    #print('timer timeout', self.oneshot)
+    # Do we need to stop it now, or restart it
+    if self.oneshot:
+        # This timer instance is removed from the list of Timers
+        # when the timeout is reached.
+        self._timeout = 0
+        return False
+    else:
+        # keep in the thread
+        self._timeout = time.time() + self.interval
+        return True
+.. @+node:ekr.20170317181855.35: *4* class YotonApplication
+class YotonApplication(object):
+    """ YotonApplication
+    
+    Represents the yoton application and contains functions for
+    the event system. Multiple instances can be created, they will
+    all operate on the same event queue and share attributes 
+    (because these are on the class, not on the instance).
+    
+    One instance of this class is always accesible via yoton.app.
+    For convenience, several of its methods are also accessible
+    directly from the yoton module namespace.
+    
+    """
+    
+    # Event queues
+    _event_queue = PackageQueue(10000, 'new')
+    
+    # Flag to stop event loop
+    _stop_event_loop = False
+    
+    # Flag to signal whether we are in an event loop
+    # Can be set externally if the event loop is hijacked.
+    _in_event_loop = False
+    
+    # To allow other event loops to embed the yoton event loop
+    _embedding_callback1 = None # The reference
+    _embedding_callback2 = None # Used in post_event
+    
+    
+    @others
+# Instantiate an application object
+app = YotonApplication()
+.. @+node:ekr.20170317181855.36: *5* call_later
+def call_later(self, func, timeout=0.0, *args, **kwargs):
+    """ call_later(func, timeout=0.0, *args, **kwargs)
+    
+    Call the given function after the specified timeout.
+    
+    Parameters
+    ----------
+    func : callable
+        The function to call.
+    timeout : number
+        The time to wait in seconds. If zero, the event is put on the event
+        queue. If negative, the event will be put at the front of the event
+        queue, so that it's processed asap.
+    args : arguments
+        The arguments to call func with.
+    kwargs: keyword arguments.
+        The keyword arguments to call func with.
+    
+    """
+    
+    # Wrap the object in an event
+    event = Event(func, *args, **kwargs)
+    
+    # Put it in the queue
+    if timeout > 0:
+        self.post_event_later(event, timeout)
+    elif timeout < 0:
+        self.post_event_asap(event) # priority event
+    else:
+        self.post_event(event)
+
+
+.. @+node:ekr.20170317181855.37: *5* post_event
+def post_event(self, event):
+    """ post_event(events)
+    
+    Post an event to the event queue.
+    
+    """
+    YotonApplication._event_queue.push(event)
+    #
+    if  YotonApplication._embedding_callback2 is not None:
+        YotonApplication._embedding_callback2 = None
+        YotonApplication._embedding_callback1()
+
+
+.. @+node:ekr.20170317181855.38: *5* post_event_asap
+def post_event_asap(self, event):
+    """ post_event_asap(event)
+    
+    Post an event to the event queue. Handle as soon as possible;
+    putting it in front of the queue.
+    
+    """
+    YotonApplication._event_queue.insert(event)
+    #
+    if  YotonApplication._embedding_callback2 is not None:
+        YotonApplication._embedding_callback2 = None
+        YotonApplication._embedding_callback1()
+
+
+.. @+node:ekr.20170317181855.39: *5* post_event_later
+def post_event_later(self, event, delay):
+    """ post_event_later(event, delay)
+    
+    Post an event to the event queue, but with a certain delay.
+    
+    """
+    event._timeout = time.time() + delay
+    theTimerThread.add(event)
+    # Calls post_event in due time
+
+
+.. @+node:ekr.20170317181855.40: *5* process_events
+def process_events(self, block=False):
+    """ process_events(block=False)
+    
+    Process all yoton events currently in the queue. 
+    This function should be called periodically
+    in order to keep the yoton event system running.
+    
+    block can be False (no blocking), True (block), or a float 
+    blocking for maximally 'block' seconds.
+    
+    """
+    # Reset callback for the embedding event loop
+    YotonApplication._embedding_callback2 = YotonApplication._embedding_callback1
+    
+    # Process events
+    try:
+        while True:
+            event = YotonApplication._event_queue.pop(block)
+            event.dispatch()
+            block = False # Proceed until there are now more events
+    except PackageQueue.Empty:
+        pass
+
+
+.. @+node:ekr.20170317181855.41: *5* start_event_loop
+def start_event_loop(self):
+    """ start_event_loop()
+    
+    Enter an event loop that keeps calling yoton.process_events().
+    The event loop can be stopped using stop_event_loop().
+    
+    """
+    
+    # Dont go if we are in an event loop
+    if YotonApplication._in_event_loop:
+        return
+    
+    # Set flags
+    YotonApplication._stop_event_loop = False
+    YotonApplication._in_event_loop = True
+    
+    try:
+        # Keep blocking for 3 seconds so a keyboardinterrupt still works
+        while not YotonApplication._stop_event_loop:
+            self.process_events(3.0)
+    finally:
+        # Unset flag
+        YotonApplication._in_event_loop = False
+
+
+.. @+node:ekr.20170317181855.42: *5* stop_event_loop
+def stop_event_loop(self):
+    """ stop_event_loop()
+    
+    Stops the event loop if it is running.
+    
+    """
+    if not YotonApplication._stop_event_loop:
+        # Signal stop
+        YotonApplication._stop_event_loop = True
+        # Push an event so that process_events() unblocks
+        def dummy(): pass
+        self.post_event(Event(dummy))
+
+
+.. @+node:ekr.20170317181855.43: *5* embed_event_loop
+def embed_event_loop(self, callback):
+    """ embed_event_loop(callback)
+    
+    Embed the yoton event loop in another event loop. The given callback
+    is called whenever a new yoton event is created. The callback
+    should create an event in the other event-loop, which should
+    lead to a call to the process_events() method. The given callback
+    should be thread safe.
+    
+    Use None as an argument to disable the embedding. 
+    
+    """
+    YotonApplication._embedding_callback1 = callback
+    YotonApplication._embedding_callback2 = callback
+
+
+.. @+node:ekr.20170317181903.1: *3* @file misc.py
+@first # -*- coding: utf-8 -*-
+<< docstring >>
+<< imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170317181913.1: *4* << docstring >>
+""" Module yoton.misc
+
+Defines a few basic constants, classes and functions.
+
+Most importantly, it defines a couple of specific buffer classes that
+are used for the low-level messaging.
+
+"""
+.. @+node:ekr.20170317183337.1: *4* << imports >> misc.py
+import leo.core.leoGlobals as g
+# import os
+import sys
+import struct
+import socket
+import threading
+import time
+import random
+from collections import deque
+
+# Version dependent defs
+V2 = sys.version_info[0] == 2
+if V2:
+    pass
+    ###
+    # if sys.platform.startswith('java'):
+        # import __builtin__ as D  # Jython
+    # else:
+        # D = __builtins__
+    # if not isinstance(D, dict):
+        # D = D.__dict__
+    ### bytes = D['str']
+    ### str = D['unicode']
+    # xrange = D['xrange']
+    # basestring = basestring
+    # long = D['long'] ### EKR: was long
+else:
+    # basestring = str  # to check if instance is string
+    # bytes, str = bytes, str
+    long = int # for the port
+    # xrange = range
+.. @+node:ekr.20170317181913.2: *4* Property
+def Property(function):
+    """ Property(function)
+    
+    A property decorator which allows to define fget, fset and fdel
+    inside the function.
+    
+    Note that the class to which this is applied must inherit from object!
+    Code based on an example posted by Walker Hale:
+    http://code.activestate.com/recipes/410698/#c6
+    
+    """
+    
+    # Define known keys
+    known_keys = 'fget', 'fset', 'fdel', 'doc'
+    
+    # Get elements for defining the property. This should return a dict
+    func_locals = function()
+    if not isinstance(func_locals, dict):
+        raise RuntimeError('Property function should "return locals()".')
+    
+    # Create dict with kwargs for property(). Init doc with docstring.
+    D = {'doc': function.__doc__}
+    
+    # Copy known keys. Check if there are invalid keys
+    for key in func_locals.keys():
+        if key in known_keys:
+            D[key] = func_locals[key]
+        else:
+            raise RuntimeError('Invalid Property element: %s' % key)
+    
+    # Done
+    return property(**D)
+
+
+.. @+node:ekr.20170317181913.3: *4* getErrorMsg
+def getErrorMsg():
+    """ getErrorMsg()
+    Return a string containing the error message. This is usefull, because
+    there is no uniform way to catch exception objects in Python 2.x and
+    Python 3.x.
+    """
+    
+    # Get traceback info
+    type, value, tb = sys.exc_info()
+    
+    # Store for debugging?
+    if True:        
+        sys.last_type = type
+        sys.last_value = value
+        sys.last_traceback = tb
+    
+    # Print
+    err = ''
+    try:
+        if not isinstance(value, (OverflowError, SyntaxError, ValueError)):
+            while tb:
+                err = "line %i of %s." % (
+                        tb.tb_frame.f_lineno, tb.tb_frame.f_code.co_filename)
+                tb = tb.tb_next
+    finally:
+        del tb
+    ### return str(value) + "\n" + err
+    return g.u(value)  + "\n" + err
+
+
+.. @+node:ekr.20170317181913.4: *4* slot_hash
+def slot_hash(name):
+    """ slot_hash(name)
+    
+    Given a string (the slot name) returns a number between 8 and 2**64-1
+    (just small enough to fit in a 64 bit unsigned integer). The number
+    is used as a slot id.
+    
+    Slots 0-7 are reseved slots.
+    
+    """
+    fac = 0xd2d84a61
+    val = 0
+    offset = 8
+    for c in name:
+        val += ( val>>3 ) + ( ord(c)*fac )
+    val += (val>>3) + (len(name)*fac)
+    return offset + (val % (2**64-offset))
+
+
+.. @+node:ekr.20170317181913.5: *4* port_hash
+def port_hash(name):
+    """ port_hash(name)
+    
+    Given a string, returns a port number between 49152 and 65535. 
+    (2**14 (16384) different posibilities)
+    This range is the range for dynamic and/or private ports 
+    (ephemeral ports) specified by iana.org.
+    The algorithm is deterministic, thus providing a way to map names
+    to port numbers.
+    
+    """
+    fac = 0xd2d84a61
+    val = 0
+    for c in name:
+        val += ( val>>3 ) + ( ord(c)*fac )
+    val += (val>>3) + (len(name)*fac)
+    return 49152 + (val % 2**14)
+
+
+.. @+node:ekr.20170317181913.6: *4* split_address
+def split_address(address):
+    """ split_address(address) -> (protocol, hostname, port)
+    
+    Split address in protocol, hostname and port. The address has the 
+    following format: "protocol://hostname:port". If the protocol is
+    omitted, TCP is assumed.
+    
+    The hostname is the name or ip-address of the computer to connect to. 
+    One can use "localhost" for a connection that bypasses some
+    network layers (and is not visible from the outside). One can use
+    "publichost" for a connection at the current computers IP address
+    that is visible from the outside.
+    
+    The port can be an integer, or a sting. In the latter case the integer
+    port number is calculated using a hash. One can also use "portname+offset"
+    to specify an integer offset for the port number.
+    
+    """
+    
+    # Check
+    #if not isinstance(address, basestring):
+    if not g.isString(address):
+        raise ValueError("Address should be a string.")
+    if not ":" in address:
+        raise ValueError("Address should be in format 'host:port'.")
+    
+    # Is the protocol explicitly defined (zeromq compatibility)
+    protocol = ''
+    if '://' in address:
+        # Get protocol and stripped address
+        tmp = address.split('://',1)
+        protocol = tmp[0].lower()
+        address = tmp[1]
+    if not protocol:
+        protocol = 'tcp'
+    
+    # Split
+    tmp = address.split(':',1)
+    host, port = tuple(tmp)
+    
+    # Process host
+    if host.lower() == 'localhost':
+        host = '127.0.0.1'
+    if host.lower() == 'publichost':
+        host = 'publichost' + '0'
+    if host.lower().startswith('publichost') and host[10:] in '0123456789':
+        index = int(host[10:])
+        hostname = socket.gethostname()
+        tmp = socket.gethostbyname_ex(hostname)
+        try:
+            host = tmp[2][index]  # This resolves to 127.0.1.1 on some Linuxes
+        except IndexError:
+            raise ValueError('Invalid index (%i) in public host addresses.' % index)
+    
+    # Process port
+    try:
+        port = int(port)
+    except ValueError:
+        # Convert to int, using a hash
+        
+        # Is there an offset?
+        offset = 0
+        if "+" in port:
+            tmp = port.split('+',1)
+            port, offset = tuple(tmp)
+            try:
+                offset = int(offset)
+            except ValueError:
+                raise ValueError("Invalid offset in address")
+        
+        # Convert
+        port = port_hash(port) + offset
+    
+    # Check port
+    #if port < 1024 or port > 2**16:
+    #    raise ValueError("The port must be in the range [1024, 2^16>.")
+    if port > 2**16:
+        raise ValueError("The port must be in the range [0, 2^16>.")
+    
+    # Done
+    return protocol, host, port
+
+
+.. @+node:ekr.20170317181913.7: *4* class UID
+class UID:
+    """ UID
+    
+    Represents an 8-byte (64 bit) Unique Identifier.
+    
+    """ 
+    
+    _last_timestamp = 0
+    
+    @others
+.. @+node:ekr.20170317181913.8: *5* __init__
+def __init__(self, id=None):
+    # Create nr consisting of two parts
+    if id is None:
+        self._nr = self._get_time_int() << 32
+        self._nr += self._get_random_int()
+    elif isinstance(id, (int, long)):
+        self._nr = id
+    else:
+        raise ValueError('The id given to UID() should be an int.')
+
+.. @+node:ekr.20170317181913.9: *5* __repr__
+def __repr__(self):
+    h = self.get_hex()
+    return "<UID %s-%s>" % (h[:8], h[8:])
+
+.. @+node:ekr.20170317181913.10: *5* get_hex
+def get_hex(self):
+    """ get_hex()
+    
+    Get the hexadecimal representation of this UID. The returned
+    string is 16 characters long.
+    
+    """
+    h = hex(self._nr)
+    h = h[2:].rstrip('L')
+    h = h.ljust(2*8, '0')
+    return h
+
+.. @+node:ekr.20170317181913.11: *5* get_bytes
+def get_bytes(self):
+    """ get_bytes()
+    
+    Get the UID as bytes.
+    
+    """
+    return struct.pack('<Q', self._nr)
+
+.. @+node:ekr.20170317181913.12: *5* get_int
+def get_int(self):
+    """ get_int()
+    
+    Get the UID as a 64 bit (long) integer.
+    
+    """
+    return self._nr
+
+.. @+node:ekr.20170317181913.13: *5* _get_random_int
+def _get_random_int(self):
+    return random.randrange(0xffffffff)
+
+.. @+node:ekr.20170317181913.14: *5* _get_time_int
+def _get_time_int(self):
+    # Get time stamp in steps of miliseconds
+    timestamp = int(time.time() * 1000)
+    # Increase by one if the same as last time
+    if timestamp <= UID._last_timestamp:
+        timestamp = UID._last_timestamp + 1
+    # Store for next time
+    UID._last_timestamp = timestamp
+    # Truncate to 4 bytes. If the time goes beyond the integer limit, we just
+    # restart counting. With this setup, the cycle is almost 25 days
+    timestamp  = timestamp & 0xffffffff
+    # Don't allow 0
+    if timestamp == 0:
+        timestamp += 1
+        UID._last_timestamp += 1
+    return timestamp
+
+
+
+.. @+node:ekr.20170317181913.15: *4* class PackageQueue
+class PackageQueue(object):
+    """ PackageQueue(N, discard_mode='old')
+    
+    A queue implementation that can be used in blocking and non-blocking 
+    mode and allows peeking. The queue has a limited size. The user
+    can specify whether old or new messages should be discarted.
+    
+    Uses a deque object for the queue and a threading.Condition for
+    the blocking.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181913.16: *5* class Empty
+class Empty(Exception):
+
+    def __init__(self):
+        Exception.__init__(self, 'pop from an empty PackageQueue')
+.. @+node:ekr.20170317181913.18: *5* __init__
+def __init__(self, N, discard_mode='old'):
+    
+    # Instantiate queue and condition
+    self._q = deque()
+    self._condition = threading.Condition()
+    
+    # Store max number of elements in queue
+    self._maxlen = int(N)
+    
+    # Store discard mode as integer
+    discard_mode = discard_mode.lower()
+    if discard_mode == 'old':
+        self._discard_mode = 1
+    elif discard_mode == 'new':
+        self._discard_mode = 2
+    else:
+        raise ValueError('Invalid discard mode.')
+
+
+.. @+node:ekr.20170317181913.19: *5* full
+def full(self):
+    """ full()
+    
+    Returns True if the number of elements is at its maximum right now.
+    Note that in theory, another thread might pop an element right 
+    after this function returns.
+    
+    """ 
+    return len(self) >= self._maxlen
+
+
+.. @+node:ekr.20170317181913.20: *5* empty
+def empty(self):
+    """ empty()
+    
+    Returns True if the number of elements is zero right now. Note 
+    that in theory, another thread might add an element right
+    after this function returns.
+    
+    """
+    return len(self) == 0
+
+
+.. @+node:ekr.20170317181913.21: *5* push
+def push(self, x):
+    """ push(item)
+    
+    Add an item to the queue. If the queue is full, the oldest
+    item in the queue, or the given item is discarted.
+    
+    """
+    
+    condition = self._condition
+    condition.acquire()
+    try:
+        q = self._q
+    
+        if len(q) < self._maxlen:
+            # Add now and notify any waiting threads in get()
+            q.append(x)
+            condition.notify() # code at wait() procedes
+        else:
+            # Full, either discard or pop (no need to notify)
+            if self._discard_mode == 1:
+                q.popleft() # pop old
+                q.append(x)
+            elif self._discard_mode == 2:
+                pass # Simply do not add
+    
+    finally:
+        condition.release()
+
+
+.. @+node:ekr.20170317181913.22: *5* insert
+def insert(self, x):
+    """ insert(x)
+    
+    Insert an item at the front of the queue. A call to pop() will
+    get this item first. This should be used in rare circumstances
+    to give an item priority. This method never causes items to
+    be discarted.
+    
+    """
+    
+    condition = self._condition
+    condition.acquire()
+    try:
+        self._q.appendleft(x)
+        condition.notify() # code at wait() procedes
+    finally:
+        condition.release()
+
+
+.. @+node:ekr.20170317181913.23: *5* pop
+def pop(self, block=True):
+    """ pop(block=True)
+    
+    Pop the oldest item from the queue. If there are no items in the
+    queue:
+      * the calling thread is blocked until an item is available
+        (if block=True, default);
+      * an PackageQueue.Empty exception is raised (if block=False);
+      * the calling thread is blocked for 'block' seconds (if block
+        is a float).
+    
+    """
+    
+    condition = self._condition
+    condition.acquire()
+    try:
+        q = self._q
+        
+        if not block:
+            # Raise empty if no items in the queue
+            if not len(q):
+                raise self.Empty()
+        elif block is True:
+            # Wait for notify (awakened does not guarantee len(q)>0)
+            while not len(q):
+                condition.wait()
+        elif isinstance(block, float):
+            # Wait if no items, then raise error if still no items
+            if not len(q):
+                condition.wait(block) 
+                if not len(q):
+                    raise self.Empty()
+        else:
+            raise ValueError('Invalid value for block in PackageQueue.pop().')
+        
+        # Return item
+        return q.popleft()
+    
+    finally:
+        condition.release()
+
+
+.. @+node:ekr.20170317181913.24: *5* peek
+def peek(self, index=0):
+    """ peek(index=0)
+    
+    Get an item from the queue without popping it. index=0 gets the
+    oldest item, index=-1 gets the newest item. Note that index access
+    slows to O(n) time in the middle of the queue (due to the undelying
+    deque object).
+    
+    Raises an IndexError if the index is out of range.
+    
+    """
+    return self._q[index]
+
+
+.. @+node:ekr.20170317181913.25: *5* __len__
+def __len__(self):
+    return self._q.__len__()
+.. @+node:ekr.20170317181913.26: *5* clear
+def clear(self):
+    """ clear()
+    
+    Remove all items from the queue.
+    
+    """
+    
+    self._condition.acquire()
+    try:
+        self._q.clear()
+    finally:
+        self._condition.release()
+
+
+
+.. @+node:ekr.20170317181913.27: *4* class TinyPackageQueue
+class TinyPackageQueue(PackageQueue):
+    """ TinyPackageQueue(N1, N2, discard_mode='old', timeout=1.0)
+    
+    A queue implementation that can be used in blocking and non-blocking 
+    mode and allows peeking. The queue has a tiny-size (N1). When this size
+    is reached, a call to push() blocks for up to timeout seconds. The
+    real size (N2) is the same as in the PackageQueue class. 
+    
+    The tinysize mechanism can be used to semi-synchronize a consumer
+    and a producer, while still having a small queue and without having
+    the consumer fully block.
+    
+    Uses a deque object for the queue and a threading.Condition for
+    the blocking.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170317181913.28: *5* __init__
+def __init__(self, N1, N2, discard_mode='old', timeout=1.0):
+    PackageQueue.__init__(self, N2, discard_mode)
+    
+    # Store limit above which the push() method will block
+    self._tinylen = int(N1)
+    
+    # Store timeout
+    self._timeout = timeout
+
+
+.. @+node:ekr.20170317181913.29: *5* push
+def push(self, x):
+    """ push(item)
+    
+    Add an item to the queue. If the queue has >= n1 values, 
+    this function will block timeout seconds, or until an item is
+    popped from another thread.
+    
+    """
+    
+    condition = self._condition
+    condition.acquire()
+    try:
+        q = self._q
+        lq = len(q)
+        
+        if lq < self._tinylen:
+            # We are on safe side. Wake up any waiting threads if queue was empty
+            q.append(x)
+            condition.notify() # pop() at wait() procedes
+        elif lq < self._maxlen:
+            # The queue is above its limit, but not full
+            condition.wait(self._timeout)
+            q.append(x)
+        else:
+            # Full, either discard or pop (no need to notify)
+            if self._discard_mode == 1:
+                q.popleft() # pop old
+                q.append(x)
+            elif self._discard_mode == 2:
+                pass # Simply do not add
+        
+    finally:
+        condition.release()
+
+
+.. @+node:ekr.20170317181913.30: *5* pop
+def pop(self, block=True):
+    """ pop(block=True)
+    
+    Pop the oldest item from the queue. If there are no items in the
+    queue:
+      * the calling thread is blocked until an item is available
+        (if block=True, default);
+      * a PackageQueue.Empty exception is raised (if block=False);
+      * the calling thread is blocked for 'block' seconds (if block
+        is a float).
+    
+    """
+    
+    condition = self._condition
+    condition.acquire()
+    try:
+        q = self._q
+        
+        if not block:
+            # Raise empty if no items in the queue
+            if not len(q):
+                raise self.Empty()
+        elif block is True:
+            # Wait for notify (awakened does not guarantee len(q)>0)
+            while not len(q):
+                condition.wait()
+        elif isinstance(block, float):
+            # Wait if no items, then raise error if still no items
+            if not len(q):
+                condition.wait(block) 
+                if not len(q):
+                    raise self.Empty()
+        else:
+            raise ValueError('Invalid value for block in PackageQueue.pop().')
+        
+        
+         # Notify if this pop would reduce the length below the threshold
+        if len(q) <= self._tinylen:
+            condition.notifyAll() # wait() procedes
+        
+        # Return item
+        return q.popleft()
+    
+    finally:
+        condition.release()
+
+
+.. @+node:ekr.20170317181913.31: *5* clear
+def clear(self):
+    """ clear()
+    
+    Remove all items from the queue.
+    
+    """
+    
+    self._condition.acquire()
+    try:
+        lq = len(self._q)
+        self._q.clear()
+        if lq >= self._tinylen:
+            self._condition.notify()
+    finally:
+        self._condition.release()
+.. @+node:ekr.20170318084601.1: *3* @path channels
+.. @+node:ekr.20170318085113.1: *4* @file channels_base.py
+@first # -*- coding: utf-8 -*-
+
+""" Module yoton.channels.channels_base
+
+Defines the base channel class and the MessageType class.
+
+"""
+<< channels_base imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318085137.1: *5* << channels_base imports >>
+import leo.core.leoGlobals as g
+
+import time
+import threading
+
+import yoton
+from yoton.misc import basestring # , bytes, str
+from yoton.misc import slot_hash, PackageQueue # getErrorMsg, Property
+from yoton.core import Package
+from yoton.context import Context
+from yoton.channels.message_types import MessageType, TEXT # BINARY, OBJECT
+
+
+.. @+node:ekr.20170318085137.2: *5* class BaseChannel
+class BaseChannel(object):
+    """ BaseChannel(context, slot_base, message_type=yoton.TEXT)
+    
+    Abstract class for all channels. 
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    message_type : yoton.MessageType instance 
+        (default is yoton.TEXT)
+        Object to convert messages to bytes and bytes to messages. 
+        Users can create their own message_type class to enable 
+        communicating any type of message they want.
+    
+    Details
+    -------
+    Messages send via a channel are delivered asynchronically to the 
+    corresponding channels.
+    
+    All channels are associated with a context and can be used to send
+    messages to other channels in the network. Each channel is also
+    associated with a slot, which is a string that represents a kind 
+    of address. A message send by a channel at slot X can only be received 
+    by a channel with slot X. 
+    
+    Note that the channel appends an extension
+    to the user-supplied slot name, that represents the message type 
+    and messaging pattern of the channel. In this way, it is prevented
+    that for example a PubChannel can communicate with a RepChannel.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318085137.3: *6* __init__
+def __init__(self, context, slot_base, message_type=None):
+    
+    # Store context
+    if not isinstance(context, Context):
+        raise ValueError('Context not valid.')
+    self._context = context
+    
+    # Check message type 
+    if message_type is None:
+        message_type = TEXT
+    if isinstance(message_type, type) and issubclass(message_type, MessageType):
+        message_type = message_type()
+    if isinstance(message_type, MessageType):
+        message_type = message_type
+    else:
+        raise ValueError('message_type should be a MessageType instance.')
+    
+    # Store message type and conversion methods
+    self._message_type_instance = message_type
+    self.message_from_bytes = message_type.message_from_bytes
+    self.message_to_bytes = message_type.message_to_bytes
+    
+    # Queue for incoming trafic (not used for pure sending channels)
+    self._q_in = PackageQueue(*context._queue_params)
+    
+    # For sending channels: to lock the channel for sending
+    self._send_condition = threading.Condition()
+    self._is_send_locked = 0 # "True" is the timeout time
+    
+    # Signal for receiving data
+    self._received_signal = yoton.events.Signal()
+    self._posted_received_event = False
+    
+    # Channels can be closed
+    self._closed = False
+    
+    # Event driven mode
+    self._run_mode = 0
+    
+    # Init slots
+    self._init_slots(slot_base)
+
+
+.. @+node:ekr.20170318085137.4: *6* _init_slots
+def _init_slots(self, slot_base):
+    """ _init_slots(slot_base)
+    
+    Called from __init__ to initialize the slots and perform all checks.
+    
+    """
+    
+    # Check if slot is string
+    if not isinstance(slot_base, basestring):
+        raise ValueError('slot_base must be a string.')
+    
+    # Get full slot names, init byte versions
+    slots_t = []
+    slots_h = []
+    
+    # Get extension for message type and messaging pattern
+    ext_type = self._message_type_instance.message_type_name()
+    ext_patterns = self._messaging_patterns() # (incoming, outgoing)
+    
+    # Normalize and check slot names
+    for ext_pattern in ext_patterns:
+        if not ext_pattern:
+            slots_t.append(None)
+            slots_h.append(0)
+            continue
+        # Get full name
+        slot = slot_base + '.' + ext_type + '.' + ext_pattern
+        # Store text version
+        slots_t.append(slot) 
+        # Strip and make lowercase
+        slot = slot.strip().lower()
+        # Hash
+        slots_h.append(slot_hash(slot))
+    
+    # Store slots
+    self._slot_out = slots_t[0]
+    self._slot_in = slots_t[1]        
+    self._slot_out_h = slots_h[0]
+    self._slot_in_h = slots_h[1]
+    
+    # Register slots (warn if neither slot is valid)
+    if self._slot_out_h:
+        self._context._register_sending_channel(self, self._slot_out_h, self._slot_out)
+    if self._slot_in_h:
+        self._context._register_receiving_channel(self, self._slot_in_h, self._slot_in)
+    if not self._slot_out_h and not self._slot_in_h:
+        raise ValueError('This channel does not have valid slots.')
+
+
+.. @+node:ekr.20170318085137.5: *6* _messaging_patterns
+def _messaging_patterns(self):
+    """ _messaging_patterns()
+    
+    Implement to return a string that specifies the pattern
+    for sending and receiving, respecitively.
+    
+    """
+    raise NotImplementedError()
+
+
+.. @+node:ekr.20170318085137.6: *6* close
+def close(self):
+    """ close()
+    
+    Close the channel, i.e. unregisters this channel at the context.
+    A closed channel cannot be reused.
+    
+    Future attempt to send() messages will result in an IOError 
+    being raised. Messages currently in the channel's queue can 
+    still be recv()'ed, but no new messages will be delivered at 
+    this channel.
+    
+    """
+    # We keep a reference to the context, otherwise we need locks
+    # The context clears the reference to this channel when unregistering.
+    g.trace('===== closing', repr(self))
+    self._closed = True
+    self._context._unregister_channel(self)
+
+
+.. @+node:ekr.20170318085137.7: *6* _send
+def _send(self, message, dest_id=0, dest_seq=0):
+    """ _send(message, dest_id=0, dest_seq=0)
+    
+    Sends a message of raw bytes without checking whether they're bytes. 
+    Optionally, dest_id and dest_seq represent the message that 
+    this message  replies to. These are used for the request/reply 
+    pattern.
+    
+    Returns the package that will be send (or None). The context
+    will set _source_id on the package right before
+    sending it away.
+    
+    """
+    
+    # Check if still open
+    if self._closed:
+        className = self.__class__.__name__
+        raise IOError("Cannot send from closed %s %i." % (className, id(self)))
+    
+    
+    if message:
+        # If send_locked, wait at most one second
+        if self._is_send_locked:
+            self._send_condition.acquire()
+            try:
+                self._send_condition.wait(1.0) # wait for notify
+            finally:
+                self._send_condition.release()
+                if time.time() > self._is_send_locked:
+                    self._is_send_locked = 0
+        # Push it on the queue as a package
+        slot = self._slot_out_h
+        cid = self._context._id
+        p = Package(message, slot, cid, 0, dest_id, dest_seq, 0)
+        self._context._send_package(p)
+        # Return package
+        return p
+    else:
+        return None
+
+
+.. @+node:ekr.20170318085137.8: *6* _recv
+def _recv(self, block):
+    """ _recv(block)
+    
+    Receive a package (or None).
+    
+    """
+
+    if block is True:
+        # Block for 0.25 seconds so that KeyboardInterrupt works
+        while not self._closed:
+            try:
+                return self._q_in.pop(0.25)
+            except self._q_in.Empty:
+                continue
+    
+    else:
+        # Block normal
+        try:
+            return self._q_in.pop(block)
+        except self._q_in.Empty:
+            return None
+
+
+.. @+node:ekr.20170318085137.9: *6* _set_send_lock
+def _set_send_lock(self, value):
+    """ _set_send_lock(self, value)
+    
+    Set or unset the blocking for the _send() method.
+    
+    """
+    # Set send lock variable. We adopt a timeout (10s) just in case
+    # the SubChannel that locks the PubChannel gets disconnected and
+    # is unable to unlock it.
+    if value:
+        self._is_send_locked = time.time() + 10.0
+    else:
+        self._is_send_locked = 0
+    # Notify any threads that are waiting in _send()
+    if not value:
+        self._send_condition.acquire()
+        try:
+            self._send_condition.notifyAll()
+        finally:
+            self._send_condition.release()
+
+
+## How packages are inserted in this channel for receiving
+
+
+.. @+node:ekr.20170318085137.10: *6* _inject_package
+def _inject_package(self, package):
+    """ _inject_package(package)
+    
+    Same as _recv_package, but by definition do not block.
+    _recv_package is overloaded in SubChannel. _inject_package is not.
+    
+    """
+    self._q_in.push(package)
+    self._maybe_emit_received()
+
+
+.. @+node:ekr.20170318085137.11: *6* _recv_package
+def _recv_package(self, package):
+    """ _recv_package(package)
+    
+    Put package in the queue.
+    
+    """
+    self._q_in.push(package)
+    self._maybe_emit_received()
+
+
+.. @+node:ekr.20170318085137.12: *6* _maybe_emit_received
+def _maybe_emit_received(self):
+    """ _maybe_emit_received()
+    
+    We want to emit a signal, but in such a way that multiple
+    arriving packages result in a single emit. This methods
+    only posts an event if it has not been done, or if the previous
+    event has been handled.
+    
+    """
+    if not self._posted_received_event:
+        self._posted_received_event = True
+        event = yoton.events.Event(self._emit_received)
+        yoton.app.post_event(event)
+
+
+.. @+node:ekr.20170318085137.13: *6* _emit_received
+def _emit_received(self):
+    """ _emit_received()
+    
+    Emits the "received" signal. This method is called once new data
+    has been received. However, multiple arrived messages may
+    result in a single call to this method. There is also no
+    guarantee that recv() has not been called in the mean time.
+    
+    Also sets the variabele so that a new event for this may be 
+    created. This method is called from the event loop.
+    
+    """
+    self._posted_received_event = False # Reset
+    self.received.emit_now(self)
+
+
+# Received property sits on the BaseChannel because is is used by almost
+# all channels. Note that PubChannels never emit this signal as they
+# catch status messages from the SubChannel by overloading _recv_package().
+.. @+node:ekr.20170318085137.14: *6* received
+@property
+def received(self):
+    """ Signal that is emitted when new data is received. Multiple 
+    arrived messages may result in a single call to this method. 
+    There is no guarantee that recv() has not been called in the 
+    mean time. The signal is emitted with the channel instance
+    as argument.
+    """
+    return self._received_signal
+
+
+## Properties
+
+
+.. @+node:ekr.20170318085137.15: *6* pending
+@property
+def pending(self):
+    """ Get the number of pending incoming messages. 
+    """
+    return len(self._q_in)
+
+
+.. @+node:ekr.20170318085137.16: *6* closed
+@property
+def closed(self):
+    """ Get whether the channel is closed. 
+    """
+    return self._closed
+
+
+.. @+node:ekr.20170318085137.17: *6* slot_outgoing
+@property
+def slot_outgoing(self):
+    """ Get the outgoing slot name.
+    """
+    return self._slot_out
+
+
+.. @+node:ekr.20170318085137.18: *6* slot_incoming
+@property
+def slot_incoming(self):
+    """ Get the incoming slot name.
+    """
+    return self._slot_in
+.. @+node:ekr.20170318085430.1: *4* @file channels_file.py
+@first # -*- coding: utf-8 -*-
+
+""" Module yoton.channels.file
+
+Defines a class that can be used to wrap a channel to give it 
+a file like interface.
+
+"""
+<< channels_file imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318085440.1: *5* << channels_file imports >>
+import sys
+import os
+# from yoton.misc import basestring, bytes, str, long
+from yoton.channels import PubChannel, SubChannel
+
+PY2 = sys.version_info[0] == 2
+.. @+node:ekr.20170318085440.2: *5* class FileWrapper
+class FileWrapper(object):
+    """ FileWrapper(channel, chunksize=0, echo=None)
+    
+    Class that wraps a PubChannel or SubChannel instance to provide
+    a file-like interface by implementing methods such as read() and 
+    write(), and other stuff specified in:
+    [[http://docs.python.org/library/stdtypes.html#bltin-file-objects]]
+    
+    The file wrapper also splits messages into smaller messages if they
+    are above the chunksize (only if chunksize > 0).
+    
+    On Python 2, the read methods return str (utf-8 encoded Unicode).
+    
+    """
+    
+    # Our file-like objects should not implement:
+    # explicitly stated: fileno, isatty
+    # don't seem to make sense: readlines, seek, tell, truncate, errors,
+    # mode, name,
+    
+    @others
+.. @+node:ekr.20170318085440.3: *6* __init__
+def __init__(self, channel, chunksize=0, echo=None, isatty=False):
+    if not isinstance(channel, (PubChannel, SubChannel)):
+        raise ValueError('FileWrapper needs a PubChannel or SubChannel.')
+    if echo is not None:
+        if not isinstance(echo, PubChannel):
+            raise ValueError('FileWrapper echo needs to be a PubChannel.')
+    
+    self._channel = channel
+    self._chunksize = int(chunksize)
+    self._echo = echo
+    self._pid = os.getpid()  # To detect whether we are in multi-process
+    self.errors = 'strict'  # compat
+    self._isatty = isatty
+
+.. @+node:ekr.20170318085440.4: *6* close
+def close(self):
+    """ Close the file object.
+    """
+    # Deal with multiprocessing
+    if self._pid != os.getpid():
+        if self is sys.stdin:
+            sys.__stdin__.close()
+        elif self is sys.stdout:
+            sys.__stdout__.close()
+        elif self is sys.stderr:
+            sys.__stderr__.close()
+        return
+    # Normal behavior
+    self._channel.close()
+
+.. @+node:ekr.20170318085440.5: *6* encoding
+@property
+def encoding(self):
+    """ The encoding used to encode strings to bytes and vice versa. 
+    """
+    return 'UTF-8'
+
+
+.. @+node:ekr.20170318085440.6: *6* closed
+@property
+def closed(self):
+    """ Get whether the file is closed. 
+    """
+    return self._channel._closed
+
+
+.. @+node:ekr.20170318085440.7: *6* flush
+def flush(self):
+    """ flush()
+    
+    Wait here until all messages have been send.
+    
+    """
+    self._channel._context.flush()
+
+
+.. @+node:ekr.20170318085440.8: *6* newlines
+@property
+def newlines(self):
+    """ The type of newlines used. Returns None; we never know what the
+    other end could be sending! 
+    """
+    return None
+
+
+# this is for the print statement to keep track spacing stuff
+.. @+node:ekr.20170318085440.9: *6* _set_softspace
+def _set_softspace(self, value):
+    self._softspace = bool(value)
+.. @+node:ekr.20170318085440.10: *6* _get_softspace
+def _get_softspace(self):
+    return hasattr(self, '_softspace') and self._softspace
+softspace = property(_get_softspace, _set_softspace, None, '')
+    
+
+.. @+node:ekr.20170318085440.11: *6* read
+def read(self, block=None):
+    """ read(block=None)
+    
+    Alias for recv().
+    
+    """
+    res = self._channel.recv(block)
+    if res and self._echo is not None:
+        self._echo.send(res)
+    if PY2:
+        return res.encode('utf-8')
+    else:
+        return res
+
+
+.. @+node:ekr.20170318085440.12: *6* write
+def write(self, message):
+    """ write(message)
+    
+    Uses channel.send() to send the message over the Yoton network.
+    The message is partitioned in smaller parts if it is larger than
+    the chunksize.
+    
+    """
+    # Deal with multiprocessing
+    if self._pid != os.getpid():
+        realfile = None
+        if self is sys.stdout:
+            realfile = sys.__stdout__
+        elif self is sys.stderr:
+            realfile = sys.__stderr__
+        if realfile is not None:
+            sys.__stderr__.write(message)
+            sys.__stderr__.flush()
+        return
+    
+    chunkSize = self._chunksize
+    if chunkSize > 0:
+        for i in range(0, len(message), chunkSize):
+            self._channel.send( message[i:i+chunkSize] )
+    else:
+        self._channel.send(message)
+
+
+.. @+node:ekr.20170318085440.13: *6* writelines
+def writelines(self, lines):
+    """ writelines(lines)
+    
+    Write a sequence of messages to the channel.
+    
+    """
+    for line in lines:
+        self._channel.send(line)
+
+
+.. @+node:ekr.20170318085440.14: *6* readline
+def readline(self, size=0):
+    """ readline(size=0)
+    
+    Read one string that was send as one from the other end (always
+    in blocking mode). A newline character is appended if it does not 
+    end with one.
+    
+    If size is given, returns only up to that many characters, the rest
+    of the message is thrown away.
+    
+    """
+    
+    # Get line
+    line = self._channel.recv(True)
+    
+    # Echo
+    if line and self._echo is not None:
+        self._echo.send(line)
+    
+    # Make sure it ends with newline
+    if not line.endswith('\n'):
+        line += '\n'
+    
+    # Decrease size?
+    if size:
+        line = line[:size]
+    
+    # Done
+    if PY2:
+        return line.encode('utf-8')
+    else:
+        return line
+
+.. @+node:ekr.20170318085440.15: *6* isatty
+def isatty(self):
+    """ Get whether this is a terminal.
+    """
+    return self._isatty
+
+.. @+node:ekr.20170318085624.1: *4* @file channels_pubsub.py
+@first # -*- coding: utf-8 -*-
+
+""" Module yoton.channels.channels_pubsub
+
+Defines the channel classes for the pub/sub pattern.
+
+"""
+<< channels_pubsub imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318085638.1: *5* << channels_pubsub imports >>
+import time
+# import sys
+# import yoton
+# from yoton.misc import bytes, # basestring, str, xrange 
+# from yoton.misc import Property, getErrorMsg
+from yoton.channels import BaseChannel
+# from yoton.core import Package
+
+QUEUE_NULL = 0
+QUEUE_OK = 1
+QUEUE_FULL = 2
+
+
+.. @+node:ekr.20170318085638.2: *5* class PubChannel(BaseChannel)
+class PubChannel(BaseChannel):
+    """ PubChannel(context, slot_base, message_type=yoton.TEXT)
+    
+    The publish part of the publish/subscribe messaging pattern.
+    Sent messages are received by all yoton.SubChannel instances with 
+    the same slot. 
+    
+    There are no limitations for this channel if events are not processed.
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    message_type : yoton.MessageType instance 
+        (default is yoton.TEXT)
+        Object to convert messages to bytes and bytes to messages. 
+        Users can create their own message_type class to let channels
+        any type of message they want.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318085638.3: *6* __init__
+def __init__(self, *args, **kwargs):
+    BaseChannel.__init__(self, *args, **kwargs)
+    self._source_set = set()
+
+
+.. @+node:ekr.20170318085638.4: *6* _messaging_patterns
+def _messaging_patterns(self):
+    return 'pub-sub', 'sub-pub'
+
+
+.. @+node:ekr.20170318085638.5: *6* send
+def send(self, message):
+    """ send(message)
+    
+    Send a message over the channel. What is send as one 
+    message will also be received as one message.
+    
+    The message is queued and delivered to all corresponding 
+    SubChannels (i.e. with the same slot) in the network.
+    
+    """
+    self._send( self.message_to_bytes(message) )
+
+
+.. @+node:ekr.20170318085638.6: *6* _recv_package
+def _recv_package(self, package):
+    """ Overloaded to set blocking mode.
+    Do not call _maybe_emit_received(), a PubChannel never emits
+    the "received" signal.
+    """
+    
+    message = package._data.decode('utf-8')
+    source_id = package._source_id
+    
+    # Keep track of who's queues are full
+    if message == 'full':
+        self._source_set.add(source_id)
+    else:
+        self._source_set.discard(source_id)
+    
+    # Set lock if there is a channel with a full queue,
+    # Unset if there are none
+    if self._source_set:
+        self._set_send_lock(True)
+        #sys.stderr.write('setting lock\n')
+    else:
+        self._set_send_lock(False)
+        #sys.stderr.write('unsetting lock\n')
+
+
+
+.. @+node:ekr.20170318085638.7: *5* class SubChannel(BaseChannel)
+class SubChannel(BaseChannel):
+    """ SubChannel(context, slot_base, message_type=yoton.TEXT)
+    
+    The subscribe part of the publish/subscribe messaging pattern.
+    Received messages were sent by a yoton.PubChannel instance at the 
+    same slot. 
+    
+    This channel can be used as an iterator, which yields all pending 
+    messages. The function yoton.select_sub_channel can
+    be used to synchronize multiple SubChannel instances. 
+    
+    If no events being processed this channel works as normal, except 
+    that the received signal will not be emitted, and sync mode will 
+    not work.
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    message_type : yoton.MessageType instance 
+        (default is yoton.TEXT)
+        Object to convert messages to bytes and bytes to messages. 
+        Users can create their own message_type class to let channels
+        any type of message they want.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318085638.8: *6* __init__
+def __init__(self, *args, **kwargs):
+    BaseChannel.__init__(self, *args, **kwargs)
+    
+    # To detect when to block the sending side
+    self._queue_status = QUEUE_NULL
+    self._queue_status_timeout = 0
+    self._HWM = 32
+    self._LWM = 16
+    
+    # Automatically check queue status when new data
+    # enters the system
+    self.received.bind(self._check_queue_status)
+
+
+.. @+node:ekr.20170318085638.9: *6* _messaging_patterns
+def _messaging_patterns(self):
+    return 'sub-pub', 'pub-sub'
+
+
+.. @+node:ekr.20170318085638.10: *6* __iter__
+def __iter__(self):
+    return self
+
+
+.. @+node:ekr.20170318085638.11: *6* __next__
+def __next__(self): # Python 3.x
+    m = self.recv(False)
+    if m:
+        return m
+    else:
+        raise StopIteration()
+
+
+.. @+node:ekr.20170318085638.12: *6* next
+def next(self): # Python 2.x
+    """ next()
+    
+    Return the next message, or raises StopIteration if non available.
+    
+    """
+    return self.__next__()
+
+
+## For sync mode
+
+.. @+node:ekr.20170318085638.13: *6* set_sync_mode
+def set_sync_mode(self, value):
+    """ set_sync_mode(value)
+    
+    Set or unset the SubChannel in sync mode. When in sync mode, all 
+    channels that send messages to this channel are blocked if 
+    the queue for this SubChannel reaches a certain size.
+    
+    This feature can be used to limit the rate of senders if the consumer
+    (i.e. the one that calls recv()) cannot keep up with processing
+    the data. 
+    
+    This feature requires the yoton event loop to run at the side
+    of the SubChannel (not necessary for the yoton.PubChannel side).
+    
+    """
+    value = bool(value)
+    
+    # First reset block status if necessary
+    if self._queue_status == QUEUE_FULL:
+        self._send_block_message_to_senders('ok')
+    
+    # Set new queue status flag
+    if value:
+        self._queue_status = QUEUE_OK
+    else:
+        self._queue_status = QUEUE_NULL
+
+
+.. @+node:ekr.20170318085638.14: *6* _send_block_message_to_senders
+def _send_block_message_to_senders(self, what):
+    """ _send_block_message_to_senders(what)
+    
+    Send a message to the PubChannel side to make it block/unblock.
+    
+    """
+    
+    # Check
+    if not self._context.connection_count:
+        return
+    
+    # Send
+    try:
+        self._send(what.encode('utf-8'))
+    except IOError:
+        # If self._closed
+        self._check_queue_status = QUEUE_NULL
+
+
+.. @+node:ekr.20170318085638.15: *6* _check_queue_status
+def _check_queue_status(self, dummy=None):
+    """ _check_queue_status()
+    
+    Check the queue status. Returns immediately unless this receiving 
+    channel runs in sync mode. 
+    
+    If the queue is above a certain size, will send out a package that
+    will make the sending side block. If the queue is below a certain
+    size, will send out a package that will make the sending side unblock.
+    
+    """
+    
+    if self._queue_status == QUEUE_NULL:
+        return
+    elif len(self._q_in) > self._HWM:
+        if self._queue_status == QUEUE_OK:
+            self._queue_status = QUEUE_FULL
+            self._queue_status_timeout = time.time() + 4.0
+            self._send_block_message_to_senders('full')
+    elif len(self._q_in) < self._LWM:
+        if self._queue_status == QUEUE_FULL:
+            self._queue_status = QUEUE_OK
+            self._queue_status_timeout = time.time() + 4.0
+            self._send_block_message_to_senders('ok')
+    
+    # Resend every so often. After 10s the PubChannel will unlock itself
+    if self._queue_status_timeout < time.time():
+        self._queue_status_timeout = time.time() + 4.0
+        if self._queue_status == QUEUE_OK:
+            self._send_block_message_to_senders('ok')
+        else:
+            self._send_block_message_to_senders('full')
+
+
+## Receive methods
+
+
+.. @+node:ekr.20170318085638.16: *6* recv
+def recv(self, block=True):
+    """ recv(block=True)
+    
+    Receive a message from the channel. What was send as one 
+    message is also received as one message.
+    
+    If block is False, returns empty message if no data is available. 
+    If block is True, waits forever until data is available.
+    If block is an int or float, waits that many seconds.
+    If the channel is closed, returns empty message.
+    
+    """
+    
+    # Check queue status, maybe we need to block the sender
+    self._check_queue_status()
+    
+    # Get package
+    package = self._recv(block)
+    
+    # Return message content or None
+    if package is not None:
+        return self.message_from_bytes(package._data)
+    else:
+        return self.message_from_bytes(b'') ### bytes())
+
+
+.. @+node:ekr.20170318085638.17: *6* recv_all
+def recv_all(self):
+    """ recv_all()
+    
+    Receive a list of all pending messages. The list can be empty.
+    
+    """
+    
+    # Check queue status, maybe we need to block the sender
+    self._check_queue_status()
+    
+    # Pop all messages and return as a list
+    pop = self._q_in.pop
+    packages = [pop() for i in range(len(self._q_in))]
+    return [self.message_from_bytes(p._data) for p in packages]
+
+
+.. @+node:ekr.20170318085638.18: *6* recv_selected
+def recv_selected(self):
+    """ recv_selected()
+    
+    Receive a list of messages. Use only after calling 
+    yoton.select_sub_channel with this channel as one of the arguments.
+    
+    The returned messages are all received before the first pending
+    message in the other SUB-channels given to select_sub_channel.
+    
+    The combination of this method and the function select_sub_channel
+    enables users to combine multiple SUB-channels in a way that 
+    preserves the original order of the messages.
+    
+    """
+    
+    # No need to check queue status, we've done that in the
+    # _get_pending_sequence_numbers() method
+    
+    # Prepare
+    q = self._q_in
+    ref_seq = self._ref_seq
+    popped = []
+    
+    # Pop all messages that have sequence number lower than reference
+    try:
+        for i in range(len(q)):
+            part = q.pop()
+            if part._recv_seq > ref_seq:
+                q.insert(part) # put back in queue
+                break
+            else:
+                popped.append(part)
+    except IndexError:
+        pass
+    
+    # Done; return messages
+    return [self.message_from_bytes(p._data) for p in popped]
+
+
+.. @+node:ekr.20170318085638.19: *6* _get_pending_sequence_numbers
+def _get_pending_sequence_numbers(self):
+    """ _get_pending_sequence_numbers()
+    
+    Get the sequence numbers of the first and last pending messages.
+    Returns (-1,-1) if no messages are pending.
+    
+    Used by select_sub_channel() to determine which channel should
+    be read from first and what the reference sequence number is.
+    
+    """
+    
+    # Check queue status, maybe we need to block the sender
+    self._check_queue_status() 
+    
+    # Peek         
+    try:
+        q = self._q_in
+        return q.peek(0)._recv_seq, q.peek(-1)._recv_seq + 1
+    except IndexError:
+        return -1, -1
+
+
+
+.. @+node:ekr.20170318085638.20: *5* select_sub_channel
+def select_sub_channel(*args):
+    """ select_sub_channel(channel1, channel2, ...)
+    
+    Returns the channel that has the oldest pending message of all 
+    given yoton.SubCannel instances. Returns None if there are no pending 
+    messages.
+    
+    This function can be used to read from SubCannels instances in the
+    order that the messages were send.
+    
+    After calling this function, use channel.recv_selected() to obtain
+    all messages that are older than any pending messages in the other
+    given channels.
+    
+    """
+    
+    # Init
+    smallest_seq1 = 99999999999999999999999999
+    smallest_seq2 = 99999999999999999999999999
+    first_channel = None
+    
+    # For each channel ...    
+    for channel in args:
+        
+        # Check if channel is of right type
+        if not isinstance(channel, SubChannel):
+            raise ValueError('select_sub_channel() only accepts SUB channels.')
+        
+        # Get and check sequence
+        seq1, seq2 = channel._get_pending_sequence_numbers()
+        if seq1 >= 0:
+            if seq1 < smallest_seq1:
+                # Cannot go beyond number of packages in queue,
+                # or than seq1 of earlier selected channel.
+                smallest_seq2 = min(smallest_seq1, smallest_seq2, seq2)
+                # Store
+                smallest_seq1 = seq1
+                first_channel = channel
+            else:
+                # The first_channel cannot go beyond the 1st package in THIS queue
+                smallest_seq2 = min(smallest_seq2, seq1)
+    
+    # Set flag at channel and return
+    if first_channel:
+        first_channel._ref_seq = smallest_seq2
+        return first_channel
+    else:
+        return None
+.. @+node:ekr.20170318090026.1: *4* @file channels_reqrep.py
+@first # -*- coding: utf-8 -*-
+
+""" Module yoton.channels.channels_reqprep
+
+Defines the channel classes for the req/rep pattern.
+
+"""
+<< channels_reqrep imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318090045.1: *5* << channels_reqrep imports >>
+import time
+import threading
+import yoton
+from yoton.misc import basestring, bytes # , str
+from yoton.misc import getErrorMsg # Property, 
+from yoton.channels import BaseChannel, OBJECT
+
+# For the req/rep channels to negotiate (simple load balancing)
+REQREP_SEQ_REF = 2**63
+
+# Define object to recognize errors
+ERROR_OBJECT = 'yoton_ERROR_HANDLING_REQUEST'
+.. @+node:ekr.20170318090145.1: *5* Exceptions
+.. @+node:ekr.20170318090045.2: *6* class TimeoutError
+class TimeoutError(Exception):
+    pass
+.. @+node:ekr.20170318090045.3: *6* class CancelledError
+class CancelledError(Exception):
+    pass
+# # Try loading the exceptions from the concurrency framework
+# # (or maybe not; it makes yoton less lightweight)
+# try:
+#     from concurrent.futures import TimeoutError, CancelledError
+# except ImportError:
+#     pass
+
+
+
+.. @+node:ekr.20170318090045.4: *5* class Future
+class Future(object):
+    """ Future(req_channel, req, request_id)
+    
+    The Future object represents the future result of a request done at 
+    a yoton.ReqChannel.
+    
+    It enables:
+      * checking whether the request is done.
+      * getting the result or the exception raised during handling the request.
+      * canceling the request (if it is not yet running)
+      * registering callbacks to handle the result when it is available
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090045.5: *6* __init__
+def __init__(self, req_channel, req, request_id):
+    
+    # For being a Future object
+    self._result = None
+    self._status = 0 # 0:waiting, 1:running, 2:canceled, 3:error, 4:success
+    self._callbacks = []
+    
+    # For handling req/rep
+    self._req_channel = req_channel
+    self._req = req        
+    self._request_id = request_id
+    self._rep = bytes()
+    self._replier = 0
+    
+    # For resending
+    self._first_send_time = time.time()
+    self._next_send_time = self._first_send_time + 0.5
+    self._auto_cancel_timeout = 10.0
+
+
+.. @+node:ekr.20170318090045.6: *6* _send
+def _send(self, msg):
+    """ _send(msg)
+    
+    For sending pre-request messages 'req?', 'req-'.
+    
+    """
+    msg = msg.encode('utf-8')
+    try:
+        self._req_channel._send(msg, 0, self._request_id+REQREP_SEQ_REF)
+    except IOError:
+        # if self._closed, will call _send again, and catch IOerror,
+        # which will result in one more call to cancel().
+        self.cancel()
+
+
+.. @+node:ekr.20170318090045.7: *6* _resend_if_necessary
+def _resend_if_necessary(self):
+    """ _resend_if_necessary()
+    
+    Resends the pre-request message if we have not done so for the last
+    0.5 second. 
+    
+    This will also auto-cancel the message if it is resend over 20 times.
+    
+    """
+    timetime = time.time()
+    if self._status != 0:
+        pass
+    elif timetime > self._first_send_time + self._auto_cancel_timeout:
+        self.cancel()
+    elif timetime > self._next_send_time:
+        self._send('req?')
+        self._next_send_time = timetime + 0.5
+
+
+.. @+node:ekr.20170318090045.8: *6* set_auto_cancel_timeout
+def set_auto_cancel_timeout(self, timeout):
+    """ set_auto_cancel_timeout(timeout):
+    
+    Set the timeout after which the call is automatically cancelled
+    if it is not done yet. By default, this value is 10 seconds.
+    
+    If timeout is None, there is no limit to the wait time.
+    
+    """ 
+    if timeout is None:
+        timeout = 999999999999999999.0
+    if timeout > 0:
+        self._auto_cancel_timeout = float(timeout)
+    else:
+        raise ValueError('A timeout cannot be negative')
+
+
+.. @+node:ekr.20170318090045.9: *6* cancel
+def cancel(self):
+    """ cancel()
+    
+    Attempt to cancel the call. If the call is currently being executed
+    and cannot be cancelled then the method will return False, otherwise
+    the call will be cancelled and the method will return True.
+    
+    """
+    
+    if self._status == 1:
+        # Running, cannot cancel
+        return False
+    elif self._status == 0:
+        # Cancel now
+        self._status = 2
+        self._send('req-')
+        for fn in self._callbacks:
+            yoton.call_later(fn, 0, self)
+        return True
+    else:
+        # Already done or canceled
+        return True
+
+
+.. @+node:ekr.20170318090045.10: *6* cancelled
+def cancelled(self):
+    """ cancelled()
+    
+    Return True if the call was successfully cancelled.
+    
+    """
+    return self._status == 2
+
+
+.. @+node:ekr.20170318090045.11: *6* running
+def running(self):
+    """ running()
+    
+    Return True if the call is currently being executed and cannot be 
+    cancelled.
+    
+    """
+    return self._status == 1
+
+
+.. @+node:ekr.20170318090045.12: *6* done
+def done(self):
+    """ done()
+    
+    Return True if the call was successfully cancelled or finished running.
+    
+    """
+    return self._status in [2,3,4]
+
+
+.. @+node:ekr.20170318090045.13: *6* _wait
+def _wait(self, timeout):
+    """ _wait(timeout)
+    
+    Wait for the request to be handled for the specified amount of time.
+    While waiting, the ReqChannel local event loop is called so that
+    pre-request messages can be exchanged.
+    
+    """
+    
+    # No timout means a veeeery long timeout
+    if timeout is None:
+        timeout = 999999999999999999.0
+    
+    # Receive packages untill we receive the one we want,
+    # or untill time runs out
+    timestamp = time.time() + timeout
+    while (self._status < 2) and (time.time() < timestamp):
+        self._req_channel._process_events_local()
+        time.sleep(0.01) # 10 ms
+
+
+.. @+node:ekr.20170318090045.14: *6* result
+def result(self, timeout=None):
+    """ result(timeout=None)
+    
+    Return the value returned by the call. If the call hasn’t yet 
+    completed then this method will wait up to timeout seconds. If 
+    the call hasn’t completed in timeout seconds, then a TimeoutError 
+    will be raised. timeout can be an int or float. If timeout is not 
+    specified or None, there is no limit to the wait time.
+
+    If the future is cancelled before completing then CancelledError 
+    will be raised.
+
+    If the call raised, this method will raise the same exception.
+
+    """
+    
+    # Wait
+    self._wait(timeout)
+    
+    # Return or raise error
+    if self._status < 2 :
+        raise TimeoutError('Result unavailable within the specified time.')
+    elif self._status == 2:
+        raise CancelledError('Result unavailable because request was cancelled.')
+    elif self._status == 3:
+        raise self._result
+    else:
+        return self._result
+
+
+.. @+node:ekr.20170318090045.15: *6* result_or_cancel
+def result_or_cancel(self, timeout=1.0):
+    """ result_or_cancel(timeout=1.0)
+    
+    Return the value returned by the call. If the call hasn’t yet 
+    completed then this method will wait up to timeout seconds. If 
+    the call hasn’t completed in timeout seconds, then the call is
+    cancelled and the method will return None.
+    
+    """
+    
+    # Wait
+    self._wait(timeout)
+    
+    # Return 
+    if self._status == 4:
+        return self._result
+    else:
+        self.cancel()
+        return None
+
+
+.. @+node:ekr.20170318090045.16: *6* exception
+def exception(self, timeout=None):
+    """ exception(timeout)
+    
+    Return the exception raised by the call. If the call hasn’t yet
+    completed then this method will wait up to timeout seconds. If 
+    the call hasn’t completed in timeout seconds, then a TimeoutError 
+    will be raised. timeout can be an int or float. If timeout is not 
+    specified or None, there is no limit to the wait time.
+    
+    If the future is cancelled before completing then CancelledError 
+    will be raised.
+    
+    If the call completed without raising, None is returned.
+    
+    """
+    
+    # Wait
+    self._wait(timeout)
+    
+    # Return or raise error
+    if self._status < 2 :
+        raise TimeoutError('Exception unavailable within the specified time.')
+    elif self._status == 2:
+        raise CancelledError('Exception unavailable because request was cancelled.')
+    elif self._status == 3:
+        return self._result
+    else:
+        return None # no exception
+
+
+.. @+node:ekr.20170318090045.17: *6* add_done_callback
+def add_done_callback(self, fn):
+    """ add_done_callback(fn)
+    
+    Attaches the callable fn to the future. fn will be called, with 
+    the future as its only argument, when the future is cancelled or 
+    finishes running.
+    
+    Added callables are called in the order that they were added. If 
+    the callable raises a Exception subclass, it will be logged and 
+    ignored. If the callable raises a BaseException subclass, the 
+    behavior is undefined.
+    
+    If the future has already completed or been cancelled, fn will be 
+    called immediately.
+    
+    """
+    
+    # Check
+    if not hasattr(fn, '__call__'):
+        raise ValueError('add_done_callback expects a callable.')
+    
+    # Add
+    if self.done():
+        yoton.call_later(fn, 0, self)
+    else:
+        self._callbacks.append(fn)
+
+
+.. @+node:ekr.20170318090045.18: *6* set_running_or_notify_cancel
+def set_running_or_notify_cancel(self):
+    """ set_running_or_notify_cancel()
+    
+    This method should only be called by Executor implementations before 
+    executing the work associated with the Future and by unit tests.
+    
+    If the method returns False then the Future was cancelled, i.e. 
+    Future.cancel() was called and returned True. 
+    
+    If the method returns True then the Future was not cancelled and 
+    has been put in the running state, i.e. calls to Future.running() 
+    will return True.
+    
+    This method can only be called once and cannot be called after 
+    Future.set_result() or Future.set_exception() have been called.
+    
+    """
+    
+    if self._status == 2:
+        return False
+    elif self._status == 0:
+        self._status = 1
+        return True
+    else:
+        raise RuntimeError('set_running_or_notify_cancel should be called when in a clear state.')
+
+
+.. @+node:ekr.20170318090045.19: *6* set_result
+def set_result(self, result):
+    """ set_result(result)
+    
+    Sets the result of the work associated with the Future to result.
+    This method should only be used by Executor implementations and
+    unit tests.
+    
+    """
+    
+    # Set result if indeed in running state
+    if self._status == 1:
+        self._result = result
+        self._status = 4
+        for fn in self._callbacks:
+            yoton.call_later(fn, 0, self)
+
+
+.. @+node:ekr.20170318090045.20: *6* set_exception
+def set_exception(self, exception):
+    """ set_exception(exception)
+    
+    Sets the result of the work associated with the Future to the 
+    Exception exception. This method should only be used by Executor 
+    implementations and unit tests.
+    
+    """
+    
+    # Check 
+    if isinstance(exception, basestring):
+        exception = Exception(exception)
+    if not isinstance(exception, Exception):
+        raise ValueError('exception must be an Exception instance.')
+    
+    # Set result if indeed in running state
+    if self._status == 1:
+        self._result = exception
+        self._status = 3
+        for fn in self._callbacks:
+            yoton.call_later(fn, 0, self)
+
+
+.. @+node:ekr.20170318090045.21: *5* class ReqChannel
+class ReqChannel(BaseChannel):
+    """ ReqChannel(context, slot_base)
+    
+    The request part of the request/reply messaging pattern.
+    A ReqChannel instance sends request and receive the corresponding 
+    replies. The requests are replied by a yoton.RepChannel instance.
+    
+    This class adopts req/rep in a remote procedure call (RPC) scheme.
+    The handling of the result is done using a yoton.Future object, which 
+    follows the approach specified in PEP 3148. Note that for the use
+    of callbacks, the yoton event loop must run.
+    
+    Basic load balancing is performed by first asking all potential
+    repliers whether they can handle a request. The actual request
+    is then send to the first replier to respond.
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    
+    Usage
+    -----
+    One performs a call on a virtual method of this object. The actual
+    method is executed by the yoton.RepChannel instance. The method can be 
+    called with normal and keyword arguments, which can be (a 
+    combination of): None, bool, int, float, string, list, tuple, dict.
+    
+    Example
+    -------
+    # Fast, but process is idling when waiting for the response.
+    reply = req.add(3,4).result(2.0) # Wait two seconds
+    
+    # Asynchronous processing, but no waiting.
+    def reply_handler(future):
+        ... # Handle reply
+    future = req.add(3,4)
+    future.add_done_callback(reply_handler)
+    
+    """
+    
+    # Notes on load balancing:
+    #
+    # Firstly, each request has an id. Which is an integer number
+    # which is increased at each new request. The id is send via
+    # the dest_seq. For pre-request messages an offset is added
+    # to recognize these meta-messages.
+    #
+    # We use an approach I call pre-request. The req channel sends
+    # a pre-request to all repliers (on the same slot) asking whether
+    # they want to handle a request. The content is 'req?' and the
+    # dest_seq is the request-id + offset.
+    #
+    # The repliers collects and queues all pre-requests. It will then
+    # send a reply to acknowledge the first received pre-request. The
+    # content is 'req!' and dest_seq is again request-id + offset.
+    #
+    # The replier is now in a state of waiting for the actual request.
+    # It will not acknowledge pre-requests, but keeps queing them.
+    #
+    # Upon receiving the acknowledge, the requester sends (directed 
+    # at only the first replier to acknowledge) the real request.
+    # The content is the real request and dest_seq is the request-id.
+    # Right after this, a pre-request cancel message is sent to all
+    # repliers. The content is 'req-' and dest_seq is request-id + offset.
+    #
+    # When a replier receives a pre-request cancel message, it will 
+    # remove the pre-request from the list. If this cancels the 
+    # request it was currently waiting for, the replier will go back
+    # to its default state, and acknowledge the first next pre-request
+    # in the queue.
+    #
+    # When the replier answers a request, it will go back to its default
+    # state, and acknowledge the first next pre-request in the queue. 
+    # The replier tries to answer as quickly to pre-requests as possible.
+    #
+    # On the request channel, a dictionary of request items is maintained.
+    # Each item has an attribute specifying whether a replier has
+    # acknowledged it (and which one).
+    
+    
+    @others
+.. @+node:ekr.20170318090045.22: *6* __init__
+def __init__(self, context, slot_base):
+    BaseChannel.__init__(self, context, slot_base, OBJECT)
+    
+    # Queue with pending requests
+    self._request_items = {}
+    
+    # Timeout
+    self._next_recheck_time = time.time() + 0.2
+    
+    # Counter
+    self._request_counter = 0
+    
+    # The req channel is always in event driven mode
+    self._run_mode = 1
+    
+    # Bind signals to process the events for this channel
+    # Bind to "received" signal for quick response and a timer 
+    # so we can resend requests if we do not receive anything.
+    self.received.bind(self._process_events_local)
+    self._timer = yoton.events.Timer(0.5, False)
+    self._timer.bind(self._process_events_local)
+    self._timer.start()
+
+
+.. @+node:ekr.20170318090045.23: *6* _messaging_patterns
+def _messaging_patterns(self):
+    return 'req-rep', 'rep-req'
+
+   
+.. @+node:ekr.20170318090045.24: *6* __getattr__
+def __getattr__(self, name):
+    if name.startswith('_'):
+        return object.__getattribute__(self, name)
+    try:
+        return object.__getattribute__(self, name)
+    except AttributeError:
+        def proxy_function(*args, **kwargs):
+            return self._handle_request(name, *args, **kwargs)
+        return proxy_function
+
+
+.. @+node:ekr.20170318090045.25: *6* _handle_request
+def _handle_request(self, name, *args, **kwargs):
+    """ _handle_request(request, callback, **kwargs)
+    
+    Post a request. This creates a Future instance and stores
+    it. A message is send asking any repliers to respond.
+    
+    The actual request will be send when a reply to our pre-request
+    is received. This all hapens in the yoton event loop.
+    
+    """
+    
+    # Create request object
+    request = name, args, kwargs
+    
+    # Check and convert request message
+    bb = self.message_to_bytes(request)
+    
+    # Get new request id
+    request_id = self._request_counter = self._request_counter + 1
+    
+    # Create new item for this request and store under the request id
+    item = Future(self, bb, request_id)
+    self._request_items[request_id] = item
+    
+    # Send pre-request (ask repliers who want to reply to a request)
+    item._send('req?')
+    
+    # Return the Future instance
+    return item
+
+
+.. @+node:ekr.20170318090045.26: *6* _resend_requests
+def _resend_requests(self):
+    """ _resend_requests()
+    
+    See if we should resend our older requests. Periodically calling 
+    this method enables doing a request while the replier is not yet 
+    attached to the network.
+    
+    This also allows the Future objects to cancel themselves if it
+    takes too long.
+    
+    """
+    for request_id in [key for key in self._request_items.keys()]:
+        item = self._request_items[request_id]
+        # Remove items that are really old
+        if item.cancelled():
+            self._request_items.pop(request_id)
+        else:
+            item._resend_if_necessary()
+
+
+.. @+node:ekr.20170318090045.27: *6* _recv_item
+def _recv_item(self):
+    """ _recv_item()
+    
+    Receive item. If a reply is send that is an acknowledgement
+    of a replier that it wants to handle our request, the 
+    correpsonding request is send to that replier.
+    
+    This is a kind of mini-event loop thingy that should be 
+    called periodically to keep things going.
+    
+    """
+    
+    # Receive package 
+    package = self._recv(False)
+    if not package:
+        return
+    
+    # Get the package reply id and sequence number
+    dest_id = package._dest_id
+    request_id = package._dest_seq
+    
+    # Check dest_id
+    if not dest_id:
+        return # We only want messages that are directed directly at us
+    elif dest_id != self._context._id:
+        return # This should not happen; context should make sure
+    
+    if request_id > REQREP_SEQ_REF:
+        # We received a reply to us asking who can handle the request.
+        # Get item, send actual request. We set the replier to indicate
+        # that this request is being handled, and we can any further
+        # acknowledgements from other repliers.
+        request_id -= REQREP_SEQ_REF
+        item = self._request_items.get(request_id, None)
+        
+        if item and not item._replier:
+            # Status now changes to "running" canceling is not possible
+            ok = item.set_running_or_notify_cancel()
+            if not ok:
+                return
+            
+            # Send actual request to specific replier
+            try:
+                self._send(item._req, package._source_id, request_id)
+            except IOError:
+                pass # Channel closed, will auto-cancel at item._send()
+            item._replier = package._source_id # mark as being processed
+            
+            # Send pre-request-cancel message to everyone
+            item._send('req-')
+    
+    elif request_id > 0:
+        # We received a reply to an actual request
+        
+        # Get item, remove from queue, set reply, return            
+        item = self._request_items.pop(request_id, None)
+        if item:
+            item._rep = package._data
+            return item
+
+
+.. @+node:ekr.20170318090045.28: *6* _process_events_local
+def _process_events_local(self, dummy=None):
+    """ _process_events_local()
+    
+    Process events only for this object. Used by _handle_now().
+    
+    """
+    
+    # Check periodically if we should resend (or clean up) old requests
+    if time.time() > self._next_recheck_time:
+        self._resend_requests()
+        self._next_recheck_time = time.time() + 0.1
+    
+    # Process all received messages
+    while self.pending:
+        item = self._recv_item()
+        if item:
+            reply = self.message_from_bytes(item._rep)
+            if isinstance(reply, tuple) and len(reply)==2 and reply[0]==ERROR_OBJECT:
+                item.set_exception(reply[1])
+            else:
+                item.set_result(reply)
+
+
+
+.. @+node:ekr.20170318090045.29: *5* class RepChannel
+class RepChannel(BaseChannel):
+    """ RepChannel(context, slot_base)
+    
+    The reply part of the request/reply messaging pattern.
+    A RepChannel instance receives request and sends the corresponding 
+    replies. The requests are send from a yoton.ReqChannel instance.
+    
+    This class adopts req/rep in a remote procedure call (RPC) scheme.
+    
+    To use a RepChannel, subclass this class and implement the methods
+    that need to be available. The reply should be (a combination of)
+    None, bool, int, float, string, list, tuple, dict. 
+    
+    This channel needs to be set to event or thread mode to function 
+    (in the first case yoton events need to be processed too).
+    To stop handling events again, use set_mode('off').
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090045.30: *6* __init__
+def __init__(self, context, slot_base):
+    BaseChannel.__init__(self, context, slot_base, OBJECT)
+    
+    # Pending pre-requests
+    self._pre_requests = []
+    
+    # Current pre-request and time that it was acknowledged
+    self._pre_request = None
+    self._pre_request_time = 0
+    
+    # Create thread
+    self._thread = ThreadForReqChannel(self)
+    
+    # Create timer (do not start)
+    self._timer = yoton.events.Timer(2.0, False)
+    self._timer.bind(self._process_events_local)
+    
+    # By default, the replier is off
+    self._run_mode = 0
+
+
+.. @+node:ekr.20170318090045.31: *6* _messaging_patterns
+def _messaging_patterns(self):
+    return 'rep-req', 'req-rep'
+
+
+# Node that setters for normal and event_driven mode are specified in
+# channels_base.py
+.. @+node:ekr.20170318090045.32: *6* set_mode
+def set_mode(self, mode):
+    """ set_mode(mode)
+    
+    Set the replier to its operating mode, or turn it off.
+    
+    Modes:
+      * 0 or 'off': do not process requests
+      * 1 or 'event': use the yoton event loop to process requests
+      * 2 or 'thread': process requests in a separate thread
+    
+    """
+    
+    if isinstance(mode, basestring):
+        mode = mode.lower()
+    
+    if mode in [0, 'off']:
+        self._run_mode = 0
+    elif mode in [1, 'event', 'event-driven']:
+        self._run_mode = 1
+        self.received.bind(self._process_events_local)
+        self._timer.start()
+    elif mode in [2, 'thread', 'thread-driven']:
+        self._run_mode = 2
+        if not self._thread.isAlive():
+            self._thread.start()
+    else:
+        raise ValueError('Invalid mode for ReqChannel instance.')
+
+
+.. @+node:ekr.20170318090045.33: *6* _handle_request
+def _handle_request(self, message):
+    """ _handle_request(message)
+    
+    This method is called for each request, and should return 
+    a reply. The message contains the name of the method to call,
+    this function calls that method.
+    
+    """
+    # Get name and args
+    name, args, kwargs = message
+    
+    # Get function
+    if not hasattr(self, name):
+        raise RuntimeError("Method '%s' not implemented." % name)
+    else:
+        func = getattr(self, name)
+    
+    # Call
+    return func(*args, **kwargs)
+
+
+.. @+node:ekr.20170318090045.34: *6* _acknowledge_next_pre_request
+def _acknowledge_next_pre_request(self):
+    
+    # Cancel current pre-request ourselves if it takes too long.
+    # Failsafe, only for if resetting by requester fails somehow.
+    if time.time() - self._pre_request_time > 10.0:
+        self._pre_request = None
+    
+    # Send any pending pre requests
+    if self._pre_requests and not self._pre_request:
+
+        # Set current pre-request and its ack time
+        package = self._pre_requests.pop(0)
+        self._pre_request = package
+        self._pre_request_time = time.time()
+        
+        # Send acknowledgement
+        msg = 'req!'.encode('utf-8')
+        try:
+            self._send(msg, package._source_id, package._dest_seq)
+        except IOError:
+            pass # Channel closed, nothing we can do about that
+        # 
+        #print 'ack', self._context.id,  package._dest_seq-REQREP_SEQ_REF
+
+
+.. @+node:ekr.20170318090045.35: *6* _replier_iteration
+def _replier_iteration(self, package):
+    """ _replier_iteration()
+    
+    Do one iteration: process one request.
+    
+    """
+    
+    # Get request id
+    request_id = package._dest_seq
+    
+    if request_id > REQREP_SEQ_REF:
+        # Pre-request stuff   
+        
+        # Remove offset
+        request_id -= REQREP_SEQ_REF
+        
+        # Get action and pre request id
+        action = package._data.decode('utf-8')
+        
+        # Remove pre-request from pending requests in case of both actions:
+        # Cancel pending pre-request, prevent stacking of the same request.
+        for prereq in [prereq for prereq in self._pre_requests]:
+            if (    package._source_id == prereq._source_id and
+                    package._dest_seq == prereq._dest_seq):
+                self._pre_requests.remove(prereq)
+        
+        if action == 'req-':
+            # Cancel current pre-request
+            if (    self._pre_request and
+                    package._source_id == self._pre_request._source_id and
+                    package._dest_seq == self._pre_request._dest_seq):
+                self._pre_request = None
+        
+        elif action == 'req?':
+            # New pre-request
+            self._pre_requests.append(package)
+    
+    else:
+        # We are asked to handle an actual request
+        
+        # We can reset the state
+        self._pre_request = None
+        
+        # Get request
+        request = self.message_from_bytes(package._data)
+        
+        # Get reply
+        try:
+            reply = self._handle_request(request)
+        except Exception:
+            reply = ERROR_OBJECT, getErrorMsg()
+            print('yoton.RepChannel: error handling request:')
+            print(reply[1])
+        
+        # Send reply
+        if True:
+            try:
+                bb = self.message_to_bytes(reply)
+                self._send(bb, package._source_id, request_id)
+            except IOError:
+                pass # Channel is closed
+            except Exception:
+                # Probably wrong type of reply returned by handle_request()
+                print('Warning: request could not be send:')
+                print(getErrorMsg())
+
+
+.. @+node:ekr.20170318090045.36: *6* _process_events_local
+def _process_events_local(self, dummy=None):
+    """ _process_events_local()
+    
+    Called when a message (or more) has been received.
+    
+    """
+    
+    # If closed, unregister from signal and stop the timer
+    if self.closed or self._run_mode!=1:
+        self.received.unbind(self._process_events_local)
+        self._timer.stop()
+    
+    # Iterate while we receive data
+    while True:
+        package = self._recv(False)
+        if package:
+            self._replier_iteration(package)
+            self._acknowledge_next_pre_request()
+        else:
+            # We always enter this the last time
+            self._acknowledge_next_pre_request()
+            return
+
+
+.. @+node:ekr.20170318090045.37: *6* echo
+def echo(self, arg1, sleep=0.0):
+    """ echo(arg1, sleep=0.0)
+    
+    Default procedure that can be used for testing. It returns
+    a tuple (first_arg, context_id)
+    
+    """
+    time.sleep(sleep)
+    return arg1, hex(self._context.id)
+
+
+
+.. @+node:ekr.20170318090045.38: *5* class ThreadForReqChannel
+class ThreadForReqChannel(threading.Thread):
+    """ ThreadForReqChannel(channel)
+    
+    Thread to run a RepChannel in threaded mode.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090045.39: *6* __init__
+def __init__(self, channel):
+    threading.Thread.__init__(self)
+    
+    # Check channel
+    if not isinstance(channel, RepChannel):
+        raise ValueError('The given channel must be a REP channel.')
+    
+    # Store channel
+    self._channel = channel
+    
+    # Make deamon
+    self.setDaemon(True)
+
+
+.. @+node:ekr.20170318090045.40: *6* run
+def run(self):
+    """ run()
+    
+    The handler's main loop. 
+    
+    """ 
+    
+    # Get ref to channel. Remove ref from instance
+    channel = self._channel
+    del self._channel
+    
+    while True:
+        
+        # Stop?
+        if channel.closed or channel._run_mode!=2:
+            break
+
+        # Wait for data (blocking, look Rob, without spinlocks :)
+        package = channel._recv(2.0)
+        if package:
+            channel._replier_iteration(package)
+            channel._acknowledge_next_pre_request()
+        else:
+            channel._acknowledge_next_pre_request()
+.. @+node:ekr.20170318090242.1: *4* @file channels_state.py
+@first # -*- coding: utf-8 -*-
+""" Module yoton.channels.channels_state
+
+Defines the channel class for state.
+
+"""
+<< channels_state imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318090253.1: *5* << channels_state imports >>
+# from yoton.misc import bytes # basestring, str, long
+# from yoton.misc import Property
+from yoton.channels import BaseChannel
+.. @+node:ekr.20170318090253.2: *5* class StateChannel (BaseChannel)
+class StateChannel(BaseChannel):
+    """ StateChannel(context, slot_base, message_type=yoton.TEXT)
+    
+    Channel class for the state messaging pattern. A state is synchronized
+    over all state channels of the same slot. Each channel can 
+    send (i.e. set) the state and recv (i.e. get) the current state.
+    Note however, that if two StateChannel instances set the state
+    around the same time, due to the network delay, it is undefined
+    which one sets the state the last.
+    
+    The context will automatically call this channel's send_last()
+    method when a new context enters the network.
+    
+    The recv() call is always non-blocking and always returns the last
+    received message: i.e. the current state.
+    
+    There are no limitations for this channel if events are not 
+    processed, except that the received signal is not emitted.
+    
+    Parameters
+    ----------
+    context : yoton.Context instance
+        The context that this channel uses to send messages in a network.
+    slot_base : string
+        The base slot name. The channel appends an extension to indicate
+        message type and messaging pattern to create the final slot name.
+        The final slot is used to connect channels at different contexts
+        in a network
+    message_type : yoton.MessageType instance 
+        (default is yoton.TEXT)
+        Object to convert messages to bytes and bytes to messages. 
+        Users can create their own message_type class to let channels
+        any type of message they want.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090253.3: *6* __init__
+def __init__(self, *args, **kwargs):
+    BaseChannel.__init__(self, *args, **kwargs)
+    
+    # Variables to hold the current state. We use only the message
+    # as a reference, so we dont need a lock.
+    # The package is used to make _recv() function more or less,
+    # and to be able to determine if a state was set (because the 
+    # message may be set to None)
+    self._current_package = None
+    self._current_message = self.message_from_bytes(b'') ### bytes())
+
+
+.. @+node:ekr.20170318090253.4: *6* _messaging_patterns
+def _messaging_patterns(self):
+    return 'state', 'state'
+
+
+.. @+node:ekr.20170318090253.5: *6* send
+def send(self, message):
+    """ send(message)
+    
+    Set the state of this channel.
+    
+    The state-message is queued and send over the socket by the IO-thread. 
+    Zero-length messages are ignored.
+    
+    """
+    # Send message only if it is different from the current state
+    # set current_message by unpacking the send binary. This ensures
+    # that if someone does this, things still go well:
+    #    a = [1,2,3]
+    #    status.send(a)
+    #    a.append(4)
+    #    status.send(a)
+    if message != self._current_message:
+        self._current_package = self._send( self.message_to_bytes(message) )
+        self._current_message = self.message_from_bytes(self._current_package._data)
+
+
+.. @+node:ekr.20170318090253.6: *6* send_last
+def send_last(self):
+    """ send_last()
+    
+    Resend the last message.
+    
+    """
+    if self._current_package is not None:
+        self._send( self.message_to_bytes(self._current_message) )
+
+
+.. @+node:ekr.20170318090253.7: *6* recv
+def recv(self, block=False):
+    """ recv(block=False)
+    
+    Get the state of the channel. Always non-blocking. Returns the
+    most up to date state.
+    
+    """
+    return self._current_message
+
+
+.. @+node:ekr.20170318090253.8: *6* _recv_package
+def _recv_package(self, package):
+    """ _recv_package(package)
+    
+    Bypass queue and just store it in a variable.
+    
+    """
+    self._current_message = self.message_from_bytes(package._data)
+    self._current_package = package
+    #
+    self._maybe_emit_received()
+
+
+.. @+node:ekr.20170318090253.9: *6* _inject_package
+def _inject_package(self, package):
+    """ Non-blocking version of recv_package. Does the same.
+    """
+    self._current_message = self.message_from_bytes(package._data)
+    self._current_package = package
+    #
+    self._maybe_emit_received()
+
+
+.. @+node:ekr.20170318090253.10: *6* _recv
+def _recv(self, block=None):
+    """ _recv(block=None)
+    
+    Returns the last received or send set package. The package
+    may not reflect the current state.
+    
+    """
+    return self._current_package
+.. @+node:ekr.20170318090814.1: *4* @file message_types.py
+@first # -*- coding: utf-8 -*-
+
+""" Module yoton.channels.message_types
+
+Defines a few basic message_types for the channels. A MessageType object
+defines how a message of that type should be converted to bytes and 
+vice versa.
+
+The Packer and Unpacker classes for the ObjectMessageType are based on 
+the xdrrpc Python module by Rob Reilink and Windel Bouwman.
+
+"""
+<< message_types imports >>
+@others
+@language python
+@tabwidth -4
+.. @+node:ekr.20170318090828.1: *5* << message_types imports >>
+import sys
+import struct
+from yoton.misc import bytes, basestring, long
+
+# To decode P2k strings that are not unicode
+if sys.__stdin__ and sys.__stdin__.encoding:
+    STDINENC = sys.__stdin__.encoding
+elif sys.stdin and sys.stdin.encoding:
+    STDINENC = sys.stdin.encoding
+else:
+    STDINENC = 'utf-8'
+.. @+node:ekr.20170318090828.2: *5* class MessageType
+class MessageType(object):
+    """ MessageType()
+    
+    Instances of this class are used to convert messages to bytes and
+    bytes to messages. 
+    
+    Users can easily inherit from this class to make channels work for 
+    user specific message types. Three methods should be overloaded:
+      * message_to_bytes()  - given a message, returns bytes
+      * message_from_bytes() - given bytes, returns the message
+      * message_type_name() - a string (for example 'text', 'array')
+    
+    The message_type_name() method is used by the channel to add an
+    extension to the slot name, such that only channels of the same 
+    message type (well, with the same message type name) can connect.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090828.3: *6* message_to_bytes
+def message_to_bytes(self, message):
+    raise NotImplementedError()
+
+.. @+node:ekr.20170318090828.4: *6* message_from_bytes
+def message_from_bytes(self, bb): 
+    raise NotImplementedError()
+
+.. @+node:ekr.20170318090828.5: *6* message_type_name
+def message_type_name(self):
+   raise NotImplementedError()
+
+
+
+.. @+node:ekr.20170318090828.6: *5* class BinaryMessageType
+class BinaryMessageType(MessageType):
+    """ BinaryMessageType()
+    
+    To let channels handle binary messages. 
+    Available as yoton.BINARY.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090828.7: *6* message_type_name
+def message_type_name(self):
+   return 'bin'
+
+
+.. @+node:ekr.20170318090828.8: *6* message_to_bytes
+def message_to_bytes(self, message):
+    if not isinstance(message, bytes):
+        raise ValueError("Binary channel requires byte messages.")
+    return message
+
+
+.. @+node:ekr.20170318090828.9: *6* message_from_bytes
+def message_from_bytes(self, bb): 
+    return bb
+
+
+
+.. @+node:ekr.20170318090828.10: *5* class TextMessageType
+class TextMessageType(MessageType):
+    """ BinaryMessageType()
+    
+    To let channels handle Unicode text messages.
+    Available as yoton.TEXT.
+    
+    """
+    
+    @others
+.. @+node:ekr.20170318090828.11: *6* message_type_name
+def message_type_name(self):
+   return 'txt'
+
+.. @+node:ekr.20170318090828.12: *6* message_to_bytes
+def message_to_bytes(self, message):
+    
+    # Check
+    if not isinstance(message, basestring):
+        raise ValueError("Text channel requires string messages.")
+    
+    # If using py2k and the string is not unicode, make unicode first
+    # by try encoding using UTF-8. When a piece of code stored
+    # in a unicode string is executed, str objects are utf-8 encoded. 
+    # Otherwise they are encoded using __stdin__.encoding. In specific 
+    # cases, a non utf-8 encoded str might be succesfully encoded
+    # using utf-8, but this is rare. Since I would not
+    # know how to tell the encoding beforehand, we'll take our 
+    # chances... Note that in Pyzo (for which this package was created,
+    # all executed code is unicode, so str instrances are always
+    # utf-8 encoded.
+    if isinstance(message, bytes):
+        try:
+            message = message.decode('utf-8')
+        except UnicodeError:
+            try:
+                message = message.decode(STDINENC)
+            except UnicodeError:
+                # Probably not really a string then?
+                message = repr(message)
+    
+    # Encode and send
+    return message.encode('utf-8')
+
+
+.. @+node:ekr.20170318090828.13: *6* message_from_bytes
+def message_from_bytes(self, bb): 
+    return bb.decode('utf-8')
+
+
+
+.. @+node:ekr.20170318090828.14: *5* class ObjectMessageType
+class ObjectMessageType(MessageType):
+    """ ObjectMessageType()
+    
+    To let channels handle messages consisting of any of the following 
+    Python objects: None, bool, int, float, string, list, tuple, dict.
+    Available as yoton.OBJECT.
+    
+    """
+    
+    @others
+# Formats
+_FMT_TYPE = '<B'
+_FMT_BOOL = '<B'
+_FMT_INT = '<q'
+_FMT_FLOAT = '<d'
+
+# Types
+_TYPE_NONE = ord('n')
+_TYPE_BOOL = ord('b')
+_TYPE_INT = ord('i')
+_TYPE_FLOAT = ord('f')
+_TYPE_STRING = ord('s')
+_TYPE_LIST = ord('l')
+_TYPE_TUPLE = ord('t')
+_TYPE_DICT = ord('d')
+
+
+.. @+node:ekr.20170318090828.15: *6* message_type_name
+def message_type_name(self):
+   return 'obj'
+
+.. @+node:ekr.20170318090828.16: *6* message_to_bytes
+def message_to_bytes(self, message):
+    packer = Packer()
+    packer.pack_object(message)
+    return packer.get_buffer()
+
+.. @+node:ekr.20170318090828.17: *6* message_from_bytes
+def message_from_bytes(self, bb): 
+    if bb:
+        unpacker = Unpacker(bb)
+        return unpacker.unpack_object()
+    else:
+        return None
+
+
+
+.. @+node:ekr.20170318090828.18: *5* class Packer
+class Packer:
+    
+    # Note that while xdrlib uses StringIO/BytesIO, this approach using 
+    # a list is actually faster.
+    
+    @others
+.. @+node:ekr.20170318090828.19: *6* __init__
+def __init__(self):
+    self._buf = []
+
+.. @+node:ekr.20170318090828.20: *6* get_buffer
+def get_buffer(self):
+    return bytes().join(self._buf)
+
+.. @+node:ekr.20170318090828.21: *6* write
+def write(self, bb):
+    self._buf.append(bb)
+
+.. @+node:ekr.20170318090828.22: *6* write_number
+def write_number(self, n):
+    if n < 255:
+        self.write( struct.pack('<B', n) )
+    else:
+        self.write( struct.pack('<B', 255) )
+        self.write( struct.pack('<Q', n) )
+
+.. @+node:ekr.20170318090828.23: *6* pack_object
+def pack_object(self, object):
+    
+    if object is None:
+        self.write( struct.pack(_FMT_TYPE, _TYPE_NONE) )
+    elif isinstance(object, bool):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_BOOL) )
+        self.write( struct.pack(_FMT_BOOL, object) )
+    elif isinstance(object, (int, long)):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_INT) )
+        self.write( struct.pack(_FMT_INT, object) )
+    elif isinstance(object, float):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_FLOAT) )
+        self.write( struct.pack(_FMT_FLOAT, object) )
+    elif isinstance(object, basestring):
+        bb = object.encode('utf-8')
+        self.write( struct.pack(_FMT_TYPE, _TYPE_STRING) )
+        self.write_number(len(bb))
+        self.write( bb )
+    elif isinstance(object, list):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_LIST) )
+        self.write_number(len(object))
+        for value in object:
+            self.pack_object(value) # call recursive
+    elif isinstance(object, tuple):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_TUPLE) )
+        self.write_number(len(object))
+        for value in object:
+            self.pack_object(value) # call recursive
+    elif isinstance(object, dict):
+        self.write( struct.pack(_FMT_TYPE, _TYPE_DICT) )
+        self.write_number(len(object))
+        # call recursive
+        for key in object:
+            self.pack_object(key) 
+            self.pack_object(object[key])
+    else:
+        raise ValueError("Unsupported type: %s" % repr(type(object)))
+
+
+.. @+node:ekr.20170318090828.24: *5* class Unpacker
+class Unpacker:
+    
+    @others
+# Define constants
+TEXT = TextMessageType()
+BINARY = BinaryMessageType()
+OBJECT = ObjectMessageType()
+
+
+if __name__ == '__main__':
+    # Test 
+    
+    s = {}
+    s['foo'] = 3
+    s['bar'] = 9
+    s['empty'] = []
+    s[(2,'aa',3)] = ['pretty', ('nice', 'eh'), 4]
+    
+    bb = OBJECT.message_to_bytes(s)
+    s2 = OBJECT.message_from_bytes(bb)
+    print(s)
+    print(s2)
+    
+    
+.. @+node:ekr.20170318090828.25: *6* __init__
+def __init__(self, data):
+    self._buf = data
+    self._pos = 0
+
+.. @+node:ekr.20170318090828.26: *6* read
+def read(self, n):
+    i1 = self._pos
+    i2 = self._pos + n
+    if i2 > len(self._buf):
+        raise EOFError
+    else:
+        self._pos = i2
+        return self._buf[i1:i2]
+
+.. @+node:ekr.20170318090828.27: *6* read_number
+def read_number(self):
+    n, = struct.unpack('<B', self.read(1))
+    if n == 255:
+        n, = struct.unpack('<Q', self.read(8))
+    return n
+
+.. @+node:ekr.20170318090828.28: *6* unpack
+def unpack(self, fmt, n):
+    i1 = self._pos
+    i2 = self._pos + n
+    if i2 > len(self._buf):
+        raise EOFError
+    else:
+        self._pos = i2
+        data = self._buf[i1:i2]
+        return struct.unpack(fmt, data)[0]
+
+.. @+node:ekr.20170318090828.29: *6* unpack_object
+def unpack_object(self):
+    
+    object_type = self.unpack(_FMT_TYPE, 1)
+    
+    if object_type == _TYPE_NONE:
+        return None
+    elif object_type == _TYPE_BOOL:
+        return bool( self.unpack(_FMT_BOOL, 1) )
+    elif object_type == _TYPE_INT:
+        return self.unpack(_FMT_INT, 8)
+    elif object_type == _TYPE_FLOAT:
+        return self.unpack(_FMT_FLOAT, 8)
+    elif object_type == _TYPE_STRING:
+        n = self.read_number()
+        return self.read(n).decode('utf-8')
+    elif object_type == _TYPE_LIST:
+        object = []
+        for i in range(self.read_number()):
+            object.append( self.unpack_object() )
+        return object
+    elif object_type == _TYPE_TUPLE:
+        object = []
+        for i in range(self.read_number()):
+            object.append( self.unpack_object() )
+        return tuple(object)
+    elif object_type == _TYPE_DICT:
+        object = {}
+        for i in range(self.read_number()):
+            key = self.unpack_object()
+            object[key] = self.unpack_object()
+        return  object
+    else:
+        raise ValueError("Unsupported type: %s" % repr(object_type))
+
+
 .. @-all
 .. @@nosearch
 .. @-leo
