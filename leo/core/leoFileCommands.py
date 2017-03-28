@@ -910,7 +910,8 @@ class FileCommands(object):
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
-        trace = True and not g.unitTesting
+        
+        trace = False and not g.unitTesting
         trace_dict = False
         trace_expanded = False
         trace_marks = False
@@ -1023,7 +1024,7 @@ class FileCommands(object):
     def createSaxVnode(self, sax_node, parent_v, v=None):
         '''Create a vnode, or use an existing vnode.'''
         c, at = self.c, self.c.atFileCommands
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
             # and self.mFileName and sax_node.headString == 'clone-test'
             # and not g.app.openingSettingsFile)
         trace_update, verbose = False, False
@@ -1360,7 +1361,7 @@ class FileCommands(object):
         c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20061006104837.1: *6* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')

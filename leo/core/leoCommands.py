@@ -438,18 +438,22 @@ class Commands(object):
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = False and not g.unitTesting
-        trace_inactive_focus = False
-        trace_in_dialog = False
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        # if trace: g.trace('active:', g.app.gui and g.app.gui.active)
+        trace_inactive_focus = True
+        trace_in_dialog = True
         c = self
         assert tag == 'idle'
-        if g.app.unitTesting or keys.get('c') != c:
+        if g.app.unitTesting:
+            return
+        if keys.get('c') != c:
+            if trace: g.trace('no c')
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
             if trace and trace_in_dialog: g.trace('in_qt_dialog')
             return
-        w = g.app.gui.get_focus()
+        w = g.app.gui.get_focus(at_idle = True)
         if g.app.gui.active:
             if trace:
                 self.trace_idle_focus(w)
@@ -495,8 +499,8 @@ class Commands(object):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = True and not g.unitTesting
-        trace_known = False
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_known = True
         c = self
         table = (
             QtWidgets.QWidget,
@@ -507,16 +511,14 @@ class Commands(object):
         if w:
             c.last_no_focus = False
             if self.is_unusual_focus(w):
-                if w_class != c.last_unusual_focus:
-                    c.last_unusual_focus = w_class
-                    g.trace('%s unusual focus: %s' % (count, w_class))
+                g.trace('%s unusual focus: %s' % (count, w_class))
             else:
                 c.last_unusual_focus = None
-                if trace:
-                    if trace_known and isinstance(w, table):
+                if isinstance(w, table):
+                    if trace and trace_known:
                         g.trace('%s known focus: %s' % (count, w_class))
-                    elif not isinstance(w, table):
-                        g.trace('%s unknown focus: %s' % (count, w_class))
+                elif trace:
+                    g.trace('%s unknown focus: %s' % (count, w_class))
         # elif active:
             # g.trace('%s no focus -> body' % (count))
         # el
@@ -6298,24 +6300,27 @@ class Commands(object):
     #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
     def get_focus(self):
         c = self
-        return g.app.gui and g.app.gui.get_focus(c)
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        w = g.app.gui and g.app.gui.get_focus(c)
+        if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
+        return w
 
     def get_requested_focus(self):
         c = self
         return c.requestedFocusWidget
 
     def request_focus(self, w):
-        trace = False and not g.unitTesting
-        c = self
-        if trace: g.trace(g.app.gui.widget_name(w), w, g.callers())
-        if w: c.requestedFocusWidget = w
-
-    def set_focus(self, w, force=False):
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: g.trace('(c)',
-                g.app.gui.widget_name(w), w)
+            if trace: g.trace('(c)', repr(g.app.gui.widget_name(w)))
+            c.requestedFocusWidget = w
+
+    def set_focus(self, w, force=False):
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        c = self
+        if w and g.app.gui:
+            if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')

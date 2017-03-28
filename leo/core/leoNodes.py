@@ -2378,30 +2378,18 @@ class VNodeBase(object):
     #@+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
     def contract(self):
         '''Contract the node.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString, g.callers())
         self.statusBits &= ~self.expandedBit
 
     def expand(self):
         '''Expand the node.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString)
         self.statusBits |= self.expandedBit
 
     def initExpandedBit(self):
         '''Init self.statusBits.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString, g.callers())
         self.statusBits |= self.expandedBit
 
     def isExpanded(self):
         '''Return True if the VNode expansion bit is set.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', bool(self.expandedBit), self._headString)
         return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus(self, status):

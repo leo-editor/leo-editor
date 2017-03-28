@@ -616,7 +616,7 @@ class LeoQtGui(leoGui.LeoGui):
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
         '''
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         if trace:
             g.trace(g.app.gui.get_focus())
         self.active = False
@@ -638,15 +638,23 @@ class LeoQtGui(leoGui.LeoGui):
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
         '''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(g.app.gui.get_focus())
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        if not g.app.gui:
+            return
+        w = g.app.gui.get_focus()
+        if trace: g.trace(w and g.app.gui.widget_name(w))
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
         if c.exists and c.vimCommands and not self.active and not g.app.killed: 
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
+        if 1: # Leo 5.6: Attempt to recover from missing focus.
+            # This should be done in c.idle_focus_handler.
+            if not w:
+                if trace: g.trace('===== FOCUS TO BODY')
+                c.bodyWantsFocus()
+                c.outerUpdate()
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:
@@ -685,10 +693,12 @@ class LeoQtGui(leoGui.LeoGui):
         w.ev_filter = theFilter
             # Set the official ivar in w.
     #@+node:ekr.20110605121601.18508: *3* qt_gui.Focus
-    def get_focus(self, c=None, raw=False):
+    def get_focus(self, c=None, raw=False, at_idle=False):
         """Returns the widget that has focus."""
         # pylint: disable=arguments-differ
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_idle = False
+        trace = trace and (trace_idle or not at_idle)
         app = QtWidgets.QApplication
         w = app.focusWidget()
         if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
@@ -699,16 +709,16 @@ class LeoQtGui(leoGui.LeoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
-        if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
+        if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
         return w
 
     def set_focus(self, c, w):
         """Put the focus on the widget."""
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
             if hasattr(w, 'widget') and w.widget: w = w.widget
-            if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
+            if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
@@ -717,6 +727,8 @@ class LeoQtGui(leoGui.LeoGui):
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        if trace: g.trace(c1)
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):

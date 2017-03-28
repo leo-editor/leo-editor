@@ -640,7 +640,7 @@ class AtFile(object):
     #@+node:ekr.20100803073751.5818: *7* defineResurrectedNodeCallback
     def defineResurrectedNodeCallback(self, r, root):
         '''Define a callback that moves node p as r's last child.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         def callback(p, r=r.copy(), root=root):
             '''The resurrected nodes callback.'''
@@ -3155,7 +3155,7 @@ class AtFile(object):
         Write p, an @auto node.
         File indices *must* have already been assigned.
         '''
-        trace = False and g.unitTesting
+        trace = False and not g.unitTesting
         at, c = self, self.c
         root = p.copy()
         fileName = p.atAutoNodeName()
@@ -3184,14 +3184,13 @@ class AtFile(object):
         at.forceSentinels = forceSentinels # 2015/06/25
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
-        if trace: g.pdb()
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
         if ok:
             # Dispatch the proper writer.
             junk, ext = g.os_path_splitext(fileName)
             writer = at.dispatch(ext, root)
+            if trace: g.trace('writer', repr(writer), fileName)
             if writer:
-                if trace: g.trace('writer', writer, fileName)
                 writer(root, forceSentinels=forceSentinels) # 2015/06/26.
             elif root.isAtAutoRstNode():
                 # An escape hatch: fall back to the theRst writer

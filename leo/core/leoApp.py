@@ -122,6 +122,8 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_focus = False
+            # True: trace changes in focus.
         self.trace_plugins = False
             # True: trace imports of plugins.
         self.translateToUpperCase = False
@@ -2406,6 +2408,8 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
+        add('--trace-focus', action='store_true', dest='trace_focus',
+            help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
         add('-v', '--version', action='store_true', dest='version',
@@ -2505,6 +2509,8 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-focus
+        g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
         # --version: print the version and exit.
