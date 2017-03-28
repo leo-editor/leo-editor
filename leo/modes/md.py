@@ -156,10 +156,22 @@ keywordsDictDict = {
 
 # Rules for md_main ruleset.
 
+def md_heading(colorer,s,i):
+    # issue 386.
+    # print('md_heading',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^[#]+",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def md_link(colorer,s,i):
+    # issue 386.
+    # print('md_link',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\[[^]]+\]\([^)]+\)",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
 def md_star_emphasis1(colorer,s,i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*",
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*[^\\s*][^*]*\\*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_star_emphasis2(colorer,s,i):
@@ -172,6 +184,18 @@ def md_underscore_emphasis1(colorer,s,i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="_[^_]+_",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def md_underline_equals(colorer,s,i):
+    # issue 386.
+    # print('md_underline_equals',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="^===[=]+$",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        
+def md_underline_minus(colorer,s,i):
+    # issue 386.
+    # print('md_underline_minus',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="---[-]+$",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def md_underscore_emphasis2(colorer,s,i):
@@ -215,8 +239,12 @@ def md_rule5(colorer, s, i):
 
 # Rules dict for md_main ruleset.
 rulesDict1 = {
-    "*": [md_star_emphasis2, md_star_emphasis1], # issue 386. Order important
-    "_": [md_underscore_emphasis2, md_underscore_emphasis1], # issue 386. Order important.
+    "#": [md_heading,], # Issue #386.
+    "[": [md_link,], # issue 386.
+    "*": [md_star_emphasis2, md_star_emphasis1,], # issue 386. Order important
+    "=": [md_underline_equals,], # issue 386.
+    "-": [md_underline_minus,], # issue 386.
+    "_": [md_underscore_emphasis2, md_underscore_emphasis1,], # issue 386. Order important.
     " ": [md_rule4,],
     "<": [md_rule0,md_rule1,md_rule2,md_rule3,md_rule5,],
 }
