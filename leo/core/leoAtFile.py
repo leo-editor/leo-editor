@@ -809,10 +809,10 @@ class AtFile(object):
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
-            p = ic.createOutline(fileName, parent=p.copy(), atAuto=True)
-            c.selectPosition(p)
-                # Fix bug #451:
-                # refresh-from-disk doesn't always restore focus to the correct node.
+            ic.createOutline(fileName, parent=p.copy(), atAuto=True)
+            # Do *not* select a postion here.
+            # That would improperly expand nodes.
+                # c.selectPosition(p)
         except AssertionError:
             ic.errors += 1
         except Exception:
@@ -5069,20 +5069,29 @@ class AtFile(object):
         setting corresponding AtFile ivars.
         '''
         trace = False and not g.unitTesting
-        at = self; c = self.c
+        at, c = self, self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
         #@+node:ekr.20080923070954.14: *5* << Set ivars >> (atScanAllDirectives)
-        self.page_width = self.c.page_width
-        self.tab_width = self.c.tab_width
+        self.page_width = c.page_width
+        self.tab_width = c.tab_width
         self.default_directory = None # 8/2: will be set later.
         # g.trace(c.target_language)
         if c.target_language:
             c.target_language = c.target_language.lower()
         delims = g.set_delims_from_language(c.target_language)
-        at.language = c.target_language
+        # Fix bug #452: Use file extension as default.
+        if False and p.isAnyAtFileNode(): ### Not ready yet.
+            fn = p.anyAtFileNodeName()
+            junk, ext = os.path.splitext(fn)
+            if ext:
+                at.language = g.language_from_extension(fn)
+            else:
+                at.language = c.target_language # Emergency.
+        else:
+            at.language = c.target_language
         at.encoding = c.config.default_derived_file_encoding
-        at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
         #@-<< set ivars >>
         lang_dict = {'language': at.language, 'delims': delims,}
         table = (
@@ -5161,7 +5170,7 @@ class AtFile(object):
             "path": at.default_directory,
             "tabwidth": at.tab_width,
         }
-        if trace: g.trace(d)
+        if trace: g.trace(d.get('language'), p.h)
         return d
     #@+node:ekr.20041005105605.242: *4* at.scanForClonedSibs (reading & writing)
     def scanForClonedSibs(self, parent_v, v):
