@@ -12,6 +12,7 @@ import re
 import string
 #@-<< imports >>
 
+
 def cmd(name):
     '''Command decorator for the abbrevCommands class.'''
     return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
@@ -294,44 +295,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     # so only restore non-empty ranges
                     w.setSelectionRange(sel1, sel2, insert=ins)
         return True
-    #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
-    def get_ch(self, event, stroke, w):
-        '''Get the ch from the stroke.'''
-        ch = g.toUnicode(event and event.char or '')
-        if self.expanding: return None
-        if w.hasSelection(): return None
-        assert g.isStrokeOrNone(stroke), stroke
-        if stroke in ('BackSpace', 'Delete'):
-            return None
-        d = {'Return': '\n', 'Tab': '\t', 'space': ' ', 'underscore': '_'}
-        if stroke:
-            ch = d.get(stroke.s, stroke.s)
-            if len(ch) > 1:
-                if (stroke.find('Ctrl+') > -1 or
-                    stroke.find('Alt+') > -1 or
-                    stroke.find('Meta+') > -1
-                ):
-                    ch = ''
-                else:
-                    ch = event and event.char or ''
-        else:
-            ch = event.char
-        return ch
-    #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
-    def get_prefixes(self, w):
-        '''Return the prefixes at the current insertion point of w.'''
-        # New code allows *any* sequence longer than 1 to be an abbreviation.
-        # Any whitespace stops the search.
-        s = w.getAllText()
-        j = w.getInsertPoint()
-        i, prefixes = j - 1, []
-        while len(s) > i >= 0 and s[i] not in ' \t\n':
-            prefixes.append(s[i: j])
-            i -= 1
-        prefixes = list(reversed(prefixes))
-        if '' not in prefixes:
-            prefixes.append('')
-        return s, i, j, prefixes
     #@+node:ekr.20161121121636.1: *4* abbrev.exec_content
     def exec_content(self, content):
         '''Execute the content in the environment, and return the result.'''
@@ -631,6 +594,44 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_sel = i + delta, j + delta
             self.save_ins = ins + delta
             if trace: g.trace('SAVE SEL: %r SAVE_INS %r:' % (self.save_ins, self.save_sel))
+    #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
+    def get_ch(self, event, stroke, w):
+        '''Get the ch from the stroke.'''
+        ch = g.toUnicode(event and event.char or '')
+        if self.expanding: return None
+        if w.hasSelection(): return None
+        assert g.isStrokeOrNone(stroke), stroke
+        if stroke in ('BackSpace', 'Delete'):
+            return None
+        d = {'Return': '\n', 'Tab': '\t', 'space': ' ', 'underscore': '_'}
+        if stroke:
+            ch = d.get(stroke.s, stroke.s)
+            if len(ch) > 1:
+                if (stroke.find('Ctrl+') > -1 or
+                    stroke.find('Alt+') > -1 or
+                    stroke.find('Meta+') > -1
+                ):
+                    ch = ''
+                else:
+                    ch = event and event.char or ''
+        else:
+            ch = event.char
+        return ch
+    #@+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
+    def get_prefixes(self, w):
+        '''Return the prefixes at the current insertion point of w.'''
+        # New code allows *any* sequence longer than 1 to be an abbreviation.
+        # Any whitespace stops the search.
+        s = w.getAllText()
+        j = w.getInsertPoint()
+        i, prefixes = j - 1, []
+        while len(s) > i >= 0 and s[i] not in ' \t\n':
+            prefixes.append(s[i: j])
+            i -= 1
+        prefixes = list(reversed(prefixes))
+        if '' not in prefixes:
+            prefixes.append('')
+        return s, i, j, prefixes
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
     #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
