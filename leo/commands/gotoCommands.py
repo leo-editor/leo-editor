@@ -284,6 +284,7 @@ class GoToCommands(object):
         c = self.c
         d = c.scanAllDirectives(root)
         delims1, delims2, delims3 = d.get('delims')
+        # g.trace(root.h, d.get('language'), d.get('delims'))
         if delims1:
             return delims1, None
         else:
@@ -316,7 +317,6 @@ class GoToCommands(object):
                         s = root.b,
                         forcePythonSentinels=False, # See #247.
                         useSentinels=True)
-
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''
