@@ -339,11 +339,21 @@ class PylintCommand(object):
         if self.wait:
             g.es_print('pylint done %s' % g.timeSince(t1))
     #@+node:ekr.20150514125218.12: *3* pylint.run_pylint
+    pylint_install_message = False
+
     def run_pylint(self, fn, rc_fn):
         '''Run pylint on fn with the given pylint configuration file.'''
         c = self.c
+        try:
+            from pylint import lint
+            assert lint # to molify pyflakes
+        except ImportError:
+            if not self.pylint_install_message:
+                self.pylint_install_message = True
+                g.es_print('pylint is not installed')
+            return
         if not os.path.exists(fn):
-            print('pylint: file not found:', fn)
+            g.es_print('pylint: file not found:', fn)
             return
         if 1: # Invoke pylint directly.
             # Escaping args is harder here because we are creating an args array.
