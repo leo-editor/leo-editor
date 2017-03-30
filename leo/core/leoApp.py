@@ -2169,25 +2169,15 @@ class LoadManager(object):
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict
                 for s in at_auto:
-                    aClass = d.get(s)
-                    if False: ### aClass and aClass != scanner_class:
-                        g.trace('duplicate %5s class: %s in %s' % (
-                            s, aClass.__name__, m.__file__))
-                    else:
-                        d[s] = scanner_class
-                        g.app.atAutoDict[s] = scanner_class
-                        g.app.atAutoNames.add(s)
-                        if trace: g.trace(s)
+                    d[s] = scanner_class
+                    g.app.atAutoDict[s] = scanner_class
+                    g.app.atAutoNames.add(s)
+                    if trace: g.trace(s)
             if extensions:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
                 for ext in extensions:
-                    aClass = d.get(ext)
-                    if False: ### aClass and aClass != scanner_class:
-                        g.trace('duplicate %s class: %s in %s' % (
-                           ext, aClass.__name__, m.__file__))
-                    else:
-                        d[ext] = scanner_class
+                    d[ext] = scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
             'basescanner.py',
