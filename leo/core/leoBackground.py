@@ -89,15 +89,17 @@ class BackgroundProcessManager(object):
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
         trace = False and not g.unitTesting
-        trace_inactive = False
+        trace_inactive = True
         trace_running = False
         if self.pid:
-            if self.pid.poll() is not None:
-                if trace: self.put_log('ending: %s' % id(self.pid))
+            if self.pid.poll() is None:
+                if trace and trace_running:
+                    self.put_log('running: %s' % id(self.pid))
+            else:
+                if trace:
+                    self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
-            elif trace and trace_running:
-                self.put_log('running: %s' % id(self.pid))
         elif self.process_queue:
             self.start_next() # Start the next process.
         elif trace and trace_inactive:
