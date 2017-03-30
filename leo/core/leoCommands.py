@@ -2329,6 +2329,8 @@ class Commands(object):
             g.warning('not an @<file> node:\n%r' % (p.h))
             redraw_flag = False
         if redraw_flag:
+            # Fix #451: refresh-from-disk selects wrong node.
+            c.selectPosition(p)
             u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
