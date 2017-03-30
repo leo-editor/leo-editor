@@ -784,7 +784,7 @@ class AtFile(object):
                 p.moveToThreadNext()
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
     def readOneAtAutoNode(self, fileName, p):
-        '''Read an @auto file into p.'''
+        '''Read an @auto file into p. Return the *new* position.'''
         trace = (False or g.app.debug) and not g.unitTesting
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
@@ -792,7 +792,7 @@ class AtFile(object):
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
         if not g.os_path_exists(fileName):
             g.error('not found: %r' % (p.h))
-            return
+            return p
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, p)
@@ -805,17 +805,21 @@ class AtFile(object):
             g.doHook('after-auto', c=c, p=p)
                 # call after-auto callbacks
                 # 2011/09/30: added call to g.doHook here.
-            return
+            return p
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
-            ic.createOutline(fileName, parent=p.copy(), atAuto=True)
+            # For #451: return p.
+            old_p = p.copy()
+            p = ic.createOutline(fileName, parent=p.copy(), atAuto=True)
             # Do *not* select a postion here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
         except AssertionError:
+            p = old_p
             ic.errors += 1
         except Exception:
+            p = old_p
             ic.errors += 1
             g.es_print('Unexpected exception importing', fileName)
             g.es_exception()
@@ -830,6 +834,7 @@ class AtFile(object):
         else:
             c.cacher.writeFile(p, fileKey)
             g.doHook('after-auto', c=c, p=p)
+        return p
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
     def readOneAtEditNode(self, fn, p):
         at = self

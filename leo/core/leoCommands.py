@@ -2304,7 +2304,8 @@ class Commands(object):
             if word == '@auto':
                 # This includes @auto-*
                 p.deleteAllChildren()
-                at.readOneAtAutoNode(fn, p)
+                # Fix #451: refresh-from-disk selects wrong node.
+                p = at.readOneAtAutoNode(fn, p)
             elif word in ('@thin', '@file'):
                 p.deleteAllChildren()
                 at.read(p, force=True)
@@ -2313,7 +2314,8 @@ class Commands(object):
                 if p.b.strip() or p.hasChildren():
                     at.readOneAtCleanNode(p)
                 else:
-                    at.readOneAtAutoNode(fn, p)
+                    # Fix #451: refresh-from-disk selects wrong node.
+                    p = at.readOneAtAutoNode(fn, p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
