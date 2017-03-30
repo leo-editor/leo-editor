@@ -5082,12 +5082,8 @@ class AtFile(object):
         delims = g.set_delims_from_language(c.target_language)
         # Fix bug #452: Use file extension as default.
         if False and p.isAnyAtFileNode(): ### Not ready yet.
-            fn = p.anyAtFileNodeName()
-            junk, ext = os.path.splitext(fn)
-            if ext:
-                at.language = g.language_from_extension(fn)
-            else:
-                at.language = c.target_language # Emergency.
+            language = g.getLanguageFromAncestorAtFileNode(p)
+            at.language = language or c.target_language # Emergency.
         else:
             at.language = c.target_language
         at.encoding = c.config.default_derived_file_encoding
