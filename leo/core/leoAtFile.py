@@ -3728,20 +3728,9 @@ class AtFile(object):
             # Suppress orphans check.
         if not at.thinFile and not s:
             return
-        inCode = True
-        #@+<< Make sure all lines end in a newline >>
-        #@+node:ekr.20041005105605.168: *8* << Make sure all lines end in a newline >>
-        # 11/20/03: except in nosentinel mode.
-        # 1/30/04: and especially in scripting mode.
-        # If we add a trailing newline, we'll generate an @nonl sentinel below.
-        if s:
-            trailingNewlineFlag = s and s[-1] == '\n'
-            if at.sentinels and not trailingNewlineFlag:
-                s = s + '\n'
-        else:
-            trailingNewlineFlag = True # don't need to generate an @nonl
-        #@-<< Make sure all lines end in a newline >>
-        i = 0
+        if at.sentinels and s and s[-1] != '\n':
+            s = s + '\n'
+        i, inCode = 0, True
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert(next_i > i)
