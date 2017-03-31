@@ -4487,93 +4487,56 @@ class AtFile(object):
                 result.append(''.join(line2))
             s = '\n'.join(result)
         self.os(s)
-    #@+node:ekr.20041005105605.206: *5* at.putDirective  (handles @delims,@comment,@language) 4.x
-    #@+at It is important for PHP and other situations that \@first
-    # and \@last directives get translated to verbatim lines that
-    # do _not_ include what follows the @first & @last directives.
-    #@@c
-
+    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x
     def putDirective(self, s, i):
-        """Output a sentinel a directive or reference s."""
-        tag = "@delims"
-        assert(i < len(s) and s[i] == '@')
+        r'''
+        Output a sentinel a directive or reference s.
+        
+        It is important for PHP and other situations that \@first and \@last
+        directives get translated to verbatim lines that do *not* include what
+        follows the @first & @last directives.
+        '''
+        at = self
+        # assert(i < len(s) and s[i] == '@')
         k = i
         j = g.skip_to_end_of_line(s, i)
         directive = s[i: j]
         if g.match_word(s, k, "@delims"):
-            #@+<< handle @delims >>
-            #@+node:ekr.20041005105605.207: *6* << handle @delims >>
-            # Put a space to protect the last delim.
-            self.putSentinel(directive + " ") # 10/23/02: put @delims, not @@delims
-            # Skip the keyword and whitespace.
-            j = i = g.skip_ws(s, k + len(tag))
-            # Get the first delim.
-            while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
-                i += 1
-            if j < i:
-                self.startSentinelComment = s[j: i]
-                # Get the optional second delim.
-                j = i = g.skip_ws(s, i)
-                while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
-                    i += 1
-                self.endSentinelComment = s[j: i] if j < i else ""
-            else:
-                self.writeError("Bad @delims directive")
-            #@-<< handle @delims >>
+            at.putDelims(directive, s, k)
         elif g.match_word(s, k, "@language"):
-            #@+<< handle @language >>
-            #@+node:ekr.20041005105605.208: *6* << handle @language >>
             self.putSentinel("@" + directive)
-            if 0: # Bug fix: Leo 4.4.1
-                # Do not scan the @language directive here!
-                # These ivars have already been scanned by the init code.
-                # Skip the keyword and whitespace.
-                i = k + len("@language")
-                i = g.skip_ws(s, i)
-                j = g.skip_c_id(s, i)
-                language = s[i: j]
-                delim1, delim2, delim3 = g.set_delims_from_language(language)
-                # g.trace(delim1,delim2,delim3)
-                # Returns a tuple (single,start,end) of comment delims
-                if delim1:
-                    self.startSentinelComment = delim1
-                    self.endSentinelComment = ""
-                elif delim2 and delim3:
-                    self.startSentinelComment = delim2
-                    self.endSentinelComment = delim3
-                else:
-                    line = g.get_line(s, i)
-                    g.warning("ignoring bad @language directive:", line)
-            #@-<< handle @language >>
         elif g.match_word(s, k, "@comment"):
-            #@+<< handle @comment >>
-            #@+node:ekr.20041005105605.209: *6* << handle @comment >>
             self.putSentinel("@" + directive)
-            if 0: # Bug fix: Leo 4.4.1
-                # Do not scan the @comment directive here!
-                # These ivars have already been scanned by the init code.
-                # g.trace(delim1,delim2,delim3)
-                j = g.skip_line(s, i)
-                line = s[i: j]
-                delim1, delim2, delim3 = g.set_delims_from_string(line)
-                # Returns a tuple (single,start,end) of comment delims
-                if delim1:
-                    self.startSentinelComment = delim1
-                    self.endSentinelComment = None
-                elif delim2 and delim3:
-                    self.startSentinelComment = delim2
-                    self.endSentinelComment = delim3
-                else:
-                    g.warning("ignoring bad @comment directive:", line)
-            #@-<< handle @comment >>
         elif g.match_word(s, k, "@last"):
-            self.putSentinel("@@last") # 10/27/03: Convert to an verbatim line _without_ anything else.
+            self.putSentinel("@@last")
+                # Convert to an verbatim line _without_ anything else.
         elif g.match_word(s, k, "@first"):
-            self.putSentinel("@@first") # 10/27/03: Convert to an verbatim line _without_ anything else.
+            self.putSentinel("@@first")
+                # Convert to an verbatim line _without_ anything else.
         else:
             self.putSentinel("@" + directive)
         i = g.skip_line(s, k)
         return i
+    #@+node:ekr.20041005105605.207: *6* at.putDelims
+    def putDelims(self, directive, s, k):
+        '''Put an @delims directive.'''
+        at = self
+        # Put a space to protect the last delim.
+        at.putSentinel(directive + " ") # 10/23/02: put @delims, not @@delims
+        # Skip the keyword and whitespace.
+        j = i = g.skip_ws(s, k + len("@delims"))
+        # Get the first delim.
+        while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
+            i += 1
+        if j < i:
+            at.startSentinelComment = s[j: i]
+            # Get the optional second delim.
+            j = i = g.skip_ws(s, i)
+            while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s, i):
+                i += 1
+            at.endSentinelComment = s[j: i] if j < i else ""
+        else:
+            at.writeError("Bad @delims directive")
     #@+node:ekr.20041005105605.210: *5* at.putIndent
     def putIndent(self, n, s=''):
         """Put tabs and spaces corresponding to n spaces,
