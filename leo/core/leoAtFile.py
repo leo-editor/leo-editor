@@ -3718,7 +3718,7 @@ class AtFile(object):
             at.putAtAllChild(child)
         at.putSentinel("@-all")
         at.indent -= delta
-    #@+node:ekr.20041005105605.167: *7* putatAllBody
+    #@+node:ekr.20041005105605.167: *7* putAtAllBody
     def putAtAllBody(self, p):
         """ Generate the body enclosed in sentinel lines."""
         at = self
