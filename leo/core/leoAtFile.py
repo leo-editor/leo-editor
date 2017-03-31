@@ -3603,26 +3603,11 @@ class AtFile(object):
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
-                        # Previous code: 2016/10/11
-                        # if at.raw or at.atAuto or at.perfectImportFlag:
-                            # # 2011/12/14: Ignore references in @auto.
-                            # # 2012/06/02: Needed for import checks.
-                            # at.putCodeLine(s, i)
                         if at.raw:
                             at.putCodeLine(s, i)
-                        # New in Leo 5.6: Allow section reference in @auto files.
-                        # At present, only the javascript importer creates section references,
-                        # but users might "accidentally" add them.
-                            # elif (at.atAuto or at.perfectImportFlag) and not at.allow_at_auto_sections:
-                                # # Use legacy behavior when at.allow_at_auto_sections is False.
-                                # at.putCodeLine(s, i)
-                        elif 0: # Previous code
-                            hasRef, n1, n2 = at.findSectionName(s, i)
-                            if hasRef:
-                                at.putRefLine(s, i, n1, n2, p)
-                            else:
-                                at.putCodeLine(s, i)
-                        else: # Silently ignore undefined sections in @auto trees.
+                        else: 
+                            # New in Leo 5.6: Allow section reference in @auto files.
+                            # At present, only the javascript importer creates section references.
                             ignore_undefined = at.atAuto or at.perfectImportFlag
                             hasRef, n1, n2 = at.findSectionName(s, i)
                             if hasRef:
@@ -3630,6 +3615,7 @@ class AtFile(object):
                                 ref = g.findReference(name, p)
                                 if ignore_undefined and not ref:
                                     at.putCodeLine(s, i)
+                                        # Silently ignore undefined sections in @auto trees.
                                 else: 
                                     at.putRefLine(s, i, n1, n2, p)
                                         # generates an error if the reference does not exist.
