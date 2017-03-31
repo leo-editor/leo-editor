@@ -27,6 +27,12 @@ refresh-from-disk doesn't always restore focus to the correct node
 - c.refreshFromDisk selects that position.
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
+.. @+node:ekr.20170331043509.1: *4* Improved @auto write code
+- Removed the allow_at_auto_section switch in leoAtFile.py.
+
+- When writing @auto files << handle line at s[i] >> in at.putBody now expands section references in @auto files *if* they are defined. Otherwise, lines containing undefined section references are written as plain code lines.
+.. @+node:ekr.20170331043931.1: *4* Added gen_refs keyword arg to Importer ctor
+This makes explicit which importers actually generate section reference. At present, only the javascript importer sets this arg.
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
@@ -55,6 +61,21 @@ All tests pass.
 - Added cancelMessage keyword arg to x.promptForDangerousWrite.
 - Use keyword args in LeoFrame.promptForSave and ns_do_context.
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
+.. @+node:ekr.20170331043621.1: *3* settings
+.. @+node:ekr.20170330083957.1: *4* Retired @bool allow_section_references_in_at_auto
+The disabled setting now contains this comment:
+
+    **Note**: This setting has been retired for the following reasons:
+    
+    1. The new javascript importer *always* generate section references
+    for non-trivial programs. As a result, the legacy value for this
+    setting would cause the javascript importer to fail.
+    
+    2. The new @auto write code writes expands section references if
+    they exist. Otherwise, the write code writes the line as is,
+    without any complaint. As a result, there should be no problem if
+    an imported code contains something that looks like a section
+    reference but isn't.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
