@@ -3548,38 +3548,60 @@ class AtFile(object):
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
     #@+node:ekr.20041005105605.160: *4* Writing 4.x
-    #@+node:ekr.20041005105605.161: *5* at.putBody
-    # oneNodeOnly is no longer used, but it might be used in the future?
-
-    def putBody(self, p, oneNodeOnly=False, fromString=''):
+    #@+node:ekr.20041005105605.161: *5* at.putBody & helpers
+    def putBody(self, p, fromString=''):
         '''
         Generate the body enclosed in sentinel lines.
         Return True if the body contains an @others line.
         '''
-        trace = False and not g.unitTesting
         at = self
-        at_comment_seen, at_delims_seen, at_warning_given = False, False, False
-            # 2011/05/25: warn if a node contains both @comment and @delims.
-        has_at_others = False
         # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
         p.v.setVisited()
-        if trace: g.trace('visit', p.h)
             # Make sure v is never expanded again.
             # Suppress orphans check.
         if not at.thinFile:
             p.v.setWriteBit() # Mark the VNode to be written.
-        if not at.thinFile and not s: return
-        inCode = True
-        #@+<< Make sure all lines end in a newline >>
-        #@+node:ekr.20041005105605.162: *6* << Make sure all lines end in a newline >>
-        #@+at If we add a trailing newline, we'll generate an @nonl sentinel below.
-        # 
-        # - We always ensure a newline in @file and @thin trees.
-        # - This code is not used used in @asis trees.
-        # - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
-        #   @bool force_newlines_in_at_nosent_bodies = False
-        #@@c
+        if not at.thinFile and not s:
+            return
+        s, trailingNewlineFlag = at.ensureTrailingNewline(s)
+        at.raw = False # Bug fix.
+        i = 0
+        status = g.Bunch(
+            at_comment_seen = False,
+            at_delims_seen = False,
+            at_warning_given = False,
+            has_at_others = False,
+            in_code = True,
+        )   
+        while i < len(s):
+            next_i = g.skip_line(s, i)
+            assert next_i > i, 'putBody'
+            kind = at.directiveKind4(s, i)
+            at.putLine(i, kind, p, s, status)
+            i = next_i
+        # pylint: disable=no-member
+            # g.bunch *does* have .in_code and has_at_others members.
+        if not status.in_code:
+            at.putEndDocLine()
+        if not trailingNewlineFlag:
+            if at.sentinels:
+                pass # Never write @nonl
+            elif at.atAuto and not at.atEdit:
+                at.onl()
+        return status.has_at_others ### goto-line-number fail: line 3600.
+    #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
+    def ensureTrailingNewline(self, s):
+        '''
+        Ensure a trailing newline in s.
+        If we add a trailing newline, we'll generate an @nonl sentinel below.
+        
+        - We always ensure a newline in @file and @thin trees.
+        - This code is not used used in @asis trees.
+        - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
+          @bool force_newlines_in_at_nosent_bodies = False
+        '''
+        at = self
         if s:
             trailingNewlineFlag = s[-1] == '\n'
             if not trailingNewlineFlag:
@@ -3590,122 +3612,98 @@ class AtFile(object):
                     s = s + '\n'
         else:
             trailingNewlineFlag = True # don't need to generate an @nonl
-        #@-<< Make sure all lines end in a newline >>
-        at.raw = False # 2007/07/04: Bug fix exposed by new sentinels.
-        i = 0
-        while i < len(s):
-            next_i = g.skip_line(s, i)
-            assert next_i > i, 'putBody'
-            kind = at.directiveKind4(s, i)
-            #@+<< handle line at s[i] >>
-            #@+node:ekr.20041005105605.163: *6* << handle line at s[i] >> (putBody)
-            if trace: g.trace(repr(s[i: next_i]), g.callers())
-            if kind == at.noDirective:
-                if not oneNodeOnly:
-                    if inCode:
-                        if at.raw:
-                            at.putCodeLine(s, i)
-                        else: 
-                            # New in Leo 5.6: Allow section reference in @auto files.
-                            # At present, only the javascript importer creates section references.
-                            ignore_undefined = at.atAuto or at.perfectImportFlag
-                            hasRef, n1, n2 = at.findSectionName(s, i)
-                            if hasRef:
-                                name = s[n1+2:n2].strip()
-                                ref = g.findReference(name, p)
-                                if ignore_undefined and not ref:
-                                    at.putCodeLine(s, i)
-                                        # Silently ignore undefined sections in @auto trees.
-                                else: 
-                                    at.putRefLine(s, i, n1, n2, p)
-                                        # generates an error if the reference does not exist.
-                            else:
-                                at.putCodeLine(s, i)
-                    else:
-                        at.putDocLine(s, i)
-            elif at.raw:
-                if kind == at.endRawDirective and not at.perfectImportFlag:
-                    at.raw = False
-                    at.putSentinel("@@end_raw")
-                    i = g.skip_line(s, i)
-                else:
-                    # Fix bug 784920: @raw mode does not ignore directives
+        return s, trailingNewlineFlag
+    #@+node:ekr.20041005105605.163: *6* at.putLine
+    def putLine(self, i, kind, p, s, status):
+        '''Put the line at s[i:] of the given kind, updating the status.'''
+        at = self
+        if kind == at.noDirective:
+            if status.in_code:
+                if at.raw:
                     at.putCodeLine(s, i)
-            elif kind in (at.docDirective, at.atDirective):
-                assert not at.pending, 'putBody at.pending'
-                if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
-                    at.putEndDocLine()
-                at.putStartDocLine(s, i, kind)
-                inCode = False
-            elif kind in (at.cDirective, at.codeDirective):
-                # Only @c and @code end a doc part.
-                if not inCode:
-                    at.putEndDocLine()
-                at.putDirective(s, i)
-                inCode = True
-            elif kind == at.allDirective:
-                if not oneNodeOnly:
-                    if inCode:
-                        if p == self.root:
-                            at.putAtAllLine(s, i, p)
-                        else:
-                            at.error('@all not valid in: %s' % (p.h))
-                    else: at.putDocLine(s, i)
-            elif kind == at.othersDirective:
-                if not oneNodeOnly:
-                    if inCode:
-                        if has_at_others:
-                            at.error('multiple @others in: %s' % (p.h))
-                        else:
-                            at.putAtOthersLine(s, i, p)
-                            has_at_others = True
+                else: 
+                    # New in Leo 5.6: Allow section reference in @auto files.
+                    # At present, only the javascript importer creates section references.
+                    ignore_undefined = at.atAuto or at.perfectImportFlag
+                    hasRef, n1, n2 = at.findSectionName(s, i)
+                    if hasRef:
+                        name = s[n1+2:n2].strip()
+                        ref = g.findReference(name, p)
+                        if ignore_undefined and not ref:
+                            at.putCodeLine(s, i)
+                                # Silently ignore undefined sections in @auto trees.
+                        else: 
+                            at.putRefLine(s, i, n1, n2, p)
+                                # generates an error if the reference does not exist.
                     else:
-                        at.putDocLine(s, i)
-            elif kind == at.rawDirective:
-                at.raw = True
-                at.putSentinel("@@raw")
-            elif kind == at.endRawDirective:
-                # Fix bug 784920: @raw mode does not ignore directives
-                at.error('unmatched @end_raw directive: %s' % p.h)
-                # at.raw = False
-                # at.putSentinel("@@end_raw")
-                # i = g.skip_line(s,i)
-            elif kind == at.startVerbatim:
-                # Fix bug 778204: @verbatim not a valid Leo directive.
-                if g.unitTesting:
-                    # A hack: unit tests for @shadow use @verbatim as a kind of directive.
-                    pass
-                elif not at.perfectImportFlag:
-                    g.trace(at.atShadow)
-                    at.error('@verbatim is not a Leo directive: %s' % p.h)
-                if 0: # Old code.  This is wrong: @verbatim is not a directive!
-                    at.putSentinel("@verbatim")
-                    at.putIndent(at.indent)
-                    i = next_i
-                    next_i = g.skip_line(s, i)
-                    at.os(s[i: next_i])
-            elif kind == at.miscDirective:
-                # Fix bug 583878: Leo should warn about @comment/@delims clashes.
-                if g.match_word(s, i, '@comment'):
-                    at_comment_seen = True
-                elif g.match_word(s, i, '@delims'):
-                    at_delims_seen = True
-                if at_comment_seen and at_delims_seen and not at_warning_given:
-                    at_warning_given = True
-                    at.error('@comment and @delims in node %s' % p.h)
-                at.putDirective(s, i)
+                        at.putCodeLine(s, i)
             else:
-                at.error('putBody: can not happen: unknown directive kind: %s' % kind)
-            #@-<< handle line at s[i] >>
-            i = next_i
-        if not inCode:
-            at.putEndDocLine()
-        if not trailingNewlineFlag:
-            if at.sentinels:
-                pass # Never write @nonl
-            elif at.atAuto and not at.atEdit:
-                at.onl() # 2010/08/01: bug fix: ensure newline here.
-        return has_at_others # 2013/01/19: for new @others logic.
+                at.putDocLine(s, i)
+        elif at.raw:
+            if kind == at.endRawDirective and not at.perfectImportFlag:
+                at.raw = False
+                at.putSentinel("@@end_raw")
+            else:
+                # Fix bug 784920: @raw mode does not ignore directives
+                at.putCodeLine(s, i)
+        elif kind in (at.docDirective, at.atDirective):
+            assert not at.pending, 'putBody at.pending'
+            if not status.in_code:
+                # Bug fix 12/31/04: handle adjacent doc parts.
+                at.putEndDocLine()
+            at.putStartDocLine(s, i, kind)
+            status.in_code = False
+        elif kind in (at.cDirective, at.codeDirective):
+            # Only @c and @code end a doc part.
+            if not status.in_code:
+                at.putEndDocLine()
+            at.putDirective(s, i)
+            status.in_code = True
+        elif kind == at.allDirective:
+            if status.in_code:
+                if p == self.root:
+                    at.putAtAllLine(s, i, p)
+                else:
+                    at.error('@all not valid in: %s' % (p.h))
+            else: at.putDocLine(s, i)
+        elif kind == at.othersDirective:
+            if status.in_code:
+                if status.has_at_others:
+                    at.error('multiple @others in: %s' % (p.h))
+                else:
+                    at.putAtOthersLine(s, i, p)
+                    status.has_at_others = True
+            else:
+                at.putDocLine(s, i)
+        elif kind == at.rawDirective:
+            at.raw = True
+            at.putSentinel("@@raw")
+        elif kind == at.endRawDirective:
+            # Fix bug 784920: @raw mode does not ignore directives
+            at.error('unmatched @end_raw directive: %s' % p.h)
+        elif kind == at.startVerbatim:
+            # Fix bug 778204: @verbatim not a valid Leo directive.
+            if g.unitTesting:
+                # A hack: unit tests for @shadow use @verbatim as a kind of directive.
+                pass
+            elif not at.perfectImportFlag:
+                at.error('@verbatim is not a Leo directive: %s' % p.h)
+        elif kind == at.miscDirective:
+            # Fix bug 583878: Leo should warn about @comment/@delims clashes.
+            if g.match_word(s, i, '@comment'):
+                status.at_comment_seen = True
+            elif g.match_word(s, i, '@delims'):
+                status.at_delims_seen = True
+            if (
+                status.at_comment_seen and
+                status.at_delims_seen and not
+                status.at_warning_given
+            ):
+                status.at_warning_given = True
+                at.error('@comment and @delims in node %s' % p.h)
+            at.putDirective(s, i)
+        else:
+            at.error('putBody: can not happen: unknown directive kind: %s' % kind)
     #@+node:ekr.20041005105605.164: *5* writing code lines...
     #@+node:ekr.20041005105605.165: *6* @all
     #@+node:ekr.20041005105605.166: *7* putAtAllLine
