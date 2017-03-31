@@ -3589,7 +3589,7 @@ class AtFile(object):
                 pass # Never write @nonl
             elif at.atAuto and not at.atEdit:
                 at.onl()
-        return status.has_at_others ### goto-line-number fail: line 3600.
+        return status.has_at_others ### goto-line-number fail: this line (3592).
     #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
     def ensureTrailingNewline(self, s):
         '''
