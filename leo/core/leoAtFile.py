@@ -370,10 +370,7 @@ class AtFile(object):
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+<< Detecting clone conflicts >>
     #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
-    #@@wrap
     #@+at
-    #@@language rest
-    # 
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
     # The vnode ctor must not create this ivar!
     # 
@@ -2661,7 +2658,7 @@ class AtFile(object):
         return i
     #@+node:ekr.20041005105605.132: *3* at.Writing
     #@+node:ekr.20041005105605.133: *4* Writing (top level)
-    #@+node:ekr.20041005105605.154: *5* at.asisWrite
+    #@+node:ekr.20041005105605.154: *5* at.asisWrite & helper
     def asisWrite(self, root, toString=False):
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
@@ -2688,27 +2685,29 @@ class AtFile(object):
                 # openFileForWriting calls root.setDirty() if there are errors.
                 return
             for p in root.self_and_subtree():
-                #@+<< Write p's headline if it starts with @@ >>
-                #@+node:ekr.20041005105605.155: *6* << Write p's headline if it starts with @@ >>
-                s = p.h
-                if g.match(s, 0, "@@"):
-                    s = s[2:]
-                    if s and len(s) > 0:
-                        at.outputFile.write(s)
-                #@-<< Write p's headline if it starts with @@ >>
-                #@+<< Write p's body >>
-                #@+node:ekr.20041005105605.156: *6* << Write p's body >>
-                s = p.b
-                if s:
-                    s = g.toEncodedString(s, at.encoding, reportErrors=True) # 3/7/03
-                    at.outputStringWithLineEndings(s)
-                #@-<< Write p's body >>
+                at.writeAsisNode(p)
             at.closeWriteFile()
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
         except Exception:
             at.writeException(root) # Sets dirty and orphan bits.
 
     silentWrite = asisWrite # Compatibility with old scripts.
+    #@+node:ekr.20170331141933.1: *6* at.writeAsisNode
+    def writeAsisNode(self, p):
+        '''Write the p's node to an @asis file.'''
+        at = self
+        # Write the headline only if it starts with '@@'.
+        s = p.h
+        if g.match(s, 0, "@@"):
+            s = s[2:]
+            if s and len(s) > 0:
+                at.outputFile.write(s)
+        # Write the body.
+        s = p.b
+        if s:
+            s = g.toEncodedString(s, at.encoding, reportErrors=True)
+            at.outputStringWithLineEndings(s)
+
     #@+node:ekr.20041005105605.142: *5* at.openFileForWriting & helper
     def openFileForWriting(self, root, fileName, toString):
         trace = False and not g.unitTesting
