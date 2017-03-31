@@ -1111,7 +1111,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
     def match_section_ref(self, s, i):
         if self.trace_leo_matches: g.trace()
-        c = self.c; p = c.p
+        p = self.c.p
         if not g.match(s, i, '<<'):
             return 0
         k = g.find_on_line(s, i + 2, '>>')
@@ -1122,7 +1122,7 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
             # g.trace('ref %r %s' % (s[i: j], p.h))
             # g.trace(g.callers(6))
-            ref = g.findReference(c, s[i: j], p)
+            ref = g.findReference(s[i: j], p)
             if ref:
                 if self.use_hyperlinks:
                     #@+<< set the hyperlink >>

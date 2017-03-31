@@ -3627,7 +3627,7 @@ class AtFile(object):
                             hasRef, n1, n2 = at.findSectionName(s, i)
                             if hasRef:
                                 name = s[n1+2:n2].strip()
-                                ref = g.findReference(self.c, name, p)
+                                ref = g.findReference(name, p)
                                 if ignore_undefined and not ref:
                                     at.putCodeLine(s, i)
                                 else: 
@@ -3879,8 +3879,8 @@ class AtFile(object):
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         '''Find a reference to name.  Raise an error if not found.'''
-        at, c = self, self.c
-        ref = g.findReference(c, name, p)
+        at = self
+        ref = g.findReference(name, p)
         if not ref and not g.unitTesting:
             at.writeError(
                 "undefined section: %s\n\treferenced from: %s" % (name, p.h))
