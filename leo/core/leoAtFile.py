@@ -4019,26 +4019,11 @@ class AtFile(object):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.onl()
     #@+node:ekr.20041005105605.187: *4* Writing 4,x sentinels...
-    #@+node:ekr.20041005105605.188: *5* at.nodeSentinelText
+    #@+node:ekr.20041005105605.188: *5* at.nodeSentinelText & helper
     def nodeSentinelText(self, p):
         """Return the text of a @+node or @-node sentinel for p."""
         at = self
-        h = p.h
-        # if g.unitTesting: g.trace(at.thinFile, at.forceSentinels)
-        #@+<< remove comment delims from h if necessary >>
-        #@+node:ekr.20041005105605.189: *6* << remove comment delims from h if necessary >>
-        #@+at Bug fix 1/24/03:
-        # 
-        # If the present @language/@comment settings do not specify a single-line comment
-        # we remove all block comment delims from h. This prevents headline text from
-        # interfering with the parsing of node sentinels.
-        #@@c
-        start = at.startSentinelComment
-        end = at.endSentinelComment
-        if end and len(end) > 0:
-            h = h.replace(start, "")
-            h = h.replace(end, "")
-        #@-<< remove comment delims from h if necessary >>
+        h = at.removeCommentDelims(p)
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
             return h
@@ -4056,6 +4041,21 @@ class AtFile(object):
                 return '%s %s%s::%s' % (stars, h, pad, gnx)
         else:
             return h
+    #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
+    def removeCommentDelims(self, p):
+        '''
+        If the present @language/@comment settings do not specify a single-line comment
+        we remove all block comment delims from h. This prevents headline text from
+        interfering with the parsing of node sentinels.
+        '''
+        at = self
+        start = at.startSentinelComment
+        end = at.endSentinelComment
+        h = p.h
+        if end and len(end) > 0:
+            h = h.replace(start, "")
+            h = h.replace(end, "")
+        return h
     #@+node:ekr.20041005105605.190: *5* at.putLeadInSentinel
     def putLeadInSentinel(self, s, i, j, delta):
         """
