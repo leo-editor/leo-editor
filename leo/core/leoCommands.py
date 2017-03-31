@@ -511,7 +511,8 @@ class Commands(object):
             w_class = w and w.__class__.__name__
             c.last_no_focus = False
             if self.is_unusual_focus(w):
-                g.trace('%s unusual focus: %s' % (count, w_class))
+                if trace:
+                    g.trace('%s unusual focus: %s' % (count, w_class))
             else:
                 c.last_unusual_focus = None
                 if isinstance(w, table):

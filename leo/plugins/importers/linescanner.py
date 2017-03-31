@@ -102,6 +102,7 @@ class Importer(object):
     def __init__(self,
         importCommands, 
         atAuto, # True when called from @auto logic.
+        gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
         state_class = None, # For i.scan_line
@@ -113,6 +114,7 @@ class Importer(object):
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
+        self.gen_refs = gen_refs
         self.language = language or name
             # For the @language directive.
         self.name = name or language
@@ -136,7 +138,6 @@ class Importer(object):
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
             # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
-        self.gen_refs = name in ('javascript',)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0 # Must be set in run, using self.root.

@@ -18,11 +18,6 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
-allow_at_auto_sections = None
-    # None: honor allow_section_references_in_at_auto setting.
-    # True: (Experimental): The @auto write code expands section references.
-    # False: (Legacy):      The @auto write code ignores section references.
-
 class AtFile(object):
     """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
@@ -127,11 +122,6 @@ class AtFile(object):
         self.cancelFlag = False
         self.yesToAll = False
         # User options.
-        if allow_at_auto_sections is None:
-            self.allow_at_auto_sections = c.config.getBool(
-                'allow_section_references_in_at_auto', default=False)
-        else:
-            self.allow_at_auto_sections = allow_at_auto_sections
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write', default=True)
         self.runPyFlakesOnWrite = c.config.getBool(
@@ -3172,7 +3162,7 @@ class AtFile(object):
             ok = self.promptForDangerousWrite(fileName, kind='@auto')
             if not ok:
                 g.es("not written:", fileName)
-                return
+                return False
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName, root)
         # This code is similar to code in at.write.
@@ -3620,13 +3610,29 @@ class AtFile(object):
                             # at.putCodeLine(s, i)
                         if at.raw:
                             at.putCodeLine(s, i)
-                        elif (at.atAuto or at.perfectImportFlag) and not at.allow_at_auto_sections:
-                            # Use legacy behavior when at.allow_at_auto_sections is False.
-                            at.putCodeLine(s, i)
-                        else:
+                        # New in Leo 5.6: Allow section reference in @auto files.
+                        # At present, only the javascript importer creates section references,
+                        # but users might "accidentally" add them.
+                            # elif (at.atAuto or at.perfectImportFlag) and not at.allow_at_auto_sections:
+                                # # Use legacy behavior when at.allow_at_auto_sections is False.
+                                # at.putCodeLine(s, i)
+                        elif 0: # Previous code
                             hasRef, n1, n2 = at.findSectionName(s, i)
                             if hasRef:
                                 at.putRefLine(s, i, n1, n2, p)
+                            else:
+                                at.putCodeLine(s, i)
+                        else: # Silently ignore undefined sections in @auto trees.
+                            ignore_undefined = at.atAuto or at.perfectImportFlag
+                            hasRef, n1, n2 = at.findSectionName(s, i)
+                            if hasRef:
+                                name = s[n1+2:n2].strip()
+                                ref = g.findReference(self.c, name, p)
+                                if ignore_undefined and not ref:
+                                    at.putCodeLine(s, i)
+                                else: 
+                                    at.putRefLine(s, i, n1, n2, p)
+                                        # generates an error if the reference does not exist.
                             else:
                                 at.putCodeLine(s, i)
                     else:
@@ -3887,7 +3893,7 @@ class AtFile(object):
         at = self
         
         def warn(s):
-            # Attempt tof fix #289:
+            # Attempt to fix #289:
             # Leo crashes with unusual combination of @clean and .leo file
             if 0: # This does not seem to work.
                 if s.strip() and not self.ref_warning_given:
