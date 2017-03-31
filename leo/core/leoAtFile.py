@@ -4744,9 +4744,7 @@ class AtFile(object):
                 at.fileChangedFlag = False
                 return False
             else:
-                # A mismatch.
-                #@+<< report if the files differ only in line endings >>
-                #@+node:ekr.20041019090322: *6* << report if the files differ only in line endings >>
+                # A mismatch. Report if the files differ only in line endings.
                 if (
                     at.explicitLineEnding and
                     at.compareFiles(
@@ -4755,8 +4753,6 @@ class AtFile(object):
                         ignoreLineEndings=True)
                 ):
                     g.warning("correcting line endings in:", at.targetFileName)
-                #@-<< report if the files differ only in line endings >>
-                # mode = at.stat(at.targetFileName)
                 s = at.outputContents
                 ok = at.create(at.targetFileName, s)
                 if ok:
