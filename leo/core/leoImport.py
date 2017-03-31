@@ -839,9 +839,8 @@ class LeoImportCommands(object):
         if trace: g.trace('1', atAuto, self.treeType, fileName)
         atAutoKind = None
         if not atAuto and kind != '@auto':
-            # scannerUnitTest uses this code.
-            if not g.unitTesting:
-                g.trace('===== SET atAutoKind', g.callers())
+            # scannerUnitTest and the recursive input code uses this code.
+                # g.trace('===== SET atAutoKind', g.callers())
             # Not yet an @auto node.
             # Set atAutoKind if there is an @auto importer for ext.
             aClass = g.app.classDispatchDict.get(ext)
