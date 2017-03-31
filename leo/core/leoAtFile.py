@@ -2128,12 +2128,9 @@ class AtFile(object):
     #@+node:ekr.20041005105605.106: *7* at.readDirective (@@)
     def readDirective(self, s, i):
         """Read an @@sentinel."""
-        trace = False and not g.unitTesting
         at = self
         assert g.match(s, i, "@"), 'missing @@ sentinel'
             # The first '@' has already been eaten.
-        if trace: g.trace(repr(s[i:]))
-            # g.trace(g.get_line(s,i))
         if g.match_word(s, i, "@raw"):
             at.raw = True
         elif g.match_word(s, i, "@end_raw"):
@@ -2147,49 +2144,6 @@ class AtFile(object):
         start = at.startSentinelComment
         if start and len(start) > 0 and start[-1] == '@':
             s2 = s2.replace('@@', '@')
-        if 0: # New in 4.2.1: never change comment delims here...
-            if g.match_word(s, i, "@language"):
-                #@+<< handle @language >>
-                #@+node:ekr.20041005105605.107: *8* << handle @language >>
-                # Skip the keyword and whitespace.
-                i += len("@language")
-                i = g.skip_ws(s, i)
-                j = g.skip_c_id(s, i)
-                language = s[i: j]
-                delim1, delim2, delim3 = g.set_delims_from_language(language)
-                if trace:
-                    g.trace(g.get_line(s, i))
-                    g.trace(delim1, delim2, delim3)
-                # Returns a tuple (single,start,end) of comment delims
-                if delim1:
-                    at.startSentinelComment = delim1
-                    at.endSentinelComment = "" # Must not be None.
-                elif delim2 and delim3:
-                    at.startSentinelComment = delim2
-                    at.endSentinelComment = delim3
-                else:
-                    line = g.get_line(s, i)
-                    g.error("ignoring bad @language sentinel:", line)
-                #@-<< handle @language >>
-            elif g.match_word(s, i, "@comment"):
-                #@+<< handle @comment >>
-                #@+node:ekr.20041005105605.108: *8* << handle @comment >>
-                j = g.skip_line(s, i)
-                line = s[i: j]
-                delim1, delim2, delim3 = g.set_delims_from_string(line)
-                #g.trace(g.get_line(s,i))
-                #g.trace(delim1,delim2,delim3)
-                # Returns a tuple (single,start,end) of comment delims
-                if delim1:
-                    self.startSentinelComment = delim1
-                    self.endSentinelComment = "" # Must not be None.
-                elif delim2 and delim3:
-                    self.startSentinelComment = delim2
-                    self.endSentinelComment = delim3
-                else:
-                    line = g.get_line(s, i)
-                    g.error("ignoring bad @comment sentinel:", line)
-                #@-<< handle @comment >>
         # An @c or @code ends the doc part when using new sentinels.
         if (
             at.readVersion5 and s2.startswith('@c') and
@@ -2197,7 +2151,7 @@ class AtFile(object):
         ):
             if at.docOut:
                 s = ''.join(at.docOut)
-                s = at.massageAtDocPart(s) # 2011/05/24
+                s = at.massageAtDocPart(s)
                 at.appendToOut(s)
                 at.docOut = []
             at.inCode = True # End the doc part.
@@ -4114,18 +4068,11 @@ class AtFile(object):
         if at.sentinels or at.forceSentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            #@+<< apply the cweb hack to s >>
-            #@+node:ekr.20041005105605.195: *6* << apply the cweb hack to s >>
-            #@+at The cweb hack:
-            # 
-            # If the opening comment delim ends in '@', double all '@' signs except the first,
-            # which is "doubled" by the trailing '@' in the opening comment delimiter.
-            #@@c
+            # apply the cweb hack to s. If the opening comment delim ends in '@',
+            # double all '@' signs except the first.
             start = at.startSentinelComment
             if start and start[-1] == '@':
-                assert(s and s[0] == '@')
                 s = s.replace('@', '@@')[1:]
-            #@-<< apply the cweb hack to s >>
             at.os(s)
             if at.endSentinelComment:
                 at.os(at.endSentinelComment)
