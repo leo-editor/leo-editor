@@ -3439,7 +3439,7 @@ class AtFile(object):
         except Exception:
             at.exception("exception preprocessing script")
         return at.stringOutput
-    #@+node:ekr.20041005105605.151: *5* at.writeMissing
+    #@+node:ekr.20041005105605.151: *5* at.writeMissing & helper
     def writeMissing(self, p, toString=False):
         at = self; c = at.c
         writtenFiles = False
@@ -3454,19 +3454,10 @@ class AtFile(object):
                         self.default_directory, at.targetFileName)
                     if not g.os_path_exists(at.targetFileName):
                         ok = at.openFileForWriting(p, at.targetFileName, toString)
-                        # openFileForWriting calls p.setDirty() if there are errors.
+                                # calls p.setDirty() if there are errors.
                         if ok:
-                            #@+<< write the @file node >>
-                            #@+node:ekr.20041005105605.152: *6* << write the @file node >> (writeMissing)
-                            if p.isAtAsisFileNode():
-                                at.asisWrite(p)
-                            elif p.isAtNoSentFileNode():
-                                at.write(p, kind='@nosent', nosentinels=True)
-                            elif p.isAtFileNode():
-                                at.write(p, kind='@file')
-                            else: assert 0, 'writeMissing'
+                            at.writeMissingNode(p)
                             writtenFiles = True
-                            #@-<< write the @file node >>
                             at.closeWriteFile()
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
@@ -3479,6 +3470,18 @@ class AtFile(object):
             else:
                 g.es("no @file node in the selected tree")
         c.raise_error_dialogs(kind='write')
+    #@+node:ekr.20041005105605.152: *6* at.writeMissingNode
+    def writeMissingNode(self, p):
+        
+        at = self
+        if p.isAtAsisFileNode():
+            at.asisWrite(p)
+        elif p.isAtNoSentFileNode():
+            at.write(p, kind='@nosent', nosentinels=True)
+        elif p.isAtFileNode():
+            at.write(p, kind='@file')
+        else:
+            g.trace('can not happen: unknown @file node')
     #@+node:ekr.20090225080846.5: *5* at.writeOneAtEditNode
     def writeOneAtEditNode(self, p, toString, force=False):
         '''Write one @edit node.'''
