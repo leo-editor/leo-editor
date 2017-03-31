@@ -2962,8 +2962,7 @@ class AtFile(object):
         at.canCancelFlag = False
         at.cancelFlag = False
         at.yesToAll = False
-        #@+<< say the command is finished >>
-        #@+node:ekr.20041005105605.150: *6* << say the command is finished >>
+        # say the command is finished.
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
                 if len(writtenFiles) > 0:
@@ -2973,7 +2972,6 @@ class AtFile(object):
                     # g.es("to write an unchanged @auto node,\nselect it directly.")
                 else:
                     g.es("no dirty @<file> nodes")
-        #@-<< say the command is finished >>
         if c.isChanged():
             # Save the outline if only persistence data nodes are dirty.
             self.saveOutlineIfPossible()
