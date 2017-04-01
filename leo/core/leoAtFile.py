@@ -2407,7 +2407,7 @@ class AtFile(object):
         def parseLeoSentinel(self, s):
             '''
             Parse the sentinel line s.
-            set at.encoding, at.readVersion, at.readVersion5
+            If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
             '''
             trace = False and not g.unitTesting
             at, c = self, self.c
@@ -2429,6 +2429,8 @@ class AtFile(object):
                 # group(2): -ver=5
                 new_df = bool(m.group(2))
                 if new_df:
+                    # Set the version number.
+                    # The old code weirdly allowed '.' in version numbers.
                     # group(3): 5
                     if m.group(3):
                         readVersion = m.group(3)
@@ -2440,7 +2442,7 @@ class AtFile(object):
                 # group(4): -thin
                 isThin = bool(m.group(4))
             if valid and m.group(5):
-                # set at.encoding.
+                # set encoding.
                 # group(5): -encoding=utf-8,.
                 # group(6): utf-8,
                 # group(7): .
