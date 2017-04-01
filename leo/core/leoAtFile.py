@@ -2413,8 +2413,8 @@ class AtFile(object):
             at, c = self, self.c
             # Set defaults.
             encoding = c.config.default_derived_file_encoding
-            new_df, start, end, isThin = False, None, None, False
             readVersion, readVersion5 = None, None
+            new_df, start, end, isThin = False, '', '', False
             # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
             pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
                 # The old code weirdly allowed '.' in version numbers.
@@ -3647,6 +3647,7 @@ class AtFile(object):
                     # At present, only the javascript importer creates section references.
                     ignore_undefined = at.atAuto or at.perfectImportFlag
                     hasRef, n1, n2 = at.findSectionName(s, i)
+                        # Note: putRefLine needs the n1 and n2 indices.
                     if hasRef:
                         name = s[n1+2:n2].strip()
                         ref = g.findReference(name, p)
@@ -4554,7 +4555,7 @@ class AtFile(object):
                 result.append(''.join(line2))
             s = '\n'.join(result)
         self.os(s)
-    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x
+    #@+node:ekr.20041005105605.206: *5* at.putDirective 4.x & helper
     def putDirective(self, s, i):
         r'''
         Output a sentinel a directive or reference s.
