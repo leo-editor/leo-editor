@@ -160,16 +160,11 @@ class Importer(object):
     # All code in passes 1 and 2 *must* use this API to change body text.
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert s, g.callers()
-        assert g.isString(s), repr(s)
-        assert not p.b, repr(p.b)
-        assert hasattr(p.v, '_import_lines'), repr(p)
-        # This might happen doing parse-body on a node p with children.
-        # However, perfect import would surely fail, so the solution
-        # must be to check for children in parse-body.
-        # if not hasattr(p.v, '_import_lines'):
-            # p.v._import_lines = p.b
-            # p.b = ''
+        assert s and g.isString(s), repr(s)
+        if not hasattr(p.v, '_import_lines'):
+            g.trace('can not happen: no _import_lines', p.h)
+            p.v._import_lines = g.splitLines(p.b)
+            p.b = ''
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -179,12 +174,10 @@ class Importer(object):
         p.v._import_lines.extend(list(lines))
 
     def get_lines(self, p):
-        # This can happen doing parse-body on a node p with children.
-        # However, perfect import would surely fail, so the solution
-        # must be to check for children in parse-body.
-        # if not hasattr(p.v, '_import_lines'):
-            # p.v._import_lines = p.b
-            # p.b = ''
+        if not hasattr(p.v, '_import_lines'):
+            g.trace('can not happen: no _import_lines', p.h)
+            p.v._import_lines = g.splitLines(p.b)
+            p.b = ''
         return p.v._import_lines
         
     def has_lines(self, p):
@@ -440,9 +433,12 @@ class Importer(object):
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
-        if trace: g.trace('='*20, self.name)
-        if trace: g.trace('=' * 10, parent.h)
         c = self.c
+        if trace: g.trace('-' * 10, parent.h)
+        # Fix #449: Cloned @auto nodes duplicates section references.
+        if parent.isCloned() and parent.hasChildren():
+            if trace: g.trace('already imported', parent.h)
+            return
         self.root = root = parent.copy()
         self.file_s = s
         # Init the error/status info.
