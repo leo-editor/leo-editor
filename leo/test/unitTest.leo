@@ -208,9 +208,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"
-expanded="ekr.20071113194858,ekr.20071113192611,ekr.20070131175538.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1221,24 +1220,7 @@ expanded="ekr.20071113194858,ekr.20071113192611,ekr.20070131175538.1,"><vh>@file
 <v t="ekr.20071113145804.7"></v>
 <v t="ekr.20170401122024.7"><vh>@@@file C:/leo.repo/leo-editor/leo/test/unittest/input/cweave.w</vh></v>
 <v t="ekr.20090529141856.4784"></v>
-<v t="ekr.20110610122533.3369"><vh>@ignore OLD goto-global-line tests</vh>
-<v t="ekr.20100212072149.5341"><vh>@test c.goToScriptLineNumber</vh>
-<v t="ekr.20100212072149.5342"><vh>syntax-error</vh></v>
-</v>
-<v t="ekr.20150626101920.1"></v>
-<v t="ekr.20150626101643.1"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20150626100652.1"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20150625101047.1"><vh>@test find_file_line: @auto-py</vh></v>
-<v t="ekr.20150626093653.1"></v>
-<v t="ekr.20160403143643.1"></v>
-<v t="ekr.20160403143655.1"></v>
-<v t="ekr.20160403123650.1"><vh>@test find_file_line: @file-c</vh></v>
-<v t="ekr.20110610122533.3395"><vh>@test find_file_line: @file-python</vh></v>
-<v t="ekr.20110610122533.3399"><vh>@test find_file_line: @nosent-python</vh></v>
-<v t="ekr.20110610122533.3394"><vh>@test find_gnx @file</vh></v>
-<v t="ekr.20110610122533.3404"><vh>@test goto_show_results not found</vh></v>
-</v>
-<v t="ekr.20170401123840.1"><vh>NEW: goto-global-line tests</vh>
+<v t="ekr.20170401123840.1"><vh>goto-global-line tests</vh>
 <v t="ekr.20170401123840.2"><vh>@test c.goToScriptLineNumber</vh>
 <v t="ekr.20170401123840.3"><vh>syntax-error</vh></v>
 </v>
@@ -3821,19 +3803,6 @@ assert not at.replaceFileWithString (fn,'abc')
 
 assert len(p.b) == 175,len(p.b)
 </t>
-<t tx="ekr.20100212072149.5341">child = g.findNodeInChildren(c, p, 'syntax-error')
-assert child, 'no child'
-try:
-    c.goToScriptLineNumber(1, child)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-</t>
-<t tx="ekr.20100212072149.5342">@language python
-def spam:
-    pass
-</t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
 &lt;?php
@@ -4130,68 +4099,6 @@ assert s2 == 'line 2.\n',repr(s2)
 
 #after
 #@-leo
-</t>
-<t tx="ekr.20110610122533.3369"></t>
-<t tx="ekr.20110610122533.3394"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    gnx = target.v.fileIndex
-    assert gnx
-    found = c.gotoCommands.find_gnx(root, gnx, h)
-    assert found, 'not found'
-</t>
-<t tx="ekr.20110610122533.3395"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
-</t>
-<t tx="ekr.20110610122533.3399"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@nosent unittest/at-nosent-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtNoSentFileNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
-            break
-</t>
-<t tx="ekr.20110610122533.3404">c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
-c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
-
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
@@ -5104,32 +5011,6 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
-<t tx="ekr.20150625101047.1">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto unittest/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 13, n
-            if trace: print('not found: %s' % n)
-            break
-else:
-    self.skipTest('Skip on Linux')
-</t>
 <t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -5152,48 +5033,6 @@ else:
         else:
             if trace: print('not found: %s' % n)
             assert n == 9, n
-            break
-</t>
-<t tx="ekr.20150626100652.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
-</t>
-<t tx="ekr.20150626101643.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
             break
 </t>
 <t tx="ekr.20150626101920.1">import sys
@@ -5567,28 +5406,6 @@ def __init__(self, s: Type) -&gt; None:
 </t>
 <t tx="ekr.20150919074321.3">def spam(self):
     pass
-</t>
-<t tx="ekr.20160403123650.1"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n)
-            break
 </t>
 <t tx="ekr.20160403143048.1">@language c
 @tabwidth -4
