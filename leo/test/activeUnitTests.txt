@@ -1624,19 +1624,29 @@ finally:
         x.unlink(filename)
         assert not g.os_path_exists(filename)
 #@+node:ekr.20071113145804.7: *4* @test at.parseLeoSentinel
-s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
-s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
-
-at=c.atFileCommands # Self is a dummy argument.
-
-for s in (s1,s2):
-    valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
-    # g.trace('start',start,'end',repr(end),'len(s)',len(s))
-    assert valid, 'not valid'
-    assert new_df, 'not new_df'
-    assert isThinDerivedFile, 'not thin'
-    assert end == '', 'invalid end: %s' % repr(end)
-    assert at.encoding == 'utf-8', 'bad encoding: %s' % repr(at.encoding)
+at=c.atFileCommands # self is a dummy argument.
+table = (
+    # start, end, new_df, isThin, encoding
+    # pre 4.2 formats...
+    ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
+    ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
+    # 4.2 formats...
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
+    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
+    ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
+)
+try:
+    for start, end, new_df, isThin, encoding, s in table:
+        valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
+        # g.trace('start',start,'end',repr(end),'len(s)',len(s))
+        assert valid, s
+        assert new_df == new_df2, s
+        assert isThin == isThin2, s
+        assert end == end2, (end, end2, s)
+        assert at.encoding == encoding, s
+finally:
+    at.encoding = 'utf-8'
 #@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController

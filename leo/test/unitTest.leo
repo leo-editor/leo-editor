@@ -205,7 +205,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1150,6 +1150,7 @@
 <v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
 </v>
 </v>
+<v t="ekr.20071113145804.7"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1913,19 +1914,29 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
-<t tx="ekr.20071113145804.7">s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
-s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
-
-at=c.atFileCommands # Self is a dummy argument.
-
-for s in (s1,s2):
-    valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
-    # g.trace('start',start,'end',repr(end),'len(s)',len(s))
-    assert valid, 'not valid'
-    assert new_df, 'not new_df'
-    assert isThinDerivedFile, 'not thin'
-    assert end == '', 'invalid end: %s' % repr(end)
-    assert at.encoding == 'utf-8', 'bad encoding: %s' % repr(at.encoding)
+<t tx="ekr.20071113145804.7">at=c.atFileCommands # self is a dummy argument.
+table = (
+    # start, end, new_df, isThin, encoding
+    # pre 4.2 formats...
+    ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
+    ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
+    # 4.2 formats...
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
+    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
+    ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
+)
+try:
+    for start, end, new_df, isThin, encoding, s in table:
+        valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
+        # g.trace('start',start,'end',repr(end),'len(s)',len(s))
+        assert valid, s
+        assert new_df == new_df2, s
+        assert isThin == isThin2, s
+        assert end == end2, (end, end2, s)
+        assert at.encoding == encoding, s
+finally:
+    at.encoding = 'utf-8'
 </t>
 <t tx="ekr.20071113145804.8">at=c.atFileCommands
 table = [
