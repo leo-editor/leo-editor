@@ -3610,7 +3610,7 @@ class AtFile(object):
                 pass # Never write @nonl
             elif at.atAuto and not at.atEdit:
                 at.onl()
-        return status.has_at_others ### goto-line-number fail: this line (3592).
+        return status.has_at_others ### goto-line-number fail: this line (3613).
     #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
     def ensureTrailingNewline(self, s):
         '''
@@ -4187,7 +4187,7 @@ class AtFile(object):
             g.es_exception()
             ok = False
         return ok
-    #@+node:ekr.20090514111518.5666: *7* syntaxError (leoAtFile)
+    #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
     def syntaxError(self, p, body):
         '''Report a syntax error.'''
         g.error("Syntax error in: %s" % (p.h))
