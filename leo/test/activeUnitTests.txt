@@ -19437,7 +19437,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20170401122751.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
@@ -19628,7 +19628,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20170401122141.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines

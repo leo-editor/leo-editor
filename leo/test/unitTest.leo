@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
-	<global_window_position top="82" left="409" height="931" width="1149"/>
+	<global_window_position top="32" left="76" height="931" width="1149"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -205,7 +205,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20090529141856.4785,ekr.20090529141856.4786,"
 expanded="ekr.20170401122141.1,ekr.20170401122141.9,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
@@ -1029,8 +1029,41 @@ expanded="ekr.20170401122141.1,ekr.20170401122141.9,"><vh>@file activeUnitTests.
 <v t="ekr.20161216141315.1"><vh>@test markdown importer-@@-section-name</vh></v>
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh>Tests of @auto-rst</vh>
-<v t="ekr.20090529141856.4785" a="M"><vh>@test rST import test</vh></v>
+<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4785" a="M"><vh>@test rST import test</vh>
+<v t="ekr.20170401122751.1"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh>
+<v t="ekr.20170401122751.2"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20170401122751.3"><vh>top</vh>
+<v t="ekr.20170401122751.4"><vh>section 1</vh></v>
+<v t="ekr.20170401122751.5"><vh>section 2</vh>
+<v t="ekr.20170401122751.6"><vh>section 2.1</vh>
+<v t="ekr.20170401122751.7"><vh>section 2.1.1</vh></v>
+</v>
+</v>
+<v t="ekr.20170401122751.8"><vh>section 3</vh>
+<v t="ekr.20170401122751.9"><vh>placeholder</vh>
+<v t="ekr.20170401122751.10"><vh>section 3.1.1</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20170401122755.1"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh>
+<v t="ekr.20170401122755.2"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20170401122755.3"><vh>top</vh>
+<v t="ekr.20170401122755.4"><vh>section 1</vh></v>
+<v t="ekr.20170401122755.5"><vh>section 2</vh>
+<v t="ekr.20170401122755.6"><vh>section 2.1</vh>
+<v t="ekr.20170401122755.7"><vh>section 2.1.1</vh></v>
+</v>
+</v>
+<v t="ekr.20170401122755.8"><vh>section 3</vh>
+<v t="ekr.20170401122755.9"><vh>placeholder</vh>
+<v t="ekr.20170401122755.10"><vh>section 3.1.1</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
 <v t="ekr.20090529141856.4786" a="M"><vh>@test rST import test: no double-underlines</vh>
 <v t="ekr.20170401122141.1" a="E"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines</vh>
@@ -1045,6 +1078,22 @@ expanded="ekr.20170401122141.1,ekr.20170401122141.9,"><vh>@file activeUnitTests.
 <v t="ekr.20170401122141.8"><vh>section 3</vh>
 <v t="ekr.20170401122141.9" a="E"><vh>placeholder</vh>
 <v t="ekr.20170401122141.10"><vh>section 3.1.1</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20170401122755.14"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines</vh>
+<v t="ekr.20170401122755.15"><vh>!Dummy chapter</vh></v>
+<v t="ekr.20170401122755.16"><vh>top</vh>
+<v t="ekr.20170401122755.17"><vh>section 1</vh></v>
+<v t="ekr.20170401122755.18"><vh>section 2</vh>
+<v t="ekr.20170401122755.19"><vh>section 2.1</vh>
+<v t="ekr.20170401122755.20"><vh>section 2.1.1</vh></v>
+</v>
+</v>
+<v t="ekr.20170401122755.21"><vh>section 3</vh>
+<v t="ekr.20170401122755.22"><vh>placeholder</vh>
+<v t="ekr.20170401122755.23"><vh>section 3.1.1</vh></v>
 </v>
 </v>
 </v>
@@ -1168,7 +1217,7 @@ expanded="ekr.20170401122141.1,ekr.20170401122141.9,"><vh>@file activeUnitTests.
 </v>
 <v t="ekr.20071113145804.7"></v>
 <v t="ekr.20170401122024.7"><vh>@@@file C:/leo.repo/leo-editor/leo/test/unittest/input/cweave.w</vh></v>
-<v t="ekr.20090529141856.4784" a="E"></v>
+<v t="ekr.20090529141856.4784"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1886,7 +1935,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="14,0">
+<t tx="ekr.20070417092935" str_leo_pos="14">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3157,7 +3206,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -3238,7 +3287,7 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
     c.redraw()
 </t>
@@ -15329,5 +15378,125 @@ section 3, line 1
 
 </t>
 <t tx="ekr.20170401122141.9"></t>
+<t tx="ekr.20170401122751.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20170401122751.10">
+section 3.1.1, line 1
+</t>
+<t tx="ekr.20170401122751.2">.. toc
+
+</t>
+<t tx="ekr.20170401122751.3">
+The top section
+
+</t>
+<t tx="ekr.20170401122751.4">
+section 1, line 1
+--
+section 1, line 2
+
+</t>
+<t tx="ekr.20170401122751.5">
+section 2, line 1
+
+</t>
+<t tx="ekr.20170401122751.6">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20170401122751.7">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20170401122751.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20170401122751.9"></t>
+<t tx="ekr.20170401122755.1">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20170401122755.10">
+section 3.1.1, line 1
+</t>
+<t tx="ekr.20170401122755.14">@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20170401122755.15">.. toc
+
+</t>
+<t tx="ekr.20170401122755.16">
+The top section
+
+</t>
+<t tx="ekr.20170401122755.17">
+section 1, line 1
+--
+section 1, line 2
+
+</t>
+<t tx="ekr.20170401122755.18">
+section 2, line 1
+
+</t>
+<t tx="ekr.20170401122755.19">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20170401122755.2">.. toc
+
+</t>
+<t tx="ekr.20170401122755.20">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20170401122755.21">
+section 3, line 1
+
+</t>
+<t tx="ekr.20170401122755.22"></t>
+<t tx="ekr.20170401122755.23">
+section 3.1.1, line 1
+</t>
+<t tx="ekr.20170401122755.3">
+The top section
+
+</t>
+<t tx="ekr.20170401122755.4">
+section 1, line 1
+--
+section 1, line 2
+
+</t>
+<t tx="ekr.20170401122755.5">
+section 2, line 1
+
+</t>
+<t tx="ekr.20170401122755.6">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20170401122755.7">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20170401122755.8">
+section 3, line 1
+
+</t>
+<t tx="ekr.20170401122755.9"></t>
 </tnodes>
 </leo_file>
