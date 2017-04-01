@@ -2417,6 +2417,7 @@ class AtFile(object):
             readVersion, readVersion5 = None, None
             # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
             pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
+                # The old code weirdly allowed '.' in version numbers.
             m = pattern.match(s)
             valid = bool(m)
             if valid:  
@@ -2430,7 +2431,6 @@ class AtFile(object):
                 new_df = bool(m.group(2))
                 if new_df:
                     # Set the version number.
-                    # The old code weirdly allowed '.' in version numbers.
                     # group(3): 5
                     if m.group(3):
                         readVersion = m.group(3)
