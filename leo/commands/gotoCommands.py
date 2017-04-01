@@ -162,7 +162,6 @@ class GoToCommands(object):
                     stack.append((gnx, h, offset),)
                     # @others is visible in the outline, but *not* in the file.
                     offset += 1
-                    ### count += 1
                 elif s2.startswith('@-others') or s2.startswith('@-<<'):
                     gnx, h, offset = stack.pop()
                     # @-others is invisible.
@@ -170,7 +169,6 @@ class GoToCommands(object):
                 elif s2.startswith('@@'):
                     # Directives are visible in the outline, but *not* in the file.
                     offset += 1
-                    ### count += 1
                 else:
                     # All other sentinels are invisible to the user.
                     offset += 1
