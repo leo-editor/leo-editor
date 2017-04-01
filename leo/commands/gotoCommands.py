@@ -17,9 +17,11 @@ class GoToCommands(object):
     #@+node:ekr.20100216141722.5622: *3* goto.find_file_line
     def find_file_line(self, n, p=None):
         '''
-        Place the cursor on the n'th line of an external file.
-        Return p, offset, found for unit testing.'''
+        Place the cursor on the n'th line (one-based) of an external file.
+        Return p, offset, found for unit testing.
+        '''
         trace = False and not g.unitTesting
+            # It's usually better to look at the file in scite.
         c = self.c
         if n < 0:
             return
@@ -33,7 +35,7 @@ class GoToCommands(object):
             lines = g.splitLines(s)
             if trace:
                 g.trace('sentinels', sentinels)
-                aList = ['%3s %s' % (i, s2) for i, s2 in enumerate(lines)]
+                aList = ['%3s %s' % (i+1, s2) for i, s2 in enumerate(lines)]
                 g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
             # Step 2: scan the lines for line n.
             if sentinels:
@@ -130,7 +132,7 @@ class GoToCommands(object):
     def scan_nonsentinel_lines(self, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
-        offset within the node of the n'th (zero-based) line.
+        offset within the node of the n'th (one-based) line.
 
         Only non-sentinel lines increment the global line count, but
         @+node sentinels reset the offset within the node.
@@ -141,66 +143,74 @@ class GoToCommands(object):
         offset: the offset of line n within the node.
         '''
         trace = False and not g.unitTesting
+        trace_lines = True
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('===== Entry', delim1, delim2, n)
+        if trace: g.trace('=====', delim1, delim2, n)
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
-            if trace: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
+            # if trace and trace_lines: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
             if is_sentinel:
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
+                    # Invisible, but resets the offset.
                     offset = 0
-                        # The node delim does not appear in the outline.
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('@+node', gnx, h)
+                    if trace: g.trace('@+node: %30s %5s %s' % (gnx, count+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
-                    # Increment the offset, but not the count.
+                    # @others is visible in the outline, but *not* in the file.
                     offset += 1
+                    ### count += 1
                 elif s2.startswith('@-others') or s2.startswith('@-<<'):
                     gnx, h, offset = stack.pop()
-                    # Increment the offset, but not the count.
+                    # @-others is invisible.
                     offset += 1
+                elif s2.startswith('@@'):
+                    # Directives are visible in the outline, but *not* in the file.
+                    offset += 1
+                    ### count += 1
                 else:
-                    # All other sentinels increment the offset.
+                    # All other sentinels are invisible to the user.
                     offset += 1
             else:
-                # Non-sentinel lines do appear in the outline.
+                # Non-sentinel lines are visible both in the outline and the file.
                 count += 1
                 offset += 1
-            if trace: g.trace(count, offset, h, '\n')
+            if trace and trace_lines: g.trace(count, offset, s.rstrip())
             if count == n:
+                # Count is the real, one-based count.
                 break
         else:
             gnx, h, offset = None, None, -1
-        if trace: g.trace('gnx', gnx, 'h', h, 'offset', offset)
+        if trace: g.trace('----- gnx:', gnx, 'h:', h, 'offset:', offset)
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
     def scan_sentinel_lines(self, lines, n, root):
         '''
         Scan a list of lines containing sentinels, looking for the node and
-        offset within the node of the n'th (zero-based) line.
+        offset within the node of the n'th (one-based) line.
 
         Return gnx, h, offset:
         gnx:    the gnx of the #@+node
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        trace_lines = False
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
         if trace: g.trace('=====', delim1, delim2, n)
         for i, s in enumerate(lines):
-            if trace: g.trace(s.rstrip())
+            if trace and trace_lines: g.trace(s.rstrip())
             if self.is_sentinel(delim1, delim2, s):
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('node', gnx, h)
+                    if trace: g.trace('node: %30s %5s %s' % (gnx, i+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
                     offset += 1
@@ -211,8 +221,8 @@ class GoToCommands(object):
                     offset += 1
             else:
                 offset += 1
-            if trace: g.trace(i, offset, h, '\n')
-            if i == n:
+            if trace and trace_lines: g.trace(i+1, offset, s.rstrip())
+            if i+1 == n: # Bug fix 2017/04/01: n is one based.
                 break
         else:
             gnx, h, offset = None, None, -1
