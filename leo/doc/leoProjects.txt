@@ -25,6 +25,7 @@ refresh-from-disk doesn't always restore focus to the correct node
 
 - at.readOneAtAutoNode returns the *new* position.
 - c.refreshFromDisk selects that position.
+.. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
