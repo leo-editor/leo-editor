@@ -2402,7 +2402,7 @@ class AtFile(object):
         p.v.setVisited() # Suppress warning about unvisited node.
         return p
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
-    if 0: # Experimental. All unit tests pass.
+    if 1: # Experimental. All unit tests pass.
         
         def parseLeoSentinel(self, s):
             '''
