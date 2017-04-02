@@ -28,6 +28,8 @@ https://github.com/leo-editor/leo-editor/issues/453
 Focus jumps to de body pane when expanding an abbreviation in a headline.
 
 The fix was in find_place_holder. It should not set focus if no placeholder found.
+.. @+node:ekr.20170402034115.1: *4* #456: replace-all is very slow
+Made several changes to find.batchChange.
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
