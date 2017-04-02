@@ -7,9 +7,6 @@
 https://github.com/leo-editor/leo-editor/issues/386
 All changes made to leo/modes/md.py
 .. @+node:ekr.20170315103331.1: *4* #438: Tree abbreviation placeholders in headlines...
-@language rest
-@wrap
-
 https://github.com/leo-editor/leo-editor/issues/438
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
@@ -26,6 +23,11 @@ refresh-from-disk doesn't always restore focus to the correct node
 - at.readOneAtAutoNode returns the *new* position.
 - c.refreshFromDisk selects that position.
 .. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
+.. @+node:ekr.20170401202930.1: *4* #453: Focus jumps to body when expanding abbrev in a headline
+https://github.com/leo-editor/leo-editor/issues/453
+Focus jumps to de body pane when expanding an abbreviation in a headline.
+
+The fix was in find_place_holder. It should not set focus if no placeholder found.
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
@@ -39,18 +41,12 @@ This makes explicit which importers actually generate section reference. At pres
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
 These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
 .. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
-@language rest
-@wrap
-
 https://github.com/leo-editor/leo-editor/issues/448
 
 If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
 
 This took only a few lines of code in abbrev.expandAbbrev.
 .. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
-@language rest
-@wrap
-
 https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
 
 The indent-region and unindent-region just move the insert point if there is no text selected.
