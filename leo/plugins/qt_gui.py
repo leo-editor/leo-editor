@@ -925,7 +925,7 @@ class LeoQtGui(leoGui.LeoGui):
         assert isinstance(qevent, QtGui.QKeyEvent)
         qw = hasattr(event.w, 'widget') and event.w.widget or None
         if qw and isinstance(qw, QtWidgets.QTextEdit):
-            g.trace(i, qevent.modifiers(), g.u(qevent.text()))
+            # g.trace(i, qevent.modifiers(), g.u(qevent.text()))
             if 1:
                 # Assume that qevent.text() *is* the desired text.
                 # This means we don't have to hack eventFilter.
