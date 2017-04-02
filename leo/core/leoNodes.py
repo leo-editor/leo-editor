@@ -1623,8 +1623,7 @@ class Position(object):
         p = self; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
-            # Don't redraw the screen: p.b must be fast.
-            # c.redraw_after_icons_changed()
+            # Warning: c.setBodyString is *expensive*.
 
     b = property(
         __get_b, __set_b,
@@ -1771,8 +1770,6 @@ class Position(object):
         p = self
         p.v.initHeadString(s)
         # Note: p.setDirty is expensive.
-        # We can't change this because Leo's core uses
-        # p.setDirty and c.setDirty interchangeably.
         p.setDirty()
     #@+node:ekr.20040312015908: *4* p.Visited bits
     #@+node:ekr.20040306220634.17: *5* p.clearVisitedInTree
