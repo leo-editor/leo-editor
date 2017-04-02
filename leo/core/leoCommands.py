@@ -32,7 +32,18 @@ def cmd(name):
 #@+others
 #@+node:ekr.20160514120615.1: ** class Commands
 class Commands(object):
-    """A class that implements most of Leo's commands."""
+    """
+    A per-outline class that implements most of Leo's commands. The
+    "c" predefined object is an instance of this class. 
+    
+    c.initObjects() creates sucommanders corresponding to files in the
+    leo/core and leo/commands. All of Leo's core code is accessible
+    via this class and its subcommanders.
+    
+    g.app.pluginsController is Leo's plugins controller. Many plugins
+    inject controllers objects into the Commands class. These are
+    another kind of subcommander.
+    """
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
@@ -194,7 +205,8 @@ class Commands(object):
         self.target_language = "python"
         self.untangle_batch_flag = False
         self.use_body_focus_border = True
-        self.use_focus_border = False
+        # self.use_focus_border = False
+            # Replaced by style-sheet entries.
         self.vim_mode = False
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars(self):
@@ -426,21 +438,25 @@ class Commands(object):
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = False and not g.unitTesting
-        trace_inactive_focus = False
-        trace_in_dialog = False
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        # if trace: g.trace('active:', g.app.gui and g.app.gui.active)
+        trace_inactive_focus = True
+        trace_in_dialog = True
         c = self
         assert tag == 'idle'
-        if g.app.unitTesting or keys.get('c') != c:
+        if g.app.unitTesting:
+            return
+        if keys.get('c') != c:
+            if trace: g.trace('no c')
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
             if trace and trace_in_dialog: g.trace('in_qt_dialog')
             return
-        w = g.app.gui.get_focus()
+        w = g.app.gui.get_focus(at_idle = True)
         if g.app.gui.active:
-            if trace:
-                self.trace_idle_focus(w)
+            # Always call trace_idle_focus.
+            self.trace_idle_focus(w)
             if w and self.is_unusual_focus(w):
                 if trace:
                     w_class = w and w.__class__.__name__
@@ -477,39 +493,35 @@ class Commands(object):
             return not isinstance(w, table)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
     last_unusual_focus = None
-    last_no_focus = False
+    # last_no_focus = False
 
     def trace_idle_focus(self, w):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = True and not g.unitTesting
-        trace_known = False
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_known = True
         c = self
         table = (
             QtWidgets.QWidget,
             qt_frame.LeoQTreeWidget,
         )
         count = c.idle_focus_count
-        w_class = w and w.__class__.__name__
         if w:
+            w_class = w and w.__class__.__name__
             c.last_no_focus = False
             if self.is_unusual_focus(w):
-                if w_class != c.last_unusual_focus:
-                    c.last_unusual_focus = w_class
+                if trace:
                     g.trace('%s unusual focus: %s' % (count, w_class))
             else:
                 c.last_unusual_focus = None
-                if trace:
-                    if trace_known and isinstance(w, table):
+                if isinstance(w, table):
+                    if trace and trace_known:
                         g.trace('%s known focus: %s' % (count, w_class))
-                    elif not isinstance(w, table):
-                        g.trace('%s unknown focus: %s' % (count, w_class))
-        # elif active:
-            # g.trace('%s no focus -> body' % (count))
-        # el
-        elif not c.last_no_focus:
-            c.last_no_focus = True
+                elif trace:
+                    g.trace('%s unknown focus: %s' % (count, w_class))
+        else:
+            # c.last_no_focus = True
             g.trace('%s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
@@ -549,7 +561,8 @@ class Commands(object):
         c.smart_tab = getBool('smart_tab')
         c.tab_width = getInt('tab_width') or -4
         c.use_body_focus_border = getBool('use_body_focus_border', default=True)
-        c.use_focus_border = getBool('use_focus_border', default=True)
+        # c.use_focus_border = getBool('use_focus_border', default=True)
+            # Not used: replaced by stylesheet settings.
         c.verbose_check_outline = getBool('verbose_check_outline', default=False)
         c.vim_mode = getBool('vim_mode', default=False)
         c.write_script_file = getBool('write_script_file')
@@ -1269,11 +1282,14 @@ class Commands(object):
         p.setDirty()
         c.validateOutline()
         return p
-    #@+node:ekr.20031218072017.1824: *6* c.dedentBody
+    #@+node:ekr.20031218072017.1824: *6* c.dedentBody (unindent-region)
     @cmd('unindent-region')
     def dedentBody(self, event=None):
         '''Remove one tab's worth of indentation from all presently selected lines.'''
         c, undoType = self, 'Unindent'
+        w = c.frame.body.wrapper
+        sel_1, sel_2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
         tab_width = c.getTabWidth(c.p)
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         changed, result = False, []
@@ -1284,7 +1300,12 @@ class Commands(object):
             result.append(s)
         if changed:
             result = ''.join(result)
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                ins = max(0, ins - abs(tab_width))
+                oldSel = ins, ins
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
     #@+node:ekr.20110530124245.18238: *6* c.extract...
     #@+node:ekr.20110530124245.18239: *7* c.extract & helpers
     @cmd('extract')
@@ -1454,6 +1475,9 @@ class Commands(object):
         specifies the column to indent to.
         '''
         c, undoType = self, 'Indent Region'
+        w = c.frame.body.wrapper
+        sel_1, sel_2 = w.getSelectionRange()
+        ins = w.getInsertPoint()
         tab_width = c.getTabWidth(c.p)
         head, lines, tail, oldSel, oldYview = self.getBodyLines()
         changed, result = False, []
@@ -1463,8 +1487,13 @@ class Commands(object):
             if s != line: changed = True
             result.append(s)
         if changed:
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                ins += tab_width
+                oldSel = ins, ins
             result = ''.join(result)
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
     #@+node:ekr.20050312114529: *6* c.insert/removeComments
     #@+node:ekr.20131103054650.16535: *7* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
@@ -1948,7 +1977,7 @@ class Commands(object):
         # Make sure we never scroll horizontally.
         w.setXScrollPosition(0)
     #@+node:ekr.20031218072017.1838: *6* c.updateBodyPane (handles changeNodeContents)
-    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
+    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         '''Handle changed text in the body pane.'''
         c, p = self, self.p
         body = c.frame.body
@@ -1958,9 +1987,13 @@ class Commands(object):
         head = head or ''
         middle = middle or ''
         tail = tail or ''
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-        newSel = i, j
+        if preserveSel:
+            # Leo 5.6: just use the computed oldSel.
+            i, j = oldSel
+        else:
+            i = len(head)
+            j = max(i, len(head) + len(middle) - 1)
+            newSel = i, j
         body.wrapper.setSelectionRange(i, j)
         # This handles the undo.
         body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
@@ -2252,14 +2285,13 @@ class Commands(object):
         elif not d:
             g.trace('can not happen: no d', g.callers())
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
+    # refresh_pattern = re.compile('^(@[\w-]+)')
+
     @cmd('refresh-from-disk')
     def refreshFromDisk(self, event=None):
         '''Refresh an @<file> node from disk.'''
         trace = False and not g.unitTesting
         c, p, u = self, self.p, self.undoer
-        if trace:
-            highlighter = c.frame.body.colorizer.highlighter
-            g.trace(highlighter.n_calls)
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
         if fn:
@@ -2271,8 +2303,10 @@ class Commands(object):
             i = g.skip_id(p.h, 0, chars='@')
             word = p.h[0: i]
             if word == '@auto':
+                # This includes @auto-*
                 p.deleteAllChildren()
-                at.readOneAtAutoNode(fn, p)
+                # Fix #451: refresh-from-disk selects wrong node.
+                p = at.readOneAtAutoNode(fn, p)
             elif word in ('@thin', '@file'):
                 p.deleteAllChildren()
                 at.read(p, force=True)
@@ -2281,7 +2315,8 @@ class Commands(object):
                 if p.b.strip() or p.hasChildren():
                     at.readOneAtCleanNode(p)
                 else:
-                    at.readOneAtAutoNode(fn, p)
+                    # Fix #451: refresh-from-disk selects wrong node.
+                    p = at.readOneAtAutoNode(fn, p)
             elif word == '@shadow ':
                 p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
@@ -2289,13 +2324,14 @@ class Commands(object):
                 p.deleteAllChildren()
                 at.readOneAtEditNode(fn, p)
             else:
-                g.es_print('can not refresh from disk\n%s' % p.h)
+                g.es_print('can not refresh from disk\n%r' % p.h)
                 redraw_flag = False
         else:
-            g.warning('not an @<file> node:\n%s' % (p.h))
+            g.warning('not an @<file> node:\n%r' % (p.h))
             redraw_flag = False
         if redraw_flag:
-            if trace: g.trace('after read')
+            # Fix #451: refresh-from-disk selects wrong node.
+            c.selectPosition(p)
             u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
             # Create the 'Recovered Nodes' tree.
             c.fileCommands.handleNodeConflicts()
@@ -2303,8 +2339,9 @@ class Commands(object):
             c.redraw()
             t2 = time.clock()
             if trace:
-                g.trace(highlighter.n_calls)
-                g.trace('%5.2f sec' % (t2-t1))
+                n = sum([1 for z in p.self_and_subtree()])
+                h = sum([hash(z.h) for z in p.self_and_subtree()])
+                g.trace('%s nodes, hash: %s in %5.2f sec. %r' % (n, h, (t2-t1), p.h))
     #@+node:ekr.20031218072017.2834: *6* c.save & helper
     @cmd('save-file')
     def save(self, event=None, fileName=None):
@@ -2949,7 +2986,8 @@ class Commands(object):
         email = "edreamleo@gmail.com"
         g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
     #@+node:ekr.20031218072017.2940: *5* c.leoDocumentation
-    @cmd('open-leoDocs-leo')
+    @cmd('open-leo-docs-leo')
+    @cmd('leo-docs-leo')
     def leoDocumentation(self, event=None):
         '''Open LeoDocs.leo in a new Leo window.'''
         c = self
@@ -2972,6 +3010,7 @@ class Commands(object):
             g.es("not found:", url)
     #@+node:ekr.20090628075121.5994: *5* c.leoQuickStart
     @cmd('open-quickstart-leo')
+    @cmd('leo-quickstart-leo')
     def leoQuickStart(self, event=None):
         '''Open quickstart.leo in a new Leo window.'''
         c = self; name = "quickstart.leo"
@@ -2983,6 +3022,7 @@ class Commands(object):
         g.es("not found:", name)
     #@+node:ekr.20131028155339.17096: *5* c.openCheatSheet
     @cmd('open-cheat-sheet-leo')
+    @cmd('leo-cheat-sheet')
     def openCheatSheet(self, event=None, redraw=True):
         '''Open leo/doc/cheatSheet.leo'''
         c = self
@@ -3001,7 +3041,8 @@ class Commands(object):
             g.es('file not found: %s' % fn)
             return None
     #@+node:ekr.20161025090405.1: *5* c.openLeoDist
-    @cmd('open-leoDist-leo')
+    @cmd('open-leo-dist-leo')
+    @cmd('leo-dist-leo')
     def openLeoDist(self, event=None):
         '''Open leoDist.leo in a new Leo window.'''
         c = self
@@ -3012,7 +3053,8 @@ class Commands(object):
             if c2: return
         g.es("not found:", name)
     #@+node:ekr.20050130152008: *5* c.openLeoPlugins
-    @cmd('open-leoPlugins-leo')
+    @cmd('open-leo-plugins-leo')
+    @cmd('leo-plugins-leo')
     def openLeoPlugins(self, event=None):
         '''Open leoPlugins.leo in a new Leo window.'''
         c = self
@@ -3025,7 +3067,8 @@ class Commands(object):
                 if c2: return
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20151225193723.1: *5* c.openLeoPy
-    @cmd('open-leoPy-leo')
+    @cmd('open-leo-py-leo')
+    @cmd('leo-py-leo')
     def openLeoPy(self, event=None):
         '''Open leoPy.leo in a new Leo window.'''
         c = self
@@ -3039,6 +3082,7 @@ class Commands(object):
         g.es('not found:', ', '.join(names))
     #@+node:ekr.20061018094539: *5* c.openLeoScripts
     @cmd('open-scripts-leo')
+    @cmd('leo-scripts-leo')
     def openLeoScripts(self, event=None):
         '''Open scripts.leo.'''
         c = self
@@ -3049,7 +3093,8 @@ class Commands(object):
             if c2: return
         g.es('not found:', fileName)
     #@+node:ekr.20031218072017.2943: *5* c.openLeoSettings & c.openMyLeoSettings & helper
-    @cmd('open-leoSettings-leo')
+    @cmd('open-leo-settings-leo')
+    @cmd('leo-settings-leo')
     def openLeoSettings(self, event=None):
         '''Open leoSettings.leo in a new Leo window.'''
         c, lm = self, g.app.loadManager
@@ -3061,6 +3106,7 @@ class Commands(object):
             return None
 
     @cmd('open-myLeoSettings-leo')
+    @cmd('my-leo-settings-leo')
     def openMyLeoSettings(self, event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
         c, lm = self, g.app.loadManager
@@ -3168,6 +3214,7 @@ class Commands(object):
             g.es("not found:", url)
     #@+node:ekr.20151225095102.1: *5* c.openUnittest
     @cmd('open-unittest-leo')
+    @cmd('leo-unittest-leo')
     def openUnittest(self, event=None):
         '''Open unittest.leo.'''
         c = self
@@ -6255,24 +6302,27 @@ class Commands(object):
     #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
     def get_focus(self):
         c = self
-        return g.app.gui and g.app.gui.get_focus(c)
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        w = g.app.gui and g.app.gui.get_focus(c)
+        if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
+        return w
 
     def get_requested_focus(self):
         c = self
         return c.requestedFocusWidget
 
     def request_focus(self, w):
-        trace = False and not g.unitTesting
-        c = self
-        if trace: g.trace(g.app.gui.widget_name(w), w, g.callers())
-        if w: c.requestedFocusWidget = w
-
-    def set_focus(self, w, force=False):
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: g.trace('(c)',
-                g.app.gui.widget_name(w), w)
+            if trace: g.trace('(c)', repr(g.app.gui.widget_name(w)))
+            c.requestedFocusWidget = w
+
+    def set_focus(self, w, force=False):
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        c = self
+        if w and g.app.gui:
+            if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')

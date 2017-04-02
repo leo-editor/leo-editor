@@ -39,7 +39,7 @@ class Rst_Importer(Importer):
         return True
     #@+node:ekr.20161129040921.2: *3* rst_i.gen_lines & helpers
     def gen_lines(self, s, parent):
-        '''Node generator for markdown importer.'''
+        '''Node generator for reStructuredText importer.'''
         trace = False and g.unitTesting
         if not s or s.isspace():
             return

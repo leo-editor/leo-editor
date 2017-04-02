@@ -349,26 +349,21 @@ class ChapterController(object):
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
         '''Called early and often to discover all chapter names.'''
-        c, cc, result = self.c, self, []
-        sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
-        seen = set()
+        c, cc = self.c, self
+        # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         if 'main' not in cc.chaptersDict:
             cc.chaptersDict['main'] = Chapter(c, cc, 'main')
             cc.makeCommand('main')
                 # This binds any existing bindings to chapter-select-main.
+        result, seen = ['main'], set()
         for p in c.all_unique_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName and p.v not in seen:
                 seen.add(p.v)
-                if chapterName != sel_name:
-                    result.append(chapterName)
+                result.append(chapterName)
                 if chapterName not in cc.chaptersDict:
                     cc.chaptersDict[chapterName] = Chapter(c, cc, chapterName)
                     cc.makeCommand(chapterName, binding)
-        if 'main' not in result and sel_name != 'main':
-            result.append('main')
-        result.sort()
-        result.insert(0, sel_name)
         return result
     #@-others
 #@+node:ekr.20070317085708: ** class Chapter

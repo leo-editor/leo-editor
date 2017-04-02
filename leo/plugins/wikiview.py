@@ -15,34 +15,28 @@ the examples :-)
 Commands
 --------
 
-  wikiview-toggle
-      Turn wikiview on or off
-  wikiview-hide-all
-      Hide all links
-  wikiview-show-all
-      Show all links
+wikiview-toggle
+  Turn wikiview on or off
+wikiview-hide-all
+  Hide all links
+wikiview-show-all
+  Show all links
 
 Settings
 --------
 
-  wikiview-active
-      True / False - should wikiview be on by default (if the plugin is enabled)
-  wikiview-link-patterns
-      Regular expressions defining text to hide.  Examples and details::
+@bool wikiview-active
+    True / False - should wikiview be on by default (if the plugin is enabled)
 
-        # regex patterns for text to be hidden by the wikiview plugin
-        # each non-blank link not starting with '#' is treated as a
-        # separate pattern, use [#] for patterns starting with '#'
-
-        # only `groups` within the pattern, i.e. parts of the pattern
-        # in (parentheses), will be hidden, e.g. the first \S+ in the
-        # restructuredText pattern is not hidden
-
-        # restructuredText `Visible text <http://invisible.url/here>`
-        (`)\S+(\s*<(https?|file)://\S+>`_)
-
-        # regular urls
-        ((https?|file)://(\S+)?(-->|[/#])(?=[.%/a-zA-Z0-9_]))
+@data wikiview-link-patterns
+    This node contains regex patterns for text to be hidden by the plugin.
+    
+    Blank lines and lines starting with '#' are comment lines.
+    Each non-comment line represents a pattern.
+    Use \b# for patterns starting with '#'
+    Only `groups` parts of the pattern in parentheses will be shown.
+    The first character of the pattern (not counting \b) is the **leadin character**.
+    The pattern will be applied only for strings starting with the leadin character.
 """
 #@-<< docstring >>
 

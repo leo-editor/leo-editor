@@ -1624,19 +1624,29 @@ finally:
         x.unlink(filename)
         assert not g.os_path_exists(filename)
 #@+node:ekr.20071113145804.7: *4* @test at.parseLeoSentinel
-s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
-s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
-
-at=c.atFileCommands # Self is a dummy argument.
-
-for s in (s1,s2):
-    valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
-    # g.trace('start',start,'end',repr(end),'len(s)',len(s))
-    assert valid, 'not valid'
-    assert new_df, 'not new_df'
-    assert isThinDerivedFile, 'not thin'
-    assert end == '', 'invalid end: %s' % repr(end)
-    assert at.encoding == 'utf-8', 'bad encoding: %s' % repr(at.encoding)
+at=c.atFileCommands # self is a dummy argument.
+table = (
+    # start, end, new_df, isThin, encoding
+    # pre 4.2 formats...
+    ('#',   '',   False,  True, 'utf-8', '#@+leo-thin-encoding=utf-8.'),
+    ('#',   '',   False,  False,'utf-8', '#@+leo-encoding=utf-8.'),
+    # 4.2 formats...
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=4-thin-encoding=utf-8,.'),
+    ('/*',  '*/', True,   True, 'utf-8',  '\*@+leo-ver=5-thin-encoding=utf-8,.*/'),
+    ('#',   '',   True,   True, 'utf-8',  '#@+leo-ver=5-thin'),
+    ('#',   '',   True,   True, 'utf-16', '#@+leo-ver=5-thin-encoding=utf-16,.'),
+)
+try:
+    for start, end, new_df, isThin, encoding, s in table:
+        valid, new_df2, start2, end2, isThin2 = at.parseLeoSentinel(s)
+        # g.trace('start',start,'end',repr(end),'len(s)',len(s))
+        assert valid, s
+        assert new_df == new_df2, s
+        assert isThin == isThin2, s
+        assert end == end2, (end, end2, s)
+        assert at.encoding == encoding, s
+finally:
+    at.encoding = 'utf-8'
 #@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
@@ -7765,8 +7775,9 @@ this is the last sentence.
 This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
-#@+node:ekr.20110610122533.3369: *5* goto-global-line tests
-#@+node:ekr.20100212072149.5341: *6* @test c.goToScriptLineNumber
+#@+node:ekr.20170401123840.1: *5* goto-global-line tests
+# To do: use tables as in the clean-c test.
+#@+node:ekr.20170401123840.2: *6* @test c.goToScriptLineNumber
 child = g.findNodeInChildren(c, p, 'syntax-error')
 assert child, 'no child'
 try:
@@ -7775,11 +7786,11 @@ finally:
     p.contract()
     c.selectPosition(p)
     c.redraw()
-#@+node:ekr.20100212072149.5342: *7* syntax-error
+#@+node:ekr.20170401123840.3: *7* syntax-error
 @language python
 def spam:
     pass
-#@+node:ekr.20150626101920.1: *6* @test find_file_line: @auto-md
+#@+node:ekr.20170401123840.4: *6* @test find_file_line: @auto-md
 import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7791,19 +7802,18 @@ elif sys.platform.startswith('win'):
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
         if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
             break
 else:
     self.skipTest('Skip on Linux')
-#@+node:ekr.20150626101643.1: *6* @test find_file_line: @auto-org
+#@+node:ekr.20170401123840.5: *6* @test find_file_line: @auto-org
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7814,17 +7824,16 @@ else:
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
         if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
+            if trace: print('not found: %s' % (n+1))
+            assert n == 4, n
             break
-#@+node:ekr.20150626100652.1: *6* @test find_file_line: @auto-otl
+#@+node:ekr.20170401123840.6: *6* @test find_file_line: @auto-otl
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7835,17 +7844,16 @@ else:
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
         if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
             if trace: print('not found: %s' % n)
-            assert n == 5, n
+            assert n == 4, n
             break
-#@+node:ekr.20150625101047.1: *6* @test find_file_line: @auto-py
+#@+node:ekr.20170401123840.7: *6* @test find_file_line: @auto-py
 import sys
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
@@ -7859,43 +7867,42 @@ elif sys.platform.startswith('win'):
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     if trace:
-        g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
         if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
         else:
-            assert n == 13, n
-            if trace: print('not found: %s' % n)
+            assert n == 12, n
+            if trace: print('not found: %s' % (n+1))
             break
 else:
     self.skipTest('Skip on Linux')
-#@+node:ekr.20150626093653.1: *6* @@test find_file_line: @auto-rst
+#@+node:ekr.20170401123840.8: *6* @@@test find_file_line: @auto-rst
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
-    trace = True
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
+    trace = False
+    h = '@auto-rst unittest/at-auto-rst-line-number-test.txt'
+        # This must not be a python file
     root = g.findNodeAnywhere(c, h)
     assert root
     assert root.isAtAutoRstNode(), root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
         print('get_external_file_with_sentinels returns...')
         # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
         g.printList(g.splitLines(s))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
         if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
-            if trace: print('not found: %s' % n)
+            if trace: print('not found: %s' % (n+1))
             assert n == 9, n
             break
-#@+node:ekr.20160403143643.1: *6* @@test find_file_line: @clean-c
+#@+node:ekr.20170401123840.9: *6* @test find_file_line: @clean-c
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7907,37 +7914,34 @@ else:
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     lines = g.splitLines(s)
-    g.printList(lines)
     stripped_lines = [z for z in lines if not z.startswith('//@')]
-    g.printList(stripped_lines)
     if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
+        # g.printList(stripped_lines)
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(lines)]))
     table = (
-        # n is the 1-based offset
-        (3, 4,  '// before @others // line 1'),
-        (2, 8,  'def spam(): // line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): // line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '// last line: line 6'),
+        # n is the 1-based offset of the *stripped* lines.
+        # Directives do not appear in @clean files.
+        # (1,     '@language c'),
+        # (2,     '@tabwidth -4'),
+        (3,     '// before @others // line 1'),
+        # (4,     '@others'),
+        # spam node.
+        (1,     'def spam(): // line 2'),
+        (2,     '    pass'),
+        # eggs node.
+        (1,    'def eggs(): // line 4'),
+        (2,    '    pass'),
+        # resume top node.
+        (5,    '// last line: line 6'),
     )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
+    for n, data in enumerate(table):
+        offset, line = data
+        p, offset2, found = c.gotoCommands.find_file_line(n+1, p=target)
+        assert offset == offset2, 'expected offset %s, got %s %r' % (
+            offset, offset2, p and p.h)
+    p, offset, found = c.gotoCommands.find_file_line(15, p=target)
     assert not found
-#@+node:ekr.20160403143655.1: *6* @@test find_file_line: @clean-python
+#@+node:ekr.20170401123840.10: *6* @test find_file_line: @clean-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7948,37 +7952,17 @@ else:
     target = g.findNodeAnywhere(c, h)
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('#@')]
     if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
-        # print('')
-        # print(''.join(['%3s %s' % (i, s) for i, s in enumerate(stripped_lines)]))
-    table = (
-        # n is the 1-based offset
-        (3, 4,  '# Before @others: line 1'),
-        (2, 8,  'def spam(): # line 2'),
-        (3, 9,  '    pass'),
-        (1, 11, 'def eggs(): # line 4'),
-        (2, 12, '    pass'),
-        (5, 14, '# Last line: line 6'),
-    )
-    for i, data in enumerate(table):
-        expected_offset, target_offset, expected_line = data
-        p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-        assert expected_offset == offset, (
-            'i: %s expected offset %s, got %s' % (i, expected_offset, offset))
-        expected_line = expected_line.rstrip()
-        got_line = stripped_lines[i].rstrip()
-        assert expected_line == got_line, 'i: %s expected line:\n%s\ngot line:\n%s' % (
-            i, expected_line, got_line)
-        got_line2 = lines[target_offset].rstrip()
-        assert expected_line == got_line2, 'i: %s expected line:\n%s\ngot line2:\n%s' % (
-            i, expected_line, got_line)
-    i = len(table)
-    p, offset, found = c.gotoCommands.find_file_line(i+1, p=target)
-    assert not found
-#@+node:ekr.20160403123650.1: *6* @test find_file_line: @file-c
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+#@+node:ekr.20170401123840.11: *6* @test find_file_line: @file-c
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -7990,17 +7974,16 @@ else:
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     if trace:
-        g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
         if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
         else:
             assert n == 10, n
-            if trace: print('not found: %s' % n)
+            if trace: print('not found: %s' % n+1)
             break
-#@+node:ekr.20110610122533.3395: *6* @test find_file_line: @file-python
+#@+node:ekr.20170401123840.12: *6* @test find_file_line: @file-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -8012,17 +7995,16 @@ else:
     assert target, 'no target'
     s = c.gotoCommands.get_external_file_with_sentinels(target)
     if trace:
-        g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=target)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
         if found:
-            if trace: print('found %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
         else:
             assert n == 10, n
-            if trace: print('not found: %s' % n)
+            if trace: print('not found: %s' % n+1)
             break
-#@+node:ekr.20110610122533.3399: *6* @test find_file_line: @nosent-python
+#@+node:ekr.20170401123840.13: *6* @test find_file_line: @nosent-python
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -8034,17 +8016,16 @@ else:
     assert root.isAtNoSentFileNode(), root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n, p=root)
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
         if found:
-            if trace: print('found: %2s %2s %s' % (n, offset, p and p.h))
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
-            if trace: print('not found: %s' % n)
-            assert n == 7, n
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
             break
-#@+node:ekr.20110610122533.3394: *6* @test find_gnx @file
+#@+node:ekr.20170401123840.14: *6* @test find_gnx @file
 # Not valid for external tests: uses @<file> node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -8057,7 +8038,7 @@ else:
     assert gnx
     found = c.gotoCommands.find_gnx(root, gnx, h)
     assert found, 'not found'
-#@+node:ekr.20110610122533.3404: *6* @test goto_show_results not found
+#@+node:ekr.20170401123840.15: *6* @test goto_show_results not found
 c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
 c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
 
@@ -12134,6 +12115,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12180,6 +12162,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12228,6 +12211,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -12279,6 +12263,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12330,6 +12315,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -12372,6 +12358,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12414,6 +12401,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -12454,6 +12442,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.c)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -13527,6 +13516,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.elisp)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -13895,6 +13885,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -13950,6 +13941,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14034,6 +14026,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14074,6 +14067,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.java)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14345,6 +14339,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.pascal)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -14523,6 +14518,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.perl)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15399,6 +15395,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20170401122030.1: *7* @@file c:/leo.repo/leo-editor/leo/test/php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170401122030.2: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 # Warning: setting atAuto=True can wipe out unit tests.
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -15453,6 +15462,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15548,6 +15558,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -15609,6 +15620,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -15675,6 +15687,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -15728,6 +15741,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands 
@@ -16154,6 +16168,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16201,6 +16216,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16277,6 +16293,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16410,6 +16427,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16462,6 +16480,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16523,6 +16542,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16611,6 +16631,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -16689,6 +16710,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -16854,23 +16876,6 @@ class aClass:
 '''
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20170306052710.1: *7* @@file c:/leo.repo/leo-editor/leo/test/python overindent def--no following def
-@others
-@language python
-@tabwidth -4
-#@+node:ekr.20170306052710.2: *8* class aClass
-class aClass:
-    @others
-#@+node:ekr.20170306052710.3: *9* def1
-def def1(self):
-    pass
-
-if False or g.unitTesting:
-
-    def pr(*args,**keys): # reportMismatch test
-        g.es_print(color='blue',*args,**keys)
-
-    pr('input...')
 #@+node:ekr.20161115063144.23: *6* @test python overindent def--one following def
 @tabwidth -4
     # Required when running unit tests externally.
@@ -16907,6 +16912,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17011,6 +17017,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17121,6 +17128,7 @@ if 0: # Preamble...
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.python)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands  
@@ -17744,6 +17752,7 @@ if 0:
     imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
     # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
@@ -18282,8 +18291,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 try:
@@ -19086,8 +19095,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19144,8 +19153,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19211,8 +19220,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19283,8 +19292,8 @@ if 0:
     # imp.reload(leo.plugins.writers.markdown)
     imp.reload(leoImport)
     markdown = leo.plugins.importers.markdown
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
 else:
     ic = c.importCommands  
 # insert test for markdown here.
@@ -19331,6 +19340,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19401,6 +19411,86 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20170401122751.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20170401122751.2: *7* !Dummy chapter
+.. toc
+
+#@+node:ekr.20170401122751.3: *7* top
+
+The top section
+
+#@+node:ekr.20170401122751.4: *8* section 1
+
+section 1, line 1
+--
+section 1, line 2
+
+#@+node:ekr.20170401122751.5: *8* section 2
+
+section 2, line 1
+
+#@+node:ekr.20170401122751.6: *9* section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20170401122751.7: *10* section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20170401122751.8: *8* section 3
+
+section 3, line 1
+
+#@+node:ekr.20170401122751.9: *9* placeholder
+#@+node:ekr.20170401122751.10: *10* section 3.1.1
+
+section 3.1.1, line 1
+#@+node:ekr.20170401122755.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20170401122755.2: *7* !Dummy chapter
+.. toc
+
+#@+node:ekr.20170401122755.3: *7* top
+
+The top section
+
+#@+node:ekr.20170401122755.4: *8* section 1
+
+section 1, line 1
+--
+section 1, line 2
+
+#@+node:ekr.20170401122755.5: *8* section 2
+
+section 2, line 1
+
+#@+node:ekr.20170401122755.6: *9* section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20170401122755.7: *10* section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20170401122755.8: *8* section 3
+
+section 3, line 1
+
+#@+node:ekr.20170401122755.9: *9* placeholder
+#@+node:ekr.20170401122755.10: *10* section 3.1.1
+
+section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -19442,6 +19532,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19511,6 +19602,86 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20170401122141.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20170401122141.2: *7* !Dummy chapter
+.. toc
+
+#@+node:ekr.20170401122141.3: *7* top
+
+The top section
+
+#@+node:ekr.20170401122141.4: *8* section 1
+
+section 1, line 1
+--
+section 1, line 2
+
+#@+node:ekr.20170401122141.5: *8* section 2
+
+section 2, line 1
+
+#@+node:ekr.20170401122141.6: *9* section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20170401122141.7: *10* section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20170401122141.8: *8* section 3
+
+section 3, line 1
+
+#@+node:ekr.20170401122141.9: *9* placeholder
+#@+node:ekr.20170401122141.10: *10* section 3.1.1
+
+section 3.1.1, line 1
+#@+node:ekr.20170401122755.14: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
+@others
+
+Warning: this node is ignored when writing this file.
+
+@language rest
+@tabwidth -4
+#@+node:ekr.20170401122755.15: *7* !Dummy chapter
+.. toc
+
+#@+node:ekr.20170401122755.16: *7* top
+
+The top section
+
+#@+node:ekr.20170401122755.17: *8* section 1
+
+section 1, line 1
+--
+section 1, line 2
+
+#@+node:ekr.20170401122755.18: *8* section 2
+
+section 2, line 1
+
+#@+node:ekr.20170401122755.19: *9* section 2.1
+
+section 2.1, line 1
+
+#@+node:ekr.20170401122755.20: *10* section 2.1.1
+
+section 2.2.1 line 1
+
+#@+node:ekr.20170401122755.21: *8* section 3
+
+section 3, line 1
+
+#@+node:ekr.20170401122755.22: *9* placeholder
+#@+node:ekr.20170401122755.23: *10* section 3.1.1
+
+section 3.1.1, line 1
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 if 0: # Preamble
     g.cls()
@@ -19522,6 +19693,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19563,6 +19735,7 @@ if 0: # Preamble
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
@@ -19638,6 +19811,7 @@ if 0:
     imp.reload(leo.plugins.importers.linescanner)
     imp.reload(leo.plugins.importers.leo_rst)
     imp.reload(leoImport)
+    g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands

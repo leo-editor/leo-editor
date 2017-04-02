@@ -596,6 +596,8 @@ def openDir(c,parent,d):
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
+
+    c.selectPosition(parent)
 #@+node:tbrown.20100304090709.31081: ** loadDocstring
 def loadDocstring(file_path):
     try:

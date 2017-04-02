@@ -38,12 +38,14 @@
 </v>
 <v t="ekr.20131019184243.16694"><vh>Scripting</vh>
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
-<v t="ekr.20131019184243.16696"><vh>Generators</vh></v>
+<v t="ekr.20170315015836.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
-<v t="ekr.20131019184243.16698"><vh>vnode class</vh></v>
-<v t="ekr.20131019184243.16699"><vh>position class</vh></v>
-<v t="ekr.20131019184243.16700"><vh>leo.core.leoGlobals module</vh></v>
+<v t="ekr.20131019184243.16698"><vh>VNode class</vh></v>
+<v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
+<v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
+<v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 </v>
+<v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
 <v t="ekr.20131030071311.18723"><vh>The rst3 tutorial</vh>
 <v t="ekr.20131030071311.18732"><vh>@rst ~/myDocument.html</vh>
@@ -66,9 +68,11 @@
 <v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
 <v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
 </v>
+<v t="ekr.20131019184243.16694"></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683"></t>
+<t tx="ekr.20131019184243.16683">@wrap
+</t>
 <t tx="ekr.20131019184243.16685"></t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 
@@ -309,7 +313,9 @@ By default, the file's extension determines the importer:
 For full details, see Leo's Directives reference:
 http://leoeditor.com/directives.html
     </t>
-<t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
+<t tx="ekr.20131019184243.16694">@wrap
+
+This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
@@ -327,26 +333,64 @@ http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/</t>
 
     self: The instance of unittest.TestCase
 </t>
-<t tx="ekr.20131019184243.16696">::
+<t tx="ekr.20131019184243.16697">Ivars:
+
+    c.config                c's configuration object
+    c.frame                 c's outer frame, a leoFrame instance.
+    c.undoer                c's undo handler.
+    c.user_dict             A temporary dict for use of scripts and plugins.
+    
+SubCommanders:
+
+    # in leo/core...
+    c.atFileCommands
+    c.chapterController
+    c.fileCommands
+    c.findCommands
+    c.importCommands
+    c.keyHandler = c.k
+    c.persistenceController
+    c.printingController
+    c.rstCommands
+    c.shadowController
+    c.tangleCommands
+    c.testManager
+    c.vimCommands
+
+    # In leo/commands...
+    c.abbrevCommands
+    c.controlCommands
+    c.convertCommands
+    c.debugCommands
+    c.editCommands
+    c.editFileCommands
+    c.gotoCommands
+    c.helpCommands
+    c.keyHandlerCommands
+    c.killBufferCommands
+    c.rectangleCommands
+    c.spellCommands
+    
+For example, c.k is an instance of the LeoKeys class in leo/core/leoKeys.py.
+    
+Generators:
 
     c.all_positions()
     c.all_unique_positions()
-    p.children()
-    p.parents()
-    p.self_and_parents()
-    p.self_and_siblings()
-    p.following_siblings()
-    p.subtree()
-    p.self_and_subtree()
-</t>
-<t tx="ekr.20131019184243.16697">::
+    
+New in Leo 5.5: All generators yield distinct positions.
+    
+Most useful methods:
 
-    c.frame         c's outer frame, a leoFrame instance.
-    c.user_dict     a temporary dict for use of scripts and plugins.
-    c.redraw()
+    c.isChanged()
+    c.deletePositionsInList(aList, callback=None)
+                            # safely deletes all the positions in aList.
     c.positionExists(p)
-
-Here is a partial list of the **official ivars** of any leoFrame f::
+    c.redraw(p=None)        # Redraw the screen. Select p if given.
+    c.save()                # Save the present outline.
+    c.selectPosition()
+    
+**Official ivars** of any leoFrame f:
 
     f.c                     is the frame’s commander.
     f.body                  is a leoBody instance.
@@ -358,23 +402,36 @@ Here is a partial list of the **official ivars** of any leoFrame f::
     
 Use autocompletion to explore these objects!
 </t>
-<t tx="ekr.20131019184243.16698">::
+<t tx="ekr.20131019184243.16698">Ivars:
 
-    v.b: v's body text.
-    v.h: v's headline text.
-    v.u: v.unknownAttributes, a persistent Python dictionary.
+    v.b:    v's body text.
+    v.gnx:  v's gnx.
+    v.h:    v's headline text.
+    v.u:    v.unknownAttributes, a persistent Python dictionary.
     
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see:
 http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 </t>
-<t tx="ekr.20131019184243.16699">**Properties**::
+<t tx="ekr.20131019184243.16699">**Properties**:
 
     p.b: same as p.v.b.
     p.h: same as p.v.h.
     p.u: same as p.v.u.
+    
+**Generators**:
 
-**Getters**::
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and_siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+    
+New in Leo 5.5: All generators yield distinct positions.
+
+**Getters**:
 
     p.back()
     p.children()
@@ -407,12 +464,12 @@ http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-
     p.visBack()
     p.visNext()
     
-**Setters**::
+**Setters**:
 
     p.setDirty()
     p.setMarked()
 
-**Operations on nodes**::
+**Operations on nodes**:
 
     p.clone()
     p.contract()
@@ -426,7 +483,7 @@ http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-
     p.moveToRoot(oldRoot=None)
         # oldRoot **must** be the old root position if it exists.
         
-**Moving positions**
+**Moving positions**:
 
 The following move positions *themselves*: they change the node to which a
 position refers. They do *not* change outline structure in any way! Use
@@ -452,7 +509,7 @@ these when generators are not flexible enough::
 </t>
 <t tx="ekr.20131019184243.16700">For full details, see @file leoGlobals.py in LeoPyRef.leo.
 
-**g vars**::
+**g vars**:
 
     g.app
     g.app.gui
@@ -460,11 +517,11 @@ these when generators are not flexible enough::
     g.unitTesting
     g.user_dict  # a temporary dict for use of scripts and plugins.
     
-**g decorator**::
+**g decorator**:
 
     @g.command(command-name)
     
-**g functions** (the most interesting: there are many more in leoGlobals.py)::
+**g functions** (the most interesting: there are many more in leoGlobals.py):
     
     g.angleBrackets()
     g.app.commanders()
@@ -844,6 +901,49 @@ Expansion of section names and @others:
     @file {{os.path.abspath(os.curdir)}}/abc.py
     
 refers to the file abc.py in (absolute path of) the current directory.
+</t>
+<t tx="ekr.20170311121717.1">- Use imp.reload to reload all changed modules.
+- Make sure to *instantiate* any changed objects.
+- See "Unit testing with Leo" for full details.
+</t>
+<t tx="ekr.20170311122518.1">Usage: launchLeo.py [options] file1, file2, ...
+    
+    Options:
+      -h, --help            show this help message and exit
+      --debug               enable debug mode
+      --diff                use Leo as an external git diff
+      --fullscreen          start fullscreen
+      --ipython             enable ipython support
+      --fail-fast           stop unit tests after the first failure
+      --gui=GUI             gui to use (qt/qttabs)
+      --load-type=LOAD_TYPE
+                            @&lt;file&gt; type for loading non-outlines from command
+                            line
+      --maximized           start maximized
+      --minimized           start minimized
+      --no-cache            disable reading of cached files
+      --no-plugins          disable all plugins
+      --no-splash           disable the splash screen
+      --screen-shot=SCREENSHOT_FN
+                            take a screen shot and then exit
+      --script=SCRIPT       execute a script and then exit
+      --script-window=SCRIPT_WINDOW
+                            open a window for scripts
+      --select=SELECT       headline or gnx of node to select
+      --session-restore     restore previously saved session tabs at startup
+      --session-save        save session tabs on exit
+      --silent              disable all log messages
+      --trace-plugins       trace imports of plugins
+      -v, --version         print version number and exit
+      --window-size=WINDOW_SIZE
+                            initial window size (height x width)
+</t>
+<t tx="ekr.20170315015836.1">Ivars:
+
+    g.app                   A LeoApp instance.
+    g.app.gui               A LeoGui instance. 
+    g.app.pluginsController A LeoPluginsController instance.
+    g.app.*                 Leo's global variables.
 </t>
 </tnodes>
 </leo_file>

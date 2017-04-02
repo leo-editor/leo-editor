@@ -1277,7 +1277,7 @@ class GetArg(object):
         c = ga.c
         if completion:
             tabList = ga.tabList = tabList[:] if tabList else []
-            if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+            if trace: g.trace('len(ga.tabList)', len(tabList))
             # command = ga.get_label()
             common_prefix, tabList = ga.compute_tab_list(tabList)
             if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
@@ -1285,6 +1285,7 @@ class GetArg(object):
             if trace:
                 g.trace('len(tabList): %s common_prefix: %r cycling_prefix: %r' % (
                     len(tabList), common_prefix, ga.cycling_prefix))
+                g.printList(tabList)
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1 and ga.do_tab_callback():
@@ -1339,8 +1340,9 @@ class GetArg(object):
             ga.show_tab_list(ga.cycling_tabList)
         else:
             # Restart.
-            if trace: g.trace('2: RESTART: %r: tabList[0]: %r' % (
-                s, tabList and tabList[0] or '<none>'))
+            if trace:
+                g.trace('2: RESTART: %r:' % (s))
+                g.printList(tabList)
             ga.show_tab_list(tabList)
             ga.cycling_tabList = tabList[:]
             ga.cycling_prefix = common_prefix
@@ -1603,17 +1605,21 @@ class GetArg(object):
         d = k.computeInverseBindingDict()
         data, legend, n = [], False, 0
         for commandName in tabList:
-            dataList = d.get(commandName, [('', ''),])
-            for z in dataList:
-                pane, key = z
-                s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
-                s1b = k.prettyPrintKey(key)
-                s1 = s1a + s1b
-                s2 = ga.command_source(commandName)
-                if s2 != ' ': legend = True
-                s3 = commandName
-                data.append((s1, s2, s3),)
-                n = max(n, len(s1))
+            dataList = d.get(commandName, [])
+            if dataList:
+                for z in dataList:
+                    pane, key = z
+                    s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
+                    s1b = k.prettyPrintKey(key)
+                    s1 = s1a + s1b
+                    s2 = ga.command_source(commandName)
+                    if s2 != ' ': legend = True
+                    s3 = commandName
+                    data.append((s1, s2, s3),)
+                    n = max(n, len(s1))
+            else:
+                # Bug fix: 2017/03/26
+                data.append(('',' ', commandName),)
         aList = ['%*s %s %s' % (-n, z1, z2, z3) for z1, z2, z3 in data]
         if legend:
             aList.extend([
@@ -2139,7 +2145,9 @@ class KeyHandlerClass(object):
         tag gives the source of the binding.
 
         '''
-        trace = False and not g.unitTesting and (shortcut == 'F1' or commandName == 'help')
+        trace = False and not g.unitTesting
+            # and commandName.startswith('move-lines')
+            # and (shortcut == 'F1' or commandName == 'help')
         trace_list = False
         k = self
         if not k.check_bind_key(commandName, pane, shortcut):
@@ -3130,20 +3138,11 @@ class KeyHandlerClass(object):
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
         '''Execute a Leo command by name.'''
         k = self; c = k.c
-        commandName = commandName.strip()
-        if not commandName: return
-        aList = commandName.split(None)
-        if len(aList) == 1:
-            k.givenArgs = []
-        else:
-            commandName = aList[0]
-            k.givenArgs = aList[1:]
-        # g.trace(commandName,k.givenArgs)
-        func = c.commandsDict.get(commandName)
+        func = self.commandExists(commandName)
         if func:
             # g.trace(commandName,func.__name__)
             if event:
@@ -3157,12 +3156,28 @@ class KeyHandlerClass(object):
                 return k.funcReturn
             else:
                 return None
+        elif g.app.unitTesting:
+            raise AttributeError
         else:
-            if g.app.unitTesting:
-                raise AttributeError
+            g.error('simulateCommand: no command for %s' % (commandName))
+            return None
+    #@+node:ekr.20170324143353.1: *5* k.commandExists
+    def commandExists(self, commandName):
+        '''Return the command handler for the given command name, or None.'''
+        c, k = self.c, self
+        commandName = commandName.strip()
+        if commandName:
+            aList = commandName.split(None)
+            if len(aList) == 1:
+                k.givenArgs = []
             else:
-                g.error('simulateCommand: no command for %s' % (commandName))
-                return None
+                commandName = aList[0]
+                k.givenArgs = aList[1:]
+            # g.trace(commandName,k.givenArgs)
+            func = c.commandsDict.get(commandName)
+            return func
+        else:
+            return None
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'
@@ -4141,18 +4156,18 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self):
-        k = self; d = {}
-        # keys are minibuffer command names, values are shortcuts.
+        k = self
+        d = {}
+            # keys are minibuffer command names, values are shortcuts.
         for stroke in k.bindingsDict.keys():
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
             for si in aList:
                 assert g.isShortcutInfo(si), si
-                shortcutList = d.get(si.commandName, [])
-                # The shortcutList consists of tuples (pane,stroke).
-                # k.inverseBindingDict has values consisting of these tuples.
+                shortcutList = k.bindingsDict.get(si.commandName, [])
+                    # Bug fix: 2017/03/26.
                 aList = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
-                        # Important: only si.pane is required below.
+                    # Important: only si.pane is required below.
                 for si in aList:
                     assert g.isShortcutInfo(si), si
                     pane = '%s:' % (si.pane)

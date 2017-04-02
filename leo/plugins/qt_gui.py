@@ -153,6 +153,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not d:
             d = self.createFindDialog(c)
             self.globalFindDialog = d
+        d.setStyleSheet(c.active_stylesheet)
         # Set the commander's FindTabManager.
         assert g.app.globalFindTabManager
         c.ftm = g.app.globalFindTabManager
@@ -302,6 +303,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not init:
             init = datetime.datetime.now()
         d = b(c.frame.top, message=message, init=init, step_min=step_min)
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         c.in_qt_dialog = True
         val = d.exec_()
@@ -331,6 +333,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
         d = QtWidgets.QInputDialog()
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         d.setLabelText(message)
         if cancelButtonText:
@@ -354,6 +357,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting: return None
         d = QtWidgets.QInputDialog()
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         d.setLabelText(message)
         d.setTextValue(default)
@@ -372,6 +376,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting: return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         d.setWindowTitle(title)
         if message: d.setText(message)
         d.setIcon(b.Information)
@@ -385,20 +390,25 @@ class LeoQtGui(leoGui.LeoGui):
         yesMessage="&Yes",
         noMessage="&No",
         yesToAllMessage=None,
-        defaultButton="Yes"
+        defaultButton="Yes",
+        cancelMessage=None,
     ):
         """Create and run an askYesNo dialog."""
         if g.unitTesting:
             return None
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)
         yes = d.addButton(yesMessage, b.YesRole)
         no = d.addButton(noMessage, b.NoRole)
         yesToAll = d.addButton(yesToAllMessage, b.YesRole) if yesToAllMessage else None
-        cancel = d.addButton(b.Cancel)
+        if cancelMessage:
+            cancel = d.addButton(cancelMessage, b.RejectRole)
+        else:
+            cancel = d.addButton(b.Cancel)
         if defaultButton == "Yes": d.setDefaultButton(yes)
         elif defaultButton == "No": d.setDefaultButton(no)
         else: d.setDefaultButton(cancel)
@@ -431,6 +441,7 @@ class LeoQtGui(leoGui.LeoGui):
         if no_all:
             buttons |= b.NoToAll
         d = b(c.frame.top)
+        d.setStyleSheet(c.active_stylesheet)
         d.setStandardButtons(buttons)
         d.setWindowTitle(title)
         if message: d.setText(message)
@@ -464,6 +475,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = None
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
+        dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
         if multiple:
             c.in_qt_dialog = True
@@ -516,6 +528,7 @@ class LeoQtGui(leoGui.LeoGui):
             parent = None
             filter_ = self.makeFilter(filetypes)
             d = QtWidgets.QFileDialog()
+            d.setStyleSheet(c.active_stylesheet)
             self.attachLeoIcon(d)
             c.in_qt_dialog = True
             obj = d.getSaveFileName(
@@ -596,18 +609,26 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
-    deactivated_name = ''
+    # deactivated_name = ''
+    deactivated_widget = None
 
     def onDeactivateEvent(self, event, c, obj, tag):
         '''
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
         '''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(g.app.gui.get_focus())
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        w = self.get_focus()
+        w_name = w and w.objectName()
+        if trace: g.trace(repr(w_name))
         self.active = False
             # Used only by c.idle_focus_helper.
+        if 1: # Leo 5.6: Recover from missing focus.
+            # Careful: never save headline widgets.
+            if w_name == 'headline':
+                self.deactivated_widget = c.frame.tree.treeWidget
+            else:
+                self.deactivated_widget = w if w_name else None
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and not self.deactivated_name:
@@ -625,15 +646,27 @@ class LeoQtGui(leoGui.LeoGui):
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
         '''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(g.app.gui.get_focus())
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        w = self.get_focus() or self.deactivated_widget
+        self.deactivated_widget = None
+        w_name = w and w.objectName()
+        # if trace: g.trace(repr(w_name))
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
         if c.exists and c.vimCommands and not self.active and not g.app.killed: 
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
+        if 1:
+            # Leo 5.6: Recover from missing focus.
+            # c.idle_focus_handler can't do this.
+            if w and w_name in ('log-widget', 'richTextEdit', 'treeWidget'):
+                # Restore focus **only** to body or tree
+                if trace: g.trace('==>', w_name)
+                c.widgetWantsFocusNow(w)
+            else:
+                if trace: g.trace(repr(w_name), '==> BODY')
+                c.bodyWantsFocusNow()   
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:
@@ -672,10 +705,12 @@ class LeoQtGui(leoGui.LeoGui):
         w.ev_filter = theFilter
             # Set the official ivar in w.
     #@+node:ekr.20110605121601.18508: *3* qt_gui.Focus
-    def get_focus(self, c=None, raw=False):
+    def get_focus(self, c=None, raw=False, at_idle=False):
         """Returns the widget that has focus."""
         # pylint: disable=arguments-differ
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_idle = False
+        trace = trace and (trace_idle or not at_idle)
         app = QtWidgets.QApplication
         w = app.focusWidget()
         if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
@@ -686,16 +721,16 @@ class LeoQtGui(leoGui.LeoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
-        if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
+        if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
         return w
 
     def set_focus(self, c, w):
         """Put the focus on the widget."""
-        trace = False and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
             if hasattr(w, 'widget') and w.widget: w = w.widget
-            if trace: g.trace('(LeoQtGui)', w.__class__.__name__, g.callers())
+            if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
@@ -704,6 +739,8 @@ class LeoQtGui(leoGui.LeoGui):
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        if trace: g.trace(c1)
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
@@ -888,7 +925,7 @@ class LeoQtGui(leoGui.LeoGui):
         assert isinstance(qevent, QtGui.QKeyEvent)
         qw = hasattr(event.w, 'widget') and event.w.widget or None
         if qw and isinstance(qw, QtWidgets.QTextEdit):
-            g.trace(i, qevent.modifiers(), g.u(qevent.text()))
+            # g.trace(i, qevent.modifiers(), g.u(qevent.text()))
             if 1:
                 # Assume that qevent.text() *is* the desired text.
                 # This means we don't have to hack eventFilter.

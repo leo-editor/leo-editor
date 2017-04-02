@@ -2408,7 +2408,7 @@ def findLanguageDirectives(c, p):
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
 
-def findReference(c, name, root):
+def findReference(name, root):
     '''Find the section definition for name.
 
     If a search of the descendants fails,
@@ -2426,7 +2426,6 @@ def findReference(c, name, root):
             for p2 in p.subtree():
                 if p2.matchHeadline(name) and not p2.isAtIgnoreNode():
                     return p2
-    # g.trace("not found:",name,root)
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
@@ -3368,7 +3367,10 @@ def setGlobalOpenDir(fileName):
         # g.es('current directory:',g.app.globalOpenDir)
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
 def shortFileName(fileName, n=None):
-    if n is None or n < 1:
+    '''Return the base name of a path.'''
+    if not fileName:
+        return ''
+    elif n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
         # return '\\'.join(fileName.split('\\')[-n:])
@@ -3767,31 +3769,6 @@ def skip_braces(s, i):
         elif g.match_word(s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
             i, delta = g.skip_pp_if(s, i)
             level += delta
-        else: i += 1
-    return i
-#@+node:ekr.20031218072017.3161: *4* skip_php_braces (no longer used)
-#@+at 08-SEP-2002 DTHEIN: Added for PHP import support
-# Skips from the opening to the matching . If no matching is found i is set to len(s).
-# 
-# This code is called only from the import logic, and only for PHP imports.
-#@@c
-
-def skip_php_braces(s, i):
-    # start = g.get_line(s,i)
-    assert(g.match(s, i, '{'))
-    level = 0; n = len(s)
-    while i < n:
-        c = s[i]
-        if c == '{':
-            level += 1; i += 1
-        elif c == '}':
-            level -= 1
-            if level <= 0: return i + 1
-            i += 1
-        elif c == '\'' or c == '"': i = g.skip_string(s, i)
-        elif g.match(s, i, "<<<"): i = g.skip_heredoc_string(s, i)
-        elif g.match(s, i, '//') or g.match(s, i, '#'): i = g.skip_to_end_of_line(s, i)
-        elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
         else: i += 1
     return i
 #@+node:ekr.20031218072017.3162: *4* skip_parens
@@ -4680,6 +4657,7 @@ def itemsMatchingPrefixInList(s, aList, matchEmptyPrefix=False):
     '''This method returns a sorted list items of aList whose prefix is s.
 
     It also returns the longest common prefix of all the matches.'''
+    trace = False and not g.unitTesting
     if s:
         pmatches = [a for a in aList if a.startswith(s)]
     elif matchEmptyPrefix:
@@ -4690,7 +4668,9 @@ def itemsMatchingPrefixInList(s, aList, matchEmptyPrefix=False):
         common_prefix = reduce(g.longestCommonPrefix, pmatches)
     else:
         common_prefix = ''
-    # g.trace(repr(s),len(pmatches))
+    if trace:
+        g.trace(repr(s))
+        g.printList(pmatches)
     return pmatches, common_prefix
 #@+node:ekr.20090516135452.5776: *4* g.removeLeading/Trailing
 # Warning: g.removeTrailingWs already exists.
@@ -4718,6 +4698,21 @@ def stripBrackets(s):
     if s.endswith('>'):
         s = s[: -1]
     return s
+#@+node:ekr.20170317101100.1: *4* g.unCamel
+def unCamel(s):
+    '''Return a list of sub-words in camelCased string s.'''
+    result, word = [], []
+    for ch in s:
+        if ch.isalpha() and ch.isupper():
+            if word: result.append(''.join(word))
+            word = [ch]
+        elif ch.isalpha():
+            word.append(ch)
+        elif word:
+            result.append(''.join(word))
+            word = []
+    if word: result.append(''.join(word))
+    return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
 def getPythonEncodingFromString(s):

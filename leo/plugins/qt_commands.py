@@ -2,6 +2,8 @@
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 '''Leo's Qt-related commands defined by @g.command.'''
 import leo.core.leoGlobals as g
+import leo.core.leoColor as leoColor
+from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init():
@@ -15,16 +17,7 @@ def onSelect(tag, keywords):
     c = keywords.get('c') or keywords.get('new_c')
     wdg = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
-#@+node:ekr.20110605121601.18001: ** detach-editor-toggle (qt_commands.py)
-@g.command('detach-editor-toggle-max')
-def detach_editor_toggle_max(event):
-    """ Detach editor, maximize """
-    c = event['c']
-    detach_editor_toggle(event)
-    if c.frame.detached_body_info is not None:
-        wdg = c.frame.top.leo_body_frame
-        wdg.showMaximized()
-
+#@+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event):
     """ Detach or undetach body editor """
@@ -39,7 +32,16 @@ def detach_editor_toggle(event):
         detach_editor(c)
     else:
         undetach_editor(c)
-
+        
+@g.command('detach-editor-toggle-max')
+def detach_editor_toggle_max(event):
+    """ Detach editor, maximize """
+    c = event['c']
+    detach_editor_toggle(event)
+    if c.frame.detached_body_info is not None:
+        wdg = c.frame.top.leo_body_frame
+        wdg.showMaximized()
+#@+node:ekr.20170324145714.1: *3* qt: detach_editor
 def detach_editor(c):
     wdg = c.frame.top.leo_body_frame
     parent = wdg.parent()
@@ -54,7 +56,7 @@ def detach_editor(c):
             sheet = '\n'.join(sheet)
             wdg.setStyleSheet(sheet)
         wdg.show()
-
+#@+node:ekr.20170324145716.1: *3* qt: undetach_editor
 def undetach_editor(c):
     wdg = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
@@ -62,7 +64,7 @@ def undetach_editor(c):
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
-#@+node:tbrown.20140620095406.40066: ** gui-show/hide/toggle (qt_commands.py)
+#@+node:tbrown.20140620095406.40066: ** qt: gui-show/hide/toggle
 # create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
 widgets = [
     ('menu', lambda c: c.frame.top.menuBar()),
@@ -95,15 +97,90 @@ for vis in 'hide', 'show', 'toggle':
             getattr(w, vis)()
 
     g.command("gui-all-%s" % vis)(doall)
-#@+node:tbrown.20140814090009.55874: ** style_sheet commands (qt_commands.py)
-#@+node:ekr.20140918124632.17893: *3* print-style-sheet
+#@+node:ekr.20140918124632.17893: ** qt: print-style-sheet
 @g.command('print-style-sheet')
 def print_style_sheet(event):
     '''print-style-sheet command.'''
     c = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()
-#@+node:ekr.20140918124632.17891: *3* style-reload
+#@+node:ekr.20170324143944.2: ** qt: show-color-names
+@g.command('show-color-names')
+def showColorNames(event=None):
+    '''Put up a dialog showing color names.'''
+    c = event.get('c')
+    template = '''
+        QComboBox {
+            background-color: %s;
+            selection-background-color: %s;
+            selection-color: black;
+        }''' 
+    ivar = 'leo_settings_color_picker'
+    if getattr(c, ivar, None):
+        g.es('The color picker already exists in the icon bar.')
+    else:
+        color_list = []
+        box = QtWidgets.QComboBox()
+    
+        def onActivated(n,*args,**keys):
+            color = color_list[n]
+            sheet = template % (color,color)
+            box.setStyleSheet(sheet)
+            g.es("copied to clipboard:", color)
+            QtWidgets.QApplication.clipboard().setText(color)
+            
+        box.activated.connect(onActivated)
+        color_db = leoColor.leo_color_database
+        for key in sorted(color_db):
+            if not key.startswith('grey'): # Use gray, not grey.
+                val = color_db.get(key)
+                color = QtGui.QColor(val)
+                color_list.append(val)
+                pixmap = QtGui.QPixmap(40,40)
+                pixmap.fill(color)
+                icon = QtGui.QIcon(pixmap)
+                box.addItem(icon,key)
+
+        c.frame.iconBar.addWidget(box)
+        setattr(c,ivar,True)
+        g.es('created color picker in icon area')
+            # Do this last, so errors don't prevent re-execution.
+#@+node:ekr.20170324142416.1: ** qt: show-color-wheel
+@g.command('show-color-wheel')
+def showColorWheel(event=None):
+    '''Show a Qt color dialog.'''
+    picker = QtWidgets.QColorDialog()
+    try:
+        text = QtWidgets.QApplication.clipboard().text()
+        color = QtGui.QColor(text)
+        picker.setCurrentColor(color)
+    except ValueError:
+        pass
+    if not picker.exec_():
+        g.es("No color selected")
+    else:
+        text = picker.selectedColor().name()
+        g.es("copied to clipboard:", text)
+        QtWidgets.QApplication.clipboard().setText(text)
+#@+node:ekr.20170324143944.3: ** qt: show-fonts
+@g.command('show-fonts')
+def showFonts(self, event=None):
+    '''Open a tab in the log pane showing a font picker.'''
+    picker = QtWidgets.QFontDialog()
+    text = QtWidgets.QApplication.clipboard().text()
+    try:
+        font = QtGui.QFont(text)
+        picker.setCurrentFont(font)
+    except ValueError:
+        pass
+    if not picker.exec_():
+        g.es("No font selected")
+    else:
+        text = picker.selectedFont().family()
+        g.es('copied to clipboard:', text)
+        QtWidgets.QApplication.clipboard().setText(text)
+    
+#@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 def style_reload(event):
     """reload-styles command.
@@ -116,7 +193,7 @@ def style_reload(event):
     if c and c.styleSheetManager:
         c.reloadSettings()
             # Call ssm.reload_settings after reloading all settings.
-#@+node:ekr.20140918124632.17892: *3* style-set-selected
+#@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):
     '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''

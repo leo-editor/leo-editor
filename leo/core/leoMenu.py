@@ -352,12 +352,6 @@ class LeoMenu(object):
             # createRecentFilesMenuItems will create the contents later.
             self.createNewMenu(name, parentName)
             return True
-        elif name2.startswith('editsettings'):
-            from leo.core.leoConfig import SettingsFinder
-            self.createNewMenu(name, parentName)
-            sf = SettingsFinder(self.c)
-            sf.build_menu()
-            return True
         elif name2 == 'help' and sys.platform == 'darwin':
             helpMenu = self.getMacHelpMenu(table)
             return helpMenu is not None

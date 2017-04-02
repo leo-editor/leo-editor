@@ -33,7 +33,7 @@ class RstWriter(basewriter.BaseWriter):
     #@+node:ekr.20140726091031.18089: *3* rstw.write
     def write(self, root, forceSentinels=False):
         '''Write an @auto tree containing imported rST code.'''
-        trace = True and g.unitTesting
+        trace = False and not g.unitTesting
         root_level = root.level()
         if trace: g.trace('='*20, root.h)
         for p in root.subtree():

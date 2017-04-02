@@ -4,6 +4,7 @@
 import leo.core.leoGlobals as g
 import keyword
 import re
+import time
 import sys
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -132,6 +133,9 @@ class LeoFind(object):
         self.frame = None
         self.k = c.k
         self.re_obj = None
+        
+        # Options ivars: set once:
+        self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
 
         # Options ivars: set by FindTabManager.init.
         self.batch = None
@@ -1291,60 +1295,57 @@ class LeoFind(object):
     def setupSearchPattern(self, pattern):
         self.ftm.setFindText(pattern)
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
-    #@+node:ekr.20031218072017.2293: *4* find.batchChange (sets start of replace-all group)
-    #@+at This routine performs a single batch change operation, updating the
-    # head or body string of p and leaving the result in s_ctrl. We update
-    # the body if we are changing the body text of c.currentVnode().
-    # 
-    # s_ctrl contains the found text on entry and contains the changed text
-    # on exit. pos and pos2 indicate the selection. The selection will never
-    # be empty. NB: we can not assume that self.p is visible.
-    #@@c
-
+    #@+node:ekr.20031218072017.2293: *4* find.batchChange
     def batchChange(self, pos1, pos2):
-        c = self.c; u = c.undoer
-        p = self.p or c.p # 2015/06/22
+        '''
+        Do a single batch change operation, updating the head or body string of
+        p and leaving the result in s_ctrl.
+        
+        s_ctrl contains the found text on entry and contains the changed text
+        on exit. pos and pos2 indicate the selection. The selection will never
+        be empty.
+        '''
+        c, u = self.c, self.c.undoer
+        p = self.p
+        if not p:
+            g.trace('===== can not happen: no p.')
+            return
         w = self.s_ctrl
         # Replace the selection with self.change_text
-        if pos1 > pos2: pos1, pos2 = pos2, pos1
+        if pos1 > pos2:
+            pos1, pos2 = pos2, pos1
         s = w.getAllText()
-        if pos1 != pos2: w.delete(pos1, pos2)
+        if pos1 != pos2:
+            w.delete(pos1, pos2)
         w.insert(pos1, self.change_text)
         # Update the selection.
         insert = pos1 if self.reverse else pos1 + len(self.change_text)
         w.setSelectionRange(insert, insert)
         w.setInsertPoint(insert)
         # Update the node
-        s = w.getAllText() # Used below.
-        if self.in_headline:
-            #@+<< change headline >>
-            #@+node:ekr.20031218072017.2294: *5* << change headline >>
-            if len(s) > 0 and s[-1] == '\n':
-                s = s[: -1]
-            if s != p.h:
-                undoData = u.beforeChangeNodeContents(p)
+        s = w.getAllText()
+        if s and s[-1] == '\n': s = s[: -1]
+        changed = s != p.h if self.in_headline else s != p.b
+        if changed:
+            undoData = u.beforeChangeNodeContents(p)
+            if self.in_headline:
                 p.initHeadString(s)
-                if self.mark_changes:
-                    p.setMarked()
-                p.setDirty()
-                if not c.isChanged():
-                    c.setChanged(True)
-                u.afterChangeNodeContents(p, 'Change Headline', undoData)
-            #@-<< change headline >>
-        else:
-            #@+<< change body >>
-            #@+node:ekr.20031218072017.2295: *5* << change body >>
-            if len(s) > 0 and s[-1] == '\n': s = s[: -1]
-            if s != p.b:
-                undoData = u.beforeChangeNodeContents(p)
-                c.setBodyString(p, s)
-                if self.mark_changes:
-                    p.setMarked()
-                p.setDirty()
-                if not c.isChanged():
-                    c.setChanged(True)
-                u.afterChangeNodeContents(p, 'Change Body', undoData)
-            #@-<< change body >>
+            else:
+                # Fix #456: replace-all is very slow.
+                # p.b calls c.setBodyString, which is *very* slow.
+                p.v.setBodyString(s)
+            if self.mark_changes:
+                p.setMarked() # Just calls v.setMarked.
+            # Fix #456: replace-all is very slow.
+            # p.setDirty if very slow.
+            p.v.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+            u.afterChangeNodeContents(
+                p,
+                'Change Headline' if self.in_headline else 'Change Body',
+                undoData,
+            )
     #@+node:ekr.20031218072017.3068: *4* find.change
     @cmd('replace')
     def change(self, event=None):
@@ -1358,6 +1359,7 @@ class LeoFind(object):
         trace = False and not g.unitTesting
         c = self.c; u = c.undoer; undoType = 'Replace All'
         current = c.p
+        t1 = time.clock()
         if not self.checkArgs():
             if trace: g.trace('checkArgs failed')
             return
@@ -1379,7 +1381,10 @@ class LeoFind(object):
             self.batchChange(pos1, pos2)
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
-        g.es("changed:", count, "instances of", self.find_text, "to", self.change_text)
+        t2 = time.clock()
+        g.es('changed %s instances in %4.2f sec.' % (count, (t2-t1)))
+            # self.find_text, self.change_text, 
+        c.recolor()
         c.redraw(p)
         self.restore(saveData)
     #@+node:ekr.20031218072017.3070: *4* find.changeSelection
@@ -1731,6 +1736,7 @@ class LeoFind(object):
         '''Resume the search where it left off.'''
         trace = False and not g.unitTesting
         verbose = False
+        if trace: t1 = time.clock()
         c, p = self.c, self.p
         if trace:
             g.trace('***** entry: search_headline: %s search_body: %s %s' % (
@@ -1761,8 +1767,11 @@ class LeoFind(object):
                 # Success.
                 if self.mark_finds:
                     p.setMarked()
-                    c.frame.tree.drawIcon(p) # redraw only the icon.
-                if trace: g.trace('success', pos, newpos, p.h)
+                    if not self.changeAllFlag:
+                        c.frame.tree.drawIcon(p) # redraw only the icon.
+                if trace:
+                    t2 = time.clock()
+                    g.trace('success', '%5.2f' % (t2-t1), pos, newpos, p.h)
                 return pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self.shouldStayInNode(p):
@@ -1940,8 +1949,7 @@ class LeoFind(object):
         trace_fail = False
         c = self.c
         p = self.p or c.p
-        ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
-        if (ignore_dups or self.find_def_data) and p.v in self.find_seen:
+        if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
         w = self.s_ctrl
@@ -1988,7 +1996,7 @@ class LeoFind(object):
                 return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
         w.setSelectionRange(pos, newpos, insert=ins)
-        if (ignore_dups or self.find_def_data):
+        if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         if trace and (trace_fail or newpos != -1):
             g.trace('** returns', pos, newpos, self.find_seen)

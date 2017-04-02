@@ -195,6 +195,7 @@ import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
+import cgi
 try:
     import docutils
     import docutils.core
@@ -249,6 +250,34 @@ QPlainTextEdit {
 }
 '''
 #@-<< define stylesheets >>
+#@+<< define html templates >>
+#@+node:ekr.20170324090828.1: ** << define html templates >>
+image_template = '''\
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head></head>
+<body bgcolor="#fffbdc">
+<img src="%s">
+</body>
+</html>
+'''
+
+# http://docs.mathjax.org/en/latest/start.html
+latex_template = '''\
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
+    </script>
+</head>
+<body bgcolor="#fffbdc">
+%s
+</body>
+</html>
+'''
+#@-<< define html templates >>
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 #@+others
@@ -522,6 +551,7 @@ if QtWidgets: # NOQA
                 'graphics-script': pc.update_graphics_script,
                 'image': pc.update_image,
                 'jupyter': pc.update_jupyter,
+                'latex': pc.update_latex,
                 'markdown': pc.update_md,
                 'md': pc.update_md,
                 'movie': pc.update_movie,
@@ -620,11 +650,13 @@ if QtWidgets: # NOQA
 
         def update(self, tag, keywords):
             '''Update the vr pane.'''
-            verbose = False
+            verbose = True
             pc = self
             p = pc.c.p
             if pc.must_update(keywords):
-                if trace and verbose: g.trace('===== updating', keywords)
+                if trace and verbose:
+                    g.trace('===== updating')
+                    g.printDict(keywords)
                 # Suppress updates until we change nodes.
                 pc.node_changed = pc.gnx != p.v.gnx
                 pc.gnx = p.v.gnx
@@ -786,18 +818,10 @@ if QtWidgets: # NOQA
                 w.setPlainText('@image: file not found: %s' % (path))
                 return
             path = path.replace('\\', '/')
-            template = '''\
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-        <head></head>
-        <body bgcolor="#fffbdc">
-        <img src="%s">
-        </body>
-        </html>
-        ''' % (path)
+            template = image_template % (path)
             # Only works in Python 3.x.
-            template = g.adjustTripleString(template, pc.c.tab_width).strip() # Sensitive to leading blank lines.
+            template = g.adjustTripleString(template, pc.c.tab_width).strip()
+                # Sensitive to leading blank lines.
             # template = g.toUnicode(template)
             pc.show()
             w.setReadOnly(False)
@@ -840,6 +864,47 @@ if QtWidgets: # NOQA
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
+        #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
+        def update_latex(self, s, keywords):
+            '''Update latex in the vr pane.'''
+            import sys
+            pc = self
+            c = pc.c
+            if g.isPython3 and sys.platform.startswith('win'):
+                g.es_print('latex rendering not ready for Python 3')
+                w = pc.ensure_text_widget()
+                pc.show()
+                w.setPlainText(s)
+                c.bodyWantsFocusNow()
+            else:
+                if pc.must_change_widget(QtWebKitWidgets.QWebView):
+                    w = QtWebKitWidgets.QWebView()
+                    n = c.config.getInt('qweb_view_font_size')
+                    if n:
+                        settings = w.settings()
+                        settings.setFontSize(settings.DefaultFontSize, n)
+                    pc.embed_widget(w)
+                    assert(w == pc.w)
+                else:
+                    w = pc.w
+                w.hide() # This forces a proper update.
+                s = self.create_latex_html(s)
+                w.setHtml(s)
+                w.show()
+                c.bodyWantsFocusNow()
+           
+        #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
+        def create_latex_html(self, s):
+            '''Create an html page embedding the latex code s.'''
+            trace = False and not g.unitTesting
+            c = self.c
+            html = cgi.escape(s)
+            template = latex_template % (html)
+            template = g.adjustTripleString(template, c.tab_width).strip()
+            if trace:
+                g.trace()
+                g.printList(g.splitLines(template))
+            return template
         #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
         def update_md(self, s, keywords):
             '''Update markdown text in the vr pane.'''
@@ -1148,8 +1213,8 @@ if QtWidgets: # NOQA
                 return language
             elif got_docutils and language in ('rest', 'rst'):
                 return language
-            elif language == 'html':
-                return 'html'
+            elif language and language in pc.dispatch_dict:
+                return language
             else:
                 # To do: look at ancestors, or uA's.
                 return pc.default_kind # The default.

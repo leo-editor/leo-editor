@@ -324,31 +324,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         # Note: this assumes that tree.startDrag has already been called.
         c.frame.tree.endDrag(event)
-    #@+node:ekr.20150514063305.204: *3* color & font
-    #@+node:ekr.20150514063305.205: *4* show-colors
-    @cmd('show-colors')
-    def showColors(self, event):
-        '''Open a tab in the log pane showing various color pickers.'''
-        c = self.c
-        log = c.frame.log
-        tabName = 'Colors'
-        if log.frameDict.get(tabName):
-            log.selectTab(tabName)
-        else:
-            log.selectTab(tabName)
-            log.createColorPicker(tabName)
-    #@+node:ekr.20150514063305.206: *4* editCommands.show-fonts & helpers
-    @cmd('show-fonts')
-    def showFonts(self, event):
-        '''Open a tab in the log pane showing a font picker.'''
-        c = self.c
-        log = c.frame.log
-        tabName = 'Fonts'
-        if log.frameDict.get(tabName):
-            log.selectTab(tabName)
-        else:
-            log.selectTab(tabName)
-            log.createFontPicker(tabName)
     #@+node:ekr.20150514063305.207: *3* comment column...
     #@+node:ekr.20150514063305.208: *4* setCommentColumn
     @cmd('set-comment-column')
@@ -754,6 +729,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.clearState()
         if n.isdigit():
+            # Very important: n is one-based.
             c.gotoCommands.find_file_line(n=int(n))
     #@+node:ekr.20150514063305.228: *4* gotoLine
     @cmd('goto-line')
@@ -2996,22 +2972,18 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
-        insert_pt = w.getInsertPoint() # 2011/04/01
+        insert_pt = w.getInsertPoint()
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i: j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
-        # n = i2-i
-        # g.trace('moveLinesDown:',repr('%s[[%s|%s|%s]]%s' % (
-        #    s[i-20:i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(w, undoType='move-lines-down')
-        changed = False
         try:
+            next_i, next_j = g.getLine(s, j) # 2011/04/01: was j+1
+            next_line = s[next_i: next_j]
+            n2 = next_j - next_i
             if j < len(s):
-                next_i, next_j = g.getLine(s, j) # 2011/04/01: was j+1
-                next_line = s[next_i: next_j]
-                n2 = next_j - next_i
                 w.delete(i, next_j)
                 if next_line.endswith('\n'):
                     # Simply swap positions with next line
@@ -3023,11 +2995,14 @@ class EditCommandsClass(BaseEditCommandsClass):
                     n2 += 1
                 w.insert(i, new_lines)
                 w.setSelectionRange(sel_1 + n2, sel_2 + n2, insert=insert_pt + n2)
-                changed = True
-                # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-                c.recolor_now(incremental=False)
+            else:
+                # Leo 5.6: insert a blank line before the selected lines.
+                w.insert(i, '\n')
+                w.setSelectionRange(sel_1 + 1, sel_2 + 1, insert=insert_pt + 1)
+            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
+            c.recolor_now(incremental=False)
         finally:
-            self.endCommand(changed=changed, setLabel=True)
+            self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.331: *4* moveLinesUp
     @cmd('move-lines-up')
     def moveLinesUp(self, event):
@@ -3045,15 +3020,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i: j]
-        # g.trace('moveLinesUp:',repr('%s[[%s|%s|%s]]%s' % (
-        #    s[max(0,i-20):i], s[i:sel_1], s[sel_1:sel_2], s[sel_2:j], s[j:j+20])))
         self.beginCommand(w, undoType='move-lines-up')
-        changed = False
         try:
+            prev_i, prev_j = g.getLine(s, i - 1)
+            prev_line = s[prev_i: prev_j]
+            n2 = prev_j - prev_i
             if i > 0:
-                prev_i, prev_j = g.getLine(s, i - 1)
-                prev_line = s[prev_i: prev_j]
-                n2 = prev_j - prev_i
                 w.delete(prev_i, j)
                 if lines.endswith('\n'):
                     # Simply swap positions with next line
@@ -3064,11 +3036,14 @@ class EditCommandsClass(BaseEditCommandsClass):
                     new_lines = lines + '\n' + prev_line[: -1]
                 w.insert(prev_i, new_lines)
                 w.setSelectionRange(sel_1 - n2, sel_2 - n2, insert=insert_pt - n2)
-                changed = True
-                # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-                c.recolor_now(incremental=False)
+            else:
+                # Leo 5.6: Insert a blank line after the line.
+                w.insert(j, '\n')
+                w.setSelectionRange(sel_1, sel_2, insert=sel_1)
+            # Fix bug 799695: colorizer bug after move-lines-up into a docstring
+            c.recolor_now(incremental=False)
         finally:
-            self.endCommand(changed=changed, setLabel=True)
+            self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.332: *4* reverseRegion
     @cmd('reverse-region')
     def reverseRegion(self, event):

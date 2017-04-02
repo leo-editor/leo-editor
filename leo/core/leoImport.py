@@ -275,7 +275,7 @@ class LeoImportCommands(object):
     For more information, see leo/plugins/importers/howto.txt.
     '''
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* ic.__init__ & helpers
+    #@+node:ekr.20031218072017.3207: *3* ic.__init__
     def __init__(self, c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
@@ -739,7 +739,8 @@ class LeoImportCommands(object):
         # Get the scanning function.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
-        if trace: g.trace(ext, p.h, func)
+        if trace: g.trace('%8s %20s %20s %s' % (
+            ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.w', '.xxx'), (ext, p.h)
@@ -764,10 +765,15 @@ class LeoImportCommands(object):
     #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
+        trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
-        # g.trace('===== self.treeType', repr(self.treeType))
+        if trace: g.trace('atAuto: %5r atAutoKind: %r parent: %s' % (
+            atAuto, atAutoKind, parent and parent.h))
         if atAuto:
             if atAutoKind:
+                # scannerUnitTest uses this code.
+                if not g.unitTesting:
+                    g.trace('===== atAutoKind', atAutoKind, g.callers())
                 # We have found a match between ext and an @auto importer.
                 undoData = u.beforeInsertNode(parent)
                 if parent:
@@ -833,6 +839,8 @@ class LeoImportCommands(object):
         if trace: g.trace('1', atAuto, self.treeType, fileName)
         atAutoKind = None
         if not atAuto and kind != '@auto':
+            # scannerUnitTest and the recursive input code uses this code.
+                # g.trace('===== SET atAutoKind', g.callers())
             # Not yet an @auto node.
             # Set atAutoKind if there is an @auto importer for ext.
             aClass = g.app.classDispatchDict.get(ext)
@@ -2137,53 +2145,53 @@ class RecursiveImportController(object):
     #@+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
     def move_doc_string(self, root):
         '''Move a leading docstring in the first child to the root node.'''
-        return # This is completely misguided
-        # To do: copy comments before docstring
-        p = root.firstChild()
-        s = p and p.b or ''
-        if not s:
-            return
-        result = []
-        for s2 in g.splitLines(s):
-            delim = None
-            s3 = s2.strip()
-            if not s3:
-                result.append(s2)
-            elif s3.startswith('#'):
-                result.append(s2)
-            elif s3.startswith('"""'):
-                delim = '"""'
-                break
-            elif s3.startswith("'''"):
-                delim = "'''"
-                break
-            else:
-                break
-        if not delim:
-            comments = ''.join(result)
-            if comments:
-                nl = '\n\n' if root.b.strip() else ''
-                if root.b.startswith('@first #!'):
-                    lines = g.splitLines(root.b)
-                    root.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+        if 0: # This is completely misguided
+            # To do: copy comments before docstring
+            p = root.firstChild()
+            s = p and p.b or ''
+            if not s:
+                return
+            result = []
+            for s2 in g.splitLines(s):
+                delim = None
+                s3 = s2.strip()
+                if not s3:
+                    result.append(s2)
+                elif s3.startswith('#'):
+                    result.append(s2)
+                elif s3.startswith('"""'):
+                    delim = '"""'
+                    break
+                elif s3.startswith("'''"):
+                    delim = "'''"
+                    break
                 else:
-                    root.b = comments + nl + root.b
-                p.b = s[len(comments):]
-            return
-        i = s.find(delim)
-        assert i > -1
-        i = s.find(delim, i + 3)
-        if i == -1:
-            return
-        doc = s[: i + 3]
-        p.b = s[i + 3:].lstrip()
-        # Move docstring to front of root.b, but after any shebang line.
-        nl = '\n\n' if root.b.strip() else ''
-        if root.b.startswith('@first #!'):
-            lines = g.splitLines(root.b)
-            root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
-        else:
-            root.b = doc + nl + root.b
+                    break
+            if not delim:
+                comments = ''.join(result)
+                if comments:
+                    nl = '\n\n' if root.b.strip() else ''
+                    if root.b.startswith('@first #!'):
+                        lines = g.splitLines(root.b)
+                        root.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+                    else:
+                        root.b = comments + nl + root.b
+                    p.b = s[len(comments):]
+                return
+            i = s.find(delim)
+            assert i > -1
+            i = s.find(delim, i + 3)
+            if i == -1:
+                return
+            doc = s[: i + 3]
+            p.b = s[i + 3:].lstrip()
+            # Move docstring to front of root.b, but after any shebang line.
+            nl = '\n\n' if root.b.strip() else ''
+            if root.b.startswith('@first #!'):
+                lines = g.splitLines(root.b)
+                root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+            else:
+                root.b = doc + nl + root.b
     #@+node:ekr.20170304161145.8: *4* ric.move_shebang_line
     def move_shebang_line(self, root):
         '''Move a shebang line from the first child to the root.'''

@@ -122,6 +122,8 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_focus = False
+            # True: trace changes in focus.
         self.trace_plugins = False
             # True: trace imports of plugins.
         self.translateToUpperCase = False
@@ -1233,7 +1235,9 @@ class LeoApp(object):
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
-
+                        
+                scanner_for_at_auto_cb.scanner_name = aClass.__name__
+                    # For traces in ic.createOutline.
                 if trace: g.trace('found', p.h)
                 return scanner_for_at_auto_cb
         if trace: g.trace('not found', p.h, sorted(d.keys()))
@@ -1255,7 +1259,9 @@ class LeoApp(object):
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
-
+                    
+            scanner_for_ext_cb.scanner_name = aClass.__name__
+                # For traces in ic.createOutline.
             return scanner_for_ext_cb
         else:
             return None
@@ -2139,6 +2145,11 @@ class LoadManager(object):
                             g.es_exception()
                         g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
+        if trace:
+            g.trace('g.app.atAutoDict')
+            g.printDict(g.app.atAutoDict)
+            g.trace('g.app.classDispatchDict')
+            g.printDict(g.app.classDispatchDict)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
@@ -2153,31 +2164,20 @@ class LoadManager(object):
             scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
             if trace:
-                g.trace('===== %s: %s' % (sfn, scanner_name))
-                if extensions: g.trace(', '.join(extensions))
+                g.trace('%20s: %20s %s' % (sfn, scanner_name, ', '.join(extensions)))
             if at_auto:
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict
                 for s in at_auto:
-                    aClass = d.get(s)
-                    if aClass and aClass != scanner_class:
-                        g.trace('duplicate %5s class: %s in %s' % (
-                            s, aClass.__name__, m.__file__))
-                    else:
-                        d[s] = scanner_class
-                        g.app.atAutoDict[s] = scanner_class
-                        g.app.atAutoNames.add(s)
-                        if trace: g.trace(s)
+                    d[s] = scanner_class
+                    g.app.atAutoDict[s] = scanner_class
+                    g.app.atAutoNames.add(s)
+                    if trace: g.trace(s)
             if extensions:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
                 for ext in extensions:
-                    aClass = d.get(ext)
-                    if aClass and aClass != scanner_class:
-                        g.trace('duplicate %s class: %s in %s' % (
-                           ext, aClass.__name__, m.__file__))
-                    else:
-                        d[ext] = scanner_class
+                    d[ext] = scanner_class
         elif sfn not in (
             # These are base classes, not real plugins.
             'basescanner.py',
@@ -2264,7 +2264,7 @@ class LoadManager(object):
                 g.app.createDefaultGui(__file__)
             else:
                 # This can happen when launching Leo from IPython.
-                g.trace('g.app.gui', g.app.gui)
+                g.trace('g.app.gui', g.app.gui, g.callers())
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -2398,6 +2398,8 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
+        add('--trace-focus', action='store_true', dest='trace_focus',
+            help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
         add('-v', '--version', action='store_true', dest='version',
@@ -2497,6 +2499,8 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-focus
+        g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
         # --version: print the version and exit.

@@ -10,8 +10,8 @@ import subprocess
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager(object):
-    #@+<< BPL docstring>>
-    #@+node:ekr.20161029063227.1: *3* << BPL docstring>>
+    #@+<< BPM docstring>>
+    #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
     '''
     #@@language rest
     #@@wrap
@@ -48,7 +48,7 @@ class BackgroundProcessManager(object):
     You can run as many of these process as you like, without involving the BPM
     in any way.
     '''
-    #@-<< BPL docstring>>
+    #@-<< BPM docstring>>
     
     # Use self.put_log, not g.es or g.es_print!
     
@@ -89,17 +89,21 @@ class BackgroundProcessManager(object):
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
         trace = False and not g.unitTesting
-        trace_inactive = False
+        trace_inactive = True
         trace_running = False
-        if self.pid or self.process_queue:
-            if self.pid.poll() is not None:
-                if trace: self.put_log('ending: %s' % id(self.pid))
+        if self.pid:
+            if self.pid.poll() is None:
+                if trace and trace_running:
+                    self.put_log('running: %s' % id(self.pid))
+            else:
+                if trace:
+                    self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
-            elif trace and trace_running:
-                self.put_log('running: %s' % id(self.pid))
+        elif self.process_queue:
+            self.start_next() # Start the next process.
         elif trace and trace_inactive:
-            self.put_log('%s inactive' % self.data.kind)
+            self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
     #@+node:ekr.20161028063557.1: *4* bm.end
     def end(self):
         '''End the present process.'''

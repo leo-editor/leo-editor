@@ -14,6 +14,7 @@ class JS_Importer(Importer):
         Importer.__init__(self,
             importCommands,
             atAuto = atAuto,
+            gen_refs = True,
             language = 'javascript',
             state_class = JS_ScanState,
         )

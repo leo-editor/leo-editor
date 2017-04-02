@@ -102,6 +102,7 @@ class Importer(object):
     def __init__(self,
         importCommands, 
         atAuto, # True when called from @auto logic.
+        gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
         state_class = None, # For i.scan_line
@@ -113,6 +114,7 @@ class Importer(object):
         self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
+        self.gen_refs = gen_refs
         self.language = language or name
             # For the @language directive.
         self.name = name or language
@@ -136,7 +138,6 @@ class Importer(object):
         self.escape_string = r'%s([0-9]+)\.' % re.escape(self.escape)
             # m.group(1) is the unindent value.
         self.escape_pattern = re.compile(self.escape_string)
-        self.gen_refs = name in ('javascript',)
         self.ScanState = ScanState
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0 # Must be set in run, using self.root.
@@ -159,16 +160,11 @@ class Importer(object):
     # All code in passes 1 and 2 *must* use this API to change body text.
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert s, g.callers()
-        assert g.isString(s), repr(s)
-        assert not p.b, repr(p.b)
-        assert hasattr(p.v, '_import_lines'), repr(p)
-        # This might happen doing parse-body on a node p with children.
-        # However, perfect import would surely fail, so the solution
-        # must be to check for children in parse-body.
-        # if not hasattr(p.v, '_import_lines'):
-            # p.v._import_lines = p.b
-            # p.b = ''
+        assert s and g.isString(s), repr(s)
+        if not hasattr(p.v, '_import_lines'):
+            g.trace('can not happen: no _import_lines', p.h)
+            p.v._import_lines = g.splitLines(p.b)
+            p.b = ''
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -178,12 +174,10 @@ class Importer(object):
         p.v._import_lines.extend(list(lines))
 
     def get_lines(self, p):
-        # This can happen doing parse-body on a node p with children.
-        # However, perfect import would surely fail, so the solution
-        # must be to check for children in parse-body.
-        # if not hasattr(p.v, '_import_lines'):
-            # p.v._import_lines = p.b
-            # p.b = ''
+        if not hasattr(p.v, '_import_lines'):
+            g.trace('can not happen: no _import_lines', p.h)
+            p.v._import_lines = g.splitLines(p.b)
+            p.b = ''
         return p.v._import_lines
         
     def has_lines(self, p):
@@ -439,9 +433,12 @@ class Importer(object):
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         trace = False and g.unitTesting
-        if trace: g.trace('='*20, self.name)
-        if trace: g.trace('=' * 10, parent.h)
         c = self.c
+        if trace: g.trace('-' * 10, parent.h)
+        # Fix #449: Cloned @auto nodes duplicates section references.
+        if parent.isCloned() and parent.hasChildren():
+            if trace: g.trace('already imported', parent.h)
+            return
         self.root = root = parent.copy()
         self.file_s = s
         # Init the error/status info.
@@ -1002,10 +999,10 @@ class Importer(object):
         '''Show both s1 and s2.'''
         print('===== s1: %s' % parent.h)
         for i, s in enumerate(lines1):
-            print('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i+1, s))
         print('===== s2')
         for i, s in enumerate(lines2):
-            print('%3s %r' % (i+1, s))
+            g.pr('%3s %r' % (i+1, s))
     #@+node:ekr.20161108131153.6: *5* i.trial_write
     def trial_write(self):
         '''Return the trial write for self.root.'''

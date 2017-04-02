@@ -1,4 +1,6 @@
- @ignore
+@q@@+leo-ver=5-thin@>
+@q@@+node:ekr.20170401122024.7: * @@file C:/leo.repo/leo-editor/leo/test/unittest/input/cweave.w@>
+@q@@@@language cweb@>
 @ % This file is part of CWEB.
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
@@ -3522,3 +3524,4 @@ of identifiers in section names are not indexed. Underlined entries
 correspond to where the identifier was declared. Error messages, control
 sequences put into the output, and a few
 other things like ``recursion'' are indexed here too.
+@q@@-leo@>

@@ -4263,6 +4263,8 @@ class LeoQtTreeTab(object):
             def __init__(self, tt):
                 self.leo_tt = tt
                 QtWidgets.QComboBox.__init__(self) # Init the base class.
+                # Fix #458: Chapters drop-down list is not automatically resized.
+                self.setSizeAdjustPolicy(self.AdjustToContents)
 
             def focusInEvent(self, event):
                 self.leo_tt.setNames()

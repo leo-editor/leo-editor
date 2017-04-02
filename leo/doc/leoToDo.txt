@@ -4,43 +4,511 @@
 .. @@wrap
 .. @+all
 .. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
-Fix @auto bugs:
-- Cancelling @auto write creates orphan nodes.
-- Cloned @auto nodes duplicates section references.
-
-Improve Ctrl-up/down:
-- Ctrl-Down should insert a blank line if at the bottom.
-- Ctrl-Up should insert a blank line if at the top.
-.. @+node:ekr.20170211190548.1: ** ** The plan for 2017
+.. @+node:ekr.20170324083526.1: *3* Improve VR plugin
 @language rest
 @wrap
-org mode docs: https://github.com/eschulte/org-mode-jss/blob/master/jss705.org
 
-- Steal everything useful from org mode:
-    - Agenda: an agenda plugin.
-    - Tables: a tables plugin.
-    - Text drawers replace uA's.
-    - Rendering of Latex, etc. in Leo's body pane.
-    - Better support for shell console & scripts.
-    - Better support for make, C, C++, Java, etc.
-    - Support for org-mode results. Invention needed.
-    - Leo's body pane must be able to hide characters and
-      render pictures within the pane.
-    - Support .org files and .org.leo files.
+1. At present, the VR pane renders an entire node the same way, namely as indicated by the first @language directive.​ Instead, the VR plugin should be re-architected to that it composes its results from multiple pieces (delimited by @language) in the same node. Not a huge thing, but it makes the rendering compatible in spirit of (the hidden relationships in) the body pane.
 
-- Emulate/ use pyzo server
+2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
 
-A short prototype of @jupyter
-https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
-Appears to work only with Python 2.
+3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
+.. @+node:ekr.20170320052551.1: *3* 5.6: First
+@language rest
+@wrap
+.. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
+https://github.com/leo-editor/leo-editor/issues/414
+.. @+node:ekr.20170325045220.1: *4* #441: Fix bugs in javascript importer
+https://github.com/leo-editor/leo-editor/issues/441
+- Make sure whitespace stripping doesn't put @language at end of line.
+.. @+node:ekr.20170328043328.1: *4* Add ekr bindings for indent/unindent-region
+Alt-Tab, Alt-Shift-Tab?
+.. @+node:ekr.20031218072017.1830: *5* c.indentBody (indent-region)
+@cmd('indent-region')
+def indentBody(self, event=None):
+    '''
+    The indent-region command indents each line of the selected body text,
+    or each line of a node if there is no selected text. The @tabwidth directive
+    in effect determines amount of indentation. (not yet) A numeric argument
+    specifies the column to indent to.
+    '''
+    c, undoType = self, 'Indent Region'
+    w = c.frame.body.wrapper
+    sel_1, sel_2 = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    tab_width = c.getTabWidth(c.p)
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    changed, result = False, []
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
+        if s != line: changed = True
+        result.append(s)
+    if changed:
+        # Leo 5.6: preserve insert point.
+        preserveSel = sel_1 == sel_2
+        if preserveSel:
+            ins += tab_width
+            oldSel = ins, ins
+        result = ''.join(result)
+        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+.. @+node:ekr.20031218072017.1824: *5* c.dedentBody (unindent-region)
+@cmd('unindent-region')
+def dedentBody(self, event=None):
+    '''Remove one tab's worth of indentation from all presently selected lines.'''
+    c, undoType = self, 'Unindent'
+    w = c.frame.body.wrapper
+    sel_1, sel_2 = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    tab_width = c.getTabWidth(c.p)
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    changed, result = False, []
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
+        if s != line: changed = True
+        result.append(s)
+    if changed:
+        result = ''.join(result)
+        # Leo 5.6: preserve insert point.
+        preserveSel = sel_1 == sel_2
+        if preserveSel:
+            ins = max(0, ins - abs(tab_width))
+            oldSel = ins, ins
+        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+.. @+node:ekr.20150514063305.268: *5* selfInsertCommand, helpers
+# @cmd('self-insert-command')
+def selfInsertCommand(self, event, action='insert'):
+    '''
+    Insert a character in the body pane.
 
-.. @+node:ekr.20170219180512.1: *3* Invisible fonts
-One way to hide characters is to use an invisible font:
-https://www.google.com/search?q=invisible+font&ie=utf-8&oe=utf-8
-http://www.inquisitr.com/595234/adobe-blank-a-new-invisible-font-that-actually-makes-sense/
+    This is the default binding for all keys in the body pane.
+    It handles undo, bodykey events, tabs, back-spaces and bracket matching.
+    '''
+    trace = False and not g.unitTesting
+    verbose = True
+    c, p = self.c, self.c.p
+    w = self.editWidget(event)
+    if not w:
+        return
+    << set local vars >>
+    assert g.isStrokeOrNone(stroke)
+    if trace: g.trace('ch', repr(ch), 'stroke', stroke)
+    if g.doHook("bodykey1", c=c, p=p, v=p, ch=ch, oldSel=oldSel, undoType=undoType):
+        return
+    if ch == '\t':
+        self.updateTab(p, w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key.
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r', '\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w, oldSel, undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p, w, ch, oldSel)
+    elif ch:
+        # Null chars must not delete the selection.
+        self.doPlainChar(action, ch, event, inBrackets, oldSel, stroke, w)
+    else:
+        return
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w, spot)
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    if trace and verbose:
+        g.trace('ch', repr(ch), 'changed', changed, 'newText', repr(newText[-10:]))
+    if changed:
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel, oldText=oldText, oldYview=None)
+    g.doHook("bodykey2", c=c, p=p, v=p, ch=ch, oldSel=oldSel, undoType=undoType)
+.. @+node:ekr.20150514063305.269: *6* << set local vars >> (selfInsertCommand)
+stroke = event and event.stroke or None
+ch = event and event.char or ''
+if ch == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if ch == 'Tab':
+    ch = '\t'
+name = c.widget_name(w)
+oldSel = name.startswith('body') and w.getSelectionRange() or (None, None)
+oldText = name.startswith('body') and p.b or ''
+undoType = 'Typing'
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch) in brackets
+.. @+node:ekr.20160924135613.1: *6* doPlainChar
+def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
+    c, p = self.c, self.c.p
+    isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+    i, j = oldSel
+    if i > j: i, j = j, i
+    # Use raw insert/delete to retain the coloring.
+    if i != j: w.delete(i, j)
+    elif action == 'overwrite': w.delete(i)
+    if isPlain:
+        ins = w.getInsertPoint()
+        if self.autojustify > 0 and not inBrackets:
+            # Support #14: auto-justify body text.
+            s = w.getAllText()
+            i = g.skip_to_start_of_line(s, ins)
+            i, j = g.getLine(s, i)
+            # Only insert a newline at the end of a line.
+            if j - i >= self.autojustify and (ins >= len(s) or s[ins] == '\n'):
+                # Find the start of the word.
+                n = 0
+                ins -= 1
+                while ins-1 > 0 and g.isWordChar(s[ins-1]):
+                    n += 1
+                    ins -= 1
+                sins = ins  # start of insert, to collect trailing whitespace
+                while sins > 0 and s[sins-1] in (' \t'):
+                    sins -= 1
+                oldSel = (sins, ins)
+                self.insertNewlineHelper(w, oldSel, undoType=None)
+                ins = w.getInsertPoint()
+                ins += (n+1)
+        w.insert(ins, ch)
+        w.setInsertPoint(ins + 1)
+    else:
+        g.app.gui.insertKeyEvent(event, i)
+    if inBrackets and self.flashMatchingBrackets:
+        self.flashMatchingBracketsHelper(c, ch, i, p, w)
+.. @+node:ekr.20150514063305.270: *6* doPlainTab
+def doPlainTab(self, s, i, tab_width, w):
+    '''Insert spaces equivalent to one tab.'''
+    start, end = g.getLine(s, i)
+    s2 = s[start: i]
+    width = g.computeWidth(s2, tab_width)
+    if tab_width > 0:
+        w.insert(i, '\t')
+        ins = i + 1
+    else:
+        n = abs(tab_width) - (width % abs(tab_width))
+        w.insert(i, ' ' * n)
+        ins = i + n
+    w.setSelectionRange(ins, ins, insert=ins)
+.. @+node:ekr.20150514063305.271: *6* flashCharacter (leoEditCommands)
+def flashCharacter(self, w, i):
+    '''Flash the character at position i of widget w.'''
+    bg = self.bracketsFlashBg or 'DodgerBlue1'
+    fg = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 3
+    delay = self.bracketsFlashDelay or 75
+    w.flashCharacter(i, bg, fg, flashes, delay)
+.. @+node:ekr.20150514063305.272: *6* flashMatchingBracketsHelper (leoEditCommands)
+def flashMatchingBracketsHelper(self, c, ch, i, p, w):
+    '''Flash matching brackets at char ch at position i at widget w.'''
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d[self.openBracketsList[z]] = self.closeBracketsList[z]
+        # reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d[self.closeBracketsList[z]] = self.openBracketsList[z]
+        # reverse = True # Search backward
+    s = w.getAllText()
+    # A partial fix for bug 127: Bracket matching is buggy.
+    language = g.getLanguageAtPosition(c, p)
+    if language ==  'perl':
+        return
+    j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
+    if j is not None:
+        self.flashCharacter(w, j)
+.. @+node:ekr.20150514063305.273: *6* initBracketMatcher
+def initBracketMatcher(self, c):
+    '''Init the bracket matching code.'''
+    trace = False and not g.unitTesting
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList = '([{'
+        self.closeBracketsList = ')]}'
+    if trace:
+        g.trace('self.openBrackets',self.openBracketsList)
+        g.trace('self.closeBrackets',self.closeBracketsList)
+.. @+node:ekr.20150514063305.274: *6* insertNewlineHelper
+def insertNewlineHelper(self, w, oldSel, undoType):
+    trace = False and not g.unitTesting
+    c, p = self.c, self.c.p
+    i, j = oldSel
+    ch = '\n'
+    if trace:
+        # s = w.widget.toPlainText()
+        g.trace('sel', i, j, g.callers())
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i, j)
+        w.insert(i, ch)
+        w.setInsertPoint(i + 1)
+    else:
+        w.insert(i, ch)
+        w.setInsertPoint(i + 1)
+        if (c.autoindent_in_nocolor or
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p, w)
+    w.seeInsertPoint()
+.. @+node:ekr.20150514063305.275: *6* updateAutoIndent (leoEditCommands)
+def updateAutoIndent(self, p, w):
+    '''Handle auto indentation.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    tab_width = c.getTabWidth(p)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s, ins)
+    i, j = g.getLine(s, i - 1)
+    s = s[i: j - 1]
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+    if s and s[-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.findLanguageDirectives(c, p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width]
+        tabex = 0
+        for i in range(0, len(s)):
+            if s[i] == '\t':
+                tabex += tab_width - 1
+            if s[i] in '([{':
+                bracketWidths.append(i + tabex + 1)
+            elif s[i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width, tab_width)
+    if ws:
+        if trace: g.trace('width: %s, tab_width: %s, ws: %s' % (
+            width, tab_width, repr(ws)))
+        i = w.getInsertPoint()
+        w.insert(i, ws)
+        w.setInsertPoint(i + len(ws))
+        w.seeInsertPoint()
+            # 2011/10/02: Fix cursor-movement bug.
+.. @+node:ekr.20150514063305.276: *6* updateAutomatchBracket
+def updateAutomatchBracket(self, p, w, ch, oldSel):
+    # assert ch in ('(',')','[',']','{','}')
+    c = self.c
+    d = c.scanAllDirectives(p)
+    i, j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+    if ch in ('(', '[', '{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(': ')', '[': ']', '{': '}'}.get(ch)
+        if i != j: w.delete(i, j)
+        w.insert(i, ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins - 1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins < len(s) and s[ins] or ''
+        if ch2 in (')', ']', '}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins + 1)
+        else:
+            if i != j: w.delete(i, j)
+            w.insert(i, ch)
+            w.setInsertPoint(i + 1)
+.. @+node:ekr.20150514063305.277: *6* updateTab
+def updateTab(self, p, w, smartTab=True):
+    '''Add spaces equivalent to a tab.'''
+    trace = False and not g.unitTesting
+    c = self.c
+    i, j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+    if i != j:
+        # w.delete(i,j)
+        c.indentBody()
+    else:
+        tab_width = c.getTabWidth(p)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start, end = g.getLine(s, i)
+        after = s[i: end]
+        if after.endswith('\n'): after = after[: -1]
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        if trace:
+            g.trace('smartTab: %s,tab_width: %s, c.tab_width: %s' % (
+                doSmartTab, tab_width, c.tab_width))
+                # 'i %s start %s after %s' % (i,start,repr(after)))
+        if doSmartTab:
+            self.updateAutoIndent(p, w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s, i, tab_width, w)
+        else:
+            self.doPlainTab(s, i, tab_width, w)
+.. @+node:ekr.20170211190548.1: *3* Add org-mode features
+@language rest
+@wrap
 
-The drawback is that Leo would have to distribute that font, and users would have to install the font.
-.. @+node:ekr.20170125104430.1: ** From Jon N
+Better support for org-mode:
+- p.drawer and p.results properties.
+- If no text selection, only execute between @language directives.
+- Add arguments to @language directive.
+- Rendering of Latex, and *images* in Leo's body pane.
+- Better support for shell console & scripts.
+- Better support for make, C, C++, Java, etc.
+- Support .org files and .org.leo files.
+
+Maybe:
+- Agenda: an agenda plugin.
+- Tables: a tables plugin.
+
+Use client/server architecture?
+- Emulate/ use pyzo server?
+- A short prototype of @jupyter?
+  https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
+  Appears to work only with Python 2.
+
+.. @+node:ekr.20160318113006.1: *3* API's for icons, attributes & windows
+Must be easy to use.
+
+- Add p/v.temp_u properties. Revise docs.
+
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+.. @+node:ekr.20160305033136.1: *4* Found:['"]icons[i"]
+.. @+node:ekr.20160129081036.1: *4* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
+.. @+node:ekr.20080802070659.11: *4* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20170315071752.1: *3* New docs
+- Leo scripting for scientists.
+
+- (Maybe) execute-script-in-common-namespace command. It's needed to simulate pyzo/jupyter/org mode calculations.
+
+- show-drawer command. It will pop up a window showing a special 'core-drawer' uA. Saving the popup will update the uA.  No need for changes to Leo's body pane.
+
+The easy way to simulate org-mode's window, and improve upon it, will be to allow Leo's body pane to contain multiple, vertically aligned panes.  Like this:
+
+    Overall body pane:
+    
+    pane 1
+    ----- (separator)
+    pane 2
+    ----- (separator)
+    pane 3
+    ...
+
+Users will be able to see the various panes without intervening headlines, although separators may show headlines.  Only one of the panes will be active.  It is the "real" body pane.  This can be done in a plugin.
+.. @+node:ekr.20170315081957.2: *4* Consider using Leo if...
+Feature table
+
+- Want Python and its libs.
+
+- You develop software, including scientific software and scripts:
+    Org-mode's script delims make it impossible to develop large software.
+    
+- You want to treat an outline as a programmable database.
+    - Leo *is* a db. Outlines can represent db queries.
+
+- You have hundreds of files to manage.
+    - Leo has a fast caching scheme.
+    
+- You want clone-find commands
+
+.. @+node:ekr.20170315081957.3: *4* Leo as a compendium
+
+"A research project typically relies upon components such as:
+
+    The data being studied;
+    Details of calculations and code used in data analysis;
+    Methodological conventions and assumptions;
+    Decisions among alternate analytic paths.
+
+However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
+
+A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
+.. @+node:ekr.20170315081957.4: *4* Reproducible research
+They summarize the uses and implications of a compendium as follows:
+
+    It encapsulates the actual work of the author, not just an abridged version suitable for publication;
+    It can display different levels of detail in derived documents;
+    The computations included in it can be re-run by an interested reader, potentially with different inputs;
+    It contains explicit computational details that make it easier for an interested reader to adapt and extend the methods;
+    It enables programmatic construction of plots and tables;
+    Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
+
+Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.
+.. @+node:ekr.20170315081957.5: *4* Scripting for scientists
+Show how scripts can invoke other scripts.
+
+Show how to compose results:
+    - With pickle?
+.. @+node:ekr.20170315081957.6: *4* Plans for 2017
+- Support for .org.leo files.
+
+- p.drawer property.
+
+- What to do about org-mode code blocks.
+
+- How good is the org-mode import/export code?
+
+- agenda.py plugin (improve existing todo.py plugin.)
+- tables.py plugin
+.. @+node:ekr.20170315081957.7: *4* Underlying technologies
+@language rest
+@wrap
+
+
+
+
+
+.. @+node:ekr.20170315081957.8: *5* LP and RR
+Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
+
+**LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
+.. @+node:ekr.20170315081957.9: *5* Scripting
+@language rest
+@wrap
+
+Leo is fundamentally more powerful than org mode scripting:
+
+1. Unlike org mode, Leo's outline nodes are true Python objects, *easily* accessible via Leo's Python `API`_. Furthermore, Leo scripting is based on Python and Python's standard library, not elisp and Emacs-specific code. Leo scripts can be run outside of Leo.
+
+2. Leo can `compose`_ both external files and scripts using the same `markup`_. Unlike org mode, Leo's markup applies *everywhere* and is fully integrated with Leo's outline structure. As a result, it is complete natural to compose external files or scripts (experiments) from a suboutline. For example: this defines an external file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    << imports >>
+    @others
+    # That's all, folks
+    @language python
+    @tabwidth
+    
+And this this defines the top-level part of a script::
+
+@language python
+
+    @langauge python
+    '''My script'''
+    << imports >>
+    class Controller:
+        # Child nodes define the methods of this class.
+        @others
+    Controller(c).run # Yes, c *is* defined.
+
+@language rest
+    
+There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
+.. @+node:ekr.20170315081957.10: *5* Data model
+Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones.
+
+Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
+.. @+node:ekr.20170125104430.1: *3* Minor issues (Jon N)
 @language rest
 @wrap
 
@@ -62,11 +530,11 @@ Anyway, here's what I have. I am currently using two @command nodes
     @command myCtrlHome @key=Ctrl+Home
     @command myCtrlEnd @key=Ctrl+End
 with content like below (merged a bit from two nodes for 'clarity')
-.. @+node:ekr.20170125104502.1: *3* Declarations
+.. @+node:ekr.20170125104502.1: *4* Declarations
 ​
 from leo.core.leoQt import QtCore
 
-.. @+node:ekr.20170125104502.2: *3* cursorToEndOfPane
+.. @+node:ekr.20170125104502.2: *4* cursorToEndOfPane
 def cursorToEndOfPane():
     """ move the text cursor to the last character visible in the body pane
     """
@@ -93,7 +561,7 @@ def cursorToEndOfPane():
    
     c.bodyWantsFocusNow()
    
-.. @+node:ekr.20170125104502.3: *3* cursorToTopOfPane
+.. @+node:ekr.20170125104502.3: *4* cursorToTopOfPane
 def cursorToTopOfPane():
     """ move the text cursor to the first character visible in the body pane
     """
@@ -115,7 +583,7 @@ def cursorToTopOfPane():
 
 # arrive here with 'Ctrl-Home' the first entry in lossage
 # XXX for now, assume we have pressed more than three keys...
-.. @+node:ekr.20170125104502.4: *3* doMyCtrlHomeKey
+.. @+node:ekr.20170125104502.4: *4* doMyCtrlHomeKey
 def doMyCtrlHomeKey():
     if g.app.lossage[1][1] == "Ctrl+Home":
         if g.app.lossage[2][1] == "Ctrl+Home":
@@ -132,7 +600,7 @@ doMyCtrlHomeKey()
 
 # arrive here with 'Ctrl-End' the first entry in lossage
 # XXX for now, assume we have pressed more than three keys...
-.. @+node:ekr.20170125104502.5: *3* doCtrlEndKey
+.. @+node:ekr.20170125104502.5: *4* doCtrlEndKey
 def doCtrlEndKey():
     showLossage()
     if g.app.lossage[1][1] == "Ctrl+End":
@@ -148,7 +616,7 @@ def doCtrlEndKey():
 
 
 doCtrlEndKey()
-.. @+node:ekr.20170122010350.1: ** Fossil videos & ideas
+.. @+node:ekr.20170122010350.1: *3* Fossil videos & ideas
 ​Richard Hipp, Fossil and SQLite author, makes that distinction and about
 the "pile of files" database (like the .git folder) instead of the single
 file approach[2]. There is a lot of querying capabilities of the last one,
@@ -213,26 +681,6 @@ I would try something like this:
 
 - Unit tests should preserve find state.
   The find command doesn't seem to work after unit tests.
-.. @+node:ekr.20160515143329.1: *3* @listen(channel_name)
-.. @+node:ekr.20160515143249.1: *3* @subcommander
-Registers subcommander
-.. @+node:ekr.20160325152551.1: *3* Add new, simple, rst/md commands
-- Use # to prevent headlines from being included.
-- Use some, but not all, rst3 settings.
-- Try markdown first.
-.. @+node:ekr.20160318113006.1: *3* API's for icons, attributes & windows
-Must be easy to use.
-
-- Add p/v.temp_u properties. Revise docs.
-
-- Use Terry's window code to create all panes:
-    - New console window plugin.
-.. @+node:ekr.20160305033136.1: *4* Found:['"]icons[i"]
-.. @+node:ekr.20160129081036.1: *4* simplifying uA access
-d = p.u.get(plugin_name, {})
-d['duration'] = 5
-p.u[plugin_name] = d
-.. @+node:ekr.20080802070659.11: *4* Make node attributes visible, and supported by Leo's core
 .. @+node:ekr.20160318113505.1: *3* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
 .. @+node:ekr.20160315141751.1: *3* Code Academy: possible topics
@@ -290,45 +738,7 @@ The so-called Easter-Egg interface creates new panes from the gui.
 A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
-.. @+node:ekr.20160227134532.1: *3* Command shell in Python
-# http://www.cyberciti.biz/faq/python-run-external-command-and-get-output/
-
-Add shell window, perhaps in viewrendered plugin.
-
-# The following program will a system and display output immediately on screen:
-
-#!/usr/bin/python
-import subprocess
-import sys
-cmd = 'ls' # "/usr/sbin/netstat -p tcp -f inet"
-
-p = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE)
-if 0:
-    while True:
-        out = p.stderr.read(1)
-        out = g.toUnicode(out)
-        if out == '' and p.poll() != None:
-            break
-        if out != '':
-            # sys.stdout.write(out)
-            # sys.stdout.flush()
-            g.es(out)
-.. @+node:ekr.20110605121601.18839: *3* Create color picker
-createColorPicker
-.. @+node:ekr.20170120111812.474: *3* Diff using Leo
-https://groups.google.com/forum/#!topic/leo-editor/ZKP-X2kCc9s
-.. @+node:ekr.20161231072737.1: *3* Improve code
-- check pid logic in BPM.
-
-- p.b & p.h setters should check that s is a string.
-
-- Use regex in g.match.  Add g.match_any.
-    pattern = '|'.join([r"\b%s\b" z for z in args])
-
-- Create leoFind wrappers:
-    - c.findCommands.setFindText -> c.findCommands.ftm.setFindText
-    - c.findCommands.setReplaceText -> c.findCommands.ftm.setReplaceText
-.. @+node:ekr.20161019020710.1: *3* Improve pylint
+.. @+node:ekr.20161019020710.1: *3* Improve pylint command
 - enable more pylint checks
 - pylint command should ensure that the leo directory is on the path.
   At present, Leo seems to need sitecustomize.py.
@@ -340,7 +750,6 @@ https://groups.google.com/forum/#!topic/leo-editor/ZKP-X2kCc9s
     - Some key to shift back to the nav pane.
 - Focus to Nav pane should select search area.
     - Something like ctrl-Enter shouild go back to Nav pane.
-.. @+node:ekr.20150801060026.1: *3* leotutor.leo
 .. @+node:ekr.20161205102034.1: *3* Maybe: Temp vim modes
 The idea is to be able to define the dot easily.
 
@@ -365,11 +774,8 @@ But... leoTest.leo defines several other subclasses of unittest.TestCase besides
 I'm not in a hurry to do any of this, since the present importer cases work.  Still it's a good idea to keep these ideas in the back of our minds. This kind of simplification could be useful when creating other kinds of unit tests.
 .. @+node:ekr.20161106074940.1: *3* Maybe: Visualize massive git changes
 This is likely impossible, but git contains all history...
-.. @+node:ekr.20170120114350.1: *3* Post: What you missed by not following leo-editor
-.. @+node:ekr.20170120114716.1: *3* reload-abbreviations
 .. @+node:ekr.20160327111800.1: *3* Support jedi auto-completion (& valuespace)
-- jedi is available in the
-- Can we use live code inside Leo?
+https://github.com/davidhalter/jedi
 
 Terry: valuespace remarks
 https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/Cl1Wy3whAgAJ

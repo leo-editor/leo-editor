@@ -814,8 +814,9 @@ class LeoFrame(object):
         else:
             name = c.mFileName if c.mFileName else self.title
         answer = g.app.gui.runAskYesNoCancelDialog(c,
-            "Confirm",
-            'Save changes to %s before %s' % (g.splitLongFileName(name), theType))
+            title="Confirm",
+            message='Save changes to %s before %s' % (
+                g.splitLongFileName(name), theType))
         # g.pr(answer)
         if answer == "cancel":
             return True # Veto.

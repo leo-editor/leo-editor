@@ -549,7 +549,7 @@ class Demo(object):
     #@+node:ekr.20170211045817.1: *3* demo.Windows & Geometry
     #@+node:ekr.20170213021048.1: *4* demo.headline_geomtry
     def headline_geometry(self, p):
-        '''Return the x, y coordinates of p, for use by demo.set_position.'''
+        '''Return the x, y, width, height coordinates of p, for use by demo.set_geometry.'''
         tree = self.c.frame.tree
         item = tree.position2itemDict.get(p.key())
         if item:

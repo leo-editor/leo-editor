@@ -141,13 +141,11 @@ class QTextMixin(object):
 
     def clipboard_clear(self):
         g.app.gui.replaceClipboardWith('')
-    #@+node:ekr.20140901062324.18698: *4* qtm.Focus
+    #@+node:ekr.20140901062324.18698: *4* qtm.setFocus
     def setFocus(self):
         '''QTextMixin'''
-        trace = False and not g.unitTesting
-        if trace: print('BaseQTextWrapper.setFocus',
-            # g.app.gui.widget_name(self.widget),
-            self.widget, g.callers(3))
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        if trace: print('BaseQTextWrapper.setFocus', self.widget)
         # Call the base class
         assert isinstance(self.widget, (
             QtWidgets.QTextBrowser,

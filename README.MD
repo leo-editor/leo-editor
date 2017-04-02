@@ -1,23 +1,22 @@
-Leo 5.4-final   October 22, 2016
+Leo 5.5 March 23, 2017
 
-[Leo](http://leoeditor.com/) 5.4 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/). 
+[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.4**
+**The highlights of Leo 5.5**
 
-- Added clone-find commands, a new way to use Leo.
-- The clone-find and tag-all-children commands unify clones and tags.
-- The new pyflakes and flake8 make it possible to check files from within Leo.
-- Added importers for freemind, mindjet, json and coffeescript files.
-- Rewrote the javascript importer.
-- Imported files can optionally contain section references.
-- The viewrendered plugin supports @pyplot nodes.
-- Improved the mod_http plugin.
-- @chapter trees need no longer be children of @chapters nodes.
-- All known bugs have been fixed.
+- Syntax coloring is 20x faster than before.
+  The "big-text" hack is no longer needed.
+- Leo's importers are now line/token oriented, allowing them
+  to handle languages like javascript more robustly.
+- New perl and javascript importers.
+- Pylint now runs in the background.
+- Pyflakes can optionally check each file as it is written.
+- Greatly simplified argument-handling for interactive commands.
+- Documented how to do Test-Driven Development in Leo.
 
 **Links**
 

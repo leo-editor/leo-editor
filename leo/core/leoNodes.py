@@ -1624,8 +1624,7 @@ class Position(object):
         p = self; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
-            # Don't redraw the screen: p.b must be fast.
-            # c.redraw_after_icons_changed()
+            # Warning: c.setBodyString is *expensive*.
 
     b = property(
         __get_b, __set_b,
@@ -1772,8 +1771,6 @@ class Position(object):
         p = self
         p.v.initHeadString(s)
         # Note: p.setDirty is expensive.
-        # We can't change this because Leo's core uses
-        # p.setDirty and c.setDirty interchangeably.
         p.setDirty()
     #@+node:ekr.20040312015908: *4* p.Visited bits
     #@+node:ekr.20040306220634.17: *5* p.clearVisitedInTree
@@ -2379,30 +2376,18 @@ class VNodeBase(object):
     #@+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
     def contract(self):
         '''Contract the node.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString, g.callers())
         self.statusBits &= ~self.expandedBit
 
     def expand(self):
         '''Expand the node.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString)
         self.statusBits |= self.expandedBit
 
     def initExpandedBit(self):
         '''Init self.statusBits.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', self._headString, g.callers())
         self.statusBits |= self.expandedBit
 
     def isExpanded(self):
         '''Return True if the VNode expansion bit is set.'''
-        # trace = True and not g.unitTesting
-        # # trace = trace and self._headString.startswith(' Tests of @auto-md')
-        # if trace: g.trace('(vnode)', bool(self.expandedBit), self._headString)
         return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus(self, status):
@@ -2496,20 +2481,37 @@ class VNodeBase(object):
             # 2011/03/21: w may not support the high-level interface.
             pass
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
+    unicode_warning_given = False
+
     def setBodyString(self, s):
         v = self
-        # if not g.isUnicode(s):
-            # g.trace('converting to unicode', type(s), repr(s), g.callers(10))
-        v._bodyString = g.toUnicode(s, reportErrors=True)
+        if g.isUnicode(s):
+            v._bodyString = s
+        else:
+            try:
+                v._bodyString = g.toUnicode(s, reportErrors=True)
+            except Exception:
+                if not self.unicode_warning_given:
+                    self.unicode_warning_given = True
+                    g.internalError(s)
+                    g.es_exception()
         sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
-        # fn = self.context.shortFileName()
-        # g.trace(fn,self.fileIndex,s,g.callers())
-        v = self
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
-        v._headString = g.toUnicode(s, reportErrors=True).replace('\n', '')
+        v = self
+        if g.isUnicode(s):
+            v._headString = s.replace('\n','')
+        else:
+            try:
+                s = g.toUnicode(s, reportErrors=True)
+                v._headString = s.replace('\n','')
+            except Exception:
+                if not self.unicode_warning_given:
+                    self.unicode_warning_given = True
+                    g.internalError(s)
+                    g.es_exception()
 
     initBodyString = setBodyString
     initHeadString = setHeadString
