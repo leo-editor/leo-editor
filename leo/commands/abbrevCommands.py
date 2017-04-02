@@ -416,8 +416,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.bodyWantsFocusNow()
             return True
         else:
-            c.frame.body.forceFullRecolor()
-            c.bodyWantsFocusNow()
+            # Fix bug 453: do nothing here.
+                # c.frame.body.forceFullRecolor()
+                # c.bodyWantsFocusNow()
             return False
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
@@ -581,7 +582,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w.delete(i, j)
         if s is not None:
             w.insert(i, s)
-        if not w_name.startswith('head'):
+        if w_name.startswith('head'):
+            pass # Don't set p.h here!
+        else:
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
             c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
