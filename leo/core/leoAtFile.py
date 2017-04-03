@@ -1495,8 +1495,11 @@ class AtFile(object):
         Read an @+node or @+middle sentinel.
         This will terminate the previous node.
         """
+        trace = False and not g.unitTesting
         at = self
         gnx, headline, i, level, ok = at.parseNodeSentinel(s, i, middle)
+        # trace = trace and headline.startswith('ic.appendStringToBody')
+        if trace: g.trace(gnx, headline)
         if at.v1:
             # Fix bug 169: https://github.com/leo-editor/leo-editor/issues/169
             # import-file does not preserve gnx of root @file node
