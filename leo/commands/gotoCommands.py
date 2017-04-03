@@ -195,7 +195,7 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_lines = False
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
