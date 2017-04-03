@@ -1619,7 +1619,12 @@ class Position(object):
         return p.bodyString()
 
     def __set_b(self, val):
-        '''Set the body text of a position.'''
+        '''
+        Set the body text of a position.
+        
+        **Warning: the p.b = whatever is *expensive* because it calls
+        c.setBodyString()
+        '''
         p = self; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
@@ -1634,11 +1639,16 @@ class Position(object):
         return p.headString()
 
     def __set_h(self, val):
+        '''
+        Set the headline text of a position.
+        
+        **Warning: the p.h = whatever is *expensive* because it calls
+        c.setHeadString()
+        '''
         p = self; c = p.v and p.v.context
         if c:
             c.setHeadString(p, val)
-            # Don't redraw the screen: p.h must be fast.
-            # c.redraw_after_head_changed()
+            # Warning: c.setHeadString is *expensive*.
 
     h = property(
         __get_h, __set_h,
