@@ -63,6 +63,9 @@ In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are ex
 Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
+.. @+node:ekr.20170404032504.1: *4* Added 'recursive' keyword arg to recursive import API
+Added 'recursive' keyword arg to c.recursiveImport and RecursiveImportController ctor.
+Recursive is *not* the same as not one_file.
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
