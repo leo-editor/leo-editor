@@ -26008,7 +26008,7 @@ def skip_php_braces(s, i):
         elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
         else: i += 1
     return i
-.. @+node:ekr.20170304161145.1: *3* ric.Pass 2: clean_all & helpers (no longer used)
+.. @+node:ekr.20170304161145.1: *3* ric.clean_all & helpers (no longer used)
 def clean_all(self, dir_, p):
     '''Clean all imported nodes. This takes a lot of time.'''
     # Warning: this happens after perfect import checks.
@@ -26234,6 +26234,18 @@ def rename_decls(self, root):
     else:
         nl = '' if i == 0 else '\n'
         root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
+.. @+node:ekr.20031218072017.3213: *3* ric.createImportParent
+def createImportParent(self, current, files):
+    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
+    name0, name1 = files
+    prefix0, junk = g.os_path_splitext(name0)
+    prefix1, junk = g.os_path_splitext(name1)
+    if prefix0 and prefix0 == prefix1:
+        current = current.insertAsLastChild()
+        name, junk = g.os_path_splitext(prefix1)
+        name = name.replace('\\', '/') # 2011/11/25
+        current.initHeadString(name)
+    return current
 .. @-all
 .. @@nosearch
 .. @-leo

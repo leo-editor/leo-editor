@@ -916,21 +916,18 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(self,
         files=None,
-        treeType=None,
+        parent=None,
         redrawFlag=True,
         shortFn=False,
+        treeType=None,
     ):
         # Not a command.  It must *not* have an event arg.
-        c, current = self.c, self.c.p
-        if not c or not current or not files:
+        c = self.c
+        if not c or not c.p or not files:
             return
-        self.tab_width = c.getTabWidth(current)
+        self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
-        ###
-        # if len(files) == 2:
-            # current = self.createImportParent(current, files)
-        # parent = current if len(files) > 1 else None
-        parent = current.copy()
+        if not parent: parent = c.p
         for fn in files:
             # 2017/03/04: Report exceptions here, not in the caller.
             try:
@@ -946,21 +943,9 @@ class LeoImportCommands(object):
                 g.es_print('Exception importing', fn)
                 g.es_exception()
         c.validateOutline()
-        current.expand()
+        parent.expand()
         if redrawFlag:
-            c.redraw(current)
-    #@+node:ekr.20031218072017.3213: *5* createImportParent (importCommands)
-    def createImportParent(self, current, files):
-        '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
-        name0, name1 = files
-        prefix0, junk = g.os_path_splitext(name0)
-        prefix1, junk = g.os_path_splitext(name1)
-        if prefix0 and prefix0 == prefix1:
-            current = current.insertAsLastChild()
-            name, junk = g.os_path_splitext(prefix1)
-            name = name.replace('\\', '/') # 2011/11/25
-            current.initHeadString(name)
-        return current
+            c.redraw(parent)
     #@+node:ekr.20031218072017.3220: *4* ic.importFlattenedOutline & helpers
     def importFlattenedOutline(self, files): # Not a command, so no event arg.
         c = self.c; u = c.undoer
@@ -2030,12 +2015,14 @@ class RecursiveImportController(object):
             p.v.h = path.replace('\\', '/')
             p.clearDirty()
         else:
-            c.selectPosition(parent, enableRedrawFlag=False)
+            ### c.selectPosition(parent, enableRedrawFlag=False)
             c.importCommands.importFilesCommand(
-                [path],
-                '@file', # '@auto','@clean','@nosent' cause problems.
+                files=[path],
+                parent=parent,
                 redrawFlag=False,
-                shortFn=True)
+                shortFn=True,
+                treeType='@file', # '@auto','@clean','@nosent' cause problems.
+            )
             p = parent.lastChild()
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
@@ -2348,12 +2335,17 @@ class ZimImportController(object):
             results.append((level, name, path))
         return results
     #@+node:ekr.20141210051628.29: *3* zic.rstToLastChild
-    def rstToLastChild(self, pos, name, rst):
+    def rstToLastChild(self, p, name, rst):
         """Import an rst file as a last child of pos node with the specified name"""
         c = self.c
-        c.selectPosition(pos, enableRedrawFlag=False)
-        c.importCommands.importFilesCommand(rst, '@rst', redrawFlag=False)
-        rstNode = pos.getLastChild()
+        ### c.selectPosition(pos, enableRedrawFlag=False)
+        c.importCommands.importFilesCommand(
+            files=rst,
+            parent=p,
+            redrawFlag=False,
+            treeType='@rst',
+        )
+        rstNode = p.getLastChild()
         rstNode.h = name
         return rstNode
     #@+node:davy.20141212140940.1: *3* zic.clean
