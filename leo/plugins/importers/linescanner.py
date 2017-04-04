@@ -948,7 +948,7 @@ class Importer(object):
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
-    #@+node:ekr.20170404035138.1: *5* context_lines
+    #@+node:ekr.20170404035138.1: *5* i.context_lines
     def context_lines(self, aList, i, n=2):
         '''Return a list containing the n lines of surrounding context of aList[i].'''
         result = []
