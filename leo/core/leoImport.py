@@ -1961,7 +1961,7 @@ class RecursiveImportController(object):
                 g.es_exception()
         if files2 or dirs:
             child = root.insertAsLastChild()
-            child.h = dir_
+            child.v.h = dir_
             c.selectPosition(child, enableRedrawFlag=False)
         if trace:
             g.trace('files2...\n%s' % '\n'.join(files2))
@@ -1974,9 +1974,9 @@ class RecursiveImportController(object):
                     try: # Fix #408
                         parent = child or root
                         p = parent.insertAsLastChild()
-                        p.h = fn.replace('\\', '/')
+                        p.v.h = fn.replace('\\', '/')
                         s, e = g.readFileIntoString(fn, kind=self.kind)
-                        p.b = s
+                        p.v.b = s
                     except Exception:
                         g.es_print('Exception importing', fn)
                         g.es_exception()
@@ -1984,7 +1984,7 @@ class RecursiveImportController(object):
                 for fn in files2:
                     parent = child or root
                     p = parent.insertAsLastChild()
-                    p.h = fn.replace('\\', '/')
+                    p.v.h = fn.replace('\\', '/')
                     p.clearDirty()
             else:
                 c.importCommands.importFilesCommand(
@@ -2040,7 +2040,7 @@ class RecursiveImportController(object):
         root = p.copy()
         for tag in ('@@file', '@file'):
             if p.h.startswith(tag):
-                p.h = p.h[len(tag):].strip()
+                p.v.h = p.h[len(tag):].strip()
                 break
         self.move_shebang_line(root)
         # A bad idea.
@@ -2082,7 +2082,7 @@ class RecursiveImportController(object):
         s = ''.join(result)
         if not s.endswith('\n'): s = s + '\n'
         if s != p.b:
-            p.b = s
+            p.v.b = s
     #@+node:ekr.20170304161145.4: *4* ric.merge_comment_nodes
     def merge_comment_nodes(self, p, delim):
         '''Merge a node containing nothing but comments with the next node.'''
@@ -2090,7 +2090,7 @@ class RecursiveImportController(object):
             p2 = p.next()
             b = p.b.lstrip()
             b = b + ('\n' if b.endswith('\n') else '\n\n')
-            p2.b = b + p2.b
+            p2.v.b = b + p2.b
             p.doDelete(p2)
     #@+node:ekr.20170304161145.5: *4* ric.merge_extra_nodes
     def merge_extra_nodes(self, p):
@@ -2104,7 +2104,7 @@ class RecursiveImportController(object):
         p2 = p.back()
         if p2:
             nl = '\n' if s.endswith('\n') else '\n\n'
-            p2.b = p2.b + nl + s
+            p2.v.b = p2.b + nl + s
             p.doDelete(p2)
     #@+node:ekr.20170304161145.6: *4* ric.move_decorator_lines (RecursiveImportController)
     def move_decorator_lines(self, p):
@@ -2133,14 +2133,14 @@ class RecursiveImportController(object):
             return False
         if not head.endswith('\n'):
             head = head + '\n'
-        # assert p.b == head+tail
+        # assert p.b.v == head+tail
         if trace:
             if tail not in seen:
                 seen.append(tail)
                 g.trace(tail.strip())
         nl = '' if tail.endswith('\n') else '\n'
-        p.b = head
-        p2.b = tail + nl + p2.b
+        p.v.b = head
+        p2.v.b = tail + nl + p2.b
         return True
     #@+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
     def move_doc_string(self, root):
@@ -2173,10 +2173,10 @@ class RecursiveImportController(object):
                     nl = '\n\n' if root.b.strip() else ''
                     if root.b.startswith('@first #!'):
                         lines = g.splitLines(root.b)
-                        root.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+                        root.v.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
                     else:
-                        root.b = comments + nl + root.b
-                    p.b = s[len(comments):]
+                        root.v.b = comments + nl + root.b
+                    p.v.b = s[len(comments):]
                 return
             i = s.find(delim)
             assert i > -1
@@ -2184,14 +2184,14 @@ class RecursiveImportController(object):
             if i == -1:
                 return
             doc = s[: i + 3]
-            p.b = s[i + 3:].lstrip()
+            p.v.b = s[i + 3:].lstrip()
             # Move docstring to front of root.b, but after any shebang line.
             nl = '\n\n' if root.b.strip() else ''
             if root.b.startswith('@first #!'):
                 lines = g.splitLines(root.b)
-                root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+                root.v.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
             else:
-                root.b = doc + nl + root.b
+                root.v.b = doc + nl + root.b
     #@+node:ekr.20170304161145.8: *4* ric.move_shebang_line
     def move_shebang_line(self, root):
         '''Move a shebang line from the first child to the root.'''
@@ -2200,8 +2200,8 @@ class RecursiveImportController(object):
         if s.startswith('#!'):
             lines = g.splitLines(s)
             nl = '\n\n' if root.b.strip() else ''
-            root.b = '@first ' + lines[0] + nl + root.b
-            p.b = ''.join(lines[1:])
+            root.v.b = '@first ' + lines[0] + nl + root.b
+            p.v.b = ''.join(lines[1:])
     #@+node:ekr.20170304161145.9: *4* ric.rename_decls
     def rename_decls(self, root):
         '''Use a section reference for declarations.'''
@@ -2214,13 +2214,13 @@ class RecursiveImportController(object):
             return # The blank node will be deleted.
         name = h[: -len(tag)].strip()
         decls = g.angleBrackets(tag)
-        p.h = '%s (%s)' % (decls, name)
+        p.v.h = '%s (%s)' % (decls, name)
         i = root.b.find('@others')
         if i == -1:
             g.trace('can not happen')
         else:
             nl = '' if i == 0 else '\n'
-            root.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
+            root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
     #@+node:ekr.20130823083943.12607: *3* ric.Pass 3: post_process & helpers
     def post_process(self, p, prefix):
         '''
@@ -2256,7 +2256,7 @@ class RecursiveImportController(object):
         for p in p.self_and_subtree():
             s = p.h.replace('\\', '/')
             if s != p.h:
-                p.h = s
+                p.v.h = s
     #@+node:ekr.20130823083943.12611: *4* ric.minimize_headlines
     file_pattern = re.compile(r'^(@auto|@clean|@edit|@file|@nosent)')
 
@@ -2274,15 +2274,15 @@ class RecursiveImportController(object):
         ends_with_ext = any([h2.endswith(z) for z in self.theTypes])
         if h == prefix:
             if trace: g.trace('@path %s' % (h))
-            p.h = '@path %s' % (h)
+            p.v.h = '@path %s' % (h)
             for p in p.children():
                 self.minimize_headlines(p, prefix)
         elif h2.find('/') <= 0 and ends_with_ext:
             if h2.startswith('/'):
                 h2 = h2[1:]
-            p.h = '%s %s' % (self.kind, h2)
+            p.v.h = '%s %s' % (self.kind, h2)
             if self.safe_at_file:
-                p.h = '@' + p.h
+                p.v.h = '@' + p.h
             if trace: g.trace(p.h)
             # We never scan the children of @file nodes.
         else:
@@ -2290,7 +2290,7 @@ class RecursiveImportController(object):
             if trace:
                 print('')
                 g.trace('@path [%s/]%s' % (prefix, h2))
-            p.h = '@path %s' % (h2)
+            p.v.h = '@path %s' % (h2)
             prefix2 = prefix if prefix.endswith('/') else prefix + '/'
             prefix2 = prefix2 + h2
             for p in p.children():
@@ -2319,7 +2319,7 @@ class RecursiveImportController(object):
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
             root = p.insertAfter()
-            root.h = 'imported files'
+            root.v.h = 'imported files'
             self.import_dir(dir_, root.copy())
             for p in root.self_and_subtree():
                 n += 1
