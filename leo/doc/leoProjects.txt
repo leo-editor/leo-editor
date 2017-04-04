@@ -46,6 +46,24 @@ This appears to be a caching problem. No changes needed to Leo's code.
 - When writing @auto files << handle line at s[i] >> in at.putBody now expands section references in @auto files *if* they are defined. Otherwise, lines containing undefined section references are written as plain code lines.
 .. @+node:ekr.20170331043931.1: *4* Added gen_refs keyword arg to Importer ctor
 This makes explicit which importers actually generate section reference. At present, only the javascript importer sets this arg.
+.. @+node:ekr.20170403182514.1: *4* Updated docs re #464
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/464
+
+**Warning**: The p.b and p.h setters and p.setDirty() are *very* expensive:
+
+- p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node's icon.
+- p.h = s calls c.setHeadString(p, s) which calls p.setDirty().
+- p.setDirty() changes the icons of all ancestor @file nodes.
+
+In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.
+
+Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
+
+These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
+.. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands

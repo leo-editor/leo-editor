@@ -417,8 +417,8 @@ http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-
 </t>
 <t tx="ekr.20131019184243.16699">**Properties**:
 
-    p.b: same as p.v.b.
-    p.h: same as p.v.h.
+    p.b: same as p.v.b. *Warning*: p.b = s is expensive.
+    p.h: same as p.v.h. *Warning*: p.h = s is expensive.
     p.u: same as p.v.u.
     
 **Generators**:
@@ -468,7 +468,7 @@ New in Leo 5.5: All generators yield distinct positions.
     
 **Setters**:
 
-    p.setDirty()
+    p.setDirty() *Warning*: p.setDirty() is expensive.
     p.setMarked()
 
 **Operations on nodes**:
