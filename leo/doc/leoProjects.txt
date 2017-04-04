@@ -33,7 +33,7 @@ Made several changes to find.batchChange.
 .. @+node:ekr.20170402035751.1: *4* #458: Chapters drop-down list is not automatically resized
 https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
-.. @+node:ekr.20170403181726.1: *4* #385: Leo doesn't remember new headlines after saves 
+.. @+node:ekr.20170403181726.1: *4* #385: Leo doesn't remember new headlines after saves
 https://github.com/leo-editor/leo-editor/issues/385
 Leo doesn't honor new headlines when switching branches
 
@@ -86,6 +86,8 @@ All tests pass.
 - Added cancelMessage keyword arg to x.promptForDangerousWrite.
 - Use keyword args in LeoFrame.promptForSave and ns_do_context.
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
+.. @+node:ekr.20170403192311.1: *3* plugins
+.. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
 .. @+node:ekr.20170330083957.1: *4* Retired @bool allow_section_references_in_at_auto
 The disabled setting now contains this comment:
