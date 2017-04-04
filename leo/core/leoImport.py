@@ -2015,7 +2015,6 @@ class RecursiveImportController(object):
             p.v.h = path.replace('\\', '/')
             p.clearDirty()
         else:
-            ### c.selectPosition(parent, enableRedrawFlag=False)
             c.importCommands.importFilesCommand(
                 files=[path],
                 parent=parent,
@@ -2338,7 +2337,6 @@ class ZimImportController(object):
     def rstToLastChild(self, p, name, rst):
         """Import an rst file as a last child of pos node with the specified name"""
         c = self.c
-        ### c.selectPosition(pos, enableRedrawFlag=False)
         c.importCommands.importFilesCommand(
             files=rst,
             parent=p,
