@@ -3023,6 +3023,7 @@ class Commands(object):
     #@+node:ekr.20131028155339.17096: *5* c.openCheatSheet
     @cmd('open-cheat-sheet-leo')
     @cmd('leo-cheat-sheet')
+    @cmd('cheat-sheet')
     def openCheatSheet(self, event=None, redraw=True):
         '''Open leo/doc/cheatSheet.leo'''
         c = self
