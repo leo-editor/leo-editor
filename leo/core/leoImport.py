@@ -1984,20 +1984,17 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, root):
         '''Import selected files from dir_, a directory.'''
-        trace = False and not g.unitTesting
         c = self.c
-        g.blue(g.os_path_normpath(dir_))
+        # g.blue(g.os_path_normpath(dir_))
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
             files = os.listdir(dir_)
-        if trace: g.trace(sorted(files))
         dirs, files2 = [], []
         for f in files:
             path = f
             try: # Fix #408.
                 path = g.os_path_join(dir_, f, expanduser=False)
-                if trace: g.trace('is_file', g.os_path_isfile(path), path)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(f)
                     if ext in self.theTypes:
@@ -2007,24 +2004,21 @@ class RecursiveImportController(object):
             except Exception:
                 g.es_print('Exception computing', path)
                 g.es_exception()
-        if files2 or dirs:
-            child = root.insertAsLastChild()
-            child.v.h = dir_
-            c.selectPosition(child, enableRedrawFlag=False)
-        if trace:
-            g.trace('files2...\n%s' % '\n'.join(files2))
-            g.trace('dirs...\n%s' % '\n'.join(dirs))
-        if files2:
-            for f in files2:
-                self.import_one_file(f, parent=child)
-        if dirs:
-            for dir_ in sorted(dirs):
-                self.import_dir(dir_, child)
+        if files or dirs:
+            parent = root.insertAsLastChild()
+            parent.v.h = dir_
+            c.selectPosition(parent, enableRedrawFlag=False)
+            if files2:
+                for f in files2:
+                    self.import_one_file(f, parent=parent)
+            if dirs:
+                for dir_ in sorted(dirs):
+                    self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *4* ric.import_one_file
     def import_one_file(self, path, parent):
         '''Import one file to the last top-level node.'''
         c = self.c
-        g.blue(g.os_path_normpath(path))
+        # g.blue(g.os_path_normpath(path))
         self.n_files += 1
         if self.kind == '@edit':
             try:
