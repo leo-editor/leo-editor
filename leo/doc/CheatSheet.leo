@@ -44,6 +44,8 @@
 <v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
+<v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
+<v t="ekr.20170403190120.1"><vh>About names</vh></v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -944,6 +946,20 @@ refers to the file abc.py in (absolute path of) the current directory.
     g.app.gui               A LeoGui instance. 
     g.app.pluginsController A LeoPluginsController instance.
     g.app.*                 Leo's global variables.
+</t>
+<t tx="ekr.20170403190104.1">**Warning**: The p.b and p.h setters and p.setDirty() are *very* expensive:
+
+- p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node's icon.
+- p.h = s calls c.setHeadString(p, s) which calls p.setDirty().
+- p.setDirty() changes the icons of all ancestor @file nodes.
+
+In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.
+
+Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
+
+These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
+</t>
+<t tx="ekr.20170403190120.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
 </tnodes>
 </leo_file>

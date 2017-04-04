@@ -23072,7 +23072,7 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 </t>
 <t tx="ekr.20170314092222.1">Adds commands for importing and exporting xml to and from Leo outlines.
 </t>
-<t tx="ekr.20170314164228.1">Scripts may safely assume that few names defined in Leo's core will ever change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
+<t tx="ekr.20170314164228.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
 <t tx="ekr.20170315020214.1">**Ivars**::
 
