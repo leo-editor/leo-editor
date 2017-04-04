@@ -1927,13 +1927,18 @@ class RecursiveImportController(object):
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
-    def __init__(self, c, kind, one_file=False, safe_at_file=True, theTypes=None):
+    def __init__(self, c, kind,
+        one_file=False,
+        recursive=True,
+        safe_at_file=True,
+        theTypes=None,
+    ):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.one_file = one_file
-        self.recursive = not one_file
+        self.recursive = recursive
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
     #@+node:ekr.20130823083943.12597: *3* ric.Pass 1: import_dir (RecursiveImportController)
@@ -1967,6 +1972,7 @@ class RecursiveImportController(object):
             g.trace('files2...\n%s' % '\n'.join(files2))
             g.trace('dirs...\n%s' % '\n'.join(dirs))
         if files2:
+            self.n_files = 1 if self.one_file else len(files2)
             if self.one_file:
                 files2 = [files2[0]]
             if self.kind == '@edit':
@@ -2316,6 +2322,7 @@ class RecursiveImportController(object):
             p1 = p.copy()
             t1 = time.time()
             n = 0
+            self.n_files = 0
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
             root = p.insertAfter()
@@ -2337,7 +2344,8 @@ class RecursiveImportController(object):
                 p.contract()
             c.redraw(root)
         t2 = time.time()
-        g.es('imported %s nodes in %2.2f sec' % (n, t2 - t1))
+        g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
+            n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:

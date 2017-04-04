@@ -7041,19 +7041,25 @@ class Commands(object):
             if trace or g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self, dir_, kind, one_file=False, safe_at_file=True, theTypes=None):
+    def recursiveImport(self, dir_, kind,
+        one_file=False,
+        recursive=True,
+        safe_at_file=True,
+        theTypes=None,
+    ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
         '''
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_            The root directory or file to import.
-            kind            One of ('@clean','@edit','@file','@nosent').
-            one_file        True: import only the file given by dir_.
-            safe_at_file    True: produce @@file nodes instead of @file nodes.
-            theTypes        A list of file extensions to import.
-                            None is equivalent to ['.py']
+            dir_              The root directory or file to import.
+            kind              One of ('@clean','@edit','@file','@nosent').
+            one_file=False    True: import only the file given by dir_.
+            recursive=True    True: recurse into subdirectories.
+            safe_at_file=True True: produce @@file nodes instead of @file nodes.
+            theTypes=None     A list of file extensions to import.
+                              None is equivalent to ['.py']
 
         This method cleans imported files as follows:
 
@@ -7070,6 +7076,7 @@ class Commands(object):
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
                     one_file=one_file,
+                    recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
                 )

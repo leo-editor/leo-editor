@@ -877,8 +877,8 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
-        trace_all = False # or parent.h.endswith('__init__.py')
-        trace_lines = True # Trace failures, regardless of trace.
+        trace_all = False # Trace all lines, always.
+        trace_lines = True # Trace all lines on failure.
         trace_status = True
         if g.app.suppressImportChecks:
             if trace and trace_status:
@@ -911,8 +911,8 @@ class Importer(object):
             self.trace_lines(lines1, lines2, parent)
         ok = lines1 == lines2
         if not ok and not self.strict:
-            if trace:
-                self.show_failure1(lines1, lines2, parent, trace_all, trace_status)
+            if trace and trace_status:
+                g.trace('===== %s NOT OK cleaning LWS' % self.name)
             # Issue an error only if something *other than* lws is amiss.
             lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
             ok = lines1 == lines2
@@ -920,8 +920,8 @@ class Importer(object):
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
             self.show_failure2(lines1, lines2, sfn)
-        if trace and trace_all or (not ok and trace_lines):
-            self.trace_lines(lines1, lines2, parent)
+            if trace and trace_lines:
+                self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -948,13 +948,6 @@ class Importer(object):
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
-    #@+node:ekr.20161125031613.1: *5* i.show_failure1
-    def show_failure1(self, lines1, lines2, parent, trace_all, trace_status):
-        '''Print traces when first checks fail.'''
-        if trace_status:
-            g.trace('===== %s NOT OK cleaning LWS' % self.name)
-        if trace_all:
-            self.trace_lines(lines1, lines2, parent)
     #@+node:ekr.20161123210716.1: *5* i.show_failure2
     def show_failure2(self, lines1, lines2, sfn):
         '''Print the failing lines.'''
