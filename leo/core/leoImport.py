@@ -1947,7 +1947,10 @@ class RecursiveImportController(object):
         trace = False and not g.unitTesting
         c = self.c
         g.blue(g.os_path_normpath(dir_))
-        files = os.listdir(dir_)
+        if g.os_path_isfile(dir_):
+            files = [dir_]
+        else:
+            files = os.listdir(dir_)
         if trace: g.trace(sorted(files))
         dirs, files2 = [], []
         for f in files:
