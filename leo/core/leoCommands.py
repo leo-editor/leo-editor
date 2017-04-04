@@ -7042,7 +7042,6 @@ class Commands(object):
         c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
-        one_file=False,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
@@ -7055,7 +7054,6 @@ class Commands(object):
         Parameters::
             dir_              The root directory or file to import.
             kind              One of ('@clean','@edit','@file','@nosent').
-            one_file=False    True: import only the file given by dir_.
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
@@ -7075,7 +7073,6 @@ class Commands(object):
             try:
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
-                    one_file=one_file,
                     recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,

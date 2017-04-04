@@ -1915,7 +1915,6 @@ class RecursiveImportController(object):
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
     def __init__(self, c, kind,
-        one_file=False,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
@@ -1924,7 +1923,6 @@ class RecursiveImportController(object):
         self.c = c
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
-        self.one_file = one_file
         self.recursive = recursive
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
