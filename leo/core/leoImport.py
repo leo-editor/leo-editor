@@ -1945,15 +1945,15 @@ class RecursiveImportController(object):
         self.theTypes = theTypes
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
-        '''Import all the .py files in dir_.'''
+        '''
+        Import all files whose extension matches self.theTypes in dir_.
+        In fact, dir_ can be a path to a single file.
+        '''
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
         try:
-            # pylint: disable=used-before-assignment
-            # p *is* properly initied.
             c = self.c
-            p = c.p
-            p1 = p.copy()
+            p1 = c.p
             t1 = time.time()
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
@@ -1962,11 +1962,10 @@ class RecursiveImportController(object):
             root = last.insertAfter()
             root.v.h = 'imported files'
             # Leo 5.6: Special case for a single file.
+            self.n_files = 0
             if g.os_path_isfile(dir_):
                 self.import_one_file(dir_, root.copy())
-                self.n_files = 1
             else:
-                self.n_files = 0
                 self.import_dir(dir_, root.copy())
                 self.post_process(root.copy(), dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
@@ -1974,11 +1973,12 @@ class RecursiveImportController(object):
             g.es_exception()
         finally:
             g.app.disable_redraw = False
-            for p in root.self_and_subtree():
-                p.contract()
+            for p2 in root.self_and_subtree():
+                p2.contract()
             c.redraw(root)
         t2 = time.time()
-        n = sum([1 for z in root.self_and_subtree()])
+        # n = sum([1 for z in root.self_and_subtree()])
+        n = len(list(root.self_and_subtree()))
         g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
             n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
@@ -2015,32 +2015,8 @@ class RecursiveImportController(object):
             g.trace('files2...\n%s' % '\n'.join(files2))
             g.trace('dirs...\n%s' % '\n'.join(dirs))
         if files2:
-            self.n_files += (1 if self.one_file else len(files2))
-            if self.one_file:
-                files2 = [files2[0]]
-            if self.kind == '@edit':
-                for fn in files2:
-                    try: # Fix #408
-                        parent = child or root
-                        p = parent.insertAsLastChild()
-                        p.v.h = fn.replace('\\', '/')
-                        s, e = g.readFileIntoString(fn, kind=self.kind)
-                        p.v.b = s
-                    except Exception:
-                        g.es_print('Exception importing', fn)
-                        g.es_exception()
-            elif self.kind == '@auto':
-                for fn in files2:
-                    parent = child or root
-                    p = parent.insertAsLastChild()
-                    p.v.h = fn.replace('\\', '/')
-                    p.clearDirty()
-            else:
-                c.importCommands.importFilesCommand(
-                    files2,
-                    '@file', # '@auto','@clean','@nosent' cause problems.
-                    redrawFlag=False,
-                    shortFn=True)
+            for f in files2:
+                self.import_one_file(f, parent=child)
         if dirs:
             for dir_ in sorted(dirs):
                 self.import_dir(dir_, child)
@@ -2049,6 +2025,7 @@ class RecursiveImportController(object):
         '''Import one file to the last top-level node.'''
         c = self.c
         g.blue(g.os_path_normpath(path))
+        self.n_files += 1
         if self.kind == '@edit':
             try:
                 p = parent.insertAsLastChild()
@@ -2069,6 +2046,9 @@ class RecursiveImportController(object):
                 '@file', # '@auto','@clean','@nosent' cause problems.
                 redrawFlag=False,
                 shortFn=True)
+            p = parent.lastChild()
+        if self.safe_at_file:
+            p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
     def post_process(self, p, prefix):
         '''
@@ -2105,44 +2085,35 @@ class RecursiveImportController(object):
             if s != p.h:
                 p.v.h = s
     #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines
-    file_pattern = re.compile(r'^(@auto|@clean|@edit|@file|@nosent)')
+    file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
 
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
-        trace = True and not g.unitTesting
-        trace_result = False
-        if trace: g.trace('=====', p.h)
+        if prefix and not prefix.endswith('/'):
+            prefix = prefix + '/'
         m = self.file_pattern.match(p.h)
         if m:
-            h = p.h[len(m.group(1)):].strip()
-            # g.trace('MATCH:', repr(m.group(1)), '==>', repr(h))
+            # It's an @file node of some kind. Strip off the prefix.
+            kind = m.group(0)
+            path = p.h[len(kind):].strip()
+            stripped = self.strip_prefix(path, prefix)
+            p.h = '%s %s' % (kind, stripped or path)
         else:
-            h = p.h
-        h2 = h[len(prefix):].strip()
-        ends_with_ext = any([h2.endswith(z) for z in self.theTypes])
-        if h == prefix:
-            if trace and trace_result: g.trace('@path %s' % (h))
-            p.v.h = '@path %s' % (h)
+            # p.h is a path.
+            path = p.h
+            stripped = self.strip_prefix(path, prefix)
+            p.h = '@path %s' % (stripped or path)
             for p in p.children():
-                self.minimize_headlines(p, prefix)
-        elif h2.find('/') <= 0 and ends_with_ext:
-            if h2.startswith('/'):
-                h2 = h2[1:]
-            p.v.h = '%s %s' % (self.kind, h2)
-            if self.safe_at_file:
-                p.v.h = '@' + p.v.h
-            if trace and trace_result: g.trace(p.h)
-            # We never scan the children of @file nodes.
+                self.minimize_headlines(p, prefix + stripped)
+        
+    #@+node:ekr.20170404134052.1: *6* ric.strip_prefix
+    def strip_prefix(self, path, prefix):
+        '''Strip the prefix from the path and return the result.'''
+        if path.startswith(prefix):
+            return path[len(prefix):]
         else:
-            if h2.startswith('/'): h2 = h2[1:]
-            if trace and trace_result:
-                print('')
-                g.trace('@path [%s/]%s' % (prefix, h2))
-            p.v.h = '@path %s' % (h2)
-            prefix2 = prefix if prefix.endswith('/') else prefix + '/'
-            prefix2 = prefix2 + h2
-            for p in p.children():
-                self.minimize_headlines(p, prefix2)
+            return '' # A signal.
+
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
         c = self.c
