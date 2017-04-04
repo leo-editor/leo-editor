@@ -913,7 +913,7 @@ class LeoImportCommands(object):
         if command: u.afterChangeGroup(p, command)
         c.redraw(current)
         return p
-    #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand & helper
+    #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(self,
         files=None,
         treeType=None,
@@ -926,9 +926,11 @@ class LeoImportCommands(object):
             return
         self.tab_width = c.getTabWidth(current)
         self.treeType = treeType or '@file'
-        if len(files) == 2:
-            current = self.createImportParent(current, files)
-        parent = current if len(files) > 1 else None
+        ###
+        # if len(files) == 2:
+            # current = self.createImportParent(current, files)
+        # parent = current if len(files) > 1 else None
+        parent = current.copy()
         for fn in files:
             # 2017/03/04: Report exceptions here, not in the caller.
             try:
@@ -1941,7 +1943,45 @@ class RecursiveImportController(object):
         self.recursive = recursive
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
-    #@+node:ekr.20130823083943.12597: *3* ric.Pass 1: import_dir (RecursiveImportController)
+    #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
+    def run(self, dir_):
+        '''Import all the .py files in dir_.'''
+        if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+            g.es('bad kind param', self.kind, color='red')
+        try:
+            # pylint: disable=used-before-assignment
+            # p *is* properly initied.
+            c = self.c
+            p = c.p
+            p1 = p.copy()
+            t1 = time.time()
+            g.app.disable_redraw = True
+            bunch = c.undoer.beforeChangeTree(p1)
+            # Always create a new last top-level node.
+            last = c.lastTopLevel()
+            root = last.insertAfter()
+            root.v.h = 'imported files'
+            # Leo 5.6: Special case for a single file.
+            if g.os_path_isfile(dir_):
+                self.import_one_file(dir_, root.copy())
+                self.n_files = 1
+            else:
+                self.n_files = 0
+                self.import_dir(dir_, root.copy())
+                self.post_process(root.copy(), dir_)
+            c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
+        except Exception:
+            g.es_exception()
+        finally:
+            g.app.disable_redraw = False
+            for p in root.self_and_subtree():
+                p.contract()
+            c.redraw(root)
+        t2 = time.time()
+        n = sum([1 for z in root.self_and_subtree()])
+        g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
+            n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
+    #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, root):
         '''Import selected files from dir_, a directory.'''
         trace = False and not g.unitTesting
@@ -1975,7 +2015,7 @@ class RecursiveImportController(object):
             g.trace('files2...\n%s' % '\n'.join(files2))
             g.trace('dirs...\n%s' % '\n'.join(dirs))
         if files2:
-            self.n_files = 1 if self.one_file else len(files2)
+            self.n_files += (1 if self.one_file else len(files2))
             if self.one_file:
                 files2 = [files2[0]]
             if self.kind == '@edit':
@@ -2004,233 +2044,32 @@ class RecursiveImportController(object):
         if dirs:
             for dir_ in sorted(dirs):
                 self.import_dir(dir_, child)
-    #@+node:ekr.20170304161145.1: *3* ric.Pass 2: clean_all & helpers (no longer used)
-    def clean_all(self, dir_, p):
-        '''Clean all imported nodes. This takes a lot of time.'''
-        # Warning: this happens after perfect import checks.
-        # Mistakes here could be serious.
-        trace = False and not g.unitTesting
-        t1 = time.time()
-        prev_dir = None
-        for p in p.self_and_subtree():
-            h = p.h
-            for tag in ('@clean', '@file', '@nosent'):
-                if h.startswith('@' + tag):
-                    i = 1 + len(tag)
-                    path = h[i:].strip()
-                    dir_, fn = g.os_path_split(path)
-                    if prev_dir != dir_:
-                        g.blue(g.os_path_normpath(dir_))
-                        prev_dir = dir_
-                    junk, ext = g.os_path_splitext(path)
-                    self.clean(p, ext)
-                elif h.startswith(tag):
-                    i = len(tag)
-                    path = h[i:].strip()
-                    dir_, fn = g.os_path_split(path)
-                    if prev_dir != dir_:
-                        g.blue(g.os_path_normpath(dir_))
-                        prev_dir = dir_
-                    junk, ext = g.os_path_splitext(path)
-                    self.clean(p, ext)
-        t2 = time.time()
-        if trace: g.trace('%2.2f sec' % (t2-t1))
-    #@+node:ekr.20170304161145.2: *4* ric.clean
-    def clean(self, p, ext):
-        '''
-        - Move a shebang line from the first child to the root.
-        - Move a leading docstring in the first child to the root.
-        - Use a section reference for declarations.
-        - Remove leading and trailing blank lines from all nodes.
-        - Merge a node containing nothing but comments with the next node.
-        - Merge a node containing no class or def lines with the previous node.
-        '''
-        g.blue('cleaning', g.shortFileName(p.h))
-        root = p.copy()
-        for tag in ('@@file', '@file'):
-            if p.h.startswith(tag):
-                p.v.h = p.h[len(tag):].strip()
-                break
-        self.move_shebang_line(root)
-        # A bad idea.
-            # self.move_doc_string(root)
-        self.rename_decls(root)
-        for p in root.self_and_subtree():
-            self.clean_blank_lines(p)
-        # Get the single-line comment delim.
-        if ext.startswith('.'): ext = ext[1:]
-        language = g.app.extension_dict.get(ext)
-        if language:
-            delim, junk, junk = g.set_delims_from_language(language)
+    #@+node:ekr.20170404103953.1: *4* ric.import_one_file
+    def import_one_file(self, path, parent):
+        '''Import one file to the last top-level node.'''
+        c = self.c
+        g.blue(g.os_path_normpath(path))
+        if self.kind == '@edit':
+            try:
+                p = parent.insertAsLastChild()
+                p.v.h = path.replace('\\', '/')
+                s, e = g.readFileIntoString(path, kind=self.kind)
+                p.v.b = s
+            except Exception:
+                g.es_print('Exception importing', path)
+                g.es_exception()
+        elif self.kind == '@auto':
+            p = parent.insertAsLastChild()
+            p.v.h = path.replace('\\', '/')
+            p.clearDirty()
         else:
-            delim = None
-        # g.trace('ext: %s language: %s delim: %s' % (ext,language,delim))
-        if delim:
-            # Do general language-dependent cleanups.
-            for p in root.subtree():
-                self.merge_comment_nodes(p, delim)
-        if ext == 'py':
-            # Do python only cleanups.
-            for p in root.subtree():
-                self.merge_extra_nodes(p)
-            for p in root.subtree():
-                self.move_decorator_lines(p)
-    #@+node:ekr.20170304161145.3: *4* ric.clean_blank_lines
-    def clean_blank_lines(self, p):
-        '''Remove leading and trailing blank lines from all nodes.'''
-        s = p.b
-        if not s.strip():
-            return
-        result = g.splitLines(s)
-        for i in 0, -1:
-            while result:
-                if result[i].strip():
-                    break
-                else:
-                    del result[i]
-        s = ''.join(result)
-        if not s.endswith('\n'): s = s + '\n'
-        if s != p.b:
-            p.v.b = s
-    #@+node:ekr.20170304161145.4: *4* ric.merge_comment_nodes
-    def merge_comment_nodes(self, p, delim):
-        '''Merge a node containing nothing but comments with the next node.'''
-        if not p.hasChildren() and p.hasNext() and p.h.strip().startswith(delim):
-            p2 = p.next()
-            b = p.b.lstrip()
-            b = b + ('\n' if b.endswith('\n') else '\n\n')
-            p2.v.b = b + p2.b
-            p.doDelete(p2)
-    #@+node:ekr.20170304161145.5: *4* ric.merge_extra_nodes
-    def merge_extra_nodes(self, p):
-        '''Merge a node containing no class or def lines with the previous node'''
-        s = p.b
-        if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
-            return
-        for s2 in g.splitLines(s):
-            if s2.strip().startswith('class') or s2.strip().startswith('def'):
-                return
-        p2 = p.back()
-        if p2:
-            nl = '\n' if s.endswith('\n') else '\n\n'
-            p2.v.b = p2.b + nl + s
-            p.doDelete(p2)
-    #@+node:ekr.20170304161145.6: *4* ric.move_decorator_lines (RecursiveImportController)
-    def move_decorator_lines(self, p):
-        '''Move trailing decorator lines to the next node.'''
-        trace = False and not g.unitTesting
-        seen = []
-        p2 = p.next()
-        if not p2:
-            return False
-        lines = g.splitLines(p.b)
-        n = len(lines) - 1
-        while n >= 0:
-            s = lines[n]
-            if s.startswith('@'):
-                i = g.skip_id(s, 1, chars='-')
-                word = s[1: i]
-                if word in g.globalDirectiveList:
-                    break
-                else:
-                    n -= 1
-            else:
-                break
-        head = ''.join(lines[: n + 1])
-        tail = ''.join(lines[n + 1:])
-        if not tail:
-            return False
-        if not head.endswith('\n'):
-            head = head + '\n'
-        # assert p.b.v == head+tail
-        if trace:
-            if tail not in seen:
-                seen.append(tail)
-                g.trace(tail.strip())
-        nl = '' if tail.endswith('\n') else '\n'
-        p.v.b = head
-        p2.v.b = tail + nl + p2.b
-        return True
-    #@+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
-    def move_doc_string(self, root):
-        '''Move a leading docstring in the first child to the root node.'''
-        if 0: # This is completely misguided
-            # To do: copy comments before docstring
-            p = root.firstChild()
-            s = p and p.b or ''
-            if not s:
-                return
-            result = []
-            for s2 in g.splitLines(s):
-                delim = None
-                s3 = s2.strip()
-                if not s3:
-                    result.append(s2)
-                elif s3.startswith('#'):
-                    result.append(s2)
-                elif s3.startswith('"""'):
-                    delim = '"""'
-                    break
-                elif s3.startswith("'''"):
-                    delim = "'''"
-                    break
-                else:
-                    break
-            if not delim:
-                comments = ''.join(result)
-                if comments:
-                    nl = '\n\n' if root.b.strip() else ''
-                    if root.b.startswith('@first #!'):
-                        lines = g.splitLines(root.b)
-                        root.v.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
-                    else:
-                        root.v.b = comments + nl + root.b
-                    p.v.b = s[len(comments):]
-                return
-            i = s.find(delim)
-            assert i > -1
-            i = s.find(delim, i + 3)
-            if i == -1:
-                return
-            doc = s[: i + 3]
-            p.v.b = s[i + 3:].lstrip()
-            # Move docstring to front of root.b, but after any shebang line.
-            nl = '\n\n' if root.b.strip() else ''
-            if root.b.startswith('@first #!'):
-                lines = g.splitLines(root.b)
-                root.v.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
-            else:
-                root.v.b = doc + nl + root.b
-    #@+node:ekr.20170304161145.8: *4* ric.move_shebang_line
-    def move_shebang_line(self, root):
-        '''Move a shebang line from the first child to the root.'''
-        p = root.firstChild()
-        s = p and p.b or ''
-        if s.startswith('#!'):
-            lines = g.splitLines(s)
-            nl = '\n\n' if root.b.strip() else ''
-            root.v.b = '@first ' + lines[0] + nl + root.b
-            p.v.b = ''.join(lines[1:])
-    #@+node:ekr.20170304161145.9: *4* ric.rename_decls
-    def rename_decls(self, root):
-        '''Use a section reference for declarations.'''
-        p = root.firstChild()
-        h = p and p.h or ''
-        tag = 'declarations'
-        if not h.endswith(tag):
-            return
-        if not p.b.strip():
-            return # The blank node will be deleted.
-        name = h[: -len(tag)].strip()
-        decls = g.angleBrackets(tag)
-        p.v.h = '%s (%s)' % (decls, name)
-        i = root.b.find('@others')
-        if i == -1:
-            g.trace('can not happen')
-        else:
-            nl = '' if i == 0 else '\n'
-            root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
-    #@+node:ekr.20130823083943.12607: *3* ric.Pass 3: post_process & helpers
+            c.selectPosition(parent, enableRedrawFlag=False)
+            c.importCommands.importFilesCommand(
+                [path],
+                '@file', # '@auto','@clean','@nosent' cause problems.
+                redrawFlag=False,
+                shortFn=True)
+    #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
     def post_process(self, p, prefix):
         '''
         Traverse p's tree, replacing all nodes that start with prefix
@@ -2238,41 +2077,41 @@ class RecursiveImportController(object):
         '''
         trace = False and not g.unitTesting
         if trace: t1 = time.time()
-        root = p.copy()
-        self.fix_back_slashes(root.copy())
+        self.fix_back_slashes(p.copy())
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
-            self.remove_empty_nodes(root.copy())
-        self.minimize_headlines(root.copy().firstChild(), prefix)
-        self.clear_dirty_bits(root.copy())
+            self.remove_empty_nodes(p.copy())
+        self.minimize_headlines(p.copy().firstChild(), prefix)
+        self.clear_dirty_bits(p.copy())
         if trace:
             t2 = time.time()
             g.trace('%2.2f sec' % (t2-t1))
-    #@+node:ekr.20130823083943.12608: *4* ric.clear_dirty_bits
+    #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
         c.setChanged(False)
         for p in p.self_and_subtree():
             p.clearDirty()
-    #@+node:ekr.20130823083943.12609: *4* ric.dump_headlines
+    #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
     def dump_headlines(self, p):
         # show all headlines.
         for p in p.self_and_subtree():
             print(p.h)
-    #@+node:ekr.20130823083943.12610: *4* ric.fix_back_slashes
+    #@+node:ekr.20130823083943.12610: *5* ric.fix_back_slashes
     def fix_back_slashes(self, p):
         '''Convert backslash to slash in all headlines.'''
         for p in p.self_and_subtree():
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s
-    #@+node:ekr.20130823083943.12611: *4* ric.minimize_headlines
+    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines
     file_pattern = re.compile(r'^(@auto|@clean|@edit|@file|@nosent)')
 
     def minimize_headlines(self, p, prefix):
         '''Create @path nodes to minimize the paths required in descendant nodes.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(p.h)
+        trace = True and not g.unitTesting
+        trace_result = False
+        if trace: g.trace('=====', p.h)
         m = self.file_pattern.match(p.h)
         if m:
             h = p.h[len(m.group(1)):].strip()
@@ -2282,7 +2121,7 @@ class RecursiveImportController(object):
         h2 = h[len(prefix):].strip()
         ends_with_ext = any([h2.endswith(z) for z in self.theTypes])
         if h == prefix:
-            if trace: g.trace('@path %s' % (h))
+            if trace and trace_result: g.trace('@path %s' % (h))
             p.v.h = '@path %s' % (h)
             for p in p.children():
                 self.minimize_headlines(p, prefix)
@@ -2291,12 +2130,12 @@ class RecursiveImportController(object):
                 h2 = h2[1:]
             p.v.h = '%s %s' % (self.kind, h2)
             if self.safe_at_file:
-                p.v.h = '@' + p.h
-            if trace: g.trace(p.h)
+                p.v.h = '@' + p.v.h
+            if trace and trace_result: g.trace(p.h)
             # We never scan the children of @file nodes.
         else:
             if h2.startswith('/'): h2 = h2[1:]
-            if trace:
+            if trace and trace_result:
                 print('')
                 g.trace('@path [%s/]%s' % (prefix, h2))
             p.v.h = '@path %s' % (h2)
@@ -2304,7 +2143,7 @@ class RecursiveImportController(object):
             prefix2 = prefix2 + h2
             for p in p.children():
                 self.minimize_headlines(p, prefix2)
-    #@+node:ekr.20130823083943.12612: *4* ric.remove_empty_nodes
+    #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
         c = self.c
         root = p.copy()
@@ -2312,43 +2151,6 @@ class RecursiveImportController(object):
             z.copy() for z in root.self_and_subtree()
                 if not p.b and not p.hasChildren()
         ])
-    #@+node:ekr.20130823083943.12613: *3* ric.run (RecursiveImportController)
-    def run(self, dir_):
-        '''Import all the .py files in dir_.'''
-        if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
-            g.es('bad kind param', self.kind, color='red')
-        try:
-            # pylint: disable=used-before-assignment
-            # p *is* properly initied.
-            c = self.c
-            p = c.p
-            p1 = p.copy()
-            t1 = time.time()
-            n = 0
-            self.n_files = 0
-            g.app.disable_redraw = True
-            bunch = c.undoer.beforeChangeTree(p1)
-            root = p.insertAfter()
-            root.v.h = 'imported files'
-            self.import_dir(dir_, root.copy())
-            for p in root.self_and_subtree():
-                n += 1
-            # The importers should do this.
-                # if self.kind not in ('@auto', '@edit'):
-                    # self.clean_all(dir_, root.copy())
-            self.post_process(root.copy(), dir_)
-            c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
-        except Exception:
-            n = 0
-            g.es_exception()
-        finally:
-            g.app.disable_redraw = False
-            for p in root.self_and_subtree():
-                p.contract()
-            c.redraw(root)
-        t2 = time.time()
-        g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
-            n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:
