@@ -1964,10 +1964,10 @@ class RecursiveImportController(object):
             # Leo 5.6: Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
-                self.import_one_file(dir_, root.copy())
+                self.import_one_file(dir_, root)
             else:
-                self.import_dir(dir_, root.copy())
-                self.post_process(root.copy(), dir_)
+                self.import_dir(dir_, root)
+                self.post_process(root, dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_exception()
@@ -1982,21 +1982,18 @@ class RecursiveImportController(object):
         g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
             n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
-    def import_dir(self, dir_, root):
+    def import_dir(self, dir_, parent):
         '''Import selected files from dir_, a directory.'''
-        c = self.c
-        # g.blue(g.os_path_normpath(dir_))
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
             files = os.listdir(dir_)
         dirs, files2 = [], []
-        for f in files:
-            path = f
+        for path in files:
             try: # Fix #408.
-                path = g.os_path_join(dir_, f, expanduser=False)
+                path = g.os_path_join(dir_, path, expanduser=False)
                 if g.os_path_isfile(path):
-                    name, ext = g.os_path_splitext(f)
+                    name, ext = g.os_path_splitext(path)
                     if ext in self.theTypes:
                         files2.append(path)
                 elif self.recursive:
@@ -2005,9 +2002,8 @@ class RecursiveImportController(object):
                 g.es_print('Exception computing', path)
                 g.es_exception()
         if files or dirs:
-            parent = root.insertAsLastChild()
+            parent = parent.insertAsLastChild()
             parent.v.h = dir_
-            c.selectPosition(parent, enableRedrawFlag=False)
             if files2:
                 for f in files2:
                     self.import_one_file(f, parent=parent)
@@ -2051,12 +2047,12 @@ class RecursiveImportController(object):
         '''
         trace = False and not g.unitTesting
         if trace: t1 = time.time()
-        self.fix_back_slashes(p.copy())
+        self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
-            self.remove_empty_nodes(p.copy())
-        self.minimize_headlines(p.copy().firstChild(), prefix)
-        self.clear_dirty_bits(p.copy())
+            self.remove_empty_nodes(p)
+        self.minimize_headlines(p.firstChild(), prefix)
+        self.clear_dirty_bits(p)
         if trace:
             t2 = time.time()
             g.trace('%2.2f sec' % (t2-t1))
@@ -2111,9 +2107,8 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
         c = self.c
-        root = p.copy()
         c.deletePositionsInList([
-            z.copy() for z in root.self_and_subtree()
+            p for p in p.self_and_subtree()
                 if not p.b and not p.hasChildren()
         ])
     #@-others
