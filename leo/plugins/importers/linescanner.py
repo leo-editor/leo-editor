@@ -919,7 +919,7 @@ class Importer(object):
             if ok and not g.unitTesting:
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
-            self.show_failure2(lines1, lines2, sfn)
+            self.show_failure(lines1, lines2, sfn)
             if trace and trace_lines:
                 self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
@@ -948,9 +948,19 @@ class Importer(object):
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
-    #@+node:ekr.20161123210716.1: *5* i.show_failure2
-    def show_failure2(self, lines1, lines2, sfn):
-        '''Print the failing lines.'''
+    #@+node:ekr.20170404035138.1: *5* context_lines
+    def context_lines(self, aList, i, n=2):
+        '''Return a list containing the n lines of surrounding context of aList[i].'''
+        result = []
+        aList1 = aList[max(0, i-n):i]
+        aList2 = aList[i+1:i+n+1]
+        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, s) for j, s in enumerate(aList1)])
+        result.append('* %4s %s' % (i + 1, aList[i]))
+        result.extend(['  %4s %s' % (i + 2 + j, s) for j, s in enumerate(aList2)])
+        return result
+    #@+node:ekr.20161123210716.1: *5* i.show_failure
+    def show_failure(self, lines1, lines2, sfn):
+        '''Print the failing lines, with surrounding context.'''
         if not g.unitTesting:
             g.es('@auto failed:', sfn, color='red')
         n1, n2 = len(lines1), len(lines2)
@@ -960,8 +970,12 @@ class Importer(object):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
                 print('first mismatched line: %s' % (i+1))
-                print(repr(line1))
-                print(repr(line2))
+                print('s1...')
+                print(''.join(self.context_lines(lines1, i)))
+                print('s2...')
+                print(''.join(self.context_lines(lines2, i)))
+                # print(repr(line1))
+                # print(repr(line2))
                 break
         else:
             print('all common lines match')
