@@ -470,9 +470,15 @@ import inspect
 
 d = c.commandsDict
 keys = sorted(d.keys())
+table = ('bookmark', 'screen-capture', 'stickynote')
 for key in keys:
-    if key.startswith('bookmark'):
-        continue # bookmarks commands are their own signatures.
+    continue_flag = False
+    for prefix in table:
+        if key.startswith(prefix):
+            continue_flag = True
+            break # These plugins have their own signatures.
+    if continue_flag:
+        continue
     f = d.get(key)
     # Test true __call__ methods if they exist.
     name = getattr(f,'__name__',None) or repr(f)
@@ -483,7 +489,7 @@ for key in keys:
     arg1 = len(args) > 1 and args[1]
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
-    assert arg0 in expected or arg1 in expected,message
+    assert arg0 in expected or arg1 in expected, message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
     
