@@ -158,6 +158,7 @@ class Importer(object):
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
+
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
         assert s and g.isString(s), repr(s)
@@ -174,6 +175,7 @@ class Importer(object):
         p.v._import_lines.extend(list(lines))
 
     def get_lines(self, p):
+        # It may be best to fail quick here.
         if not hasattr(p.v, '_import_lines'):
             g.trace('can not happen: no _import_lines', p.h)
             p.v._import_lines = g.splitLines(p.b)
@@ -1026,9 +1028,11 @@ class Importer(object):
         if self.gen_refs:
             # Alas, the *actual* @auto write code refuses to write section references!!
             at.write(self.root,
-                    nosentinels=True,           # was False,
-                    perfectImportFlag=False,    # was True,
-                    scriptWrite=True,           # was False,
+                    nosentinels=True,
+                    perfectImportFlag=False,
+                        # True Allow undefined section references.
+                        # Not ready yet.
+                    scriptWrite=True,
                     thinFile=True,
                     toString=True,
                 )

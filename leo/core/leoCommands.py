@@ -2133,7 +2133,10 @@ class Commands(object):
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand(files=[fn], treeType='@clean')
+                ic.importFilesCommand(
+                    files=[fn],
+                    parent=c.p,
+                    treeType='@clean')
         c.raise_error_dialogs(kind='read')
 
     # Compatibility: used by unit tests.

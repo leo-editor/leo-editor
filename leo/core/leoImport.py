@@ -708,7 +708,10 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self, fileName, parent,
-        atAuto=False, atShadow=False, s=None, ext=None
+        atAuto=False,
+        atShadow=False,
+        s=None,
+        ext=None,
     ):
         '''Create an outline by importing a file or string.'''
         trace = False and not g.unitTesting
@@ -765,9 +768,9 @@ class LeoImportCommands(object):
     #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c, u = self.c, self.c.undoer
-        if trace: g.trace('atAuto: %5r atAutoKind: %r parent: %s' % (
+        if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
             atAuto, atAutoKind, parent and parent.h))
         if atAuto:
             if atAutoKind:
@@ -780,9 +783,11 @@ class LeoImportCommands(object):
                     p = parent.insertAsLastChild()
                 else:
                     p = c.lastTopLevel().insertAfter()
-                p.initHeadString(atAutoKind + ' ' + fileName)
+                if atAutoKind:
+                    p.initHeadString(atAutoKind + ' ' + fileName)
                 u.afterInsertNode(p, 'Import', undoData)
             else:
+                # Use the *existing* node.
                 p = parent.copy()
                 p.setBodyString('')
         else:
@@ -817,7 +822,7 @@ class LeoImportCommands(object):
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars & vars for imports.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         junk, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
@@ -836,7 +841,8 @@ class LeoImportCommands(object):
             self.rootLine = "@root-code " + self.fileName + '\n'
         else:
             self.rootLine = ''
-        if trace: g.trace('1', atAuto, self.treeType, fileName)
+        if trace: g.trace('1: atAuto: %s treeType: %s %s' % (
+            atAuto, self.treeType, fileName))
         atAutoKind = None
         if not atAuto and kind != '@auto':
             # scannerUnitTest and the recursive input code uses this code.
@@ -853,7 +859,7 @@ class LeoImportCommands(object):
                         atAuto = True
                         atAutoKind = z
                         break
-        if trace: g.trace('2', atAuto, atAutoKind, ext)
+        if trace: g.trace('2: atAuto: %s kind: %s ext: %s' % (atAuto, atAutoKind, ext))
         return atAuto, atAutoKind, ext, s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self):
@@ -927,12 +933,18 @@ class LeoImportCommands(object):
             return
         self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
-        if not parent: parent = c.p
+        if not parent:
+            g.trace('===== no parent', g.callers())
+            parent = c.p
         for fn in files:
             # 2017/03/04: Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
-                p = self.createOutline(fn, parent=parent)
+                p = self.createOutline(
+                    fn,
+                    atAuto=True, # Leo 5.6: ignore apparent undefined section references.
+                    parent=parent,
+                )
                 if p: # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1942,26 +1954,25 @@ class RecursiveImportController(object):
             bunch = c.undoer.beforeChangeTree(p1)
             # Always create a new last top-level node.
             last = c.lastTopLevel()
-            root = last.insertAfter()
-            root.v.h = 'imported files'
+            parent = last.insertAfter()
+            parent.v.h = 'imported files'
             # Leo 5.6: Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
-                self.import_one_file(dir_, root)
+                self.import_one_file(dir_, parent)
             else:
-                self.import_dir(dir_, root)
-                self.post_process(root, dir_)
+                self.import_dir(dir_, parent)
+                self.post_process(parent, dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_exception()
         finally:
             g.app.disable_redraw = False
-            for p2 in root.self_and_subtree():
+            for p2 in parent.self_and_subtree():
                 p2.contract()
-            c.redraw(root)
+            c.redraw(parent)
         t2 = time.time()
-        # n = sum([1 for z in root.self_and_subtree()])
-        n = len(list(root.self_and_subtree()))
+        n = len(list(parent.self_and_subtree()))
         g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
             n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
@@ -1970,6 +1981,7 @@ class RecursiveImportController(object):
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
+            g.es_print(dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
@@ -1991,14 +2003,15 @@ class RecursiveImportController(object):
                 for f in files2:
                     self.import_one_file(f, parent=parent)
             if dirs:
+                assert self.recursive
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *4* ric.import_one_file
     def import_one_file(self, path, parent):
         '''Import one file to the last top-level node.'''
         c = self.c
-        # g.blue(g.os_path_normpath(path))
         self.n_files += 1
+        g.trace(parent.h)
         if self.kind == '@edit':
             try:
                 p = parent.insertAsLastChild()
