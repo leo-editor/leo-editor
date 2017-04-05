@@ -649,6 +649,9 @@ class Importer(object):
         top = stack[-1]
         return new_state.level() < top.state.level()
     #@+node:ekr.20161108160409.8: *5* i.gen_ref
+    refs_dict = {}
+        # Keys are headlines. Values are disambiguating number.
+
     def gen_ref(self, line, parent, target):
         '''
         Generate the ref line and a flag telling this method whether a previous
@@ -661,6 +664,12 @@ class Importer(object):
         if self.is_rst and not self.atAuto:
             return None, None
         elif self.gen_refs:
+            # Fix #441: Make sure all section refs are unique.
+            d = self.refs_dict
+            n = d.get(h, 0)
+            d [h] = n + 1
+            if n > 0:
+                h = '%s: %s' % (n, h)
             headline = g.angleBrackets(' %s ' % h)
             ref = '%s%s\n' % (
                 indent_ws,
