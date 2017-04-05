@@ -18,14 +18,6 @@
 @wrap
 .. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
 https://github.com/leo-editor/leo-editor/issues/414
-.. @+node:ekr.20170325045220.1: *4* #441: Fix bugs in javascript importer
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/441
-- Make sure whitespace stripping doesn't put @language at end of line.
-
-@language python
 .. @+node:ekr.20170328043328.1: *4* Add ekr bindings for indent/unindent-region
 Alt-Tab, Alt-Shift-Tab?
 .. @+node:ekr.20031218072017.1830: *5* c.indentBody (indent-region)
@@ -354,6 +346,7 @@ def updateTab(self, p, w, smartTab=True):
                 self.doPlainTab(s, i, tab_width, w)
         else:
             self.doPlainTab(s, i, tab_width, w)
+.. @+node:ekr.20170405071940.1: *4* #466: Moving a node can cause temporary coloring issues
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap

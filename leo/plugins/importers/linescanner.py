@@ -594,12 +594,16 @@ class Importer(object):
                 p = tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
-    #@+node:ekr.20161127102339.1: *5* i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
-        # Comparing new_state against prev_state does not work for python.
-        top = stack[-1]
-        return new_state.level() < top.state.level()
+    #@+node:ekr.20161108160409.7: *5* i.create_child_node
+    def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        child = parent.insertAsLastChild()
+        self.inject_lines_ivar(child)
+        if body:
+            self.add_line(child, body)
+        assert g.isString(headline), repr(headline)
+        child.h = headline.strip()
+        return child
     #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -638,6 +642,45 @@ class Importer(object):
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
+    #@+node:ekr.20161127102339.1: *5* i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
+    #@+node:ekr.20161108160409.8: *5* i.gen_ref
+    def gen_ref(self, line, parent, target):
+        '''
+        Generate the ref line and a flag telling this method whether a previous
+        #@+others
+        #@-others
+        '''
+        trace = False and g.unitTesting
+        indent_ws = self.get_str_lws(line)
+        h = self.clean_headline(line) 
+        if self.is_rst and not self.atAuto:
+            return None, None
+        elif self.gen_refs:
+            headline = g.angleBrackets(' %s ' % h)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % h))
+        else:
+            if target.ref_flag:
+                ref = None
+            else:
+                ref = '%s@others\n' % indent_ws
+                target.at_others_flag = True
+            target.ref_flag = True
+                # Don't generate another @others in this target.
+            headline = h
+        if ref:
+            if trace:
+                g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+                g.printList(self.get_lines(parent))
+            self.add_line(parent,ref)
+        return headline
     #@+node:ekr.20161110041440.1: *5* i.inject_lines_ivar
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
@@ -676,49 +719,6 @@ class Importer(object):
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
         g.printList(stack)
-    #@+node:ekr.20161108160409.7: *5* i.create_child_node
-    def create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
-        child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
-        assert g.isString(headline), repr(headline)
-        child.h = headline.strip()
-        return child
-    #@+node:ekr.20161108160409.8: *5* i.gen_ref
-    def gen_ref(self, line, parent, target):
-        '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        '''
-        trace = False and g.unitTesting
-        indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = g.angleBrackets(' %s ' % h)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % h))
-        else:
-            if target.ref_flag:
-                ref = None
-            else:
-                ref = '%s@others\n' % indent_ws
-                target.at_others_flag = True
-            target.ref_flag = True
-                # Don't generate another @others in this target.
-            headline = h
-        if ref:
-            if trace:
-                g.trace('%s indent_ws: %r line: %r parent: %s' % (
-                '*' * 20, indent_ws, line, parent.h))
-                g.printList(self.get_lines(parent))
-            self.add_line(parent,ref)
-        return headline
     #@+node:ekr.20161108131153.13: *4* Stage 2: i.post_pass & helpers
     def post_pass(self, parent):
         '''
