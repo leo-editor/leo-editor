@@ -10,12 +10,11 @@ Importer = linescanner.Importer
 class Markdown_Importer(Importer):
     '''The importer for the markdown lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Markdown_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'md',
             state_class = None,
             strict = False,

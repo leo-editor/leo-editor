@@ -9,12 +9,11 @@ Importer = linescanner.Importer
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
     
-    def __init__(self, importCommands, atAuto,language=None, alternate_language=None):
+    def __init__(self, importCommands, language=None, alternate_language=None):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'javascript',
             state_class = TS_ScanState,
         )

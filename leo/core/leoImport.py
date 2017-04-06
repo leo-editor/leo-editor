@@ -763,7 +763,7 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            func(atAuto=atAuto,c=c, parent=p, s=s)
+            func(c=c, parent=p, s=s) ### atAuto=atAuto,
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -1616,11 +1616,11 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
     def setEncoding(self, p=None, default=None):
         c = self.c
-        encoding = g.getEncodingAt(p or c.p)
+        encoding = g.getEncodingAt(p or c.p) or default
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
-        elif default: ### atAuto:
-            self.encoding = default ### c.config.default_at_auto_file_encoding
+        elif default:
+            self.encoding = default
         else:
             self.encoding = 'utf-8'
     #@-others

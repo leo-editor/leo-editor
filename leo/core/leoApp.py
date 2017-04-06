@@ -1222,14 +1222,13 @@ class LeoApp(object):
         for key in d.keys():
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
-            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, c, parent, s):
+                def scanner_for_at_auto_cb(c, parent, s):
                     try:
                         ic = c.importCommands
-                        scanner = aClass(importCommands=ic, atAuto=atAuto)
+                        scanner = aClass(importCommands=ic)
                         return scanner.run(s, parent)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -1250,10 +1249,10 @@ class LeoApp(object):
         if trace: g.trace(ext, aClass.__name__)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, c, parent, s):
+            def scanner_for_ext_cb(c, parent, s):
                 try:
                     ic = c.importCommands
-                    scanner = aClass(importCommands=ic, atAuto=atAuto)
+                    scanner = aClass(importCommands=ic)
                     return scanner.run(s, parent)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)

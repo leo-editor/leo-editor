@@ -10,12 +10,11 @@ Importer = linescanner.Importer
 class Pascal_Importer(Importer):
     '''The importer for the pascal lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Pascal_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'pascal',
             state_class = Pascal_ScanState,
             strict = False,

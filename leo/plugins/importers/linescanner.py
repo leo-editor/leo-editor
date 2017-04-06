@@ -101,7 +101,6 @@ class Importer(object):
 
     def __init__(self,
         importCommands, 
-        atAuto, # True when called from @auto logic.
         gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
@@ -111,7 +110,6 @@ class Importer(object):
         '''Importer.__init__.'''
         # Copies of args...
         self.importCommands = ic = importCommands
-        self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
         self.gen_refs = gen_refs
@@ -398,7 +396,7 @@ class Importer(object):
             
             if c.isChanged(): c.save()
             < < imp.reload importers.linescanner and importers.python > >
-            importer = py.Py_Importer(c.importCommands, atAuto=True)
+            importer = py.Py_Importer(c.importCommands)
             importer.test_scan_state(tests, Python_ScanState)
         '''
         trace = False and g.unitTesting
@@ -665,10 +663,12 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
-        if self.is_rst and not self.atAuto:
-            return None
-        elif self.gen_refs:
+        h = self.clean_headline(line)
+        ###
+        # if self.is_rst and not self.atAuto:
+            # return None
+        # el
+        if self.gen_refs:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict
             n = d.get(h, 0)

@@ -10,12 +10,11 @@ Importer = linescanner.Importer
 class Php_Importer(Importer):
     '''The importer for the php lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Php_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'php',
             state_class = Php_ScanState,
             strict = False,

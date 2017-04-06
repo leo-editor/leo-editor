@@ -15451,7 +15451,7 @@ else:
         g.Bunch(line='a = {[(')
     ]
 if hasattr(python, 'Py_Importer'):
-    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer = python.Py_Importer(c.importCommands)
     importer.test_scan_state(tests, State=python.Python_ScanState)
 else:
     self.skipTest('Skipping test for new python importer')
@@ -17760,7 +17760,7 @@ if 0:
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
+    # x = markdown.Markdown_Importer(ic)
 else:
     ic = c.importCommands  
 try:
@@ -20462,7 +20462,6 @@ lines_table = [
 for language in ('python', 'coffeescript'):
     importer = linescanner.Importer(
         c.importCommands,
-        atAuto = True,
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
@@ -20480,8 +20479,7 @@ table = [
     ('  ','  # comment\n'),
     ('', '\n'),
 ]
-importer = linescanner.Importer(c.importCommands,
-    atAuto=True, language='python')
+importer = linescanner.Importer(c.importCommands, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
@@ -20495,11 +20493,7 @@ table = [
     (True, '    '),
     (True,'  # comment'),
 ]
-importer = linescanner.Importer(
-    c.importCommands,
-    atAuto = True,
-    language = 'python',
-)
+importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
@@ -20517,7 +20511,7 @@ table = (
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    importer = js.JS_Importer(c.importCommands)
     prev_state = js.JS_ScanState()
     new_state = importer.scan_line(s, prev_state)
     curlies, parens, context = result

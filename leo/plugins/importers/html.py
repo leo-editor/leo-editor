@@ -7,12 +7,11 @@ Xml_Importer = xml.Xml_Importer
 #@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)
 class Html_Importer(Xml_Importer):
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Html_Importer.__init__'''
         # Init the base class.
         Xml_Importer.__init__(self,
             importCommands,
-            atAuto,
             tags_setting='import_html_tags',
         )
         self.name = 'html'
