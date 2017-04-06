@@ -174,6 +174,11 @@ class Importer(object):
     def extend_lines(self, p, lines):
         p.v._import_lines.extend(list(lines))
 
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        assert not p.v._bodyString, p and p.h or '<no p>' ### repr(p.v._bodyString)
+        p.v._import_lines = []
+
     def get_lines(self, p):
         # It may be best to fail quick here.
         if not hasattr(p.v, '_import_lines'):
@@ -692,11 +697,6 @@ class Importer(object):
                 g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return headline
-    #@+node:ekr.20161110041440.1: *5* i.inject_lines_ivar
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, repr(p.v._bodyString)
-        p.v._import_lines = []
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
