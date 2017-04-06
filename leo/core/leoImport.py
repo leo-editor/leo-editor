@@ -1999,7 +1999,6 @@ class RecursiveImportController(object):
         '''Import one file to the last top-level node.'''
         c = self.c
         self.n_files += 1
-        g.trace(parent.h)
         if self.kind == '@edit':
             try:
                 p = parent.insertAsLastChild()
