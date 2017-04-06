@@ -611,7 +611,7 @@ class LeoPluginsController(object):
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             self.handlers = [bunch]
-    #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler
+    #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""
         if isinstance(tags, (list, tuple)):
