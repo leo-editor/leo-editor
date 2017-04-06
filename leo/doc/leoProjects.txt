@@ -33,11 +33,8 @@ Made several changes to find.batchChange.
 .. @+node:ekr.20170402035751.1: *4* #458: Chapters drop-down list is not automatically resized
 https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
-.. @+node:ekr.20170403181726.1: *4* #385: Leo doesn't remember new headlines after saves
-https://github.com/leo-editor/leo-editor/issues/385
-Leo doesn't honor new headlines when switching branches
-
-This appears to be a caching problem. No changes needed to Leo's code.
+.. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
+Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
