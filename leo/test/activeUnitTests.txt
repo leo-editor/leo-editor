@@ -22295,7 +22295,7 @@ pc.registerOneHandler('testtag', handler)
 assert len(pc.handlers.get('testtag')) is 1, \
     'registering same handler twice should have no effect'
 pc.handlers['testtag'] = None
-#@+node:vitalije.20170406113048.1: *4* @test registerOneHandler
+#@+node:vitalije.20170406113048.1: *4* @test registerOneExclusiveHandler
 pc = g.app.pluginsController
 g.app.unitTesting = False
 def handler(**kw):
