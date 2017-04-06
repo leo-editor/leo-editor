@@ -713,9 +713,17 @@ class LeoImportCommands(object):
         s=None,
         ext=None,
     ):
-        '''Create an outline by importing a file or string.'''
+        '''
+        Create an outline by importing a file (with given fileName) or string s.
+        
+        parent is the parent node receiving the imported file.
+        
+        New in Leo 5.6: The atAuto and atShadow args are *only* for error messages.
+        They have no other effect except to set default file encoding.
+        '''
         trace = False and not g.unitTesting
         c = self.c
+        p = parent.copy()
         self.treeType = '@file'
             # Fix #352.
         fn = self.get_import_filename(fileName, parent)
@@ -723,14 +731,12 @@ class LeoImportCommands(object):
             return self.import_binary_file(fn, parent)
         # Init ivars.
         self.setEncoding(p=parent, atAuto=atAuto)
-        atAuto, atAutoKind, ext, s = self.init_import(atAuto, atShadow, ext, fileName, s)
+        ext, s = self.init_import(atAuto, atShadow, ext, fileName, s)
         if s is None:
             if trace: g.trace('read failed', fileName)
             return
         if trace and not s:
             g.trace('empty file: but calling importer', fileName)
-        # Create the top-level headline.
-        p = self.create_top_node(atAuto, atAutoKind, fileName, parent)
         # Get the scanning function.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
@@ -756,48 +762,6 @@ class LeoImportCommands(object):
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
         w.seeInsertPoint()
-        return p
-    #@+node:ekr.20140724175458.18053: *5* ic.create_top_node (Eliminate)
-    def create_top_node(self, atAuto, atAutoKind, fileName, parent):
-        '''Create the top node.'''
-        # g.trace(g.callers())
-        return parent.copy() ###
-        trace = True and not g.unitTesting
-        c, u = self.c, self.c.undoer
-        if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
-            atAuto, atAutoKind, parent and parent.h))
-        if atAuto:
-            if atAutoKind:
-                # scannerUnitTest uses this code.
-                if not g.unitTesting:
-                    g.trace('===== atAutoKind', atAutoKind, g.callers())
-                # We have found a match between ext and an @auto importer.
-                undoData = u.beforeInsertNode(parent)
-                if parent:
-                    p = parent.insertAsLastChild()
-                else:
-                    p = c.lastTopLevel().insertAfter()
-                if atAutoKind:
-                    p.initHeadString(atAutoKind + ' ' + fileName)
-                u.afterInsertNode(p, 'Import', undoData)
-            else:
-                # Use the *existing* node.
-                p = parent.copy()
-                p.setBodyString('')
-        else:
-            undoData = u.beforeInsertNode(parent)
-            if parent:
-                p = parent.insertAsLastChild()
-            else:
-                p = c.lastTopLevel().insertAfter()
-            if self.treeType in ('@clean', '@file', '@nosent'):
-                p.initHeadString('%s %s' % (self.treeType, fileName))
-            elif self.treeType is None:
-                # By convention, we use the short file name.
-                p.initHeadString(g.shortFileName(fileName))
-            else:
-                p.initHeadString(fileName)
-            u.afterInsertNode(p, 'Import', undoData)
         return p
     #@+node:ekr.20140724064952.18038: *5* ic.dispatch & helpers
     def dispatch(self, ext, p):
@@ -825,31 +789,32 @@ class LeoImportCommands(object):
             p = c.lastTopLevel().insertAfter()
         p.h = '@url file://%s' % fileName
         return p
-    #@+node:ekr.20140724175458.18052: *5* ic.init_import (Simplify or delete)
+    #@+node:ekr.20140724175458.18052: *5* ic.init_import
     def init_import(self, atAuto, atShadow, ext, fileName, s):
-        '''Init ivars & vars for imports.'''
-        trace = False and g.unitTesting
+        '''
+        Init ivars imports and read the file into s.
+        Return ext, s.
+        '''
         junk, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
         ext = ext.lower()
         kind = None
         if not s:
-            if atShadow: kind = '@shadow '
+            # Set the kind for error messages in readFileIntoString.
+            if atShadow: kind = '@shadow ' # Order matters.
             elif atAuto: kind = '@auto '
             else: kind = ''
             s, e = g.readFileIntoString(fileName, encoding=self.encoding, kind=kind)
                 # Kind is used only for messages.
             if s is None:
-                return None, None, None, None
+                return None, None
             if e: self.encoding = e
-        if self.treeType == '@root': # 2010/09/29.
+        if self.treeType == '@root':
             self.rootLine = "@root-code " + self.fileName + '\n'
         else:
             self.rootLine = ''
-        atAutoKind = None
-        if trace: g.trace('atAuto: %s kind: %s ext: %s' % (atAuto, atAutoKind, ext))
-        return atAuto, atAutoKind, ext, s
+        return ext, s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self):
         c = self.c

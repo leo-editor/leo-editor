@@ -25983,6 +25983,7 @@ def unpack_object(self):
 
 
 .. @+node:ekr.20170404102619.1: ** Unused code
+@language python
 .. @+node:ekr.20031218072017.3161: *3* skip_php_braces (no longer used)
 @ 08-SEP-2002 DTHEIN: Added for PHP import support
 Skips from the opening to the matching . If no matching is found i is set to len(s).
@@ -26234,7 +26235,7 @@ def rename_decls(self, root):
     else:
         nl = '' if i == 0 else '\n'
         root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
-.. @+node:ekr.20031218072017.3213: *3* ric.createImportParent
+.. @+node:ekr.20031218072017.3213: *3* ric.createImportParent (no longer used)
 def createImportParent(self, current, files):
     '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
     name0, name1 = files
@@ -26246,6 +26247,48 @@ def createImportParent(self, current, files):
         name = name.replace('\\', '/') # 2011/11/25
         current.initHeadString(name)
     return current
+.. @+node:ekr.20140724175458.18053: *3* ic.create_top_node (no longer used)
+def create_top_node(self, atAuto, atAutoKind, fileName, parent):
+    '''Create the top node.'''
+    # g.trace(g.callers())
+    return parent.copy() ###
+    trace = True and not g.unitTesting
+    c, u = self.c, self.c.undoer
+    if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
+        atAuto, atAutoKind, parent and parent.h))
+    if atAuto:
+        if atAutoKind:
+            # scannerUnitTest uses this code.
+            if not g.unitTesting:
+                g.trace('===== atAutoKind', atAutoKind, g.callers())
+            # We have found a match between ext and an @auto importer.
+            undoData = u.beforeInsertNode(parent)
+            if parent:
+                p = parent.insertAsLastChild()
+            else:
+                p = c.lastTopLevel().insertAfter()
+            if atAutoKind:
+                p.initHeadString(atAutoKind + ' ' + fileName)
+            u.afterInsertNode(p, 'Import', undoData)
+        else:
+            # Use the *existing* node.
+            p = parent.copy()
+            p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        if parent:
+            p = parent.insertAsLastChild()
+        else:
+            p = c.lastTopLevel().insertAfter()
+        if self.treeType in ('@clean', '@file', '@nosent'):
+            p.initHeadString('%s %s' % (self.treeType, fileName))
+        elif self.treeType is None:
+            # By convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p, 'Import', undoData)
+    return p
 .. @-all
 .. @@nosearch
 .. @-leo
