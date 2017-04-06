@@ -19417,86 +19417,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122751.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122751.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122751.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122751.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122751.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122751.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122751.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122751.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122751.9: *9* placeholder
-#@+node:ekr.20170401122751.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.9: *9* placeholder
-#@+node:ekr.20170401122755.10: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -19608,86 +19528,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122141.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122141.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122141.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122141.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122141.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122141.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122141.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122141.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122141.9: *9* placeholder
-#@+node:ekr.20170401122141.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.14: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.15: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.16: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.17: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.18: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.19: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.20: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.21: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.22: *9* placeholder
-#@+node:ekr.20170401122755.23: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 if 0: # Preamble
     g.cls()
@@ -22441,6 +22281,33 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
+#@+node:vitalije.20170406112012.1: *4* @test registerOneHandler
+pc = g.app.pluginsController
+def handler(**kw):
+    pass
+assert pc.handlers.get('testtag') is None, 'handlers for unsupported tag should be None by default'
+
+pc.registerOneHandler('testtag', handler)
+assert len(pc.handlers.get('testtag')) is 1, \
+    'handlers after first registration should have just one element'
+
+pc.registerOneHandler('testtag', handler)
+assert len(pc.handlers.get('testtag')) is 1, \
+    'registering same handler twice should have no effect'
+pc.handlers['testtag'] = None
+#@+node:vitalije.20170406113048.1: *4* @test registerOneHandler
+pc = g.app.pluginsController
+g.app.unitTesting = False
+def handler(**kw):
+    pass
+check_1, m1 = pc.handlers.get('testtag') is None, 'handlers for unsupported tag should be None by default'
+
+pc.registerOneExclusiveHandler('testtag', handler)
+check_2, m2 = len(pc.handlers.get('testtag')) is 1, \
+    'handlers after first registration should have just one element'
+g.app.unitTesting = True
+assert check_1, m1
+assert check_2, m2
 #@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
