@@ -661,15 +661,13 @@ class Importer(object):
 
     def gen_ref(self, line, parent, target):
         '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
+        Generate the ref line. Return the headline.
         '''
         trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line) 
         if self.is_rst and not self.atAuto:
-            return None, None
+            return None
         elif self.gen_refs:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict

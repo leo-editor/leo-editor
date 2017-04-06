@@ -707,24 +707,33 @@ class LeoImportCommands(object):
         f.close()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, fileName, parent,
+    def createOutline(self,
+        fileName,
+        parent,
         atAuto=False,
         atShadow=False,
-        s=None,
+        encoding=None,
+        errorKind=None,
         ext=None,
+        s=None,
     ):
         '''
-        Create an outline by importing a file (with given fileName) or string s.
+        Create an outline by importing a file, reading the file with the
+        given encoding if string s is None.
         
-        parent is the parent node receiving the imported file.
-        
-        The atAuto and atShadow args are mostly for error messages.
-        However, the atAuto also sets the default file encoding.
+        encoding:   A string or None. The encoding to be used when reading the file.
+        errorKind:  A string or None. "@file", etc. For error messages while reading.
+        fileName:   A string or None. The name of the file to be read.
+        root:       The root position of the created outline.
+        s:          A string or None. The file's contents.
 
-        **Experimental**: ic.importFilesCommand sets atAuto=True
-        to allow importers to ignore apparent section references.
+        **Experimental**:
+        ignore_bad_references:  True if importers should ignore undefined
+                                apparent section references.
+                                (set only in ic.importFilesCommand)
         '''
         trace = False and not g.unitTesting
+        assert atAuto == True, g.callers()
         c = self.c
         p = parent.copy()
         self.treeType = '@file'
@@ -1426,7 +1435,16 @@ class LeoImportCommands(object):
             atAuto, kind = self.compute_unit_test_kind(ext, fileName)
                 # This used to be in ic.createOutline.
         parent.h = '%s %s' % (kind, fileName)
-        self.createOutline(title.strip(), parent.copy(), atAuto=atAuto, s=s, ext=ext)
+        self.createOutline(
+            ### atAuto=atAuto, # Hurray! No need for this 'huh?' arg!
+            atAuto=True, ### Experimental.
+            ### encoding = None, # Probably no need for an encoding.
+            ### errorKind = None, # Definitely no need for this.
+            ext = ext,
+            fileName = title.strip(),
+            parent = parent.copy(),
+            s=s,
+        )
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
@@ -1594,7 +1612,7 @@ class LeoImportCommands(object):
         #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
-    #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (leoImport)
+    #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
     def setEncoding(self, p=None, atAuto=False):
         c = self.c
         encoding = g.getEncodingAt(p or c.p)
