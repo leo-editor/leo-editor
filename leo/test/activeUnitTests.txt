@@ -22294,7 +22294,7 @@ assert len(pc.handlers.get('testtag')) is 1, \
 pc.registerOneHandler('testtag', handler)
 assert len(pc.handlers.get('testtag')) is 1, \
     'registering same handler twice should have no effect'
-pc.handlers['testtag'] = None
+del pc.handlers['testtag']
 #@+node:vitalije.20170406113048.1: *4* @test registerOneExclusiveHandler
 pc = g.app.pluginsController
 g.app.unitTesting = False
@@ -22303,11 +22303,11 @@ def handler(**kw):
 check_1, m1 = pc.handlers.get('testtag') is None, 'handlers for unsupported tag should be None by default'
 
 pc.registerOneExclusiveHandler('testtag', handler)
-check_2, m2 = len(pc.handlers.get('testtag')) is 1, \
-    'handlers after first registration should have just one element'
 g.app.unitTesting = True
 assert check_1, m1
-assert check_2, m2
+assert len(pc.handlers.get('testtag')) is 1, \
+    'handlers after first registration should have just one element'
+
 #@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
