@@ -15415,7 +15415,7 @@ EOT;
 }
 ?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
-# Warning: setting atAuto=True can wipe out unit tests.
+
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
 print('end python tests')
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -16726,7 +16726,7 @@ s = """\
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
     '''A class implementing all of Leo's import/export code.'''
-    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    def createOutline(self, fileName, parent, s=None, ext=None):
         '''Create an outline by importing a file or string.'''
 
     def dispatch(self, ext, p):
@@ -16741,9 +16741,9 @@ class LeoImportCommands(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                def scanner_for_at_auto_cb(parent, s, prepass=False):
                     try:
-                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        scanner = aClass(importCommands=self)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -16759,9 +16759,9 @@ class LeoImportCommands(object):
         aClass = self.classDispatchDict.get(ext)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+            def scanner_for_ext_cb(parent, s, prepass=False):
                 try:
-                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    scanner = aClass(importCommands=self)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -16774,7 +16774,7 @@ class LeoImportCommands(object):
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
 
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
 table = (
@@ -19880,7 +19880,7 @@ try:
     assert child
 
     ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    ic.createOutline (fn,parent=child,s=None,ext=None)
     assert ic.errors == 0
 finally:
     setup(p)

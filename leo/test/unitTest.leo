@@ -209,8 +209,9 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"
+expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -269,51 +270,6 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
-<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
-<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
-<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
-<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
-<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
-<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
-<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
-<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
-<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
-<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
-<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
-<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
-<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
-<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
-<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
-<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
-<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
-<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -577,7 +533,51 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
+<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
+<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
+<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
+<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
+<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
+<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
+<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
+<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
+<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
+<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
+<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
+<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
+<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
+<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
+<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+</v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
@@ -1107,7 +1107,7 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 <v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
 </v>
-<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199" a="E"><vh>Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -1537,7 +1537,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2155,7 +2155,7 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
+<t tx="ekr.20090529141856.4736">
 </t>
 <t tx="ekr.20090529141856.4766"></t>
 <t tx="ekr.20090529141856.4767">if 0: # Preamble...
@@ -3574,7 +3574,7 @@ try:
     assert child
 
     ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    ic.createOutline (fn,parent=child,s=None,ext=None)
     assert ic.errors == 0
 finally:
     setup(p)
@@ -7236,7 +7236,7 @@ s = """\
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
     '''A class implementing all of Leo's import/export code.'''
-    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    def createOutline(self, fileName, parent, s=None, ext=None):
         '''Create an outline by importing a file or string.'''
 
     def dispatch(self, ext, p):
@@ -7251,9 +7251,9 @@ class LeoImportCommands(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                def scanner_for_at_auto_cb(parent, s, prepass=False):
                     try:
-                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        scanner = aClass(importCommands=self)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -7269,9 +7269,9 @@ class LeoImportCommands(object):
         aClass = self.classDispatchDict.get(ext)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+            def scanner_for_ext_cb(parent, s, prepass=False):
                 try:
-                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    scanner = aClass(importCommands=self)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -7284,7 +7284,7 @@ class LeoImportCommands(object):
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
 
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
 table = (
