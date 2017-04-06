@@ -3611,7 +3611,8 @@ class AtFile(object):
         if not trailingNewlineFlag:
             if at.sentinels:
                 pass # Never write @nonl
-            elif at.atAuto and not at.atEdit:
+            ### elif at.atAuto and not at.atEdit:
+            elif not at.atEdit:
                 at.onl()
         return status.has_at_others
     #@+node:ekr.20041005105605.162: *6* at.ensureTrailingNewline
@@ -3630,7 +3631,8 @@ class AtFile(object):
             trailingNewlineFlag = s[-1] == '\n'
             if not trailingNewlineFlag:
                 if (at.sentinels or
-                    (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+                    ### (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+                    at.force_newlines_in_at_nosent_bodies
                 ):
                     # g.trace('Added newline',repr(s))
                     s = s + '\n'
@@ -3843,7 +3845,8 @@ class AtFile(object):
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
             return False # A section definition node.
-        elif at.sentinels or at.atAuto or at.toString:
+        ### elif at.sentinels or at.atAuto or at.toString:
+        elif at.sentinels or at.toString:
             # @ignore must not stop expansion here!
             return True
         elif p.isAtIgnoreNode():
