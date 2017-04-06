@@ -1026,12 +1026,11 @@ class Importer(object):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
         if self.gen_refs:
-            # Alas, the *actual* @auto write code refuses to write section references!!
+            # Previously, the *actual* @auto write code refused to write section references.
             at.write(self.root,
                     nosentinels=True,
                     perfectImportFlag=False,
                         # True Allow undefined section references.
-                        # Not ready yet.
                     scriptWrite=True,
                     thinFile=True,
                     toString=True,

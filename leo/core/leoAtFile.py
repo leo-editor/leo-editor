@@ -3657,16 +3657,22 @@ class AtFile(object):
                 else: 
                     # New in Leo 5.6: Allow section reference in @auto files.
                     # At present, only the javascript importer creates section references.
-                    ignore_undefined = at.atAuto or at.perfectImportFlag
                     hasRef, n1, n2 = at.findSectionName(s, i)
                         # Note: putRefLine needs the n1 and n2 indices.
                     if hasRef:
                         name = s[n1+2:n2].strip()
                         ref = g.findReference(name, p)
-                        if ignore_undefined and not ref:
-                            at.putCodeLine(s, i)
-                                # Silently ignore undefined sections in @auto trees.
-                        else: 
+                        ### ignore_undefined = at.atAuto or at.perfectImportFlag
+                        ### Experimental...
+                        if False: ### at.perfectImportFlag:
+                            # g.trace(name, repr(ref))
+                            if ref:
+                                # The reference *does* exists, so *don't* write the ref!
+                                pass
+                            else:
+                                # An apparent reference, so *do* write it.
+                                at.putCodeLine(s, i)
+                        else:
                             at.putRefLine(s, i, n1, n2, p)
                                 # generates an error if the reference does not exist.
                     else:

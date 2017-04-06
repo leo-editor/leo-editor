@@ -718,8 +718,11 @@ class LeoImportCommands(object):
         
         parent is the parent node receiving the imported file.
         
-        New in Leo 5.6: The atAuto and atShadow args are *only* for error messages.
-        They have no other effect except to set default file encoding.
+        The atAuto and atShadow args are mostly for error messages.
+        However, the atAuto also sets the default file encoding.
+
+        **Experimental**: ic.importFilesCommand sets atAuto=True
+        to allow importers to ignore apparent section references.
         '''
         trace = False and not g.unitTesting
         c = self.c
@@ -903,8 +906,8 @@ class LeoImportCommands(object):
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(
                     fn,
-                    ### Not yet.
-                    ### atAuto=True, # Leo 5.6: ignore apparent undefined section references.
+                    ### Experimental: ignore apparent undefined section references.
+                    atAuto=True,
                     parent=p,
                 )
                 if p: # createOutline may fail.
