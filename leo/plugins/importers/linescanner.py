@@ -101,7 +101,6 @@ class Importer(object):
 
     def __init__(self,
         importCommands, 
-        atAuto, # True when called from @auto logic.
         gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
@@ -111,7 +110,6 @@ class Importer(object):
         '''Importer.__init__.'''
         # Copies of args...
         self.importCommands = ic = importCommands
-        self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
         self.gen_refs = gen_refs
@@ -158,6 +156,7 @@ class Importer(object):
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
+
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
         assert s and g.isString(s), repr(s)
@@ -173,7 +172,13 @@ class Importer(object):
     def extend_lines(self, p, lines):
         p.v._import_lines.extend(list(lines))
 
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        assert not p.v._bodyString, p and p.h or '<no p>'
+        p.v._import_lines = []
+
     def get_lines(self, p):
+        # It may be best to fail quick here.
         if not hasattr(p.v, '_import_lines'):
             g.trace('can not happen: no _import_lines', p.h)
             p.v._import_lines = g.splitLines(p.b)
@@ -391,7 +396,7 @@ class Importer(object):
             
             if c.isChanged(): c.save()
             < < imp.reload importers.linescanner and importers.python > >
-            importer = py.Py_Importer(c.importCommands, atAuto=True)
+            importer = py.Py_Importer(c.importCommands)
             importer.test_scan_state(tests, Python_ScanState)
         '''
         trace = False and g.unitTesting
@@ -654,16 +659,12 @@ class Importer(object):
 
     def gen_ref(self, line, parent, target):
         '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
+        Generate the ref line. Return the headline.
         '''
         trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
+        h = self.clean_headline(line)
+        if self.gen_refs:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict
             n = d.get(h, 0)
@@ -690,11 +691,6 @@ class Importer(object):
                 g.printList(self.get_lines(parent))
             self.add_line(parent,ref)
         return headline
-    #@+node:ekr.20161110041440.1: *5* i.inject_lines_ivar
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, repr(p.v._bodyString)
-        p.v._import_lines = []
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -1024,11 +1020,12 @@ class Importer(object):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
         if self.gen_refs:
-            # Alas, the *actual* @auto write code refuses to write section references!!
+            # Previously, the *actual* @auto write code refused to write section references.
             at.write(self.root,
-                    nosentinels=True,           # was False,
-                    perfectImportFlag=False,    # was True,
-                    scriptWrite=True,           # was False,
+                    nosentinels=True,
+                    perfectImportFlag=False,
+                        # True Allow undefined section references.
+                    scriptWrite=True,
                     thinFile=True,
                     toString=True,
                 )

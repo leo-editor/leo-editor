@@ -602,13 +602,16 @@ class LeoPluginsController(object):
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
+        if 0:
+            if g.app.unitTesting: g.pr('')
+            g.pr('%6s %15s %25s %s' % (g.app.unitTesting, moduleName, tag, fn.__name__))
         if g.app.unitTesting: return
         if tag in self.handlers:
             g.es("*** Two exclusive handlers for", "'%s'" % (tag))
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
-            self.handlers[tag] = [bunch]
-    #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler
+            self.handlers[tag] = [bunch] # Vitalije
+    #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""
         if isinstance(tags, (list, tuple)):
@@ -623,8 +626,12 @@ class LeoPluginsController(object):
             moduleName = self.loadingModuleNameStack[-1]
         except IndexError:
             moduleName = '<no module>'
+        if 0:
+            if g.app.unitTesting: g.pr('')
+            g.pr('%6s %15s %25s %s' % (g.app.unitTesting, moduleName, tag, fn.__name__))
         items = self.handlers.get(tag, [])
-        if fn not in map(lambda x: x.fn, items):
+        functions = [z.fn for z in items]
+        if fn not in functions: # Vitalije
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             items.append(bunch)
         self.handlers[tag] = items

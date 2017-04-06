@@ -15415,7 +15415,7 @@ EOT;
 }
 ?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
-# Warning: setting atAuto=True can wipe out unit tests.
+
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
 print('end python tests')
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -15451,7 +15451,7 @@ else:
         g.Bunch(line='a = {[(')
     ]
 if hasattr(python, 'Py_Importer'):
-    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer = python.Py_Importer(c.importCommands)
     importer.test_scan_state(tests, State=python.Python_ScanState)
 else:
     self.skipTest('Skipping test for new python importer')
@@ -16726,7 +16726,7 @@ s = """\
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
     '''A class implementing all of Leo's import/export code.'''
-    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    def createOutline(self, fileName, parent, s=None, ext=None):
         '''Create an outline by importing a file or string.'''
 
     def dispatch(self, ext, p):
@@ -16741,9 +16741,9 @@ class LeoImportCommands(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                def scanner_for_at_auto_cb(parent, s, prepass=False):
                     try:
-                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        scanner = aClass(importCommands=self)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -16759,9 +16759,9 @@ class LeoImportCommands(object):
         aClass = self.classDispatchDict.get(ext)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+            def scanner_for_ext_cb(parent, s, prepass=False):
                 try:
-                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    scanner = aClass(importCommands=self)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -16774,7 +16774,7 @@ class LeoImportCommands(object):
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
 
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
 table = (
@@ -17760,7 +17760,7 @@ if 0:
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
+    # x = markdown.Markdown_Importer(ic)
 else:
     ic = c.importCommands  
 try:
@@ -19720,7 +19720,7 @@ try:
     assert child
 
     ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    ic.createOutline (fn,parent=child,s=None,ext=None)
     assert ic.errors == 0
 finally:
     setup(p)
@@ -20302,7 +20302,6 @@ lines_table = [
 for language in ('python', 'coffeescript'):
     importer = linescanner.Importer(
         c.importCommands,
-        atAuto = True,
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
@@ -20320,8 +20319,7 @@ table = [
     ('  ','  # comment\n'),
     ('', '\n'),
 ]
-importer = linescanner.Importer(c.importCommands,
-    atAuto=True, language='python')
+importer = linescanner.Importer(c.importCommands, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
@@ -20335,11 +20333,7 @@ table = [
     (True, '    '),
     (True,'  # comment'),
 ]
-importer = linescanner.Importer(
-    c.importCommands,
-    atAuto = True,
-    language = 'python',
-)
+importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
@@ -20357,7 +20351,7 @@ table = (
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    importer = js.JS_Importer(c.importCommands)
     prev_state = js.JS_ScanState()
     new_state = importer.scan_line(s, prev_state)
     curlies, parens, context = result

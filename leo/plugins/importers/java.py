@@ -11,12 +11,11 @@ Target = linescanner.Target
 class Java_Importer(Importer):
     '''The importer for the java lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Java_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'java',
             state_class = Java_ScanState,
             strict = False,

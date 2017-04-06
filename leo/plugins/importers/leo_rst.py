@@ -16,12 +16,11 @@ underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'
 class Rst_Importer(Importer):
     '''The importer for the rst lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Rst_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'rest',
             state_class = Rst_ScanState,
             strict = False,

@@ -10,12 +10,11 @@ Importer = linescanner.Importer
 class Otl_Importer(Importer):
     '''The importer for the otl lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Otl_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'plain',
             state_class = None,
             strict = False,
