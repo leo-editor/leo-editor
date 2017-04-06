@@ -7271,7 +7271,7 @@ class Commands(object):
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
-            return True
+            return True # Vitalije.
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''
