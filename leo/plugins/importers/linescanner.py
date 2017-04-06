@@ -176,7 +176,7 @@ class Importer(object):
 
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, p and p.h or '<no p>' ### repr(p.v._bodyString)
+        assert not p.v._bodyString, p and p.h or '<no p>'
         p.v._import_lines = []
 
     def get_lines(self, p):
