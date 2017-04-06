@@ -63,6 +63,8 @@ These performance gotchas become important for repetitive commands, like cff, re
 .. @+node:ekr.20170404032504.1: *4* Added 'recursive' keyword arg to recursive import API
 Added 'recursive' keyword arg to c.recursiveImport and RecursiveImportController ctor.
 Recursive is *not* the same as not one_file.
+.. @+node:ekr.20170406092043.1: *4* Removed atAuto from atFile class
+Ding dong, the switch is dead, the wicked old switch is dead.
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
