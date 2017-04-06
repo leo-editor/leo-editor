@@ -710,19 +710,14 @@ class LeoImportCommands(object):
     def createOutline(self,
         fileName,
         parent,
-        atAuto=False,
-        atShadow=False,
-        encoding=None,
-        errorKind=None,
+        atShadow=False, # For error messages only.
         ext=None,
         s=None,
     ):
         '''
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
-        
-        encoding:   A string or None. The encoding to be used when reading the file.
-        errorKind:  A string or None. "@file", etc. For error messages while reading.
+
         fileName:   A string or None. The name of the file to be read.
         root:       The root position of the created outline.
         s:          A string or None. The file's contents.
@@ -733,7 +728,6 @@ class LeoImportCommands(object):
                                 (set only in ic.importFilesCommand)
         '''
         trace = False and not g.unitTesting
-        assert atAuto == True, g.callers()
         c = self.c
         p = parent.copy()
         self.treeType = '@file'
@@ -1425,9 +1419,6 @@ class LeoImportCommands(object):
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = '%s %s' % (kind, fileName)
         self.createOutline(
-            atAuto=True,
-            ### encoding = None, # Probably no need for an encoding.
-            ### errorKind = None, # Definitely no need for this.
             ext = ext,
             fileName = title.strip(),
             parent = parent.copy(),
