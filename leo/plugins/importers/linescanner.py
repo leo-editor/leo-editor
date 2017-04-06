@@ -664,10 +664,6 @@ class Importer(object):
         trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line)
-        ###
-        # if self.is_rst and not self.atAuto:
-            # return None
-        # el
         if self.gen_refs:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict
