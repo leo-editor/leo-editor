@@ -746,7 +746,7 @@ class LeoImportCommands(object):
             p=parent,
             default=c.config.default_at_auto_file_encoding,
         )
-        ext, s = self.init_import(atAuto, atShadow, ext, fileName, s)
+        ext, s = self.init_import(atShadow, ext, fileName, s)
         if s is None:
             if trace: g.trace('read failed', fileName)
             return
@@ -763,7 +763,7 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            func(c=c, parent=p, s=s) ### atAuto=atAuto,
+            func(c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -804,7 +804,7 @@ class LeoImportCommands(object):
         p.h = '@url file://%s' % fileName
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, atShadow, ext, fileName, s):
         '''
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -813,13 +813,13 @@ class LeoImportCommands(object):
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
         ext = ext.lower()
-        kind = None
         if not s:
             # Set the kind for error messages in readFileIntoString.
-            if atShadow: kind = '@shadow ' # Order matters.
-            elif atAuto: kind = '@auto '
-            else: kind = ''
-            s, e = g.readFileIntoString(fileName, encoding=self.encoding, kind=kind)
+            s, e = g.readFileIntoString(
+                fileName,
+                encoding=self.encoding,
+                kind='@shadow ' if atShadow else '@auto ',
+            )
                 # Kind is used only for messages.
             if s is None:
                 return None, None
@@ -951,12 +951,7 @@ class LeoImportCommands(object):
                     p = c.lastTopLevel().insertAfter()
                 p.h = '%s %s' % (treeType, fn)
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(
-                    fn,
-                    ### Experimental: ignore apparent undefined section references.
-                    atAuto=True,
-                    parent=p,
-                )
+                p = self.createOutline(fn, parent=p)
                 if p: # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1326,7 +1321,7 @@ class LeoImportCommands(object):
         aClass = ext and g.app.classDispatchDict.get(ext)
 
         def body_parser_for_class(parent, s):
-            obj = aClass(importCommands=self, atAuto=True)
+            obj = aClass(importCommands=self)
             return obj.run(s, parent, parse_body=True)
 
         return body_parser_for_class if aClass else None
@@ -1427,15 +1422,10 @@ class LeoImportCommands(object):
             parent = p.insertAsLastChild()
         else:
             parent = c.lastTopLevel().insertAfter()
-        if False: ### atAuto:
-            kind = '@auto'
-        else:
-            atAuto, kind = self.compute_unit_test_kind(ext, fileName)
-                # This used to be in ic.createOutline.
+        kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = '%s %s' % (kind, fileName)
         self.createOutline(
-            ### atAuto=atAuto, # Hurray! No need for this 'huh?' arg!
-            atAuto=True, ### Experimental.
+            atAuto=True,
             ### encoding = None, # Probably no need for an encoding.
             ### errorKind = None, # Definitely no need for this.
             ext = ext,
@@ -1468,19 +1458,18 @@ class LeoImportCommands(object):
         return ok
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):
-        '''Return atAuto, kind from fn's file extension.'''
+        '''Return kind from fn's file extension.'''
         if not ext:
             junk, ext = g.os_path_splitext(fn)
         if ext:
             aClass = g.app.classDispatchDict.get(ext)
             if aClass:
-                # Set the atAuto flag if any @auto importers match the extension.
                 d2 = g.app.atAutoDict
                 for z in d2:
                     if d2.get(z) == aClass:
                         # g.trace('found',z,'for',ext,aClass.__name__)
-                        return True, z
-        return False, '@file'
+                        return z
+        return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
