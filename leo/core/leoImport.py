@@ -742,7 +742,10 @@ class LeoImportCommands(object):
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fn, parent)
         # Init ivars.
-        self.setEncoding(p=parent, atAuto=atAuto)
+        self.setEncoding(
+            p=parent,
+            default=c.config.default_at_auto_file_encoding,
+        )
         ext, s = self.init_import(atAuto, atShadow, ext, fileName, s)
         if s is None:
             if trace: g.trace('read failed', fileName)
@@ -760,16 +763,15 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            func(atAuto=atAuto, c=c, parent=p, s=s)
+            func(atAuto=atAuto,c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            self.scanUnknownFileType(s, p, ext, atAuto=atAuto)
-        if atAuto:
-            # Fix bug 488894: unsettling dialog when saving Leo file
-            # Fix bug 889175: Remember the full fileName.
-            c.atFileCommands.rememberReadPath(fileName, p)
+            self.scanUnknownFileType(s, p, ext)
+        # Fix bug 488894: unsettling dialog when saving Leo file
+        # Fix bug 889175: Remember the full fileName.
+        c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
         w.setInsertPoint(0)
@@ -827,6 +829,42 @@ class LeoImportCommands(object):
         else:
             self.rootLine = ''
         return ext, s
+    #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
+    def scanUnknownFileType(self, s, p, ext):
+        '''Scan the text of an unknown file type.'''
+        c = self.c
+        changed = c.isChanged()
+        body = ''
+        if ext in ('.html', '.htm'): body += '@language html\n'
+        elif ext in ('.txt', '.text'): body += '@nocolor\n'
+        else:
+            language = self.languageForExtension(ext)
+            if language: body += '@language %s\n' % language
+        self.setBodyString(p, body + self.rootLine + s)
+        for p in p.self_and_subtree():
+            p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+        g.app.unitTestDict = {'result': True}
+        return True
+    #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
+    def languageForExtension(self, ext):
+        '''Return the language corresponding to the extension ext.'''
+        unknown = 'unknown_language'
+        if ext.startswith('.'): ext = ext[1:]
+        if ext:
+            z = g.app.extra_extension_dict.get(ext)
+            if z not in (None, 'none', 'None'):
+                language = z
+            else:
+                language = g.app.extension_dict.get(ext)
+            if language in (None, 'none', 'None'):
+                language = unknown
+        else:
+            language = unknown
+        # g.trace(ext,repr(language))
+        # Return the language even if there is no colorizer mode for it.
+        return language
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self):
         c = self.c
@@ -1243,43 +1281,6 @@ class LeoImportCommands(object):
                     found = True; result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20070713075352: *3* ic.scanUnknownFileType & helper
-    def scanUnknownFileType(self, s, p, ext, atAuto=False):
-        '''Scan the text of an unknown file type.'''
-        c = self.c
-        changed = c.isChanged()
-        body = ''
-        if ext in ('.html', '.htm'): body += '@language html\n'
-        elif ext in ('.txt', '.text'): body += '@nocolor\n'
-        else:
-            language = self.languageForExtension(ext)
-            if language: body += '@language %s\n' % language
-        self.setBodyString(p, body + self.rootLine + s)
-        if atAuto:
-            for p in p.self_and_subtree():
-                p.clearDirty()
-            if not changed:
-                c.setChanged(False)
-        g.app.unitTestDict = {'result': True}
-        return True
-    #@+node:ekr.20080811174246.1: *4* ic.languageForExtension
-    def languageForExtension(self, ext):
-        '''Return the language corresponding to the extension ext.'''
-        unknown = 'unknown_language'
-        if ext.startswith('.'): ext = ext[1:]
-        if ext:
-            z = g.app.extra_extension_dict.get(ext)
-            if z not in (None, 'none', 'None'):
-                language = z
-            else:
-                language = g.app.extension_dict.get(ext)
-            if language in (None, 'none', 'None'):
-                language = unknown
-        else:
-            language = unknown
-        # g.trace(ext,repr(language))
-        # Return the language even if there is no colorizer mode for it.
-        return language
     #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
     def parse_body(self, p):
         '''
@@ -1613,13 +1614,13 @@ class LeoImportCommands(object):
         s = s.rstrip()
         return s
     #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
-    def setEncoding(self, p=None, atAuto=False):
+    def setEncoding(self, p=None, default=None):
         c = self.c
         encoding = g.getEncodingAt(p or c.p)
         if encoding and g.isValidEncoding(encoding):
             self.encoding = encoding
-        elif atAuto:
-            self.encoding = c.config.default_at_auto_file_encoding
+        elif default: ### atAuto:
+            self.encoding = default ### c.config.default_at_auto_file_encoding
         else:
             self.encoding = 'utf-8'
     #@-others
