@@ -272,7 +272,8 @@ class AtFile(object):
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (The only setter)
     def initWriteIvars(self, root, targetFileName,
-        atAuto=False, atEdit=False, atShadow=False,
+        atEdit=False,
+        atShadow=False,
         forcePythonSentinels=None,
         nosentinels=False,
         perfectImportFlag=False,
@@ -285,10 +286,9 @@ class AtFile(object):
         self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
-        at.atAuto = atAuto
         at.atEdit = atEdit
-        at.forceSentinels = False # 2015/06/25
-        at.scriptWrite = scriptWrite # 2015/06/23
+        at.forceSentinels = False
+        at.scriptWrite = scriptWrite
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
         at.docKind = None
@@ -3190,7 +3190,6 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         at.targetFileName = "<string-file>" if toString else fileName
         at.initWriteIvars(root, at.targetFileName,
-            atAuto=True,
             nosentinels=True,
             thinFile=False,
             scriptWrite=False,
@@ -3386,7 +3385,7 @@ class AtFile(object):
             at.sentinels = sentinels
             at.writeOpenFile(root,
                 nosentinels=not sentinels, toString=False)
-                # nosentinels only affects error messages, and then only if atAuto is True.
+                    # nosentinels only affects error messages.
             s = at.closeStringFile(theFile)
             data.append(s)
         # Set these new ivars for unit tests.
@@ -3531,9 +3530,11 @@ class AtFile(object):
                 return False
         at.targetFileName = fn
         at.initWriteIvars(root, at.targetFileName,
-            atAuto=True, atEdit=True,
-            nosentinels=True, thinFile=False,
-            scriptWrite=False, toString=toString)
+            atEdit=True,
+            nosentinels=True,
+            thinFile=False,
+            scriptWrite=False,
+            toString=toString)
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
@@ -3611,7 +3612,6 @@ class AtFile(object):
         if not trailingNewlineFlag:
             if at.sentinels:
                 pass # Never write @nonl
-            ### elif at.atAuto and not at.atEdit:
             elif not at.atEdit:
                 at.onl()
         return status.has_at_others
@@ -3630,10 +3630,7 @@ class AtFile(object):
         if s:
             trailingNewlineFlag = s[-1] == '\n'
             if not trailingNewlineFlag:
-                if (at.sentinels or
-                    ### (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
-                    at.force_newlines_in_at_nosent_bodies
-                ):
+                if at.sentinels or at.force_newlines_in_at_nosent_bodies:
                     # g.trace('Added newline',repr(s))
                     s = s + '\n'
         else:
@@ -3655,7 +3652,6 @@ class AtFile(object):
                     if hasRef:
                         name = s[n1+2:n2].strip()
                         ref = g.findReference(name, p)
-                        ### ignore_undefined = at.atAuto or at.perfectImportFlag
                         ### Experimental...
                         if False: ### at.perfectImportFlag:
                             # g.trace(name, repr(ref))
@@ -3845,7 +3841,6 @@ class AtFile(object):
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
             return False # A section definition node.
-        ### elif at.sentinels or at.atAuto or at.toString:
         elif at.sentinels or at.toString:
             # @ignore must not stop expansion here!
             return True
