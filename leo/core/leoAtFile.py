@@ -798,7 +798,11 @@ class AtFile(object):
         try:
             # For #451: return p.
             old_p = p.copy()
-            p = ic.createOutline(fileName, parent=p.copy(), atAuto=True)
+            p = ic.createOutline(
+                fileName,
+                parent=p.copy(),
+                atAuto=True,
+            )
             # Do *not* select a postion here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
@@ -978,7 +982,12 @@ class AtFile(object):
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ic.createOutline(fn, parent=p.copy(), atAuto=True, atShadow=True)
+        ic.createOutline(
+            fn,
+            parent=p.copy(),
+            atAuto=True,
+            atShadow=True,
+        )
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):

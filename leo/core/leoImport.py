@@ -718,17 +718,9 @@ class LeoImportCommands(object):
         c = self.c
         self.treeType = '@file'
             # Fix #352.
-        fileName = self.get_import_filename(fileName, parent)
+        fn = self.get_import_filename(fileName, parent)
         if g.is_binary_external_file(fileName):
-            # Fix bug 1185409 importing binary files puts binary content in body editor.
-            # Create an @url node.
-            if parent:
-                p = parent.insertAsLastChild()
-            else:
-                p = c.lastTopLevel().insertAfter()
-            p.h = '@url file://%s' % fileName
-            if trace: g.trace('binary file:', fileName)
-            return
+            return self.import_binary_file(fn, parent)
         # Init ivars.
         self.setEncoding(p=parent, atAuto=atAuto)
         atAuto, atAutoKind, ext, s = self.init_import(atAuto, atShadow, ext, fileName, s)
@@ -765,9 +757,11 @@ class LeoImportCommands(object):
         w.setInsertPoint(0)
         w.seeInsertPoint()
         return p
-    #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
+    #@+node:ekr.20140724175458.18053: *5* ic.create_top_node (Eliminate)
     def create_top_node(self, atAuto, atAutoKind, fileName, parent):
         '''Create the top node.'''
+        # g.trace(g.callers())
+        return parent.copy() ###
         trace = True and not g.unitTesting
         c, u = self.c, self.c.undoer
         if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
@@ -819,10 +813,22 @@ class LeoImportCommands(object):
         fileName = c.os_path_finalize_join(self.default_directory, fileName)
         fileName = fileName.replace('\\', '/') # 2011/11/25
         return fileName
-    #@+node:ekr.20140724175458.18052: *5* ic.init_import
+    #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
+    def import_binary_file(self, fileName, parent):
+        
+        # Fix bug 1185409 importing binary files puts binary content in body editor.
+        # Create an @url node.
+        c = self.c
+        if parent:
+            p = parent.insertAsLastChild()
+        else:
+            p = c.lastTopLevel().insertAfter()
+        p.h = '@url file://%s' % fileName
+        return p
+    #@+node:ekr.20140724175458.18052: *5* ic.init_import (Simplify or delete)
     def init_import(self, atAuto, atShadow, ext, fileName, s):
         '''Init ivars & vars for imports.'''
-        trace = True and not g.unitTesting
+        trace = False and g.unitTesting
         junk, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
@@ -841,25 +847,8 @@ class LeoImportCommands(object):
             self.rootLine = "@root-code " + self.fileName + '\n'
         else:
             self.rootLine = ''
-        if trace: g.trace('1: atAuto: %s treeType: %s %s' % (
-            atAuto, self.treeType, fileName))
         atAutoKind = None
-        if not atAuto and kind != '@auto':
-            # scannerUnitTest and the recursive input code uses this code.
-                # g.trace('===== SET atAutoKind', g.callers())
-            # Not yet an @auto node.
-            # Set atAutoKind if there is an @auto importer for ext.
-            aClass = g.app.classDispatchDict.get(ext)
-            if aClass:
-                # Set the atAuto flag if any @auto importers match the extension.
-                d2 = g.app.atAutoDict
-                for z in d2:
-                    if d2.get(z) == aClass:
-                        # g.trace('found',z,'for',ext,aClass.__name__)
-                        atAuto = True
-                        atAutoKind = z
-                        break
-        if trace: g.trace('2: atAuto: %s kind: %s ext: %s' % (atAuto, atAutoKind, ext))
+        if trace: g.trace('atAuto: %s kind: %s ext: %s' % (atAuto, atAutoKind, ext))
         return atAuto, atAutoKind, ext, s
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes(self):
@@ -872,7 +861,6 @@ class LeoImportCommands(object):
                     g.warning('ignoring', p.h)
                     p.moveToThreadNext()
                 else:
-                    # self.readOneAtAutoNode(p)
                     fileName = p.atAutoNodeName()
                     c.atFileCommands.readOneAtAutoNode(fileName, p)
                     found = True
@@ -928,7 +916,7 @@ class LeoImportCommands(object):
         treeType=None,
     ):
         # Not a command.  It must *not* have an event arg.
-        c = self.c
+        c, u = self.c, self.c.undoer
         if not c or not c.p or not files:
             return
         self.tab_width = c.getTabWidth(c.p)
@@ -937,13 +925,22 @@ class LeoImportCommands(object):
             g.trace('===== no parent', g.callers())
             parent = c.p
         for fn in files:
-            # 2017/03/04: Report exceptions here, not in the caller.
+            # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
+                # Leo 5.6: Handle undo here, not in createOutline.
+                undoData = u.beforeInsertNode(parent)
+                if parent:
+                    p = parent.insertAsLastChild()
+                else:
+                    p = c.lastTopLevel().insertAfter()
+                p.h = '%s %s' % (treeType, fn)
+                u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(
                     fn,
-                    atAuto=True, # Leo 5.6: ignore apparent undefined section references.
-                    parent=parent,
+                    ### Not yet.
+                    ### atAuto=True, # Leo 5.6: ignore apparent undefined section references.
+                    parent=p,
                 )
                 if p: # createOutline may fail.
                     if not g.unitTesting:
@@ -1434,7 +1431,8 @@ class LeoImportCommands(object):
         i.e., create a tree from string s at location p.
         '''
         trace = False
-        c = self.c; h = p.h; old_root = p.copy()
+        c, h = self.c, p.h
+        old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
         oldChanged = c.changed
@@ -1449,7 +1447,18 @@ class LeoImportCommands(object):
         if not s: s = self.removeSentinelsCommand([fileName], toString=True)
         title = h[5:] if h.startswith('@test') else h
         # Run the actual test using the **GeneralTestCase** class.
-        self.createOutline(title.strip(), p.copy(), atAuto=atAuto, s=s, ext=ext)
+        # Leo 5.6: Compute parent here.
+        if p:
+            parent = p.insertAsLastChild()
+        else:
+            parent = c.lastTopLevel().insertAfter()
+        if atAuto:
+            kind = '@auto'
+        else:
+            atAuto, kind = self.compute_unit_test_kind(ext, fileName)
+                # This used to be in ic.createOutline.
+        parent.h = '%s %s' % (kind, fileName)
+        self.createOutline(title.strip(), parent.copy(), atAuto=atAuto, s=s, ext=ext)
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
@@ -1473,6 +1482,21 @@ class LeoImportCommands(object):
                 g.app.unitTestDict['fail'] = p.h
             assert ok, p.h
         return ok
+    #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
+    def compute_unit_test_kind(self, ext, fn):
+        '''Return atAuto, kind from fn's file extension.'''
+        if not ext:
+            junk, ext = g.os_path_splitext(fn)
+        if ext:
+            aClass = g.app.classDispatchDict.get(ext)
+            if aClass:
+                # Set the atAuto flag if any @auto importers match the extension.
+                d2 = g.app.atAutoDict
+                for z in d2:
+                    if d2.get(z) == aClass:
+                        # g.trace('found',z,'for',ext,aClass.__name__)
+                        return True, z
+        return False, '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
