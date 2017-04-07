@@ -20524,6 +20524,27 @@ for base, result, s in table:
         new_state.parens == parens and
         new_state.context == context)
     assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
+#@+node:ekr.20170407065952.1: *5* @test importers.javascript.binop_pattern
+import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+importer = js.JS_Importer(c.importCommands)
+pattern = importer.binop_pattern
+table = (
+    '++', '--', '&&', '||', '~', '>>', '<<', 
+    # '>>=',  '<<=',
+    # '>>>', '>>>=',
+    # '<<<', '<<<=',
+    '<', '<=', '>', '>=',
+    '+', '+=', '-', '-=',
+    '/', '/=', '*', '*=', 
+    '%', '%=', '&', '&=',
+    '|', '|=',
+)
+for s in table:
+    m = pattern.match(s)
+    assert m, s
+    assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

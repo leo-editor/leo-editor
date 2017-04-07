@@ -5161,7 +5161,7 @@ class Commands(object):
         u.afterChangeGroup(parent, undoType, undoData)
         return parent # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
-    def deletePositionsInList(self, aList, callback=None):
+    def deletePositionsInList(self, aList, callback=None, redraw=True):
         '''
         Delete all vnodes corresponding to the positions in aList. If a
         callback is given, the callback is called for every node in the list.
@@ -5299,6 +5299,8 @@ class Commands(object):
                 aList2.append(p.copy())
             else:
                 g.trace('invalid position', p)
+        if not aList2:
+            return # Don't redraw the screen unless necessary!
         # Delete p.v for all positions p in reversed(sorted(aList2)).
         if callback:
             for p in reversed(sorted(aList2)):
@@ -5324,8 +5326,10 @@ class Commands(object):
             v = leoNodes.VNode(context=c)
             v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
             if trace: g.trace('new root', v)
-        c.selectPosition(c.rootPosition())
-        c.redraw()
+        if redraw:
+            c.selectPosition(c.rootPosition())
+                # Calls redraw()
+            # c.redraw()
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives

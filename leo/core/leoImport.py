@@ -930,12 +930,10 @@ class LeoImportCommands(object):
             return
         self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
-        if parent:
-            g.trace('===== parent', parent.h)
-        else:
+        if not parent:
             g.trace('===== no parent', g.callers())
             return
-        for fn in files:
+        for fn in files: ### Testing.
             # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
@@ -1958,6 +1956,7 @@ class RecursiveImportController(object):
                 self.post_process(parent, dir_)
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
+            g.es_print('Exception in recursive import')
             g.es_exception()
         finally:
             g.app.disable_redraw = False
@@ -1971,14 +1970,17 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         '''Import selected files from dir_, a directory.'''
+        limit = True # True: only one file per directory.
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
-            g.es_print(dir_)
+            g.es_print('\nimporting directory:', dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
-            try: # Fix #408.
+            try:
+                # Fix #408. Catch path exceptions.
+                # The idea here is to keep going on small errors.
                 path = g.os_path_join(dir_, path, expanduser=False)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(path)
@@ -1986,7 +1988,7 @@ class RecursiveImportController(object):
                         files2.append(path)
                 elif self.recursive:
                     dirs.append(path)
-            except Exception:
+            except OSError:
                 g.es_print('Exception computing', path)
                 g.es_exception()
         if files or dirs:
@@ -1996,6 +1998,7 @@ class RecursiveImportController(object):
             if files2:
                 for f in files2:
                     self.import_one_file(f, parent=parent)
+                    if limit: break
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
@@ -2007,15 +2010,12 @@ class RecursiveImportController(object):
         self.n_files += 1
         assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
-            try:
-                p = parent.insertAsLastChild()
-                p.v.h = path.replace('\\', '/')
-                s, e = g.readFileIntoString(path, kind=self.kind)
-                p.v.b = s
-            except Exception:
-                g.es_print('Exception importing', path)
-                g.es_exception()
-                return
+            # Leo 5.6: Let the caller handle this.
+            p = parent.insertAsLastChild()
+            p.v.h = path.replace('\\', '/')
+            s, e = g.readFileIntoString(path, kind=self.kind)
+            p.v.b = s
+            return
         elif self.kind == '@auto':
             p = parent.insertAsLastChild()
             p.v.h = path.replace('\\', '/')
@@ -2098,11 +2098,12 @@ class RecursiveImportController(object):
 
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
+        '''Remove empty nodes. Not called for @auto or @edit trees.'''
         c = self.c
-        c.deletePositionsInList([
-            p for p in p.self_and_subtree()
-                if not p.b and not p.hasChildren()
-        ])
+        aList = [p for p in p.self_and_subtree()
+            if not p.b and not p.hasChildren()]
+        if aList:
+            c.deletePositionsInList(aList, redraw=False)
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:

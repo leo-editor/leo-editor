@@ -5868,8 +5868,14 @@ def plural(obj):
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s, n):
     '''Return s truncated to n characters.'''
-    s2 = s if len(s) <= n else s[:n-3] + '...'
-    return s2 + '\n' if s.endswith('\n') else s2
+    if len(s) <= n:
+        return s
+    else:
+        s2 = s[:n-3] + '...'
+        if s.endswith('\n'):
+            return s2 + '\n'
+        else:
+            return s2
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows():
     return app and app.windowList

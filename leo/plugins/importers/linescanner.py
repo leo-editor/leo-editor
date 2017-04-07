@@ -84,7 +84,7 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 import re
-import time
+# import time
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
@@ -159,11 +159,9 @@ class Importer(object):
 
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert s and g.isString(s), repr(s)
-        if not hasattr(p.v, '_import_lines'):
-            g.trace('can not happen: no _import_lines', p.h)
-            p.v._import_lines = g.splitLines(p.b)
-            p.b = ''
+        assert s and g.isString(s), (repr(s), g.callers())
+        # *Never* change p unexpectedly!
+        assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -172,22 +170,20 @@ class Importer(object):
     def extend_lines(self, p, lines):
         p.v._import_lines.extend(list(lines))
 
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, p and p.h or '<no p>'
-        p.v._import_lines = []
-
     def get_lines(self, p):
-        # It may be best to fail quick here.
-        if not hasattr(p.v, '_import_lines'):
-            g.trace('can not happen: no _import_lines', p.h)
-            p.v._import_lines = g.splitLines(p.b)
-            p.b = ''
+        # *Never* change p unexpectedly!
+        assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
         return p.v._import_lines
         
     def has_lines(self, p):
         return hasattr(p.v, '_import_lines')
         
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        # *Never* change p unexpectedly!
+        assert not p.v._bodyString, (p and p.h, g.callers())
+        p.v._import_lines = []
+
     def prepend_lines(self, p, lines):
         p.v._import_lines = list(lines) + p.v._import_lines
 
@@ -513,7 +509,7 @@ class Importer(object):
             if not g.unitTesting:
                 # g.es_print('Warning: Intermixed tabs and blanks in', fn)
                 # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es_print('changed leading %s to %s in %s line%s in %s' % (
+                g.es('changed leading %s to %s in %s line%s in %s' % (
                     kind2, kind, count, g.plural(count), fn))
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
@@ -565,7 +561,7 @@ class Importer(object):
             if g.unitTesting:
                 self.report(message)
             else:
-                g.es_print(message)
+                g.es(message)
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     def gen_lines(self, s, parent):
@@ -775,13 +771,16 @@ class Importer(object):
         aList = []
         for p in parent.subtree():
             back = p.threadBack()
-            if back != parent and not p.isCloned():
+            if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
                 lines = self.get_lines(p)
                 # Move the whitespace from p to back.
                 if all([z.isspace() for z in lines]):
                     self.extend_lines(back, lines)
                     aList.append(p.copy())
-        c.deletePositionsInList(aList)
+        if aList:
+            g.trace('='*40, parent.h)
+            c.deletePositionsInList(aList, redraw=False)
+                # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
         '''A placeholder for python_i.promote_last_lines.'''
@@ -891,7 +890,7 @@ class Importer(object):
             g.app.suppressImportChecks = False
             return True
         c = self.c
-        t1 = time.clock()
+        # t1 = time.clock()
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
@@ -936,10 +935,10 @@ class Importer(object):
                 d['fail'] = g.callers()
                 # Used in a unit test.
                 c.importCommands.errors += 1
-        t2 = time.clock()
-        if ok and t2 - t1 > 2.0:
-            print('')
-            g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
+        # t2 = time.clock()
+        # if ok and t2 - t1 > 2.0:
+            # print('')
+            # g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
         if trace and trace_status:
             g.trace('Ok:', ok, g.shortFileName(parent.h))
         return ok
@@ -959,10 +958,10 @@ class Importer(object):
         result = []
         aList1 = aList[max(0, i-n):i]
         aList2 = aList[i+1:i+n+1]
-        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, g.truncate(s,100))
+        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, g.truncate(s,60))
             for j, s in enumerate(aList1)])
-        result.append('* %4s %s' % (i + 1, g.truncate(aList[i], 100)))
-        result.extend(['  %4s %s' % (i + 2 + j, g.truncate(s, 100))
+        result.append('* %4s %s' % (i + 1, g.truncate(aList[i], 60)))
+        result.extend(['  %4s %s' % (i + 2 + j, g.truncate(s, 60))
             for j, s in enumerate(aList2)])
         return result
     #@+node:ekr.20161123210716.1: *5* i.show_failure
@@ -1060,7 +1059,8 @@ class Importer(object):
     #@+node:ekr.20161108131153.12: *4* i.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
-        parent.b = parent.b.rstrip() + '\n@ignore\n'
+        parent.v.b = parent.v.b.rstrip() + '\n@ignore\n'
+            # Do *not* update the screen by setting p.b.
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
