@@ -933,17 +933,12 @@ class LeoImportCommands(object):
         if not parent:
             g.trace('===== no parent', g.callers())
             return
-        for fn in files: ### Testing.
+        for fn in files:
             # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
-                ### 
-                # if parent:
-                    # p = parent.insertAsLastChild()
-                # else:
-                    # p = c.lastTopLevel().insertAfter()
                 p = parent.insertAsLastChild()
                 p.h = '%s %s' % (treeType, fn)
                 u.afterInsertNode(p, 'Import', undoData)
@@ -1943,7 +1938,7 @@ class RecursiveImportController(object):
             t1 = time.time()
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
-            # Always create a new last top-level node.
+            # Leo 5.6: Always create a new last top-level node.
             last = c.lastTopLevel()
             parent = last.insertAfter()
             parent.v.h = 'imported files'
@@ -2010,7 +2005,6 @@ class RecursiveImportController(object):
         self.n_files += 1
         assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
-            # Leo 5.6: Let the caller handle this.
             p = parent.insertAsLastChild()
             p.v.h = path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)

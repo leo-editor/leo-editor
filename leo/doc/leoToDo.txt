@@ -353,6 +353,8 @@ Leo doesn't honor new headlines when switching branches
 
 This appears to be a caching problem. No changes needed to Leo's code.
 .. @+node:ekr.20170407135011.1: *4* *** Allow paste-retaining-clones across files
+.. @+node:ekr.20170407135747.1: *4* ** warn about multiple redraws in a single command
+.. @+node:ekr.20170407141052.1: *4* ** code review: c.selectPosition followed by redraw
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap
