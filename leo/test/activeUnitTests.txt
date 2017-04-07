@@ -505,7 +505,7 @@ createMenuEntries creates the association of stroke to commandName.
 trace = False # False: the unit test can fail.
 k = c.k
 d = g.app.unitTestMenusDict
-d2 = k.bindingsDict ### c.k.masterGuiBindingsDict
+d2 = k.bindingsDict
 d2name = 'k.bindingsDict'
 commandNames = list(d.keys())
 commandNames.sort()
@@ -1816,7 +1816,7 @@ import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 exists = g.os_path_exists
-at.outputFileName = None ### g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
 # Remove both files.
 for fn in (at.outputFileName,at.targetFileName):
@@ -5278,8 +5278,6 @@ finally:
         p.clearDirty()
         child.clearDirty()
     finally: pass
-
-#### c.redraw()
 #@+node:ekr.20040802065214.1: *5* bogus
 test
 #@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
@@ -6623,7 +6621,7 @@ try:
     i = s.find('main')
     assert i == 2,i
 finally:
-    if 0: ####################
+    if 0: ###
         c.undoer.undo()
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
@@ -13511,7 +13509,7 @@ finally:
 #@+node:ekr.20090529141856.4733: *6* @test elisp
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14334,7 +14332,7 @@ finally:
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14513,7 +14511,7 @@ finally:
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15553,7 +15551,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *6* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16288,7 +16286,7 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -17744,7 +17742,7 @@ c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 << define s >>
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -18283,7 +18281,7 @@ Section 3, line 1
 << define s >>
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19087,7 +19085,7 @@ section 3, line 1
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19145,7 +19143,7 @@ finally:
 #@+node:ekr.20161126111517.1: *5* @test markdown importer-implicit section
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19212,7 +19210,7 @@ finally:
 #@+node:ekr.20161216141315.1: *5* @test markdown importer-@@-section-name
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19284,7 +19282,7 @@ finally:
     # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19337,7 +19335,7 @@ finally:
 #@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19529,7 +19527,7 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19690,7 +19688,7 @@ section 3, line 1
 section 3.1.1, line 1
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19732,7 +19730,7 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -20500,7 +20498,6 @@ for val, s in table:
 import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
-g.cls() ###
 table = (
     # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),

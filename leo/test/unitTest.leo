@@ -209,7 +209,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -2034,7 +2034,7 @@ if sys.platform.lower().startswith('win'):
 <t tx="ekr.20090529141856.4731"></t>
 <t tx="ekr.20090529141856.4733">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2086,7 +2086,7 @@ finally:
 <t tx="ekr.20090529141856.4734"></t>
 <t tx="ekr.20090529141856.4735">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2550,7 +2550,7 @@ c.contractAllHeadlines()
 </t>
 <t tx="ekr.20090529141856.4784"></t>
 <t tx="ekr.20090529141856.4785">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -2632,7 +2632,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4786">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -2713,7 +2713,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4787">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -2755,7 +2755,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4788">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -4073,7 +4073,7 @@ else:
     assert root.isAtAutoRstNode(), root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
+        # g.cls()
         print('get_external_file_with_sentinels returns...')
         # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
         g.printList(g.splitLines(s))
@@ -4097,7 +4097,7 @@ elif sys.platform.startswith('win'):
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
+        # g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
         p, offset, found = c.gotoCommands.find_file_line(n, p=root)
@@ -4488,7 +4488,7 @@ else:
     stripped_lines = [z for z in lines if not z.startswith('//@')]
     g.printList(stripped_lines)
     if trace:
-        g.cls()
+        # g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
     table = (
         # n is the 1-based offset
@@ -4571,7 +4571,7 @@ else:
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -4620,7 +4620,7 @@ finally:
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -4694,7 +4694,6 @@ Section 3, line 1
 <t tx="ekr.20161011052016.1">import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
-g.cls() ###
 table = (
     # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
@@ -6956,7 +6955,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.34"># Was unittest/at_auto-unit-test.py
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -7418,7 +7417,7 @@ finally:
 </t>
 <t tx="ekr.20161119032623.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -7593,7 +7592,7 @@ finally:
 </t>
 <t tx="ekr.20161125134815.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -7687,7 +7686,7 @@ section 3, line 1
 </t>
 <t tx="ekr.20161126111517.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -7756,7 +7755,7 @@ finally:
     # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -9523,7 +9522,7 @@ EOT;
 </t>
 <t tx="ekr.20161216141315.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -9902,7 +9901,7 @@ EOT;
 <t tx="ekr.20161224101046.1">@tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
