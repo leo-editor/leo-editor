@@ -1945,6 +1945,7 @@ class RecursiveImportController(object):
             # Leo 5.6: Special case for a single file.
             self.n_files = 0
             if g.os_path_isfile(dir_):
+                g.es_print('\nimporting file:', dir_)
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
