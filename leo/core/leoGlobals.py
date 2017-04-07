@@ -5871,7 +5871,7 @@ def truncate(s, n):
     if len(s) <= n:
         return s
     else:
-        s2 = s[:n-3] + '...'
+        s2 = s[:n-3] + '...(%s)' % len(s)
         if s.endswith('\n'):
             return s2 + '\n'
         else:
