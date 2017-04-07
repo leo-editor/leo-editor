@@ -20497,8 +20497,12 @@ importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
+import imp
 import leo.plugins.importers.javascript as js
+imp.reload(js)
+g.cls() ###
 table = (
+    # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
     (None, (0, 0, ''),      r'a + b // /*'),
     (None, (0, 1, ''),      r'(function'),
@@ -20507,7 +20511,7 @@ table = (
     (None, (0, 0, ''),      r'var x = /a"c/'),
     (None, (0, 0, ''),      r'var x = /a\//'),
     (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
@@ -20519,7 +20523,7 @@ for base, result, s in table:
         new_state.curlies == curlies and
         new_state.parens == parens and
         new_state.context == context)
-    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
+    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

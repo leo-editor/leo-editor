@@ -930,19 +930,23 @@ class LeoImportCommands(object):
             return
         self.tab_width = c.getTabWidth(c.p)
         self.treeType = treeType or '@file'
-        if not parent:
+        if parent:
+            g.trace('===== parent', parent.h)
+        else:
             g.trace('===== no parent', g.callers())
-            parent = c.p
+            return
         for fn in files:
             # Report exceptions here, not in the caller.
             try:
                 g.setGlobalOpenDir(fn)
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
-                if parent:
-                    p = parent.insertAsLastChild()
-                else:
-                    p = c.lastTopLevel().insertAfter()
+                ### 
+                # if parent:
+                    # p = parent.insertAsLastChild()
+                # else:
+                    # p = c.lastTopLevel().insertAfter()
+                p = parent.insertAsLastChild()
                 p.h = '%s %s' % (treeType, fn)
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(fn, parent=p)
@@ -1924,6 +1928,7 @@ class RecursiveImportController(object):
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
+        self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
@@ -1936,7 +1941,7 @@ class RecursiveImportController(object):
             g.es('bad kind param', self.kind, color='red')
         try:
             c = self.c
-            p1 = c.p
+            p1 = self.root = c.p
             t1 = time.time()
             g.app.disable_redraw = True
             bunch = c.undoer.beforeChangeTree(p1)
@@ -1985,6 +1990,7 @@ class RecursiveImportController(object):
                 g.es_print('Exception computing', path)
                 g.es_exception()
         if files or dirs:
+            assert parent and parent.v != self.root.v, g.callers()
             parent = parent.insertAsLastChild()
             parent.v.h = dir_
             if files2:
@@ -1999,6 +2005,7 @@ class RecursiveImportController(object):
         '''Import one file to the last top-level node.'''
         c = self.c
         self.n_files += 1
+        assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             try:
                 p = parent.insertAsLastChild()
@@ -2008,6 +2015,7 @@ class RecursiveImportController(object):
             except Exception:
                 g.es_print('Exception importing', path)
                 g.es_exception()
+                return
         elif self.kind == '@auto':
             p = parent.insertAsLastChild()
             p.v.h = path.replace('\\', '/')

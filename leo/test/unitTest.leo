@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.65" body_secondary_ratio="0.71">
-	<global_window_position top="40" left="398" height="931" width="1149"/>
+	<global_window_position top="92" left="536" height="931" width="1149"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -209,9 +209,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"
-expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1107,7 +1106,7 @@ expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 <v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
 </v>
-<v t="ekr.20140724220921.5199" a="E"><vh>Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -1122,6 +1121,8 @@ expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
+<v t="ekr.20161011052016.1"></v>
+<v t="ekr.20170407065952.1"><vh>@test importers.javascript.binop_pattern</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1537,7 +1538,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="11">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -4689,8 +4690,12 @@ Section 3, line 1
 
 '''
 </t>
-<t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
+<t tx="ekr.20161011052016.1">import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+g.cls() ###
 table = (
+    # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
     (None, (0, 0, ''),      r'a + b // /*'),
     (None, (0, 1, ''),      r'(function'),
@@ -4699,7 +4704,7 @@ table = (
     (None, (0, 0, ''),      r'var x = /a"c/'),
     (None, (0, 0, ''),      r'var x = /a\//'),
     (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
@@ -4711,7 +4716,7 @@ for base, result, s in table:
         new_state.curlies == curlies and
         new_state.parens == parens and
         new_state.context == context)
-    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
+    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
 </t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
@@ -11021,5 +11026,26 @@ unl: class class2--&gt;class2_method2
 <t tx="ekr.20170401123910.4">gnx: ekr.20150626093745.1
 </t>
 <t tx="ekr.20170401123910.6"></t>
+<t tx="ekr.20170407065952.1">import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+importer = js.JS_Importer(c.importCommands)
+pattern = importer.binop_pattern
+table = (
+    '++', '--', '&amp;&amp;', '||', '~', '&gt;&gt;', '&lt;&lt;', 
+    # '&gt;&gt;=',  '&lt;&lt;=',
+    # '&gt;&gt;&gt;', '&gt;&gt;&gt;=',
+    # '&lt;&lt;&lt;', '&lt;&lt;&lt;=',
+    '&lt;', '&lt;=', '&gt;', '&gt;=',
+    '+', '+=', '-', '-=',
+    '/', '/=', '*', '*=', 
+    '%', '%=', '&amp;', '&amp;=',
+    '|', '|=',
+)
+for s in table:
+    m = pattern.match(s)
+    assert m, s
+    assert m.group(0) == s, (s, m.group(0))
+</t>
 </tnodes>
 </leo_file>

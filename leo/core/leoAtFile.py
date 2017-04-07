@@ -3885,7 +3885,8 @@ class AtFile(object):
         ref = g.findReference(name, p)
         if not ref and not g.unitTesting:
             at.writeError(
-                "undefined section: %s\n\treferenced from: %s" % (name, p.h))
+                "undefined section: %s\n\treferenced from: %s" % (
+                    g.truncate(name, 60), g.truncate(p.h, 60)))
         return ref
     #@+node:ekr.20041005105605.176: *7* putRefLine
     ref_warning_given = False

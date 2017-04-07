@@ -959,9 +959,11 @@ class Importer(object):
         result = []
         aList1 = aList[max(0, i-n):i]
         aList2 = aList[i+1:i+n+1]
-        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, s) for j, s in enumerate(aList1)])
-        result.append('* %4s %s' % (i + 1, aList[i]))
-        result.extend(['  %4s %s' % (i + 2 + j, s) for j, s in enumerate(aList2)])
+        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, g.truncate(s,100))
+            for j, s in enumerate(aList1)])
+        result.append('* %4s %s' % (i + 1, g.truncate(aList[i], 100)))
+        result.extend(['  %4s %s' % (i + 2 + j, g.truncate(s, 100))
+            for j, s in enumerate(aList2)])
         return result
     #@+node:ekr.20161123210716.1: *5* i.show_failure
     def show_failure(self, lines1, lines2, sfn):

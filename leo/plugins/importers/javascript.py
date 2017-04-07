@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18144: * @file importers/javascript.py
 '''The @auto importer for JavaScript.'''
+import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
@@ -19,76 +20,185 @@ class JS_Importer(Importer):
         )
 
     #@+others
-    #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helper
+    #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
+    #@@nobeautify
+
+    binop_table = [
+        # Longest first in each line.
+        # '>>>', '>>>=',
+        # '<<<', '<<<=',
+        # '>>=',  '<<=',
+        '>>', '>=', '>',
+        '<<', '<=', '<',
+        '++', '+=', '+',
+        '--', '-=', '-',
+              '*=', '*',
+              '/=', '/',
+              '%=', '%',
+        '&&', '&=', '&', 
+        '||', '|=', '|', 
+                    '~',
+                    '='
+    ]
+    binop_string = '|'.join([re.escape(z) for z in binop_table])
+    binop_pattern = re.compile(binop_string)
+
     def scan_line(self, s, prev_state):
-        '''Update the scan state by scanning s.'''
-        trace = False and not g.unitTesting
+        '''
+        Update the scan state at the *end* of the line by scanning all of s.
+
+        Distinguishing the the start of a regex from a div operator is tricky:
+        http://stackoverflow.com/questions/4726295/
+        http://stackoverflow.com/questions/5519596/
+        (, [, {, ;, and binops can only be followed by a regexp.
+        ), ], }, ids, strings and numbers can only be followed by a div operator.
+        '''
+        trace = False # and not g.unitTesting
+        trace_ch = True
         context = prev_state.context
         curlies, parens = prev_state.curlies, prev_state.parens
+        expect = None # (None, 'regex', 'div')
         i = 0
+        # Special case for the start of a *file*
+        # if not context:
+            # i = g.skip_ws(s, i)
+            # m = self.start_pattern.match(s, i)
+            # if m:
+                # i += len(m.group(0))
+                # if g.match(s, i, '/'):
+                    # i = self.skip_regex(s, i)
         while i < len(s):
+            assert expect is None, expect
             progress = i
             ch, s2 = s[i], s[i:i+2]
+            if trace and trace_ch: g.trace(repr(ch), repr(s2))
             if context == '/*':
                 if s2 == '*/':
+                    i += 2
                     context = ''
-                    i += 1
+                    expect = 'div'
                 else:
-                    pass # Eat the next comment char.
+                    i += 1 # Eat the next comment char.
             elif context:
                 assert context in ('"', "'"), repr(context)
                 if ch == '\\':
-                    i += 1 # Bug fix 2016/10/27: was += 2
+                    i += 2
                 elif context == ch:
+                    i += 1
                     context = '' # End the string.
+                    expect = 'regex'
                 else:
-                    pass # Eat the string character.
+                    i += 1 # Eat the string character.
             elif s2 == '//':
                 break # The single-line comment ends the line.
             elif s2 == '/*':
+                # Start a comment.
+                i += 2
                 context = '/*'
+            elif ch in ('"', "'"):
+                # Start a string.
                 i += 1
-            elif ch in ('"', "'"): context = ch
-            elif ch == '=':
-                i = self.skip_possible_regex(s, i)
-            elif ch == '\\': i += 2
-            elif ch == '{': curlies += 1
-            elif ch == '}': curlies -= 1
-            elif ch == '(':
-                parens += 1
-                i = self.skip_possible_regex(s, i)
-            elif ch == ')': parens -= 1
-            i += 1
-            assert progress < i
-        if trace: g.trace(self, s.rstrip())
-        d = {'context':context, 'curlies':curlies, 'parens':parens}
-        return JS_ScanState(d)
-    #@+node:ekr.20161011045426.1: *4* js_i.skip_possible_regex
-    def skip_possible_regex(self, s, i):
-        '''look ahead for a regex /'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(repr(s))
-        assert s[i] in '=(', repr(s[i])
-        i += 1
-        while i < len(s) and s[i] in ' \t':
-            i += 1
-        if i < len(s) and s[i] == '/':
-            i += 1
-            while i < len(s):
-                progress = i
-                ch = s[i]
-                # g.trace(repr(ch))
-                if ch == '\\':
-                    i += 2
-                elif ch == '/':
+                context = ch
+            elif ch in '_$' or ch.isalpha():
+                # An identifier. Only *approximately* correct.
+                # http://stackoverflow.com/questions/1661197/
+                i += 1
+                while i < len(s) and (s[i] in '_$' or s[i].isalnum()):
                     i += 1
-                    break
+                expect = 'div'
+            elif ch.isdigit():
+                i += 1
+                # Only *approximately* correct. 
+                while i < len(s) and (s[i] in '.+-e' or s[i].isdigit()):
+                    i += 1
+                # This should work even if the scan ends with '+' or '-'
+                expect = 'div'
+            elif ch in '?:':
+                i += 1
+                expect = 'regex'
+            elif ch in ';,':
+                i += 1
+                expect = 'regex'
+            elif ch == '\\':
+                i += 2
+            elif ch == '{':
+                i += 1
+                curlies += 1
+                expect = 'regex'
+            elif ch == '}':
+                i += 1
+                curlies -= 1
+                expect = 'div'
+            elif ch == '(':
+                i += 1
+                parens += 1
+                expect = 'regex'
+            elif ch == ')':
+                i += 1
+                parens -= 1
+                expect = 'div'
+            elif ch == '[':
+                i += 1
+                expect = 'regex'
+            elif ch == ']':
+                i += 1
+                expect = 'div'
+            else:
+                m = self.binop_pattern.match(s, i)
+                if m:
+                    if trace: g.trace('BINOP', m.group(0))
+                    i += len(m.group(0))
+                    expect = 'regex'
+                elif ch == '/':
+                    g.trace('no lookahead for "/"', repr(s))
+                    assert False, i
                 else:
                     i += 1
-                assert progress < i
-        
-        if trace: g.trace('returns', i, s[i] if i < len(s) else '')
-        return i-1
+                    expect = None
+            # Look for a '/' in the expected context.
+            if expect:
+                assert not context, repr(context)
+                i = g.skip_ws(s, i)
+                # Careful // is the comment operator.
+                if g.match(s, i, '//'):
+                    break
+                elif g.match(s, i, '/'):
+                    if expect == 'div':
+                        i += 1
+                    else:
+                        assert expect == 'regex', repr(expect)
+                        i = self.skip_regex(s,i)
+            expect = None
+            assert progress < i
+        d = {'context':context, 'curlies':curlies, 'parens':parens}
+        state = JS_ScanState(d)
+        if trace: g.trace(state)
+        return state
+    #@+node:ekr.20161011045426.1: *4* js_i.skip_regex
+    def skip_regex(self, s, i):
+        '''Skip an *actual* regex /'''
+        trace = False # and not g.unitTesting
+        trace_ch = False
+        if trace: g.trace('ENTRY', i, repr(s[i:]))
+        assert s[i] == '/', (i, repr(s))
+        i1 = i
+        i += 1
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if trace and trace_ch: g.trace(repr(ch))
+            if ch == '\\':
+                i += 2
+            elif ch == '/':
+                i += 1
+                if i < len(s) and s[i] in 'igm':
+                    i += 1 # Skip modifier.
+                if trace: g.trace('FOUND', i, s[i1:i])
+                return i
+            else:
+                i += 1
+            assert progress < i
+        return i1 # Don't skip ahead.
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
