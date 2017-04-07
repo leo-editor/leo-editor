@@ -3652,8 +3652,7 @@ class AtFile(object):
                     if hasRef:
                         name = s[n1+2:n2].strip()
                         ref = g.findReference(name, p)
-                        ### Experimental...
-                        if False: ### at.perfectImportFlag:
+                        if False: ### Experimental: at.perfectImportFlag:
                             # g.trace(name, repr(ref))
                             if ref:
                                 # The reference *does* exists, so *don't* write the ref!
@@ -3734,7 +3733,7 @@ class AtFile(object):
         else:
             at.error('putBody: can not happen: unknown directive kind: %s' % kind)
     #@+node:ekr.20041005105605.164: *5* writing code lines...
-    #@+node:ekr.20041005105605.165: *6* @all
+    #@+node:ekr.20041005105605.165: *6* at.@all
     #@+node:ekr.20041005105605.166: *7* putAtAllLine
     def putAtAllLine(self, s, i, p):
         """Put the expansion of @all."""
@@ -3797,7 +3796,7 @@ class AtFile(object):
         for child in p.children():
             at.putAtAllChild(child)
         at.putCloseNodeSentinel(p)
-    #@+node:ekr.20041005105605.170: *6* @others (write)
+    #@+node:ekr.20041005105605.170: *6* at.@others (write)
     #@+node:ekr.20041005105605.173: *7* putAtOthersLine & helpers
     def putAtOthersLine(self, s, i, p):
         """Put the expansion of @others."""
@@ -3849,7 +3848,7 @@ class AtFile(object):
             return False
         else:
             return True
-    #@+node:ekr.20041005105605.174: *6* putCodeLine (leoAtFile)
+    #@+node:ekr.20041005105605.174: *6* at.putCodeLine (leoAtFile)
     def putCodeLine(self, s, i):
         '''Put a normal code line.'''
         trace = False and not g.unitTesting
@@ -3877,7 +3876,7 @@ class AtFile(object):
             at.os(line) # Bug fix: 2013/09/16
         else:
             g.trace('Can not happen: completely empty line')
-    #@+node:ekr.20041005105605.175: *6* putRefLine & allies
+    #@+node:ekr.20041005105605.175: *6* at.putRefLine & allies
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
         '''Find a reference to name.  Raise an error if not found.'''
@@ -3888,38 +3887,25 @@ class AtFile(object):
                 "undefined section: %s\n\treferenced from: %s" % (
                     g.truncate(name, 60), g.truncate(p.h, 60)))
         return ref
-    #@+node:ekr.20041005105605.176: *7* putRefLine
-    ref_warning_given = False
-
+    #@+node:ekr.20041005105605.176: *7* at.putRefLine
     def putRefLine(self, s, i, n1, n2, p):
         """Put a line containing one or more references."""
         at = self
-        
-        def warn(s):
-            # Attempt to fix #289:
-            # Leo crashes with unusual combination of @clean and .leo file
-            if 0: # This does not seem to work.
-                if s.strip() and not self.ref_warning_given:
-                    g.es_print('Warning: %s will be written on a new line.' %
-                        g.angleBrackets(s.strip()))
-                    self.ref_warning_given = True
-
         # Compute delta only once.
         delta = self.putRefAt(s, i, n1, n2, p, delta=None)
-        if delta is None: return # 11/23/03
+        if delta is None:
+            return # 11/23/03
         while 1:
             i = n2 + 2
             hasRef, n1, n2 = at.findSectionName(s, i)
             if hasRef:
-                warn(s[n1:n2])
                 self.putAfterMiddleRef(s, i, n1, delta)
                 self.putRefAt(s, n1, n1, n2, p, delta)
             else: break
-        end = g.skip_line(s, i)
-        after = s[i: end].strip()
-        warn(after)
+        # end = g.skip_line(s, i)
+        # after = s[i: end].strip()
         self.putAfterLastRef(s, i, delta)
-    #@+node:ekr.20041005105605.177: *7* putRefAt
+    #@+node:ekr.20041005105605.177: *7* at.putRefAt
     def putRefAt(self, s, i, n1, n2, p, delta):
         """Put a reference at s[n1:n2+2] from p."""
         at = self
@@ -3941,7 +3927,7 @@ class AtFile(object):
         at.putSentinel("@-" + name)
         at.indent -= delta
         return delta
-    #@+node:ekr.20041005105605.178: *7* putAfterLastRef
+    #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
         """Handle whatever follows the last ref of a line."""
         at = self
@@ -3956,7 +3942,7 @@ class AtFile(object):
             if at.sentinels and after and after[-1] != '\n':
                 at.onl() # Add a newline if the line didn't end with one.
             at.indent -= delta
-    #@+node:ekr.20041005105605.179: *7* putAfterMiddleRef
+    #@+node:ekr.20041005105605.179: *7* at.putAfterMiddleRef
     def putAfterMiddleRef(self, s, start, end, delta):
         """Handle whatever follows a ref that is not the last ref of a line."""
         at = self
