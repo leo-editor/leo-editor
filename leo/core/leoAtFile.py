@@ -3645,18 +3645,17 @@ class AtFile(object):
                 if at.raw:
                     at.putCodeLine(s, i)
                 else: 
-                    # New in Leo 5.6: Allow section reference in @auto files.
-                    # At present, only the javascript importer creates section references.
-                    hasRef, n1, n2 = at.findSectionName(s, i)
-                        # Note: putRefLine needs the n1 and n2 indices.
-                    if hasRef:
+                    # Experimental: Allow section reference in @auto files.
+                    # Only the javascript importer creates section references.
+                    name, n1, n2 = at.findSectionName(s, i)
+                    if name:
                         if 1: # old code.
-                            at.putRefLine(s, i, n1, n2, p)
+                            at.putRefLine(s, i, n1, n2, name, p)
                                 # generates an error if the reference does not exist.
                         else: # Experimental
                             name = s[n1+2:n2].strip()
                             ref = g.findReference(name, p)
-                            if False: ### Experimental: at.perfectImportFlag:
+                            if False: # Experimental: at.perfectImportFlag:
                                 if ref:
                                     # The reference *does* exists, so *don't* write the ref!
                                     pass
@@ -3664,7 +3663,7 @@ class AtFile(object):
                                     # An apparent reference, so *do* write it.
                                     at.putCodeLine(s, i)
                             else:
-                                at.putRefLine(s, i, n1, n2, p)
+                                at.putRefLine(s, i, n1, n2, name, p)
                                     # generates an error if the reference does not exist.
                     else:
                         at.putCodeLine(s, i)
@@ -3880,44 +3879,31 @@ class AtFile(object):
         else:
             g.trace('Can not happen: completely empty line')
     #@+node:ekr.20041005105605.176: *6* at.putRefLine & helpers
-    def putRefLine(self, s, i, n1, n2, p):
+    def putRefLine(self, s, i, n1, n2, name, p):
         """Put a line containing one or more references."""
         at = self
-        # Compute delta only once.
-        ### From putRefAt.
-        name = s[n1: n2 + 2]
         ref = at.findReference(name, p)
             # Issues error if not found.
         if not ref:
             return
+        # Compute delta only once.
         junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-        ###
-        # delta = self.putRefAt(s, i, n1, n2, p, delta=None)
-        # if delta is None:
-            # return # 11/23/03
+        # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1, delta)
-            ### Was in putRefAt.
-        ### self.putRefAt(s, i, n1, n2, p, delta)
         self.putRefAt(name, ref, delta)
         while 1:
             progress = i
-            i = n2 + 2
-            hasRef, n1, n2 = at.findSectionName(s, i)
-            if hasRef:
-                # These just use the indices.
-                name = s[n1: n2 + 2]
+            i = n2
+            name, n1, n2 = at.findSectionName(s, i)
+            if name:
                 ref = at.findReference(name, p)
                     # Issues error if not found.
                 if ref:
                     middle_s = s[i:n1]
-                    ### self.putAfterMiddleRef(s, i, n1, delta)
                     self.putAfterMiddleRef(middle_s, delta)
-                    ### self.putRefAt(s, n1, n1, n2, p, delta)
                     self.putRefAt(name, ref, delta)
             else: break
             assert progress < i
-        # end = g.skip_line(s, i)
-        # after = s[i: end].strip()
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
     def findReference(self, name, p):
@@ -3931,6 +3917,10 @@ class AtFile(object):
         return ref
     #@+node:ekr.20041005105605.199: *7* at.findSectionName
     def findSectionName(self, s, i):
+        '''
+        Return n1, n2 representing a section name.
+        The section name, *including* brackes is s[n1:n2]
+        '''
         end = s.find('\n', i)
         if end == -1:
             n1 = s.find("<<", i)
@@ -3939,14 +3929,17 @@ class AtFile(object):
             n1 = s.find("<<", i, end)
             n2 = s.find(">>", i, end)
         ok = -1 < n1 < n2
-        # New in Leo 4.4.3: warn on extra brackets.
         if ok:
+            # Warn on extra brackets.
             for ch, j in (('<', n1 + 2), ('>', n2 + 2)):
                 if g.match(s, j, ch):
                     line = g.get_line(s, i)
                     g.es('dubious brackets in', line)
                     break
-        return ok, n1, n2
+            name = s[n1:n2+2]
+            return name, n1, n2+2
+        else:
+            return None, n1, len(s)
     #@+node:ekr.20041005105605.178: *7* at.putAfterLastRef
     def putAfterLastRef(self, s, start, delta):
         """Handle whatever follows the last ref of a line."""
@@ -3963,32 +3956,18 @@ class AtFile(object):
                 at.onl() # Add a newline if the line didn't end with one.
             at.indent -= delta
     #@+node:ekr.20041005105605.179: *7* at.putAfterMiddleRef
-    ### def putAfterMiddleRef(self, s, start, end, delta):
     def putAfterMiddleRef(self, s, delta):
         """Handle whatever follows a ref that is not the last ref of a line."""
         at = self
-        ### if start < end:
         if s:
             at.indent += delta
             at.putSentinel("@afterref")
-            ### at.os(s[start: end])
             at.os(s)
             at.onl_sent() # Not a real newline.
             at.indent -= delta
     #@+node:ekr.20041005105605.177: *7* at.putRefAt
-    ### def putRefAt(self, s, i, n1, n2, p, delta):
-    ###    """Put a reference at s[n1:n2+2] from p."""
     def putRefAt(self, name, ref, delta):
         at = self
-        # name = s[n1: n2 + 2]
-        # ref = at.findReference(name, p)
-        # if not ref: return None
-        # Expand the ref.
-        # if not delta:
-            # junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
-        ### This did nothing after the first call since i == n1
-        ### at.putLeadInSentinel(s, i, n1, delta)
-
         # Fix #132: Section Reference causes clone...
         # https://github.com/leo-editor/leo-editor/issues/132
         # Never put any @+middle or @-middle sentinels.
@@ -3999,7 +3978,6 @@ class AtFile(object):
         at.putCloseNodeSentinel(ref)
         at.putSentinel("@-" + name)
         at.indent -= delta
-        ### return delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
     #@+node:ekr.20041005105605.181: *6* putBlankDocLine
     def putBlankDocLine(self):
