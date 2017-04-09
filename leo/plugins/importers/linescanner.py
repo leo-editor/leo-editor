@@ -181,7 +181,7 @@ class Importer(object):
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         # *Never* change p unexpectedly!
-        assert not p.v._bodyString, (p and p.h, g.callers())
+        assert not p.v._bodyString, (p and p.h, g.callers(10))
         p.v._import_lines = []
 
     def prepend_lines(self, p, lines):
@@ -1020,23 +1020,34 @@ class Importer(object):
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
-        if self.gen_refs:
-            # Previously, the *actual* @auto write code refused to write section references.
-            at.write(self.root,
+        ivar = 'allow_undefined_refs' if self.language == 'javascript' else None
+        if ivar:
+            setattr(at, ivar, True)
+        try:
+            if False and self.gen_refs:
+                # Previously, the *actual* @auto write code refused to write section references.
+                at.write(
+                    self.root,
                     nosentinels=True,
-                    perfectImportFlag=False,
+                    ### perfectImportFlag=True,
                         # True Allow undefined section references.
-                    scriptWrite=True,
+                    scriptWrite=False,
+                        # Do *not* set scriptWrite = True.
+                        # That would force python sentinels.
                     thinFile=True,
                     toString=True,
                 )
-        else:
-            at.writeOneAtAutoNode(
-                self.root,
-                toString=True,
-                force=True,
-                trialWrite=True,
-            )
+            else:
+                at.writeOneAtAutoNode(
+                    self.root,
+                    toString=True,
+                    force=True,
+                    ### trialWrite=True,
+                        ### No longer needed.
+                )
+        finally:
+            if ivar:
+                delattr(at, ivar)
         return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts

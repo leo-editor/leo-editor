@@ -2085,6 +2085,7 @@ class Commands(object):
             ("C/C++ files", "*.hpp"),
             ("FreeMind files", "*.mm.html"),
             ("Java files", "*.java"),
+            ("JavaScript files", "*.js"),
             # ("JSON files", "*.json"),
             ("Mindjet files", "*.csv"),
             ("MORE files", "*.MORE"),
@@ -2133,10 +2134,16 @@ class Commands(object):
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
+                # Make *sure* that parent.b is empty.
+                last = c.lastTopLevel()
+                parent = last.insertAfter()
+                parent.v.h = 'Imported Files'
                 ic.importFilesCommand(
                     files=[fn],
-                    parent=c.p,
-                    treeType='@clean')
+                    parent=parent,
+                    treeType='@auto', # was '@clean'
+                        # Experimental: attempt to use permissive section ref logic.
+                )
         c.raise_error_dialogs(kind='read')
 
     # Compatibility: used by unit tests.

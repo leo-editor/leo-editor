@@ -212,6 +212,7 @@ class AtFile(object):
         perfectImportRoot=None,
         atShadow=False,
     ):
+        ### if root.h.startswith('@auto'): g.trace(root.h)
         at = self
         at.initCommonIvars()
         at.bom_encoding = None
@@ -270,11 +271,11 @@ class AtFile(object):
         at.thinFile = False # 2010/01/22: was thinFile
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (The only setter)
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root, targetFileName,
         atEdit=False,
         atShadow=False,
-        forcePythonSentinels=None,
+        forcePythonSentinels=False, # Was None
         nosentinels=False,
         perfectImportFlag=False,
         scriptWrite=False,
@@ -301,8 +302,10 @@ class AtFile(object):
         at.fileChangedFlag = False # True: the file has actually been updated.
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force_newlines_in_at_nosent_bodies')
-        if forcePythonSentinels is None:
-            forcePythonSentinels = scriptWrite
+        ###
+        ### if forcePythonSentinels is None:
+        ###    forcePythonSentinels = scriptWrite
+
         # at.language:      set by scanAllDirectives() below.
         # at.outputFile:    set below.
         # at.outputNewline: set below.
@@ -327,7 +330,6 @@ class AtFile(object):
         at.scanAllDirectives(root,
             scripting=scriptWrite,
             forcePythonSentinels=forcePythonSentinels,
-            issuePathWarning=True,
         )
         # Sets the following ivars:
             # at.default_directory
@@ -796,8 +798,18 @@ class AtFile(object):
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
+            at.scanAllDirectives(
+                p,
+                forcePythonSentinels=False,
+                importing=True,
+                reading=True, 
+            )
+            if trace: g.trace(at.language, p.h)
             # For #451: return p.
             old_p = p.copy()
+            if 1: # Experimental.
+                p.v.b = '' # Required for @auto API checks.
+                p.deleteAllChildren()
             p = ic.createOutline(fileName, parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
@@ -3866,11 +3878,9 @@ class AtFile(object):
         """Put a line containing one or more references."""
         at = self
         ref = at.findReference(name, p)
-            # Issues error if not found.
         if not ref:
-            ### Experimental: allow apparent section references in @auto tree.
-            if False: ### What is the selector???
-                # Write the apparent reference
+            if hasattr(at, 'allow_undefined_refs'):
+                # Allow apparent section reference: just write the line.
                 at.putCodeLine(s, i)
             return
         # Compute delta only once.
@@ -3897,7 +3907,7 @@ class AtFile(object):
         '''Find a reference to name.  Raise an error if not found.'''
         at = self
         ref = g.findReference(name, p)
-        if not ref and not g.unitTesting:
+        if not ref and not hasattr(at, 'allow_undefined_refs'):
             at.writeError(
                 "undefined section: %s\n\treferenced from: %s" % (
                     g.truncate(name, 60), g.truncate(p.h, 60)))
@@ -5004,34 +5014,30 @@ class AtFile(object):
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p,
-        scripting=False, importing=False,
-        reading=False, forcePythonSentinels=False,
-        createPath=True,
+    def scanAllDirectives(self,
+        p,
+        forcePythonSentinels=False,
+        importing=False,
         issuePathWarning=False,
+        reading=False,
+        scripting=False,
     ):
         '''
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
         '''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and p.h.startswith('@auto')
         at, c = self, self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
-        #@+node:ekr.20080923070954.14: *5* << Set ivars >> (atScanAllDirectives)
-        self.page_width = c.page_width
-        self.tab_width = c.tab_width
-        self.default_directory = None # 8/2: will be set later.
-        # g.trace(c.target_language)
+        #@+node:ekr.20080923070954.14: *5* << Set ivars >> (at.scanAllDirectives)
+        at.page_width = c.page_width
+        at.tab_width = c.tab_width
+        at.default_directory = None # 8/2: will be set later.
         if c.target_language:
             c.target_language = c.target_language.lower()
         delims = g.set_delims_from_language(c.target_language)
-        # Fix bug #452: Use file extension as default.
-        if False and p.isAnyAtFileNode(): ### Not ready yet.
-            language = g.getLanguageFromAncestorAtFileNode(p)
-            at.language = language or c.target_language # Emergency.
-        else:
-            at.language = c.target_language
+        at.language = c.target_language
         at.encoding = c.config.default_derived_file_encoding
         at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
         #@-<< set ivars >>
@@ -5059,13 +5065,12 @@ class AtFile(object):
         if lang_dict:
             delims = lang_dict.get('delims')
             at.language = lang_dict.get('language')
-            # g.trace('1', at.language, delims)
+            if trace: g.trace('1', at.language, delims)
         else:
-            # 2011/10/10:
             # No language directive.  Look for @<file> nodes.
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
             delims = g.set_delims_from_language(language)
-            # g.trace('2', repr(language), delims)
+            if trace: g.trace('2', repr(language), delims)
         at.encoding = d.get('encoding')
         at.explicitLineEnding = bool(lineending)
         at.output_newline = lineending or g.getOutputNewline(c=c)
@@ -5075,7 +5080,7 @@ class AtFile(object):
         if not importing and not reading:
             # Don't override comment delims when reading!
             #@+<< set comment strings from delims >>
-            #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >>
+            #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
             if forcePythonSentinels:
                 # Force Python language.
                 delim1, delim2, delim3 = g.set_delims_from_language("python")
@@ -5112,7 +5117,9 @@ class AtFile(object):
             "path": at.default_directory,
             "tabwidth": at.tab_width,
         }
-        if trace: g.trace(d.get('language'), p.h)
+        if trace:
+            # g.trace('forcePythonSentinels', forcePythonSentinels)
+            g.trace('returns', d.get('language'), p.h, g.callers())
         return d
     #@+node:ekr.20041005105605.242: *4* at.scanForClonedSibs (reading & writing)
     def scanForClonedSibs(self, parent_v, v):
