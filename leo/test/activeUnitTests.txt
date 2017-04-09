@@ -1653,6 +1653,110 @@ try:
         assert at.encoding == encoding, s
 finally:
     at.encoding = 'utf-8'
+#@+node:ekr.20170408233251.1: *4* @test at.putRefLine 1
+import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (
+    %s and 
+    %s > 3
+):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5
+AT+node:GNX: * @test at.putRefLine 1
+if (
+    AT+< <a> >
+    AT+node:GNX: ** < < a > >
+    a
+    AT-< <a> >
+    ATafterref
+ and 
+    AT+< <b> >
+    AT+node:GNX: ** < < b > >
+    b
+    AT-< <b> >
+    ATafterref
+ > 3
+):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+#@+node:ekr.20170408234524.1: *5* << a >>
+a
+#@+node:ekr.20170408234531.1: *5* << b >>
+b
+#@+node:ekr.20170409003052.1: *4* @test at.putRefLine 2
+import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (%s and %s > 3):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5
+AT+node:GNX: * @test at.putRefLine 2
+if (
+AT+< <a> >
+AT+node:GNX: ** < < a > >
+a
+AT-< <a> >
+ATafterref
+ and 
+AT+< <b> >
+AT+node:GNX: ** < < b > >
+b
+AT-< <b> >
+ATafterref
+ > 3):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+    # Recreate expected string.
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    # assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+#@+node:ekr.20170409003052.2: *5* << a >>
+a
+#@+node:ekr.20170409003052.3: *5* << b >>
+b
 #@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
@@ -1673,8 +1777,6 @@ finally:
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20120228174052.3929: *4* Node 1
-# node 1 text A.
 #@+node:ekr.20050105093136: *4* @test at.remove
 import os
 
@@ -2005,6 +2107,8 @@ assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
+#@+node:ekr.20120228174052.3929: *4* Node 1
+# node 1 text A.
 #@+node:ekr.20111113091935.4786: *4* Not valid when run externally
 @nocolor-node
 
