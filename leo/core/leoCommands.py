@@ -262,7 +262,7 @@ class Commands(object):
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
-        # Break circular import dependencies by importing here.
+        # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.

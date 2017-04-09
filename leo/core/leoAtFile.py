@@ -689,13 +689,12 @@ class AtFile(object):
                 isThin, repr(line))
             return not isThin
     #@+node:ekr.20041005105605.26: *5* at.readAll
-    def readAll(self, root, partialFlag=False):
+    def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         use_tracer = False
         if use_tracer: tt = g.startTracer()
-        force = partialFlag
-        if partialFlag:
+        if force:
             # Capture the current headline only if
             # we aren't doing the initial read.
             c.endEditing()
@@ -704,7 +703,7 @@ class AtFile(object):
         p = root.copy()
         scanned_tnodes = set()
         c.init_error_dialogs()
-        after = p.nodeAfterTree() if partialFlag else None
+        after = p.nodeAfterTree() if force else None
         while p and p != after:
             gnx = p.gnx
             #skip clones
@@ -754,7 +753,7 @@ class AtFile(object):
             if nRead:
                 t2 = time.time()
                 g.es('read %s files in %2.2f seconds' % (nRead, t2 - t1))
-            elif partialFlag:
+            elif force:
                 g.es("no @<file> nodes in the selected tree")
         if use_tracer: tt.stop()
         c.raise_error_dialogs()

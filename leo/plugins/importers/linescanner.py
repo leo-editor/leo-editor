@@ -1020,8 +1020,8 @@ class Importer(object):
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
-        ivar = 'allow_undefined_refs' if self.language == 'javascript' else None
-        if ivar:
+        ivar = 'allow_undefined_refs'
+        if self.language == 'javascript':
             setattr(at, ivar, True)
         try:
             if False and self.gen_refs:
@@ -1046,7 +1046,7 @@ class Importer(object):
                         ### No longer needed.
                 )
         finally:
-            if ivar:
+            if hasattr(at, ivar):
                 delattr(at, ivar)
         return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils

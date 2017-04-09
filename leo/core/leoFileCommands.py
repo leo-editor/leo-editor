@@ -790,7 +790,7 @@ class FileCommands(object):
     def readExternalFiles(self, fileName):
         '''Read all external files.'''
         c, fc = self.c, self
-        c.atFileCommands.readAll(c.rootVnode(), partialFlag=False)
+        c.atFileCommands.readAll(c.rootVnode(), force=False)
         recoveryNode = fc.handleNodeConflicts()
         # Do this after reading external files.
         # The descendent nodes won't exist unless we have read
@@ -813,7 +813,7 @@ class FileCommands(object):
     def readAtFileNodes(self):
         c = self.c; p = c.p
         c.endEditing()
-        c.atFileCommands.readAll(p, partialFlag=True)
+        c.atFileCommands.readAll(p, force=True)
         c.redraw()
         # Force an update of the body pane.
         c.setBodyString(p, p.b)
