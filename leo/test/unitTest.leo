@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.65" body_secondary_ratio="0.71">
-	<global_window_position top="40" left="398" height="931" width="1149"/>
+<globals body_outline_ratio="0.33" body_secondary_ratio="0.71">
+	<global_window_position top="66" left="450" height="931" width="1149"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -209,9 +209,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"
-expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1107,7 +1106,7 @@ expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
 <v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
 </v>
-<v t="ekr.20140724220921.5199" a="E"><vh>Tests of individual methods</vh>
+<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
 <v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
 <v t="ekr.20140206132559.4567"></v>
 <v t="ekr.20150919074122.1"></v>
@@ -1121,6 +1120,14 @@ expanded="ekr.20140724220921.5199,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
+</v>
+<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
+<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
+<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1537,7 +1544,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="10">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -11021,5 +11028,105 @@ unl: class class2--&gt;class2_method2
 <t tx="ekr.20170401123910.4">gnx: ekr.20150626093745.1
 </t>
 <t tx="ekr.20170401123910.6"></t>
+<t tx="ekr.20170408233251.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (
+    %s and 
+    %s &gt; 3
+):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5
+AT+node:GNX: * @test at.putRefLine 1
+if (
+    AT+&lt; &lt;a&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+    a
+    AT-&lt; &lt;a&gt; &gt;
+    ATafterref
+ and 
+    AT+&lt; &lt;b&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+    b
+    AT-&lt; &lt;b&gt; &gt;
+    ATafterref
+ &gt; 3
+):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170408234524.1">a</t>
+<t tx="ekr.20170408234531.1">b</t>
+<t tx="ekr.20170409003052.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (%s and %s &gt; 3):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5
+AT+node:GNX: * @test at.putRefLine 2
+if (
+AT+&lt; &lt;a&gt; &gt;
+AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+a
+AT-&lt; &lt;a&gt; &gt;
+ATafterref
+ and 
+AT+&lt; &lt;b&gt; &gt;
+AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+b
+AT-&lt; &lt;b&gt; &gt;
+ATafterref
+ &gt; 3):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+    # Recreate expected string.
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    # assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170409003052.2">a</t>
+<t tx="ekr.20170409003052.3">b</t>
 </tnodes>
 </leo_file>
