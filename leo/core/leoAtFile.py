@@ -3645,26 +3645,9 @@ class AtFile(object):
                 if at.raw:
                     at.putCodeLine(s, i)
                 else: 
-                    # Experimental: Allow section reference in @auto files.
-                    # Only the javascript importer creates section references.
                     name, n1, n2 = at.findSectionName(s, i)
                     if name:
-                        if 1: # old code.
-                            at.putRefLine(s, i, n1, n2, name, p)
-                                # generates an error if the reference does not exist.
-                        else: # Experimental
-                            name = s[n1+2:n2].strip()
-                            ref = g.findReference(name, p)
-                            if False: # Experimental: at.perfectImportFlag:
-                                if ref:
-                                    # The reference *does* exists, so *don't* write the ref!
-                                    pass
-                                else:
-                                    # An apparent reference, so *do* write it.
-                                    at.putCodeLine(s, i)
-                            else:
-                                at.putRefLine(s, i, n1, n2, name, p)
-                                    # generates an error if the reference does not exist.
+                        at.putRefLine(s, i, n1, n2, name, p)
                     else:
                         at.putCodeLine(s, i)
             else:
@@ -3885,6 +3868,10 @@ class AtFile(object):
         ref = at.findReference(name, p)
             # Issues error if not found.
         if not ref:
+            ### Experimental: allow apparent section references in @auto tree.
+            if False: ### What is the selector???
+                # Write the apparent reference
+                at.putCodeLine(s, i)
             return
         # Compute delta only once.
         junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
