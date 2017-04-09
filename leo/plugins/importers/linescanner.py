@@ -1020,31 +1020,18 @@ class Importer(object):
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
+        # Leo 5.6: Allow apparent section refs for *all* languages.
         ivar = 'allow_undefined_refs'
-        if self.language == 'javascript':
-            setattr(at, ivar, True)
         try:
-            if False and self.gen_refs:
-                # Previously, the *actual* @auto write code refused to write section references.
-                at.write(
-                    self.root,
-                    nosentinels=True,
-                    ### perfectImportFlag=True,
-                        # True Allow undefined section references.
-                    scriptWrite=False,
-                        # Do *not* set scriptWrite = True.
-                        # That would force python sentinels.
-                    thinFile=True,
-                    toString=True,
-                )
-            else:
-                at.writeOneAtAutoNode(
-                    self.root,
-                    toString=True,
-                    force=True,
-                    ### trialWrite=True,
-                        ### No longer needed.
-                )
+            setattr(at, ivar, True)
+            at.writeOneAtAutoNode(
+                self.root,
+                force=True,
+                toString=True,
+                trialWrite=True,
+                    # Suppress call to update_before_write_foreign_file
+                    # in at.writeOneAtAutoNode.
+            )
         finally:
             if hasattr(at, ivar):
                 delattr(at, ivar)

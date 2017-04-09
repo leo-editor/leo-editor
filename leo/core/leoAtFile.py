@@ -3172,9 +3172,13 @@ class AtFile(object):
             else:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p, toString, force,
+    def writeOneAtAutoNode(self, p,
+        force=False,
+        forceSentinels=False,
+        toString=False,
         trialWrite=False,
-        forceSentinels=False, # 2015/06/25
+            # Set only by Importer.trial_write.
+            # Suppresses call to update_before_write_foreign_file below.
     ):
         '''
         Write p, an @auto node.
@@ -3224,7 +3228,14 @@ class AtFile(object):
                 if not ok2: at.errors += 1
             else:
                 if trace: g.trace('at.writeOpenFile', fileName)
-                at.writeOpenFile(root, nosentinels=True, toString=toString)
+                # leo 5.6: allow undefined section references in all @auto files.
+                ivar = 'allow_undefined_refs'
+                try:
+                    setattr(at, ivar, True)
+                    at.writeOpenFile(root, nosentinels=True, toString=toString)
+                finally:
+                    if hasattr(at, ivar):
+                        delattr(at, ivar)
             at.closeWriteFile()
                 # Sets stringOutput if toString is True.
             if at.errors == 0:
@@ -3460,7 +3471,8 @@ class AtFile(object):
             at.writeOpenFile(root,
                 nosentinels=not useSentinels,
                 toString=True,
-                fromString=s)
+                fromString=s,
+            )
             at.closeWriteFile()
             # Major bug: failure to clear this wipes out headlines!
             # Minor bug: sometimes this causes slight problems...
@@ -3907,6 +3919,7 @@ class AtFile(object):
         at = self
         ref = g.findReference(name, p)
         if not ref and not hasattr(at, 'allow_undefined_refs'):
+            # Do give this error even if unit testing.
             at.writeError(
                 "undefined section: %s\n\treferenced from: %s" % (
                     g.truncate(name, 60), g.truncate(p.h, 60)))

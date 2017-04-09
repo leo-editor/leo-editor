@@ -15516,6 +15516,32 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20170409174529.27: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170409174529.28: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170409174632.19: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170409174632.20: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
@@ -16910,14 +16936,21 @@ finally:
 #@+node:ekr.20161115063144.18: *6* @test python looks like section ref
 # ~/at-auto-test.py
 
+# Careful: don't put a section reference in the string.
 s = '''\
 # This is valid Python, but it looks like a section reference.
-a = b << c >> d
-'''
+a = b < < c > > d
+'''.replace('> >', '>>').replace('< <', '<<')
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
-# Always passes, but *sometimes* i.check gives a message!
+#@+node:ekr.20170409175016.1: *7* @@file @test python looks like section ref
+# This is valid Python, but it looks like a section reference.
+@others
+@language python
+@tabwidth -4
+#@+node:ekr.20170409175016.2: *8* Declarations
+a = b << c >> d
 #@+node:ekr.20161115063144.19: *6* @test python minimal class 1
 @tabwidth -4
     # Required when running unit tests externally.
@@ -19519,86 +19552,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122751.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122751.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122751.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122751.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122751.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122751.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122751.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122751.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122751.9: *9* placeholder
-#@+node:ekr.20170401122751.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.9: *9* placeholder
-#@+node:ekr.20170401122755.10: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -19710,86 +19663,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122141.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122141.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122141.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122141.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122141.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122141.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122141.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122141.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122141.9: *9* placeholder
-#@+node:ekr.20170401122141.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.14: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.15: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.16: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.17: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.18: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.19: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.20: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.21: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.22: *9* placeholder
-#@+node:ekr.20170401122755.23: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 if 0: # Preamble
     # g.cls()
