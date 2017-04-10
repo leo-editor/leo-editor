@@ -1966,6 +1966,7 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         '''Import selected files from dir_, a directory.'''
+        trace = False and not g.unitTesting
         limit = True # True: only one file per directory.
         if g.os_path_isfile(dir_):
             files = [dir_]
@@ -1994,7 +1995,7 @@ class RecursiveImportController(object):
             if files2:
                 for f in files2:
                     self.import_one_file(f, parent=parent)
-                    if limit: break
+                    if trace and limit: break
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
