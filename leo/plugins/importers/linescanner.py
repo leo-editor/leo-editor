@@ -151,6 +151,8 @@ class Importer(object):
         self.errors = 0
         ic.errors = 0 # Required.
         self.parse_body = False
+        self.refs_dict = {}
+            # Keys are headlines. Values are disambiguating number.
         self.skip = 0 # A skip count for x.gen_lines & its helpers.
         self.ws_error = False
         self.root = None
@@ -650,9 +652,6 @@ class Importer(object):
         top = stack[-1]
         return new_state.level() < top.state.level()
     #@+node:ekr.20161108160409.8: *5* i.gen_ref
-    refs_dict = {}
-        # Keys are headlines. Values are disambiguating number.
-
     def gen_ref(self, line, parent, target):
         '''
         Generate the ref line. Return the headline.
@@ -1076,12 +1075,6 @@ class Importer(object):
         self.importCommands.errors += 1
         if trace or not g.unitTesting:
             g.error('Error:', s)
-        # if g.unitTesting:
-            # if self.errors == 1:
-                # g.app.unitTestDict['actualErrorMessage'] = s
-            # g.app.unitTestDict['actualErrors'] = self.errors
-        # else:
-            # g.error('Error:', s)
 
     def report(self, message):
         if self.strict:
