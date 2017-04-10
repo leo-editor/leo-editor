@@ -310,28 +310,13 @@ class GoToCommands(object):
             # Special case @auto nodes: 
             # Leo does not write sentinels in the root @auto node.
             at = c.atFileCommands
-            if 1: ### New code:
-                
-                ivar = 'force_sentinels'
-                try:
-                    setattr(at, ivar, True)
-                    ok = at.writeOneAtAutoNode(
-                        root,
-                        toString=True,
-                        force=True,
-                    )
-                finally:
-                    if hasattr(at, ivar):
-                        delattr(at, ivar)
-            else:
-                ok = at.writeOneAtAutoNode(
-                    root,
-                    toString=True,
-                    force=True,
-                    ### forceSentinels=True,
-                        # This is the *only* place were forceSentinels is set to True.
-                        # It is used in the AtFile class and all writer plugins.
-                )
+            ivar = 'force_sentinels'
+            try:
+                setattr(at, ivar, True)
+                ok = at.writeOneAtAutoNode(root, force=True, toString=True)
+            finally:
+                if hasattr(at, ivar):
+                    delattr(at, ivar)
             return ok and at.stringOutput or ''
         else:
             return g.composeScript( # Fix # 429.

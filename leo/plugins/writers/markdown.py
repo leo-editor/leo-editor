@@ -12,7 +12,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18076: *3* mdw.write
-    def write(self, root): ### , forceSentinels=False):
+    def write(self, root):
         """Write all the *descendants* of an @auto-markdown node."""
         # Fix bug 66: errors inhibited read @auto foo.md.
         # New in Leo 5.5: Skip !headlines. Convert all others to '#' sections.

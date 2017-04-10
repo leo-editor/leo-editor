@@ -160,7 +160,7 @@ class JSON_Import_Helper(object):
                 'children': [z.gnx for z in v.children]
             }
         #@+node:ekr.20160504144455.1: *5* json.write
-        def write(self, root): ###, forceSentinels=False):
+        def write(self, root):
             """Write all the @auto-json node."""
             nodes = list(set([p.v for p in root.subtree()]))
             nodes = [self.vnode_dict(v) for v in nodes]

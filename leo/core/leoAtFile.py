@@ -190,7 +190,6 @@ class AtFile(object):
         at.encoding = c.config.default_derived_file_encoding
         at.endSentinelComment = ""
         at.errors = 0
-        ### at.forceSentinels = False
         at.inCode = True
         at.indent = 0 # The unit of indentation is spaces, not tabs.
         at.language = None
@@ -212,7 +211,6 @@ class AtFile(object):
         perfectImportRoot=None,
         atShadow=False,
     ):
-        ### if root.h.startswith('@auto'): g.trace(root.h)
         at = self
         at.initCommonIvars()
         at.bom_encoding = None
@@ -278,8 +276,6 @@ class AtFile(object):
         atShadow=False,
         forcePythonSentinels=False, # Was None
         nosentinels=False,
-        ### perfectImportFlag=False,
-        ### scriptWrite=False,
         thinFile=False,
         toString=False,
     ):
@@ -289,8 +285,6 @@ class AtFile(object):
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
         at.atEdit = atEdit
-        ### at.forceSentinels = False
-        ### at.scriptWrite = scriptWrite
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
         at.docKind = None
@@ -303,10 +297,6 @@ class AtFile(object):
         at.fileChangedFlag = False # True: the file has actually been updated.
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force_newlines_in_at_nosent_bodies')
-        ###
-        ### if forcePythonSentinels is None:
-        ###    forcePythonSentinels = scriptWrite
-
         # at.language:      set by scanAllDirectives() below.
         # at.outputFile:    set below.
         # at.outputNewline: set below.
@@ -319,7 +309,6 @@ class AtFile(object):
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
-        ### at.perfectImportFlag = perfectImportFlag
         at.sentinels = not nosentinels
         at.shortFileName = "" # For messages.
         at.root = root
@@ -328,10 +317,7 @@ class AtFile(object):
             # Must be None for @shadow.
         at.thinFile = thinFile
         at.toString = toString
-        at.scanAllDirectives(root,
-            ### scripting=scriptWrite, ### Not used.
-            forcePythonSentinels=forcePythonSentinels,
-        )
+        at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
         # Sets the following ivars:
             # at.default_directory
             # at.encoding
@@ -950,8 +936,6 @@ class AtFile(object):
         at.write(root,
             kind='@nosent',
             nosentinels=False,
-            ### perfectImportFlag=False,
-            ### scriptWrite=False, # Do *not* force python sentinels!
             thinFile=True,
             toString=True,
         )
@@ -2846,8 +2830,6 @@ class AtFile(object):
     def write(self, root,
         kind='@unknown', # Should not happen.
         nosentinels=False,
-        ### perfectImportFlag=False,
-        ### scriptWrite=False,
         thinFile=False,
         toString=False,
     ):
@@ -2858,10 +2840,8 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         at.setTargetFileName(nosentinels, root, thinFile, toString)
         at.initWriteIvars(root, at.targetFileName,
-            ### perfectImportFlag=perfectImportFlag,
             nosentinels=nosentinels,
             thinFile=thinFile,
-            ### scriptWrite=scriptWrite,
             toString=toString,
         )
         # "look ahead" computation of eventual fileName.
@@ -2872,7 +2852,6 @@ class AtFile(object):
                 g.os_path_exists(at.default_directory),
                 at.default_directory)
             g.trace('eventual_fn', eventualFileName)
-        ### if not scriptWrite and not toString:
         if not toString:
             if at.shouldPromptForDangerousWrite(eventualFileName, root):
                 # Prompt if writing a new @file or @thin node would
@@ -3177,7 +3156,6 @@ class AtFile(object):
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self, p,
         force=False,
-        ### forceSentinels=False,
         toString=False,
         trialWrite=False,
             # Set only by Importer.trial_write.
@@ -3210,9 +3188,7 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=True,
             thinFile=False,
-            ### scriptWrite=False,
             toString=toString)
-        ### at.forceSentinels = forceSentinels # 2015/06/25
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
@@ -3222,7 +3198,6 @@ class AtFile(object):
             writer = at.dispatch(ext, root)
             if trace: g.trace('writer', repr(writer), fileName)
             if writer:
-                ### writer(root, forceSentinels=forceSentinels) # 2015/06/26.
                 writer(root)
             elif root.isAtAutoRstNode():
                 # An escape hatch: fall back to the theRst writer
@@ -3263,7 +3238,7 @@ class AtFile(object):
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
-    def writer_for_at_auto(self, root): ###, forceSentinels=False):
+    def writer_for_at_auto(self, root):
         '''A factory returning a writer function for the given kind of @auto directive.'''
         trace = False # and g.unitTesting
         at = self
@@ -3273,12 +3248,12 @@ class AtFile(object):
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
-                def writer_for_at_auto_cb(root): ###, forceSentinels):
+                def writer_for_at_auto_cb(root):
                     # pylint: disable=cell-var-from-loop
                     try:
                         if trace: g.trace('    INSTANTIATE:', aClass)
                         writer = aClass(at.c)
-                        s = writer.write(root) ###, forceSentinels=forceSentinels)
+                        s = writer.write(root)
                         return s
                     except Exception:
                         g.es_exception()
@@ -3291,7 +3266,7 @@ class AtFile(object):
         if trace: g.trace('   NOT FOUND:', g.shortFileName(root.h))
         return None
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
-    def writer_for_ext(self, ext): ### , forceSentinels=False):
+    def writer_for_ext(self, ext):
         '''A factory returning a writer function for the given file extension.'''
         trace = False # and not g.unitTesting
         at = self
@@ -3300,12 +3275,12 @@ class AtFile(object):
         # if trace: g.trace('ext', ext, 'aClass', repr(aClass), '\n'+','.join(sorted(d)))
         if aClass:
 
-            def writer_for_ext_cb(root): ### , forceSentinels):
+            def writer_for_ext_cb(root):
                 try:
                     if trace:
                         g.trace('        FOUND:', g.shortFileName(root.h), aClass)
                         g.trace(g.callers())
-                    return aClass(at.c).write(root) ### , forceSentinels=forceSentinels)
+                    return aClass(at.c).write(root)
                 except Exception:
                     g.es_exception()
                     return None
@@ -3393,10 +3368,10 @@ class AtFile(object):
             atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
-            ### scriptWrite=False,
             toString=False, # True: create a FileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
+        #
         # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
         #                     what is used in x.propegate changes.
         marker = x.markerFromFileName(fn)
@@ -3464,10 +3439,9 @@ class AtFile(object):
         at.initWriteIvars(root, "<string-file>",
             nosentinels=not useSentinels,
             thinFile=False,
-            ### scriptWrite=True,
-                # This is the *only* place where scriptWrite is set True.
             toString=True,
-            forcePythonSentinels=forcePythonSentinels)
+            forcePythonSentinels=forcePythonSentinels,
+        )
         # This is the only place that sets at.scriptWrite.
         at.scriptWrite = True
         try:
@@ -3563,8 +3537,8 @@ class AtFile(object):
             atEdit=True,
             nosentinels=True,
             thinFile=False,
-            ### scriptWrite=False,
-            toString=toString)
+            toString=toString,
+        )
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
@@ -3683,7 +3657,7 @@ class AtFile(object):
             else:
                 at.putDocLine(s, i)
         elif at.raw:
-            if kind == at.endRawDirective: ### and not at.perfectImportFlag:
+            if kind == at.endRawDirective:
                 at.raw = False
                 at.putSentinel("@@end_raw")
             else:
@@ -3729,7 +3703,6 @@ class AtFile(object):
             if g.unitTesting:
                 # A hack: unit tests for @shadow use @verbatim as a kind of directive.
                 pass
-            ### elif not at.perfectImportFlag:
             else:
                 at.error('@verbatim is not a Leo directive: %s' % p.h)
         elif kind == at.miscDirective:
@@ -4086,7 +4059,7 @@ class AtFile(object):
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
             return h
-        elif at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'): ###at.forceSentinels:
+        elif at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'):
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4145,7 +4118,7 @@ class AtFile(object):
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
         at = self
-        if at.sentinels or hasattr(at, 'force_sentinels'): ### at.forceSentinels:
+        if at.sentinels or hasattr(at, 'force_sentinels'):
             if at.thinFile:
                 s = s + "-thin"
             encoding = at.encoding.lower()
@@ -4169,7 +4142,7 @@ class AtFile(object):
     def putSentinel(self, s):
         "Write a sentinel whose text is s, applying the CWEB hack if needed."
         at = self
-        if at.sentinels or hasattr(at, 'force_sentinels'): ### at.forceSentinels:
+        if at.sentinels or hasattr(at, 'force_sentinels'):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
             # apply the cweb hack to s. If the opening comment delim ends in '@',
@@ -5040,7 +5013,6 @@ class AtFile(object):
         importing=False,
         issuePathWarning=False,
         reading=False,
-        ### scripting=False, ### Not used
     ):
         '''
         Scan p and p's ancestors looking for directives,

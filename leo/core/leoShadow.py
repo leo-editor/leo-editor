@@ -629,9 +629,8 @@ class ShadowController(object):
                 at.write(p,
                     nosentinels=False,
                     thinFile=False, # Debatable.
-                    ### scriptWrite=False,
-                        # 2015/06/23: Was True, which is inaccurate and unnecessary.
-                    toString=True)
+                    toString=True,
+                )
             finally:
                 at.at_shadow_test_hack = False
             s = at.stringOutput
