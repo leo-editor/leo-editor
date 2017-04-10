@@ -277,7 +277,7 @@ class AtFile(object):
         atShadow=False,
         forcePythonSentinels=False, # Was None
         nosentinels=False,
-        perfectImportFlag=False,
+        ### perfectImportFlag=False,
         scriptWrite=False,
         thinFile=False,
         toString=False,
@@ -318,7 +318,7 @@ class AtFile(object):
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
-        at.perfectImportFlag = perfectImportFlag
+        ### at.perfectImportFlag = perfectImportFlag
         at.sentinels = not nosentinels
         at.shortFileName = "" # For messages.
         at.root = root
@@ -949,7 +949,7 @@ class AtFile(object):
         at.write(root,
             kind='@nosent',
             nosentinels=False,
-            perfectImportFlag=False,
+            ### perfectImportFlag=False,
             scriptWrite=False, # Do *not* force python sentinels!
             thinFile=True,
             toString=True)
@@ -2844,7 +2844,7 @@ class AtFile(object):
     def write(self, root,
         kind='@unknown', # Should not happen.
         nosentinels=False,
-        perfectImportFlag=False,
+        ### perfectImportFlag=False,
         scriptWrite=False,
         thinFile=False,
         toString=False,
@@ -2856,7 +2856,7 @@ class AtFile(object):
         c.endEditing() # Capture the current headline.
         at.setTargetFileName(nosentinels, root, thinFile, toString)
         at.initWriteIvars(root, at.targetFileName,
-            perfectImportFlag=perfectImportFlag,
+            ### perfectImportFlag=perfectImportFlag,
             nosentinels=nosentinels,
             thinFile=thinFile,
             scriptWrite=scriptWrite,
@@ -3677,7 +3677,7 @@ class AtFile(object):
             else:
                 at.putDocLine(s, i)
         elif at.raw:
-            if kind == at.endRawDirective and not at.perfectImportFlag:
+            if kind == at.endRawDirective: ### and not at.perfectImportFlag:
                 at.raw = False
                 at.putSentinel("@@end_raw")
             else:
@@ -3723,7 +3723,8 @@ class AtFile(object):
             if g.unitTesting:
                 # A hack: unit tests for @shadow use @verbatim as a kind of directive.
                 pass
-            elif not at.perfectImportFlag:
+            ### elif not at.perfectImportFlag:
+            else:
                 at.error('@verbatim is not a Leo directive: %s' % p.h)
         elif kind == at.miscDirective:
             # Fix bug 583878: Leo should warn about @comment/@delims clashes.
