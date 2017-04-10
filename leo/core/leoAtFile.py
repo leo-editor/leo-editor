@@ -199,7 +199,6 @@ class AtFile(object):
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.root_seen = False # True: root VNode has been handled in this file.
-        ### at.scriptWrite = False
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -276,7 +275,6 @@ class AtFile(object):
         atShadow=False,
         forcePythonSentinels=False, # Was None
         nosentinels=False,
-        ### thinFile=False,
         toString=False,
     ):
         at, c = self, self.c
@@ -315,7 +313,6 @@ class AtFile(object):
         # at.tab_width:         set by scanAllDirectives() below.
         at.targetFileName = targetFileName
             # Must be None for @shadow.
-        ### at.thinFile = thinFile
         at.thinFile = True
         at.toString = toString
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
@@ -2830,7 +2827,6 @@ class AtFile(object):
     def write(self, root,
         kind='@unknown', # Should not happen.
         nosentinels=False,
-        ### thinFile=False,
         toString=False,
     ):
         """Write a 4.x derived file.
@@ -2838,10 +2834,11 @@ class AtFile(object):
         trace = False and not g.unitTesting
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
-        at.setTargetFileName(root, toString) ### thinFile
-        at.initWriteIvars(root, at.targetFileName,
+        at.setTargetFileName(root, toString)
+        at.initWriteIvars(
+            root,
+            at.targetFileName,
             nosentinels=nosentinels,
-            ### thinFile=thinFile,
             toString=toString,
         )
         # "look ahead" computation of eventual fileName.
@@ -3061,10 +3058,10 @@ class AtFile(object):
                 at.writeOneAtShadowNode(p, toString=toString, force=force or pathChanged)
                 writtenFiles.append(p.v)
             elif p.isAtThinFileNode():
-                at.write(p, kind='@thin', toString=toString) ### thinFile=True,
+                at.write(p, kind='@thin', toString=toString)
                 writtenFiles.append(p.v)
             elif p.isAtFileNode():
-                at.write(p, kind='@file', toString=toString) ### thinFile=True, 
+                at.write(p, kind='@file', toString=toString) 
                 writtenFiles.append(p.v)
             if p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
@@ -3175,10 +3172,12 @@ class AtFile(object):
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = "<string-file>" if toString else fileName
-        at.initWriteIvars(root, at.targetFileName,
+        at.initWriteIvars(
+            root,
+            at.targetFileName,
             nosentinels=True,
-            ### thinFile=False,
-            toString=toString)
+            toString=toString,
+        )
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
@@ -3354,16 +3353,22 @@ class AtFile(object):
                 g.es("not written:", fn)
                 return
         c.endEditing() # Capture the current headline.
-        at.initWriteIvars(root, targetFileName=None, # Not used.
+        at.initWriteIvars(
+            root,
+            targetFileName=None, # Not used.
             atShadow=True,
-            nosentinels=None, # set below.  Affects only error messages (sometimes).
-            ### thinFile=True, # New in Leo 4.5 b2: private files are thin files.
-            toString=False, # True: create a FileLikeObject.  This is done below.
-            forcePythonSentinels=True) # A hack to suppress an error message.
+            nosentinels=None,
+                # set below.  Affects only error messages (sometimes).
+            toString=False,
+                # True: create a FileLikeObject below.
+            forcePythonSentinels=True,
+                # A hack to suppress an error message.
                 # The actual sentinels will be set below.
+        )    
         #
-        # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
-        #                     what is used in x.propegate changes.
+        # Bug fix: Leo 4.5.1:
+        # use x.markerFromFileName to force the delim to match
+        # what is used in x.propegate changes.
         marker = x.markerFromFileName(fn)
         at.startSentinelComment, at.endSentinelComment = marker.getDelims()
         if g.app.unitTesting:
@@ -3371,7 +3376,7 @@ class AtFile(object):
         # Write the public and private files to public_s and private_s strings.
         data = []
         for sentinels in (False, True):
-            # 2011/09/09: specify encoding explicitly.
+            # Specify encoding explicitly.
             theFile = at.openStringFile(fn, encoding=at.encoding)
             at.sentinels = sentinels
             at.writeOpenFile(root,
@@ -3389,7 +3394,8 @@ class AtFile(object):
         if at.errors == 0 and not toString:
             # Write the public and private files.
             if trace: g.trace('writing', fn)
-            x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+            x.makeShadowDirectory(fn)
+                # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn, at.private_s)
             at.replaceFileWithString(fn, at.public_s)
         self.checkPythonCode(root, s=at.private_s, targetFn=fn)
@@ -3398,8 +3404,8 @@ class AtFile(object):
             root.clearDirty()
         else:
             g.error("not written:", at.outputFileName)
-            root.setDirty() # New in Leo 4.4.8.
-            root.setOrphan() # 2010/10/22.
+            root.setDirty()
+            root.setOrphan()
         return at.errors == 0
     #@+node:ekr.20080819075811.13: *7* adjustTargetLanguage
     def adjustTargetLanguage(self, fn):
@@ -3428,12 +3434,9 @@ class AtFile(object):
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
             nosentinels=not useSentinels,
-            ### thinFile=False,
             toString=True,
             forcePythonSentinels=forcePythonSentinels,
         )
-        # This is the only place that sets at.scriptWrite.
-        ### at.scriptWrite = True
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
             if g.app.unitTesting:
@@ -3526,7 +3529,6 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             atEdit=True,
             nosentinels=True,
-            ### thinFile=False,
             toString=toString,
         )
         # Compute the file's contents.
@@ -3579,10 +3581,6 @@ class AtFile(object):
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        if False: ### not at.thinFile:
-            p.v.setWriteBit() # Mark the VNode to be written.
-        if False: ### not at.thinFile and not s:
-            return
         s, trailingNewlineFlag = at.ensureTrailingNewline(s)
         at.raw = False # Bug fix.
         i = 0
@@ -3733,8 +3731,6 @@ class AtFile(object):
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        if False: ### not at.thinFile and not s:
-            return
         if at.sentinels and s and s[-1] != '\n':
             s = s + '\n'
         i, inCode = 0, True
@@ -4049,7 +4045,7 @@ class AtFile(object):
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
             return h
-        elif True: ### at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'):
+        else:
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4061,8 +4057,6 @@ class AtFile(object):
             else: # Hide the gnx to the right.
                 pad = max(1, 100 - len(stars) - len(h)) * ' '
                 return '%s %s%s::%s' % (stars, h, pad, gnx)
-        else:
-            return h
     #@+node:ekr.20041005105605.189: *6* at.removeCommentDelims
     def removeCommentDelims(self, p):
         '''
@@ -4109,8 +4103,7 @@ class AtFile(object):
         """Write @+leo sentinel."""
         at = self
         if at.sentinels or hasattr(at, 'force_sentinels'):
-            if True: ### at.thinFile:
-                s = s + "-thin"
+            s = s + "-thin"
             encoding = at.encoding.lower()
             if encoding != "utf-8":
                 # New in 4.2: encoding fields end in ",."
@@ -4752,24 +4745,23 @@ class AtFile(object):
 
     def warnAboutOrphandAndIgnoredNodes(self):
         # Always warn, even when language=="cweb"
-        at = self; root = at.root
-        if at.errors: return # No need to repeat this.
+        at, root = self, self.root
+        if at.errors:
+            return # No need to repeat this.
         for p in root.self_and_subtree():
             if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
                     g.blue("parent node:", p.parent().h)
-                if False: ### not at.thinFile and p.isAtIgnoreNode():
+        p = root.copy()
+        after = p.nodeAfterTree()
+        while p and p != after:
+            if p.isAtAllNode():
+                p.moveToNodeAfterTree()
+            else:
+                if p.isAtIgnoreNode():
                     at.writeError("@ignore node: " + p.h)
-        if True: ### at.thinFile:
-            p = root.copy(); after = p.nodeAfterTree()
-            while p and p != after:
-                if p.isAtAllNode():
-                    p.moveToNodeAfterTree()
-                else:
-                    if p.isAtIgnoreNode():
-                        at.writeError("@ignore node: " + p.h)
-                    p.moveToThreadNext()
+                p.moveToThreadNext()
     #@+node:ekr.20041005105605.217: *5* at.writeError
     def writeError(self, message=None):
         '''Issue an error while writing an @<file> node.'''

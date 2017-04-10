@@ -937,7 +937,6 @@ class TestManager(object):
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
             "@asis",), "bad type: %s" % theType
-        ### thinFile = theType == "@thin"
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
             at.asisWrite(child1, toString=True)
@@ -947,7 +946,6 @@ class TestManager(object):
             at.writeOneAtEditNode(child1, toString=True)
         else:
             at.write(child1, nosentinels=nosentinels, toString=True)
-                ### thinFile=thinFile, 
         try:
             result = g.toUnicode(at.stringOutput)
             assert result == expected
@@ -1640,7 +1638,6 @@ class TestManager(object):
                 p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
         at.write(p, nosentinels=not sentinels, toString=True)
-            ### thinFile=True, 
         return at.stringOutput
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
