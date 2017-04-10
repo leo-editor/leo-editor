@@ -199,7 +199,7 @@ class AtFile(object):
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.root_seen = False # True: root VNode has been handled in this file.
-        at.scriptWrite = False
+        ### at.scriptWrite = False
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -3444,7 +3444,7 @@ class AtFile(object):
             forcePythonSentinels=forcePythonSentinels,
         )
         # This is the only place that sets at.scriptWrite.
-        at.scriptWrite = True
+        ### at.scriptWrite = True
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
             if g.app.unitTesting:
