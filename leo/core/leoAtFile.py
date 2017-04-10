@@ -793,9 +793,8 @@ class AtFile(object):
             if trace: g.trace(at.language, p.h)
             # For #451: return p.
             old_p = p.copy()
-            if 1: # Experimental.
-                p.v.b = '' # Required for @auto API checks.
-                p.deleteAllChildren()
+            p.v.b = '' # Required for @auto API checks.
+            p.deleteAllChildren()
             p = ic.createOutline(fileName, parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
