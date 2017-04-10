@@ -208,10 +208,13 @@ class JS_Importer(Importer):
             return s
         elif 1:
             # Imo, showing the whole line is better than truncating it.
-            return s
+            # However the lines must have a reasonable length.
+            return g.truncate(s, 100)
         else:
             i = s.find('(')
-            return s if i == -1 else s[:i]
+            if i > -1:
+                s = s[:i]
+            return g.truncate(s, 100)
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
