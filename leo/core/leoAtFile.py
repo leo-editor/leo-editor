@@ -2837,7 +2837,7 @@ class AtFile(object):
         trace = False and not g.unitTesting
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
-        at.setTargetFileName(nosentinels, root, thinFile, toString)
+        at.setTargetFileName(root, thinFile, toString)
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=nosentinels,
             thinFile=thinFile,
@@ -2896,24 +2896,13 @@ class AtFile(object):
             else:
                 at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20140630081820.16722: *6* at.setTargetFileName
-    def setTargetFileName(self, nosentinels, root, thinFile, toString):
+    def setTargetFileName(self, root, thinFile, toString):
         '''Set the target file name for at.write.'''
         at = self
         if toString:
             at.targetFileName = "<string-file>"
-        elif True: ### Experimental.
-            at.targetFileName = root.anyAtFileNodeName()
-        elif nosentinels:
-            at.targetFileName = (
-                root.atNoSentFileNodeName() or
-                root.atCleanNodeName()) # 2015/04/06
-        elif thinFile:
-            at.targetFileName = root.atThinFileNodeName()
-            if not at.targetFileName:
-                # We have an @file node.
-                at.targetFileName = root.atFileNodeName()
         else:
-            at.targetFileName = root.atFileNodeName()
+            at.targetFileName = root.anyAtFileNodeName()
     #@+node:ekr.20140630081820.16723: *6* at.setDirtyOrphanBits
     def setDirtyOrphanBits(self, root):
         '''
