@@ -2901,6 +2901,8 @@ class AtFile(object):
         at = self
         if toString:
             at.targetFileName = "<string-file>"
+        elif True: ### Experimental.
+            at.targetFileName = root.anyAtFileNodeName()
         elif nosentinels:
             at.targetFileName = (
                 root.atNoSentFileNodeName() or
@@ -3588,9 +3590,9 @@ class AtFile(object):
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        if not at.thinFile:
+        if False: ### not at.thinFile:
             p.v.setWriteBit() # Mark the VNode to be written.
-        if not at.thinFile and not s:
+        if False: ### not at.thinFile and not s:
             return
         s, trailingNewlineFlag = at.ensureTrailingNewline(s)
         at.raw = False # Bug fix.
@@ -3722,7 +3724,7 @@ class AtFile(object):
             at.error('putBody: can not happen: unknown directive kind: %s' % kind)
     #@+node:ekr.20041005105605.164: *5* writing code lines...
     #@+node:ekr.20041005105605.165: *6* at.@all
-    #@+node:ekr.20041005105605.166: *7* putAtAllLine
+    #@+node:ekr.20041005105605.166: *7* at.putAtAllLine
     def putAtAllLine(self, s, i, p):
         """Put the expansion of @all."""
         at = self
@@ -3734,7 +3736,7 @@ class AtFile(object):
             at.putAtAllChild(child)
         at.putSentinel("@-all")
         at.indent -= delta
-    #@+node:ekr.20041005105605.167: *7* putAtAllBody
+    #@+node:ekr.20041005105605.167: *7* at.putAtAllBody
     def putAtAllBody(self, p):
         """ Generate the body enclosed in sentinel lines."""
         at = self
@@ -3742,7 +3744,7 @@ class AtFile(object):
         p.v.setVisited()
             # Make sure v is never expanded again.
             # Suppress orphans check.
-        if not at.thinFile and not s:
+        if False: ### not at.thinFile and not s:
             return
         if at.sentinels and s and s[-1] != '\n':
             s = s + '\n'
@@ -3758,7 +3760,7 @@ class AtFile(object):
             i = next_i
         if not inCode:
             at.putEndDocLine()
-    #@+node:ekr.20041005105605.169: *7* putAtAllChild
+    #@+node:ekr.20041005105605.169: *7* at.putAtAllChild
     #@+at This code puts only the first of two or more cloned siblings, preceding the
     # clone with an @clone n sentinel.
     # 
@@ -3968,7 +3970,7 @@ class AtFile(object):
         at.putSentinel("@-" + name)
         at.indent -= delta
     #@+node:ekr.20041005105605.180: *5* writing doc lines...
-    #@+node:ekr.20041005105605.181: *6* putBlankDocLine
+    #@+node:ekr.20041005105605.181: *6* at.putBlankDocLine
     def putBlankDocLine(self):
         at = self
         at.putPending(split=False)
@@ -3976,7 +3978,7 @@ class AtFile(object):
             at.putIndent(at.indent)
             at.os(at.startSentinelComment); at.oblank()
         at.onl()
-    #@+node:ekr.20041005105605.183: *6* putDocLine
+    #@+node:ekr.20041005105605.183: *6* at.putDocLine
     def putDocLine(self, s, i):
         """
         Handle one line of a doc part.
@@ -4003,7 +4005,7 @@ class AtFile(object):
             at.os(s)
             if not s.endswith('\n'):
                 at.onl()
-    #@+node:ekr.20041005105605.185: *6* putEndDocLine
+    #@+node:ekr.20041005105605.185: *6* at.putEndDocLine
     def putEndDocLine(self):
         """Write the conclusion of a doc part."""
         at = self
@@ -4013,7 +4015,7 @@ class AtFile(object):
             at.putIndent(at.indent)
             at.os(at.endSentinelComment)
             at.onl() # Note: no trailing whitespace.
-    #@+node:ekr.20041005105605.186: *6* putPending (old only)
+    #@+node:ekr.20041005105605.186: *6* at.putPending (old only)
     def putPending(self, split):
         """Write the pending part of a doc part.
 
@@ -4031,7 +4033,7 @@ class AtFile(object):
         if not at.endSentinelComment:
             at.os(at.startSentinelComment); at.oblank()
         at.os(s); at.onl()
-    #@+node:ekr.20041005105605.182: *6* putStartDocLine
+    #@+node:ekr.20041005105605.182: *6* at.putStartDocLine
     def putStartDocLine(self, s, i, kind):
         """Write the start of a doc part."""
         at = self
@@ -4058,7 +4060,7 @@ class AtFile(object):
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
             return h
-        elif at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'):
+        elif True: ### at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'):
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4118,7 +4120,7 @@ class AtFile(object):
         """Write @+leo sentinel."""
         at = self
         if at.sentinels or hasattr(at, 'force_sentinels'):
-            if at.thinFile:
+            if True: ### at.thinFile:
                 s = s + "-thin"
             encoding = at.encoding.lower()
             if encoding != "utf-8":
@@ -4768,9 +4770,9 @@ class AtFile(object):
                 at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
                     g.blue("parent node:", p.parent().h)
-                if not at.thinFile and p.isAtIgnoreNode():
+                if False: ### not at.thinFile and p.isAtIgnoreNode():
                     at.writeError("@ignore node: " + p.h)
-        if at.thinFile:
+        if True: ### at.thinFile:
             p = root.copy(); after = p.nodeAfterTree()
             while p and p != after:
                 if p.isAtAllNode():

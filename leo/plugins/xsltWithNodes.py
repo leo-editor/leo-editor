@@ -208,9 +208,11 @@ def addXSLTElement( c , element):
     ### w.event_generate( '<Key>' )
     ### w.update_idletasks()
 
-#@+node:mork.20041025113021: ** getString
+#@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
 def getString (c):
-    '''This def turns a node into a string based off of Leo's file-nosent write logic'''
+    '''
+    This def turns a node into a string using Leo's file-nosent write logic.
+    '''
     at = c.atFileCommands
     pos = c.p
     cS = StringIO()
@@ -220,7 +222,7 @@ def getString (c):
         at.toStringFlag = True
         # at.outputFile = cS
         at.writeOpenFile(pos,nosentinels=True,toString=True)
-            #How the heck does this fill cS with data, if at.outputFile is never set?
+            # How does this fill cS with data, if at.outputFile is never set?
         # at.outputFile = None
         # at.toStringFlag = False
 

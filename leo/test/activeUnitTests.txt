@@ -1496,6 +1496,26 @@ c.testManager.runAtFileTest(p)
 #after
 #@+node:ekr.20110524120515.3491: *5* Output
 #@verbatim
+#@+leo-ver=5-thin
+#@verbatim
+#@+node:ekr.20110524120515.3490: * #@file
+# before
+
+#@verbatim
+#@@raw
+
+@c
+
+<< ref >>
+
+#@verbatim
+#@@end_raw
+
+#after
+#@verbatim
+#@-leo
+#@+node:ekr.20170410084645.1: *5* Old-Output
+#@verbatim
 #@+leo-ver=5
 #@verbatim
 #@+node:#@file
@@ -1669,7 +1689,7 @@ if (
 ''' % (g.angleBrackets('a'), g.angleBrackets('b'))
 # Careful: avoid @verbatim and other substitutions.
 expected = '''\
-AT+leo-ver=5
+AT+leo-ver=5-thin
 AT+node:GNX: * @test at.putRefLine 1
 if (
     AT+< <a> >
@@ -1720,7 +1740,7 @@ if (%s and %s > 3):
 ''' % (g.angleBrackets('a'), g.angleBrackets('b'))
 # Careful: avoid @verbatim and other substitutions.
 expected = '''\
-AT+leo-ver=5
+AT+leo-ver=5-thin
 AT+node:GNX: * @test at.putRefLine 2
 if (
 AT+< <a> >
@@ -1946,23 +1966,47 @@ finally:
             if fn and exists(fn):
                 os.remove(fn)
 #@+node:ekr.20060602195313: *4* @test at.write using @comment
+import re
 at = c.atFileCommands
+expected = '''\
+/*@+leo-ver=5-thin*/
+/*@+node:GNX: * root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@+< < Get LRR Task > >*/
+/*@+node:GNX: ** < < Get LRR Task > >*/
+/*@-< < Get LRR Task > >*/
+/*@+< < Start LRR > >*/
+/*@+node:GNX: ** < < Start LRR > >*/
+/*@-< < Start LRR > >*/
+/*@-leo*/
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
 child = p.firstChild()
-child2 = child.next()
-result = str(child2.b)
 at.write(child, toString=True)
-    # Defaults:
-    # nosentinels=False,
-    # thinFile=False,
-s = str(at.stringOutput)
+    # Defaults: nosentinels=False, thinFile=False,
+result = str(at.stringOutput)
+result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
 
-if s != result:
-    print('-' * 30)
-    print(s)
-    print('-' * 30)
-    print(result)
-
-assert s == result
+assert result == expected
 #@+node:ekr.20060602195313.2: *5* root
 @language c
 #ifdef COMMENT
@@ -1977,26 +2021,6 @@ assert s == result
 << Start LRR >>
 #@+node:ekr.20060602195313.3: *6* << Get LRR Task >>
 #@+node:ekr.20060602195313.4: *6* << Start LRR >>
-#@+node:ekr.20060602195914: *5* Result
-/*@+leo-ver=5*/
-/*@+node:root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+<< Get LRR Task >>*/
-/*@+node:<< Get LRR Task >>*/
-/*@-<< Get LRR Task >>*/
-/*@+<< Start LRR >>*/
-/*@+node:<< Start LRR >>*/
-/*@-<< Start LRR >>*/
-/*@-leo*/
 #@+node:ekr.20090529115704.4567: *4* @test at.writeOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
