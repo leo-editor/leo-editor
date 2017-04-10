@@ -2824,7 +2824,8 @@ class AtFile(object):
                 g.es_exception()
             return 'error', None
     #@+node:ekr.20041005105605.144: *5* at.write & helpers
-    def write(self, root,
+    def write(self,
+        root,
         kind='@unknown', # Should not happen.
         nosentinels=False,
         toString=False,
@@ -3141,7 +3142,8 @@ class AtFile(object):
             else:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
-    def writeOneAtAutoNode(self, p,
+    def writeOneAtAutoNode(self,
+        p,
         force=False,
         toString=False,
         trialWrite=False,

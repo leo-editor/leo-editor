@@ -214,27 +214,9 @@ def getString (c):
     This def turns a node into a string using Leo's file-nosent write logic.
     '''
     at = c.atFileCommands
-    pos = c.p
-    cS = StringIO()
-
-    if not hasattr( at, 'new_df' ):
-        # 4.3 code base.
-        at.toStringFlag = True
-        # at.outputFile = cS
-        at.writeOpenFile(pos,nosentinels=True,toString=True)
-            # How does this fill cS with data, if at.outputFile is never set?
-        # at.outputFile = None
-        # at.toStringFlag = False
-
-    else: # 4.2 code base
-        at.new_df.toStringFlag = True
-        at.new_df.outputFile = cS
-        at.new_df.writeOpenFile(pos,nosentinels=True,toString=True)
-        at.new_df.outputFile = None
-        at.new_df.toStringFlag = False
-
-    cS.seek(0)
-    return cleanString( cS.getvalue() )
+    # EKR: 2017/04/10: needs testing.
+    at.writeOpenFile(c.p, nosentinels=True, toString=True)
+    return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):
     '''

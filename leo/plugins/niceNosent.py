@@ -48,7 +48,7 @@ def init ():
 #@+node:ekr.20040331151007.1: ** onPreSave
 def onPreSave(tag=None, keywords=None):
 
-    """Before saving a nosentinels file, make sure that all nodes have a blank line at the end."""
+    """Before saving an @nosent file, make sure that all nodes have a blank line at the end."""
 
     global nosentNodes
     c = keywords.get('c')
@@ -63,7 +63,7 @@ def onPreSave(tag=None, keywords=None):
                         c.setBodyString(p2,s+"\n")
 #@+node:ekr.20040331151007.2: ** onPostSave
 def onPostSave(tag=None, keywords=None):
-    """After saving a nosentinels file, replace all tabs with spaces."""
+    """After saving an @nosent file, replace all tabs with spaces."""
 
     global nosentNodes
     c = keywords.get('c')
