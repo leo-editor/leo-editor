@@ -933,7 +933,6 @@ class AtFile(object):
         at.write(root,
             kind='@nosent',
             nosentinels=False,
-            # thinFile=True,
             toString=True,
         )
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
