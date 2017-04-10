@@ -1992,7 +1992,7 @@ expected = '''\
 
 child = p.firstChild()
 at.write(child, toString=True)
-    # Defaults: nosentinels=False, thinFile=False,
+    # Default: nosentinels=False
 result = str(at.stringOutput)
 result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
 if 0: # Show unexpected mismatches.

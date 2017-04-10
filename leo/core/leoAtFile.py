@@ -276,7 +276,7 @@ class AtFile(object):
         atShadow=False,
         forcePythonSentinels=False, # Was None
         nosentinels=False,
-        thinFile=False,
+        ### thinFile=False,
         toString=False,
     ):
         at, c = self, self.c
@@ -315,7 +315,8 @@ class AtFile(object):
         # at.tab_width:         set by scanAllDirectives() below.
         at.targetFileName = targetFileName
             # Must be None for @shadow.
-        at.thinFile = thinFile
+        ### at.thinFile = thinFile
+        at.thinFile = True
         at.toString = toString
         at.scanAllDirectives(root, forcePythonSentinels=forcePythonSentinels)
         # Sets the following ivars:
@@ -935,7 +936,7 @@ class AtFile(object):
         at.write(root,
             kind='@nosent',
             nosentinels=False,
-            thinFile=True,
+            # thinFile=True,
             toString=True,
         )
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
@@ -2829,7 +2830,7 @@ class AtFile(object):
     def write(self, root,
         kind='@unknown', # Should not happen.
         nosentinels=False,
-        thinFile=False,
+        ### thinFile=False,
         toString=False,
     ):
         """Write a 4.x derived file.
@@ -2837,10 +2838,10 @@ class AtFile(object):
         trace = False and not g.unitTesting
         at = self; c = at.c
         c.endEditing() # Capture the current headline.
-        at.setTargetFileName(root, thinFile, toString)
+        at.setTargetFileName(root, toString) ### thinFile
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=nosentinels,
-            thinFile=thinFile,
+            ### thinFile=thinFile,
             toString=toString,
         )
         # "look ahead" computation of eventual fileName.
@@ -2896,7 +2897,7 @@ class AtFile(object):
             else:
                 at.writeException() # Sets dirty and orphan bits.
     #@+node:ekr.20140630081820.16722: *6* at.setTargetFileName
-    def setTargetFileName(self, root, thinFile, toString):
+    def setTargetFileName(self, root, toString):
         '''Set the target file name for at.write.'''
         at = self
         if toString:
@@ -3060,11 +3061,10 @@ class AtFile(object):
                 at.writeOneAtShadowNode(p, toString=toString, force=force or pathChanged)
                 writtenFiles.append(p.v)
             elif p.isAtThinFileNode():
-                at.write(p, kind='@thin', thinFile=True, toString=toString)
+                at.write(p, kind='@thin', toString=toString) ### thinFile=True,
                 writtenFiles.append(p.v)
             elif p.isAtFileNode():
-                # Write old @file nodes using @thin format.
-                at.write(p, kind='@file', thinFile=True, toString=toString)
+                at.write(p, kind='@file', toString=toString) ### thinFile=True, 
                 writtenFiles.append(p.v)
             if p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
@@ -3177,7 +3177,7 @@ class AtFile(object):
         at.targetFileName = "<string-file>" if toString else fileName
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=True,
-            thinFile=False,
+            ### thinFile=False,
             toString=toString)
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
@@ -3357,7 +3357,7 @@ class AtFile(object):
         at.initWriteIvars(root, targetFileName=None, # Not used.
             atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
-            thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+            ### thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             toString=False, # True: create a FileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
@@ -3428,7 +3428,7 @@ class AtFile(object):
             # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root, "<string-file>",
             nosentinels=not useSentinels,
-            thinFile=False,
+            ### thinFile=False,
             toString=True,
             forcePythonSentinels=forcePythonSentinels,
         )
@@ -3526,7 +3526,7 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             atEdit=True,
             nosentinels=True,
-            thinFile=False,
+            ### thinFile=False,
             toString=toString,
         )
         # Compute the file's contents.

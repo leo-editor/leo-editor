@@ -628,7 +628,7 @@ class ShadowController(object):
             try:
                 at.write(p,
                     nosentinels=False,
-                    thinFile=False, # Debatable.
+                    ### thinFile=False, # Debatable.
                     toString=True,
                 )
             finally:
