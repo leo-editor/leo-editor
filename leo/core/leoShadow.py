@@ -629,7 +629,7 @@ class ShadowController(object):
                 at.write(p,
                     nosentinels=False,
                     thinFile=False, # Debatable.
-                    scriptWrite=False,
+                    ### scriptWrite=False,
                         # 2015/06/23: Was True, which is inaccurate and unnecessary.
                     toString=True)
             finally:

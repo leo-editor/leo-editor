@@ -1950,7 +1950,10 @@ at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
 result = str(child2.b)
-at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
+at.write(child, toString=True)
+    # Defaults:
+    # nosentinels=False,
+    # thinFile=False,
 s = str(at.stringOutput)
 
 if s != result:

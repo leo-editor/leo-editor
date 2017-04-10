@@ -200,7 +200,7 @@ class AtFile(object):
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
         at.root_seen = False # True: root VNode has been handled in this file.
-        at.scriptWrite = False # 2015/06/23
+        at.scriptWrite = False
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -268,7 +268,8 @@ class AtFile(object):
         at.v = None
         at.vStack = [] # Stack of at.v values.
         at.thinChildIndexStack = [] # number of siblings at this level.
-        at.thinFile = False # 2010/01/22: was thinFile
+        at.thinFile = False
+            # True if the external file uses new-style sentinels.
         at.thinNodeStack = [] # Entries are vnodes.
         at.updateWarningGiven = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
@@ -278,7 +279,7 @@ class AtFile(object):
         forcePythonSentinels=False, # Was None
         nosentinels=False,
         ### perfectImportFlag=False,
-        scriptWrite=False,
+        ### scriptWrite=False,
         thinFile=False,
         toString=False,
     ):
@@ -289,7 +290,7 @@ class AtFile(object):
         assert at.underindentEscapeString is not None
         at.atEdit = atEdit
         ### at.forceSentinels = False
-        at.scriptWrite = scriptWrite
+        ### at.scriptWrite = scriptWrite
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
         at.docKind = None
@@ -328,7 +329,7 @@ class AtFile(object):
         at.thinFile = thinFile
         at.toString = toString
         at.scanAllDirectives(root,
-            scripting=scriptWrite,
+            ### scripting=scriptWrite, ### Not used.
             forcePythonSentinels=forcePythonSentinels,
         )
         # Sets the following ivars:
@@ -950,9 +951,10 @@ class AtFile(object):
             kind='@nosent',
             nosentinels=False,
             ### perfectImportFlag=False,
-            scriptWrite=False, # Do *not* force python sentinels!
+            ### scriptWrite=False, # Do *not* force python sentinels!
             thinFile=True,
-            toString=True)
+            toString=True,
+        )
         s = g.toUnicode(at.stringOutput, encoding=at.encoding)
         return g.splitLines(s)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode
@@ -2845,7 +2847,7 @@ class AtFile(object):
         kind='@unknown', # Should not happen.
         nosentinels=False,
         ### perfectImportFlag=False,
-        scriptWrite=False,
+        ### scriptWrite=False,
         thinFile=False,
         toString=False,
     ):
@@ -2859,7 +2861,7 @@ class AtFile(object):
             ### perfectImportFlag=perfectImportFlag,
             nosentinels=nosentinels,
             thinFile=thinFile,
-            scriptWrite=scriptWrite,
+            ### scriptWrite=scriptWrite,
             toString=toString,
         )
         # "look ahead" computation of eventual fileName.
@@ -2870,7 +2872,8 @@ class AtFile(object):
                 g.os_path_exists(at.default_directory),
                 at.default_directory)
             g.trace('eventual_fn', eventualFileName)
-        if not scriptWrite and not toString:
+        ### if not scriptWrite and not toString:
+        if not toString:
             if at.shouldPromptForDangerousWrite(eventualFileName, root):
                 # Prompt if writing a new @file or @thin node would
                 # overwrite an existing file.
@@ -3207,7 +3210,7 @@ class AtFile(object):
         at.initWriteIvars(root, at.targetFileName,
             nosentinels=True,
             thinFile=False,
-            scriptWrite=False,
+            ### scriptWrite=False,
             toString=toString)
         ### at.forceSentinels = forceSentinels # 2015/06/25
         if c.persistenceController and not trialWrite:
@@ -3390,7 +3393,7 @@ class AtFile(object):
             atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
-            scriptWrite=False,
+            ### scriptWrite=False,
             toString=False, # True: create a FileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
@@ -3461,9 +3464,12 @@ class AtFile(object):
         at.initWriteIvars(root, "<string-file>",
             nosentinels=not useSentinels,
             thinFile=False,
-            scriptWrite=True,
+            ### scriptWrite=True,
+                # This is the *only* place where scriptWrite is set True.
             toString=True,
             forcePythonSentinels=forcePythonSentinels)
+        # This is the only place that sets at.scriptWrite.
+        at.scriptWrite = True
         try:
             ok = at.openFileForWriting(root, at.targetFileName, toString=True)
             if g.app.unitTesting:
@@ -3557,7 +3563,7 @@ class AtFile(object):
             atEdit=True,
             nosentinels=True,
             thinFile=False,
-            scriptWrite=False,
+            ### scriptWrite=False,
             toString=toString)
         # Compute the file's contents.
         # Unlike the @clean/@nosent file logic, it does not add a final newline.
@@ -5034,7 +5040,7 @@ class AtFile(object):
         importing=False,
         issuePathWarning=False,
         reading=False,
-        scripting=False,
+        ### scripting=False, ### Not used
     ):
         '''
         Scan p and p's ancestors looking for directives,
