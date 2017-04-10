@@ -51,7 +51,7 @@ class Export_IPYNB(object):
             except IOError:
                 g.es_print('can not open: %s' % fn)
     #@+node:ekr.20160412114239.1: *4* write: @auto entry
-    def write(self, root, forceSentinels=False):
+    def write(self, root): ###, forceSentinels=False):
         '''
         Export_IPYNB: entry point for @auto writes.
         Signature must match signature of BaseWriter.write().

@@ -16,7 +16,7 @@ class CTextWriter(basewriter.BaseWriter):
             self.put(txt+'\n\n')
             self.recurse(child, level+1)
     #@+node:tbrown.20140804103545.29979: *3* write
-    def write(self,root,forceSentinels=False):
+    def write(self,root): ### ,forceSentinels=False):
 
         self.cchar = '#'
         if root.h.lower()[-4:] == '.tex':

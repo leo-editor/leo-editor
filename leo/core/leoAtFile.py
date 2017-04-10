@@ -190,7 +190,7 @@ class AtFile(object):
         at.encoding = c.config.default_derived_file_encoding
         at.endSentinelComment = ""
         at.errors = 0
-        at.forceSentinels = False
+        ### at.forceSentinels = False
         at.inCode = True
         at.indent = 0 # The unit of indentation is spaces, not tabs.
         at.language = None
@@ -288,7 +288,7 @@ class AtFile(object):
         assert at.checkPythonCodeOnWrite is not None
         assert at.underindentEscapeString is not None
         at.atEdit = atEdit
-        at.forceSentinels = False
+        ### at.forceSentinels = False
         at.scriptWrite = scriptWrite
         at.atShadow = atShadow
         # at.default_directory: set by scanAllDirectives()
@@ -3174,7 +3174,7 @@ class AtFile(object):
     #@+node:ekr.20070806141607: *6* at.writeOneAtAutoNode & helpers
     def writeOneAtAutoNode(self, p,
         force=False,
-        forceSentinels=False,
+        ### forceSentinels=False,
         toString=False,
         trialWrite=False,
             # Set only by Importer.trial_write.
@@ -3209,7 +3209,7 @@ class AtFile(object):
             thinFile=False,
             scriptWrite=False,
             toString=toString)
-        at.forceSentinels = forceSentinels # 2015/06/25
+        ### at.forceSentinels = forceSentinels # 2015/06/25
         if c.persistenceController and not trialWrite:
             c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting(root, fileName=fileName, toString=toString)
@@ -3219,7 +3219,8 @@ class AtFile(object):
             writer = at.dispatch(ext, root)
             if trace: g.trace('writer', repr(writer), fileName)
             if writer:
-                writer(root, forceSentinels=forceSentinels) # 2015/06/26.
+                ### writer(root, forceSentinels=forceSentinels) # 2015/06/26.
+                writer(root)
             elif root.isAtAutoRstNode():
                 # An escape hatch: fall back to the theRst writer
                 # if there is no rst writer plugin.
@@ -3259,7 +3260,7 @@ class AtFile(object):
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
     #@+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
-    def writer_for_at_auto(self, root, forceSentinels=False):
+    def writer_for_at_auto(self, root): ###, forceSentinels=False):
         '''A factory returning a writer function for the given kind of @auto directive.'''
         trace = False # and g.unitTesting
         at = self
@@ -3269,12 +3270,12 @@ class AtFile(object):
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
-                def writer_for_at_auto_cb(root, forceSentinels):
+                def writer_for_at_auto_cb(root): ###, forceSentinels):
                     # pylint: disable=cell-var-from-loop
                     try:
                         if trace: g.trace('    INSTANTIATE:', aClass)
                         writer = aClass(at.c)
-                        s = writer.write(root, forceSentinels=forceSentinels)
+                        s = writer.write(root) ###, forceSentinels=forceSentinels)
                         return s
                     except Exception:
                         g.es_exception()
@@ -3287,7 +3288,7 @@ class AtFile(object):
         if trace: g.trace('   NOT FOUND:', g.shortFileName(root.h))
         return None
     #@+node:ekr.20140728040812.17997: *8* at.writer_for_ext
-    def writer_for_ext(self, ext, forceSentinels=False):
+    def writer_for_ext(self, ext): ### , forceSentinels=False):
         '''A factory returning a writer function for the given file extension.'''
         trace = False # and not g.unitTesting
         at = self
@@ -3296,12 +3297,12 @@ class AtFile(object):
         # if trace: g.trace('ext', ext, 'aClass', repr(aClass), '\n'+','.join(sorted(d)))
         if aClass:
 
-            def writer_for_ext_cb(root, forceSentinels):
+            def writer_for_ext_cb(root): ### , forceSentinels):
                 try:
                     if trace:
                         g.trace('        FOUND:', g.shortFileName(root.h), aClass)
                         g.trace(g.callers())
-                    return aClass(at.c).write(root, forceSentinels=forceSentinels)
+                    return aClass(at.c).write(root) ### , forceSentinels=forceSentinels)
                 except Exception:
                     g.es_exception()
                     return None
@@ -4078,7 +4079,7 @@ class AtFile(object):
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
             return h
-        elif at.thinFile or at.scriptWrite or at.forceSentinels:
+        elif at.thinFile or at.scriptWrite or hasattr(at, 'force_sentinels'): ###at.forceSentinels:
             gnx = p.v.fileIndex
             level = 1 + p.level() - self.root.level()
             stars = '*' * level
@@ -4137,7 +4138,7 @@ class AtFile(object):
     def putOpenLeoSentinel(self, s):
         """Write @+leo sentinel."""
         at = self
-        if at.sentinels or at.forceSentinels:
+        if at.sentinels or hasattr(at, 'force_sentinels'): ### at.forceSentinels:
             if at.thinFile:
                 s = s + "-thin"
             encoding = at.encoding.lower()
@@ -4161,7 +4162,7 @@ class AtFile(object):
     def putSentinel(self, s):
         "Write a sentinel whose text is s, applying the CWEB hack if needed."
         at = self
-        if at.sentinels or at.forceSentinels:
+        if at.sentinels or hasattr(at, 'force_sentinels'): ### at.forceSentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
             # apply the cweb hack to s. If the opening comment delim ends in '@',
