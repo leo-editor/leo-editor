@@ -5772,6 +5772,33 @@ def createScratchCommander(fileName=None):
 def funcToMethod(f, theClass, name=None):
     setattr(theClass, name or f.__name__, f)
     # g.trace(name)
+#@+node:ekr.20170411155558.1: *3* g.getGitBranchName
+def getGitBranchName(path=None, shorthand=True):
+    '''
+    Return the name of leo-editor's git branch.
+    
+    This requires the pygit2 package. Return None if not available.
+    
+    Return the shorthand name (master) or the full name (refs/heads/master).
+    '''
+    try:
+        import pygit2
+    except ImportError:
+        return None
+    if path is None:
+        path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    try:
+        repo = pygit2.Repository(path)
+        if repo:
+            head = repo.head
+            return head.shorthand if shorthand else head.name
+        else:
+            return None
+    except Exception:
+        # Hard to tell what Repository ctor will do with an invalid path.
+        g.es_exception()
+        return None
+
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
 init_zodb_failed = {} # Keys are paths, values are True.
