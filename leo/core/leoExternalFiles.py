@@ -7,6 +7,7 @@ import getpass
 import os
 import subprocess
 import tempfile
+import time
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile(object):
@@ -134,40 +135,46 @@ class ExternalFilesController(object):
         '''Check for changed files in all commanders.'''
         trace = False and not g.unitTesting
         trace_files = False
-        if trace:
-            import time
-            t1 = time.time()
-        if g.app and not g.app.killed:
-            # Switch pylint checkers if the last one has finished.
-            if 1:
-                # Fix #262: Improve performance of check_for_changed_external_files
-                if self.unchecked_files:
-                    # Check all external files.
-                    for ef in self.unchecked_files:
-                        if trace: g.trace('check', ef.shortFileName())
-                        self.idle_check_open_with_file(ef)
-                    self.unchecked_files = []
-                elif self.unchecked_commanders:
-                    # Check *one* commander.
-                    c = self.unchecked_commanders.pop()
-                    if trace: g.trace('check', c.shortFileName())
-                    self.idle_check_commander(c)
-                else:
-                    self.unchecked_commanders = g.app.commanders()[:]
-                    self.unchecked_files = [z for z in self.files if z.exists()]
-            else:
-                # First, check the open-with files.
+        trace_idle = True
+        if not g.app or g.app.killed:
+            return
+        t1 = time.time()
+        self.on_idle_count += 1
+        trace = trace and ((self.on_idle_count % 5) == 0)
+            # Only trace every 5 times
+        if 1:
+            # Fix #262: Improve performance of check_for_changed_external_files
+            if self.unchecked_files:
+                # Check all external files.
                 for ef in self.unchecked_files:
+                    if trace: g.trace('check', ef.shortFileName())
                     self.idle_check_open_with_file(ef)
-                # Next, check, all @<file> nodes in all commanders.
-                for c in g.app.commanders():
-                    self.idle_check_commander(c)
-        if trace and trace_files:
-            self.on_idle_count += 1
+                self.unchecked_files = []
+            elif self.unchecked_commanders:
+                # Check *one* commander.
+                c = self.unchecked_commanders.pop()
+                if trace: g.trace('check', c.shortFileName())
+                self.idle_check_commander(c)
+            else:
+                self.unchecked_commanders = g.app.commanders()[:]
+                self.unchecked_files = [z for z in self.files if z.exists()]
+                if trace and trace_files:
+                    g.trace('All checked')
+                    print('Commanders...')
+                    g.printList([z.shortFileName() for z in self.unchecked_commanders])
+                    g.printList([g.shortFileName(z) for z in self.unchecked_files])
+        else:
+            # First, check the open-with files.
+            for ef in self.unchecked_files:
+                self.idle_check_open_with_file(ef)
+            # Next, check, all @<file> nodes in all commanders.
+            for c in g.app.commanders():
+                self.idle_check_commander(c)
+        if trace and trace_idle:
             if (self.on_idle_count % 5) == 0:
                 t2 = time.time()
                 n = len(list(g.app.commanders()))
-                g.trace('(ExternalFilesController) %3s %s files %4.2f sec.' % (
+                g.trace('(ExternalFilesController) count: %3s files: %s %4.2f sec.' % (
                     self.on_idle_count, n, t2 - t1))
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
