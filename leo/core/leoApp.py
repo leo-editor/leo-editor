@@ -3420,8 +3420,16 @@ class RecentFilesManager(object):
         rf = self
         theFile = None
         try:
-            theFile = open(fileName)
-            lines = theFile.readlines()
+            # Attempt to fix #471:
+            if g.isPython3:
+                theFile = open(fileName, encoding='utf-8', mode='r')
+            else:
+                theFile = open(fileName, mode='r')
+            try:
+                # Protect against #471.
+                lines = theFile.readlines()
+            except Exception:
+                lines = None
             if lines and rf.sanitize(lines[0]) == 'readonly':
                 if trace: g.trace('read-only: %s' % fileName)
                 return False
@@ -3430,7 +3438,7 @@ class RecentFilesManager(object):
             pass
         finally:
             if theFile: theFile.close()
-        theFile = None
+            theFile = None
         try:
             if g.isPython3:
                 theFile = open(fileName, encoding='utf-8', mode='w')
