@@ -963,7 +963,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -1290,6 +1290,9 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20170409174632.19"><vh>@@file @test php here doc</vh>
 <v t="ekr.20170409174632.20"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20170410190519.53"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170410190519.54"><vh>class foo</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20090529141856.4736"><vh>Python tests</vh>
@@ -1319,11 +1322,7 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
 <v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
 <v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh>
-<v t="ekr.20170409175016.1"><vh>@@file @test python looks like section ref</vh>
-<v t="ekr.20170409175016.2"><vh>Declarations</vh></v>
-</v>
-</v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
 <v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
 <v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
 <v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
@@ -1816,7 +1815,7 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
 <v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
-<v t="ekr.20170407065952.1"><vh>@test importers.javascript.binop_pattern</vh></v>
+<v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
@@ -12507,7 +12506,7 @@ unl: section 2
 import leo.plugins.importers.javascript as js
 imp.reload(js)
 importer = js.JS_Importer(c.importCommands)
-pattern = importer.binop_pattern
+pattern = importer.op_pattern
 table = (
     '++', '--', '&amp;&amp;', '||', '~', '&gt;&gt;', '&lt;&lt;', 
     # '&gt;&gt;=',  '&lt;&lt;=',
@@ -15298,13 +15297,6 @@ unl: Declarations
 <t tx="ekr.20170409174954.5">gnx: ekr.20170409174954.2
 unl: Declarations
 </t>
-<t tx="ekr.20170409175016.1"># This is valid Python, but it looks like a section reference.
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20170409175016.2">a = b &lt;&lt; c &gt;&gt; d
-</t>
 <t tx="ekr.20170409175016.3">gnx: ekr.20170409175016.1
 </t>
 <t tx="ekr.20170409175016.4">gnx: ekr.20170409175016.1
@@ -15364,6 +15356,19 @@ unl: eggs
 
 #after
 #@-leo
+</t>
+<t tx="ekr.20170410190519.53">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170410190519.54">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
 </tnodes>
 </leo_file>

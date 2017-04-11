@@ -850,6 +850,11 @@ class Importer(object):
         if self.parse_body:
             pass
         elif self.has_lines(parent):
+            # Make sure the last line ends with a newline.
+            lines = self.get_lines(parent)
+            last_line = lines.pop()
+            last_line = last_line.rstrip() + '\n'
+            self.add_line(parent, last_line)
             self.extend_lines(parent, table)
         else:
             self.set_lines(parent, table)
