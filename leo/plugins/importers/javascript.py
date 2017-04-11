@@ -23,7 +23,7 @@ class JS_Importer(Importer):
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
     #@@nobeautify
 
-    binop_table = [
+    op_table = [
         # Longest first in each line.
         # '>>>', '>>>=',
         # '<<<', '<<<=',
@@ -38,10 +38,11 @@ class JS_Importer(Importer):
         '&&', '&=', '&', 
         '||', '|=', '|', 
                     '~',
-                    '='
+                    '=',
+                    '!', # Unary op can trigger regex.
     ]
-    binop_string = '|'.join([re.escape(z) for z in binop_table])
-    binop_pattern = re.compile(binop_string)
+    op_string = '|'.join([re.escape(z) for z in op_table])
+    op_pattern = re.compile(op_string)
 
     def scan_line(self, s, prev_state):
         '''
@@ -71,7 +72,7 @@ class JS_Importer(Importer):
             assert expect is None, expect
             progress = i
             ch, s2 = s[i], s[i:i+2]
-            if trace and trace_ch: g.trace(repr(ch), repr(s2))
+            if trace and trace_ch: g.trace(repr(ch)) #, repr(s2))
             if context == '/*':
                 if s2 == '*/':
                     i += 2
@@ -144,9 +145,9 @@ class JS_Importer(Importer):
                 i += 1
                 expect = 'div'
             else:
-                m = self.binop_pattern.match(s, i)
+                m = self.op_pattern.match(s, i)
                 if m:
-                    if trace: g.trace('BINOP', m.group(0))
+                    if trace: g.trace('OP', m.group(0))
                     i += len(m.group(0))
                     expect = 'regex'
                 elif ch == '/':
@@ -178,7 +179,7 @@ class JS_Importer(Importer):
     def skip_regex(self, s, i):
         '''Skip an *actual* regex /'''
         trace = False # and not g.unitTesting
-        trace_ch = False
+        trace_ch = True
         if trace: g.trace('ENTRY', i, repr(s[i:]))
         assert s[i] == '/', (i, repr(s))
         i1 = i
