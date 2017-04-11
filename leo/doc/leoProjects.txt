@@ -35,7 +35,7 @@ https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
 .. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
 Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
-.. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp 
+.. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
 It must return True if g.app.externalFilesController is None.
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
@@ -90,6 +90,13 @@ All tests pass.
 - Added cancelMessage keyword arg to x.promptForDangerousWrite.
 - Use keyword args in LeoFrame.promptForSave and ns_do_context.
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
+.. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
+Searches from c.p for *any* clone, not just a clone of c.p.  Useful for eliminating all clones from a .leo file.
+
+This command is different from goto-next-clone as follows:
+
+- goto-any-clone goes to the next clone, regardless of whether c.p is a clone.
+- goto-any-clone does not wrap. It prints a message when no clones remain.
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
