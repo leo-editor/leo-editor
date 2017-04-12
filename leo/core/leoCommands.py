@@ -2527,9 +2527,6 @@ class Commands(object):
             g.es("save commands disabled", color="purple")
             return
         c.init_error_dialogs()
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
         # Add fileName keyword arg for leoBridge scripts.
         if not fileName:
             # set local fileName, _not_ c.mFileName
