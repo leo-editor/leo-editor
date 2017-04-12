@@ -5777,10 +5777,23 @@ def getGitBranchName(path=None, shorthand=True):
     '''
     Return the name of leo-editor's git branch.
     
-    This requires the pygit2 package. Return None if not available.
+    First, attempt to get the branch from leoVersion.branch.
+    This will always be the shorthand name of the branch.
     
+    Otherwise, use the pygit2 package if it exists.
     Return the shorthand name (master) or the full name (refs/heads/master).
+    
+    In all cases, return None if the branch name can not be determined.
     '''
+    # First, try to get the version from leoVersion.
+    try:
+        from leo.core import leoVersion
+        branch = leoVersion.branch
+        if branch not in (None, 'None'):
+            return branch
+    except ImportError:
+        pass
+    # Next, use pygit2 if possible.
     try:
         import pygit2
     except ImportError:
