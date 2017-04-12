@@ -72,6 +72,19 @@ Added 'recursive' keyword arg to c.recursiveImport and RecursiveImportController
 Recursive is *not* the same as not one_file.
 .. @+node:ekr.20170406092043.1: *4* Removed atAuto from atFile class
 Ding dong, the switch is dead, the wicked old switch is dead.
+.. @+node:ekr.20170412055006.1: *4* Added g.getGitBranchName
+g.getGitBranchName(path=None, shorthand=True) will report the name of the present git branch. g.getGitBranchName will return None if pygit2 is not installed.
+
+To install pygit2, use pip install pygit2.
+
+c.backup now supports the prefix keyword argument. Typically, this would be the branch name.
+
+You can add some variant of the following @button backup node to your local copies of leoPy.leo::
+
+    junk, base = g.os_path_split(c.fileName())
+    path = g.os_path_join('~/Dropbox/', 'backups', 'leoPy', base)
+    branch = g.getGitBranchName()
+    c.backup(path, prefix=branch, useTimeStamp=True)
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
