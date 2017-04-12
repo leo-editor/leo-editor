@@ -2527,12 +2527,6 @@ class Commands(object):
             g.es("save commands disabled", color="purple")
             return
         c.init_error_dialogs()
-        old_mFileName = c.mFileName
-            # 2015/04/21: Save.
-        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
-        if fileName:
-            c.frame.title = g.computeWindowTitle(fileName)
-            c.mFileName = fileName
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
@@ -2552,10 +2546,6 @@ class Commands(object):
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
-        c.mFileName = old_mFileName
-            # 2015/04/21: save-to must not change c.mFileName.
-        # Does not change icons status.
-        # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
         if inBody:
@@ -2563,6 +2553,8 @@ class Commands(object):
             p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
+        c.outerUpdate()
+
     #@+node:ekr.20031218072017.2837: *6* c.revert
     @cmd('revert')
     def revert(self, event=None):
