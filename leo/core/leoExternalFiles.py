@@ -132,18 +132,18 @@ class ExternalFilesController(object):
     on_idle_count = 0
 
     def on_idle(self):
-        '''Check for changed files in all commanders.'''
-        trace = False and not g.unitTesting
-        trace_files = False
+        '''
+        Check for changed open-with files and all external files in commanders
+        for which @bool check_for_changed_external_file is True.
+        '''
+        trace = False and not g.unitTesting and ((self.on_idle_count % 5) == 0)
         trace_idle = True
         if not g.app or g.app.killed:
             return
         t1 = time.time()
         self.on_idle_count += 1
-        trace = trace and ((self.on_idle_count % 5) == 0)
-            # Only trace every 5 times
         if 1:
-            # Fix #262: Improve performance of check_for_changed_external_files
+            # Fix #262: Improve performance of check_for_changed_external_files.
             if self.unchecked_files:
                 # Check all external files.
                 for ef in self.unchecked_files:
@@ -151,31 +151,34 @@ class ExternalFilesController(object):
                     self.idle_check_open_with_file(ef)
                 self.unchecked_files = []
             elif self.unchecked_commanders:
-                # Check *one* commander.
+                # Check the next commander for which
+                # @bool check_for_changed_external_file is True.
                 c = self.unchecked_commanders.pop()
                 if trace: g.trace('check', c.shortFileName())
                 self.idle_check_commander(c)
             else:
-                self.unchecked_commanders = g.app.commanders()[:]
+                # Add all commanders for which
+                # @bool check_for_changed_external_file is True.
+                self.unchecked_commanders = [
+                    z for z in g.app.commanders() if self.is_enabled(z)
+                ]
                 self.unchecked_files = [z for z in self.files if z.exists()]
-                if trace and trace_files:
-                    g.trace('All checked')
-                    print('Commanders...')
-                    g.printList([z.shortFileName() for z in self.unchecked_commanders])
-                    g.printList([g.shortFileName(z) for z in self.unchecked_files])
         else:
-            # First, check the open-with files.
-            for ef in self.unchecked_files:
-                self.idle_check_open_with_file(ef)
-            # Next, check, all @<file> nodes in all commanders.
+            # First, check all existing open-with files.
+            for ef in self.files: # A list of ExternalFile instances.
+                if ef.exists():
+                    self.idle_check_open_with_file(ef)
+            # Next, check all commanders for which
+            # @bool check_for_changed_external_file is True.
             for c in g.app.commanders():
-                self.idle_check_commander(c)
+                if self.is_enabled(c):
+                    self.idle_check_commander(c)
         if trace and trace_idle:
-            if (self.on_idle_count % 5) == 0:
-                t2 = time.time()
-                n = len(list(g.app.commanders()))
-                g.trace('(ExternalFilesController) count: %3s files: %s %4.2f sec.' % (
-                    self.on_idle_count, n, t2 - t1))
+            t2 = time.time()
+            n1 = len([z for z in self.files if z.exists()])
+            n2 = len([z for z in g.app.commanders() if self.is_enabled(z)])
+            g.trace('(EFC) count: %3s files: %s commanders: %s time: %4.2f sec.' % (
+                self.on_idle_count, n1, n2, t2 - t1))
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
         '''
@@ -183,9 +186,6 @@ class ExternalFilesController(object):
         changes.
         '''
         trace = False and not g.unitTesting
-        if not self.is_enabled(c) or g.unitTesting:
-            if trace: g.trace('not enabled', c.shortFileName())
-            return
         if trace: g.trace('checking', c.shortFileName())
         p = c.rootPosition()
         seen = set()
@@ -491,7 +491,7 @@ class ExternalFilesController(object):
             return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):
-        '''return cached @bool check_for_changed_external_file setting.'''
+        '''Return the cached @bool check_for_changed_external_file setting.'''
         trace = False and not g.unitTesting
         d = self.enabled_d
         val = d.get(c)
