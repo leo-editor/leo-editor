@@ -608,7 +608,7 @@ class Commands(object):
             g.es(message)
             g.app.gui.alert(c, message)
     #@+node:ekr.20150422080541.1: *3* c.backup
-    def backup(self, fileName=None, useTimeStamp=True):
+    def backup(self, fileName=None, prefix=None, useTimeStamp=True):
         '''
         Back up given fileName or c.fileName().
         If useTimeStamp is True, append a timestamp to the filename.
@@ -622,7 +622,8 @@ class Commands(object):
             if base.endswith('.leo'):
                 base = base[: -4]
             stamp = time.strftime("%Y%m%d-%H%M%S")
-            fn = '%s-%s.leo' % (base, stamp)
+            branch = prefix + '-' if prefix else ''
+            fn = '%s%s-%s.leo' % (branch, base, stamp)
             path = g.os_path_finalize_join(theDir, fn)
         else:
             path = fn
