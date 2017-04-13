@@ -718,14 +718,10 @@ class LeoImportCommands(object):
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
 
+        ext,        The file extension to be used, or None.
         fileName:   A string or None. The name of the file to be read.
-        root:       The root position of the created outline.
+        parent:     The parent position of the created outline.
         s:          A string or None. The file's contents.
-
-        **Experimental**:
-        ignore_bad_references:  True if importers should ignore undefined
-                                apparent section references.
-                                (set only in ic.importFilesCommand)
         '''
         trace = False and not g.unitTesting
         c = self.c
