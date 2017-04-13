@@ -277,11 +277,14 @@ class Cacher(object):
         Return (s,ok,key)
         '''
         trace = (False or g.app.debug) and not g.unitTesting
-        showHits, showLines, verbose = False, False, True
+        showHits = False
+        showLines = True
+        showList = True
         sfn = g.shortFileName(fileName)
         if not g.enableDB:
-            if trace and verbose: g.trace('g.enableDB is False', sfn)
+            if trace: g.trace('g.enableDB is False', sfn)
             return '', False, None
+        if trace: g.trace('=====', root.v.gnx, 'children', root.numberOfChildren(), root.h)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
             if trace: g.trace('empty file contents', sfn)
@@ -300,6 +303,8 @@ class Cacher(object):
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = self.db.get(key)
+            if trace and showList:
+                g.printList(list(g.flatten_list(aList)))
             self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
         elif trace:
             g.trace('cache miss', key[-6:], sfn)
