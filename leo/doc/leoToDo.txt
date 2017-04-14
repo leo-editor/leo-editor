@@ -19,9 +19,11 @@
 .. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
 https://github.com/leo-editor/leo-editor/issues/414
 .. @+node:ekr.20170405071940.1: *4* #466: Moving a node can cause temporary coloring issues
-.. @+node:ekr.20170407135011.1: *4* *** Allow paste-retaining-clones across files
-.. @+node:ekr.20170407135747.1: *4* ** warn about multiple redraws in a single command
-.. @+node:ekr.20170407141052.1: *4* ** code review: c.selectPosition followed by redraw
+.. @+node:ekr.20170414095128.1: *4* New to do
+- Warn about multiple redraws in a single command.
+- Allow paste-retaining-clones across files.
+- Code review: c.selectPosition followed by redraw.
+- Code review: more AtFile helpers.
 .. @+node:ekr.20170328043328.1: *4* Add ekr bindings for indent/unindent-region
 Ctrl-Tab moves between Outline tabs.
 
