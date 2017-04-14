@@ -4264,8 +4264,8 @@ def gitInfo(path=None):
         f.close()
     if trace: g.trace('returns:', branch, commit)
     return branch, commit
-#@+node:ekr.20170414041333.1: *3* g.gitJsonInfo
-def gitJsonInfo():
+#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
+def jsonCommitInfo():
     '''
     return asctime and timestamp from leo/core/commit_timestamp.json.
     return ('', '') if the file does not exist or is not a valid .json file.
