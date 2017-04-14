@@ -4225,19 +4225,19 @@ def gitInfo(path=None):
     Return the branch and commit number or ('', '').
     '''
     trace = False and not g.unitTesting
+    branch, commit = '', '' # Set defaults.
     path = g.gitHeadPath(path)
     if not path:
         if trace: g.trace('no path')
-        return '', ''
+        return branch, commit
     git_dir = g.os_path_finalize_join(path, '..')
     try:
         f = open(path, 'r')
     except IOError:
         g.trace('can not open:', path)
-        return '', ''
+        return branch, commit
     try:
         s = f.read()
-        branch, commit = 'None', s.strip()[0: 12] # Set defaults.
         if not s.startswith('ref'):
             if trace: g.trace('no ref', branch, commit)
             return branch, commit

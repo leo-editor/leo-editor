@@ -985,13 +985,8 @@ class LeoApp(object):
             except Exception:
                 pass
         else: sysVersion = sys.platform
-        if 1:
-            git_info = leoVersion.git_info
-            branch = git_info.get('branch', None)
-            commit = git_info.get('commit', None)
-        else:
-            branch, commit = g.gitInfo()
-        if branch is None or commit is None:
+        branch, commit = g.gitInfo()
+        if not branch or not commit:
             app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
