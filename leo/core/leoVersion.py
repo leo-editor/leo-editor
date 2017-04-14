@@ -3,7 +3,8 @@
 '''
 A module holding the following version-related info:
 
-leoVersion.build:   The timestamp field from commit_timestamp.json
+leoVersion.branch:  The git branch name, or ''.
+leoVersion.build:   The timestamp field from commit_timestamp.json.
 leoVersion.date:    The asctime field from commit_timestamp.json.
 leoVersion.version: Leo's version number, set below.
 
@@ -41,6 +42,7 @@ import leo.core.leoGlobals as g
 #@-<< about install hooks >>
 version = "5.5"
 date, build = g.jsonCommitInfo()
+branch = g.gitBranchName()
 #@@language python
 #@@tabwidth -4
 #@-leo
