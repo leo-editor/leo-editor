@@ -139,7 +139,7 @@ class RstCommands(object):
         self.debug = c.config.getBool('rst3_debug', default=False)
         self.n_written = 0
             # Number of files written.
-        # Warnings flags.
+        # Warning flags.
         self.silverCityWarningGiven = False
         # Settings.
         self.dd = {}
