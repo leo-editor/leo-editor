@@ -962,7 +962,6 @@ class LeoApp(object):
         app = self
         import leo.core.leoVersion as leoVersion
         build, date = leoVersion.build, leoVersion.date
-        git_info = leoVersion.git_info
         guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
@@ -986,8 +985,12 @@ class LeoApp(object):
             except Exception:
                 pass
         else: sysVersion = sys.platform
-        branch = git_info.get('branch', None)
-        commit = git_info.get('commit', None)
+        if 1:
+            git_info = leoVersion.git_info
+            branch = git_info.get('branch', None)
+            commit = git_info.get('commit', None)
+        else:
+            branch, commit = g.gitInfo()
         if branch is None or commit is None:
             app.signon1 = 'Not running from a git repo'
         else:

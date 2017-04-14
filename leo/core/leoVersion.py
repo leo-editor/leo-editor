@@ -2,6 +2,7 @@
 #@+node:ekr.20090717092906.12765: * @file leoVersion.py
 '''A module holding version-related info.'''
 trace = False
+import leo.core.leoGlobals as g
 import os
 import json
 #@+<< version dates >>
@@ -55,6 +56,7 @@ version = "5.5" # Always used.
 git_info = {}
 theDir = os.path.dirname(__file__)
 git_dir = os.path.join(theDir, '..', '..', '.git')
+if trace: g.trace('git_dir', git_dir)
 path = os.path.join(git_dir, 'HEAD')
 if trace: print('leoVersion.py: %s exists: %s' % (path, os.path.exists(path)))
 try:
@@ -65,6 +67,8 @@ try:
             pointer = s.split()[1]
             dirs = pointer.split('/')
             branch = dirs[-1]
+            if trace:
+                g.trace('pointer: %r dirs: %r branch: %r' % (pointer, dirs, branch))
             path = os.path.join(git_dir, pointer)
             try:
                 s = open(path, 'r').read().strip()[0: 12]
@@ -87,6 +91,9 @@ try:
 except Exception as e:
     # don't crash Leo, this info. not essential
     print(e)
+if trace:
+    g.trace('git_info...')
+    g.printDict(git_info)
 build = commit_timestamp
 date = commit_asctime
 #@@language python
