@@ -19,9 +19,6 @@
 .. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
 https://github.com/leo-editor/leo-editor/issues/414
 .. @+node:ekr.20170405071940.1: *4* #466: Moving a node can cause temporary coloring issues
-.. @+node:ekr.20170403181726.1: *4* #385: Leo doesn't remember new headlines after saves
-https://github.com/leo-editor/leo-editor/issues/385
-Leo doesn't honor new headlines when switching branches
 .. @+node:ekr.20170407135011.1: *4* *** Allow paste-retaining-clones across files
 .. @+node:ekr.20170407135747.1: *4* ** warn about multiple redraws in a single command
 .. @+node:ekr.20170407141052.1: *4* ** code review: c.selectPosition followed by redraw
