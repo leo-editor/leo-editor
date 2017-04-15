@@ -27,6 +27,9 @@ class Xml_Importer(Importer):
         self.stack = []
             # Stack of tags.
             # A closing tag decrements state.tag_level only if the top is an opening tag.
+        self.void_tags = []
+            # Only html has void tags.
+
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
@@ -34,11 +37,9 @@ class Xml_Importer(Importer):
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
-        if trace:
-            g.trace(setting)
-            g.printList(aList)
+        if trace: g.trace(setting, aList)
+            # g.printList(aList)
         return aList
-
     #@+node:ekr.20161123003732.1: *3* xml_i.error
     def error(self, s):
         '''Issue an error, but do *not* cause a unit test to fail.'''
@@ -111,7 +112,7 @@ class Xml_Importer(Importer):
         trace = False
         stack = self.stack
         if not stack:
-            g.trace('stack underflow: tag: %s in %r' % (tag, s))
+            if trace: g.trace('stack underflow: tag: %s in %r' % (tag, s))
             return tag_level
         data = stack[-1]
         tag1, tag2 = data
@@ -130,8 +131,7 @@ class Xml_Importer(Importer):
             g.printList(stack)
         return tag_level
     #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag
-    ch_pattern = re.compile(r'[\w\_\.\:\-]')
-        # Compare single characters so as not to create lots of substrings.
+    ch_pattern = re.compile(r'([\w\_\.\:\-]+)')
 
     def scan_tag(self, s, i, tag_level):
         '''
@@ -142,12 +142,17 @@ class Xml_Importer(Importer):
         assert s[i] == '<', repr(s[i])
         end_tag = self.match(s, i, '</')
         i += (2 if end_tag else 1)
-        tag_i = i
-        while i < len(s):
-            m = self.ch_pattern.match(s[i])
-            if m: i += 1
-            else: break
-        tag = s[tag_i:i].lower()
+        m = self.ch_pattern.match(s, i)
+        if m:
+            tag = m.group(0).lower()
+            i += len(m.group(0))
+        else:
+            self.error('missing tag in position %s of %r' % (i, s))
+            return i, tag_level
+        if tag in self.void_tags:
+            return i, tag_level
+        if tag not in self.start_tags:
+            return i, tag_level
         # Here, i has already been incremented.
         if tag and end_tag:
             if self.stack:
@@ -155,12 +160,14 @@ class Xml_Importer(Importer):
                 if top[1] == tag:
                     self.stack[-1][0] = '</'
                 else:
-                    self.error('mismatched closing tag: %s %s' % (
+                    self.error('mismatched closing tag: tag: %s top: %s' % (
                         tag, top[1]))
+                    # if trace: g.printList(self.stack)
             else:
                 self.error('tag underflow: %s' % tag)
         elif tag:
-            self.stack.append(['<', tag])
+            if tag not in self.void_tags:
+                self.stack.append(['<', tag])
             if tag in self.start_tags:
                 tag_level += 1
         if trace:

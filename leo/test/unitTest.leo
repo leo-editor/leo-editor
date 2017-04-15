@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.58" body_secondary_ratio="0.71">
-	<global_window_position top="66" left="275" height="931" width="1149"/>
+<globals body_outline_ratio="0.69" body_secondary_ratio="0.71">
+	<global_window_position top="64" left="529" height="931" width="1149"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -963,8 +963,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1292,6 +1291,9 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 </v>
 <v t="ekr.20170410190519.53"><vh>@@file @test php here doc</vh>
 <v t="ekr.20170410190519.54"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170415061122.50"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170415061122.51"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -1795,9 +1797,9 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
 <v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
-<v t="ekr.20090529141856.4785" a="M"><vh>@test rST import test</vh></v>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
-<v t="ekr.20090529141856.4786" a="M"><vh>@test rST import test: no double-underlines</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
@@ -1923,6 +1925,7 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
 </v>
 </v>
+<v t="ekr.20111029112647.4099"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2637,7 +2640,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="11">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -5062,7 +5065,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     
 &lt;!-- oops: missing tags. --&gt;
 '''
-table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+table = ('&lt;html&gt;', '&lt;head&gt;') # '&lt;link id="L1"&gt;'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
@@ -5088,7 +5091,7 @@ finally:
 &lt;/head&gt;
 &lt;/html&gt;
 '''
-table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+table = ('&lt;html&gt;', '&lt;head&gt;') # , '&lt;link id="L1"&gt;'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
@@ -15363,6 +15366,19 @@ unl: eggs
 @tabwidth -4
 </t>
 <t tx="ekr.20170410190519.54">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170415061122.50">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170415061122.51">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar

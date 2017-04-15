@@ -13915,7 +13915,7 @@ s = r'''
     
 <!-- oops: missing tags. -->
 '''
-table = ('<html>', '<head>', '<link id="L1">')
+table = ('<html>', '<head>') # '<link id="L1">'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
@@ -13941,7 +13941,7 @@ s = '''
 </head>
 </html>
 '''
-table = ('<html>', '<head>', '<link id="L1">')
+table = ('<html>', '<head>') # , '<link id="L1">'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
@@ -15575,6 +15575,19 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20170410190519.54: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170415061122.50: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170415061122.51: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.

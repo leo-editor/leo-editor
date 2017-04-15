@@ -15,6 +15,12 @@ class Html_Importer(Xml_Importer):
             tags_setting='import_html_tags',
         )
         self.name = 'html'
+        self.void_tags = [
+            # void elements in HTML 4.01/XHTML 1.0 Strict:
+            'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'param',
+            # void elements in HTML5:
+            'command', 'keygen', 'source', 
+        ]
 #@-others
 importer_dict = {
     'class': Html_Importer,
