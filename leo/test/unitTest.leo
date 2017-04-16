@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
-	<global_window_position top="235" left="403" height="931" width="1375"/>
+	<global_window_position top="107" left="417" height="931" width="1375"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -964,8 +964,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1025,7 +1025,6 @@ marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20170415084531.1"></v>
 <v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
@@ -1165,44 +1164,12 @@ marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
-<v t="ekr.20111109143012.3839" a="M"><vh>@test html: multiple tags on a line</vh>
-<v t="ekr.20170415092645.1"><vh>@@file @test html: multiple tags on a line</vh>
-<v t="ekr.20170415092645.2"><vh>&lt;html&gt;</vh>
-<v t="ekr.20170415092645.3"><vh>&lt;body&gt;</vh>
-<v t="ekr.20170415092645.4"><vh>&lt;table id="0"&gt;</vh>
-<v t="ekr.20170415092645.5"><vh>&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;</vh>
-<v t="ekr.20170415092645.6"><vh>&lt;table id="3"&gt;</vh>
-<v t="ekr.20170415092645.7"><vh>&lt;table id="4"&gt;</vh>
-<v t="ekr.20170415092645.8"><vh>&lt;table id="6"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20170415092645.9"><vh>&lt;DIV class="webonly"&gt;</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170415093006.5"><vh>@@file @test html: multiple tags on a line</vh>
-<v t="ekr.20170415093006.6"><vh>&lt;html&gt;</vh>
-<v t="ekr.20170415093006.7"><vh>&lt;body&gt;</vh>
-<v t="ekr.20170415093006.8"><vh>&lt;table id="0"&gt;</vh>
-<v t="ekr.20170415093006.9"><vh>&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;</vh>
-<v t="ekr.20170415093006.10"><vh>&lt;table id="3"&gt;</vh>
-<v t="ekr.20170415093006.11"><vh>&lt;table id="4"&gt;</vh>
-<v t="ekr.20170415093006.12"><vh>&lt;table id="6"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20170415093006.13"><vh>&lt;DIV class="webonly"&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
+<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+<v t="ekr.20140218122321.4349"><vh>@test html: multple node completed on a line</vh></v>
+<v t="ekr.20170416085619.1" a="M"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
@@ -1486,7 +1453,7 @@ marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
 <v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
@@ -1962,7 +1929,8 @@ marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4780" a="E"></v>
+<v t="ekr.20090529141856.4780"></v>
+<v t="ekr.20111029112647.4099" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2677,7 +2645,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="12,0">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -3864,7 +3832,31 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 &lt;/body&gt;
 &lt;/html&gt;
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "&lt;html&gt;"),
+    (2, "&lt;head&gt;"),
+    (2, "&lt;body class='bodystring'&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4783"># Not a real unit test.
 c.contractAllHeadlines()
@@ -4861,8 +4853,29 @@ if not g.app.isExternalUnitTest:
 &lt;nodeB/&gt;
 &lt;/nodeA&gt;
 '''
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "&lt;nodeA&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
@@ -4895,7 +4908,7 @@ try:
     root = c.p.firstChild()
     assert root.h.endswith('lowercase tags'), root.h
     p2 = root.firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
     p.deleteAllChildren()
@@ -4938,14 +4951,13 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 '''
 table = (
-    # '&lt;td width="550"&gt;',
     '&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;',
     '&lt;table&gt;',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
     p.deleteAllChildren()
@@ -4968,7 +4980,6 @@ setting = 'import_html_tags'
 c.config.set(setting,'data',html_tags)
 tags = c.config.getData(setting)
 assert tags == html_tags,len(tags)
-
 try:
     c.importCommands.importFilesCommand(files=[fn],treeType='@file')
 finally:
@@ -4977,7 +4988,6 @@ finally:
             root.firstChild().doDelete()
         c.redraw()
     assert not root.hasChildren()
-
 fail = g.app.unitTestDict.get('fail')
 assert not fail
 </t>
@@ -4986,7 +4996,6 @@ assert not fail
 # NOT: tr, td, tbody, etc.
 @language html
 s = '''
-
 &lt;html&gt;
 &lt;body&gt;
     &lt;table id="0"&gt;
@@ -5035,16 +5044,17 @@ s = '''
 
 # c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 table = (
-'&lt;html&gt;', '&lt;body&gt;',
-'&lt;table id="0"&gt;',
+    '&lt;html&gt;',
+    '&lt;body&gt;',
+    '&lt;table id="0"&gt;',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    if 0:
+    if 1:
         p.deleteAllChildren()
 finally:
     c.redraw()
@@ -5076,7 +5086,21 @@ run-all-unit-tests-locally          = Alt-6
 
 &lt;/body&gt;
 '''
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = (
+    ('&lt;body&gt;'),
+    ('&lt;div id="D666"&gt;'),
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+
 </t>
 <t tx="ekr.20111112103320.3887">s = r'''
 &lt;html&gt;
@@ -5092,14 +5116,18 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     
 &lt;!-- oops: missing tags. --&gt;
 '''
-table = ('&lt;html&gt;', '&lt;head&gt;') # '&lt;link id="L1"&gt;'
+table = (
+    '&lt;html&gt;',
+    '&lt;head&gt;',
+)
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    p.deleteAllChildren()
+    if 1:
+        p.deleteAllChildren()
 finally:
     c.redraw()
 </t>
@@ -5124,9 +5152,9 @@ try:
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
+finally:
         c.redraw()
 </t>
 <t tx="ekr.20111113091935.4786">@nocolor-node
@@ -5243,9 +5271,14 @@ s = '''\
 &lt;Ì&gt;
 &lt;_.ÌÑ&gt;
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+try:
+    test_node = p.copy()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>
@@ -5636,13 +5669,26 @@ var c3 = (function () {
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140218122321.4349">@language html
-
 s = '''
 &lt;!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB --&gt;
 &lt;html&gt;&lt;head&gt;headline&lt;/head&gt;&lt;body&gt;body&lt;/body&gt;&lt;/html&gt;
 '''
+@language python
+table = (
+    # The new xml scanner doesn't generate any new nodes,
+    # because the scan state hasn't changed at the end of the line!
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140218151418.4353">s = '''\
 var express = require('express');
@@ -9143,17 +9189,24 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20161123080832.1">'''Create a table of expected headlines in a unit test.'''
+<t tx="ekr.20161123080832.1">'''
+Create a table of expected headlines in a unit test.
+
+Usage: select the desired subnode of an @test node.
+'''
 g.cls()
 # Proper escapes are tricky.
-table = [
-    '(%s, "%s"),' % (
-        p.level()-c.p.level(),
-        p.h.replace('\\', '\\\\').replace('"', '\\"'),
-    )
-        for p in c.p.subtree()
-]
-print("table = (\n    %s\n)" % '\n    '.join(table))</t>
+if p.parent() and p.parent().h.startswith('@test'):
+    table = [
+        '(%s, "%s"),' % (
+            p.level()-c.p.level(),
+            p.h.replace('\\', '\\\\').replace('"', '\\"'),
+        )
+            for p in p.subtree()
+    ]
+    print("table = (\n    %s\n)" % '\n    '.join(table))
+else:
+    print('select a child of an @test node node')</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -15421,132 +15474,6 @@ table
 nodeA
 nodeB
 </t>
-<t tx="ekr.20170415092645.1">
-
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20170415092645.2">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20170415092645.3">&lt;body&gt;
-    @others
-&lt;/body&gt;
-</t>
-<t tx="ekr.20170415092645.4">&lt;table id="0"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="619"&gt;
-    @others
-&lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
-</t>
-<t tx="ekr.20170415092645.5">&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
-    @others
-&lt;/table&gt;
-&lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
-</t>
-<t tx="ekr.20170415092645.6">&lt;table id="3"&gt;
-&lt;tr&gt;
-&lt;td width="368"&gt;
-    @others
-&lt;/table&gt;	
-&lt;/td&gt;
-&lt;/tr&gt;
-</t>
-<t tx="ekr.20170415092645.7">&lt;table id="4"&gt;
-&lt;tbody id="5"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="550"&gt;
-    @others
-&lt;br /&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-</t>
-<t tx="ekr.20170415092645.8">&lt;table id="6"&gt;
-&lt;tbody id="6"&gt;
-&lt;tr&gt;
-&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;/td&gt;
-&lt;/tr&gt;&lt;tr&gt;
-&lt;td width="100%" colspan="2"&gt;
-</t>
-<t tx="ekr.20170415092645.9">&lt;DIV class="webonly"&gt;
-&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
-&lt;/DIV&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
-&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
-&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
-</t>
-<t tx="ekr.20170415093006.10">&lt;table id="3"&gt;
-&lt;tr&gt;
-&lt;td width="368"&gt;
-    @others
-&lt;/table&gt;	
-&lt;/td&gt;
-&lt;/tr&gt;
-</t>
-<t tx="ekr.20170415093006.11">&lt;table id="4"&gt;
-&lt;tbody id="5"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="550"&gt;
-    @others
-&lt;br /&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-</t>
-<t tx="ekr.20170415093006.12">&lt;table id="6"&gt;
-&lt;tbody id="6"&gt;
-&lt;tr&gt;
-&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;/td&gt;
-&lt;/tr&gt;&lt;tr&gt;
-&lt;td width="100%" colspan="2"&gt;
-</t>
-<t tx="ekr.20170415093006.13">&lt;DIV class="webonly"&gt;
-&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
-&lt;/DIV&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
-&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
-&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
-</t>
-<t tx="ekr.20170415093006.5">
-
-@others
-@language xml
-@tabwidth -4
-</t>
-<t tx="ekr.20170415093006.6">&lt;html&gt;
-    @others
-&lt;/html&gt;
-</t>
-<t tx="ekr.20170415093006.7">&lt;body&gt;
-    @others
-&lt;/body&gt;
-</t>
-<t tx="ekr.20170415093006.8">&lt;table id="0"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="619"&gt;
-    @others
-&lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
-</t>
-<t tx="ekr.20170415093006.9">&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
-    @others
-&lt;/table&gt;
-&lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
-</t>
 <t tx="ekr.20170416060817.1">s = '''\
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE note SYSTEM "Note.dtd"&gt;
@@ -15559,7 +15486,55 @@ nodeB
 &lt;/body&gt;
 &lt;/html&gt;
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "&lt;html&gt;"),
+    (2, "&lt;head&gt;"),
+    (2, "&lt;body class='bodystring'&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+
+</t>
+<t tx="ekr.20170416085619.1">@language html
+s = '''
+&lt;html&gt;
+&lt;head&gt;headline&lt;/head&gt;
+&lt;body&gt;body&lt;/body&gt;
+&lt;/html&gt;
+'''
+@language python
+table = (
+    '&lt;html&gt;',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+
 </t>
 </tnodes>
 </leo_file>

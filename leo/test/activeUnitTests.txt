@@ -13706,7 +13706,6 @@ setting = 'import_html_tags'
 c.config.set(setting,'data',html_tags)
 tags = c.config.getData(setting)
 assert tags == html_tags,len(tags)
-
 try:
     c.importCommands.importFilesCommand(files=[fn],treeType='@file')
 finally:
@@ -13715,7 +13714,6 @@ finally:
             root.firstChild().doDelete()
         c.redraw()
     assert not root.hasChildren()
-
 fail = g.app.unitTestDict.get('fail')
 assert not fail
 #@+node:ekr.20111029112647.4101: *6* @test html: lowercase tags
@@ -13739,7 +13737,7 @@ try:
     root = c.p.firstChild()
     assert root.h.endswith('lowercase tags'), root.h
     p2 = root.firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
     p.deleteAllChildren()
@@ -13751,7 +13749,6 @@ finally:
 # NOT: tr, td, tbody, etc.
 @language html
 s = '''
-
 <html>
 <body>
     <table id="0">
@@ -13800,154 +13797,65 @@ s = '''
 
 # c.importCommands.htmlUnitTest(p,s=s,showTree=True)
 table = (
-'<html>', '<body>',
-'<table id="0">',
+    '<html>',
+    '<body>',
+    '<table id="0">',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    if 0:
+    if 1:
         p.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20170415092645.1: *7* @@file @test html: multiple tags on a line
-
-
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20170415092645.2: *8* <html>
-<html>
-    @others
-</html>
-#@+node:ekr.20170415092645.3: *9* <body>
-<body>
-    @others
-</body>
-#@+node:ekr.20170415092645.4: *10* <table id="0">
-<table id="0">
-<tr valign="top">
-<td width="619">
-    @others
-<!-- View Second part --> </td> </tr></table>
-#@+node:ekr.20170415092645.5: *11* <table id="2"> <tr valign="top"> <td width="377">
-<table id="2"> <tr valign="top"> <td width="377">
-    @others
-</table>
-<!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-#@+node:ekr.20170415092645.6: *12* <table id="3">
-<table id="3">
-<tr>
-<td width="368">
-    @others
-</table>	
-</td>
-</tr>
-#@+node:ekr.20170415092645.7: *13* <table id="4">
-<table id="4">
-<tbody id="5">
-<tr valign="top">
-<td width="550">
-    @others
-<br />
-</td>
-</tr>
-</tbody>
-#@+node:ekr.20170415092645.8: *14* <table id="6">
-<table id="6">
-<tbody id="6">
-<tr>
-<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr><tr>
-<td width="100%" colspan="2">
-#@+node:ekr.20170415092645.9: *10* <DIV class="webonly">
-<DIV class="webonly">
-<script src="/scripts/footer.js"></script>
-</DIV>
-</td>
-</tr>
-<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
-#@+node:ekr.20170415093006.5: *7* @@file @test html: multiple tags on a line
-
-
-@others
-@language xml
-@tabwidth -4
-#@+node:ekr.20170415093006.6: *8* <html>
-<html>
-    @others
-</html>
-#@+node:ekr.20170415093006.7: *9* <body>
-<body>
-    @others
-</body>
-#@+node:ekr.20170415093006.8: *10* <table id="0">
-<table id="0">
-<tr valign="top">
-<td width="619">
-    @others
-<!-- View Second part --> </td> </tr></table>
-#@+node:ekr.20170415093006.9: *11* <table id="2"> <tr valign="top"> <td width="377">
-<table id="2"> <tr valign="top"> <td width="377">
-    @others
-</table>
-<!-- View First part --> </td> <td width="242"> <!-- View Second part -->
-#@+node:ekr.20170415093006.10: *12* <table id="3">
-<table id="3">
-<tr>
-<td width="368">
-    @others
-</table>	
-</td>
-</tr>
-#@+node:ekr.20170415093006.11: *13* <table id="4">
-<table id="4">
-<tbody id="5">
-<tr valign="top">
-<td width="550">
-    @others
-<br />
-</td>
-</tr>
-</tbody>
-#@+node:ekr.20170415093006.12: *14* <table id="6">
-<table id="6">
-<tbody id="6">
-<tr>
-<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr><tr>
-<td width="100%" colspan="2">
-#@+node:ekr.20170415093006.13: *10* <DIV class="webonly">
-<DIV class="webonly">
-<script src="/scripts/footer.js"></script>
-</DIV>
-</td>
-</tr>
-<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
-#@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
+#@+node:ekr.20140218122321.4349: *6* @test html: multple node completed on a line
 @language html
-
 s = '''
 <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
 <html><head>headline</head><body>body</body></html>
 '''
+@language python
+table = (
+    # The new xml scanner doesn't generate any new nodes,
+    # because the scan state hasn't changed at the end of the line!
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20170416085619.1: *6* @test html: multple node starts on a line
+@language html
+s = '''
+<html>
+<head>headline</head>
+<body>body</body>
+</html>
+'''
+@language python
+table = (
+    '<html>',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+
 #@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
 s = r'''
 <td width="550">
@@ -13971,14 +13879,13 @@ s = r'''
 
 '''
 table = (
-    # '<td width="550">',
     '<table cellspacing="0" cellpadding="0" width="600" border="0">',
     '<table>',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
     p.deleteAllChildren()
@@ -14015,7 +13922,21 @@ s = '''\
 
 </body>
 '''
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+table = (
+    ('<body>'),
+    ('<div id="D666">'),
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+
 #@+node:ekr.20111112103320.3887: *6* @test html: improperly terminated tags
 s = r'''
 <html>
@@ -14031,14 +13952,18 @@ s = r'''
     
 <!-- oops: missing tags. -->
 '''
-table = ('<html>', '<head>') # '<link id="L1">'
+table = (
+    '<html>',
+    '<head>',
+)
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-    p.deleteAllChildren()
+    if 1:
+        p.deleteAllChildren()
 finally:
     c.redraw()
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
@@ -14063,9 +13988,9 @@ try:
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
+finally:
         c.redraw()
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
@@ -18016,7 +17941,32 @@ s = '''\
 </body>
 </html>
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "<html>"),
+    (2, "<head>"),
+    (2, "<body class='bodystring'>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+
 #@+node:ekr.20090529141856.4781: *6* @test xml 1
 s = '''\
 <html>
@@ -18028,15 +17978,60 @@ s = '''\
 </body>
 </html>
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "<html>"),
+    (2, "<head>"),
+    (2, "<body class='bodystring'>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20111026105935.3966: *6* @test xml 2
 s = '''\
 <nodeA>
 <nodeB/>
 </nodeA>
 '''
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "<nodeA>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20120306173116.3933: *6* @test xml non-ascii tags
 @first # -*- coding: utf-8 -*-
 
@@ -18045,9 +18040,14 @@ s = '''\
 <Ì>
 <_.ÌÑ>
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+try:
+    test_node = p.copy()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20160410152100.1: *4* Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>

@@ -46,6 +46,11 @@ class Xml_Importer(Importer):
         if trace: g.trace(setting, aList)
             # g.printList(aList)
         return aList
+    #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
+    def clean_headline(self, s):
+        '''xml and html: Return a cleaned up headline s.'''
+        m = re.match(r'\s*(<[^>]+>)', s)
+        return m.group(1) if m else s.strip()
     #@+node:ekr.20161123003732.1: *3* xml_i.error
     def error(self, s):
         '''Issue an error, but do *not* cause a unit test to fail.'''
@@ -173,7 +178,6 @@ class Xml_Importer(Importer):
             g.trace('Returns level: ', tag_level)
             g.printList(self.stack)
         return i, tag_level
-        
     #@+node:ekr.20170416043508.1: *6* xml_i.pop_to_tag
     def pop_to_tag(self, tag, s):
         '''
