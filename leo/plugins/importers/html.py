@@ -16,6 +16,8 @@ class Html_Importer(Xml_Importer):
         )
         self.name = 'html'
         self.void_tags = [
+            # A small kludge: add !DOCTYPE.
+            '!doctype',
             # void elements in HTML 4.01/XHTML 1.0 Strict:
             'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'param',
             # void elements in HTML5:

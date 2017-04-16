@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.69" body_secondary_ratio="0.71">
-	<global_window_position top="64" left="529" height="931" width="1149"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
+	<global_window_position top="235" left="403" height="931" width="1375"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -22,6 +22,7 @@
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20170415084531.1"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
@@ -963,7 +964,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20111109143012.3839,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1023,6 +1025,111 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170415084531.1"></v>
+<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
+<v t="ekr.20041021065844"><vh>@test @asis</vh>
+<v t="ekr.20041021065903"><vh>#@asis</vh>
+<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
+</v>
+<v t="ekr.20041021065844.1"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
+<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
+<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
+<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
+</v>
+<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
+<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
+<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
+<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
+<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
+<v t="ekr.20090225102051.4"><vh>Output</vh></v>
+</v>
+<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
+<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
+<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
+<v t="ekr.20170410084645.1"><vh>Old-Output</vh></v>
+</v>
+<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
+<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
+<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
+<v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
+<v t="ekr.20110524091618.3488"><vh>@test at.massageDocPart</vh></v>
+<v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
+<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
+<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
+<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
+<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
+<v t="ekr.20050105093524"><vh>@test at.rename</vh></v>
+<v t="ekr.20090529115704.4566"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
+<v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
+<v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
+<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
+<v t="ekr.20060602195313.2"><vh>root</vh>
+<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
+<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
+</v>
+<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
+<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
+<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
+<v t="ekr.20101021205258.6011"><vh>at.Directives &amp; directories</vh>
+<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
+<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
+<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
+</v>
+<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
+<v t="ekr.20111113091935.4786"><vh>Not valid when run externally</vh>
+<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
+<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
+<v t="ekr.20090704085350.5018"><vh>@@test @shadow: shape of tree</vh></v>
+<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
+<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
+<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
+<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
+<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
+<v t="ekr.20040707141957.14"><vh>Output</vh></v>
+</v>
+</v>
+<v t="ekr.20101021210253.6018"><vh>Unused</vh>
+<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
+<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.105"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
+<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.108"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
+<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.111"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
+</v>
+</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
@@ -1061,7 +1168,40 @@
 <v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
-<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+<v t="ekr.20111109143012.3839" a="M"><vh>@test html: multiple tags on a line</vh>
+<v t="ekr.20170415092645.1"><vh>@@file @test html: multiple tags on a line</vh>
+<v t="ekr.20170415092645.2"><vh>&lt;html&gt;</vh>
+<v t="ekr.20170415092645.3"><vh>&lt;body&gt;</vh>
+<v t="ekr.20170415092645.4"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20170415092645.5"><vh>&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;</vh>
+<v t="ekr.20170415092645.6"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20170415092645.7"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20170415092645.8"><vh>&lt;table id="6"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20170415092645.9"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170415093006.5"><vh>@@file @test html: multiple tags on a line</vh>
+<v t="ekr.20170415093006.6"><vh>&lt;html&gt;</vh>
+<v t="ekr.20170415093006.7"><vh>&lt;body&gt;</vh>
+<v t="ekr.20170415093006.8"><vh>&lt;table id="0"&gt;</vh>
+<v t="ekr.20170415093006.9"><vh>&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;</vh>
+<v t="ekr.20170415093006.10"><vh>&lt;table id="3"&gt;</vh>
+<v t="ekr.20170415093006.11"><vh>&lt;table id="4"&gt;</vh>
+<v t="ekr.20170415093006.12"><vh>&lt;table id="6"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20170415093006.13"><vh>&lt;DIV class="webonly"&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
@@ -1346,7 +1486,8 @@
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4780" a="E"><vh>xml tests</vh>
+<v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
@@ -1821,111 +1962,7 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
-<v t="ekr.20041021065844"><vh>@test @asis</vh>
-<v t="ekr.20041021065903"><vh>#@asis</vh>
-<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
-</v>
-<v t="ekr.20041021065844.1"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
-<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
-<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
-<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
-</v>
-<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
-<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
-<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
-<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
-<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
-<v t="ekr.20090225102051.4"><vh>Output</vh></v>
-</v>
-<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
-<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
-<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
-<v t="ekr.20170410084645.1"><vh>Old-Output</vh></v>
-</v>
-<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
-<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
-<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
-<v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
-<v t="ekr.20110524091618.3488"><vh>@test at.massageDocPart</vh></v>
-<v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
-<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
-<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
-<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
-<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
-<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
-<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
-</v>
-<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
-<v t="ekr.20050105093524"><vh>@test at.rename</vh></v>
-<v t="ekr.20090529115704.4566"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
-<v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
-<v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
-<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
-<v t="ekr.20060602195313.2"><vh>root</vh>
-<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
-<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
-<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
-<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
-<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
-<v t="ekr.20101021205258.6011"><vh>at.Directives &amp; directories</vh>
-<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
-<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
-<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
-</v>
-<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
-<v t="ekr.20111113091935.4786"><vh>Not valid when run externally</vh>
-<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
-<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20090704085350.5018"><vh>@@test @shadow: shape of tree</vh></v>
-<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
-<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
-<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
-<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
-<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
-<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
-<v t="ekr.20040707141957.14"><vh>Output</vh></v>
-</v>
-</v>
-<v t="ekr.20101021210253.6018"><vh>Unused</vh>
-<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
-<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.105"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
-<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.108"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
-<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.111"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
-</v>
-</v>
-<v t="ekr.20111029112647.4099"></v>
+<v t="ekr.20090529141856.4780" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2640,7 +2677,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11">
+<t tx="ekr.20070417092935" str_leo_pos="12,0">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -4825,7 +4862,6 @@ if not g.app.isExternalUnitTest:
 &lt;/nodeA&gt;
 '''
 
-
 c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
@@ -4862,10 +4898,9 @@ try:
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20111029120441.3982">s = '''\
 &lt;HTML&gt;
@@ -4903,7 +4938,7 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 '''
 table = (
-    '&lt;td width="550"&gt;',
+    # '&lt;td width="550"&gt;',
     '&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;',
     '&lt;table&gt;',
 )
@@ -4913,10 +4948,9 @@ try:
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -4947,78 +4981,73 @@ finally:
 fail = g.app.unitTestDict.get('fail')
 assert not fail
 </t>
-<t tx="ekr.20111109143012.3839">@language html
-    # Essential for the unit test.
-    
-# This part of the test file caused lots of problems.
-
+<t tx="ekr.20111109143012.3839">@language python
+# tags that cause nodes: html, head, body, div, table, nodeA, nodeB
+# NOT: tr, td, tbody, etc.
+@language html
 s = '''
 
 &lt;html&gt;
-
 &lt;body&gt;
-
-&lt;table id="0"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="619"&gt;
-	&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
-		&lt;table id="3"&gt;
-		&lt;tr&gt;
-		&lt;td width="368"&gt;
-			&lt;table id="4"&gt;
-
-&lt;tbody id="5"&gt;
-
-&lt;tr valign="top"&gt;
-&lt;td width="550"&gt;
-&lt;table id="6"&gt;
-
-&lt;tbody id="6"&gt;
-&lt;tr&gt;
-
-&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-
-&lt;/table&gt;
-
-&lt;/td&gt;
-&lt;/tr&gt;&lt;tr&gt;
-&lt;td width="100%" colspan="2"&gt;
-
-
-&lt;br /&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;	
-							&lt;/td&gt;
-						&lt;/tr&gt;
-						&lt;/table&gt;
-
-	&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
-
-	&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
-
-
-&lt;DIV class="webonly"&gt;
-
-&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
-	
-&lt;/DIV&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
-&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
-&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+    &lt;table id="0"&gt;
+        &lt;tr valign="top"&gt;
+        &lt;td width="619"&gt;
+        &lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
+            &lt;table id="3"&gt;
+            &lt;tr&gt;
+            &lt;td width="368"&gt;
+            &lt;table id="4"&gt;
+                &lt;tbody id="5"&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td width="550"&gt;
+                &lt;table id="6"&gt;
+                    &lt;tbody id="6"&gt;
+                    &lt;tr&gt;
+                    &lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+                    &lt;/tr&gt;
+                    &lt;/tbody&gt;
+                &lt;/table&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;&lt;tr&gt;
+                &lt;td width="100%" colspan="2"&gt;
+                &lt;br /&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;	
+            &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+        &lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
+        &lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
+    &lt;DIV class="webonly"&gt;
+        &lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    &lt;/DIV&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+    &lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+    &lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-
 '''
+@language python
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+# c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+table = (
+'&lt;html&gt;', '&lt;body&gt;',
+'&lt;table id="0"&gt;',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for i, h in enumerate(table):
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 0:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -5047,8 +5076,6 @@ run-all-unit-tests-locally          = Alt-6
 
 &lt;/body&gt;
 '''
-
-
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20111112103320.3887">s = r'''
@@ -5072,10 +5099,9 @@ try:
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20111112103320.3893">s = '''
 &lt;html&gt;
@@ -5615,7 +5641,6 @@ s = '''
 &lt;!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB --&gt;
 &lt;html&gt;&lt;head&gt;headline&lt;/head&gt;&lt;body&gt;body&lt;/body&gt;&lt;/html&gt;
 '''
-
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
@@ -15385,6 +15410,156 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+nodeA
+nodeB
+</t>
+<t tx="ekr.20170415092645.1">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20170415092645.2">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20170415092645.3">&lt;body&gt;
+    @others
+&lt;/body&gt;
+</t>
+<t tx="ekr.20170415092645.4">&lt;table id="0"&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="619"&gt;
+    @others
+&lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
+</t>
+<t tx="ekr.20170415092645.5">&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
+    @others
+&lt;/table&gt;
+&lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
+</t>
+<t tx="ekr.20170415092645.6">&lt;table id="3"&gt;
+&lt;tr&gt;
+&lt;td width="368"&gt;
+    @others
+&lt;/table&gt;	
+&lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20170415092645.7">&lt;table id="4"&gt;
+&lt;tbody id="5"&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="550"&gt;
+    @others
+&lt;br /&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20170415092645.8">&lt;table id="6"&gt;
+&lt;tbody id="6"&gt;
+&lt;tr&gt;
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width="100%" colspan="2"&gt;
+</t>
+<t tx="ekr.20170415092645.9">&lt;DIV class="webonly"&gt;
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+&lt;/DIV&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+</t>
+<t tx="ekr.20170415093006.10">&lt;table id="3"&gt;
+&lt;tr&gt;
+&lt;td width="368"&gt;
+    @others
+&lt;/table&gt;	
+&lt;/td&gt;
+&lt;/tr&gt;
+</t>
+<t tx="ekr.20170415093006.11">&lt;table id="4"&gt;
+&lt;tbody id="5"&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="550"&gt;
+    @others
+&lt;br /&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+</t>
+<t tx="ekr.20170415093006.12">&lt;table id="6"&gt;
+&lt;tbody id="6"&gt;
+&lt;tr&gt;
+&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td width="100%" colspan="2"&gt;
+</t>
+<t tx="ekr.20170415093006.13">&lt;DIV class="webonly"&gt;
+&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+&lt;/DIV&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+</t>
+<t tx="ekr.20170415093006.5">
+
+@others
+@language xml
+@tabwidth -4
+</t>
+<t tx="ekr.20170415093006.6">&lt;html&gt;
+    @others
+&lt;/html&gt;
+</t>
+<t tx="ekr.20170415093006.7">&lt;body&gt;
+    @others
+&lt;/body&gt;
+</t>
+<t tx="ekr.20170415093006.8">&lt;table id="0"&gt;
+&lt;tr valign="top"&gt;
+&lt;td width="619"&gt;
+    @others
+&lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
+</t>
+<t tx="ekr.20170415093006.9">&lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
+    @others
+&lt;/table&gt;
+&lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
+</t>
+<t tx="ekr.20170416060817.1">s = '''\
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE note SYSTEM "Note.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
