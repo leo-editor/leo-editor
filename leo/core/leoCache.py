@@ -128,6 +128,7 @@ class Cacher(object):
         # New in Leo 5.6: Use the git branch name in the key.
         # This also is part of the fix for #385.
         branch = g.gitBranchName()
+        # g.trace(type(branch))
         if branch and g.isUnicode(branch):
             branch = g.toEncodedString(branch)
         m.update(branch)

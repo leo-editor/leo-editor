@@ -4212,9 +4212,9 @@ def gitHeadPath(path=None):
     startup code.
     '''
     if not path:
-        path = os.path.dirname(__file__)
-    head = os.path.join(path, '..', '..', '.git', 'HEAD')
-    exists = os.path.exists(head)
+        path = g.os_path_dirname(__file__)
+    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
+    exists = g.os_path_exists(head)
     # g.trace('exists: %s path: %s' % (exists, head))
     return head if exists else None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
@@ -4246,14 +4246,14 @@ def gitInfo(path=None):
         dirs = pointer.split('/')
         branch = dirs[-1]
         # Try to get a better commit number.
-        path = os.path.join(git_dir, pointer)
+        path = g.os_path_finalize_join(git_dir, pointer)
         try:
             s = open(path, 'r').read()
             commit = s.strip()[0: 12]
             # shorten the hash to a unique shortname
         except IOError:
             try:
-                path = os.path.join(git_dir, 'packed-refs')
+                path = g.os_path_finalize_join(git_dir, 'packed-refs')
                 for line in open(path):
                     if line.strip().endswith(' '+pointer):
                         commit = line.split()[0][0: 12]
@@ -4263,7 +4263,7 @@ def gitInfo(path=None):
     finally:
         f.close()
     if trace: g.trace('returns:', branch, commit)
-    return branch, commit
+    return g.toUnicode(branch), g.toUnicode(commit)
 #@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
 def jsonCommitInfo():
     '''
@@ -4272,7 +4272,7 @@ def jsonCommitInfo():
     '''
     trace = False and not g.unitTesting
     import json
-    leo_core_path = os.path.dirname(os.path.realpath(__file__))
+    leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
     json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
     if not g.os_path_exists(json_path):
         if trace: g.trace('not found', json_path)
