@@ -1002,7 +1002,10 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         app = self
-        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui2', verbose=verbose)
+        app.pluginsController.loadOnePlugin(
+            'leo.plugins.cursesGui2',
+            verbose=verbose,
+        )
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
