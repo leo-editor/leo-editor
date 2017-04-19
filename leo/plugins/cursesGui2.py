@@ -1,5 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
+'''A prototype text gui using the python curses library.'''
+#@+<< cursesGui imports >>
+#@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import sys
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
@@ -8,7 +11,7 @@ try:
     import curses
 except ImportError:
     curses = None
-
+#@-<< cursesGui imports >>
 #@+others
 #@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
 def init():
@@ -80,10 +83,16 @@ class CursesGui(leoGui.LeoGui):
         return None
     #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
     def runMainLoop(self):
-        g.trace(g.callers())
+        '''The curses gui main loop.'''
+        w = curses.initscr()
+        w.addstr('enter characters: x quits')
+        while 1:
+            i = w.getch() # Returns an int.
+            ch = chr(i)
+            if ch == 'x': break
         sys.exit(0)
     #@-others
-#@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
+#@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog) (disabled)
 if 0:
     class CursesLog(leoFrame.LeoLog):
         '''A class that represents cursese log pane.'''
@@ -473,4 +482,6 @@ class CursesMenu:
             # Or just raise AttributeError.
     #@-others
 #@-others
+#@@language python
+#@@tabwidth -3
 #@-leo
