@@ -1002,7 +1002,7 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         app = self
-        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
+        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui2', verbose=verbose)
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1019,6 +1019,8 @@ class LeoApp(object):
             g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
+        elif argName == 'text':
+            app.createTextGui()
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
@@ -1043,6 +1045,10 @@ class LeoApp(object):
                 print('Qt Gui created in %s' % fileName)
         else:
             print('createQtGui: can not create Qt gui.')
+    #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
+    def createTextGui(self, fileName='', verbose=False):
+        app = self
+        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui(self, fileName='', verbose=False):
         # Do NOT omit fileName param: it is used in plugin code.
@@ -2425,7 +2431,8 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('curses', 'qt', 'null'):
+            elif gui in ('curses', 'text', 'qt', 'null'):
+                    # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
                 print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
