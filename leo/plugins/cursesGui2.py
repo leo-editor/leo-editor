@@ -111,6 +111,10 @@ class CursesFrame (leoFrame.LeoFrame):
         self.tree = g.NullObject()
 
     #@+others
+    #@+node:ekr.20170420170826.1: *3* CF.oops
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20170420163932.1: *3* CF.finishCreate
     def finishCreate(self):
         pass
