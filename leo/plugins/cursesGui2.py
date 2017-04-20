@@ -11,6 +11,12 @@ try:
     import curses
 except ImportError:
     curses = None
+npyscreen = g.importExtension(
+   'npyscreen',
+   pluginName=None,
+   verbose=False,
+   required=True,
+)
 #@-<< cursesGui imports >>
 #@+others
 #@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
@@ -86,7 +92,7 @@ class CursesGui(leoGui.LeoGui):
     def runMainLoop(self):
         '''The curses gui main loop.'''
         if 1:
-            print('CG.runMainLoop')
+            g.trace(npyscreen)
             # print accumulated traces.
         else:
             w = curses.initscr()
