@@ -240,7 +240,6 @@ class CursesLog:
             w.set_values(values)
             w.update()
         else:
-            g.trace(repr(s))
             self.waiting_list.append(s)
                 ### To do: remember color
                 
