@@ -1,4 +1,7 @@
 #!/usr/bin/python
+
+import leo.core.leoGlobals as g #EKR
+
 import codecs
 import copy
 import sys
@@ -66,6 +69,10 @@ class InputHandler(object):
         runs the methods in self.complex_handlers (if any), which is an array of form (test_func, dispatch_func).
         If test_func(input) returns true, then dispatch_func(input) is called. Check to see if parent can handle.
         No further action taken after that point."""
+        
+        # g.pdb()
+        # sys.stdout.write('\nhandle_input:' + repr(_input)) # EKR
+        # sys.stdout.write('\nhandle_input:' + g.callers()) # EKR
         
         if _input in self.handlers:
             self.handlers[_input](_input)

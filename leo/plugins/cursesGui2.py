@@ -1,9 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
 '''A prototype text gui using the python curses library.'''
+use_npyscreen = False
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
-# import sys
+import pudb 
+import sys
+assert pudb, sys # to keep pyflakes happy.
 import leo.core.leoGlobals as g
 # import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
@@ -11,44 +14,83 @@ try:
     import curses
 except ImportError:
     curses = None
-npyscreen = g.importExtension(
-   'npyscreen',
-   pluginName=None,
-   verbose=False,
-   required=True,
-)
+if use_npyscreen:
+   npyscreen = g.importExtension(
+      'npyscreen',
+      pluginName=None,
+      verbose=False,
+      required=True,
+   )
+else:
+   npyscreen = None
+   try:
+      import urwid
+   except ImportError:
+      urwid = None
 #@-<< cursesGui imports >>
 #@+others
 #@+node:ekr.20170420054211.1: ** class CursesApp
-class CursesApp(npyscreen.NPSApp):
-    
-    def __init__(self, c):
-        npyscreen.NPSApp.__init__(self)
-            # Init the base class.
-        self.leo_c = c
-        self.leo_log = c.frame.log
-        self.leo_minibuffer = None
-        self.leo_tree = None
+base = npyscreen.NPSApp if use_npyscreen else object
 
-    def main(self):
-        F  = npyscreen.Form(name = "Welcome to Leo",)
-        # Transfer queued log messages to the log pane.
-        waiting_list = self.leo_log.waiting_list[:]
-        self.leo_log.waiting_list = []
-        # Set the log widget.
-        self.leo_log.w = F.add(
-            npyscreen.MultiLineEditableBoxed,
-            max_height=20,
-            name='Log Pane',
-            footer="Press i or o to insert text", 
-            values=waiting_list, 
-            slow_scroll=False,
-        )
-        # Make sure that log message now go to the curses widget.
-        g.es('test:', g.callers())
-        # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        F.edit()
+class CursesApp(base):
+    
+   def __init__(self, c):
+      
+      if use_npyscreen:
+         npyscreen.NPSApp.__init__(self)
+            # Init the base class.
+      else:
+         pass ###
+      self.leo_c = c
+      self.leo_log = c.frame.log
+      self.leo_minibuffer = None
+      self.leo_tree = None
+     
+   #@+others
+   #@+node:ekr.20170420090426.1: *3* CApp.main
+   def main(self):
+       '''Create the main screen.'''
+       # Redirect stdout and stderr to files
+       # sys.stdout = open('stdout.log', 'w')
+       # sys.stderr = open('stderr.log', 'w')
+       F  = npyscreen.Form(name = "Welcome to Leo",)
+       # Transfer queued log messages to the log pane.
+       waiting_list = self.leo_log.waiting_list[:]
+       self.leo_log.waiting_list = []
+       # Set the log widget.
+       self.leo_log.w = F.add(
+           npyscreen.MultiLineEditableBoxed,
+           max_height=20,
+           name='Log Pane',
+           footer="Press i or o to insert text", 
+           values=waiting_list, 
+           slow_scroll=False,
+       )
+       # Make sure that log message now go to the curses widget.
+       g.es('test:', g.callers())
+       # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+       self.leo_minibuffer = w = F.add_widget(npyscreen.TitleText, name="Minibuffer")
+       if 0: # Monkey-patch
+       
+           w.handlers = {} # Kill all previous handlers.
+           w.complex_handlers = []
+           sys.stdout.write('\n1' + repr(w.handle_input))
+       
+           def handle_input(self, _input):
+               sys.stdout.write(repr(_input))
+               sys.exit(0)
+
+           g.funcToMethod(handle_input, w.__class__)
+           sys.stdout.write('\n2' + repr(w.handle_input))
+               
+       elif 0: # Redirect all events in the minibuffer
+           assert hasattr(w, 'complex_handlers')
+           def true(*args, **keys): return True
+           w.handlers = {} # Kill all previous handlers.
+           w.complex_handlers = [(true, eventFilter),]
+       F.edit()
+   #@-others
+      
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame:
     
@@ -79,48 +121,59 @@ class CursesFrame:
     
 #@+node:ekr.20170419094731.1: ** class CursesGui
 class CursesGui(leoGui.LeoGui):
-    '''A do-nothing curses gui template.'''
+   '''Leo's curses gui wrapper.'''
 
-    def __init__(self):
-        self.consoleOnly = False # Required attribute.
-        self.d = {}
-            # Keys are names, values of lists of g.callers values.
+   def __init__(self):
+      '''Ctor for the CursesGui class.'''
+      leoGui.LeoGui.__init__(self, 'curses')
+         # Init the base class.
+      self.consoleOnly = False # Required attribute.
+      self.d = {}
+         # Keys are names, values of lists of g.callers values.
             
-    #@+others
-    #@+node:ekr.20170419110330.1: *3* CG.__getattr__
-    # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
-    def __getattr__(self, name):
-        aList = self.d.get(name, [])
-        callers = g.callers(4)
-        if callers not in aList:
-            aList.append(callers)
-            self.d[name] = aList
-            g.trace('%30s' % ('CursesGui.' + name), callers)
-            g.es('CursesGui.__getattr__.' + name, callers)
-        return g.NullObject()
-            # Or just raise AttributeError.
-    #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
-    def createLeoFrame(self, c, title):
-        
-        return CursesFrame(c, title)
-    #@+node:ekr.20170419111744.1: *3* CG.Focus...
-    def get_focus(self, *args, **keys):
-        return None
-    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
-    def runMainLoop(self):
-        '''The curses gui main loop.'''
-        c = g.app.log.c
-        if 0:
-            w = curses.initscr()
-            w.addstr('enter characters: x quits')
-            while 1:
-                i = w.getch() # Returns an int.
-                ch = chr(i)
-                if ch == 'x': break
-        else:
-            app = CursesApp(c)
-            app.run()   
-    #@-others
+   #@+others
+   #@+node:ekr.20170419110330.1: *3* CG.__getattr__
+   # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
+   def __getattr__(self, name):
+       aList = self.d.get(name, [])
+       callers = g.callers(4)
+       if callers not in aList:
+           aList.append(callers)
+           self.d[name] = aList
+           g.trace('%30s' % ('CursesGui.' + name), callers)
+           g.es('CursesGui.__getattr__.' + name, callers)
+       return g.NullObject()
+           # Or just raise AttributeError.
+   #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
+   def createLeoFrame(self, c, title):
+       
+       return CursesFrame(c, title)
+   #@+node:ekr.20170419111744.1: *3* CG.Focus...
+   def get_focus(self, *args, **keys):
+       return None
+   #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
+   def runMainLoop(self):
+       '''The curses gui main loop.'''
+       c = g.app.log.c
+       assert c
+       if 0:
+           w = curses.initscr()
+           w.addstr('enter characters: x quits')
+           while 1:
+               i = w.getch() # Returns an int.
+               ch = chr(i)
+               if ch == 'x': break
+       elif use_npyscreen:
+           # Not on windows.
+           # pudb.set_trace()
+           app = CursesApp(c)
+           app.run()
+       else:
+           txt = urwid.Text(u"Hello World")
+           fill = urwid.Filler(txt, 'top')
+           loop = urwid.MainLoop(fill)
+           loop.run() 
+   #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
    '''A class that represents curses log pane.'''
@@ -194,7 +247,6 @@ class CursesLog:
            print('CLog.log.put fails', repr(s))
            return
        if self.w:
-           # import sys; sys.exit(0)
            values = w.get_values()
            values.append(s)
            w.set_values(values)
@@ -254,7 +306,6 @@ class CursesLog:
        # print('CLog.put: %s' % g.callers())
        if g.app.quitting:
            return
-       g.trace('=====', g.callers())
        # if tabName:
            # self.selectTab(tabName)
        # w = self.logCtrl.widget
@@ -292,20 +343,26 @@ class CursesMenu:
         return g.NullObject()
             # Or just raise AttributeError.
     #@-others
+#@+node:ekr.20170420085017.1: ** eventFilter
+def eventFilter(*args, **kwargs):
+   
+   sys.exit(0)
+   g.es(args, kwargs)
 #@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
 def init():
 
-    ok = curses and not g.app.gui and not g.app.unitTesting
+   ### ok = curses and not g.app.gui and not g.app.unitTesting
+   ok = urwid and not g.app.gui and not g.app.unitTesting
         # Not Ok for unit testing!
-    if ok:
-        g.app.gui = CursesGui()
-        g.app.root = g.app.gui.createRootWindow()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
+   if ok:
+      g.app.gui = CursesGui()
+      g.app.root = g.app.gui.createRootWindow()
+      g.app.gui.finishCreate()
+      g.plugin_signon(__name__)
+   elif g.app.gui and not g.app.unitTesting:
+      s = "Can't install text gui: previous gui installed"
+      g.es_print(s, color="red")
+   return ok
 #@-others
 #@@language python
 #@@tabwidth -3
