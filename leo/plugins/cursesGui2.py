@@ -19,6 +19,29 @@ npyscreen = g.importExtension(
 )
 #@-<< cursesGui imports >>
 #@+others
+#@+node:ekr.20170420054211.1: ** class CursesApp
+class CursesApp(npyscreen.NPSApp):
+    
+    def __init__(self, c):
+        npyscreen.NPSApp.__init__(self)
+            # Init the base class.
+        self.leo_c = c
+        self.leo_log = c.frame.log
+        self.leo_waiting_list = self.leo_log.waiting_list[:]
+        self.leo_log.waiting_list = []
+
+    def main(self):
+        F  = npyscreen.Form(name = "Welcome to Leo",)
+        self.leo_log.w = F.add(
+            npyscreen.MultiLineEditableBoxed,
+            max_height=20,
+            name='Log Pane',
+            footer="Press i or o to insert values", 
+            values=self.leo_waiting_list, 
+            slow_scroll=False,
+        )
+        g.es('test:', g.callers())
+        F.edit()
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame:
     
@@ -74,15 +97,16 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419111744.1: *3* CG.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop & helpers
+    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
         c = g.app.log.c
         # Capture the queued log messages.
-        log = c.frame.log
-        waiting_list = log.waiting_list[:]
-        log.waiting_list = []
-        log.waiting = False
+        # if 0:
+            # log = c.frame.log
+            # waiting_list = log.waiting_list[:]
+            # log.waiting_list = []
+            # log.waiting = False
         if 0:
             w = curses.initscr()
             w.addstr('enter characters: x quits')
@@ -91,24 +115,7 @@ class CursesGui(leoGui.LeoGui):
                 ch = chr(i)
                 if ch == 'x': break
         else:
-            #@+others
-            #@+node:ekr.20170420054211.1: *4* class CursesApp
-            class CursesApp(npyscreen.NPSApp):
-
-                def main(self):
-                    F  = npyscreen.Form(name = "Welcome to Leo",)
-                    log.w = F.add(
-                        npyscreen.MultiLineEditableBoxed,
-                        max_height=20,
-                        name='Log Pane',
-                        footer="Press i or o to insert values", 
-                        values=waiting_list, 
-                        slow_scroll=False,
-                    )
-                    g.es('test:', g.callers())
-                    F.edit()
-            #@-others
-            app = CursesApp()
+            app = CursesApp(c)
             app.run()   
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
