@@ -27,19 +27,22 @@ class CursesApp(npyscreen.NPSApp):
             # Init the base class.
         self.leo_c = c
         self.leo_log = c.frame.log
-        self.leo_waiting_list = self.leo_log.waiting_list[:]
-        self.leo_log.waiting_list = []
 
     def main(self):
         F  = npyscreen.Form(name = "Welcome to Leo",)
+        # Transfer queued log messages to the log pane.
+        waiting_list = self.leo_log.waiting_list[:]
+        self.leo_log.waiting_list = []
+        # Set the log widget.
         self.leo_log.w = F.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
             name='Log Pane',
             footer="Press i or o to insert values", 
-            values=self.leo_waiting_list, 
+            values=waiting_list, 
             slow_scroll=False,
         )
+        # Make sure that log message now go to the curses widget.
         g.es('test:', g.callers())
         F.edit()
 #@+node:ekr.20170419105852.1: ** class CursesFrame
@@ -62,6 +65,7 @@ class CursesFrame:
             aList.append(callers)
             self.d[name] = aList
             g.trace('%30s' % ('CursesFrame.' + name), callers)
+            g.es('CursesFrame.__getattr__' + name, callers)
         return g.NullObject()
             # Or just raise AttributeError.
     #@+node:ekr.20170419111305.1: *3* CF.getShortCut
@@ -88,6 +92,7 @@ class CursesGui(leoGui.LeoGui):
             aList.append(callers)
             self.d[name] = aList
             g.trace('%30s' % ('CursesGui.' + name), callers)
+            g.es('CursesGui.__getattr__.' + name, callers)
         return g.NullObject()
             # Or just raise AttributeError.
     #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
@@ -101,12 +106,6 @@ class CursesGui(leoGui.LeoGui):
     def runMainLoop(self):
         '''The curses gui main loop.'''
         c = g.app.log.c
-        # Capture the queued log messages.
-        # if 0:
-            # log = c.frame.log
-            # waiting_list = log.waiting_list[:]
-            # log.waiting_list = []
-            # log.waiting = False
         if 0:
             w = curses.initscr()
             w.addstr('enter characters: x quits')
@@ -123,16 +122,17 @@ class CursesLog:
    '''A class that represents curses log pane.'''
    #@+others
    #@+node:ekr.20170419143731.4: *3* CLog.__init__
-   def __init__(self, c): ### frame, parentFrame):
+   def __init__(self, c):
        '''Ctor for CLog class.'''
        self.c = c
        self.enabled = True
+           # Required by Leo's core.
        self.isNull = False
+           # Required by Leo's core.
        self.w = None
            # The npyscreen log widget. Queue all output until set.
-       ###self.waiting = True
-           # True: queue all output for later in self.waiting_list
        self.waiting_list = []
+           # The queued log text.
        
        ### from LeoQtLog
            # leoFrame.LeoLog.__init__(self, frame, parentFrame)
@@ -142,7 +142,7 @@ class CursesLog:
                # # logCtrl may be either a wrapper or a widget.
            # self.c = frame.c # Also set in the base constructor, but we need it here.
        
-       # if 0:
+       ### Old code:
            # self.contentsDict = {} # Keys are tab names.  Values are widgets.
            # self.eventFilters = [] # Apparently needed to make filters work!
            # self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
@@ -284,6 +284,7 @@ class CursesMenu:
             aList.append(callers)
             self.d[name] = aList
             g.trace('%30s' % ('CursesMenu.' + name), callers)
+            g.es('CursesMenu.__getattr__.' + name, callers)
         return g.NullObject()
             # Or just raise AttributeError.
     #@-others
