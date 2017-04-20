@@ -3,7 +3,7 @@
 '''A prototype text gui using the python curses library.'''
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
-import sys
+# import sys
 import leo.core.leoGlobals as g
 # import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
@@ -19,20 +19,6 @@ npyscreen = g.importExtension(
 )
 #@-<< cursesGui imports >>
 #@+others
-#@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
-def init():
-
-    ok = curses and not g.app.gui and not g.app.unitTesting
-        # Not Ok for unit testing!
-    if ok:
-        g.app.gui = CursesGui()
-        g.app.root = g.app.gui.createRootWindow()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame:
     
@@ -88,36 +74,58 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419111744.1: *3* CG.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
+    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop & helpers
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        if 1:
-            g.trace(npyscreen)
-            # print accumulated traces.
-        else:
+        c = g.app.log.c
+        # Capture the queued log messages.
+        log = c.frame.log
+        waiting_list = log.waiting_list[:]
+        log.waiting_list = []
+        log.waiting = False
+        if 0:
             w = curses.initscr()
             w.addstr('enter characters: x quits')
             while 1:
                 i = w.getch() # Returns an int.
                 ch = chr(i)
                 if ch == 'x': break
-        sys.exit(0)
+        else:
+            #@+others
+            #@+node:ekr.20170420054211.1: *4* class CursesApp
+            class CursesApp(npyscreen.NPSApp):
+
+                def main(self):
+                    F  = npyscreen.Form(name = "Welcome to Npyscreen",)
+                    log.w = F.add(
+                        npyscreen.MultiLineEditableBoxed,
+                        max_height=20,
+                        name='List of Values',
+                        footer="Press i or o to insert values", 
+                        values=waiting_list, 
+                        slow_scroll=False,
+                    )
+                    g.es('test:', g.callers())
+                    F.edit()
+            #@-others
+            app = CursesApp()
+            app.run()   
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
-class CursesLog: ### (leoFrame.LeoLog):
+class CursesLog:
    '''A class that represents curses log pane.'''
    #@+others
-   #@+node:ekr.20170419143731.2: *3* CLog.cmd (decorator)
-   def cmd(name):
-       '''Command decorator for the c.frame.log class.'''
-       # pylint: disable=no-self-argument
-       return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
    #@+node:ekr.20170419143731.4: *3* CLog.__init__
    def __init__(self, c): ### frame, parentFrame):
        '''Ctor for CLog class.'''
        self.c = c
        self.enabled = True
        self.isNull = False
+       self.w = None
+           # The npyscreen log widget. Queue all output until set.
+       ###self.waiting = True
+           # True: queue all output for later in self.waiting_list
+       self.waiting_list = []
        
        ### from LeoQtLog
            # leoFrame.LeoLog.__init__(self, frame, parentFrame)
@@ -144,6 +152,11 @@ class CursesLog: ### (leoFrame.LeoLog):
                # tw.installEventFilter(theFilter)
            # # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
            # tw.setMovable(True)
+   #@+node:ekr.20170419143731.2: *3* CLog.cmd (decorator)
+   def cmd(name):
+       '''Command decorator for the c.frame.log class.'''
+       # pylint: disable=no-self-argument
+       return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
    #@+node:ekr.20170419143731.7: *3* CLog.Commands
    @cmd('clear-log')
    def clearLog(self, event=None):
@@ -165,11 +178,22 @@ class CursesLog: ### (leoFrame.LeoLog):
    #@+node:ekr.20170419143731.15: *4* CLog.put
    def put(self, s, color=None, tabName='Log', from_redirect=False):
        '''All output to the log stream eventually comes here.'''
-       c = self.c
+       c, w = self.c, self.w
        if g.app.quitting or not c or not c.exists:
            print('CLog.log.put fails', repr(s))
            return
-       g.trace(repr(s))
+       if self.w:
+           # import sys; sys.exit(0)
+           values = w.get_values()
+           values.append(s)
+           w.set_values(values)
+           w.update()
+       else:
+           g.trace(repr(s))
+           self.waiting_list.append(s)
+               ### To do: remember color
+               
+       ### Old code.
        # trace = False and not g.unitTesting
        # trace_s = False
        # if color:
@@ -256,6 +280,20 @@ class CursesMenu:
         return g.NullObject()
             # Or just raise AttributeError.
     #@-others
+#@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
+def init():
+
+    ok = curses and not g.app.gui and not g.app.unitTesting
+        # Not Ok for unit testing!
+    if ok:
+        g.app.gui = CursesGui()
+        g.app.root = g.app.gui.createRootWindow()
+        g.app.gui.finishCreate()
+        g.plugin_signon(__name__)
+    elif g.app.gui and not g.app.unitTesting:
+        s = "Can't install text gui: previous gui installed"
+        g.es_print(s, color="red")
+    return ok
 #@-others
 #@@language python
 #@@tabwidth -3
