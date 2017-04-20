@@ -96,11 +96,11 @@ class CursesGui(leoGui.LeoGui):
             class CursesApp(npyscreen.NPSApp):
 
                 def main(self):
-                    F  = npyscreen.Form(name = "Welcome to Npyscreen",)
+                    F  = npyscreen.Form(name = "Welcome to Leo",)
                     log.w = F.add(
                         npyscreen.MultiLineEditableBoxed,
                         max_height=20,
-                        name='List of Values',
+                        name='Log Pane',
                         footer="Press i or o to insert values", 
                         values=waiting_list, 
                         slow_scroll=False,
