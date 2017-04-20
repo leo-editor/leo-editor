@@ -27,6 +27,8 @@ class CursesApp(npyscreen.NPSApp):
             # Init the base class.
         self.leo_c = c
         self.leo_log = c.frame.log
+        self.leo_minibuffer = None
+        self.leo_tree = None
 
     def main(self):
         F  = npyscreen.Form(name = "Welcome to Leo",)
@@ -38,12 +40,14 @@ class CursesApp(npyscreen.NPSApp):
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
             name='Log Pane',
-            footer="Press i or o to insert values", 
+            footer="Press i or o to insert text", 
             values=waiting_list, 
             slow_scroll=False,
         )
         # Make sure that log message now go to the curses widget.
         g.es('test:', g.callers())
+        # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
         F.edit()
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame:
