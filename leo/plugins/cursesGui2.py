@@ -134,6 +134,11 @@ class CursesGui(leoGui.LeoGui):
         self.consoleOnly = False # Required attribute.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
+            
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
+
 
     #@+others
     #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
@@ -323,8 +328,11 @@ class CursesMenu (leoMenu.LeoMenu):
         self.c = c
         self.d = {}
 
-    #@+others
-    #@-others
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
+
+        
 #@+node:ekr.20170420085017.1: ** eventFilter
 def eventFilter(*args, **kwargs):
 
