@@ -11,8 +11,9 @@ import leo.core.leoGlobals as g
    # pudb = None
 import sys
 assert sys # to keep pyflakes happy.
-# import leo.core.leoFrame as leoFrame
+import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
+import leo.core.leoMenu as leoMenu
 try:
     import curses
 except ImportError:
@@ -92,28 +93,27 @@ class CursesApp(npyscreen.NPSApp):
     #@-others
 
 #@+node:ekr.20170419105852.1: ** class CursesFrame
-class CursesFrame:
+class CursesFrame (leoFrame.LeoFrame):
 
     def __init__ (self, c, title):
+        leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
         self.c = c
         self.d = {}
         self.log = CursesLog(c)
         self.title = title
+        # Standard ivars.
+        self.ratio = self.secondary_ratio = 0.0
+        # Widgets
+        self.body = None
         self.menu = CursesMenu(c)
+        self.miniBufferWidget = None
+        self.top = None
+        self.tree = g.NullObject()
 
     #@+others
-    #@+node:ekr.20170419111214.1: *3* CF.__getattr__
-    # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
-    def __getattr__(self, name):
-        aList = self.d.get(name, [])
-        callers = g.callers(4)
-        if callers not in aList:
-            aList.append(callers)
-            self.d[name] = aList
-            g.trace('%30s' % ('CursesFrame.' + name), callers)
-            g.es('CursesFrame.__getattr__' + name, callers)
-        return g.NullObject()
-            # Or just raise AttributeError.
+    #@+node:ekr.20170420163932.1: *3* CF.finishCreate
+    def finishCreate(self):
+        pass
     #@+node:ekr.20170419111305.1: *3* CF.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
@@ -132,18 +132,6 @@ class CursesGui(leoGui.LeoGui):
             # Keys are names, values of lists of g.callers values.
 
     #@+others
-    #@+node:ekr.20170419110330.1: *3* CG.__getattr__
-    # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
-    def __getattr__(self, name):
-        aList = self.d.get(name, [])
-        callers = g.callers(4)
-        if callers not in aList:
-            aList.append(callers)
-            self.d[name] = aList
-            g.trace('%30s' % ('CursesGui.' + name), callers)
-            g.es('CursesGui.__getattr__.' + name, callers)
-        return g.NullObject()
-            # Or just raise AttributeError.
     #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
     def createLeoFrame(self, c, title):
         
@@ -323,25 +311,16 @@ class CursesLog:
             # g.app.logWaiting.append(('\n', 'black'),)
     #@-others
 #@+node:ekr.20170419111515.1: ** class CursesMenu
-class CursesMenu:
+class CursesMenu (leoMenu.LeoMenu):
 
     def __init__ (self, c):
+        
+        dummy_frame = g.Bunch(c=c)
+        leoMenu.LeoMenu.__init__(self, dummy_frame)
         self.c = c
         self.d = {}
 
     #@+others
-    #@+node:ekr.20170419111555.1: *3* CM.__getattr__
-    # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
-    def __getattr__(self, name):
-        aList = self.d.get(name, [])
-        callers = g.callers(4)
-        if callers not in aList:
-            aList.append(callers)
-            self.d[name] = aList
-            g.trace('%30s' % ('CursesMenu.' + name), callers)
-            g.es('CursesMenu.__getattr__.' + name, callers)
-        return g.NullObject()
-            # Or just raise AttributeError.
     #@-others
 #@+node:ekr.20170420085017.1: ** eventFilter
 def eventFilter(*args, **kwargs):
