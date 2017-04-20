@@ -30,7 +30,7 @@ class TemplateFrame:
         self.menu = TemplateMenu(c)
         
     #@+others
-    #@+node:ekr.20170419150249.4: *3* CF.__getattr__
+    #@+node:ekr.20170419150249.4: *3* TF.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
     def __getattr__(self, name):
         aList = self.d.get(name, [])
@@ -41,7 +41,7 @@ class TemplateFrame:
             g.trace('%30s' % ('TemplateFrame.' + name), callers)
         return g.NullObject()
             # Or just raise AttributeError.
-    #@+node:ekr.20170419150249.5: *3* CF.getShortCut
+    #@+node:ekr.20170419150249.5: *3* TF.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
     #@-others
@@ -56,7 +56,7 @@ class TemplateGui(leoGui.LeoGui):
             # Keys are names, values of lists of g.callers values.
             
     #@+others
-    #@+node:ekr.20170419150249.7: *3* CG.__getattr__
+    #@+node:ekr.20170419150249.7: *3* TG.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
     def __getattr__(self, name):
         aList = self.d.get(name, [])
@@ -67,14 +67,14 @@ class TemplateGui(leoGui.LeoGui):
             g.trace('%30s' % ('TemplateGui.' + name), callers)
         return g.NullObject()
             # Or just raise AttributeError.
-    #@+node:ekr.20170419150249.8: *3* CG.createLeoFrame
+    #@+node:ekr.20170419150249.8: *3* TG.createLeoFrame
     def createLeoFrame(self, c, title):
         
         return TemplateFrame(c, title)
-    #@+node:ekr.20170419150249.9: *3* CG.Focus...
+    #@+node:ekr.20170419150249.9: *3* TG.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419150249.10: *3* CG.runMainLoop
+    #@+node:ekr.20170419150249.10: *3* TG.runMainLoop
     def runMainLoop(self):
         g.trace(g.callers())
         sys.exit(0)
@@ -87,7 +87,7 @@ class TemplateMenu:
         self.d = {}
         
     #@+others
-    #@+node:ekr.20170419150249.40: *3* CM.__getattr__
+    #@+node:ekr.20170419150249.40: *3* TM.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
     def __getattr__(self, name):
         aList = self.d.get(name, [])
