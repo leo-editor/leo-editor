@@ -5,10 +5,6 @@ use_npyscreen = True
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import leo.core.leoGlobals as g
-# try:
-   # import pudb
-# except ImportError:
-   # pudb = None
 import sys
 assert sys # to keep pyflakes happy.
 import leo.core.leoFrame as leoFrame
@@ -18,19 +14,13 @@ try:
     import curses
 except ImportError:
     curses = None
-if use_npyscreen:
-   npyscreen = g.importExtension(
-      'npyscreen',
-      pluginName=None,
-      verbose=False,
-      required=True,
-   )
-else:
-   npyscreen = None
-   # try:
-      # import urwid
-   # except ImportError:
-      # urwid = None
+
+npyscreen = g.importExtension(
+    'npyscreen',
+    pluginName=None,
+    required=True,
+    verbose=False,
+)
 #@-<< cursesGui imports >>
 #@+others
 #@+node:ekr.20170420054211.1: ** class CursesApp
@@ -139,11 +129,10 @@ class CursesGui(leoGui.LeoGui):
         '''Ignore do-nothing methods.'''
         # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
 
-
     #@+others
     #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
     def createLeoFrame(self, c, title):
-        
+
         return CursesFrame(c, title)
     #@+node:ekr.20170419111744.1: *3* CG.Focus...
     def get_focus(self, *args, **keys):
@@ -160,16 +149,15 @@ class CursesGui(leoGui.LeoGui):
                 i = w.getch() # Returns an int.
                 ch = chr(i)
                 if ch == 'x': break
-        else: ### elif use_npyscreen:
-            # Not on windows.
-            # pudb.set_trace()
+        elif 1:
             app = CursesApp(c)
             app.run()
-        # else:
-            # txt = urwid.Text(u"Hello World")
-            # fill = urwid.Filler(txt, 'top')
-            # loop = urwid.MainLoop(fill)
-            # loop.run() 
+        else:
+            import urwid
+            txt = urwid.Text(u"Hello World")
+            fill = urwid.Filler(txt, 'top')
+            loop = urwid.MainLoop(fill)
+            loop.run() # On Windows, fails because termios not installed.
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
@@ -333,7 +321,7 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170420085017.1: ** eventFilter
+#@+node:ekr.20170420085017.1: ** eventFilter (not used)
 def eventFilter(*args, **kwargs):
 
     sys.exit(0)
