@@ -36,7 +36,7 @@ def main():
         if c:
             runUnitTests(c, g)
     g.pr(tag, 'done')
-#@+node:ekr.20080730161153.4: *3* runUnitTests
+#@+node:ekr.20080730161153.4: *3* runUnitTests (leoBridgeTest.py)
 def runUnitTests(c, g):
     '''Run all the unit tests from the leoBridge.'''
     nodeName = 'All unit tests' # The tests to run.
@@ -53,7 +53,7 @@ def runUnitTests(c, g):
         g.es('unexpected exception')
         g.es_exception()
         raise
-#@+node:ekr.20090121164439.6177: *3* scanOptions
+#@+node:ekr.20090121164439.6177: *3* scanOptions (leoBridgeTest.py)
 def scanOptions():
     '''Handle all options and remove them from sys.argv.'''
     parser = optparse.OptionParser()

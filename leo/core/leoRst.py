@@ -139,7 +139,7 @@ class RstCommands(object):
         self.debug = c.config.getBool('rst3_debug', default=False)
         self.n_written = 0
             # Number of files written.
-        # Warnings flags.
+        # Warning flags.
         self.silverCityWarningGiven = False
         # Settings.
         self.dd = {}
@@ -188,8 +188,6 @@ class RstCommands(object):
         self.rootNode = None
         self.source = None
             # The written source as a string.
-        self.trialWrite = False
-            # True if doing a trialWrite.
         # Complete the init.
         self.updateD0FromSettings()
         self.initHeadlineCommands()
@@ -1112,14 +1110,13 @@ class RstCommands(object):
                 return self.processTree(p, ext=ext, toString=True, justOneFile=True)
         return self.processTree(current, ext=ext, toString=True, justOneFile=True)
     #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
-    def writeAtAutoFile(self, p, fileName, outputFile, trialWrite=False):
+    def writeAtAutoFile(self, p, fileName, outputFile):
         '''
         Write an @auto tree containing imported rST code.
         The caller will close the output file.
         '''
         self.initSettings(p)
         try:
-            self.trialWrite = trialWrite
             self.atAutoWrite = True
             self.initAtAutoWrite(p, fileName, outputFile)
             self.topNode = p.copy() # Indicate the top of this tree.
@@ -1160,10 +1157,10 @@ class RstCommands(object):
         self.underlines2 = underlines2
     #@+node:ekr.20091228080620.6499: *5* rst.isSafeWrite
     def isSafeWrite(self, p):
-        '''Return True if node p contributes nothing but
-        rst-options to the write.'''
-        if self.trialWrite or not p.isAtAutoRstNode():
-            return True # Trial writes are always safe.
+        '''
+        Return True if node p contributes nothing but
+        rst-options to the write.
+        '''
         lines = g.splitLines(p.b)
         for z in lines:
             if z.strip() and not z.startswith('@') and not z.startswith('.. '):

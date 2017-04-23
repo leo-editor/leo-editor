@@ -112,20 +112,27 @@ class Cacher(object):
                 c.cacher.clearCache()
         g.es('done', color='blue')
     #@+node:ekr.20100208071151.5907: *3* cacher.fileKey
-    def fileKey(self, s, content, requireEncodedString=False):
+    def fileKey(self, fileName, content, requireEncodedString=False):
         '''
-        Compute the hash of s (usually a headline) and content.
-        s may be unicode, content must be bytes (or plain string in Python 2.x)
+        Compute the hash of fileName and content. fileName may be unicode,
+        content must be bytes (or plain string in Python 2.x).
         '''
         trace = False and not g.unitTesting
         m = hashlib.md5()
-        if g.isUnicode(s):
-            s = g.toEncodedString(s)
+        if g.isUnicode(fileName):
+            fileName = g.toEncodedString(fileName)
         if g.isUnicode(content):
             if requireEncodedString:
                 g.internalError('content arg must be str/bytes')
             content = g.toEncodedString(content)
-        m.update(s)
+        # New in Leo 5.6: Use the git branch name in the key.
+        # This also is part of the fix for #385.
+        branch = g.gitBranchName()
+        # g.trace(type(branch))
+        if branch and g.isUnicode(branch):
+            branch = g.toEncodedString(branch)
+        m.update(branch)
+        m.update(fileName)
         m.update(content)
         if trace: g.trace(m.hexdigest())
         return "fcache/" + m.hexdigest()
@@ -277,21 +284,25 @@ class Cacher(object):
         Return (s,ok,key)
         '''
         trace = (False or g.app.debug) and not g.unitTesting
-        showHits, showLines, verbose = False, False, True
+        showHits = False
+        showLines = False
+        showList = False
         sfn = g.shortFileName(fileName)
         if not g.enableDB:
-            if trace and verbose: g.trace('g.enableDB is False', sfn)
+            if trace: g.trace('g.enableDB is False', fileName)
             return '', False, None
+        if trace: g.trace('=====', root.v.gnx, 'children', root.numberOfChildren(), fileName)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
-            if trace: g.trace('empty file contents', sfn)
+            if trace: g.trace('empty file contents', fileName)
             return s, False, None
         assert not g.isUnicode(s)
         if trace and showLines:
             for i, line in enumerate(g.splitLines(s)):
                 print('%3d %s' % (i, repr(line)))
         # There will be a bug if s is not already an encoded string.
-        key = self.fileKey(root.h, s, requireEncodedString=True)
+        key = self.fileKey(fileName, s, requireEncodedString=True)
+            # Fix bug #385: use the full fileName, not root.h.
         ok = self.db and key in self.db
         if ok:
             if trace and showHits: g.trace('cache hit', key[-6:], sfn)
@@ -300,6 +311,8 @@ class Cacher(object):
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = self.db.get(key)
+            if trace and showList:
+                g.printList(list(g.flatten_list(aList)))
             self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
         elif trace:
             g.trace('cache miss', key[-6:], sfn)

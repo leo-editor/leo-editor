@@ -937,7 +937,6 @@ class TestManager(object):
         assert theType in (
             "@auto", "@clean", "@edit", "@file", "@thin", "@nosent",
             "@asis",), "bad type: %s" % theType
-        thinFile = theType == "@thin"
         nosentinels = theType in ("@asis", "@clean", "@edit", "@nosent")
         if theType == "@asis":
             at.asisWrite(child1, toString=True)
@@ -946,7 +945,7 @@ class TestManager(object):
         elif theType == "@edit":
             at.writeOneAtEditNode(child1, toString=True)
         else:
-            at.write(child1, thinFile=thinFile, nosentinels=nosentinels, toString=True)
+            at.write(child1, nosentinels=nosentinels, toString=True)
         try:
             result = g.toUnicode(at.stringOutput)
             assert result == expected
@@ -1617,30 +1616,29 @@ class TestManager(object):
     def throwAssertionError(self):
         assert 0, 'assert(0) as a test of catching assertions'
     #@+node:ekr.20051104075904.37: *4* TM.writeNodesToNode
-    def writeNodesToNode(self, c, input, output, sentinels=True):
+    def writeNodesToNode(self, c, p, output, sentinels=True):
         result = []
-        for p in input.self_and_subtree():
-            s = self.writeNodeToString(c, p, sentinels)
+        for p2 in p.self_and_subtree():
+            s = self.writeNodeToString(c, p2, sentinels)
             result.append(s)
         result = ''.join(result)
         output.scriptSetBodyString(result)
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
-    def writeNodeToNode(self, c, input, output, sentinels=True):
-        """Do an AtFile.write the input tree to the body text of the output node."""
-        s = self.writeNodeToString(c, input, sentinels)
+    def writeNodeToNode(self, c, p, output, sentinels=True):
+        """Do an AtFile.write the p's tree to the body text of the output node."""
+        s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
-    def writeNodeToString(self, c, input, sentinels):
-        """Return an AtFile.write of the input tree to a string."""
-        df = c.atFileCommands
+    def writeNodeToString(self, c, p, sentinels):
+        """Return an AtFile.write of p's tree to a string."""
+        at = c.atFileCommands
         ni = g.app.nodeIndices
-        for p in input.self_and_subtree():
-            if not p.v.fileIndex:
-                p.v.fileIndex = ni.getNewIndex(p.v)
+        for p2 in p.self_and_subtree():
+            if not p2.v.fileIndex:
+                p2.v.fileIndex = ni.getNewIndex(p2.v)
         # Write the file to a string.
-        df.write(input, thinFile=True, nosentinels=not sentinels, toString=True)
-        s = df.stringOutput
-        return s
+        at.write(p, nosentinels=not sentinels, toString=True)
+        return at.stringOutput
     #@-others
 #@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *3* leoTest.py: factorial (a test of doctests)

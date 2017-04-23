@@ -13,13 +13,13 @@ class JSON_Scanner:
     # Not a subclass of the Importer class.
     #@+others
     #@+node:ekr.20160504080826.3: *3* json.__init__
-    def __init__(self, importCommands, atAuto,
+    def __init__(self,
+        importCommands,
         language='json',
         alternate_language=None,
     ):
         '''The ctor for the JSON_Scanner class.'''
         self.c = c = importCommands.c
-        self.atAuto = atAuto
         self.gnx_dict = {}
             # Keys are gnx's. Values are vnode_dicts.
         self.tab_width = c.tab_width
@@ -64,7 +64,7 @@ class JSON_Scanner:
         changed = c.isChanged()
         ok = self.scan(s, parent)
         # g.app.unitTestDict['result'] = ok
-        if self.atAuto and ok:
+        if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
             c.setChanged(changed)

@@ -677,6 +677,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.225: *3* goto...
+    #@+node:ekr.20170411065920.1: *4* gotoAnyClone
+    @cmd('goto-any-clone')
+    def gotoAnyClone(self, event=None):
+        '''Select then next cloned node, regardless of whether c.p is a clone.'''
+        c = self.c
+        p = c.p.threadNext()
+        while p:
+            if p.isCloned():
+                c.selectPosition(p)
+                return
+            else:
+                p.moveToThreadNext()
+        g.es('no clones found after', c.p.h)
     #@+node:ekr.20150514063305.226: *4* gotoCharacter
     @cmd('goto-char')
     def gotoCharacter(self, event):

@@ -12,11 +12,10 @@ class CS_Importer(Importer):
 
     #@+others
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Ctor for CoffeeScriptScanner class.'''
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'coffeescript',
             state_class = CS_ScanState,
                 # Not used: This class overrides i.scan_line.

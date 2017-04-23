@@ -262,7 +262,7 @@ class Commands(object):
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
-        # Break circular import dependencies by importing here.
+        # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoBeautify as leoBeautify # So decorators are executed.
@@ -608,7 +608,7 @@ class Commands(object):
             g.es(message)
             g.app.gui.alert(c, message)
     #@+node:ekr.20150422080541.1: *3* c.backup
-    def backup(self, fileName=None, useTimeStamp=True):
+    def backup(self, fileName=None, prefix=None, useTimeStamp=True):
         '''
         Back up given fileName or c.fileName().
         If useTimeStamp is True, append a timestamp to the filename.
@@ -622,7 +622,8 @@ class Commands(object):
             if base.endswith('.leo'):
                 base = base[: -4]
             stamp = time.strftime("%Y%m%d-%H%M%S")
-            fn = '%s-%s.leo' % (base, stamp)
+            branch = prefix + '-' if prefix else ''
+            fn = '%s%s-%s.leo' % (branch, base, stamp)
             path = g.os_path_finalize_join(theDir, fn)
         else:
             path = fn
@@ -2085,6 +2086,7 @@ class Commands(object):
             ("C/C++ files", "*.hpp"),
             ("FreeMind files", "*.mm.html"),
             ("Java files", "*.java"),
+            ("JavaScript files", "*.js"),
             # ("JSON files", "*.json"),
             ("Mindjet files", "*.csv"),
             ("MORE files", "*.MORE"),
@@ -2133,7 +2135,16 @@ class Commands(object):
             elif ext == 'txt':
                 ic.importFlattenedOutline([fn])
             else:
-                ic.importFilesCommand([fn], '@clean')
+                # Make *sure* that parent.b is empty.
+                last = c.lastTopLevel()
+                parent = last.insertAfter()
+                parent.v.h = 'Imported Files'
+                ic.importFilesCommand(
+                    files=[fn],
+                    parent=parent,
+                    treeType='@auto', # was '@clean'
+                        # Experimental: attempt to use permissive section ref logic.
+                )
         c.raise_error_dialogs(kind='read')
 
     # Compatibility: used by unit tests.
@@ -2516,15 +2527,6 @@ class Commands(object):
             g.es("save commands disabled", color="purple")
             return
         c.init_error_dialogs()
-        old_mFileName = c.mFileName
-            # 2015/04/21: Save.
-        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
-        if fileName:
-            c.frame.title = g.computeWindowTitle(fileName)
-            c.mFileName = fileName
-        # Make sure we never pass None to the ctor.
-        if not c.mFileName:
-            c.frame.title = ""
         # Add fileName keyword arg for leoBridge scripts.
         if not fileName:
             # set local fileName, _not_ c.mFileName
@@ -2541,10 +2543,6 @@ class Commands(object):
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
-        c.mFileName = old_mFileName
-            # 2015/04/21: save-to must not change c.mFileName.
-        # Does not change icons status.
-        # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
         if inBody:
@@ -2552,6 +2550,8 @@ class Commands(object):
             p.restoreCursorAndScroll()
         else:
             c.treeWantsFocus()
+        c.outerUpdate()
+
     #@+node:ekr.20031218072017.2837: *6* c.revert
     @cmd('revert')
     def revert(self, event=None):
@@ -3023,6 +3023,7 @@ class Commands(object):
     #@+node:ekr.20131028155339.17096: *5* c.openCheatSheet
     @cmd('open-cheat-sheet-leo')
     @cmd('leo-cheat-sheet')
+    @cmd('cheat-sheet')
     def openCheatSheet(self, event=None, redraw=True):
         '''Open leo/doc/cheatSheet.leo'''
         c = self
@@ -5157,7 +5158,7 @@ class Commands(object):
         u.afterChangeGroup(parent, undoType, undoData)
         return parent # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
-    def deletePositionsInList(self, aList, callback=None):
+    def deletePositionsInList(self, aList, callback=None, redraw=True):
         '''
         Delete all vnodes corresponding to the positions in aList. If a
         callback is given, the callback is called for every node in the list.
@@ -5295,6 +5296,8 @@ class Commands(object):
                 aList2.append(p.copy())
             else:
                 g.trace('invalid position', p)
+        if not aList2:
+            return # Don't redraw the screen unless necessary!
         # Delete p.v for all positions p in reversed(sorted(aList2)).
         if callback:
             for p in reversed(sorted(aList2)):
@@ -5320,8 +5323,10 @@ class Commands(object):
             v = leoNodes.VNode(context=c)
             v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
             if trace: g.trace('new root', v)
-        c.selectPosition(c.rootPosition())
-        c.redraw()
+        if redraw:
+            c.selectPosition(c.rootPosition())
+                # Calls redraw()
+            # c.redraw()
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
@@ -7040,19 +7045,23 @@ class Commands(object):
             if trace or g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self, dir_, kind, one_file=False, safe_at_file=True, theTypes=None):
+    def recursiveImport(self, dir_, kind,
+        recursive=True,
+        safe_at_file=True,
+        theTypes=None,
+    ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
         '''
         Recursively import all python files in a directory and clean the results.
 
         Parameters::
-            dir_            The root directory or file to import.
-            kind            One of ('@clean','@edit','@file','@nosent').
-            one_file        True: import only the file given by dir_.
-            safe_at_file    True: produce @@file nodes instead of @file nodes.
-            theTypes        A list of file extensions to import.
-                            None is equivalent to ['.py']
+            dir_              The root directory or file to import.
+            kind              One of ('@clean','@edit','@file','@nosent').
+            recursive=True    True: recurse into subdirectories.
+            safe_at_file=True True: produce @@file nodes instead of @file nodes.
+            theTypes=None     A list of file extensions to import.
+                              None is equivalent to ['.py']
 
         This method cleans imported files as follows:
 
@@ -7068,7 +7077,7 @@ class Commands(object):
             try:
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
-                    one_file=one_file,
+                    recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
                 )
@@ -7262,6 +7271,8 @@ class Commands(object):
         c = self
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
+        else:
+            return True # Vitalije.
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''

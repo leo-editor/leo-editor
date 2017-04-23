@@ -84,7 +84,7 @@ else:
     import StringIO
     StringIO = StringIO.StringIO
 import re
-import time
+# import time
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer
@@ -101,7 +101,6 @@ class Importer(object):
 
     def __init__(self,
         importCommands, 
-        atAuto, # True when called from @auto logic.
         gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
@@ -111,7 +110,6 @@ class Importer(object):
         '''Importer.__init__.'''
         # Copies of args...
         self.importCommands = ic = importCommands
-        self.atAuto = atAuto
         self.c = c = ic.c
         self.encoding = ic.encoding
         self.gen_refs = gen_refs
@@ -153,18 +151,19 @@ class Importer(object):
         self.errors = 0
         ic.errors = 0 # Required.
         self.parse_body = False
+        self.refs_dict = {}
+            # Keys are headlines. Values are disambiguating number.
         self.skip = 0 # A skip count for x.gen_lines & its helpers.
         self.ws_error = False
         self.root = None
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
+
     def add_line(self, p, s):
         '''Append the line s to p.v._import_lines.'''
-        assert s and g.isString(s), repr(s)
-        if not hasattr(p.v, '_import_lines'):
-            g.trace('can not happen: no _import_lines', p.h)
-            p.v._import_lines = g.splitLines(p.b)
-            p.b = ''
+        assert s and g.isString(s), (repr(s), g.callers())
+        # *Never* change p unexpectedly!
+        assert hasattr(p.v, '_import_lines'), (repr(s), g.callers())
         p.v._import_lines.append(s)
 
     def clear_lines(self, p):
@@ -174,15 +173,19 @@ class Importer(object):
         p.v._import_lines.extend(list(lines))
 
     def get_lines(self, p):
-        if not hasattr(p.v, '_import_lines'):
-            g.trace('can not happen: no _import_lines', p.h)
-            p.v._import_lines = g.splitLines(p.b)
-            p.b = ''
+        # *Never* change p unexpectedly!
+        assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
         return p.v._import_lines
         
     def has_lines(self, p):
         return hasattr(p.v, '_import_lines')
         
+    def inject_lines_ivar(self, p):
+        '''Inject _import_lines into p.v.'''
+        # *Never* change p unexpectedly!
+        assert not p.v._bodyString, (p and p.h, g.callers(10))
+        p.v._import_lines = []
+
     def prepend_lines(self, p, lines):
         p.v._import_lines = list(lines) + p.v._import_lines
 
@@ -391,7 +394,7 @@ class Importer(object):
             
             if c.isChanged(): c.save()
             < < imp.reload importers.linescanner and importers.python > >
-            importer = py.Py_Importer(c.importCommands, atAuto=True)
+            importer = py.Py_Importer(c.importCommands)
             importer.test_scan_state(tests, Python_ScanState)
         '''
         trace = False and g.unitTesting
@@ -508,7 +511,7 @@ class Importer(object):
             if not g.unitTesting:
                 # g.es_print('Warning: Intermixed tabs and blanks in', fn)
                 # g.es_print('Perfect import test will ignoring leading whitespace.')
-                g.es_print('changed leading %s to %s in %s line%s in %s' % (
+                g.es('changed leading %s to %s in %s line%s in %s' % (
                     kind2, kind, count, g.plural(count), fn))
             if g.unitTesting: # Sets flag for unit tests.
                 self.report('changed %s lines' % count) 
@@ -560,7 +563,7 @@ class Importer(object):
             if g.unitTesting:
                 self.report(message)
             else:
-                g.es_print(message)
+                g.es(message)
         return ok
     #@+node:ekr.20161108160409.1: *4* Stage 1: i.gen_lines & helpers
     def gen_lines(self, s, parent):
@@ -594,12 +597,16 @@ class Importer(object):
                 p = tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
-    #@+node:ekr.20161127102339.1: *5* i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
-        '''True if line ends the block.'''
-        # Comparing new_state against prev_state does not work for python.
-        top = stack[-1]
-        return new_state.level() < top.state.level()
+    #@+node:ekr.20161108160409.7: *5* i.create_child_node
+    def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        child = parent.insertAsLastChild()
+        self.inject_lines_ivar(child)
+        if body:
+            self.add_line(child, body)
+        assert g.isString(headline), repr(headline)
+        child.h = headline.strip()
+        return child
     #@+node:ekr.20161119130337.1: *5* i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
@@ -638,11 +645,47 @@ class Importer(object):
         self.cut_stack(new_state, stack)
         tail_p = None if self.gen_refs else p
         return tail_p
-    #@+node:ekr.20161110041440.1: *5* i.inject_lines_ivar
-    def inject_lines_ivar(self, p):
-        '''Inject _import_lines into p.v.'''
-        assert not p.v._bodyString, repr(p.v._bodyString)
-        p.v._import_lines = []
+    #@+node:ekr.20161127102339.1: *5* i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
+    #@+node:ekr.20161108160409.8: *5* i.gen_ref
+    def gen_ref(self, line, parent, target):
+        '''
+        Generate the ref line. Return the headline.
+        '''
+        trace = False and g.unitTesting
+        indent_ws = self.get_str_lws(line)
+        h = self.clean_headline(line)
+        if self.gen_refs:
+            # Fix #441: Make sure all section refs are unique.
+            d = self.refs_dict
+            n = d.get(h, 0)
+            d [h] = n + 1
+            if n > 0:
+                h = '%s: %s' % (n, h)
+            headline = g.angleBrackets(' %s ' % h)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % h))
+        else:
+            if target.ref_flag:
+                ref = None
+            else:
+                ref = '%s@others\n' % indent_ws
+                target.at_others_flag = True
+            target.ref_flag = True
+                # Don't generate another @others in this target.
+            headline = h
+        if ref:
+            if trace:
+                g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+                g.printList(self.get_lines(parent))
+            self.add_line(parent,ref)
+        return headline
     #@+node:ekr.20161108160409.6: *5* i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -676,49 +719,6 @@ class Importer(object):
         print('prev_state: %s' % prev_state)
         # print(' top.state: %s' % top.state)
         g.printList(stack)
-    #@+node:ekr.20161108160409.7: *5* i.create_child_node
-    def create_child_node(self, parent, body, headline):
-        '''Create a child node of parent.'''
-        child = parent.insertAsLastChild()
-        self.inject_lines_ivar(child)
-        if body:
-            self.add_line(child, body)
-        assert g.isString(headline), repr(headline)
-        child.h = headline.strip()
-        return child
-    #@+node:ekr.20161108160409.8: *5* i.gen_ref
-    def gen_ref(self, line, parent, target):
-        '''
-        Generate the ref line and a flag telling this method whether a previous
-        #@+others
-        #@-others
-        '''
-        trace = False and g.unitTesting
-        indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
-        if self.is_rst and not self.atAuto:
-            return None, None
-        elif self.gen_refs:
-            headline = g.angleBrackets(' %s ' % h)
-            ref = '%s%s\n' % (
-                indent_ws,
-                g.angleBrackets(' %s ' % h))
-        else:
-            if target.ref_flag:
-                ref = None
-            else:
-                ref = '%s@others\n' % indent_ws
-                target.at_others_flag = True
-            target.ref_flag = True
-                # Don't generate another @others in this target.
-            headline = h
-        if ref:
-            if trace:
-                g.trace('%s indent_ws: %r line: %r parent: %s' % (
-                '*' * 20, indent_ws, line, parent.h))
-                g.printList(self.get_lines(parent))
-            self.add_line(parent,ref)
-        return headline
     #@+node:ekr.20161108131153.13: *4* Stage 2: i.post_pass & helpers
     def post_pass(self, parent):
         '''
@@ -770,13 +770,16 @@ class Importer(object):
         aList = []
         for p in parent.subtree():
             back = p.threadBack()
-            if back != parent and not p.isCloned():
+            if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
                 lines = self.get_lines(p)
                 # Move the whitespace from p to back.
                 if all([z.isspace() for z in lines]):
                     self.extend_lines(back, lines)
                     aList.append(p.copy())
-        c.deletePositionsInList(aList)
+        if aList:
+            g.trace('='*40, parent.h)
+            c.deletePositionsInList(aList, redraw=False)
+                # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
     def promote_last_lines(self, parent):
         '''A placeholder for python_i.promote_last_lines.'''
@@ -847,6 +850,12 @@ class Importer(object):
         if self.parse_body:
             pass
         elif self.has_lines(parent):
+            # Make sure the last line ends with a newline.
+            lines = self.get_lines(parent)
+            if lines:
+                last_line = lines.pop()
+                last_line = last_line.rstrip() + '\n'
+                self.add_line(parent, last_line)
             self.extend_lines(parent, table)
         else:
             self.set_lines(parent, table)
@@ -877,8 +886,8 @@ class Importer(object):
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
         trace = False # and g.unitTesting
-        trace_all = False # or parent.h.endswith('__init__.py')
-        trace_lines = True # Trace failures, regardless of trace.
+        trace_all = False # Trace all lines, always.
+        trace_lines = True # Trace all lines on failure.
         trace_status = True
         if g.app.suppressImportChecks:
             if trace and trace_status:
@@ -886,7 +895,7 @@ class Importer(object):
             g.app.suppressImportChecks = False
             return True
         c = self.c
-        t1 = time.clock()
+        # t1 = time.clock()
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
@@ -911,17 +920,17 @@ class Importer(object):
             self.trace_lines(lines1, lines2, parent)
         ok = lines1 == lines2
         if not ok and not self.strict:
-            if trace:
-                self.show_failure1(lines1, lines2, parent, trace_all, trace_status)
+            if trace and trace_status:
+                g.trace('===== %s NOT OK cleaning LWS' % self.name)
             # Issue an error only if something *other than* lws is amiss.
             lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
             ok = lines1 == lines2
             if ok and not g.unitTesting:
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
-            self.show_failure2(lines1, lines2, sfn)
-        if trace and trace_all or (not ok and trace_lines):
-            self.trace_lines(lines1, lines2, parent)
+            self.show_failure(lines1, lines2, sfn)
+            if trace and trace_lines:
+                self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -931,10 +940,10 @@ class Importer(object):
                 d['fail'] = g.callers()
                 # Used in a unit test.
                 c.importCommands.errors += 1
-        t2 = time.clock()
-        if ok and t2 - t1 > 2.0:
-            print('')
-            g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
+        # t2 = time.clock()
+        # if ok and t2 - t1 > 2.0:
+            # print('')
+            # g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
         if trace and trace_status:
             g.trace('Ok:', ok, g.shortFileName(parent.h))
         return ok
@@ -948,16 +957,21 @@ class Importer(object):
         while lines and lines[-1].isspace():
             lines.pop()
         return lines
-    #@+node:ekr.20161125031613.1: *5* i.show_failure1
-    def show_failure1(self, lines1, lines2, parent, trace_all, trace_status):
-        '''Print traces when first checks fail.'''
-        if trace_status:
-            g.trace('===== %s NOT OK cleaning LWS' % self.name)
-        if trace_all:
-            self.trace_lines(lines1, lines2, parent)
-    #@+node:ekr.20161123210716.1: *5* i.show_failure2
-    def show_failure2(self, lines1, lines2, sfn):
-        '''Print the failing lines.'''
+    #@+node:ekr.20170404035138.1: *5* i.context_lines
+    def context_lines(self, aList, i, n=2):
+        '''Return a list containing the n lines of surrounding context of aList[i].'''
+        result = []
+        aList1 = aList[max(0, i-n):i]
+        aList2 = aList[i+1:i+n+1]
+        result.extend(['  %4s %s' % (i + 1 - len(aList1) + j, g.truncate(s,60))
+            for j, s in enumerate(aList1)])
+        result.append('* %4s %s' % (i + 1, g.truncate(aList[i], 60)))
+        result.extend(['  %4s %s' % (i + 2 + j, g.truncate(s, 60))
+            for j, s in enumerate(aList2)])
+        return result
+    #@+node:ekr.20161123210716.1: *5* i.show_failure
+    def show_failure(self, lines1, lines2, sfn):
+        '''Print the failing lines, with surrounding context.'''
         if not g.unitTesting:
             g.es('@auto failed:', sfn, color='red')
         n1, n2 = len(lines1), len(lines2)
@@ -967,8 +981,12 @@ class Importer(object):
             line1, line2 = lines1[i], lines2[i]
             if line1 != line2:
                 print('first mismatched line: %s' % (i+1))
-                print(repr(line1))
-                print(repr(line2))
+                print('s1...')
+                print(''.join(self.context_lines(lines1, i)))
+                print('s2...')
+                print(''.join(self.context_lines(lines2, i)))
+                # print(repr(line1))
+                # print(repr(line2))
                 break
         else:
             print('all common lines match')
@@ -1007,22 +1025,21 @@ class Importer(object):
     def trial_write(self):
         '''Return the trial write for self.root.'''
         at = self.c.atFileCommands
-        if self.gen_refs:
-            # Alas, the *actual* @auto write code refuses to write section references!!
-            at.write(self.root,
-                    nosentinels=True,           # was False,
-                    perfectImportFlag=False,    # was True,
-                    scriptWrite=True,           # was False,
-                    thinFile=True,
-                    toString=True,
-                )
-        else:
+        # Leo 5.6: Allow apparent section refs for *all* languages.
+        ivar = 'allow_undefined_refs'
+        try:
+            setattr(at, ivar, True)
             at.writeOneAtAutoNode(
                 self.root,
-                toString=True,
                 force=True,
+                toString=True,
                 trialWrite=True,
+                    # Suppress call to update_before_write_foreign_file
+                    # in at.writeOneAtAutoNode.
             )
+        finally:
+            if hasattr(at, ivar):
+                delattr(at, ivar)
         return g.toUnicode(at.stringOutput, self.encoding)
     #@+node:ekr.20161108131153.15: *3* i.Utils
     #@+node:ekr.20161114012522.1: *4* i.all_contexts
@@ -1045,7 +1062,8 @@ class Importer(object):
     #@+node:ekr.20161108131153.12: *4* i.insert_ignore_directive
     def insert_ignore_directive(self, parent):
         c = self.c
-        parent.b = parent.b.rstrip() + '\n@ignore\n'
+        parent.v.b = parent.v.b.rstrip() + '\n@ignore\n'
+            # Do *not* update the screen by setting p.b.
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
         elif parent.isAnyAtFileNode() and not parent.isAtAutoNode():
@@ -1063,12 +1081,6 @@ class Importer(object):
         self.importCommands.errors += 1
         if trace or not g.unitTesting:
             g.error('Error:', s)
-        # if g.unitTesting:
-            # if self.errors == 1:
-                # g.app.unitTestDict['actualErrorMessage'] = s
-            # g.app.unitTestDict['actualErrors'] = self.errors
-        # else:
-            # g.error('Error:', s)
 
     def report(self, message):
         if self.strict:

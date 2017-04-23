@@ -1627,123 +1627,6 @@ def isTextWidget(w):
 
 def isTextWrapper(w):
     return w and g.app.gui.isTextWrapper(w)
-#@+node:ekr.20150508165324.1: ** g.Decorators
-#@+node:ekr.20170219173203.1: *3* g.callback
-def callback(func):
-    '''
-    A global decorator that protects Leo against crashes in callbacks.
-    
-    This is the recommended way of defining all callback.
-        
-        @g.callback
-        def a_callback(...):
-            c = event.get('c')
-            ...
-    '''
-
-    def callback_wrapper(*args, **keys):
-        '''Callback for the @g.callback decorator.'''
-        try:
-            return func(*args, **keys)
-        except Exception:
-            g.es_exception()
-
-    return callback_wrapper
-#@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c, g):
-    '''
-    Check g.check_cmd_instance_dict.
-    This is a permanent unit test, called from c.finishCreate.
-    '''
-    d = cmd_instance_dict
-    for key in d.keys():
-        ivars = d.get(key)
-        obj = ivars2instance(c, g, ivars)
-            # Produces warnings.
-        if obj:
-            name = obj.__class__.__name__
-            if name != key:
-                g.trace('class mismatch', key, name)
-#@+node:ville.20090521164644.5924: *3* g.command (decorator)
-class Command(object):
-    '''
-    A global decorator for creating commands.
-    
-    This is the recommended way of defining all new commands, including
-    commands that could befined inside a class. The typical usage is:
-        
-        @g.command('command-name')
-        def A_Command(event):
-            c = event.get('c')
-            ...
-
-    g can *not* be used anywhere in this class!
-    '''
-
-    def __init__(self, name, **kwargs):
-        '''Ctor for command decorator class.'''
-        self.name = name
-
-    def __call__(self, func):
-        '''Register command for all future commanders.'''
-        global_commands_dict[self.name] = func
-        if app:
-            for c in app.commanders():
-                c.k.registerCommand(self.name, shortcut=None, func=func)
-        # Inject ivars for plugins_menu.py.
-        func.is_command = True
-        func.command_name = self.name
-        return func
-
-command = Command
-#@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c, g, ivars):
-    '''
-    Return the instance of c given by ivars.
-    ivars is a list of strings.
-    A special case: ivars may be 'g', indicating the leoGlobals module.
-    '''
-    if not ivars:
-        g.trace('can not happen: no ivars')
-        return None
-    ivar = ivars[0]
-    if ivar not in ('c', 'g'):
-        g.trace('can not happen: unknown base', ivar)
-        return None
-    obj = c if ivar == 'c' else g
-    for ivar in ivars[1:]:
-        obj = getattr(obj, ivar, None)
-        if not obj:
-            g.trace('can not happen: unknown attribute', obj, ivar, ivars)
-            break
-    return obj
-#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
-def new_cmd_decorator(name, ivars):
-    '''
-    Return a new decorator for a command with the given name.
-    Compute the class *instance* using the ivar string or list.
-    '''
-
-    def _decorator(func):
-
-        def wrapper(event):
-            c = event.c
-            self = g.ivars2instance(c, g, ivars)
-            try:
-                func(self, event=event)
-                    # Don't use a keyword for self.
-                    # This allows the VimCommands class to use vc instead.
-            except Exception:
-                g.es_exception()
-
-        wrapper.__name__ = 'wrapper: %s' % name
-        wrapper.__doc__ = func.__doc__
-        global_commands_dict[name] = wrapper
-            # Put the *wrapper* into the global dict.
-        return func
-            # The decorator must return the func itself.
-
-    return _decorator
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert
@@ -2321,6 +2204,123 @@ def printDiffTime(message, start):
 
 def timeSince(start):
     return "%5.2f sec." % (time.time() - start)
+#@+node:ekr.20150508165324.1: ** g.Decorators
+#@+node:ekr.20170219173203.1: *3* g.callback
+def callback(func):
+    '''
+    A global decorator that protects Leo against crashes in callbacks.
+    
+    This is the recommended way of defining all callback.
+        
+        @g.callback
+        def a_callback(...):
+            c = event.get('c')
+            ...
+    '''
+
+    def callback_wrapper(*args, **keys):
+        '''Callback for the @g.callback decorator.'''
+        try:
+            return func(*args, **keys)
+        except Exception:
+            g.es_exception()
+
+    return callback_wrapper
+#@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
+def check_cmd_instance_dict(c, g):
+    '''
+    Check g.check_cmd_instance_dict.
+    This is a permanent unit test, called from c.finishCreate.
+    '''
+    d = cmd_instance_dict
+    for key in d.keys():
+        ivars = d.get(key)
+        obj = ivars2instance(c, g, ivars)
+            # Produces warnings.
+        if obj:
+            name = obj.__class__.__name__
+            if name != key:
+                g.trace('class mismatch', key, name)
+#@+node:ville.20090521164644.5924: *3* g.command (decorator)
+class Command(object):
+    '''
+    A global decorator for creating commands.
+    
+    This is the recommended way of defining all new commands, including
+    commands that could befined inside a class. The typical usage is:
+        
+        @g.command('command-name')
+        def A_Command(event):
+            c = event.get('c')
+            ...
+
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        global_commands_dict[self.name] = func
+        if app:
+            for c in app.commanders():
+                c.k.registerCommand(self.name, shortcut=None, func=func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+command = Command
+#@+node:ekr.20150508164812.1: *3* g.ivars2instance
+def ivars2instance(c, g, ivars):
+    '''
+    Return the instance of c given by ivars.
+    ivars is a list of strings.
+    A special case: ivars may be 'g', indicating the leoGlobals module.
+    '''
+    if not ivars:
+        g.trace('can not happen: no ivars')
+        return None
+    ivar = ivars[0]
+    if ivar not in ('c', 'g'):
+        g.trace('can not happen: unknown base', ivar)
+        return None
+    obj = c if ivar == 'c' else g
+    for ivar in ivars[1:]:
+        obj = getattr(obj, ivar, None)
+        if not obj:
+            g.trace('can not happen: unknown attribute', obj, ivar, ivars)
+            break
+    return obj
+#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
+def new_cmd_decorator(name, ivars):
+    '''
+    Return a new decorator for a command with the given name.
+    Compute the class *instance* using the ivar string or list.
+    '''
+
+    def _decorator(func):
+
+        def wrapper(event):
+            c = event.c
+            self = g.ivars2instance(c, g, ivars)
+            try:
+                func(self, event=event)
+                    # Don't use a keyword for self.
+                    # This allows the VimCommands class to use vc instead.
+            except Exception:
+                g.es_exception()
+
+        wrapper.__name__ = 'wrapper: %s' % name
+        wrapper.__doc__ = func.__doc__
+        global_commands_dict[name] = wrapper
+            # Put the *wrapper* into the global dict.
+        return func
+            # The decorator must return the func itself.
+
+    return _decorator
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
@@ -4184,6 +4184,108 @@ def skip_ws_and_nl(s, i):
     while i < n and (g.is_ws(s[i]) or g.is_nl(s, i)):
         i += 1
     return i
+#@+node:ekr.20170414034616.1: ** g.Git
+#@+node:ekr.20170414034616.2: *3* g.gitBranchName
+def gitBranchName(path=None):
+    '''
+    Return the git branch name associated with path/.git, or the empty
+    string if path/.git does not exist. If path is None, use the leo-editor
+    directory.
+    '''
+    branch, commit = g.gitInfo(path)
+    return branch
+#@+node:ekr.20170414034616.4: *3* g.gitCommitNumber
+def gitCommitNumber(path=None):
+    '''
+    Return the git commit number associated with path/.git, or the empty
+    string if path/.git does not exist. If path is None, use the leo-editor
+    directory.
+    '''
+    branch, commit = g.gitInfo(path)
+    return commit
+#@+node:ekr.20170414034616.6: *3* g.gitHeadPath
+def gitHeadPath(path=None):
+    '''
+    Compute the path to the .git/HEAD directory given the path to another
+    directory. If no path is given, use the path to *this* file. This code
+    can *not* use g.app.loadDir because it is called too early in Leo's
+    startup code.
+    '''
+    if not path:
+        path = g.os_path_dirname(__file__)
+    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
+    exists = g.os_path_exists(head)
+    # g.trace('exists: %s path: %s' % (exists, head))
+    return head if exists else None
+#@+node:ekr.20170414034616.3: *3* g.gitInfo
+def gitInfo(path=None):
+    '''
+    Path is a .git/HEAD directory, or None.
+    
+    Return the branch and commit number or ('', '').
+    '''
+    trace = False and not g.unitTesting
+    branch, commit = '', '' # Set defaults.
+    path = g.gitHeadPath(path)
+    if not path:
+        if trace: g.trace('no path')
+        return branch, commit
+    git_dir = g.os_path_finalize_join(path, '..')
+    try:
+        f = open(path, 'r')
+    except IOError:
+        g.trace('can not open:', path)
+        return branch, commit
+    try:
+        s = f.read()
+        if not s.startswith('ref'):
+            if trace: g.trace('no ref', branch, commit)
+            return branch, commit
+        # On a proper branch
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+        # Try to get a better commit number.
+        path = g.os_path_finalize_join(git_dir, pointer)
+        try:
+            s = open(path, 'r').read()
+            commit = s.strip()[0: 12]
+            # shorten the hash to a unique shortname
+        except IOError:
+            try:
+                path = g.os_path_finalize_join(git_dir, 'packed-refs')
+                for line in open(path):
+                    if line.strip().endswith(' '+pointer):
+                        commit = line.split()[0][0: 12]
+                        break
+            except IOError:
+                pass
+    finally:
+        f.close()
+    if trace: g.trace('returns:', branch, commit)
+    return g.toUnicode(branch), g.toUnicode(commit)
+#@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
+def jsonCommitInfo():
+    '''
+    return asctime and timestamp from leo/core/commit_timestamp.json.
+    return ('', '') if the file does not exist or is not a valid .json file.
+    '''
+    trace = False and not g.unitTesting
+    import json
+    leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
+    json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
+    if not g.os_path_exists(json_path):
+        if trace: g.trace('not found', json_path)
+        return '', ''
+    try:
+        info = json.load(open(json_path))
+        if trace: g.trace('returns: asctime: %s timestamp: %s' % (
+            info['asctime'], info['timestamp']))
+        return info['asctime'], info['timestamp']
+    except Exception:
+        g.trace('error loading leo/core/commit_timestamp.json')
+        # g.es_exception()
+        return '', ''
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c, p, event):
@@ -5868,7 +5970,14 @@ def plural(obj):
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s, n):
     '''Return s truncated to n characters.'''
-    return s if len(s) <= n else s[:n-3] + '...'
+    if len(s) <= n:
+        return s
+    else:
+        s2 = s[:n-3] + '...(%s)' % len(s)
+        if s.endswith('\n'):
+            return s2 + '\n'
+        else:
+            return s2
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows():
     return app and app.windowList

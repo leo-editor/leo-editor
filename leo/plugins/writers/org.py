@@ -11,7 +11,7 @@ class OrgModeWriter(basewriter.BaseWriter):
         # basewriter.BaseWriter.__init__(self,c)
     #@+others
     #@+node:ekr.20140726091031.18154: *3* orgw.write
-    def write(self, root, forceSentinels=False):
+    def write(self, root):
         """Write all the *descendants* of an @auto-org-mode node."""
         root_level = root.level()
         first = root.firstChild()
@@ -19,7 +19,7 @@ class OrgModeWriter(basewriter.BaseWriter):
             if p == first and p.h == 'declarations':
                 pass
             else:
-                if forceSentinels:
+                if hasattr(self.at, 'force_sentinels'):
                     self.put_node_sentinel(p, '#')
                 indent = p.level() - root_level
                 self.put('%s %s' % ('*' * indent, p.h))

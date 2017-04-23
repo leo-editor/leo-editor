@@ -470,9 +470,15 @@ import inspect
 
 d = c.commandsDict
 keys = sorted(d.keys())
+table = ('bookmark', 'screen-capture', 'stickynote')
 for key in keys:
-    if key.startswith('bookmark'):
-        continue # bookmarks commands are their own signatures.
+    continue_flag = False
+    for prefix in table:
+        if key.startswith(prefix):
+            continue_flag = True
+            break # These plugins have their own signatures.
+    if continue_flag:
+        continue
     f = d.get(key)
     # Test true __call__ methods if they exist.
     name = getattr(f,'__name__',None) or repr(f)
@@ -483,7 +489,7 @@ for key in keys:
     arg1 = len(args) > 1 and args[1]
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
-    assert arg0 in expected or arg1 in expected,message
+    assert arg0 in expected or arg1 in expected, message
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
     
@@ -499,7 +505,7 @@ createMenuEntries creates the association of stroke to commandName.
 trace = False # False: the unit test can fail.
 k = c.k
 d = g.app.unitTestMenusDict
-d2 = k.bindingsDict ### c.k.masterGuiBindingsDict
+d2 = k.bindingsDict
 d2name = 'k.bindingsDict'
 commandNames = list(d.keys())
 commandNames.sort()
@@ -1490,6 +1496,26 @@ c.testManager.runAtFileTest(p)
 #after
 #@+node:ekr.20110524120515.3491: *5* Output
 #@verbatim
+#@+leo-ver=5-thin
+#@verbatim
+#@+node:ekr.20110524120515.3490: * #@file
+# before
+
+#@verbatim
+#@@raw
+
+@c
+
+<< ref >>
+
+#@verbatim
+#@@end_raw
+
+#after
+#@verbatim
+#@-leo
+#@+node:ekr.20170410084645.1: *5* Old-Output
+#@verbatim
 #@+leo-ver=5
 #@verbatim
 #@+node:#@file
@@ -1647,6 +1673,110 @@ try:
         assert at.encoding == encoding, s
 finally:
     at.encoding = 'utf-8'
+#@+node:ekr.20170408233251.1: *4* @test at.putRefLine 1
+import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (
+    %s and 
+    %s > 3
+):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 1
+if (
+    AT+< <a> >
+    AT+node:GNX: ** < < a > >
+    a
+    AT-< <a> >
+    ATafterref
+ and 
+    AT+< <b> >
+    AT+node:GNX: ** < < b > >
+    b
+    AT-< <b> >
+    ATafterref
+ > 3
+):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+#@+node:ekr.20170408234524.1: *5* << a >>
+a
+#@+node:ekr.20170408234531.1: *5* << b >>
+b
+#@+node:ekr.20170409003052.1: *4* @test at.putRefLine 2
+import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (%s and %s > 3):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 2
+if (
+AT+< <a> >
+AT+node:GNX: ** < < a > >
+a
+AT-< <a> >
+ATafterref
+ and 
+AT+< <b> >
+AT+node:GNX: ** < < b > >
+b
+AT-< <b> >
+ATafterref
+ > 3):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+    # Recreate expected string.
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    # assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+#@+node:ekr.20170409003052.2: *5* << a >>
+a
+#@+node:ekr.20170409003052.3: *5* << b >>
+b
 #@+node:ekr.20090529115704.4564: *4* @test at.readOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
@@ -1667,8 +1797,6 @@ finally:
 @language python
 @tabwidth -4
 @others
-#@+node:ekr.20120228174052.3929: *4* Node 1
-# node 1 text A.
 #@+node:ekr.20050105093136: *4* @test at.remove
 import os
 
@@ -1810,7 +1938,7 @@ import os
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 exists = g.os_path_exists
-at.outputFileName = None ### g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
 # Remove both files.
 for fn in (at.outputFileName,at.targetFileName):
@@ -1838,20 +1966,47 @@ finally:
             if fn and exists(fn):
                 os.remove(fn)
 #@+node:ekr.20060602195313: *4* @test at.write using @comment
+import re
 at = c.atFileCommands
+expected = '''\
+/*@+leo-ver=5-thin*/
+/*@+node:GNX: * root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@+< < Get LRR Task > >*/
+/*@+node:GNX: ** < < Get LRR Task > >*/
+/*@-< < Get LRR Task > >*/
+/*@+< < Start LRR > >*/
+/*@+node:GNX: ** < < Start LRR > >*/
+/*@-< < Start LRR > >*/
+/*@-leo*/
+'''.replace('AT','#@').replace('> >', '>>').replace('< <', '<<')
+
 child = p.firstChild()
-child2 = child.next()
-result = str(child2.b)
-at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
-s = str(at.stringOutput)
+at.write(child, toString=True)
+    # Default: nosentinels=False
+result = str(at.stringOutput)
+result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
 
-if s != result:
-    print('-' * 30)
-    print(s)
-    print('-' * 30)
-    print(result)
-
-assert s == result
+assert result == expected
 #@+node:ekr.20060602195313.2: *5* root
 @language c
 #ifdef COMMENT
@@ -1866,26 +2021,6 @@ assert s == result
 << Start LRR >>
 #@+node:ekr.20060602195313.3: *6* << Get LRR Task >>
 #@+node:ekr.20060602195313.4: *6* << Start LRR >>
-#@+node:ekr.20060602195914: *5* Result
-/*@+leo-ver=5*/
-/*@+node:root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+<< Get LRR Task >>*/
-/*@+node:<< Get LRR Task >>*/
-/*@-<< Get LRR Task >>*/
-/*@+<< Start LRR >>*/
-/*@+node:<< Start LRR >>*/
-/*@-<< Start LRR >>*/
-/*@-leo*/
 #@+node:ekr.20090529115704.4567: *4* @test at.writeOneAtShadowNode
 at = c.atFileCommands
 x = c.shadowController
@@ -1999,6 +2134,8 @@ assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
+#@+node:ekr.20120228174052.3929: *4* Node 1
+# node 1 text A.
 #@+node:ekr.20111113091935.4786: *4* Not valid when run externally
 @nocolor-node
 
@@ -5272,8 +5409,6 @@ finally:
         p.clearDirty()
         child.clearDirty()
     finally: pass
-
-#### c.redraw()
 #@+node:ekr.20040802065214.1: *5* bogus
 test
 #@+node:ekr.20050512083822.2: *4* @test c.unmarkAll
@@ -6617,7 +6752,7 @@ try:
     i = s.find('main')
     assert i == 2,i
 finally:
-    if 0: ####################
+    if 0: ###
         c.undoer.undo()
 #@+node:ekr.20061101121602.166: *5* @test delete-char
 c.testManager.runEditCommandTest(p)
@@ -13505,7 +13640,7 @@ finally:
 #@+node:ekr.20090529141856.4733: *6* @test elisp
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -13571,7 +13706,6 @@ setting = 'import_html_tags'
 c.config.set(setting,'data',html_tags)
 tags = c.config.getData(setting)
 assert tags == html_tags,len(tags)
-
 try:
     c.importCommands.importFilesCommand(files=[fn],treeType='@file')
 finally:
@@ -13580,7 +13714,6 @@ finally:
             root.firstChild().doDelete()
         c.redraw()
     assert not root.hasChildren()
-
 fail = g.app.unitTestDict.get('fail')
 assert not fail
 #@+node:ekr.20111029112647.4101: *6* @test html: lowercase tags
@@ -13604,96 +13737,125 @@ try:
     root = c.p.firstChild()
     assert root.h.endswith('lowercase tags'), root.h
     p2 = root.firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 #@+node:ekr.20111109143012.3839: *6* @test html: multiple tags on a line
+@language python
+# tags that cause nodes: html, head, body, div, table, nodeA, nodeB
+# NOT: tr, td, tbody, etc.
 @language html
-    # Essential for the unit test.
-    
-# This part of the test file caused lots of problems.
-
 s = '''
-
 <html>
-
 <body>
-
-<table id="0">
-<tr valign="top">
-<td width="619">
-	<table id="2">	<tr valign="top">	<td width="377">
-		<table id="3">
-		<tr>
-		<td width="368">
-			<table id="4">
-
-<tbody id="5">
-
-<tr valign="top">
-<td width="550">
-<table id="6">
-
-<tbody id="6">
-<tr>
-
-<td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
-</tr>
-</tbody>
-
-</table>
-
-</td>
-</tr><tr>
-<td width="100%" colspan="2">
-
-
-<br />
-</td>
-</tr>
-</tbody>
-</table>	
-							</td>
-						</tr>
-						</table>
-
-	<!-- View First part -->	</td>	<td width="242">	<!-- View Second part -->
-
-	<!-- View Second part -->	</td>	</tr></table>										
-
-
-<DIV class="webonly">
-
-<script src="/scripts/footer.js"></script>
-	
-</DIV>
-</td>
-</tr>
-</table>
-
-<script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
-<script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
-<noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
+    <table id="0">
+        <tr valign="top">
+        <td width="619">
+        <table id="2"> <tr valign="top"> <td width="377">
+            <table id="3">
+            <tr>
+            <td width="368">
+            <table id="4">
+                <tbody id="5">
+                <tr valign="top">
+                <td width="550">
+                <table id="6">
+                    <tbody id="6">
+                    <tr>
+                    <td class="blutopgrabot"><a href="href1">Listing Standards</a> | <a href="href2">Fees</a> | <strong>Non-compliant Issuers</strong> | <a href="href3">Form 25 Filings</a> </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </td>
+                </tr><tr>
+                <td width="100%" colspan="2">
+                <br />
+                </td>
+                </tr>
+                </tbody>
+            </table>	
+            </td>
+            </tr>
+        </table>
+        <!-- View First part --> </td> <td width="242"> <!-- View Second part -->
+        <!-- View Second part --> </td> </tr></table>
+    <DIV class="webonly">
+        <script src="/scripts/footer.js"></script>
+    </DIV>
+    </td>
+    </tr>
+    <script language="JavaScript1.1">var SA_ID="nyse;nyse";</script>
+    <script language="JavaScript1.1" src="/scripts/stats/track.js"></script>
+    <noscript><img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"></noscript>
 </body>
 </html>
-
 '''
+@language python
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
+# c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+table = (
+    '<html>',
+    '<body>',
+    '<table id="0">',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+#@+node:ekr.20140218122321.4349: *6* @test html: multple node completed on a line
 @language html
-
 s = '''
 <!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
 <html><head>headline</head><body>body</body></html>
 '''
+@language python
+table = (
+    # The new xml scanner doesn't generate any new nodes,
+    # because the scan state hasn't changed at the end of the line!
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
+#@+node:ekr.20170416085619.1: *6* @test html: multple node starts on a line
+@language html
+s = '''
+<html>
+<head>headline</head>
+<body>body</body>
+</html>
+'''
+@language python
+table = (
+    '<html>',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
 s = r'''
 <td width="550">
@@ -13717,20 +13879,18 @@ s = r'''
 
 '''
 table = (
-    '<td width="550">',
     '<table cellspacing="0" cellpadding="0" width="600" border="0">',
     '<table>',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 #@+node:ekr.20111029120441.3982: *6* @test html: uppercase tags
 s = '''\
 <HTML>
@@ -13762,9 +13922,21 @@ s = '''\
 
 </body>
 '''
+table = (
+    ('<body>'),
+    ('<div id="D666">'),
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111112103320.3887: *6* @test html: improperly terminated tags
 s = r'''
 <html>
@@ -13780,17 +13952,20 @@ s = r'''
     
 <!-- oops: missing tags. -->
 '''
-table = ('<html>', '<head>', '<link id="L1">')
+table = (
+    '<html>',
+    '<head>',
+)
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+finally:
+    c.redraw()
 #@+node:ekr.20111112103320.3893: *6* @test html: improperly terminated tags2
 s = '''
 <html>
@@ -13806,16 +13981,16 @@ s = '''
 </head>
 </html>
 '''
-table = ('<html>', '<head>', '<link id="L1">')
+table = ('<html>', '<head>') # , '<link id="L1">'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
+finally:
         c.redraw()
 #@+node:ekr.20100803234640.5804: *5* ini tests
 #@+node:ekr.20100803234640.5805: *6* @test ini-test-1
@@ -14328,7 +14503,7 @@ finally:
 #@+node:ekr.20090529141856.4735: *6* @test pascal-to-delphi interface
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -14507,7 +14682,7 @@ finally:
 #@+node:ekr.20161119032623.1: *6* @test perl regex-2
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -15408,8 +15583,60 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20170409174529.27: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170409174529.28: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170409174632.19: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170409174632.20: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170410190519.53: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170410190519.54: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170415061122.50: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170415061122.51: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
-# Warning: setting atAuto=True can wipe out unit tests.
+
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
 print('end python tests')
 #@+node:ekr.20161204042916.1: *6* @@test print('start python tests')
@@ -15445,7 +15672,7 @@ else:
         g.Bunch(line='a = {[(')
     ]
 if hasattr(python, 'Py_Importer'):
-    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer = python.Py_Importer(c.importCommands)
     importer.test_scan_state(tests, State=python.Python_ScanState)
 else:
     self.skipTest('Skipping test for new python importer')
@@ -15547,7 +15774,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161115063144.34: *6* @test python basic nesting test
 # Was unittest/at_auto-unit-test.py
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16282,7 +16509,7 @@ finally:
 @tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -16720,7 +16947,7 @@ s = """\
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
     '''A class implementing all of Leo's import/export code.'''
-    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    def createOutline(self, fileName, parent, s=None, ext=None):
         '''Create an outline by importing a file or string.'''
 
     def dispatch(self, ext, p):
@@ -16735,9 +16962,9 @@ class LeoImportCommands(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                def scanner_for_at_auto_cb(parent, s, prepass=False):
                     try:
-                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        scanner = aClass(importCommands=self)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -16753,9 +16980,9 @@ class LeoImportCommands(object):
         aClass = self.classDispatchDict.get(ext)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+            def scanner_for_ext_cb(parent, s, prepass=False):
                 try:
-                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    scanner = aClass(importCommands=self)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -16768,7 +16995,7 @@ class LeoImportCommands(object):
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
 
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         '''Init ivars & vars for imports.'''
 """
 table = (
@@ -16802,14 +17029,14 @@ finally:
 #@+node:ekr.20161115063144.18: *6* @test python looks like section ref
 # ~/at-auto-test.py
 
+# Careful: don't put a section reference in the string.
 s = '''\
 # This is valid Python, but it looks like a section reference.
-a = b << c >> d
-'''
+a = b < < c > > d
+'''.replace('> >', '>>').replace('< <', '<<')
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
-# Always passes, but *sometimes* i.check gives a message!
 #@+node:ekr.20161115063144.19: *6* @test python minimal class 1
 @tabwidth -4
     # Required when running unit tests externally.
@@ -17701,6 +17928,45 @@ document.body.appendChild(button)
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20090529141856.4780: *5* xml tests
+#@+node:ekr.20170416060817.1: *6* @test xml with standard opening elements
+s = '''\
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note SYSTEM "Note.dtd">
+<html>
+<head>
+    <title>Bodystring</title>
+</head>
+<body class='bodystring'>
+<div id='bodydisplay'></div>
+</body>
+</html>
+'''
+ic = c.importCommands
+table = (
+    (1, "<html>"),
+    (2, "<head>"),
+    (2, "<body class='bodystring'>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+
 #@+node:ekr.20090529141856.4781: *6* @test xml 1
 s = '''\
 <html>
@@ -17712,16 +17978,60 @@ s = '''\
 </body>
 </html>
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "<html>"),
+    (2, "<head>"),
+    (2, "<body class='bodystring'>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20111026105935.3966: *6* @test xml 2
 s = '''\
 <nodeA>
 <nodeB/>
 </nodeA>
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "<nodeA>"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20120306173116.3933: *6* @test xml non-ascii tags
 @first # -*- coding: utf-8 -*-
 
@@ -17730,15 +18040,20 @@ s = '''\
 <Ì>
 <_.ÌÑ>
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+try:
+    test_node = p.copy()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20160410152100.1: *4* Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -17754,7 +18069,7 @@ if 0:
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
+    # x = markdown.Markdown_Importer(ic)
 else:
     ic = c.importCommands  
 try:
@@ -18277,7 +18592,7 @@ Section 3, line 1
 << define s >>
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19081,7 +19396,7 @@ section 3, line 1
 #@+node:ekr.20161125134815.1: *5* @test markdown importer-basic
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19139,7 +19454,7 @@ finally:
 #@+node:ekr.20161126111517.1: *5* @test markdown importer-implicit section
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19206,7 +19521,7 @@ finally:
 #@+node:ekr.20161216141315.1: *5* @test markdown importer-@@-section-name
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19278,7 +19593,7 @@ finally:
     # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -19331,7 +19646,7 @@ finally:
 #@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19411,86 +19726,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122751.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122751.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122751.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122751.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122751.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122751.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122751.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122751.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122751.9: *9* placeholder
-#@+node:ekr.20170401122751.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.9: *9* placeholder
-#@+node:ekr.20170401122755.10: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
 s = '''\
 .. toc
@@ -19523,7 +19758,7 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19602,89 +19837,9 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20170401122141.1: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122141.2: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122141.3: *7* top
-
-The top section
-
-#@+node:ekr.20170401122141.4: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122141.5: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122141.6: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122141.7: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122141.8: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122141.9: *9* placeholder
-#@+node:ekr.20170401122141.10: *10* section 3.1.1
-
-section 3.1.1, line 1
-#@+node:ekr.20170401122755.14: *6* @@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines
-@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-#@+node:ekr.20170401122755.15: *7* !Dummy chapter
-.. toc
-
-#@+node:ekr.20170401122755.16: *7* top
-
-The top section
-
-#@+node:ekr.20170401122755.17: *8* section 1
-
-section 1, line 1
---
-section 1, line 2
-
-#@+node:ekr.20170401122755.18: *8* section 2
-
-section 2, line 1
-
-#@+node:ekr.20170401122755.19: *9* section 2.1
-
-section 2.1, line 1
-
-#@+node:ekr.20170401122755.20: *10* section 2.1.1
-
-section 2.2.1 line 1
-
-#@+node:ekr.20170401122755.21: *8* section 3
-
-section 3, line 1
-
-#@+node:ekr.20170401122755.22: *9* placeholder
-#@+node:ekr.20170401122755.23: *10* section 3.1.1
-
-section 3.1.1, line 1
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19726,7 +19881,7 @@ finally:
     c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
 if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -19874,7 +20029,7 @@ try:
     assert child
 
     ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    ic.createOutline (fn,parent=child,s=None,ext=None)
     assert ic.errors == 0
 finally:
     setup(p)
@@ -20456,7 +20611,6 @@ lines_table = [
 for language in ('python', 'coffeescript'):
     importer = linescanner.Importer(
         c.importCommands,
-        atAuto = True,
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
@@ -20474,8 +20628,7 @@ table = [
     ('  ','  # comment\n'),
     ('', '\n'),
 ]
-importer = linescanner.Importer(c.importCommands,
-    atAuto=True, language='python')
+importer = linescanner.Importer(c.importCommands, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 #@+node:ekr.20161109065949.1: *5* @test Importer.is_ws_line
@@ -20489,16 +20642,15 @@ table = [
     (True, '    '),
     (True,'  # comment'),
 ]
-importer = linescanner.Importer(
-    c.importCommands,
-    atAuto = True,
-    language = 'python',
-)
+importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 #@+node:ekr.20161011052016.1: *5* @test importers.javascript.scan_line
+import imp
 import leo.plugins.importers.javascript as js
+imp.reload(js)
 table = (
+    # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
     (None, (0, 0, ''),      r'a + b // /*'),
     (None, (0, 1, ''),      r'(function'),
@@ -20507,11 +20659,11 @@ table = (
     (None, (0, 0, ''),      r'var x = /a"c/'),
     (None, (0, 0, ''),      r'var x = /a\//'),
     (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    importer = js.JS_Importer(c.importCommands)
     prev_state = js.JS_ScanState()
     new_state = importer.scan_line(s, prev_state)
     curlies, parens, context = result
@@ -20519,7 +20671,28 @@ for base, result, s in table:
         new_state.curlies == curlies and
         new_state.parens == parens and
         new_state.context == context)
-    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
+    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
+#@+node:ekr.20170407065952.1: *5* @test importers.javascript.op_pattern
+import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+importer = js.JS_Importer(c.importCommands)
+pattern = importer.op_pattern
+table = (
+    '++', '--', '&&', '||', '~', '>>', '<<', 
+    # '>>=',  '<<=',
+    # '>>>', '>>>=',
+    # '<<<', '<<<=',
+    '<', '<=', '>', '>=',
+    '+', '+=', '-', '-=',
+    '/', '/=', '*', '*=', 
+    '%', '%=', '&', '&=',
+    '|', '|=',
+)
+for s in table:
+    m = pattern.match(s)
+    assert m, s
+    assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

@@ -6250,105 +6250,8 @@ http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcut
 @language rest
 .. @+node:ekr.20161022035203.1: ** Test code: do not delete
 @language python
+# This tree contains clones. None are contained in any external file.
 .. @+node:ekr.20160923163813.1: *3* @buttons for pyflakes & flake8
-.. @+node:ekr.20160923163813.2: *4* @@button test-pyflakes @key=Ctrl-6
-# g.cls()
-import os
-import pyflakes
-import sys
-import time
-if 1:
-    p = c.p
-else:
-    h = '@file leoApp.py'
-    p = g.findNodeAnywhere(c, h)
-assert p
-@others
-if c.isChanged():
-    c.save()
-PyflakesCommand(c).run(p=p)
-
-.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
-class PyflakesCommand(object):
-    '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c):
-        '''ctor for PyflakesCommand class.'''
-        self.c = c
-        self.seen = [] # List of checked paths.
-
-    @others
-.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
-def check_all(self, paths):
-    '''Run pyflakes on fn.'''
-    from pyflakes import api, reporter
-    total_errors = 0
-    for fn in sorted(paths):
-        # Report the file name.
-        sfn = g.shortFileName(fn)
-        s = g.readFileIntoEncodedString(fn, silent=False)
-        if not s.strip():
-            return
-        r = reporter.Reporter(
-            errorStream=sys.stderr,
-            warningStream=sys.stderr,
-            )
-        errors = api.check(s, sfn, r)
-        total_errors += errors
-        if False and errors:
-            # Annoying.
-            print('%s error%s in %s' % (errors, g.plural(errors), fn))
-    ok = not total_errors
-    return ok
-.. @+node:ekr.20160923163813.16: *6* pyflakes.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.17: *6* pyflakes.run
-def run(self, p=None):
-    '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run pyflakes on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        ok = self.check_all(paths)
-        g.es_print('pyflakes: %s file%s in %s' % (
-            len(paths), g.plural(paths), g.timeSince(t1)))
-    return ok
 .. @+node:ekr.20160923163813.7: *4* @@button test-flake8 @key=Ctrl-7
 # g.cls()
 import flake8
@@ -6366,7 +6269,25 @@ if c.isChanged():
     c.save()
 Flake8Command(c).run(p=p)
 
-.. @+node:ekr.20160923163813.19: *5* class Flake8Command
+.. @+node:ekr.20170411071020.1: *5* ** Put a clone of class Flake8Command here
+.. @+node:ekr.20160923163813.2: *4* @@button test-pyflakes @key=Ctrl-6
+# g.cls()
+import os
+import pyflakes
+import sys
+import time
+if 1:
+    p = c.p
+else:
+    h = '@file leoApp.py'
+    p = g.findNodeAnywhere(c, h)
+assert p
+@others
+if c.isChanged():
+    c.save()
+PyflakesCommand(c).run(p=p)
+
+.. @+node:ekr.20160923163813.19: *4* class Flake8Command (probably should use the real code)
 class Flake8Command(object):
     '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
 
@@ -6377,7 +6298,7 @@ class Flake8Command(object):
         self.seen = [] # List of checked paths.
 
     @others
-.. @+node:ekr.20160923163813.20: *6* flake8.check_all
+.. @+node:ekr.20160923163813.20: *5* flake8.check_all
 def check_all(self, paths):
     '''Run flake8 on all paths.'''
     from flake8 import engine, main
@@ -6394,7 +6315,7 @@ def check_all(self, paths):
         options.total_errors = True
         # options.benchmark = True
         main.print_report(report, style)
-.. @+node:ekr.20160923163813.21: *6* flake8.find
+.. @+node:ekr.20160923163813.21: *5* flake8.find
 def find(self, p):
     '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
     found = False
@@ -6408,7 +6329,7 @@ def find(self, p):
                 self.seen.append(fn)
                 found = True
     return found
-.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
+.. @+node:ekr.20160923163813.22: *5* flake8.get_flake8_config
 def get_flake8_config(self):
     '''Return the path to the pylint configuration file.'''
     trace = False and not g.unitTesting
@@ -6432,7 +6353,7 @@ def get_flake8_config(self):
         g.es_print('no flake8 configuration file found in\n%s' % (
             '\n'.join(dir_table)))
     return None
-.. @+node:ekr.20160923163813.23: *6* flake8.run
+.. @+node:ekr.20160923163813.23: *5* flake8.run
 def run(self, p=None):
     '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
     c = self.c
@@ -6468,24 +6389,7 @@ def run(self, p=None):
         self.check_all(paths)
     g.es_print('flake8: %s file%s in %s' % (
         len(paths), g.plural(paths), g.timeSince(t1)))
-.. @+node:ekr.20160923163813.13: *4* pyflakes command
-@g.command('pyflakes')
-def pyflakes_command(event):
-    '''
-    Run pyflakes on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    '''
-    @others
-        # define class PyFlakesCommand.
-    c = event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if pyflakes:
-            PyflakesCommand(c).run()
-        else:
-            g.es_print('can not import pyflakes')
-.. @+node:ekr.20160923163813.14: *5* class PyflakesCommand
+.. @+node:ekr.20160923163813.14: *4* class PyflakesCommand (probably should use the real code)
 class PyflakesCommand(object):
     '''A class to run pyflakes on all Python @<file> nodes in c.p's tree.'''
 
@@ -6495,7 +6399,7 @@ class PyflakesCommand(object):
         self.seen = [] # List of checked paths.
 
     @others
-.. @+node:ekr.20160923163813.15: *6* pyflakes.check_all
+.. @+node:ekr.20160923163813.15: *5* pyflakes.check_all
 def check_all(self, paths):
     '''Run pyflakes on fn.'''
     from pyflakes import api, reporter
@@ -6517,7 +6421,7 @@ def check_all(self, paths):
             print('%s error%s in %s' % (errors, g.plural(errors), fn))
     ok = not total_errors
     return ok
-.. @+node:ekr.20160923163813.16: *6* pyflakes.find
+.. @+node:ekr.20160923163813.16: *5* pyflakes.find
 def find(self, p):
     '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
     found = False
@@ -6531,7 +6435,7 @@ def find(self, p):
                 self.seen.append(fn)
                 found = True
     return found
-.. @+node:ekr.20160923163813.17: *6* pyflakes.run
+.. @+node:ekr.20160923163813.17: *5* pyflakes.run
 def run(self, p=None):
     '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
     c = self.c
@@ -6583,108 +6487,23 @@ def flake8_command(event):
             Flake8Command(c).run()
         else:
             g.es_print('can not import flake8')
-.. @+node:ekr.20160923163813.19: *5* class Flake8Command
-class Flake8Command(object):
-    '''A class to run flake8 on all Python @<file> nodes in c.p's tree.'''
-
-    def __init__(self, c, quiet=False):
-        '''ctor for Flake8Command class.'''
-        self.c = c
-        self.quiet = quiet
-        self.seen = [] # List of checked paths.
-
+.. @+node:ekr.20160923163813.13: *4* pyflakes command
+@g.command('pyflakes')
+def pyflakes_command(event):
+    '''
+    Run pyflakes on all nodes of the selected tree,
+    or the first @<file> node in an ancestor.
+    '''
     @others
-.. @+node:ekr.20160923163813.20: *6* flake8.check_all
-def check_all(self, paths):
-    '''Run flake8 on all paths.'''
-    from flake8 import engine, main
-    config_file = self.get_flake8_config()
-    if config_file:
-        style = engine.get_style_guide(
-            parse_argv=False,
-            config_file=config_file,
-        )
-        report = style.check_files(paths=paths)
-        # Set statistics here, instead of from the command line.
-        options = style.options
-        options.statistics = True
-        options.total_errors = True
-        # options.benchmark = True
-        main.print_report(report, style)
-.. @+node:ekr.20160923163813.21: *6* flake8.find
-def find(self, p):
-    '''Return True and add p's path to self.seen if p is a Python @<file> node.'''
-    found = False
-    if p.isAnyAtFileNode():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        fn = p.anyAtFileNodeName()
-        if fn.endswith('.py'):
-            fn = g.os_path_finalize_join(path, fn)
-            if fn not in self.seen:
-                self.seen.append(fn)
-                found = True
-    return found
-.. @+node:ekr.20160923163813.22: *6* flake8.get_flake8_config
-def get_flake8_config(self):
-    '''Return the path to the pylint configuration file.'''
-    trace = False and not g.unitTesting
-    join = g.os_path_finalize_join
-    dir_table = (
-        g.app.homeDir,
-        join(g.app.homeDir, '.leo'),
-        join(g.app.loadDir, '..', '..', 'leo', 'test'),
-    )
-    if g.isPython3:
-        base_table = ('flake8', 'flake8.txt')
-    else:
-        base_table = ('flake8',)
-    for base in base_table:
-        for path in dir_table:
-            fn = g.os_path_abspath(join(path, base))
-            if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
-                return fn
-    if not g.unitTesting:
-        g.es_print('no flake8 configuration file found in\n%s' % (
-            '\n'.join(dir_table)))
-    return None
-.. @+node:ekr.20160923163813.23: *6* flake8.run
-def run(self, p=None):
-    '''Run flake8 on all Python @<file> nodes in c.p's tree.'''
-    c = self.c
-    root = p or c.p
-    # Make sure Leo is on sys.path.
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
-    if leo_path not in sys.path:
-        sys.path.append(leo_path)
-    # Run flake8 on all Python @<file> nodes in root's tree.
-    t1 = time.time()
-    found = False
-    for p in root.self_and_subtree():
-        found |= self.find(p)
-    # Look up the tree if no @<file> nodes were found.
-    if not found:
-        for p in root.parents():
-            if self.find(p):
-                found = True
-                break
-    # If still not found, expand the search if root is a clone.
-    if not found:
-        isCloned = any([p.isCloned() for p in root.self_and_parents()])
-        # g.trace(isCloned,root.h)
-        if isCloned:
-            for p in c.all_positions():
-                if p.isAnyAtFileNode():
-                    isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                    # g.trace(isAncestor,p.h)
-                    if isAncestor and self.find(p):
-                        break
-    paths = list(set(self.seen))
-    if paths:
-        self.check_all(paths)
-    g.es_print('flake8: %s file%s in %s' % (
-        len(paths), g.plural(paths), g.timeSince(t1)))
+        # define class PyFlakesCommand.
+    c = event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        if pyflakes:
+            PyflakesCommand(c).run()
+        else:
+            g.es_print('can not import pyflakes')
 .. @+node:ekr.20161006162035.1: *3* cff regex pattern to find section references
 # This works
 <<(\s*)(\w+)(\s+)(\w+)(.*)>>
@@ -7995,70 +7814,13 @@ tags = c.config.getData(setting)
 assert tags == html_tags,len(tags)
 
 g.app.unitTestDict ['expectedErrors'] = 0
-
-showTree = True
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=showTree)
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 if showTree:
     # g.cls()
     for p in p.subtree():
         print('\n***** %s\n' %p.h)
         print(p.b)
-.. @+node:ekr.20161117164321.14: *6* @file c:/leo.repo/trunk/leo/core/html string
-@language xml
-@tabwidth -4
-@others
-
-.. @+node:ekr.20161117164321.23: *7* html
-<HTML>
-@others
-</html>
-.. @+node:ekr.20161117164321.24: *8* head
-
-<head>
-    <title>Bodystring</title>
-</head>
-.. @+node:ekr.20161117164321.25: *8* body
-<body class='bodystring'>
-<div id='bodydisplay'></div>
-</body>
-.. @+node:ekr.20161117164321.18: *6* @file c:/leo.repo/trunk/leo/core/html string
-@language xml
-@tabwidth -4
-@others
-
-.. @+node:ekr.20161117164321.23: *7* html
-<HTML>
-@others
-</html>
-.. @+node:ekr.20161117164321.24: *8* head
-
-<head>
-    <title>Bodystring</title>
-</head>
-.. @+node:ekr.20161117164321.25: *8* body
-<body class='bodystring'>
-<div id='bodydisplay'></div>
-</body>
-.. @+node:ekr.20161117164321.22: *6* @file c:/leo.repo/trunk/leo/core/html string
-@language xml
-@tabwidth -4
-@others
-
-.. @+node:ekr.20161117164321.23: *7* html
-<HTML>
-@others
-</html>
-.. @+node:ekr.20161117164321.24: *8* head
-
-<head>
-    <title>Bodystring</title>
-</head>
-.. @+node:ekr.20161117164321.25: *8* body
-<body class='bodystring'>
-<div id='bodydisplay'></div>
-</body>
 .. @+node:ekr.20161117164321.26: *5* @test HtmlScanner.filterTokens
 import leo.core.leoImport as leoImport
 ic = c.importCommands
@@ -16049,15 +15811,6 @@ g.es(s)
 g.pr(s)
 s = '炰'
 g.pr(s)
-.. @+node:ekr.20161117164321.619: *5* runProfile button mini-test
-for i in range(10000):
-    if i and (i % 1000) == 0:
-        g.pr(i)
-.. @+node:ekr.20161117164321.620: *5* runTimeit mini-test
-i = 0
-for i in range(100000):
-    i += 1
-    i -= 1
 .. @+node:ekr.20161117164321.621: *5* Standard print test
 @first # -*- coding: utf-8 -*-
 
@@ -25982,7 +25735,9 @@ def unpack_object(self):
         raise ValueError("Unsupported type: %s" % repr(object_type))
 
 
-.. @+node:ekr.20031218072017.3161: ** skip_php_braces (no longer used)
+.. @+node:ekr.20170404102619.1: ** Unused code
+@language python
+.. @+node:ekr.20031218072017.3161: *3* skip_php_braces (no longer used)
 @ 08-SEP-2002 DTHEIN: Added for PHP import support
 Skips from the opening to the matching . If no matching is found i is set to len(s).
 
@@ -26007,6 +25762,326 @@ def skip_php_braces(s, i):
         elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
         else: i += 1
     return i
+.. @+node:ekr.20170304161145.1: *3* ric.clean_all & helpers (no longer used)
+def clean_all(self, dir_, p):
+    '''Clean all imported nodes. This takes a lot of time.'''
+    # Warning: this happens after perfect import checks.
+    # Mistakes here could be serious.
+    trace = False and not g.unitTesting
+    t1 = time.time()
+    prev_dir = None
+    for p in p.self_and_subtree():
+        h = p.h
+        for tag in ('@clean', '@file', '@nosent'):
+            if h.startswith('@' + tag):
+                i = 1 + len(tag)
+                path = h[i:].strip()
+                dir_, fn = g.os_path_split(path)
+                if prev_dir != dir_:
+                    g.blue(g.os_path_normpath(dir_))
+                    prev_dir = dir_
+                junk, ext = g.os_path_splitext(path)
+                self.clean(p, ext)
+            elif h.startswith(tag):
+                i = len(tag)
+                path = h[i:].strip()
+                dir_, fn = g.os_path_split(path)
+                if prev_dir != dir_:
+                    g.blue(g.os_path_normpath(dir_))
+                    prev_dir = dir_
+                junk, ext = g.os_path_splitext(path)
+                self.clean(p, ext)
+    t2 = time.time()
+    if trace: g.trace('%2.2f sec' % (t2-t1))
+.. @+node:ekr.20170304161145.2: *4* ric.clean
+def clean(self, p, ext):
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+    g.blue('cleaning', g.shortFileName(p.h))
+    root = p.copy()
+    for tag in ('@@file', '@file'):
+        if p.h.startswith(tag):
+            p.v.h = p.h[len(tag):].strip()
+            break
+    self.move_shebang_line(root)
+    # A bad idea.
+        # self.move_doc_string(root)
+    self.rename_decls(root)
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(p)
+    # Get the single-line comment delim.
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        delim, junk, junk = g.set_delims_from_language(language)
+    else:
+        delim = None
+    # g.trace('ext: %s language: %s delim: %s' % (ext,language,delim))
+    if delim:
+        # Do general language-dependent cleanups.
+        for p in root.subtree():
+            self.merge_comment_nodes(p, delim)
+    if ext == 'py':
+        # Do python only cleanups.
+        for p in root.subtree():
+            self.merge_extra_nodes(p)
+        for p in root.subtree():
+            self.move_decorator_lines(p)
+.. @+node:ekr.20170304161145.3: *4* ric.clean_blank_lines
+def clean_blank_lines(self, p):
+    '''Remove leading and trailing blank lines from all nodes.'''
+    s = p.b
+    if not s.strip():
+        return
+    result = g.splitLines(s)
+    for i in 0, -1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.v.b = s
+.. @+node:ekr.20170304161145.4: *4* ric.merge_comment_nodes
+def merge_comment_nodes(self, p, delim):
+    '''Merge a node containing nothing but comments with the next node.'''
+    if not p.hasChildren() and p.hasNext() and p.h.strip().startswith(delim):
+        p2 = p.next()
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.v.b = b + p2.b
+        p.doDelete(p2)
+.. @+node:ekr.20170304161145.5: *4* ric.merge_extra_nodes
+def merge_extra_nodes(self, p):
+    '''Merge a node containing no class or def lines with the previous node'''
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
+        return
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.v.b = p2.b + nl + s
+        p.doDelete(p2)
+.. @+node:ekr.20170304161145.6: *4* ric.move_decorator_lines (RecursiveImportController)
+def move_decorator_lines(self, p):
+    '''Move trailing decorator lines to the next node.'''
+    trace = False and not g.unitTesting
+    seen = []
+    p2 = p.next()
+    if not p2:
+        return False
+    lines = g.splitLines(p.b)
+    n = len(lines) - 1
+    while n >= 0:
+        s = lines[n]
+        if s.startswith('@'):
+            i = g.skip_id(s, 1, chars='-')
+            word = s[1: i]
+            if word in g.globalDirectiveList:
+                break
+            else:
+                n -= 1
+        else:
+            break
+    head = ''.join(lines[: n + 1])
+    tail = ''.join(lines[n + 1:])
+    if not tail:
+        return False
+    if not head.endswith('\n'):
+        head = head + '\n'
+    # assert p.b.v == head+tail
+    if trace:
+        if tail not in seen:
+            seen.append(tail)
+            g.trace(tail.strip())
+    nl = '' if tail.endswith('\n') else '\n'
+    p.v.b = head
+    p2.v.b = tail + nl + p2.b
+    return True
+.. @+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
+def move_doc_string(self, root):
+    '''Move a leading docstring in the first child to the root node.'''
+    if 0: # This is completely misguided
+        # To do: copy comments before docstring
+        p = root.firstChild()
+        s = p and p.b or ''
+        if not s:
+            return
+        result = []
+        for s2 in g.splitLines(s):
+            delim = None
+            s3 = s2.strip()
+            if not s3:
+                result.append(s2)
+            elif s3.startswith('#'):
+                result.append(s2)
+            elif s3.startswith('"""'):
+                delim = '"""'
+                break
+            elif s3.startswith("'''"):
+                delim = "'''"
+                break
+            else:
+                break
+        if not delim:
+            comments = ''.join(result)
+            if comments:
+                nl = '\n\n' if root.b.strip() else ''
+                if root.b.startswith('@first #!'):
+                    lines = g.splitLines(root.b)
+                    root.v.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+                else:
+                    root.v.b = comments + nl + root.b
+                p.v.b = s[len(comments):]
+            return
+        i = s.find(delim)
+        assert i > -1
+        i = s.find(delim, i + 3)
+        if i == -1:
+            return
+        doc = s[: i + 3]
+        p.v.b = s[i + 3:].lstrip()
+        # Move docstring to front of root.b, but after any shebang line.
+        nl = '\n\n' if root.b.strip() else ''
+        if root.b.startswith('@first #!'):
+            lines = g.splitLines(root.b)
+            root.v.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+        else:
+            root.v.b = doc + nl + root.b
+.. @+node:ekr.20170304161145.8: *4* ric.move_shebang_line
+def move_shebang_line(self, root):
+    '''Move a shebang line from the first child to the root.'''
+    p = root.firstChild()
+    s = p and p.b or ''
+    if s.startswith('#!'):
+        lines = g.splitLines(s)
+        nl = '\n\n' if root.b.strip() else ''
+        root.v.b = '@first ' + lines[0] + nl + root.b
+        p.v.b = ''.join(lines[1:])
+.. @+node:ekr.20170304161145.9: *4* ric.rename_decls
+def rename_decls(self, root):
+    '''Use a section reference for declarations.'''
+    p = root.firstChild()
+    h = p and p.h or ''
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+    if not p.b.strip():
+        return # The blank node will be deleted.
+    name = h[: -len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.v.h = '%s (%s)' % (decls, name)
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+    else:
+        nl = '' if i == 0 else '\n'
+        root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
+.. @+node:ekr.20031218072017.3213: *3* ric.createImportParent (no longer used)
+def createImportParent(self, current, files):
+    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
+    name0, name1 = files
+    prefix0, junk = g.os_path_splitext(name0)
+    prefix1, junk = g.os_path_splitext(name1)
+    if prefix0 and prefix0 == prefix1:
+        current = current.insertAsLastChild()
+        name, junk = g.os_path_splitext(prefix1)
+        name = name.replace('\\', '/') # 2011/11/25
+        current.initHeadString(name)
+    return current
+.. @+node:ekr.20140724175458.18053: *3* ic.create_top_node (no longer used)
+def create_top_node(self, atAuto, atAutoKind, fileName, parent):
+    '''Create the top node.'''
+    # g.trace(g.callers())
+    return parent.copy() ###
+    trace = True and not g.unitTesting
+    c, u = self.c, self.c.undoer
+    if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
+        atAuto, atAutoKind, parent and parent.h))
+    if atAuto:
+        if atAutoKind:
+            # scannerUnitTest uses this code.
+            if not g.unitTesting:
+                g.trace('===== atAutoKind', atAutoKind, g.callers())
+            # We have found a match between ext and an @auto importer.
+            undoData = u.beforeInsertNode(parent)
+            if parent:
+                p = parent.insertAsLastChild()
+            else:
+                p = c.lastTopLevel().insertAfter()
+            if atAutoKind:
+                p.initHeadString(atAutoKind + ' ' + fileName)
+            u.afterInsertNode(p, 'Import', undoData)
+        else:
+            # Use the *existing* node.
+            p = parent.copy()
+            p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        if parent:
+            p = parent.insertAsLastChild()
+        else:
+            p = c.lastTopLevel().insertAfter()
+        if self.treeType in ('@clean', '@file', '@nosent'):
+            p.initHeadString('%s %s' % (self.treeType, fileName))
+        elif self.treeType is None:
+            # By convention, we use the short file name.
+            p.initHeadString(g.shortFileName(fileName))
+        else:
+            p.initHeadString(fileName)
+        u.afterInsertNode(p, 'Import', undoData)
+    return p
+.. @+node:ekr.20170411155558.1: *3* OLD g.getGitBranchName
+def getGitBranchName(path=None, shorthand=True):
+    '''
+    Return the name of leo-editor's git branch.
+    
+    First, attempt to get the branch from leoVersion.branch.
+    This will always be the shorthand name of the branch.
+    
+    Otherwise, use the pygit2 package if it exists.
+    Return the shorthand name (master) or the full name (refs/heads/master).
+    
+    In all cases, return None if the branch name can not be determined.
+    '''
+    # First, try to get the version from leoVersion.
+    try:
+        from leo.core import leoVersion
+        branch = leoVersion.branch
+        if branch not in (None, 'None'):
+            return branch
+    except ImportError:
+        pass
+    # Next, use pygit2 if possible.
+    try:
+        import pygit2
+    except ImportError:
+        return None
+    if path is None:
+        path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    try:
+        repo = pygit2.Repository(path)
+        if repo:
+            head = repo.head
+            return head.shorthand if shorthand else head.name
+        else:
+            return None
+    except Exception:
+        # Hard to tell what Repository ctor will do with an invalid path.
+        g.es_exception()
+        return None
+
 .. @-all
 .. @@nosearch
 .. @-leo

@@ -3947,7 +3947,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             self.createAtEditNode(fn, p)
         self.warnIfNodeExists(p)
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20110605121601.18373: *9* createAtAutoTree
+    #@+node:ekr.20110605121601.18373: *9* createAtAutoTree (QTreeWidget)
     def createAtAutoTree(self, fn, p):
         '''Make p an @auto node and create the tree using
         s, the file's contents.

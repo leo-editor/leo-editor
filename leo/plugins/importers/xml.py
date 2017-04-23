@@ -13,12 +13,11 @@ class Xml_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161122124109.1: *3* xml_i.__init__
-    def __init__(self, importCommands, atAuto, tags_setting='import_xml_tags'):
+    def __init__(self, importCommands, tags_setting='import_xml_tags'):
         '''Xml_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'xml',
             state_class = Xml_ScanState,
             strict = False,
@@ -28,6 +27,15 @@ class Xml_Importer(Importer):
         self.stack = []
             # Stack of tags.
             # A closing tag decrements state.tag_level only if the top is an opening tag.
+        self.void_tags = [
+            '<?xml',
+            '!doctype',
+        ]
+        self.tag_warning_given = False
+            # True: a structure error has been detected.
+            # Only warn once.
+
+
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
@@ -35,17 +43,19 @@ class Xml_Importer(Importer):
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
-        if trace:
-            g.trace(setting)
-            g.printList(aList)
+        if trace: g.trace(setting, aList)
+            # g.printList(aList)
         return aList
-
+    #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
+    def clean_headline(self, s):
+        '''xml and html: Return a cleaned up headline s.'''
+        m = re.match(r'\s*(<[^>]+>)', s)
+        return m.group(1) if m else s.strip()
     #@+node:ekr.20161123003732.1: *3* xml_i.error
     def error(self, s):
         '''Issue an error, but do *not* cause a unit test to fail.'''
-        trace = False or not g.unitTesting
-        if trace:
-            g.es_print(s)
+        g.es_print('\nin %s' % self.root.h)
+        g.es_print(s)
         # Tell i.check to strip lws.
         self.ws_error = True
     #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
@@ -108,67 +118,100 @@ class Xml_Importer(Importer):
         return context, i, tag_level
     #@+node:ekr.20161122084808.1: *5* xml_i.end_tag
     def end_tag(self, s, tag, tag_level):
-        '''Handle the end of a tag.'''
+        '''
+        Handle the ">" or "/>" that ends an element.
+        
+        Ignore ">" except for void tags.
+        '''
         trace = False
-        stack = self.stack
-        if not stack:
-            g.trace('stack underflow: tag: %s in %r' % (tag, s))
-            return tag_level
-        data = stack[-1]
-        tag1, tag2 = data
-        if tag1 == '</' or tag == '/>':
-            stack.pop()
-            if tag2 in self.start_tags:
-                if tag_level > 0:
-                    tag_level -= 1
-                elif trace:
-                    g.trace('unexpected end tag: %s in %r' % (tag, s))
-        else:
-            # '>' just ends the opening element. No change to the stack.
-            pass
         if trace:
-            g.trace(tag)
-            g.printList(stack)
+            g.trace(tag, repr(s))
+            g.printList(self.stack)
+        if self.stack:
+            if tag == '/>':
+                top = self.stack.pop()
+                if top in self.start_tags:
+                    tag_level -= 1
+            else:
+                top = self.stack[-1]
+                if top in self.void_tags:
+                    self.stack.pop()
+        elif tag == '/>':
+            g.es_print("Warning: ignoring dubious /> in...")
+            g.es_print(repr(s))
         return tag_level
-    #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag
-    ch_pattern = re.compile(r'[\w\_\.\:\-]')
-        # Compare single characters so as not to create lots of substrings.
+    #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper
+    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)')
 
     def scan_tag(self, s, i, tag_level):
         '''
-        Scan for the *start* of a beginning *or ending tag at i in s.
-        Update tag_level only if the tag matches a tag in self.start_tags.
+        Scan an xml tag starting with "<" or "</".
+        
+        Adjust the stack as appropriate:
+        - "<" adds the tag to the stack.
+        - "</" removes the top of the stack if it matches.
         '''
         trace = False
         assert s[i] == '<', repr(s[i])
         end_tag = self.match(s, i, '</')
+        # Scan the tag.
         i += (2 if end_tag else 1)
-        tag_i = i
-        while i < len(s):
-            m = self.ch_pattern.match(s[i])
-            if m: i += 1
-            else: break
-        tag = s[tag_i:i].lower()
-        # Here, i has already been incremented.
-        if tag and end_tag:
-            if self.stack:
-                top = self.stack[-1]
-                if top[1] == tag:
-                    self.stack[-1][0] = '</'
-                else:
-                    self.error('mismatched closing tag: %s %s' % (
-                        tag, top[1]))
-            else:
-                self.error('tag underflow: %s' % tag)
-        elif tag:
-            self.stack.append(['<', tag])
+        m = self.ch_pattern.match(s, i)
+        if m:
+            tag = m.group(0).lower()
+            i += len(m.group(0))
+        else:
+            # All other '<' characters should have had xml/html escapes applied to them.
+            self.error('missing tag in position %s of %r' % (i, s))
+            g.es_print(repr(s))
+            return i, tag_level
+        if end_tag:
+            self.pop_to_tag(tag, s)
+            if tag in self.start_tags:
+                tag_level -= 1
+        else:
+            self.stack.append(tag)
             if tag in self.start_tags:
                 tag_level += 1
         if trace:
-            g.trace('tag: %s end: %s level: %s len(stack): %s %r' % (
-                tag, int(end_tag), tag_level, len(self.stack), s))
+            g.trace(tag, repr(s))
+            g.trace('Returns level: ', tag_level)
             g.printList(self.stack)
         return i, tag_level
+    #@+node:ekr.20170416043508.1: *6* xml_i.pop_to_tag
+    def pop_to_tag(self, tag, s):
+        '''
+        Attempt to pop tag from the top of the stack.
+        
+        If the top doesn't match, issue a warning and attempt to recover.
+        '''
+        trace = False
+        if not self.stack:
+            self.error('Empty tag stack: %s' % tag)
+            g.es_print(repr(s))
+            return
+        if trace:
+            g.trace(tag, repr(s))
+            g.printList(self.stack)
+        top = self.stack[-1]
+        if top == tag:
+            self.stack.pop()
+            return
+        # Only issue one warning per file.
+        if trace or self.tag_warning_given:
+            self.tag_warning_given = True
+            self.error('mismatched closing tag: %s top: %s' % (tag, top))
+            g.es_print(repr(s))
+            if trace:
+                g.trace(self.root.h)
+                g.printList(self.stack)
+        # Attempt a recovery.
+        if tag in self.stack:
+            while self.stack:
+                top = self.stack.pop()
+                # if trace: g.trace('POP: ', top)
+                if top == tag:
+                    return
     #@+node:ekr.20161121210839.1: *3* xml_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the line startswith an xml block'''

@@ -195,7 +195,7 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_lines = False
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
@@ -310,21 +310,21 @@ class GoToCommands(object):
             # Special case @auto nodes: 
             # Leo does not write sentinels in the root @auto node.
             at = c.atFileCommands
-            ok = at.writeOneAtAutoNode(
-                        root,
-                        toString=True,
-                        force=True,
-                        trialWrite=False,
-                        forceSentinels=True,
-            )
+            ivar = 'force_sentinels'
+            try:
+                setattr(at, ivar, True)
+                ok = at.writeOneAtAutoNode(root, force=True, toString=True)
+            finally:
+                if hasattr(at, ivar):
+                    delattr(at, ivar)
             return ok and at.stringOutput or ''
         else:
             return g.composeScript( # Fix # 429.
-                        c = c,
-                        p = root,
-                        s = root.b,
-                        forcePythonSentinels=False, # See #247.
-                        useSentinels=True)
+                c = c,
+                p = root,
+                s = root.b,
+                forcePythonSentinels=False, # See #247.
+                useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
         '''Return the gnx and headline of a #@+node.'''

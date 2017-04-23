@@ -12,12 +12,11 @@ Target = linescanner.Target
 class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
     
-    def __init__(self, importCommands, atAuto, language=None, alternate_language=None):
+    def __init__(self, importCommands, language=None, alternate_language=None):
         '''Py_Importer.ctor.'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto=atAuto,
             language='python',
             state_class = Python_ScanState,
             strict=True,
@@ -234,7 +233,6 @@ class Py_Importer(Importer):
         '''
         trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        ### lws = self.get_int_lws(line)
         h = self.clean_headline(line) 
         if not target.at_others_flag:
             target.at_others_flag = True
@@ -408,7 +406,6 @@ class Py_Importer(Importer):
         index = 0
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
-            ### top = stack[-1]
             if trace: g.trace(new_state)
             if self.starts_block(i, lines, new_state, prev_state):
                 return self.skip_block(i, index, lines, new_state, stack)

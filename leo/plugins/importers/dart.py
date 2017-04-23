@@ -9,12 +9,11 @@ Importer = linescanner.Importer
 class Dart_Importer(Importer):
     '''The importer for the dart lanuage.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands):
         '''Dart_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            atAuto = atAuto,
             language = 'dart',
             state_class = Dart_ScanState,
             strict = False,

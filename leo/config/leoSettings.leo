@@ -659,7 +659,7 @@
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
-<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = False</vh></v>
+<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
@@ -2781,7 +2781,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161011090731.1"></v>
+<v t="ekr.20150403055250.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4477,6 +4477,7 @@ mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
+screen_capture.py
 settings_finder.py
 stickynotes.py
 todo.py
@@ -10557,9 +10558,8 @@ Note: check-outline always writes error messages to both log and console.</t>
 <t tx="ekr.20150327002834.1">True: enable detailed traces inside vim.py.</t>
 <t tx="ekr.20150403055250.1">True: check all @&lt;file&gt; nodes in the outline for changes in corresponding external files.
 
-Warning: There have been reports that checking many networked files
-can hang Leo.  See https://github.com/leo-editor/leo-editor/issues/262
-@bool check_for_changed_external_files may hang on network files
+Warning: Checking many networked files can hang Leo. See:
+https://github.com/leo-editor/leo-editor/issues/262
 </t>
 <t tx="ekr.20150420115701.1"></t>
 <t tx="ekr.20150420115709.1"></t>

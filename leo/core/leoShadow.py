@@ -626,12 +626,7 @@ class ShadowController(object):
             # but we *do* want sentinels elsewhere.
             at.at_shadow_test_hack = True
             try:
-                at.write(p,
-                    nosentinels=False,
-                    thinFile=False, # Debatable.
-                    scriptWrite=False,
-                        # 2015/06/23: Was True, which is inaccurate and unnecessary.
-                    toString=True)
+                at.write(p, nosentinels=False, toString=True)
             finally:
                 at.at_shadow_test_hack = False
             s = at.stringOutput

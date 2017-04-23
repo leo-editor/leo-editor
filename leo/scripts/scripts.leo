@@ -126,6 +126,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170411105625.1"><vh>Script: get git branch name using pygit2</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -1440,5 +1441,16 @@ c.redraw()
 </t>
 <t tx="ekr.20170303064120.1"></t>
 <t tx="ekr.20170303064128.1"></t>
+<t tx="ekr.20170411105625.1"># http://stackoverflow.com/questions/26134026/
+# how-to-get-the-current-checked-out-git-branch-name-through-pygit2
+
+import pygit2
+path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+repo = pygit2.Repository(path)
+head = repo.head
+# print(head)
+print(head.name)
+print(head.shorthand)
+</t>
 </tnodes>
 </leo_file>

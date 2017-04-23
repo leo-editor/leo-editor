@@ -2,7 +2,7 @@ Leo 5.5 March 23, 2017
 
 [Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 

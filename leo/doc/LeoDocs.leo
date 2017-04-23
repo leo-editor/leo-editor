@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1219,6 +1219,7 @@
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
 <v t="ekr.20170311120214.1"><vh>Test driven development</vh></v>
+<v t="ekr.20170403185500.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20170314164228.1"><vh>About names</vh></v>
 </v>
 <v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
@@ -15995,8 +15996,8 @@ to associate persistent data with vnodes. For details see the section about
 </t>
 <t tx="ekr.20131019061259.16691">**Properties**::
 
-    p.b: same as p.v.b.
-    p.h: same as p.v.h.
+    p.b: same as p.v.b.  *Warning*: p.b = s is expensive.
+    p.h: same as p.v.h.  *Warning*: p.h = s is expensive.
     p.u: same as p.v.u.
     
 **Generators** (New in Leo 5.5: All generators yield distinct positions)::
@@ -16045,7 +16046,7 @@ to associate persistent data with vnodes. For details see the section about
     
 **Setters**::
 
-    p.setDirty()
+    p.setDirty()  *Warning*: p.setDirty() is expensive.
     p.setMarked()
 
 **Operations on nodes**::
@@ -20200,7 +20201,7 @@ For instance, here is the @test node I use to develop the new javascript importe
         c.save()
     import leo.plugins.importers.basescanner as basescanner
     @others
-    scanner = JavaScriptScanner(c.importCommands, atAuto = False)
+    scanner = JavaScriptScanner(c.importCommands)
     h = '@ignore js-test'
     p = g.findNodeAnywhere(c, h)
     if p:
@@ -23071,7 +23072,7 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 </t>
 <t tx="ekr.20170314092222.1">Adds commands for importing and exporting xml to and from Leo outlines.
 </t>
-<t tx="ekr.20170314164228.1">Scripts may safely assume that few names defined in Leo's core will ever change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
+<t tx="ekr.20170314164228.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
 <t tx="ekr.20170315020214.1">**Ivars**::
 
@@ -23165,7 +23166,19 @@ Here is an example of a dark theme, showing how to manage Emacs config files wit
 
 |leo-thesis|
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170403185500.1">**Warning**: The p.b and p.h setters and p.setDirty() are *very* expensive:
+
+- p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node's icon.
+- p.h = s calls c.setHeadString(p, s) which calls p.setDirty().
+- p.setDirty() changes the icons of all ancestor @file nodes.
+
+In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.
+
+Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
+
+These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

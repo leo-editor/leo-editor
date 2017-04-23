@@ -962,7 +962,6 @@ class LeoApp(object):
         app = self
         import leo.core.leoVersion as leoVersion
         build, date = leoVersion.build, leoVersion.date
-        git_info = leoVersion.git_info
         guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
@@ -986,9 +985,8 @@ class LeoApp(object):
             except Exception:
                 pass
         else: sysVersion = sys.platform
-        branch = git_info.get('branch', None)
-        commit = git_info.get('commit', None)
-        if branch is None or commit is None:
+        branch, commit = g.gitInfo()
+        if not branch or not commit:
             app.signon1 = 'Not running from a git repo'
         else:
             app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
@@ -1004,7 +1002,10 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         app = self
-        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
+        app.pluginsController.loadOnePlugin(
+            'leo.plugins.cursesGui2',
+            verbose=verbose,
+        )
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1021,6 +1022,8 @@ class LeoApp(object):
             g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
+        elif argName == 'text':
+            app.createTextGui()
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
@@ -1045,6 +1048,10 @@ class LeoApp(object):
                 print('Qt Gui created in %s' % fileName)
         else:
             print('createQtGui: can not create Qt gui.')
+    #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
+    def createTextGui(self, fileName='', verbose=False):
+        app = self
+        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui(self, fileName='', verbose=False):
         # Do NOT omit fileName param: it is used in plugin code.
@@ -1222,14 +1229,13 @@ class LeoApp(object):
         for key in d.keys():
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
-            # if trace:g.trace(bool(aClass),p.h.startswith(key),g.match_word(p.h,0,key),p.h,key)
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, c, parent, s):
+                def scanner_for_at_auto_cb(c, parent, s):
                     try:
                         ic = c.importCommands
-                        scanner = aClass(importCommands=ic, atAuto=atAuto)
+                        scanner = aClass(importCommands=ic)
                         return scanner.run(s, parent)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -1250,10 +1256,10 @@ class LeoApp(object):
         if trace: g.trace(ext, aClass.__name__)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, c, parent, s):
+            def scanner_for_ext_cb(c, parent, s):
                 try:
                     ic = c.importCommands
-                    scanner = aClass(importCommands=ic, atAuto=atAuto)
+                    scanner = aClass(importCommands=ic)
                     return scanner.run(s, parent)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -2428,7 +2434,8 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('curses', 'qt', 'null'):
+            elif gui in ('curses', 'text', 'qt', 'null'):
+                    # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
                 print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
@@ -3421,8 +3428,16 @@ class RecentFilesManager(object):
         rf = self
         theFile = None
         try:
-            theFile = open(fileName)
-            lines = theFile.readlines()
+            # Attempt to fix #471:
+            if g.isPython3:
+                theFile = open(fileName, encoding='utf-8', mode='r')
+            else:
+                theFile = open(fileName, mode='r')
+            try:
+                # Protect against #471.
+                lines = theFile.readlines()
+            except Exception:
+                lines = None
             if lines and rf.sanitize(lines[0]) == 'readonly':
                 if trace: g.trace('read-only: %s' % fileName)
                 return False
@@ -3431,7 +3446,7 @@ class RecentFilesManager(object):
             pass
         finally:
             if theFile: theFile.close()
-        theFile = None
+            theFile = None
         try:
             if g.isPython3:
                 theFile = open(fileName, encoding='utf-8', mode='w')

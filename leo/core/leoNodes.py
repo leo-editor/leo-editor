@@ -1620,7 +1620,20 @@ class Position(object):
         return p.bodyString()
 
     def __set_b(self, val):
-        '''Set the body text of a position.'''
+        '''
+        Set the body text of a position.
+        
+        **Warning: the p.b = whatever is *expensive* because it calls
+        c.setBodyString().
+        
+        Usually, code *should* this setter, despite its cost, because it
+        update's Leo's outline pane properly. Calling c.redraw() is *not*
+        enough.
+
+        This performance gotcha becomes important for repetitive commands, like
+        cff, replace-all and recursive import. In such situations, code should
+        use p.v.b instead of p.b.
+        '''
         p = self; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
@@ -1635,11 +1648,24 @@ class Position(object):
         return p.headString()
 
     def __set_h(self, val):
+        '''
+        Set the headline text of a position.
+        
+        **Warning: the p.h = whatever is *expensive* because it calls
+        c.setHeadString().
+        
+        Usually, code *should* this setter, despite its cost, because it
+        update's Leo's outline pane properly. Calling c.redraw() is *not*
+        enough.
+
+        This performance gotcha becomes important for repetitive commands, like
+        cff, replace-all and recursive import. In such situations, code should
+        use p.v.h instead of p.h.
+        '''
         p = self; c = p.v and p.v.context
         if c:
             c.setHeadString(p, val)
-            # Don't redraw the screen: p.h must be fast.
-            # c.redraw_after_head_changed()
+            # Warning: c.setHeadString is *expensive*.
 
     h = property(
         __get_h, __set_h,
@@ -1830,7 +1856,16 @@ class Position(object):
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self, setDescendentsDirty=True):
-        '''Mark a node and all ancestor @file nodes dirty.'''
+        '''
+        Mark a node and all ancestor @file nodes dirty.
+        
+        **Warning**: p.setDirty() is *expensive* because it calls
+        p.setAllAncestorAtFileNodesDirty().
+        
+        Usually, code *should* this setter, despite its cost, because it
+        update's Leo's outline pane properly. Calling c.redraw() is *not*
+        enough.
+        '''
         trace = False and not g.unitTesting
         p = self; dirtyVnodeList = []
         if trace and p.h.startswith('@auto'):

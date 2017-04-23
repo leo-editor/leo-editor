@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.65" body_secondary_ratio="0.71">
-	<global_window_position top="40" left="398" height="931" width="1149"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
+	<global_window_position top="107" left="417" height="931" width="1375"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -22,6 +22,7 @@
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20170415084531.1"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
@@ -51,16 +52,770 @@
 <v t="ekr.20170401123909.8"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20170401123909.14"><vh>@gnxs</vh></v>
+<v t="ekr.20170409175122.21"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.9"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
-<v t="ekr.20170401123909.20"><vh>@gnxs</vh></v>
+<v t="ekr.20170409175122.24"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170303055634.17"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
-<v t="ekr.20170401123910.3"><vh>@gnxs</vh></v>
+<v t="ekr.20170409175122.15"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20170401123910.4"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.txt</vh>
 <v t="ekr.20170401123910.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409165318.5"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
+<v t="ekr.20170409175122.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409165318.11"><vh>@data:@auto unittest/at-auto-test.py</vh>
+<v t="ekr.20170409175122.8"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409172044.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409172044.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409172044.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409172255.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409172255.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409172255.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409172518.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409172518.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409172518.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409172847.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409172847.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409172847.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409173115.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409173115.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409173115.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409173133.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409173133.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409173133.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174448.2"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409174448.3"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409174448.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.38"><vh>@data:@file @test c class 1</vh></v>
+<v t="ekr.20170409174526.39"><vh>@data:@file @test c class 1</vh>
+<v t="ekr.20170409174526.40"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.45"><vh>@data:@file @test c class--underindented line</vh></v>
+<v t="ekr.20170409174526.46"><vh>@data:@file @test c class--underindented line</vh>
+<v t="ekr.20170409174526.47"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.51"><vh>@data:@file @test c comment follows arg list</vh></v>
+<v t="ekr.20170409174526.52"><vh>@data:@file @test c comment follows arg list</vh>
+<v t="ekr.20170409174526.53"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.57"><vh>@data:@file @test c comment follows block delim</vh></v>
+<v t="ekr.20170409174526.58"><vh>@data:@file @test c comment follows block delim</vh>
+<v t="ekr.20170409174526.59"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.62"><vh>@data:@file @test c intermixed blanks and tabs</vh></v>
+<v t="ekr.20170409174526.63"><vh>@data:@file @test c intermixed blanks and tabs</vh>
+<v t="ekr.20170409174526.64"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.67"><vh>@data:@file @test c old-style decl 1</vh></v>
+<v t="ekr.20170409174526.68"><vh>@data:@file @test c old-style decl 1</vh>
+<v t="ekr.20170409174526.69"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.72"><vh>@data:@file @test c old-style decl 2</vh></v>
+<v t="ekr.20170409174526.73"><vh>@data:@file @test c old-style decl 2</vh>
+<v t="ekr.20170409174526.74"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174526.77"><vh>@data:@file @test c extern</vh></v>
+<v t="ekr.20170409174526.78"><vh>@data:@file @test c extern</vh>
+<v t="ekr.20170409174526.79"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.4"><vh>@data:@file @test c# namespace indent</vh></v>
+<v t="ekr.20170409174527.5"><vh>@data:@file @test c# namespace indent</vh>
+<v t="ekr.20170409174527.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.10"><vh>@data:@file @test c# namespace no indent</vh></v>
+<v t="ekr.20170409174527.11"><vh>@data:@file @test c# namespace no indent</vh>
+<v t="ekr.20170409174527.12"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.122"><vh>@data:@file @test coffeescript-1</vh></v>
+<v t="ekr.20170409174527.123"><vh>@data:@file @test coffeescript-1</vh>
+<v t="ekr.20170409174527.124"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.127"><vh>@data:@file @test coffeescript-2</vh></v>
+<v t="ekr.20170409174527.128"><vh>@data:@file @test coffeescript-2</vh>
+<v t="ekr.20170409174527.129"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.136"><vh>@data:@file @test coffeescript-3</vh></v>
+<v t="ekr.20170409174527.137"><vh>@data:@file @test coffeescript-3</vh>
+<v t="ekr.20170409174527.138"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.143"><vh>@data:@file @test dart hello world</vh></v>
+<v t="ekr.20170409174527.144"><vh>@data:@file @test dart hello world</vh>
+<v t="ekr.20170409174527.145"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.149"><vh>@data:@file @test elisp</vh></v>
+<v t="ekr.20170409174527.150"><vh>@data:@file @test elisp</vh>
+<v t="ekr.20170409174527.151"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.156"><vh>@data:@file @test html: lowercase tags</vh></v>
+<v t="ekr.20170409174527.157"><vh>@data:@file @test html: lowercase tags</vh>
+<v t="ekr.20170409174527.158"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.179"><vh>@data:@file @test html: multiple tags on a line</vh></v>
+<v t="ekr.20170409174527.180"><vh>@data:@file @test html: multiple tags on a line</vh>
+<v t="ekr.20170409174527.181"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.183"><vh>@data:@file @test html: multple node starts on a line</vh></v>
+<v t="ekr.20170409174527.184"><vh>@data:@file @test html: multple node starts on a line</vh>
+<v t="ekr.20170409174527.185"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.190"><vh>@data:@file @test html: underindented comment</vh></v>
+<v t="ekr.20170409174527.191"><vh>@data:@file @test html: underindented comment</vh>
+<v t="ekr.20170409174527.192"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.197"><vh>@data:@file @test html: uppercase tags</vh></v>
+<v t="ekr.20170409174527.198"><vh>@data:@file @test html: uppercase tags</vh>
+<v t="ekr.20170409174527.199"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.205"><vh>@data:@file @test html: improperly nested tags</vh></v>
+<v t="ekr.20170409174527.206"><vh>@data:@file @test html: improperly nested tags</vh>
+<v t="ekr.20170409174527.207"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174527.213"><vh>@data:@file @test html: improperly terminated tags</vh></v>
+<v t="ekr.20170409174527.214"><vh>@data:@file @test html: improperly terminated tags</vh>
+<v t="ekr.20170409174527.215"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.6"><vh>@data:@file @test html: improperly terminated tags2</vh></v>
+<v t="ekr.20170409174528.7"><vh>@data:@file @test html: improperly terminated tags2</vh>
+<v t="ekr.20170409174528.8"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.12"><vh>@data:@file @test ini-test-1</vh></v>
+<v t="ekr.20170409174528.13"><vh>@data:@file @test ini-test-1</vh>
+<v t="ekr.20170409174528.14"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.18"><vh>@data:@file @test from AdminPermission.java</vh></v>
+<v t="ekr.20170409174528.19"><vh>@data:@file @test from AdminPermission.java</vh>
+<v t="ekr.20170409174528.20"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.24"><vh>@data:@file @test from BundleException.java</vh></v>
+<v t="ekr.20170409174528.25"><vh>@data:@file @test from BundleException.java</vh>
+<v t="ekr.20170409174528.26"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.29"><vh>@data:@file @test java interface test1</vh></v>
+<v t="ekr.20170409174528.30"><vh>@data:@file @test java interface test1</vh>
+<v t="ekr.20170409174528.31"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.34"><vh>@data:@file @test java interface test2</vh></v>
+<v t="ekr.20170409174528.35"><vh>@data:@file @test java interface test2</vh>
+<v t="ekr.20170409174528.36"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.39"><vh>@data:@file @test Javascript-regex-1</vh></v>
+<v t="ekr.20170409174528.40"><vh>@data:@file @test Javascript-regex-1</vh>
+<v t="ekr.20170409174528.41"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.46"><vh>@data:@file @test Javascript-3</vh></v>
+<v t="ekr.20170409174528.47"><vh>@data:@file @test Javascript-3</vh>
+<v t="ekr.20170409174528.48"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.52"><vh>@data:@file @test Javascript-4</vh></v>
+<v t="ekr.20170409174528.53"><vh>@data:@file @test Javascript-4</vh>
+<v t="ekr.20170409174528.54"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.58"><vh>@data:@file @test Javascript-5</vh></v>
+<v t="ekr.20170409174528.59"><vh>@data:@file @test Javascript-5</vh>
+<v t="ekr.20170409174528.60"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.68"><vh>@data:@auto-org @test org-1</vh>
+<v t="ekr.20170409174528.69"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.77"><vh>@data:@auto-otl @test otl-1</vh>
+<v t="ekr.20170409174528.78"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.83"><vh>@data:@file @test pascal-to-delphi interface</vh></v>
+<v t="ekr.20170409174528.84"><vh>@data:@file @test pascal-to-delphi interface</vh>
+<v t="ekr.20170409174528.85"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.90"><vh>@data:@file @test perl-1</vh></v>
+<v t="ekr.20170409174528.91"><vh>@data:@file @test perl-1</vh>
+<v t="ekr.20170409174528.92"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.97"><vh>@data:@file @test perlpod comment</vh></v>
+<v t="ekr.20170409174528.98"><vh>@data:@file @test perlpod comment</vh>
+<v t="ekr.20170409174528.99"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.101"><vh>@data:@file @test perl multi-line string</vh></v>
+<v t="ekr.20170409174528.102"><vh>@data:@file @test perl multi-line string</vh>
+<v t="ekr.20170409174528.103"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174528.109"><vh>@data:@file @test perl regex-1</vh></v>
+<v t="ekr.20170409174528.110"><vh>@data:@file @test perl regex-1</vh>
+<v t="ekr.20170409174528.111"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.6"><vh>@data:@file @test perl regex-2</vh></v>
+<v t="ekr.20170409174529.7"><vh>@data:@file @test perl regex-2</vh>
+<v t="ekr.20170409174529.8"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.12"><vh>@data:@file @test php import class</vh></v>
+<v t="ekr.20170409174529.13"><vh>@data:@file @test php import class</vh>
+<v t="ekr.20170409174529.14"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.19"><vh>@data:@file @test php import conditional class</vh></v>
+<v t="ekr.20170409174529.20"><vh>@data:@file @test php import conditional class</vh>
+<v t="ekr.20170409174529.21"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.24"><vh>@data:@file @test php import classes &amp; functions</vh></v>
+<v t="ekr.20170409174529.25"><vh>@data:@file @test php import classes &amp; functions</vh>
+<v t="ekr.20170409174529.26"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.29"><vh>@data:@file @test php here doc</vh></v>
+<v t="ekr.20170409174529.30"><vh>@data:@file @test php here doc</vh>
+<v t="ekr.20170409174529.31"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.35"><vh>@data:@file @test leoApp fail</vh></v>
+<v t="ekr.20170409174529.36"><vh>@data:@file @test leoApp fail</vh>
+<v t="ekr.20170409174529.37"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.41"><vh>@data:@file @test python bad class test</vh></v>
+<v t="ekr.20170409174529.42"><vh>@data:@file @test python bad class test</vh>
+<v t="ekr.20170409174529.43"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.51"><vh>@data:@file @test python basic nesting test</vh></v>
+<v t="ekr.20170409174529.52"><vh>@data:@file @test python basic nesting test</vh>
+<v t="ekr.20170409174529.53"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.57"><vh>@data:@file @test python bug #346</vh></v>
+<v t="ekr.20170409174529.58"><vh>@data:@file @test python bug #346</vh>
+<v t="ekr.20170409174529.59"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.62"><vh>@data:@file @test python bug #354</vh></v>
+<v t="ekr.20170409174529.63"><vh>@data:@file @test python bug #354</vh>
+<v t="ekr.20170409174529.64"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.76"><vh>@data:@file @test python bug #357</vh></v>
+<v t="ekr.20170409174529.77"><vh>@data:@file @test python bug #357</vh>
+<v t="ekr.20170409174529.78"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.81"><vh>@data:@file @test python bug #360</vh></v>
+<v t="ekr.20170409174529.82"><vh>@data:@file @test python bug #360</vh>
+<v t="ekr.20170409174529.83"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.88"><vh>@data:@file @test python bug @390</vh></v>
+<v t="ekr.20170409174529.89"><vh>@data:@file @test python bug @390</vh>
+<v t="ekr.20170409174529.90"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.94"><vh>@data:@file @test python bug 603720</vh></v>
+<v t="ekr.20170409174529.95"><vh>@data:@file @test python bug 603720</vh>
+<v t="ekr.20170409174529.96"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.99"><vh>@data:@file @test python class test 2</vh></v>
+<v t="ekr.20170409174529.100"><vh>@data:@file @test python class test 2</vh>
+<v t="ekr.20170409174529.101"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174529.106"><vh>@data:@file @test python class tests 1</vh></v>
+<v t="ekr.20170409174529.107"><vh>@data:@file @test python class tests 1</vh>
+<v t="ekr.20170409174529.108"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.3"><vh>@data:@file @test python comment after dict assign</vh></v>
+<v t="ekr.20170409174530.4"><vh>@data:@file @test python comment after dict assign</vh>
+<v t="ekr.20170409174530.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.8"><vh>@data:@file @test python decls test 1</vh></v>
+<v t="ekr.20170409174530.9"><vh>@data:@file @test python decls test 1</vh>
+<v t="ekr.20170409174530.10"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.15"><vh>@data:@file @test python decorator</vh></v>
+<v t="ekr.20170409174530.16"><vh>@data:@file @test python decorator</vh>
+<v t="ekr.20170409174530.17"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.27"><vh>@data:@file @test python decorator 2</vh></v>
+<v t="ekr.20170409174530.28"><vh>@data:@file @test python decorator 2</vh>
+<v t="ekr.20170409174530.29"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.33"><vh>@data:@file @test python def inside def</vh></v>
+<v t="ekr.20170409174530.34"><vh>@data:@file @test python def inside def</vh>
+<v t="ekr.20170409174530.35"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.40"><vh>@data:@file @test python def test 1</vh></v>
+<v t="ekr.20170409174530.41"><vh>@data:@file @test python def test 1</vh>
+<v t="ekr.20170409174530.42"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.47"><vh>@data:@file @test python def test 2</vh></v>
+<v t="ekr.20170409174530.48"><vh>@data:@file @test python def test 2</vh>
+<v t="ekr.20170409174530.49"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.52"><vh>@data:@file @test python docstring only</vh></v>
+<v t="ekr.20170409174530.53"><vh>@data:@file @test python docstring only</vh>
+<v t="ekr.20170409174530.54"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.57"><vh>@data:@file @test python empty decls</vh></v>
+<v t="ekr.20170409174530.58"><vh>@data:@file @test python empty decls</vh>
+<v t="ekr.20170409174530.59"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.63"><vh>@data:@file @test python extra leading ws test</vh></v>
+<v t="ekr.20170409174530.64"><vh>@data:@file @test python extra leading ws test</vh>
+<v t="ekr.20170409174530.65"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.73"><vh>@data:@file @test python indent decls</vh></v>
+<v t="ekr.20170409174530.74"><vh>@data:@file @test python indent decls</vh>
+<v t="ekr.20170409174530.75"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.85"><vh>@data:@file @test python leoImport.py (small)</vh></v>
+<v t="ekr.20170409174530.86"><vh>@data:@file @test python leoImport.py (small)</vh>
+<v t="ekr.20170409174530.87"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.91"><vh>@data:@file @test python minimal class 1</vh></v>
+<v t="ekr.20170409174530.92"><vh>@data:@file @test python minimal class 1</vh>
+<v t="ekr.20170409174530.93"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.97"><vh>@data:@file @test python minimal class 2</vh></v>
+<v t="ekr.20170409174530.98"><vh>@data:@file @test python minimal class 2</vh>
+<v t="ekr.20170409174530.99"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.103"><vh>@data:@file @test python minimal class 3</vh></v>
+<v t="ekr.20170409174530.104"><vh>@data:@file @test python minimal class 3</vh>
+<v t="ekr.20170409174530.105"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174530.109"><vh>@data:@file @test python overindent def--no following def</vh></v>
+<v t="ekr.20170409174530.110"><vh>@data:@file @test python overindent def--no following def</vh>
+<v t="ekr.20170409174530.111"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.5"><vh>@data:@file @test python overindent def--one following def</vh></v>
+<v t="ekr.20170409174531.6"><vh>@data:@file @test python overindent def--one following def</vh>
+<v t="ekr.20170409174531.7"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.11"><vh>@data:@file @test python overindented def 3</vh></v>
+<v t="ekr.20170409174531.12"><vh>@data:@file @test python overindented def 3</vh>
+<v t="ekr.20170409174531.13"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.18"><vh>@data:@file @test python string test: extra indent</vh></v>
+<v t="ekr.20170409174531.19"><vh>@data:@file @test python string test: extra indent</vh>
+<v t="ekr.20170409174531.20"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.25"><vh>@data:@file @test python string underindent lines</vh></v>
+<v t="ekr.20170409174531.26"><vh>@data:@file @test python string underindent lines</vh>
+<v t="ekr.20170409174531.27"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.32"><vh>@data:@file @test python string underindent lines 2</vh></v>
+<v t="ekr.20170409174531.33"><vh>@data:@file @test python string underindent lines 2</vh>
+<v t="ekr.20170409174531.34"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.41"><vh>@data:@file @test python top-level later decl</vh></v>
+<v t="ekr.20170409174531.42"><vh>@data:@file @test python top-level later decl</vh>
+<v t="ekr.20170409174531.43"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.47"><vh>@data:@file @test python trailing comment</vh></v>
+<v t="ekr.20170409174531.48"><vh>@data:@file @test python trailing comment</vh>
+<v t="ekr.20170409174531.49"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.52"><vh>@data:@file @test python trailing comment--outer levels</vh></v>
+<v t="ekr.20170409174531.53"><vh>@data:@file @test python trailing comment--outer levels</vh>
+<v t="ekr.20170409174531.54"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.58"><vh>@data:@file @test python two functions</vh></v>
+<v t="ekr.20170409174531.59"><vh>@data:@file @test python two functions</vh>
+<v t="ekr.20170409174531.60"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.65"><vh>@data:@file @test python underindent method</vh></v>
+<v t="ekr.20170409174531.66"><vh>@data:@file @test python underindent method</vh>
+<v t="ekr.20170409174531.67"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.71"><vh>@data:@file @test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20170409174531.72"><vh>@data:@file @test python unindent in triple string does not end function</vh>
+<v t="ekr.20170409174531.73"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.152"><vh>@data:@file @test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20170409174531.153"><vh>@data:@file @test python unittest/perfectImport/formatter.py</vh>
+<v t="ekr.20170409174531.154"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.160"><vh>@data:@file @test TypeScript class</vh></v>
+<v t="ekr.20170409174531.161"><vh>@data:@file @test TypeScript class</vh>
+<v t="ekr.20170409174531.162"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.169"><vh>@data:@file @test TypeScript module</vh></v>
+<v t="ekr.20170409174531.170"><vh>@data:@file @test TypeScript module</vh>
+<v t="ekr.20170409174531.171"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.176"><vh>@data:@file @test xml 1</vh></v>
+<v t="ekr.20170409174531.177"><vh>@data:@file @test xml 1</vh>
+<v t="ekr.20170409174531.178"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.181"><vh>@data:@file @test xml 2</vh></v>
+<v t="ekr.20170409174531.182"><vh>@data:@file @test xml 2</vh>
+<v t="ekr.20170409174531.183"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174531.185"><vh>@data:@file @test xml non-ascii tags</vh></v>
+<v t="ekr.20170409174531.186"><vh>@data:@file @test xml non-ascii tags</vh>
+<v t="ekr.20170409174531.187"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174628.38"><vh>@data:@file @test c class 1</vh></v>
+<v t="ekr.20170409174628.39"><vh>@data:@file @test c class 1</vh>
+<v t="ekr.20170409174628.40"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174628.45"><vh>@data:@file @test c class--underindented line</vh></v>
+<v t="ekr.20170409174628.46"><vh>@data:@file @test c class--underindented line</vh>
+<v t="ekr.20170409174629.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.5"><vh>@data:@file @test c comment follows arg list</vh></v>
+<v t="ekr.20170409174629.6"><vh>@data:@file @test c comment follows arg list</vh>
+<v t="ekr.20170409174629.7"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.11"><vh>@data:@file @test c comment follows block delim</vh></v>
+<v t="ekr.20170409174629.12"><vh>@data:@file @test c comment follows block delim</vh>
+<v t="ekr.20170409174629.13"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.16"><vh>@data:@file @test c intermixed blanks and tabs</vh></v>
+<v t="ekr.20170409174629.17"><vh>@data:@file @test c intermixed blanks and tabs</vh>
+<v t="ekr.20170409174629.18"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.21"><vh>@data:@file @test c old-style decl 1</vh></v>
+<v t="ekr.20170409174629.22"><vh>@data:@file @test c old-style decl 1</vh>
+<v t="ekr.20170409174629.23"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.26"><vh>@data:@file @test c old-style decl 2</vh></v>
+<v t="ekr.20170409174629.27"><vh>@data:@file @test c old-style decl 2</vh>
+<v t="ekr.20170409174629.28"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.31"><vh>@data:@file @test c extern</vh></v>
+<v t="ekr.20170409174629.32"><vh>@data:@file @test c extern</vh>
+<v t="ekr.20170409174629.33"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.37"><vh>@data:@file @test c# namespace indent</vh></v>
+<v t="ekr.20170409174629.38"><vh>@data:@file @test c# namespace indent</vh>
+<v t="ekr.20170409174629.39"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.43"><vh>@data:@file @test c# namespace no indent</vh></v>
+<v t="ekr.20170409174629.44"><vh>@data:@file @test c# namespace no indent</vh>
+<v t="ekr.20170409174629.45"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.155"><vh>@data:@file @test coffeescript-1</vh></v>
+<v t="ekr.20170409174629.156"><vh>@data:@file @test coffeescript-1</vh>
+<v t="ekr.20170409174629.157"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.160"><vh>@data:@file @test coffeescript-2</vh></v>
+<v t="ekr.20170409174629.161"><vh>@data:@file @test coffeescript-2</vh>
+<v t="ekr.20170409174629.162"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174629.169"><vh>@data:@file @test coffeescript-3</vh></v>
+<v t="ekr.20170409174629.170"><vh>@data:@file @test coffeescript-3</vh>
+<v t="ekr.20170409174629.171"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.5"><vh>@data:@file @test dart hello world</vh></v>
+<v t="ekr.20170409174630.6"><vh>@data:@file @test dart hello world</vh>
+<v t="ekr.20170409174630.7"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.11"><vh>@data:@file @test elisp</vh></v>
+<v t="ekr.20170409174630.12"><vh>@data:@file @test elisp</vh>
+<v t="ekr.20170409174630.13"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.18"><vh>@data:@file @test html: lowercase tags</vh></v>
+<v t="ekr.20170409174630.19"><vh>@data:@file @test html: lowercase tags</vh>
+<v t="ekr.20170409174630.20"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.41"><vh>@data:@file @test html: multiple tags on a line</vh></v>
+<v t="ekr.20170409174630.42"><vh>@data:@file @test html: multiple tags on a line</vh>
+<v t="ekr.20170409174630.43"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.45"><vh>@data:@file @test html: multple node starts on a line</vh></v>
+<v t="ekr.20170409174630.46"><vh>@data:@file @test html: multple node starts on a line</vh>
+<v t="ekr.20170409174630.47"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.52"><vh>@data:@file @test html: underindented comment</vh></v>
+<v t="ekr.20170409174630.53"><vh>@data:@file @test html: underindented comment</vh>
+<v t="ekr.20170409174630.54"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.59"><vh>@data:@file @test html: uppercase tags</vh></v>
+<v t="ekr.20170409174630.60"><vh>@data:@file @test html: uppercase tags</vh>
+<v t="ekr.20170409174630.61"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.67"><vh>@data:@file @test html: improperly nested tags</vh></v>
+<v t="ekr.20170409174630.68"><vh>@data:@file @test html: improperly nested tags</vh>
+<v t="ekr.20170409174630.69"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.75"><vh>@data:@file @test html: improperly terminated tags</vh></v>
+<v t="ekr.20170409174630.76"><vh>@data:@file @test html: improperly terminated tags</vh>
+<v t="ekr.20170409174630.77"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.83"><vh>@data:@file @test html: improperly terminated tags2</vh></v>
+<v t="ekr.20170409174630.84"><vh>@data:@file @test html: improperly terminated tags2</vh>
+<v t="ekr.20170409174630.85"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.89"><vh>@data:@file @test ini-test-1</vh></v>
+<v t="ekr.20170409174630.90"><vh>@data:@file @test ini-test-1</vh>
+<v t="ekr.20170409174630.91"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.95"><vh>@data:@file @test from AdminPermission.java</vh></v>
+<v t="ekr.20170409174630.96"><vh>@data:@file @test from AdminPermission.java</vh>
+<v t="ekr.20170409174630.97"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174630.101"><vh>@data:@file @test from BundleException.java</vh></v>
+<v t="ekr.20170409174630.102"><vh>@data:@file @test from BundleException.java</vh>
+<v t="ekr.20170409174630.103"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.3"><vh>@data:@file @test java interface test1</vh></v>
+<v t="ekr.20170409174631.4"><vh>@data:@file @test java interface test1</vh>
+<v t="ekr.20170409174631.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.8"><vh>@data:@file @test java interface test2</vh></v>
+<v t="ekr.20170409174631.9"><vh>@data:@file @test java interface test2</vh>
+<v t="ekr.20170409174631.10"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.13"><vh>@data:@file @test Javascript-regex-1</vh></v>
+<v t="ekr.20170409174631.14"><vh>@data:@file @test Javascript-regex-1</vh>
+<v t="ekr.20170409174631.15"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.20"><vh>@data:@file @test Javascript-3</vh></v>
+<v t="ekr.20170409174631.21"><vh>@data:@file @test Javascript-3</vh>
+<v t="ekr.20170409174631.22"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.26"><vh>@data:@file @test Javascript-4</vh></v>
+<v t="ekr.20170409174631.27"><vh>@data:@file @test Javascript-4</vh>
+<v t="ekr.20170409174631.28"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.32"><vh>@data:@file @test Javascript-5</vh></v>
+<v t="ekr.20170409174631.33"><vh>@data:@file @test Javascript-5</vh>
+<v t="ekr.20170409174631.34"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.42"><vh>@data:@auto-org @test org-1</vh>
+<v t="ekr.20170409174631.43"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.51"><vh>@data:@auto-vim-outline @test otl-1</vh>
+<v t="ekr.20170409174631.52"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.57"><vh>@data:@file @test pascal-to-delphi interface</vh></v>
+<v t="ekr.20170409174631.58"><vh>@data:@file @test pascal-to-delphi interface</vh>
+<v t="ekr.20170409174631.59"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.64"><vh>@data:@file @test perl-1</vh></v>
+<v t="ekr.20170409174631.65"><vh>@data:@file @test perl-1</vh>
+<v t="ekr.20170409174631.66"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.71"><vh>@data:@file @test perlpod comment</vh></v>
+<v t="ekr.20170409174631.72"><vh>@data:@file @test perlpod comment</vh>
+<v t="ekr.20170409174631.73"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.75"><vh>@data:@file @test perl multi-line string</vh></v>
+<v t="ekr.20170409174631.76"><vh>@data:@file @test perl multi-line string</vh>
+<v t="ekr.20170409174631.77"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.83"><vh>@data:@file @test perl regex-1</vh></v>
+<v t="ekr.20170409174631.84"><vh>@data:@file @test perl regex-1</vh>
+<v t="ekr.20170409174631.85"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174631.91"><vh>@data:@file @test perl regex-2</vh></v>
+<v t="ekr.20170409174631.92"><vh>@data:@file @test perl regex-2</vh>
+<v t="ekr.20170409174631.93"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.4"><vh>@data:@file @test php import class</vh></v>
+<v t="ekr.20170409174632.5"><vh>@data:@file @test php import class</vh>
+<v t="ekr.20170409174632.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.11"><vh>@data:@file @test php import conditional class</vh></v>
+<v t="ekr.20170409174632.12"><vh>@data:@file @test php import conditional class</vh>
+<v t="ekr.20170409174632.13"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.16"><vh>@data:@file @test php import classes &amp; functions</vh></v>
+<v t="ekr.20170409174632.17"><vh>@data:@file @test php import classes &amp; functions</vh>
+<v t="ekr.20170409174632.18"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.21"><vh>@data:@file @test php here doc</vh></v>
+<v t="ekr.20170409174632.22"><vh>@data:@file @test php here doc</vh>
+<v t="ekr.20170409174632.23"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.27"><vh>@data:@file @test leoApp fail</vh></v>
+<v t="ekr.20170409174632.28"><vh>@data:@file @test leoApp fail</vh>
+<v t="ekr.20170409174632.29"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.33"><vh>@data:@file @test python bad class test</vh></v>
+<v t="ekr.20170409174632.34"><vh>@data:@file @test python bad class test</vh>
+<v t="ekr.20170409174632.35"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.43"><vh>@data:@file @test python basic nesting test</vh></v>
+<v t="ekr.20170409174632.44"><vh>@data:@file @test python basic nesting test</vh>
+<v t="ekr.20170409174632.45"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.49"><vh>@data:@file @test python bug #346</vh></v>
+<v t="ekr.20170409174632.50"><vh>@data:@file @test python bug #346</vh>
+<v t="ekr.20170409174632.51"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.54"><vh>@data:@file @test python bug #354</vh></v>
+<v t="ekr.20170409174632.55"><vh>@data:@file @test python bug #354</vh>
+<v t="ekr.20170409174632.56"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.68"><vh>@data:@file @test python bug #357</vh></v>
+<v t="ekr.20170409174632.69"><vh>@data:@file @test python bug #357</vh>
+<v t="ekr.20170409174632.70"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.73"><vh>@data:@file @test python bug #360</vh></v>
+<v t="ekr.20170409174632.74"><vh>@data:@file @test python bug #360</vh>
+<v t="ekr.20170409174632.75"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174632.80"><vh>@data:@file @test python bug @390</vh></v>
+<v t="ekr.20170409174632.81"><vh>@data:@file @test python bug @390</vh>
+<v t="ekr.20170409174632.82"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.1"><vh>@data:@file @test python bug 603720</vh></v>
+<v t="ekr.20170409174633.2"><vh>@data:@file @test python bug 603720</vh>
+<v t="ekr.20170409174633.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.6"><vh>@data:@file @test python class test 2</vh></v>
+<v t="ekr.20170409174633.7"><vh>@data:@file @test python class test 2</vh>
+<v t="ekr.20170409174633.8"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.13"><vh>@data:@file @test python class tests 1</vh></v>
+<v t="ekr.20170409174633.14"><vh>@data:@file @test python class tests 1</vh>
+<v t="ekr.20170409174633.15"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.18"><vh>@data:@file @test python comment after dict assign</vh></v>
+<v t="ekr.20170409174633.19"><vh>@data:@file @test python comment after dict assign</vh>
+<v t="ekr.20170409174633.20"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.23"><vh>@data:@file @test python decls test 1</vh></v>
+<v t="ekr.20170409174633.24"><vh>@data:@file @test python decls test 1</vh>
+<v t="ekr.20170409174633.25"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.30"><vh>@data:@file @test python decorator</vh></v>
+<v t="ekr.20170409174633.31"><vh>@data:@file @test python decorator</vh>
+<v t="ekr.20170409174633.32"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.42"><vh>@data:@file @test python decorator 2</vh></v>
+<v t="ekr.20170409174633.43"><vh>@data:@file @test python decorator 2</vh>
+<v t="ekr.20170409174633.44"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.48"><vh>@data:@file @test python def inside def</vh></v>
+<v t="ekr.20170409174633.49"><vh>@data:@file @test python def inside def</vh>
+<v t="ekr.20170409174633.50"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.55"><vh>@data:@file @test python def test 1</vh></v>
+<v t="ekr.20170409174633.56"><vh>@data:@file @test python def test 1</vh>
+<v t="ekr.20170409174633.57"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.62"><vh>@data:@file @test python def test 2</vh></v>
+<v t="ekr.20170409174633.63"><vh>@data:@file @test python def test 2</vh>
+<v t="ekr.20170409174633.64"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.67"><vh>@data:@file @test python docstring only</vh></v>
+<v t="ekr.20170409174633.68"><vh>@data:@file @test python docstring only</vh>
+<v t="ekr.20170409174633.69"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.72"><vh>@data:@file @test python empty decls</vh></v>
+<v t="ekr.20170409174633.73"><vh>@data:@file @test python empty decls</vh>
+<v t="ekr.20170409174633.74"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174633.78"><vh>@data:@file @test python extra leading ws test</vh></v>
+<v t="ekr.20170409174633.79"><vh>@data:@file @test python extra leading ws test</vh>
+<v t="ekr.20170409174633.80"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.8"><vh>@data:@file @test python indent decls</vh></v>
+<v t="ekr.20170409174634.9"><vh>@data:@file @test python indent decls</vh>
+<v t="ekr.20170409174634.10"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.20"><vh>@data:@file @test python leoImport.py (small)</vh></v>
+<v t="ekr.20170409174634.21"><vh>@data:@file @test python leoImport.py (small)</vh>
+<v t="ekr.20170409174634.22"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.26"><vh>@data:@file @test python minimal class 1</vh></v>
+<v t="ekr.20170409174634.27"><vh>@data:@file @test python minimal class 1</vh>
+<v t="ekr.20170409174634.28"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.32"><vh>@data:@file @test python minimal class 2</vh></v>
+<v t="ekr.20170409174634.33"><vh>@data:@file @test python minimal class 2</vh>
+<v t="ekr.20170409174634.34"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.38"><vh>@data:@file @test python minimal class 3</vh></v>
+<v t="ekr.20170409174634.39"><vh>@data:@file @test python minimal class 3</vh>
+<v t="ekr.20170409174634.40"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.44"><vh>@data:@file @test python overindent def--no following def</vh></v>
+<v t="ekr.20170409174634.45"><vh>@data:@file @test python overindent def--no following def</vh>
+<v t="ekr.20170409174634.46"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.51"><vh>@data:@file @test python overindent def--one following def</vh></v>
+<v t="ekr.20170409174634.52"><vh>@data:@file @test python overindent def--one following def</vh>
+<v t="ekr.20170409174634.53"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.57"><vh>@data:@file @test python overindented def 3</vh></v>
+<v t="ekr.20170409174634.58"><vh>@data:@file @test python overindented def 3</vh>
+<v t="ekr.20170409174634.59"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.64"><vh>@data:@file @test python string test: extra indent</vh></v>
+<v t="ekr.20170409174634.65"><vh>@data:@file @test python string test: extra indent</vh>
+<v t="ekr.20170409174634.66"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.71"><vh>@data:@file @test python string underindent lines</vh></v>
+<v t="ekr.20170409174634.72"><vh>@data:@file @test python string underindent lines</vh>
+<v t="ekr.20170409174634.73"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.78"><vh>@data:@file @test python string underindent lines 2</vh></v>
+<v t="ekr.20170409174634.79"><vh>@data:@file @test python string underindent lines 2</vh>
+<v t="ekr.20170409174634.80"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.87"><vh>@data:@file @test python top-level later decl</vh></v>
+<v t="ekr.20170409174634.88"><vh>@data:@file @test python top-level later decl</vh>
+<v t="ekr.20170409174634.89"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174634.93"><vh>@data:@file @test python trailing comment</vh></v>
+<v t="ekr.20170409174634.94"><vh>@data:@file @test python trailing comment</vh>
+<v t="ekr.20170409174634.95"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.3"><vh>@data:@file @test python trailing comment--outer levels</vh></v>
+<v t="ekr.20170409174635.4"><vh>@data:@file @test python trailing comment--outer levels</vh>
+<v t="ekr.20170409174635.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.9"><vh>@data:@file @test python two functions</vh></v>
+<v t="ekr.20170409174635.10"><vh>@data:@file @test python two functions</vh>
+<v t="ekr.20170409174635.11"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.16"><vh>@data:@file @test python underindent method</vh></v>
+<v t="ekr.20170409174635.17"><vh>@data:@file @test python underindent method</vh>
+<v t="ekr.20170409174635.18"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.22"><vh>@data:@file @test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20170409174635.23"><vh>@data:@file @test python unindent in triple string does not end function</vh>
+<v t="ekr.20170409174635.24"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.103"><vh>@data:@file @test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20170409174635.104"><vh>@data:@file @test python unittest/perfectImport/formatter.py</vh>
+<v t="ekr.20170409174635.105"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.111"><vh>@data:@file @test TypeScript class</vh></v>
+<v t="ekr.20170409174635.112"><vh>@data:@file @test TypeScript class</vh>
+<v t="ekr.20170409174635.113"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.120"><vh>@data:@file @test TypeScript module</vh></v>
+<v t="ekr.20170409174635.121"><vh>@data:@file @test TypeScript module</vh>
+<v t="ekr.20170409174635.122"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.127"><vh>@data:@file @test xml 1</vh></v>
+<v t="ekr.20170409174635.128"><vh>@data:@file @test xml 1</vh>
+<v t="ekr.20170409174635.129"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.132"><vh>@data:@file @test xml 2</vh></v>
+<v t="ekr.20170409174635.133"><vh>@data:@file @test xml 2</vh>
+<v t="ekr.20170409174635.134"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174635.136"><vh>@data:@file @test xml non-ascii tags</vh></v>
+<v t="ekr.20170409174635.137"><vh>@data:@file @test xml non-ascii tags</vh>
+<v t="ekr.20170409174635.138"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174906.3"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409174906.4"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409174906.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174948.3"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409174948.4"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409174948.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409174954.3"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409174954.4"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409174954.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409175016.3"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409175016.4"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409175016.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170409175027.3"><vh>@data:@file @test python looks like section ref</vh></v>
+<v t="ekr.20170409175027.4"><vh>@data:@file @test python looks like section ref</vh>
+<v t="ekr.20170409175027.5"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
@@ -209,8 +964,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -270,50 +1025,109 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 </v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
-<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
-<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
-<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
-<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
-<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
-<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
-<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
-<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
-<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
-<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
-<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
-<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
-<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
-<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
-<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
-<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
-<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
-<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
+<v t="ekr.20041021065844"><vh>@test @asis</vh>
+<v t="ekr.20041021065903"><vh>#@asis</vh>
+<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
+<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
+</v>
+<v t="ekr.20041021065844.1"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
+<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
+<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
+<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
+</v>
+<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
+<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
+<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
+<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
+<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
+<v t="ekr.20090225102051.4"><vh>Output</vh></v>
+</v>
+<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
+<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
+<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
+<v t="ekr.20170410084645.1"><vh>Old-Output</vh></v>
+</v>
+<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
+<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
+<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
+<v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
+<v t="ekr.20110524091618.3488"><vh>@test at.massageDocPart</vh></v>
+<v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
+<v t="ekr.20170408233251.1"><vh>@test at.putRefLine 1</vh>
+<v t="ekr.20170408234524.1"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170408234531.1"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20170409003052.1"><vh>@test at.putRefLine 2</vh>
+<v t="ekr.20170409003052.2"><vh>&lt;&lt; a &gt;&gt;</vh></v>
+<v t="ekr.20170409003052.3"><vh>&lt;&lt; b &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
+</v>
+<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
+<v t="ekr.20050105093524"><vh>@test at.rename</vh></v>
+<v t="ekr.20090529115704.4566"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
+<v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
+<v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
+<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
+<v t="ekr.20060602195313.2"><vh>root</vh>
+<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
+<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
+</v>
+<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
+<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
+<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
+<v t="ekr.20101021205258.6011"><vh>at.Directives &amp; directories</vh>
+<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
+<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
+<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
+</v>
+<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
+<v t="ekr.20111113091935.4786"><vh>Not valid when run externally</vh>
+<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
+<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
+<v t="ekr.20090704085350.5018"><vh>@@test @shadow: shape of tree</vh></v>
+<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
+<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
+<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
+<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
+<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
+<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
+<v t="ekr.20040707141957.14"><vh>Output</vh></v>
+</v>
+</v>
+<v t="ekr.20101021210253.6018"><vh>Unused</vh>
+<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
+<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.105"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
+<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.108"><vh>Output</vh></v>
+</v>
+<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
+<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
+<v t="ekr.20040712101754.111"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
+</v>
 </v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
@@ -350,11 +1164,12 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
-<v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
+<v t="ekr.20140218122321.4349"><vh>@test html: multple node completed on a line</vh></v>
+<v t="ekr.20170416085619.1" a="M"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
@@ -575,14 +1390,71 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20170401122030.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
 <v t="ekr.20170401122030.2"><vh>class foo</vh></v>
 </v>
+<v t="ekr.20170409174529.27"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170409174529.28"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170409174632.19"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170409174632.20"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170410190519.53"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170410190519.54"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170415061122.50"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170415061122.51"><vh>class foo</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4736"></v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
+<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
+<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
+<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
+<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
+<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
+<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
+<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
+<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
+<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
+<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
+<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
+<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
+<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
+<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
+<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+</v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
 <v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
 </v>
 <v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
 <v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
@@ -1033,75 +1905,9 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
 </v>
 <v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
-<v t="ekr.20090529141856.4785" a="M"><vh>@test rST import test</vh>
-<v t="ekr.20170401122751.1"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh>
-<v t="ekr.20170401122751.2"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20170401122751.3"><vh>top</vh>
-<v t="ekr.20170401122751.4"><vh>section 1</vh></v>
-<v t="ekr.20170401122751.5"><vh>section 2</vh>
-<v t="ekr.20170401122751.6"><vh>section 2.1</vh>
-<v t="ekr.20170401122751.7"><vh>section 2.1.1</vh></v>
-</v>
-</v>
-<v t="ekr.20170401122751.8"><vh>section 3</vh>
-<v t="ekr.20170401122751.9"><vh>placeholder</vh>
-<v t="ekr.20170401122751.10"><vh>section 3.1.1</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20170401122755.1"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test</vh>
-<v t="ekr.20170401122755.2"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20170401122755.3"><vh>top</vh>
-<v t="ekr.20170401122755.4"><vh>section 1</vh></v>
-<v t="ekr.20170401122755.5"><vh>section 2</vh>
-<v t="ekr.20170401122755.6"><vh>section 2.1</vh>
-<v t="ekr.20170401122755.7"><vh>section 2.1.1</vh></v>
-</v>
-</v>
-<v t="ekr.20170401122755.8"><vh>section 3</vh>
-<v t="ekr.20170401122755.9"><vh>placeholder</vh>
-<v t="ekr.20170401122755.10"><vh>section 3.1.1</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
-<v t="ekr.20090529141856.4786" a="M"><vh>@test rST import test: no double-underlines</vh>
-<v t="ekr.20170401122141.1"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines</vh>
-<v t="ekr.20170401122141.2"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20170401122141.3"><vh>top</vh>
-<v t="ekr.20170401122141.4"><vh>section 1</vh></v>
-<v t="ekr.20170401122141.5"><vh>section 2</vh>
-<v t="ekr.20170401122141.6"><vh>section 2.1</vh>
-<v t="ekr.20170401122141.7"><vh>section 2.1.1</vh></v>
-</v>
-</v>
-<v t="ekr.20170401122141.8"><vh>section 3</vh>
-<v t="ekr.20170401122141.9"><vh>placeholder</vh>
-<v t="ekr.20170401122141.10"><vh>section 3.1.1</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20170401122755.14"><vh>@@auto-rst c:/leo.repo/leo-editor/leo/test/rST import test: no double-underlines</vh>
-<v t="ekr.20170401122755.15"><vh>!Dummy chapter</vh></v>
-<v t="ekr.20170401122755.16"><vh>top</vh>
-<v t="ekr.20170401122755.17"><vh>section 1</vh></v>
-<v t="ekr.20170401122755.18"><vh>section 2</vh>
-<v t="ekr.20170401122755.19"><vh>section 2.1</vh>
-<v t="ekr.20170401122755.20"><vh>section 2.1.1</vh></v>
-</v>
-</v>
-<v t="ekr.20170401122755.21"><vh>section 3</vh>
-<v t="ekr.20170401122755.22"><vh>placeholder</vh>
-<v t="ekr.20170401122755.23"><vh>section 3.1.1</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
@@ -1119,106 +1925,12 @@ marks="ekr.20170401123840.8,ekr.20090529141856.4785,ekr.20090529141856.4786,"><v
 <v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
 <v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
+<v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
-<v t="ekr.20041021065844"><vh>@test @asis</vh>
-<v t="ekr.20041021065903"><vh>#@asis</vh>
-<v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
-<v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
-</v>
-<v t="ekr.20041021065844.1"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
-<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
-<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
-<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
-</v>
-<v t="ekr.20100801125533.5787"><vh>@test @auto (no newline at end of nodes)</vh>
-<v t="ekr.20100801125533.5788"><vh>#@auto</vh>
-<v t="ekr.20100801125533.5789"><vh>spam</vh></v>
-<v t="ekr.20100801125533.5790"><vh>cheese</vh></v>
-</v>
-<v t="ekr.20100801125533.5791"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
-<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
-<v t="ekr.20090225102051.4"><vh>Output</vh></v>
-</v>
-<v t="ekr.20110524120515.3489"><vh>@test @raw</vh>
-<v t="ekr.20110524120515.3490"><vh>#@file</vh></v>
-<v t="ekr.20110524120515.3491"><vh>Output</vh></v>
-</v>
-<v t="ekr.20071113145804.8"><vh>@test at.directiveKind4</vh></v>
-<v t="ekr.20170123035753.1"><vh>@test at.directiveKind4 (new)</vh></v>
-<v t="ekr.20100225094004.5385"><vh>@test at.isFileLike</vh></v>
-<v t="ekr.20071113143844.5"><vh>@test at.isSignificantTree</vh></v>
-<v t="ekr.20110524091618.3488"><vh>@test at.massageDocPart</vh></v>
-<v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
-<v t="ekr.20071113145804.7"><vh>@test at.parseLeoSentinel</vh></v>
-<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
-</v>
-<v t="ekr.20120228174052.3929"><vh>Node 1</vh></v>
-<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
-<v t="ekr.20050105093524"><vh>@test at.rename</vh></v>
-<v t="ekr.20090529115704.4566"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
-<v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
-<v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
-<v t="ekr.20060602195313"><vh>@test at.write using @comment</vh>
-<v t="ekr.20060602195313.2"><vh>root</vh>
-<v t="ekr.20060602195313.3"><vh>&lt;&lt; Get LRR Task &gt;&gt;</vh></v>
-<v t="ekr.20060602195313.4"><vh>&lt;&lt; Start LRR &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20060602195914"><vh>Result</vh></v>
-</v>
-<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
-</v>
-<v t="ekr.20130912092638.4151"><vh>@test utf-16 encoding</vh></v>
-<v t="ekr.20100131180007.5462"><vh>@test verbatim sentinel</vh></v>
-<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
-<v t="ekr.20101021205258.6011"><vh>at.Directives &amp; directories</vh>
-<v t="ekr.20100131180007.5454"><vh>@test at.get/setPathUa</vh></v>
-<v t="ekr.20100131180007.5461"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20100131180007.5458"><vh>@test at.scanAllDirectives (minimal)</vh></v>
-<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
-</v>
-<v t="ekr.20111113091935.4786"><vh>Not valid when run externally</vh>
-<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
-<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
-<v t="ekr.20090704085350.5018"><vh>@@test @shadow: shape of tree</vh></v>
-<v t="ekr.20100731163237.5778"><vh>@test @thin: html section references</vh></v>
-<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
-<v t="ekr.20111021115306.3696"><vh>@test @file: tex bug</vh></v>
-<v t="ekr.20100802220019.5795"><vh>@test at.deleteUnvistedNodes</vh></v>
-<v t="ekr.20040707141957.12"><vh>@test @thin: @last</vh>
-<v t="ekr.20040707141957.13"><vh>#@thin</vh></v>
-<v t="ekr.20040707141957.14"><vh>Output</vh></v>
-</v>
-</v>
-<v t="ekr.20101021210253.6018"><vh>Unused</vh>
-<v t="ekr.20040712101754.103"><vh>@@test @file no newline</vh>
-<v t="ekr.20040712101754.104"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.105"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.106"><vh>@@test @file one newline</vh>
-<v t="ekr.20040712101754.107"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.108"><vh>Output</vh></v>
-</v>
-<v t="ekr.20040712101754.109"><vh>@@test @file two newlines</vh>
-<v t="ekr.20040712101754.110"><vh>#@file</vh></v>
-<v t="ekr.20040712101754.111"><vh>Output</vh></v>
-</v>
-<v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
-</v>
-</v>
-<v t="ekr.20071113145804.7"></v>
+<v t="ekr.20090529141856.4780"></v>
+<v t="ekr.20111029112647.4099" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1457,7 +2169,7 @@ finally:
 import leo.core.leoAtFile as leoAtFile
 at = c.atFileCommands
 exists = g.os_path_exists
-at.outputFileName = None ### g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
 # Remove both files.
 for fn in (at.outputFileName,at.targetFileName):
@@ -1727,20 +2439,47 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20060602195313">at = c.atFileCommands
+<t tx="ekr.20060602195313">import re
+at = c.atFileCommands
+expected = '''\
+/*@+leo-ver=5-thin*/
+/*@+node:GNX: * root*/
+/*@@language c*/
+#ifdef COMMENT
+/*@@comment /* */ */
+#endif
+/*@@tabwidth 4*/
+/*@@lineending crlf*/
+
+/*@+others*/
+/*@-others*/
+
+/*@+&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Get LRR Task &gt; &gt;*/
+/*@-&lt; &lt; Get LRR Task &gt; &gt;*/
+/*@+&lt; &lt; Start LRR &gt; &gt;*/
+/*@+node:GNX: ** &lt; &lt; Start LRR &gt; &gt;*/
+/*@-&lt; &lt; Start LRR &gt; &gt;*/
+/*@-leo*/
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
 child = p.firstChild()
-child2 = child.next()
-result = str(child2.b)
-at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
-s = str(at.stringOutput)
+at.write(child, toString=True)
+    # Default: nosentinels=False
+result = str(at.stringOutput)
+result = re.sub(r'@\+node:(.+):', '@+node:GNX:', result)
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    print('len(expected): %s, len(result): %s' % (len(expected), len(result)))
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
 
-if s != result:
-    print('-' * 30)
-    print(s)
-    print('-' * 30)
-    print(result)
-
-assert s == result
+assert result == expected
 </t>
 <t tx="ekr.20060602195313.2">@language c
 #ifdef COMMENT
@@ -1756,26 +2495,6 @@ assert s == result
 </t>
 <t tx="ekr.20060602195313.3"></t>
 <t tx="ekr.20060602195313.4"></t>
-<t tx="ekr.20060602195914">/*@+leo-ver=5*/
-/*@+node:root*/
-/*@@language c*/
-#ifdef COMMENT
-/*@@comment /* */ */
-#endif
-/*@@tabwidth 4*/
-/*@@lineending crlf*/
-
-/*@+others*/
-/*@-others*/
-
-/*@+&lt;&lt; Get LRR Task &gt;&gt;*/
-/*@+node:&lt;&lt; Get LRR Task &gt;&gt;*/
-/*@-&lt;&lt; Get LRR Task &gt;&gt;*/
-/*@+&lt;&lt; Start LRR &gt;&gt;*/
-/*@+node:&lt;&lt; Start LRR &gt;&gt;*/
-/*@-&lt;&lt; Start LRR &gt;&gt;*/
-/*@-leo*/
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -2604,7 +3323,7 @@ if sys.platform.lower().startswith('win'):
 <t tx="ekr.20090529141856.4731"></t>
 <t tx="ekr.20090529141856.4733">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2656,7 +3375,7 @@ finally:
 <t tx="ekr.20090529141856.4734"></t>
 <t tx="ekr.20090529141856.4735">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -2727,7 +3446,7 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.
+<t tx="ekr.20090529141856.4736">
 </t>
 <t tx="ekr.20090529141856.4766"></t>
 <t tx="ekr.20090529141856.4767">if 0: # Preamble...
@@ -3113,14 +3832,38 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 &lt;/body&gt;
 &lt;/html&gt;
 '''
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "&lt;html&gt;"),
+    (2, "&lt;head&gt;"),
+    (2, "&lt;body class='bodystring'&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20090529141856.4783"># Not a real unit test.
 c.contractAllHeadlines()
 </t>
 <t tx="ekr.20090529141856.4784"></t>
 <t tx="ekr.20090529141856.4785">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -3202,7 +3945,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4786">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -3283,7 +4026,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4787">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -3325,7 +4068,7 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20090529141856.4788">if 0: # Preamble
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
     import leo.plugins.importers.linescanner as linescanner
@@ -4067,8 +4810,8 @@ assert s2 == 'line 2.\n',repr(s2)
 
 #after
 </t>
-<t tx="ekr.20110524120515.3491">#@+leo-ver=5
-#@+node:#@file
+<t tx="ekr.20110524120515.3491">#@+leo-ver=5-thin
+#@+node:ekr.20110524120515.3490: * #@file
 # before
 
 #@@raw
@@ -4110,9 +4853,29 @@ if not g.app.isExternalUnitTest:
 &lt;nodeB/&gt;
 &lt;/nodeA&gt;
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+table = (
+    (1, "&lt;nodeA&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
 
@@ -4145,13 +4908,12 @@ try:
     root = c.p.firstChild()
     assert root.h.endswith('lowercase tags'), root.h
     p2 = root.firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20111029120441.3982">s = '''\
 &lt;HTML&gt;
@@ -4189,20 +4951,18 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 
 '''
 table = (
-    '&lt;td width="550"&gt;',
     '&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;',
     '&lt;table&gt;',
 )
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
-    for i, h in enumerate(table):
+    for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
+    p.deleteAllChildren()
 finally:
-    if 1:
-        p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -4220,7 +4980,6 @@ setting = 'import_html_tags'
 c.config.set(setting,'data',html_tags)
 tags = c.config.getData(setting)
 assert tags == html_tags,len(tags)
-
 try:
     c.importCommands.importFilesCommand(files=[fn],treeType='@file')
 finally:
@@ -4229,82 +4988,76 @@ finally:
             root.firstChild().doDelete()
         c.redraw()
     assert not root.hasChildren()
-
 fail = g.app.unitTestDict.get('fail')
 assert not fail
 </t>
-<t tx="ekr.20111109143012.3839">@language html
-    # Essential for the unit test.
-    
-# This part of the test file caused lots of problems.
-
+<t tx="ekr.20111109143012.3839">@language python
+# tags that cause nodes: html, head, body, div, table, nodeA, nodeB
+# NOT: tr, td, tbody, etc.
+@language html
 s = '''
-
 &lt;html&gt;
-
 &lt;body&gt;
-
-&lt;table id="0"&gt;
-&lt;tr valign="top"&gt;
-&lt;td width="619"&gt;
-	&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
-		&lt;table id="3"&gt;
-		&lt;tr&gt;
-		&lt;td width="368"&gt;
-			&lt;table id="4"&gt;
-
-&lt;tbody id="5"&gt;
-
-&lt;tr valign="top"&gt;
-&lt;td width="550"&gt;
-&lt;table id="6"&gt;
-
-&lt;tbody id="6"&gt;
-&lt;tr&gt;
-
-&lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-
-&lt;/table&gt;
-
-&lt;/td&gt;
-&lt;/tr&gt;&lt;tr&gt;
-&lt;td width="100%" colspan="2"&gt;
-
-
-&lt;br /&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;	
-							&lt;/td&gt;
-						&lt;/tr&gt;
-						&lt;/table&gt;
-
-	&lt;!-- View First part --&gt;	&lt;/td&gt;	&lt;td width="242"&gt;	&lt;!-- View Second part --&gt;
-
-	&lt;!-- View Second part --&gt;	&lt;/td&gt;	&lt;/tr&gt;&lt;/table&gt;										
-
-
-&lt;DIV class="webonly"&gt;
-
-&lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
-	
-&lt;/DIV&gt;
-&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
-&lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
-&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+    &lt;table id="0"&gt;
+        &lt;tr valign="top"&gt;
+        &lt;td width="619"&gt;
+        &lt;table id="2"&gt; &lt;tr valign="top"&gt; &lt;td width="377"&gt;
+            &lt;table id="3"&gt;
+            &lt;tr&gt;
+            &lt;td width="368"&gt;
+            &lt;table id="4"&gt;
+                &lt;tbody id="5"&gt;
+                &lt;tr valign="top"&gt;
+                &lt;td width="550"&gt;
+                &lt;table id="6"&gt;
+                    &lt;tbody id="6"&gt;
+                    &lt;tr&gt;
+                    &lt;td class="blutopgrabot"&gt;&lt;a href="href1"&gt;Listing Standards&lt;/a&gt; | &lt;a href="href2"&gt;Fees&lt;/a&gt; | &lt;strong&gt;Non-compliant Issuers&lt;/strong&gt; | &lt;a href="href3"&gt;Form 25 Filings&lt;/a&gt; &lt;/td&gt;
+                    &lt;/tr&gt;
+                    &lt;/tbody&gt;
+                &lt;/table&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;&lt;tr&gt;
+                &lt;td width="100%" colspan="2"&gt;
+                &lt;br /&gt;
+                &lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;/tbody&gt;
+            &lt;/table&gt;	
+            &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+        &lt;!-- View First part --&gt; &lt;/td&gt; &lt;td width="242"&gt; &lt;!-- View Second part --&gt;
+        &lt;!-- View Second part --&gt; &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;
+    &lt;DIV class="webonly"&gt;
+        &lt;script src="/scripts/footer.js"&gt;&lt;/script&gt;
+    &lt;/DIV&gt;
+    &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;script language="JavaScript1.1"&gt;var SA_ID="nyse;nyse";&lt;/script&gt;
+    &lt;script language="JavaScript1.1" src="/scripts/stats/track.js"&gt;&lt;/script&gt;
+    &lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
 &lt;/body&gt;
 &lt;/html&gt;
-
 '''
+@language python
 
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+# c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+table = (
+    '&lt;html&gt;',
+    '&lt;body&gt;',
+    '&lt;table id="0"&gt;',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -4333,9 +5086,21 @@ run-all-unit-tests-locally          = Alt-6
 
 &lt;/body&gt;
 '''
+table = (
+    ('&lt;body&gt;'),
+    ('&lt;div id="D666"&gt;'),
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2.h == h, (p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20111112103320.3887">s = r'''
 &lt;html&gt;
@@ -4351,17 +5116,20 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
     
 &lt;!-- oops: missing tags. --&gt;
 '''
-table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+table = (
+    '&lt;html&gt;',
+    '&lt;head&gt;',
+)
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for i, h in enumerate(table):
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20111112103320.3893">s = '''
 &lt;html&gt;
@@ -4377,16 +5145,16 @@ finally:
 &lt;/head&gt;
 &lt;/html&gt;
 '''
-table = ('&lt;html&gt;', '&lt;head&gt;', '&lt;link id="L1"&gt;')
+table = ('&lt;html&gt;', '&lt;head&gt;') # , '&lt;link id="L1"&gt;'
 try:
     c.importCommands.htmlUnitTest(p,s=s,showTree=True)
     p2 = c.p.firstChild().firstChild()
     for h in table:
         assert p2.h == h, (p2.h, h)
         p2.moveToThreadNext()
-finally:
     if 1:
         p.deleteAllChildren()
+finally:
         c.redraw()
 </t>
 <t tx="ekr.20111113091935.4786">@nocolor-node
@@ -4483,7 +5251,7 @@ try:
     assert child
 
     ic.errors = 0
-    ic.createOutline (fn,parent=child,atAuto=True,atShadow=False,s=None,ext=None)
+    ic.createOutline (fn,parent=child,s=None,ext=None)
     assert ic.errors == 0
 finally:
     setup(p)
@@ -4503,9 +5271,14 @@ s = '''\
 &lt;Ì&gt;
 &lt;_.ÌÑ&gt;
 '''
-
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+ic = c.importCommands
+try:
+    test_node = p.copy()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>
@@ -4896,14 +5669,26 @@ var c3 = (function () {
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140218122321.4349">@language html
-
 s = '''
 &lt;!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB --&gt;
 &lt;html&gt;&lt;head&gt;headline&lt;/head&gt;&lt;body&gt;body&lt;/body&gt;&lt;/html&gt;
 '''
+@language python
+table = (
+    # The new xml scanner doesn't generate any new nodes,
+    # because the scan state hasn't changed at the end of the line!
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
 
-
-c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20140218151418.4353">s = '''\
 var express = require('express');
@@ -5004,7 +5789,7 @@ else:
     assert root.isAtAutoRstNode(), root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
+        # g.cls()
         print('get_external_file_with_sentinels returns...')
         # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
         g.printList(g.splitLines(s))
@@ -5028,7 +5813,7 @@ elif sys.platform.startswith('win'):
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
     if trace:
-        g.cls()
+        # g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
     for n in range(20):
         p, offset, found = c.gotoCommands.find_file_line(n, p=root)
@@ -5419,7 +6204,7 @@ else:
     stripped_lines = [z for z in lines if not z.startswith('//@')]
     g.printList(stripped_lines)
     if trace:
-        g.cls()
+        # g.cls()
         print(''.join(['%3s %s' % (i, s) for i, s in enumerate(lines)]))
     table = (
         # n is the 1-based offset
@@ -5502,7 +6287,7 @@ else:
 <t tx="ekr.20160410152100.2">&lt;&lt; define s &gt;&gt;
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -5518,7 +6303,7 @@ if 0:
     markdown = leo.plugins.importers.markdown
     g.app.loadManager.createAllImporetersData()
     ic = leoImport.LeoImportCommands(c)
-    # x = markdown.Markdown_Importer(ic, atAuto=False)
+    # x = markdown.Markdown_Importer(ic)
 else:
     ic = c.importCommands  
 try:
@@ -5551,7 +6336,7 @@ finally:
 <t tx="ekr.20160411033840.1">&lt;&lt; define s &gt;&gt;
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -5622,8 +6407,11 @@ Section 3, line 1
 
 '''
 </t>
-<t tx="ekr.20161011052016.1">import leo.plugins.importers.javascript as js
+<t tx="ekr.20161011052016.1">import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
 table = (
+    # base  result          s
     (None, (0, 0, '/*'),    r'/* abc'),
     (None, (0, 0, ''),      r'a + b // /*'),
     (None, (0, 1, ''),      r'(function'),
@@ -5632,11 +6420,11 @@ table = (
     (None, (0, 0, ''),      r'var x = /a"c/'),
     (None, (0, 0, ''),      r'var x = /a\//'),
     (None, (0, 0, ''),      r'var x = /a\//'),
-    (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
+    # (None, (0, 0, ''),      r"console.log(/'\d+'/)"),
     (None, (0, 1, ''),      r'var x = (0,'),
 )
 for base, result, s in table:
-    importer = js.JS_Importer(c.importCommands, atAuto=False)
+    importer = js.JS_Importer(c.importCommands)
     prev_state = js.JS_ScanState()
     new_state = importer.scan_line(s, prev_state)
     curlies, parens, context = result
@@ -5644,7 +6432,7 @@ for base, result, s in table:
         new_state.curlies == curlies and
         new_state.parens == parens and
         new_state.context == context)
-    assert ok, '\nexpected %r\n     got %r' % (expected_state, new_state)
+    assert ok, '\nnew_state: %s\n        s: %s' % (new_state, s)
 </t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
@@ -6596,7 +7384,6 @@ lines_table = [
 for language in ('python', 'coffeescript'):
     importer = linescanner.Importer(
         c.importCommands,
-        atAuto = True,
         language = language,
     )
     # print('%s %r' % (language, importer.comment_delim))
@@ -6616,11 +7403,7 @@ table = [
     (True, '    '),
     (True,'  # comment'),
 ]
-importer = linescanner.Importer(
-    c.importCommands,
-    atAuto = True,
-    language = 'python',
-)
+importer = linescanner.Importer(c.importCommands, language = 'python')
 for val, s in table:
     assert val == importer.is_ws_line(s), (val, repr(s))
 </t>
@@ -7100,14 +7883,14 @@ finally:
 </t>
 <t tx="ekr.20161115063144.18"># ~/at-auto-test.py
 
+# Careful: don't put a section reference in the string.
 s = '''\
 # This is valid Python, but it looks like a section reference.
-a = b &lt;&lt; c &gt;&gt; d
-'''
+a = b &lt; &lt; c &gt; &gt; d
+'''.replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
 
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 
-# Always passes, but *sometimes* i.check gives a message!
 </t>
 <t tx="ekr.20161115063144.19">@tabwidth -4
     # Required when running unit tests externally.
@@ -7888,7 +8671,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20161115063144.34"># Was unittest/at_auto-unit-test.py
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -8147,7 +8930,7 @@ else:
         g.Bunch(line='a = {[(')
     ]
 if hasattr(python, 'Py_Importer'):
-    importer = python.Py_Importer(c.importCommands, atAuto=True)
+    importer = python.Py_Importer(c.importCommands)
     importer.test_scan_state(tests, State=python.Python_ScanState)
 else:
     self.skipTest('Skipping test for new python importer')
@@ -8174,7 +8957,7 @@ s = """\
 import leo.core.leoGlobals as g
 class LeoImportCommands(object):
     '''A class implementing all of Leo's import/export code.'''
-    def createOutline(self, fileName, parent, atAuto=False, atShadow=False, s=None, ext=None):
+    def createOutline(self, fileName, parent, s=None, ext=None):
         '''Create an outline by importing a file or string.'''
 
     def dispatch(self, ext, p):
@@ -8189,9 +8972,9 @@ class LeoImportCommands(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(atAuto, parent, s, prepass=False):
+                def scanner_for_at_auto_cb(parent, s, prepass=False):
                     try:
-                        scanner = aClass(importCommands=self, atAuto=atAuto)
+                        scanner = aClass(importCommands=self)
                         return scanner.run(s, parent, prepass=prepass)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -8207,9 +8990,9 @@ class LeoImportCommands(object):
         aClass = self.classDispatchDict.get(ext)
         if aClass:
 
-            def scanner_for_ext_cb(atAuto, parent, s, prepass=False):
+            def scanner_for_ext_cb(parent, s, prepass=False):
                 try:
-                    scanner = aClass(importCommands=self, atAuto=atAuto)
+                    scanner = aClass(importCommands=self)
                     return scanner.run(s, parent, prepass=prepass)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)
@@ -8222,7 +9005,7 @@ class LeoImportCommands(object):
     def get_import_filename(self, fileName, parent):
         '''Return the absolute path of the file and set .default_directory.'''
 
-    def init_import(self, atAuto, atShadow, ext, fileName, s):
+    def init_import(self, ext, fileName, s):
         '''Init ivars &amp; vars for imports.'''
 """
 table = (
@@ -8262,8 +9045,7 @@ table = [
     ('  ','  # comment\n'),
     ('', '\n'),
 ]
-importer = linescanner.Importer(c.importCommands,
-    atAuto=True, language='python')
+importer = linescanner.Importer(c.importCommands, language='python')
 for val, s in table:
     assert val == importer.get_str_lws(s), (val, repr(s))
 </t>
@@ -8351,7 +9133,7 @@ finally:
 </t>
 <t tx="ekr.20161119032623.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -8407,17 +9189,24 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20161123080832.1">'''Create a table of expected headlines in a unit test.'''
+<t tx="ekr.20161123080832.1">'''
+Create a table of expected headlines in a unit test.
+
+Usage: select the desired subnode of an @test node.
+'''
 g.cls()
 # Proper escapes are tricky.
-table = [
-    '(%s, "%s"),' % (
-        p.level()-c.p.level(),
-        p.h.replace('\\', '\\\\').replace('"', '\\"'),
-    )
-        for p in c.p.subtree()
-]
-print("table = (\n    %s\n)" % '\n    '.join(table))</t>
+if p.parent() and p.parent().h.startswith('@test'):
+    table = [
+        '(%s, "%s"),' % (
+            p.level()-c.p.level(),
+            p.h.replace('\\', '\\\\').replace('"', '\\"'),
+        )
+            for p in p.subtree()
+    ]
+    print("table = (\n    %s\n)" % '\n    '.join(table))
+else:
+    print('select a child of an @test node node')</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -8526,7 +9315,7 @@ finally:
 </t>
 <t tx="ekr.20161125134815.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -8620,7 +9409,7 @@ section 3, line 1
 </t>
 <t tx="ekr.20161126111517.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -8689,7 +9478,7 @@ finally:
     # Required (Python 2 only) because test contains ```.
 if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -10456,7 +11245,7 @@ EOT;
 </t>
 <t tx="ekr.20161216141315.1">if 0:
     # The preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -10835,7 +11624,7 @@ EOT;
 <t tx="ekr.20161224101046.1">@tabwidth -4
     # Required when running unit tests externally.
 if 0: # Preamble...
-    g.cls()
+    # g.cls()
     if c.isChanged(): c.save()
     # import leo
     import leo.core.leoImport as leoImport
@@ -11786,196 +12575,2966 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170401122141.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-</t>
-<t tx="ekr.20170401122141.10">
-section 3.1.1, line 1
-</t>
-<t tx="ekr.20170401122141.2">.. toc
-
-</t>
-<t tx="ekr.20170401122141.3">
-The top section
-
-</t>
-<t tx="ekr.20170401122141.4">
-section 1, line 1
---
-section 1, line 2
-
-</t>
-<t tx="ekr.20170401122141.5">
-section 2, line 1
-
-</t>
-<t tx="ekr.20170401122141.6">
-section 2.1, line 1
-
-</t>
-<t tx="ekr.20170401122141.7">
-section 2.2.1 line 1
-
-</t>
-<t tx="ekr.20170401122141.8">
-section 3, line 1
-
-</t>
-<t tx="ekr.20170401122141.9"></t>
-<t tx="ekr.20170401122751.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-</t>
-<t tx="ekr.20170401122751.10">
-section 3.1.1, line 1
-</t>
-<t tx="ekr.20170401122751.2">.. toc
-
-</t>
-<t tx="ekr.20170401122751.3">
-The top section
-
-</t>
-<t tx="ekr.20170401122751.4">
-section 1, line 1
---
-section 1, line 2
-
-</t>
-<t tx="ekr.20170401122751.5">
-section 2, line 1
-
-</t>
-<t tx="ekr.20170401122751.6">
-section 2.1, line 1
-
-</t>
-<t tx="ekr.20170401122751.7">
-section 2.2.1 line 1
-
-</t>
-<t tx="ekr.20170401122751.8">
-section 3, line 1
-
-</t>
-<t tx="ekr.20170401122751.9"></t>
-<t tx="ekr.20170401122755.1">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-</t>
-<t tx="ekr.20170401122755.10">
-section 3.1.1, line 1
-</t>
-<t tx="ekr.20170401122755.14">@others
-
-Warning: this node is ignored when writing this file.
-
-@language rest
-@tabwidth -4
-</t>
-<t tx="ekr.20170401122755.15">.. toc
-
-</t>
-<t tx="ekr.20170401122755.16">
-The top section
-
-</t>
-<t tx="ekr.20170401122755.17">
-section 1, line 1
---
-section 1, line 2
-
-</t>
-<t tx="ekr.20170401122755.18">
-section 2, line 1
-
-</t>
-<t tx="ekr.20170401122755.19">
-section 2.1, line 1
-
-</t>
-<t tx="ekr.20170401122755.2">.. toc
-
-</t>
-<t tx="ekr.20170401122755.20">
-section 2.2.1 line 1
-
-</t>
-<t tx="ekr.20170401122755.21">
-section 3, line 1
-
-</t>
-<t tx="ekr.20170401122755.22"></t>
-<t tx="ekr.20170401122755.23">
-section 3.1.1, line 1
-</t>
-<t tx="ekr.20170401122755.3">
-The top section
-
-</t>
-<t tx="ekr.20170401122755.4">
-section 1, line 1
---
-section 1, line 2
-
-</t>
-<t tx="ekr.20170401122755.5">
-section 2, line 1
-
-</t>
-<t tx="ekr.20170401122755.6">
-section 2.1, line 1
-
-</t>
-<t tx="ekr.20170401122755.7">
-section 2.2.1 line 1
-
-</t>
-<t tx="ekr.20170401122755.8">
-section 3, line 1
-
-</t>
-<t tx="ekr.20170401122755.9"></t>
-<t tx="ekr.20170401123909.14">gnx: ekr.20170401123837.17
-unl: section 1
-gnx: ekr.20170401123837.18
-unl: section 2
-</t>
-<t tx="ekr.20170401123909.20">gnx: ekr.20170401123837.19
-unl: section 1
-gnx: ekr.20170401123837.20
-unl: section 2
-</t>
 <t tx="ekr.20170401123909.8">gnx: ekr.20170401123837.4
 unl: section 1
 gnx: ekr.20170401123837.5
 unl: section 2
 </t>
-<t tx="ekr.20170401123910.3">gnx: ekr.20170401123837.8
-unl: class class1
-gnx: ekr.20170401123837.9
-unl: class class1--&gt;class1_method1
-gnx: ekr.20170401123837.10
-unl: class class1--&gt;class1_method2
-gnx: ekr.20170401123837.11
-unl: class class2
-gnx: ekr.20170401123837.12
-unl: class class2--&gt;class2_method1
-gnx: ekr.20170401123837.13
-unl: class class2--&gt;class2_method2
-</t>
 <t tx="ekr.20170401123910.4">gnx: ekr.20150626093745.1
 </t>
 <t tx="ekr.20170401123910.6"></t>
+<t tx="ekr.20170407065952.1">import imp
+import leo.plugins.importers.javascript as js
+imp.reload(js)
+importer = js.JS_Importer(c.importCommands)
+pattern = importer.op_pattern
+table = (
+    '++', '--', '&amp;&amp;', '||', '~', '&gt;&gt;', '&lt;&lt;', 
+    # '&gt;&gt;=',  '&lt;&lt;=',
+    # '&gt;&gt;&gt;', '&gt;&gt;&gt;=',
+    # '&lt;&lt;&lt;', '&lt;&lt;&lt;=',
+    '&lt;', '&lt;=', '&gt;', '&gt;=',
+    '+', '+=', '-', '-=',
+    '/', '/=', '*', '*=', 
+    '%', '%=', '&amp;', '&amp;=',
+    '|', '|=',
+)
+for s in table:
+    m = pattern.match(s)
+    assert m, s
+    assert m.group(0) == s, (s, m.group(0))
+</t>
+<t tx="ekr.20170408233251.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (
+    %s and 
+    %s &gt; 3
+):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 1
+if (
+    AT+&lt; &lt;a&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+    a
+    AT-&lt; &lt;a&gt; &gt;
+    ATafterref
+ and 
+    AT+&lt; &lt;b&gt; &gt;
+    AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+    b
+    AT-&lt; &lt;b&gt; &gt;
+    ATafterref
+ &gt; 3
+):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170408234524.1">a
+</t>
+<t tx="ekr.20170408234531.1">b
+</t>
+<t tx="ekr.20170409003052.1">import re
+import leo.core.leoAtFile as atFile
+if 0: # prefix
+    import imp
+    imp.reload(atFile)
+at = atFile.AtFile(c)
+s = '''\
+if (%s and %s &gt; 3):
+    pass
+''' % (g.angleBrackets('a'), g.angleBrackets('b'))
+# Careful: avoid @verbatim and other substitutions.
+expected = '''\
+AT+leo-ver=5-thin
+AT+node:GNX: * @test at.putRefLine 2
+if (
+AT+&lt; &lt;a&gt; &gt;
+AT+node:GNX: ** &lt; &lt; a &gt; &gt;
+a
+AT-&lt; &lt;a&gt; &gt;
+ATafterref
+ and 
+AT+&lt; &lt;b&gt; &gt;
+AT+node:GNX: ** &lt; &lt; b &gt; &gt;
+b
+AT-&lt; &lt;b&gt; &gt;
+ATafterref
+ &gt; 3):
+    pass
+AT-leo
+'''.replace('AT','#@').replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+    # Recreate expected string.
+result = at.writeFromString(c.p, s)
+result = re.sub(r'#@\+node:(.+):', '#@+node:GNX:', result)
+    # Don't test actual gnx's, so we can copy/paste this test.
+if 0: # Show unexpected mismatches.
+    result = g.splitLines(result)
+    expected = g.splitLines(expected)
+    # assert len(expected) == len(result)
+    for i, s in enumerate(result):
+        if expected[i] != result[i]:
+            print(i)
+            print('expected: %r' % expected[i])
+            print('result:   %r' % result[i])
+            break
+assert result == expected
+</t>
+<t tx="ekr.20170409003052.2">a
+</t>
+<t tx="ekr.20170409003052.3">b
+</t>
+<t tx="ekr.20170409165318.11">gnx: ekr.20090704085350.5056
+</t>
+<t tx="ekr.20170409165318.5">gnx: ekr.20080904084223.1
+</t>
+<t tx="ekr.20170409172044.2">gnx: ekr.20170409172044.1
+</t>
+<t tx="ekr.20170409172044.3">gnx: ekr.20170409172044.1
+</t>
+<t tx="ekr.20170409172044.4"></t>
+<t tx="ekr.20170409172255.2">gnx: ekr.20170409172255.1
+</t>
+<t tx="ekr.20170409172255.3">gnx: ekr.20170409172255.1
+</t>
+<t tx="ekr.20170409172255.4"></t>
+<t tx="ekr.20170409172518.2">gnx: ekr.20170409172518.1
+</t>
+<t tx="ekr.20170409172518.3">gnx: ekr.20170409172518.1
+</t>
+<t tx="ekr.20170409172518.4"></t>
+<t tx="ekr.20170409172847.2">gnx: ekr.20170409172847.1
+</t>
+<t tx="ekr.20170409172847.3">gnx: ekr.20170409172847.1
+</t>
+<t tx="ekr.20170409172847.4"></t>
+<t tx="ekr.20170409173115.2">gnx: ekr.20170409173115.1
+</t>
+<t tx="ekr.20170409173115.3">gnx: ekr.20170409173115.1
+</t>
+<t tx="ekr.20170409173115.4"></t>
+<t tx="ekr.20170409173133.2">gnx: ekr.20170409173133.1
+</t>
+<t tx="ekr.20170409173133.3">gnx: ekr.20170409173133.1
+</t>
+<t tx="ekr.20170409173133.4"></t>
+<t tx="ekr.20170409174448.2">gnx: ekr.20170409174448.1
+</t>
+<t tx="ekr.20170409174448.3">gnx: ekr.20170409174448.1
+</t>
+<t tx="ekr.20170409174448.4"></t>
+<t tx="ekr.20170409174526.38">gnx: ekr.20170409174526.34
+</t>
+<t tx="ekr.20170409174526.39">gnx: ekr.20170409174526.34
+</t>
+<t tx="ekr.20170409174526.40">gnx: ekr.20170409174526.35
+unl: class cTestClass1
+gnx: ekr.20170409174526.36
+unl: class cTestClass1--&gt;int foo
+gnx: ekr.20170409174526.37
+unl: class cTestClass1--&gt;char bar
+</t>
+<t tx="ekr.20170409174526.45">gnx: ekr.20170409174526.41
+</t>
+<t tx="ekr.20170409174526.46">gnx: ekr.20170409174526.41
+</t>
+<t tx="ekr.20170409174526.47">gnx: ekr.20170409174526.42
+unl: class cTestClass1
+gnx: ekr.20170409174526.43
+unl: class cTestClass1--&gt;int foo
+gnx: ekr.20170409174526.44
+unl: class cTestClass1--&gt;char bar
+</t>
+<t tx="ekr.20170409174526.51">gnx: ekr.20170409174526.48
+</t>
+<t tx="ekr.20170409174526.52">gnx: ekr.20170409174526.48
+</t>
+<t tx="ekr.20170409174526.53">gnx: ekr.20170409174526.49
+unl: void aaa::bbb::doit
+gnx: ekr.20170409174526.50
+unl: bool aaa::bbb::dothat
+</t>
+<t tx="ekr.20170409174526.57">gnx: ekr.20170409174526.54
+</t>
+<t tx="ekr.20170409174526.58">gnx: ekr.20170409174526.54
+</t>
+<t tx="ekr.20170409174526.59">gnx: ekr.20170409174526.55
+unl: void aaa::bbb::doit
+gnx: ekr.20170409174526.56
+unl: bool aaa::bbb::dothat
+</t>
+<t tx="ekr.20170409174526.62">gnx: ekr.20170409174526.60
+</t>
+<t tx="ekr.20170409174526.63">gnx: ekr.20170409174526.60
+</t>
+<t tx="ekr.20170409174526.64">gnx: ekr.20170409174526.61
+unl: void aaa::bbb::doit
+</t>
+<t tx="ekr.20170409174526.67">gnx: ekr.20170409174526.65
+</t>
+<t tx="ekr.20170409174526.68">gnx: ekr.20170409174526.65
+</t>
+<t tx="ekr.20170409174526.69">gnx: ekr.20170409174526.66
+unl: static void ReleaseCharSet
+</t>
+<t tx="ekr.20170409174526.72">gnx: ekr.20170409174526.70
+</t>
+<t tx="ekr.20170409174526.73">gnx: ekr.20170409174526.70
+</t>
+<t tx="ekr.20170409174526.74">gnx: ekr.20170409174526.71
+unl: Tcl_Obj * Tcl_NewLongObj
+</t>
+<t tx="ekr.20170409174526.77">gnx: ekr.20170409174526.75
+</t>
+<t tx="ekr.20170409174526.78">gnx: ekr.20170409174526.75
+</t>
+<t tx="ekr.20170409174526.79">gnx: ekr.20170409174526.76
+unl: extern "C"
+</t>
+<t tx="ekr.20170409174527.10">gnx: ekr.20170409174527.7
+</t>
+<t tx="ekr.20170409174527.11">gnx: ekr.20170409174527.7
+</t>
+<t tx="ekr.20170409174527.12">gnx: ekr.20170409174527.8
+unl: namespace
+gnx: ekr.20170409174527.9
+unl: namespace--&gt;class cTestClass1
+</t>
+<t tx="ekr.20170409174527.122">gnx: ekr.20170409174527.13
+</t>
+<t tx="ekr.20170409174527.123">gnx: ekr.20170409174527.13
+</t>
+<t tx="ekr.20170409174527.124">gnx: ekr.20170409174527.14
+unl: buildCoffee = (str) -&gt;
+gnx: ekr.20170409174527.15
+unl: class Builder
+gnx: ekr.20170409174527.16
+unl: class Builder--&gt;constructor: -&gt;
+gnx: ekr.20170409174527.17
+unl: class Builder--&gt;build: (args...) -&gt;
+gnx: ekr.20170409174527.18
+unl: class Builder--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174527.19
+unl: class Builder--&gt;body: (node, opts={}) -&gt;
+gnx: ekr.20170409174527.20
+unl: class Builder--&gt;'script': (n, opts={}) -&gt;
+gnx: ekr.20170409174527.21
+unl: class Builder--&gt;'property_identifier': (n) -&gt;
+gnx: ekr.20170409174527.22
+unl: class Builder--&gt;'identifier': (n) -&gt;
+gnx: ekr.20170409174527.23
+unl: class Builder--&gt;'number': (n) -&gt;
+gnx: ekr.20170409174527.24
+unl: class Builder--&gt;'id': (n) -&gt;
+gnx: ekr.20170409174527.25
+unl: class Builder--&gt;'id_param': (n) -&gt;
+gnx: ekr.20170409174527.26
+unl: class Builder--&gt;'return': (n) -&gt;
+gnx: ekr.20170409174527.27
+unl: class Builder--&gt;';': (n) -&gt;
+gnx: ekr.20170409174527.28
+unl: class Builder--&gt;'new': (n) -&gt; "new #{@build n.left()}"
+gnx: ekr.20170409174527.29
+unl: class Builder--&gt;'new_with_args': (n) -&gt; "new #{@build n.left()}(#{@build n.right()})"
+gnx: ekr.20170409174527.30
+unl: class Builder--&gt;'unary_plus': (n) -&gt; "+#{@build n.left()}"
+gnx: ekr.20170409174527.31
+unl: class Builder--&gt;'unary_minus': (n) -&gt; "-#{@build n.left()}"
+gnx: ekr.20170409174527.32
+unl: class Builder--&gt;'this': (n) -&gt; 'this'
+gnx: ekr.20170409174527.33
+unl: class Builder--&gt;'null': (n) -&gt; 'null'
+gnx: ekr.20170409174527.34
+unl: class Builder--&gt;'true': (n) -&gt; 'true'
+gnx: ekr.20170409174527.35
+unl: class Builder--&gt;'false': (n) -&gt; 'false'
+gnx: ekr.20170409174527.36
+unl: class Builder--&gt;'void': (n) -&gt; 'undefined'
+gnx: ekr.20170409174527.37
+unl: class Builder--&gt;'debugger': (n) -&gt; "debugger\n"
+gnx: ekr.20170409174527.38
+unl: class Builder--&gt;'break': (n) -&gt; "break\n"
+gnx: ekr.20170409174527.39
+unl: class Builder--&gt;'continue': (n) -&gt; "continue\n"
+gnx: ekr.20170409174527.40
+unl: class Builder--&gt;'~': (n) -&gt; "~#{@build n.left()}"
+gnx: ekr.20170409174527.41
+unl: class Builder--&gt;'typeof': (n) -&gt; "typeof #{@build n.left()}"
+gnx: ekr.20170409174527.42
+unl: class Builder--&gt;'index': (n) -&gt;
+gnx: ekr.20170409174527.43
+unl: class Builder--&gt;'throw': (n) -&gt; "throw #{@build n.exception}"
+gnx: ekr.20170409174527.44
+unl: class Builder--&gt;'!': (n) -&gt;
+gnx: ekr.20170409174527.45
+unl: class Builder--&gt;in: (n) -&gt;    @binary_operator n, 'of'
+gnx: ekr.20170409174527.46
+unl: class Builder--&gt;'+': (n) -&gt;   @binary_operator n, '+'
+gnx: ekr.20170409174527.47
+unl: class Builder--&gt;'-': (n) -&gt;   @binary_operator n, '-'
+gnx: ekr.20170409174527.48
+unl: class Builder--&gt;'*': (n) -&gt;   @binary_operator n, '*'
+gnx: ekr.20170409174527.49
+unl: class Builder--&gt;'/': (n) -&gt;   @binary_operator n, '/'
+gnx: ekr.20170409174527.50
+unl: class Builder--&gt;'%': (n) -&gt;   @binary_operator n, '%'
+gnx: ekr.20170409174527.51
+unl: class Builder--&gt;'&gt;': (n) -&gt;   @binary_operator n, '&gt;'
+gnx: ekr.20170409174527.52
+unl: class Builder--&gt;'&lt;': (n) -&gt;   @binary_operator n, '&lt;'
+gnx: ekr.20170409174527.53
+unl: class Builder--&gt;'&amp;': (n) -&gt;   @binary_operator n, '&amp;'
+gnx: ekr.20170409174527.54
+unl: class Builder--&gt;'|': (n) -&gt;   @binary_operator n, '|'
+gnx: ekr.20170409174527.55
+unl: class Builder--&gt;'^': (n) -&gt;   @binary_operator n, '^'
+gnx: ekr.20170409174527.56
+unl: class Builder--&gt;'&amp;&amp;': (n) -&gt;  @binary_operator n, 'and'
+gnx: ekr.20170409174527.57
+unl: class Builder--&gt;'||': (n) -&gt;  @binary_operator n, 'or'
+gnx: ekr.20170409174527.58
+unl: class Builder--&gt;'&lt;&lt;': (n) -&gt;  @binary_operator n, '&lt;&lt;'
+gnx: ekr.20170409174527.59
+unl: class Builder--&gt;'&lt;=': (n) -&gt;  @binary_operator n, '&lt;='
+gnx: ekr.20170409174527.60
+unl: class Builder--&gt;'&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;'
+gnx: ekr.20170409174527.61
+unl: class Builder--&gt;'&gt;=': (n) -&gt;  @binary_operator n, '&gt;='
+gnx: ekr.20170409174527.62
+unl: class Builder--&gt;'===': (n) -&gt; @binary_operator n, 'is'
+gnx: ekr.20170409174527.63
+unl: class Builder--&gt;'!==': (n) -&gt; @binary_operator n, 'isnt'
+gnx: ekr.20170409174527.64
+unl: class Builder--&gt;'&gt;&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;&gt;'
+gnx: ekr.20170409174527.65
+unl: class Builder--&gt;instanceof: (n) -&gt; @binary_operator n, 'instanceof'
+gnx: ekr.20170409174527.66
+unl: class Builder--&gt;'==': (n) -&gt;
+gnx: ekr.20170409174527.67
+unl: class Builder--&gt;'!=': (n) -&gt;
+gnx: ekr.20170409174527.68
+unl: class Builder--&gt;'binary_operator': do -&gt;
+gnx: ekr.20170409174527.69
+unl: class Builder--&gt;'--': (n) -&gt; @increment_decrement n, '--'
+gnx: ekr.20170409174527.70
+unl: class Builder--&gt;'++': (n) -&gt; @increment_decrement n, '++'
+gnx: ekr.20170409174527.71
+unl: class Builder--&gt;'increment_decrement': (n, sign) -&gt;
+gnx: ekr.20170409174527.72
+unl: class Builder--&gt;'=': (n) -&gt;
+gnx: ekr.20170409174527.73
+unl: class Builder--&gt;',': (n) -&gt;
+gnx: ekr.20170409174527.74
+unl: class Builder--&gt;'regexp': (n) -&gt;
+gnx: ekr.20170409174527.75
+unl: class Builder--&gt;'string': (n) -&gt;
+gnx: ekr.20170409174527.76
+unl: class Builder--&gt;'call': (n) -&gt;
+gnx: ekr.20170409174527.77
+unl: class Builder--&gt;'call_statement': (n) -&gt;
+gnx: ekr.20170409174527.78
+unl: class Builder--&gt;'list': (n) -&gt;
+gnx: ekr.20170409174527.79
+unl: class Builder--&gt;'delete': (n) -&gt;
+gnx: ekr.20170409174527.80
+unl: class Builder--&gt;'.': (n) -&gt;
+gnx: ekr.20170409174527.81
+unl: class Builder--&gt;'try': (n) -&gt;
+gnx: ekr.20170409174527.82
+unl: class Builder--&gt;'catch': (n) -&gt;
+gnx: ekr.20170409174527.83
+unl: class Builder--&gt;'?': (n) -&gt;
+gnx: ekr.20170409174527.84
+unl: class Builder--&gt;'for': (n) -&gt;
+gnx: ekr.20170409174527.85
+unl: class Builder--&gt;'for_in': (n) -&gt;
+gnx: ekr.20170409174527.86
+unl: class Builder--&gt;'while': (n) -&gt;
+gnx: ekr.20170409174527.87
+unl: class Builder--&gt;'do': (n) -&gt;
+gnx: ekr.20170409174527.88
+unl: class Builder--&gt;'if': (n) -&gt;
+gnx: ekr.20170409174527.89
+unl: class Builder--&gt;'switch': (n) -&gt;
+gnx: ekr.20170409174527.90
+unl: class Builder--&gt;'existence_check': (n) -&gt;
+gnx: ekr.20170409174527.91
+unl: class Builder--&gt;'array_init': (n) -&gt;
+gnx: ekr.20170409174527.92
+unl: class Builder--&gt;'property_init': (n) -&gt;
+gnx: ekr.20170409174527.93
+unl: class Builder--&gt;'object_init': (n, options={}) -&gt;
+gnx: ekr.20170409174527.94
+unl: class Builder--&gt;'function': (n) -&gt;
+gnx: ekr.20170409174527.95
+unl: class Builder--&gt;'var': (n) -&gt;
+gnx: ekr.20170409174527.96
+unl: class Builder--&gt;'other': (n) -&gt;   @unsupported n, "#{n.typeName()} is not supported yet"
+gnx: ekr.20170409174527.97
+unl: class Builder--&gt;'getter': (n) -&gt;  @unsupported n, "getter syntax is not supported; use __defineGetter__"
+gnx: ekr.20170409174527.98
+unl: class Builder--&gt;'setter': (n) -&gt;  @unsupported n, "setter syntax is not supported; use __defineSetter__"
+gnx: ekr.20170409174527.99
+unl: class Builder--&gt;'label': (n) -&gt;   @unsupported n, "labels are not supported by CoffeeScript"
+gnx: ekr.20170409174527.100
+unl: class Builder--&gt;'const': (n) -&gt;   @unsupported n, "consts are not supported by CoffeeScript"
+gnx: ekr.20170409174527.101
+unl: class Builder--&gt;'block': (args...) -&gt;
+gnx: ekr.20170409174527.102
+unl: class Builder--&gt;'unsupported': (node, message) -&gt;
+gnx: ekr.20170409174527.103
+unl: class Transformer
+gnx: ekr.20170409174527.104
+unl: class Transformer--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174527.105
+unl: class Transformer--&gt;'script': (n) -&gt;
+gnx: ekr.20170409174527.106
+unl: class Transformer--&gt;'.': (n) -&gt;
+gnx: ekr.20170409174527.107
+unl: class Transformer--&gt;';': (n) -&gt;
+gnx: ekr.20170409174527.108
+unl: class Transformer--&gt;'function': (n) -&gt;
+gnx: ekr.20170409174527.109
+unl: class Transformer--&gt;'function': (n) -&gt;--&gt;n.body.walk last: true, (parent, node, list) -&gt;
+gnx: ekr.20170409174527.110
+unl: class Transformer--&gt;'switch': (n) -&gt;
+gnx: ekr.20170409174527.111
+unl: class Transformer--&gt;'call_statement': (n) -&gt;
+gnx: ekr.20170409174527.112
+unl: class Transformer--&gt;'return': (n) -&gt;
+gnx: ekr.20170409174527.113
+unl: class Transformer--&gt;'block': (n) -&gt;
+gnx: ekr.20170409174527.114
+unl: class Transformer--&gt;'if': (n) -&gt;
+gnx: ekr.20170409174527.115
+unl: class Transformer--&gt;'while': (n) -&gt;
+gnx: ekr.20170409174527.116
+unl: class Transformer--&gt;'inversible': (n) -&gt;
+gnx: ekr.20170409174527.117
+unl: class Transformer--&gt;'==': (n) -&gt;
+gnx: ekr.20170409174527.118
+unl: class Transformer--&gt;'!=': (n) -&gt;
+gnx: ekr.20170409174527.119
+unl: class UnsupportedError
+gnx: ekr.20170409174527.120
+unl: class UnsupportedError--&gt;constructor: (str, src) -&gt;
+gnx: ekr.20170409174527.121
+unl: class UnsupportedError--&gt;toString: -&gt; @message
+</t>
+<t tx="ekr.20170409174527.127">gnx: ekr.20170409174527.125
+</t>
+<t tx="ekr.20170409174527.128">gnx: ekr.20170409174527.125
+</t>
+<t tx="ekr.20170409174527.129">gnx: ekr.20170409174527.126
+unl: buildCoffee = (str) -&gt;
+</t>
+<t tx="ekr.20170409174527.136">gnx: ekr.20170409174527.130
+</t>
+<t tx="ekr.20170409174527.137">gnx: ekr.20170409174527.130
+</t>
+<t tx="ekr.20170409174527.138">gnx: ekr.20170409174527.131
+unl: class Builder
+gnx: ekr.20170409174527.132
+unl: class Builder--&gt;constructor: -&gt;
+gnx: ekr.20170409174527.133
+unl: class Builder--&gt;build: (args...) -&gt;
+gnx: ekr.20170409174527.134
+unl: class Builder--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174527.135
+unl: class Builder--&gt;body: (node, opts={}) -&gt;
+</t>
+<t tx="ekr.20170409174527.143">gnx: ekr.20170409174527.139
+</t>
+<t tx="ekr.20170409174527.144">gnx: ekr.20170409174527.139
+</t>
+<t tx="ekr.20170409174527.145">gnx: ekr.20170409174527.140
+unl: hello
+gnx: ekr.20170409174527.141
+unl: printNumber
+gnx: ekr.20170409174527.142
+unl: void main
+</t>
+<t tx="ekr.20170409174527.149">gnx: ekr.20170409174527.146
+</t>
+<t tx="ekr.20170409174527.150">gnx: ekr.20170409174527.146
+</t>
+<t tx="ekr.20170409174527.151">gnx: ekr.20170409174527.147
+unl: defun abc
+gnx: ekr.20170409174527.148
+unl: defun cde
+</t>
+<t tx="ekr.20170409174527.156">gnx: ekr.20170409174527.152
+</t>
+<t tx="ekr.20170409174527.157">gnx: ekr.20170409174527.152
+</t>
+<t tx="ekr.20170409174527.158">gnx: ekr.20170409174527.153
+unl: &lt;html&gt;
+gnx: ekr.20170409174527.154
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174527.155
+unl: &lt;html&gt;--&gt;&lt;body class="bodystring"&gt;
+</t>
+<t tx="ekr.20170409174527.179">gnx: ekr.20170409174527.159
+</t>
+<t tx="ekr.20170409174527.180">gnx: ekr.20170409174527.159
+</t>
+<t tx="ekr.20170409174527.181">gnx: ekr.20170409174527.160
+unl: &lt;html&gt;
+gnx: ekr.20170409174527.161
+unl: &lt;html&gt;--&gt;&lt;body&gt;
+gnx: ekr.20170409174527.162
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;
+gnx: ekr.20170409174527.163
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;
+gnx: ekr.20170409174527.164
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;
+gnx: ekr.20170409174527.165
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+gnx: ekr.20170409174527.166
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;
+gnx: ekr.20170409174527.167
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;
+gnx: ekr.20170409174527.168
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;
+gnx: ekr.20170409174527.169
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;
+gnx: ekr.20170409174527.170
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;
+gnx: ekr.20170409174527.171
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;
+gnx: ekr.20170409174527.172
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;
+gnx: ekr.20170409174527.173
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;
+gnx: ekr.20170409174527.174
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;--&gt;&lt;tbody id="6"&gt;
+gnx: ekr.20170409174527.175
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;--&gt;&lt;tbody id="6"&gt;--&gt;&lt;tr&gt;
+gnx: ekr.20170409174527.176
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="100%" colspan="2"&gt;
+gnx: ekr.20170409174527.177
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;DIV class="webonly"&gt;
+gnx: ekr.20170409174527.178
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+</t>
+<t tx="ekr.20170409174527.183">gnx: ekr.20170409174527.182
+</t>
+<t tx="ekr.20170409174527.184">gnx: ekr.20170409174527.182
+</t>
+<t tx="ekr.20170409174527.185"></t>
+<t tx="ekr.20170409174527.190">gnx: ekr.20170409174527.186
+</t>
+<t tx="ekr.20170409174527.191">gnx: ekr.20170409174527.186
+</t>
+<t tx="ekr.20170409174527.192">gnx: ekr.20170409174527.187
+unl: &lt;td width="550"&gt;
+gnx: ekr.20170409174527.188
+unl: &lt;td width="550"&gt;--&gt;&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;
+gnx: ekr.20170409174527.189
+unl: &lt;td width="550"&gt;--&gt;&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;--&gt;&lt;table&gt;
+</t>
+<t tx="ekr.20170409174527.197">gnx: ekr.20170409174527.193
+</t>
+<t tx="ekr.20170409174527.198">gnx: ekr.20170409174527.193
+</t>
+<t tx="ekr.20170409174527.199">gnx: ekr.20170409174527.194
+unl: &lt;HTML&gt;
+gnx: ekr.20170409174527.195
+unl: &lt;HTML&gt;--&gt;&lt;HEAD&gt;
+gnx: ekr.20170409174527.196
+unl: &lt;HTML&gt;--&gt;&lt;BODY class='bodystring'&gt;
+</t>
+<t tx="ekr.20170409174527.205">gnx: ekr.20170409174527.200
+</t>
+<t tx="ekr.20170409174527.206">gnx: ekr.20170409174527.200
+</t>
+<t tx="ekr.20170409174527.207">gnx: ekr.20170409174527.201
+unl: &lt;body&gt;
+gnx: ekr.20170409174527.202
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;
+gnx: ekr.20170409174527.203
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;--&gt;&lt;div id="D666"&gt;Paragraph&lt;/p&gt; &lt;!-- P1 --&gt;
+gnx: ekr.20170409174527.204
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;--&gt;&lt;div id="D666"&gt;Paragraph&lt;/p&gt; &lt;!-- P1 --&gt;--&gt;&lt;p id="P2"&gt;
+</t>
+<t tx="ekr.20170409174527.213">gnx: ekr.20170409174527.208
+</t>
+<t tx="ekr.20170409174527.214">gnx: ekr.20170409174527.208
+</t>
+<t tx="ekr.20170409174527.215">gnx: ekr.20170409174527.209
+unl: &lt;html&gt;
+gnx: ekr.20170409174527.210
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174527.211
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;
+gnx: ekr.20170409174527.212
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;--&gt;&lt;link id="L2"&gt;
+</t>
+<t tx="ekr.20170409174527.4">gnx: ekr.20170409174527.1
+</t>
+<t tx="ekr.20170409174527.5">gnx: ekr.20170409174527.1
+</t>
+<t tx="ekr.20170409174527.6">gnx: ekr.20170409174527.2
+unl: namespace
+gnx: ekr.20170409174527.3
+unl: namespace--&gt;class cTestClass1
+</t>
+<t tx="ekr.20170409174528.101">gnx: ekr.20170409174528.100
+</t>
+<t tx="ekr.20170409174528.102">gnx: ekr.20170409174528.100
+</t>
+<t tx="ekr.20170409174528.103"></t>
+<t tx="ekr.20170409174528.109">gnx: ekr.20170409174528.104
+</t>
+<t tx="ekr.20170409174528.110">gnx: ekr.20170409174528.104
+</t>
+<t tx="ekr.20170409174528.111">gnx: ekr.20170409174528.105
+unl: sub test1
+gnx: ekr.20170409174528.106
+unl: sub test2
+gnx: ekr.20170409174528.107
+unl: sub test3
+gnx: ekr.20170409174528.108
+unl: sub test4
+</t>
+<t tx="ekr.20170409174528.12">gnx: ekr.20170409174528.9
+</t>
+<t tx="ekr.20170409174528.13">gnx: ekr.20170409174528.9
+</t>
+<t tx="ekr.20170409174528.14">gnx: ekr.20170409174528.10
+unl: [owner]
+gnx: ekr.20170409174528.11
+unl: [database]
+</t>
+<t tx="ekr.20170409174528.18">gnx: ekr.20170409174528.15
+</t>
+<t tx="ekr.20170409174528.19">gnx: ekr.20170409174528.15
+</t>
+<t tx="ekr.20170409174528.20">gnx: ekr.20170409174528.16
+unl: public final class AdminPermission extends BasicPermission
+gnx: ekr.20170409174528.17
+unl: public final class AdminPermission extends BasicPermission--&gt;public AdminPermission
+</t>
+<t tx="ekr.20170409174528.24">gnx: ekr.20170409174528.21
+</t>
+<t tx="ekr.20170409174528.25">gnx: ekr.20170409174528.21
+</t>
+<t tx="ekr.20170409174528.26">gnx: ekr.20170409174528.22
+unl: public class BundleException extends Exception
+gnx: ekr.20170409174528.23
+unl: public class BundleException extends Exception--&gt;public BundleException
+</t>
+<t tx="ekr.20170409174528.29">gnx: ekr.20170409174528.27
+</t>
+<t tx="ekr.20170409174528.30">gnx: ekr.20170409174528.27
+</t>
+<t tx="ekr.20170409174528.31">gnx: ekr.20170409174528.28
+unl: interface Bicycle
+</t>
+<t tx="ekr.20170409174528.34">gnx: ekr.20170409174528.32
+</t>
+<t tx="ekr.20170409174528.35">gnx: ekr.20170409174528.32
+</t>
+<t tx="ekr.20170409174528.36">gnx: ekr.20170409174528.33
+unl: interface Bicycle
+</t>
+<t tx="ekr.20170409174528.39">gnx: ekr.20170409174528.37
+</t>
+<t tx="ekr.20170409174528.40">gnx: ekr.20170409174528.37
+</t>
+<t tx="ekr.20170409174528.41">gnx: ekr.20170409174528.38
+unl: &lt;&lt; { &gt;&gt;
+</t>
+<t tx="ekr.20170409174528.46">gnx: ekr.20170409174528.42
+</t>
+<t tx="ekr.20170409174528.47">gnx: ekr.20170409174528.42
+</t>
+<t tx="ekr.20170409174528.48">gnx: ekr.20170409174528.43
+unl: &lt;&lt; 1: { &gt;&gt;
+gnx: ekr.20170409174528.44
+unl: &lt;&lt; 1: { &gt;&gt;--&gt;&lt;&lt; if(story.isEmpty()) { &gt;&gt;
+gnx: ekr.20170409174528.45
+unl: &lt;&lt; 1: { &gt;&gt;--&gt;&lt;&lt; if(story.isEmpty()) { &gt;&gt;--&gt;&lt;&lt; for(var t=0; t&lt;tiddlers.length; t++) { &gt;&gt;
+</t>
+<t tx="ekr.20170409174528.52">gnx: ekr.20170409174528.49
+</t>
+<t tx="ekr.20170409174528.53">gnx: ekr.20170409174528.49
+</t>
+<t tx="ekr.20170409174528.54">gnx: ekr.20170409174528.50
+unl: &lt;&lt; var c3 = (function () { &gt;&gt;
+gnx: ekr.20170409174528.51
+unl: &lt;&lt; var c3 = (function () { &gt;&gt;--&gt;&lt;&lt; c3.someFunction = function () { &gt;&gt;
+</t>
+<t tx="ekr.20170409174528.58">gnx: ekr.20170409174528.55
+</t>
+<t tx="ekr.20170409174528.59">gnx: ekr.20170409174528.55
+</t>
+<t tx="ekr.20170409174528.6">gnx: ekr.20170409174528.1
+</t>
+<t tx="ekr.20170409174528.60">gnx: ekr.20170409174528.56
+unl: &lt;&lt; app.get('/', function(request, response) { &gt;&gt;
+gnx: ekr.20170409174528.57
+unl: &lt;&lt; app.listen(port, function() { &gt;&gt;
+</t>
+<t tx="ekr.20170409174528.68">gnx: ekr.20170409174528.61
+</t>
+<t tx="ekr.20170409174528.69">gnx: ekr.20170409174528.62
+unl: Section 1
+gnx: ekr.20170409174528.63
+unl: Section 2
+gnx: ekr.20170409174528.64
+unl: Section 2--&gt;Section 2-1
+gnx: ekr.20170409174528.65
+unl: Section 2--&gt;Section 2-1--&gt;Section 2-1-1
+gnx: ekr.20170409174528.66
+unl: Section 3
+gnx: ekr.20170409174528.67
+unl: Section 3--&gt;Section 3.1
+</t>
+<t tx="ekr.20170409174528.7">gnx: ekr.20170409174528.1
+</t>
+<t tx="ekr.20170409174528.77">gnx: ekr.20170409174528.70
+</t>
+<t tx="ekr.20170409174528.78">gnx: ekr.20170409174528.71
+unl: Section 1
+gnx: ekr.20170409174528.72
+unl: Section 2
+gnx: ekr.20170409174528.73
+unl: Section 2--&gt;Section 2-1
+gnx: ekr.20170409174528.74
+unl: Section 2--&gt;Section 2-1--&gt;Section 2-1-1
+gnx: ekr.20170409174528.75
+unl: Section 3
+gnx: ekr.20170409174528.76
+unl: Section 3--&gt;Section 3.1
+</t>
+<t tx="ekr.20170409174528.8">gnx: ekr.20170409174528.2
+unl: &lt;html&gt;
+gnx: ekr.20170409174528.3
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174528.4
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;
+gnx: ekr.20170409174528.5
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;--&gt;&lt;link id="L2"&gt;
+</t>
+<t tx="ekr.20170409174528.83">gnx: ekr.20170409174528.79
+</t>
+<t tx="ekr.20170409174528.84">gnx: ekr.20170409174528.79
+</t>
+<t tx="ekr.20170409174528.85">gnx: ekr.20170409174528.80
+unl: interface
+gnx: ekr.20170409174528.81
+unl: interface--&gt;procedure FormCreate
+gnx: ekr.20170409174528.82
+unl: interface--&gt;procedure TForm1.FormCreate
+</t>
+<t tx="ekr.20170409174528.90">gnx: ekr.20170409174528.86
+</t>
+<t tx="ekr.20170409174528.91">gnx: ekr.20170409174528.86
+</t>
+<t tx="ekr.20170409174528.92">gnx: ekr.20170409174528.87
+unl: sub Hello
+gnx: ekr.20170409174528.88
+unl: sub Test
+gnx: ekr.20170409174528.89
+unl: if ($bar =~ /foo/){
+</t>
+<t tx="ekr.20170409174528.97">gnx: ekr.20170409174528.93
+</t>
+<t tx="ekr.20170409174528.98">gnx: ekr.20170409174528.93
+</t>
+<t tx="ekr.20170409174528.99">gnx: ekr.20170409174528.94
+unl: sub Test
+gnx: ekr.20170409174528.95
+unl: sub World
+gnx: ekr.20170409174528.96
+unl: sub Hello
+</t>
+<t tx="ekr.20170409174529.100">gnx: ekr.20170409174529.97
+</t>
+<t tx="ekr.20170409174529.101">gnx: ekr.20170409174529.98
+unl: class testClass2
+</t>
+<t tx="ekr.20170409174529.106">gnx: ekr.20170409174529.102
+</t>
+<t tx="ekr.20170409174529.107">gnx: ekr.20170409174529.102
+</t>
+<t tx="ekr.20170409174529.108">gnx: ekr.20170409174529.103
+unl: class testClass1
+gnx: ekr.20170409174529.104
+unl: class testClass1--&gt;__init__
+gnx: ekr.20170409174529.105
+unl: class testClass1--&gt;f1
+</t>
+<t tx="ekr.20170409174529.12">gnx: ekr.20170409174529.9
+</t>
+<t tx="ekr.20170409174529.13">gnx: ekr.20170409174529.9
+</t>
+<t tx="ekr.20170409174529.14">gnx: ekr.20170409174529.10
+unl: class cc
+gnx: ekr.20170409174529.11
+unl: class cc--&gt;function __construct()
+</t>
+<t tx="ekr.20170409174529.19">gnx: ekr.20170409174529.15
+</t>
+<t tx="ekr.20170409174529.20">gnx: ekr.20170409174529.15
+</t>
+<t tx="ekr.20170409174529.21">gnx: ekr.20170409174529.16
+unl: if (expr)
+gnx: ekr.20170409174529.17
+unl: if (expr)--&gt;class cc
+gnx: ekr.20170409174529.18
+unl: if (expr)--&gt;class cc
+</t>
+<t tx="ekr.20170409174529.24">gnx: ekr.20170409174529.22
+</t>
+<t tx="ekr.20170409174529.25">gnx: ekr.20170409174529.22
+</t>
+<t tx="ekr.20170409174529.26">gnx: ekr.20170409174529.23
+unl: class Enum
+</t>
+<t tx="ekr.20170409174529.27">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170409174529.28">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170409174529.29">gnx: ekr.20170409174529.27
+</t>
+<t tx="ekr.20170409174529.30">gnx: ekr.20170409174529.27
+</t>
+<t tx="ekr.20170409174529.31">gnx: ekr.20170409174529.28
+unl: class foo
+</t>
+<t tx="ekr.20170409174529.35">gnx: ekr.20170409174529.32
+</t>
+<t tx="ekr.20170409174529.36">gnx: ekr.20170409174529.32
+</t>
+<t tx="ekr.20170409174529.37">gnx: ekr.20170409174529.33
+unl: isValidPython
+gnx: ekr.20170409174529.34
+unl: loadLocalFile
+</t>
+<t tx="ekr.20170409174529.41">gnx: ekr.20170409174529.38
+</t>
+<t tx="ekr.20170409174529.42">gnx: ekr.20170409174529.38
+</t>
+<t tx="ekr.20170409174529.43">gnx: ekr.20170409174529.39
+unl: class testClass1
+gnx: ekr.20170409174529.40
+unl: spam
+</t>
+<t tx="ekr.20170409174529.51">gnx: ekr.20170409174529.44
+</t>
+<t tx="ekr.20170409174529.52">gnx: ekr.20170409174529.44
+</t>
+<t tx="ekr.20170409174529.53">gnx: ekr.20170409174529.45
+unl: class class1
+gnx: ekr.20170409174529.46
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170409174529.47
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170409174529.48
+unl: class class2
+gnx: ekr.20170409174529.49
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170409174529.50
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20170409174529.57">gnx: ekr.20170409174529.54
+</t>
+<t tx="ekr.20170409174529.58">gnx: ekr.20170409174529.54
+</t>
+<t tx="ekr.20170409174529.59">gnx: ekr.20170409174529.55
+unl: Declarations
+gnx: ekr.20170409174529.56
+unl: make_parser
+</t>
+<t tx="ekr.20170409174529.6">gnx: ekr.20170409174529.1
+</t>
+<t tx="ekr.20170409174529.62">gnx: ekr.20170409174529.60
+</t>
+<t tx="ekr.20170409174529.63">gnx: ekr.20170409174529.60
+</t>
+<t tx="ekr.20170409174529.64">gnx: ekr.20170409174529.61
+unl: Declarations
+</t>
+<t tx="ekr.20170409174529.7">gnx: ekr.20170409174529.1
+</t>
+<t tx="ekr.20170409174529.76">gnx: ekr.20170409174529.65
+</t>
+<t tx="ekr.20170409174529.77">gnx: ekr.20170409174529.65
+</t>
+<t tx="ekr.20170409174529.78">gnx: ekr.20170409174529.66
+unl: Declarations
+gnx: ekr.20170409174529.67
+unl: class AttrDict
+gnx: ekr.20170409174529.68
+unl: class AttrDict--&gt;__init__
+gnx: ekr.20170409174529.69
+unl: make_parser
+gnx: ekr.20170409174529.70
+unl: get_options
+gnx: ekr.20170409174529.71
+unl: get_aggregate
+gnx: ekr.20170409174529.72
+unl: proc_file
+gnx: ekr.20170409174529.73
+unl: get_answers
+gnx: ekr.20170409174529.74
+unl: get_table_rows
+gnx: ekr.20170409174529.75
+unl: main
+</t>
+<t tx="ekr.20170409174529.8">gnx: ekr.20170409174529.2
+unl: sub test1
+gnx: ekr.20170409174529.3
+unl: sub test2
+gnx: ekr.20170409174529.4
+unl: sub test3
+gnx: ekr.20170409174529.5
+unl: sub test4
+</t>
+<t tx="ekr.20170409174529.81">gnx: ekr.20170409174529.79
+</t>
+<t tx="ekr.20170409174529.82">gnx: ekr.20170409174529.79
+</t>
+<t tx="ekr.20170409174529.83">gnx: ekr.20170409174529.80
+unl: make_map
+</t>
+<t tx="ekr.20170409174529.88">gnx: ekr.20170409174529.84
+</t>
+<t tx="ekr.20170409174529.89">gnx: ekr.20170409174529.84
+</t>
+<t tx="ekr.20170409174529.90">gnx: ekr.20170409174529.85
+unl: Declarations
+gnx: ekr.20170409174529.86
+unl: class Foo
+gnx: ekr.20170409174529.87
+unl: main
+</t>
+<t tx="ekr.20170409174529.94">gnx: ekr.20170409174529.91
+</t>
+<t tx="ekr.20170409174529.95">gnx: ekr.20170409174529.91
+</t>
+<t tx="ekr.20170409174529.96">gnx: ekr.20170409174529.92
+unl: foo
+gnx: ekr.20170409174529.93
+unl: class bar
+</t>
+<t tx="ekr.20170409174529.99">gnx: ekr.20170409174529.97
+</t>
+<t tx="ekr.20170409174530.10">gnx: ekr.20170409174530.7
+unl: Declarations
+</t>
+<t tx="ekr.20170409174530.103">gnx: ekr.20170409174530.100
+</t>
+<t tx="ekr.20170409174530.104">gnx: ekr.20170409174530.100
+</t>
+<t tx="ekr.20170409174530.105">gnx: ekr.20170409174530.101
+unl: class emptyClass
+gnx: ekr.20170409174530.102
+unl: followingDef
+</t>
+<t tx="ekr.20170409174530.109">gnx: ekr.20170409174530.106
+</t>
+<t tx="ekr.20170409174530.110">gnx: ekr.20170409174530.106
+</t>
+<t tx="ekr.20170409174530.111">gnx: ekr.20170409174530.107
+unl: class aClass
+gnx: ekr.20170409174530.108
+unl: class aClass--&gt;def1
+</t>
+<t tx="ekr.20170409174530.15">gnx: ekr.20170409174530.11
+</t>
+<t tx="ekr.20170409174530.16">gnx: ekr.20170409174530.11
+</t>
+<t tx="ekr.20170409174530.17">gnx: ekr.20170409174530.12
+unl: class Index
+gnx: ekr.20170409174530.13
+unl: class Index--&gt;index
+gnx: ekr.20170409174530.14
+unl: class Index--&gt;abc
+</t>
+<t tx="ekr.20170409174530.27">gnx: ekr.20170409174530.18
+</t>
+<t tx="ekr.20170409174530.28">gnx: ekr.20170409174530.18
+</t>
+<t tx="ekr.20170409174530.29">gnx: ekr.20170409174530.19
+unl: Declarations
+gnx: ekr.20170409174530.20
+unl: class Draggable
+gnx: ekr.20170409174530.21
+unl: class Draggable--&gt;__init__
+gnx: ekr.20170409174530.22
+unl: class Draggable--&gt;mousePressEvent
+gnx: ekr.20170409174530.23
+unl: class Draggable--&gt;mouseMoveEvent
+gnx: ekr.20170409174530.24
+unl: command
+gnx: ekr.20170409174530.25
+unl: exit_
+gnx: ekr.20170409174530.26
+unl: main
+</t>
+<t tx="ekr.20170409174530.3">gnx: ekr.20170409174530.1
+</t>
+<t tx="ekr.20170409174530.33">gnx: ekr.20170409174530.30
+</t>
+<t tx="ekr.20170409174530.34">gnx: ekr.20170409174530.30
+</t>
+<t tx="ekr.20170409174530.35">gnx: ekr.20170409174530.31
+unl: class aClass
+gnx: ekr.20170409174530.32
+unl: class aClass--&gt;outerDef
+</t>
+<t tx="ekr.20170409174530.4">gnx: ekr.20170409174530.1
+</t>
+<t tx="ekr.20170409174530.40">gnx: ekr.20170409174530.36
+</t>
+<t tx="ekr.20170409174530.41">gnx: ekr.20170409174530.36
+</t>
+<t tx="ekr.20170409174530.42">gnx: ekr.20170409174530.37
+unl: class test
+gnx: ekr.20170409174530.38
+unl: class test--&gt;importFilesCommand
+gnx: ekr.20170409174530.39
+unl: class test--&gt;convertMoreStringToOutlineAfter
+</t>
+<t tx="ekr.20170409174530.47">gnx: ekr.20170409174530.43
+</t>
+<t tx="ekr.20170409174530.48">gnx: ekr.20170409174530.43
+</t>
+<t tx="ekr.20170409174530.49">gnx: ekr.20170409174530.44
+unl: class test
+gnx: ekr.20170409174530.45
+unl: class test--&gt;spam
+gnx: ekr.20170409174530.46
+unl: class test--&gt;foo
+</t>
+<t tx="ekr.20170409174530.5">gnx: ekr.20170409174530.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409174530.52">gnx: ekr.20170409174530.50
+</t>
+<t tx="ekr.20170409174530.53">gnx: ekr.20170409174530.50
+</t>
+<t tx="ekr.20170409174530.54">gnx: ekr.20170409174530.51
+unl: Declarations
+</t>
+<t tx="ekr.20170409174530.57">gnx: ekr.20170409174530.55
+</t>
+<t tx="ekr.20170409174530.58">gnx: ekr.20170409174530.55
+</t>
+<t tx="ekr.20170409174530.59">gnx: ekr.20170409174530.56
+unl: Declarations
+</t>
+<t tx="ekr.20170409174530.63">gnx: ekr.20170409174530.60
+</t>
+<t tx="ekr.20170409174530.64">gnx: ekr.20170409174530.60
+</t>
+<t tx="ekr.20170409174530.65">gnx: ekr.20170409174530.61
+unl: class cls
+gnx: ekr.20170409174530.62
+unl: class cls--&gt;fun
+</t>
+<t tx="ekr.20170409174530.73">gnx: ekr.20170409174530.66
+</t>
+<t tx="ekr.20170409174530.74">gnx: ekr.20170409174530.66
+</t>
+<t tx="ekr.20170409174530.75">gnx: ekr.20170409174530.67
+unl: class mammalProviderBase
+gnx: ekr.20170409174530.68
+unl: class mammalProviderBase--&gt;__init__
+gnx: ekr.20170409174530.69
+unl: class mammalProviderBase--&gt;provide
+gnx: ekr.20170409174530.70
+unl: class mammalProviderBase--&gt;imagePath
+gnx: ekr.20170409174530.71
+unl: class mainPages
+gnx: ekr.20170409174530.72
+unl: class mainPages--&gt;provide
+</t>
+<t tx="ekr.20170409174530.8">gnx: ekr.20170409174530.6
+</t>
+<t tx="ekr.20170409174530.85">gnx: ekr.20170409174530.76
+</t>
+<t tx="ekr.20170409174530.86">gnx: ekr.20170409174530.76
+</t>
+<t tx="ekr.20170409174530.87">gnx: ekr.20170409174530.77
+unl: Declarations
+gnx: ekr.20170409174530.78
+unl: class LeoImportCommands
+gnx: ekr.20170409174530.79
+unl: class LeoImportCommands--&gt;createOutline
+gnx: ekr.20170409174530.80
+unl: class LeoImportCommands--&gt;dispatch
+gnx: ekr.20170409174530.81
+unl: class LeoImportCommands--&gt;scanner_for_at_auto
+gnx: ekr.20170409174530.82
+unl: class LeoImportCommands--&gt;scanner_for_ext
+gnx: ekr.20170409174530.83
+unl: class LeoImportCommands--&gt;get_import_filename
+gnx: ekr.20170409174530.84
+unl: class LeoImportCommands--&gt;init_import
+</t>
+<t tx="ekr.20170409174530.9">gnx: ekr.20170409174530.6
+</t>
+<t tx="ekr.20170409174530.91">gnx: ekr.20170409174530.88
+</t>
+<t tx="ekr.20170409174530.92">gnx: ekr.20170409174530.88
+</t>
+<t tx="ekr.20170409174530.93">gnx: ekr.20170409174530.89
+unl: class ItasException
+gnx: ekr.20170409174530.90
+unl: gpRun
+</t>
+<t tx="ekr.20170409174530.97">gnx: ekr.20170409174530.94
+</t>
+<t tx="ekr.20170409174530.98">gnx: ekr.20170409174530.94
+</t>
+<t tx="ekr.20170409174530.99">gnx: ekr.20170409174530.95
+unl: class emptyClass
+gnx: ekr.20170409174530.96
+unl: followingDef
+</t>
+<t tx="ekr.20170409174531.11">gnx: ekr.20170409174531.8
+</t>
+<t tx="ekr.20170409174531.12">gnx: ekr.20170409174531.8
+</t>
+<t tx="ekr.20170409174531.13">gnx: ekr.20170409174531.9
+unl: Declarations
+gnx: ekr.20170409174531.10
+unl: class testClass1
+</t>
+<t tx="ekr.20170409174531.152">gnx: ekr.20170409174531.74
+</t>
+<t tx="ekr.20170409174531.153">gnx: ekr.20170409174531.74
+</t>
+<t tx="ekr.20170409174531.154">gnx: ekr.20170409174531.75
+unl: Declarations
+gnx: ekr.20170409174531.76
+unl: class NullFormatter
+gnx: ekr.20170409174531.77
+unl: class NullFormatter--&gt;__init__
+gnx: ekr.20170409174531.78
+unl: class NullFormatter--&gt;end_paragraph
+gnx: ekr.20170409174531.79
+unl: class NullFormatter--&gt;add_line_break
+gnx: ekr.20170409174531.80
+unl: class NullFormatter--&gt;add_hor_rule
+gnx: ekr.20170409174531.81
+unl: class NullFormatter--&gt;add_label_data
+gnx: ekr.20170409174531.82
+unl: class NullFormatter--&gt;add_flowing_data
+gnx: ekr.20170409174531.83
+unl: class NullFormatter--&gt;add_literal_data
+gnx: ekr.20170409174531.84
+unl: class NullFormatter--&gt;flush_softspace
+gnx: ekr.20170409174531.85
+unl: class NullFormatter--&gt;push_alignment
+gnx: ekr.20170409174531.86
+unl: class NullFormatter--&gt;pop_alignment
+gnx: ekr.20170409174531.87
+unl: class NullFormatter--&gt;push_font
+gnx: ekr.20170409174531.88
+unl: class NullFormatter--&gt;pop_font
+gnx: ekr.20170409174531.89
+unl: class NullFormatter--&gt;push_margin
+gnx: ekr.20170409174531.90
+unl: class NullFormatter--&gt;pop_margin
+gnx: ekr.20170409174531.91
+unl: class NullFormatter--&gt;set_spacing
+gnx: ekr.20170409174531.92
+unl: class NullFormatter--&gt;push_style
+gnx: ekr.20170409174531.93
+unl: class NullFormatter--&gt;pop_style
+gnx: ekr.20170409174531.94
+unl: class NullFormatter--&gt;assert_line_data
+gnx: ekr.20170409174531.95
+unl: class AbstractFormatter
+gnx: ekr.20170409174531.96
+unl: class AbstractFormatter--&gt;__init__
+gnx: ekr.20170409174531.97
+unl: class AbstractFormatter--&gt;end_paragraph
+gnx: ekr.20170409174531.98
+unl: class AbstractFormatter--&gt;add_line_break
+gnx: ekr.20170409174531.99
+unl: class AbstractFormatter--&gt;add_hor_rule
+gnx: ekr.20170409174531.100
+unl: class AbstractFormatter--&gt;add_label_data
+gnx: ekr.20170409174531.101
+unl: class AbstractFormatter--&gt;format_counter
+gnx: ekr.20170409174531.102
+unl: class AbstractFormatter--&gt;format_letter
+gnx: ekr.20170409174531.103
+unl: class AbstractFormatter--&gt;format_roman
+gnx: ekr.20170409174531.104
+unl: class AbstractFormatter--&gt;add_flowing_data
+gnx: ekr.20170409174531.105
+unl: class AbstractFormatter--&gt;add_literal_data
+gnx: ekr.20170409174531.106
+unl: class AbstractFormatter--&gt;flush_softspace
+gnx: ekr.20170409174531.107
+unl: class AbstractFormatter--&gt;push_alignment
+gnx: ekr.20170409174531.108
+unl: class AbstractFormatter--&gt;pop_alignment
+gnx: ekr.20170409174531.109
+unl: class AbstractFormatter--&gt;push_font
+gnx: ekr.20170409174531.110
+unl: class AbstractFormatter--&gt;pop_font
+gnx: ekr.20170409174531.111
+unl: class AbstractFormatter--&gt;push_margin
+gnx: ekr.20170409174531.112
+unl: class AbstractFormatter--&gt;pop_margin
+gnx: ekr.20170409174531.113
+unl: class AbstractFormatter--&gt;set_spacing
+gnx: ekr.20170409174531.114
+unl: class AbstractFormatter--&gt;push_style
+gnx: ekr.20170409174531.115
+unl: class AbstractFormatter--&gt;pop_style
+gnx: ekr.20170409174531.116
+unl: class AbstractFormatter--&gt;assert_line_data
+gnx: ekr.20170409174531.117
+unl: class NullWriter
+gnx: ekr.20170409174531.118
+unl: class NullWriter--&gt;__init__
+gnx: ekr.20170409174531.119
+unl: class NullWriter--&gt;flush
+gnx: ekr.20170409174531.120
+unl: class NullWriter--&gt;new_alignment
+gnx: ekr.20170409174531.121
+unl: class NullWriter--&gt;new_font
+gnx: ekr.20170409174531.122
+unl: class NullWriter--&gt;new_margin
+gnx: ekr.20170409174531.123
+unl: class NullWriter--&gt;new_spacing
+gnx: ekr.20170409174531.124
+unl: class NullWriter--&gt;new_styles
+gnx: ekr.20170409174531.125
+unl: class NullWriter--&gt;send_paragraph
+gnx: ekr.20170409174531.126
+unl: class NullWriter--&gt;send_line_break
+gnx: ekr.20170409174531.127
+unl: class NullWriter--&gt;send_hor_rule
+gnx: ekr.20170409174531.128
+unl: class NullWriter--&gt;send_label_data
+gnx: ekr.20170409174531.129
+unl: class NullWriter--&gt;send_flowing_data
+gnx: ekr.20170409174531.130
+unl: class NullWriter--&gt;send_literal_data
+gnx: ekr.20170409174531.131
+unl: class AbstractWriter
+gnx: ekr.20170409174531.132
+unl: class AbstractWriter--&gt;new_alignment
+gnx: ekr.20170409174531.133
+unl: class AbstractWriter--&gt;new_font
+gnx: ekr.20170409174531.134
+unl: class AbstractWriter--&gt;new_margin
+gnx: ekr.20170409174531.135
+unl: class AbstractWriter--&gt;new_spacing
+gnx: ekr.20170409174531.136
+unl: class AbstractWriter--&gt;new_styles
+gnx: ekr.20170409174531.137
+unl: class AbstractWriter--&gt;send_paragraph
+gnx: ekr.20170409174531.138
+unl: class AbstractWriter--&gt;send_line_break
+gnx: ekr.20170409174531.139
+unl: class AbstractWriter--&gt;send_hor_rule
+gnx: ekr.20170409174531.140
+unl: class AbstractWriter--&gt;send_label_data
+gnx: ekr.20170409174531.141
+unl: class AbstractWriter--&gt;send_flowing_data
+gnx: ekr.20170409174531.142
+unl: class AbstractWriter--&gt;send_literal_data
+gnx: ekr.20170409174531.143
+unl: class DumbWriter
+gnx: ekr.20170409174531.144
+unl: class DumbWriter--&gt;__init__
+gnx: ekr.20170409174531.145
+unl: class DumbWriter--&gt;reset
+gnx: ekr.20170409174531.146
+unl: class DumbWriter--&gt;send_paragraph
+gnx: ekr.20170409174531.147
+unl: class DumbWriter--&gt;send_line_break
+gnx: ekr.20170409174531.148
+unl: class DumbWriter--&gt;send_hor_rule
+gnx: ekr.20170409174531.149
+unl: class DumbWriter--&gt;send_literal_data
+gnx: ekr.20170409174531.150
+unl: class DumbWriter--&gt;send_flowing_data
+gnx: ekr.20170409174531.151
+unl: test
+</t>
+<t tx="ekr.20170409174531.160">gnx: ekr.20170409174531.155
+</t>
+<t tx="ekr.20170409174531.161">gnx: ekr.20170409174531.155
+</t>
+<t tx="ekr.20170409174531.162">gnx: ekr.20170409174531.156
+unl: class Greeter {
+gnx: ekr.20170409174531.157
+unl: class Greeter {--&gt;constructor (message: string) {
+gnx: ekr.20170409174531.158
+unl: class Greeter {--&gt;greet() {
+gnx: ekr.20170409174531.159
+unl: button.onclick = function() {
+</t>
+<t tx="ekr.20170409174531.169">gnx: ekr.20170409174531.163
+</t>
+<t tx="ekr.20170409174531.170">gnx: ekr.20170409174531.163
+</t>
+<t tx="ekr.20170409174531.171">gnx: ekr.20170409174531.164
+unl: module Sayings {
+gnx: ekr.20170409174531.165
+unl: module Sayings {--&gt;export class Greeter {
+gnx: ekr.20170409174531.166
+unl: module Sayings {--&gt;export class Greeter {--&gt;constructor (message: string) {
+gnx: ekr.20170409174531.167
+unl: module Sayings {--&gt;export class Greeter {--&gt;greet() {
+gnx: ekr.20170409174531.168
+unl: button.onclick = function() {
+</t>
+<t tx="ekr.20170409174531.176">gnx: ekr.20170409174531.172
+</t>
+<t tx="ekr.20170409174531.177">gnx: ekr.20170409174531.172
+</t>
+<t tx="ekr.20170409174531.178">gnx: ekr.20170409174531.173
+unl: &lt;html&gt;
+gnx: ekr.20170409174531.174
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174531.175
+unl: &lt;html&gt;--&gt;&lt;body class='bodystring'&gt;
+</t>
+<t tx="ekr.20170409174531.18">gnx: ekr.20170409174531.14
+</t>
+<t tx="ekr.20170409174531.181">gnx: ekr.20170409174531.179
+</t>
+<t tx="ekr.20170409174531.182">gnx: ekr.20170409174531.179
+</t>
+<t tx="ekr.20170409174531.183">gnx: ekr.20170409174531.180
+unl: &lt;nodeA&gt;
+</t>
+<t tx="ekr.20170409174531.185">gnx: ekr.20170409174531.184
+</t>
+<t tx="ekr.20170409174531.186">gnx: ekr.20170409174531.184
+</t>
+<t tx="ekr.20170409174531.187"></t>
+<t tx="ekr.20170409174531.19">gnx: ekr.20170409174531.14
+</t>
+<t tx="ekr.20170409174531.20">gnx: ekr.20170409174531.15
+unl: class BaseScanner
+gnx: ekr.20170409174531.16
+unl: class BaseScanner--&gt;__init__
+gnx: ekr.20170409174531.17
+unl: class BaseScanner--&gt;createHeadline
+</t>
+<t tx="ekr.20170409174531.25">gnx: ekr.20170409174531.21
+</t>
+<t tx="ekr.20170409174531.26">gnx: ekr.20170409174531.21
+</t>
+<t tx="ekr.20170409174531.27">gnx: ekr.20170409174531.22
+unl: class BaseScanner
+gnx: ekr.20170409174531.23
+unl: class BaseScanner--&gt;containsUnderindentedComment
+gnx: ekr.20170409174531.24
+unl: class BaseScanner--&gt;empty
+</t>
+<t tx="ekr.20170409174531.32">gnx: ekr.20170409174531.28
+</t>
+<t tx="ekr.20170409174531.33">gnx: ekr.20170409174531.28
+</t>
+<t tx="ekr.20170409174531.34">gnx: ekr.20170409174531.29
+unl: class BaseScanner
+gnx: ekr.20170409174531.30
+unl: class BaseScanner--&gt;containsUnderindentedComment
+gnx: ekr.20170409174531.31
+unl: class BaseScanner--&gt;empty
+</t>
+<t tx="ekr.20170409174531.41">gnx: ekr.20170409174531.35
+</t>
+<t tx="ekr.20170409174531.42">gnx: ekr.20170409174531.35
+</t>
+<t tx="ekr.20170409174531.43">gnx: ekr.20170409174531.36
+unl: Declarations
+gnx: ekr.20170409174531.37
+unl: merge_value
+gnx: ekr.20170409174531.38
+unl: class MainDisplay
+gnx: ekr.20170409174531.39
+unl: class MainDisplay--&gt;save_file
+gnx: ekr.20170409174531.40
+unl: retab
+</t>
+<t tx="ekr.20170409174531.47">gnx: ekr.20170409174531.44
+</t>
+<t tx="ekr.20170409174531.48">gnx: ekr.20170409174531.44
+</t>
+<t tx="ekr.20170409174531.49">gnx: ekr.20170409174531.45
+unl: class aClass
+gnx: ekr.20170409174531.46
+unl: class aClass--&gt;def1
+</t>
+<t tx="ekr.20170409174531.5">gnx: ekr.20170409174531.1
+</t>
+<t tx="ekr.20170409174531.52">gnx: ekr.20170409174531.50
+</t>
+<t tx="ekr.20170409174531.53">gnx: ekr.20170409174531.50
+</t>
+<t tx="ekr.20170409174531.54">gnx: ekr.20170409174531.51
+unl: Declarations
+</t>
+<t tx="ekr.20170409174531.58">gnx: ekr.20170409174531.55
+</t>
+<t tx="ekr.20170409174531.59">gnx: ekr.20170409174531.55
+</t>
+<t tx="ekr.20170409174531.6">gnx: ekr.20170409174531.1
+</t>
+<t tx="ekr.20170409174531.60">gnx: ekr.20170409174531.56
+unl: foo
+gnx: ekr.20170409174531.57
+unl: bar
+</t>
+<t tx="ekr.20170409174531.65">gnx: ekr.20170409174531.61
+</t>
+<t tx="ekr.20170409174531.66">gnx: ekr.20170409174531.61
+</t>
+<t tx="ekr.20170409174531.67">gnx: ekr.20170409174531.62
+unl: class emptyClass
+gnx: ekr.20170409174531.63
+unl: class emptyClass--&gt;spam
+gnx: ekr.20170409174531.64
+unl: followingDef
+</t>
+<t tx="ekr.20170409174531.7">gnx: ekr.20170409174531.2
+unl: class aClass
+gnx: ekr.20170409174531.3
+unl: class aClass--&gt;def1
+gnx: ekr.20170409174531.4
+unl: class aClass--&gt;def2
+</t>
+<t tx="ekr.20170409174531.71">gnx: ekr.20170409174531.68
+</t>
+<t tx="ekr.20170409174531.72">gnx: ekr.20170409174531.68
+</t>
+<t tx="ekr.20170409174531.73">gnx: ekr.20170409174531.69
+unl: foo
+gnx: ekr.20170409174531.70
+unl: bar
+</t>
+<t tx="ekr.20170409174628.38">gnx: ekr.20170409174628.34
+</t>
+<t tx="ekr.20170409174628.39">gnx: ekr.20170409174628.34
+</t>
+<t tx="ekr.20170409174628.40">gnx: ekr.20170409174628.35
+unl: class cTestClass1
+gnx: ekr.20170409174628.36
+unl: class cTestClass1--&gt;int foo
+gnx: ekr.20170409174628.37
+unl: class cTestClass1--&gt;char bar
+</t>
+<t tx="ekr.20170409174628.45">gnx: ekr.20170409174628.41
+</t>
+<t tx="ekr.20170409174628.46">gnx: ekr.20170409174628.41
+</t>
+<t tx="ekr.20170409174629.1">gnx: ekr.20170409174628.42
+unl: class cTestClass1
+gnx: ekr.20170409174628.43
+unl: class cTestClass1--&gt;int foo
+gnx: ekr.20170409174628.44
+unl: class cTestClass1--&gt;char bar
+</t>
+<t tx="ekr.20170409174629.11">gnx: ekr.20170409174629.8
+</t>
+<t tx="ekr.20170409174629.12">gnx: ekr.20170409174629.8
+</t>
+<t tx="ekr.20170409174629.13">gnx: ekr.20170409174629.9
+unl: void aaa::bbb::doit
+gnx: ekr.20170409174629.10
+unl: bool aaa::bbb::dothat
+</t>
+<t tx="ekr.20170409174629.155">gnx: ekr.20170409174629.46
+</t>
+<t tx="ekr.20170409174629.156">gnx: ekr.20170409174629.46
+</t>
+<t tx="ekr.20170409174629.157">gnx: ekr.20170409174629.47
+unl: buildCoffee = (str) -&gt;
+gnx: ekr.20170409174629.48
+unl: class Builder
+gnx: ekr.20170409174629.49
+unl: class Builder--&gt;constructor: -&gt;
+gnx: ekr.20170409174629.50
+unl: class Builder--&gt;build: (args...) -&gt;
+gnx: ekr.20170409174629.51
+unl: class Builder--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174629.52
+unl: class Builder--&gt;body: (node, opts={}) -&gt;
+gnx: ekr.20170409174629.53
+unl: class Builder--&gt;'script': (n, opts={}) -&gt;
+gnx: ekr.20170409174629.54
+unl: class Builder--&gt;'property_identifier': (n) -&gt;
+gnx: ekr.20170409174629.55
+unl: class Builder--&gt;'identifier': (n) -&gt;
+gnx: ekr.20170409174629.56
+unl: class Builder--&gt;'number': (n) -&gt;
+gnx: ekr.20170409174629.57
+unl: class Builder--&gt;'id': (n) -&gt;
+gnx: ekr.20170409174629.58
+unl: class Builder--&gt;'id_param': (n) -&gt;
+gnx: ekr.20170409174629.59
+unl: class Builder--&gt;'return': (n) -&gt;
+gnx: ekr.20170409174629.60
+unl: class Builder--&gt;';': (n) -&gt;
+gnx: ekr.20170409174629.61
+unl: class Builder--&gt;'new': (n) -&gt; "new #{@build n.left()}"
+gnx: ekr.20170409174629.62
+unl: class Builder--&gt;'new_with_args': (n) -&gt; "new #{@build n.left()}(#{@build n.right()})"
+gnx: ekr.20170409174629.63
+unl: class Builder--&gt;'unary_plus': (n) -&gt; "+#{@build n.left()}"
+gnx: ekr.20170409174629.64
+unl: class Builder--&gt;'unary_minus': (n) -&gt; "-#{@build n.left()}"
+gnx: ekr.20170409174629.65
+unl: class Builder--&gt;'this': (n) -&gt; 'this'
+gnx: ekr.20170409174629.66
+unl: class Builder--&gt;'null': (n) -&gt; 'null'
+gnx: ekr.20170409174629.67
+unl: class Builder--&gt;'true': (n) -&gt; 'true'
+gnx: ekr.20170409174629.68
+unl: class Builder--&gt;'false': (n) -&gt; 'false'
+gnx: ekr.20170409174629.69
+unl: class Builder--&gt;'void': (n) -&gt; 'undefined'
+gnx: ekr.20170409174629.70
+unl: class Builder--&gt;'debugger': (n) -&gt; "debugger\n"
+gnx: ekr.20170409174629.71
+unl: class Builder--&gt;'break': (n) -&gt; "break\n"
+gnx: ekr.20170409174629.72
+unl: class Builder--&gt;'continue': (n) -&gt; "continue\n"
+gnx: ekr.20170409174629.73
+unl: class Builder--&gt;'~': (n) -&gt; "~#{@build n.left()}"
+gnx: ekr.20170409174629.74
+unl: class Builder--&gt;'typeof': (n) -&gt; "typeof #{@build n.left()}"
+gnx: ekr.20170409174629.75
+unl: class Builder--&gt;'index': (n) -&gt;
+gnx: ekr.20170409174629.76
+unl: class Builder--&gt;'throw': (n) -&gt; "throw #{@build n.exception}"
+gnx: ekr.20170409174629.77
+unl: class Builder--&gt;'!': (n) -&gt;
+gnx: ekr.20170409174629.78
+unl: class Builder--&gt;in: (n) -&gt;    @binary_operator n, 'of'
+gnx: ekr.20170409174629.79
+unl: class Builder--&gt;'+': (n) -&gt;   @binary_operator n, '+'
+gnx: ekr.20170409174629.80
+unl: class Builder--&gt;'-': (n) -&gt;   @binary_operator n, '-'
+gnx: ekr.20170409174629.81
+unl: class Builder--&gt;'*': (n) -&gt;   @binary_operator n, '*'
+gnx: ekr.20170409174629.82
+unl: class Builder--&gt;'/': (n) -&gt;   @binary_operator n, '/'
+gnx: ekr.20170409174629.83
+unl: class Builder--&gt;'%': (n) -&gt;   @binary_operator n, '%'
+gnx: ekr.20170409174629.84
+unl: class Builder--&gt;'&gt;': (n) -&gt;   @binary_operator n, '&gt;'
+gnx: ekr.20170409174629.85
+unl: class Builder--&gt;'&lt;': (n) -&gt;   @binary_operator n, '&lt;'
+gnx: ekr.20170409174629.86
+unl: class Builder--&gt;'&amp;': (n) -&gt;   @binary_operator n, '&amp;'
+gnx: ekr.20170409174629.87
+unl: class Builder--&gt;'|': (n) -&gt;   @binary_operator n, '|'
+gnx: ekr.20170409174629.88
+unl: class Builder--&gt;'^': (n) -&gt;   @binary_operator n, '^'
+gnx: ekr.20170409174629.89
+unl: class Builder--&gt;'&amp;&amp;': (n) -&gt;  @binary_operator n, 'and'
+gnx: ekr.20170409174629.90
+unl: class Builder--&gt;'||': (n) -&gt;  @binary_operator n, 'or'
+gnx: ekr.20170409174629.91
+unl: class Builder--&gt;'&lt;&lt;': (n) -&gt;  @binary_operator n, '&lt;&lt;'
+gnx: ekr.20170409174629.92
+unl: class Builder--&gt;'&lt;=': (n) -&gt;  @binary_operator n, '&lt;='
+gnx: ekr.20170409174629.93
+unl: class Builder--&gt;'&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;'
+gnx: ekr.20170409174629.94
+unl: class Builder--&gt;'&gt;=': (n) -&gt;  @binary_operator n, '&gt;='
+gnx: ekr.20170409174629.95
+unl: class Builder--&gt;'===': (n) -&gt; @binary_operator n, 'is'
+gnx: ekr.20170409174629.96
+unl: class Builder--&gt;'!==': (n) -&gt; @binary_operator n, 'isnt'
+gnx: ekr.20170409174629.97
+unl: class Builder--&gt;'&gt;&gt;&gt;': (n) -&gt;  @binary_operator n, '&gt;&gt;&gt;'
+gnx: ekr.20170409174629.98
+unl: class Builder--&gt;instanceof: (n) -&gt; @binary_operator n, 'instanceof'
+gnx: ekr.20170409174629.99
+unl: class Builder--&gt;'==': (n) -&gt;
+gnx: ekr.20170409174629.100
+unl: class Builder--&gt;'!=': (n) -&gt;
+gnx: ekr.20170409174629.101
+unl: class Builder--&gt;'binary_operator': do -&gt;
+gnx: ekr.20170409174629.102
+unl: class Builder--&gt;'--': (n) -&gt; @increment_decrement n, '--'
+gnx: ekr.20170409174629.103
+unl: class Builder--&gt;'++': (n) -&gt; @increment_decrement n, '++'
+gnx: ekr.20170409174629.104
+unl: class Builder--&gt;'increment_decrement': (n, sign) -&gt;
+gnx: ekr.20170409174629.105
+unl: class Builder--&gt;'=': (n) -&gt;
+gnx: ekr.20170409174629.106
+unl: class Builder--&gt;',': (n) -&gt;
+gnx: ekr.20170409174629.107
+unl: class Builder--&gt;'regexp': (n) -&gt;
+gnx: ekr.20170409174629.108
+unl: class Builder--&gt;'string': (n) -&gt;
+gnx: ekr.20170409174629.109
+unl: class Builder--&gt;'call': (n) -&gt;
+gnx: ekr.20170409174629.110
+unl: class Builder--&gt;'call_statement': (n) -&gt;
+gnx: ekr.20170409174629.111
+unl: class Builder--&gt;'list': (n) -&gt;
+gnx: ekr.20170409174629.112
+unl: class Builder--&gt;'delete': (n) -&gt;
+gnx: ekr.20170409174629.113
+unl: class Builder--&gt;'.': (n) -&gt;
+gnx: ekr.20170409174629.114
+unl: class Builder--&gt;'try': (n) -&gt;
+gnx: ekr.20170409174629.115
+unl: class Builder--&gt;'catch': (n) -&gt;
+gnx: ekr.20170409174629.116
+unl: class Builder--&gt;'?': (n) -&gt;
+gnx: ekr.20170409174629.117
+unl: class Builder--&gt;'for': (n) -&gt;
+gnx: ekr.20170409174629.118
+unl: class Builder--&gt;'for_in': (n) -&gt;
+gnx: ekr.20170409174629.119
+unl: class Builder--&gt;'while': (n) -&gt;
+gnx: ekr.20170409174629.120
+unl: class Builder--&gt;'do': (n) -&gt;
+gnx: ekr.20170409174629.121
+unl: class Builder--&gt;'if': (n) -&gt;
+gnx: ekr.20170409174629.122
+unl: class Builder--&gt;'switch': (n) -&gt;
+gnx: ekr.20170409174629.123
+unl: class Builder--&gt;'existence_check': (n) -&gt;
+gnx: ekr.20170409174629.124
+unl: class Builder--&gt;'array_init': (n) -&gt;
+gnx: ekr.20170409174629.125
+unl: class Builder--&gt;'property_init': (n) -&gt;
+gnx: ekr.20170409174629.126
+unl: class Builder--&gt;'object_init': (n, options={}) -&gt;
+gnx: ekr.20170409174629.127
+unl: class Builder--&gt;'function': (n) -&gt;
+gnx: ekr.20170409174629.128
+unl: class Builder--&gt;'var': (n) -&gt;
+gnx: ekr.20170409174629.129
+unl: class Builder--&gt;'other': (n) -&gt;   @unsupported n, "#{n.typeName()} is not supported yet"
+gnx: ekr.20170409174629.130
+unl: class Builder--&gt;'getter': (n) -&gt;  @unsupported n, "getter syntax is not supported; use __defineGetter__"
+gnx: ekr.20170409174629.131
+unl: class Builder--&gt;'setter': (n) -&gt;  @unsupported n, "setter syntax is not supported; use __defineSetter__"
+gnx: ekr.20170409174629.132
+unl: class Builder--&gt;'label': (n) -&gt;   @unsupported n, "labels are not supported by CoffeeScript"
+gnx: ekr.20170409174629.133
+unl: class Builder--&gt;'const': (n) -&gt;   @unsupported n, "consts are not supported by CoffeeScript"
+gnx: ekr.20170409174629.134
+unl: class Builder--&gt;'block': (args...) -&gt;
+gnx: ekr.20170409174629.135
+unl: class Builder--&gt;'unsupported': (node, message) -&gt;
+gnx: ekr.20170409174629.136
+unl: class Transformer
+gnx: ekr.20170409174629.137
+unl: class Transformer--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174629.138
+unl: class Transformer--&gt;'script': (n) -&gt;
+gnx: ekr.20170409174629.139
+unl: class Transformer--&gt;'.': (n) -&gt;
+gnx: ekr.20170409174629.140
+unl: class Transformer--&gt;';': (n) -&gt;
+gnx: ekr.20170409174629.141
+unl: class Transformer--&gt;'function': (n) -&gt;
+gnx: ekr.20170409174629.142
+unl: class Transformer--&gt;'function': (n) -&gt;--&gt;n.body.walk last: true, (parent, node, list) -&gt;
+gnx: ekr.20170409174629.143
+unl: class Transformer--&gt;'switch': (n) -&gt;
+gnx: ekr.20170409174629.144
+unl: class Transformer--&gt;'call_statement': (n) -&gt;
+gnx: ekr.20170409174629.145
+unl: class Transformer--&gt;'return': (n) -&gt;
+gnx: ekr.20170409174629.146
+unl: class Transformer--&gt;'block': (n) -&gt;
+gnx: ekr.20170409174629.147
+unl: class Transformer--&gt;'if': (n) -&gt;
+gnx: ekr.20170409174629.148
+unl: class Transformer--&gt;'while': (n) -&gt;
+gnx: ekr.20170409174629.149
+unl: class Transformer--&gt;'inversible': (n) -&gt;
+gnx: ekr.20170409174629.150
+unl: class Transformer--&gt;'==': (n) -&gt;
+gnx: ekr.20170409174629.151
+unl: class Transformer--&gt;'!=': (n) -&gt;
+gnx: ekr.20170409174629.152
+unl: class UnsupportedError
+gnx: ekr.20170409174629.153
+unl: class UnsupportedError--&gt;constructor: (str, src) -&gt;
+gnx: ekr.20170409174629.154
+unl: class UnsupportedError--&gt;toString: -&gt; @message
+</t>
+<t tx="ekr.20170409174629.16">gnx: ekr.20170409174629.14
+</t>
+<t tx="ekr.20170409174629.160">gnx: ekr.20170409174629.158
+</t>
+<t tx="ekr.20170409174629.161">gnx: ekr.20170409174629.158
+</t>
+<t tx="ekr.20170409174629.162">gnx: ekr.20170409174629.159
+unl: buildCoffee = (str) -&gt;
+</t>
+<t tx="ekr.20170409174629.169">gnx: ekr.20170409174629.163
+</t>
+<t tx="ekr.20170409174629.17">gnx: ekr.20170409174629.14
+</t>
+<t tx="ekr.20170409174629.170">gnx: ekr.20170409174629.163
+</t>
+<t tx="ekr.20170409174629.171">gnx: ekr.20170409174629.164
+unl: class Builder
+gnx: ekr.20170409174629.165
+unl: class Builder--&gt;constructor: -&gt;
+gnx: ekr.20170409174629.166
+unl: class Builder--&gt;build: (args...) -&gt;
+gnx: ekr.20170409174629.167
+unl: class Builder--&gt;transform: (args...) -&gt;
+gnx: ekr.20170409174629.168
+unl: class Builder--&gt;body: (node, opts={}) -&gt;
+</t>
+<t tx="ekr.20170409174629.18">gnx: ekr.20170409174629.15
+unl: void aaa::bbb::doit
+</t>
+<t tx="ekr.20170409174629.21">gnx: ekr.20170409174629.19
+</t>
+<t tx="ekr.20170409174629.22">gnx: ekr.20170409174629.19
+</t>
+<t tx="ekr.20170409174629.23">gnx: ekr.20170409174629.20
+unl: static void ReleaseCharSet
+</t>
+<t tx="ekr.20170409174629.26">gnx: ekr.20170409174629.24
+</t>
+<t tx="ekr.20170409174629.27">gnx: ekr.20170409174629.24
+</t>
+<t tx="ekr.20170409174629.28">gnx: ekr.20170409174629.25
+unl: Tcl_Obj * Tcl_NewLongObj
+</t>
+<t tx="ekr.20170409174629.31">gnx: ekr.20170409174629.29
+</t>
+<t tx="ekr.20170409174629.32">gnx: ekr.20170409174629.29
+</t>
+<t tx="ekr.20170409174629.33">gnx: ekr.20170409174629.30
+unl: extern "C"
+</t>
+<t tx="ekr.20170409174629.37">gnx: ekr.20170409174629.34
+</t>
+<t tx="ekr.20170409174629.38">gnx: ekr.20170409174629.34
+</t>
+<t tx="ekr.20170409174629.39">gnx: ekr.20170409174629.35
+unl: namespace
+gnx: ekr.20170409174629.36
+unl: namespace--&gt;class cTestClass1
+</t>
+<t tx="ekr.20170409174629.43">gnx: ekr.20170409174629.40
+</t>
+<t tx="ekr.20170409174629.44">gnx: ekr.20170409174629.40
+</t>
+<t tx="ekr.20170409174629.45">gnx: ekr.20170409174629.41
+unl: namespace
+gnx: ekr.20170409174629.42
+unl: namespace--&gt;class cTestClass1
+</t>
+<t tx="ekr.20170409174629.5">gnx: ekr.20170409174629.2
+</t>
+<t tx="ekr.20170409174629.6">gnx: ekr.20170409174629.2
+</t>
+<t tx="ekr.20170409174629.7">gnx: ekr.20170409174629.3
+unl: void aaa::bbb::doit
+gnx: ekr.20170409174629.4
+unl: bool aaa::bbb::dothat
+</t>
+<t tx="ekr.20170409174630.101">gnx: ekr.20170409174630.98
+</t>
+<t tx="ekr.20170409174630.102">gnx: ekr.20170409174630.98
+</t>
+<t tx="ekr.20170409174630.103">gnx: ekr.20170409174630.99
+unl: public class BundleException extends Exception
+gnx: ekr.20170409174630.100
+unl: public class BundleException extends Exception--&gt;public BundleException
+</t>
+<t tx="ekr.20170409174630.11">gnx: ekr.20170409174630.8
+</t>
+<t tx="ekr.20170409174630.12">gnx: ekr.20170409174630.8
+</t>
+<t tx="ekr.20170409174630.13">gnx: ekr.20170409174630.9
+unl: defun abc
+gnx: ekr.20170409174630.10
+unl: defun cde
+</t>
+<t tx="ekr.20170409174630.18">gnx: ekr.20170409174630.14
+</t>
+<t tx="ekr.20170409174630.19">gnx: ekr.20170409174630.14
+</t>
+<t tx="ekr.20170409174630.20">gnx: ekr.20170409174630.15
+unl: &lt;html&gt;
+gnx: ekr.20170409174630.16
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174630.17
+unl: &lt;html&gt;--&gt;&lt;body class="bodystring"&gt;
+</t>
+<t tx="ekr.20170409174630.41">gnx: ekr.20170409174630.21
+</t>
+<t tx="ekr.20170409174630.42">gnx: ekr.20170409174630.21
+</t>
+<t tx="ekr.20170409174630.43">gnx: ekr.20170409174630.22
+unl: &lt;html&gt;
+gnx: ekr.20170409174630.23
+unl: &lt;html&gt;--&gt;&lt;body&gt;
+gnx: ekr.20170409174630.24
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;
+gnx: ekr.20170409174630.25
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;
+gnx: ekr.20170409174630.26
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;
+gnx: ekr.20170409174630.27
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;
+gnx: ekr.20170409174630.28
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;
+gnx: ekr.20170409174630.29
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;
+gnx: ekr.20170409174630.30
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;
+gnx: ekr.20170409174630.31
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;
+gnx: ekr.20170409174630.32
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;
+gnx: ekr.20170409174630.33
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;
+gnx: ekr.20170409174630.34
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;
+gnx: ekr.20170409174630.35
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;
+gnx: ekr.20170409174630.36
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;--&gt;&lt;tbody id="6"&gt;
+gnx: ekr.20170409174630.37
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="550"&gt;--&gt;&lt;table id="6"&gt;--&gt;&lt;tbody id="6"&gt;--&gt;&lt;tr&gt;
+gnx: ekr.20170409174630.38
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;table id="2"&gt;	&lt;tr valign="top"&gt;	&lt;td width="377"&gt;--&gt;&lt;table id="3"&gt;--&gt;&lt;tr&gt;--&gt;&lt;td width="368"&gt;--&gt;&lt;table id="4"&gt;--&gt;&lt;tbody id="5"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="100%" colspan="2"&gt;
+gnx: ekr.20170409174630.39
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;table id="0"&gt;--&gt;&lt;tr valign="top"&gt;--&gt;&lt;td width="619"&gt;--&gt;&lt;DIV class="webonly"&gt;
+gnx: ekr.20170409174630.40
+unl: &lt;html&gt;--&gt;&lt;body&gt;--&gt;&lt;noscript&gt;&lt;img src="/scripts/stats/track.js" height="1" width="1" alt="" border="0"&gt;&lt;/noscript&gt;
+</t>
+<t tx="ekr.20170409174630.45">gnx: ekr.20170409174630.44
+</t>
+<t tx="ekr.20170409174630.46">gnx: ekr.20170409174630.44
+</t>
+<t tx="ekr.20170409174630.47"></t>
+<t tx="ekr.20170409174630.5">gnx: ekr.20170409174630.1
+</t>
+<t tx="ekr.20170409174630.52">gnx: ekr.20170409174630.48
+</t>
+<t tx="ekr.20170409174630.53">gnx: ekr.20170409174630.48
+</t>
+<t tx="ekr.20170409174630.54">gnx: ekr.20170409174630.49
+unl: &lt;td width="550"&gt;
+gnx: ekr.20170409174630.50
+unl: &lt;td width="550"&gt;--&gt;&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;
+gnx: ekr.20170409174630.51
+unl: &lt;td width="550"&gt;--&gt;&lt;table cellspacing="0" cellpadding="0" width="600" border="0"&gt;--&gt;&lt;table&gt;
+</t>
+<t tx="ekr.20170409174630.59">gnx: ekr.20170409174630.55
+</t>
+<t tx="ekr.20170409174630.6">gnx: ekr.20170409174630.1
+</t>
+<t tx="ekr.20170409174630.60">gnx: ekr.20170409174630.55
+</t>
+<t tx="ekr.20170409174630.61">gnx: ekr.20170409174630.56
+unl: &lt;HTML&gt;
+gnx: ekr.20170409174630.57
+unl: &lt;HTML&gt;--&gt;&lt;HEAD&gt;
+gnx: ekr.20170409174630.58
+unl: &lt;HTML&gt;--&gt;&lt;BODY class='bodystring'&gt;
+</t>
+<t tx="ekr.20170409174630.67">gnx: ekr.20170409174630.62
+</t>
+<t tx="ekr.20170409174630.68">gnx: ekr.20170409174630.62
+</t>
+<t tx="ekr.20170409174630.69">gnx: ekr.20170409174630.63
+unl: &lt;body&gt;
+gnx: ekr.20170409174630.64
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;
+gnx: ekr.20170409174630.65
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;--&gt;&lt;div id="D666"&gt;Paragraph&lt;/p&gt; &lt;!-- P1 --&gt;
+gnx: ekr.20170409174630.66
+unl: &lt;body&gt;--&gt;&lt;p id="P1"&gt;--&gt;&lt;div id="D666"&gt;Paragraph&lt;/p&gt; &lt;!-- P1 --&gt;--&gt;&lt;p id="P2"&gt;
+</t>
+<t tx="ekr.20170409174630.7">gnx: ekr.20170409174630.2
+unl: hello
+gnx: ekr.20170409174630.3
+unl: printNumber
+gnx: ekr.20170409174630.4
+unl: void main
+</t>
+<t tx="ekr.20170409174630.75">gnx: ekr.20170409174630.70
+</t>
+<t tx="ekr.20170409174630.76">gnx: ekr.20170409174630.70
+</t>
+<t tx="ekr.20170409174630.77">gnx: ekr.20170409174630.71
+unl: &lt;html&gt;
+gnx: ekr.20170409174630.72
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174630.73
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;
+gnx: ekr.20170409174630.74
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;--&gt;&lt;link id="L2"&gt;
+</t>
+<t tx="ekr.20170409174630.83">gnx: ekr.20170409174630.78
+</t>
+<t tx="ekr.20170409174630.84">gnx: ekr.20170409174630.78
+</t>
+<t tx="ekr.20170409174630.85">gnx: ekr.20170409174630.79
+unl: &lt;html&gt;
+gnx: ekr.20170409174630.80
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174630.81
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;
+gnx: ekr.20170409174630.82
+unl: &lt;html&gt;--&gt;&lt;head&gt;--&gt;&lt;link id="L1"&gt;--&gt;&lt;link id="L2"&gt;
+</t>
+<t tx="ekr.20170409174630.89">gnx: ekr.20170409174630.86
+</t>
+<t tx="ekr.20170409174630.90">gnx: ekr.20170409174630.86
+</t>
+<t tx="ekr.20170409174630.91">gnx: ekr.20170409174630.87
+unl: [owner]
+gnx: ekr.20170409174630.88
+unl: [database]
+</t>
+<t tx="ekr.20170409174630.95">gnx: ekr.20170409174630.92
+</t>
+<t tx="ekr.20170409174630.96">gnx: ekr.20170409174630.92
+</t>
+<t tx="ekr.20170409174630.97">gnx: ekr.20170409174630.93
+unl: public final class AdminPermission extends BasicPermission
+gnx: ekr.20170409174630.94
+unl: public final class AdminPermission extends BasicPermission--&gt;public AdminPermission
+</t>
+<t tx="ekr.20170409174631.10">gnx: ekr.20170409174631.7
+unl: interface Bicycle
+</t>
+<t tx="ekr.20170409174631.13">gnx: ekr.20170409174631.11
+</t>
+<t tx="ekr.20170409174631.14">gnx: ekr.20170409174631.11
+</t>
+<t tx="ekr.20170409174631.15">gnx: ekr.20170409174631.12
+unl: &lt;&lt; { &gt;&gt;
+</t>
+<t tx="ekr.20170409174631.20">gnx: ekr.20170409174631.16
+</t>
+<t tx="ekr.20170409174631.21">gnx: ekr.20170409174631.16
+</t>
+<t tx="ekr.20170409174631.22">gnx: ekr.20170409174631.17
+unl: &lt;&lt; 1: { &gt;&gt;
+gnx: ekr.20170409174631.18
+unl: &lt;&lt; 1: { &gt;&gt;--&gt;&lt;&lt; if(story.isEmpty()) { &gt;&gt;
+gnx: ekr.20170409174631.19
+unl: &lt;&lt; 1: { &gt;&gt;--&gt;&lt;&lt; if(story.isEmpty()) { &gt;&gt;--&gt;&lt;&lt; for(var t=0; t&lt;tiddlers.length; t++) { &gt;&gt;
+</t>
+<t tx="ekr.20170409174631.26">gnx: ekr.20170409174631.23
+</t>
+<t tx="ekr.20170409174631.27">gnx: ekr.20170409174631.23
+</t>
+<t tx="ekr.20170409174631.28">gnx: ekr.20170409174631.24
+unl: &lt;&lt; var c3 = (function () { &gt;&gt;
+gnx: ekr.20170409174631.25
+unl: &lt;&lt; var c3 = (function () { &gt;&gt;--&gt;&lt;&lt; c3.someFunction = function () { &gt;&gt;
+</t>
+<t tx="ekr.20170409174631.3">gnx: ekr.20170409174631.1
+</t>
+<t tx="ekr.20170409174631.32">gnx: ekr.20170409174631.29
+</t>
+<t tx="ekr.20170409174631.33">gnx: ekr.20170409174631.29
+</t>
+<t tx="ekr.20170409174631.34">gnx: ekr.20170409174631.30
+unl: &lt;&lt; app.get('/', function(request, response) { &gt;&gt;
+gnx: ekr.20170409174631.31
+unl: &lt;&lt; app.listen(port, function() { &gt;&gt;
+</t>
+<t tx="ekr.20170409174631.4">gnx: ekr.20170409174631.1
+</t>
+<t tx="ekr.20170409174631.42">gnx: ekr.20170409174631.35
+</t>
+<t tx="ekr.20170409174631.43">gnx: ekr.20170409174631.36
+unl: Section 1
+gnx: ekr.20170409174631.37
+unl: Section 2
+gnx: ekr.20170409174631.38
+unl: Section 2--&gt;Section 2-1
+gnx: ekr.20170409174631.39
+unl: Section 2--&gt;Section 2-1--&gt;Section 2-1-1
+gnx: ekr.20170409174631.40
+unl: Section 3
+gnx: ekr.20170409174631.41
+unl: Section 3--&gt;Section 3.1
+</t>
+<t tx="ekr.20170409174631.5">gnx: ekr.20170409174631.2
+unl: interface Bicycle
+</t>
+<t tx="ekr.20170409174631.51">gnx: ekr.20170409174631.44
+</t>
+<t tx="ekr.20170409174631.52">gnx: ekr.20170409174631.45
+unl: Section 1
+gnx: ekr.20170409174631.46
+unl: Section 2
+gnx: ekr.20170409174631.47
+unl: Section 2--&gt;Section 2-1
+gnx: ekr.20170409174631.48
+unl: Section 2--&gt;Section 2-1--&gt;Section 2-1-1
+gnx: ekr.20170409174631.49
+unl: Section 3
+gnx: ekr.20170409174631.50
+unl: Section 3--&gt;Section 3.1
+</t>
+<t tx="ekr.20170409174631.57">gnx: ekr.20170409174631.53
+</t>
+<t tx="ekr.20170409174631.58">gnx: ekr.20170409174631.53
+</t>
+<t tx="ekr.20170409174631.59">gnx: ekr.20170409174631.54
+unl: interface
+gnx: ekr.20170409174631.55
+unl: interface--&gt;procedure FormCreate
+gnx: ekr.20170409174631.56
+unl: interface--&gt;procedure TForm1.FormCreate
+</t>
+<t tx="ekr.20170409174631.64">gnx: ekr.20170409174631.60
+</t>
+<t tx="ekr.20170409174631.65">gnx: ekr.20170409174631.60
+</t>
+<t tx="ekr.20170409174631.66">gnx: ekr.20170409174631.61
+unl: sub Hello
+gnx: ekr.20170409174631.62
+unl: sub Test
+gnx: ekr.20170409174631.63
+unl: if ($bar =~ /foo/){
+</t>
+<t tx="ekr.20170409174631.71">gnx: ekr.20170409174631.67
+</t>
+<t tx="ekr.20170409174631.72">gnx: ekr.20170409174631.67
+</t>
+<t tx="ekr.20170409174631.73">gnx: ekr.20170409174631.68
+unl: sub Test
+gnx: ekr.20170409174631.69
+unl: sub World
+gnx: ekr.20170409174631.70
+unl: sub Hello
+</t>
+<t tx="ekr.20170409174631.75">gnx: ekr.20170409174631.74
+</t>
+<t tx="ekr.20170409174631.76">gnx: ekr.20170409174631.74
+</t>
+<t tx="ekr.20170409174631.77"></t>
+<t tx="ekr.20170409174631.8">gnx: ekr.20170409174631.6
+</t>
+<t tx="ekr.20170409174631.83">gnx: ekr.20170409174631.78
+</t>
+<t tx="ekr.20170409174631.84">gnx: ekr.20170409174631.78
+</t>
+<t tx="ekr.20170409174631.85">gnx: ekr.20170409174631.79
+unl: sub test1
+gnx: ekr.20170409174631.80
+unl: sub test2
+gnx: ekr.20170409174631.81
+unl: sub test3
+gnx: ekr.20170409174631.82
+unl: sub test4
+</t>
+<t tx="ekr.20170409174631.9">gnx: ekr.20170409174631.6
+</t>
+<t tx="ekr.20170409174631.91">gnx: ekr.20170409174631.86
+</t>
+<t tx="ekr.20170409174631.92">gnx: ekr.20170409174631.86
+</t>
+<t tx="ekr.20170409174631.93">gnx: ekr.20170409174631.87
+unl: sub test1
+gnx: ekr.20170409174631.88
+unl: sub test2
+gnx: ekr.20170409174631.89
+unl: sub test3
+gnx: ekr.20170409174631.90
+unl: sub test4
+</t>
+<t tx="ekr.20170409174632.11">gnx: ekr.20170409174632.7
+</t>
+<t tx="ekr.20170409174632.12">gnx: ekr.20170409174632.7
+</t>
+<t tx="ekr.20170409174632.13">gnx: ekr.20170409174632.8
+unl: if (expr)
+gnx: ekr.20170409174632.9
+unl: if (expr)--&gt;class cc
+gnx: ekr.20170409174632.10
+unl: if (expr)--&gt;class cc
+</t>
+<t tx="ekr.20170409174632.16">gnx: ekr.20170409174632.14
+</t>
+<t tx="ekr.20170409174632.17">gnx: ekr.20170409174632.14
+</t>
+<t tx="ekr.20170409174632.18">gnx: ekr.20170409174632.15
+unl: class Enum
+</t>
+<t tx="ekr.20170409174632.19">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170409174632.20">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170409174632.21">gnx: ekr.20170409174632.19
+</t>
+<t tx="ekr.20170409174632.22">gnx: ekr.20170409174632.19
+</t>
+<t tx="ekr.20170409174632.23">gnx: ekr.20170409174632.20
+unl: class foo
+</t>
+<t tx="ekr.20170409174632.27">gnx: ekr.20170409174632.24
+</t>
+<t tx="ekr.20170409174632.28">gnx: ekr.20170409174632.24
+</t>
+<t tx="ekr.20170409174632.29">gnx: ekr.20170409174632.25
+unl: isValidPython
+gnx: ekr.20170409174632.26
+unl: loadLocalFile
+</t>
+<t tx="ekr.20170409174632.33">gnx: ekr.20170409174632.30
+</t>
+<t tx="ekr.20170409174632.34">gnx: ekr.20170409174632.30
+</t>
+<t tx="ekr.20170409174632.35">gnx: ekr.20170409174632.31
+unl: class testClass1
+gnx: ekr.20170409174632.32
+unl: spam
+</t>
+<t tx="ekr.20170409174632.4">gnx: ekr.20170409174632.1
+</t>
+<t tx="ekr.20170409174632.43">gnx: ekr.20170409174632.36
+</t>
+<t tx="ekr.20170409174632.44">gnx: ekr.20170409174632.36
+</t>
+<t tx="ekr.20170409174632.45">gnx: ekr.20170409174632.37
+unl: class class1
+gnx: ekr.20170409174632.38
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170409174632.39
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170409174632.40
+unl: class class2
+gnx: ekr.20170409174632.41
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170409174632.42
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20170409174632.49">gnx: ekr.20170409174632.46
+</t>
+<t tx="ekr.20170409174632.5">gnx: ekr.20170409174632.1
+</t>
+<t tx="ekr.20170409174632.50">gnx: ekr.20170409174632.46
+</t>
+<t tx="ekr.20170409174632.51">gnx: ekr.20170409174632.47
+unl: Declarations
+gnx: ekr.20170409174632.48
+unl: make_parser
+</t>
+<t tx="ekr.20170409174632.54">gnx: ekr.20170409174632.52
+</t>
+<t tx="ekr.20170409174632.55">gnx: ekr.20170409174632.52
+</t>
+<t tx="ekr.20170409174632.56">gnx: ekr.20170409174632.53
+unl: Declarations
+</t>
+<t tx="ekr.20170409174632.6">gnx: ekr.20170409174632.2
+unl: class cc
+gnx: ekr.20170409174632.3
+unl: class cc--&gt;function __construct()
+</t>
+<t tx="ekr.20170409174632.68">gnx: ekr.20170409174632.57
+</t>
+<t tx="ekr.20170409174632.69">gnx: ekr.20170409174632.57
+</t>
+<t tx="ekr.20170409174632.70">gnx: ekr.20170409174632.58
+unl: Declarations
+gnx: ekr.20170409174632.59
+unl: class AttrDict
+gnx: ekr.20170409174632.60
+unl: class AttrDict--&gt;__init__
+gnx: ekr.20170409174632.61
+unl: make_parser
+gnx: ekr.20170409174632.62
+unl: get_options
+gnx: ekr.20170409174632.63
+unl: get_aggregate
+gnx: ekr.20170409174632.64
+unl: proc_file
+gnx: ekr.20170409174632.65
+unl: get_answers
+gnx: ekr.20170409174632.66
+unl: get_table_rows
+gnx: ekr.20170409174632.67
+unl: main
+</t>
+<t tx="ekr.20170409174632.73">gnx: ekr.20170409174632.71
+</t>
+<t tx="ekr.20170409174632.74">gnx: ekr.20170409174632.71
+</t>
+<t tx="ekr.20170409174632.75">gnx: ekr.20170409174632.72
+unl: make_map
+</t>
+<t tx="ekr.20170409174632.80">gnx: ekr.20170409174632.76
+</t>
+<t tx="ekr.20170409174632.81">gnx: ekr.20170409174632.76
+</t>
+<t tx="ekr.20170409174632.82">gnx: ekr.20170409174632.77
+unl: Declarations
+gnx: ekr.20170409174632.78
+unl: class Foo
+gnx: ekr.20170409174632.79
+unl: main
+</t>
+<t tx="ekr.20170409174633.1">gnx: ekr.20170409174632.83
+</t>
+<t tx="ekr.20170409174633.13">gnx: ekr.20170409174633.9
+</t>
+<t tx="ekr.20170409174633.14">gnx: ekr.20170409174633.9
+</t>
+<t tx="ekr.20170409174633.15">gnx: ekr.20170409174633.10
+unl: class testClass1
+gnx: ekr.20170409174633.11
+unl: class testClass1--&gt;__init__
+gnx: ekr.20170409174633.12
+unl: class testClass1--&gt;f1
+</t>
+<t tx="ekr.20170409174633.18">gnx: ekr.20170409174633.16
+</t>
+<t tx="ekr.20170409174633.19">gnx: ekr.20170409174633.16
+</t>
+<t tx="ekr.20170409174633.2">gnx: ekr.20170409174632.83
+</t>
+<t tx="ekr.20170409174633.20">gnx: ekr.20170409174633.17
+unl: Declarations
+</t>
+<t tx="ekr.20170409174633.23">gnx: ekr.20170409174633.21
+</t>
+<t tx="ekr.20170409174633.24">gnx: ekr.20170409174633.21
+</t>
+<t tx="ekr.20170409174633.25">gnx: ekr.20170409174633.22
+unl: Declarations
+</t>
+<t tx="ekr.20170409174633.3">gnx: ekr.20170409174632.84
+unl: foo
+gnx: ekr.20170409174632.85
+unl: class bar
+</t>
+<t tx="ekr.20170409174633.30">gnx: ekr.20170409174633.26
+</t>
+<t tx="ekr.20170409174633.31">gnx: ekr.20170409174633.26
+</t>
+<t tx="ekr.20170409174633.32">gnx: ekr.20170409174633.27
+unl: class Index
+gnx: ekr.20170409174633.28
+unl: class Index--&gt;index
+gnx: ekr.20170409174633.29
+unl: class Index--&gt;abc
+</t>
+<t tx="ekr.20170409174633.42">gnx: ekr.20170409174633.33
+</t>
+<t tx="ekr.20170409174633.43">gnx: ekr.20170409174633.33
+</t>
+<t tx="ekr.20170409174633.44">gnx: ekr.20170409174633.34
+unl: Declarations
+gnx: ekr.20170409174633.35
+unl: class Draggable
+gnx: ekr.20170409174633.36
+unl: class Draggable--&gt;__init__
+gnx: ekr.20170409174633.37
+unl: class Draggable--&gt;mousePressEvent
+gnx: ekr.20170409174633.38
+unl: class Draggable--&gt;mouseMoveEvent
+gnx: ekr.20170409174633.39
+unl: command
+gnx: ekr.20170409174633.40
+unl: exit_
+gnx: ekr.20170409174633.41
+unl: main
+</t>
+<t tx="ekr.20170409174633.48">gnx: ekr.20170409174633.45
+</t>
+<t tx="ekr.20170409174633.49">gnx: ekr.20170409174633.45
+</t>
+<t tx="ekr.20170409174633.50">gnx: ekr.20170409174633.46
+unl: class aClass
+gnx: ekr.20170409174633.47
+unl: class aClass--&gt;outerDef
+</t>
+<t tx="ekr.20170409174633.55">gnx: ekr.20170409174633.51
+</t>
+<t tx="ekr.20170409174633.56">gnx: ekr.20170409174633.51
+</t>
+<t tx="ekr.20170409174633.57">gnx: ekr.20170409174633.52
+unl: class test
+gnx: ekr.20170409174633.53
+unl: class test--&gt;importFilesCommand
+gnx: ekr.20170409174633.54
+unl: class test--&gt;convertMoreStringToOutlineAfter
+</t>
+<t tx="ekr.20170409174633.6">gnx: ekr.20170409174633.4
+</t>
+<t tx="ekr.20170409174633.62">gnx: ekr.20170409174633.58
+</t>
+<t tx="ekr.20170409174633.63">gnx: ekr.20170409174633.58
+</t>
+<t tx="ekr.20170409174633.64">gnx: ekr.20170409174633.59
+unl: class test
+gnx: ekr.20170409174633.60
+unl: class test--&gt;spam
+gnx: ekr.20170409174633.61
+unl: class test--&gt;foo
+</t>
+<t tx="ekr.20170409174633.67">gnx: ekr.20170409174633.65
+</t>
+<t tx="ekr.20170409174633.68">gnx: ekr.20170409174633.65
+</t>
+<t tx="ekr.20170409174633.69">gnx: ekr.20170409174633.66
+unl: Declarations
+</t>
+<t tx="ekr.20170409174633.7">gnx: ekr.20170409174633.4
+</t>
+<t tx="ekr.20170409174633.72">gnx: ekr.20170409174633.70
+</t>
+<t tx="ekr.20170409174633.73">gnx: ekr.20170409174633.70
+</t>
+<t tx="ekr.20170409174633.74">gnx: ekr.20170409174633.71
+unl: Declarations
+</t>
+<t tx="ekr.20170409174633.78">gnx: ekr.20170409174633.75
+</t>
+<t tx="ekr.20170409174633.79">gnx: ekr.20170409174633.75
+</t>
+<t tx="ekr.20170409174633.8">gnx: ekr.20170409174633.5
+unl: class testClass2
+</t>
+<t tx="ekr.20170409174633.80">gnx: ekr.20170409174633.76
+unl: class cls
+gnx: ekr.20170409174633.77
+unl: class cls--&gt;fun
+</t>
+<t tx="ekr.20170409174634.10">gnx: ekr.20170409174634.2
+unl: class mammalProviderBase
+gnx: ekr.20170409174634.3
+unl: class mammalProviderBase--&gt;__init__
+gnx: ekr.20170409174634.4
+unl: class mammalProviderBase--&gt;provide
+gnx: ekr.20170409174634.5
+unl: class mammalProviderBase--&gt;imagePath
+gnx: ekr.20170409174634.6
+unl: class mainPages
+gnx: ekr.20170409174634.7
+unl: class mainPages--&gt;provide
+</t>
+<t tx="ekr.20170409174634.20">gnx: ekr.20170409174634.11
+</t>
+<t tx="ekr.20170409174634.21">gnx: ekr.20170409174634.11
+</t>
+<t tx="ekr.20170409174634.22">gnx: ekr.20170409174634.12
+unl: Declarations
+gnx: ekr.20170409174634.13
+unl: class LeoImportCommands
+gnx: ekr.20170409174634.14
+unl: class LeoImportCommands--&gt;createOutline
+gnx: ekr.20170409174634.15
+unl: class LeoImportCommands--&gt;dispatch
+gnx: ekr.20170409174634.16
+unl: class LeoImportCommands--&gt;scanner_for_at_auto
+gnx: ekr.20170409174634.17
+unl: class LeoImportCommands--&gt;scanner_for_ext
+gnx: ekr.20170409174634.18
+unl: class LeoImportCommands--&gt;get_import_filename
+gnx: ekr.20170409174634.19
+unl: class LeoImportCommands--&gt;init_import
+</t>
+<t tx="ekr.20170409174634.26">gnx: ekr.20170409174634.23
+</t>
+<t tx="ekr.20170409174634.27">gnx: ekr.20170409174634.23
+</t>
+<t tx="ekr.20170409174634.28">gnx: ekr.20170409174634.24
+unl: class ItasException
+gnx: ekr.20170409174634.25
+unl: gpRun
+</t>
+<t tx="ekr.20170409174634.32">gnx: ekr.20170409174634.29
+</t>
+<t tx="ekr.20170409174634.33">gnx: ekr.20170409174634.29
+</t>
+<t tx="ekr.20170409174634.34">gnx: ekr.20170409174634.30
+unl: class emptyClass
+gnx: ekr.20170409174634.31
+unl: followingDef
+</t>
+<t tx="ekr.20170409174634.38">gnx: ekr.20170409174634.35
+</t>
+<t tx="ekr.20170409174634.39">gnx: ekr.20170409174634.35
+</t>
+<t tx="ekr.20170409174634.40">gnx: ekr.20170409174634.36
+unl: class emptyClass
+gnx: ekr.20170409174634.37
+unl: followingDef
+</t>
+<t tx="ekr.20170409174634.44">gnx: ekr.20170409174634.41
+</t>
+<t tx="ekr.20170409174634.45">gnx: ekr.20170409174634.41
+</t>
+<t tx="ekr.20170409174634.46">gnx: ekr.20170409174634.42
+unl: class aClass
+gnx: ekr.20170409174634.43
+unl: class aClass--&gt;def1
+</t>
+<t tx="ekr.20170409174634.51">gnx: ekr.20170409174634.47
+</t>
+<t tx="ekr.20170409174634.52">gnx: ekr.20170409174634.47
+</t>
+<t tx="ekr.20170409174634.53">gnx: ekr.20170409174634.48
+unl: class aClass
+gnx: ekr.20170409174634.49
+unl: class aClass--&gt;def1
+gnx: ekr.20170409174634.50
+unl: class aClass--&gt;def2
+</t>
+<t tx="ekr.20170409174634.57">gnx: ekr.20170409174634.54
+</t>
+<t tx="ekr.20170409174634.58">gnx: ekr.20170409174634.54
+</t>
+<t tx="ekr.20170409174634.59">gnx: ekr.20170409174634.55
+unl: Declarations
+gnx: ekr.20170409174634.56
+unl: class testClass1
+</t>
+<t tx="ekr.20170409174634.64">gnx: ekr.20170409174634.60
+</t>
+<t tx="ekr.20170409174634.65">gnx: ekr.20170409174634.60
+</t>
+<t tx="ekr.20170409174634.66">gnx: ekr.20170409174634.61
+unl: class BaseScanner
+gnx: ekr.20170409174634.62
+unl: class BaseScanner--&gt;__init__
+gnx: ekr.20170409174634.63
+unl: class BaseScanner--&gt;createHeadline
+</t>
+<t tx="ekr.20170409174634.71">gnx: ekr.20170409174634.67
+</t>
+<t tx="ekr.20170409174634.72">gnx: ekr.20170409174634.67
+</t>
+<t tx="ekr.20170409174634.73">gnx: ekr.20170409174634.68
+unl: class BaseScanner
+gnx: ekr.20170409174634.69
+unl: class BaseScanner--&gt;containsUnderindentedComment
+gnx: ekr.20170409174634.70
+unl: class BaseScanner--&gt;empty
+</t>
+<t tx="ekr.20170409174634.78">gnx: ekr.20170409174634.74
+</t>
+<t tx="ekr.20170409174634.79">gnx: ekr.20170409174634.74
+</t>
+<t tx="ekr.20170409174634.8">gnx: ekr.20170409174634.1
+</t>
+<t tx="ekr.20170409174634.80">gnx: ekr.20170409174634.75
+unl: class BaseScanner
+gnx: ekr.20170409174634.76
+unl: class BaseScanner--&gt;containsUnderindentedComment
+gnx: ekr.20170409174634.77
+unl: class BaseScanner--&gt;empty
+</t>
+<t tx="ekr.20170409174634.87">gnx: ekr.20170409174634.81
+</t>
+<t tx="ekr.20170409174634.88">gnx: ekr.20170409174634.81
+</t>
+<t tx="ekr.20170409174634.89">gnx: ekr.20170409174634.82
+unl: Declarations
+gnx: ekr.20170409174634.83
+unl: merge_value
+gnx: ekr.20170409174634.84
+unl: class MainDisplay
+gnx: ekr.20170409174634.85
+unl: class MainDisplay--&gt;save_file
+gnx: ekr.20170409174634.86
+unl: retab
+</t>
+<t tx="ekr.20170409174634.9">gnx: ekr.20170409174634.1
+</t>
+<t tx="ekr.20170409174634.93">gnx: ekr.20170409174634.90
+</t>
+<t tx="ekr.20170409174634.94">gnx: ekr.20170409174634.90
+</t>
+<t tx="ekr.20170409174634.95">gnx: ekr.20170409174634.91
+unl: class aClass
+gnx: ekr.20170409174634.92
+unl: class aClass--&gt;def1
+</t>
+<t tx="ekr.20170409174635.10">gnx: ekr.20170409174635.6
+</t>
+<t tx="ekr.20170409174635.103">gnx: ekr.20170409174635.25
+</t>
+<t tx="ekr.20170409174635.104">gnx: ekr.20170409174635.25
+</t>
+<t tx="ekr.20170409174635.105">gnx: ekr.20170409174635.26
+unl: Declarations
+gnx: ekr.20170409174635.27
+unl: class NullFormatter
+gnx: ekr.20170409174635.28
+unl: class NullFormatter--&gt;__init__
+gnx: ekr.20170409174635.29
+unl: class NullFormatter--&gt;end_paragraph
+gnx: ekr.20170409174635.30
+unl: class NullFormatter--&gt;add_line_break
+gnx: ekr.20170409174635.31
+unl: class NullFormatter--&gt;add_hor_rule
+gnx: ekr.20170409174635.32
+unl: class NullFormatter--&gt;add_label_data
+gnx: ekr.20170409174635.33
+unl: class NullFormatter--&gt;add_flowing_data
+gnx: ekr.20170409174635.34
+unl: class NullFormatter--&gt;add_literal_data
+gnx: ekr.20170409174635.35
+unl: class NullFormatter--&gt;flush_softspace
+gnx: ekr.20170409174635.36
+unl: class NullFormatter--&gt;push_alignment
+gnx: ekr.20170409174635.37
+unl: class NullFormatter--&gt;pop_alignment
+gnx: ekr.20170409174635.38
+unl: class NullFormatter--&gt;push_font
+gnx: ekr.20170409174635.39
+unl: class NullFormatter--&gt;pop_font
+gnx: ekr.20170409174635.40
+unl: class NullFormatter--&gt;push_margin
+gnx: ekr.20170409174635.41
+unl: class NullFormatter--&gt;pop_margin
+gnx: ekr.20170409174635.42
+unl: class NullFormatter--&gt;set_spacing
+gnx: ekr.20170409174635.43
+unl: class NullFormatter--&gt;push_style
+gnx: ekr.20170409174635.44
+unl: class NullFormatter--&gt;pop_style
+gnx: ekr.20170409174635.45
+unl: class NullFormatter--&gt;assert_line_data
+gnx: ekr.20170409174635.46
+unl: class AbstractFormatter
+gnx: ekr.20170409174635.47
+unl: class AbstractFormatter--&gt;__init__
+gnx: ekr.20170409174635.48
+unl: class AbstractFormatter--&gt;end_paragraph
+gnx: ekr.20170409174635.49
+unl: class AbstractFormatter--&gt;add_line_break
+gnx: ekr.20170409174635.50
+unl: class AbstractFormatter--&gt;add_hor_rule
+gnx: ekr.20170409174635.51
+unl: class AbstractFormatter--&gt;add_label_data
+gnx: ekr.20170409174635.52
+unl: class AbstractFormatter--&gt;format_counter
+gnx: ekr.20170409174635.53
+unl: class AbstractFormatter--&gt;format_letter
+gnx: ekr.20170409174635.54
+unl: class AbstractFormatter--&gt;format_roman
+gnx: ekr.20170409174635.55
+unl: class AbstractFormatter--&gt;add_flowing_data
+gnx: ekr.20170409174635.56
+unl: class AbstractFormatter--&gt;add_literal_data
+gnx: ekr.20170409174635.57
+unl: class AbstractFormatter--&gt;flush_softspace
+gnx: ekr.20170409174635.58
+unl: class AbstractFormatter--&gt;push_alignment
+gnx: ekr.20170409174635.59
+unl: class AbstractFormatter--&gt;pop_alignment
+gnx: ekr.20170409174635.60
+unl: class AbstractFormatter--&gt;push_font
+gnx: ekr.20170409174635.61
+unl: class AbstractFormatter--&gt;pop_font
+gnx: ekr.20170409174635.62
+unl: class AbstractFormatter--&gt;push_margin
+gnx: ekr.20170409174635.63
+unl: class AbstractFormatter--&gt;pop_margin
+gnx: ekr.20170409174635.64
+unl: class AbstractFormatter--&gt;set_spacing
+gnx: ekr.20170409174635.65
+unl: class AbstractFormatter--&gt;push_style
+gnx: ekr.20170409174635.66
+unl: class AbstractFormatter--&gt;pop_style
+gnx: ekr.20170409174635.67
+unl: class AbstractFormatter--&gt;assert_line_data
+gnx: ekr.20170409174635.68
+unl: class NullWriter
+gnx: ekr.20170409174635.69
+unl: class NullWriter--&gt;__init__
+gnx: ekr.20170409174635.70
+unl: class NullWriter--&gt;flush
+gnx: ekr.20170409174635.71
+unl: class NullWriter--&gt;new_alignment
+gnx: ekr.20170409174635.72
+unl: class NullWriter--&gt;new_font
+gnx: ekr.20170409174635.73
+unl: class NullWriter--&gt;new_margin
+gnx: ekr.20170409174635.74
+unl: class NullWriter--&gt;new_spacing
+gnx: ekr.20170409174635.75
+unl: class NullWriter--&gt;new_styles
+gnx: ekr.20170409174635.76
+unl: class NullWriter--&gt;send_paragraph
+gnx: ekr.20170409174635.77
+unl: class NullWriter--&gt;send_line_break
+gnx: ekr.20170409174635.78
+unl: class NullWriter--&gt;send_hor_rule
+gnx: ekr.20170409174635.79
+unl: class NullWriter--&gt;send_label_data
+gnx: ekr.20170409174635.80
+unl: class NullWriter--&gt;send_flowing_data
+gnx: ekr.20170409174635.81
+unl: class NullWriter--&gt;send_literal_data
+gnx: ekr.20170409174635.82
+unl: class AbstractWriter
+gnx: ekr.20170409174635.83
+unl: class AbstractWriter--&gt;new_alignment
+gnx: ekr.20170409174635.84
+unl: class AbstractWriter--&gt;new_font
+gnx: ekr.20170409174635.85
+unl: class AbstractWriter--&gt;new_margin
+gnx: ekr.20170409174635.86
+unl: class AbstractWriter--&gt;new_spacing
+gnx: ekr.20170409174635.87
+unl: class AbstractWriter--&gt;new_styles
+gnx: ekr.20170409174635.88
+unl: class AbstractWriter--&gt;send_paragraph
+gnx: ekr.20170409174635.89
+unl: class AbstractWriter--&gt;send_line_break
+gnx: ekr.20170409174635.90
+unl: class AbstractWriter--&gt;send_hor_rule
+gnx: ekr.20170409174635.91
+unl: class AbstractWriter--&gt;send_label_data
+gnx: ekr.20170409174635.92
+unl: class AbstractWriter--&gt;send_flowing_data
+gnx: ekr.20170409174635.93
+unl: class AbstractWriter--&gt;send_literal_data
+gnx: ekr.20170409174635.94
+unl: class DumbWriter
+gnx: ekr.20170409174635.95
+unl: class DumbWriter--&gt;__init__
+gnx: ekr.20170409174635.96
+unl: class DumbWriter--&gt;reset
+gnx: ekr.20170409174635.97
+unl: class DumbWriter--&gt;send_paragraph
+gnx: ekr.20170409174635.98
+unl: class DumbWriter--&gt;send_line_break
+gnx: ekr.20170409174635.99
+unl: class DumbWriter--&gt;send_hor_rule
+gnx: ekr.20170409174635.100
+unl: class DumbWriter--&gt;send_literal_data
+gnx: ekr.20170409174635.101
+unl: class DumbWriter--&gt;send_flowing_data
+gnx: ekr.20170409174635.102
+unl: test
+</t>
+<t tx="ekr.20170409174635.11">gnx: ekr.20170409174635.7
+unl: foo
+gnx: ekr.20170409174635.8
+unl: bar
+</t>
+<t tx="ekr.20170409174635.111">gnx: ekr.20170409174635.106
+</t>
+<t tx="ekr.20170409174635.112">gnx: ekr.20170409174635.106
+</t>
+<t tx="ekr.20170409174635.113">gnx: ekr.20170409174635.107
+unl: class Greeter {
+gnx: ekr.20170409174635.108
+unl: class Greeter {--&gt;constructor (message: string) {
+gnx: ekr.20170409174635.109
+unl: class Greeter {--&gt;greet() {
+gnx: ekr.20170409174635.110
+unl: button.onclick = function() {
+</t>
+<t tx="ekr.20170409174635.120">gnx: ekr.20170409174635.114
+</t>
+<t tx="ekr.20170409174635.121">gnx: ekr.20170409174635.114
+</t>
+<t tx="ekr.20170409174635.122">gnx: ekr.20170409174635.115
+unl: module Sayings {
+gnx: ekr.20170409174635.116
+unl: module Sayings {--&gt;export class Greeter {
+gnx: ekr.20170409174635.117
+unl: module Sayings {--&gt;export class Greeter {--&gt;constructor (message: string) {
+gnx: ekr.20170409174635.118
+unl: module Sayings {--&gt;export class Greeter {--&gt;greet() {
+gnx: ekr.20170409174635.119
+unl: button.onclick = function() {
+</t>
+<t tx="ekr.20170409174635.127">gnx: ekr.20170409174635.123
+</t>
+<t tx="ekr.20170409174635.128">gnx: ekr.20170409174635.123
+</t>
+<t tx="ekr.20170409174635.129">gnx: ekr.20170409174635.124
+unl: &lt;html&gt;
+gnx: ekr.20170409174635.125
+unl: &lt;html&gt;--&gt;&lt;head&gt;
+gnx: ekr.20170409174635.126
+unl: &lt;html&gt;--&gt;&lt;body class='bodystring'&gt;
+</t>
+<t tx="ekr.20170409174635.132">gnx: ekr.20170409174635.130
+</t>
+<t tx="ekr.20170409174635.133">gnx: ekr.20170409174635.130
+</t>
+<t tx="ekr.20170409174635.134">gnx: ekr.20170409174635.131
+unl: &lt;nodeA&gt;
+</t>
+<t tx="ekr.20170409174635.136">gnx: ekr.20170409174635.135
+</t>
+<t tx="ekr.20170409174635.137">gnx: ekr.20170409174635.135
+</t>
+<t tx="ekr.20170409174635.138"></t>
+<t tx="ekr.20170409174635.16">gnx: ekr.20170409174635.12
+</t>
+<t tx="ekr.20170409174635.17">gnx: ekr.20170409174635.12
+</t>
+<t tx="ekr.20170409174635.18">gnx: ekr.20170409174635.13
+unl: class emptyClass
+gnx: ekr.20170409174635.14
+unl: class emptyClass--&gt;spam
+gnx: ekr.20170409174635.15
+unl: followingDef
+</t>
+<t tx="ekr.20170409174635.22">gnx: ekr.20170409174635.19
+</t>
+<t tx="ekr.20170409174635.23">gnx: ekr.20170409174635.19
+</t>
+<t tx="ekr.20170409174635.24">gnx: ekr.20170409174635.20
+unl: foo
+gnx: ekr.20170409174635.21
+unl: bar
+</t>
+<t tx="ekr.20170409174635.3">gnx: ekr.20170409174635.1
+</t>
+<t tx="ekr.20170409174635.4">gnx: ekr.20170409174635.1
+</t>
+<t tx="ekr.20170409174635.5">gnx: ekr.20170409174635.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409174635.9">gnx: ekr.20170409174635.6
+</t>
+<t tx="ekr.20170409174906.3">gnx: ekr.20170409174906.1
+</t>
+<t tx="ekr.20170409174906.4">gnx: ekr.20170409174906.1
+</t>
+<t tx="ekr.20170409174906.5">gnx: ekr.20170409174906.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409174948.3">gnx: ekr.20170409174948.1
+</t>
+<t tx="ekr.20170409174948.4">gnx: ekr.20170409174948.1
+</t>
+<t tx="ekr.20170409174948.5">gnx: ekr.20170409174948.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409174954.3">gnx: ekr.20170409174954.1
+</t>
+<t tx="ekr.20170409174954.4">gnx: ekr.20170409174954.1
+</t>
+<t tx="ekr.20170409174954.5">gnx: ekr.20170409174954.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409175016.3">gnx: ekr.20170409175016.1
+</t>
+<t tx="ekr.20170409175016.4">gnx: ekr.20170409175016.1
+</t>
+<t tx="ekr.20170409175016.5">gnx: ekr.20170409175016.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409175027.3">gnx: ekr.20170409175027.1
+</t>
+<t tx="ekr.20170409175027.4">gnx: ekr.20170409175027.1
+</t>
+<t tx="ekr.20170409175027.5">gnx: ekr.20170409175027.2
+unl: Declarations
+</t>
+<t tx="ekr.20170409175122.15">gnx: ekr.20170409175122.9
+unl: class class1
+gnx: ekr.20170409175122.10
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170409175122.11
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170409175122.12
+unl: class class2
+gnx: ekr.20170409175122.13
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170409175122.14
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20170409175122.21">gnx: ekr.20170409175122.19
+unl: section 1
+gnx: ekr.20170409175122.20
+unl: section 2
+</t>
+<t tx="ekr.20170409175122.24">gnx: ekr.20170409175122.22
+unl: section 1
+gnx: ekr.20170409175122.23
+unl: section 2
+</t>
+<t tx="ekr.20170409175122.3">gnx: ekr.20170409175122.2
+unl: at_auto_child
+</t>
+<t tx="ekr.20170409175122.8">gnx: ekr.20170409175122.6
+unl: spam
+gnx: ekr.20170409175122.7
+unl: eggs
+</t>
+<t tx="ekr.20170410084645.1">#@+leo-ver=5
+#@+node:#@file
+# before
+
+#@@raw
+
+@c
+
+&lt;&lt; ref &gt;&gt;
+
+#@@end_raw
+
+#after
+#@-leo
+</t>
+<t tx="ekr.20170410190519.53">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170410190519.54">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170415061122.50">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170415061122.51">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+nodeA
+nodeB
+</t>
+<t tx="ekr.20170416060817.1">s = '''\
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE note SYSTEM "Note.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+ic = c.importCommands
+table = (
+    (1, "&lt;html&gt;"),
+    (2, "&lt;head&gt;"),
+    (2, "&lt;body class='bodystring'&gt;"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    ic.xmlUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    if 1:
+        test_node.deleteAllChildren()
+finally:
+    c.redraw()
+
+</t>
+<t tx="ekr.20170416085619.1">@language html
+s = '''
+&lt;html&gt;
+&lt;head&gt;headline&lt;/head&gt;
+&lt;body&gt;body&lt;/body&gt;
+&lt;/html&gt;
+'''
+@language python
+table = (
+    '&lt;html&gt;',
+)
+try:
+    c.importCommands.htmlUnitTest(p,s=s,showTree=True)
+    p2 = c.p.firstChild().firstChild()
+    for h in table:
+        assert p2 and p2.h == h, (p2 and p2.h, h)
+        p2.moveToThreadNext()
+    if 1:
+        p.deleteAllChildren()
+finally:
+    c.redraw()
+
+</t>
 </tnodes>
 </leo_file>

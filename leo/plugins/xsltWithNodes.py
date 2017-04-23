@@ -208,31 +208,15 @@ def addXSLTElement( c , element):
     ### w.event_generate( '<Key>' )
     ### w.update_idletasks()
 
-#@+node:mork.20041025113021: ** getString
+#@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
 def getString (c):
-    '''This def turns a node into a string based off of Leo's file-nosent write logic'''
+    '''
+    This def turns a node into a string using Leo's file-nosent write logic.
+    '''
     at = c.atFileCommands
-    pos = c.p
-    cS = StringIO()
-
-    if not hasattr( at, 'new_df' ):
-        # 4.3 code base.
-        at.toStringFlag = True
-        # at.outputFile = cS
-        at.writeOpenFile(pos,nosentinels=True,toString=True)
-            #How the heck does this fill cS with data, if at.outputFile is never set?
-        # at.outputFile = None
-        # at.toStringFlag = False
-
-    else: # 4.2 code base
-        at.new_df.toStringFlag = True
-        at.new_df.outputFile = cS
-        at.new_df.writeOpenFile(pos,nosentinels=True,toString=True)
-        at.new_df.outputFile = None
-        at.new_df.toStringFlag = False
-
-    cS.seek(0)
-    return cleanString( cS.getvalue() )
+    # EKR: 2017/04/10: needs testing.
+    at.writeOpenFile(c.p, nosentinels=True, toString=True)
+    return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):
     '''
