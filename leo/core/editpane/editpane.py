@@ -308,8 +308,12 @@ class LeoEditPane(QtWidgets.QWidget):
                 if g.isPython3:
                     modules.append(import_module('leo.core.editpane.'+name))
                 else:
-                    exec ( "import %s" % name )  # parens for Python 3 syntax
-                    modules.append(locals()[name])
+                    try:
+                        exec ( "import %s" % name )  # parens for Python 3 syntax
+                        modules.append(locals()[name])
+                    except Exception:
+                        pass
+                    
             except ImportError:
                 pass
 
