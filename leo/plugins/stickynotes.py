@@ -605,7 +605,10 @@ class Tabula(QMainWindow):
         sw = self.mdi.addSubWindow(n)
         # pylint: disable=maybe-no-member
         # Qt.WA_DeleteOnClose does exist.
-        sw.setAttribute(Qt.WA_DeleteOnClose, False)
+        try:
+            sw.setAttribute(Qt.WA_DeleteOnClose, False)
+        except Exception:
+            pass
         self.notes[gnx] = n
         n.show()
         return n
