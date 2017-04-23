@@ -577,21 +577,18 @@ class Tabula(QMainWindow):
     def __init__(self, c):
 
         QMainWindow.__init__(self)
-
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
         self.create_actions()
         self.menuBar().setVisible(False)
-
         self.notes = {}
         self.c = c
 
         def delayed_load():
             self.load_states()
+
         QTimer.singleShot(0, delayed_load)
-
         self.setWindowTitle("Tabula " + os.path.basename(self.c.mFileName))
-
         g.registerHandler("end1",self.on_quit)
     #@+node:ekr.20101114061906.5443: *4* add_note
     def add_note(self, p):
@@ -607,7 +604,7 @@ class Tabula(QMainWindow):
         # Qt.WA_DeleteOnClose does exist.
         try:
             sw.setAttribute(Qt.WA_DeleteOnClose, False)
-        except Exception:
+        except AttributeError:
             pass
         self.notes[gnx] = n
         n.show()
