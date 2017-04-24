@@ -638,7 +638,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.k.keyboardQuit(setFocus=False)
                     # The best way to retain as much focus as possible.
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
+    #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent(self, event, c, obj, tag):
