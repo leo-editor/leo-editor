@@ -393,7 +393,7 @@ def cmd_bookmark_organizer(event):
     cmd_bookmark(event, organizer=True)
 
 @g.command('bookmarks-bookmark-find-flat')
-def cmd_bookmark_organizer(event):
+def cmd_bookmark_find_flat(event):
     """like clone find flat"""
 
     c = event.get('c')
