@@ -126,11 +126,10 @@ class Cacher(object):
                 g.internalError('content arg must be str/bytes')
             content = g.toEncodedString(content)
         # New in Leo 5.6: Use the git branch name in the key.
-        # This also is part of the fix for #385.
         branch = g.gitBranchName()
-        # g.trace(type(branch))
-        if branch and g.isUnicode(branch):
-            branch = g.toEncodedString(branch)
+        # g.trace(type(branch), repr(branch))
+        branch = g.toEncodedString(branch)
+            # Fix #475.
         m.update(branch)
         m.update(fileName)
         m.update(content)

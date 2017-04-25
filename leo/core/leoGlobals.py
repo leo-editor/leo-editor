@@ -4263,7 +4263,7 @@ def gitInfo(path=None):
     finally:
         f.close()
     if trace: g.trace('returns:', branch, commit)
-    return g.toUnicode(branch), g.toUnicode(commit)
+    return branch, commit
 #@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
 def jsonCommitInfo():
     '''
