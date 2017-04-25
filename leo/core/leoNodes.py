@@ -2631,7 +2631,7 @@ class VNodeBase(object):
         # If v has no more parents, we adjust all
         # the parent links in the descendant tree.
         # This handles clones properly when deleting a tree.
-        if len(v.parents) == 0:
+        if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20090804190529.6133: *5* v._cutParentLinks
@@ -2640,7 +2640,7 @@ class VNodeBase(object):
         v = self
         if trace: g.trace('parent', parent, 'v', v)
         v.parents.remove(parent)
-        if len(v.parents) == 0:
+        if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)

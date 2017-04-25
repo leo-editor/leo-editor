@@ -403,7 +403,7 @@ class LeoImportCommands(object):
             i += 1
         i = g.skip_ws_and_nl(s, i)
         i, result2 = self.copyPart(s, i, "")
-        if len(result2) > 0:
+        if result2:
             # Break lines after periods.
             result2 = result2.replace(".  ", "." + nl)
             result2 = result2.replace(". ", "." + nl)
@@ -458,7 +458,7 @@ class LeoImportCommands(object):
                 docSeen = True
             assert(progress < i)
         result = result.strip()
-        if len(result) > 0:
+        if result:
             result += nl
         return result
     #@+node:ekr.20031218072017.3299: *4* ic.copyPart
@@ -575,7 +575,7 @@ class LeoImportCommands(object):
                 break
         for p in current.self_and_subtree():
             s = self.convertVnodeToWeb(p)
-            if len(s) > 0:
+            if s:
                 if not g.isPython3: # 2010/08/27
                     s = g.toEncodedString(s, self.encoding, reportErrors=True)
                 theFile.write(s)
@@ -678,7 +678,7 @@ class LeoImportCommands(object):
         for p in p.self_and_subtree():
             s = p.b
             s2 = s.strip()
-            if s2 and len(s2) > 0:
+            if s2:
                 f.write("-" * 60); f.write(nl)
                 #@+<< write the context of p to f >>
                 #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
@@ -1491,7 +1491,7 @@ class LeoImportCommands(object):
         body = g.u(body)
         headline = g.u(headline)
         p.initHeadString(headline)
-        if len(body) > 0:
+        if body:
             self.setBodyString(p, body)
         # g.trace(p.v.gnx,p.h)
         return p
@@ -1551,7 +1551,7 @@ class LeoImportCommands(object):
                 doc = doc.replace("\n", " ")
                 doc = doc.replace("\r", "")
                 doc = doc.strip()
-                if doc and len(doc) > 0:
+                if doc:
                     if doc == "@":
                         doc = "@ " if self.webType == "cweb" else "@\n"
                     else:
@@ -1784,7 +1784,7 @@ class MORE_Importer(object):
     #@+node:ekr.20031218072017.3215: *3* MORE.import_lines
     def import_lines(self, strings, first_p):
         c = self.c
-        if len(strings) == 0: return None
+        if not strings: return None
         if not self.check_lines(strings): return None
         firstLevel, junk = self.headlineLevel(strings[0])
         lastLevel = -1; theRoot = last_p = None

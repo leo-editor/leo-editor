@@ -335,7 +335,7 @@ class NullGui(LeoGui):
     def alert(self, message):
         pass
 
-    def attachLeoIcon(self, w):
+    def attachLeoIcon(self, window):
         pass
 
     def destroySelf(self):

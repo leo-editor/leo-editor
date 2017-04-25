@@ -740,7 +740,7 @@ class AutoCompleterClass(object):
         '''Return the object corresponding to the current prefix.'''
         trace = False and not g.unitTesting
         common_prefix, prefix1, aList = self.compute_completion_list()
-        if len(aList) == 0:
+        if not aList:
             if trace: g.trace('no completion list for: %s' % (prefix1))
             return None, prefix1
         elif len(aList) == 1:
@@ -4289,6 +4289,7 @@ class KeyHandlerClass(object):
         Convert a stroke to an (insertable) char.
         This method allows Leo to use strokes everywhere.
         '''
+        # pylint: disable=len-as-condition
         trace = False and not g.unitTesting
         trace = trace and stroke.lower().find('1') > -1
         k = self
