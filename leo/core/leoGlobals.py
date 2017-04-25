@@ -1359,7 +1359,9 @@ class ShortcutInfo(object):
             if hasattr(si, ivar):
                 val = getattr(si, ivar)
                 if val not in (None, 'none', 'None', ''):
-                    if ivar == 'func': val = val.__name__
+                    if ivar == 'func':
+                        # pylint: disable=no-member
+                        val = val.__name__
                     s = '%s: %r' % (ivar, val)
                     result.append(s)
         return '[%s]' % ' '.join(result).strip()
@@ -1728,7 +1730,7 @@ def plugin_date(plugin_mod, format=None):
     return g.file_date(root + ".py", format=format)
 
 def file_date(theFile, format=None):
-    if theFile and len(theFile) and g.os_path_exists(theFile):
+    if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
             if format is None:
@@ -3202,14 +3204,14 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
             # c is not None,force,create,theDir))
     # Split theDir into all its component parts.
     paths = []
-    while len(theDir) > 0:
+    while theDir:
         head, tail = g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
+        if tail:
             paths.append(tail)
             theDir = head
+        else:
+            paths.append(head)
+            break
     path = ""
     paths.reverse()
     if trace: g.trace('paths:', paths)
@@ -3368,12 +3370,12 @@ def setGlobalOpenDir(fileName):
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''
+    # pylint: disable=invalid-unary-operand-type
     if not fileName:
         return ''
     elif n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
-        # return '\\'.join(fileName.split('\\')[-n:])
         return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 
 shortFilename = shortFileName
@@ -3700,7 +3702,7 @@ def scanf(s, pat):
     parts = re.split(pat, s)
     result = []
     for part in parts:
-        if len(part) > 0 and len(result) < count:
+        if part and len(result) < count:
             result.append(part)
     # g.trace("scanf returns:",result)
     return result
@@ -5144,24 +5146,24 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                 space = ' ' * sentenceSpacingWidth
             else:
                 space = ' '
-            if len(line) > 0 and wordLen > 0: wordLen += len(space)
+            if line and wordLen > 0: wordLen += len(space)
             if wordLen + len(line) <= outputLineWidth:
                 if wordLen > 0:
                     #@+<< place blank and word on the present line >>
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
-                    if len(line) == 0:
-                        # Just add the word to the start of the line.
-                        line = word
-                    else:
+                    if line:
                         # Add the word, preceeded by a blank.
                         line = space.join((line, word)) # DTHEIN 18-JAN-2004: better syntax
+                    else:
+                        # Just add the word to the start of the line.
+                        line = word
                     #@-<< place blank and word on the present line >>
                 else: pass # discard the trailing whitespace.
             else:
                 #@+<< place word on a new line >>
                 #@+node:ekr.20110727091744.15085: *5* << place word on a new line >>
                 # End the previous line.
-                if len(line) > 0:
+                if line:
                     result.append(line)
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
                 # Discard the whitespace and put the word on a new line.
@@ -5172,7 +5174,7 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
                     line = ""
                 #@-<< place word on a new line >>
-    if len(line) > 0:
+    if line:
         result.append(line)
     # g.trace(result)
     return result
