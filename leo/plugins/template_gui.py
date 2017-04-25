@@ -51,10 +51,13 @@ class TemplateGui(leoGui.LeoGui):
     '''A do-nothing gui template.'''
 
     def __init__(self):
+
+        leoGui.LeoGui.__init__(self, 'curses')
+            # Init the base class.
         self.consoleOnly = True # Affects g.es, etc.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
-            
+
     #@+others
     #@+node:ekr.20170419150249.7: *3* TG.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
