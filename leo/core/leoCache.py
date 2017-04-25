@@ -640,11 +640,11 @@ class PickleShareDB(object):
         segments = [os.pardir] * (len(orig_list) - i)
         # Need to add the diverging part of dest_list.
         segments += dest_list[i:]
-        if len(segments) == 0:
+        if segments:
+            return join(*segments)
+        else:
             # If they happen to be identical, use os.curdir.
             return os.curdir
-        else:
-            return join(*segments)
     #@+node:ekr.20100208223942.10462: *4* _splitall
     # Used by relpathto.
 

@@ -726,6 +726,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def set_focus(self, c, w):
         """Put the focus on the widget."""
+        # pylint: disable=arguments-differ
         trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
@@ -734,8 +735,12 @@ class LeoQtGui(leoGui.LeoGui):
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
-        """Check to see if c.frame is in a tabbed ui, and if so, make sure
-        the tab is visible"""
+        """
+        Check to see if c.frame is in a tabbed ui, and if so, make sure
+        the tab is visible
+        """
+        # pylint: disable=arguments-differ
+        #
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
@@ -1235,6 +1240,8 @@ class StyleClassManager(object):
     #@+node:tbrown.20150724090431.7: *3* sclass_tests
     def sclass_tests(self):
         """Test style class property manipulation functions"""
+        
+        # pylint: disable=len-as-condition
 
         class Test_W:
             """simple standin for QWidget for testing"""

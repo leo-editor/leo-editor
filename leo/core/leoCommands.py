@@ -1273,9 +1273,9 @@ class Commands(object):
     def createLastChildNode(self, parent, headline, body):
         '''A helper function for the three extract commands.'''
         c = self
-        if body and len(body) > 0:
+        if body:
             body = body.rstrip()
-        if not body or len(body) == 0:
+        if not body:
             body = ""
         p = parent.insertAsLastChild()
         p.initHeadString(headline)
@@ -1893,7 +1893,7 @@ class Commands(object):
         c = self
         trailingNL = lines and lines[-1].endswith('\n')
         lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-        if len(lines) > 0: # Bug fix: 2013/12/22.
+        if lines: # Bug fix: 2013/12/22.
             s = lines[0]
             if c.startsParagraph(s):
                 # Adjust indents[1]

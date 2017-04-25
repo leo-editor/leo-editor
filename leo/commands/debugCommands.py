@@ -43,7 +43,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
             parser = doctest.DocTestParser()
             examples = parser.get_examples(script)
             # if this is doctest, extract the examples as a script
-            if len(examples) > 0:
+            if examples:
                 script = doctest.script_from_examples(script)
         except ImportError:
             pass

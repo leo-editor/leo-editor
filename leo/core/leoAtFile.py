@@ -4853,14 +4853,14 @@ class AtFile(object):
     #@-<< about os.rename >>
 
     def rename(self, src, dst, mode=None, verbose=True):
-        '''remove dst if it exists, then rename src to dst.
-
+        '''
+        Remove dst if it exists, then rename src to dst.
         Change the mode of the renamed file if mode is given.
-
-        Return True if all went well.'''
+        Return True if all went well.
+        '''
         c = self.c
         head, junk = g.os_path_split(dst)
-        if head and len(head) > 0:
+        if head:
             g.makeAllNonExistentDirectories(head, c=c)
         if g.os_path_exists(dst):
             if not self.remove(dst, verbose=verbose):

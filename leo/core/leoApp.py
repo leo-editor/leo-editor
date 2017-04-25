@@ -1333,7 +1333,7 @@ class LeoApp(object):
                     f = open(fn, 'r')
                     s = f.readline()
                     f.close()
-                    if s and len(s) > 0:
+                    if s:
                         g.app.leoID = s.strip()
                         # Careful: periods in the id field of a gnx
                         # will corrupt the .leo file!
