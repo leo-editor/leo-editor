@@ -846,7 +846,7 @@ class FileCommands(object):
         # preference that will over-ride what we are about to set.
         #@@c
         theDir = g.os_path_dirname(fileName)
-        if len(theDir) > 0:
+        if theDir:
             c.openDirectory = c.frame.openDirectory = theDir
         #@-<< Set the default directory >>
         ok, ratio = self.getLeoFile(theFile, fileName, readAtFileNodesFlag=False)

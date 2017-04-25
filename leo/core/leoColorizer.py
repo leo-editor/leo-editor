@@ -2309,6 +2309,7 @@ class QScintillaColorizer(BaseColorizer):
             class_name = 'QsciLexer' + language_name
             lexer_class = getattr(Qsci, class_name, None)
             if lexer_class:
+                # pylint: disable=not-callable
                 lexer = lexer_class(parent=parent)
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer

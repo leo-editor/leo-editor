@@ -1748,7 +1748,7 @@ class LeoFind(object):
         if not self.search_headline and not self.search_body:
             if trace: g.trace('nothing to search')
             return None, None
-        if len(self.find_text) == 0:
+        if not self.find_text:
             if trace: g.trace('no find text')
             return None, None
         self.errors = 0
@@ -2251,7 +2251,7 @@ class LeoFind(object):
             g.es("not searching headline or body")
             val = False
         s = self.ftm.getFindText()
-        if len(s) == 0:
+        if not s:
             g.es("empty find patttern")
             val = False
         return val
