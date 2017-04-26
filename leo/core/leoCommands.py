@@ -5888,7 +5888,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
-        return g.app.gui and g.app.gui.widget_name(widget) or ''
+        return g.app.gui.widget_name(widget) if g.app.gui else ''
     #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
     def enableMenuBar(self):
         '''A failed attempt to work around Ubuntu Unity memory bugs.'''
@@ -6022,14 +6022,16 @@ class Commands(object):
         j2 = line.find("@>")
         return -1 < i1 < j1 or -1 < i2 < j2
     #@+node:ekr.20031218072017.2965: *4* c.canFindMatchingBracket
+    #@@nobeautify
+
     def canFindMatchingBracket(self):
         c = self
         brackets = "()[]{}"
         w = c.frame.body.wrapper
         s = w.getAllText()
         ins = w.getInsertPoint()
-        c1 = 0 <= ins < len(s) and s[ins] or ''
-        c2 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
+        c1 = s[ins]   if 0 <= ins   < len(s) else ''
+        c2 = s[ins-1] if 0 <= ins-1 < len(s) else ''
         val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
         return bool(val)
     #@+node:ekr.20040303165342: *4* c.canHoist & canDehoist
@@ -7177,7 +7179,7 @@ class Commands(object):
             return
         c = self; p = c.p; p1 = p.copy()
         invisible = c.config.getBool('invisible_outline_navigation')
-        ch = event and event.char or ''
+        ch = event.char if event else ''
         allFlag = ch.isupper() and invisible # all is a global (!?)
         if not invisible: ch = ch.lower()
         found = False
@@ -7237,7 +7239,7 @@ class Commands(object):
                 if h.startswith('@' + s):
                     while 1:
                         n = len(prefix)
-                        ch2 = n < len(h) and h[n] or ''
+                        ch2 = h[n] if n < len(h) else ''
                         if ch2.isspace():
                             prefix = prefix + ch2
                         else: break
