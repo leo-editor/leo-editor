@@ -673,7 +673,7 @@ class LeoFind(object):
         trace = False and not g.unitTesting
         # c = self.c
         k = self.k
-        stroke = event and event.stroke or None
+        stroke = event.stroke if event else None
         s = stroke.s if stroke else ''
         if trace: g.trace('again', stroke in self.iSearchStrokes, 's', repr(s))
         # No need to recognize ctrl-z.
@@ -2157,8 +2157,8 @@ class LeoFind(object):
             return False
         pat1, pat2 = pattern[0], pattern[-1]
         n = len(pattern)
-        ch1 = 0 <= i - 1 < len(s) and s[i - 1] or '.'
-        ch2 = 0 <= i + n < len(s) and s[i + n] or '.'
+        ch1 = s[i - 1] if 0 <= i - 1 < len(s) else '.'
+        ch2 = s[i + n] if 0 <= i + n < len(s) else '.'
         isWordPat1 = g.isWordChar(pat1)
         isWordPat2 = g.isWordChar(pat2)
         isWordCh1 = g.isWordChar(ch1)
@@ -2322,7 +2322,7 @@ class LeoFind(object):
         ftm = self.ftm
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
         ftm.entry_focus = None # Only use this focus widget once!
-        w_name = w and g.app.gui.widget_name(w) or ''
+        w_name = g.app.gui.widget_name(w) if w else ''
         if self.buttonFlag and self.was_in_headline in (True, False):
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
             self.in_headline = self.was_in_headline
