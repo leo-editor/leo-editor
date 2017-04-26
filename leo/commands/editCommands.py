@@ -192,12 +192,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event and event.widget # Does **not** require a text widget.
         pane = None # The widget that will get the new focus.
         log = c.frame.log
-        w_name = g.app.gui.widget_name
-        if trace: g.trace('**before', w_name(w), 'isLog', log.isLogWidget(w))
+        w_name = c.widget_name(w)
+        if trace: g.trace('**before', w_name, 'isLog', log.isLogWidget(w))
         # w may not be the present body widget, so test its name, not its id.
-        if w_name(w).find('tree') > -1 or w_name(w).startswith('head'):
+        if w_name.find('tree') > -1 or w_name.startswith('head'):
             pane = c.frame.body.wrapper
-        elif w_name(w).startswith('body'):
+        elif w_name.startswith('body'):
             # Cycle through the *body* editor if there are several.
             n = c.frame.body.numberOfEditors
             if n > 1:
@@ -223,7 +223,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # A safe default: go to the body.
             if trace: g.trace('* default to body')
             pane = c.frame.body.wrapper
-        if trace: g.trace('**after', w_name(pane), pane)
+        if trace: g.trace('**after', c.widget_name(pane), pane)
         if pane:
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)

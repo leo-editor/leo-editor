@@ -2322,7 +2322,7 @@ class LeoFind(object):
         ftm = self.ftm
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
         ftm.entry_focus = None # Only use this focus widget once!
-        w_name = g.app.gui.widget_name(w) if w else ''
+        w_name = c.widget_name(w)
         if self.buttonFlag and self.was_in_headline in (True, False):
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
             self.in_headline = self.was_in_headline

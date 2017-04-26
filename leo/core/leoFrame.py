@@ -928,7 +928,7 @@ class LeoFrame(object):
         trace = False and not g.unitTesting
         f = self; c = f.c
         w = event and event.widget
-        wname = c.widget_name(w) if w else '<no widget>'
+        wname = c.widget_name(w)
         if trace: g.trace(g.isTextWrapper(w), wname, w)
         if not w or not g.isTextWrapper(w):
             return
@@ -993,7 +993,7 @@ class LeoFrame(object):
         trace = False and not g.unitTesting
         f = self; c = f.c
         w = event and event.widget
-        wname = c.widget_name(w) if w else '<no widget>'
+        wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget', w)
             return

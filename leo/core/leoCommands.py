@@ -5888,7 +5888,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
-        return g.app.gui.widget_name(widget) if g.app.gui else ''
+        return g.app.gui.widget_name(widget) if g.app.gui else '<no widget>'
     #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
     def enableMenuBar(self):
         '''A failed attempt to work around Ubuntu Unity memory bugs.'''

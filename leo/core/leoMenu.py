@@ -1050,7 +1050,7 @@ class LeoMenu(object):
             w = c.frame.getFocus()
             if w and sys.platform.startswith('darwin'):
                  # 2012/01/11: redirect (MacOS only).
-                wname = c.widget_name(w) or ''
+                wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
             # 2015/05/14: return a wrapper if possible.
