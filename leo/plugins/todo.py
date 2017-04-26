@@ -533,6 +533,7 @@ class todoController(object):
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
             elif which == 'progress':
                 prog = self.getat(p.v, 'progress')
+                # pylint: disable=literal-comparison
                 if prog is not '':
                     prog = int(prog or 0)
                     use = prog//10*10
