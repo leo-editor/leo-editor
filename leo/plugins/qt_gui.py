@@ -59,7 +59,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.styleSheetManagerClass = StyleSheetManager
         self.mGuiName = 'qt'
         self.appIcon = self.getIconImage('leoapp32.png')
-        self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
+        self.color_theme = g.app.config and g.app.config.getString('color_theme')
         self.active = True
             # For c.idle_focus_helper and activate/deactivate events.
         # Put up the splash screen()
@@ -928,7 +928,7 @@ class LeoQtGui(leoGui.LeoGui):
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
         assert isinstance(qevent, QtGui.QKeyEvent)
-        qw = hasattr(event.w, 'widget') and event.w.widget or None
+        qw = getattr(event.w, 'widget', None)
         if qw and isinstance(qw, QtWidgets.QTextEdit):
             # g.trace(i, qevent.modifiers(), g.u(qevent.text()))
             if 1:

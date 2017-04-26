@@ -2106,6 +2106,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.statusBar.addWidget(splitter, True)
             sizes = c.config.getString('status_line_split_sizes') or '1 2'
             sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+            # pylint: disable=consider-using-ternary
             for n, i in enumerate(sizes):
                 w = [w1, w2][n]
                 policy = w.sizePolicy()

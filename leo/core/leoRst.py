@@ -519,7 +519,8 @@ class RstCommands(object):
         '''Find and handle all @rst and @slides node associated with p.'''
         
         def predicate(p):
-            h = p and p.h or ''
+            # pylint: disable=consider-using-ternary
+            h = p.h if p else ''
             return (
                 h.startswith('@rst') and not h.startswith('@rst-') or
                 h.startswith('@slides'))
@@ -605,7 +606,7 @@ class RstCommands(object):
         i = g.skip_id(h, 1) # Skip the '@'
         kind, fn = h[: i].strip(), h[i:].strip()
         if not fn: return g.error('%s requires file name' % (kind))
-        title = p and p.firstChild().h or '<no slide>'
+        title = p.firstChild().h if p and p.firstChild() else '<no slide>'
         title = title.strip().capitalize()
         n_tot = p.numberOfChildren()
         n = 1

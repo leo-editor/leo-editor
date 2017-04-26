@@ -689,7 +689,7 @@ class ShadowController(object):
         #@+node:ekr.20080709062932.11: *4* shortDescription (AtShadowTestCase)
         def shortDescription(self):
             '''AtShadowTestCase.shortDescription.'''
-            return self.p and self.p.h or '@test-shadow: no self.p'
+            return self.p.h if self.p else '@test-shadow: no self.p'
         #@-others
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
     class Marker(object):

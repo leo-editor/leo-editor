@@ -1364,7 +1364,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def editPosition(self):
         c = self.c; p = c.currentPosition()
         ew = self.edit_widget(p)
-        return ew and p or None
+        return p if ew else None
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
