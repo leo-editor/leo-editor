@@ -400,7 +400,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def watchEscape(self, event):
         '''Enter watch escape mode.'''
         k = self.c.k
-        char = event and event.char or ''
+        char = event.char if event else ''
         if not k.inState():
             k.setState('escape', 'start', handler=self.watchEscape)
             k.setLabelBlue('Esc ')
@@ -428,7 +428,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = self.editWidget(event)
         if not w:
             return
-        char = event and event.char or ''
+        char = event.char if event else ''
         if k.getLabel() == 'Eval:':
             k.setLabel('')
         if char in ('\n', 'Return'):
@@ -1494,15 +1494,15 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         #@+<< set local vars >>
         #@+node:ekr.20150514063305.269: *5* << set local vars >> (selfInsertCommand)
-        stroke = event and event.stroke or None
-        ch = event and event.char or ''
+        stroke = event.stroke if event else None
+        ch = event.char if event else ''
         if ch == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
         if ch == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
-        oldSel = name.startswith('body') and w.getSelectionRange() or (None, None)
-        oldText = name.startswith('body') and p.b or ''
+        oldSel = w.getSelectionRange() if name.startswith('body') else (None, None)
+        oldText = p.b if name.startswith('body') else ''
         undoType = 'Typing'
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.toUnicode(ch) in brackets
@@ -1711,7 +1711,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(ins - 1)
         else:
             ins = w.getInsertPoint()
-            ch2 = ins < len(s) and s[ins] or ''
+            ch2 = s[ins] if ins < len(s) else ''
             if ch2 in (')', ']', '}'):
                 ins = w.getInsertPoint()
                 w.setInsertPoint(ins + 1)
