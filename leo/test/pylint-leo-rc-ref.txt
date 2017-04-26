@@ -42,6 +42,7 @@ disable=
     attribute-defined-outside-init,
     bad-builtin,
     bad-continuation,
+    bad-option-value,
     bad-whitespace,
     broad-except,
     consider-iterating-dictionary,
