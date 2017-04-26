@@ -739,6 +739,8 @@ class MatchBrackets(object):
         '''Report an error in the match-brackets command.'''
         g.es(s, color='red')
     #@+node:ekr.20160119094053.1: *4* mb.run
+    #@@nobeautify
+
     def run(self):
         '''The driver for the MatchBrackets class.'''
         trace = False and not g.unitTesting
@@ -747,8 +749,8 @@ class MatchBrackets(object):
         s = w.getAllText()
         ins = w.getInsertPoint()
         if trace: g.trace(s)
-        ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
-        ch2 = 0 <= ins < len(s) and s[ins] or ''
+        ch1 = s[ins-1] if 0 <= ins-1 < len(s) else ''
+        ch2 = s[ins]   if 0 <= ins   < len(s) else ''
         # g.trace(repr(ch1),repr(ch2),ins)
         # Prefer to match the character to the left of the cursor.
         if ch1 and ch1 in self.brackets:
@@ -2235,7 +2237,7 @@ def check_cmd_instance_dict(c, g):
     This is a permanent unit test, called from c.finishCreate.
     '''
     d = cmd_instance_dict
-    for key in d.keys():
+    for key in d:
         ivars = d.get(key)
         obj = ivars2instance(c, g, ivars)
             # Produces warnings.
@@ -4094,7 +4096,7 @@ def skip_c_id(s, i):
     return i
 #@+node:ekr.20040705195048: *4* skip_id
 def skip_id(s, i, chars=None):
-    chars = chars and g.toUnicode(chars) or ''
+    chars = g.toUnicode(chars) if chars else ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
         i += 1
@@ -4328,6 +4330,7 @@ def doHook(tag, *args, **keywords):
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = keywords.get("c")
+    # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if trace and (verbose or tag != 'idle'):
         g.trace('tag', tag, 'f', f and f.__name__)
@@ -5279,15 +5282,12 @@ def skip_leading_ws_with_indent(s, i, tab_width):
 #@+node:ekr.20040723093558.1: *4* g.stripBlankLines
 def stripBlankLines(s):
     lines = g.splitLines(s)
-    for i in range(len(lines)):
-        line = lines[i]
+    for i, line in enumerate(lines):
         j = g.skip_ws(line, 0)
         if j >= len(line):
             lines[i] = ''
-            # g.trace("%4d %s" % (i,repr(lines[i])))
         elif line[j] == '\n':
             lines[i] = '\n'
-            # g.trace("%4d %s" % (i,repr(lines[i])))
     return ''.join(lines)
 #@+node:ekr.20031218072017.3108: ** g.Logging & Printing
 # g.es and related print to the Log window.
@@ -5737,7 +5737,7 @@ def translateArgs(args, d):
     global console_encoding
     if not console_encoding:
         e = sys.getdefaultencoding()
-        console_encoding = isValidEncoding(e) and e or 'utf-8'
+        console_encoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',console_encoding
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:

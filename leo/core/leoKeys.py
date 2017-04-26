@@ -190,6 +190,7 @@ class AutoCompleterClass(object):
         trace = False and not g.unitTesting
         c, k = self.c, self.k
         state = k.unboundKeyAction
+        # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
         self.force = force
         if state not in ('insert', 'overwrite'):
@@ -380,8 +381,8 @@ class AutoCompleterClass(object):
         trace = False and not g.app.unitTesting
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
-        ch = event and event.char or ''
-        stroke = event and event.stroke or None
+        ch = event.char if event else ''
+        stroke = event.stroke if event else ''
         is_plain = k.isPlainKey(stroke)
         if trace: g.trace('state: %s, ch: %s, stroke: %s' % (
             state, repr(ch), repr(stroke)))
@@ -776,8 +777,8 @@ class AutoCompleterClass(object):
         try:
             argspec = inspect.getargspec(obj)
             # uses None instead of empty list
-            argn = argspec.args and len(argspec.args) or 0
-            defn = argspec.defaults and len(argspec.defaults) or 0
+            argn = len(argspec.args or [])
+            defn = len(argspec.defaults or [])
             put("args:")
             simple_args = argspec.args[: argn - defn]
             if not simple_args:
@@ -929,9 +930,9 @@ class AutoCompleterClass(object):
         '''
         d = {}
         for z in tabList:
-            tail = z and z[len(header):] or ''
+            tail = z[len(header):] if z else ''
             if tail.startswith('.'): tail = tail[1:]
-            ch = tail and tail[0] or ''
+            ch = tail[0] if tail else ''
             if ch:
                 n = d.get(ch, 0)
                 d[ch] = n + 1
@@ -1113,7 +1114,7 @@ class FileNameChooser(object):
         c, k = fnc.c, fnc.c.k
         tag = 'get-file-name'
         state = k.getState(tag)
-        char = event and event.char or ''
+        char = event.char if event else ''
         if trace:
             g.trace('state', state, 'char', char or '<**no char**>')
         if state == 0:
@@ -1423,7 +1424,7 @@ class GetArg(object):
         c, k = ga.c, ga.k
         state = k.getState('getArg')
         c.check_event(event)
-        char = event and event.char or ''
+        char = event.char if event else ''
         if state > 0:
             k.setLossage(char, stroke)
         if state == 0:
@@ -1510,6 +1511,7 @@ class GetArg(object):
         # Enter the next state.
         c.widgetWantsFocus(c.frame.body.wrapper)
         k.setState('getArg', 1, k.getArg)
+        # pylint: disable=consider-using-ternary
         k.afterArgWidget = event and event.widget or c.frame.body.wrapper
         if useMinibuffer: c.minibufferWantsFocus()
     #@+node:ekr.20140818103808.18234: *4* ga.should_end
@@ -2515,8 +2517,8 @@ class KeyHandlerClass(object):
             state = k.getState('full-command')
             helpPrompt = 'Help for command: '
             c.check_event(event)
-            ch = char = event and event.char or ''
-            stroke = event and event.stroke or None
+            ch = char = event.char if event else ''
+            stroke = event.stroke if event else ''
             if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
@@ -2807,7 +2809,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20131017100903.16689: *5* repeatComplexCommandHelper
     def repeatComplexCommandHelper(self, event):
         k = self; c = k.c
-        char = event and event.char or ''
+        char = event.char if event else ''
         if char in ('\n', 'Return') and k.mb_history:
             last = k.mb_history[0]
             k.resetLabel()
@@ -3200,8 +3202,8 @@ class KeyHandlerClass(object):
         #@+<< define vars >>
         #@+node:ekr.20061031131434.147: *5* << define vars >>
         w = event and event.widget
-        char = event and event.char or ''
-        stroke = event and event.stroke or None
+        char = event.char if event else ''
+        stroke = event.stroke if event else ''
         w_name = c.widget_name(w)
         if w_name.startswith('log'):
             # A hack: send the event to the text part of the log.
@@ -3288,9 +3290,9 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
         trace = False and not g.unitTesting
-        k = self; val = None
-        ch = event and event.char or ''
-        stroke = event and event.stroke or ''
+        k, val = self, None
+        ch = event.char if event else ''
+        stroke = event.stroke if event else ''
         if trace: g.trace(k.state.kind, 'ch', ch, 'stroke', stroke,
             'ignore_unbound_non_ascii_keys', k.ignore_unbound_non_ascii_keys)
         if k.state.kind == 'auto-complete':
@@ -3604,7 +3606,7 @@ class KeyHandlerClass(object):
         c.setLog()
         c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
-        char = ch = event and event.char or ''
+        char = ch = event.char if event else ''
         # 2011/10/28: compute func if not given.
         if commandName and not func:
             func = c.commandsDict.get(commandName)
@@ -3837,7 +3839,7 @@ class KeyHandlerClass(object):
         instead of plain accumulation.'''
         trace = False or g.trace_minibuffer and not g.app.unitTesting
         k = self; c = k.c; w = self.w
-        ch = (event and event.char) or ''
+        ch = event.char if event else ''
         if trace: g.trace('ch', ch, 'k.stroke', k.stroke)
         if ch and ch not in ('\n', '\r'):
             c.widgetWantsFocusNow(w)
@@ -4159,7 +4161,7 @@ class KeyHandlerClass(object):
         k = self
         d = {}
             # keys are minibuffer command names, values are shortcuts.
-        for stroke in k.bindingsDict.keys():
+        for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
             for si in aList:
@@ -4600,16 +4602,14 @@ class KeyHandlerClass(object):
         #@-<< about repeat counts >>
         k = self
         state = k.getState('u-arg')
-        stroke = event and event.stroke or None
+        stroke = event.stroke if event else ''
         if state == 0:
             k.dispatchEvent = event
             # The call should set the label.
             k.setState('u-arg', 1, k.universalDispatcher)
             k.repeatCount = 1
         elif state == 1:
-            # stroke = k.stroke # Warning: k.stroke is always Alt-u
-            char = event and event.char or ''
-            # g.trace(state,char)
+            char = event.char if event else ''
             if char == 'Escape':
                 k.keyboardQuit()
             elif char == k.universalArgKey:
@@ -4639,7 +4639,7 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         c, k = self.c, self
         w = event and event.widget
-        stroke = event and event.stroke or None
+        stroke = event.stroke if event else ''
         if not stroke: return
         if stroke == k.fullCommandKey:
             for z in range(n):
@@ -4659,7 +4659,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.203: *4* doControlU
     def doControlU(self, event, stroke):
         k = self
-        ch = event and event.char or ''
+        ch = event.char if event else ''
         k.setLabelBlue('Control-u %s' % g.stripBrackets(stroke))
         if ch == '(':
             k.clearState()
@@ -4716,7 +4716,7 @@ class ModeInfo(object):
         '''Create mode bindings for w, a text widget.'''
         trace = False and not g.unitTesting
         c, d, k, modeName = self.c, self.d, self.k, self.name
-        for commandName in d.keys():
+        for commandName in d:
             func = c.commandsDict.get(commandName)
             if not func:
                 g.es_print('no such command: %s Referenced from %s' % (
