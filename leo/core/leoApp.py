@@ -962,7 +962,7 @@ class LeoApp(object):
         app = self
         import leo.core.leoVersion as leoVersion
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
+        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -1613,11 +1613,7 @@ class LoadManager(object):
         g.app.testDir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
     #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
-        # lm = self
-        # To avoid pylint complaints that sys.leo_config_directory does not exist.
-        leo_config_dir = (
-            hasattr(sys, 'leo_config_directory') and
-            getattr(sys, 'leo_config_directory') or None)
+        leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
         else:
@@ -1984,7 +1980,7 @@ class LoadManager(object):
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
-        return ok and c or None
+        return c if ok else None
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
@@ -2677,7 +2673,7 @@ class LoadManager(object):
         g.app.initComplete = True
         if c: c.setLog()
         # print('doPostPluginsInit: ***** set log')
-        p = c and c.p or None
+        p = c.p if c else None
         g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
         if c: lm.initFocusAndDraw(c, fileName)
         screenshot_fn = lm.options.get('screenshot_fn')

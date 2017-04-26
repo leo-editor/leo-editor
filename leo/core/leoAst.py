@@ -214,7 +214,7 @@ class AstFormatter(object):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
         val = self.visit(node)
-        return val and val.strip() or ''
+        return val.strip() if val else ''
     #@+node:ekr.20141012064706.18403: *4* f.visit
     def visit(self, node):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
