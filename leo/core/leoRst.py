@@ -1985,6 +1985,7 @@ class HtmlParserClass(LinkAnchorParserClass):
         self.stack = self.stack[2]
     #@+node:ekr.20120219194520.10455: *4* feed
     def feed(self, line):
+        # pylint: disable=arguments-differ
         # g.trace(repr(line))
         self.node_code.append(line)
         HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().

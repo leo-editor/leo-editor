@@ -717,6 +717,7 @@ class Commands(object):
             for ivar in ('reloadSettings', 'reload_settings'):
                 func = getattr(subcommander, ivar, None)
                 if func:
+                    # pylint: disable=not-callable
                     if trace:
                         g.es_print('reloading settings in',
                             subcommander.__class__.__name__)

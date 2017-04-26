@@ -266,7 +266,7 @@ class AstFormatter(object):
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node, async=False):
+    def do_FunctionDef(self, node, async_flag=False):
         '''Format a FunctionDef node.'''
         result = []
         if node.decorator_list:
@@ -274,7 +274,7 @@ class AstFormatter(object):
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
         args = self.visit(node.args) if node.args else ''
-        asynch_prefix = 'asynch ' if async else ''
+        asynch_prefix = 'asynch ' if async_flag else ''
         if getattr(node, 'returns', None): # Python 3.
             returns = self.visit(node.returns)
             result.append(self.indent('%sdef %s(%s): -> %s\n' % (
@@ -289,7 +289,7 @@ class AstFormatter(object):
         return ''.join(result)
         
     def do_AsyncFunctionDef(self, node):
-        return self.do_FunctionDef(node, async=True)
+        return self.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20141012064706.18407: *4* f.Interactive
     def do_Interactive(self, node):
         for z in node.body:
@@ -645,10 +645,10 @@ class AstFormatter(object):
         else:
             return self.indent('exec %s\n' % (body))
     #@+node:ekr.20141012064706.18451: *4* f.For & AsnchFor (Python 3)
-    def do_For(self, node, async=False):
+    def do_For(self, node, async_flag=False):
         result = []
         result.append(self.indent('%sfor %s in %s:\n' % (
-            'async ' if async else '',
+            'async ' if async_flag else '',
             self.visit(node.target),
             self.visit(node.iter))))
         for z in node.body:
@@ -664,7 +664,7 @@ class AstFormatter(object):
         return ''.join(result)
         
     def do_AsyncFor(self, node):
-        return self.do_For(node, async=True)
+        return self.do_For(node, async_flag=True)
     #@+node:ekr.20141012064706.18452: *4* f.Global
     def do_Global(self, node):
         return self.indent('global %s\n' % (
@@ -854,9 +854,9 @@ class AstFormatter(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(self, node, async=False):
+    def do_With(self, node, async_flag=False):
         result = []
-        result.append(self.indent('%swith ' % ('async ' if async else '')))
+        result.append(self.indent('%swith ' % ('async ' if async_flag else '')))
         if getattr(node, 'context_expression', None):
             result.append(self.visit(node.context_expresssion))
         vars_list = []
@@ -885,7 +885,7 @@ class AstFormatter(object):
         return ''.join(result)
         
     def do_AsyncWith(self, node):
-        return self.do_With(node, async=True)
+        return self.do_With(node, async_flag=True)
     #@+node:ekr.20141012064706.18466: *4* f.Yield
     def do_Yield(self, node):
         if getattr(node, 'value', None):
@@ -2191,10 +2191,10 @@ class HTMLReportTraverser(object):
     #@+node:ekr.20150722204300.68: *4* rt.For & AsyncFor (Python 3)
     # For(expr target, expr iter, stmt* body, stmt* orelse)
 
-    def do_For(rt, node, async=False):
+    def do_For(rt, node, async_flag=False):
 
         rt.div('statement')
-        if async:
+        if async_flag:
             rt.keyword('async')
         rt.keyword("for")
         rt.visit(node.target)
@@ -2209,16 +2209,16 @@ class HTMLReportTraverser(object):
         rt.end_div('statement')
         
     def do_AsyncFor(rt, node):
-        rt.do_For(node, async=True)
+        rt.do_For(node, async_flag=True)
     #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(rt, node, async=False):
+    def do_FunctionDef(rt, node, async_flag=False):
 
         rt.div('function', extra='id="%s"' % node.name)
-        if async:
+        if async_flag:
             rt.keyword('async')
         rt.keyword("def")
         rt.name(node.name)
@@ -2238,7 +2238,7 @@ class HTMLReportTraverser(object):
         rt.end_div('function')
         
     def do_AsyncFunctionDef(rt, node):
-        rt.do_FunctionDef(node, async=True)
+        rt.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20150722204300.70: *4* rt.GeneratorExp
     def do_GeneratorExp(rt, node):
 
@@ -2593,13 +2593,13 @@ class HTMLReportTraverser(object):
     #          stmt* body)
     # withitem = (expr context_expr, expr? optional_vars)
 
-    def do_With(rt, node, async=False):
+    def do_With(rt, node, async_flag=False):
 
         context_expr = getattr(node, 'context_expr', None)
         optional_vars = getattr(node, 'optional_vars', None)
         items = getattr(node, 'items', None)
         rt.div('statement')
-        if async:
+        if async_flag:
             rt.keyword('async')
         rt.keyword('with')
         if context_expr:
@@ -2618,7 +2618,7 @@ class HTMLReportTraverser(object):
         rt.end_div('statement')
         
     def do_AsyncWith(rt, node):
-        rt.do_With(node, async=True)
+        rt.do_With(node, async_flag=True)
     #@+node:ekr.20150722204300.96: *4* rt.Yield
     def do_Yield(rt, node):
 

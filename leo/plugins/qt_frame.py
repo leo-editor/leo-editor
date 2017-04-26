@@ -1529,10 +1529,12 @@ class LeoQtBody(leoFrame.LeoBody):
         return c.frame.body.wrapper
     #@+node:ekr.20110605121601.18201: *5* LeoQtBody.select/unselectLabel
     def unselectLabel(self, wrapper):
+        # pylint: disable=arguments-differ
         pass
         # self.createChapterIvar(wrapper)
 
     def selectLabel(self, wrapper):
+        # pylint: disable=arguments-differ
         c = self.c
         w = wrapper.widget
         lab = hasattr(w, 'leo_label') and w.leo_label
@@ -1545,6 +1547,7 @@ class LeoQtBody(leoFrame.LeoBody):
 
     def selectEditor(self, wrapper):
         '''Select editor w and node w.leo_p.'''
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         verbose = False
         c = self.c
@@ -1736,6 +1739,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18213: *5* LeoQtBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p, wrapper):
         '''Support QScintillaColorizer.colorize.'''
+        # pylint: disable=arguments-differ
         c = self.c
         colorizer = c.frame.body.colorizer
         if p and colorizer and hasattr(colorizer, 'colorize'):
@@ -2551,6 +2555,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18282: *4* qtFrame.resizePanesToRatio
     def resizePanesToRatio(self, ratio, ratio2):
         '''Resize splitter1 and splitter2 using the given ratios.'''
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting
         if trace: g.trace('vertical: %5s, %0.2f %0.2f' % (
             self.splitVerticalFlag, ratio, ratio2))
@@ -2978,6 +2983,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return s
 
     def setTitle(self, s):
+        # pylint: disable=arguments-differ
         # g.trace('**(qtFrame)',repr(s))
         if self.top:
             # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
@@ -3396,6 +3402,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@+node:ekr.20110605121601.18345: *5* add_command (LeoQtMenu) (Called by createMenuEntries)
     def add_command(self, **keys):
         """Wrapper for the Tkinter add_command menu method."""
+        # pylint: disable=arguments-differ
         trace = False and not g.unitTesting # and label.startswith('Paste')
         accel = keys.get('accelerator') or ''
         command = keys.get('command')
