@@ -107,7 +107,7 @@ class LeoQtEventFilter(QtCore.QObject):
             elif k.inState():
                 override = not ignore # allow all keystrokes.
             else:
-                override = len(aList) > 0
+                override = bool(aList)
         else:
             override = False; tkKey = '<no key>'
             if self.tag == 'body':

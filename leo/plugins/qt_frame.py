@@ -4194,7 +4194,7 @@ class LeoQtSpellTab(object):
         if not word: word = ""
         self.wordLabel.setText("Suggestions for: " + word)
         self.listBox.clear()
-        if len(self.suggestions):
+        if self.suggestions:
             self.listBox.addItems(self.suggestions)
             self.listBox.setCurrentRow(0)
     #@+node:ekr.20110605121601.18400: *4* getSuggestion

@@ -18048,6 +18048,12 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+#@+node:ekr.20170425190651.1: *7* @@file @test xml non-ascii tags
+<:À.Ç>
+<Ì>
+<_.ÌÑ>
+@language xml
+@tabwidth -4
 #@+node:ekr.20160410152100.1: *4* Tests of @auto-md
 #@+node:ekr.20160410152100.2: *5* @test md-import-test
 << define s >>

@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.71">
-	<global_window_position top="107" left="417" height="931" width="1375"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.71">
+	<global_window_position top="106" left="595" height="931" width="1375"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -964,7 +964,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -1164,7 +1164,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
 <v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
 </v>
-<v t="ekr.20111029112647.4099" a="E"><vh>html tests</vh>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
@@ -1457,7 +1457,9 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
 <v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
 <v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
-<v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
+<v t="ekr.20120306173116.3933" a="E"><vh>@test xml non-ascii tags</vh>
+<v t="ekr.20170425190651.1"><vh>@@file @test xml non-ascii tags</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20160410152100.1"><vh>Tests of @auto-md</vh>
@@ -1930,7 +1932,8 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20090529141856.4780"></v>
-<v t="ekr.20111029112647.4099" a="E"></v>
+<v t="ekr.20111029112647.4099"></v>
+<v t="ekr.20120306173116.3933" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2645,7 +2648,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="13">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -15535,6 +15538,12 @@ try:
 finally:
     c.redraw()
 
+</t>
+<t tx="ekr.20170425190651.1">&lt;:À.Ç&gt;
+&lt;Ì&gt;
+&lt;_.ÌÑ&gt;
+@language xml
+@tabwidth -4
 </t>
 </tnodes>
 </leo_file>
