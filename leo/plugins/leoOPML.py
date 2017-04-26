@@ -651,7 +651,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         return g.toEncodedString(s, "ascii")
     #@+node:ekr.20060904134958.174: *3*  Do nothing...
     #@+node:ekr.20060904134958.175: *4* other methods
-    def ignorableWhitespace(self, ws):
+    def ignorableWhitespace(self, content):
         g.trace()
 
     def processingInstruction(self, target, data):
