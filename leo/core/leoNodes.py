@@ -891,7 +891,7 @@ class Position(object):
     def level(self):
         '''Return the number of p's parents.'''
         p = self
-        return p.v and len(p.stack) or 0
+        return len(p.stack) if p.v else 0
 
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
@@ -2254,7 +2254,7 @@ class VNodeBase(object):
     #@+node:ekr.20031218072017.3364: *5* v.lastChild
     def lastChild(self):
         v = self
-        return v.children and v.children[-1] or None
+        return v.children[-1] if v.children else None
     #@+node:ekr.20031218072017.3365: *5* v.nthChild
     # childIndex and nthChild are zero-based.
 
