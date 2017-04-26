@@ -1041,12 +1041,12 @@ class AtFile(object):
         if not firstLines:
             return
         found, j, tag = False, 0, "@first"
-        for k in range(len(out)):
+        for k, s in enumerate(out):
             # Skip leading whitespace lines.
-            if not found and not out[k].strip():
+            if not found and s.isspace():
                 continue
             # Quit if something other than @first directive.
-            if not g.match(out[k], 0, tag):
+            if not g.match(s, 0, tag):
                 break
             found = True
             # Quit if no leading lines to apply.
@@ -1056,7 +1056,7 @@ class AtFile(object):
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() + '\n'
             j += 1
-            if trace: g.trace(repr(out[k]))
+            if trace: g.trace(repr(s))
     #@+node:ekr.20041005105605.118: *7* at.completeLastDirectives
     def completeLastDirectives(self, out, lastLines):
         '''
