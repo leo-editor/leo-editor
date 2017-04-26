@@ -175,8 +175,7 @@ if sys.platform != 'cli':
             content = content.replace('\r', '')
             if not content:
                 return
-            elementName = (self.elementStack and self.elementStack[-1].lower() or
-                '<no element name>')
+            elementName = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
             # if self.trace: g.trace(elementName,content.strip())
             if elementName in ('t', 'vh'):
                 # if elementName == 'vh': g.trace(elementName,repr(content))
@@ -1283,7 +1282,7 @@ class FileCommands(object):
             parent_v = c.hiddenRootNode
             children = fc.createSaxChildren(saxRoot, parent_v)
             assert c.hiddenRootNode.children == children
-            v = children and children[0] or None
+            v = children[0] if children else None
             return v
         else:
             return None
@@ -1634,6 +1633,7 @@ class FileCommands(object):
     def putTnode(self, v):
         # Call put just once.
         gnx = v.fileIndex
+        # pylint: disable=consider-using-ternary
         ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
@@ -2121,6 +2121,7 @@ class FileCommands(object):
             d[key] = d2
         if trace: g.trace(p.h, g.dictToString(d))
         # Pickle and hexlify d
+        # pylint: disable=consider-using-ternary
         return d and self.pickle(
             torv=p.v, val=d, tag='descendentVnodeUnknownAttributes') or ''
     #@+node:ekr.20050418161620.2: *4* fc.putUaHelper
