@@ -60,7 +60,7 @@ def sync_node_to_folder(c,parent,d):
         c.setHeadString(v,name)
         v.setMarked()
     #warn for orphan oldlist
-    if len(oldlist)>0:
+    if oldlist:
         g.es('missing: '+','.join(oldlist.keys()))
 #@-others
 #@@language python

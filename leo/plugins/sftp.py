@@ -197,7 +197,7 @@ class SFTPController(object):
             return
         else:
             remotefile = headline.split(':')[1].strip()
-        if len(remotefile) == 0:
+        if not remotefile:
             self.log("ERROR: need a file path!", color='red')
             return
 
@@ -209,7 +209,7 @@ class SFTPController(object):
 
         if has_username:
             username = headline.split('@',1)[0]
-            if len(username) == 0:
+            if not username:
                 self.log("ERROR parsing username.  Falling back to leoID value.", color='red')
 
         hostname = headline.split(':')[0]

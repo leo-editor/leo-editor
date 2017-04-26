@@ -22,6 +22,7 @@ npyscreen = g.importExtension(
     verbose=False,
 )
 #@-<< cursesGui imports >>
+# pylint: disable=arguments-differ
 #@+others
 #@+node:ekr.20170420054211.1: ** class CursesApp
 # base = npyscreen.NPSApp if use_npyscreen else object

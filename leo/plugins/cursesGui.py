@@ -6,6 +6,7 @@
 # are labeled: # undoc: where the AttributeError comes from other implementations
 # of method.
 #@@c
+# pylint: disable=arguments-differ
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 # pylint: disable=wrong-import-order
@@ -289,7 +290,7 @@ class textMenuCascade(object):
     #@+node:ekr.20150107090324.39: *3* display
     def display(self):
         ret = underline(self.label, self.underline)
-        if len(self.menu.entries) == 0:
+        if not self.menu.entries:
             ret += ' [Submenu with no entries]'
         return ret
     #@-others

@@ -4,7 +4,7 @@
 import sys
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
-
+# pylint: disable=arguments-differ
 #@+others
 #@+node:ekr.20170419150249.2: ** init (template_gui.py)
 def init():

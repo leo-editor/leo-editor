@@ -349,7 +349,7 @@ class OpmlController(object):
             filetypes=[("OPML files", "*.opml"), ("All files", "*")],
             defaultextension=".opml")
         c.bringToFront()
-        if fileName and len(fileName) > 0:
+        if fileName:
             self.readFile(fileName)
         else:
             c.bodyWantsFocus()

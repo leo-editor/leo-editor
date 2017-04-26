@@ -155,7 +155,7 @@ class controller(object):
             #@-<< listdir >>
             p = c.importCommands.createHeadline(current,body,tail)
             c.selectPosition(p)
-            if len(dossiers) > 0:
+            if dossiers:
                 for d in dossiers:
                     compteurglobal = self.importDir(d,compteurglobal)
             c.setChanged(True)
