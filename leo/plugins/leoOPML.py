@@ -673,7 +673,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         pass
     #@+node:ekr.20060904134958.178: *3* characters
     def characters(self, content):
-        name = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
+        name = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
         # Opml elements should not have content: everything is carried in attributes.
         if name == 'leo:body':
             if self.node:

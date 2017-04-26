@@ -338,6 +338,7 @@ def _get_bm_container(c, child=False, organizer=False):
     elif not bm.current.b.strip():  # no url implies folder
         container = bm.current
     else:
+        # pylint: disable=consider-using-ternary
         container = bm.current.parents and bm.current.parents[0] or bm.v
 
     return bm, container
@@ -366,6 +367,7 @@ def cmd_bookmark(event, child=False, organizer=False):
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
+    # pylint: disable=consider-using-ternary
     nd.h = (
         c.frame.body.wrapper.hasSelection() and
         c.frame.body.wrapper.getSelectedText() or
@@ -934,9 +936,7 @@ class BookMarkDisplay(object):
         showing_chain = []
 
         while todo:
-
-            links = todo and todo.pop(0) or []
-
+            links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()
             # pylint: disable=undefined-loop-variable
             # pylint bug, fix released: http://www.logilab.org/ticket/89092

@@ -143,7 +143,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20161220171728.1: *4* python_i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
-        return lines and self.get_str_lws(lines[0]) or ''
+        return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
     #@+node:ekr.20161116034633.2: *4* python_i.cut_stack

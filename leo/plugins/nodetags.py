@@ -350,14 +350,13 @@ class LeoTagWidget(QtWidgets.QWidget):
                 self.custom_searches.append(key)
 
         query = re.split(self.search_re, key)
-
         tags = []
         operations = []
-        for i in range(len(query)):
+        for i, s in enumerate(query):
             if i % 2 == 0:
-                tags.append(query[i].strip())
+                tags.append(s.strip())
             else:
-                operations.append(query[i].strip())
+                operations.append(s.strip())
         tags.reverse()
         operations.reverse()
 
