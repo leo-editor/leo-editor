@@ -43,7 +43,7 @@ class Rst_Importer(Importer):
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
-        # We may as well do this first.  See warning below.
+        # We may as well do this first.  See note below.
         self.add_line(parent, '@others\n')
         self.stack = [parent]
         skip = 0
@@ -66,8 +66,11 @@ class Rst_Importer(Importer):
             else:
                 p = self.stack[-1]
                 self.add_line(p, line)
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.add_line(parent, warning)
+        note = (
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required.\n'
+        )
+        self.add_line(parent, note)
     #@+node:ekr.20161129040921.5: *4* rst_i.find_parent
     def find_parent(self, level, h):
         '''

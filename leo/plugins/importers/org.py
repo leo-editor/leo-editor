@@ -27,7 +27,7 @@ class Org_Importer(Importer):
     def gen_lines(self, s, parent):
         '''Node generator for org mode.'''
         self.inject_lines_ivar(parent)
-        # We may as well do this first.  See warning below.
+        # We may as well do this first.  See note below.
         self.add_line(parent, '@others\n')
         self.parents = [parent]
         for line in g.splitLines(s):
@@ -42,9 +42,11 @@ class Org_Importer(Importer):
             else:
                 p = self.parents[-1]
                 self.add_line(p, line)
-        # This warning *is* correct.
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.add_line(self.root, warning)
+        note = (
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required.\n'
+        )
+        self.add_line(parent, note)
     #@+node:ekr.20161123194732.2: *4* org_i.find_parent
     def find_parent(self, level, h):
         '''
