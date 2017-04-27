@@ -107,6 +107,8 @@ The path should be a folder containing a .git subfolder. If the path is None, th
 Leo's cacher code will soon use the branch name returned by g.gitInfo() to ensure that switching git branches works properly.
 
 As a happy side effect, these methods completely collapse the complexity of leoVersion.py. 
+.. @+node:ekr.20170427171721.1: *4* Added traces to c.doCommand to detect multiple redraws
+These traces detected nothing unusual and have been disabled.
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
