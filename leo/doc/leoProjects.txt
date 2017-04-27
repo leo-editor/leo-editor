@@ -37,7 +37,7 @@ UnicodeDecodeError in writeRecentFilesFileHelper
 https://github.com/leo-editor/leo-editor/issues/471
 
 The fix was in rf.writeRecentFilesFileHelper.
-.. @+node:ekr.20170411072045.1: *4* #472: @clean nodes stopped updating 
+.. @+node:ekr.20170411072045.1: *4* #472: @clean nodes stopped updating
 https://github.com/leo-editor/leo-editor/issues/472
 
 Solved: the checks are made only if @bool check_for_changed_external_files = True
@@ -51,6 +51,10 @@ The bug gave way too many bindings for the move-lines commands.
 ga.show_tab_list wasn't showing commands without any shortcuts!
 .. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
 Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
+.. @+node:ekr.20170427164915.1: *4* Fixed html import problem
+The unit test "@test xml non-ascii tags" failed on Python 2, but not Python 3.
+
+The fix was in xml_i.scan_tag & helper
 .. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
 It must return True if g.app.externalFilesController is None.
 .. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line

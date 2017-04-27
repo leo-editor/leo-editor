@@ -141,7 +141,7 @@ class Xml_Importer(Importer):
             g.es_print(repr(s))
         return tag_level
     #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper
-    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)')
+    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
     def scan_tag(self, s, i, tag_level):
         '''
