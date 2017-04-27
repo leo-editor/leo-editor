@@ -24,13 +24,13 @@ class Pascal_Importer(Importer):
     #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
 
-    def clean_headline(self, headline):
+    def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
-        m = self.pascal_clean_pattern.match(headline)
+        m = self.pascal_clean_pattern.match(s)
         if m:
             return '%s %s' % (m.group(1), m.group(2))
         else:
-            return headline.strip()
+            return s.strip()
 
     #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
     def cut_stack(self, new_state, stack):

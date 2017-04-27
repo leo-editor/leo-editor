@@ -928,7 +928,7 @@ class LeoFrame(object):
         trace = False and not g.unitTesting
         f = self; c = f.c
         w = event and event.widget
-        wname = (w and c.widget_name(w)) or '<no widget>'
+        wname = c.widget_name(w)
         if trace: g.trace(g.isTextWrapper(w), wname, w)
         if not w or not g.isTextWrapper(w):
             return
@@ -993,7 +993,7 @@ class LeoFrame(object):
         trace = False and not g.unitTesting
         f = self; c = f.c
         w = event and event.widget
-        wname = (w and c.widget_name(w)) or '<no widget>'
+        wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             if trace: g.trace('not a text widget', w)
             return
@@ -1207,7 +1207,7 @@ class LeoLog(object):
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoLog class.'''
         self.frame = frame
-        self.c = frame and frame.c or None
+        self.c = frame.c if frame else None
         self.enabled = True
         self.newlines = 0
         self.isNull = False
@@ -1510,15 +1510,11 @@ class LeoTree(object):
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
     def onHeadlineKey(self, event):
         '''Handle a key event in a headline.'''
-        w = event and event.widget or None
-        ch = event and event.char or ''
-        # g.trace(repr(ch),g.callers())
-        # Testing for ch here prevents flashing in the headline
-        # when the control key is held down.
+        w = event.widget if event else None
+        ch = event.char if event else ''
+        # This test prevents flashing in the headline when the control key is held down.
         if ch:
-            # g.trace(repr(ch),g.callers())
             self.updateHead(event, w)
-        return # (for Tk) 'break' # Required
     #@+node:ekr.20120314064059.9739: *4* LeoTree.OnIconCtrlClick (@url)
     def OnIconCtrlClick(self, p):
         g.openUrl(p)
@@ -1531,7 +1527,7 @@ class LeoTree(object):
 
         The headline officially changes only when editing ends.'''
         c = self.c; k = c.k
-        ch = event and event.char or ''
+        ch = event.char if event else ''
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
         if i != j: ins = i

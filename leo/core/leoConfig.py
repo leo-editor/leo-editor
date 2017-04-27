@@ -172,7 +172,7 @@ class ParserBaseClass(object):
         if aList:
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-            g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
+            g.app.config.buttonsFileName = c.shortFileName() if c else '<no settings file>'
         if trace: g.trace(c.shortFileName(), '[%s]' % ','.join([z[0].h for z in aList]))
         d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
         aList = d.get(key, [])
@@ -274,7 +274,7 @@ class ParserBaseClass(object):
         s = ''.join(aList)
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
-        g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
+        g.app.config.enabledPluginsFileName = c.shortFileName() if c else '<no settings file>'
         # g.trace('\n%s' % (s),g.app.config.enabledPluginsFileName)
     #@+node:ekr.20041120094940.6: *4* doFloat
     def doFloat(self, p, kind, name, val):

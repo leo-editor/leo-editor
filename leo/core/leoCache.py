@@ -126,10 +126,10 @@ class Cacher(object):
                 g.internalError('content arg must be str/bytes')
             content = g.toEncodedString(content)
         # New in Leo 5.6: Use the git branch name in the key.
-        # This also is part of the fix for #385.
         branch = g.gitBranchName()
-        if branch and g.isUnicode(branch):
-            branch = g.toEncodedString(branch)
+        # g.trace(type(branch), repr(branch))
+        branch = g.toEncodedString(branch)
+            # Fix #475.
         m.update(branch)
         m.update(fileName)
         m.update(content)
@@ -640,11 +640,11 @@ class PickleShareDB(object):
         segments = [os.pardir] * (len(orig_list) - i)
         # Need to add the diverging part of dest_list.
         segments += dest_list[i:]
-        if len(segments) == 0:
+        if segments:
+            return join(*segments)
+        else:
             # If they happen to be identical, use os.curdir.
             return os.curdir
-        else:
-            return join(*segments)
     #@+node:ekr.20100208223942.10462: *4* _splitall
     # Used by relpathto.
 

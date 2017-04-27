@@ -6,7 +6,7 @@
 import leo.core.leoGlobals as g
 __version__ = "1.2"
 #@+others
-#@+node:ekr.20100128091412.5387: ** newHeadline
+#@+node:ekr.20100128091412.5387: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = not g.app.unitTesting # Not for unit testing.
@@ -17,7 +17,7 @@ def init():
 #@+node:edream.110203113231.737: ** onKey
 def onKey(tag, keywords):
     ch = keywords.get("ch")
-    if ch and len(ch) > 0:
+    if ch:
         g.es("key", repr(ch))
 #@-others
 #@-leo

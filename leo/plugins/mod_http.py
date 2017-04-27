@@ -1098,10 +1098,7 @@ class RequestHandler(
             if item.endswith("[]"):
                 res[item[: -2]] = value
             else:
-                if len(value) == 0:
-                    res[item] = ''
-                else:
-                    res[item] = value[0]
+                res[item] = value[0] if value else ''
         return res
     #@+node:EKR.20040517080250.34: *3* handle_data
     def handle_data(self):

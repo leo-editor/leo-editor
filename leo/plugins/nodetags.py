@@ -156,7 +156,7 @@ class TagController(object):
         if tag not in self.taglist:
             self.taglist.append(tag)
         nodelist = self.get_tagged_nodes(tag)
-        if len(nodelist) == 0:
+        if not nodelist:
             self.taglist.remove(tag)
         self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* get_tagged_nodes
@@ -200,10 +200,10 @@ class TagController(object):
         tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
         if tag in tags:
             tags.remove(tag)
-        if len(tags) == 0:
-            del p.v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
-        else:
+        if tags:
             p.v.u[self.TAG_LIST_KEY] = tags
+        else:
+            del p.v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
         self.c.setChanged(True)
         self.update_taglist(tag)
     #@-others
@@ -350,19 +350,18 @@ class LeoTagWidget(QtWidgets.QWidget):
                 self.custom_searches.append(key)
 
         query = re.split(self.search_re, key)
-
         tags = []
         operations = []
-        for i in range(len(query)):
+        for i, s in enumerate(query):
             if i % 2 == 0:
-                tags.append(query[i].strip())
+                tags.append(s.strip())
             else:
-                operations.append(query[i].strip())
+                operations.append(s.strip())
         tags.reverse()
         operations.reverse()
 
         resultset = set(self.tc.get_tagged_nodes(tags.pop()))
-        while len(operations) > 0:
+        while operations:
             op = operations.pop()
             nodes = set(self.tc.get_tagged_nodes(tags.pop()))
             if op == '&':
@@ -388,7 +387,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         ''' updates the tag GUI '''
         key = str(self.comboBox.currentText())
         self.update_combobox()
-        if len(key) > 0:
+        if key:
             idx = self.comboBox.findText(key)
             if idx == -1: idx = 0
         else:
@@ -400,7 +399,7 @@ class LeoTagWidget(QtWidgets.QWidget):
     def add_tag(self, event=None):
         p = self.c.p
         tag = str(self.comboBox.currentText()).strip()
-        if len(tag) == 0:
+        if not tag:
             return # no error message, probably an honest mistake
         elif len(re.split(self.search_re,tag)) > 1:
             g.es('Cannot add tags containing any of these characters: &|^-', color='red')

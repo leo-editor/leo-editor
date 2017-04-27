@@ -254,7 +254,7 @@ def comment_leo_lines(p):
         s = lines[i]
         # Comment out any containing a section reference.
         j = s.find('<<')
-        k = j > -1 and s.find('>>') or -1
+        k = s.find('>>') if j > -1 else -1
         if -1 < j < k:
             result.append(comment + s)
             # Generate a properly-indented pass line.
@@ -347,7 +347,7 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
         return i
     else:
         j = s.find('<<')
-        k = j > -1 and s.find('>>') or -1
+        k = s.find('>>') if j > -1 else -1
         if -1 < j < k or s.find('@others') > -1:
             # A section reference line or an @others line.
             # Such lines are followed by a pass line.

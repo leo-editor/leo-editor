@@ -239,13 +239,13 @@ class BaseLeoCompare(object):
             #@+<< ignore blank lines and/or sentinels >>
             #@+node:ekr.20031218072017.3640: *4* << ignore blank lines and/or sentinels >>
             # Completely empty strings denotes end-of-file.
-            if s1 and len(s1) > 0:
-                if self.ignoreBlankLines and len(s1.strip()) == 0:
+            if s1:
+                if self.ignoreBlankLines and s1.isspace():
                     s1 = None; continue
                 if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(s1, sentinelComment1):
                     s1 = None; continue
-            if s2 and len(s2) > 0:
-                if self.ignoreBlankLines and len(s2.strip()) == 0:
+            if s2:
+                if self.ignoreBlankLines and s2.isspace():
                     s2 = None; continue
                 if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(s2, sentinelComment2):
                     s2 = None; continue
@@ -339,7 +339,8 @@ class BaseLeoCompare(object):
         while 1:
             if not s:
                 s = g.readlineForceUnixNewline(f)
-            if len(s) == 0: break
+            if not s:
+                break
             trailingLines += 1
             if self.printTrailingMismatches and printTrailing:
                 z = tag + str(line)
@@ -372,10 +373,10 @@ class BaseLeoCompare(object):
         if self.outputFileName is None:
             return
         theDir, name = g.os_path_split(self.outputFileName)
-        if len(theDir) == 0:
+        if not theDir:
             self.show("empty output directory")
             return
-        if len(name) == 0:
+        if not name:
             self.show("empty output file name")
             return
         if not g.os_path_exists(theDir):

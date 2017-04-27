@@ -73,10 +73,10 @@ class LeoGui(object):
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
-    #@+node:ekr.20031218072017.3725: *5* destroySelf (LeoGui)
+    #@+node:ekr.20031218072017.3725: *5* LeoGui.destroySelf
     def destroySelf(self):
         self.oops()
-    #@+node:ekr.20031218072017.3729: *5* runMainLoop
+    #@+node:ekr.20031218072017.3729: *5* LeoGui.runMainLoop
     def runMainLoop(self):
         """Run the gui's main loop."""
         self.oops()
@@ -335,7 +335,7 @@ class NullGui(LeoGui):
     def alert(self, message):
         pass
 
-    def attachLeoIcon(self, w):
+    def attachLeoIcon(self, window):
         pass
 
     def destroySelf(self):

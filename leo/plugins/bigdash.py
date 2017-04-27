@@ -487,6 +487,7 @@ class LeoFts(object):
     #@+node:ekr.20140920041848.17945: *3* fts.statistics
     def statistics(self):
         r = {}
+        # pylint: disable=no-member
         with self.ix.searcher() as s:
             r['documents'] = list(s.lexicon("doc"))
         # print("stats: %s" % r)

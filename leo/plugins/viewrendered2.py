@@ -1443,11 +1443,11 @@ class ViewRenderedController(QtWidgets.QWidget):
             assert i > -1
             sizes = splitter.sizes()
             n = len(sizes)
-            for j in range(len(sizes)):
+            for j, size in enumerate(sizes):
                 if j == i:
-                    sizes[j] = max(0, sizes[i] + delta)
+                    sizes[j] = max(0, size + delta)
                 else:
-                    sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
+                    sizes[j] = max(0, size - int(delta / (n - 1)))
             splitter.setSizes(sizes)
     #@+node:ekr.20140226074510.4216: *3* vr2.activate
     def activate(self):

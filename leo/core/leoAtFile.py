@@ -1041,12 +1041,12 @@ class AtFile(object):
         if not firstLines:
             return
         found, j, tag = False, 0, "@first"
-        for k in range(len(out)):
+        for k, s in enumerate(out):
             # Skip leading whitespace lines.
-            if not found and not out[k].strip():
+            if not found and s.isspace():
                 continue
             # Quit if something other than @first directive.
-            if not g.match(out[k], 0, tag):
+            if not g.match(s, 0, tag):
                 break
             found = True
             # Quit if no leading lines to apply.
@@ -1056,7 +1056,7 @@ class AtFile(object):
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() + '\n'
             j += 1
-            if trace: g.trace(repr(out[k]))
+            if trace: g.trace(repr(s))
     #@+node:ekr.20041005105605.118: *7* at.completeLastDirectives
     def completeLastDirectives(self, out, lastLines):
         '''
@@ -1358,7 +1358,7 @@ class AtFile(object):
                 s = at.readLine()
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
-                if len(s) == 0:
+                if not s:
                     # An error.  We expect readEndLeo to set at.done.
                     break
                 kind = at.sentinelKind4(s)
@@ -1439,14 +1439,14 @@ class AtFile(object):
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
         # Skip the leading stuff
-        if len(at.endSentinelComment) == 0:
+        if at.endSentinelComment:
+            i = at.skipIndent(s, 0, at.indent)
+        else:
             # Skip the single comment delim and a blank.
             i = g.skip_ws(s, 0)
             if g.match(s, i, at.startSentinelComment):
                 i += len(at.startSentinelComment)
                 if g.match(s, i, " "): i += 1
-        else:
-            i = at.skipIndent(s, 0, at.indent)
         if at.readVersion5:
             # Append the line to docOut.
             line = s[i:]
@@ -1708,11 +1708,11 @@ class AtFile(object):
         '''Set headline to the rest of the line.
         Don't strip leading whitespace.'''
         at = self
-        if len(at.endSentinelComment) == 0:
-            h = s[i: -1].rstrip()
-        else:
+        if at.endSentinelComment:
             k = s.rfind(at.endSentinelComment, i)
             h = s[i: k].rstrip() # works if k == -1
+        else:
+            h = s[i: -1].rstrip()
         # Undo the CWEB hack: undouble @ signs if\
         # the opening comment delim ends in '@'.
         if at.startSentinelComment[-1:] == '@':
@@ -1780,22 +1780,20 @@ class AtFile(object):
             lws2 = ''
         j = g.skip_ws(s, i)
         assert g.match(s, j, "<<"), 'missing @<< sentinel'
-        # g.trace(repr(at.endSentinelComment))
-        if len(at.endSentinelComment) == 0:
-            if at.readVersion5:
-                line = lws2 + s[i:]
-            else:
-                line = s[i: -1] # No trailing newline
-        else:
+        if at.endSentinelComment:
             k = s.find(at.endSentinelComment, i)
             if at.readVersion5:
                 line = lws2 + s[i: k] + '\n' # Restore the newline.
             else:
                 line = s[i: k] # No trailing newline, whatever k is.
-            # g.trace(repr(line))
+        else:
+            if at.readVersion5:
+                line = lws2 + s[i:]
+            else:
+                line = s[i: -1] # No trailing newline
         # Undo the cweb hack.
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             line = line.replace('@@', '@')
         at.appendToOut(line)
         if at.readVersion5:
@@ -1930,7 +1928,7 @@ class AtFile(object):
         # Such lines were presumably written by @last.
         while 1:
             s = at.readLine()
-            if len(s) == 0: break
+            if not s: break
             at.lastLines.append(s) # Capture all trailing lines, even if empty.
         at.done = True
     #@+node:ekr.20041005105605.94: *7* at.readEndMiddle
@@ -2133,12 +2131,12 @@ class AtFile(object):
             at.raw = False
         e = at.endSentinelComment
         s2 = s[i:]
-        if len(e) > 0:
+        if e:
             k = s.rfind(e, i)
             if k != -1:
                 s2 = s[i: k] + '\n'
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             s2 = s2.replace('@@', '@')
         # An @c or @code ends the doc part when using new sentinels.
         if (
@@ -2289,7 +2287,7 @@ class AtFile(object):
             return at.noSentinel
         # Locally undo cweb hack here
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             s = s[: i] + s[i:].replace('@@', '@')
         # New sentinels.
         if g.match(s, i, "@+"):
@@ -2333,7 +2331,7 @@ class AtFile(object):
             i += 1
         i = g.skip_c_id(s, i)
         key = s[j: i]
-        if len(key) > 0 and key in at.sentinelDict:
+        if key and key in at.sentinelDict:
             return at.sentinelDict[key]
         else:
             return at.noSentinel
@@ -2341,7 +2339,7 @@ class AtFile(object):
     def skipSentinelStart4(self, s, i):
         """Skip the start of a sentinel."""
         start = self.startSentinelComment
-        assert start and len(start) > 0, 'skipSentinelStart4 1'
+        assert start, 'skipSentinelStart4 1'
         i = g.skip_ws(s, i)
         assert g.match(s, i, start), 'skipSentinelStart4 2'
         i += len(start)
@@ -2717,7 +2715,7 @@ class AtFile(object):
         s = p.h
         if g.match(s, 0, "@@"):
             s = s[2:]
-            if s and len(s) > 0:
+            if s:
                 at.outputFile.write(s)
         # Write the body.
         s = p.b
@@ -2970,7 +2968,7 @@ class AtFile(object):
         # say the command is finished.
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
-                if len(writtenFiles) > 0:
+                if writtenFiles:
                     g.es("finished")
                 elif writeAtFileNodesFlag:
                     g.warning("no @<file> nodes in the selected tree")
@@ -4069,7 +4067,7 @@ class AtFile(object):
         start = at.startSentinelComment
         end = at.endSentinelComment
         h = p.h
-        if end and len(end) > 0:
+        if end:
             h = h.replace(start, "")
             h = h.replace(end, "")
         return h
@@ -4608,7 +4606,7 @@ class AtFile(object):
             lines = s2.split("\\n")
             for line in lines:
                 line = line.replace("@date", time.asctime())
-                if len(line) > 0:
+                if line:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
     def replaceFileWithString(self, fn, s):
@@ -4853,14 +4851,14 @@ class AtFile(object):
     #@-<< about os.rename >>
 
     def rename(self, src, dst, mode=None, verbose=True):
-        '''remove dst if it exists, then rename src to dst.
-
+        '''
+        Remove dst if it exists, then rename src to dst.
         Change the mode of the renamed file if mode is given.
-
-        Return True if all went well.'''
+        Return True if all went well.
+        '''
         c = self.c
         head, junk = g.os_path_split(dst)
-        if head and len(head) > 0:
+        if head:
             g.makeAllNonExistentDirectories(head, c=c)
         if g.os_path_exists(dst):
             if not self.remove(dst, verbose=verbose):

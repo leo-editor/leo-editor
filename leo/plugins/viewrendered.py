@@ -195,7 +195,6 @@ import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
-import cgi
 try:
     import docutils
     import docutils.core
@@ -583,11 +582,11 @@ if QtWidgets: # NOQA
                 assert i > -1
                 sizes = splitter.sizes()
                 n = len(sizes)
-                for j in range(len(sizes)):
+                for j, size in enumerate(sizes):
                     if j == i:
-                        sizes[j] = max(0, sizes[i] + delta)
+                        sizes[j] = max(0, size + delta)
                     else:
-                        sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
+                        sizes[j] = max(0, size - int(delta / (n - 1)))
                 splitter.setSizes(sizes)
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
@@ -898,8 +897,15 @@ if QtWidgets: # NOQA
             '''Create an html page embedding the latex code s.'''
             trace = False and not g.unitTesting
             c = self.c
-            html = cgi.escape(s)
-            template = latex_template % (html)
+            # pylint: disable=deprecated-method
+            try:
+                import html
+                escape = html.escape
+            except AttributeError:
+                import cgi
+                escape = cgi.escape
+            html_s = escape(s)
+            template = latex_template % (html_s)
             template = g.adjustTripleString(template, c.tab_width).strip()
             if trace:
                 g.trace()

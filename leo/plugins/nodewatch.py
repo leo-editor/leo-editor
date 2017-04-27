@@ -243,7 +243,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
         key = str(self.comboBox.currentText())
         self.update_combobox()
-        if len(key) > 0:
+        if key:
             idx = self.comboBox.findText(key)
             if idx == -1: idx = 0
         else:

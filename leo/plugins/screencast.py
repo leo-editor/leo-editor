@@ -681,7 +681,7 @@ class ScreenCastController(object):
         trace = True and not g.unitTesting
         m = self; c = m.c; k = c.k
         state = k.getState(m.state_name)
-        char = event and event.char or ''
+        char = event.char if event else ''
         if trace:
             g.trace('char: %s k.state.kind: %s m.k_state: %s' % (
                 repr(char), repr(k.state.kind),

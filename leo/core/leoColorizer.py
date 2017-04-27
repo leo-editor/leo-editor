@@ -363,7 +363,7 @@ class JEditColorizer(BaseColorizer):
             return
         else:
             self.importedRulesets[rulesetName] = True
-        names = hasattr(mode, 'importDict') and mode.importDict.get(rulesetName, []) or []
+        names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
         for name in names:
             savedBunch = self.modeBunch
             ok = self.init_mode(name)
@@ -550,10 +550,10 @@ class JEditColorizer(BaseColorizer):
             ("elide", None, "yellow"),
         ):
             if self.showInvisibles:
-                color = option_name and c.config.getColor(option_name) or default_color
+                color = c.config.getColor(option_name) if option_name else default_color
             else:
                 option_name, default_color = self.default_colors_dict.get(name, (None, None),)
-                color = option_name and c.config.getColor(option_name) or ''
+                color = c.config.getColor(option_name) if option_name else ''
             try:
                 wrapper.tag_configure(name, background=color)
             except Exception: # A user error.
@@ -654,13 +654,13 @@ class JEditColorizer(BaseColorizer):
             return False
         self.language = language
         self.rulesetName = rulesetName
-        self.properties = hasattr(mode, 'properties') and mode.properties or {}
-        self.keywordsDict = hasattr(mode, 'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName, {}) or {}
+        self.properties = getattr(mode, 'properties', None) or {}
+        self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) if hasattr(mode, 'keywordsDictDict') else {}
         self.setKeywords()
-        self.attributesDict = hasattr(mode, 'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+        self.attributesDict = mode.attributesDictDict.get(rulesetName) if hasattr(mode, 'attributesDictDict') else {}
         # if trace: g.trace(rulesetName,self.attributesDict)
         self.setModeAttributes()
-        self.rulesDict = hasattr(mode, 'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+        self.rulesDict = mode.rulesDictDict.get(rulesetName) if hasattr(mode, 'rulesDictDict') else {}
         # if trace: g.trace(self.rulesDict)
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
@@ -2309,6 +2309,7 @@ class QScintillaColorizer(BaseColorizer):
             class_name = 'QsciLexer' + language_name
             lexer_class = getattr(Qsci, class_name, None)
             if lexer_class:
+                # pylint: disable=not-callable
                 lexer = lexer_class(parent=parent)
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer

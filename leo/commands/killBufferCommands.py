@@ -335,7 +335,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             k.setLabelBlue('Zap To Character: ')
             k.setState('zap-to-char', 1, handler=self.zapToCharacter)
         else:
-            ch = event and event.char or ' '
+            ch = event.char if event else ' '
             k.resetLabel()
             k.clearState()
             s = w.getAllText()

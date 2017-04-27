@@ -788,7 +788,7 @@ class graphcanvasController(object):
                 self.nodeItem[i].do_update()
             elif pydot:
                 lst = G.get_node(''.join(['"', i.gnx, '"']))
-                if len(lst) > 0:
+                if lst:
                     x,y = map(float, lst[0].get_pos().strip('"').split(','))
                     i.u['_bklnk']['x'] = x
                     i.u['_bklnk']['y'] = -y

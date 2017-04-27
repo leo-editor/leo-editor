@@ -852,6 +852,7 @@ def cmd_MarkContent(event):
             return
     c.unmarkAll()
     def find_content(nd, count):
+        # pylint: disable=len-as-condition
         if nd.isAnyAtFileNode():
             return
         content = True

@@ -70,7 +70,7 @@ def runUnitTests(c, g):
     #g.es_print('running dynamic unit tests...')
     c.selectPosition(p)
     c.debugCommands.runAllUnitTestsLocally()
-#@+node:ekr.20090121164439.6176: *3* scanOptions
+#@+node:ekr.20090121164439.6176: *3* scanOptions (leoDynamicTest.py)
 #@@nobeautify
 
 def scanOptions():

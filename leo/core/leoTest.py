@@ -1254,6 +1254,7 @@ class TestManager(object):
         if len(lines1) != len(lines2):
             if verbose: g.trace("Different number of lines")
             return False
+        # pylint: disable=consider-using-enumerate
         for i in range(len(lines2)):
             line1 = lines1[i]
             line2 = lines2[i]
@@ -1352,6 +1353,7 @@ class TestManager(object):
                 p.moveToNodeAfterTree()
                 continue
             seen.append(p.v)
+            # pylint: disable=consider-using-ternary
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h, 0, '@ignore'):
                 if trace and verbose: g.trace(p.h)

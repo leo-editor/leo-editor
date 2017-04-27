@@ -616,7 +616,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 ):
                     ch = ''
                 else:
-                    ch = event and event.char or ''
+                    ch = event.char if event else ''
         else:
             ch = event.char
         return ch

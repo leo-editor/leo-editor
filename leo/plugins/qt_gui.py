@@ -59,7 +59,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.styleSheetManagerClass = StyleSheetManager
         self.mGuiName = 'qt'
         self.appIcon = self.getIconImage('leoapp32.png')
-        self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
+        self.color_theme = g.app.config and g.app.config.getString('color_theme')
         self.active = True
             # For c.idle_focus_helper and activate/deactivate events.
         # Put up the splash screen()
@@ -638,7 +638,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.k.keyboardQuit(setFocus=False)
                     # The best way to retain as much focus as possible.
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
+    #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent(self, event, c, obj, tag):
@@ -726,6 +726,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def set_focus(self, c, w):
         """Put the focus on the widget."""
+        # pylint: disable=arguments-differ
         trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
@@ -734,8 +735,12 @@ class LeoQtGui(leoGui.LeoGui):
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
-        """Check to see if c.frame is in a tabbed ui, and if so, make sure
-        the tab is visible"""
+        """
+        Check to see if c.frame is in a tabbed ui, and if so, make sure
+        the tab is visible
+        """
+        # pylint: disable=arguments-differ
+        #
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
@@ -923,7 +928,7 @@ class LeoQtGui(leoGui.LeoGui):
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
         assert isinstance(qevent, QtGui.QKeyEvent)
-        qw = hasattr(event.w, 'widget') and event.w.widget or None
+        qw = getattr(event.w, 'widget', None)
         if qw and isinstance(qw, QtWidgets.QTextEdit):
             # g.trace(i, qevent.modifiers(), g.u(qevent.text()))
             if 1:
@@ -1235,6 +1240,8 @@ class StyleClassManager(object):
     #@+node:tbrown.20150724090431.7: *3* sclass_tests
     def sclass_tests(self):
         """Test style class property manipulation functions"""
+        
+        # pylint: disable=len-as-condition
 
         class Test_W:
             """simple standin for QWidget for testing"""

@@ -317,7 +317,7 @@ class GoToCommands(object):
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-            return ok and at.stringOutput or ''
+            return at.stringOutput if ok else ''
         else:
             return g.composeScript( # Fix # 429.
                 c = c,

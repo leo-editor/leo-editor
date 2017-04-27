@@ -1518,7 +1518,7 @@ class QTextEditWrapper(QTextMixin):
         trace = False and not g.unitTesting
         trace_time = True
         c, w = self.c, self.widget
-        h = c.p and c.p.h or '<no p>'
+        h = c.p.h if c.p else '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
         try:
             if trace and trace_time:

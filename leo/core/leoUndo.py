@@ -1756,13 +1756,13 @@ class Undoer(object):
         s = []
         if leading > 0:
             s.extend(body_lines[: leading])
-        if len(oldMidLines) > 0:
+        if oldMidLines:
             s.extend(oldMidLines)
         if trailing > 0:
             s.extend(body_lines[-trailing:])
         s = '\n'.join(s)
         # Remove trailing newlines in s.
-        while len(s) > 0 and s[-1] == '\n':
+        while s and s[-1] == '\n':
             s = s[: -1]
         # Add oldNewlines newlines.
         if oldNewlines > 0:

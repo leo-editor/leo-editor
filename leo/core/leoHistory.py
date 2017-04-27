@@ -21,8 +21,8 @@ class NodeHistory(object):
         '''Dump the beadList'''
         for i, data in enumerate(self.beadList):
             p, chapter = data
-            p = p and p.h or 'no p'
-            chapter = chapter and chapter.name or 'main'
+            p = p.h if p else 'no p'
+            chapter = chapter.name if chapter else 'main'
             mark = '**' if i == self.beadPointer else '  '
             print('%s %s %s %s' % (mark, i, chapter, p))
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext

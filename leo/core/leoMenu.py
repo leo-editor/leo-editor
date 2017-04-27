@@ -107,12 +107,13 @@ class LeoMenu(object):
         g.error('', s)
     #@+node:ekr.20031218072017.3781: *3* Gui-independent menu routines
     #@+node:ekr.20060926213642: *4* capitalizeMinibufferMenuName
+    #@@nobeautify
+
     def capitalizeMinibufferMenuName(self, s, removeHyphens):
         result = []
-        for i in range(len(s)):
-            ch = s[i]
-            prev = i > 0 and s[i - 1] or ''
-            prevprev = i > 1 and s[i - 2] or ''
+        for i, ch in enumerate(s):
+            prev =     s[i - 1] if i > 0 else ''
+            prevprev = s[i - 2] if i > 1 else ''
             if (
                 i == 0 or
                 i == 1 and prev == '&' or
@@ -1049,7 +1050,7 @@ class LeoMenu(object):
             w = c.frame.getFocus()
             if w and sys.platform.startswith('darwin'):
                  # 2012/01/11: redirect (MacOS only).
-                wname = c.widget_name(w) or ''
+                wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
             # 2015/05/14: return a wrapper if possible.

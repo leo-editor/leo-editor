@@ -533,6 +533,7 @@ class todoController(object):
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
             elif which == 'progress':
                 prog = self.getat(p.v, 'progress')
+                # pylint: disable=literal-comparison
                 if prog is not '':
                     prog = int(prog or 0)
                     use = prog//10*10
@@ -605,7 +606,7 @@ class todoController(object):
     #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
-
+        # pylint: disable=consider-using-ternary
         return attrib == "priority" and val == 9999 or val == ""
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):

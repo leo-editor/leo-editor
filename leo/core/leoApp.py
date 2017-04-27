@@ -962,7 +962,7 @@ class LeoApp(object):
         app = self
         import leo.core.leoVersion as leoVersion
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
+        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
@@ -1002,7 +1002,10 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         app = self
-        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
+        app.pluginsController.loadOnePlugin(
+            'leo.plugins.cursesGui2',
+            verbose=verbose,
+        )
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1019,6 +1022,8 @@ class LeoApp(object):
             g.app.gui = g.app.nullGui
         elif argName == 'curses':
             app.createCursesGui()
+        elif argName == 'text':
+            app.createTextGui()
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
     #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
@@ -1043,6 +1048,10 @@ class LeoApp(object):
                 print('Qt Gui created in %s' % fileName)
         else:
             print('createQtGui: can not create Qt gui.')
+    #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
+    def createTextGui(self, fileName='', verbose=False):
+        app = self
+        app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
     #@+node:ekr.20090126063121.3: *4* app.createWxGui
     def createWxGui(self, fileName='', verbose=False):
         # Do NOT omit fileName param: it is used in plugin code.
@@ -1324,7 +1333,7 @@ class LeoApp(object):
                     f = open(fn, 'r')
                     s = f.readline()
                     f.close()
-                    if s and len(s) > 0:
+                    if s:
                         g.app.leoID = s.strip()
                         # Careful: periods in the id field of a gnx
                         # will corrupt the .leo file!
@@ -1604,11 +1613,7 @@ class LoadManager(object):
         g.app.testDir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
     #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
-        # lm = self
-        # To avoid pylint complaints that sys.leo_config_directory does not exist.
-        leo_config_dir = (
-            hasattr(sys, 'leo_config_directory') and
-            getattr(sys, 'leo_config_directory') or None)
+        leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
         else:
@@ -1975,7 +1980,7 @@ class LoadManager(object):
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
-        return ok and c or None
+        return c if ok else None
     #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
@@ -2425,7 +2430,8 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('curses', 'qt', 'null'):
+            elif gui in ('curses', 'text', 'qt', 'null'):
+                    # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
                 print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
@@ -2667,7 +2673,7 @@ class LoadManager(object):
         g.app.initComplete = True
         if c: c.setLog()
         # print('doPostPluginsInit: ***** set log')
-        p = c and c.p or None
+        p = c.p if c else None
         g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
         if c: lm.initFocusAndDraw(c, fileName)
         screenshot_fn = lm.options.get('screenshot_fn')

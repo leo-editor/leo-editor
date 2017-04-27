@@ -349,7 +349,7 @@ class OpmlController(object):
             filetypes=[("OPML files", "*.opml"), ("All files", "*")],
             defaultextension=".opml")
         c.bringToFront()
-        if fileName and len(fileName) > 0:
+        if fileName:
             self.readFile(fileName)
         else:
             c.bodyWantsFocus()
@@ -651,7 +651,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         return g.toEncodedString(s, "ascii")
     #@+node:ekr.20060904134958.174: *3*  Do nothing...
     #@+node:ekr.20060904134958.175: *4* other methods
-    def ignorableWhitespace(self, ws):
+    def ignorableWhitespace(self, content):
         g.trace()
 
     def processingInstruction(self, target, data):
@@ -673,7 +673,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         pass
     #@+node:ekr.20060904134958.178: *3* characters
     def characters(self, content):
-        name = self.elementStack and self.elementStack[-1].lower() or '<no element name>'
+        name = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
         # Opml elements should not have content: everything is carried in attributes.
         if name == 'leo:body':
             if self.node:

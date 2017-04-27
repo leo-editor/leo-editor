@@ -295,9 +295,8 @@ class To_Python(object):
         if n == 1:
             return ['%s# %s' % ((' ' * (w - 1)), s.strip())]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
-        i, result = 0, []
-        for i in range(len(comment_lines)):
-            s = comment_lines[i]
+        result = []
+        for i, s in enumerate(comment_lines):
             if s.strip():
                 result.append('%s# %s' % ((' ' * w), s.strip()))
             elif i == n - 1:

@@ -739,6 +739,8 @@ class MatchBrackets(object):
         '''Report an error in the match-brackets command.'''
         g.es(s, color='red')
     #@+node:ekr.20160119094053.1: *4* mb.run
+    #@@nobeautify
+
     def run(self):
         '''The driver for the MatchBrackets class.'''
         trace = False and not g.unitTesting
@@ -747,8 +749,8 @@ class MatchBrackets(object):
         s = w.getAllText()
         ins = w.getInsertPoint()
         if trace: g.trace(s)
-        ch1 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
-        ch2 = 0 <= ins < len(s) and s[ins] or ''
+        ch1 = s[ins-1] if 0 <= ins-1 < len(s) else ''
+        ch2 = s[ins]   if 0 <= ins   < len(s) else ''
         # g.trace(repr(ch1),repr(ch2),ins)
         # Prefer to match the character to the left of the cursor.
         if ch1 and ch1 in self.brackets:
@@ -1359,7 +1361,9 @@ class ShortcutInfo(object):
             if hasattr(si, ivar):
                 val = getattr(si, ivar)
                 if val not in (None, 'none', 'None', ''):
-                    if ivar == 'func': val = val.__name__
+                    if ivar == 'func':
+                        # pylint: disable=no-member
+                        val = val.__name__
                     s = '%s: %r' % (ivar, val)
                     result.append(s)
         return '[%s]' % ' '.join(result).strip()
@@ -1728,7 +1732,7 @@ def plugin_date(plugin_mod, format=None):
     return g.file_date(root + ".py", format=format)
 
 def file_date(theFile, format=None):
-    if theFile and len(theFile) and g.os_path_exists(theFile):
+    if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
             if format is None:
@@ -2233,7 +2237,7 @@ def check_cmd_instance_dict(c, g):
     This is a permanent unit test, called from c.finishCreate.
     '''
     d = cmd_instance_dict
-    for key in d.keys():
+    for key in d:
         ivars = d.get(key)
         obj = ivars2instance(c, g, ivars)
             # Produces warnings.
@@ -3202,14 +3206,14 @@ def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
             # c is not None,force,create,theDir))
     # Split theDir into all its component parts.
     paths = []
-    while len(theDir) > 0:
+    while theDir:
         head, tail = g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
+        if tail:
             paths.append(tail)
             theDir = head
+        else:
+            paths.append(head)
+            break
     path = ""
     paths.reverse()
     if trace: g.trace('paths:', paths)
@@ -3368,12 +3372,12 @@ def setGlobalOpenDir(fileName):
 #@+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''
+    # pylint: disable=invalid-unary-operand-type
     if not fileName:
         return ''
     elif n is None or n < 1:
         return g.os_path_basename(fileName)
     else:
-        # return '\\'.join(fileName.split('\\')[-n:])
         return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 
 shortFilename = shortFileName
@@ -3700,7 +3704,7 @@ def scanf(s, pat):
     parts = re.split(pat, s)
     result = []
     for part in parts:
-        if len(part) > 0 and len(result) < count:
+        if part and len(result) < count:
             result.append(part)
     # g.trace("scanf returns:",result)
     return result
@@ -4092,7 +4096,7 @@ def skip_c_id(s, i):
     return i
 #@+node:ekr.20040705195048: *4* skip_id
 def skip_id(s, i, chars=None):
-    chars = chars and g.toUnicode(chars) or ''
+    chars = g.toUnicode(chars) if chars else ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
         i += 1
@@ -4212,9 +4216,9 @@ def gitHeadPath(path=None):
     startup code.
     '''
     if not path:
-        path = os.path.dirname(__file__)
-    head = os.path.join(path, '..', '..', '.git', 'HEAD')
-    exists = os.path.exists(head)
+        path = g.os_path_dirname(__file__)
+    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
+    exists = g.os_path_exists(head)
     # g.trace('exists: %s path: %s' % (exists, head))
     return head if exists else None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
@@ -4246,14 +4250,14 @@ def gitInfo(path=None):
         dirs = pointer.split('/')
         branch = dirs[-1]
         # Try to get a better commit number.
-        path = os.path.join(git_dir, pointer)
+        path = g.os_path_finalize_join(git_dir, pointer)
         try:
             s = open(path, 'r').read()
             commit = s.strip()[0: 12]
             # shorten the hash to a unique shortname
         except IOError:
             try:
-                path = os.path.join(git_dir, 'packed-refs')
+                path = g.os_path_finalize_join(git_dir, 'packed-refs')
                 for line in open(path):
                     if line.strip().endswith(' '+pointer):
                         commit = line.split()[0][0: 12]
@@ -4272,7 +4276,7 @@ def jsonCommitInfo():
     '''
     trace = False and not g.unitTesting
     import json
-    leo_core_path = os.path.dirname(os.path.realpath(__file__))
+    leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
     json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
     if not g.os_path_exists(json_path):
         if trace: g.trace('not found', json_path)
@@ -4326,6 +4330,7 @@ def doHook(tag, *args, **keywords):
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = keywords.get("c")
+    # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if trace and (verbose or tag != 'idle'):
         g.trace('tag', tag, 'f', f and f.__name__)
@@ -5144,24 +5149,24 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                 space = ' ' * sentenceSpacingWidth
             else:
                 space = ' '
-            if len(line) > 0 and wordLen > 0: wordLen += len(space)
+            if line and wordLen > 0: wordLen += len(space)
             if wordLen + len(line) <= outputLineWidth:
                 if wordLen > 0:
                     #@+<< place blank and word on the present line >>
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
-                    if len(line) == 0:
-                        # Just add the word to the start of the line.
-                        line = word
-                    else:
+                    if line:
                         # Add the word, preceeded by a blank.
                         line = space.join((line, word)) # DTHEIN 18-JAN-2004: better syntax
+                    else:
+                        # Just add the word to the start of the line.
+                        line = word
                     #@-<< place blank and word on the present line >>
                 else: pass # discard the trailing whitespace.
             else:
                 #@+<< place word on a new line >>
                 #@+node:ekr.20110727091744.15085: *5* << place word on a new line >>
                 # End the previous line.
-                if len(line) > 0:
+                if line:
                     result.append(line)
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
                 # Discard the whitespace and put the word on a new line.
@@ -5172,7 +5177,7 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                     outputLineWidth = pageWidth # DTHEIN 3-NOV-2002: width for remaining lines
                     line = ""
                 #@-<< place word on a new line >>
-    if len(line) > 0:
+    if line:
         result.append(line)
     # g.trace(result)
     return result
@@ -5277,15 +5282,12 @@ def skip_leading_ws_with_indent(s, i, tab_width):
 #@+node:ekr.20040723093558.1: *4* g.stripBlankLines
 def stripBlankLines(s):
     lines = g.splitLines(s)
-    for i in range(len(lines)):
-        line = lines[i]
+    for i, line in enumerate(lines):
         j = g.skip_ws(line, 0)
         if j >= len(line):
             lines[i] = ''
-            # g.trace("%4d %s" % (i,repr(lines[i])))
         elif line[j] == '\n':
             lines[i] = '\n'
-            # g.trace("%4d %s" % (i,repr(lines[i])))
     return ''.join(lines)
 #@+node:ekr.20031218072017.3108: ** g.Logging & Printing
 # g.es and related print to the Log window.
@@ -5735,7 +5737,7 @@ def translateArgs(args, d):
     global console_encoding
     if not console_encoding:
         e = sys.getdefaultencoding()
-        console_encoding = isValidEncoding(e) and e or 'utf-8'
+        console_encoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',console_encoding
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:
