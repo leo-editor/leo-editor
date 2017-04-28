@@ -7798,8 +7798,7 @@ View node
     descendant nodes comprise most of the data of the view. Other non-cloned
     nodes may add additional information to the view.
 </t>
-<t tx="ekr.20100804133903.7262">.. _`Using Chapters`: outlines.html#using-chapters
-
+<t tx="ekr.20100804133903.7262">
 This section is a reference guide for all other Leo directives, organized alphabetically.
 
 Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.
@@ -7845,11 +7844,12 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 .. index::
     pair: @chapter; Reference
+    
+.. _`Using Chapters`: commands.html#using-chapters
 
 \@chapter
 
-    An @chapter tree represents a chapter. For full details, see
-    `Using Chapters`_.
+    An @chapter tree represents a chapter. For full details, see `Using Chapters`_.
 
     These directives must appear in the node's headline.
 
@@ -23178,7 +23178,7 @@ Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite the
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
