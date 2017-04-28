@@ -76,7 +76,7 @@ class InputHandler(object):
     "An object that can handle user input"
 
     #@+others
-    #@+node:ekr.20170428084208.405: *3* IH.handle_input & leo helpers
+    #@+node:ekr.20170428084208.405: *3* IH.handle_input
     def handle_input(self, _input):
         """
         Dispatch a handler found in the .input_handers dict or the .complex_handlers list.
@@ -123,9 +123,16 @@ class InputHandler(object):
         return _input not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170428112815.1: *4* IH.do_leo_key
     def do_leo_key(self, _input):
-
-        event = g.app.gui.LeoKeyEvent(
-            c = g.app.windowList[0],
+        
+        import leo.plugins.cursesGui2 as cursesGui2
+        app = cursesGui2.app
+        assert app
+        assert app.windowList
+        c = app.windowList[0]
+        ### This must create a proper stroke.
+        # At present, k.handleUnboundKeys give a "can not happen" message.
+        event = cursesGui2.LeoKeyEvent(
+            c=c,
             char=_input,
             event=None,
             shortcut=None,
@@ -135,10 +142,9 @@ class InputHandler(object):
             x_root=None,
             y_root=None,
         )
-        assert event
-        # c.k.masterKeyHandler(event)
+        c.k.masterKeyHandler(event)
         return True
-    #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
+    #@+node:ekr.20170428084208.406: *3* set_up_handlers
     def set_up_handlers(self):
         """
         InputHandler.set_up_handlers.
@@ -165,7 +171,7 @@ class InputHandler(object):
         }
         self.complex_handlers = []
 
-    #@+node:ekr.20170428084208.407: *3* IH.add_handlers
+    #@+node:ekr.20170428084208.407: *3* add_handlers
     def add_handlers(self, handler_dictionary):
         """Update the dictionary of simple handlers.  Pass in a dictionary with keyname (eg "^P" or curses.KEY_DOWN) as the key, and the function that key should call as the values """
         self.handlers.update(handler_dictionary)

@@ -25,8 +25,6 @@ npyscreen = g.importExtension(
 # pylint: disable=arguments-differ
 #@+others
 #@+node:ekr.20170420054211.1: ** class CursesApp
-# base = npyscreen.NPSApp if use_npyscreen else object
-
 class CursesApp(npyscreen.NPSApp):
 
     def __init__(self, c):
@@ -37,30 +35,29 @@ class CursesApp(npyscreen.NPSApp):
         self.leo_log = c.frame.log
         self.leo_minibuffer = None
         self.leo_tree = None
-        assert not hasattr(self, 'windowList')
+        assert not hasattr(self, 'windowList'), self.windowList
         self.windowList = [c]
+        # g.app = self
 
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
-        # Redirect stdout and stderr to files
-        # sys.stdout = open('stdout.log', 'w')
-        # sys.stderr = open('stderr.log', 'w')
-        def test(*args, **kwargs):
-            return True
-            
-        def eventFilter(*args, **keys):
-            g.es('eventFilter', args, keys)
-
         F  = npyscreen.Form(name = "Welcome to Leo",)
-        F.handlers = {}
-        F.complex_handlers = [(test, eventFilter),]
+        ### This doesn't work.
+            # def test(*args, **kwargs):
+                # return True
+                
+            # def eventFilter(*args, **keys):
+                # g.es('eventFilter', args, keys)
+            # F.handlers = {}
+            # F.complex_handlers = [(test, eventFilter),]
+
         # Transfer queued log messages to the log pane.
         waiting_list = self.leo_log.waiting_list[:]
         self.leo_log.waiting_list = []
         # Set the log widget.
-        self.leo_log.w = w = F.add(
+        self.leo_log.w = F.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
             name='Log Pane',
@@ -68,11 +65,10 @@ class CursesApp(npyscreen.NPSApp):
             values=waiting_list, 
             slow_scroll=False,
         )
-        w.handlers = {}
-        g.es('test:', g.callers())
+        ### w.handlers = {}
         # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        self.leo_minibuffer = w = F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        w.handlers = {}
+        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
+        ###w.handlers = {}
         F.edit()
     #@-others
 
@@ -131,27 +127,20 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419111744.1: *3* CG.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop
+    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop (sets app global)
     def runMainLoop(self):
         '''The curses gui main loop.'''
+        global app
         c = g.app.log.c
         assert c
-        if 0:
-            w = curses.initscr()
-            w.addstr('enter characters: x quits')
-            while 1:
-                i = w.getch() # Returns an int.
-                ch = chr(i)
-                if ch == 'x': break
-        elif 1:
-            app = CursesApp(c)
-            app.run()
-        else:
-            import urwid
-            txt = urwid.Text(u"Hello World")
-            fill = urwid.Filler(txt, 'top')
-            loop = urwid.MainLoop(fill)
-            loop.run() # On Windows, fails because termios not installed.
+        app = CursesApp(c)
+        app.run()
+        ###
+            # import urwid
+            # txt = urwid.Text(u"Hello World")
+            # fill = urwid.Filler(txt, 'top')
+            # loop = urwid.MainLoop(fill)
+            # loop.run() # On Windows, fails because termios not installed.
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
@@ -315,11 +304,54 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170420085017.1: ** eventFilter (not used)
-def eventFilter(*args, **kwargs):
+#@+node:edward.20170428174322.1: ** class LeoKeyEvent
+class LeoKeyEvent(object):
+    '''A gui-independent wrapper for gui events.'''
+    #@+others
+    #@+node:edward.20170428174322.2: *3* LeoKeyEvent.__init__
+    def __init__(self, c, char, event, shortcut, w,
+        x=None,
+        y=None,
+        x_root=None,
+        y_root=None,
+    ):
+        '''Ctor for LeoKeyEvent class.'''
+        trace = False and not g.unitTesting
+        if g.isStroke(shortcut):
+            g.trace('***** (LeoKeyEvent) oops: already a stroke', shortcut, g.callers())
+            stroke = shortcut
+        else:
+            stroke = g.KeyStroke(shortcut) if shortcut else None
+        assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
+            repr(stroke), g.callers())
+        if trace: g.trace('(LeoKeyEvent) stroke', stroke)
+        self.c = c
+        self.char = char or ''
+        self.event = event # New in Leo 4.11.
+        self.stroke = stroke
+        self.w = self.widget = w
+        # Optional ivars
+        self.x = x
+        self.y = y
+        # Support for fastGotoNode plugin
+        self.x_root = x_root
+        self.y_root = y_root
+    #@+node:edward.20170428174322.3: *3* LeoKeyEvent.__repr__
+    def __repr__(self):
+        return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke), repr(self.char), repr(self.w))
+    #@+node:edward.20170428174322.4: *3* LeoKeyEvent.get & __getitem__
+    def get(self, attr):
+        '''Compatibility with g.bunch: return an attr.'''
+        return getattr(self, attr, None)
 
-    sys.exit(0)
-    g.es(args, kwargs)
+    def __getitem__(self, attr):
+        '''Compatibility with g.bunch: return an attr.'''
+        return getattr(self, attr, None)
+    #@+node:edward.20170428174322.5: *3* LeoKeyEvent.type
+    def type(self):
+        return 'LeoKeyEvent'
+    #@-others
 #@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
 def init():
 
