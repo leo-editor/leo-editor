@@ -141,10 +141,10 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         self.complex_handlers = []
         self.handlers = { 
             curses.KEY_F1: self.h_display_help,
-            "KEY_F(1)": self.h_display_help,
-            "^O":       self.h_display_help,
-            "^L":       self.h_display,
-            curses.KEY_RESIZE: self._resize,
+            "KEY_F(1)":         self.h_display_help,
+            "^O":               self.h_display_help,
+            "^L":               self.h_display,
+            curses.KEY_RESIZE:  self._resize,
         }
     #@+node:ekr.20170428084207.185: *3* set_up_exit_condition_handlers
     def set_up_exit_condition_handlers(self):
