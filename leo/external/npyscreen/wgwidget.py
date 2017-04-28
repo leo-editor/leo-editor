@@ -75,11 +75,17 @@ class InputHandler(object):
     #@+others
     #@+node:ekr.20170428084208.405: *3* handle_input
     def handle_input(self, _input):
-        """Returns True if input has been dealt with, and no further action needs taking.
-        First attempts to look up a method in self.input_handers (which is a dictionary), then
-        runs the methods in self.complex_handlers (if any), which is an array of form (test_func, dispatch_func).
-        If test_func(input) returns true, then dispatch_func(input) is called. Check to see if parent can handle.
-        No further action taken after that point."""
+        """
+        Returns True if input has been dealt with, and no further action needs
+        taking.
+        
+        First attempts to look up a method in self.input_handers (which
+        is a dictionary), then runs the methods in self.complex_handlers (if
+        any), which is an array of form (test_func, dispatch_func). If
+        test_func(input) returns true, then dispatch_func(input) is called.
+        Check to see if parent can handle. No further action taken after that
+        point.
+        """
         
         # g.pdb()
         # sys.stdout.write('\nhandle_input:' + repr(_input)) # EKR
@@ -115,29 +121,32 @@ class InputHandler(object):
 
         else:
             pass
-    # If we've got here, all else has failed, so:
+        # If we've got here, all else has failed, so:
         return False
 
     #@+node:ekr.20170428084208.406: *3* set_up_handlers
     def set_up_handlers(self):
-        """This function should be called somewhere during object initialisation (which all library-defined widgets do). You might like to override this in your own definition,
-but in most cases the add_handers or add_complex_handlers methods are what you want."""
+        """
+        This function should be called somewhere during object initialisation
+        (which all library-defined widgets do). You might like to override this
+        in your own definition, but in most cases the add_handers or
+        add_complex_handlers methods are what you want.
+        """
         #called in __init__
         self.handlers = {
-                   curses.ascii.NL:     self.h_exit_down,
-                   curses.ascii.CR:     self.h_exit_down,
-                   curses.ascii.TAB:    self.h_exit_down,
-                   curses.KEY_BTAB:     self.h_exit_up,
-                   curses.KEY_DOWN:     self.h_exit_down,
-                   curses.KEY_UP:       self.h_exit_up,
-                   curses.KEY_LEFT:     self.h_exit_left,
-                   curses.KEY_RIGHT:    self.h_exit_right,
-                   "^P":                self.h_exit_up,
-                   "^N":                self.h_exit_down,
-                   curses.ascii.ESC:    self.h_exit_escape,
-                   curses.KEY_MOUSE:    self.h_exit_mouse,
-                   }
-
+            curses.ascii.NL:     self.h_exit_down,
+            curses.ascii.CR:     self.h_exit_down,
+            curses.ascii.TAB:    self.h_exit_down,
+            curses.KEY_BTAB:     self.h_exit_up,
+            curses.KEY_DOWN:     self.h_exit_down,
+            curses.KEY_UP:       self.h_exit_up,
+            curses.KEY_LEFT:     self.h_exit_left,
+            curses.KEY_RIGHT:    self.h_exit_right,
+            "^P":                self.h_exit_up,
+            "^N":                self.h_exit_down,
+            curses.ascii.ESC:    self.h_exit_escape,
+            curses.KEY_MOUSE:    self.h_exit_mouse,
+        }
         self.complex_handlers = []
 
     #@+node:ekr.20170428084208.407: *3* add_handlers

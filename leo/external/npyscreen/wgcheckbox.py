@@ -16,17 +16,16 @@ class _ToggleControl(Widget):
     #@+node:ekr.20170428084207.539: *3* set_up_handlers
     def set_up_handlers(self):
         super(_ToggleControl, self).set_up_handlers()
-        
         self.handlers.update({
-                curses.ascii.SP: self.h_toggle,
-                ord('x'):        self.h_toggle,
-                curses.ascii.NL: self.h_select_exit,
-                curses.ascii.CR: self.h_select_exit,
-                ord('j'):        self.h_exit_down,
-                ord('k'):        self.h_exit_up,
-                ord('h'):        self.h_exit_left,
-                ord('l'):        self.h_exit_right,                      
-            })
+            curses.ascii.SP: self.h_toggle,
+            ord('x'):        self.h_toggle,
+            curses.ascii.NL: self.h_select_exit,
+            curses.ascii.CR: self.h_select_exit,
+            ord('j'):        self.h_exit_down,
+            ord('k'):        self.h_exit_up,
+            ord('h'):        self.h_exit_left,
+            ord('l'):        self.h_exit_right,                      
+        })
 
     #@+node:ekr.20170428084207.540: *3* h_toggle
     def h_toggle(self, ch):

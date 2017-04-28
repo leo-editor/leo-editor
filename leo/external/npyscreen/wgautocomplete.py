@@ -18,8 +18,9 @@ class Autocomplete(textbox.Textfield):
     #@+node:ekr.20170428084207.497: *3* set_up_handlers
     def set_up_handlers(self):
         super(Autocomplete, self).set_up_handlers()
-        
-        self.handlers.update({curses.ascii.TAB: self.auto_complete})
+        self.handlers.update({
+            curses.ascii.TAB: self.auto_complete
+        })
 
     #@+node:ekr.20170428084207.498: *3* auto_complete
     def auto_complete(self, input):

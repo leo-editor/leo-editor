@@ -85,8 +85,8 @@ class TextCommandBox(wgtextbox.Textfield):
     def set_up_handlers(self):
         super(TextCommandBox, self).set_up_handlers()
         self.handlers.update({
-                   curses.ascii.NL:     self.h_execute_command,
-                   curses.ascii.CR:     self.h_execute_command,
+           curses.ascii.NL:     self.h_execute_command,
+           curses.ascii.CR:     self.h_execute_command,
         })
 
     #@+node:ekr.20170428084207.269: *3* set_up_history_keys

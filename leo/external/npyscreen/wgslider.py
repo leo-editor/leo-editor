@@ -130,17 +130,16 @@ class Slider(widget.Widget):
     #@+node:ekr.20170428084208.306: *3* set_up_handlers
     def set_up_handlers(self):
         super(widget.Widget, self).set_up_handlers()
-        
         self.handlers.update({ 
-                    curses.KEY_LEFT: self.h_decrease,
-                    curses.KEY_RIGHT: self.h_increase,
-                    ord('+'): self.h_increase,
-                    ord('-'): self.h_decrease,
-                    ord('h'): self.h_decrease,
-                    ord('l'): self.h_increase,
-                    ord('j'): self.h_exit_down,
-                    ord('k'): self.h_exit_up,
-                })
+            curses.KEY_LEFT: self.h_decrease,
+            curses.KEY_RIGHT: self.h_increase,
+            ord('+'): self.h_increase,
+            ord('-'): self.h_decrease,
+            ord('h'): self.h_decrease,
+            ord('l'): self.h_increase,
+            ord('j'): self.h_exit_down,
+            ord('k'): self.h_exit_up,
+        })
 
     #@+node:ekr.20170428084208.307: *3* h_increase
     def h_increase(self, ch):

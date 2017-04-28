@@ -257,35 +257,30 @@ class MultiLineEdit(widget.Widget):
     #@+node:ekr.20170428084207.598: *3* set_up_handlers
     def set_up_handlers(self):
         super(MultiLineEdit, self).set_up_handlers()    
-
         # For OS X
         # del_key = curses.ascii.alt('~')
-        
         self.handlers.update({
-                   curses.ascii.NL:    self.h_add_nl,
-                   curses.ascii.CR:    self.h_add_nl,
-                   curses.KEY_LEFT:    self.h_cursor_left,
-                   curses.KEY_RIGHT:   self.h_cursor_right,
-                   curses.KEY_UP:      self.h_line_up,
-                   curses.KEY_DOWN:    self.h_line_down,
-                   curses.KEY_DC:      self.h_delete_right,
-                   curses.ascii.DEL:   self.h_delete_left,
-                   curses.ascii.BS:    self.h_delete_left,
-                   curses.KEY_BACKSPACE: self.h_delete_left,
-                   "^R":           self.full_reformat,
-                   # mac os x curses reports DEL as escape oddly
-                   # no solution yet                   
-                   #"^K":          self.h_erase_right,
-                   #"^U":          self.h_erase_left,
-            })
-
+            curses.ascii.NL:    self.h_add_nl,
+            curses.ascii.CR:    self.h_add_nl,
+            curses.KEY_LEFT:    self.h_cursor_left,
+            curses.KEY_RIGHT:   self.h_cursor_right,
+            curses.KEY_UP:      self.h_line_up,
+            curses.KEY_DOWN:    self.h_line_down,
+            curses.KEY_DC:      self.h_delete_right,
+            curses.ascii.DEL:   self.h_delete_left,
+            curses.ascii.BS:    self.h_delete_left,
+            curses.KEY_BACKSPACE: self.h_delete_left,
+            # mac os x curses reports DEL as escape oddly
+            "^R":               self.full_reformat,
+            # no solution yet                   
+            #"^K":          self.h_erase_right,
+            #"^U":          self.h_erase_left,
+        })
         self.complex_handlers.extend((
-                    (self.t_input_isprint, self.h_addch),
-                    # (self.t_is_ck, self.h_erase_right),
-                    # (self.t_is_cu, self.h_erase_left),
-                        ))
-
-
+            (self.t_input_isprint, self.h_addch),
+            # (self.t_is_ck, self.h_erase_right),
+            # (self.t_is_cu, self.h_erase_left),
+        ))
     #@+node:ekr.20170428084207.599: *3* h_addch
     def h_addch(self, inp):
         if self.editable:

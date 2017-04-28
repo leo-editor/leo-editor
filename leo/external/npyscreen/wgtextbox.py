@@ -417,27 +417,25 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.338: *3* set_up_handlers
     def set_up_handlers(self):
         super(Textfield, self).set_up_handlers()    
-
         # For OS X
         # del_key = curses.ascii.alt('~')
-        
-        self.handlers.update({curses.KEY_LEFT:    self.h_cursor_left,
-                           curses.KEY_RIGHT:   self.h_cursor_right,
-                   curses.KEY_DC:      self.h_delete_right,
-                   curses.ascii.DEL:   self.h_delete_left,
-                   curses.ascii.BS:    self.h_delete_left,
-                   curses.KEY_BACKSPACE: self.h_delete_left,
-                   # mac os x curses reports DEL as escape oddly
-                   # no solution yet                   
-                   "^K":           self.h_erase_right,
-                   "^U":           self.h_erase_left,
-            })
-
+        self.handlers.update({
+            curses.KEY_LEFT:    self.h_cursor_left,
+            curses.KEY_RIGHT:   self.h_cursor_right,
+            curses.KEY_DC:      self.h_delete_right,
+            curses.ascii.DEL:   self.h_delete_left,
+            curses.ascii.BS:    self.h_delete_left,
+            curses.KEY_BACKSPACE: self.h_delete_left,
+            # mac os x curses reports DEL as escape oddly
+            # no solution yet                   
+            "^K":           self.h_erase_right,
+            "^U":           self.h_erase_left,
+        })
         self.complex_handlers.extend((
-                        (self.t_input_isprint, self.h_addch),
-                        # (self.t_is_ck, self.h_erase_right),
-                        # (self.t_is_cu, self.h_erase_left),
-                        ))
+            (self.t_input_isprint, self.h_addch),
+            # (self.t_is_ck, self.h_erase_right),
+            # (self.t_is_cu, self.h_erase_left),
+        ))
 
     #@+node:ekr.20170428084208.339: *3* t_input_isprint
     def t_input_isprint(self, inp):
@@ -529,11 +527,12 @@ class FixedText(TextfieldBase):
     #@+node:ekr.20170428084208.349: *3* set_up_handlers
     def set_up_handlers(self):
         super(FixedText, self).set_up_handlers()
-        self.handlers.update({curses.KEY_LEFT:    self.h_cursor_left,
-                           curses.KEY_RIGHT:   self.h_cursor_right,
-                           ord('k'):    self.h_exit_up,
-                           ord('j'):    self.h_exit_down,
-                           })
+        self.handlers.update({
+            curses.KEY_LEFT:    self.h_cursor_left,
+            curses.KEY_RIGHT:   self.h_cursor_right,
+            ord('k'):    self.h_exit_up,
+            ord('j'):    self.h_exit_down,
+        })
 
 
     #@+node:ekr.20170428084208.350: *3* h_cursor_left

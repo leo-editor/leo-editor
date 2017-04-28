@@ -45,12 +45,20 @@ class CursesApp(npyscreen.NPSApp):
         # Redirect stdout and stderr to files
         # sys.stdout = open('stdout.log', 'w')
         # sys.stderr = open('stderr.log', 'w')
+        def test(*args, **kwargs):
+            return True
+            
+        def eventFilter(*args, **keys):
+            g.es('eventFilter', args, keys)
+
         F  = npyscreen.Form(name = "Welcome to Leo",)
+        F.handlers = {}
+        F.complex_handlers = [(test, eventFilter),]
         # Transfer queued log messages to the log pane.
         waiting_list = self.leo_log.waiting_list[:]
         self.leo_log.waiting_list = []
         # Set the log widget.
-        self.leo_log.w = F.add(
+        self.leo_log.w = w = F.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
             name='Log Pane',
@@ -58,28 +66,11 @@ class CursesApp(npyscreen.NPSApp):
             values=waiting_list, 
             slow_scroll=False,
         )
-        # Make sure that log message now go to the curses widget.
+        w.handlers = {}
         g.es('test:', g.callers())
         # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
         self.leo_minibuffer = w = F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        if 0: # Monkey-patch
-        
-            w.handlers = {} # Kill all previous handlers.
-            w.complex_handlers = []
-            sys.stdout.write('\n1' + repr(w.handle_input))
-        
-            def handle_input(self, _input):
-                sys.stdout.write(repr(_input))
-                sys.exit(0)
-
-            g.funcToMethod(handle_input, w.__class__)
-            sys.stdout.write('\n2' + repr(w.handle_input))
-                
-        elif 0: # Redirect all events in the minibuffer
-            assert hasattr(w, 'complex_handlers')
-            def true(*args, **keys): return True
-            w.handlers = {} # Kill all previous handlers.
-            w.complex_handlers = [(true, eventFilter),]
+        w.handlers = {}
         F.edit()
     #@-others
 

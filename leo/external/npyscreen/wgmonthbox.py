@@ -61,18 +61,19 @@ depending on the value of onErrorHigher"""
     #@+node:ekr.20170428084208.50: *3* set_up_handlers
     def set_up_handlers(self):
         super(DateEntryBase, self).set_up_handlers()
-        self.handlers.update({ "D":    self.h_day_less,
-                               "d":    self.h_day_more,
-                               "W":    self.h_week_less,
-                               "w":    self.h_week_more,
-                               "M":    self.h_month_less,
-                               "m":    self.h_month_more,
-                               "Y":    self.h_year_less,
-                               "y":    self.h_year_more,
-                               "t":    self.h_find_today,
-                               "q":    self.h_clear,
-                               "c":    self.h_clear,
-                            })
+        self.handlers.update({
+            "D":    self.h_day_less,
+            "d":    self.h_day_more,
+            "W":    self.h_week_less,
+            "w":    self.h_week_more,
+            "M":    self.h_month_less,
+            "m":    self.h_month_more,
+            "Y":    self.h_year_less,
+            "y":    self.h_year_more,
+            "t":    self.h_find_today,
+            "q":    self.h_clear,
+            "c":    self.h_clear,
+        })
     #@+node:ekr.20170428084208.51: *3* _reduce_value_by_delta
     def _reduce_value_by_delta(self, delta):
         old_value = self.value
@@ -281,13 +282,14 @@ class MonthBox(DateEntryBase):
     #@+node:ekr.20170428084208.67: *3* set_up_handlers
     def set_up_handlers(self):
         super(MonthBox, self).set_up_handlers()
-        self.handlers.update({curses.KEY_LEFT:    self.h_day_less,
-                              curses.KEY_RIGHT:   self.h_day_more,
-                              curses.KEY_UP:      self.h_week_less,
-                              curses.KEY_DOWN:    self.h_week_more,
-                              curses.ascii.SP:    self.h_exit_down,
-                              "^T":               self.h_find_today,
-                            })
+        self.handlers.update({
+            curses.KEY_LEFT:    self.h_day_less,
+            curses.KEY_RIGHT:   self.h_day_more,
+            curses.KEY_UP:      self.h_week_less,
+            curses.KEY_DOWN:    self.h_week_more,
+            curses.ascii.SP:    self.h_exit_down,
+            "^T":               self.h_find_today,
+        })
 
     #@-others
 #@-others

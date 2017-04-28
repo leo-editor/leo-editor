@@ -194,35 +194,32 @@ Should accept one argument (the object to be represented), and return a string."
     def set_up_handlers(self):
         super(SimpleGrid, self).set_up_handlers()
         self.handlers = {
-                    curses.KEY_UP:      self.h_move_line_up,
-                    curses.KEY_LEFT:    self.h_move_cell_left,
-                    curses.KEY_DOWN:    self.h_move_line_down,
-                    curses.KEY_RIGHT:   self.h_move_cell_right,
-                    "k":                self.h_move_line_up,
-                    "h":                self.h_move_cell_left,
-                    "j":                self.h_move_line_down,
-                    "l":                self.h_move_cell_right,
-                    curses.KEY_NPAGE:   self.h_move_page_down,
-                    curses.KEY_PPAGE:   self.h_move_page_up,
-                    curses.KEY_HOME:    self.h_show_beginning,
-                    curses.KEY_END:     self.h_show_end,
-                    ord('g'):           self.h_show_beginning,
-                    ord('G'):           self.h_show_end,
-                    curses.ascii.TAB:   self.h_exit,
-                    curses.KEY_BTAB:     self.h_exit_up,
-                    '^P':               self.h_exit_up,
-                    '^N':               self.h_exit_down,
-                    #curses.ascii.NL:    self.h_exit,
-                    #curses.ascii.SP:    self.h_exit,
-                    #ord('x'):       self.h_exit,
-                    ord('q'):       self.h_exit,
-                    curses.ascii.ESC:   self.h_exit,
-                    curses.KEY_MOUSE:    self.h_exit_mouse,
-                }
-
-        self.complex_handlers = [
-                    ]
-
+            curses.KEY_UP:      self.h_move_line_up,
+            curses.KEY_LEFT:    self.h_move_cell_left,
+            curses.KEY_DOWN:    self.h_move_line_down,
+            curses.KEY_RIGHT:   self.h_move_cell_right,
+            "k":                self.h_move_line_up,
+            "h":                self.h_move_cell_left,
+            "j":                self.h_move_line_down,
+            "l":                self.h_move_cell_right,
+            curses.KEY_NPAGE:   self.h_move_page_down,
+            curses.KEY_PPAGE:   self.h_move_page_up,
+            curses.KEY_HOME:    self.h_show_beginning,
+            curses.KEY_END:     self.h_show_end,
+            ord('g'):           self.h_show_beginning,
+            ord('G'):           self.h_show_end,
+            curses.ascii.TAB:   self.h_exit,
+            curses.KEY_BTAB:     self.h_exit_up,
+            '^P':               self.h_exit_up,
+            '^N':               self.h_exit_down,
+            #curses.ascii.NL:    self.h_exit,
+            #curses.ascii.SP:    self.h_exit,
+            #ord('x'):       self.h_exit,
+            ord('q'):       self.h_exit,
+            curses.ascii.ESC:   self.h_exit,
+            curses.KEY_MOUSE:    self.h_exit_mouse,
+        }
+        self.complex_handlers = []
     #@+node:ekr.20170428084208.18: *3* getValuesFlatList
     def getValuesFlatList(self):
         output_list = []

@@ -89,14 +89,13 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
     def set_up_handlers(self):
         super(textbox.Textfield, self).set_up_handlers()
         self.handlers.update({curses.ascii.SP:  self.h_change_value,
-                      #curses.ascii.TAB: self.h_change_value,
-                      curses.ascii.CR:  self.h_change_value,
-                      curses.ascii.NL:  self.h_change_value,
-                      ord('x'):         self.h_change_value,
-                      ord('j'): self.h_exit_down,
-                      ord('k'): self.h_exit_up,
-                      })
-
+            #curses.ascii.TAB: self.h_change_value,
+            curses.ascii.CR:    self.h_change_value,
+            curses.ascii.NL:    self.h_change_value,
+            ord('x'):           self.h_change_value,
+            ord('j'):           self.h_exit_down,
+            ord('k'):           self.h_exit_up,
+        })
     #@-others
 #@+node:ekr.20170428084207.585: ** class TitleDateCombo
 class TitleDateCombo(titlefield.TitleText):

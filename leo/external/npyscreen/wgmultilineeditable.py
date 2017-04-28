@@ -122,17 +122,15 @@ class MultiLineEditable(wgmultiline.MultiLine):
     def set_up_handlers(self):
         super(MultiLineEditable, self).set_up_handlers()
         self.handlers.update ( {
-                    ord('i'):           self.h_insert_value,
-                    ord('o'):           self.h_insert_next_line,
-                    curses.ascii.CR:    self.h_edit_cursor_line_value,
-                    curses.ascii.NL:    self.h_edit_cursor_line_value,
-                    curses.ascii.SP:    self.h_edit_cursor_line_value,
-                    
-                    curses.ascii.DEL:       self.h_delete_line_value,
-                    curses.ascii.BS:        self.h_delete_line_value,
-                    curses.KEY_BACKSPACE:   self.h_delete_line_value,
-                } )
-                
+            ord('i'):               self.h_insert_value,
+            ord('o'):               self.h_insert_next_line,
+            curses.ascii.CR:        self.h_edit_cursor_line_value,
+            curses.ascii.NL:        self.h_edit_cursor_line_value,
+            curses.ascii.SP:        self.h_edit_cursor_line_value,
+            curses.ascii.DEL:       self.h_delete_line_value,
+            curses.ascii.BS:        self.h_delete_line_value,
+            curses.KEY_BACKSPACE:   self.h_delete_line_value,
+        })
     #@-others
 #@+node:ekr.20170428084208.171: ** class MultiLineEditableTitle
 class MultiLineEditableTitle(wgmultiline.TitleMultiLine):

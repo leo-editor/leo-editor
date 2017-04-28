@@ -17,11 +17,11 @@ class MultiSelect(selectone.SelectOne):
     def set_up_handlers(self):
         super(MultiSelect, self).set_up_handlers()
         self.handlers.update({
-                    ord("x"):    self.h_select_toggle,
-                    curses.ascii.SP: self.h_select_toggle,
-                    ord("X"):    self.h_select,
-                    "^U":        self.h_select_none,
-                })
+            ord("x"):           self.h_select_toggle,
+            curses.ascii.SP:    self.h_select_toggle,
+            ord("X"):           self.h_select,
+            "^U":               self.h_select_none,
+        })
 
     #@+node:ekr.20170428084208.229: *3* h_select_none
     def h_select_none(self, input):
@@ -72,12 +72,12 @@ class MultiSelectAction(MultiSelect):
     def set_up_handlers(self):
         super(MultiSelectAction, self).set_up_handlers()
         self.handlers.update ( {
-                    curses.ascii.NL:    self.h_act_on_highlighted,
-                    curses.ascii.CR:    self.h_act_on_highlighted,
-                    ord(';'):           self.h_act_on_selected,
-                    # "^L":        self.h_set_filtered_to_selected,
-                    curses.ascii.SP:    self.h_act_on_highlighted,
-                } )
+            curses.ascii.NL:    self.h_act_on_highlighted,
+            curses.ascii.CR:    self.h_act_on_highlighted,
+            ord(';'):           self.h_act_on_selected,
+            # "^L":             self.h_set_filtered_to_selected,
+            curses.ascii.SP:    self.h_act_on_highlighted,
+        })
 
     #@+node:ekr.20170428084208.238: *3* h_act_on_highlighted
     def h_act_on_highlighted(self, ch):
@@ -106,15 +106,13 @@ class MultiSelectFixed(MultiSelect):
     def set_up_handlers(self):
         super(MultiSelectFixed, self).set_up_handlers()
         self.handlers.update({
-            ord("x"):   self.user_set_value,
-            ord("X"):   self.user_set_value,
-            curses.ascii.SP: self.user_set_value,
-            "^U":        self.user_set_value,
+            ord("x"):           self.user_set_value,
+            ord("X"):           self.user_set_value,
+            curses.ascii.SP:    self.user_set_value,
+            "^U":               self.user_set_value,
             curses.ascii.NL:    self.h_exit_down,
             curses.ascii.CR:    self.h_exit_down,
-            
         })
-
     #@-others
 #@+node:ekr.20170428084208.243: ** class TitleMultiSelect
 class TitleMultiSelect(multiline.TitleMultiLine):

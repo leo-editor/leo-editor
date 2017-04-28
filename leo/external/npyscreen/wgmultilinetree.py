@@ -320,14 +320,14 @@ class MLTree(multiline.MultiLine):
     def set_up_handlers(self):
         super(MLTree, self).set_up_handlers()
         self.handlers.update({
-                ord('<'): self.h_collapse_tree,
-                ord('>'): self.h_expand_tree,
-                ord('['): self.h_collapse_tree,
-                ord(']'): self.h_expand_tree,
-                ord('{'): self.h_collapse_all,
-                ord('}'): self.h_expand_all,
-                ord('h'): self.h_collapse_tree,
-                ord('l'): self.h_expand_tree,                
+            ord('<'): self.h_collapse_tree,
+            ord('>'): self.h_expand_tree,
+            ord('['): self.h_collapse_tree,
+            ord(']'): self.h_expand_tree,
+            ord('{'): self.h_collapse_all,
+            ord('}'): self.h_expand_all,
+            ord('h'): self.h_collapse_tree,
+            ord('l'): self.h_expand_tree,                
         })
 
 

@@ -95,11 +95,10 @@ class MiniButtonPress(MiniButton):
     #@+node:ekr.20170428084207.532: *3* set_up_handlers
     def set_up_handlers(self):
         super(MiniButtonPress, self).set_up_handlers()
-        
         self.handlers.update({
-                curses.ascii.NL: self.h_toggle,
-                curses.ascii.CR: self.h_toggle,
-            })
+            curses.ascii.NL: self.h_toggle,
+            curses.ascii.CR: self.h_toggle,
+        })
         
     #@+node:ekr.20170428084207.533: *3* destroy
     def destroy(self):

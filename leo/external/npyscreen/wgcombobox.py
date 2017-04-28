@@ -57,17 +57,17 @@ Should accept one argument (the object to be represented), and return a string."
     #@+node:ekr.20170428084207.569: *3* set_up_handlers
     def set_up_handlers(self):
         super(textbox.Textfield, self).set_up_handlers()
-
-        self.handlers.update({curses.ascii.SP:  self.h_change_value,
-                      #curses.ascii.TAB: self.h_change_value,
-                      curses.ascii.NL:  self.h_change_value,
-                      curses.ascii.CR:  self.h_change_value,
-                      ord('x'):         self.h_change_value,
-                      ord('k'):         self.h_exit_up,
-                      ord('j'):         self.h_exit_down,
-                      ord('h'):         self.h_exit_left,
-                      ord('l'):         self.h_exit_right,                      
-                      })
+        self.handlers.update({
+            curses.ascii.SP:  self.h_change_value,
+            #curses.ascii.TAB: self.h_change_value,
+            curses.ascii.NL:  self.h_change_value,
+            curses.ascii.CR:  self.h_change_value,
+            ord('x'):         self.h_change_value,
+            ord('k'):         self.h_exit_up,
+            ord('j'):         self.h_exit_down,
+            ord('h'):         self.h_exit_left,
+            ord('l'):         self.h_exit_right,                      
+        })
 
     #@+node:ekr.20170428084207.570: *3* h_change_value
     def h_change_value(self, input):

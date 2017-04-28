@@ -456,28 +456,27 @@ object to be passed to the contained widget."""
     #@+node:ekr.20170428084208.101: *3* set_up_handlers
     def set_up_handlers(self):
         super(MultiLine, self).set_up_handlers()
-        self.handlers.update ( {
-                    curses.KEY_UP:      self.h_cursor_line_up,
-                    ord('k'):       self.h_cursor_line_up,
-                    curses.KEY_LEFT:    self.h_cursor_line_up,
-                    curses.KEY_DOWN:    self.h_cursor_line_down,
-                    ord('j'):       self.h_cursor_line_down,
-                    curses.KEY_RIGHT:   self.h_cursor_line_down,
-                    curses.KEY_NPAGE:   self.h_cursor_page_down,
-                    curses.KEY_PPAGE:   self.h_cursor_page_up,
-                    curses.ascii.TAB:   self.h_exit_down,
-                    curses.ascii.NL:    self.h_select_exit,
-                    curses.KEY_HOME:    self.h_cursor_beginning,
-                    curses.KEY_END:     self.h_cursor_end,
-                    ord('g'):           self.h_cursor_beginning,
-                    ord('G'):           self.h_cursor_end,
-                    ord('x'):           self.h_select,
-                    # "^L":        self.h_set_filtered_to_selected,
-                    curses.ascii.SP:    self.h_select,
-                    curses.ascii.ESC:   self.h_exit_escape,
-                    curses.ascii.CR:    self.h_select_exit,
-                } )
-                
+        self.handlers.update ({
+            curses.KEY_UP:      self.h_cursor_line_up,
+            ord('k'):           self.h_cursor_line_up,
+            curses.KEY_LEFT:    self.h_cursor_line_up,
+            curses.KEY_DOWN:    self.h_cursor_line_down,
+            ord('j'):           self.h_cursor_line_down,
+            curses.KEY_RIGHT:   self.h_cursor_line_down,
+            curses.KEY_NPAGE:   self.h_cursor_page_down,
+            curses.KEY_PPAGE:   self.h_cursor_page_up,
+            curses.ascii.TAB:   self.h_exit_down,
+            curses.ascii.NL:    self.h_select_exit,
+            curses.KEY_HOME:    self.h_cursor_beginning,
+            curses.KEY_END:     self.h_cursor_end,
+            ord('g'):           self.h_cursor_beginning,
+            ord('G'):           self.h_cursor_end,
+            ord('x'):           self.h_select,
+            # "^L":        self.h_set_filtered_to_selected,
+            curses.ascii.SP:    self.h_select,
+            curses.ascii.ESC:   self.h_exit_escape,
+            curses.ascii.CR:    self.h_select_exit,
+        })  
         if self.allow_filtering:
             self.handlers.update ( {
                 ord('l'):       self.h_set_filter,
@@ -486,24 +485,18 @@ object to be passed to the contained widget."""
                 ord('N'):       self.move_previous_filtered,
                 ord('p'):       self.move_previous_filtered,
                 # "^L":        self.h_set_filtered_to_selected,
-                
-            } )
-            
-                
+            } )   
         if self.exit_left:
             self.handlers.update({
-                    curses.KEY_LEFT:    self.h_exit_left
+                curses.KEY_LEFT:    self.h_exit_left
             })
-        
         if self.exit_right:
             self.handlers.update({
-                    curses.KEY_RIGHT:   self.h_exit_right
+                curses.KEY_RIGHT:   self.h_exit_right
             })
-
         self.complex_handlers = [
-                    #(self.t_input_isprint, self.h_find_char)
-                    ]
-
+            # (self.t_input_isprint, self.h_find_char)
+        ]
     #@+node:ekr.20170428084208.102: *3* h_find_char
     def h_find_char(self, input):
         # The following ought to work, but there is a curses keyname bug
@@ -668,11 +661,11 @@ class MultiLineAction(MultiLine):
     def set_up_handlers(self):
         super(MultiLineAction, self).set_up_handlers()
         self.handlers.update ( {
-                    curses.ascii.NL:    self.h_act_on_highlighted,
-                    curses.ascii.CR:    self.h_act_on_highlighted,
-                    ord('x'):           self.h_act_on_highlighted,
-                    curses.ascii.SP:    self.h_act_on_highlighted,
-                    } )
+            curses.ascii.NL:    self.h_act_on_highlighted,
+            curses.ascii.CR:    self.h_act_on_highlighted,
+            ord('x'):           self.h_act_on_highlighted,
+            curses.ascii.SP:    self.h_act_on_highlighted,
+        })
 
 
     #@-others
@@ -848,29 +841,27 @@ class Pager(MultiLine):
     def set_up_handlers(self):
         super(Pager, self).set_up_handlers()
         self.handlers = {
-                    curses.KEY_UP:      self.h_scroll_line_up,
-                    curses.KEY_LEFT:    self.h_scroll_line_up,
-                    curses.KEY_DOWN:    self.h_scroll_line_down,
-                    curses.KEY_RIGHT:   self.h_scroll_line_down,
-                    curses.KEY_NPAGE:   self.h_scroll_page_down,
-                    curses.KEY_PPAGE:   self.h_scroll_page_up,
-                    curses.KEY_HOME:    self.h_show_beginning,
-                    curses.KEY_END:     self.h_show_end,
-                    curses.ascii.NL:    self.h_exit,
-                    curses.ascii.CR:    self.h_exit,
-                    curses.ascii.SP:    self.h_scroll_page_down,
-                    curses.ascii.TAB:   self.h_exit,
-                    ord('j'):           self.h_scroll_line_down,
-                    ord('k'):           self.h_scroll_line_up,
-                    ord('x'):           self.h_exit,
-                    ord('q'):           self.h_exit,
-                    ord('g'):           self.h_show_beginning,
-                    ord('G'):           self.h_show_end,
-                    curses.ascii.ESC:   self.h_exit_escape,
-                }
-
-        self.complex_handlers = [
-                    ]
+            curses.KEY_UP:      self.h_scroll_line_up,
+            curses.KEY_LEFT:    self.h_scroll_line_up,
+            curses.KEY_DOWN:    self.h_scroll_line_down,
+            curses.KEY_RIGHT:   self.h_scroll_line_down,
+            curses.KEY_NPAGE:   self.h_scroll_page_down,
+            curses.KEY_PPAGE:   self.h_scroll_page_up,
+            curses.KEY_HOME:    self.h_show_beginning,
+            curses.KEY_END:     self.h_show_end,
+            curses.ascii.NL:    self.h_exit,
+            curses.ascii.CR:    self.h_exit,
+            curses.ascii.SP:    self.h_scroll_page_down,
+            curses.ascii.TAB:   self.h_exit,
+            ord('j'):           self.h_scroll_line_down,
+            ord('k'):           self.h_scroll_line_up,
+            ord('x'):           self.h_exit,
+            ord('q'):           self.h_exit,
+            ord('g'):           self.h_show_beginning,
+            ord('G'):           self.h_show_end,
+            curses.ascii.ESC:   self.h_exit_escape,
+        }
+        self.complex_handlers = []
 
     #@-others
 #@+node:ekr.20170428084208.143: ** class TitleMultiLine
