@@ -120,10 +120,24 @@ class InputHandler(object):
     def is_key_event(self, _input):
         # sys.stdout.write('\nhandle_input:' + repr(_input)) # EKR
         # sys.stdout.write('\nhandle_input:' + g.callers()) # EKR
-        return False ### Not ready yet.
+        return _input not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170428112815.1: *4* IH.do_leo_key
     def do_leo_key(self, _input):
-        return False
+
+        event = g.app.gui.LeoKeyEvent(
+            c = g.app.windowList[0],
+            char=_input,
+            event=None,
+            shortcut=None,
+            w=None, ###
+            x=None,
+            y=None,
+            x_root=None,
+            y_root=None,
+        )
+        assert event
+        # c.k.masterKeyHandler(event)
+        return True
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
     def set_up_handlers(self):
         """
