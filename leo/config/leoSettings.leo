@@ -2782,6 +2782,8 @@
 </v>
 </v>
 <v t="ekr.20150403055250.1"></v>
+<v t="ekr.20051007200824"></v>
+<v t="ekr.20060925060533.4"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4290,6 +4292,8 @@ delete-char                         !text = Delete
 delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
+# indent-region                     = Tab # Only when text is selected.
+indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
 newline-and-indent                  = Ctrl-j # same as tab.
@@ -4298,7 +4302,8 @@ paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
 unformat-paragraph                  = Shift-Ctrl-u
-unindent-region                     = Shift-tab
+unindent-region                     = ctrl-less # Ctrl-Shift-&lt;
+unindent-region                     = Shift-tab # Only when text is selected.
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>

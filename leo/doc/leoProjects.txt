@@ -151,6 +151,12 @@ Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
+.. @+node:ekr.20170328043328.1: *4* Added ctrl-shift < and > bindings
+@language rest
+@wrap
+
+These are bound to indent/unindent-region and can be used when no text is selected.
+.. @+node:ekr.20170427110630.1: *4* Restored default: @bool check_for_changed_external_files = True
 .. @+node:ekr.20170330083957.1: *4* Retired @bool allow_section_references_in_at_auto
 The disabled setting now contains this comment:
 
@@ -165,7 +171,6 @@ The disabled setting now contains this comment:
     without any complaint. As a result, there should be no problem if
     an imported code contains something that looks like a section
     reference but isn't.
-.. @+node:ekr.20170427110630.1: *4* Restored default: @bool check_for_changed_external_files = True
 .. @-all
 .. @@nosearch
 .. @@killbeautify
