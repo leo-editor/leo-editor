@@ -4371,7 +4371,7 @@ def IdleTime(handler, delay=500, tag=None):
                 timer.stop()
 
         # Execute handler every 500 msec. at idle time.
-        timer = g.IdleTime(c,handler,delay=500)
+        timer = g.IdleTime(handler,delay=500)
         if timer: timer.start()
 
     Timer instances are completely independent::
@@ -4390,8 +4390,8 @@ def IdleTime(handler, delay=500, tag=None):
                 g.trace('done')
                 timer.stop()
 
-        timer1 = g.IdleTime(c,handler1,delay=500)
-        timer2 = g.IdleTime(c,handler2,delay=1000)
+        timer1 = g.IdleTime(handler1,delay=500)
+        timer2 = g.IdleTime(handler2,delay=1000)
         if timer1 and timer2:
             timer1.start()
             timer2.start()
