@@ -877,6 +877,7 @@ class Commands(object):
     #@+node:ekr.20161022121036.1: *5* c.cloneFindMarkedHelper
     def cloneFindMarkedHelper(self, flatten):
         '''Helper for clone-find-marked commands.'''
+        c = self
 
         def isMarked(p):
             return p.isMarked()
@@ -886,8 +887,12 @@ class Commands(object):
             predicate = isMarked,
             failMsg = 'No marked nodes',
             flatten = flatten,
+            redraw = True,
             undoType = 'clone-find-marked',
         )
+        found = c.lastTopLevel()
+        c.selectPosition(found)
+        found.b = '# Found %s marked nodes' % found.numberOfChildren()
     #@+node:ekr.20031218072017.2861: *4* Edit Menu...
     #@+node:ekr.20031218072017.2862: *5* Edit top level
     #@+node:ekr.20031218072017.2090: *6* c.colorPanel
