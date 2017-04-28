@@ -4365,7 +4365,7 @@ def IdleTime(handler, delay=500, tag=None):
         def handler(timer):
             """IdleTime handler.  timer is an IdleTime instance."""
             delta_t = timer.time-timer.starting_time
-            g.trace(timer.count,timer.c.shortFileName(),'%2.4f' % (delta_t))
+            g.trace(timer.count, '%2.4f' % (delta_t))
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
@@ -4378,14 +4378,14 @@ def IdleTime(handler, delay=500, tag=None):
 
         def handler1(timer):
             delta_t = timer.time-timer.starting_time
-            g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
+            g.trace('%2s %2.4f' % (timer.count,delta_t))
             if timer.count >= 5:
                 g.trace('done')
                 timer.stop()
 
         def handler2(timer):
             delta_t = timer.time-timer.starting_time
-            g.trace('%2s %s %2.4f' % (timer.count,timer.c.shortFileName(),delta_t))
+            g.trace('%2s %2.4f' % (timer.count,delta_t))
             if timer.count >= 10:
                 g.trace('done')
                 timer.stop()
