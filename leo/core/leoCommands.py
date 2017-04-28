@@ -4629,7 +4629,7 @@ class Commands(object):
             c.setChanged(True)
             u.afterMoveNode(p, 'Move Down', undoData, dirtyVnodeList)
         c.redraw(p, setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        c.recolor_now(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1770: *6* c.moveOutlineLeft
     @cmd('move-outline-left')
     def moveOutlineLeft(self, event=None):
@@ -4661,7 +4661,7 @@ class Commands(object):
         if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
         c.redraw_now(p, setFocus=True)
-        c.recolor_now() # Moving can change syntax coloring.
+        c.recolor_now(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1771: *6* c.moveOutlineRight
     @cmd('move-outline-right')
     def moveOutlineRight(self, event=None):
@@ -4689,9 +4689,8 @@ class Commands(object):
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-        # g.trace(p)
         c.redraw_now(p, setFocus=True)
-        c.recolor_now()
+        c.recolor_now(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1772: *6* c.moveOutlineUp
     @cmd('move-outline-up')
     def moveOutlineUp(self, event=None):
@@ -4759,7 +4758,8 @@ class Commands(object):
             c.setChanged(True)
             u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
         c.redraw(p, setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        # c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        c.recolor_now(p)
     #@+node:ekr.20031218072017.1774: *6* c.promote
     @cmd('promote')
     def promote(self, event=None, undoFlag=True, redrawFlag=True):
@@ -5797,7 +5797,7 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
+    #@+node:ekr.20080514131122.12: *4* c.recolor (requestRecolor) and c.force_recolor
     def requestRecolor(self):
         c = self
         c.requestRecolorFlag = True
@@ -5805,15 +5805,10 @@ class Commands(object):
     recolor = requestRecolor
 
     @cmd('recolor')
-    def recolorCommand(self, event=None):
+    def force_recolor(self, event=None):
         '''Force a full recolor.'''
         c = self
-        wrapper = c.frame.body.wrapper
-        # Setting all text appears to be the only way.
-        i, j = wrapper.getSelectionRange()
-        ins = wrapper.getInsertPoint()
-        wrapper.setAllText(c.p.b)
-        wrapper.setSelectionRange(i, j, insert=ins)
+        c.recolor_now(p=c.p)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
@@ -5888,12 +5883,23 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
+    #@+node:ekr.20080514131122.13: *4* c.recolor_now
     def recolor_now(self, p=None, incremental=False, interruptable=True):
-        # Support QScintillaColorizer.colorize.
         c = self
+        if not p: p = c.p
         colorizer = c.frame.body.colorizer
-        if colorizer and hasattr(colorizer, 'colorize'):
+        if not colorizer:
+            return
+        if hasattr(colorizer, 'highlighter'):
+            # QSyntaxHighlighter.
+            highlighter = colorizer.highlighter
+            colorizer.updateSyntaxColorer(p)
+            colorizer.init_all_state(p.v)
+            colorizer.init(p)
+            if hasattr(highlighter, 'force_rehighlight'):
+                highlighter.force_rehighlight(p)
+        elif hasattr(colorizer, 'colorize'):
+            # Scintilla.
             colorizer.colorize(p or c.p)
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):

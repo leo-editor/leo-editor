@@ -32,6 +32,13 @@ Made several changes to find.batchChange.
 .. @+node:ekr.20170402035751.1: *4* #458: Chapters drop-down list is not automatically resized
 https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
+.. @+node:ekr.20170428063311.1: *4* #466: Moving a node can cause temporary coloring issues
+https://github.com/leo-editor/leo-editor/issues/466
+
+- Added LeoHighlighter.force_rehighlight.
+- Rewrote 'recolor' command (c.force_recolor).
+- Rewrote c.recolor_now.
+- Added calls to c.recolor_now to c.moveOutline*.
 .. @+node:ekr.20170411072038.1: *4* #471: UnicodeDecodeError in writeRecentFilesFileHelper
 UnicodeDecodeError in writeRecentFilesFileHelper
 https://github.com/leo-editor/leo-editor/issues/471
