@@ -1,34 +1,45 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.324: * @file ../external/npyscreen/muMenu.py
 #!/usr/bin/python
 # encoding: utf-8
 
-import sys
-import os
+#@+others
+#@+node:ekr.20170428084207.325: ** Declarations
+# import sys
+# import os
 from . import wgmultiline
 from . import fmForm
-import weakref
+# import weakref
 
 
+#@+node:ekr.20170428084207.326: ** class Menu
 class Menu(object):
     "This class is obsolete and Depricated.  Use NewMenu instead."
 
+    #@+others
+    #@+node:ekr.20170428084207.327: *3* __init__
     def __init__(self, name=None, show_atx=None, show_aty=None):
         self.__menu_items = []
         self.name = name
         self.__show_atx = show_atx
         self.__show_aty = show_aty
         
+    #@+node:ekr.20170428084207.328: *3* before_item_select
     def before_item_select(self):
         pass
         
+    #@+node:ekr.20170428084207.329: *3* add_item
     def add_item(self, text, func):
         self.__menu_items.append((text, func))
-    
+
+    #@+node:ekr.20170428084207.330: *3* set_menu
     def set_menu(self, pairs):
         """Pass in a list of pairs of text labels and functions"""
         self.__menu_items = []
         for pair in pairs:
             self.add_item(pair[0], pair[1])
         
+    #@+node:ekr.20170428084207.331: *3* edit
     def edit(self, *args, **keywords):
         """Display choice to user, execute function associated"""
         
@@ -68,3 +79,8 @@ class Menu(object):
             self.before_item_select()
             self.__menu_items[l.value][1]()
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

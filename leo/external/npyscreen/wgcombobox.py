@@ -1,14 +1,21 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.561: * @file ../external/npyscreen/wgcombobox.py
 #!/usr/bin/env python
+#@+others
+#@+node:ekr.20170428084207.562: ** Declarations
 import curses
 
 from . import wgtextbox     as textbox
 from . import wgmultiline   as multiline
-from . import fmForm        as Form
+# from . import fmForm        as Form
 from . import fmPopup       as Popup
 from . import wgtitlefield  as titlefield
 
+#@+node:ekr.20170428084207.563: ** class ComboBox
 class ComboBox(textbox.Textfield):
     ENSURE_STRING_VALUE = False
+    #@+others
+    #@+node:ekr.20170428084207.564: *3* __init__
     def __init__(self, screen, value = None, values=None,**keywords):
         self.values = values or []
         self.value = value or None
@@ -16,15 +23,18 @@ class ComboBox(textbox.Textfield):
             self.value = 0
         super(ComboBox, self).__init__(screen, **keywords)
         
+    #@+node:ekr.20170428084207.565: *3* display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
 Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
+    #@+node:ekr.20170428084207.566: *3* update
     def update(self, **keywords):
         keywords.update({'cursor': False})
         super(ComboBox, self).update(**keywords)
-    
+
+    #@+node:ekr.20170428084207.567: *3* _print
     def _print(self):
         if self.value == None or self.value is '':
             printme = '-unset-'
@@ -39,10 +49,12 @@ Should accept one argument (the object to be represented), and return a string."
             self.parent.curses_pad.addnstr(self.rely, self.relx, printme, self.width)
 
 
+    #@+node:ekr.20170428084207.568: *3* edit
     def edit(self):
         #We'll just use the widget one
         super(textbox.Textfield, self).edit()
-    
+
+    #@+node:ekr.20170428084207.569: *3* set_up_handlers
     def set_up_handlers(self):
         super(textbox.Textfield, self).set_up_handlers()
 
@@ -56,7 +68,8 @@ Should accept one argument (the object to be represented), and return a string."
                       ord('h'):         self.h_exit_left,
                       ord('l'):         self.h_exit_right,                      
                       })
-    
+
+    #@+node:ekr.20170428084207.570: *3* h_change_value
     def h_change_value(self, input):
         "Pop up a window in which to select the values for the field"
         F = Popup.Popup(name = self.name)
@@ -69,9 +82,13 @@ Should accept one argument (the object to be represented), and return a string."
         self.value = l.value
 
 
+    #@-others
+#@+node:ekr.20170428084207.571: ** class TitleCombo
 class TitleCombo(titlefield.TitleText):
     _entry_type = ComboBox
     
+    #@+others
+    #@+node:ekr.20170428084207.572: *3* get_values
     def get_values(self):
         try:
             return self.entry_widget.values
@@ -80,7 +97,8 @@ class TitleCombo(titlefield.TitleText):
                 return self.__tmp_values
             except:
                 return None
-    
+
+    #@+node:ekr.20170428084207.573: *3* set_values
     def set_values(self, values):
         try:
             self.entry_widget.values = values
@@ -88,8 +106,14 @@ class TitleCombo(titlefield.TitleText):
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = values
             
+    #@+node:ekr.20170428084207.574: *3* del_values
     def del_values(self):
         del self.entry_widget.values
 
     values = property(get_values, set_values, del_values)
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

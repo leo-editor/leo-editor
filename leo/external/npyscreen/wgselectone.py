@@ -1,9 +1,16 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.290: * @file ../external/npyscreen/wgselectone.py
+#@+others
+#@+node:ekr.20170428084208.291: ** Declarations
 from . import wgmultiline  as multiline
 from . import wgcheckbox   as checkbox
 
+#@+node:ekr.20170428084208.292: ** class SelectOne
 class SelectOne(multiline.MultiLine):
     _contained_widgets = checkbox.RoundCheckBox
     
+    #@+others
+    #@+node:ekr.20170428084208.293: *3* update
     def update(self, clear=True):
         if self.hidden:
             self.clear()
@@ -17,9 +24,11 @@ class SelectOne(multiline.MultiLine):
                 
         super(SelectOne, self).update(clear=clear)
 
+    #@+node:ekr.20170428084208.294: *3* h_select
     def h_select(self, ch):
         self.value = [self.cursor_line,]
 
+    #@+node:ekr.20170428084208.295: *3* _print_line
     def _print_line(self, line, value_indexer):
         try:
             display_this = self.display_value(self.values[value_indexer])
@@ -53,6 +62,12 @@ class SelectOne(multiline.MultiLine):
 
         line.highlight= False
         
+    #@-others
+#@+node:ekr.20170428084208.296: ** class TitleSelectOne
 class TitleSelectOne(multiline.TitleMultiLine):
     _entry_type = SelectOne
     
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

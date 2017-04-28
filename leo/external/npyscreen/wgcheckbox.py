@@ -1,12 +1,19 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.536: * @file ../external/npyscreen/wgcheckbox.py
 #!/usr/bin/python
 
+#@+others
+#@+node:ekr.20170428084207.537: ** Declarations
 from .wgtextbox   import Textfield
 from .wgwidget    import Widget
 #from .wgmultiline import MultiLine
 from . import wgwidget as widget
 import curses
 
+#@+node:ekr.20170428084207.538: ** class _ToggleControl
 class _ToggleControl(Widget):
+    #@+others
+    #@+node:ekr.20170428084207.539: *3* set_up_handlers
     def set_up_handlers(self):
         super(_ToggleControl, self).set_up_handlers()
         
@@ -20,17 +27,20 @@ class _ToggleControl(Widget):
                 ord('h'):        self.h_exit_left,
                 ord('l'):        self.h_exit_right,                      
             })
-    
+
+    #@+node:ekr.20170428084207.540: *3* h_toggle
     def h_toggle(self, ch):
         if self.value is False or self.value is None or self.value == 0: 
             self.value = True
         else: 
             self.value = False
         self.whenToggled()
-    
+
+    #@+node:ekr.20170428084207.541: *3* whenToggled
     def whenToggled(self):
         pass
-    
+
+    #@+node:ekr.20170428084207.542: *3* h_select_exit
     def h_select_exit(self, ch):
         if not self.value:
             self.h_toggle(ch)
@@ -38,18 +48,24 @@ class _ToggleControl(Widget):
         self.how_exited = widget.EXITED_DOWN
 
 
+    #@-others
+#@+node:ekr.20170428084207.543: ** class CheckboxBare
 class CheckboxBare(_ToggleControl):
     False_box = '[ ]'
     True_box  = '[X]'
     
+    #@+others
+    #@+node:ekr.20170428084207.544: *3* __init__
     def __init__(self, screen, value = False, **keywords):
         super(CheckboxBare, self).__init__(screen, **keywords)
         self.value = value
         self.hide  = False
-    
+
+    #@+node:ekr.20170428084207.545: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 1, 4
-    
+
+    #@+node:ekr.20170428084207.546: *3* update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:
@@ -78,14 +94,18 @@ class CheckboxBare(_ToggleControl):
                 self.parent.curses_pad.addstr(self.rely,  self.relx + 1, curses.A_STANDOUT)
             
             
-    
-    
 
 
+
+
+    #@-others
+#@+node:ekr.20170428084207.547: ** class Checkbox
 class Checkbox(_ToggleControl):
     False_box = '[ ]'
     True_box  = '[X]'
     
+    #@+others
+    #@+node:ekr.20170428084207.548: *3* __init__
     def __init__(self, screen, value = False, **keywords):
         self.value = value
         super(Checkbox, self).__init__(screen, **keywords)
@@ -98,6 +118,7 @@ class Checkbox(_ToggleControl):
         self.important = False
         self.hide      = False
         
+    #@+node:ekr.20170428084207.549: *3* _create_label_area
     def _create_label_area(self, screen):
         l_a_width = self.width - 5
         
@@ -108,6 +129,7 @@ class Checkbox(_ToggleControl):
                       width=self.width-5, value=self.name)
         
 
+    #@+node:ekr.20170428084207.550: *3* update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:
@@ -127,10 +149,12 @@ class Checkbox(_ToggleControl):
 
         self._update_label_area()
 
+    #@+node:ekr.20170428084207.551: *3* _update_label_area
     def _update_label_area(self, clear=True):
         self.label_area.value = self.name
         self._update_label_row_attributes(self.label_area, clear=clear)
-    
+
+    #@+node:ekr.20170428084207.552: *3* _update_label_row_attributes
     def _update_label_row_attributes(self, row, clear=True):
         if self.editing:
             row.highlight = True
@@ -154,18 +178,25 @@ class Checkbox(_ToggleControl):
 
         row.update(clear=clear)
         
+    #@+node:ekr.20170428084207.553: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 1,0
 
+    #@-others
+#@+node:ekr.20170428084207.554: ** class CheckBox
 class CheckBox(Checkbox):
     pass
 
    
+#@+node:ekr.20170428084207.555: ** class RoundCheckBox
 class RoundCheckBox(Checkbox):
     False_box = '( )'
     True_box  = '(X)'
     
+#@+node:ekr.20170428084207.556: ** class CheckBoxMultiline
 class CheckBoxMultiline(Checkbox):
+    #@+others
+    #@+node:ekr.20170428084207.557: *3* _create_label_area
     def _create_label_area(self, screen):    
         self.label_area = []
         for y in range(self.height):
@@ -175,7 +206,8 @@ class CheckBoxMultiline(Checkbox):
                            width=self.width-5, 
                            value=None) 
             )
-    
+
+    #@+node:ekr.20170428084207.558: *3* _update_label_area
     def _update_label_area(self, clear=True):
         for x in range(len(self.label_area)):
             if x >= len(self.name):
@@ -186,11 +218,18 @@ class CheckBoxMultiline(Checkbox):
                 self.label_area[x].hidden = False
                 self._update_label_row_attributes(self.label_area[x], clear=clear)
                 
+    #@+node:ekr.20170428084207.559: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
         
+    #@-others
+#@+node:ekr.20170428084207.560: ** class RoundCheckBoxMultiline
 class RoundCheckBoxMultiline(CheckBoxMultiline):
     False_box = '( )'
     True_box  = '(X)'
     
 
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

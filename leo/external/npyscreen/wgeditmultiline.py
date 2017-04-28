@@ -1,4 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.586: * @file ../external/npyscreen/wgeditmultiline.py
 #!/usr/bin/python
+
+#@+others
+#@+node:ekr.20170428084207.587: ** Declarations
 from . import wgwidget    as widget
 from . import npysGlobalOptions as GlobalOptions
 import locale
@@ -6,10 +11,13 @@ import sys
 import curses
 import textwrap
 import re
-from functools import reduce
+# from functools import reduce
 
+#@+node:ekr.20170428084207.588: ** class MultiLineEdit
 class MultiLineEdit(widget.Widget):
     _SAFE_STRING_STRIPS_NL = False
+    #@+others
+    #@+node:ekr.20170428084207.589: *3* __init__
     def __init__(self, screen, autowrap=True, slow_scroll=True, scroll_exit=True, value=None, **keywords):
         self.value = value or ''
         super(MultiLineEdit, self).__init__(screen, **keywords)
@@ -30,6 +38,7 @@ class MultiLineEdit(widget.Widget):
             self._force_ascii = False
 
 
+    #@+node:ekr.20170428084207.590: *3* safe_filter
     def safe_filter(self, this_string):
         s = []
         for cha in this_string:   #.replace('\n', ''): Not of this widget
@@ -45,6 +54,7 @@ class MultiLineEdit(widget.Widget):
         
 
 
+    #@+node:ekr.20170428084207.591: *3* get_value_as_list
     def get_value_as_list(self, upto=None, keepends=False, useEncoding=True):
         if useEncoding:
             text_to_print = self.safe_string(self.value)
@@ -60,6 +70,7 @@ class MultiLineEdit(widget.Widget):
             lines = text.splitlines()
         return lines
 
+    #@+node:ekr.20170428084207.592: *3* translate_cursor
     def translate_cursor(self, y):
         """Translate cursor position from point in a str to y,x on in widget (you'll need to add in rely, relx yourself)"""
         if self.value == "": return 0,0
@@ -74,9 +85,11 @@ class MultiLineEdit(widget.Widget):
             x = 0
         return y, x
             
+    #@+node:ekr.20170428084207.593: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
 
+    #@+node:ekr.20170428084207.594: *3* update
     def update(self, clear=True):
         if clear: self.clear()
         display_length = self.maximum_display_height
@@ -87,7 +100,7 @@ class MultiLineEdit(widget.Widget):
         if self.cursor_position > len(self.value): self.cursor_position = len(self.value)
 
         self.cursory, self.cursorx = self.translate_cursor(self.cursor_position)
-    
+
         if self.editing:
             if self.slow_scroll:
                 if self.cursory > self.start_display_at+display_length-1:
@@ -109,7 +122,7 @@ class MultiLineEdit(widget.Widget):
             if self.cursorx > display_width:
                 xdisplay_offset = self.cursorx - display_width
         
-        max_display = len(text_to_display[self.start_display_at:])
+        # max_display = len(text_to_display[self.start_display_at:])
 
         for line_counter in range(self.height):
             if line_counter >= len(text_to_display)-self.start_display_at: 
@@ -179,6 +192,7 @@ class MultiLineEdit(widget.Widget):
             else:
                 self.parent.curses_pad.addstr(self.rely + _cur_y - self.start_display_at, _cur_x - xdisplay_offset + self.relx, char_under_cur, curses.A_STANDOUT)
             
+    #@+node:ekr.20170428084207.595: *3* _print_unicode_char
     def _print_unicode_char(self, ch):
         # return the ch to print.  For python 3 this is just ch
         if self._force_ascii:
@@ -188,6 +202,7 @@ class MultiLineEdit(widget.Widget):
         else:
             return ch.encode('utf-8', 'strict')
 
+    #@+node:ekr.20170428084207.596: *3* reformat_preserve_nl
     def reformat_preserve_nl(self, *ignorethese):
         # Adapted from a script found at:
         #http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/148061
@@ -223,6 +238,7 @@ class MultiLineEdit(widget.Widget):
 
 
 
+    #@+node:ekr.20170428084207.597: *3* full_reformat
     def full_reformat(self, *args):
         w = DocWrapper(width=self.maximum_display_width)
         self.value = w.fill(self.value)
@@ -238,11 +254,12 @@ class MultiLineEdit(widget.Widget):
 
         
     ######################################################################
+    #@+node:ekr.20170428084207.598: *3* set_up_handlers
     def set_up_handlers(self):
         super(MultiLineEdit, self).set_up_handlers()    
-    
+
         # For OS X
-        del_key = curses.ascii.alt('~')
+        # del_key = curses.ascii.alt('~')
         
         self.handlers.update({
                    curses.ascii.NL:    self.h_add_nl,
@@ -268,7 +285,8 @@ class MultiLineEdit(widget.Widget):
                     # (self.t_is_cu, self.h_erase_left),
                         ))
 
-    
+
+    #@+node:ekr.20170428084207.599: *3* h_addch
     def h_addch(self, inp):
         if self.editable:
             if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
@@ -289,7 +307,8 @@ class MultiLineEdit(widget.Widget):
             return False
         if self.autowrap:
             self.reformat_preserve_nl()
-    
+
+    #@+node:ekr.20170428084207.600: *3* t_input_isprint
     def t_input_isprint(self, inp):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
             return True
@@ -299,6 +318,7 @@ class MultiLineEdit(widget.Widget):
         
         else: return False
 
+    #@+node:ekr.20170428084207.601: *3* h_addch_disabled
     def h_addch_disabled(self, input):
         """Add printable characters.  However, do NOT add newlines with this function"""
         if not self.editable: return False
@@ -309,7 +329,8 @@ class MultiLineEdit(widget.Widget):
         if self.autowrap:
             self.reformat_preserve_nl()
 
-    
+
+    #@+node:ekr.20170428084207.602: *3* h_line_down
     def h_line_down(self, input):
         end_this_line = self.value.find("\n", self.cursor_position) 
         if end_this_line == -1:
@@ -328,6 +349,7 @@ class MultiLineEdit(widget.Widget):
                     self.cursor_position += 1
             
 
+    #@+node:ekr.20170428084207.603: *3* h_line_up
     def h_line_up(self, input):
         end_last_line = self.value.rfind("\n", 0, self.cursor_position) 
         if end_last_line == -1:
@@ -344,31 +366,40 @@ class MultiLineEdit(widget.Widget):
                 if self.value[self.cursor_position] == "\n":
                     self.cursor_position += 1 
     # Bug somewhere here when dealing with empty lines.
+    #@+node:ekr.20170428084207.604: *3* h_add_nl
     def h_add_nl(self, input):
         self.value = self.value[:self.cursor_position] + "\n" + self.value[self.cursor_position:]
         self.cursor_position += 1
 
+    #@+node:ekr.20170428084207.605: *3* h_cursor_left
     def h_cursor_left(self, input):
         if self.cursor_position > 0: 
             self.cursor_position -= 1
         
 
+    #@+node:ekr.20170428084207.606: *3* h_cursor_right
     def h_cursor_right(self, input):
         self.cursor_position += 1
 
+    #@+node:ekr.20170428084207.607: *3* h_delete_left
     def h_delete_left(self, input):
         if self.editable and self.cursor_position > 0:
             self.value = self.value[:self.cursor_position-1] + self.value[self.cursor_position:]
         
         self.cursor_position -= 1
 
+    #@+node:ekr.20170428084207.608: *3* h_delete_right
     def h_delete_right(self, input):
         if self.editable:
             self.value = self.value[:self.cursor_position] + self.value[self.cursor_position+1:]
 
+    #@-others
+#@+node:ekr.20170428084207.609: ** class DocWrapper
 class DocWrapper(textwrap.TextWrapper):
     """Wrap text in a document, processing each paragraph individually"""
     # Code from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/358228
+    #@+others
+    #@+node:ekr.20170428084207.610: *3* wrap
     def wrap(self, text):
         """Override textwrap.TextWrapper to process 'text' properly when
         multiple paragraphs present"""
@@ -393,3 +424,8 @@ class DocWrapper(textwrap.TextWrapper):
         return wrapped_lines
 
         
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

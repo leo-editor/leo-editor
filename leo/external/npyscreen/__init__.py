@@ -1,6 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.443: * @file ../external/npyscreen/__init__.py
 #!/usr/bin/python
-
-from .globals                    import DEBUG, DISABLE_RESIZE_SYSTEM
+#@+others
+#@+node:ekr.20170428084208.444: ** Declarations
+from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
 
 from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
 
@@ -113,3 +116,7 @@ from .apNPSApplicationEvents import StandardApp
 from .eveventhandler import Event
 
 
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

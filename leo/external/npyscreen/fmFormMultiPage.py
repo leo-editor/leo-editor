@@ -1,25 +1,34 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.223: * @file ../external/npyscreen/fmFormMultiPage.py
 ## Very, very experimental. Do NOT USE.
+#@+others
+#@+node:ekr.20170428084207.224: ** Declarations
 import curses
 from .         import fmForm
 from .wgwidget import NotEnoughSpaceForWidget
 from .         import wgNMenuDisplay
 
 
+#@+node:ekr.20170428084207.225: ** class FormMultiPage
 class FormMultiPage(fmForm.FormBaseNew):
     page_info_pre_pages_display = '[ '
     page_info_post_pages_display = ' ]'
     page_info_pages_name = 'Page'
     page_info_out_of     = 'of'
+    #@+others
+    #@+node:ekr.20170428084207.226: *3* __init__
     def __init__(self, display_pages=True, pages_label_color='NORMAL', *args, **keywords):
         self.display_pages = display_pages
         self.pages_label_color = pages_label_color
         super(FormMultiPage, self).__init__(*args, **keywords)
         self.switch_page(0)
-    
+
+    #@+node:ekr.20170428084207.227: *3* draw_form
     def draw_form(self, *args, **keywords):
         super(FormMultiPage, self).draw_form(*args, **keywords)
         self.display_page_number()
-    
+
+    #@+node:ekr.20170428084207.228: *3* _resize
     def _resize(self, *args):
         if not self.ALLOW_RESIZE:
             return False
@@ -33,8 +42,9 @@ class FormMultiPage(fmForm.FormBaseNew):
             for w in page:
                 w._resize()
         self.DISPLAY()
-    
-    
+
+
+    #@+node:ekr.20170428084207.229: *3* display_page_number
     def display_page_number(self):
         if not self.display_pages:
             return False
@@ -68,7 +78,8 @@ class FormMultiPage(fmForm.FormBaseNew):
                 maxx - len(display_text) - 2,
             )
         
-    
+
+    #@+node:ekr.20170428084207.230: *3* add_widget_intelligent
     def add_widget_intelligent(self, *args, **keywords):
         try:
             return self.add_widget(*args, **keywords)
@@ -76,20 +87,23 @@ class FormMultiPage(fmForm.FormBaseNew):
             self.add_page()
             return self.add_widget(*args, **keywords)
             
-    
+
+    #@+node:ekr.20170428084207.231: *3* _clear_all_widgets
     def _clear_all_widgets(self,):
         super(FormMultiPage, self)._clear_all_widgets()
         self._pages__     = [ [],]
         self._active_page = 0
         self.switch_page(self._active_page, display=False)
-    
+
+    #@+node:ekr.20170428084207.232: *3* switch_page
     def switch_page(self, page, display=True):
         self._widgets__ = self._pages__[page]
         self._active_page = page
         self.editw = 0
         if display:
             self.display(clear=True)
-    
+
+    #@+node:ekr.20170428084207.233: *3* add_page
     def add_page(self):
         self._pages__.append([])
         page_number   = len(self._pages__)-1
@@ -97,7 +111,8 @@ class FormMultiPage(fmForm.FormBaseNew):
         self.nextrelx = self.DEFAULT_X_OFFSET
         self.switch_page(page_number, display=False)
         return page_number
-    
+
+    #@+node:ekr.20170428084207.234: *3* find_next_editable
     def find_next_editable(self, *args):
         if not self.editw == len(self._widgets__):
             value_changed = False
@@ -114,8 +129,9 @@ class FormMultiPage(fmForm.FormBaseNew):
                 if self._active_page < len(self._pages__)-1:
                     self.switch_page(self._active_page + 1)
         self.display()
-    
-    
+
+
+    #@+node:ekr.20170428084207.235: *3* find_previous_editable
     def find_previous_editable(self, *args):
         if self.editw == 0:
             if self._active_page > 0:
@@ -130,17 +146,23 @@ class FormMultiPage(fmForm.FormBaseNew):
                     break
                     
                     
+    #@-others
+#@+node:ekr.20170428084207.236: ** class FormMultiPageAction
 class FormMultiPageAction(FormMultiPage):
     CANCEL_BUTTON_BR_OFFSET = (2, 12)
     OK_BUTTON_TEXT          = "OK"
     CANCEL_BUTTON_TEXT      = "Cancel"
     
+    #@+others
+    #@+node:ekr.20170428084207.237: *3* on_ok
     def on_ok(self):
         pass
-    
+
+    #@+node:ekr.20170428084207.238: *3* on_cancel
     def on_cancel(self):
         pass
-    
+
+    #@+node:ekr.20170428084207.239: *3* pre_edit_loop
     def pre_edit_loop(self):
         self._page_for_buttons = len(self._pages__)-1
         self.switch_page(self._page_for_buttons)
@@ -166,21 +188,24 @@ class FormMultiPageAction(FormMultiPage):
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.switch_page(0)
         
+    #@+node:ekr.20170428084207.240: *3* _during_edit_loop
     def _during_edit_loop(self):
         if self.ok_button.value or self.c_button.value:
             self.editing = False
-    
+
         if self.ok_button.value:
             self.ok_button.value = False
             self.edit_return_value = self.on_ok()
         elif self.c_button.value:
             self.c_button.value = False
             self.edit_return_value = self.on_cancel()
-    
+
+    #@+node:ekr.20170428084207.241: *3* resize
     def resize(self):
         super(FormMultiPageAction, self).resize()
         self.move_ok_button()
           
+    #@+node:ekr.20170428084207.242: *3* move_ok_button
     def move_ok_button(self):
         if hasattr(self, 'ok_button'):
             my, mx = self.curses_pad.getmaxyx()
@@ -195,8 +220,9 @@ class FormMultiPageAction(FormMultiPage):
             cmx -= len(c_button_text)+self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
             self.c_button.rely = cmy
             self.c_button.relx = cmx
-    
-    
+
+
+    #@+node:ekr.20170428084207.243: *3* post_edit_loop
     def post_edit_loop(self):
         self.switch_page(self._page_for_buttons)
         self.ok_button.destroy()
@@ -212,12 +238,25 @@ class FormMultiPageAction(FormMultiPage):
         return self.edit_return_value
 
 
+    #@-others
+#@+node:ekr.20170428084207.244: ** class FormMultiPageWithMenus
 class FormMultiPageWithMenus(FormMultiPage, wgNMenuDisplay.HasMenus):
+    #@+others
+    #@+node:ekr.20170428084207.245: *3* __init__
     def __init__(self, *args, **keywords):
         super(FormMultiPageWithMenus, self).__init__(*args, **keywords)
         self.initialize_menus()
 
+    #@-others
+#@+node:ekr.20170428084207.246: ** class FormMultiPageActionWithMenus
 class FormMultiPageActionWithMenus(FormMultiPageAction, wgNMenuDisplay.HasMenus):
+    #@+others
+    #@+node:ekr.20170428084207.247: *3* __init__
     def __init__(self, *args, **keywords):
         super(FormMultiPageActionWithMenus, self).__init__(*args, **keywords)
         self.initialize_menus()
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

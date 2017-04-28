@@ -1,5 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.311: * @file ../external/npyscreen/fm_form_edit_loop.py
 #!/usr/bin/env python
 # encoding: utf-8
+#@+others
+#@+node:ekr.20170428084207.312: ** Declarations
 """
 form_edit_loop.py
 
@@ -7,19 +11,25 @@ Created by Nicholas Cole on 2008-03-31.
 Copyright (c) 2008 __MyCompanyName__. All rights reserved.
 """
 
-import sys
-import os
+# import sys
+# import os
 import weakref
 
+#@+node:ekr.20170428084207.313: ** class FormNewEditLoop
 class FormNewEditLoop(object):
     "Edit Fields .editing = False"
+    #@+others
+    #@+node:ekr.20170428084207.314: *3* pre_edit_loop
     def pre_edit_loop(self):
         pass
+    #@+node:ekr.20170428084207.315: *3* post_edit_loop
     def post_edit_loop(self):
         pass
+    #@+node:ekr.20170428084207.316: *3* _during_edit_loop
     def _during_edit_loop(self):
         pass
-    
+
+    #@+node:ekr.20170428084207.317: *3* edit_loop
     def edit_loop(self):
         self.editing = True
         self.display()
@@ -42,12 +52,17 @@ class FormNewEditLoop(object):
 
             if self.editw > len(self._widgets__)-1: self.editw = len(self._widgets__)-1
         
+    #@+node:ekr.20170428084207.318: *3* edit
     def edit(self):
         self.pre_edit_loop()
         self.edit_loop()
         self.post_edit_loop()
 
+    #@-others
+#@+node:ekr.20170428084207.319: ** class FormDefaultEditLoop
 class FormDefaultEditLoop(object):
+    #@+others
+    #@+node:ekr.20170428084207.320: *3* edit
     def edit(self):
         """Edit the fields until the user selects the ok button added in the lower right corner. Button will
         be removed when editing finishes"""
@@ -106,7 +121,8 @@ class FormDefaultEditLoop(object):
 
         self.editing = False
         self.erase()
-    
+
+    #@+node:ekr.20170428084207.321: *3* move_ok_button
     def move_ok_button(self):
         if hasattr(self, 'ok_button'):
             my, mx = self.curses_pad.getmaxyx()
@@ -116,4 +132,9 @@ class FormDefaultEditLoop(object):
             self.ok_button.rely = my
 
 
-    
+
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

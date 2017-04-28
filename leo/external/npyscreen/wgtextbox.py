@@ -1,4 +1,8 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
 #!/usr/bin/python
+#@+others
+#@+node:ekr.20170428084208.319: ** Declarations
 import curses
 import curses.ascii
 import sys
@@ -7,8 +11,11 @@ import locale
 from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
 
+#@+node:ekr.20170428084208.320: ** class TextfieldBase
 class TextfieldBase(widget.Widget):
     ENSURE_STRING_VALUE = True
+    #@+others
+    #@+node:ekr.20170428084208.321: *3* __init__
     def __init__(self, screen, value='', highlight_color='CURSOR', highlight_whole_widget=False,
         invert_highlight_color=True,
         **keywords):
@@ -39,24 +46,28 @@ class TextfieldBase(widget.Widget):
         self.left_margin = 0
         
         self.begin_at = 0   # Where does the display string begin?
-    
+
         self.set_text_widths()
         self.update()
         
+    #@+node:ekr.20170428084208.322: *3* set_text_widths
     def set_text_widths(self):
         if self.on_last_line:
             self.maximum_string_length = self.width - 2  # Leave room for the cursor
         else:   
             self.maximum_string_length = self.width - 1  # Leave room for the cursor at the end of the string.
 
+    #@+node:ekr.20170428084208.323: *3* resize
     def resize(self):
         self.set_text_widths()
 
-    
+
+    #@+node:ekr.20170428084208.324: *3* calculate_area_needed
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
         return 1,0
 
+    #@+node:ekr.20170428084208.325: *3* update
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # cursor not working. See later for a fake cursor
@@ -141,17 +152,18 @@ class TextfieldBase(widget.Widget):
         self.parent.curses_pad.attrset(0)
         if self.editing and cursor:
             self.print_cursor()
-    
+
+    #@+node:ekr.20170428084208.326: *3* print_cursor
     def print_cursor(self):
         # This needs fixing for Unicode multi-width chars.
 
         # Cursors do not seem to work on pads.
-        #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
+            #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
         # let's have a fake cursor
-        _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
+            # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         # The following two lines work fine for ascii, but not for unicode
-        #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
-        #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
+            #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
+            #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
         #The following appears to work for unicode as well.
         try:
             #char_under_cur = self.value[self.cursor_position] #use the real value
@@ -165,16 +177,15 @@ class TextfieldBase(widget.Widget):
             self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, self.parent.theme_manager.findPair(self, 'CURSOR_INVERSE'))
         else:
             self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, curses.A_STANDOUT)
-            
-
+    #@+node:ekr.20170428084208.327: *3* print_cursor_pre_unicode
     def print_cursor_pre_unicode(self):
         # Cursors do not seem to work on pads.
-        #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
+            #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
         # let's have a fake cursor
-        _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
+            # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         # The following two lines work fine for ascii, but not for unicode
-        #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
-        #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
+            #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
+            #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
         #The following appears to work for unicode as well.
         try:
             char_under_cur = self.display_value(self.value)[self.cursor_position]
@@ -184,6 +195,7 @@ class TextfieldBase(widget.Widget):
         self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, curses.A_STANDOUT)
         
 
+    #@+node:ekr.20170428084208.328: *3* display_value
     def display_value(self, value):
         if value == None:
             return ''
@@ -197,10 +209,12 @@ class TextfieldBase(widget.Widget):
                 return ">*ERROR*ERROR*ERROR*<"
             return self.safe_string(str_value)
 
-    
+
+    #@+node:ekr.20170428084208.329: *3* find_width_of_char
     def find_width_of_char(self, ch):
         return 1
-    
+
+    #@+node:ekr.20170428084208.330: *3* _print_unicode_char
     def _print_unicode_char(self, ch):
         # return the ch to print.  For python 3 this is just ch
         if self._force_ascii:
@@ -209,7 +223,8 @@ class TextfieldBase(widget.Widget):
             return ch
         else:
             return ch.encode('utf-8', 'strict')
-    
+
+    #@+node:ekr.20170428084208.331: *3* _get_string_to_print
     def _get_string_to_print(self):
         string_to_print = self.display_value(self.value)
         if not string_to_print:
@@ -225,8 +240,9 @@ class TextfieldBase(widget.Widget):
                 dv = dv.decode(self.encoding, 'replace')
             string_to_print = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         return string_to_print
-    
-    
+
+
+    #@+node:ekr.20170428084208.332: *3* _print
     def _print(self):
         string_to_print = self._get_string_to_print()
         if not string_to_print:
@@ -300,11 +316,12 @@ class TextfieldBase(widget.Widget):
                     )
                 column += width_of_char_to_print
                 place_in_string += 1
-    
-    
-    
-    
-    
+
+
+
+
+
+    #@+node:ekr.20170428084208.333: *3* _print_pre_unicode
     def _print_pre_unicode(self):
         # This method was used to print the string before we became interested in unicode.
         
@@ -348,15 +365,21 @@ class TextfieldBase(widget.Widget):
             else:
                 self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, 
                     string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])
-    
+
+    #@+node:ekr.20170428084208.334: *3* update_highlighting
     def update_highlighting(self, start=None, end=None, clear=False):
         if clear or (self._highlightingdata == None):
             self._highlightingdata = []
         
-        string_to_print = self.display_value(self.value)
+        # string_to_print = self.display_value(self.value)
+        self.display_value(self.value)
 
 
+    #@-others
+#@+node:ekr.20170428084208.335: ** class Textfield
 class Textfield(TextfieldBase):
+    #@+others
+    #@+node:ekr.20170428084208.336: *3* show_brief_message
     def show_brief_message(self, message):
         curses.beep()
         keep_for_a_moment = self.value
@@ -368,6 +391,7 @@ class Textfield(TextfieldBase):
         self.value = keep_for_a_moment
         
 
+    #@+node:ekr.20170428084208.337: *3* edit
     def edit(self):
         self.editing = 1
         if self.cursor_position is False:
@@ -390,11 +414,12 @@ class Textfield(TextfieldBase):
     ###########################################################################################
     # Handlers and methods
 
+    #@+node:ekr.20170428084208.338: *3* set_up_handlers
     def set_up_handlers(self):
         super(Textfield, self).set_up_handlers()    
-    
+
         # For OS X
-        del_key = curses.ascii.alt('~')
+        # del_key = curses.ascii.alt('~')
         
         self.handlers.update({curses.KEY_LEFT:    self.h_cursor_left,
                            curses.KEY_RIGHT:   self.h_cursor_right,
@@ -414,6 +439,7 @@ class Textfield(TextfieldBase):
                         # (self.t_is_cu, self.h_erase_left),
                         ))
 
+    #@+node:ekr.20170428084208.339: *3* t_input_isprint
     def t_input_isprint(self, inp):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
             return True
@@ -424,6 +450,7 @@ class Textfield(TextfieldBase):
             return False
         
         
+    #@+node:ekr.20170428084208.340: *3* h_addch
     def h_addch(self, inp):
         if self.editable:
             #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
@@ -451,12 +478,15 @@ class Textfield(TextfieldBase):
             #   + self.value[self.cursor_position:]
             #self.cursor_position += len(curses.ascii.unctrl(input))
 
+    #@+node:ekr.20170428084208.341: *3* h_cursor_left
     def h_cursor_left(self, input):
         self.cursor_position -= 1
 
+    #@+node:ekr.20170428084208.342: *3* h_cursor_right
     def h_cursor_right(self, input):
         self.cursor_position += 1
 
+    #@+node:ekr.20170428084208.343: *3* h_delete_left
     def h_delete_left(self, input):
         if self.editable and self.cursor_position > 0:
             self.value = self.value[:self.cursor_position-1] + self.value[self.cursor_position:]
@@ -464,22 +494,26 @@ class Textfield(TextfieldBase):
         self.cursor_position -= 1
         self.begin_at -= 1
 
-    
+
+    #@+node:ekr.20170428084208.344: *3* h_delete_right
     def h_delete_right(self, input):
         if self.editable:
             self.value = self.value[:self.cursor_position] + self.value[self.cursor_position+1:]
 
+    #@+node:ekr.20170428084208.345: *3* h_erase_left
     def h_erase_left(self, input):
         if self.editable:
             self.value = self.value[self.cursor_position:]
             self.cursor_position=0
-    
+
+    #@+node:ekr.20170428084208.346: *3* h_erase_right
     def h_erase_right(self, input):
         if self.editable:
             self.value = self.value[:self.cursor_position]
             self.cursor_position = len(self.value)
             self.begin_at = 0
-    
+
+    #@+node:ekr.20170428084208.347: *3* handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         #mouse_id, x, y, z, bstate = mouse_event
         #rel_mouse_x = x - self.relx - self.parent.show_atx
@@ -487,8 +521,12 @@ class Textfield(TextfieldBase):
         self.cursor_position = rel_x + self.begin_at
         self.display()
 
-    
+
+    #@-others
+#@+node:ekr.20170428084208.348: ** class FixedText
 class FixedText(TextfieldBase):
+    #@+others
+    #@+node:ekr.20170428084208.349: *3* set_up_handlers
     def set_up_handlers(self):
         super(FixedText, self).set_up_handlers()
         self.handlers.update({curses.KEY_LEFT:    self.h_cursor_left,
@@ -496,19 +534,23 @@ class FixedText(TextfieldBase):
                            ord('k'):    self.h_exit_up,
                            ord('j'):    self.h_exit_down,
                            })
-    
-    
+
+
+    #@+node:ekr.20170428084208.350: *3* h_cursor_left
     def h_cursor_left(self, input):
         if self.begin_at > 0:
             self.begin_at -= 1
 
+    #@+node:ekr.20170428084208.351: *3* h_cursor_right
     def h_cursor_right(self, input):
         if len(self.value) - self.begin_at > self.maximum_string_length:
             self.begin_at += 1
 
+    #@+node:ekr.20170428084208.352: *3* update
     def update(self, clear=True,):
         super(FixedText, self).update(clear=clear, cursor=False)
-    
+
+    #@+node:ekr.20170428084208.353: *3* edit
     def edit(self):
         self.editing = 1
         self.highlight = False
@@ -529,3 +571,8 @@ class FixedText(TextfieldBase):
 
         return self.how_exited, self.value
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

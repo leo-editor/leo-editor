@@ -1,5 +1,9 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.153: * @file ../external/npyscreen/fmFileSelector.py
+#@+others
+#@+node:ekr.20170428084207.154: ** Declarations
 from . import fmFormMutt
-from . import wgmultiline
+# from . import wgmultiline
 from . import wggrid
 from . import wgautocomplete
 from . import utilNotify
@@ -7,9 +11,12 @@ from . import utilNotify
 import curses
 import os
 import os.path
-import operator
+# import operator
 
+#@+node:ekr.20170428084207.155: ** class FileCommand
 class FileCommand(wgautocomplete.Filename):
+    #@+others
+    #@+node:ekr.20170428084207.156: *3* set_up_handlers
     def set_up_handlers(self):
         super(FileCommand, self).set_up_handlers()
         self.handlers.update ({
@@ -18,14 +25,17 @@ class FileCommand(wgautocomplete.Filename):
             "^W":               self.h_up_level,
         })
         
+    #@+node:ekr.20170428084207.157: *3* h_select_file
     def h_select_file(self, *args, **keywords):
         self.h_exit_down(None)
         self.parent.try_exit()
-    
+
+    #@+node:ekr.20170428084207.158: *3* h_up_level
     def h_up_level(self, *args, **keywords):
         self.value = os.path.split(self.value)[0]
         self.cursor_position = len(self.value)
-    
+
+    #@+node:ekr.20170428084207.159: *3* auto_complete
     def auto_complete(self, input):
         self.value = os.path.expanduser(self.value)
         
@@ -79,9 +89,13 @@ class FileCommand(wgautocomplete.Filename):
             self.parent.update_grid()
 
 
+    #@-others
+#@+node:ekr.20170428084207.160: ** class FileGrid
 class FileGrid(wggrid.SimpleGrid):
     default_column_number = 3
     
+    #@+others
+    #@+node:ekr.20170428084207.161: *3* set_up_handlers
     def set_up_handlers(self):
         super(FileGrid, self).set_up_handlers()
         self.handlers.update ({
@@ -89,7 +103,8 @@ class FileGrid(wggrid.SimpleGrid):
             curses.ascii.CR:    self.h_select_file,
             curses.ascii.SP:    self.h_select_file,
         })
-    
+
+    #@+node:ekr.20170428084207.162: *3* change_dir
     def change_dir(self, select_file):
         try:
             os.listdir(select_file)
@@ -104,8 +119,9 @@ class FileGrid(wggrid.SimpleGrid):
         self.begin_col_display_at = 0
         return True
         
-    
-    
+
+
+    #@+node:ekr.20170428084207.163: *3* h_select_file
     def h_select_file(self, *args, **keywrods):
         try:
              select_file = os.path.join(self.parent.value, self.values[self.edit_cell[0]][self.edit_cell[1]])
@@ -119,7 +135,8 @@ class FileGrid(wggrid.SimpleGrid):
         else:
             self.parent.wCommand.value = select_file
             self.h_exit_down(None)
-    
+
+    #@+node:ekr.20170428084207.164: *3* display_value
     def display_value(self, vl):
         p = os.path.split(vl)
         if p[1]:
@@ -127,17 +144,21 @@ class FileGrid(wggrid.SimpleGrid):
         else:
             return os.path.split(p[0])[1] + os.sep
         
+    #@-others
+#@+node:ekr.20170428084207.165: ** class FileSelector
 class FileSelector(fmFormMutt.FormMutt):
     MAIN_WIDGET_CLASS   = FileGrid
     COMMAND_WIDGET_CLASS= FileCommand
     BLANK_LINES_BASE     = 0
+    #@+others
+    #@+node:ekr.20170428084207.166: *3* __init__
     def __init__(self,
     select_dir=False, #Select a dir, not a file
     must_exist=False, #Selected File must already exist
     confirm_if_exists=True,
     sort_by_extension=True,
     *args, **keywords):
-    
+
         self.select_dir = select_dir
         self.must_exist = must_exist
         self.confirm_if_exists = confirm_if_exists
@@ -149,7 +170,8 @@ class FileSelector(fmFormMutt.FormMutt):
                 self.value = os.getcwd()
         except:
             self.value = os.getcwd()
-    
+
+    #@+node:ekr.20170428084207.167: *3* try_exit
     def try_exit(self):
         if not self.wCommand.value:
             self.value=''
@@ -175,16 +197,19 @@ class FileSelector(fmFormMutt.FormMutt):
             return False
         self.exit_editing()
         return True
-    
+
+    #@+node:ekr.20170428084207.168: *3* set_colors
     def set_colors(self):
         self.wCommand.color = 'IMPORTANT'
         self.wCommand.color = 'STANDOUT'
         
         
+    #@+node:ekr.20170428084207.169: *3* beforeEditing
     def beforeEditing(self,):
         self.adjust_widgets()
         self.set_colors()
         
+    #@+node:ekr.20170428084207.170: *3* update_grid
     def update_grid(self,):
         if self.value:
             self.value = os.path.expanduser(self.value)
@@ -226,13 +251,17 @@ class FileSelector(fmFormMutt.FormMutt):
         self.wMain.set_grid_values_from_flat_list(file_list, reset_cursor=False)
                 
         self.display()
-    
+
+    #@+node:ekr.20170428084207.171: *3* get_extension
     def get_extension(self, fn):
         return os.path.splitext(fn)[1]
-    
+
+    #@+node:ekr.20170428084207.172: *3* adjust_widgets
     def adjust_widgets(self):
         self.update_grid()
         
+    #@-others
+#@+node:ekr.20170428084207.173: ** selectFile
 def selectFile(starting_value=None, *args, **keywords):
     F = FileSelector(*args, **keywords)
     F.set_colors()
@@ -250,3 +279,7 @@ def selectFile(starting_value=None, *args, **keywords):
     F.edit()    
     return F.wCommand.value
         
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

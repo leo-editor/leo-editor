@@ -1,6 +1,11 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.477: * @file ../external/npyscreen/util_viewhelp.py
+#@+others
+#@+node:ekr.20170428084207.478: ** Declarations
 import textwrap
 
 
+#@+node:ekr.20170428084207.479: ** view_help
 def view_help(message, title="Message", form_color="STANDOUT", scroll_exit=False, autowrap=False):
     from . import fmForm
     from . import wgmultiline
@@ -20,3 +25,7 @@ def view_help(message, title="Message", form_color="STANDOUT", scroll_exit=False
     del mlw
     del F
     
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

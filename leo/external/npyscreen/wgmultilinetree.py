@@ -1,4 +1,8 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.173: * @file ../external/npyscreen/wgmultilinetree.py
 #!/usr/bin/python
+#@+others
+#@+node:ekr.20170428084208.174: ** Declarations
 import curses
 import weakref
 
@@ -8,7 +12,10 @@ from npyscreen.compatibility_code import npysNPSTree as NPSTree
 from .npysTree import TreeData
 
 
+#@+node:ekr.20170428084208.175: ** class TreeLine
 class TreeLine(textbox.TextfieldBase):
+    #@+others
+    #@+node:ekr.20170428084208.176: *3* __init__
     def __init__(self, *args, **keywords):
         self._tree_real_value   = None
         self._tree_ignore_root  = None
@@ -26,6 +33,7 @@ class TreeLine(textbox.TextfieldBase):
     # Methods to enable this class to work with NPSTree and newer tree classes
     ##########################################################################
 
+    #@+node:ekr.20170428084208.177: *3* _get_content_for_display
     def _get_content_for_display(self, vl):
         try:
             return vl.get_content_for_display()
@@ -41,6 +49,7 @@ class TreeLine(textbox.TextfieldBase):
 
 
     #EXPERIMENTAL
+    #@+node:ekr.20170428084208.178: *3* _print
     def _print(self, left_margin=0):
         self.left_margin = left_margin
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
@@ -49,6 +58,7 @@ class TreeLine(textbox.TextfieldBase):
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         super(TreeLine, self)._print()
         
+    #@+node:ekr.20170428084208.179: *3* _print_tree
     def _print_tree(self, real_x):
         if hasattr(self._tree_real_value, 'find_depth') or hasattr(self._tree_real_value, 'findDepth'):
             control_chars_added = 0
@@ -123,6 +133,7 @@ class TreeLine(textbox.TextfieldBase):
         return margin_needed
         
         
+    #@+node:ekr.20170428084208.180: *3* display_value
     def display_value(self, vl):
         try:
             return self.safe_string(self._get_content_for_display(self._tree_real_value))
@@ -130,23 +141,29 @@ class TreeLine(textbox.TextfieldBase):
             # Catch the times this is None.
             return self.safe_string(vl)
             
-    
 
+
+    #@-others
+#@+node:ekr.20170428084208.181: ** class TreeLineAnnotated
 class TreeLineAnnotated(TreeLine):
     ## Experimental.
     _annotate = "   ?   "
     _annotatecolor = 'CONTROL'
 
+    #@+others
+    #@+node:ekr.20170428084208.182: *3* getAnnotationAndColor
     def getAnnotationAndColor(self):
         # This is actually the api.  Override this function to return the correct string and colour name as a tuple.
         self.setAnnotateString()
         return (self._annotate, self._annotatecolor)
 
+    #@+node:ekr.20170428084208.183: *3* setAnnotateString
     def setAnnotateString(self):
         # This was an experimental function it was the original way to set the string and annotation.
         self._annotate = "   ?   "
         self._annotatecolor = 'CONTROL'
 
+    #@+node:ekr.20170428084208.184: *3* annotationColor
     def annotationColor(self, real_x):
         # Must return the "Margin" needed before the entry begins
          # historical reasons.
@@ -154,6 +171,7 @@ class TreeLineAnnotated(TreeLine):
         self.parent.curses_pad.addstr(self.rely, real_x, _annotation, self.parent.theme_manager.findPair(self, _color))
         return len(_annotation)
 
+    #@+node:ekr.20170428084208.185: *3* annotationNoColor
     def annotationNoColor(self, real_x):
         # Must return the "Margin" needed before the entry begins
         #self.parent.curses_pad.addstr(self.rely, real_x, 'xxx')
@@ -162,6 +180,7 @@ class TreeLineAnnotated(TreeLine):
         self.parent.curses_pad.addstr(self.rely, real_x, _annotation)
         return len(_annotation)
 
+    #@+node:ekr.20170428084208.186: *3* _print
     def _print(self):
         self.left_margin = 0
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
@@ -175,6 +194,8 @@ class TreeLineAnnotated(TreeLine):
         super(TreeLine, self)._print()
 
 
+    #@-others
+#@+node:ekr.20170428084208.187: ** class MLTree
 class MLTree(multiline.MultiLine):
     # Experimental
     
@@ -185,36 +206,43 @@ class MLTree(multiline.MultiLine):
     # Methods to enable this class to work with NPSTree and newer tree classes
     ##########################################################################
 
+    #@+others
+    #@+node:ekr.20170428084208.188: *3* _find_depth
     def _find_depth(self, vl):
         try:
             return vl.find_depth()
         except AttributeError:
             return vl.findDepth()
 
+    #@+node:ekr.20170428084208.189: *3* _has_children
     def _has_children(self, vl):
         try:
             return vl.has_children()
         except AttributeError:
             return vl.hasChildren()
 
+    #@+node:ekr.20170428084208.190: *3* _get_content
     def _get_content(self, vl):
         try:
             return vl.get_content()
         except AttributeError:
             return vl.getContent()
 
+    #@+node:ekr.20170428084208.191: *3* _get_ignore_root
     def _get_ignore_root(self, vl):
         try:
             return vl.ignore_root
         except AttributeError:
             return vl.ignoreRoot
 
+    #@+node:ekr.20170428084208.192: *3* _get_tree_as_list
     def _get_tree_as_list(self, vl):
         try:
             return vl.get_tree_as_list()
         except AttributeError:
             return vl.getTreeAsList()
 
+    #@+node:ekr.20170428084208.193: *3* _walk_tree
     def _walk_tree(self, root, only_expanded=True, ignore_root=True, sort=None, sort_function=None):
         try:
             return root.walk_tree(only_expanded=only_expanded, ignore_root=ignore_root, sort=sort, sort_function=sort_function)
@@ -224,6 +252,7 @@ class MLTree(multiline.MultiLine):
     # End Compatibility Methods
     ##########################################################################
 
+    #@+node:ekr.20170428084208.194: *3* _setMyValues
     def _setMyValues(self, tree):
         if tree == [] or tree == None:
             self._myFullValues = TreeData() #NPSTree.NPSTreeData()
@@ -234,22 +263,26 @@ class MLTree(multiline.MultiLine):
                 raise TypeError("MultiLineTree widget can only contain a TreeData or NPSTreeData object in its values attribute")
         else:
             self._myFullValues = tree
-    
+
+    #@+node:ekr.20170428084208.195: *3* convertToTree
     def convertToTree(self, tree):
         "Override this function to convert a set of values to a tree."
         return None
         
+    #@+node:ekr.20170428084208.196: *3* resize
     def resize(self):
         super(MLTree, self).resize()
         self.clearDisplayCache()
         self.update(clear=True)
         self.display()
-    
+
+    #@+node:ekr.20170428084208.197: *3* clearDisplayCache
     def clearDisplayCache(self):
         self._cached_tree = None
         self._cached_sort = None
         self._cached_tree_as_list = None
-    
+
+    #@+node:ekr.20170428084208.198: *3* _getApparentValues
     def _getApparentValues(self):
         try:
             if self._cached_tree is weakref.proxy(self._myFullValues) and \
@@ -261,24 +294,29 @@ class MLTree(multiline.MultiLine):
         self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
         self._cached_tree_as_list = self._get_tree_as_list(self._myFullValues)
         return self._cached_tree_as_list
-    
+
+    #@+node:ekr.20170428084208.199: *3* _walkMyValues
     def _walkMyValues(self):
         return self._walk_tree(self._myFullValues)
-    
+
+    #@+node:ekr.20170428084208.200: *3* _delMyValues
     def _delMyValues(self):
         self._myFullValues = None
-    
+
     values = property(_getApparentValues, _setMyValues, _delMyValues)
-    
+
+    #@+node:ekr.20170428084208.201: *3* filter_value
     def filter_value(self, index):
         if self._filter in self._get_content(self.display_value(self.values[index])):
             return True
         else:
             return False
-    
+
+    #@+node:ekr.20170428084208.202: *3* display_value
     def display_value(self, vl):
         return vl
-    
+
+    #@+node:ekr.20170428084208.203: *3* set_up_handlers
     def set_up_handlers(self):
         super(MLTree, self).set_up_handlers()
         self.handlers.update({
@@ -292,10 +330,12 @@ class MLTree(multiline.MultiLine):
                 ord('l'): self.h_expand_tree,                
         })
 
-    
+
+    #@+node:ekr.20170428084208.204: *3* _before_print_lines
     def _before_print_lines(self):
         pass
-    
+
+    #@+node:ekr.20170428084208.205: *3* _set_line_values
     def _set_line_values(self, line, value_indexer):
         line._tree_real_value   = None
         line._tree_depth        = False
@@ -322,7 +362,7 @@ class MLTree(multiline.MultiLine):
                     line._tree_sibling_next = True
                 else:
                     line._tree_sibling_next = False
-    
+
             except:
                 line._sibling_next = False
                 line._tree_last_line = True
@@ -336,6 +376,7 @@ class MLTree(multiline.MultiLine):
         except TypeError:
             self._set_line_blank(line)
             
+    #@+node:ekr.20170428084208.206: *3* h_collapse_tree
     def h_collapse_tree(self, ch):
         if self.values[self.cursor_line].expanded and self._has_children(self.values[self.cursor_line]):
             self.values[self.cursor_line].expanded = False
@@ -352,6 +393,7 @@ class MLTree(multiline.MultiLine):
         self._cached_tree = None
         self.display()
 
+    #@+node:ekr.20170428084208.207: *3* h_expand_tree
     def h_expand_tree(self, ch):
         if not self.values[self.cursor_line].expanded:
             self.values[self.cursor_line].expanded = True
@@ -360,27 +402,33 @@ class MLTree(multiline.MultiLine):
                 v.expanded = True
         self._cached_tree = None
         self.display()
-    
+
+    #@+node:ekr.20170428084208.208: *3* h_collapse_all
     def h_collapse_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=True):
             v.expanded = False
         self._cached_tree = None
         self.cursor_line = 0
         self.display()
-    
+
+    #@+node:ekr.20170428084208.209: *3* h_expand_all
     def h_expand_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=False):
             v.expanded    = True
         self._cached_tree = None
         self.cursor_line  = 0
         self.display()
-    
+
+    #@-others
+#@+node:ekr.20170428084208.210: ** class MLTreeAnnotated
 class MLTreeAnnotated(MLTree):
     _contained_widgets = TreeLineAnnotated
 
+#@+node:ekr.20170428084208.211: ** class MLTreeAction
 class MLTreeAction(MLTree, multiline.MultiLineAction):
     pass
 
+#@+node:ekr.20170428084208.212: ** class MLTreeAnnotatedAction
 class MLTreeAnnotatedAction(MLTree, multiline.MultiLineAction):
     _contained_widgets = TreeLineAnnotated
 
@@ -396,3 +444,7 @@ class MLTreeAnnotatedAction(MLTree, multiline.MultiLineAction):
 
 
 
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

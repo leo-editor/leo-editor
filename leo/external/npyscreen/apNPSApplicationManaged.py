@@ -1,12 +1,17 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.29: * @file ../external/npyscreen/apNPSApplicationManaged.py
 #!/usr/bin/env python
 # encoding: utf-8
+#@+others
+#@+node:ekr.20170428084207.30: ** Declarations
 """
 NPSAppManaged.py
 """
 from . import apNPSApplication
-from . import fmForm
+# from . import fmForm
 import weakref
 
+#@+node:ekr.20170428084207.31: ** class NPSAppManaged
 class NPSAppManaged(apNPSApplication.NPSApp):
     """This class is intended to make it easier to program applications with many screens:
     
@@ -39,16 +44,20 @@ class NPSAppManaged(apNPSApplication.NPSApp):
 
     STARTING_FORM = "MAIN"
 
+    #@+others
+    #@+node:ekr.20170428084207.32: *3* __init__
     def __init__(self):
         super(NPSAppManaged, self).__init__()    
         self._FORM_VISIT_LIST = []
         self.NEXT_ACTIVE_FORM = self.__class__.STARTING_FORM
         self._LAST_NEXT_ACTIVE_FORM = None
         self._Forms = {}
-    
+
+    #@+node:ekr.20170428084207.33: *3* addFormClass
     def addFormClass(self, f_id, FormClass, *args, **keywords):
         self._Forms[f_id] = [FormClass, args, keywords]
-    
+
+    #@+node:ekr.20170428084207.34: *3* addForm
     def addForm(self, f_id, FormClass, *args, **keywords):
         """Create a form of the given class. f_id should be a string which will uniquely identify the form. *args will be passed to the Form constructor.
         Forms created in this way are handled entirely by the NPSAppManaged class."""
@@ -56,32 +65,38 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         self.registerForm(f_id, fm)
         return weakref.proxy(fm)
         
+    #@+node:ekr.20170428084207.35: *3* registerForm
     def registerForm(self, f_id, fm):
         """f_id should be a string which should uniquely identify the form.  fm should be a Form."""
         fm.parentApp = weakref.proxy(self)
         self._Forms[f_id] = fm
         
+    #@+node:ekr.20170428084207.36: *3* removeForm
     def removeForm(self, f_id):
         del self._Forms[f_id].parentApp
         del self._Forms[f_id]
-    
+
+    #@+node:ekr.20170428084207.37: *3* getForm
     def getForm(self, name):
         f = self._Forms[name]
         try:
             return weakref.proxy(f)
         except:
             return f
-    
+
+    #@+node:ekr.20170428084207.38: *3* setNextForm
     def setNextForm(self, fmid):
         """Set the form that will be selected when the current one exits."""
         self.NEXT_ACTIVE_FORM = fmid
 
+    #@+node:ekr.20170428084207.39: *3* switchForm
     def switchForm(self, fmid):
         """Immediately switch to the form specified by fmid."""
         self._THISFORM.editing = False
         self.setNextForm(fmid)
         self.switchFormNow()
         
+    #@+node:ekr.20170428084207.40: *3* switchFormNow
     def switchFormNow(self):
         self._THISFORM.editing = False
         try:
@@ -94,14 +109,17 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         except (AttributeError, IndexError):
             pass
 
+    #@+node:ekr.20170428084207.41: *3* removeLastFormFromHistory
     def removeLastFormFromHistory(self):
         self._FORM_VISIT_LIST.pop()
         self._FORM_VISIT_LIST.pop()
             
+    #@+node:ekr.20170428084207.42: *3* switchFormPrevious
     def switchFormPrevious(self, backup=STARTING_FORM):
         self.setNextFormPrevious()
         self.switchFormNow()
         
+    #@+node:ekr.20170428084207.43: *3* setNextFormPrevious
     def setNextFormPrevious(self, backup=STARTING_FORM):
         try:
             if self._THISFORM.FORM_NAME == self._FORM_VISIT_LIST[-1]:
@@ -112,15 +130,18 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         except IndexError:
             self.setNextForm(backup)
             
+    #@+node:ekr.20170428084207.44: *3* getHistory
     def getHistory(self):
         return self._FORM_VISIT_LIST
         
-    
+
+    #@+node:ekr.20170428084207.45: *3* resetHistory
     def resetHistory(self):
         self._FORM_VISIT_LIST = []
             
 
 
+    #@+node:ekr.20170428084207.46: *3* main
     def main(self):
         """
         This function starts the application. It is usually called indirectly through the function .run().  
@@ -176,14 +197,22 @@ class NPSAppManaged(apNPSApplication.NPSApp):
             self.onInMainLoop()
         self.onCleanExit()
         
+    #@+node:ekr.20170428084207.47: *3* onInMainLoop
     def onInMainLoop(self):
         """Called between each screen while the application is running. Not called before the first screen. Override at will"""
         
+    #@+node:ekr.20170428084207.48: *3* onStart
     def onStart(self):
         """Override this method to perform any initialisation."""
         pass
                 
+    #@+node:ekr.20170428084207.49: *3* onCleanExit
     def onCleanExit(self):
         """Override this method to perform any cleanup when application is exiting without error."""
 
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

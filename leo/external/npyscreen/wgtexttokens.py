@@ -1,9 +1,14 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.366: * @file ../external/npyscreen/wgtexttokens.py
+#@+others
+#@+node:ekr.20170428084208.367: ** Declarations
 import curses
-import sys
+# import sys
 from . import wgwidget
 from . import wgtextbox
 from . import wgtitlefield
 
+#@+node:ekr.20170428084208.368: ** class TextTokens
 class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     """This is an experiemental widget"""
     
@@ -11,6 +16,8 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     # OF THE TEXTFIELD CLASS.
     
     
+    #@+others
+    #@+node:ekr.20170428084208.369: *3* __init__
     def __init__(self, *args, **keywords):        
         super(TextTokens, self).__init__(*args, **keywords)
         self.begin_at        = 0 # which token to begin display with
@@ -22,6 +29,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         self.highlight = False
         self.show_bold = False
 
+    #@+node:ekr.20170428084208.370: *3* find_cursor_offset_on_screen
     def find_cursor_offset_on_screen(self, position):
         index  = self.begin_at 
         offset = 0
@@ -32,7 +40,8 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
                                       # why the - self.begin_at is needed
                                       # but without it the cursor and screen
                                       # get out of sync
-    
+
+    #@+node:ekr.20170428084208.371: *3* decode_token
     def decode_token(self, tk):
         r = ''.join(tk)
         if len(r) > 1:
@@ -40,13 +49,14 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         if isinstance(r, bytes):
             r = r.decode(self.encoding, 'replace')
         return r
-    
+
     # text and highlighting generator.
+    #@+node:ekr.20170428084208.372: *3* get_literal_text_and_highlighting_generator
     def get_literal_text_and_highlighting_generator(self, start_at=0,):
         # could perform initialization here.
         index = start_at
         string_length = 0
-        output = ''
+        # output = ''
         while string_length <= self.maximum_string_length and len(self.value) > index:
             token_output = self.decode_token(self.value[index])
             if isinstance(token_output, bytes):
@@ -54,7 +64,8 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             highlighting = [curses.A_NORMAL for c in token_output]
             yield(token_output, highlighting)
             index += 1
-    
+
+    #@+node:ekr.20170428084208.373: *3* get_literal_text_to_display
     def get_literal_text_to_display(self, start_at=0,):
         g = self.get_literal_text_and_highlighting_generator(start_at=start_at)
         txt = []
@@ -65,6 +76,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         return txt, highlighting
             
                 
+    #@+node:ekr.20170428084208.374: *3* update
     def update(self, clear=True, cursor=True):
         if clear: self.clear()
         if self.begin_at    < 0: self.begin_at = 0
@@ -83,7 +95,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
                  self.find_cursor_offset_on_screen(self.begin_at) + \
                  self.maximum_string_length - self.left_margin -1: # -1:
             self.begin_at += 1
-    
+
 
         text, highlighting = self.get_literal_text_to_display(start_at=self.begin_at)
         if self.do_colors():
@@ -118,6 +130,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             self.print_cursor()
         
 
+    #@+node:ekr.20170428084208.375: *3* _print
     def _print(self, text, highlighting):
         self.add_line(self.rely, 
                       self.relx + self.left_margin,
@@ -125,8 +138,9 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
                       highlighting,
                       self.maximum_string_length - self.left_margin
                       )
+    #@+node:ekr.20170428084208.376: *3* print_cursor
     def print_cursor(self):
-        _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
+        # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         try:
             char_under_cur = self.decode_token(self.value[self.cursor_position]) #use the real value
             char_under_cur = self.safe_string(char_under_cur)
@@ -141,7 +155,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             ATTR_LIST = self.parent.theme_manager.findPair(self) | curses.A_STANDOUT
         else:
             ATTR_LIST = curses.A_STANDOUT
-    
+
         self.add_line(self.rely, 
              self.begin_at + self.relx + self.left_margin + offset,
             char_under_cur, 
@@ -151,6 +165,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             self.maximum_string_length+1 - self.left_margin - offset - self.begin_at,
             )
 
+    #@+node:ekr.20170428084208.377: *3* h_addch
     def h_addch(self, inp):
         if self.editable:
             #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
@@ -172,18 +187,26 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             self.value = self.value[:self.cursor_position] + [ch_adding,] \
                 + self.value[self.cursor_position:]
             self.cursor_position += len(ch_adding)
-    
+
+    #@+node:ekr.20170428084208.378: *3* display_value
     def display_value(self, vl):
         return vl
-    
-    
+
+
+    #@+node:ekr.20170428084208.379: *3* calculate_area_needed
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
         return 1,0
         
 
 
+    #@-others
+#@+node:ekr.20170428084208.380: ** class TitleTextTokens
 class TitleTextTokens(wgtitlefield.TitleText):
     _entry_type = TextTokens
 
     
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

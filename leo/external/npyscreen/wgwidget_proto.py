@@ -1,14 +1,22 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084208.436: * @file ../external/npyscreen/wgwidget_proto.py
+#@+others
+#@+node:ekr.20170428084208.437: ** Declarations
 import sys
 
+#@+node:ekr.20170428084208.438: ** class _LinePrinter
 class _LinePrinter(object):
     """A base class for printing lines to the screen.
        Do not use directly. For internal use only.
        Experimental.
     """
+    #@+others
+    #@+node:ekr.20170428084208.439: *3* find_width_of_char
     def find_width_of_char(self, ch):
         # will eventually need changing.
         return 1
-    
+
+    #@+node:ekr.20170428084208.440: *3* _print_unicode_char
     def _print_unicode_char(self, ch, force_ascii=None):
         if hasattr(self, '_force_ascii') and force_ascii is None:
             force_ascii = self._force_ascii
@@ -20,6 +28,7 @@ class _LinePrinter(object):
         else:
             return ch.encode('utf-8', 'replace')
 
+    #@+node:ekr.20170428084208.441: *3* add_line
     def add_line(self, realy, realx, 
                 unicode_string, 
                 attributes_list, max_columns, 
@@ -57,7 +66,8 @@ class _LinePrinter(object):
                 break
             column += width_of_char_to_print
             place_in_string += 1
-    
+
+    #@+node:ekr.20170428084208.442: *3* make_attributes_list
     def make_attributes_list(self, unicode_string, attribute):
         """A convenience function.  Retuns a list the length of the unicode_string
         provided, with each entry of the list containing a copy of attribute."""
@@ -69,3 +79,8 @@ class _LinePrinter(object):
         for x in range(ln):
             atb_array.append(attribute)
         return atb_array
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo
