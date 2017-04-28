@@ -2,7 +2,10 @@
 #@+node:ville.20090314215508.4: * @file quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
-''' Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+'''
+Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+
+Quicksearch searches node headlines only, *not* body text
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
@@ -19,6 +22,7 @@ by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expre
 syntax, as documented in
 
 The search can be confined to several options:
+
 - All: regular search for all nodes
 - Subtree: current node and it's children
 - File: only search under a node with an @<file> directive
