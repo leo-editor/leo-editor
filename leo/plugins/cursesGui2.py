@@ -37,6 +37,8 @@ class CursesApp(npyscreen.NPSApp):
         self.leo_log = c.frame.log
         self.leo_minibuffer = None
         self.leo_tree = None
+        assert not hasattr(self, 'windowList')
+        self.windowList = [c]
 
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
