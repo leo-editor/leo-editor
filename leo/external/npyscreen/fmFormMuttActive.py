@@ -92,6 +92,7 @@ class TextCommandBox(wgtextbox.Textfield):
 
     #@+node:ekr.20170428084207.269: *3* set_up_history_keys
     def set_up_history_keys(self):
+        '''ActionControllerSimple.set_up_history_keys'''
         self.handlers.update({
             "^P":   self.h_get_previous_history,
             "^N":   self.h_get_next_history,
