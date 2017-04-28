@@ -63,8 +63,11 @@
 <v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
 </v>
 </v>
-<v t="ekr.20170427114446.1"><vh>scripts</vh>
-<v t="ekr.20170427114446.2"><vh>check leoPy.leo</vh></v>
+<v t="ekr.20170427114412.1"><vh>scripts</vh>
+<v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
+<v t="ekr.20170428084123.1"><vh>Recursive import script</vh>
+<v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
+</v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -84,8 +87,7 @@
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"
-expanded="ekr.20120209051836.10242,ekr.20120219154958.10452,ekr.20120219154958.10477,"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
@@ -98,13 +100,12 @@ expanded="ekr.20120209051836.10242,ekr.20120219154958.10452,ekr.20120219154958.1
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
-<v t="ekr.20170427114329.1"><vh>@file leoDebugger.py</vh></v>
+<v t="ekr.20130302121602.10208"><vh>@file leoDebugger.py</vh></v>
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31372e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
-<v t="ekr.20031218072017.3206"
-marks="ekr.20070713082220,"><vh>@file leoImport.py</vh></v>
+<v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
@@ -114,15 +115,14 @@ marks="ekr.20070713082220,"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3571017d71022858090000007374725f6174696d657103580d000000313331393634313435352e3937710458090000007374725f6d74696d657105580c000000313331393634313131372e39710658090000007374725f6374696d657107580c000000313331393633383634382e307108755805000000302e332e3371097d710a2858090000007374725f6174696d65710b580d000000313332303433343235372e3336710c58090000007374725f6d74696d65710d580d000000313332303432323639302e3534710e58090000007374725f6374696d65710f580c000000313331393436303438332e307110755805000000302e332e3171117d71122858090000007374725f6174696d657113580c000000313332303432323637302e39711458090000007374725f6d74696d657115580d000000313331393436373033382e3235711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3071197d711a2858090000007374725f6174696d65711b580d000000313331393534393339302e3839711c58090000007374725f6d74696d65711d580d000000313331393439323330312e3532711e58090000007374725f6374696d65711f580c000000313331393439313330362e307120755805000000302e332e3471217d71222858090000007374725f6174696d657123580c000000313331393634353330362e32712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6374696d657127580c000000313331393633383634382e307128755805000000302e332e3271297d712a2858090000007374725f6174696d65712b580d000000313331393436373035302e3438712c58090000007374725f6d74696d65712d580d000000313331393436373035302e3438712e58090000007374725f6374696d65712f580c000000313331393436303438332e30713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3471017d71022858090000007374725f6374696d657103580c000000313331393633383634382e30710458090000007374725f6174696d657105580c000000313331393634353330362e32710658090000007374725f6d74696d657107580d000000313331393634313038352e30387108755805000000302e332e3271097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6174696d65710d580d000000313331393436373035302e3438710e58090000007374725f6d74696d65710f580d000000313331393436373035302e34387110755805000000302e332e3571117d71122858090000007374725f6374696d657113580c000000313331393633383634382e30711458090000007374725f6174696d657115580d000000313331393634313435352e3937711658090000007374725f6d74696d657117580c000000313331393634313131372e397118755805000000302e332e3071197d711a2858090000007374725f6374696d65711b580c000000313331393439313330362e30711c58090000007374725f6174696d65711d580d000000313331393534393339302e3839711e58090000007374725f6d74696d65711f580d000000313331393439323330312e35327120755805000000302e332e3171217d71222858090000007374725f6374696d657123580c000000313331393436303438332e30712458090000007374725f6174696d657125580c000000313332303432323637302e39712658090000007374725f6d74696d657127580d000000313331393436373033382e32357128755805000000302e332e3371297d712a2858090000007374725f6374696d65712b580c000000313331393436303438332e30712c58090000007374725f6174696d65712d580d000000313332303433343235372e3336712e58090000007374725f6d74696d65712f580d000000313332303432323639302e3534713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
 <v t="ekr.20150514035207.1"><vh>Command classes</vh>
-<v t="ekr.20150514035236.1"
-marks="ekr.20150514043850.13,"><vh>@file ../commands/abbrevCommands.py</vh></v>
+<v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
 <v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
 <v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
 <v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
@@ -200,6 +200,82 @@ marks="ekr.20150514043850.13,"><vh>@file ../commands/abbrevCommands.py</vh></v>
 <v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
+<v t="ekr.20170428085201.1"><vh>npyscreen</vh>
+<v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
+<v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
+<v t="ekr.20170428084207.15"><vh>@file ../external/npyscreen/apNPSApplicationEvents.py</vh></v>
+<v t="ekr.20170428084207.29"><vh>@file ../external/npyscreen/apNPSApplicationManaged.py</vh></v>
+<v t="ekr.20170428084207.50"><vh>@file ../external/npyscreen/apOptions.py</vh></v>
+<v t="ekr.20170428084207.111"><vh>@file ../external/npyscreen/eveventhandler.py</vh></v>
+<v t="ekr.20170428084207.121"><vh>@file ../external/npyscreen/fmActionForm.py</vh></v>
+<v t="ekr.20170428084207.131"><vh>@file ../external/npyscreen/fmActionFormV2.py</vh></v>
+<v t="ekr.20170428084207.153"><vh>@file ../external/npyscreen/fmFileSelector.py</vh></v>
+<v t="ekr.20170428084207.174"><vh>@file ../external/npyscreen/fmForm.py</vh></v>
+<v t="ekr.20170428084207.223"><vh>@file ../external/npyscreen/fmFormMultiPage.py</vh></v>
+<v t="ekr.20170428084207.248"><vh>@file ../external/npyscreen/fmFormMutt.py</vh></v>
+<v t="ekr.20170428084207.258"><vh>@file ../external/npyscreen/fmFormMuttActive.py</vh></v>
+<v t="ekr.20170428084207.285"><vh>@file ../external/npyscreen/fmFormWithMenus.py</vh></v>
+<v t="ekr.20170428084207.303"><vh>@file ../external/npyscreen/fmPopup.py</vh></v>
+<v t="ekr.20170428084207.311"><vh>@@file ../external/npyscreen/fm_form_edit_loop.py</vh>
+<v t="ekr.20170428084207.312"><vh>Declarations</vh></v>
+<v t="ekr.20170428084207.313"><vh>class FormNewEditLoop</vh>
+<v t="ekr.20170428084207.314"><vh>pre_edit_loop</vh></v>
+<v t="ekr.20170428084207.315"><vh>post_edit_loop</vh></v>
+<v t="ekr.20170428084207.316"><vh>_during_edit_loop</vh></v>
+<v t="ekr.20170428084207.317"><vh>edit_loop</vh></v>
+<v t="ekr.20170428084207.318"><vh>edit</vh></v>
+</v>
+<v t="ekr.20170428084207.319"><vh>class FormDefaultEditLoop</vh>
+<v t="ekr.20170428084207.320"><vh>edit</vh></v>
+<v t="ekr.20170428084207.321"><vh>move_ok_button</vh></v>
+</v>
+</v>
+<v t="ekr.20170428084207.322"><vh>@file ../external/npyscreen/globals.py</vh></v>
+<v t="ekr.20170428084207.324"><vh>@file ../external/npyscreen/muMenu.py</vh></v>
+<v t="ekr.20170428084207.332"><vh>@file ../external/npyscreen/muNewMenu.py</vh></v>
+<v t="ekr.20170428084207.351"><vh>@file ../external/npyscreen/npysGlobalOptions.py</vh></v>
+<v t="ekr.20170428084207.353"><vh>@file ../external/npyscreen/npysNPSFilteredData.py</vh></v>
+<v t="ekr.20170428084207.364"><vh>@file ../external/npyscreen/npyspmfuncs.py</vh></v>
+<v t="ekr.20170428084207.370"><vh>@file ../external/npyscreen/npyssafewrapper.py</vh></v>
+<v t="ekr.20170428084207.377"><vh>@file ../external/npyscreen/npysThemeManagers.py</vh></v>
+<v t="ekr.20170428084207.390"><vh>@file ../external/npyscreen/npysThemes.py</vh></v>
+<v t="ekr.20170428084207.399"><vh>@file ../external/npyscreen/npysTree.py</vh></v>
+<v t="ekr.20170428084207.422"><vh>@file ../external/npyscreen/proto_fm_screen_area.py</vh></v>
+<v t="ekr.20170428084207.434"><vh>@file ../external/npyscreen/stdfmemail.py</vh></v>
+<v t="ekr.20170428084207.464"><vh>@file ../external/npyscreen/utilNotify.py</vh></v>
+<v t="ekr.20170428084207.477"><vh>@file ../external/npyscreen/util_viewhelp.py</vh></v>
+<v t="ekr.20170428084207.480"><vh>@file ../external/npyscreen/wgannotatetextbox.py</vh></v>
+<v t="ekr.20170428084207.494"><vh>@file ../external/npyscreen/wgautocomplete.py</vh></v>
+<v t="ekr.20170428084207.503"><vh>@file ../external/npyscreen/wgboxwidget.py</vh></v>
+<v t="ekr.20170428084207.524"><vh>@file ../external/npyscreen/wgbutton.py</vh></v>
+<v t="ekr.20170428084207.536"><vh>@file ../external/npyscreen/wgcheckbox.py</vh></v>
+<v t="ekr.20170428084207.561"><vh>@file ../external/npyscreen/wgcombobox.py</vh></v>
+<v t="ekr.20170428084207.575"><vh>@file ../external/npyscreen/wgdatecombo.py</vh></v>
+<v t="ekr.20170428084207.586"><vh>@file ../external/npyscreen/wgeditmultiline.py</vh></v>
+<v t="ekr.20170428084207.611"><vh>@file ../external/npyscreen/wgfilenamecombo.py</vh></v>
+<v t="ekr.20170428084207.618"><vh>@file ../external/npyscreen/wgFormControlCheckbox.py</vh></v>
+<v t="ekr.20170428084208.1"><vh>@file ../external/npyscreen/wggrid.py</vh></v>
+<v t="ekr.20170428084208.36"><vh>@file ../external/npyscreen/wggridcoltitles.py</vh></v>
+<v t="ekr.20170428084208.43"><vh>@file ../external/npyscreen/wgmonthbox.py</vh></v>
+<v t="ekr.20170428084208.68"><vh>@file ../external/npyscreen/wgmultiline.py</vh></v>
+<v t="ekr.20170428084208.157"><vh>@file ../external/npyscreen/wgmultilineeditable.py</vh></v>
+<v t="ekr.20170428084208.173"><vh>@file ../external/npyscreen/wgmultilinetree.py</vh></v>
+<v t="ekr.20170428084208.213"><vh>@file ../external/npyscreen/wgmultilinetreeselectable.py</vh></v>
+<v t="ekr.20170428084208.225"><vh>@file ../external/npyscreen/wgmultiselect.py</vh></v>
+<v t="ekr.20170428084208.245"><vh>@file ../external/npyscreen/wgmultiselecttree.py</vh></v>
+<v t="ekr.20170428084208.253"><vh>@file ../external/npyscreen/wgNMenuDisplay.py</vh></v>
+<v t="ekr.20170428084208.285"><vh>@file ../external/npyscreen/wgpassword.py</vh></v>
+<v t="ekr.20170428084208.290"><vh>@file ../external/npyscreen/wgselectone.py</vh></v>
+<v t="ekr.20170428084208.297"><vh>@file ../external/npyscreen/wgslider.py</vh></v>
+<v t="ekr.20170428084208.318"><vh>@file ../external/npyscreen/wgtextbox.py</vh></v>
+<v t="ekr.20170428084208.354"><vh>@file ../external/npyscreen/wgtextboxunicode.py</vh></v>
+<v t="ekr.20170428084208.359"><vh>@file ../external/npyscreen/wgtextbox_controlchrs.py</vh></v>
+<v t="ekr.20170428084208.366"><vh>@file ../external/npyscreen/wgtexttokens.py</vh></v>
+<v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
+<v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
+<v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
+<v t="ekr.20170428084208.443"><vh>@file ../external/npyscreen/__init__.py</vh></v>
+</v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
@@ -219,7 +295,7 @@ marks="ekr.20150514043850.13,"><vh>@file ../commands/abbrevCommands.py</vh></v>
 </t>
 <t tx="EKR.20040519090151.2">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b00580400000074797065710258080000006e6f646552656374710358010000007971044b0058050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858050000006c696e6b7371015d710258010000007871034b0058010000007971044b00580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python</t>
 <t tx="ekr.20031218072017.2604"></t>
@@ -1729,11 +1805,7 @@ gnx: ekr.20160412193816.4
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
 <t tx="ekr.20160425070345.2"></t>
-<t tx="ekr.20170427114446.1"></t>
-<t tx="ekr.20170427114446.2">'''
-Check this file (leoPy.leo or LeoPyRef.leo) to make sure it contains all expected files.
-'''
-# g.cls()
+<t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
 files = [z for z in files if g.os_path_basename(z).startswith('leo')]
@@ -1756,5 +1828,172 @@ else:
     else:
         print('done')
         </t>
+<t tx="ekr.20170427114412.1"></t>
+<t tx="ekr.20170428084123.1">'''Recursively import all python files in a directory and clean the result.'''
+if 0:
+    &lt;&lt; old dir_ settings &gt;&gt;
+g.cls()
+dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+c.recursiveImport(
+    dir_ = dir_,
+    kind = '@file', # '@clean', #'@nosent','@auto','@file',
+    recursive = True,
+    safe_at_file = False,
+    theTypes = ['.py',],
+)
+</t>
+<t tx="ekr.20170428084123.2">dir_ = r'C:\prog\yoton',
+dir_ = r'c:\leo.repo\ace\lib'
+# Tests: 2017/04/07
+dir_ = r'c:\leo.repo\ace\demo\kitchen-sink\dev_util.js' # pass.
+dir_ = r'c:\leo.repo\ace\demo\static-highlighter\server.js' # Perfect import fails.
+dir_ = r'c:\leo.repo\ace\lib\ace\mode\asciidoc_highlight_rules.js' # undefined sections.
+dir_ = r'c:\leo.repo\ace\lib\ace\mode\abap.js' # pass.
+dir_ = r'c:\leo.repo\ace\lib\ace\lib\event.js' # pass.
+dir_ = r'c:\leo.repo\ace\lib\ace\lib' # pass.
+dir_ = r'c:\leo.repo\ace\demo' # All pass except server.js
+dir_ = r'c:\test\js-import-test.js' # pass.
+dir_ = r'c:\leo.repo\ace\lib\ace\mode\coffee\coffee.js'
+# Perfect import fails. Compressed code. Maybe will never pass.
+dir_ = r'c:\leo.repo\ace\lib\ace\mode\behaviour' # All pass
+dir_ = r'c:\leo.repo\ace\lib\ace\mode' # One failure.
+dir_ = r'c:\leo.repo\ace\lib\ace\mode\xquery\xqlint.js' # perfect import fails.
+dir_ = r'c:\prog\brython-home.html'</t>
+<t tx="ekr.20170428084207.311">#!/usr/bin/env python
+# encoding: utf-8
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20170428084207.312">"""
+form_edit_loop.py
+
+Created by Nicholas Cole on 2008-03-31.
+Copyright (c) 2008 __MyCompanyName__. All rights reserved.
+"""
+
+# import sys
+# import os
+import weakref
+
+</t>
+<t tx="ekr.20170428084207.313">class FormNewEditLoop(object):
+    "Edit Fields .editing = False"
+    @others
+</t>
+<t tx="ekr.20170428084207.314">def pre_edit_loop(self):
+    pass
+</t>
+<t tx="ekr.20170428084207.315">def post_edit_loop(self):
+    pass
+</t>
+<t tx="ekr.20170428084207.316">def _during_edit_loop(self):
+    pass
+
+</t>
+<t tx="ekr.20170428084207.317">def edit_loop(self):
+    self.editing = True
+    self.display()
+    while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
+        self.editw += 1
+        if self.editw &gt; len(self._widgets__)-1: 
+            self.editing = False
+            return False
+    
+    while self.editing:
+        if not self.ALL_SHOWN: self.on_screen()
+        self.while_editing(weakref.proxy(self._widgets__[self.editw]))
+        self._during_edit_loop()
+        if not self.editing:
+            break
+        self._widgets__[self.editw].edit()
+        self._widgets__[self.editw].display()
+
+        self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
+
+        if self.editw &gt; len(self._widgets__)-1: self.editw = len(self._widgets__)-1
+    
+</t>
+<t tx="ekr.20170428084207.318">def edit(self):
+    self.pre_edit_loop()
+    self.edit_loop()
+    self.post_edit_loop()
+
+</t>
+<t tx="ekr.20170428084207.319">class FormDefaultEditLoop(object):
+    @others
+</t>
+<t tx="ekr.20170428084207.320">def edit(self):
+    """Edit the fields until the user selects the ok button added in the lower right corner. Button will
+    be removed when editing finishes"""
+    # Add ok button. Will remove later
+    tmp_rely, tmp_relx = self.nextrely, self.nextrelx
+    my, mx = self.curses_pad.getmaxyx()
+    ok_button_text = self.__class__.OK_BUTTON_TEXT
+    my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
+    mx -= len(ok_button_text)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+    self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
+    ok_button_postion = len(self._widgets__)-1
+    self.ok_button.update()
+    # End add buttons 
+    self.editing=True
+    if self.editw &lt; 0: self.editw=0
+    if self.editw &gt; len(self._widgets__)-1:
+        self.editw = len(self._widgets__)-1
+    if not self.preserve_selected_widget:
+        self.editw = 0
+    if not self._widgets__[self.editw].editable: self.find_next_editable()
+
+
+    self.display()
+
+    while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
+        self.editw += 1
+        if self.editw &gt; len(self._widgets__)-1: 
+            self.editing = False
+            return False
+
+    while self.editing:
+        if not self.ALL_SHOWN: self.on_screen()
+        self.while_editing(weakref.proxy(self._widgets__[self.editw]))
+        if not self.editing:
+            break
+        self._widgets__[self.editw].edit()
+        self._widgets__[self.editw].display()
+
+        self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
+
+        if self.editw &gt; len(self._widgets__)-1: self.editw = len(self._widgets__)-1
+        if self.ok_button.value:
+            self.editing = False
+
+    self.ok_button.destroy()
+    del self._widgets__[ok_button_postion]
+    del self.ok_button
+    self.nextrely, self.nextrelx = tmp_rely, tmp_relx
+    self.display()
+    
+    #try:
+    #    self.parentApp._FORM_VISIT_LIST.pop()
+    #except:
+    #    pass
+    
+
+    self.editing = False
+    self.erase()
+
+</t>
+<t tx="ekr.20170428084207.321">def move_ok_button(self):
+    if hasattr(self, 'ok_button'):
+        my, mx = self.curses_pad.getmaxyx()
+        my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
+        mx -= len(self.__class__.OK_BUTTON_TEXT)+self.__class__.OK_BUTTON_BR_OFFSET[1]
+        self.ok_button.relx = mx
+        self.ok_button.rely = my
+
+
+
+</t>
+<t tx="ekr.20170428085201.1"></t>
 </tnodes>
 </leo_file>
