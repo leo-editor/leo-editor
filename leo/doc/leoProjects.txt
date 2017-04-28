@@ -52,6 +52,8 @@ Solved: the checks are made only if @bool check_for_changed_external_files = Tru
 Changed code in efc.on_idle and efc.idle_check_commander.
 .. @+node:ekr.20170425070312.1: *4* #476: (error in cacher.fileKey)
 https://github.com/leo-editor/leo-editor/issues/476
+.. @+node:ekr.20170428144545.1: *4* #487: g.IdleTime docstring
+https://github.com/leo-editor/leo-editor/issues/487
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
