@@ -18,6 +18,7 @@ class FileCommand(wgautocomplete.Filename):
     #@+others
     #@+node:ekr.20170428084207.156: *3* set_up_handlers
     def set_up_handlers(self):
+        '''FileCommand.set_up_handlers.'''
         super(FileCommand, self).set_up_handlers()
         self.handlers.update ({
             curses.ascii.NL:    self.h_select_file,
@@ -97,6 +98,7 @@ class FileGrid(wggrid.SimpleGrid):
     #@+others
     #@+node:ekr.20170428084207.161: *3* set_up_handlers
     def set_up_handlers(self):
+        '''FileGrid.set_up_handlers.'''
         super(FileGrid, self).set_up_handlers()
         self.handlers.update ({
             curses.ascii.NL:    self.h_select_file,

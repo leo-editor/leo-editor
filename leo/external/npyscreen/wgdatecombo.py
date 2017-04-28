@@ -87,6 +87,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
 
     #@+node:ekr.20170428084207.584: *3* set_up_handlers
     def set_up_handlers(self):
+        '''DataCombo.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
         self.handlers.update({curses.ascii.SP:  self.h_change_value,
             #curses.ascii.TAB: self.h_change_value,

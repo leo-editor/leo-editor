@@ -256,6 +256,7 @@ class MultiLineEdit(widget.Widget):
     ######################################################################
     #@+node:ekr.20170428084207.598: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiLineEdit.set_up_handlers.'''
         super(MultiLineEdit, self).set_up_handlers()    
         # For OS X
         # del_key = curses.ascii.alt('~')

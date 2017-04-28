@@ -192,6 +192,7 @@ Should accept one argument (the object to be represented), and return a string."
         
     #@+node:ekr.20170428084208.17: *3* set_up_handlers
     def set_up_handlers(self):
+        '''SimpleGrid.set_up_handlers.'''
         super(SimpleGrid, self).set_up_handlers()
         self.handlers = {
             curses.KEY_UP:      self.h_move_line_up,

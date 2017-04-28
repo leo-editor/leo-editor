@@ -54,6 +54,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
 
     #@+node:ekr.20170428084207.442: *3* set_up_handlers
     def set_up_handlers(self):
+        '''EmailTree.set_up_handlers.'''
         super(EmailTree, self).set_up_handlers()
         self.handlers.update({
             ord('s'):   self.h_save_message_part,
@@ -71,6 +72,7 @@ class EmailPager(npyscreen.Pager):
     #@+others
     #@+node:ekr.20170428084207.445: *3* set_up_handlers
     def set_up_handlers(self):
+        '''EmailPager.set_up_handlers.'''
         super(EmailPager, self).set_up_handlers()
         self.handlers.update({
             curses.KEY_LEFT:    self.h_exit_tree,
@@ -134,6 +136,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
 
     #@+node:ekr.20170428084207.452: *3* set_up_handlers
     def set_up_handlers(self):
+        '''EmailViewFm.set_up_handlers.'''
         super(EmailViewFm, self).set_up_handlers()
         self.handlers.update({})
 

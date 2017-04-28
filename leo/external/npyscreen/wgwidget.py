@@ -127,6 +127,8 @@ class InputHandler(object):
     #@+node:ekr.20170428084208.406: *3* set_up_handlers
     def set_up_handlers(self):
         """
+        InputHandler.set_up_handlers.
+
         This function should be called somewhere during object initialisation
         (which all library-defined widgets do). You might like to override this
         in your own definition, but in most cases the add_handers or

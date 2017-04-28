@@ -137,6 +137,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.184: *3* set_up_handlers
     def set_up_handlers(self):
+        '''FormBase.set_up_handlers.'''
         self.complex_handlers = []
         self.handlers = { 
             curses.KEY_F1: self.h_display_help,

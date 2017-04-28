@@ -15,6 +15,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
     #@+others
     #@+node:ekr.20170428084208.248: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiSelectTree.set_up_handlers.'''
         super(MultiSelectTree, self).set_up_handlers()
         self.handlers.update({
             ord("x"):    self.h_select_toggle,

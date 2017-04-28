@@ -60,6 +60,7 @@ depending on the value of onErrorHigher"""
 
     #@+node:ekr.20170428084208.50: *3* set_up_handlers
     def set_up_handlers(self):
+        '''DataEntryBase.set_up_handlers.'''
         super(DateEntryBase, self).set_up_handlers()
         self.handlers.update({
             "D":    self.h_day_less,
@@ -281,6 +282,7 @@ class MonthBox(DateEntryBase):
         
     #@+node:ekr.20170428084208.67: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MonthBox.set_up_handlers.'''
         super(MonthBox, self).set_up_handlers()
         self.handlers.update({
             curses.KEY_LEFT:    self.h_day_less,

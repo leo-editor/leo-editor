@@ -455,6 +455,7 @@ object to be passed to the contained widget."""
 
     #@+node:ekr.20170428084208.101: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiLine.set_up_handlers.'''
         super(MultiLine, self).set_up_handlers()
         self.handlers.update ({
             curses.KEY_UP:      self.h_cursor_line_up,
@@ -659,6 +660,7 @@ class MultiLineAction(MultiLine):
             
     #@+node:ekr.20170428084208.121: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiLineAction.set_up_handlers.'''
         super(MultiLineAction, self).set_up_handlers()
         self.handlers.update ( {
             curses.ascii.NL:    self.h_act_on_highlighted,
@@ -675,6 +677,7 @@ class MultiLineActionWithShortcuts(MultiLineAction):
     #@+others
     #@+node:ekr.20170428084208.123: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiLineActionWithShortcuts.set_up_handlers.'''
         super(MultiLineActionWithShortcuts, self).set_up_handlers()
         self.add_complex_handlers( ((self.h_find_shortcut_action, self.h_execute_shortcut_action),) )
         
@@ -839,6 +842,7 @@ class Pager(MultiLine):
 
     #@+node:ekr.20170428084208.142: *3* set_up_handlers
     def set_up_handlers(self):
+        '''Pager.set_up_handlers.'''
         super(Pager, self).set_up_handlers()
         self.handlers = {
             curses.KEY_UP:      self.h_scroll_line_up,

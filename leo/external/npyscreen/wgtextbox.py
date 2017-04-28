@@ -416,6 +416,7 @@ class Textfield(TextfieldBase):
 
     #@+node:ekr.20170428084208.338: *3* set_up_handlers
     def set_up_handlers(self):
+        '''Textfield.set_up_handlers.'''
         super(Textfield, self).set_up_handlers()    
         # For OS X
         # del_key = curses.ascii.alt('~')
@@ -526,6 +527,7 @@ class FixedText(TextfieldBase):
     #@+others
     #@+node:ekr.20170428084208.349: *3* set_up_handlers
     def set_up_handlers(self):
+        '''FixedText.set_up_handlers.'''
         super(FixedText, self).set_up_handlers()
         self.handlers.update({
             curses.KEY_LEFT:    self.h_cursor_left,

@@ -120,6 +120,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
 
     #@+node:ekr.20170428084208.170: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiLineEditable.set_up_handlers.'''
         super(MultiLineEditable, self).set_up_handlers()
         self.handlers.update ( {
             ord('i'):               self.h_insert_value,

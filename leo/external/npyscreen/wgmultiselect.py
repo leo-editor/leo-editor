@@ -15,6 +15,7 @@ class MultiSelect(selectone.SelectOne):
     #@+others
     #@+node:ekr.20170428084208.228: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiSelect.set_up_handlers.'''
         super(MultiSelect, self).set_up_handlers()
         self.handlers.update({
             ord("x"):           self.h_select_toggle,
@@ -70,6 +71,7 @@ class MultiSelectAction(MultiSelect):
 
     #@+node:ekr.20170428084208.237: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiSelectAction.set_up_handlers.'''
         super(MultiSelectAction, self).set_up_handlers()
         self.handlers.update ( {
             curses.ascii.NL:    self.h_act_on_highlighted,
@@ -104,6 +106,7 @@ class MultiSelectFixed(MultiSelect):
 
     #@+node:ekr.20170428084208.242: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MultiSelectFixed.set_up_handlers.'''
         super(MultiSelectFixed, self).set_up_handlers()
         self.handlers.update({
             ord("x"):           self.user_set_value,

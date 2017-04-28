@@ -318,6 +318,7 @@ class MLTree(multiline.MultiLine):
 
     #@+node:ekr.20170428084208.203: *3* set_up_handlers
     def set_up_handlers(self):
+        '''TreeLineAnnotated.set_up_handlers.'''
         super(MLTree, self).set_up_handlers()
         self.handlers.update({
             ord('<'): self.h_collapse_tree,

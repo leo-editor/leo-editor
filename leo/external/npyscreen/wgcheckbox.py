@@ -15,6 +15,7 @@ class _ToggleControl(Widget):
     #@+others
     #@+node:ekr.20170428084207.539: *3* set_up_handlers
     def set_up_handlers(self):
+        '''ToggleControl.set_up_handlers.'''
         super(_ToggleControl, self).set_up_handlers()
         self.handlers.update({
             curses.ascii.SP: self.h_toggle,

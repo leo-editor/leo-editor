@@ -56,6 +56,7 @@ Should accept one argument (the object to be represented), and return a string."
 
     #@+node:ekr.20170428084207.569: *3* set_up_handlers
     def set_up_handlers(self):
+        '''ComboBox.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
         self.handlers.update({
             curses.ascii.SP:  self.h_change_value,

@@ -129,6 +129,7 @@ class Slider(widget.Widget):
 
     #@+node:ekr.20170428084208.306: *3* set_up_handlers
     def set_up_handlers(self):
+        '''Slider.set_up_handlers.'''
         super(widget.Widget, self).set_up_handlers()
         self.handlers.update({ 
             curses.KEY_LEFT: self.h_decrease,

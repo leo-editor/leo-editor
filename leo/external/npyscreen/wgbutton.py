@@ -94,6 +94,7 @@ class MiniButtonPress(MiniButton):
 
     #@+node:ekr.20170428084207.532: *3* set_up_handlers
     def set_up_handlers(self):
+        '''MiniButtonPress.set_up_handlers.'''
         super(MiniButtonPress, self).set_up_handlers()
         self.handlers.update({
             curses.ascii.NL: self.h_toggle,
