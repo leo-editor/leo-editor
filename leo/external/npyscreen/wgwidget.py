@@ -1,6 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.398: * @file ../external/npyscreen/wgwidget.py
 #!/usr/bin/python
+
+leo_gui = True
+
 #@+others
 #@+node:ekr.20170428084208.399: ** Declarations
 import leo.core.leoGlobals as g #EKR
@@ -73,58 +76,55 @@ class InputHandler(object):
     "An object that can handle user input"
 
     #@+others
-    #@+node:ekr.20170428084208.405: *3* handle_input
+    #@+node:ekr.20170428084208.405: *3* IH.handle_input & leo helpers
     def handle_input(self, _input):
         """
-        Returns True if input has been dealt with, and no further action needs
-        taking.
+        Dispatch a handler found in the .input_handers dict or the .complex_handlers list.
         
-        First attempts to look up a method in self.input_handers (which
-        is a dictionary), then runs the methods in self.complex_handlers (if
-        any), which is an array of form (test_func, dispatch_func). If
-        test_func(input) returns true, then dispatch_func(input) is called.
-        Check to see if parent can handle. No further action taken after that
-        point.
+        If none found, pass the event to any parent that can handle it.
+        
+        Return True if input has been completely handled.
         """
-        
-        # g.pdb()
-        # sys.stdout.write('\nhandle_input:' + repr(_input)) # EKR
-        # sys.stdout.write('\nhandle_input:' + g.callers()) # EKR
-        
+        if leo_gui and self.is_key_event(_input) and self.do_leo_key(_input):
+            return True
         if _input in self.handlers:
             self.handlers[_input](_input)
             return True
-        
         try:
             _unctrl_input = curses.ascii.unctrl(_input)
         except TypeError:
             _unctrl_input = None
-        
         if _unctrl_input and (_unctrl_input in self.handlers):
             self.handlers[_unctrl_input](_input)
             return True
-
-
-        if not hasattr(self, 'complex_handlers'): 
-            return False
-        else:
-            for test, handler in self.complex_handlers:
-                if test(_input) is not False: 
-                    handler(_input)
-                    return True
+        ### Old code
+            # if not hasattr(self, 'complex_handlers'): 
+                # return False
+            # else:
+                # for test, handler in self.complex_handlers:
+                    # if test(_input) is not False: 
+                        # handler(_input)
+                        # return True
+        for test, handler in getattr(self, 'complex_handlers', []):
+            if test(_input): # was is not False.
+                handler(_input)
+                return True
         if hasattr(self, 'parent_widget') and hasattr(self.parent_widget, 'handle_input'):
             if self.parent_widget.handle_input(_input):
                 return True
-        elif hasattr(self, 'parent') and hasattr(self.parent, 'handle_input'):
+        if hasattr(self, 'parent') and hasattr(self.parent, 'handle_input'):
             if self.parent.handle_input(_input):
                 return True
-
-        else:
-            pass
-        # If we've got here, all else has failed, so:
         return False
-
-    #@+node:ekr.20170428084208.406: *3* set_up_handlers
+    #@+node:ekr.20170428112805.1: *4* IH.is_key_event
+    def is_key_event(self, _input):
+        # sys.stdout.write('\nhandle_input:' + repr(_input)) # EKR
+        # sys.stdout.write('\nhandle_input:' + g.callers()) # EKR
+        return False ### Not ready yet.
+    #@+node:ekr.20170428112815.1: *4* IH.do_leo_key
+    def do_leo_key(self, _input):
+        return False
+    #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
     def set_up_handlers(self):
         """
         InputHandler.set_up_handlers.
@@ -151,12 +151,12 @@ class InputHandler(object):
         }
         self.complex_handlers = []
 
-    #@+node:ekr.20170428084208.407: *3* add_handlers
+    #@+node:ekr.20170428084208.407: *3* IH.add_handlers
     def add_handlers(self, handler_dictionary):
         """Update the dictionary of simple handlers.  Pass in a dictionary with keyname (eg "^P" or curses.KEY_DOWN) as the key, and the function that key should call as the values """
         self.handlers.update(handler_dictionary)
 
-    #@+node:ekr.20170428084208.408: *3* add_complex_handlers
+    #@+node:ekr.20170428084208.408: *3* IH.add_complex_handlers
     def add_complex_handlers(self, handlers_list):
         """add complex handlers: format of the list is pairs of
         (test_function, callback) sets"""
@@ -165,7 +165,7 @@ class InputHandler(object):
             assert len(pair) == 2
         self.complex_handlers.extend(handlers_list)
         
-    #@+node:ekr.20170428084208.409: *3* remove_complex_handler
+    #@+node:ekr.20170428084208.409: *3* IH.remove_complex_handler
     def remove_complex_handler(self, test_function):
         _new_list = []
         for pair in self.complex_handlers:
