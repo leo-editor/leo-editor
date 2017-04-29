@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20170429161422.1: * @file ../external/broadcast.py
+#@+node:ekr.20170429161422.1: * @file ../external/log_broadcast.py
 import logging, logging.handlers
 
 rootLogger = logging.getLogger('')

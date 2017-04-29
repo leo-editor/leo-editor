@@ -5,6 +5,8 @@ use_npyscreen = True
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import leo.core.leoGlobals as g
+import logging
+import logging.handlers
 import sys
 assert sys # to keep pyflakes happy.
 import leo.core.leoFrame as leoFrame
@@ -27,6 +29,8 @@ npyscreen = g.importExtension(
 #@+node:ekr.20170420054211.1: ** class CursesApp
 class CursesApp(npyscreen.NPSApp):
 
+    #@+others
+    #@+node:ekr.20170429164632.1: *3* CApp.__init__
     def __init__(self, c):
 
         npyscreen.NPSApp.__init__(self)
@@ -37,12 +41,74 @@ class CursesApp(npyscreen.NPSApp):
         self.leo_tree = None
         assert not hasattr(self, 'windowList'), self.windowList
         self.windowList = [c]
-        # g.app = self
+        self.init_logger()
+    #@+node:ekr.20170429165004.1: *3* CApp.init_logger
+    def init_logger(self):
+        
+        self.rootLogger = logging.getLogger('')
+        self.rootLogger.setLevel(logging.DEBUG)
+        socketHandler = logging.handlers.SocketHandler(
+            'localhost',
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        )
+        # The socket handler sends the event as an unformatted pickle, so
+        # there is no need for a formatter.
+        self.rootLogger.addHandler(socketHandler)
 
-    #@+others
+        # Monkey-patch g.trace.
+        g.trace = self.trace
+    #@+node:ekr.20170429165242.1: *3* CApp.trace
+    def trace(self, *args, **keys):
+        '''Print a tracing message.'''
+        # Don't use g here: in standalone mode g is a NullObject!
+        # Compute the effective args.
+        d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
+        d = g.doKeywordArgs(keys, d)
+        ### newline = d.get('newline')
+        align = d.get('align', 0)
+        caller_level = d.get('caller_level', 1)
+        noname = d.get('noname')
+        # Compute the caller name.
+        if noname:
+            name = ''
+        else:
+            try: # get the function name from the call stack.
+                f1 = sys._getframe(caller_level) # The stack frame, one level up.
+                code1 = f1.f_code # The code object
+                name = code1.co_name # The code name
+            except Exception:
+                name = g.shortFileName(__file__)
+            if name == '<module>':
+                name = g.shortFileName(__file__)
+            if name.endswith('.pyc'):
+                name = name[: -1]
+        # Pad the caller name.
+        if align != 0 and len(name) < abs(align):
+            pad = ' ' * (abs(align) - len(name))
+            if align > 0: name = name + pad
+            else: name = pad + name
+        # Munge *args into s.
+        # print ('g.trace:args...')
+        # for z in args: print (g.isString(z),repr(z))
+        result = [name] if name else []
+        for arg in args:
+            if g.isString(arg):
+                pass
+            elif g.isBytes(arg):
+                arg = g.toUnicode(arg)
+            else:
+                arg = repr(arg)
+            if result:
+                result.append(" " + arg)
+            else:
+                result.append(arg)
+        s = d.get('before') + ''.join(result)
+        # pr(s, newline=newline)
+        logging.info(s)
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
+        g.trace('CurseseApp.main')
         F  = npyscreen.Form(name = "Welcome to Leo",)
         ### This doesn't work.
             # def test(*args, **kwargs):
@@ -69,6 +135,7 @@ class CursesApp(npyscreen.NPSApp):
         # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
         self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
         ###w.handlers = {}
+        g.trace('before F.edit()')
         F.edit()
     #@-others
 
