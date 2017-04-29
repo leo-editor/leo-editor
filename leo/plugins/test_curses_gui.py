@@ -12,6 +12,9 @@ sys.path.append(r'c:\leo.repo\leo-editor')
 import leo.core.leoGlobals as g
 g.app = g.NullObject()
 #@+others
+#@+node:ekr.20170429161836.1: ** init
+def init():
+    return False # Not a real plugin.
 #@+node:ekr.20170429113539.1: ** run_curses_gui
 def run_curses_gui():
     '''

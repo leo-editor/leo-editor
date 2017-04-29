@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20170429131315.1: * @file curses_gui_broadcast.py
+#@+node:ekr.20170429161422.1: * @file ../external/broadcast.py
 import logging, logging.handlers
 
 rootLogger = logging.getLogger('')
