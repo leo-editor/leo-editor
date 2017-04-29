@@ -27,7 +27,7 @@ class ActionControllerSimple(object):
     def __init__(self, parent=None):
         try:
             self.parent = weakref.proxy(parent)
-        except:
+        except Exception:
             self.parent = parent
         self._action_list = []
         self.create()
@@ -179,7 +179,7 @@ class TextCommandBoxTraditional(TextCommandBox):
     def handle_input(self, inputch):
         try:
             inputchstr = chr(inputch)
-        except:
+        except Exception:
             inputchstr = False
         
         try:

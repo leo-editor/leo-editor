@@ -44,7 +44,7 @@ class TitleText(widget.Widget):
         for dangerous in ('relx', 'rely','value',):# 'width','max_width'):
             try:
                 self._passon.pop(dangerous)
-            except:
+            except Exception:
                 pass
                 
         if self.field_width_request:

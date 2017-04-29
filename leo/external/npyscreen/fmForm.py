@@ -47,7 +47,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         if parentApp:
             try:
                 self.parentApp = weakref.proxy(parentApp)
-            except:
+            except Exception:
                 self.parentApp = parentApp
             try:
                 self.keypress_timeout = self.parentApp.keypress_timeout_default
@@ -177,11 +177,11 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         self.editing = False
         try:
             self._widgets__[self.editw].entry_widget.editing = False
-        except:
+        except Exception:
             pass
         try:
             self._widgets__[self.editw].editing = False
-        except:
+        except Exception:
             pass
 
     #@+node:ekr.20170428084207.189: *3* adjust_widgets
@@ -369,7 +369,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                     self.make_attributes_list(_title, curses.A_NORMAL),
                     self.columns-4
                     )
-        except:
+        except Exception:
             pass
 
         if self.help and self.editing:
@@ -383,7 +383,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                  self.make_attributes_list(help_advert, curses.A_NORMAL),
                  len(help_advert)
                  )
-            except:
+            except Exception:
                 pass
 
     #@+node:ekr.20170428084207.205: *3* draw_form

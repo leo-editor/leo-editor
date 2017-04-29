@@ -21,7 +21,7 @@ class TextfieldBase(widget.Widget):
         **keywords):
         try:
             self.value = value or ""
-        except:
+        except Exception:
             self.value = ""
         
         
@@ -189,7 +189,7 @@ class TextfieldBase(widget.Widget):
         #The following appears to work for unicode as well.
         try:
             char_under_cur = self.display_value(self.value)[self.cursor_position]
-        except:
+        except Exception:
             char_under_cur = ' '
 
         self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, curses.A_STANDOUT)
@@ -270,7 +270,7 @@ class TextfieldBase(widget.Widget):
                     break 
                 try:
                     highlight = self._highlightingdata[self.begin_at+place_in_string]
-                except:
+                except Exception:
                     highlight = curses.A_NORMAL                
                 self.parent.curses_pad.addstr(self.rely,self.relx+column+self.left_margin, 
                     self._print_unicode_char(string_to_print[place_in_string]), 
@@ -333,7 +333,7 @@ class TextfieldBase(widget.Widget):
             for i in range(len(string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])):
                 try:
                     highlight = self._highlightingdata[self.begin_at+i]
-                except:
+                except Exception:
                     highlight = curses.A_NORMAL
                 self.parent.curses_pad.addstr(self.rely,self.relx+i+self.left_margin, 
                     string_to_print[self.begin_at+i], 

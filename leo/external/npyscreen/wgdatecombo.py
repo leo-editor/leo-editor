@@ -73,7 +73,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
             # Is it a date, do we think?
             self.value.isoformat()
             m.value = self.value
-        except:
+        except Exception:
             # if not, we could do worse than today
             m.value = self.date_or_datetime().today()
             # But make sure that that is acceptable

@@ -61,7 +61,7 @@ def wrapper_fork(call_function, reset=True):
         _SCREEN = curses.initscr()
         try:
             curses.start_color()
-        except:
+        except Exception:
             pass
         _SCREEN.keypad(1)
         curses.noecho()
@@ -93,7 +93,7 @@ def wrapper_no_fork(call_function, reset=False):
         _SCREEN = curses.initscr()
         try:
             curses.start_color()
-        except:
+        except Exception:
             pass
         curses.noecho()
         curses.cbreak()

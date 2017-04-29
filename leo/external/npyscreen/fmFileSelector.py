@@ -50,7 +50,7 @@ class FileCommand(wgautocomplete.Filename):
         
         try: 
             flist = os.listdir(directory)
-        except:
+        except Exception:
             self.show_brief_message("Can't read directory!")
             return False
             
@@ -170,7 +170,7 @@ class FileSelector(fmFormMutt.FormMutt):
         try:
             if not self.value:
                 self.value = os.getcwd()
-        except:
+        except Exception:
             self.value = os.getcwd()
 
     #@+node:ekr.20170428084207.167: *3* try_exit

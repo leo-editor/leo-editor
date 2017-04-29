@@ -15,7 +15,7 @@ from . import npysThemeManagers as ThemeManagers
 # For more complex method of getting the size of screen
 try:
     import fcntl, termios, struct, sys
-except:
+except Exception:
     # Win32 platforms do not have fcntl
     pass
 
@@ -97,7 +97,7 @@ class ScreenArea(object):
         try:
             if self.lines_were_auto_set: self.lines = None
             if self.cols_were_auto_set: self.columns = None
-        except: pass
+        except Exception: pass
 
         
         if not self.lines: 

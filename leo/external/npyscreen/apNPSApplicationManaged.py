@@ -81,7 +81,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         f = self._Forms[name]
         try:
             return weakref.proxy(f)
-        except:
+        except Exception:
             return f
 
     #@+node:ekr.20170428084207.38: *3* setNextForm

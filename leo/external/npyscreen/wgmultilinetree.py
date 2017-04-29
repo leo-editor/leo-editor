@@ -137,7 +137,7 @@ class TreeLine(textbox.TextfieldBase):
     def display_value(self, vl):
         try:
             return self.safe_string(self._get_content_for_display(self._tree_real_value))
-        except:
+        except Exception:
             # Catch the times this is None.
             return self.safe_string(vl)
             
@@ -288,7 +288,7 @@ class MLTree(multiline.MultiLine):
             if self._cached_tree is weakref.proxy(self._myFullValues) and \
             (self._cached_sort == (self._myFullValues.sort, self._myFullValues.sort_function)):
                 return self._cached_tree_as_list
-        except:
+        except Exception:
             pass
         self._cached_tree = weakref.proxy(self._myFullValues)
         self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
@@ -354,7 +354,7 @@ class MLTree(multiline.MultiLine):
                 line._tree_depth        = self._find_depth(self.values[value_indexer])
                 line._tree_has_children = self._has_children(self.values[value_indexer])
                 line._tree_expanded     = self.values[value_indexer].expanded
-            except:
+            except Exception:
                 line._tree_depth        = False
                 line._tree_has_children = False
                 line._tree_expanded     = False
@@ -364,12 +364,12 @@ class MLTree(multiline.MultiLine):
                 else:
                     line._tree_sibling_next = False
 
-            except:
+            except Exception:
                 line._sibling_next = False
                 line._tree_last_line = True
             try:
                 line._tree_depth_next = self._find_depth(self.values[value_indexer+1])
-            except:
+            except Exception:
                 line._tree_depth_next = False
             line.hidden = False
         except IndexError:

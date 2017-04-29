@@ -64,7 +64,7 @@ class Filename(Autocomplete):
 
             try: 
                 flist = os.listdir(dir)
-            except:
+            except Exception:
                 self.show_brief_message("Can't read directory!")
                 break
 

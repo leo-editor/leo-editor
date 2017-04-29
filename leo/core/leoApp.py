@@ -153,6 +153,8 @@ class LeoApp(object):
             # May be set by plugins.
         self.idle_timers = []
             # A list of IdleTime instances, so they persist.
+        self.log_listener = None
+            # The process created by the 'listen-for-log' command.
         self.positions = 0
             # The number of positions generated.
         self.scanErrors = 0

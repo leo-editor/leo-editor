@@ -26,7 +26,7 @@ class ComboBox(textbox.Textfield):
     #@+node:ekr.20170428084207.565: *3* display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
-Should accept one argument (the object to be represented), and return a string."""
+        Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
     #@+node:ekr.20170428084207.566: *3* update
@@ -93,17 +93,17 @@ class TitleCombo(titlefield.TitleText):
     def get_values(self):
         try:
             return self.entry_widget.values
-        except:
+        except Exception:
             try:
                 return self.__tmp_values
-            except:
+            except Exception:
                 return None
 
     #@+node:ekr.20170428084207.573: *3* set_values
     def set_values(self, values):
         try:
             self.entry_widget.values = values
-        except:
+        except Exception:
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = values
             

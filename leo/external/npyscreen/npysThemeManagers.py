@@ -108,7 +108,7 @@ class ThemeManager(object):
         # Locate the requested colour pair.  Default to default if not found.
         try:
             pair = self._defined_pairs[self._names[request]]
-        except:
+        except Exception:
             pair = self._defined_pairs[self._names['DEFAULT']]
 
         # now make the actual attribute

@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.398: * @file ../external/npyscreen/wgwidget.py
 #!/usr/bin/python
-
+# pylint: disable=no-member,access-member-before-definition
 leo_gui = True
 
 #@+others
@@ -76,7 +76,7 @@ class InputHandler(object):
     "An object that can handle user input"
 
     #@+others
-    #@+node:ekr.20170428084208.405: *3* IH.handle_input
+    #@+node:ekr.20170428084208.405: *3* IH.handle_input & leo helpers
     def handle_input(self, _input):
         """
         Dispatch a handler found in the .input_handers dict or the .complex_handlers list.
@@ -144,7 +144,7 @@ class InputHandler(object):
         )
         c.k.masterKeyHandler(event)
         return True
-    #@+node:ekr.20170428084208.406: *3* set_up_handlers
+    #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
     def set_up_handlers(self):
         """
         InputHandler.set_up_handlers.
@@ -171,7 +171,7 @@ class InputHandler(object):
         }
         self.complex_handlers = []
 
-    #@+node:ekr.20170428084208.407: *3* add_handlers
+    #@+node:ekr.20170428084208.407: *3* IH.add_handlers
     def add_handlers(self, handler_dictionary):
         """Update the dictionary of simple handlers.  Pass in a dictionary with keyname (eg "^P" or curses.KEY_DOWN) as the key, and the function that key should call as the values """
         self.handlers.update(handler_dictionary)
@@ -213,7 +213,7 @@ class InputHandler(object):
     def h_exit_up(self, _input):
         if not self._test_safe_to_exit():
             return False
-        """Called when the user leaves the widget to the previous widget"""
+        # Called when the user leaves the widget to the previous widget
         self.editing = False
         self.how_exited = EXITED_UP
         
@@ -317,7 +317,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         # same again
         try:
             self.name
-        except:
+        except Exception:
             self.name=name
             
         self.request_width =  width     # widgets should honour if possible
@@ -422,9 +422,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170428084208.421: *3* calculate_area_needed
     def calculate_area_needed(self): 
         """Classes should provide a function to
-calculate the screen area they need, returning either y,x, or 0,0 if
-they want all the screen they can.  However, do not use this to say how
-big a given widget is ... use .height and .width instead"""
+        calculate the screen area they need, returning either y,x, or 0,0 if
+        they want all the screen they can.  However, do not use this to say how
+        big a given widget is ... use .height and .width instead"""
         return 0,0
 
     #@+node:ekr.20170428084208.422: *3* set_size
@@ -518,7 +518,7 @@ big a given widget is ... use .height and .width instead"""
 #               try:
 #                   # We are in a try loop in case the cursor is moved off the bottom right corner of the screen
 #                   self.parent.curses_pad.addch(self.rely+y, self.relx + x, usechar)
-#               except: pass
+#               except Exception: pass
 #Use this instead
             if self.do_colors():
                 self.parent.curses_pad.addstr(self.rely+y, self.relx, usechar * (self.width), self.parent.theme_manager.findPair(self, self.parent.color))  # used to be width + 1
@@ -826,7 +826,7 @@ big a given widget is ... use .height and .width instead"""
                     # no it isn't.
                     try:
                         rtn_value = rtn_value.decode(self.encoding, 'replace')
-                    except:
+                    except Exception:
                         # Python2.6
                         rtn_value = rtn_value.decode(self.encoding, 'replace')
                 if sys.version_info[0] >= 3:
@@ -836,7 +836,7 @@ big a given widget is ... use .height and .width instead"""
             else:
                 rtn = self.safe_filter(this_string)
                 return rtn
-        except:
+        except Exception:
             if DEBUG:
                 raise
             else:
@@ -846,7 +846,7 @@ big a given widget is ... use .height and .width instead"""
         try:
             this_string = this_string.decode(self.encoding, 'replace')
             return this_string.encode('ascii', 'replace').decode()
-        except:
+        except Exception:
             # Things have gone badly wrong if we get here, but let's try to salvage it.
             try:
                 if self._safe_filter_value_cache[0] == this_string:
@@ -861,7 +861,7 @@ big a given widget is ... use .height and .width instead"""
                 #    s.append('?')
                 try:
                     s.append(str(cha))
-                except:
+                except Exception:
                     s.append('?')
             s = ''.join(s)
         
@@ -873,7 +873,7 @@ big a given widget is ... use .height and .width instead"""
         #for cha in this_string.replace('\n', ''):
         #    try:
         #        s += cha.encode('ascii')
-        #    except:
+        #    except Exception:
         #        s += '?'
         #return s
         

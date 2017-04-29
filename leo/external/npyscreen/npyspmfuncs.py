@@ -15,14 +15,14 @@ class ResizeError(Exception):
 def hidecursor():
     try:
         curses.curs_set(0)
-    except:
+    except Exception:
         pass
 
 #@+node:ekr.20170428084207.368: ** showcursor
 def showcursor():
     try:
         curses.curs_set(1)
-    except:
+    except Exception:
         pass
 
 #@+node:ekr.20170428084207.369: ** CallSubShell

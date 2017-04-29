@@ -45,7 +45,7 @@ class DateEntryBase(widget.Widget):
     #@+node:ekr.20170428084208.49: *3* _check_today_validity
     def _check_today_validity(self, onErrorHigher=True):
         """If not allowed to select today's date, and today is selected, move either higher or lower
-depending on the value of onErrorHigher"""
+        depending on the value of onErrorHigher"""
         if not self.allow_date_in_past:
             onErrorHigher = True
         if self.allow_todays_date:
@@ -80,7 +80,7 @@ depending on the value of onErrorHigher"""
         old_value = self.value
         try:
             self.value -= delta
-        except:
+        except Exception:
             self.value = old_value
 
     #@+node:ekr.20170428084208.52: *3* _increase_value_by_delta
@@ -88,7 +88,7 @@ depending on the value of onErrorHigher"""
         old_value = self.value
         try:
             self.value += delta
-        except:
+        except Exception:
             self.value = old_value
 
 
@@ -138,7 +138,7 @@ depending on the value of onErrorHigher"""
                 self.value = self.value.replace(year=self.value.year-1)
             self._check_date()
             self._check_today_validity(onErrorHigher=False)
-        except:
+        except Exception:
             self.value=old_value
 
     #@+node:ekr.20170428084208.60: *3* h_year_more
@@ -151,7 +151,7 @@ depending on the value of onErrorHigher"""
                 self.value = self.value.replace(year=self.value.year+1)
             self._check_date()
             self._check_today_validity(onErrorHigher=True)
-        except:
+        except Exception:
             self.value = old_value
             
     #@+node:ekr.20170428084208.61: *3* h_find_today

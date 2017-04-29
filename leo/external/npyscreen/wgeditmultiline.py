@@ -47,7 +47,7 @@ class MultiLineEdit(widget.Widget):
             else:
                 try:
                     s.append(str(cha))
-                except:
+                except Exception:
                     s.append('?')
         s = ''.join(s)
         return s
@@ -182,7 +182,7 @@ class MultiLineEdit(widget.Widget):
                 char_under_cur = self.safe_string(self.value[self.cursor_position])
                 if char_under_cur == '\n':
                     char_under_cur = ' '
-            except:
+            except Exception:
                 char_under_cur = ' '
             
             if self.do_colors():

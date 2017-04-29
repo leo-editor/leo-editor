@@ -93,7 +93,7 @@ class TreeData(object):
         for c in self._children:
             try:
                 yield weakref.proxy(c)
-            except:
+            except Exception:
                 yield c
 
     #@+node:ekr.20170428084207.414: *3* get_children_objects
@@ -160,7 +160,7 @@ class TreeData(object):
         # example sort function #             frm = the_item.getContent().get('from')
         # example sort function #             try:
         # example sort function #                 frm = email.utils.parseaddr(frm)[0]
-        # example sort function #             except:
+        # example sort function #             except Exception:
         # example sort function #                 pass
         # example sort function #             return frm
         # example sort function #     else:
@@ -218,7 +218,7 @@ class TreeData(object):
         for node in self.walk_tree(only_expanded=only_expanded, ignore_root=self.ignore_root, sort=sort):
             try:
                 _a.append(weakref.proxy(node))
-            except:
+            except Exception:
                 _a.append(node)
         return _a
     #@-others

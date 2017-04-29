@@ -134,8 +134,8 @@ the same effect can be achieved by altering the __str__() method of displayed ob
     #@+node:ekr.20170428084208.78: *3* display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
-Should accept one argument (the object to be represented), and return a string or the 
-object to be passed to the contained widget."""
+        Should accept one argument (the object to be represented), and return a string or the 
+        object to be passed to the contained widget."""
         try:
             return self.safe_string(str(vl))
         except ReferenceError:
@@ -143,7 +143,7 @@ object to be passed to the contained widget."""
         
         try:
             return "Error displaying " + self.safe_string(repr(vl))
-        except:
+        except Exception:
             return "**** Error ****"
 
     #@+node:ekr.20170428084208.79: *3* calculate_area_needed
@@ -211,7 +211,7 @@ object to be passed to the contained widget."""
        
             else:
                 no_change = False
-        except:
+        except Exception:
                 no_change = False
         if clear:
             no_change = False

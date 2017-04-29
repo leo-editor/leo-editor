@@ -93,7 +93,7 @@ class SimpleGrid(widget.Widget):
     #@+node:ekr.20170428084208.8: *3* display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
-Should accept one argument (the object to be represented), and return a string."""
+        Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
         
