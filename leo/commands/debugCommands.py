@@ -147,7 +147,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         
     #@+node:ekr.20170429152049.1: *3* debug.listenToLog
     @cmd('listen-to-log')
-    @cmd('log-listen-kill')
+    @cmd('log-listen')
     def listenToLog(self, event=None):
         '''
         A socket listener, listening on localhost. See:
