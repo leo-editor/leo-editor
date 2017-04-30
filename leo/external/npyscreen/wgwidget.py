@@ -2,7 +2,6 @@
 #@+node:ekr.20170428084208.398: * @file ../external/npyscreen/wgwidget.py
 #!/usr/bin/python
 # pylint: disable=no-member,access-member-before-definition
-leo_gui = True
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 import leo.core.leoGlobals as g #EKR
@@ -79,7 +78,16 @@ class InputHandler(object):
         
         Return True if input has been completely handled.
         """
-        if leo_gui and self.is_key_event(_input) and self.do_leo_key(_input):
+        trace = True
+        parent_widget = getattr(self, 'parent_widget', None)
+        parent = getattr(self, 'parent', None)
+        if trace:
+            g.trace('%3s = %6r, parent: %5r, widget: %s' % (
+                _input, curses.ascii.unctrl(_input),
+                parent.__class__.__name__,
+                parent_widget.__class__.__name__,
+            ))
+        if False and self.is_key_event(_input) and self.do_leo_key(_input):
             return True
         if _input in self.handlers:
             self.handlers[_input](_input)
@@ -103,11 +111,12 @@ class InputHandler(object):
             if test(_input): # was is not False.
                 handler(_input)
                 return True
-        if hasattr(self, 'parent_widget') and hasattr(self.parent_widget, 'handle_input'):
-            if self.parent_widget.handle_input(_input):
+        # if hasattr(self, 'parent_widget') and hasattr(self.parent_widget, 'handle_input'):
+        if parent_widget and hasattr(parent_widget, 'handle_input'):
+            if parent_widget.handle_input(_input):
                 return True
-        if hasattr(self, 'parent') and hasattr(self.parent, 'handle_input'):
-            if self.parent.handle_input(_input):
+        if parent and hasattr(self.parent, 'handle_input'):
+            if parent.handle_input(_input):
                 return True
         return False
     #@+node:ekr.20170428112805.1: *4* IH.is_key_event

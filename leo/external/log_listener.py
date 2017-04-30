@@ -41,6 +41,8 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         followed by the LogRecord in pickle format. Logs the record
         according to whatever policy is configured locally.
         """
+        print('listener started')
+            # This isn't shown.
         while True:
             try:
                 chunk = self.connection.recv(4)
@@ -55,7 +57,8 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
             obj = self.unPickle(chunk)
             record = logging.makeLogRecord(obj)
             self.handleLogRecord(record)
-        print('listener terminated')
+        print('listener suspended')
+            # This method can be re-invoked later.
     #@+node:ekr.20170429152049.4: *3* unPickle
     def unPickle(self, data):
         return pickle.loads(data)
