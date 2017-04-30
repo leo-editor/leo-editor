@@ -97,7 +97,8 @@ class LogRecordSocketReceiver(SocketServer.ThreadingTCPServer):
 #@+node:ekr.20170429153814.1: ** start
 def start():
     '''Start the log listener.'''
-    format='%(relativeCreated)5d %(name)-15s %(levelname)-8s %(message)s'
+    # format='%(relativeCreated)5d %(name)-15s %(levelname)-8s %(message)s'
+    format='%(message)s' # To mimic g.trace.
     logging.basicConfig(format=format)
     tcpserver = LogRecordSocketReceiver()
     print('About to start TCP server...')
