@@ -13,6 +13,7 @@ leo/plugins/cursesGui2.py is a typical broadcaster.
 '''
 #@+<< log_listener imports >>
 #@+node:ekr.20170429153432.1: ** << log_listener imports >>
+# import leo.core.leoGlobals as g
 import logging
 import logging.handlers
 import pickle
@@ -41,7 +42,10 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         according to whatever policy is configured locally.
         """
         while True:
-            chunk = self.connection.recv(4)
+            try:
+                chunk = self.connection.recv(4)
+            except ConnectionResetError:
+                break
             if len(chunk) < 4:
                 break
             slen = struct.unpack('>L', chunk)[0]
@@ -51,6 +55,7 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
             obj = self.unPickle(chunk)
             record = logging.makeLogRecord(obj)
             self.handleLogRecord(record)
+        print('listener terminated')
     #@+node:ekr.20170429152049.4: *3* unPickle
     def unPickle(self, data):
         return pickle.loads(data)

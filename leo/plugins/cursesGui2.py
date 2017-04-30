@@ -52,10 +52,7 @@ class CursesApp(npyscreen.NPSApp):
             'localhost',
             logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         )
-        # The socket handler sends the event as an unformatted pickle, so
-        # there is no need for a formatter.
         self.rootLogger.addHandler(socketHandler)
-
         # Monkey-patch g.trace.
         g.trace = self.trace
     #@+node:ekr.20170429165242.1: *3* CApp.trace
@@ -203,6 +200,7 @@ class CursesGui(leoGui.LeoGui):
         assert c
         app = CursesApp(c)
         app.run()
+        g.trace('DONE')
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
