@@ -2,6 +2,7 @@
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
 '''A prototype text gui using the python curses library.'''
 use_npyscreen = True
+app = None
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import leo.core.leoGlobals as g
@@ -39,7 +40,7 @@ class CursesApp(npyscreen.NPSApp):
         self.leo_log = c.frame.log
         self.leo_minibuffer = None
         self.leo_tree = None
-        assert not hasattr(self, 'windowList'), self.windowList
+        assert not hasattr(self, 'windowList'), getattr(self, 'windowList')
         self.windowList = [c]
         self.init_logger()
     #@+node:ekr.20170429165004.1: *3* CApp.init_logger
@@ -202,12 +203,6 @@ class CursesGui(leoGui.LeoGui):
         assert c
         app = CursesApp(c)
         app.run()
-        ###
-            # import urwid
-            # txt = urwid.Text(u"Hello World")
-            # fill = urwid.Filler(txt, 'top')
-            # loop = urwid.MainLoop(fill)
-            # loop.run() # On Windows, fails because termios not installed.
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
