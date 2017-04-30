@@ -9,9 +9,10 @@ assert g
 
 # import codecs
 import copy
-import sys
 import curses
 import curses.ascii
+import string
+import sys
 #import curses.wrapper
 import weakref
 from . import npysGlobalOptions as GlobalOptions
@@ -21,6 +22,7 @@ import locale
 from .globals import DEBUG
 # experimental
 from .eveventhandler import EventHandler
+
 #@-<< wgwidget imports >>
 #@+<< wgwidgets data >>
 #@+node:ekr.20170429213125.1: ** << wgwidgets data >>
@@ -125,7 +127,7 @@ class InputHandler(object):
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170428112815.1: *4* IH.do_leo_key & helpers
     def do_leo_key(self, ch_i):
-        
+        '''Handle a key that has no curses/npyscreen binding.'''
         import leo.plugins.cursesGui2 as cursesGui2
         c = cursesGui2.app.windowList[0]
         # Kludge: just use body bindings for everything.
@@ -145,9 +147,7 @@ class InputHandler(object):
             return True
     #@+node:ekr.20170430045550.2: *5* filter.create_key_event
     def create_key_event(self, c, w, ch, tkKey, shortcut):
-        trace = False
-        if trace:
-            g.trace('ch: %r, tkKey: %r, shortcut: %r' % (ch, tkKey, shortcut))
+        trace = True
         # Last-minute adjustments...
         if shortcut == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
@@ -173,10 +173,7 @@ class InputHandler(object):
             }
             if tkKey in darwinmap:
                 shortcut = darwinmap[tkKey]
-        if trace:
-            import string
-            g.trace('ch: %r, shortcut: %r printable: %r' % (
-                ch, shortcut, ch in string.printable))
+        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
         import leo.core.leoGui as leoGui
         return leoGui.LeoKeyEvent(
             c=c,
@@ -241,35 +238,26 @@ class InputHandler(object):
         text = ch ### Wrong.
         toString = g.u(toString)
         if trace:
-            g.trace('ch_i: %7x ch: %3r toString %r text: %r' % (
-                ch_i, ch, toString, text))
+            g.trace('ch_i: %s ch: %5r toString %5r text: %r' % (ch_i, ch, toString, text))
         return text, toString, ch
-    #@+node:ekr.20170430045550.10: *5* filter.qtMods (REWRITE)
+    #@+node:ekr.20170430045550.10: *5* filter.qtMods (Test)
     def qtMods(self, ch_i):
         '''Return the text version of the modifiers of the key event.'''
-        return [] # Not ready yet.
-        ###
-            # modifiers = event.modifiers()
-            # # The order of this table must match the order created by k.strokeFromSetting.
-            # qt = QtCore.Qt
-            # # 2016/06/13: toStroke can now generate meta on MacOS.
-            # # In other words: only one version of this table is needed.
-            # table = (
-                # (qt.AltModifier, 'Alt'),
-                # (qt.ControlModifier, 'Control'),
-                # (qt.MetaModifier, 'Meta'),
-                # (qt.ShiftModifier, 'Shift'),
-            # )
-            # mods = [b for a, b in table if (modifiers & a)]
-            # return mods
+        table = (
+            (curses.ascii.isctrl, 'Control'),
+            (curses.ascii.ismeta, 'Alt'), # Not sure this is ever used.
+            (curses.ascii.isupper, 'Shift'),
+        )
+        mods = [s for func, s in table if func(ch_i)]
+        g.trace(ch_i, curses.ascii.unctrl(ch_i), mods)
+        return mods
     #@+node:ekr.20170430045550.4: *5* filter.tkKey & helper
     def tkKey(self, mods, text, toString, ch):
         '''
         Carefully convert the Qt key to a Tk-style binding compatible with
         Leo's core binding dictionaries.
         '''
-        import string
-        trace = False
+        trace = True
         ch1 = ch # For tracing.
         use_shift = (
             'Home', 'End', 'Tab',
@@ -377,7 +365,7 @@ class InputHandler(object):
     #@+node:ekr.20170430045550.8: *5* filter.toStroke (top-level)
     def toStroke(self, tkKey):
         '''Convert the official tkKey name to a stroke.'''
-        trace = False and not g.unitTesting
+        trace = True
         s = tkKey
         table = (
             ('Alt-', 'Alt+'),
