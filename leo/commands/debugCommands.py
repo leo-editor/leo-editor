@@ -157,6 +157,15 @@ class DebugCommandsClass(BaseEditCommandsClass):
         
         leo/plugins/cursesGui2.py is a typical broadcaster.
         '''
+        # Kill any previous listener.
+        if g.app.log_listener:
+            g.es_print('Killing previous listener')
+            try:
+                g.app.log_listener.kill()
+            except Exception:
+                g.es_exception()
+            g.app.log_listener = None
+        # Start a new listener.
         g.es_print('Starting log_listener.py')
         path = g.os_path_finalize_join(g.app.loadDir,
             '..', 'external', 'log_listener.py')
