@@ -2,9 +2,10 @@
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
 '''A prototype text gui using the python curses library.'''
 use_npyscreen = True
-app = None
+gApp = None
+gC = None
 #@+<< cursesGui imports >>
-#@+node:ekr.20170419172102.1: ** << cursesGui imports >>
+#@+node:ekr.20170419172102.1: **  << cursesGui imports >>
 import leo.core.leoGlobals as g
 import logging
 import logging.handlers
@@ -27,13 +28,29 @@ npyscreen = g.importExtension(
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ
 #@+others
-#@+node:ekr.20170420054211.1: ** class CursesApp
+#@+node:ekr.20170419094705.1: **  init (cursesGui2.py)
+def init():
+
+    ok = curses and not g.app.gui and not g.app.unitTesting
+        # Not Ok for unit testing!
+    if ok:
+        g.app.gui = CursesGui()
+        g.app.root = g.app.gui.createRootWindow()
+        g.app.gui.finishCreate()
+        g.plugin_signon(__name__)
+    elif g.app.gui and not g.app.unitTesting:
+        s = "Can't install text gui: previous gui installed"
+        g.es_print(s, color="red")
+    return ok
+#@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
 
     #@+others
     #@+node:ekr.20170429164632.1: *3* CApp.__init__
     def __init__(self, c):
 
+        global gC
+        gC = c
         npyscreen.NPSApp.__init__(self)
             # Init the base class.
         self.leo_c = c
@@ -43,6 +60,23 @@ class CursesApp(npyscreen.NPSApp):
         assert not hasattr(self, 'windowList'), getattr(self, 'windowList')
         self.windowList = [c]
         self.init_logger()
+    #@+node:ekr.20170430112645.1: *3* CAPP.es
+    def es(self, *args, **keys):
+        '''Put all non-keyword args to the log pane.
+        The first, third, fifth, etc. arg translated by g.translateString.
+        Supports color, comma, newline, spaces and tabName keyword arguments.
+        '''
+        # Compute the effective args.
+        d = {
+            'color': None,
+            'commas': False,
+            'newline': True,
+            'spaces': True,
+            'tabName': 'Log',
+        }
+        d = g.doKeywordArgs(keys, d)
+        s = g.translateArgs(args, d)
+        logging.info(s)
     #@+node:ekr.20170429165004.1: *3* CApp.init_logger
     def init_logger(self):
         
@@ -53,8 +87,31 @@ class CursesApp(npyscreen.NPSApp):
             logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         )
         self.rootLogger.addHandler(socketHandler)
-        # Monkey-patch g.trace.
+        # Monkey-patch g.trace and g.es.
+        # This allows us to see startup data and tracebacks.
         g.trace = self.trace
+        g.es = self.es
+    #@+node:ekr.20170420090426.1: *3* CApp.main
+    def main(self):
+        '''Create the main screen.'''
+        g.trace('CurseseApp.main')
+        F  = npyscreen.Form(name = "Welcome to Leo",)
+        # Transfer queued log messages to the log pane.
+        waiting_list = self.leo_log.waiting_list[:]
+        self.leo_log.waiting_list = []
+        # Set the log widget.
+        self.leo_log.w = F.add(
+            npyscreen.MultiLineEditableBoxed,
+            max_height=20,
+            name='Log Pane',
+            footer="Press i or o to insert text", 
+            values=waiting_list, 
+            slow_scroll=False,
+        )
+        # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
+        g.trace('before F.edit()')
+        F.edit()
     #@+node:ekr.20170429165242.1: *3* CApp.trace
     def trace(self, *args, **keys):
         '''Print a tracing message.'''
@@ -103,38 +160,6 @@ class CursesApp(npyscreen.NPSApp):
         s = d.get('before') + ''.join(result)
         # pr(s, newline=newline)
         logging.info(s)
-    #@+node:ekr.20170420090426.1: *3* CApp.main
-    def main(self):
-        '''Create the main screen.'''
-        g.trace('CurseseApp.main')
-        F  = npyscreen.Form(name = "Welcome to Leo",)
-        ### This doesn't work.
-            # def test(*args, **kwargs):
-                # return True
-                
-            # def eventFilter(*args, **keys):
-                # g.es('eventFilter', args, keys)
-            # F.handlers = {}
-            # F.complex_handlers = [(test, eventFilter),]
-
-        # Transfer queued log messages to the log pane.
-        waiting_list = self.leo_log.waiting_list[:]
-        self.leo_log.waiting_list = []
-        # Set the log widget.
-        self.leo_log.w = F.add(
-            npyscreen.MultiLineEditableBoxed,
-            max_height=20,
-            name='Log Pane',
-            footer="Press i or o to insert text", 
-            values=waiting_list, 
-            slow_scroll=False,
-        )
-        ### w.handlers = {}
-        # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        ###w.handlers = {}
-        g.trace('before F.edit()')
-        F.edit()
     #@-others
 
 #@+node:ekr.20170419105852.1: ** class CursesFrame
@@ -179,28 +204,182 @@ class CursesGui(leoGui.LeoGui):
         self.consoleOnly = False # Required attribute.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
+        self.key_handler = CursesKeyHandler()
             
     def oops(self):
         '''Ignore do-nothing methods.'''
         # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
 
     #@+others
-    #@+node:ekr.20170419110052.1: *3* CG.createLeoFrame
+    #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
 
         return CursesFrame(c, title)
-    #@+node:ekr.20170419111744.1: *3* CG.Focus...
+    #@+node:ekr.20170430114709.1: *3* CGui.do_key
+    def do_key(self, ch_i):
+        
+        self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170419111744.1: *3* CGui.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419140914.1: *3* CG.runMainLoop (sets app global)
+    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets app global)
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        global app
+        global gApp
         c = g.app.log.c
         assert c
-        app = CursesApp(c)
-        app.run()
+        gApp = CursesApp(c)
+        gApp.run()
         g.trace('DONE')
+    #@-others
+#@+node:ekr.20170430114840.1: ** class CursesKeyHandler
+class CursesKeyHandler:
+
+    #@+others
+    #@+node:ekr.20170430114930.1: *3* CKey.do_key & helpers
+    def do_key(self, ch_i):
+        '''
+        Handle a key event by calling k.masterKeyHandler.
+        Return True if the event was completely handled.
+        '''
+        #  This is a complete rewrite of the LeoQtEventFilter code.
+        if self.is_key_event(ch_i):
+            c = gC
+            w = None ### c.frame.body.wrapper
+            char, shortcut = self.to_key(ch_i)
+            event = self.create_key_event(c, w, char, shortcut)
+            g.trace(event.stroke)
+            try:
+                c.k.masterKeyHandler(event)
+            except Exception:
+                g.es_exception()
+            return True
+        else:
+            return False
+    #@+node:ekr.20170430115131.4: *4* CKey.char_to_tk_name
+    tk_dict = {
+        # Part 1: same as g.app.guiBindNamesDict
+        "&": "ampersand",
+        "^": "asciicircum",
+        "~": "asciitilde",
+        "*": "asterisk",
+        "@": "at",
+        "\\": "backslash",
+        "|": "bar",
+        "{": "braceleft",
+        "}": "braceright",
+        "[": "bracketleft",
+        "]": "bracketright",
+        ":": "colon",
+        ",": "comma",
+        "$": "dollar",
+        "=": "equal",
+        "!": "exclam",
+        ">": "greater",
+        "<": "less",
+        "-": "minus",
+        "#": "numbersign",
+        '"': "quotedbl",
+        "'": "quoteright",
+        "(": "parenleft",
+        ")": "parenright",
+        "%": "percent",
+        ".": "period",
+        "+": "plus",
+        "?": "question",
+        "`": "quoteleft",
+        ";": "semicolon",
+        "/": "slash",
+        " ": "space",
+        "_": "underscore",
+        # Curses.
+        ### Qt
+            # # Part 2: special Qt translations.
+            # 'Backspace': 'BackSpace',
+            # 'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+            # 'Esc': 'Escape',
+            # 'Del': 'Delete',
+            # 'Ins': 'Insert', # was 'Return',
+            # # Comment these out to pass the key to the QTextWidget.
+            # # Use these to enable Leo's page-up/down commands.
+            # 'PgDown': 'Next',
+            # 'PgUp': 'Prior',
+            # # New entries.  These simplify code.
+            # 'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
+            # 'End': 'End',
+            # 'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
+            # 'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
+            # 'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
+            # 'Home': 'Home',
+            # # 'Insert':'Insert',
+            # 'Return': 'Return',
+            # 'Tab': 'Tab',
+            # # 'Tab':'\t', # A hack for QLineEdit.
+            # # Unused: Break, Caps_Lock,Linefeed,Num_lock
+    }
+
+    def char_to_tk_name(self, ch):
+        val = self.tk_dict.get(ch)
+        return val
+    #@+node:ekr.20170430115131.2: *4* CKey.create_key_event
+    def create_key_event(self, c, w, ch, shortcut):
+        trace = True
+        # Last-minute adjustments...
+        if shortcut == 'Return':
+            ch = '\n' # Somehow Qt wants to return '\r'.
+        elif shortcut == 'Escape':
+            ch = 'Escape'
+        # Switch the Shift modifier to handle the cap-lock key.
+        if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
+            if ch != shortcut:
+                if trace: g.trace('caps-lock')
+                shortcut = ch
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        ### Alt keys apparently never generated.
+            # if sys.platform.startswith('darwin'):
+                # darwinmap = {
+                    # 'Alt-Key-5': '[',
+                    # 'Alt-Key-6': ']',
+                    # 'Alt-Key-7': '|',
+                    # 'Alt-slash': '\\',
+                    # 'Alt-Key-8': '{',
+                    # 'Alt-Key-9': '}',
+                    # 'Alt-e': '€',
+                    # 'Alt-l': '@',
+                # }
+                # if tkKey in darwinmap:
+                    # shortcut = darwinmap[tkKey]
+        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
+        import leo.core.leoGui as leoGui
+        return leoGui.LeoKeyEvent(
+            c=c,
+            char=ch,
+            event={'c': c, 'w': w},
+            shortcut=shortcut,
+            w=w, x=0, y=0, x_root=0, y_root=0,
+        )
+    #@+node:ekr.20170430115030.1: *4* CKey.is_key_event
+    def is_key_event(self, ch_i):
+        return ch_i not in (curses.KEY_MOUSE,)
+    #@+node:ekr.20170430115131.3: *4* CKey.to_key
+    def to_key(self, ch_i):
+        '''
+        Convert ch_i to a shortcut and char.
+        '''
+        a = curses.ascii
+        g.trace(ch_i, a.iscntrl(ch_i))
+        if a.iscntrl(ch_i):
+            val = ch_i - 1 + ord('a')
+            char = chr(val)
+            shortcut = 'Ctrl+%s' % char
+        else:
+            char = a.ascii(ch_i)
+            shortcut = self.char_to_tk_name(char)
+        g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
+        return char, shortcut
+
+        
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
@@ -376,18 +555,13 @@ class LeoKeyEvent(object):
         y_root=None,
     ):
         '''Ctor for LeoKeyEvent class.'''
-        trace = False and not g.unitTesting
-        if g.isStroke(shortcut):
-            g.trace('***** (LeoKeyEvent) oops: already a stroke', shortcut, g.callers())
-            stroke = shortcut
-        else:
-            stroke = g.KeyStroke(shortcut) if shortcut else None
-        assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
-            repr(stroke), g.callers())
+        trace = True
+        assert not g.isStroke(shortcut), g.callers()
+        stroke = g.KeyStroke(shortcut) if shortcut else None
         if trace: g.trace('(LeoKeyEvent) stroke', stroke)
         self.c = c
         self.char = char or ''
-        self.event = event # New in Leo 4.11.
+        self.event = event
         self.stroke = stroke
         self.w = self.widget = w
         # Optional ivars
@@ -412,20 +586,6 @@ class LeoKeyEvent(object):
     def type(self):
         return 'LeoKeyEvent'
     #@-others
-#@+node:ekr.20170419094705.1: ** init (cursesGui2.py)
-def init():
-
-    ok = curses and not g.app.gui and not g.app.unitTesting
-        # Not Ok for unit testing!
-    if ok:
-        g.app.gui = CursesGui()
-        g.app.root = g.app.gui.createRootWindow()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
 #@-others
 #@@language python
 #@@tabwidth -4

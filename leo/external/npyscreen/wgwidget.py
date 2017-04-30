@@ -4,14 +4,15 @@
 # pylint: disable=no-member,access-member-before-definition
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
-import leo.core.leoGlobals as g #EKR
+import leo.core.leoGlobals as g
+# import leo.plugins.cursesGui2 as cursesGui2
 assert g
 
 # import codecs
 import copy
 import curses
 import curses.ascii
-import string
+# import string
 import sys
 #import curses.wrapper
 import weakref
@@ -22,7 +23,6 @@ import locale
 from .globals import DEBUG
 # experimental
 from .eveventhandler import EventHandler
-
 #@-<< wgwidget imports >>
 #@+<< wgwidgets data >>
 #@+node:ekr.20170429213125.1: ** << wgwidgets data >>
@@ -66,17 +66,15 @@ class ExhaustedTestInput(Exception):
 class NotEnoughSpaceForWidget(Exception):
     pass
 
-#@+node:ekr.20170428084208.404: ** class InputHandler
+#@+node:ekr.20170428084208.404: ** class InputHandler (wgwidget.py)
 class InputHandler(object):
     "An object that can handle user input"
 
     #@+others
-    #@+node:ekr.20170428084208.405: *3* IH.handle_input & leo helpers
+    #@+node:ekr.20170428084208.405: *3* IH.handle_input
     def handle_input(self, ch_i):
         """
-        Dispatch a handler found in the .input_handers dict or the .complex_handlers list.
-        
-        If none found, pass the event to any parent that can handle it.
+        Dispatch a handler in this class or parents.
         
         Return True if input has been completely handled.
         """
@@ -99,19 +97,10 @@ class InputHandler(object):
         if _unctrl_input and (_unctrl_input in self.handlers):
             self.handlers[_unctrl_input](ch_i)
             return True
-        ### Old code
-            # if not hasattr(self, 'complex_handlers'): 
-                # return False
-            # else:
-                # for test, handler in self.complex_handlers:
-                    # if test(ch_i) is not False: 
-                        # handler(ch_i)
-                        # return True
         for test, handler in getattr(self, 'complex_handlers', []):
             if test(ch_i): # was is not False.
                 handler(ch_i)
                 return True
-        # if hasattr(self, 'parent_widget') and hasattr(self.parent_widget, 'handle_input'):
         if parent_widget and hasattr(parent_widget, 'handle_input'):
             if parent_widget.handle_input(ch_i):
                 return True
@@ -119,284 +108,10 @@ class InputHandler(object):
             if parent.handle_input(ch_i):
                 return True
         # Handle Leo bindings *last*.
-        if self.is_key_event(ch_i) and self.do_leo_key(ch_i):
-            return True
+        # Note: g.app is a LeoApp instance, *not* a CursesApp.
+        if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
+            return g.app.gui.do_key(ch_i)
         return False
-    #@+node:ekr.20170428112805.1: *4* IH.is_key_event
-    def is_key_event(self, ch_i):
-        return ch_i not in (curses.KEY_MOUSE,)
-    #@+node:ekr.20170428112815.1: *4* IH.do_leo_key & helpers
-    def do_leo_key(self, ch_i):
-        '''Handle a key that has no curses/npyscreen binding.'''
-        import leo.plugins.cursesGui2 as cursesGui2
-        c = cursesGui2.app.windowList[0]
-        # Kludge: just use body bindings for everything.
-        ### w = c.frame.body.wrapper
-        w = None ###
-        # From eventFilter
-        tkKey, ch, ignore = self.toTkKey(ch_i)
-        if ignore:
-            return False
-        else:
-            shortcut = self.toStroke(tkKey)
-            event = self.create_key_event(c, w, ch, tkKey, shortcut)
-            try:
-                c.k.masterKeyHandler(event)
-            except Exception:
-                g.es_exception()
-            return True
-    #@+node:ekr.20170430045550.2: *5* filter.create_key_event
-    def create_key_event(self, c, w, ch, tkKey, shortcut):
-        trace = True
-        # Last-minute adjustments...
-        if shortcut == 'Return':
-            ch = '\n' # Somehow Qt wants to return '\r'.
-        elif shortcut == 'Escape':
-            ch = 'Escape'
-        # Switch the Shift modifier to handle the cap-lock key.
-        if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
-            if ch != shortcut:
-                if trace: g.trace('caps-lock')
-                shortcut = ch
-        # Patch provided by resi147.
-        # See the thread: special characters in MacOSX, like '@'.
-        if sys.platform.startswith('darwin'):
-            darwinmap = {
-                'Alt-Key-5': '[',
-                'Alt-Key-6': ']',
-                'Alt-Key-7': '|',
-                'Alt-slash': '\\',
-                'Alt-Key-8': '{',
-                'Alt-Key-9': '}',
-                'Alt-e': '€',
-                'Alt-l': '@',
-            }
-            if tkKey in darwinmap:
-                shortcut = darwinmap[tkKey]
-        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
-        import leo.core.leoGui as leoGui
-        return leoGui.LeoKeyEvent(
-            c=c,
-            char=ch,
-            event={'c': c, 'w': w},
-            shortcut=shortcut,
-            w=w, x=0, y=0, x_root=0, y_root=0,
-        )
-    #@+node:ekr.20170430045550.7: *5* filter.isSpecialOverride (not used)
-    # def isSpecialOverride(self, tkKey, ch):
-        # '''Return True if tkKey is a special Tk key name.
-        # '''
-        # return tkKey or ch in self.flashers
-    #@+node:ekr.20170430045550.9: *5* filter.qtKey (REWRITE)
-    def qtKey(self, ch_i):
-        '''
-        Return the components of ch_i, a curses character code.
-        Modifiers are handled separately.
-
-        Return text,toString,ch
-
-        ch:     g.u(chr(keynum)) or '' if there is an exception.
-        toString:
-            For special keys: made-up spelling that become part of the setting.
-            For all others:   QtGui.QKeySequence(keynum).toString()
-        text:   event.text()
-        '''
-        trace = True
-        ### text = event.text() # This is the unicode text.
-        ### qt = QtCore.Qt
-        d = {
-            ### Not ready yet.
-                # qt.Key_Shift: 'Key_Shift',
-                # qt.Key_Control: 'Key_Control', # MacOS: Command key
-                # qt.Key_Meta: 'Key_Meta', # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
-                # qt.Key_Alt: 'Key_Alt',
-                # qt.Key_AltGr: 'Key_AltGr',
-                    # On Windows, when the KeyDown event for this key is sent,
-                    # the Ctrl+Alt modifiers are also set.
-        }
-        if d.get(ch_i):
-            toString = d.get(ch_i)
-        else:
-            ### toString = QtGui.QKeySequence(keynum).toString()
-            ### More work needed
-            toString = curses.ascii.unctrl(ch_i)
-        # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
-        if toString == 'Enter':
-            toString = 'Return'
-        ###
-        # try:
-            # ch1 = chr(keynum)
-        # except ValueError:
-            # ch1 = ''
-        ### More work needed
-        ch = curses.ascii.unctrl(ch_i)
-        # try:
-            # ch = g.u(ch1)
-        # except UnicodeError:
-            # ch = ch1
-        ### text = g.u(text)
-        text = ch ### Wrong.
-        toString = g.u(toString)
-        if trace:
-            g.trace('ch_i: %s ch: %5r toString %5r text: %r' % (ch_i, ch, toString, text))
-        return text, toString, ch
-    #@+node:ekr.20170430045550.10: *5* filter.qtMods (Test)
-    def qtMods(self, ch_i):
-        '''Return the text version of the modifiers of the key event.'''
-        table = (
-            (curses.ascii.isctrl, 'Control'),
-            (curses.ascii.ismeta, 'Alt'), # Not sure this is ever used.
-            (curses.ascii.isupper, 'Shift'),
-        )
-        mods = [s for func, s in table if func(ch_i)]
-        g.trace(ch_i, curses.ascii.unctrl(ch_i), mods)
-        return mods
-    #@+node:ekr.20170430045550.4: *5* filter.tkKey & helper
-    def tkKey(self, mods, text, toString, ch):
-        '''
-        Carefully convert the Qt key to a Tk-style binding compatible with
-        Leo's core binding dictionaries.
-        '''
-        trace = True
-        ch1 = ch # For tracing.
-        use_shift = (
-            'Home', 'End', 'Tab',
-            'Up', 'Down', 'Left', 'Right',
-            'Next', 'Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
-            # 2011/05/17: Fix bug 681797.
-            # There is nothing 'dubious' about these provided that they are bound.
-            # If they are not bound, then weird characters will be inserted.
-            'Delete', 'Ins', 'Backspace',
-            'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-        )
-        # Convert '&' to 'ampersand', etc.
-        # *Do* allow shift-bracketleft, etc.
-        ch2 = self.char2tkName(ch or toString)
-        if ch2: ch = ch2
-        if not ch: ch = ''
-        if 'Shift' in mods:
-            if trace: g.trace(repr(ch))
-            if len(ch) == 1 and ch.isalpha():
-                mods.remove('Shift')
-                ch = ch.upper()
-            elif len(ch) > 1 and ch not in use_shift:
-                # Experimental!
-                mods.remove('Shift')
-            # 2009/12/19: Speculative.
-            # if ch in ('parenright','parenleft','braceright','braceleft'):
-                # mods.remove('Shift')
-        elif len(ch) == 1:
-            ch = ch.lower()
-        if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
-            mods.append('Key')
-        # *Do* allow bare mod keys, so they won't be passed on.
-        tkKey = '%s%s%s' % ('-'.join(mods), mods and '-' or '', ch)
-        if trace:
-            g.trace('text: %r toString: %r ch1: %r ch: %r' % (
-                text, toString, ch1, ch))
-        ignore = not ch # Essential
-        ch = text or toString
-        return tkKey, ch, ignore
-    #@+node:ekr.20170430045550.5: *6* filter.char2tkName
-    char2tkNameDict = {
-        # Part 1: same as g.app.guiBindNamesDict
-        "&": "ampersand",
-        "^": "asciicircum",
-        "~": "asciitilde",
-        "*": "asterisk",
-        "@": "at",
-        "\\": "backslash",
-        "|": "bar",
-        "{": "braceleft",
-        "}": "braceright",
-        "[": "bracketleft",
-        "]": "bracketright",
-        ":": "colon",
-        ",": "comma",
-        "$": "dollar",
-        "=": "equal",
-        "!": "exclam",
-        ">": "greater",
-        "<": "less",
-        "-": "minus",
-        "#": "numbersign",
-        '"': "quotedbl",
-        "'": "quoteright",
-        "(": "parenleft",
-        ")": "parenright",
-        "%": "percent",
-        ".": "period",
-        "+": "plus",
-        "?": "question",
-        "`": "quoteleft",
-        ";": "semicolon",
-        "/": "slash",
-        " ": "space",
-        "_": "underscore",
-        # Part 2: special Qt translations.
-        'Backspace': 'BackSpace',
-        'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-        'Esc': 'Escape',
-        'Del': 'Delete',
-        'Ins': 'Insert', # was 'Return',
-        # Comment these out to pass the key to the QTextWidget.
-        # Use these to enable Leo's page-up/down commands.
-        'PgDown': 'Next',
-        'PgUp': 'Prior',
-        # New entries.  These simplify code.
-        'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
-        'End': 'End',
-        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
-        'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
-        'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
-        'Home': 'Home',
-        # 'Insert':'Insert',
-        'Return': 'Return',
-        'Tab': 'Tab',
-        # 'Tab':'\t', # A hack for QLineEdit.
-        # Unused: Break, Caps_Lock,Linefeed,Num_lock
-    }
-    # Called only by tkKey.
-
-    def char2tkName(self, ch):
-        val = self.char2tkNameDict.get(ch)
-        # g.trace(repr(ch),repr(val))
-        return val
-    #@+node:ekr.20170430045550.8: *5* filter.toStroke (top-level)
-    def toStroke(self, tkKey):
-        '''Convert the official tkKey name to a stroke.'''
-        trace = True
-        s = tkKey
-        table = (
-            ('Alt-', 'Alt+'),
-            ('Ctrl-', 'Ctrl+'),
-            ('Control-', 'Ctrl+'),
-            # Use Alt+Key-1, etc.  Sheesh.
-            # ('Key-','Key+'),
-            ('Meta-', 'Meta+'), # 2016/06/13: per Karsten Wolf.
-            ('Shift-', 'Shift+')
-        )
-        for a, b in table:
-            s = s.replace(a, b)
-        if trace: g.trace('tkKey', tkKey, '-->', s)
-        return s
-    #@+node:ekr.20170430045550.3: *5* filter.toTkKey (top-level)
-    def toTkKey(self, ch_i):
-        '''
-        Return (tkKey, ch, ignore):
-
-        tkKey: the Tk spelling of the event used to look up
-               bindings in k.masterGuiBindingsDict.
-
-        ch:    the insertable key, or ''.
-
-        ignore: True if the key should be ignored.
-                This is **not** the same as 'not ch'.
-        '''
-        mods = self.qtMods(ch_i)
-        text, toString, ch = self.qtKey(ch_i)
-        tkKey, ch, ignore = self.tkKey(mods, text, toString, ch)
-        return tkKey, ch, ignore
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
     def set_up_handlers(self):
         """
@@ -446,42 +161,43 @@ class InputHandler(object):
                 _new_list.append(pair)
         self.complex_handlers = _new_list
 
-    #@-others
-###########################################################################################
-# Handler Methods here - npc convention - prefix with h_
+    #@+node:ekr.20170430114154.1: *3* IH.handlers
+    # Handler Methods here - npc convention - prefix with h_
 
+    #@+others
+    #@+node:ekr.20170430114213.1: *4* h_exit_down
     def h_exit_down(self, _input):
         """Called when user leaves the widget to the next widget"""
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
-        
+    #@+node:ekr.20170430114213.2: *4* h_exit_right
     def h_exit_right(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_RIGHT
-
+    #@+node:ekr.20170430114213.3: *4* h_exit_up
     def h_exit_up(self, _input):
         if not self._test_safe_to_exit():
             return False
         # Called when the user leaves the widget to the previous widget
         self.editing = False
         self.how_exited = EXITED_UP
-        
+    #@+node:ekr.20170430114213.4: *4* h_exit_left
     def h_exit_left(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_LEFT
-        
+    #@+node:ekr.20170430114213.5: *4* h_exit_escape
     def h_exit_escape(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_ESCAPE
-
+    #@+node:ekr.20170430114213.6: *4* h_exit_mouse
     def h_exit_mouse(self, _input):
         mouse_event = self.parent.safe_get_mouse_event()
         if mouse_event and self.intersted_in_mouse_event(mouse_event):
@@ -493,11 +209,8 @@ class InputHandler(object):
                 assert ch == curses.KEY_MOUSE
             self.editing = False
             self.how_exited = EXITED_MOUSE
-    
-    
-
-
-
+    #@-others
+    #@-others
 #@+node:ekr.20170428084208.410: ** class Widget
 class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     "A base class for widgets. Do not use directly"
