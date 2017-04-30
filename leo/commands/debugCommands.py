@@ -132,6 +132,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         return None
     #@+node:ekr.20170429154309.1: *3* debug.killLogListener
     @cmd('kill-log-listener')
+    @cmd('log-kill-listener')
     def killLogListener(self, event=None):
         '''Kill the listener started by listen-for-log.'''
         if g.app.log_listener:
@@ -146,6 +147,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         
     #@+node:ekr.20170429152049.1: *3* debug.listenToLog
     @cmd('listen-to-log')
+    @cmd('log-listen-kill')
     def listenToLog(self, event=None):
         '''
         A socket listener, listening on localhost. See:
