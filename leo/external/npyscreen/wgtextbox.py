@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
 #!/usr/bin/python
-#@+others
-#@+node:ekr.20170428084208.319: ** Declarations
+#@+<< wgtextbox imports >>
+#@+node:ekr.20170428084208.319: ** << wgtextbox imports >>
 import curses
 import curses.ascii
 import sys
@@ -10,8 +10,9 @@ import locale
 #import curses.wrapper
 from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
-
-#@+node:ekr.20170428084208.320: ** class TextfieldBase
+#@-<< wgtextbox imports >>
+#@+others
+#@+node:ekr.20170428084208.320: ** class TextfieldBase (Widget)
 class TextfieldBase(widget.Widget):
     ENSURE_STRING_VALUE = True
     #@+others
@@ -376,7 +377,7 @@ class TextfieldBase(widget.Widget):
 
 
     #@-others
-#@+node:ekr.20170428084208.335: ** class Textfield
+#@+node:ekr.20170428084208.335: ** class Textfield (TextfieldBase)
 class Textfield(TextfieldBase):
     #@+others
     #@+node:ekr.20170428084208.336: *3* show_brief_message
@@ -522,7 +523,7 @@ class Textfield(TextfieldBase):
 
 
     #@-others
-#@+node:ekr.20170428084208.348: ** class FixedText
+#@+node:ekr.20170428084208.348: ** class FixedText (TextfieldBase)
 class FixedText(TextfieldBase):
     #@+others
     #@+node:ekr.20170428084208.349: *3* set_up_handlers

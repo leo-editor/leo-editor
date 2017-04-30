@@ -3,9 +3,8 @@
 #!/usr/bin/python
 # pylint: disable=no-member,access-member-before-definition
 leo_gui = True
-
-#@+others
-#@+node:ekr.20170428084208.399: ** Declarations
+#@+<< wgwidget imports >>
+#@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 import leo.core.leoGlobals as g #EKR
 assert g
 
@@ -20,24 +19,20 @@ from . import npysGlobalOptions as GlobalOptions
 from . import wgwidget_proto
 import locale
 # import warnings
-
 from .globals import DEBUG
-
 # experimental
 from .eveventhandler import EventHandler
-
-
-
+#@-<< wgwidget imports >>
+#@+<< wgwidgets data >>
+#@+node:ekr.20170429213125.1: ** << wgwidgets data >>
 EXITED_DOWN  =  1
 EXITED_UP    = -1
 EXITED_LEFT  = -2
 EXITED_RIGHT =  2
 EXITED_ESCAPE= 127
 EXITED_MOUSE = 130
-
 SETMAX       = 'SETMAX'
 RAISEERROR   = 'RAISEERROR'
-
 ALLOW_NEW_INPUT = True
 
 TEST_SETTINGS = {
@@ -45,16 +40,15 @@ TEST_SETTINGS = {
     'TEST_INPUT_LOG': [],
     'CONTINUE_AFTER_TEST_INPUT': False,
     'INPUT_GENERATOR': None,
-    }
-
-
+}
+#@-<< wgwidgets data >>
+#@+others
 #@+node:ekr.20170428084208.400: ** add_test_input_from_iterable
 def add_test_input_from_iterable(test_input):
     global TEST_SETTINGS
     if not TEST_SETTINGS['TEST_INPUT']:
         TEST_SETTINGS['TEST_INPUT'] = []
     TEST_SETTINGS['TEST_INPUT'].extend([ch for ch in test_input])
-    
 #@+node:ekr.20170428084208.401: ** add_test_input_ch
 def add_test_input_ch(test_input):
     global TEST_SETTINGS
@@ -252,12 +246,6 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     _SAFE_STRING_STRIPS_NL = True
     
     #@+others
-    #@+node:ekr.20170428084208.411: *3* destroy
-    def destroy(self):
-        """Destroy the widget: methods should provide a mechanism to destroy any references that might
-        case a memory leak.  See select. module for an example"""
-        pass
-        
     #@+node:ekr.20170428084208.412: *3* __init__
     def __init__(self, screen, 
             relx=0, rely=0, name=None, value=None, 
@@ -340,203 +328,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.value_changed_callback = None
         
         self.initialize_event_handling()
-
-    #@+node:ekr.20170428084208.413: *3* set_relyx
-    def set_relyx(self, y, x):
-        """
-        Set the position of the widget on the Form.  If y or x is a negative value,
-        npyscreen will try to position it relative to the bottom or right edge of the 
-        Form.  Note that this ignores any margins that the Form may have defined.
-        This is currently an experimental feature.  A future version of the API may 
-        take account of the margins set by the parent Form.
-        """
-        self._requested_rely = y
-        self._requested_relx = x
-        if y >= 0:
-            self.rely = y
-        else:
-            self._requested_rely = y
-            self.rely = self.parent.curses_pad.getmaxyx()[0] + y
-            # I don't think there is any real value in using these margins
-            #if self.parent.BLANK_LINES_BASE and not self.use_max_space:
-            #    self.rely -= self.parent.BLANK_LINES_BASE
-            if self.rely < 0:
-                self.rely = 0
-        if x >= 0:
-            self.relx = x            
-        else:
-            self.relx = self.parent.curses_pad.getmaxyx()[1] + x
-            # I don't think there is any real value in using these margins
-            #if self.parent.BLANK_COLUMNS_RIGHT and not self.use_max_space:
-            #    self.relx -= self.parent.BLANK_COLUMNS_RIGHT
-            if self.relx < 0:
-                self.relx = 0
-
-    #@+node:ekr.20170428084208.414: *3* _move_widget_on_terminal_resize
-    def _move_widget_on_terminal_resize(self):
-        if self._requested_rely < 0 or self._requested_relx < 0:
-            self.set_relyx(self._requested_rely, self._requested_relx)
-
-    #@+node:ekr.20170428084208.415: *3* _resize
-    def _resize(self):
-        "Internal Method. This will be the method called when the terminal resizes."
-        self._move_widget_on_terminal_resize()
-        self._recalculate_size()
-        if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
-        else: self.on_last_line = False
-        self.resize()
-        self.when_resized()
-
-    #@+node:ekr.20170428084208.416: *3* resize
-    def resize(self):
-        "Widgets should override this to control what should happen when they are resized."
-        pass
-        
-    #@+node:ekr.20170428084208.417: *3* _recalculate_size
-    def _recalculate_size(self):
-        return self.set_size()
-
-    #@+node:ekr.20170428084208.418: *3* when_resized
-    def when_resized(self):
-        # this method is called when the widget has been resized.
-        pass
-
-        
-    #@+node:ekr.20170428084208.419: *3* do_colors
-    def do_colors(self):
-        "Returns True if the widget should try to paint in coloour."
-        if curses.has_colors() and not GlobalOptions.DISABLE_ALL_COLORS:
-            return True
-        else:
-            return False
-        
-    #@+node:ekr.20170428084208.420: *3* space_available
-    def space_available(self):
-        """The space available left on the screen, returned as rows, columns"""
-        if self.use_max_space:
-            y, x = self.parent.useable_space(self.rely, self.relx)
-        else:
-            y, x = self.parent.widget_useable_space(self.rely, self.relx)
-        return y,x
-
-    #@+node:ekr.20170428084208.421: *3* calculate_area_needed
-    def calculate_area_needed(self): 
-        """Classes should provide a function to
-        calculate the screen area they need, returning either y,x, or 0,0 if
-        they want all the screen they can.  However, do not use this to say how
-        big a given widget is ... use .height and .width instead"""
-        return 0,0
-
-    #@+node:ekr.20170428084208.422: *3* set_size
-    def set_size(self):
-        """Set the size of the object, reconciling the user's request with the space available"""
-        my, mx = self.space_available()
-        #my = my+1 # Probably want to remove this.
-        ny, nx = self.calculate_area_needed()
-        
-        max_height = self.max_height
-        max_width  = self.max_width
-        # What to do if max_height or max_width is negative
-        if max_height not in (None, False) and max_height < 0:
-            max_height = my + max_height
-        if max_width not in (None, False) and max_width < 0:
-            max_width = mx + max_width
-            
-        if max_height not in (None, False) and max_height <= 0:
-            raise NotEnoughSpaceForWidget("Not enough space for requested size")  
-        if max_width not in (None, False) and max_width <= 0:
-            raise NotEnoughSpaceForWidget("Not enough space for requested size")
-        
-        if ny > 0:
-            if my >= ny: 
-                self.height = ny
-            else: 
-                self.height = RAISEERROR
-        elif max_height:
-            if max_height <= my: 
-                self.height = max_height
-            else: 
-                self.height = self.request_height
-        else: 
-            self.height = (self.request_height or my)
-        
-        #if mx <= 0 or my <= 0:
-        #    raise Exception("Not enough space for widget")
-
-
-        if nx > 0:                 # if a minimum space is specified....
-            if mx >= nx:           # if max width is greater than needed space 
-                self.width = nx    # width is needed space
-            else: 
-                self.width = RAISEERROR    # else raise an error
-        elif self.max_width:       # otherwise if a max width is speciied
-            if max_width <= mx: 
-                self.width = max_width
-            else: 
-                self.width = RAISEERROR
-        else: 
-            self.width = self.request_width or mx
-
-        if self.height == RAISEERROR or self.width == RAISEERROR:
-            # Not enough space for widget
-            raise NotEnoughSpaceForWidget("Not enough space: max y and x = %s , %s. Height and Width = %s , %s " % (my, mx, self.height, self.width) ) # unsafe. Need to add error here.
-
-    #@+node:ekr.20170428084208.423: *3* update
-    def update(self, clear=True):
-        """How should object display itself on the screen. Define here, but do not actually refresh the curses
-        display, since this should be done as little as possible.  This base widget puts nothing on screen."""
-        if self.hidden:
-            self.clear()
-            return True
-
-    #@+node:ekr.20170428084208.424: *3* display
-    def display(self):
-        """Do an update of the object AND refresh the screen"""
-        if self.hidden:
-            self.clear()
-            self.parent.refresh()
-        else:
-            self.update()
-            self.parent.refresh()
-
-    #@+node:ekr.20170428084208.425: *3* set_editable
-    def set_editable(self, value):
-        if value: self._is_editable = True
-        else: self._is_editable = False
-
-    #@+node:ekr.20170428084208.426: *3* get_editable
-    def get_editable(self):
-        return(self._is_editable)
-
-    #@+node:ekr.20170428084208.427: *3* clear
-    def clear(self, usechar=' '):
-        """Blank the screen area used by this widget, ready for redrawing"""
-        for y in range(self.height):
-    #@-others
-#This method is too slow
-#           for x in range(self.width+1):
-#               try:
-#                   # We are in a try loop in case the cursor is moved off the bottom right corner of the screen
-#                   self.parent.curses_pad.addch(self.rely+y, self.relx + x, usechar)
-#               except Exception: pass
-#Use this instead
-            if self.do_colors():
-                self.parent.curses_pad.addstr(self.rely+y, self.relx, usechar * (self.width), self.parent.theme_manager.findPair(self, self.parent.color))  # used to be width + 1
-            else:
-                self.parent.curses_pad.addstr(self.rely+y, self.relx, usechar * (self.width))  # used to be width + 1
-
-    def edit(self):
-        """Allow the user to edit the widget: ie. start handling keypresses."""
-        self.editing = 1
-        self._pre_edit()
-        self._edit_loop()
-        return self._post_edit()
-
-    def _pre_edit(self):
-        self.highlight = 1
-        # old_value = self.value
-        self.how_exited = False
-
+    #@+node:ekr.20170429213619.3: *3* _edit_loop
     def _edit_loop(self):
         if not self.parent.editing:
             _i_set_parent_editing = True
@@ -552,11 +344,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if self.editing:
             self.editing    = False
             self.how_exited = True
-
-    def _post_edit(self):
-        self.highlight = 0
-        self.update()
-        
+    #@+node:ekr.20170429213619.5: *3* _get_ch
     def _get_ch(self):
         #try:
         #    # Python3.3 and above - returns unicode
@@ -615,26 +403,105 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         
         # This line should not be in the except clause.
         return ch
-
-    def try_adjust_widgets(self):
-        if hasattr(self.parent, "adjust_widgets"):
-            self.parent.adjust_widgets()
-        if hasattr(self.parent, "parentApp"):
-            if hasattr(self.parent.parentApp, "_internal_adjust_widgets"):
-                self.parent.parentApp._internal_adjust_widgets()
-            if hasattr(self.parent.parentApp, "adjust_widgets"):
-                self.parent.parentApp.adjust_widgets()
-            
-    
-    def try_while_waiting(self):
-        if hasattr(self.parent, "while_waiting"):
-            self.parent.while_waiting()
-        if hasattr(self.parent, "parentApp"):
-            if hasattr(self.parent.parentApp, "_internal_while_waiting"):
-                self.parent.parentApp._internal_while_waiting()
-            if hasattr(self.parent.parentApp, "while_waiting"):
-                self.parent.parentApp.while_waiting()
-
+    #@+node:ekr.20170429213619.16: *3* _internal_when_value_edited
+    def _internal_when_value_edited(self):
+        if self.value_changed_callback:
+            return self.value_changed_callback(widget=self)
+    #@+node:ekr.20170428084208.414: *3* _move_widget_on_terminal_resize
+    def _move_widget_on_terminal_resize(self):
+        if self._requested_rely < 0 or self._requested_relx < 0:
+            self.set_relyx(self._requested_rely, self._requested_relx)
+    #@+node:ekr.20170429213619.4: *3* _post_edit
+    def _post_edit(self):
+        self.highlight = 0
+        self.update()
+        
+    #@+node:ekr.20170429213619.2: *3* _pre_edit
+    def _pre_edit(self):
+        self.highlight = 1
+        # old_value = self.value
+        self.how_exited = False
+    #@+node:ekr.20170428084208.417: *3* _recalculate_size
+    def _recalculate_size(self):
+        return self.set_size()
+    #@+node:ekr.20170428084208.415: *3* _resize
+    def _resize(self):
+        "Internal Method. This will be the method called when the terminal resizes."
+        self._move_widget_on_terminal_resize()
+        self._recalculate_size()
+        if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
+        else: self.on_last_line = False
+        self.resize()
+        self.when_resized()
+    #@+node:ekr.20170429213619.12: *3* _safe_to_exit
+    def _safe_to_exit(self):
+        return True
+    #@+node:ekr.20170429213619.14: *3* _test_safe_to_exit
+    def _test_safe_to_exit(self):
+        if self._safe_to_exit() and self.safe_to_exit():
+            return True
+        else:
+            return False
+    #@+node:ekr.20170428084208.421: *3* calculate_area_needed
+    def calculate_area_needed(self): 
+        """Classes should provide a function to
+        calculate the screen area they need, returning either y,x, or 0,0 if
+        they want all the screen they can.  However, do not use this to say how
+        big a given widget is ... use .height and .width instead"""
+        return 0,0
+    #@+node:ekr.20170428084208.427: *3* clear
+    def clear(self, usechar=' '):
+        """Blank the screen area used by this widget, ready for redrawing"""
+        for y in range(self.height):
+            #This method is too slow
+            #   for x in range(self.width+1):
+            #       try:
+            #           # We are in a try loop in case the cursor is moved off the bottom right corner of the screen
+            #           self.parent.curses_pad.addch(self.rely+y, self.relx + x, usechar)
+            #       except Exception: pass
+            #Use this instead
+            if self.do_colors():
+                self.parent.curses_pad.addstr(
+                    self.rely+y,
+                    self.relx, usechar * (self.width),
+                    self.parent.theme_manager.findPair(self, self.parent.color))
+                        # used to be width + 1
+            else:
+                self.parent.curses_pad.addstr(
+                    self.rely+y,
+                    self.relx,
+                    usechar * (self.width))
+                        # used to be width + 1
+    #@+node:ekr.20170428084208.411: *3* destroy
+    def destroy(self):
+        """Destroy the widget: methods should provide a mechanism to destroy any references that might
+        case a memory leak.  See select. module for an example"""
+        pass
+        
+    #@+node:ekr.20170428084208.424: *3* display
+    def display(self):
+        """Do an update of the object AND refresh the screen"""
+        if self.hidden:
+            self.clear()
+            self.parent.refresh()
+        else:
+            self.update()
+            self.parent.refresh()
+    #@+node:ekr.20170428084208.419: *3* do_colors
+    def do_colors(self):
+        "Returns True if the widget should try to paint in coloour."
+        if curses.has_colors() and not GlobalOptions.DISABLE_ALL_COLORS:
+            return True
+        else:
+            return False
+    #@+node:ekr.20170429213619.1: *3* edit
+    def edit(self):
+        """Allow the user to edit the widget: ie. start handling keypresses."""
+        self.editing = 1
+        self._pre_edit()
+        self._edit_loop()
+        return self._post_edit()
+    #@+node:ekr.20170429213619.8: *3* get_and_use_key_press
     def get_and_use_key_press(self):
         global TEST_SETTINGS
         if (TEST_SETTINGS['TEST_INPUT'] is None) and (TEST_SETTINGS['INPUT_GENERATOR'] is None):
@@ -686,25 +553,15 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.when_check_value_changed()
         if self.check_cursor_move:
             self.when_check_cursor_moved()
-        
-        
         self.try_adjust_widgets()
-            
-    def intersted_in_mouse_event(self, mouse_event):
-        if not self.editable and not self.interested_in_mouse_even_when_not_editable:
-            return False
-        mouse_id, x, y, z, bstate = mouse_event
-        x += self.parent.show_from_x
-        y += self.parent.show_from_y
-        if self.relx <= x <= self.relx + self.width-1 + self.parent.show_atx:
-            if self.rely  <= y <= self.rely + self.height-1 + self.parent.show_aty:
-                return True
-        return False
-    
+    #@+node:ekr.20170428084208.426: *3* get_editable
+    def get_editable(self):
+        return(self._is_editable)
+    #@+node:ekr.20170429213619.10: *3* handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # mouse_id, x, y, z, bstate = mouse_event
         pass
-    
+    #@+node:ekr.20170429213619.11: *3* interpret_mouse_event
     def interpret_mouse_event(self, mouse_event):
         mouse_id, x, y, z, bstate = mouse_event
         x += self.parent.show_from_x
@@ -716,70 +573,56 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #def when_parent_changes_value(self):
         # Can be called by forms when they chage their value.
         #pass
-
-    def _safe_to_exit(self):
-        return True
-        
-    def safe_to_exit(self):
-        return True
-    
-    def _test_safe_to_exit(self):
-        if self._safe_to_exit() and self.safe_to_exit():
-            return True
-        else:
+    #@+node:ekr.20170429213619.9: *3* intersted_in_mouse_event
+    def intersted_in_mouse_event(self, mouse_event):
+        if not self.editable and not self.interested_in_mouse_even_when_not_editable:
             return False
-    
-
-    def when_check_value_changed(self):
-        "Check whether the widget's value has changed and call when_valued_edited if so."
-        try:
-            if self.value == self._old_value:
-                return False
-        except AttributeError:
-            self._old_value = copy.deepcopy(self.value)
-            self.when_value_edited()
-        # Value must have changed:
-        self._old_value = copy.deepcopy(self.value)
-        self._internal_when_value_edited()
-        self.when_value_edited()
-        if hasattr(self, 'parent_widget'):
-            self.parent_widget.when_value_edited()
-            self.parent_widget._internal_when_value_edited()
-        return True
-    
-    def _internal_when_value_edited(self):
-        if self.value_changed_callback:
-            return self.value_changed_callback(widget=self)
-    
-    def when_value_edited(self):
-        """Called when the user edits the value of the widget.  Will usually also be called the first time
-        that the user edits the widget."""
+        mouse_id, x, y, z, bstate = mouse_event
+        x += self.parent.show_from_x
+        y += self.parent.show_from_y
+        if self.relx <= x <= self.relx + self.width-1 + self.parent.show_atx:
+            if self.rely  <= y <= self.rely + self.height-1 + self.parent.show_aty:
+                return True
+        return False
+    #@+node:ekr.20170428084208.416: *3* resize
+    def resize(self):
+        "Widgets should override this to control what should happen when they are resized."
         pass
-    
-    def when_check_cursor_moved(self):
-        if hasattr(self, 'cursor_line'):
-            cursor = self.cursor_line
-        elif hasattr(self, 'cursor_position'):
-            cursor = self.cursor_position
-        elif hasattr(self, 'edit_cell'):
-            cursor = copy.copy(self.edit_cell)
-        else:
-            return None
+    #@+node:ekr.20170429213619.21: *3* safe_filter
+    def safe_filter(self, this_string):
         try:
-            if self._old_cursor == cursor:
-                return False
-        except AttributeError:
-            pass
-        # Value must have changed:
-        self._old_cursor = cursor
-        self.when_cursor_moved()
-        if hasattr(self, 'parent_widget'):
-            self.parent_widget.when_cursor_moved()
+            this_string = this_string.decode(self.encoding, 'replace')
+            return this_string.encode('ascii', 'replace').decode()
+        except Exception:
+            # Things have gone badly wrong if we get here, but let's try to salvage it.
+            try:
+                if self._safe_filter_value_cache[0] == this_string:
+                    return self._safe_filter_value_cache[1]
+            except AttributeError:
+                pass
+            s = []
+            for cha in this_string.replace('\n', ' '):
+                #if curses.ascii.isprint(cha):
+                #    s.append(cha)
+                #else:
+                #    s.append('?')
+                try:
+                    s.append(str(cha))
+                except Exception:
+                    s.append('?')
+            s = ''.join(s)
         
-    def when_cursor_moved(self):
-        "Called when the cursor moves"
-        pass
-
+            self._safe_filter_value_cache = (this_string, s)
+        
+            return s
+        #s = ''
+        #for cha in this_string.replace('\n', ''):
+        #    try:
+        #        s += cha.encode('ascii')
+        #    except Exception:
+        #        s += '?'
+        #return s
+    #@+node:ekr.20170429213619.20: *3* safe_string
     def safe_string(self, this_string):
         """Check that what you are trying to display contains only
         printable chars.  (Try to catch dodgy input).  Give it a string,
@@ -841,42 +684,181 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 raise
             else:
                 return "*ERROR DISPLAYING STRING*"
-    
-    def safe_filter(self, this_string):
+    #@+node:ekr.20170429213619.13: *3* safe_to_exit
+    def safe_to_exit(self):
+        return True
+    #@+node:ekr.20170428084208.425: *3* set_editable
+    def set_editable(self, value):
+        if value: self._is_editable = True
+        else: self._is_editable = False
+    #@+node:ekr.20170428084208.413: *3* set_relyx
+    def set_relyx(self, y, x):
+        """
+        Set the position of the widget on the Form.  If y or x is a negative value,
+        npyscreen will try to position it relative to the bottom or right edge of the 
+        Form.  Note that this ignores any margins that the Form may have defined.
+        This is currently an experimental feature.  A future version of the API may 
+        take account of the margins set by the parent Form.
+        """
+        self._requested_rely = y
+        self._requested_relx = x
+        if y >= 0:
+            self.rely = y
+        else:
+            self._requested_rely = y
+            self.rely = self.parent.curses_pad.getmaxyx()[0] + y
+            # I don't think there is any real value in using these margins
+            #if self.parent.BLANK_LINES_BASE and not self.use_max_space:
+            #    self.rely -= self.parent.BLANK_LINES_BASE
+            if self.rely < 0:
+                self.rely = 0
+        if x >= 0:
+            self.relx = x            
+        else:
+            self.relx = self.parent.curses_pad.getmaxyx()[1] + x
+            # I don't think there is any real value in using these margins
+            #if self.parent.BLANK_COLUMNS_RIGHT and not self.use_max_space:
+            #    self.relx -= self.parent.BLANK_COLUMNS_RIGHT
+            if self.relx < 0:
+                self.relx = 0
+    #@+node:ekr.20170428084208.422: *3* set_size
+    def set_size(self):
+        """Set the size of the object, reconciling the user's request with the space available"""
+        my, mx = self.space_available()
+        #my = my+1 # Probably want to remove this.
+        ny, nx = self.calculate_area_needed()
+        
+        max_height = self.max_height
+        max_width  = self.max_width
+        # What to do if max_height or max_width is negative
+        if max_height not in (None, False) and max_height < 0:
+            max_height = my + max_height
+        if max_width not in (None, False) and max_width < 0:
+            max_width = mx + max_width
+            
+        if max_height not in (None, False) and max_height <= 0:
+            raise NotEnoughSpaceForWidget("Not enough space for requested size")  
+        if max_width not in (None, False) and max_width <= 0:
+            raise NotEnoughSpaceForWidget("Not enough space for requested size")
+        
+        if ny > 0:
+            if my >= ny: 
+                self.height = ny
+            else: 
+                self.height = RAISEERROR
+        elif max_height:
+            if max_height <= my: 
+                self.height = max_height
+            else: 
+                self.height = self.request_height
+        else: 
+            self.height = (self.request_height or my)
+        
+        #if mx <= 0 or my <= 0:
+        #    raise Exception("Not enough space for widget")
+
+
+        if nx > 0:                 # if a minimum space is specified....
+            if mx >= nx:           # if max width is greater than needed space 
+                self.width = nx    # width is needed space
+            else: 
+                self.width = RAISEERROR    # else raise an error
+        elif self.max_width:       # otherwise if a max width is speciied
+            if max_width <= mx: 
+                self.width = max_width
+            else: 
+                self.width = RAISEERROR
+        else: 
+            self.width = self.request_width or mx
+        if self.height == RAISEERROR or self.width == RAISEERROR:
+            # Not enough space for widget
+            raise NotEnoughSpaceForWidget("Not enough space: max y and x = %s , %s. Height and Width = %s , %s " % (my, mx, self.height, self.width) ) # unsafe. Need to add error here.
+    #@+node:ekr.20170428084208.420: *3* space_available
+    def space_available(self):
+        """The space available left on the screen, returned as rows, columns"""
+        if self.use_max_space:
+            y, x = self.parent.useable_space(self.rely, self.relx)
+        else:
+            y, x = self.parent.widget_useable_space(self.rely, self.relx)
+        return y,x
+    #@+node:ekr.20170429213619.6: *3* try_adjust_widgets
+    def try_adjust_widgets(self):
+        if hasattr(self.parent, "adjust_widgets"):
+            self.parent.adjust_widgets()
+        if hasattr(self.parent, "parentApp"):
+            if hasattr(self.parent.parentApp, "_internal_adjust_widgets"):
+                self.parent.parentApp._internal_adjust_widgets()
+            if hasattr(self.parent.parentApp, "adjust_widgets"):
+                self.parent.parentApp.adjust_widgets()
+    #@+node:ekr.20170429213619.7: *3* try_while_waiting
+    def try_while_waiting(self):
+        if hasattr(self.parent, "while_waiting"):
+            self.parent.while_waiting()
+        if hasattr(self.parent, "parentApp"):
+            if hasattr(self.parent.parentApp, "_internal_while_waiting"):
+                self.parent.parentApp._internal_while_waiting()
+            if hasattr(self.parent.parentApp, "while_waiting"):
+                self.parent.parentApp.while_waiting()
+    #@+node:ekr.20170428084208.423: *3* update
+    def update(self, clear=True):
+        """How should object display itself on the screen. Define here, but do not actually refresh the curses
+        display, since this should be done as little as possible.  This base widget puts nothing on screen."""
+        if self.hidden:
+            self.clear()
+            return True
+    #@+node:ekr.20170429213619.18: *3* when_check_cursor_moved
+    def when_check_cursor_moved(self):
+        if hasattr(self, 'cursor_line'):
+            cursor = self.cursor_line
+        elif hasattr(self, 'cursor_position'):
+            cursor = self.cursor_position
+        elif hasattr(self, 'edit_cell'):
+            cursor = copy.copy(self.edit_cell)
+        else:
+            return None
         try:
-            this_string = this_string.decode(self.encoding, 'replace')
-            return this_string.encode('ascii', 'replace').decode()
-        except Exception:
-            # Things have gone badly wrong if we get here, but let's try to salvage it.
-            try:
-                if self._safe_filter_value_cache[0] == this_string:
-                    return self._safe_filter_value_cache[1]
-            except AttributeError:
-                pass
-            s = []
-            for cha in this_string.replace('\n', ' '):
-                #if curses.ascii.isprint(cha):
-                #    s.append(cha)
-                #else:
-                #    s.append('?')
-                try:
-                    s.append(str(cha))
-                except Exception:
-                    s.append('?')
-            s = ''.join(s)
-        
-            self._safe_filter_value_cache = (this_string, s)
-        
-            return s
-        
-        #s = ''
-        #for cha in this_string.replace('\n', ''):
-        #    try:
-        #        s += cha.encode('ascii')
-        #    except Exception:
-        #        s += '?'
-        #return s
-        
+            if self._old_cursor == cursor:
+                return False
+        except AttributeError:
+            pass
+        # Value must have changed:
+        self._old_cursor = cursor
+        self.when_cursor_moved()
+        if hasattr(self, 'parent_widget'):
+            self.parent_widget.when_cursor_moved()
+    #@+node:ekr.20170429213619.15: *3* when_check_value_changed
+    def when_check_value_changed(self):
+        "Check whether the widget's value has changed and call when_valued_edited if so."
+        try:
+            if self.value == self._old_value:
+                return False
+        except AttributeError:
+            self._old_value = copy.deepcopy(self.value)
+            self.when_value_edited()
+        # Value must have changed:
+        self._old_value = copy.deepcopy(self.value)
+        self._internal_when_value_edited()
+        self.when_value_edited()
+        if hasattr(self, 'parent_widget'):
+            self.parent_widget.when_value_edited()
+            self.parent_widget._internal_when_value_edited()
+        return True
+    #@+node:ekr.20170429213619.19: *3* when_cursor_moved
+    def when_cursor_moved(self):
+        "Called when the cursor moves"
+        pass
+    #@+node:ekr.20170428084208.418: *3* when_resized
+    def when_resized(self):
+        # this method is called when the widget has been resized.
+        pass
+    #@+node:ekr.20170429213619.17: *3* when_value_edited
+    def when_value_edited(self):
+        """Called when the user edits the value of the widget.  Will usually also be called the first time
+        that the user edits the widget."""
+        pass
+    #@-others
+
+
 #@+node:ekr.20170428084208.428: ** class DummyWidget
 class DummyWidget(Widget):
     "This widget is invisible and does nothing.  Which is sometimes important."
