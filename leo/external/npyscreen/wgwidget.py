@@ -87,8 +87,6 @@ class InputHandler(object):
                 parent.__class__.__name__,
                 parent_widget.__class__.__name__,
             ))
-        if False and self.is_key_event(_input) and self.do_leo_key(_input):
-            return True
         if _input in self.handlers:
             self.handlers[_input](_input)
             return True
@@ -118,6 +116,9 @@ class InputHandler(object):
         if parent and hasattr(self.parent, 'handle_input'):
             if parent.handle_input(_input):
                 return True
+        # Handle Leo bindings *last*.
+        if self.is_key_event(_input) and self.do_leo_key(_input):
+            return True
         return False
     #@+node:ekr.20170428112805.1: *4* IH.is_key_event
     def is_key_event(self, _input):
