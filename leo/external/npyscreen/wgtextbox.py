@@ -11,6 +11,7 @@ import locale
 from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
 #@-<< wgtextbox imports >>
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.320: ** class TextfieldBase (Widget)
 class TextfieldBase(widget.Widget):
@@ -71,30 +72,25 @@ class TextfieldBase(widget.Widget):
     #@+node:ekr.20170428084208.325: *3* update
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
+        # pylint: disable=arguments-differ
+        
         # cursor not working. See later for a fake cursor
-        #if self.editing: pmfuncs.show_cursor()
-        #else: pmfuncs.hide_cursor()
-
+            #if self.editing: pmfuncs.show_cursor()
+            #else: pmfuncs.hide_cursor()
         # Not needed here -- gets called too much!
-        #pmfuncs.hide_cursor()
+            #pmfuncs.hide_cursor()
         
         if clear: self.clear()
-        
         if self.hidden:
             return True
-        
         value_to_use_for_calculations = self.value        
-        
         if self.ENSURE_STRING_VALUE:
             if value_to_use_for_calculations in (None, False, True):
                 value_to_use_for_calculations = ''
                 self.value = ''
-
         if self.begin_at < 0: self.begin_at = 0
-        
         if self.left_margin >= self.maximum_string_length:
             raise ValueError
-        
         if self.editing:
             if isinstance(self.value, bytes):
                 # use a unicode version of self.value to work out where the cursor is.
@@ -120,9 +116,6 @@ class TextfieldBase(widget.Widget):
                     self.parent.curses_pad.bkgdset(' ', self.parent.theme_manager.findPair(self, self.highlight_color) | curses.A_STANDOUT)
                 else:
                     self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-
-
-
         # Do this twice so that the _print method can ignore it if needed.
         if self.highlight:
             if self.do_colors():
@@ -133,19 +126,11 @@ class TextfieldBase(widget.Widget):
                 self.parent.curses_pad.bkgdset(' ', attributes)
             else:
                 self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-            
-
         if self.show_bold:
             self.parent.curses_pad.attron(curses.A_BOLD)
         if self.important and not self.do_colors():
             self.parent.curses_pad.attron(curses.A_UNDERLINE)
-
-
         self._print()
-        
-        
-        
-
         # reset everything to normal
         self.parent.curses_pad.attroff(curses.A_BOLD)
         self.parent.curses_pad.attroff(curses.A_UNDERLINE)
@@ -153,7 +138,6 @@ class TextfieldBase(widget.Widget):
         self.parent.curses_pad.attrset(0)
         if self.editing and cursor:
             self.print_cursor()
-
     #@+node:ekr.20170428084208.326: *3* print_cursor
     def print_cursor(self):
         # This needs fixing for Unicode multi-width chars.
@@ -217,7 +201,8 @@ class TextfieldBase(widget.Widget):
 
     #@+node:ekr.20170428084208.330: *3* _print_unicode_char
     def _print_unicode_char(self, ch):
-        # return the ch to print.  For python 3 this is just ch
+        '''return the ch to print.  For python 3 this is just ch.'''
+        # pylint: disable=arguments-differ
         if self._force_ascii:
             return ch.encode('ascii', 'replace')
         elif sys.version_info[0] >= 3:
@@ -550,6 +535,7 @@ class FixedText(TextfieldBase):
 
     #@+node:ekr.20170428084208.352: *3* update
     def update(self, clear=True,):
+        # pylint: disable=arguments-differ
         super(FixedText, self).update(clear=clear, cursor=False)
 
     #@+node:ekr.20170428084208.353: *3* edit
