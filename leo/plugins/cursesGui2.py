@@ -10,7 +10,7 @@ import leo.core.leoGlobals as g
 import logging
 import logging.handlers
 import sys
-import traceback
+# import traceback
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
@@ -61,20 +61,6 @@ def es(*args, **keys):
         g.app.log.put(s)
     else:
         logging.info(s.rstrip())
-#@+node:ekr.20170501042908.1: *4* es_exception
-def es_exception(full=True, c=None, color="red"):
-    '''Monkey-patch for g.es_exception.'''
-    typ, val, tb = sys.exc_info()
-    # val is the second argument to the raise statement.
-    if full or g.app.debugSwitch > 0:
-        lines = traceback.format_exception(typ, val, tb)
-    else:
-        lines = traceback.format_exception_only(typ, val)
-    for line in lines:
-        # g.es_print_error(line, color=color)
-        logging.info(line.rstrip())
-    fileName, n = g.getLastTracebackFileAndLineNumber()
-    return fileName, n
 #@+node:ekr.20170501043411.1: *4* pr
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
@@ -123,7 +109,7 @@ def trace(*args, **keys):
             result.append(arg)
     s = d.get('before') + ''.join(result)
     logging.info(s.rstrip())
-#@+node:ekr.20170420054211.1: *3* class CursesApp (NPSApp)
+#@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     
     def __init__(self, c):
@@ -138,7 +124,7 @@ class CursesApp(npyscreen.NPSApp):
             # Init the base class.
 
     #@+others
-    #@+node:ekr.20170420090426.1: *4* CApp.main
+    #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
         g.trace('CursesApp.main')
@@ -161,8 +147,8 @@ class CursesApp(npyscreen.NPSApp):
         F.edit()
     #@-others
 
-#@+node:ekr.20170501024433.1: *3* class CursesBody
-#@+node:ekr.20170419105852.1: *3* class CursesFrame
+#@+node:ekr.20170501024433.1: ** class CursesBody
+#@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame (leoFrame.LeoFrame):
 
     def __init__ (self, c, title):
@@ -183,19 +169,19 @@ class CursesFrame (leoFrame.LeoFrame):
         self.tree = g.NullObject()
 
     #@+others
-    #@+node:ekr.20170420170826.1: *4* CF.oops
+    #@+node:ekr.20170420170826.1: *3* CF.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
         # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20170420163932.1: *4* CF.finishCreate
+    #@+node:ekr.20170420163932.1: *3* CF.finishCreate
     def finishCreate(self):
         g.trace('CursesFrame')
-    #@+node:ekr.20170419111305.1: *4* CF.getShortCut
+    #@+node:ekr.20170419111305.1: *3* CF.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
     #@-others
 
-#@+node:ekr.20170419094731.1: *3* class CursesGui
+#@+node:ekr.20170419094731.1: ** class CursesGui
 class CursesGui(leoGui.LeoGui):
     '''Leo's curses gui wrapper.'''
 
@@ -215,18 +201,18 @@ class CursesGui(leoGui.LeoGui):
         # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
 
     #@+others
-    #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
+    #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
 
         return CursesFrame(c, title)
-    #@+node:ekr.20170430114709.1: *4* CGui.do_key
+    #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
         self.key_handler.do_key(ch_i)
-    #@+node:ekr.20170419111744.1: *4* CGui.Focus...
+    #@+node:ekr.20170419111744.1: *3* CGui.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170501032447.1: *4* CGui.init_logger
+    #@+node:ekr.20170501032447.1: *3* CGui.init_logger
     def init_logger(self):
 
         self.rootLogger = logging.getLogger('')
@@ -237,12 +223,10 @@ class CursesGui(leoGui.LeoGui):
         )
         self.rootLogger.addHandler(socketHandler)
         # Monkey-patch leoGlobals functions.
-        g.trace = trace
         g.es = es
-        g.es_exception = es_exception
-        g.pr = pr
+        g.pr = pr # Most ouput goes through here, including g.es_exception.
 
-    #@+node:ekr.20170419140914.1: *4* CGui.runMainLoop (sets gApp)
+    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets gApp)
     def runMainLoop(self):
         '''The curses gui main loop.'''
         global gApp
@@ -253,11 +237,11 @@ class CursesGui(leoGui.LeoGui):
             # Calls CursesGui.main()
         g.trace('DONE')
     #@-others
-#@+node:ekr.20170430114840.1: *3* class CursesKeyHandler
+#@+node:ekr.20170430114840.1: ** class CursesKeyHandler
 class CursesKeyHandler:
 
     #@+others
-    #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
+    #@+node:ekr.20170430114930.1: *3* CKey.do_key & helpers
     def do_key(self, ch_i):
         '''
         Handle a key event by calling k.masterKeyHandler.
@@ -277,7 +261,7 @@ class CursesKeyHandler:
             return True
         else:
             return False
-    #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
+    #@+node:ekr.20170430115131.4: *4* CKey.char_to_tk_name
     tk_dict = {
         # Part 1: same as g.app.guiBindNamesDict
         "&": "ampersand",
@@ -342,7 +326,7 @@ class CursesKeyHandler:
     def char_to_tk_name(self, ch):
         val = self.tk_dict.get(ch)
         return val
-    #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
+    #@+node:ekr.20170430115131.2: *4* CKey.create_key_event
     def create_key_event(self, c, w, ch, shortcut):
         trace = True
         # Last-minute adjustments...
@@ -380,11 +364,11 @@ class CursesKeyHandler:
             shortcut=shortcut,
             w=w, x=0, y=0, x_root=0, y_root=0,
         )
-    #@+node:ekr.20170430115030.1: *5* CKey.is_key_event
+    #@+node:ekr.20170430115030.1: *4* CKey.is_key_event
     def is_key_event(self, ch_i):
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
-    #@+node:ekr.20170430115131.3: *5* CKey.to_key
+    #@+node:ekr.20170430115131.3: *4* CKey.to_key
     def to_key(self, ch_i):
         '''Convert ch_i to a char and shortcut.'''
         trace = True
@@ -402,11 +386,11 @@ class CursesKeyHandler:
 
         
     #@-others
-#@+node:ekr.20170419143731.1: *3* class CursesLog
+#@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
     '''A class that represents curses log pane.'''
     #@+others
-    #@+node:ekr.20170419143731.4: *4* CLog.__init__
+    #@+node:ekr.20170419143731.4: *3* CLog.__init__
     def __init__(self, c):
         '''Ctor for CLog class.'''
         self.c = c
@@ -444,30 +428,30 @@ class CursesLog:
                 # tw.installEventFilter(theFilter)
             # # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
             # tw.setMovable(True)
-    #@+node:ekr.20170419143731.2: *4* CLog.cmd (decorator)
+    #@+node:ekr.20170419143731.2: *3* CLog.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.log class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
-    #@+node:ekr.20170419143731.7: *4* CLog.Commands
+    #@+node:ekr.20170419143731.7: *3* CLog.Commands
     @cmd('clear-log')
     def clearLog(self, event=None):
         '''Clear the log pane.'''
         # w = self.logCtrl.widget # w is a QTextBrowser
         # if w:
             # w.clear()
-    #@+node:ekr.20170420040818.1: *4* CLog.Entries
-    #@+node:ekr.20170420035717.1: *5* CLog.enable/disable
+    #@+node:ekr.20170420040818.1: *3* CLog.Entries
+    #@+node:ekr.20170420035717.1: *4* CLog.enable/disable
     def disable(self):
         self.enabled = False
 
     def enable(self, enabled=True):
         self.enabled = enabled
-    #@+node:ekr.20170420041119.1: *5* CLog.finishCreate
+    #@+node:ekr.20170420041119.1: *4* CLog.finishCreate
     def finishCreate(self):
         '''CursesLog.finishCreate.'''
         pass
-    #@+node:ekr.20170419143731.15: *5* CLog.put
+    #@+node:ekr.20170419143731.15: *4* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
         c, w = self.c, self.w
@@ -526,7 +510,7 @@ class CursesLog:
             # if g.isUnicode(s):
                 # s = g.toEncodedString(s, "ascii")
             # print(s)
-    #@+node:ekr.20170419143731.16: *5* CLog.putnl
+    #@+node:ekr.20170419143731.16: *4* CLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
         # This is not called normally.
@@ -549,7 +533,7 @@ class CursesLog:
             # # put s to logWaiting and print  a newline
             # g.app.logWaiting.append(('\n', 'black'),)
     #@-others
-#@+node:ekr.20170419111515.1: *3* class CursesMenu
+#@+node:ekr.20170419111515.1: ** class CursesMenu
 class CursesMenu (leoMenu.LeoMenu):
 
     def __init__ (self, c):
@@ -564,12 +548,12 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170501024424.1: *3* class CursesTree
-#@+node:edward.20170428174322.1: *3* class LeoKeyEvent
+#@+node:ekr.20170501024424.1: ** class CursesTree
+#@+node:edward.20170428174322.1: ** class LeoKeyEvent
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
     #@+others
-    #@+node:edward.20170428174322.2: *4* LeoKeyEvent.__init__
+    #@+node:edward.20170428174322.2: *3* LeoKeyEvent.__init__
     def __init__(self, c, char, event, shortcut, w,
         x=None,
         y=None,
@@ -592,11 +576,11 @@ class LeoKeyEvent(object):
         # Support for fastGotoNode plugin
         self.x_root = x_root
         self.y_root = y_root
-    #@+node:edward.20170428174322.3: *4* LeoKeyEvent.__repr__
+    #@+node:edward.20170428174322.3: *3* LeoKeyEvent.__repr__
     def __repr__(self):
         return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke), repr(self.char), repr(self.w))
-    #@+node:edward.20170428174322.4: *4* LeoKeyEvent.get & __getitem__
+    #@+node:edward.20170428174322.4: *3* LeoKeyEvent.get & __getitem__
     def get(self, attr):
         '''Compatibility with g.bunch: return an attr.'''
         return getattr(self, attr, None)
@@ -604,7 +588,7 @@ class LeoKeyEvent(object):
     def __getitem__(self, attr):
         '''Compatibility with g.bunch: return an attr.'''
         return getattr(self, attr, None)
-    #@+node:edward.20170428174322.5: *4* LeoKeyEvent.type
+    #@+node:edward.20170428174322.5: *3* LeoKeyEvent.type
     def type(self):
         return 'LeoKeyEvent'
     #@-others
