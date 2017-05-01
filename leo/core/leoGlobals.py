@@ -5762,16 +5762,17 @@ def translateString(s):
     '''Return the translated text of s.'''
     # pylint: disable=undefined-loop-variable
     # looks like a pylint bug
+    upper = app and getattr(app, 'translateToUpperCase', None)
     if isPython3:
         if not isString(s):
             s = str(s, 'utf-8')
-        if app and app.translateToUpperCase:
+        if upper:
             s = s.upper()
         else:
             s = gettext.gettext(s)
         return s
     else:
-        if app and app.translateToUpperCase:
+        if upper:
             return s.upper()
         else:
             return gettext.gettext(s)
