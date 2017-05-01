@@ -1,9 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
 '''A prototype text gui using the python curses library.'''
-use_npyscreen = True
-gApp = None
-gC = None
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: **  << cursesGui imports >>
 import leo.core.leoGlobals as g
@@ -26,28 +23,31 @@ npyscreen = g.importExtension(
     verbose=False,
 )
 #@-<< cursesGui imports >>
+gGui = None # Set in LeoApp.createCursesGui.
+gLog = None # Set in CursesFrame.ctor
 # pylint: disable=arguments-differ
 #@+others
 #@+node:ekr.20170501043944.1: **  top-level
 #@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
 def init():
-
-    ok = curses and not g.app.gui and not g.app.unitTesting
-        # Not Ok for unit testing!
-    if ok:
-        g.app.gui = CursesGui()
-        g.app.root = g.app.gui.createRootWindow()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.app.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
+    '''
+    top-level init for cursesGui2.py pseudo-plugin.
+    This plugin should be loaded only from leoApp.py.
+    '''
+    if g.app.gui:
+        if not g.app.unitTesting:
+            s = "Can't install text gui: previous gui installed"
+            g.es_print(s, color="red")
+        return False
+    else:
+        return curses and not g.app.gui and not g.app.unitTesting
+            # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
 #@+node:ekr.20170430112645.1: *4* es
 def es(*args, **keys):
     '''Monkey-patch for g.es.'''
+    global gLog
     d = {
         'color': None,
         'commas': False,
@@ -56,22 +56,33 @@ def es(*args, **keys):
         'tabName': 'Log',
     }
     d = g.doKeywordArgs(keys, d)
+    color = d.get('color')
     s = g.translateArgs(args, d)
-    if g.app.log and g.app.logInited:
-        g.app.log.put(s)
-    else:
-        logging.info(s.rstrip())
+    # s = ''.join(args)
+    if isinstance(g.app.gui, CursesGui):
+        if g.app.gui.log_inited:
+            gLog.put(s, color=color)
+        else:
+            g.app.gui.wait_list.append((s, color),)
+    elif 1:
+        logging.info(' KILL: %r' % s)
 #@+node:ekr.20170501043411.1: *4* pr
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
-    logging.info(s.rstrip())
+    logging.info('   pr: %r' % s)
 #@+node:ekr.20170429165242.1: *4* trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
-    d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
+    d = {
+        'align': 0,
+        'before': '',
+        'newline': True,
+        'caller_level': 1,
+        'noname': False,
+    }
     d = g.doKeywordArgs(keys, d)
     align = d.get('align', 0)
     caller_level = d.get('caller_level', 1)
@@ -107,57 +118,117 @@ def trace(*args, **keys):
             result.append(" " + arg)
         else:
             result.append(arg)
-    s = d.get('before') + ''.join(result)
-    logging.info(s.rstrip())
+    # s = d.get('before') + ''.join(result)
+    s = ''.join(result)
+    logging.info('trace: %r' % s)
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     
     def __init__(self, c):
-        global gC
-        gC = c ### To be deleted.
         g.trace('CursesApp')
-        self.leo_c = c
-        self.leo_log = c.frame.log
-        self.leo_minibuffer = None
-        self.leo_tree = None
         npyscreen.NPSApp.__init__(self)
             # Init the base class.
+        self.leo_c = c
+        self.leo_log = None ### was c.frame.log
+        self.leo_log_waiting = []
+        self.leo_minibuffer = None
+        self.leo_tree = None
+        assert not hasattr(self, 'gui')
+        self.gui = None # Set in runMainLoop.
 
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
-        g.trace('CursesApp.main')
-        F  = npyscreen.Form(name = "Welcome to Leo",)
+        global gLog
         # Transfer queued log messages to the log pane.
-        waiting_list = self.leo_log.waiting_list[:]
-        self.leo_log.waiting_list = []
-        # Set the log widget.
-        self.leo_log.w = F.add(
+        values = [s for s, color in g.app.gui.wait_list]
+        g.app.gui.wait_list = []
+        g.app.gui.log_inited = True
+        # The next call clears the screen.
+        F = npyscreen.Form(name = "Welcome to Leo")
+        w = F.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
             name='Log Pane',
             footer="Press i or o to insert text", 
-            values=waiting_list, 
+            values=values, 
             slow_scroll=False,
         )
+        gLog.w = w
         # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
         self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
+        g.es('g.es test')
         g.trace('before F.edit()')
         F.edit()
+    #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog
+    def writeWaitingLog(self, c):
+        '''Write all waiting lines to the log.'''
+        trace = True
+        app = self
+        if trace:
+            # Do not call g.es, g.es_print, g.pr or g.trace here!
+            logging.info('CApp.writeWaitingLog')
+            for s, color in g.app.gui.wait_list:
+                logging.info('wait2 %r' % s)
+            return
+        return ####
+        if not c or not c.exists:
+            return
+        # if g.unitTesting:
+            # app.printWaiting = []
+            # app.logWaiting = []
+            # g.app.setLog(None) # Prepare to requeue for other commanders.
+            # return
+        table = [
+            ('Leo Log Window', 'red'),
+            (app.signon, None),
+            (app.signon1, None),
+            (app.signon2, None)
+        ]
+        table.reverse()
+        c.setLog()
+        app.logInited = True # Prevent recursive call.
+        if not app.signon_printed:
+            app.signon_printed = True
+            if not app.silentMode:
+                print('')
+                print('** isPython3: %s' % g.isPython3)
+                if not g.enableDB:
+                    print('** caching disabled')
+                print(app.signon)
+                if app.signon1:
+                    print(app.signon1)
+                print(app.signon2)
+        if not app.silentMode:
+            for s in app.printWaiting:
+                print(s)
+        app.printWaiting = []
+        if not app.silentMode:
+            for s, color in table:
+                if s:
+                    app.logWaiting.insert(0, (s + '\n', color),)
+            for s, color in app.logWaiting:
+                g.es('', s, color=color, newline=0)
+                    # The caller must write the newlines.
+            if hasattr(c.frame.log, 'scrollToEnd'):
+                g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
+        app.logWaiting = []
+        # Essential when opening multiple files...
+        g.app.setLog(None)
     #@-others
-
 #@+node:ekr.20170501024433.1: ** class CursesBody
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame (leoFrame.LeoFrame):
 
     def __init__ (self, c, title):
 
-        g.trace('CursesFrame')
+        global gLog
+        g.trace('CursesFrame', c.shortFileName())
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
         self.c = c
         self.d = {}
-        self.log = CursesLog(c)
+        self.log = gLog = CursesLog(c)
         self.title = title
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.0
@@ -181,19 +252,25 @@ class CursesFrame (leoFrame.LeoFrame):
         return None
     #@-others
 
-#@+node:ekr.20170419094731.1: ** class CursesGui
+#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
 class CursesGui(leoGui.LeoGui):
     '''Leo's curses gui wrapper.'''
 
     def __init__(self):
         '''Ctor for the CursesGui class.'''
+        self.wait_list = []
+        self.log_inited = False
+        self.init_logger()
+            # Do this as early as possible.
+            # It monkey-patches g.pr and g.trace.
+        g.trace('CursesGui')
         leoGui.LeoGui.__init__(self, 'curses')
          # Init the base class.
+        self.app = None
+            # set in self.runMainLoop.
         self.consoleOnly = False # Required attribute.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
-        self.init_logger()
-            # Do this as early as possible.
         self.key_handler = CursesKeyHandler()
             
     def oops(self):
@@ -222,19 +299,23 @@ class CursesGui(leoGui.LeoGui):
             logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         )
         self.rootLogger.addHandler(socketHandler)
+        logging.info('-' * 20)
         # Monkey-patch leoGlobals functions.
         g.es = es
         g.pr = pr # Most ouput goes through here, including g.es_exception.
-
-    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets gApp)
+        g.trace = trace
+    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        global gApp
+        global gGui # Set earlier in LeoApp.createCursesGui.
+        assert gGui
         c = g.app.log.c
         assert c
-        gApp = CursesApp(c)
-        gApp.run()
-            # Calls CursesGui.main()
+        g.app = self.app = CursesApp(c)
+        g.app.gui = gGui
+        self.app.run()
+            # Inits/clears the screen.
+            # Calls CursesApp.main()
         g.trace('DONE')
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
@@ -249,7 +330,8 @@ class CursesKeyHandler:
         '''
         #  This is a complete rewrite of the LeoQtEventFilter code.
         if self.is_key_event(ch_i):
-            c = gC
+            c = g.app.log and g.app.log.c
+            assert c, g.callers()
             w = None ### c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
             event = self.create_key_event(c, w, char, shortcut)
@@ -393,6 +475,7 @@ class CursesLog:
     #@+node:ekr.20170419143731.4: *3* CLog.__init__
     def __init__(self, c):
         '''Ctor for CLog class.'''
+        g.trace('CursesLog')
         self.c = c
         self.enabled = True
             # Required by Leo's core.
@@ -400,16 +483,6 @@ class CursesLog:
             # Required by Leo's core.
         self.w = None
             # The npyscreen log widget. Queue all output until set.
-        self.waiting_list = []
-            # The queued log text.
-        
-        ### from LeoQtLog
-            # leoFrame.LeoLog.__init__(self, frame, parentFrame)
-                # # Init the base class. Calls createControl.
-            # assert self.logCtrl is None, self.logCtrl # Set in finishCreate.
-                # # Important: depeding on the log *tab*,
-                # # logCtrl may be either a wrapper or a widget.
-            # self.c = frame.c # Also set in the base constructor, but we need it here.
         
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
@@ -455,8 +528,8 @@ class CursesLog:
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
         c, w = self.c, self.w
-        if g.app.quitting or not c or not c.exists:
-            print('CLog.log.put fails', repr(s))
+        if not c or not c.exists:
+            logging.info('CLog.put: no c: %r' % s)
             return
         if self.w:
             values = w.get_values()
@@ -464,52 +537,7 @@ class CursesLog:
             w.set_values(values)
             w.update()
         else:
-            self.waiting_list.append(s)
-                ### To do: remember color
-                
-        ### Old code.
-        # trace = False and not g.unitTesting
-        # trace_s = False
-        # if color:
-            # color = leoColor.getColor(color, 'black')
-        # else:
-            # color = leoColor.getColor('black')
-        # self.selectTab(tabName or 'Log')
-        # # Must be done after the call to selectTab.
-        # w = self.logCtrl.widget # w is a QTextBrowser
-        # if w:
-            # if trace:
-                # g.trace(id(self.logCtrl), c.shortFileName())
-            # sb = w.horizontalScrollBar()
-            # s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            # if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
-                # s = s.replace(' ', '&nbsp;')
-            # if from_redirect:
-                # s = s.replace('\n', '<br>')
-            # else:
-                # s = s.rstrip().replace('\n', '<br>')
-            # s = '<font color="%s">%s</font>' % (color, s)
-            # if trace and trace_s:
-                # # print('CLog.put: %4s redirect: %5s\n  %s' % (
-                    # # len(s), from_redirect, s))
-                # print('CLog.put: %r' % (s))
-            # if from_redirect:
-                # w.insertHtml(s)
-            # else:
-                # # w.append(s)
-                    # # w.append is a QTextBrowser method.
-                    # # This works.
-                # # This also works.  Use it to see if it fixes #301:
-                # # Log window doesn't get line separators
-                # w.insertHtml(s+'<br>')
-            # w.moveCursor(QtGui.QTextCursor.End)
-            # sb.setSliderPosition(0) # Force the slider to the initial position.
-        # else:
-            # # put s to logWaiting and print s
-            # g.app.logWaiting.append((s, color),)
-            # if g.isUnicode(s):
-                # s = g.toEncodedString(s, "ascii")
-            # print(s)
+            logging.info('CLog.put no w: %r' % s)
     #@+node:ekr.20170419143731.16: *4* CLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''

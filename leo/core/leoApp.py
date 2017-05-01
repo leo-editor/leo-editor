@@ -1003,11 +1003,16 @@ class LeoApp(object):
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
-        app = self
-        app.pluginsController.loadOnePlugin(
-            'leo.plugins.cursesGui2',
-            verbose=verbose,
-        )
+        try:
+            import leo.plugins.cursesGui2 as cursesGui2
+            ok = cursesGui2.init()
+            if ok:
+                g.app.gui = cursesGui2.CursesGui()
+                cursesGui2.gGui = g.app.gui
+        except ImportError:
+            ok = False
+        if not ok:
+            print('can not create curses gui.')
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
