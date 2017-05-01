@@ -23,9 +23,8 @@ npyscreen = g.importExtension(
     verbose=False,
 )
 #@-<< cursesGui imports >>
-gGui = None # Set in LeoApp.createCursesGui.
 gLog = None # Set in CursesFrame.ctor
-# pylint: disable=arguments-differ
+# pylint: disable=arguments-differ,logging-not-lazy
 #@+others
 #@+node:ekr.20170501043944.1: **  top-level
 #@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
@@ -58,14 +57,13 @@ def es(*args, **keys):
     d = g.doKeywordArgs(keys, d)
     color = d.get('color')
     s = g.translateArgs(args, d)
-    # s = ''.join(args)
     if isinstance(g.app.gui, CursesGui):
         if g.app.gui.log_inited:
             gLog.put(s, color=color)
         else:
             g.app.gui.wait_list.append((s, color),)
-    elif 1:
-        logging.info(' KILL: %r' % s)
+    # else:
+        # logging.info(' KILL: %r' % s)
 #@+node:ekr.20170501043411.1: *4* pr
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
@@ -124,17 +122,10 @@ def trace(*args, **keys):
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     
-    def __init__(self, c):
+    def __init__(self):
         g.trace('CursesApp')
         npyscreen.NPSApp.__init__(self)
             # Init the base class.
-        self.leo_c = c
-        self.leo_log = None ### was c.frame.log
-        self.leo_log_waiting = []
-        self.leo_minibuffer = None
-        self.leo_tree = None
-        assert not hasattr(self, 'gui')
-        self.gui = None # Set in runMainLoop.
 
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
@@ -156,78 +147,31 @@ class CursesApp(npyscreen.NPSApp):
             slow_scroll=False,
         )
         gLog.w = w
-        # self.leo_tree = F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        g.es('g.es test')
-        g.trace('before F.edit()')
+        # F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        F.add_widget(npyscreen.TitleText, name="Minibuffer")
+        g.trace('CApp: g.app.windowList', g.app.windowList)
+        g.trace('CApp: before F.edit()')
         F.edit()
-    #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog
+    #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog (do nothing)
     def writeWaitingLog(self, c):
         '''Write all waiting lines to the log.'''
-        trace = True
-        app = self
-        if trace:
-            # Do not call g.es, g.es_print, g.pr or g.trace here!
-            logging.info('CApp.writeWaitingLog')
-            for s, color in g.app.gui.wait_list:
-                logging.info('wait2 %r' % s)
-            return
-        return ####
-        if not c or not c.exists:
-            return
-        # if g.unitTesting:
-            # app.printWaiting = []
-            # app.logWaiting = []
-            # g.app.setLog(None) # Prepare to requeue for other commanders.
-            # return
-        table = [
-            ('Leo Log Window', 'red'),
-            (app.signon, None),
-            (app.signon1, None),
-            (app.signon2, None)
-        ]
-        table.reverse()
-        c.setLog()
-        app.logInited = True # Prevent recursive call.
-        if not app.signon_printed:
-            app.signon_printed = True
-            if not app.silentMode:
-                print('')
-                print('** isPython3: %s' % g.isPython3)
-                if not g.enableDB:
-                    print('** caching disabled')
-                print(app.signon)
-                if app.signon1:
-                    print(app.signon1)
-                print(app.signon2)
-        if not app.silentMode:
-            for s in app.printWaiting:
-                print(s)
-        app.printWaiting = []
-        if not app.silentMode:
-            for s, color in table:
-                if s:
-                    app.logWaiting.insert(0, (s + '\n', color),)
-            for s, color in app.logWaiting:
-                g.es('', s, color=color, newline=0)
-                    # The caller must write the newlines.
-            if hasattr(c.frame.log, 'scrollToEnd'):
-                g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
-        app.logWaiting = []
-        # Essential when opening multiple files...
-        g.app.setLog(None)
+        # Done in CApp.main.
     #@-others
 #@+node:ekr.20170501024433.1: ** class CursesBody
-#@+node:ekr.20170419105852.1: ** class CursesFrame
+#@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
-
+    
+    #@+others
+    #@+node:ekr.20170501155347.1: *3* CFrame.birth
     def __init__ (self, c, title):
-
+        
         global gLog
-        g.trace('CursesFrame', c.shortFileName())
+        g.trace('CursesFrame', id(self)) ### c.shortFileName())
+        leoFrame.LeoFrame.instances += 1 # Increment the class var.
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
-        self.c = c
-        self.d = {}
+            # Init the base class.
+        assert self.c == c
+        # self.d = {}
         self.log = gLog = CursesLog(c)
         self.title = title
         # Standard ivars.
@@ -238,21 +182,140 @@ class CursesFrame (leoFrame.LeoFrame):
         self.miniBufferWidget = None
         self.top = None
         self.tree = g.NullObject()
-
-    #@+others
-    #@+node:ekr.20170420170826.1: *3* CF.oops
-    def oops(self):
-        '''Ignore do-nothing methods.'''
-        # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20170420163932.1: *3* CF.finishCreate
+        
+        # ===============
+        
+        # Official ivars...
+        ### self.iconBar = None
+        ### self.iconBarClass = None ### self.QtIconBarClass
+        ### self.initComplete = False # Set by initCompleteHint().
+        ### self.minibufferVisible = True
+        ### self.statusLineClass = None ### self.QtStatusLineClass
+        ###
+            # Config settings.
+            # self.trace_status_line = c.config.getBool('trace_status_line')
+            # self.use_chapters = c.config.getBool('use_chapters')
+            # self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
+        ###
+        ### self.set_ivars()
+        ###
+        # "Official ivars created in createLeoFrame and its allies.
+        ### self.bar1 = None
+        ### self.bar2 = None
+        self.body = None
+        ### self.f1 = self.f2 = None
+        ### self.findPanel = None # Inited when first opened.
+        ### self.iconBarComponentName = 'iconBar'
+        ### self.iconFrame = None
+        ### self.canvas = None
+        ### self.outerFrame = None
+        ### self.statusFrame = None
+        ### self.statusLineComponentName = 'statusLine'
+        ### self.statusText = None
+        ### self.statusLabel = None
+        ### self.top = None # This will be a class Window object.
+        # Used by event handlers...
+        # self.controlKeyIsDown = False # For control-drags
+        # self.isActive = True
+        # self.redrawCount = 0
+        # self.wantedWidget = None
+        # self.wantedCallbackScheduled = False
+        # self.scrollWay = None
+    #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (To do)
     def finishCreate(self):
         g.trace('CursesFrame')
-    #@+node:ekr.20170419111305.1: *3* CF.getShortCut
+        ### From qtFrame...
+        c, f = self.c, self
+        assert c
+        if 0: ### Not yet.
+            f.top = g.app.gui.frameFactory.createFrame(f)
+            f.createIconBar() # A base class method.
+            ### f.createSplitterComponents()
+            f.createStatusLine() # A base class method.
+            f.createFirstTreeNode() # Call the base-class method.
+            ### f.menu = LeoQtMenu(c, f, label='top-level-menu')
+            g.app.windowList.append(f)
+            ### f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+            c.bodyWantsFocus()
+    #@+node:ekr.20170419111305.1: *3* CFrame.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
-    #@-others
+    #@+node:ekr.20170501161029.1: *3* CFrame.must be defined in subclasses
+    def bringToFront(self):
+        pass
+        # self.lift()
 
-#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
+    def deiconify(self):
+        pass
+        # if self.top and self.top.isMinimized(): # Bug fix: 400739.
+            # self.lift()
+
+    def getFocus(self):
+        pass ### To do
+        # return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+
+    def get_window_info(self):
+        pass
+        # if hasattr(self.top, 'leo_master') and self.top.leo_master:
+            # f = self.top.leo_master
+        # else:
+            # f = self.top
+        # rect = f.geometry()
+        # topLeft = rect.topLeft()
+        # x, y = topLeft.x(), topLeft.y()
+        # w, h = rect.width(), rect.height()
+        # return w, h, x, y
+
+    def iconify(self):
+        pass
+        # if self.top: self.top.showMinimized()
+
+    def lift(self):
+        pass
+        # if not self.top: return
+        # if self.top.isMinimized(): # Bug 379141
+            # self.top.showNormal()
+        # self.top.activateWindow()
+        # self.top.raise_()
+
+    def getTitle(self):
+        return self.c.title
+        # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+        # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+        # w = self.top.leo_master if g.app.qt_use_tabs else self.top
+        # s = g.u(w.windowTitle())
+        # return s
+        
+    def resizePanesToRatio(self, ratio, secondary_ratio):
+        '''Resize splitter1 and splitter2 using the given ratios.'''
+        # g.trace('vertical: %5s, %0.2f %0.2f' % (
+            # self.splitVerticalFlag, ratio, secondary_ratio))
+        # self.divideLeoSplitter1(ratio)
+        # self.divideLeoSplitter2(secondary_ratio)
+
+    def setTitle(self, title):
+        pass
+        # if self.top:
+            # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+            # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+            # w = self.top.leo_master if g.app.qt_use_tabs else self.top
+            # w.setWindowTitle(title)
+
+    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+        pass
+        # self.top is a DynamicWindow.
+        # if self.top:
+            # self.top.setGeometry(QtCore.QRect(x, y, w, h))
+
+    def update(self, *args, **keys):
+        pass
+        # self.top.update()
+    #@+node:ekr.20170420170826.1: *3* CFrame.oops
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
+    #@-others
+#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui) (REARRANGE)
 class CursesGui(leoGui.LeoGui):
     '''Leo's curses gui wrapper.'''
 
@@ -265,9 +328,7 @@ class CursesGui(leoGui.LeoGui):
             # It monkey-patches g.pr and g.trace.
         g.trace('CursesGui')
         leoGui.LeoGui.__init__(self, 'curses')
-         # Init the base class.
-        self.app = None
-            # set in self.runMainLoop.
+            # Init the base class.
         self.consoleOnly = False # Required attribute.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
@@ -307,15 +368,9 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        global gGui # Set earlier in LeoApp.createCursesGui.
-        assert gGui
-        c = g.app.log.c
-        assert c
-        g.app = self.app = CursesApp(c)
-        g.app.gui = gGui
-        self.app.run()
-            # Inits/clears the screen.
-            # Calls CursesApp.main()
+        # Do NOT change g.app!
+        CursesApp().run()
+            # run calls CursesApp.main()
         g.trace('DONE')
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler

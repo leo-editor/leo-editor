@@ -90,6 +90,7 @@ class LeoApp(object):
 
         leoGlobals.py contains global switches to be set by hand.
         '''
+        # g.trace('LeoApp')
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False
@@ -1006,12 +1007,11 @@ class LeoApp(object):
         try:
             import leo.plugins.cursesGui2 as cursesGui2
             ok = cursesGui2.init()
-            if ok:
-                g.app.gui = cursesGui2.CursesGui()
-                cursesGui2.gGui = g.app.gui
         except ImportError:
             ok = False
-        if not ok:
+        if ok:
+            g.app.gui = cursesGui2.CursesGui()
+        else:
             print('can not create curses gui.')
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
