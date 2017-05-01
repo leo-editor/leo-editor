@@ -41,7 +41,7 @@ class LogRecordStreamHandler(SocketServer.StreamRequestHandler):
         followed by the LogRecord in pickle format. Logs the record
         according to whatever policy is configured locally.
         """
-        print('listener started')
+        # print('listener started')
             # This isn't shown.
         while True:
             try:

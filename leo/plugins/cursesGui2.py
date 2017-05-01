@@ -10,6 +10,7 @@ import leo.core.leoGlobals as g
 import logging
 import logging.handlers
 import sys
+import traceback
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
@@ -62,6 +63,55 @@ def es(*args, **keys):
         g.app.log.put(s)
     else:
         logging.info(s.rstrip())
+#@+node:ekr.20170501042908.1: *3* es_exception
+def es_exception(full=True, c=None, color="red"):
+    typ, val, tb = sys.exc_info()
+    # val is the second argument to the raise statement.
+    if full or g.app.debugSwitch > 0:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    for line in lines:
+        # g.es_print_error(line, color=color)
+        logging.info(line.rstrip())
+    fileName, n = g.getLastTracebackFileAndLineNumber()
+    return fileName, n
+#@+node:ekr.20170501043411.1: *3* pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+pr_warning_given = False
+
+def pr(*args, **keys):
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+    # Compute the effective args.
+    d = {'commas': False, 'newline': True, 'spaces': True}
+    d = g.doKeywordArgs(keys, d)
+    newline = d.get('newline')
+    stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
+        # Unit tests require sys.stdout.
+    if sys.platform.lower().startswith('win'):
+        encoding = 'ascii' # 2011/11/9.
+    elif hasattr(stdout, 'encoding') and stdout.encoding:
+        # sys.stdout is a TextIOWrapper with a particular encoding.
+        encoding = stdout.encoding
+    else:
+        encoding = 'utf-8'
+    s = g.translateArgs(args, d) # Translates everything to unicode.
+    # Add a newline unless we are going to queue the message.
+    if newline: ###  and app and app.logInited:
+        s = s + '\n'
+    if g.isPython3:
+        if encoding.lower() in ('utf-8', 'utf-16'):
+            s2 = s # There can be no problem.
+        else:
+            # Carefully convert s to the encoding.
+            s3 = g.toEncodedString(s, encoding=encoding, reportErrors=False)
+            s2 = g.toUnicode(s3, encoding=encoding, reportErrors=False)
+    else:
+        s2 = g.toEncodedString(s, encoding, reportErrors=False)
+    logging.info(s2.rstrip())
 #@+node:ekr.20170429165242.1: *3* trace
 def trace(*args, **keys):
     '''Print a tracing message.'''
@@ -223,10 +273,12 @@ class CursesGui(leoGui.LeoGui):
             logging.handlers.DEFAULT_TCP_LOGGING_PORT,
         )
         self.rootLogger.addHandler(socketHandler)
-        # Monkey-patch g.trace and g.es.
-        # This allows us to see startup data and tracebacks.
+        # Monkey-patch leoGlobals functions.
         g.trace = trace
         g.es = es
+        g.es_exception = es_exception
+        g.pr = pr
+
     #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets gApp)
     def runMainLoop(self):
         '''The curses gui main loop.'''
