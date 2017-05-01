@@ -184,7 +184,6 @@ class CursesFrame (leoFrame.LeoFrame):
         self.tree = g.NullObject()
         
         # ===============
-        
         # Official ivars...
         ### self.iconBar = None
         ### self.iconBarClass = None ### self.QtIconBarClass
@@ -202,7 +201,6 @@ class CursesFrame (leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         ### self.bar1 = None
         ### self.bar2 = None
-        self.body = None
         ### self.f1 = self.f2 = None
         ### self.findPanel = None # Inited when first opened.
         ### self.iconBarComponentName = 'iconBar'
@@ -227,6 +225,7 @@ class CursesFrame (leoFrame.LeoFrame):
         ### From qtFrame...
         c, f = self.c, self
         assert c
+        g.app.windowList.append(f)
         if 0: ### Not yet.
             f.top = g.app.gui.frameFactory.createFrame(f)
             f.createIconBar() # A base class method.
@@ -234,9 +233,8 @@ class CursesFrame (leoFrame.LeoFrame):
             f.createStatusLine() # A base class method.
             f.createFirstTreeNode() # Call the base-class method.
             ### f.menu = LeoQtMenu(c, f, label='top-level-menu')
-            g.app.windowList.append(f)
             ### f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
-            c.bodyWantsFocus()
+            ### c.bodyWantsFocus()
     #@+node:ekr.20170419111305.1: *3* CFrame.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
