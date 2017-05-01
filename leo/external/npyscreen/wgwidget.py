@@ -78,7 +78,7 @@ class InputHandler(object):
         
         Return True if input has been completely handled.
         """
-        trace = True
+        trace = False
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace:

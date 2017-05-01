@@ -10,7 +10,6 @@ import leo.core.leoGlobals as g
 import logging
 import logging.handlers
 import sys
-assert sys # to keep pyflakes happy.
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
@@ -28,7 +27,8 @@ npyscreen = g.importExtension(
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ
 #@+others
-#@+node:ekr.20170419094705.1: **  init (cursesGui2.py)
+#@+node:ekr.20170501032705.1: ** top-level
+#@+node:ekr.20170419094705.1: *3*  init (cursesGui2.py)
 def init():
 
     ok = curses and not g.app.gui and not g.app.unitTesting
@@ -42,59 +42,93 @@ def init():
         s = "Can't install text gui: previous gui installed"
         g.es_print(s, color="red")
     return ok
+#@+node:ekr.20170430112645.1: *3* es
+def es(*args, **keys):
+    '''Put all non-keyword args to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+    # Compute the effective args.
+    d = {
+        'color': None,
+        'commas': False,
+        'newline': True,
+        'spaces': True,
+        'tabName': 'Log',
+    }
+    d = g.doKeywordArgs(keys, d)
+    s = g.translateArgs(args, d)
+    if g.app.log and g.app.logInited:
+        g.app.log.put(s)
+    else:
+        logging.info(s.rstrip())
+#@+node:ekr.20170429165242.1: *3* trace
+def trace(*args, **keys):
+    '''Print a tracing message.'''
+    # Don't use g here: in standalone mode g is a NullObject!
+    # Compute the effective args.
+    d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
+    d = g.doKeywordArgs(keys, d)
+    # newline = d.get('newline')
+    align = d.get('align', 0)
+    caller_level = d.get('caller_level', 1)
+    noname = d.get('noname')
+    # Compute the caller name.
+    if noname:
+        name = ''
+    else:
+        try: # get the function name from the call stack.
+            f1 = sys._getframe(caller_level) # The stack frame, one level up.
+            code1 = f1.f_code # The code object
+            name = code1.co_name # The code name
+        except Exception:
+            name = g.shortFileName(__file__)
+        if name == '<module>':
+            name = g.shortFileName(__file__)
+        if name.endswith('.pyc'):
+            name = name[: -1]
+    # Pad the caller name.
+    if align != 0 and len(name) < abs(align):
+        pad = ' ' * (abs(align) - len(name))
+        if align > 0: name = name + pad
+        else: name = pad + name
+    # Munge *args into s.
+    # print ('g.trace:args...')
+    # for z in args: print (g.isString(z),repr(z))
+    result = [name] if name else []
+    for arg in args:
+        if g.isString(arg):
+            pass
+        elif g.isBytes(arg):
+            arg = g.toUnicode(arg)
+        else:
+            arg = repr(arg)
+        if result:
+            result.append(" " + arg)
+        else:
+            result.append(arg)
+    s = d.get('before') + ''.join(result)
+    # pr(s, newline=newline)
+    logging.info(s.rstrip())
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
-
-    #@+others
-    #@+node:ekr.20170429164632.1: *3* CApp.__init__
+    
     def __init__(self, c):
-
         global gC
-        gC = c
-        npyscreen.NPSApp.__init__(self)
-            # Init the base class.
+        gC = c ### To be deleted.
+        g.trace('CursesApp')
         self.leo_c = c
         self.leo_log = c.frame.log
         self.leo_minibuffer = None
         self.leo_tree = None
-        assert not hasattr(self, 'windowList'), getattr(self, 'windowList')
-        self.windowList = [c]
-        self.init_logger()
-    #@+node:ekr.20170430112645.1: *3* CAPP.es
-    def es(self, *args, **keys):
-        '''Put all non-keyword args to the log pane.
-        The first, third, fifth, etc. arg translated by g.translateString.
-        Supports color, comma, newline, spaces and tabName keyword arguments.
-        '''
-        # Compute the effective args.
-        d = {
-            'color': None,
-            'commas': False,
-            'newline': True,
-            'spaces': True,
-            'tabName': 'Log',
-        }
-        d = g.doKeywordArgs(keys, d)
-        s = g.translateArgs(args, d)
-        logging.info(s)
-    #@+node:ekr.20170429165004.1: *3* CApp.init_logger
-    def init_logger(self):
-        
-        self.rootLogger = logging.getLogger('')
-        self.rootLogger.setLevel(logging.DEBUG)
-        socketHandler = logging.handlers.SocketHandler(
-            'localhost',
-            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        )
-        self.rootLogger.addHandler(socketHandler)
-        # Monkey-patch g.trace and g.es.
-        # This allows us to see startup data and tracebacks.
-        g.trace = self.trace
-        g.es = self.es
+        npyscreen.NPSApp.__init__(self)
+            # Init the base class.
+
+    #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
-        g.trace('CurseseApp.main')
+        g.trace('CursesApp.main')
         F  = npyscreen.Form(name = "Welcome to Leo",)
         # Transfer queued log messages to the log pane.
         waiting_list = self.leo_log.waiting_list[:]
@@ -112,60 +146,15 @@ class CursesApp(npyscreen.NPSApp):
         self.leo_minibuffer = F.add_widget(npyscreen.TitleText, name="Minibuffer")
         g.trace('before F.edit()')
         F.edit()
-    #@+node:ekr.20170429165242.1: *3* CApp.trace
-    def trace(self, *args, **keys):
-        '''Print a tracing message.'''
-        # Don't use g here: in standalone mode g is a NullObject!
-        # Compute the effective args.
-        d = {'align': 0, 'before': '', 'newline': True, 'caller_level': 1, 'noname': False}
-        d = g.doKeywordArgs(keys, d)
-        ### newline = d.get('newline')
-        align = d.get('align', 0)
-        caller_level = d.get('caller_level', 1)
-        noname = d.get('noname')
-        # Compute the caller name.
-        if noname:
-            name = ''
-        else:
-            try: # get the function name from the call stack.
-                f1 = sys._getframe(caller_level) # The stack frame, one level up.
-                code1 = f1.f_code # The code object
-                name = code1.co_name # The code name
-            except Exception:
-                name = g.shortFileName(__file__)
-            if name == '<module>':
-                name = g.shortFileName(__file__)
-            if name.endswith('.pyc'):
-                name = name[: -1]
-        # Pad the caller name.
-        if align != 0 and len(name) < abs(align):
-            pad = ' ' * (abs(align) - len(name))
-            if align > 0: name = name + pad
-            else: name = pad + name
-        # Munge *args into s.
-        # print ('g.trace:args...')
-        # for z in args: print (g.isString(z),repr(z))
-        result = [name] if name else []
-        for arg in args:
-            if g.isString(arg):
-                pass
-            elif g.isBytes(arg):
-                arg = g.toUnicode(arg)
-            else:
-                arg = repr(arg)
-            if result:
-                result.append(" " + arg)
-            else:
-                result.append(arg)
-        s = d.get('before') + ''.join(result)
-        # pr(s, newline=newline)
-        logging.info(s)
     #@-others
 
+#@+node:ekr.20170501024433.1: ** class CursesBody
 #@+node:ekr.20170419105852.1: ** class CursesFrame
 class CursesFrame (leoFrame.LeoFrame):
 
     def __init__ (self, c, title):
+
+        g.trace('CursesFrame')
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
         self.c = c
         self.d = {}
@@ -187,7 +176,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20170420163932.1: *3* CF.finishCreate
     def finishCreate(self):
-        pass
+        g.trace('CursesFrame')
     #@+node:ekr.20170419111305.1: *3* CF.getShortCut
     def getShortCut(self, *args, **kwargs):
         return None
@@ -204,6 +193,8 @@ class CursesGui(leoGui.LeoGui):
         self.consoleOnly = False # Required attribute.
         self.d = {}
             # Keys are names, values of lists of g.callers values.
+        self.init_logger()
+            # Do this as early as possible.
         self.key_handler = CursesKeyHandler()
             
     def oops(self):
@@ -222,7 +213,21 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419111744.1: *3* CGui.Focus...
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets app global)
+    #@+node:ekr.20170501032447.1: *3* CGUI.init_logger
+    def init_logger(self):
+
+        self.rootLogger = logging.getLogger('')
+        self.rootLogger.setLevel(logging.DEBUG)
+        socketHandler = logging.handlers.SocketHandler(
+            'localhost',
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        )
+        self.rootLogger.addHandler(socketHandler)
+        # Monkey-patch g.trace and g.es.
+        # This allows us to see startup data and tracebacks.
+        g.trace = trace
+        g.es = es
+    #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop (sets gApp)
     def runMainLoop(self):
         '''The curses gui main loop.'''
         global gApp
@@ -230,6 +235,7 @@ class CursesGui(leoGui.LeoGui):
         assert c
         gApp = CursesApp(c)
         gApp.run()
+            # Calls CursesGui.main()
         g.trace('DONE')
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
@@ -361,14 +367,14 @@ class CursesKeyHandler:
         )
     #@+node:ekr.20170430115030.1: *4* CKey.is_key_event
     def is_key_event(self, ch_i):
+        # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170430115131.3: *4* CKey.to_key
     def to_key(self, ch_i):
-        '''
-        Convert ch_i to a shortcut and char.
-        '''
+        '''Convert ch_i to a char and shortcut.'''
+        trace = True
         a = curses.ascii
-        g.trace(ch_i, a.iscntrl(ch_i))
+        if trace: g.trace(ch_i, a.iscntrl(ch_i))
         if a.iscntrl(ch_i):
             val = ch_i - 1 + ord('a')
             char = chr(val)
@@ -376,7 +382,7 @@ class CursesKeyHandler:
         else:
             char = a.ascii(ch_i)
             shortcut = self.char_to_tk_name(char)
-        g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
+        if trace: g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
         return char, shortcut
 
         
@@ -543,6 +549,7 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
+#@+node:ekr.20170501024424.1: ** class CursesTree
 #@+node:edward.20170428174322.1: ** class LeoKeyEvent
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
@@ -558,7 +565,7 @@ class LeoKeyEvent(object):
         trace = True
         assert not g.isStroke(shortcut), g.callers()
         stroke = g.KeyStroke(shortcut) if shortcut else None
-        if trace: g.trace('(LeoKeyEvent) stroke', stroke)
+        if trace: g.trace('LeoKeyEvent: stroke', stroke)
         self.c = c
         self.char = char or ''
         self.event = event

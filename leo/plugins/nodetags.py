@@ -100,7 +100,7 @@ import re
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 #@+others
-#@+node:peckj.20140804103733.9244: ** init
+#@+node:peckj.20140804103733.9244: ** init (nodetags.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     if g.app.gui is None:
@@ -110,7 +110,7 @@ def init ():
         #g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('after-create-leo-frame',onCreate)
         g.plugin_signon(__name__)
-    else:
+    elif g.app.gui.guiName() != 'curses':
         g.es('Plugin %s not loaded.' % __name__, color='red')
     return ok
 #@+node:peckj.20140804103733.9245: ** onCreate

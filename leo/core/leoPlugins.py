@@ -7,6 +7,7 @@ import sys
 # but that mignt not load because imports may fail.
 optional_modules = [
     'leo.plugins.livecode',
+    'leo.plugins.cursesGui2',
 ]
 #@+others
 #@+node:ekr.20100908125007.6041: ** Top-level functions (leoPlugins.py)
@@ -561,8 +562,9 @@ class LeoPluginsController(object):
             if trace: report('loaded: %s' % moduleName)
         elif trace or self.warn_on_failure:
             if trace or tag == 'open0':
-                if moduleName not in optional_modules:
-                    report('can not load enabled plugin: %s' % moduleName)
+                if not g.app.gui.guiName().startswith('curses'):
+                    if moduleName not in optional_modules:
+                        report('can not load enabled plugin: %s' % moduleName)
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
     def plugin_signon(self, module_name, verbose=False):
