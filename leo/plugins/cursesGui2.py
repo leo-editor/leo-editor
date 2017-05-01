@@ -315,28 +315,25 @@ class CursesFrame (leoFrame.LeoFrame):
         '''Ignore do-nothing methods.'''
         g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
     #@-others
-#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui) (REARRANGE)
+#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
 class CursesGui(leoGui.LeoGui):
     '''Leo's curses gui wrapper.'''
 
     def __init__(self):
         '''Ctor for the CursesGui class.'''
-        self.wait_list = []
+        leoGui.LeoGui.__init__(self, 'curses')
+            # Init the base class.
+        self.consoleOnly = False
+            # Required attribute.
         self.log_inited = False
+            # True: don't use the wait_list.
+        self.wait_list = []
+            # Queued log messages.
         self.init_logger()
             # Do this as early as possible.
             # It monkey-patches g.pr and g.trace.
         g.trace('CursesGui')
-        leoGui.LeoGui.__init__(self, 'curses')
-            # Init the base class.
-        self.consoleOnly = False # Required attribute.
-        self.d = {}
-            # Keys are names, values of lists of g.callers values.
         self.key_handler = CursesKeyHandler()
-            
-    def oops(self):
-        '''Ignore do-nothing methods.'''
-        # g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
 
     #@+others
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
@@ -365,6 +362,10 @@ class CursesGui(leoGui.LeoGui):
         g.es = es
         g.pr = pr # Most ouput goes through here, including g.es_exception.
         g.trace = trace
+    #@+node:ekr.20170501165746.1: *3* CGui.oops
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
