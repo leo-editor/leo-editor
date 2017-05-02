@@ -118,6 +118,12 @@ def trace(*args, **keys):
     logging.info('trace: %r' % s)
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
+    '''
+    The anonymous npyscreen application object, created from
+    CGui.runMainLoop.
+    
+    This is *not* g.app. There is no need for a reference to it.
+    '''
     
     def __init__(self):
         g.trace('CursesApp')
@@ -127,27 +133,10 @@ class CursesApp(npyscreen.NPSApp):
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
-        '''Create the main screen.'''
-        # Transfer queued log messages to the log pane.
-        values = [s for s, color in g.app.gui.wait_list]
-        g.app.gui.wait_list = []
-        g.app.gui.log_inited = True
-        F = npyscreen.Form(name = "Welcome to Leo")
-            # This call clears the screen.
-        w = F.add(
-            npyscreen.MultiLineEditableBoxed,
-            max_height=20,
-            name='Log Pane',
-            footer="Press i or o to insert text", 
-            values=values, 
-            slow_scroll=False,
-        )
-        g.app.gui.log.w = w
-        # F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        g.trace('CApp: g.app.windowList', g.app.windowList)
-        g.trace('CApp: before F.edit()')
-        F.edit()
+        '''Create and start Leo's singleton npyscreen window.
+        '''
+        g.app.gui.run()
+
     #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog (do nothing)
     def writeWaitingLog(self, c):
         '''Write all waiting lines to the log.'''
@@ -156,6 +145,9 @@ class CursesApp(npyscreen.NPSApp):
 #@+node:ekr.20170501024433.1: ** class CursesBody
 #@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
+    '''
+    The LeoFrame when --gui=curses is in effect.
+    '''
     
     #@+others
     #@+node:ekr.20170501155347.1: *3* CFrame.birth
@@ -309,7 +301,10 @@ class CursesFrame (leoFrame.LeoFrame):
     #@-others
 #@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
 class CursesGui(leoGui.LeoGui):
-    '''Leo's curses gui wrapper.'''
+    '''
+    Leo's curses gui wrapper.
+    This is g.app.gui, when --gui=curses.
+    '''
 
     def __init__(self):
         '''Ctor for the CursesGui class.'''
@@ -332,8 +327,94 @@ class CursesGui(leoGui.LeoGui):
     #@+others
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
-
+        '''
+        Create a LeoFrame for the current gui.
+        Called from Leo's core (c.initObjects).
+        '''
         return CursesFrame(c, title)
+    #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
+    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
+        """Create and run Leo's About Leo dialog."""
+        g.trace('not ready yet')
+
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        g.trace('not ready yet')
+
+    def runAskOkDialog(self, c, title,
+        message=None,
+        text="Ok",
+    ):
+        """Create and run an askOK dialog ."""
+        g.trace('not ready yet')
+
+    def runAskOkCancelNumberDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+    ):
+        """Create and run askOkCancelNumber dialog ."""
+        g.trace('not ready yet')
+
+    def runAskOkCancelStringDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+        default="",
+        wide=False,
+    ):
+        """Create and run askOkCancelString dialog ."""
+        g.trace('not ready yet')
+
+    def runAskYesNoDialog(self, c, title,
+        message=None,
+        yes_all=False,
+        no_all=False,
+    ):
+        """Create and run an askYesNo dialog."""
+        g.trace('not ready yet')
+
+    def runAskYesNoCancelDialog(self, c, title,
+        message=None,
+        yesMessage="Yes",
+        noMessage="No",
+        yesToAllMessage=None,
+        defaultButton="Yes",
+        cancelMessage=None,
+    ):
+        """Create and run an askYesNoCancel dialog ."""
+        g.trace('not ready yet')
+
+    def runPropertiesDialog(self,
+        title='Properties',
+        data=None,
+        callback=None,
+        buttons=None,
+    ):
+        """Dispay a modal TkPropertiesDialog"""
+        g.trace('not ready yet')
+    #@+node:ekr.20170502020354.1: *3* CGui.run
+    def run(self):
+        '''Create and run Leo's singleton npyscreen window.'''
+        assert self == g.app.gui
+        # Transfer queued log messages to the log pane.
+        values = [s for s, color in self.wait_list]
+        self.wait_list = []
+        self.log_inited = True
+        F = npyscreen.Form(name = "Welcome to Leo")
+            # This call clears the screen.
+        w = F.add(
+            npyscreen.MultiLineEditableBoxed,
+            max_height=20,
+            name='Log Pane',
+            footer="Press i or o to insert text", 
+            values=values, 
+            slow_scroll=False,
+        )
+        self.log.w = w
+        # F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        F.add_widget(npyscreen.TitleText, name="Minibuffer")
+        # g.trace('CGui: g.app.windowList', g.app.windowList)
+        # g.trace('CGui: before F.edit()')
+        F.edit()
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
@@ -359,13 +440,13 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170501165746.1: *3* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
-        g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
+        g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
         # Do NOT change g.app!
         CursesApp().run()
-            # run calls CursesApp.main()
+            # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
