@@ -2870,7 +2870,7 @@ class LoadManager(object):
         get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
         or open an empty outline.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = (False or g.trace_startup or g.app.debug) and not g.unitTesting
         if trace: g.es_debug(fn)
         lm = self
         # Step 0: Return if the file is already open.

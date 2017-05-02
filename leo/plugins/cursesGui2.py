@@ -119,10 +119,8 @@ def trace(*args, **keys):
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
-    The anonymous npyscreen application object, created from
-    CGui.runMainLoop.
-    
-    This is *not* g.app. There is no need for a reference to it.
+    The *anonymous* npyscreen application object, created from
+    CGui.runMainLoop. This is *not* g.app.
     '''
     
     def __init__(self):
@@ -133,8 +131,7 @@ class CursesApp(npyscreen.NPSApp):
     #@+others
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
-        '''Create and start Leo's singleton npyscreen window.
-        '''
+        '''Create and start Leo's singleton npyscreen window.'''
         g.app.gui.run()
 
     #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog (do nothing)
@@ -208,7 +205,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # self.scrollWay = None
     #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (To do)
     def finishCreate(self):
-        g.trace('CursesFrame')
+        g.trace('CursesFrame', self.c.shortFileName())
         g.app.windowList.append(self)
         ### Not yet.
             # c = self.c
@@ -333,9 +330,13 @@ class CursesGui(leoGui.LeoGui):
         '''
         return CursesFrame(c, title)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
+    def dialog_message(self, message):
+        for s in g.splitLines(message):
+            g.pr(s.rstrip())
+
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run Leo's About Leo dialog."""
-        g.trace('not ready yet')
+        g.trace(version)
 
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
@@ -346,14 +347,16 @@ class CursesGui(leoGui.LeoGui):
         text="Ok",
     ):
         """Create and run an askOK dialog ."""
-        g.trace('not ready yet')
+        g.trace()
+        self.dialog_message(message)
 
     def runAskOkCancelNumberDialog(self, c, title, message,
         cancelButtonText=None,
         okButtonText=None,
     ):
         """Create and run askOkCancelNumber dialog ."""
-        g.trace('not ready yet')
+        g.trace()
+        self.dialog_message(message)
 
     def runAskOkCancelStringDialog(self, c, title, message,
         cancelButtonText=None,
@@ -362,7 +365,8 @@ class CursesGui(leoGui.LeoGui):
         wide=False,
     ):
         """Create and run askOkCancelString dialog ."""
-        g.trace('not ready yet')
+        g.trace()
+        self.dialog_message(message)
 
     def runAskYesNoDialog(self, c, title,
         message=None,
@@ -370,7 +374,8 @@ class CursesGui(leoGui.LeoGui):
         no_all=False,
     ):
         """Create and run an askYesNo dialog."""
-        g.trace('not ready yet')
+        g.trace()
+        self.dialog_message(message)
 
     def runAskYesNoCancelDialog(self, c, title,
         message=None,
@@ -381,7 +386,8 @@ class CursesGui(leoGui.LeoGui):
         cancelMessage=None,
     ):
         """Create and run an askYesNoCancel dialog ."""
-        g.trace('not ready yet')
+        g.trace()
+        self.dialog_message(message)
 
     def runPropertiesDialog(self,
         title='Properties',
@@ -390,11 +396,19 @@ class CursesGui(leoGui.LeoGui):
         buttons=None,
     ):
         """Dispay a modal TkPropertiesDialog"""
-        g.trace('not ready yet')
-    #@+node:ekr.20170502020354.1: *3* CGui.run
+        g.trace(title)
+    #@+node:ekr.20170502020354.1: *3* CGui.run (creates main npyscreen window)
     def run(self):
-        '''Create and run Leo's singleton npyscreen window.'''
+        '''
+        Create and run Leo's singleton npyscreen window.
+        
+        g.app.windowList contains the list of all open LeoFrame's.
+        '''
+        trace = True and not g.unitTesting
         assert self == g.app.gui
+        if trace:
+            g.trace('commanders in g.app.windowList')
+            g.printList([z.c.shortFileName() for z in g.app.windowList])
         # Transfer queued log messages to the log pane.
         values = [s for s, color in self.wait_list]
         self.wait_list = []

@@ -640,6 +640,7 @@ class FileCommands(object):
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
         '''
+        trace = False and not g.unitTesting
         fc, c = self, self.c
         t1 = time.time()
         c.setChanged(False) # May be set when reading @file nodes.
@@ -665,7 +666,7 @@ class FileCommands(object):
                     c.redraw()
                     recoveryNode = fc.readExternalFiles(fileName)
         finally:
-            if g.app.debug: g.trace('=====',
+            if trace: g.trace(
                 recoveryNode and recoveryNode.h,
                 c.p and c.p.h)
             p = recoveryNode or c.p or c.lastTopLevel()

@@ -300,7 +300,7 @@ class ChapterController(object):
 
         Note: this code calls c.redraw() if the chapter changes.
         '''
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = False and not g.unitTesting
         c, cc = self.c, self
         # New in Leo 4.11
         if cc.selectChapterLockout:
