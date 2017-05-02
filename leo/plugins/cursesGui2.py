@@ -241,6 +241,9 @@ class CursesFrame (leoFrame.LeoFrame):
         pass
         # if self.top and self.top.isMinimized(): # Bug fix: 400739.
             # self.lift()
+            
+    def destroySelf(self):
+        pass
 
     def getFocus(self):
         pass ### To do
@@ -427,7 +430,8 @@ class CursesGui(leoGui.LeoGui):
         text="Ok",
     ):
         """Create and run an askOK dialog ."""
-        g.trace()
+        # Potentially dangerous dialog.
+        g.trace(g.callers())
         self.dialog_message(message)
 
     def runAskOkCancelNumberDialog(self, c, title, message,
@@ -488,9 +492,6 @@ class CursesGui(leoGui.LeoGui):
     def do_key(self, ch_i):
         
         self.key_handler.do_key(ch_i)
-    #@+node:ekr.20170419111744.1: *3* CGui.Focus...
-    def get_focus(self, *args, **keys):
-        return None
     #@+node:ekr.20170501032447.1: *3* CGui.init_logger
     def init_logger(self):
 
@@ -506,6 +507,12 @@ class CursesGui(leoGui.LeoGui):
         g.es = es
         g.pr = pr # Most ouput goes through here, including g.es_exception.
         g.trace = trace
+    #@+node:ekr.20170502101347.1: *3* CGui.must be defined in subclasses
+    def destroySelf(self):
+        pass
+        
+    def get_focus(self, *args, **keys):
+        return None
     #@+node:ekr.20170501165746.1: *3* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
@@ -531,7 +538,8 @@ class CursesKeyHandler:
         #  This is a complete rewrite of the LeoQtEventFilter code.
         if self.is_key_event(ch_i):
             c = g.app.log and g.app.log.c
-            assert c, g.callers()
+            if not c:
+                return True # We are shutting down.
             w = None ### c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
             event = self.create_key_event(c, w, char, shortcut)
@@ -679,7 +687,7 @@ class CursesLog:
     #@+node:ekr.20170419143731.4: *3* CLog.__init__
     def __init__(self, c):
         '''Ctor for CLog class.'''
-        g.trace('CursesLog')
+        # g.trace('CursesLog')
         leoFrame.LeoLog.__init__(self,
             frame = g.NullObject(),
             parentFrame = None,
