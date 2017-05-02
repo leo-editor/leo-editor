@@ -161,11 +161,17 @@ class CursesFrame (leoFrame.LeoFrame):
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.0
         # Widgets
-        self.body = None
+        assert hasattr(self, 'body')
         self.menu = CursesMenu(c)
         self.miniBufferWidget = None
         self.top = None
+        assert self.tree is None, self.tree
         self.tree = g.NullObject()
+            ### To do: remove.
+        # npyscreen widgets.
+        self.body_widget = None
+        self.log_widget = None
+        self.tree_widget = None
         
         # ===============
         # Official ivars...
@@ -406,6 +412,10 @@ class CursesGui(leoGui.LeoGui):
         '''
         trace = True and not g.unitTesting
         assert self == g.app.gui
+        assert g.app.windowList
+        frame = g.app.windowList[0]
+        c = frame.c
+        assert isinstance(c.frame, CursesFrame), repr(c.frame)
         if trace:
             g.trace('commanders in g.app.windowList')
             g.printList([z.c.shortFileName() for z in g.app.windowList])
@@ -415,19 +425,34 @@ class CursesGui(leoGui.LeoGui):
         self.log_inited = True
         F = npyscreen.Form(name = "Welcome to Leo")
             # This call clears the screen.
-        w = F.add(
-            npyscreen.MultiLineEditableBoxed,
-            max_height=20,
-            name='Log Pane',
-            footer="Press i or o to insert text", 
-            values=values, 
-            slow_scroll=False,
-        )
-        self.log.w = w
-        # F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        if 1: # Add the log widget.
+            w = F.add(
+                npyscreen.MultiLineEditableBoxed,
+                max_height=10,
+                name='Log Pane',
+                footer="Press i or o to insert text", 
+                values=values, 
+                slow_scroll=False,
+            )
+            self.log.w = w
+            assert hasattr(c.frame, 'log_widget')
+            c.frame.log_widget = w
+        if 0: # Not ready yet.
+            F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+            assert hasattr(c.frame, 'tree_widget')
+            c.frame.body_widget = w
+        if 1: # Create the body widget.
+            w = F.add(
+                npyscreen.MultiLineEditableBoxed,
+                max_height=10,
+                name='Body Pane',
+                footer="Press i or o to insert text", 
+                values=g.splitLines(c.p.b), 
+                slow_scroll=False,
+            )
+            assert hasattr(c.frame, 'body_widget')
+            c.frame.body_widget = w
         F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        # g.trace('CGui: g.app.windowList', g.app.windowList)
-        # g.trace('CGui: before F.edit()')
         F.edit()
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
