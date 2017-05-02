@@ -23,7 +23,6 @@ npyscreen = g.importExtension(
     verbose=False,
 )
 #@-<< cursesGui imports >>
-gLog = None # Set in CursesFrame.ctor
 # pylint: disable=arguments-differ,logging-not-lazy
 #@+others
 #@+node:ekr.20170501043944.1: **  top-level
@@ -46,7 +45,6 @@ def init():
 #@+node:ekr.20170430112645.1: *4* es
 def es(*args, **keys):
     '''Monkey-patch for g.es.'''
-    global gLog
     d = {
         'color': None,
         'commas': False,
@@ -59,11 +57,10 @@ def es(*args, **keys):
     s = g.translateArgs(args, d)
     if isinstance(g.app.gui, CursesGui):
         if g.app.gui.log_inited:
-            gLog.put(s, color=color)
+            g.app.gui.log.put(s, color=color)
         else:
             g.app.gui.wait_list.append((s, color),)
-    # else:
-        # logging.info(' KILL: %r' % s)
+    # else: logging.info(' KILL: %r' % s)
 #@+node:ekr.20170501043411.1: *4* pr
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
@@ -131,13 +128,12 @@ class CursesApp(npyscreen.NPSApp):
     #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
         '''Create the main screen.'''
-        global gLog
         # Transfer queued log messages to the log pane.
         values = [s for s, color in g.app.gui.wait_list]
         g.app.gui.wait_list = []
         g.app.gui.log_inited = True
-        # The next call clears the screen.
         F = npyscreen.Form(name = "Welcome to Leo")
+            # This call clears the screen.
         w = F.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=20,
@@ -146,7 +142,7 @@ class CursesApp(npyscreen.NPSApp):
             values=values, 
             slow_scroll=False,
         )
-        gLog.w = w
+        g.app.gui.log.w = w
         # F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
         F.add_widget(npyscreen.TitleText, name="Minibuffer")
         g.trace('CApp: g.app.windowList', g.app.windowList)
@@ -165,14 +161,13 @@ class CursesFrame (leoFrame.LeoFrame):
     #@+node:ekr.20170501155347.1: *3* CFrame.birth
     def __init__ (self, c, title):
         
-        global gLog
-        g.trace('CursesFrame', id(self)) ### c.shortFileName())
+        g.trace('CursesFrame', c.shortFileName())
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
             # Init the base class.
         assert self.c == c
-        # self.d = {}
-        self.log = gLog = CursesLog(c)
+        self.log = CursesLog(c)
+        g.app.gui.log = self.log
         self.title = title
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.0
@@ -222,18 +217,17 @@ class CursesFrame (leoFrame.LeoFrame):
     #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (To do)
     def finishCreate(self):
         g.trace('CursesFrame')
-        ### From qtFrame...
-        c, f = self.c, self
-        assert c
-        g.app.windowList.append(f)
-        if 0: ### Not yet.
-            f.top = g.app.gui.frameFactory.createFrame(f)
-            f.createIconBar() # A base class method.
-            ### f.createSplitterComponents()
-            f.createStatusLine() # A base class method.
-            f.createFirstTreeNode() # Call the base-class method.
-            ### f.menu = LeoQtMenu(c, f, label='top-level-menu')
-            ### f.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+        g.app.windowList.append(self)
+        ### Not yet.
+            # c = self.c
+            # assert c
+            # self.top = g.app.gui.frameFactory.createFrame(self)
+            # self.createIconBar() # A base class method.
+            ### self.createSplitterComponents()
+            # self.createStatusLine() # A base class method.
+            # self.createFirstTreeNode() # Call the base-class method.
+            ### self.menu = LeoQtMenu(c, self, label='top-level-menu')
+            ### self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
             ### c.bodyWantsFocus()
     #@+node:ekr.20170419111305.1: *3* CFrame.getShortCut
     def getShortCut(self, *args, **kwargs):
@@ -323,6 +317,8 @@ class CursesGui(leoGui.LeoGui):
             # Init the base class.
         self.consoleOnly = False
             # Required attribute.
+        self.log = None
+            # The present log. Used by g.es
         self.log_inited = False
             # True: don't use the wait_list.
         self.wait_list = []
@@ -537,6 +533,7 @@ class CursesLog:
             # Required by Leo's core.
         self.w = None
             # The npyscreen log widget. Queue all output until set.
+            # Set in CApp.main.
         
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
