@@ -418,9 +418,6 @@ class CursesGui(leoGui.LeoGui):
         return CursesFrame(c, title)
     #@+node:ekr.20170502103338.1: *3* CGui.destroySelf
     def destroySelf(self):
-        g.trace('===== kill curses app')
-        # self.top_form.editing = False
-        # self.top_form.how_exited=True
         sys.exit(0)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
     def dialog_message(self, message):
