@@ -1,14 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.157: * @file ../external/npyscreen/wgmultilineeditable.py
-#@+others
-#@+node:ekr.20170428084208.158: ** Declarations
 import curses
 from . import wgwidget
 from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
 
-
+#@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable
 class MultiLineEditable(wgmultiline.MultiLine):
     _contained_widgets      = textbox.Textfield 

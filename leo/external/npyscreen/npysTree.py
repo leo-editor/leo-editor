@@ -1,10 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.399: * @file ../external/npyscreen/npysTree.py
-#@+others
-#@+node:ekr.20170428084207.400: ** Declarations
 import weakref
 import collections
-
+#@+others
 #@+node:ekr.20170428084207.401: ** class TreeData
 class TreeData(object):
     # This is a new version of NPSTreeData that follows PEP8.
@@ -26,39 +24,22 @@ class TreeData(object):
         self.sort_function_wrapper = True
 
 
-    #@+node:ekr.20170428084207.403: *3* get_content
-    def get_content(self):
-        return self.content
+    #@+node:ekr.20170428084207.415: *3* _get_children_list
+    def _get_children_list(self):
+        return self._children
 
-    #@+node:ekr.20170428084207.404: *3* get_content_for_display
-    def get_content_for_display(self):
-        return str(self.content)
+    #@+node:ekr.20170428084207.418: *3* create_wrapped_sort_function
+    def create_wrapped_sort_function(self, this_function):
+        def new_function(the_item):
+            if the_item:
+                the_real_item = the_item.get_content()
+                return this_function(the_real_item)
+            else:
+                return the_item
+        return new_function
 
-    #@+node:ekr.20170428084207.405: *3* set_content
-    def set_content(self, content):
-        self.content = content
-
-    #@+node:ekr.20170428084207.406: *3* is_selected
-    def is_selected(self):
-        return self.selected
-
-    #@+node:ekr.20170428084207.407: *3* is_highlighted
-    def is_highlighted(self):
-        return self.highlight
-
-    #@+node:ekr.20170428084207.408: *3* set_parent
-    def set_parent(self, parent):
-        if parent == None:
-            self._parent = None
-        else:
-            self._parent = weakref.proxy(parent)
-
-    #@+node:ekr.20170428084207.409: *3* get_parent
-    def get_parent(self):
-        return self._parent
-
-
-    #@+node:ekr.20170428084207.410: *3* find_depth
+    #@+node:ekr.20170502144851.1: *3* getters
+    #@+node:ekr.20170428084207.410: *4* find_depth
     def find_depth(self, d=0):
         parent = self.get_parent()
         while parent:
@@ -71,7 +52,53 @@ class TreeData(object):
         #else:
         #    return(self._parent.findDepth(d+1))
 
-    #@+node:ekr.20170428084207.411: *3* is_last_sibling
+    #@+node:ekr.20170428084207.413: *4* get_children
+    def get_children(self):
+        for c in self._children:
+            try:
+                yield weakref.proxy(c)
+            except Exception:
+                yield c
+
+    #@+node:ekr.20170428084207.414: *4* get_children_objects
+    def get_children_objects(self):
+        return self._children[:]
+
+    #@+node:ekr.20170428084207.403: *4* get_content
+    def get_content(self):
+        return self.content
+
+    #@+node:ekr.20170428084207.404: *4* get_content_for_display
+    def get_content_for_display(self):
+        return str(self.content)
+
+    #@+node:ekr.20170428084207.409: *4* get_parent
+    def get_parent(self):
+        return self._parent
+
+
+    #@+node:ekr.20170428084207.421: *4* get_tree_as_list
+    def get_tree_as_list(self, only_expanded=True, sort=None, key=None):
+        _a = []
+        for node in self.walk_tree(only_expanded=only_expanded, ignore_root=self.ignore_root, sort=sort):
+            try:
+                _a.append(weakref.proxy(node))
+            except Exception:
+                _a.append(node)
+        return _a
+    #@+node:ekr.20170428084207.412: *4* has_children
+    def has_children(self):
+        if len(self._children) > 0:
+            return True
+        else:
+            return False
+
+    #@+node:ekr.20170502144912.1: *3* predicates
+    #@+node:ekr.20170428084207.407: *4* is_highlighted
+    def is_highlighted(self):
+        return self.highlight
+
+    #@+node:ekr.20170428084207.411: *4* is_last_sibling
     def is_last_sibling(self):
         if self.get_parent():
             if list(self.get_parent().get_children())[-1] == self:
@@ -81,30 +108,12 @@ class TreeData(object):
         else:
             return None
 
-    #@+node:ekr.20170428084207.412: *3* has_children
-    def has_children(self):
-        if len(self._children) > 0:
-            return True
-        else:
-            return False
+    #@+node:ekr.20170428084207.406: *4* is_selected
+    def is_selected(self):
+        return self.selected
 
-    #@+node:ekr.20170428084207.413: *3* get_children
-    def get_children(self):
-        for c in self._children:
-            try:
-                yield weakref.proxy(c)
-            except Exception:
-                yield c
-
-    #@+node:ekr.20170428084207.414: *3* get_children_objects
-    def get_children_objects(self):
-        return self._children[:]
-
-    #@+node:ekr.20170428084207.415: *3* _get_children_list
-    def _get_children_list(self):
-        return self._children
-
-    #@+node:ekr.20170428084207.416: *3* new_child
+    #@+node:ekr.20170502144922.1: *3* setters
+    #@+node:ekr.20170428084207.416: *4* new_child
     def new_child(self, *args, **keywords):
         if self.CHILDCLASS:
             cld = self.CHILDCLASS
@@ -114,7 +123,7 @@ class TreeData(object):
         self._children.append(c)
         return weakref.proxy(c)
 
-    #@+node:ekr.20170428084207.417: *3* remove_child
+    #@+node:ekr.20170428084207.417: *4* remove_child
     def remove_child(self, child):
         new_children = []
         for ch in self._children:
@@ -126,15 +135,16 @@ class TreeData(object):
         self._children = new_children
 
 
-    #@+node:ekr.20170428084207.418: *3* create_wrapped_sort_function
-    def create_wrapped_sort_function(self, this_function):
-        def new_function(the_item):
-            if the_item:
-                the_real_item = the_item.get_content()
-                return this_function(the_real_item)
-            else:
-                return the_item
-        return new_function
+    #@+node:ekr.20170428084207.405: *4* set_content
+    def set_content(self, content):
+        self.content = content
+
+    #@+node:ekr.20170428084207.408: *4* set_parent
+    def set_parent(self, parent):
+        if parent == None:
+            self._parent = None
+        else:
+            self._parent = weakref.proxy(parent)
 
     #@+node:ekr.20170428084207.419: *3* walk_parents
     def walk_parents(self):
@@ -142,7 +152,6 @@ class TreeData(object):
         while p:
             yield p
             p = p.get_parent()
-
     #@+node:ekr.20170428084207.420: *3* walk_tree
     def walk_tree(self, only_expanded=True, ignore_root=True, sort=None, sort_function=None):
         #Iterate over Tree
@@ -211,16 +220,6 @@ class TreeData(object):
                         nodes_to_yield.extendleft(yield_these)
                         del yield_these
                 yield child
-
-    #@+node:ekr.20170428084207.421: *3* get_tree_as_list
-    def get_tree_as_list(self, only_expanded=True, sort=None, key=None):
-        _a = []
-        for node in self.walk_tree(only_expanded=only_expanded, ignore_root=self.ignore_root, sort=sort):
-            try:
-                _a.append(weakref.proxy(node))
-            except Exception:
-                _a.append(node)
-        return _a
     #@-others
 #@-others
 #@@language python

@@ -180,6 +180,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # npyscreen widgets.
         self.body_widget = None
         self.log_widget = None
+        self.minibuffer_widget = None
         self.tree_widget = None
         
         # ===============
@@ -218,7 +219,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # self.wantedWidget = None
         # self.wantedCallbackScheduled = False
         # self.scrollWay = None
-    #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (To do)
+    #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (Finish)
     def finishCreate(self):
         # g.trace('CursesFrame', self.c.shortFileName())
         g.app.windowList.append(self)
@@ -329,6 +330,7 @@ class CursesGui(leoGui.LeoGui):
         self.createCursesTree(c, form)
         self.createCursesBody(c, form)
         self.createCursesMinibuffer(c, form)
+        g.es(form)
         return form
     #@+node:ekr.20170502084106.1: *4* createCursesBody
     def createCursesBody(self, c, form):
@@ -338,7 +340,7 @@ class CursesGui(leoGui.LeoGui):
         '''
         w = form.add(
             npyscreen.MultiLineEditableBoxed,
-            max_height=10,
+            max_height=8, # Subtract 4 lines
             name='Body Pane',
             footer="Press i or o to insert text", 
             values=g.splitLines(c.p.b), 
@@ -355,7 +357,7 @@ class CursesGui(leoGui.LeoGui):
         '''
         w = form.add(
             npyscreen.MultiLineEditableBoxed,
-            max_height=10,
+            max_height=8, # Subtract 4 lines
             name='Log Pane',
             footer="Press i or o to insert text", 
             values=[s for s, color in self.wait_list], 
@@ -371,14 +373,52 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502084249.1: *4* createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
-        form.add_widget(npyscreen.TitleText, name="Minibuffer")
+        if 1:
+            w = form.add(
+                npyscreen.MultiLineEditableBoxed,
+                max_height=4, # 4 is the minimum!
+                name='Minibuffer',
+                footer="Press i or o to insert text", 
+                values=[], 
+                slow_scroll=False,
+            )
+        elif 1:
+            w = form.add(npyscreen.TitleText, name="Minibuffer")
+            # w = form.add(npyscreen.TitleFixedText, name="Minibuffer")
+        else:
+
+            class TitleBox(npyscreen.BoxTitle, npyscreen.TitleText):
+                pass
+                
+            w = form.add(TitleBox, name="Minibuffer")
+            
+        assert hasattr(c.frame, 'minibuffer_widget')
+        c.frame.minibuffer_widget = w
     #@+node:ekr.20170502083754.1: *4* createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
-        if 0: # Not ready yet.
-            w = form.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-            assert hasattr(c.frame, 'tree_widget')
-            c.frame.body_widget = w
+        # w = form.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+        values = npyscreen.TreeData(
+            ignore_root=False,
+            content = ['abc', 'xyz'],
+        )
+        assert values
+            # content=None, parent=None, selected=False, selectable=True,
+            # highlight=False, expanded=True, sort_function=None)
+            
+        class TitleTree(npyscreen.BoxTitle, npyscreen.MLTree):
+            pass
+
+        w = form.add(
+            TitleTree, # npyscreen.MLTree,
+            max_height=8, # Subtract 4 lines
+            name='Tree Pane',
+            # footer="Press i or o to insert text", 
+            # values=values, 
+            slow_scroll=False,
+        )
+        assert hasattr(c.frame, 'tree_widget')
+        c.frame.body_widget = w
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -388,7 +428,10 @@ class CursesGui(leoGui.LeoGui):
         return CursesFrame(c, title)
     #@+node:ekr.20170502103338.1: *3* CGui.destroySelf
     def destroySelf(self):
-        '''Terminate the curses gui application.'''
+        '''
+        Terminate the curses gui application.
+        Leo's core calls this only if the user agrees to terminate the app.
+        '''
         sys.exit(0)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
     def dialog_message(self, message):
@@ -524,11 +567,11 @@ class CursesKeyHandler:
         Return True if the event was completely handled.
         '''
         #  This is a complete rewrite of the LeoQtEventFilter code.
-        if self.is_key_event(ch_i):
-            c = g.app.log and g.app.log.c
-            if not c:
-                return True # We are shutting down.
-            w = None ### c.frame.body.wrapper
+        c = g.app.log and g.app.log.c
+        if not c:
+            return True # We are shutting down.
+        elif self.is_key_event(ch_i):
+            w = c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
             event = self.create_key_event(c, w, char, shortcut)
             try:

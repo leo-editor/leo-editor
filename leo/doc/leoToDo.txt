@@ -7,6 +7,25 @@
 .. @+node:ekr.20170427115510.1: *3* To do first
 @language rest
 @wrap
+
+===== Curses gui to do:
+
+First
+- Working tree.
+
+Unit tests:
+- Unit test for do_key. (Capture all keys)
+- Bind Ctrl-1 to run-all-unit tests.
+- Send tests to logger when using curses gui.
+- Run all unit tests
+
+Widgets:
+- Working minibuffer.
+- Subclass npyscreen widgets
+- Remove all NullObjects.
+- Write log messages into the log widget.
+* Functional dialogs.
+- List of kludges.
 .. @+node:ekr.20170324083526.1: *4* Improve VR plugin
 @language rest
 @wrap
