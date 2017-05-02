@@ -677,7 +677,7 @@ class CursesKeyHandler:
         if trace: g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
         return char, shortcut
     #@-others
-#@+node:ekr.20170419143731.1: ** class CursesLog
+#@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
 class CursesLog:
     '''A class that represents curses log pane.'''
     #@+others
@@ -685,6 +685,11 @@ class CursesLog:
     def __init__(self, c):
         '''Ctor for CLog class.'''
         g.trace('CursesLog')
+        leoFrame.LeoLog.__init__(self,
+            frame = g.NullObject(),
+            parentFrame = None,
+        )
+            # Init the base class.
         self.c = c
         self.enabled = True
             # Required by Leo's core.
