@@ -383,24 +383,20 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502083754.1: *4* createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
-        # w = form.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-        values = npyscreen.TreeData(
-            ignore_root=False,
-            content = ['abc', 'xyz'],
-        )
-        assert values
-            # content=None, parent=None, selected=False, selectable=True,
-            # highlight=False, expanded=True, sort_function=None)
-            
-        class TitleTree(npyscreen.BoxTitle, npyscreen.MLTree):
-            pass
 
+        class BoxTitleTree(npyscreen.BoxTitle):
+            _contained_widget = npyscreen.MLTree
+            
+        data = npyscreen.TreeData(ignore_root=True)
+        for i in range(4):
+            data.new_child(content='child %s' % (i))
+        # g.printList(data.get_children_objects())
         w = form.add(
-            TitleTree, # npyscreen.MLTree,
+            BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
-            # footer="Press i or o to insert text", 
-            # values=values, 
+            footer="Press i or o to insert text",
+            values=data, 
             slow_scroll=False,
         )
         assert hasattr(c.frame, 'tree_widget')
