@@ -124,22 +124,18 @@ class CursesApp(npyscreen.NPSApp):
     CGui.runMainLoop. This is *not* g.app.
     '''
     
-    def __init__(self):
-        g.trace('CursesApp')
-        npyscreen.NPSApp.__init__(self)
-            # Init the base class.
+    if 0: # Not needed
+        def __init__(self):
+            g.trace('CursesApp')
+            npyscreen.NPSApp.__init__(self)
+                # Init the base class.
 
-    #@+others
-    #@+node:ekr.20170420090426.1: *3* CApp.main
     def main(self):
-        '''Create and start Leo's singleton npyscreen window.'''
+        '''
+        Called automatically from the ctor.
+        Create and start Leo's singleton npyscreen window.
+        '''
         g.app.gui.run()
-
-    #@+node:ekr.20170501120748.1: *3* CApp.writeWaitingLog (do nothing)
-    def writeWaitingLog(self, c):
-        '''Write all waiting lines to the log.'''
-        # Done in CApp.main.
-    #@-others
 #@+node:ekr.20170501024433.1: ** class CursesBody (LeoBody)
 class CursesBody (leoFrame.LeoBody):
     '''A class that represents curses body pane.'''
@@ -154,15 +150,13 @@ class CursesBody (leoFrame.LeoBody):
         self.c = c
 #@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
-    '''
-    The LeoFrame when --gui=curses is in effect.
-    '''
+    '''The LeoFrame when --gui=curses is in effect.'''
     
     #@+others
     #@+node:ekr.20170501155347.1: *3* CFrame.birth
     def __init__ (self, c, title):
         
-        g.trace('CursesFrame', c.shortFileName())
+        # g.trace('CursesFrame', c.shortFileName())
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
             # Init the base class.
@@ -176,7 +170,7 @@ class CursesFrame (leoFrame.LeoFrame):
         self.body = CursesBody(c)
         self.menu = CursesMenu(c)
         self.miniBufferWidget = None
-        self.top = None
+        self.top = CursesTopFrame(c)
         assert self.tree is None, self.tree
         self.tree = CursesTree(c)
         # npyscreen widgets.
@@ -222,7 +216,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # self.scrollWay = None
     #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (To do)
     def finishCreate(self):
-        g.trace('CursesFrame', self.c.shortFileName())
+        # g.trace('CursesFrame', self.c.shortFileName())
         g.app.windowList.append(self)
         ### Not yet.
             # c = self.c
@@ -277,7 +271,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # self.top.raise_()
 
     def getTitle(self):
-        return self.c.title
+        return self.title
         # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         # w = self.top.leo_master if g.app.qt_use_tabs else self.top
@@ -292,7 +286,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # self.divideLeoSplitter2(secondary_ratio)
 
     def setTitle(self, title):
-        pass
+        self.title = title
         # if self.top:
             # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
             # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
@@ -335,14 +329,14 @@ class CursesGui(leoGui.LeoGui):
         self.init_logger()
             # Do this as early as possible.
             # It monkey-patches g.pr and g.trace.
-        g.trace('CursesGui')
+        # g.trace('CursesGui')
         self.key_handler = CursesKeyHandler()
 
     #@+others
     #@+node:ekr.20170502083158.1: *3* CGui.createCursesTop & helpers
     def createCursesTop(self):
         '''Create the top-level curses Form.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # Assert the key relationships required by the startup code.
         assert self == g.app.gui
         c = g.app.log.c
@@ -792,21 +786,56 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
+#@+node:ekr.20170502093200.1: ** class CursesTopFrame
+class CursesTopFrame:
+    '''A representation of c.frame.top.'''
+    
+    def __init__(self, c):
+        self.c = c
+        
+    def select(self, *args, **kwargs):
+        pass # g.trace(args, kwargs)
+        
+    def findChild(self, *args, **kwargs):
+        return g.NullObject()
+
+    def finishCreateLogPane(self, *args, **kwargs):
+        pass # g.trace(args, kwargs)
 #@+node:ekr.20170501024424.1: ** class CursesTree (LeoTree)
 class CursesTree (leoFrame.LeoTree):
     '''A class that represents curses log pane.'''
     
+    class DummyFrame:
+        def __init__(self, c):
+            self.c = c
+    
     def __init__(self, c):
-        
-        class DummyFrame:
-            def __init__(self, c):
-                self.c = c
-        
-        dummy_frame = DummyFrame(c)
 
+        dummy_frame = self.DummyFrame(c)
         leoFrame.LeoTree.__init__(self, dummy_frame)
             # Init the base class.
         assert self.c
+        
+    #@+others
+    #@+node:ekr.20170502094839.1: *3* CTree.must be defined in sublasses
+    def drawIcon(self, p):
+        pass
+        
+    def editLabel(self, p, selectAll=False, selection=None):
+        pass
+
+    def edit_widget(self, p):
+        return None
+
+    def redraw(self, p=None, scroll=True, forceDraw=False):
+        pass
+
+    def redraw_now(self, p=None, scroll=True, forceDraw=False):
+        pass
+
+    def scrollTo(self, p):
+        pass
+    #@-others
 #@+node:edward.20170428174322.1: ** class LeoKeyEvent
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
