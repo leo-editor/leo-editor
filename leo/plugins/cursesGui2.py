@@ -67,7 +67,8 @@ def pr(*args, **keys):
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
-    logging.info('   pr: %r' % s)
+    for line in g.splitLines(s):
+        logging.info('   pr: %s' % line.rstrip())
 #@+node:ekr.20170429165242.1: *4* trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
@@ -115,7 +116,7 @@ def trace(*args, **keys):
             result.append(arg)
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
-    logging.info('trace: %r' % s)
+    logging.info('trace: %s' % s.rstrip())
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
