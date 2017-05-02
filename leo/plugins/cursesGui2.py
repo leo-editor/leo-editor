@@ -373,25 +373,11 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502084249.1: *4* createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
-        if 1:
-            w = form.add(
-                npyscreen.MultiLineEditableBoxed,
-                max_height=4, # 4 is the minimum!
-                name='Minibuffer',
-                footer="Press i or o to insert text", 
-                values=[], 
-                slow_scroll=False,
-            )
-        elif 1:
-            w = form.add(npyscreen.TitleText, name="Minibuffer")
-            # w = form.add(npyscreen.TitleFixedText, name="Minibuffer")
-        else:
-
-            class TitleBox(npyscreen.BoxTitle, npyscreen.TitleText):
-                pass
+        
+        class BoxTitleText(npyscreen.BoxTitle):
+            _contained_widget = npyscreen.Textfield
                 
-            w = form.add(TitleBox, name="Minibuffer")
-            
+        w = form.add(BoxTitleText, name='Mini-buffer', max_height=3)
         assert hasattr(c.frame, 'minibuffer_widget')
         c.frame.minibuffer_widget = w
     #@+node:ekr.20170502083754.1: *4* createCursesTree

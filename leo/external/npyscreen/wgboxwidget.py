@@ -1,11 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.503: * @file ../external/npyscreen/wgboxwidget.py
-#@+others
-#@+node:ekr.20170428084207.504: ** Declarations
 import curses
 import weakref
 from .wgwidget import Widget
 from .wgmultiline import MultiLine
+#@+others
 #@+node:ekr.20170428084207.505: ** class BoxBasic
 class BoxBasic(Widget):
     #@+others
