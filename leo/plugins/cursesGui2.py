@@ -233,86 +233,52 @@ class CursesFrame (leoFrame.LeoFrame):
             ### self.menu = LeoQtMenu(c, self, label='top-level-menu')
             ### self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
             ### c.bodyWantsFocus()
-    #@+node:ekr.20170419111305.1: *3* CFrame.getShortCut
-    def getShortCut(self, *args, **kwargs):
-        return None
     #@+node:ekr.20170501161029.1: *3* CFrame.must be defined in subclasses
     def bringToFront(self):
         pass
-        # self.lift()
 
     def deiconify(self):
         pass
-        # if self.top and self.top.isMinimized(): # Bug fix: 400739.
-            # self.lift()
             
     def destroySelf(self):
         pass
 
     def getFocus(self):
         pass ### To do
-        # return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+        # return g.app.gui.get_focus(self.c)
 
     def get_window_info(self):
         return 0, 0, 0, 0
-        # if hasattr(self.top, 'leo_master') and self.top.leo_master:
-            # f = self.top.leo_master
-        # else:
-            # f = self.top
-        # rect = f.geometry()
-        # topLeft = rect.topLeft()
-        # x, y = topLeft.x(), topLeft.y()
-        # w, h = rect.width(), rect.height()
-        # return w, h, x, y
 
     def iconify(self):
         pass
-        # if self.top: self.top.showMinimized()
 
     def lift(self):
         pass
-        # if not self.top: return
-        # if self.top.isMinimized(): # Bug 379141
-            # self.top.showNormal()
-        # self.top.activateWindow()
-        # self.top.raise_()
+        
+    def getShortCut(self, *args, **kwargs):
+        return None
 
     def getTitle(self):
         return self.title
-        # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-        # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        # w = self.top.leo_master if g.app.qt_use_tabs else self.top
-        # s = g.u(w.windowTitle())
-        # return s
         
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
+
     def resizePanesToRatio(self, ratio, secondary_ratio):
         '''Resize splitter1 and splitter2 using the given ratios.'''
-        # g.trace('vertical: %5s, %0.2f %0.2f' % (
-            # self.splitVerticalFlag, ratio, secondary_ratio))
         # self.divideLeoSplitter1(ratio)
         # self.divideLeoSplitter2(secondary_ratio)
 
     def setTitle(self, title):
-        self.title = title
-        # if self.top:
-            # # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-            # # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-            # w = self.top.leo_master if g.app.qt_use_tabs else self.top
-            # w.setWindowTitle(title)
+        self.title = g.toUnicode(title)
 
     def setTopGeometry(self, w, h, x, y, adjustSize=True):
         pass
-        # self.top is a DynamicWindow.
-        # if self.top:
-            # self.top.setGeometry(QtCore.QRect(x, y, w, h))
 
     def update(self, *args, **keys):
         pass
-        # self.top.update()
-    #@+node:ekr.20170420170826.1: *3* CFrame.oops
-    def oops(self):
-        '''Ignore do-nothing methods.'''
-        g.pr("CursesFrame oops:", g.callers(4), "should be overridden in subclass")
     #@-others
 #@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
 class CursesGui(leoGui.LeoGui):
@@ -534,7 +500,7 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502101347.1: *3* CGui.must be defined in subclasses
     def get_focus(self, *args, **keys):
         return None
-    #@+node:ekr.20170501165746.1: *3* CGui.oops
+
     def oops(self):
         '''Ignore do-nothing methods.'''
         g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
@@ -565,7 +531,6 @@ class CursesKeyHandler:
             w = None ### c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
             event = self.create_key_event(c, w, char, shortcut)
-            g.trace(event.stroke)
             try:
                 c.k.masterKeyHandler(event)
             except Exception:
@@ -639,7 +604,7 @@ class CursesKeyHandler:
         return self.tk_dict.get(ch, ch)
     #@+node:ekr.20170430115131.2: *4* CKey.create_key_event
     def create_key_event(self, c, w, ch, shortcut):
-        trace = True
+        trace = False
         # Last-minute adjustments...
         if shortcut == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
@@ -688,7 +653,7 @@ class CursesKeyHandler:
     #@+node:ekr.20170430115131.3: *4* CKey.to_key
     def to_key(self, ch_i):
         '''Convert ch_i to a char and shortcut.'''
-        trace = True
+        trace = False
         a = curses.ascii
         if trace: g.trace(ch_i, a.ascii(ch_i), a.iscntrl(ch_i))
         if a.iscntrl(ch_i):
