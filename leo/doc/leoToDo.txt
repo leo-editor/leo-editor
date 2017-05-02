@@ -12,6 +12,7 @@
 
 First
 - Working tree.
+- Working minibuffer.
 
 Unit tests:
 - Unit test for do_key. (Capture all keys)
@@ -20,10 +21,8 @@ Unit tests:
 - Run all unit tests
 
 Widgets:
-- Working minibuffer.
-- Subclass npyscreen widgets
+- Add all must be defined in subclasses methods.
 - Remove all NullObjects.
-- Write log messages into the log widget.
 * Functional dialogs.
 - List of kludges.
 .. @+node:ekr.20170324083526.1: *4* Improve VR plugin
