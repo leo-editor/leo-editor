@@ -22,6 +22,10 @@ npyscreen = g.importExtension(
     required=True,
     verbose=False,
 )
+
+if npyscreen:
+    import npyscreen.utilNotify as utilNotify
+    assert utilNotify
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
 #@+others
@@ -250,7 +254,7 @@ class CursesFrame (leoFrame.LeoFrame):
         # return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
 
     def get_window_info(self):
-        pass
+        return 0, 0, 0, 0
         # if hasattr(self.top, 'leo_master') and self.top.leo_master:
             # f = self.top.leo_master
         # else:
@@ -418,6 +422,7 @@ class CursesGui(leoGui.LeoGui):
         return CursesFrame(c, title)
     #@+node:ekr.20170502103338.1: *3* CGui.destroySelf
     def destroySelf(self):
+        '''Terminate the curses gui application.'''
         sys.exit(0)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
     def dialog_message(self, message):
@@ -438,8 +443,11 @@ class CursesGui(leoGui.LeoGui):
     ):
         """Create and run an askOK dialog ."""
         # Potentially dangerous dialog.
-        g.trace(g.callers())
-        self.dialog_message(message)
+        # self.dialog_message(message)
+        if self.curses_app:
+            val = utilNotify.notify_confirm(message=message,title=title)
+            g.trace(repr(val))
+        return None ###
 
     def runAskOkCancelNumberDialog(self, c, title, message,
         cancelButtonText=None,
@@ -448,6 +456,9 @@ class CursesGui(leoGui.LeoGui):
         """Create and run askOkCancelNumber dialog ."""
         g.trace()
         self.dialog_message(message)
+        val = utilNotify.notify_ok_cancel(message=message,title=title)
+        g.trace(val)
+        return val
 
     def runAskOkCancelStringDialog(self, c, title, message,
         cancelButtonText=None,
@@ -458,6 +469,9 @@ class CursesGui(leoGui.LeoGui):
         """Create and run askOkCancelString dialog ."""
         g.trace()
         self.dialog_message(message)
+        val = utilNotify.notify_ok_cancel(message=message,title=title)
+        g.trace(val)
+        return val
 
     def runAskYesNoDialog(self, c, title,
         message=None,
@@ -465,8 +479,10 @@ class CursesGui(leoGui.LeoGui):
         no_all=False,
     ):
         """Create and run an askYesNo dialog."""
-        g.trace()
-        self.dialog_message(message)
+        # self.dialog_message(message)
+        val = utilNotify.notify_ok_cancel(message=message,title=title)
+        g.trace(val)
+        return 'yes' if val else 'no'
 
     def runAskYesNoCancelDialog(self, c, title,
         message=None,
@@ -499,7 +515,7 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
-        self.key_handler.do_key(ch_i)
+        return self.key_handler.do_key(ch_i)
     #@+node:ekr.20170501032447.1: *3* CGui.init_logger
     def init_logger(self):
 
