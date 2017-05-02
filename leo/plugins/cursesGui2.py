@@ -139,7 +139,18 @@ class CursesApp(npyscreen.NPSApp):
         '''Write all waiting lines to the log.'''
         # Done in CApp.main.
     #@-others
-#@+node:ekr.20170501024433.1: ** class CursesBody
+#@+node:ekr.20170501024433.1: ** class CursesBody (LeoBody)
+class CursesBody (leoFrame.LeoBody):
+    '''A class that represents curses body pane.'''
+    
+    def __init__(self, c):
+        
+        leoFrame.LeoBody.__init__(self,
+            frame = g.NullObject(),
+            parentFrame = None,
+        )
+            # Init the base class.
+        self.c = c
 #@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
     '''
@@ -154,20 +165,19 @@ class CursesFrame (leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1 # Increment the class var.
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
             # Init the base class.
-        assert self.c == c
+        assert c and self.c == c
         self.log = CursesLog(c)
         g.app.gui.log = self.log
         self.title = title
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.0
         # Widgets
-        assert hasattr(self, 'body')
+        self.body = CursesBody(c)
         self.menu = CursesMenu(c)
         self.miniBufferWidget = None
         self.top = None
         assert self.tree is None, self.tree
-        self.tree = g.NullObject()
-            ### To do: remove.
+        self.tree = CursesTree(c)
         # npyscreen widgets.
         self.body_widget = None
         self.log_widget = None
@@ -761,7 +771,7 @@ class CursesLog:
             # # put s to logWaiting and print  a newline
             # g.app.logWaiting.append(('\n', 'black'),)
     #@-others
-#@+node:ekr.20170419111515.1: ** class CursesMenu
+#@+node:ekr.20170419111515.1: ** class CursesMenu (LeoMenu)
 class CursesMenu (leoMenu.LeoMenu):
 
     def __init__ (self, c):
@@ -776,7 +786,21 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170501024424.1: ** class CursesTree
+#@+node:ekr.20170501024424.1: ** class CursesTree (LeoTree)
+class CursesTree (leoFrame.LeoTree):
+    '''A class that represents curses log pane.'''
+    
+    def __init__(self, c):
+        
+        class DummyFrame:
+            def __init__(self, c):
+                self.c = c
+        
+        dummy_frame = DummyFrame(c)
+
+        leoFrame.LeoTree.__init__(self, dummy_frame)
+            # Init the base class.
+        assert self.c
 #@+node:edward.20170428174322.1: ** class LeoKeyEvent
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
