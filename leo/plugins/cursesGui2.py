@@ -328,6 +328,75 @@ class CursesGui(leoGui.LeoGui):
         self.key_handler = CursesKeyHandler()
 
     #@+others
+    #@+node:ekr.20170502083158.1: *3* CGui.createCursesTop & helpers
+    def createCursesTop(self):
+        '''Create the top-level curses Form.'''
+        trace = True and not g.unitTesting
+        # Assert the key relationships required by the startup code.
+        assert self == g.app.gui
+        c = g.app.log.c
+        assert c == g.app.windowList[0].c
+        assert isinstance(c.frame, CursesFrame), repr(c.frame)
+        if trace:
+            g.trace('commanders in g.app.windowList')
+            g.printList([z.c.shortFileName() for z in g.app.windowList])
+        # Create the top-level form.
+        form = npyscreen.Form(name = "Welcome to Leo")
+            # This call clears the screen.
+        self.createCursesLog(c, form)
+        self.createCursesTree(c, form)
+        self.createCursesBody(c, form)
+        self.createCursesMinibuffer(c, form)
+        return form
+    #@+node:ekr.20170502084106.1: *4* createCursesBody
+    def createCursesBody(self, c, form):
+        '''
+        Create the curses body widget in the given curses Form.
+        Populate it with c.p.b.
+        '''
+        w = form.add(
+            npyscreen.MultiLineEditableBoxed,
+            max_height=10,
+            name='Body Pane',
+            footer="Press i or o to insert text", 
+            values=g.splitLines(c.p.b), 
+            slow_scroll=False,
+        )
+        # link
+        assert hasattr(c.frame, 'body_widget')
+        c.frame.body_widget = w
+    #@+node:ekr.20170502083613.1: *4* createCursesLog
+    def createCursesLog(self, c, form):
+        '''
+        Create the curses log widget in the given curses Form.
+        Populate the widget with the queued log messages.
+        '''
+        w = form.add(
+            npyscreen.MultiLineEditableBoxed,
+            max_height=10,
+            name='Log Pane',
+            footer="Press i or o to insert text", 
+            values=[s for s, color in self.wait_list], 
+            slow_scroll=False,
+        )
+        # Clear the wait list and disable it.
+        self.wait_list = []
+        self.log_inited = True
+        # Add links.
+        self.log.w = w
+        assert hasattr(c.frame, 'log_widget')
+        c.frame.log_widget = w
+    #@+node:ekr.20170502084249.1: *4* createCursesMinibuffer
+    def createCursesMinibuffer(self, c, form):
+        '''Create the curses minibuffer widget in the given curses Form.'''
+        form.add_widget(npyscreen.TitleText, name="Minibuffer")
+    #@+node:ekr.20170502083754.1: *4* createCursesTree
+    def createCursesTree(self, c, form):
+        '''Create the curses tree widget in the given curses Form.'''
+        if 0: # Not ready yet.
+            w = form.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
+            assert hasattr(c.frame, 'tree_widget')
+            c.frame.body_widget = w
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -403,57 +472,13 @@ class CursesGui(leoGui.LeoGui):
     ):
         """Dispay a modal TkPropertiesDialog"""
         g.trace(title)
-    #@+node:ekr.20170502020354.1: *3* CGui.run (creates main npyscreen window)
+    #@+node:ekr.20170502020354.1: *3* CGui.run
     def run(self):
         '''
-        Create and run Leo's singleton npyscreen window.
+        Create and run the top-level curses form.
         
-        g.app.windowList contains the list of all open LeoFrame's.
         '''
-        trace = True and not g.unitTesting
-        assert self == g.app.gui
-        assert g.app.windowList
-        frame = g.app.windowList[0]
-        c = frame.c
-        assert isinstance(c.frame, CursesFrame), repr(c.frame)
-        if trace:
-            g.trace('commanders in g.app.windowList')
-            g.printList([z.c.shortFileName() for z in g.app.windowList])
-        # Transfer queued log messages to the log pane.
-        values = [s for s, color in self.wait_list]
-        self.wait_list = []
-        self.log_inited = True
-        F = npyscreen.Form(name = "Welcome to Leo")
-            # This call clears the screen.
-        if 1: # Add the log widget.
-            w = F.add(
-                npyscreen.MultiLineEditableBoxed,
-                max_height=10,
-                name='Log Pane',
-                footer="Press i or o to insert text", 
-                values=values, 
-                slow_scroll=False,
-            )
-            self.log.w = w
-            assert hasattr(c.frame, 'log_widget')
-            c.frame.log_widget = w
-        if 0: # Not ready yet.
-            F.add_widget(npyscreen.TreeLineAnnotated, name='Outline')
-            assert hasattr(c.frame, 'tree_widget')
-            c.frame.body_widget = w
-        if 1: # Create the body widget.
-            w = F.add(
-                npyscreen.MultiLineEditableBoxed,
-                max_height=10,
-                name='Body Pane',
-                footer="Press i or o to insert text", 
-                values=g.splitLines(c.p.b), 
-                slow_scroll=False,
-            )
-            assert hasattr(c.frame, 'body_widget')
-            c.frame.body_widget = w
-        F.add_widget(npyscreen.TitleText, name="Minibuffer")
-        F.edit()
+        self.createCursesTop().edit()
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
@@ -576,8 +601,7 @@ class CursesKeyHandler:
     }
 
     def char_to_tk_name(self, ch):
-        val = self.tk_dict.get(ch)
-        return val
+        return self.tk_dict.get(ch, ch)
     #@+node:ekr.20170430115131.2: *4* CKey.create_key_event
     def create_key_event(self, c, w, ch, shortcut):
         trace = True
@@ -587,7 +611,13 @@ class CursesKeyHandler:
         elif shortcut == 'Escape':
             ch = 'Escape'
         # Switch the Shift modifier to handle the cap-lock key.
-        if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
+        if isinstance(ch, int):
+            g.trace('can not happen: ch: %r shortcut: %r' % (ch, shortcut))
+        elif (
+            ch and len(ch) == 1 and
+            shortcut and len(shortcut) == 1 and
+            ch.isalpha() and shortcut.isalpha()
+        ):
             if ch != shortcut:
                 if trace: g.trace('caps-lock')
                 shortcut = ch
@@ -625,18 +655,17 @@ class CursesKeyHandler:
         '''Convert ch_i to a char and shortcut.'''
         trace = True
         a = curses.ascii
-        if trace: g.trace(ch_i, a.iscntrl(ch_i))
+        if trace: g.trace(ch_i, a.ascii(ch_i), a.iscntrl(ch_i))
         if a.iscntrl(ch_i):
             val = ch_i - 1 + ord('a')
             char = chr(val)
             shortcut = 'Ctrl+%s' % char
         else:
-            char = a.ascii(ch_i)
-            shortcut = self.char_to_tk_name(char)
+            char = chr(a.ascii(ch_i))
+            char = self.char_to_tk_name(char)
+            shortcut = 'Ctrl+%s' % char
         if trace: g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
         return char, shortcut
-
-        
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog
 class CursesLog:
