@@ -1211,13 +1211,22 @@ class LeoApp(object):
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
-    #@+node:ekr.20031218072017.2617: *3* app.onQuit (enabled)
+    #@+node:ekr.20031218072017.2617: *3* app.onQuit
     @cmd('exit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('onQuit: %s' % g.callers())
+        trace = True # self.trace_shutdown and not g.unitTesting
+        is_curses = g.app.gui.guiName() == 'curses'
+        if trace:
+            if is_curses:
+                import logging
+                logging.info('--gui=curses: onQuit: %s' % g.callers())
+            else:
+                print('onQuit: %s' % g.callers())
         g.app.quitting = True
+        if is_curses:
+            g.app.finishQuit()
+            return
         # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
         if g.app.save_session and g.app.sessionManager:
             g.app.sessionManager.save_snapshot()

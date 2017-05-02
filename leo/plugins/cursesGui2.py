@@ -323,6 +323,8 @@ class CursesGui(leoGui.LeoGui):
             # Init the base class.
         self.consoleOnly = False
             # Required attribute.
+        self.curses_app = None
+            # The singleton CursesApp instance.
         self.log = None
             # The present log. Used by g.es
         self.log_inited = False
@@ -333,6 +335,8 @@ class CursesGui(leoGui.LeoGui):
             # Do this as early as possible.
             # It monkey-patches g.pr and g.trace.
         # g.trace('CursesGui')
+        self.top_form = None
+            # The top-level form. Set in createCursesTop.
         self.key_handler = CursesKeyHandler()
 
     #@+others
@@ -412,6 +416,12 @@ class CursesGui(leoGui.LeoGui):
         Called from Leo's core (c.initObjects).
         '''
         return CursesFrame(c, title)
+    #@+node:ekr.20170502103338.1: *3* CGui.destroySelf
+    def destroySelf(self):
+        g.trace('===== kill curses app')
+        # self.top_form.editing = False
+        # self.top_form.how_exited=True
+        sys.exit(0)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
     def dialog_message(self, message):
         for s in g.splitLines(message):
@@ -487,7 +497,8 @@ class CursesGui(leoGui.LeoGui):
         Create and run the top-level curses form.
         
         '''
-        self.createCursesTop().edit()
+        self.top_form = self.createCursesTop()
+        self.top_form.edit()
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
@@ -508,9 +519,6 @@ class CursesGui(leoGui.LeoGui):
         g.pr = pr # Most ouput goes through here, including g.es_exception.
         g.trace = trace
     #@+node:ekr.20170502101347.1: *3* CGui.must be defined in subclasses
-    def destroySelf(self):
-        pass
-        
     def get_focus(self, *args, **keys):
         return None
     #@+node:ekr.20170501165746.1: *3* CGui.oops
@@ -521,7 +529,8 @@ class CursesGui(leoGui.LeoGui):
     def runMainLoop(self):
         '''The curses gui main loop.'''
         # Do NOT change g.app!
-        CursesApp().run()
+        self.curses_app = CursesApp()
+        self.curses_app.run()
             # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
     #@-others
