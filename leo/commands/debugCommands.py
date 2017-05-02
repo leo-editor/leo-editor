@@ -170,7 +170,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         path = g.os_path_finalize_join(g.app.loadDir,
             '..', 'external', 'log_listener.py')
         g.app.log_listener = subprocess.Popen(
-            r'%s %s' % (sys.executable, path),
+            [sys.executable, path],
             shell=False,
             universal_newlines=True,
         )
