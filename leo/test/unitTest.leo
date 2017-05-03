@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.71">
-	<global_window_position top="57" left="646" height="979" width="1109"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="121" left="327" height="865" width="1171"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -964,7 +964,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -1303,6 +1303,12 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20170502211859.15"><vh>@@file @test php here doc</vh>
 <v t="ekr.20170502211859.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170503133125.21"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170503133125.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170503133258.21"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170503133258.22"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -2247,7 +2253,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">
+<t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -4779,12 +4785,12 @@ for fn in glob.glob(pattern):
     assert m
 </t>
 <t tx="ekr.20140724164600.4590"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-# c.contractParent()
-# g.app.unitTestDict['restoreSelectedNode']=False
-
-print('\nEnd of leoImport tests.')
+s = '\nEnd of leoImport tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    print(s)
 </t>
 <t tx="ekr.20140724220921.5199"></t>
 <t tx="ekr.20140725132959.4593">s = '''\
@@ -14477,6 +14483,32 @@ EOT;
 @tabwidth -4
 </t>
 <t tx="ekr.20170502211859.16">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170503133125.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170503133125.22">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170503133258.21">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170503133258.22">class foo {
     public $bar = &lt;&lt;&lt;EOT
 a test.
 bar

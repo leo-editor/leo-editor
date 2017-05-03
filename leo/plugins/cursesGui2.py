@@ -476,7 +476,8 @@ class CursesGui(leoGui.LeoGui):
         # self.dialog_message(message)
         val = utilNotify.notify_ok_cancel(message=message,title=title)
         g.trace(val)
-        return 'yes' if val else 'no'
+        # return 'yes' if val else 'no'
+        return 'no' ### For dialog while unit testing.
 
     def runAskYesNoCancelDialog(self, c, title,
         message=None,
