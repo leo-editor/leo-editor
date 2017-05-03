@@ -152,6 +152,10 @@ class CursesBody (leoFrame.LeoBody):
         )
             # Init the base class.
         self.c = c
+        ### Not yet
+            # self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
+            # self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
+        self.wrapper = g.NullObject()
 #@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
     '''The LeoFrame when --gui=curses is in effect.'''
@@ -678,7 +682,7 @@ class CursesKeyHandler:
     #@+node:ekr.20170430115131.3: *4* CKey.to_key
     def to_key(self, i):
         '''Convert int i to a char and shortcut.'''
-        trace = False
+        trace = True
         a = curses.ascii
         char, shortcut = '', ''
         s = a.unctrl(i)
@@ -689,9 +693,12 @@ class CursesKeyHandler:
                 27:'Escape',    32: ' ',
             }
             shortcut = d.get(i, '')
+            # All real ctrl keys lie between 1 and 26.
             if shortcut and shortcut != 'Escape':
                 char = chr(i)
-        elif i == 127 or i >= 256:
+            elif len(s) >= 2 and s.startswith('^'):
+                shortcut = 'Ctrl+' + self.char_to_tk_name(s[1:].lower())
+        elif i == 127:
             pass
         elif i < 128:
             char = shortcut = chr(i)
@@ -699,15 +706,18 @@ class CursesKeyHandler:
                 shortcut = 'Shift+' + char
             else:
                 shortcut = self.char_to_tk_name(char)
+        elif 265 <= i <= 276:
+            # Special case for F-keys
+            shortcut = 'F%s' % (i-265+1)
+        elif i == 351:
+            shortcut = 'Shift+Tab'
         elif s.startswith('\\x'):
             pass
         elif len(s) >= 3 and s.startswith('!^'):
             shortcut = 'Alt+' + self.char_to_tk_name(s[2:])
-        elif len(s) >= 2 and s.startswith('!'):
-            shortcut = 'Ctrl+' + self.char_to_tk_name(s[1:])
         else:
             pass
-        if trace: g.trace('i: %s char: %r shortcut: %r' % (i, char, shortcut))
+        if trace: g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
         return char, shortcut
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
@@ -872,6 +882,9 @@ class CursesTree (leoFrame.LeoTree):
         pass
 
     def scrollTo(self, p):
+        pass
+
+    def setHeadline(self, p, s):
         pass
     #@-others
 #@+node:edward.20170428174322.1: ** class LeoKeyEvent
