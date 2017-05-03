@@ -80,7 +80,7 @@ class InputHandler(object):
         
         Return True if input has been completely handled.
         """
-        trace = True
+        trace = False
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace:
@@ -114,7 +114,7 @@ class InputHandler(object):
             if parent.handle_input(i):
                 return True
         # Handle Leo bindings *last*.
-        # Note: g.app is a LeoApp instance, *not* a CursesApp.
+        # Important: g.app is a LeoApp instance, *not* a CursesApp.
         if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
             return g.app.gui.do_key(i)
         return False
