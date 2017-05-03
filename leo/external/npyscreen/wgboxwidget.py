@@ -4,6 +4,7 @@ import curses
 import weakref
 from .wgwidget import Widget
 from .wgmultiline import MultiLine
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084207.505: ** class BoxBasic
 class BoxBasic(Widget):

@@ -675,9 +675,10 @@ class TestManager(object):
                     suite.addTest(test)
                     found = True
             if found:
-                if False: # g.app.gui.guiName() == 'curses':
+                if g.app.gui.guiName() == 'curses':
                     
-                    import logging, logging.handlers
+                    import logging
+                    import logging.handlers
                     logger = logging.getLogger()
                     logger.setLevel(logging.DEBUG)
                     socketHandler = logging.handlers.SocketHandler(

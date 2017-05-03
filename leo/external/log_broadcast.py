@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170429161422.1: * @file ../external/log_broadcast.py
-import logging, logging.handlers
+import logging
+import logging.handlers
 
 rootLogger = logging.getLogger('')
 rootLogger.setLevel(logging.DEBUG)

@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.464: * @file ../external/npyscreen/utilNotify.py
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084207.465: ** Declarations
 from . import fmPopup
@@ -26,7 +27,7 @@ class YesNoPopup(ConfirmCancelPopup):
     
 #@+node:ekr.20170428084207.470: ** _prepare_message
 def _prepare_message(message):
-    if isinstance(message, list) or isinstance(message, tuple):
+    if isinstance(message, (list, tuple)):
         return "\n".join([ s.rstrip() for s in message])
         #return "\n".join(message)
     else:
