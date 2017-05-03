@@ -17,7 +17,7 @@ from . import fm_form_edit_loop   as form_edit_loop
 from . import util_viewhelp
 from . import npysGlobalOptions as GlobalOptions
 from .eveventhandler import EventHandler
-# from .globals import DISABLE_RESIZE_SYSTEM
+from .globals import DISABLE_RESIZE_SYSTEM
 
 #@+node:ekr.20170428084207.176: ** class _FormBase
 class _FormBase(proto_fm_screen_area.ScreenArea, 
@@ -112,7 +112,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.182: *3* _resize
     def _resize(self, *args):
-        global DISABLE_RESIZE_SYSTEM
+        # global DISABLE_RESIZE_SYSTEM
+        # EKR: This is an imported symbol, not a global!
         if DISABLE_RESIZE_SYSTEM:
             return False
             
