@@ -72,45 +72,51 @@ class InputHandler(object):
 
     #@+others
     #@+node:ekr.20170428084208.405: *3* IH.handle_input
-    def handle_input(self, ch_i):
+    def handle_input(self, i):
         """
         Dispatch a handler in this class or parents.
         
+        i is the character code. Leo handles codes from 1..351.
+        
         Return True if input has been completely handled.
         """
-        trace = False
+        trace = True
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace:
             g.trace('%3s = %6r, parent: %5r, widget: %s' % (
-                ch_i, curses.ascii.unctrl(ch_i),
+                i, curses.ascii.unctrl(i),
                 parent.__class__.__name__,
                 parent_widget.__class__.__name__,
             ))
-        if ch_i in self.handlers:
-            self.handlers[ch_i](ch_i)
+        # A special case for F4 so we can run unit tests.
+        if i == 268:
+            g.app.gui.do_key(i)
+            return True
+        if i in self.handlers:
+            self.handlers[i](i)
             return True
         try:
-            _unctrl_input = curses.ascii.unctrl(ch_i)
+            _unctrl_input = curses.ascii.unctrl(i)
         except TypeError:
             _unctrl_input = None
         if _unctrl_input and (_unctrl_input in self.handlers):
-            self.handlers[_unctrl_input](ch_i)
+            self.handlers[_unctrl_input](i)
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
-            if test(ch_i): # was is not False.
-                handler(ch_i)
+            if test(i): # was is not False.
+                handler(i)
                 return True
         if parent_widget and hasattr(parent_widget, 'handle_input'):
-            if parent_widget.handle_input(ch_i):
+            if parent_widget.handle_input(i):
                 return True
         if parent and hasattr(self.parent, 'handle_input'):
-            if parent.handle_input(ch_i):
+            if parent.handle_input(i):
                 return True
         # Handle Leo bindings *last*.
         # Note: g.app is a LeoApp instance, *not* a CursesApp.
         if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
-            return g.app.gui.do_key(ch_i)
+            return g.app.gui.do_key(i)
         return False
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
     def set_up_handlers(self):
