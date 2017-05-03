@@ -547,21 +547,20 @@ class CursesKeyHandler:
         Handle a key event by calling k.masterKeyHandler.
         Return True if the event was completely handled.
         '''
-        #  This is a complete rewrite of the LeoQtEventFilter code.
-        trace = True
+        #  This is a rewrite of LeoQtEventFilter code.
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.
         elif self.is_key_event(ch_i):
-            w = c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
-            event = self.create_key_event(c, w, char, shortcut)
-            if trace: g.trace(ch_i, repr(char), repr(shortcut))
-            try:
-                c.k.masterKeyHandler(event)
-            except Exception:
-                g.es_exception()
-            return True
+            if shortcut:
+                try:
+                    w = c.frame.body.wrapper
+                    event = self.create_key_event(c, w, char, shortcut)
+                    c.k.masterKeyHandler(event)
+                except Exception:
+                    g.es_exception()
+            return bool(shortcut)
         else:
             return False
     #@+node:ekr.20170430115131.4: *4* CKey.char_to_tk_name
@@ -677,20 +676,38 @@ class CursesKeyHandler:
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
     #@+node:ekr.20170430115131.3: *4* CKey.to_key
-    def to_key(self, ch_i):
-        '''Convert ch_i to a char and shortcut.'''
+    def to_key(self, i):
+        '''Convert int i to a char and shortcut.'''
         trace = False
         a = curses.ascii
-        if trace: g.trace(ch_i, a.ascii(ch_i), a.iscntrl(ch_i))
-        if a.iscntrl(ch_i):
-            val = ch_i - 1 + ord('a')
-            char = chr(val)
-            shortcut = 'Ctrl+%s' % char
+        char, shortcut = '', ''
+        s = a.unctrl(i)
+        if i <= 32:
+            d = {
+                8:'Backspace',  9:'Tab',
+                10:'Return',    13:'Linefeed',
+                27:'Escape',    32: ' ',
+            }
+            shortcut = d.get(i, '')
+            if shortcut and shortcut != 'Escape':
+                char = chr(i)
+        elif i == 127 or i >= 256:
+            pass
+        elif i < 128:
+            char = shortcut = chr(i)
+            if char.isupper():
+                shortcut = 'Shift+' + char
+            else:
+                shortcut = self.char_to_tk_name(char)
+        elif s.startswith('\\x'):
+            pass
+        elif len(s) >= 3 and s.startswith('!^'):
+            shortcut = 'Alt+' + self.char_to_tk_name(s[2:])
+        elif len(s) >= 2 and s.startswith('!'):
+            shortcut = 'Ctrl+' + self.char_to_tk_name(s[1:])
         else:
-            char = chr(a.ascii(ch_i))
-            char = self.char_to_tk_name(char)
-            shortcut = 'Ctrl+%s' % char
-        if trace: g.trace('ch_i: %s char: %r shortcut: %r' % (ch_i, char, shortcut))
+            pass
+        if trace: g.trace('i: %s char: %r shortcut: %r' % (i, char, shortcut))
         return char, shortcut
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
