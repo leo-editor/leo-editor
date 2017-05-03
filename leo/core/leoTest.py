@@ -675,11 +675,44 @@ class TestManager(object):
                     suite.addTest(test)
                     found = True
             if found:
+                if False: # g.app.gui.guiName() == 'curses':
+                    
+                    import logging, logging.handlers
+                    logger = logging.getLogger()
+                    logger.setLevel(logging.DEBUG)
+                    socketHandler = logging.handlers.SocketHandler(
+                        'localhost',
+                        logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+                    )
+                    logger.addHandler(socketHandler)
+        
+                    class Log:
+                        aList = []
+                        def write(self, s):
+                            prefix = ''.join(self.aList)
+                            if s.isspace():
+                                pass
+                            elif s.endswith('\n') or len(prefix+s) > 50:
+                                logger.info(prefix+s)
+                                self.aList = []
+                            else:
+                                self.aList.append(s)
+                        def flush(self):
+                            pass
+
+                    stream = Log()
+                else:
+                    stream = None
                 runner = unittest.TextTestRunner(
+                    stream=stream,
                     failfast=g.app.failFast,
                     verbosity=verbosity,
                 )
                 result = runner.run(suite)
+                if stream:
+                    if stream.aList:
+                        logger.info(''.join(stream.aList))
+                    logger.removeHandler(socketHandler)
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'

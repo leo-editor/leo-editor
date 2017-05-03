@@ -346,7 +346,6 @@ class CursesGui(leoGui.LeoGui):
             values=g.splitLines(c.p.b), 
             slow_scroll=False,
         )
-        # link
         assert hasattr(c.frame, 'body_widget')
         c.frame.body_widget = w
     #@+node:ekr.20170502083613.1: *4* createCursesLog
@@ -386,7 +385,7 @@ class CursesGui(leoGui.LeoGui):
 
         class BoxTitleTree(npyscreen.BoxTitle):
             _contained_widget = npyscreen.MLTree
-            
+
         data = npyscreen.TreeData(ignore_root=True)
         for i in range(4):
             data.new_child(content='child %s' % (i))
@@ -549,6 +548,7 @@ class CursesKeyHandler:
         Return True if the event was completely handled.
         '''
         #  This is a complete rewrite of the LeoQtEventFilter code.
+        trace = True
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.
@@ -556,6 +556,7 @@ class CursesKeyHandler:
             w = c.frame.body.wrapper
             char, shortcut = self.to_key(ch_i)
             event = self.create_key_event(c, w, char, shortcut)
+            if trace: g.trace(ch_i, repr(char), repr(shortcut))
             try:
                 c.k.masterKeyHandler(event)
             except Exception:
