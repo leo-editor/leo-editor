@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.68: * @file ../external/npyscreen/wgmultiline.py
 #!/usr/bin/python
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.69: ** Declarations
 import copy
@@ -430,7 +431,7 @@ the same effect can be achieved by altering the __str__() method of displayed ob
             if possible < self.cursor_line:
                 self.cursor_line = possible
                 return True
-                break
+
 
     #@+node:ekr.20170428084208.99: *3* get_selected_objects
     def get_selected_objects(self):
@@ -837,8 +838,8 @@ class Pager(MultiLine):
         self.start_display_at = len(self.values) - len(self._my_widgets)
 
     #@+node:ekr.20170428084208.141: *3* h_select_exit
-    def h_select_exit(self, input):
-        self.exit(self, input)
+    def h_select_exit(self, _input):
+        self.exit(self, _input)
 
     #@+node:ekr.20170428084208.142: *3* set_up_handlers
     def set_up_handlers(self):

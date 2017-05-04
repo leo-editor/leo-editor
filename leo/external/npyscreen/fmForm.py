@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.174: * @file ../external/npyscreen/fmForm.py
 #!/usr/bin/python
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084207.175: ** Declarations
 from . import proto_fm_screen_area
@@ -312,7 +313,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.201: *3* find_previous_editable
     def find_previous_editable(self, *args):
-        if not self.editw == 0:     
+        if self.editw != 0:     
             # remember that xrange does not return the 'last' value,
             # so go to -1, not 0! (fence post error in reverse)
             for n in range(self.editw-1, -1, -1 ):
@@ -445,30 +446,22 @@ class FormBaseNew(form_edit_loop.FormNewEditLoop, _FormBase):
 #@+node:ekr.20170428084207.209: ** class Form
 class Form(form_edit_loop.FormDefaultEditLoop, _FormBase, ):
     #use the old-style edit loop
-    pass
-    
-    #@+others
-    #@+node:ekr.20170428084207.210: *3* resize
+
     def resize(self):
         super(Form, self).resize()
         self.move_ok_button()
-
-
-
-    #@-others
 #@+node:ekr.20170428084207.211: ** class FormBaseNewExpanded
 class FormBaseNewExpanded(form_edit_loop.FormNewEditLoop, _FormBase):
     BLANK_LINES_BASE   = 1
     OK_BUTTON_BR_OFFSET = (1,6)
     # use the new-style edit loop.
-    pass
 
 #@+node:ekr.20170428084207.212: ** class FormExpanded
 class FormExpanded(form_edit_loop.FormDefaultEditLoop, _FormBase, ):
     BLANK_LINES_BASE   = 1
     OK_BUTTON_BR_OFFSET = (1,6)
     #use the old-style edit loop
-    pass
+
 
     
     
