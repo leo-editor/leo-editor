@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="116" left="307" height="821" width="1091"/>
+	<global_window_position top="54" left="457" height="953" width="1173"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -964,7 +964,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -1841,6 +1841,61 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20120306173116.3933"></v>
+<v t="ekr.20170504062625.1"><vh>Found:leoQt</vh>
+<v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
+<v t="ekr.20111121142012.4030"><vh>@test c.frame.log relationships</vh></v>
+<v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
+</v>
+<v t="ekr.20170504101454.1"><vh>@test logging</vh></v>
+<v t="ekr.20170504102140.1"><vh>Found:print</vh>
+<v t="ekr.20170504102649.1"><vh>Real prints</vh>
+<v t="ekr.20161002020559.1"><vh>@test all generator return unique positions</vh></v>
+<v t="ekr.20110613143220.3314"><vh>@test All menus execute the proper command</vh></v>
+<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
+<v t="ekr.20040712101754.188"><vh>@test p.iters and v.iters</vh>
+<v t="ekr.20040712101754.189"><vh>child1</vh>
+<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.191"><vh>b</vh></v>
+</v>
+<v t="ekr.20040712101754.192"><vh>c</vh></v>
+<v t="ekr.20040712101754.193"><vh>d</vh>
+<v t="ekr.20040712101754.194"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20040712101754.195"><vh>child2</vh></v>
+<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
+<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
+<v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
+<v t="ekr.20100827194549.5963"><vh>report</vh></v>
+<v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
+</v>
+<v t="ekr.20170504102726.1"><vh>zz tests</vh>
+<v t="ekr.20081111150402.11"><vh>@test zz end of all tests</vh></v>
+<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
+<v t="ekr.20090615053403.4957"><vh>@test zz end of leoColor tests</vh></v>
+<v t="ekr.20071113201833"><vh>@test zz end of leoCommands tests</vh></v>
+<v t="ekr.20071113201854"><vh>@test zz end of leoConfig tests</vh></v>
+<v t="ekr.20070306091949"><vh>@test zz end of leoEditCommands tests</vh></v>
+<v t="ekr.20071113202045"><vh>@test zz end of leoFile tests</vh></v>
+<v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
+<v t="ekr.20071113202153.1"><vh>@test zz end of leoFrame tests</vh></v>
+<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
+<v t="ekr.20100131171342.5603"><vh>@test zz end of leoGui tests</vh></v>
+<v t="ekr.20140724164600.4590"></v>
+<v t="ekr.20100131171342.5609"><vh>@test zz end of leoKeys tests</vh></v>
+<v t="ekr.20071113202452"><vh>@test zz end of leoNodes tests</vh></v>
+<v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
+<v t="ekr.20100131171342.5501"><vh>@test zz end of plugins unit tests</vh></v>
+<v t="ekr.20060131102450"><vh>@test zz print end of typing tests</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1864,7 +1919,118 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
+current = c.p
+child = current.firstChild()
+allList = [p.v for p in c.all_positions_iter()]
+vList1 = [v for v in c.p.vnodes_iter()]
+vList2 = [v for v in c.p.unique_vnodes_iter()]
+if 0:
+    for v in vList1: print(v)
+    for v in vList2: print(v)
+if 0:
+    print(len(allList),len(vList1),len(vList2))
+
+if 0: # v.iters no longer exist.
+    &lt;&lt; tests of consistency of p and v iters &gt;&gt;
+&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;
+&lt;&lt; print nodes returned by iterators &gt;&gt;
+</t>
+<t tx="ekr.20040712101754.189"></t>
+<t tx="ekr.20040712101754.190"></t>
+<t tx="ekr.20040712101754.191"></t>
+<t tx="ekr.20040712101754.192"></t>
+<t tx="ekr.20040712101754.193"></t>
+<t tx="ekr.20040712101754.194"></t>
+<t tx="ekr.20040712101754.195"></t>
+<t tx="ekr.20040712101754.196">try:
+    tag = "@test p.iters and v.itersL: test1"
+    list1 = [v for v in current.vnodes_iter()]
+    list2 = [v for v in current.v.self_and_subtree_iter()]
+    assert(list1==list2)
+    tag = "@test p.iters and v.iters: test2"
+    list1 = [p.v for p in c.all_positions_iter()]
+    list2 = [v   for v in c.all_vnodes_iter()]
+    assert(list1==list2)
+except AssertionError:
+    print(tag)
+    print("list1")
+    for v in list1: print(v)
+    print("list2")
+    for v in list2: print(v)
+    raise
+</t>
+<t tx="ekr.20040712101754.197">nodes = []
+for v in current.unique_vnodes_iter():
+    assert v not in nodes
+    nodes.append(v)
+
+nodes = []
+for t in current.unique_tnodes_iter():
+    assert t not in nodes
+    nodes.append(t)
+
+# print("duplicate tests pass")
+</t>
+<t tx="ekr.20040712101754.198">if 0:
+    for v in current.vnodes_iter(): print(v)
+    for v in current.unique_vnodes_iter(): print(v)
+
+if 0: # subtree of root node:
+    root = c.rootPosition()
+    for v in root.vnodes_iter(): print(v)
+    for t in root.tnodes_iter(): print(t)
+
+if 0: # child1's tree.  child2 should not be included.
+    for v in child.vnodes_iter(): print(v)
+    for t in child.tnodes_iter(): print(t)
+</t>
 <t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050120095423.20">class lastTestCase(unittest.TestCase):
+
+    '''A test case to print a message at the end of plugin tests.'''
+
+    def __init__ (self,c,openFlag):
+        # Init the base class.
+        unittest.TestCase.__init__(self)
+        self.c = c
+        self.openFlag = openFlag
+
+    def runTest(self):
+        c = self.c
+        print('\n%s a new window to test more plugin logic\n' % g.choose(
+            self.openFlag,'opening','open'))
+        if self.openFlag:
+            self.new_c = new_c = c.new() # Create the new window.
+            new_c.frame.setTitle("unit test for 'new' hook")
+
+    if 0: # Doesn't work
+        def shutDown(self):
+            c = self.new_c
+            c.close()
+</t>
+<t tx="ekr.20050218015346.22">def removeLeadingWs (code):
+
+    if not code.strip():
+        return ''
+    lines = g.splitLines(code)
+    line = lines[0]
+    i = g.skip_ws(line,0)
+    ws = line[0:i]
+    if not ws:
+        return code
+    result = [] ; n = len(ws)
+    for line in lines:
+        if line.startswith(ws):
+            result.append(line[n:])
+        elif not line.strip() and line.endswith('\n'):
+            result.append('\n')
+        else:
+            print('unitTest.leo:underindented line:%s' % repr(line))
+            result.append(line)
+    result = ''.join(result)
+    return result
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -2106,6 +2272,8 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20060131102450">g.pr('\nEnd of typing tests')
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -2256,6 +2424,8 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
+<t tx="ekr.20070306091949">g.pr('\nEnd of leoEditCommands tests.')
+</t>
 <t tx="ekr.20070417092935" str_leo_pos="7">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
@@ -2286,6 +2456,38 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113201736"># This is **not** a real unit test.
+g.pr('\nEnd of leoAtFile tests')
+</t>
+<t tx="ekr.20071113201833"># This is **not** a real unit test.
+g.pr('\nEnd of leoCommands tests')
+</t>
+<t tx="ekr.20071113201854">g.pr('\nEnd of leoConfig tests')
+</t>
+<t tx="ekr.20071113202045">g.pr('\nEnd of leoFileCommands tests.')
+</t>
+<t tx="ekr.20071113202153">g.pr('\nEnd of leoFind tests.')
+</t>
+<t tx="ekr.20071113202153.1">g.pr('\nEnd of leoFrame tests.')
+</t>
+<t tx="ekr.20071113202153.2">g.pr('\nEnd of leoGlobals tests.')
+</t>
+<t tx="ekr.20071113202452"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
+
+g.pr('\nEnd of leoNodes tests.')
+</t>
+<t tx="ekr.20071113202510"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
+
+g.pr('\nEnd of leoUndo tests.')
+</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -2299,6 +2501,23 @@ Important: this may cause crashes on some platforms.
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
+</t>
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+if 0:
+    c.selectPosition(p)
+    c.contractParent()
+    c.selectPosition(p.parent())
+    # Do not do this! It would changed unitTest.leo!
+        # c.save()
+    g.app.unitTestDict['restoreSelectedNode']=False
+    c.bodyWantsFocus()
+# Print does not work: it is redirected.
+g.pr('all unit tests done',color='blue')
+</t>
+<t tx="ekr.20090306091634.1">tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    print('%s: %s' % (p.h,tree.redrawCount))
 </t>
 <t tx="ekr.20090529141856.4682"></t>
 <t tx="ekr.20090529141856.4684">@language python
@@ -3591,6 +3810,9 @@ for ext in g.app.extension_dict.keys():
         if language is None:
             print('no language for ext=%s' % (ext))
 </t>
+<t tx="ekr.20090615053403.4957"># This is **not** a real unit test.
+g.pr('\nEnd of leoColor tests')
+</t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
@@ -3815,6 +4037,74 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131171342.5487">def checkFile(p):
+
+    # print('checking',p.h)
+    # Check all the descendant nodes.
+    ok = True
+    for p2 in p.subtree_iter():
+        h = p2.h
+        for tag in ('@test','@suite'):
+            if h.startswith(tag):
+                s = p2.b
+                lines = g.splitLines(s)
+                for line in lines:
+                    # print('line',line)
+                    if not line.strip() or line.startswith('#'):
+                        continue
+                    elif line.startswith('if g.unitTesting:'):
+                        break
+                    else:
+                        print('in %s' % p.h)
+                        print('missing "if g.unitTesting:" %s' % h)
+                        ok = False
+    return ok
+</t>
+<t tx="ekr.20100131171342.5501" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+if 0: # No longer needed.
+    c.contractAllHeadlines()
+    h = 'All unit tests'
+    p = c.testManager.findNodeAnywhere(h)
+    if p:
+        p.expand()
+        g.app.unitTestDict['restoreSelectedNode']=False
+        c.selectPosition(p)
+        c.redraw()
+
+g.pr('\nEnd of plugins unit tests')
+</t>
+<t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
+
+if g.app.isExternalUnitTest:
+    print('running @test leoBridge init logic')
+    # This can not be run locally!
+    b = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,
+        readSettings=True,
+        silent=False,
+        tracePlugins=True,
+        verbose=True)
+    g = b.globals()
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(path)
+    c = b.openLeoFile(path)
+    assert c
+    assert c.rootPosition()
+else:
+    self.skipTest('Can not be run locally')
+</t>
+<t tx="ekr.20100131171342.5603" annotate="7d71002e">g.pr('\nEnd of leoGui tests.')
+</t>
+<t tx="ekr.20100131171342.5609" annotate="7d71002e"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+# c.contractParent()
+# g.app.unitTestDict['restoreSelectedNode']=False
+
+g.pr('\nEnd of leoKeys tests.')
+</t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
 &lt;?php
@@ -3923,6 +4213,20 @@ finally:
         c.redraw()
 
 </t>
+<t tx="ekr.20100827194549.5963">def report (self,expected,got):
+    '''Report errors in an rst test.'''
+    verbose = True
+    expected_lines = g.splitLines(expected.b)
+    got_lines = g.splitLines(got.b)
+    for i in range(min(len(expected_lines),len(got_lines))):
+        match = expected_lines[i]==got_lines[i]
+        if verbose or not match:
+            tag = g.choose(match,'  ','**')
+            print ('%3d%s %s' % (i,tag,repr(expected_lines[i])))
+            print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
+        if not verbose and not match:
+            break
+</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -3941,6 +4245,53 @@ False:
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
+</t>
+<t tx="ekr.20110613143220.3314">@ We want to ensure that when masterMenuHandler does::
+    
+    event = g.app.gui.create_key_event(c,None,stroke,w)
+    return k.masterKeyHandler(event)
+    
+that the effect will be to call commandName, where commandName
+is the arg passed to masterMenuHandler.
+
+createMenuEntries creates the association of stroke to commandName.
+@c
+
+trace = False # False: the unit test can fail.
+k = c.k
+d = g.app.unitTestMenusDict
+d2 = k.bindingsDict
+d2name = 'k.bindingsDict'
+commandNames = list(d.keys())
+commandNames.sort()
+exclude_strokes = ('Alt+F4','Ctrl+q','Ctrl+Shift+Tab',)
+
+for name in commandNames:
+    assert name in c.commandsDict,'unexpected command name: %s' % (
+        repr(name))
+    aSet = d.get(name)
+    aList = list(aSet)
+    aList.sort()
+    for z in exclude_strokes:
+        if z in aList:
+            aList.remove(z)
+    for stroke in aList:
+        aList2 = d2.get(stroke)
+        assert aList2,'stroke %s not in %s' % (
+            repr(stroke),d2name)
+        for b in aList2:
+            if b.commandName == name:
+                break
+        else:
+            if trace:
+                inverseBindingDict = k.computeInverseBindingDict()
+                print('%s: stroke %s not bound to %s in %s' % (
+                    p.h,repr(stroke),repr(name),d2name))
+                print('%s: inverseBindingDict.get(%s): %s' % (
+                    p.h,name,inverseBindingDict.get(name)))
+            else:
+                assert False,'stroke %s not bound to %s in %s' % (
+                    repr(stroke),repr(name),d2name)
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
@@ -4254,6 +4605,99 @@ finally:
         c.redraw()
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+elif g.app.gui.guiName().startswith('qt'):
+    def setup(p):
+        delete_children(p)
+        p2 = p.insertAsLastChild()
+        c.selectPosition(p2)
+        p2.h = 'first-child'
+    
+    def delete_children(p):
+        while p.hasChildren():
+            p.firstChild().doDelete()
+    
+    app = g.app.gui.qtApp
+    assert issubclass(app.__class__,QtWidgets.QApplication)
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    # w_name = w.__class__.__name__
+    # bassert w_name in('QsciScintilla','LeoQTextBrowser'),w_name
+    p1 = p.copy()
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
+    try:
+        ev = QtCore.QEvent
+        table = (
+            ev.KeyPress,
+            # ev.KeyRelease, # Ignored except in QLineEdit's.
+            # ev.ShortcutOverride, # Ignored everywhere.
+        )
+        for theType in table:
+            # Create the event.
+            setup(p1)
+            e = QtGui.QKeyEvent(theType,ord('i'),QtCore.Qt.ControlModifier)
+            # Pass it to eventFilter.
+            filter_obj.eventFilter(w,e)
+            # Check the results.
+            c.redraw()
+            n = p1.numberOfChildren()
+            assert n==2,'%s children' % (n)
+            delete_children(p1)
+    finally:
+        delete_children(p1)
+        c.redraw()
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20111121142012.4030">from leo.core.leoQt import QtGui,QtWidgets
+log = c.frame.log
+name = log.__class__.__name__
+
+if g.app.isExternalUnitTest:
+    assert name == 'NullLog',name
+elif g.app.gui.guiName().startswith('qt'):
+    assert name == 'LeoQtLog',name
+    assert log.logCtrl.__class__.__name__ == 'QTextEditWrapper',log.logCtrl
+    assert not issubclass(log.logCtrl.__class__,QtWidgets.QWidget.__class__)
+        # leoQTextEditWidget us a poor name: it is not a Qt widget.
+    assert log.logCtrl.widget.__class__.__name__ == 'LeoQTextBrowser'
+    assert hasattr(log.logCtrl,'widget') and log.logCtrl.widget
+    assert hasattr(log.logCtrl.widget,'leo_log_wrapper')
+    wrapper = log.logCtrl.widget.leo_log_wrapper
+    assert wrapper == log.logCtrl
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName().startswith('qt'):
+    tabs = ('Log','Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+        
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        event = g.bunch(widget=last_widget)
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -4272,6 +4716,34 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
+</t>
+<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+elif g.app.gui.guiName().startswith('qt'):
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            break
+    else:
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+else:
+     self.skipTest('Requires Qt Gui')
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -4779,21 +5251,20 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 import glob
 import importlib
 path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
-# print('path: %s' % path)
-assert g.os_path_exists(path)
+assert g.os_path_exists(path), repr(path)
 pattern = g.os_path_finalize_join(path,'*.py')
 for fn in glob.glob(pattern):
     sfn = g.shortFileName(fn)
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
 </t>
-<t tx="ekr.20140724164600.4590"># This is **not** a real unit test.
-s = '\nEnd of leoImport tests.'
-if g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    print(s)
+<t tx="ekr.20140724164600.4590">s = '\nEnd of leoImport tests.'
+g.pr(s)
+# if g.app.gui.guiName() == 'curses':
+    # import logging
+    # logging.info(s)
+# else:
+    # print(s)
 </t>
 <t tx="ekr.20140724220921.5199"></t>
 <t tx="ekr.20140725132959.4593">s = '''\
@@ -4827,6 +5298,60 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20140904060337.4476">if g.in_bridge or g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName().startswith('qt'):
+    import leo.core.leoFrame as leoFrame
+    import leo.plugins.qt_text as qt_text
+    from leo.core.leoQt import Qsci,QtWidgets
+    if Qsci:
+        w = Qsci.QsciScintilla()
+        q = qt_text.QScintillaWrapper(widget=w,c=c,name='test')
+        q_list = [z for z in sorted(dir(q)) if not z.startswith('__')]
+    # Check the text wrappers.
+    W = leoFrame.WrapperAPI(c)
+    tw = QtWidgets.QTextBrowser()
+    t = qt_text.QTextEditWrapper(widget=tw,name='test2')
+    W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+    t_list = [z for z in sorted(dir(t)) if not z.startswith('__')]
+    ignore = [
+        'set_focus', # synonym for setFocus
+        'mutable_methods', # maybe for unit test, not actually used.
+    ]
+    for z in W_list:
+        if z not in t_list and z not in ignore:
+            assert False,'In WrapperAPI but not in QTextEditWrapper: %s' % z
+    if Qsci:
+        for z in W_list:
+            if z not in q_list and z not in ignore:
+                assert False,'In WrapperAPI but not in QScintillaWrapper: %s' % z
+    # Check Null classes that are not subclasses of a base type:
+    table = (
+        ('NullIconBarClass',leoFrame.NullIconBarClass(c,None),
+         # 'c.frame.iconBar',c.frame.iconBar,
+         'IconBarAPI',leoFrame.IconBarAPI(c,None),
+        ),
+        ('NullStatusLineClass',leoFrame.NullStatusLineClass(c,None),
+         # 'c.frame.statusLine',c.frame.statusLine,
+         'StatusLineAPI',leoFrame.StatusLineAPI(c,None)
+        )
+    )
+    for name1,L,name2,W in table:
+        W_list = [z for z in sorted(dir(W)) if not z.startswith('__')]
+        L_list = [z for z in sorted(dir(L)) if not z.startswith('__')]
+        for z in W_list:
+            assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
+else:
+     self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20141223125432.11">if not g.isPython3 and g.app.gui.guiName().startswith('qt'):
+    import leo.core.leoQt as leoQt
+    QString = leoQt.QString
+    s = g.toUnicode(QString('abc'))
+    assert s == 'abc',repr(s)
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -5473,6 +5998,31 @@ The next section is empty. It must not be deleted.
 Section 3, line 1
 
 '''
+</t>
+<t tx="ekr.20161002020559.1"># This fixes a major bug in *all* generators returning positions.
+trace = False
+root = c.rootPosition
+table = (
+    ('all_positions', c.all_positions),
+    ('all_unique_positions', c.all_unique_positions),
+    ('children', root().children),
+    ('self_and_siblings', root().self_and_siblings),
+    ('self_and_parents', root().firstChild().self_and_parents),
+    ('self_and_subtree', root().self_and_subtree),
+    ('following_siblings', root().following_siblings),
+    ('parents', root().firstChild().firstChild().parents),
+    ('unique_subtree', root().unique_subtree),
+)
+fail = []
+for kind, generator in table:
+    aList = list(generator())
+    aList2 = list(set(aList))
+    if len(aList) == len(aList2) and len(aList) &gt; 1:
+        if trace: print('  OK: %s %s' % (kind, len(aList)))
+    else:
+        if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
+        fail.append(kind)
+assert not fail, fail
 </t>
 <t tx="ekr.20161011052016.1">import imp
 import leo.plugins.importers.javascript as js
@@ -7288,8 +7838,8 @@ if showTree:
         assert n == 2, 'expected 2 children, got %s' % n
     finally:
         if keepTree:
-            h = child.h
-            print('h',h)
+            # h = child.h
+            # print('h',h)
             child.setHeadString('@'+h)
         else:
             while p.hasChildren():
@@ -14532,5 +15082,15 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20170504062625.1"># flattened, ignore-case, head, body
+
+# found 7 nodes</t>
+<t tx="ekr.20170504101454.1">import logging
+logging.info('test')</t>
+<t tx="ekr.20170504102140.1"># flattened, word, ignore-case, head, body
+
+# found 149 nodes</t>
+<t tx="ekr.20170504102649.1"></t>
+<t tx="ekr.20170504102726.1"></t>
 </tnodes>
 </leo_file>
