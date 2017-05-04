@@ -5447,6 +5447,7 @@ for obj,val in table:
 #@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
 s = '\nEnd of leoCommands tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -28394,8 +28395,5 @@ if g.app.gui.guiName() == 'curses':
     curses.endwin()
 else:
     c.k.simulateCommand(':q!')
-#@+node:ekr.20170504101454.1: ** @test logging
-import logging
-logging.info('test')
 #@-all
 #@-leo
