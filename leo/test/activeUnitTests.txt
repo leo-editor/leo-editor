@@ -401,7 +401,9 @@ import sys
 if g.isPython3 and sys.platform.startswith('linux'):
     # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
     # The crash causes several other unit tests to fail.
-    pass
+    self.skipTest('Not for Linux.')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
 else:
     c1 = c
     fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
@@ -20936,20 +20938,20 @@ finally:
 #@+node:ekr.20070611071101.4: *5* limit
 #@+node:ekr.20070611071101.5: *6* d
 #@+node:ekr.20070611071954: *5* e
-#@+node:ekr.20161002020559.1: *4* @test all generator return unique positions
+#@+node:ekr.20161002020559.1: *4* @test all generators return unique positions
 # This fixes a major bug in *all* generators returning positions.
 trace = False
-root = c.rootPosition
+root = p.firstChild().firstChild()
 table = (
     ('all_positions', c.all_positions),
     ('all_unique_positions', c.all_unique_positions),
-    ('children', root().children),
-    ('self_and_siblings', root().self_and_siblings),
-    ('self_and_parents', root().firstChild().self_and_parents),
-    ('self_and_subtree', root().self_and_subtree),
-    ('following_siblings', root().following_siblings),
-    ('parents', root().firstChild().firstChild().parents),
-    ('unique_subtree', root().unique_subtree),
+    ('children', root.children),
+    ('self_and_siblings', root.self_and_siblings),
+    ('self_and_parents', root.firstChild().self_and_parents),
+    ('self_and_subtree', root.self_and_subtree),
+    ('following_siblings', root.following_siblings),
+    ('parents', root.firstChild().firstChild().parents),
+    ('unique_subtree', root.unique_subtree),
 )
 fail = []
 for kind, generator in table:
@@ -20961,6 +20963,13 @@ for kind, generator in table:
         if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
         fail.append(kind)
 assert not fail, fail
+#@+node:ekr.20170504124652.1: *5* parent
+#@+node:ekr.20170504124245.1: *6* child1
+#@+node:ekr.20170504124249.1: *7* grandchild
+#@+node:ekr.20170504124842.1: *8* greatGrandChild
+#@+node:ekr.20170504124617.1: *7* grandchild2
+#@+node:ekr.20170504124417.1: *6* child2
+#@+node:ekr.20170504124637.1: *6* child3
 #@+node:ekr.20040712101754.99: *4* @test c iters
 << coverage tests >>
 << duplicate tests >>
@@ -28361,7 +28370,16 @@ if 0:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
-
-c.k.simulateCommand(':q!')
+    
+if g.app.gui.guiName() == 'curses':
+    import curses
+    import logging
+    logging.info('test')
+    curses.endwin()
+else:
+    c.k.simulateCommand(':q!')
+#@+node:ekr.20170504101454.1: ** @test logging
+import logging
+logging.info('test')
 #@-all
 #@-leo
