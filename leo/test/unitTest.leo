@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1554,6 +1554,7 @@ assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051013162226"></t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -1710,11 +1711,12 @@ else:
     return i,j</t>
 <t tx="ekr.20070306091949">s = '\nEnd of leoEditCommands tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="6">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1784,6 +1786,7 @@ for h in sorted(d2.keys()):
         print(h)</t>
 <t tx="ekr.20071113201736">s = '\nEnd of leoAtFile tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -1796,42 +1799,49 @@ else:
 </t>
 <t tx="ekr.20071113201854">s = '\nEnd of leoConfig tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202045">s = '\nEnd of leoFileCommands tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153">s = '\nEnd of leoFind tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153.1">s = '\nEnd of leoFrame tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153.2">s = '\nEnd of leoGlobals tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202452">s = '\nEnd of leoNodes tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202510">s = '\nEnd of leoUndo tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -1872,6 +1882,7 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20081111150402.11"># Print does not work: it is redirected.
 s = 'all unit tests done'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s,color='blue')
@@ -3173,6 +3184,7 @@ for ext in g.app.extension_dict.keys():
 </t>
 <t tx="ekr.20090615053403.4957">s = '\nEnd of leoColor tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -3439,6 +3451,7 @@ for tag,aList in table:
 </t>
 <t tx="ekr.20100131171342.5501" annotate="7d71002e">s = '\nEnd of plugins unit tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -3465,12 +3478,14 @@ else:
 </t>
 <t tx="ekr.20100131171342.5603" annotate="7d71002e">s = '\nEnd of leoGui tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20100131171342.5609" annotate="7d71002e">s = '\nEnd of leoKeys tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -4654,6 +4669,7 @@ for fn in glob.glob(pattern):
 </t>
 <t tx="ekr.20140724164600.4590">s = '\nEnd of leoImport tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)

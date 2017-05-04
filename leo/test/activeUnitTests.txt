@@ -2067,6 +2067,7 @@ assert len(p.b) == 175,len(p.b)
 #@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
 s = '\nEnd of leoAtFile tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -4845,6 +4846,7 @@ IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 s = '\nEnd of leoColor tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -5556,6 +5558,7 @@ assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 s = '\nEnd of leoConfig tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -10656,12 +10659,14 @@ finally:
 #@+node:ekr.20060131102450: *5* @test zz print end of typing tests
 s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
 #@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
 s = '\nEnd of leoEditCommands tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -10957,6 +10962,7 @@ else:
 #@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
 s = '\nEnd of leoFileCommands tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -11030,6 +11036,7 @@ else:
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 s = '\nEnd of leoFind tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -11212,6 +11219,7 @@ c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
 s = '\nEnd of leoFrame tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -12005,6 +12013,7 @@ for ivar in ('c','g','p'):
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 s = '\nEnd of leoGlobals tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -12108,6 +12117,7 @@ else:
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 s = '\nEnd of leoGui tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -20656,6 +20666,7 @@ for s in table:
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 s = '\nEnd of leoImport tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -20788,6 +20799,7 @@ for setting, result in table:
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 s = '\nEnd of leoKeys tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -21600,6 +21612,7 @@ if leoNodes.use_zodb:
 #@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
 s = '\nEnd of leoNodes tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -27835,6 +27848,7 @@ after
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 s = '\nEnd of leoUndo tests.'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -28347,6 +28361,7 @@ if hasattr(c,'theScriptingController'):
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 s = '\nEnd of plugins unit tests'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s)
@@ -28362,6 +28377,7 @@ if 0:
 # Print does not work: it is redirected.
 s = 'all unit tests done'
 if g.app.gui.guiName() == 'curses':
+    import logging
     logging.info(s)
 else:
     g.pr(s,color='blue')
