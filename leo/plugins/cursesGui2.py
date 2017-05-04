@@ -624,6 +624,7 @@ class CursesGui(leoGui.LeoGui):
         self.curses_app.run()
             # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
+        curses.endwin()
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
 class CursesKeyHandler:

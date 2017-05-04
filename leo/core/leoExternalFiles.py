@@ -317,6 +317,8 @@ class ExternalFilesController(object):
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
+        if g.unitTesting:
+            return False
         if not p:
             for ef in self.files:
                 if ef.path == path:
