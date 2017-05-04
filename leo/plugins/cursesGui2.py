@@ -276,6 +276,9 @@ class CursesFrame (leoFrame.LeoFrame):
         '''Resize splitter1 and splitter2 using the given ratios.'''
         # self.divideLeoSplitter1(ratio)
         # self.divideLeoSplitter2(secondary_ratio)
+        
+    def setInitialWindowGeometry(self):
+        pass
 
     def setTitle(self, title):
         self.title = g.toUnicode(title)
@@ -319,6 +322,48 @@ class CursesGui(leoGui.LeoGui):
         self.key_handler = CursesKeyHandler()
 
     #@+others
+    #@+node:ekr.20170504112655.1: *3* CGui.clipboard (to do)
+    #@+node:ekr.20170504112744.2: *4* CGui.replaceClipboardWith (to do)
+    def replaceClipboardWith(self, s):
+        '''Replace the clipboard with the string s.'''
+        pass
+        ###
+            # cb = self.qtApp.clipboard()
+            # if cb:
+                # s = g.toUnicode(s)
+                # QtWidgets.QApplication.processEvents()
+                # # Fix #241: QMimeData object error
+                # cb.setText(QString(s))
+                # QtWidgets.QApplication.processEvents()
+                # # g.trace(len(s), type(s), s[: 25])
+            # else:
+                # g.trace('no clipboard!')
+    #@+node:ekr.20170504112744.3: *4* CGui.getTextFromClipboard
+    def getTextFromClipboard(self):
+        '''Get a unicode string from the clipboard.'''
+        return ''
+        ###
+            # cb = self.qtApp.clipboard()
+            # if cb:
+                # QtWidgets.QApplication.processEvents()
+                # s = cb.text()
+                # # g.trace(len(s), type(s), s[: 25])
+                # # Fix bug 147: Python 3 clipboard encoding
+                # s = g.u(s)
+                    # # Don't call g.toUnicode here!
+                    # # s is a QString, which isn't exactly a unicode string!
+                # return s
+            # else:
+                # g.trace('no clipboard!')
+                # return ''
+    #@+node:ekr.20170504112744.4: *4* CGui.setClipboardSelection
+    def setClipboardSelection(self, s):
+        '''Set the clipboard selection to s.'''
+        ###
+            # if s:
+                # # This code generates a harmless, but annoying warning on PyQt5.
+                # cb = self.qtApp.clipboard()
+                # cb.setText(QString(s), mode=cb.Selection)
     #@+node:ekr.20170502083158.1: *3* CGui.createCursesTop & helpers
     def createCursesTop(self):
         '''Create the top-level curses Form.'''
@@ -425,16 +470,19 @@ class CursesGui(leoGui.LeoGui):
         sys.exit(0)
     #@+node:ekr.20170502021145.1: *3* CGui.dialogs (to do)
     def dialog_message(self, message):
-        for s in g.splitLines(message):
-            g.pr(s.rstrip())
+        if not g.unitTesting:
+            for s in g.splitLines(message):
+                g.pr(s.rstrip())
 
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run Leo's About Leo dialog."""
-        g.trace(version)
+        if not g.unitTesting:
+            g.trace(version)
 
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
-        g.trace('not ready yet')
+        if not g.unitTesting:
+            g.trace('not ready yet')
 
     def runAskOkDialog(self, c, title,
         message=None,
@@ -443,21 +491,30 @@ class CursesGui(leoGui.LeoGui):
         """Create and run an askOK dialog ."""
         # Potentially dangerous dialog.
         # self.dialog_message(message)
-        if self.curses_app:
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
             val = utilNotify.notify_confirm(message=message,title=title)
             g.trace(repr(val))
-        return None ###
+            return val
+        else:
+            return False
 
     def runAskOkCancelNumberDialog(self, c, title, message,
         cancelButtonText=None,
         okButtonText=None,
     ):
         """Create and run askOkCancelNumber dialog ."""
-        g.trace()
-        self.dialog_message(message)
-        val = utilNotify.notify_ok_cancel(message=message,title=title)
-        g.trace(val)
-        return val
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
+            g.trace()
+            self.dialog_message(message)
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            g.trace(val)
+            return val
+        else:
+            return False
 
     def runAskOkCancelStringDialog(self, c, title, message,
         cancelButtonText=None,
@@ -466,11 +523,14 @@ class CursesGui(leoGui.LeoGui):
         wide=False,
     ):
         """Create and run askOkCancelString dialog ."""
-        g.trace()
-        self.dialog_message(message)
-        val = utilNotify.notify_ok_cancel(message=message,title=title)
-        g.trace(val)
-        return val
+        if g.unitTesting:
+            return False
+        else:
+            g.trace()
+            self.dialog_message(message)
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            g.trace(val)
+            return val
 
     def runAskYesNoDialog(self, c, title,
         message=None,
@@ -478,11 +538,11 @@ class CursesGui(leoGui.LeoGui):
         no_all=False,
     ):
         """Create and run an askYesNo dialog."""
-        # self.dialog_message(message)
-        val = utilNotify.notify_ok_cancel(message=message,title=title)
-        g.trace(val)
-        # return 'yes' if val else 'no'
-        return 'no' ### For dialog while unit testing.
+        if g.unitTesting:
+            return False
+        else:
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            return 'yes' if val else 'no'
 
     def runAskYesNoCancelDialog(self, c, title,
         message=None,
@@ -493,8 +553,10 @@ class CursesGui(leoGui.LeoGui):
         cancelMessage=None,
     ):
         """Create and run an askYesNoCancel dialog ."""
-        g.trace()
-        self.dialog_message(message)
+        if g.unitTesting:
+            return False
+        else:
+            self.dialog_message(message)
         
     def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
         if not g.unitTesting:
@@ -507,12 +569,12 @@ class CursesGui(leoGui.LeoGui):
         buttons=None,
     ):
         """Dispay a modal TkPropertiesDialog"""
-        g.trace(title)
+        if not g.unitTesting:
+            g.trace(title)
         
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
         if not g.unitTesting:
             g.trace(title)
-
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
@@ -562,9 +624,6 @@ class CursesGui(leoGui.LeoGui):
         self.curses_app.run()
             # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
-    #@+node:ekr.20170504053709.1: *3* CGui.setInitialWindowGeometry
-    def setInitialWindowGeometry(self):
-        pass
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
 class CursesKeyHandler:
