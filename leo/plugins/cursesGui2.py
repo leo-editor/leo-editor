@@ -66,13 +66,18 @@ def es(*args, **keys):
             g.app.gui.wait_list.append((s, color),)
     # else: logging.info(' KILL: %r' % s)
 #@+node:ekr.20170501043411.1: *4* pr
+pr_count = 0
+
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
+    global pr_count
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
+    pr_count += 1
     for line in g.splitLines(s):
-        logging.info('   pr: %s' % line.rstrip())
+        # logging.info('   pr: %s %s' % (pr_count, line.rstrip()))
+        logging.info('   pr: %s' % (line.rstrip()))
 #@+node:ekr.20170429165242.1: *4* trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''

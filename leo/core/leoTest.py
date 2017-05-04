@@ -678,7 +678,7 @@ class TestManager(object):
                     found = True
             if found:
                 if g.app.gui.guiName() == 'curses':
-                    logger, socketHandler, stream = self.create_logging_stream()
+                    logger, handler, stream = self.create_logging_stream()
                 else:
                     stream = None
                 runner = unittest.TextTestRunner(
@@ -690,7 +690,7 @@ class TestManager(object):
                 if stream:
                     if stream.aList:
                         logger.info('\n'+''.join(stream.aList))
-                    logger.removeHandler(socketHandler)
+                    logger.removeHandler(handler)
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'
@@ -738,14 +738,20 @@ class TestManager(object):
 
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
+        
             # Don't use debug: it includes Qt debug messages.
-        socketHandler = logging.handlers.SocketHandler(
-            'localhost',
-            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        )
-        logger.addHandler(socketHandler)
+        for handler in logger.handlers or []:
+            if isinstance(handler, logging.handlers.SocketHandler):
+                stream = None
+                break
+        else:
+            handler = logging.handlers.SocketHandler(
+                'localhost',
+                logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+            )
+            logger.addHandler(handler)
         stream = self.LoggingStream(logger)
-        return logger, socketHandler, stream
+        return logger, handler, stream
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
         s = '''
