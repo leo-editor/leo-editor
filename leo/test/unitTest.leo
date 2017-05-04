@@ -964,7 +964,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>Failing unit tests</vh>
@@ -1850,7 +1850,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
 </v>
 <v t="ekr.20170504101454.1"><vh>@test logging</vh></v>
-<v t="ekr.20170504102140.1"><vh>Found:print</vh>
+<v t="ekr.20170504102140.1" a="E"><vh>Found:print</vh>
 <v t="ekr.20170504102649.1"><vh>Real prints</vh>
 <v t="ekr.20161002020559.1"><vh>@test all generator return unique positions</vh></v>
 <v t="ekr.20110613143220.3314"><vh>@test All menus execute the proper command</vh></v>
@@ -2272,7 +2272,11 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20060131102450">g.pr('\nEnd of typing tests')
+<t tx="ekr.20060131102450">s = '\nEnd of typing tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
@@ -2424,9 +2428,13 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070306091949">g.pr('\nEnd of leoEditCommands tests.')
+<t tx="ekr.20070306091949">s = '\nEnd of leoEditCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7">
+<t tx="ekr.20070417092935" str_leo_pos="13,1">
 @nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
@@ -2456,37 +2464,59 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113201736"># This is **not** a real unit test.
-g.pr('\nEnd of leoAtFile tests')
+<t tx="ekr.20071113201736">s = '\nEnd of leoAtFile tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113201833"># This is **not** a real unit test.
-g.pr('\nEnd of leoCommands tests')
+<t tx="ekr.20071113201833">s = '\nEnd of leoCommands tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113201854">g.pr('\nEnd of leoConfig tests')
+<t tx="ekr.20071113201854">s = '\nEnd of leoConfig tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202045">g.pr('\nEnd of leoFileCommands tests.')
+<t tx="ekr.20071113202045">s = '\nEnd of leoFileCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202153">g.pr('\nEnd of leoFind tests.')
+<t tx="ekr.20071113202153">s = '\nEnd of leoFind tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202153.1">g.pr('\nEnd of leoFrame tests.')
+<t tx="ekr.20071113202153.1">s = '\nEnd of leoFrame tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202153.2">g.pr('\nEnd of leoGlobals tests.')
+<t tx="ekr.20071113202153.2">s = '\nEnd of leoGlobals tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202452"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-# c.contractParent()
-# g.app.unitTestDict['restoreSelectedNode']=False
-
-g.pr('\nEnd of leoNodes tests.')
+<t tx="ekr.20071113202452">s = '\nEnd of leoNodes tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113202510"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-# c.contractParent()
-# g.app.unitTestDict['restoreSelectedNode']=False
-
-g.pr('\nEnd of leoUndo tests.')
+<t tx="ekr.20071113202510">s = '\nEnd of leoUndo tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
@@ -2502,18 +2532,12 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
-<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-if 0:
-    c.selectPosition(p)
-    c.contractParent()
-    c.selectPosition(p.parent())
-    # Do not do this! It would changed unitTest.leo!
-        # c.save()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.bodyWantsFocus()
-# Print does not work: it is redirected.
-g.pr('all unit tests done',color='blue')
+<t tx="ekr.20081111150402.11"># Print does not work: it is redirected.
+s = 'all unit tests done'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s,color='blue')
 </t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
@@ -3810,8 +3834,11 @@ for ext in g.app.extension_dict.keys():
         if language is None:
             print('no language for ext=%s' % (ext))
 </t>
-<t tx="ekr.20090615053403.4957"># This is **not** a real unit test.
-g.pr('\nEnd of leoColor tests')
+<t tx="ekr.20090615053403.4957">s = '\nEnd of leoColor tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5028">@language python
@@ -4060,20 +4087,11 @@ for tag,aList in table:
                         ok = False
     return ok
 </t>
-<t tx="ekr.20100131171342.5501" annotate="7d71002e"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-if 0: # No longer needed.
-    c.contractAllHeadlines()
-    h = 'All unit tests'
-    p = c.testManager.findNodeAnywhere(h)
-    if p:
-        p.expand()
-        g.app.unitTestDict['restoreSelectedNode']=False
-        c.selectPosition(p)
-        c.redraw()
-
-g.pr('\nEnd of plugins unit tests')
+<t tx="ekr.20100131171342.5501" annotate="7d71002e">s = '\nEnd of plugins unit tests'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
 
@@ -4095,15 +4113,17 @@ if g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 </t>
-<t tx="ekr.20100131171342.5603" annotate="7d71002e">g.pr('\nEnd of leoGui tests.')
+<t tx="ekr.20100131171342.5603" annotate="7d71002e">s = '\nEnd of leoGui tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20100131171342.5609" annotate="7d71002e"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-# c.contractParent()
-# g.app.unitTestDict['restoreSelectedNode']=False
-
-g.pr('\nEnd of leoKeys tests.')
+<t tx="ekr.20100131171342.5609" annotate="7d71002e">s = '\nEnd of leoKeys tests.'
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -5259,12 +5279,10 @@ for fn in glob.glob(pattern):
     assert m
 </t>
 <t tx="ekr.20140724164600.4590">s = '\nEnd of leoImport tests.'
-g.pr(s)
-# if g.app.gui.guiName() == 'curses':
-    # import logging
-    # logging.info(s)
-# else:
-    # print(s)
+if g.app.gui.guiName() == 'curses':
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20140724220921.5199"></t>
 <t tx="ekr.20140725132959.4593">s = '''\
