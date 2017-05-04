@@ -555,6 +555,8 @@ class LeoBody(object):
 
     def updateInjectedIvars(self, w, p):
         '''Inject updated ivars in w, a gui widget.'''
+        if not w:
+            return
         c = self.c
         cc = c.chapterController
         # Was in ctor.
