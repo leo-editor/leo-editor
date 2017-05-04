@@ -495,6 +495,10 @@ class CursesGui(leoGui.LeoGui):
         """Create and run an askYesNoCancel dialog ."""
         g.trace()
         self.dialog_message(message)
+        
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+        if not g.unitTesting:
+            g.trace(title)
 
     def runPropertiesDialog(self,
         title='Properties',
@@ -504,14 +508,21 @@ class CursesGui(leoGui.LeoGui):
     ):
         """Dispay a modal TkPropertiesDialog"""
         g.trace(title)
+        
+    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+        if not g.unitTesting:
+            g.trace(title)
+
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
         return self.key_handler.do_key(ch_i)
-    #@+node:ekr.20170502101347.1: *3* CGui.get_focus (to do)
+    #@+node:ekr.20170502101347.1: *3* CGui.get/set_focus (to do)
     def get_focus(self, *args, **keys):
         return None
 
+    def set_focus(self, *args, **keys):
+        pass
     #@+node:ekr.20170501032447.1: *3* CGui.init_logger
     def init_logger(self):
 
@@ -551,6 +562,9 @@ class CursesGui(leoGui.LeoGui):
         self.curses_app.run()
             # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
+    #@+node:ekr.20170504053709.1: *3* CGui.setInitialWindowGeometry
+    def setInitialWindowGeometry(self):
+        pass
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
 class CursesKeyHandler:
@@ -775,44 +789,44 @@ class CursesLog (leoFrame.LeoLog):
                 # tw.installEventFilter(theFilter)
             # # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
             # tw.setMovable(True)
-    #@+node:ekr.20170419143731.2: *3* CLog.cmd (decorator)
+    #@+node:ekr.20170419143731.2: *3*  CLog.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.log class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
-    #@+node:ekr.20170419143731.7: *3* CLog.Commands
+    #@+node:ekr.20170419143731.7: *3* CLog.clearLog
     @cmd('clear-log')
     def clearLog(self, event=None):
         '''Clear the log pane.'''
         # w = self.logCtrl.widget # w is a QTextBrowser
         # if w:
             # w.clear()
-    #@+node:ekr.20170420040818.1: *3* CLog.Entries
-    #@+node:ekr.20170420035717.1: *4* CLog.enable/disable
+    #@+node:ekr.20170420035717.1: *3* CLog.enable/disable
     def disable(self):
         self.enabled = False
 
     def enable(self, enabled=True):
         self.enabled = enabled
-    #@+node:ekr.20170420041119.1: *4* CLog.finishCreate
+    #@+node:ekr.20170420041119.1: *3* CLog.finishCreate
     def finishCreate(self):
         '''CursesLog.finishCreate.'''
         pass
-    #@+node:ekr.20170419143731.15: *4* CLog.put
+    #@+node:ekr.20170419143731.15: *3* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
         c, w = self.c, self.w
         if not c or not c.exists:
-            logging.info('CLog.put: no c: %r' % s)
-            return
-        if self.w:
+            # logging.info('CLog.put: no c: %r' % s)
+            pass
+        elif self.w:
             values = w.get_values()
             values.append(s)
             w.set_values(values)
             w.update()
         else:
-            logging.info('CLog.put no w: %r' % s)
-    #@+node:ekr.20170419143731.16: *4* CLog.putnl
+            pass
+            # logging.info('CLog.put no w: %r' % s)
+    #@+node:ekr.20170419143731.16: *3* CLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
         # This is not called normally.
