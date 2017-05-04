@@ -675,12 +675,12 @@ class TestManager(object):
                     suite.addTest(test)
                     found = True
             if found:
-                if g.app.gui.guiName() == 'curses':
-                    
+                if False: # g.app.gui.guiName() == 'curses':
                     import logging
                     import logging.handlers
                     logger = logging.getLogger()
-                    logger.setLevel(logging.DEBUG)
+                    logger.setLevel(logging.INFO)
+                        # Don't use debug: it includes Qt debug messages.
                     socketHandler = logging.handlers.SocketHandler(
                         'localhost',
                         logging.handlers.DEFAULT_TCP_LOGGING_PORT,
@@ -690,14 +690,18 @@ class TestManager(object):
                     class Log:
                         aList = []
                         def write(self, s):
-                            prefix = ''.join(self.aList)
-                            if s.isspace():
-                                pass
-                            elif s.endswith('\n') or len(prefix+s) > 50:
-                                logger.info(prefix+s)
-                                self.aList = []
+                            if 1: # Write everything on a new line.
+                                if not s.isspace():
+                                    logger.info(s)
                             else:
-                                self.aList.append(s)
+                                prefix = ''.join(self.aList)
+                                if s.isspace():
+                                    pass
+                                elif s.endswith('\n') or len(prefix+s) > 50:
+                                    logger.info('\n'+prefix+s)
+                                    self.aList = []
+                                else:
+                                    self.aList.append(s)
                         def flush(self):
                             pass
 
@@ -712,7 +716,7 @@ class TestManager(object):
                 result = runner.run(suite)
                 if stream:
                     if stream.aList:
-                        logger.info(''.join(stream.aList))
+                        logger.info('\n'+''.join(stream.aList))
                     logger.removeHandler(socketHandler)
                 # put info to db as well
                 if g.enableDB:
