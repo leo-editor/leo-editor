@@ -12,11 +12,13 @@ try:
     import builtins # Python 3
 except ImportError:
     import __builtin__ as builtins # Python 2.
+import cProfile as profile
 import doctest
 import gc
 import glob
+import logging
+import logging.handlers
 import os
-import cProfile as profile
 # import pstats # A Python distro bug: can fail on Ubuntu.
 # import re
 import sys
@@ -675,37 +677,8 @@ class TestManager(object):
                     suite.addTest(test)
                     found = True
             if found:
-                if False: # g.app.gui.guiName() == 'curses':
-                    import logging
-                    import logging.handlers
-                    logger = logging.getLogger()
-                    logger.setLevel(logging.INFO)
-                        # Don't use debug: it includes Qt debug messages.
-                    socketHandler = logging.handlers.SocketHandler(
-                        'localhost',
-                        logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-                    )
-                    logger.addHandler(socketHandler)
-        
-                    class Log:
-                        aList = []
-                        def write(self, s):
-                            if 1: # Write everything on a new line.
-                                if not s.isspace():
-                                    logger.info(s)
-                            else:
-                                prefix = ''.join(self.aList)
-                                if s.isspace():
-                                    pass
-                                elif s.endswith('\n') or len(prefix+s) > 50:
-                                    logger.info('\n'+prefix+s)
-                                    self.aList = []
-                                else:
-                                    self.aList.append(s)
-                        def flush(self):
-                            pass
-
-                    stream = Log()
+                if g.app.gui.guiName() == 'curses':
+                    logger, socketHandler, stream = self.create_logging_stream()
                 else:
                     stream = None
                 runner = unittest.TextTestRunner(
@@ -736,6 +709,43 @@ class TestManager(object):
                 c.redraw(p1)
             else:
                 c.recolor() # Needed when coloring is disabled in unit tests.
+    #@+node:ekr.20170504130531.1: *5* class LoggingLog
+    class LoggingStream:
+        '''A class that can searve as a logging stream.'''
+        
+        def __init__(self, logger):
+            self.aList = []
+            self.logger = logger
+
+        def write(self, s):
+            if 1: # Write everything on a new line.
+                s = s.strip()
+                if len(s) > 1:
+                    self.logger.info(s)
+            else:
+                prefix = ''.join(self.aList)
+                if s.isspace():
+                    pass
+                elif s.endswith('\n') or len(prefix+s) > 50:
+                    self.logger.info('\n'+prefix+s)
+                    self.aList = []
+                else:
+                    self.aList.append(s)
+        def flush(self):
+            pass
+    #@+node:ekr.20170504130408.1: *5* create_logging_stream
+    def create_logging_stream(self):
+
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+            # Don't use debug: it includes Qt debug messages.
+        socketHandler = logging.handlers.SocketHandler(
+            'localhost',
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        )
+        logger.addHandler(socketHandler)
+        stream = self.LoggingStream(logger)
+        return logger, socketHandler, stream
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
         s = '''
