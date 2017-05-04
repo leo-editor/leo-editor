@@ -712,12 +712,13 @@ class TestManager(object):
     #@+node:ekr.20170504130531.1: *5* class LoggingLog
     class LoggingStream:
         '''A class that can searve as a logging stream.'''
-        
+
         def __init__(self, logger):
             self.aList = []
             self.logger = logger
 
         def write(self, s):
+            '''Called from pr and also unittest.addSuccess/addFailure.'''
             if 0: # Write everything on a new line.
                 if not s.isspace():
                     self.logger.info(s.rstrip())
@@ -732,15 +733,13 @@ class TestManager(object):
                     self.logger.info(s.rstrip())
         def flush(self):
             pass
-            # if self.aList:
-                # self.logger.info(''.join(self.aList))
-                # self.aList = []
+
     #@+node:ekr.20170504130408.1: *5* create_logging_stream
     def create_logging_stream(self):
 
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
-        
+
             # Don't use debug: it includes Qt debug messages.
         for handler in logger.handlers or []:
             if isinstance(handler, logging.handlers.SocketHandler):
