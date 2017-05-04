@@ -142,7 +142,10 @@ class CursesApp(npyscreen.NPSApp):
         g.app.gui.run()
 #@+node:ekr.20170501024433.1: ** class CursesBody (LeoBody)
 class CursesBody (leoFrame.LeoBody):
-    '''A class that represents curses body pane.'''
+    '''
+    A class that represents curses body pane.
+    This is c.frame.body.
+    '''
     
     def __init__(self, c):
         
@@ -501,18 +504,14 @@ class CursesGui(leoGui.LeoGui):
     ):
         """Dispay a modal TkPropertiesDialog"""
         g.trace(title)
-    #@+node:ekr.20170502020354.1: *3* CGui.run
-    def run(self):
-        '''
-        Create and run the top-level curses form.
-        
-        '''
-        self.top_form = self.createCursesTop()
-        self.top_form.edit()
     #@+node:ekr.20170430114709.1: *3* CGui.do_key
     def do_key(self, ch_i):
         
         return self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170502101347.1: *3* CGui.get_focus (to do)
+    def get_focus(self, *args, **keys):
+        return None
+
     #@+node:ekr.20170501032447.1: *3* CGui.init_logger
     def init_logger(self):
 
@@ -528,13 +527,22 @@ class CursesGui(leoGui.LeoGui):
         g.es = es
         g.pr = pr # Most ouput goes through here, including g.es_exception.
         g.trace = trace
-    #@+node:ekr.20170502101347.1: *3* CGui.must be defined in subclasses
-    def get_focus(self, *args, **keys):
-        return None
-
+    #@+node:ekr.20170504052119.1: *3* CGui.isTextWrapper
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20170504052042.1: *3* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
         g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20170502020354.1: *3* CGui.run
+    def run(self):
+        '''
+        Create and run the top-level curses form.
+        
+        '''
+        self.top_form = self.createCursesTop()
+        self.top_form.edit()
     #@+node:ekr.20170419140914.1: *3* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
@@ -725,7 +733,11 @@ class CursesKeyHandler:
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
 class CursesLog (leoFrame.LeoLog):
-    '''A class that represents curses log pane.'''
+    '''
+    A class that represents curses log pane.
+    This is c.frame.log.
+    '''
+    
     #@+others
     #@+node:ekr.20170419143731.4: *3* CLog.__init__
     def __init__(self, c):
@@ -744,6 +756,7 @@ class CursesLog (leoFrame.LeoLog):
         self.w = None
             # The npyscreen log widget. Queue all output until set.
             # Set in CApp.main.
+
         
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
@@ -839,7 +852,10 @@ class CursesMenu (leoMenu.LeoMenu):
         
 #@+node:ekr.20170504034655.1: ** class CursesTextWrapper(object)
 class CursesTextWrapper(object):
-    '''A Wrapper class for Curses edit widgets classes.'''
+    '''
+    A Wrapper class for Curses edit widgets classes.
+    This is c.frame.body.wrapper or c.frame.log.wrapper.
+    '''
     #@+others
     #@+node:ekr.20170504034655.2: *3* cw.ctor & helper
     def __init__(self, c, name, w):
