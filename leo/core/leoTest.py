@@ -723,8 +723,6 @@ class TestManager(object):
                     self.logger.info(s.rstrip())
             else:
                 s = s.strip()
-                # if s.startswith('pr:'):
-                    # s = s[3:].strip()
                 if len(s) == 1:
                     self.aList.append(s)
                 elif s:
