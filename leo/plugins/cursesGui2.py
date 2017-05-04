@@ -152,10 +152,8 @@ class CursesBody (leoFrame.LeoBody):
         )
             # Init the base class.
         self.c = c
-        ### Not yet
-            # self.widget = top.leo_ui.richTextEdit # A LeoQTextBrowser
-            # self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
-        self.wrapper = g.NullObject()
+        self.widget = None
+        self.wrapper = None # Set in createCursesBody.
 #@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
     '''The LeoFrame when --gui=curses is in effect.'''
@@ -281,6 +279,9 @@ class CursesFrame (leoFrame.LeoFrame):
 
     def setTopGeometry(self, w, h, x, y, adjustSize=True):
         pass
+        
+    def setWrap(self, p):
+        pass
 
     def update(self, *args, **keys):
         pass
@@ -352,6 +353,7 @@ class CursesGui(leoGui.LeoGui):
         )
         assert hasattr(c.frame, 'body_widget')
         c.frame.body_widget = w
+        c.frame.body.wrapper = CursesTextWrapper(c, 'body', w)
     #@+node:ekr.20170502083613.1: *4* createCursesLog
     def createCursesLog(self, c, form):
         '''
@@ -683,7 +685,7 @@ class CursesKeyHandler:
     #@+node:ekr.20170430115131.3: *4* CKey.to_key
     def to_key(self, i):
         '''Convert int i to a char and shortcut.'''
-        trace = True
+        trace = False
         a = curses.ascii
         char, shortcut = '', ''
         s = a.unctrl(i)
@@ -722,7 +724,7 @@ class CursesKeyHandler:
         return char, shortcut
     #@-others
 #@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
-class CursesLog:
+class CursesLog (leoFrame.LeoLog):
     '''A class that represents curses log pane.'''
     #@+others
     #@+node:ekr.20170419143731.4: *3* CLog.__init__
@@ -835,6 +837,511 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
+#@+node:ekr.20170504034655.1: ** class CursesTextWrapper(object)
+class CursesTextWrapper(object):
+    '''A Wrapper class for Curses edit widgets classes.'''
+    #@+others
+    #@+node:ekr.20170504034655.2: *3* cw.ctor & helper
+    def __init__(self, c, name, w):
+        '''Ctor for QTextMixin class'''
+        self.c = c
+        self.changingText = False # A lockout for onTextChanged.
+        self.enabled = True
+        self.name = name
+        self.supportsHighLevelInterface = True
+            # A flag for k.masterKeyHandler and isTextWrapper.
+        self.w = self.widget = w
+        self.injectIvars(c)
+            # These are used by Leo's core.
+    #@+node:ekr.20170504034655.3: *4* cw.injectIvars
+    def injectIvars(self, name='1', parentFrame=None):
+        '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
+        p = self.c.currentPosition()
+        if name == '1':
+            self.leo_p = None # Will be set when the second editor is created.
+        else:
+            self.leo_p = p and p.copy()
+        self.leo_active = True
+        # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+        self.leo_bodyBar = None
+        self.leo_bodyXBar = None
+        self.leo_chapter = None
+        self.leo_frame = None
+        self.leo_name = name
+        self.leo_label = None
+    #@+node:ekr.20170504034655.5: *3* cw.Event handlers (To do)
+    # These are independent of the kind of Qt widget.
+    #@+node:ekr.20170504034655.6: *4* cw.onCursorPositionChanged
+    def onCursorPositionChanged(self, event=None):
+        c = self.c
+        name = c.widget_name(self)
+        # Apparently, this does not cause problems
+        # because it generates no events in the body pane.
+        if name.startswith('body'):
+            if hasattr(c.frame, 'statusLine'):
+                c.frame.statusLine.update()
+    #@+node:ekr.20170504034655.7: *4* cw.onTextChanged
+    def onTextChanged(self):
+        '''
+        Update Leo after the body has been changed.
+
+        self.selecting is guaranteed to be True during
+        the entire selection process.
+        '''
+        # Important: usually w.changingText is True.
+        # This method very seldom does anything.
+        trace = False and not g.unitTesting
+        verbose = False
+        w = self
+        c = self.c; p = c.p
+        tree = c.frame.tree
+        if w.changingText:
+            if trace and verbose: g.trace('already changing')
+            return
+        if tree.tree_select_lockout:
+            if trace and verbose: g.trace('selecting lockout')
+            return
+        if tree.selecting:
+            if trace and verbose: g.trace('selecting')
+            return
+        if tree.redrawing:
+            if trace and verbose: g.trace('redrawing')
+            return
+        if not p:
+            if trace: g.trace('*** no p')
+            return
+        newInsert = w.getInsertPoint()
+        newSel = w.getSelectionRange()
+        newText = w.getAllText() # Converts to unicode.
+        # Get the previous values from the VNode.
+        oldText = p.b
+        if oldText == newText:
+            # This can happen as the result of undo.
+            # g.error('*** unexpected non-change')
+            return
+        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+        # oldIns  = p.v.insertSpot
+        i, j = p.v.selectionStart, p.v.selectionLength
+        oldSel = (i, i + j)
+        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
+        oldYview = None
+        undoType = 'Typing'
+        c.undoer.setUndoTypingParams(p, undoType,
+            oldText=oldText, newText=newText,
+            oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        # Update the VNode.
+        p.v.setBodyString(newText)
+        if True:
+            p.v.insertSpot = newInsert
+            i, j = newSel
+            i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+            if i > j: i, j = j, i
+            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        # No need to redraw the screen.
+        c.recolor()
+        if g.app.qt_use_tabs:
+            if trace: g.trace(c.frame.top)
+        if not c.changed and c.frame.initComplete:
+            c.setChanged(True)
+        c.frame.body.updateEditors()
+        c.frame.tree.updateIcon(p)
+    #@+node:ekr.20170504034655.8: *3* cw.High-level interface
+    #@+node:ekr.20170504035808.1: *4* curses-specific (To do)
+    #@+node:ekr.20170504040309.2: *5* cw.delete (uses getAllText)
+    def delete(self, i, j=None):
+        
+        # Generic
+        i = self.toPythonIndex(i)
+        if j is None: j = i + 1
+        j = self.toPythonIndex(j)
+        # This allows subclasses to use this base class method.
+        if i > j: i, j = j, i
+        s = self.getAllText()
+        self.setAllText(s[: i] + s[j:])
+        self.setSelectionRange(i, i, insert=i)
+        ###
+            # Avoid calls to setAllText
+            # w = self.widget
+            # if trace: g.trace(self.getSelectionRange())
+            # i = self.toPythonIndex(i)
+            # if j is None: j = i + 1
+            # j = self.toPythonIndex(j)
+            # if i > j: i, j = j, i
+            # if trace: g.trace(i, j)
+            # sb = w.verticalScrollBar()
+            # pos = sb.sliderPosition()
+            # cursor = w.textCursor()
+            # try:
+                # self.changingText = True # Disable onTextChanged
+                # old_i, old_j = self.getSelectionRange()
+                # if i == old_i and j == old_j:
+                    # # Work around an apparent bug in cursor.movePosition.
+                    # cursor.removeSelectedText()
+                # elif i == j:
+                    # pass
+                # else:
+                    # # g.trace('*** using dubious code')
+                    # cursor.setPosition(i)
+                    # moveCount = abs(j - i)
+                    # cursor.movePosition(cursor.Right, cursor.KeepAnchor, moveCount)
+                    # w.setTextCursor(cursor) # Bug fix: 2010/01/27
+                    # if trace:
+                        # i, j = self.getSelectionRange()
+                        # g.trace(i, j)
+                    # cursor.removeSelectedText()
+                    # if trace: g.trace(self.getSelectionRange())
+            # finally:
+                # self.changingText = False
+            # sb.setSliderPosition(pos)
+    #@+node:ekr.20170504040309.3: *5* cw.flashCharacter (To do)
+    def flashCharacter(self, i,
+        bg='white',
+        fg='red',
+        flashes=3,
+        delay=75,
+    ):
+        pass
+        ###
+            # # numbered color names don't work in Ubuntu 8.10, so...
+            # if bg[-1].isdigit() and bg[0] != '#':
+                # bg = bg[: -1]
+            # if fg[-1].isdigit() and fg[0] != '#':
+                # fg = fg[: -1]
+            # # This might causes problems during unit tests.
+            # # The selection point isn't restored in time.
+            
+            # if g.app.unitTesting:
+                # return
+            # w = self.widget # A QTextEdit.
+            # e = QtGui.QTextCursor
+        
+            # def after(func):
+                # QtCore.QTimer.singleShot(delay, func)
+        
+            # def addFlashCallback(self=self, w=w):
+                # i = self.flashIndex
+                # cursor = w.textCursor() # Must be the widget's cursor.
+                # cursor.setPosition(i)
+                # cursor.movePosition(e.Right, e.KeepAnchor, 1)
+                # extra = w.ExtraSelection()
+                # extra.cursor = cursor
+                # if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
+                # if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
+                # self.extraSelList = [extra] # keep the reference.
+                # w.setExtraSelections(self.extraSelList)
+                # self.flashCount -= 1
+                # after(removeFlashCallback)
+        
+            # def removeFlashCallback(self=self, w=w):
+                # w.setExtraSelections([])
+                # if self.flashCount > 0:
+                    # after(addFlashCallback)
+                # else:
+                    # w.setFocus()
+        
+            # self.flashCount = flashes
+            # self.flashIndex = i
+            # self.flashBg = None if bg.lower() == 'same' else bg
+            # self.flashFg = None if fg.lower() == 'same' else fg
+            # addFlashCallback()
+    #@+node:ekr.20170504035640.1: *5* cw.getAllText (To do)
+    def getAllText(self):
+
+        return ''
+        ###
+            # w = self.widget
+            # s = g.u(w.toPlainText())
+            # return s
+    #@+node:ekr.20170504040026.1: *5* cw.getInsertPoint (To do)
+    def getInsertPoint(self):
+        
+        return 0
+        ###
+            # return self.widget.textCursor().position()
+    #@+node:ekr.20170504040221.1: *5* cw.getSelectionRange (To do)
+    def getSelectionRange(self, sort=True):
+        
+        return 0, 0
+        ###
+            # w = self.widget
+            # tc = w.textCursor()
+            # i, j = tc.selectionStart(), tc.selectionEnd()
+            # return i, j
+    #@+node:ekr.20170504040309.7: *5* cw.getX/YScrollPosition (To do)
+    def getXScrollPosition(self):
+
+        return 0
+        ###
+            # w = self.widget
+            # sb = w.horizontalScrollBar()
+            # return sb.sliderPosition()
+
+
+    def getYScrollPosition(self):
+
+        return 0
+        ###
+            # w = self.widget
+            # sb = w.verticalScrollBar()
+            # return sb.sliderPosition()
+        
+    #@+node:ekr.20170504040309.8: *5* cw.hasSelection (To do)
+    def hasSelection(self):
+        
+        return False
+        ###
+            # return self.widget.textCursor().hasSelection()
+    #@+node:ekr.20170504040309.9: *5* cw.insert (uses setAllText)
+    def insert(self, i, s):
+        
+        s2 = self.getAllText()
+        i = self.toPythonIndex(i)
+        self.setAllText(s2[: i] + s + s2[i:])
+        self.setInsertPoint(i + len(s))
+        return i
+        ### Avoid call to getAllText
+            # w = self.widget
+            # i = self.toPythonIndex(i)
+            # cursor = w.textCursor()
+            # try:
+                # self.changingText = True # Disable onTextChanged.
+                # cursor.setPosition(i)
+                # cursor.insertText(s)
+                # w.setTextCursor(cursor) # Bug fix: 2010/01/27
+            # finally:
+                # self.changingText = False
+    #@+node:ekr.20170504040309.14: *5* cw.see & seeInsertPoint (to do)
+    def see(self, i):
+        '''Make sure position i is visible.'''
+        pass
+        ###
+            # trace = False and not g.unitTesting
+            # w = self.widget
+            # if trace:
+                # cursor = w.textCursor()
+                # g.trace('i', i, 'pos', cursor.position())
+                    # # 'getInsertPoint',self.getInsertPoint())
+            # w.ensureCursorVisible()
+
+    def seeInsertPoint(self):
+        '''Make sure the insert point is visible.'''
+        pass
+        ###
+            # trace = False and not g.unitTesting
+            # if trace: g.trace(self.getInsertPoint())
+            # self.widget.ensureCursorVisible()
+    #@+node:ekr.20170504034655.21: *5* cw.selectAllText (to do)
+    def selectAllText(self, s=None):
+        
+        pass
+        ###
+            # self.setSelectionRange(0, self.getLength(s))
+    #@+node:ekr.20170504040309.15: *5* cw.setAllText (to do)
+    def setAllText(self, s):
+        '''Set the text of body pane.'''
+        pass
+        ###
+        # trace = False and not g.unitTesting
+        # trace_time = True
+        # c, w = self.c, self.widget
+        # h = c.p.h if c.p else '<no p>'
+        # if trace and not trace_time: g.trace(len(s), h)
+        # try:
+            # if trace and trace_time:
+                # t1 = time.time()
+            # self.changingText = True # Disable onTextChanged.
+            # w.setReadOnly(False)
+            # w.setPlainText(s)
+            # if trace and trace_time:
+                # delta_t = time.time() - t1
+                # g.trace('%4.2f sec. %6s chars %s' % (delta_t, len(s), h))
+        # finally:
+            # self.changingText = False
+    #@+node:ekr.20170504034655.11: *5* cw.setFocus (to do)
+    def setFocus(self):
+        
+        pass
+        ###
+            # # Call the base class
+            # assert isinstance(self.widget, (
+                # QtWidgets.QTextBrowser,
+                # QtWidgets.QLineEdit,
+                # QtWidgets.QTextEdit,
+                # Qsci and Qsci.QsciScintilla,
+            # )), self.widget
+            # QtWidgets.QTextBrowser.setFocus(self.widget)
+    #@+node:ekr.20170504040309.17: *5* cw.setSelectionRange (to do)
+    def setSelectionRange(self, i, j, insert=None, s=None):
+        '''Set the selection range and the insert point.'''
+        pass
+        ###
+            # trace = False and not g.unitTesting
+            # traceTime = False and not g.unitTesting
+            # # Part 1
+            # if traceTime: t1 = time.time()
+            # w = self.widget
+            # i = self.toPythonIndex(i)
+            # j = self.toPythonIndex(j)
+            # if s is None:
+                # s = self.getAllText()
+            # n = len(s)
+            # i = max(0, min(i, n))
+            # j = max(0, min(j, n))
+            # if insert is None:
+                # ins = max(i, j)
+            # else:
+                # ins = self.toPythonIndex(insert)
+                # ins = max(0, min(ins, n))
+            # if traceTime:
+                # delta_t = time.time() - t1
+                # if delta_t > 0.1: g.trace('part1: %2.3f sec' % (delta_t))
+            # # Part 2:
+            # if traceTime: t2 = time.time()
+            # # 2010/02/02: Use only tc.setPosition here.
+            # # Using tc.movePosition doesn't work.
+            # tc = w.textCursor()
+            # if i == j:
+                # tc.setPosition(i)
+            # elif ins == j:
+                # # Put the insert point at j
+                # tc.setPosition(i)
+                # tc.setPosition(j, tc.KeepAnchor)
+            # elif ins == i:
+                # # Put the insert point at i
+                # tc.setPosition(j)
+                # tc.setPosition(i, tc.KeepAnchor)
+            # else:
+                # # 2014/08/21: It doesn't seem possible to put the insert point somewhere else!
+                # tc.setPosition(j)
+                # tc.setPosition(i, tc.KeepAnchor)
+            # w.setTextCursor(tc)
+            # # Fix bug 218: https://github.com/leo-editor/leo-editor/issues/218
+            # if hasattr(g.app.gui, 'setClipboardSelection'):
+                # g.app.gui.setClipboardSelection(s[i:j])
+            # # Remember the values for v.restoreCursorAndScroll.
+            # v = self.c.p.v # Always accurate.
+            # v.insertSpot = ins
+            # if i > j: i, j = j, i
+            # assert(i <= j)
+            # v.selectionStart = i
+            # v.selectionLength = j - i
+            # v.scrollBarSpot = spot = w.verticalScrollBar().value()
+            # if trace: g.trace('i: %s j: %s ins: %s spot: %s %s' % (i, j, ins, spot, v.h))
+            # if traceTime:
+                # delta_t = time.time() - t2
+                # tot_t = time.time() - t1
+                # if delta_t > 0.1: g.trace('part2: %2.3f sec' % (delta_t))
+                # if tot_t > 0.1: g.trace('total: %2.3f sec' % (tot_t))
+
+    setSelectionRangeHelper = setSelectionRange
+    #@+node:ekr.20170504040309.18: *5* cw.setXScrollPosition (to do)
+    def setXScrollPosition(self, pos):
+        '''Set the position of the horizonatl scrollbar.'''
+        pass
+        ###
+            # if pos is not None:
+                # w = self.widget
+                # sb = w.horizontalScrollBar()
+                # sb.setSliderPosition(pos)
+    #@+node:ekr.20170504040309.19: *5* cw.setYScrollPosition (to do)
+    def setYScrollPosition(self, pos):
+        '''Set the vertical scrollbar position.'''
+        pass
+        ###
+            # if pos is not None:
+                # w = self.widget
+                # sb = w.verticalScrollBar()
+                # sb.setSliderPosition(pos)
+    #@+node:ekr.20170504035742.1: *4* generic (no changes)
+    # These call only wrapper methods.
+    #@+node:ekr.20170504034655.13: *5* cw.appendText
+    def appendText(self, s):
+
+        s2 = self.getAllText()
+        self.setAllText(s2 + s)
+        self.setInsertPoint(len(s2))
+    #@+node:ekr.20170504034655.10: *5* cw.clipboard_append & clipboard_clear
+    def clipboard_append(self, s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+
+    def clipboard_clear(self):
+        g.app.gui.replaceClipboardWith('')
+    #@+node:ekr.20170504034655.15: *5* cw.deleteTextSelection
+    def deleteTextSelection(self):
+
+        i, j = self.getSelectionRange()
+        self.delete(i, j)
+    #@+node:ekr.20170504034655.9: *5* cw.enable/disable
+    def disable(self):
+        self.enabled = False
+
+    def enable(self, enabled=True):
+        self.enabled = enabled
+    #@+node:ekr.20170504034655.16: *5* cw.get
+    def get(self, i, j=None):
+
+        # 2012/04/12: fix the following two bugs by using the vanilla code:
+        # https://bugs.launchpad.net/leo-editor/+bug/979142
+        # https://bugs.launchpad.net/leo-editor/+bug/971166
+        s = self.getAllText()
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        return s[i: j]
+    #@+node:ekr.20170504034655.17: *5* cw.getLastPosition & getLength
+    def getLastPosition(self, s=None):
+
+        return len(self.getAllText()) if s is None else len(s)
+
+    def getLength(self, s=None):
+
+        return len(self.getAllText()) if s is None else len(s)
+    #@+node:ekr.20170504034655.4: *5* cw.getName
+    def getName(self):
+        return self.name # Essential.
+    #@+node:ekr.20170504034655.18: *5* cw.getSelectedText
+    def getSelectedText(self):
+
+        i, j = self.getSelectionRange()
+        if i == j:
+            return ''
+        else:
+            s = self.getAllText()
+            return s[i: j]
+    #@+node:ekr.20170504034655.24: *5* cw.rememberSelectionAndScroll
+    def rememberSelectionAndScroll(self):
+        
+        w = self
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = w.getInsertPoint()
+        i, j = w.getSelectionRange()
+        if i > j: i, j = j, i
+        assert(i <= j)
+        v.selectionStart = i
+        v.selectionLength = j - i
+        v.scrollBarSpot = w.getYScrollPosition()
+    #@+node:ekr.20170504040309.16: *5* cw.setInsertPoint
+    def setInsertPoint(self, i, s=None):
+
+        # Fix bug 981849: incorrect body content shown.
+        # Use the more careful code in setSelectionRange.
+        self.setSelectionRange(i=i, j=i, insert=i, s=s)
+    #@+node:ekr.20170504034655.22: *5* cw.toPythonIndex
+    def toPythonIndex(self, index, s=None):
+
+        if s is None:
+            s = self.getAllText()
+        i = g.toPythonIndex(s, index)
+        return i
+    #@+node:ekr.20170504034655.23: *5* cw.toPythonIndexRowCol
+    def toPythonIndexRowCol(self, index):
+
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return i, row, col
+    #@-others
+
 #@+node:ekr.20170502093200.1: ** class CursesTopFrame
 class CursesTopFrame:
     '''A representation of c.frame.top.'''
