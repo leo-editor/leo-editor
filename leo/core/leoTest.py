@@ -718,21 +718,25 @@ class TestManager(object):
             self.logger = logger
 
         def write(self, s):
-            if 1: # Write everything on a new line.
-                s = s.strip()
-                if len(s) > 1:
-                    self.logger.info(s)
+            if 0: # Write everything on a new line.
+                if not s.isspace():
+                    self.logger.info(s.rstrip())
             else:
-                prefix = ''.join(self.aList)
-                if s.isspace():
-                    pass
-                elif s.endswith('\n') or len(prefix+s) > 50:
-                    self.logger.info('\n'+prefix+s)
-                    self.aList = []
-                else:
+                s = s.strip()
+                # if s.startswith('pr:'):
+                    # s = s[3:].strip()
+                if len(s) == 1:
                     self.aList.append(s)
+                elif s:
+                    if self.aList:
+                        self.logger.info(''.join(self.aList))
+                        self.aList = []
+                    self.logger.info(s.rstrip())
         def flush(self):
             pass
+            # if self.aList:
+                # self.logger.info(''.join(self.aList))
+                # self.aList = []
     #@+node:ekr.20170504130408.1: *5* create_logging_stream
     def create_logging_stream(self):
 

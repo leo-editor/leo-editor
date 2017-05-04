@@ -75,9 +75,13 @@ def pr(*args, **keys):
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
     pr_count += 1
-    for line in g.splitLines(s):
-        # logging.info('   pr: %s %s' % (pr_count, line.rstrip()))
-        logging.info('   pr: %s' % (line.rstrip()))
+    if False and g.unitTesting:
+        for line in g.splitLines(s):
+            logging.info(line.rstrip())
+    else:
+        for line in g.splitLines(s):
+            # logging.info('   pr: %s %s' % (pr_count, line.rstrip()))
+            logging.info('   pr: %s' % (line.rstrip()))
 #@+node:ekr.20170429165242.1: *4* trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
