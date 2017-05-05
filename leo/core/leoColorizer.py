@@ -2123,10 +2123,13 @@ if QtGui:
                     delta_t = time.clock()-t1
                     g.trace('(leo_h) ----- %2.3f sec' % (delta_t), self.n_calls)
         #@+node:ekr.20170428054142.1: *3* leo_h.force_rehighlight
-        def force_rehighlight(self, p):
-            '''Force a complete rehighlighting of p.b.'''
-            if hasattr(self, 'currentBlock') and self.colorizer.enabled:
-                QtGui.QSyntaxHighlighter.rehighlight(self)
+        if 0:
+            # Part of the failed fix for #466.
+            
+            def force_rehighlight(self, p):
+                '''Force a complete rehighlighting of p.b.'''
+                if hasattr(self, 'currentBlock') and self.colorizer.enabled:
+                    QtGui.QSyntaxHighlighter.rehighlight(self)
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
             """ Called by QSyntaxHiglighter """
