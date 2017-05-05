@@ -157,7 +157,7 @@ class MultiLine(widget.Widget):
     def reset_display_cache(self):
         self._last_values = False
         self._last_value  = False
-    #@+node:ekr.20170428084208.82: *3* update
+    #@+node:ekr.20170428084208.82: *3* update ***
     def update(self, clear=True):
         if self.hidden and clear:
             self.clear()
@@ -171,46 +171,42 @@ class MultiLine(widget.Widget):
         #self._remake_filter_cache()
         self._filtered_values_cache = self.get_filtered_indexes()
         if self.editing or self.always_show_cursor:
-            if self.cursor_line < 0: self.cursor_line = 0
-            if self.cursor_line > len(self.values)-1: self.cursor_line = len(self.values)-1
-            
+            if self.cursor_line < 0:
+                self.cursor_line = 0
+            if self.cursor_line > len(self.values)-1:
+                self.cursor_line = len(self.values)-1
             if self.slow_scroll:
                 if self.cursor_line > self.start_display_at+display_length-1:
                     self.start_display_at = self.cursor_line - (display_length-1) 
-
                 if self.cursor_line < self.start_display_at:
                     self.start_display_at = self.cursor_line
-            
             else:
                 if self.cursor_line > self.start_display_at+(display_length-2):
                     self.start_display_at = self.cursor_line
-
                 if self.cursor_line < self.start_display_at:
                     self.start_display_at = self.cursor_line - (display_length-2)
                     if self.start_display_at < 0: self.start_display_at=0
         # Don't update the screen if nothing has changed.
-        no_change = False
+        # no_change = False
         try:            
-            if (self._safe_to_display_cache and \
-                self._last_value is self.value) and \
-                (self.values == self._last_values) and \
-                (self.start_display_at == self._last_start_display_at) and \
-                (clear != True) and \
-                (self._last_cursor_line == self.cursor_line) and \
-                (self._last_filter == self._filter) and \
-                self.editing:
-                no_change = True
-            else:
-                no_change = False
+            no_change = (
+                self._safe_to_display_cache and
+                self._last_value is self.value and
+                self.values == self._last_values and
+                self.start_display_at == self._last_start_display_at and
+                clear != True and
+                self._last_cursor_line == self.cursor_line and
+                self._last_filter == self._filter and
+                self.editing
+            )
         except Exception:
-                no_change = False
+            no_change = False
         if clear:
             no_change = False
         if not no_change or clear or self.never_cache:
             if clear is True: 
                 self.clear()
-            if (self._last_start_display_at != self.start_display_at) \
-                    and clear is None:
+            if self._last_start_display_at != self.start_display_at and clear is None:
                 self.clear()
             else:
                 pass
@@ -245,9 +241,17 @@ class MultiLine(widget.Widget):
                 #line.show_bold = False
                 line.clear()
                 if self.do_colors():
-                    self.parent.curses_pad.addstr(self.rely+self.height-1, self.relx, MORE_LABEL, self.parent.theme_manager.findPair(self, 'CONTROL'))
+                    self.parent.curses_pad.addstr(
+                        self.rely+self.height-1,
+                        self.relx, MORE_LABEL,
+                        self.parent.theme_manager.findPair(self, 'CONTROL'),
+                    )
                 else:
-                    self.parent.curses_pad.addstr(self.rely+self.height-1, self.relx, MORE_LABEL)
+                    self.parent.curses_pad.addstr(
+                        self.rely+self.height-1,
+                        self.relx,
+                        MORE_LABEL,
+                    )
             if self.editing or self.always_show_cursor: 
                 self.set_is_line_cursor(self._my_widgets[(self.cursor_line-self.start_display_at)], True)
                 self._my_widgets[(self.cursor_line-self.start_display_at)].update(clear=True)
@@ -261,7 +265,9 @@ class MultiLine(widget.Widget):
         self._last_value  = copy.copy(self.value)
         # Prevent the program crashing if the user has changed values and
         # the cursor is now on the bottom line.
-        if (self._my_widgets[self.cursor_line-self.start_display_at].task in (MORE_LABEL, "PRINTLINELASTOFSCREEN")): 
+        if (self._my_widgets[self.cursor_line-self.start_display_at].task in 
+            (MORE_LABEL, "PRINTLINELASTOFSCREEN")
+        ): 
             if self.slow_scroll:
                 self.start_display_at += 1
             else:
@@ -277,7 +283,8 @@ class MultiLine(widget.Widget):
             line.color = self.color
         self._set_line_values(line, value_indexer)
         self._set_line_highlighting(line, value_indexer)
-    #@+node:ekr.20170428084208.85: *3* _set_line_values
+    #@+node:ekr.20170504211313.1: *3* setters
+    #@+node:ekr.20170428084208.85: *4* _set_line_values
     def _set_line_values(self, line, value_indexer):
         try:
             _vl = self.values[value_indexer]
@@ -289,13 +296,13 @@ class MultiLine(widget.Widget):
             return False
         line.value = self.display_value(_vl)
         line.hidden = False
-    #@+node:ekr.20170428084208.86: *3* _set_line_blank
+    #@+node:ekr.20170428084208.86: *4* _set_line_blank
     def _set_line_blank(self, line):
         line.value    = None
         line.show_bold= False
         line.name     = None
         line.hidden   = True
-    #@+node:ekr.20170428084208.87: *3* _set_line_highlighting
+    #@+node:ekr.20170428084208.87: *4* _set_line_highlighting
     def _set_line_highlighting(self, line, value_indexer):
         if value_indexer in self._filtered_values_cache:
             self.set_is_line_important(line, True)
@@ -307,16 +314,17 @@ class MultiLine(widget.Widget):
         else: 
             self.set_is_line_bold(line, False)
         self.set_is_line_cursor(line, False)
-    #@+node:ekr.20170428084208.88: *3* set_is_line_important
+    #@+node:ekr.20170428084208.88: *4* set_is_line_important
     def set_is_line_important(self, line, value):
         line.important = value
-    #@+node:ekr.20170428084208.89: *3* set_is_line_bold
+    #@+node:ekr.20170428084208.89: *4* set_is_line_bold
     def set_is_line_bold(self, line, value):
         line.show_bold = value
-    #@+node:ekr.20170428084208.90: *3* set_is_line_cursor
+    #@+node:ekr.20170428084208.90: *4* set_is_line_cursor
     def set_is_line_cursor(self, line, value):
         line.highlight = value
-    #@+node:ekr.20170428084208.91: *3* get_filtered_indexes
+    #@+node:ekr.20170504211232.1: *3* filters
+    #@+node:ekr.20170428084208.91: *4* get_filtered_indexes
     def get_filtered_indexes(self, force_remake_cache=False):
         if not force_remake_cache:
             try:
@@ -334,32 +342,32 @@ class MultiLine(widget.Widget):
             if self.filter_value(indexer):
                 list_of_indexes.append(indexer)
         return list_of_indexes
-    #@+node:ekr.20170428084208.92: *3* get_filtered_values
+    #@+node:ekr.20170428084208.92: *4* get_filtered_values
     def get_filtered_values(self):
         fvls = []
         for vli in self.get_filtered_indexes():
             fvls.append(self.values[vli])
         return fvls
 
-    #@+node:ekr.20170428084208.93: *3* _remake_filter_cache
+    #@+node:ekr.20170428084208.93: *4* _remake_filter_cache
     def _remake_filter_cache(self):
         self._filtered_values_cache = self.get_filtered_indexes(force_remake_cache=True)
-    #@+node:ekr.20170428084208.94: *3* filter_value
+    #@+node:ekr.20170428084208.94: *4* filter_value
     def filter_value(self, index):
         if self._filter in self.display_value(self.values[index]):
             return True
         else:
             return False
-    #@+node:ekr.20170428084208.95: *3* jump_to_first_filtered
+    #@+node:ekr.20170428084208.95: *4* jump_to_first_filtered
     def jump_to_first_filtered(self, ):
         self.h_cursor_beginning(None)
         self.move_next_filtered(include_this_line=True)
-    #@+node:ekr.20170428084208.96: *3* clear_filter
+    #@+node:ekr.20170428084208.96: *4* clear_filter
     def clear_filter(self):
         self._filter = None
         self.cursor_line = 0
         self.start_display_at = 0
-    #@+node:ekr.20170428084208.97: *3* move_next_filtered
+    #@+node:ekr.20170428084208.97: *4* move_next_filtered
     def move_next_filtered(self, include_this_line=False, *args):
         if self._filter == None:
             return False
@@ -381,7 +389,7 @@ class MultiLine(widget.Widget):
         except IndexError:
             self.cursor_line = 0
             self.start_display_at = 0
-    #@+node:ekr.20170428084208.98: *3* move_previous_filtered
+    #@+node:ekr.20170428084208.98: *4* move_previous_filtered
     def move_previous_filtered(self, *args):
         if self._filter == None:
             return False
@@ -408,7 +416,8 @@ class MultiLine(widget.Widget):
         ##if self.cursor_line > len(self.values):
         ##    self.cursor_line = len(self.values)
         self.display()
-    #@+node:ekr.20170428084208.101: *3* set_up_handlers
+    #@+node:ekr.20170504210158.1: *3* Handlers
+    #@+node:ekr.20170428084208.101: *4* set_up_handlers
     def set_up_handlers(self):
         '''MultiLine.set_up_handlers.'''
         super(MultiLine, self).set_up_handlers()
@@ -453,7 +462,7 @@ class MultiLine(widget.Widget):
         self.complex_handlers = [
             # (self.t_input_isprint, self.h_find_char)
         ]
-    #@+node:ekr.20170428084208.102: *3* h_find_char
+    #@+node:ekr.20170428084208.102: *4* h_find_char
     def h_find_char(self, input):
         # The following ought to work, but there is a curses keyname bug
         # searchingfor = curses.keyname(input).upper()
@@ -466,11 +475,11 @@ class MultiLine(widget.Widget):
                     break
             except AttributeError:
                 break
-    #@+node:ekr.20170428084208.103: *3* t_input_isprint
+    #@+node:ekr.20170428084208.103: *4* t_input_isprint
     def t_input_isprint(self, input):
         if curses.ascii.isprint(input): return True
         else: return False
-    #@+node:ekr.20170428084208.104: *3* h_set_filter
+    #@+node:ekr.20170428084208.104: *4* h_set_filter
     def h_set_filter(self, ch):
         if not self.allow_filtering:
             return None
@@ -480,20 +489,20 @@ class MultiLine(widget.Widget):
         P.filterbox.edit()
         self._remake_filter_cache()
         self.jump_to_first_filtered()
-    #@+node:ekr.20170428084208.105: *3* h_clear_filter
+    #@+node:ekr.20170428084208.105: *4* h_clear_filter
     def h_clear_filter(self, ch):
         self.clear_filter()
         self.update()
 
-    #@+node:ekr.20170428084208.106: *3* h_cursor_beginning
+    #@+node:ekr.20170428084208.106: *4* h_cursor_beginning
     def h_cursor_beginning(self, ch):
         self.cursor_line = 0
-    #@+node:ekr.20170428084208.107: *3* h_cursor_end
+    #@+node:ekr.20170428084208.107: *4* h_cursor_end
     def h_cursor_end(self, ch):
         self.cursor_line= len(self.values)-1
         if self.cursor_line < 0:
             self.cursor_line = 0
-    #@+node:ekr.20170428084208.108: *3* h_cursor_page_down
+    #@+node:ekr.20170428084208.108: *4* h_cursor_page_down
     def h_cursor_page_down(self, ch):
         self.cursor_line += (len(self._my_widgets)-1) # -1 because of the -more-
         if self.cursor_line >= len(self.values)-1:
@@ -503,14 +512,14 @@ class MultiLine(widget.Widget):
             if self.start_display_at > len(self.values) - (len(self._my_widgets)-1):
                 self.start_display_at = len(self.values) - (len(self._my_widgets)-1)
 
-    #@+node:ekr.20170428084208.109: *3* h_cursor_page_up
+    #@+node:ekr.20170428084208.109: *4* h_cursor_page_up
     def h_cursor_page_up(self, ch):
         self.cursor_line -= (len(self._my_widgets)-1)
         if self.cursor_line < 0:
             self.cursor_line = 0
         self.start_display_at -= (len(self._my_widgets)-1)
         if self.start_display_at < 0: self.start_display_at = 0
-    #@+node:ekr.20170428084208.110: *3* h_cursor_line_up
+    #@+node:ekr.20170428084208.110: *4* h_cursor_line_up
     def h_cursor_line_up(self, ch):
         self.cursor_line -= 1
         if self.cursor_line < 0: 
@@ -520,7 +529,7 @@ class MultiLine(widget.Widget):
             else: 
                 self.cursor_line = 0
 
-    #@+node:ekr.20170428084208.111: *3* h_cursor_line_down
+    #@+node:ekr.20170428084208.111: *4* h_cursor_line_down
     def h_cursor_line_down(self, ch):
         self.cursor_line += 1
         if self.cursor_line >= len(self.values):
@@ -536,12 +545,12 @@ class MultiLine(widget.Widget):
                 self.start_display_at += 1
             else:
                 self.start_display_at = self.cursor_line
-    #@+node:ekr.20170428084208.112: *3* h_exit
+    #@+node:ekr.20170428084208.112: *4* h_exit
     def h_exit(self, ch):
         self.editing = False
         self.how_exited = True
 
-    #@+node:ekr.20170428084208.113: *3* h_set_filtered_to_selected
+    #@+node:ekr.20170428084208.113: *4* h_set_filtered_to_selected
     def h_set_filtered_to_selected(self, ch):
         # This is broken on multiline
         if len(self._filtered_values_cache) < 2:
@@ -549,19 +558,19 @@ class MultiLine(widget.Widget):
         else:
             # There is an error - trying to select too many things.
             curses.beep()
-    #@+node:ekr.20170428084208.114: *3* h_select
+    #@+node:ekr.20170428084208.114: *4* h_select
     def h_select(self, ch):
         self.value = self.cursor_line
         if self.select_exit:
             self.editing = False
             self.how_exited = True
-    #@+node:ekr.20170428084208.115: *3* h_select_exit
+    #@+node:ekr.20170428084208.115: *4* h_select_exit
     def h_select_exit(self, ch):
         self.h_select(ch)
         if self.return_exit or self.select_exit:
             self.editing = False
             self.how_exited=True
-    #@+node:ekr.20170428084208.116: *3* edit
+    #@+node:ekr.20170428084208.116: *4* edit
     def edit(self):
         self.editing = True
         self.how_exited = None

@@ -18,14 +18,17 @@ class TextfieldBase(widget.Widget):
     ENSURE_STRING_VALUE = True
     #@+others
     #@+node:ekr.20170428084208.321: *3* __init__
-    def __init__(self, screen, value='', highlight_color='CURSOR', highlight_whole_widget=False,
+    def __init__(self, screen,
+        value='',
+        highlight_color='CURSOR',
+        highlight_whole_widget=False,
         invert_highlight_color=True,
-        **keywords):
+        **keywords
+    ):
         try:
             self.value = value or ""
         except Exception:
             self.value = ""
-        
         
         super(TextfieldBase, self).__init__(screen, **keywords)
 
@@ -48,7 +51,6 @@ class TextfieldBase(widget.Widget):
         self.left_margin = 0
         
         self.begin_at = 0   # Where does the display string begin?
-
         self.set_text_widths()
         self.update()
         
@@ -58,18 +60,15 @@ class TextfieldBase(widget.Widget):
             self.maximum_string_length = self.width - 2  # Leave room for the cursor
         else:   
             self.maximum_string_length = self.width - 1  # Leave room for the cursor at the end of the string.
-
     #@+node:ekr.20170428084208.323: *3* resize
     def resize(self):
         self.set_text_widths()
-
-
     #@+node:ekr.20170428084208.324: *3* calculate_area_needed
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
         return 1,0
 
-    #@+node:ekr.20170428084208.325: *3* update
+    #@+node:ekr.20170428084208.325: *3* update **
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ
@@ -150,6 +149,7 @@ class TextfieldBase(widget.Widget):
             #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
             #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
         #The following appears to work for unicode as well.
+
         try:
             #char_under_cur = self.value[self.cursor_position] #use the real value
             char_under_cur = self._get_string_to_print()[self.cursor_position]
@@ -159,9 +159,17 @@ class TextfieldBase(widget.Widget):
         except TypeError:
             char_under_cur = ' '
         if self.do_colors():
-            self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, self.parent.theme_manager.findPair(self, 'CURSOR_INVERSE'))
+            self.parent.curses_pad.addstr(
+                self.rely,
+                self.cursor_position - self.begin_at + self.relx + self.left_margin,
+                char_under_cur,
+                self.parent.theme_manager.findPair(self, 'CURSOR_INVERSE'))
         else:
-            self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, curses.A_STANDOUT)
+            self.parent.curses_pad.addstr(
+                self.rely,
+                self.cursor_position - self.begin_at + self.relx + self.left_margin,
+                char_under_cur,
+                curses.A_STANDOUT)
     #@+node:ekr.20170428084208.327: *3* print_cursor_pre_unicode
     def print_cursor_pre_unicode(self):
         # Cursors do not seem to work on pads.
@@ -178,8 +186,6 @@ class TextfieldBase(widget.Widget):
             char_under_cur = ' '
 
         self.parent.curses_pad.addstr(self.rely, self.cursor_position - self.begin_at + self.relx + self.left_margin, char_under_cur, curses.A_STANDOUT)
-        
-
     #@+node:ekr.20170428084208.328: *3* display_value
     def display_value(self, value):
         if value == None:
@@ -193,12 +199,9 @@ class TextfieldBase(widget.Widget):
             except ReferenceError:                
                 return ">*ERROR*ERROR*ERROR*<"
             return self.safe_string(str_value)
-
-
     #@+node:ekr.20170428084208.329: *3* find_width_of_char
     def find_width_of_char(self, ch):
         return 1
-
     #@+node:ekr.20170428084208.330: *3* _print_unicode_char
     def _print_unicode_char(self, ch):
         '''return the ch to print.  For python 3 this is just ch.'''
@@ -209,7 +212,6 @@ class TextfieldBase(widget.Widget):
             return ch
         else:
             return ch.encode('utf-8', 'strict')
-
     #@+node:ekr.20170428084208.331: *3* _get_string_to_print
     def _get_string_to_print(self):
         string_to_print = self.display_value(self.value)
@@ -226,8 +228,6 @@ class TextfieldBase(widget.Widget):
                 dv = dv.decode(self.encoding, 'replace')
             string_to_print = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         return string_to_print
-
-
     #@+node:ekr.20170428084208.332: *3* _print
     def _print(self):
         string_to_print = self._get_string_to_print()
@@ -258,10 +258,12 @@ class TextfieldBase(widget.Widget):
                     highlight = self._highlightingdata[self.begin_at+place_in_string]
                 except Exception:
                     highlight = curses.A_NORMAL                
-                self.parent.curses_pad.addstr(self.rely,self.relx+column+self.left_margin, 
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
                     self._print_unicode_char(string_to_print[place_in_string]), 
                     highlight
-                    )
+                )
                 column += self.find_width_of_char(string_to_print[place_in_string])
                 place_in_string += 1
         else:
@@ -279,34 +281,31 @@ class TextfieldBase(widget.Widget):
                     color = curses.A_BOLD
                 else:
                     color = curses.A_NORMAL
-
             while column <= (self.maximum_string_length - self.left_margin):
                 if not string_to_print or place_in_string > len(string_to_print)-1:
                     if self.highlight_whole_widget:
-                        self.parent.curses_pad.addstr(self.rely,self.relx+column+self.left_margin, 
+                        self.parent.curses_pad.addstr(
+                            self.rely,
+                            self.relx+column+self.left_margin, 
                             ' ', 
-                            color
-                            )
+                            color,
+                        )
                         column += width_of_char_to_print
                         place_in_string += 1
                         continue
                     else:
                         break
-                        
                 width_of_char_to_print = self.find_width_of_char(string_to_print[place_in_string])
                 if column - 1 + width_of_char_to_print > self.maximum_string_length:
                     break 
-                self.parent.curses_pad.addstr(self.rely,self.relx+column+self.left_margin, 
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
                     self._print_unicode_char(string_to_print[place_in_string]), 
-                    color
-                    )
+                    color,
+                )
                 column += width_of_char_to_print
                 place_in_string += 1
-
-
-
-
-
     #@+node:ekr.20170428084208.333: *3* _print_pre_unicode
     def _print_pre_unicode(self):
         # This method was used to print the string before we became interested in unicode.
@@ -321,37 +320,52 @@ class TextfieldBase(widget.Widget):
                     highlight = self._highlightingdata[self.begin_at+i]
                 except Exception:
                     highlight = curses.A_NORMAL
-                self.parent.curses_pad.addstr(self.rely,self.relx+i+self.left_margin, 
+                self.parent.curses_pad.addstr(
+                    self.rely,self.relx+i+self.left_margin, 
                     string_to_print[self.begin_at+i], 
                     highlight 
-                    )
-        
+                )
         elif self.do_colors():
             coltofind = 'DEFAULT'
             if self.show_bold and self.color == 'DEFAULT':
                 coltofind = 'BOLD'
             if self.show_bold:
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
-                                                    self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin,
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             elif self.important:
                 coltofind = 'IMPORTANT'
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
-                                                    self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin,
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             else:
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
-                                                self.parent.theme_manager.findPair(self))
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin,
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    self.parent.theme_manager.findPair(self))
         else:
             if self.important:
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, 
-                        string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], curses.A_BOLD)
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin, 
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    curses.A_BOLD)
             elif self.show_bold:
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, 
-                        string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], curses.A_BOLD)
-
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin, 
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
+                    curses.A_BOLD)
             else:
-                self.parent.curses_pad.addstr(self.rely,self.relx+self.left_margin, 
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+self.left_margin, 
                     string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])
-
     #@+node:ekr.20170428084208.334: *3* update_highlighting
     def update_highlighting(self, start=None, end=None, clear=False):
         if clear or (self._highlightingdata == None):
@@ -359,8 +373,6 @@ class TextfieldBase(widget.Widget):
         
         # string_to_print = self.display_value(self.value)
         self.display_value(self.value)
-
-
     #@-others
 #@+node:ekr.20170428084208.335: ** class Textfield (TextfieldBase)
 class Textfield(TextfieldBase):
