@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20170419092835.1: * @file cursesGui2.py
+#@@first
 '''A prototype text gui using the python curses library.'''
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: **  << cursesGui imports >>
@@ -624,6 +626,8 @@ class CursesGui(leoGui.LeoGui):
         self.curses_app.run()
             # run calls CApp.main(), which calls CGui.run().
         g.trace('DONE')
+        # pylint: disable=no-member
+        # endwin *does* exist.
         curses.endwin()
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
