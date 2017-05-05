@@ -5797,7 +5797,7 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
+    #@+node:ekr.20080514131122.12: *4* c.recolor (requestRecolor) and c.force_recolor
     def requestRecolor(self):
         c = self
         c.requestRecolorFlag = True
@@ -5888,7 +5888,7 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
+    #@+node:ekr.20080514131122.13: *4* c.recolor_now
     def recolor_now(self, p=None, incremental=False, interruptable=True):
         # Support QScintillaColorizer.colorize.
         c = self
