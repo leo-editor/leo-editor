@@ -52,9 +52,12 @@ class FilterPopupHelper(Popup.Popup):
 #@+node:ekr.20170428084208.74: ** class MultiLine
 class MultiLine(widget.Widget):
     _safe_to_display_cache = True
-    """Display a list of items to the user.  By overloading the display_value method, this widget can be made to 
-display different kinds of objects.  Given the standard definition, 
-the same effect can be achieved by altering the __str__() method of displayed objects"""
+    """
+    Display a list of items to the user. By overloading the display_value
+    method, this widget can be made to display different kinds of objects.
+    Given the standard definition, the same effect can be achieved by
+    altering the __str__() method of displayed objects
+    """
     _MINIMUM_HEIGHT = 2 # Raise an error if not given this.
     _contained_widgets = textbox.Textfield
     _contained_widget_height = 1
@@ -628,13 +631,12 @@ the same effect can be achieved by altering the __str__() method of displayed ob
         while self.editing:
             self.get_and_use_key_press()
             self.update(clear=None)
-    #@-others
-##          self.clear()
-##          self.update(clear=False)
+            ##  self.clear()
+            ##  self.update(clear=False)
             self.parent.refresh()
-##          curses.napms(10)
-##          curses.flushinp()
-
+            ##  curses.napms(10)
+            ##  curses.flushinp()
+    #@-others
 #@+node:ekr.20170428084208.117: ** class MultiLineAction
 class MultiLineAction(MultiLine):
     RAISE_ERROR_IF_EMPTY_ACTION = False
