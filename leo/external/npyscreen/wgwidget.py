@@ -224,7 +224,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     _SAFE_STRING_STRIPS_NL = True
     
     #@+others
-    #@+node:ekr.20170428084208.412: *3* __init__
+    #@+node:ekr.20170428084208.412: *3* Widget.__init__
     def __init__(self, screen, 
             relx=0, rely=0, name=None, value=None, 
             width = False, height = False,
@@ -777,7 +777,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self.parent.parentApp._internal_while_waiting()
             if hasattr(self.parent.parentApp, "while_waiting"):
                 self.parent.parentApp.while_waiting()
-    #@+node:ekr.20170428084208.423: *3* update
+    #@+node:ekr.20170428084208.423: *3* Widget.update
     def update(self, clear=True):
         """How should object display itself on the screen. Define here, but do not actually refresh the curses
         display, since this should be done as little as possible.  This base widget puts nothing on screen."""

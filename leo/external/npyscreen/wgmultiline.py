@@ -2,8 +2,8 @@
 #@+node:ekr.20170428084208.68: * @file ../external/npyscreen/wgmultiline.py
 #!/usr/bin/python
 # pylint: disable=no-member
-#@+others
-#@+node:ekr.20170428084208.69: ** Declarations
+import leo.core.leoGlobals as g
+assert g
 import copy
 from . import wgwidget       as widget
 from . import wgtextbox      as textbox
@@ -13,9 +13,9 @@ from . import wgtitlefield   as titlefield
 from . import fmPopup        as Popup
 import weakref
 import collections
-
 MORE_LABEL = "- more -" # string to tell user there are more options
-
+#@+others
+#@+node:ekr.20170428084208.69: ** Declarations
 #@+node:ekr.20170428084208.70: ** class FilterPopupHelper
 class FilterPopupHelper(Popup.Popup):
     #@+others
@@ -49,7 +49,7 @@ class FilterPopupHelper(Popup.Popup):
         
 
     #@-others
-#@+node:ekr.20170428084208.74: ** class MultiLine
+#@+node:ekr.20170428084208.74: ** class MultiLine (Widget)
 class MultiLine(widget.Widget):
     _safe_to_display_cache = True
     """
@@ -62,58 +62,57 @@ class MultiLine(widget.Widget):
     _contained_widgets = textbox.Textfield
     _contained_widget_height = 1
     #@+others
-    #@+node:ekr.20170428084208.75: *3* __init__
-    def __init__(self, screen, values = None, value = None,
-            slow_scroll=False, scroll_exit=False, 
-            return_exit=False, select_exit=False,
-            exit_left  = False,
-            exit_right = False,
-            widgets_inherit_color = False,
-            always_show_cursor = False,
-            allow_filtering    = True,
-             **keywords):
-        
-        self.never_cache     = False
-        self.exit_left       = exit_left
-        self.exit_right      = exit_right
+    #@+node:ekr.20170428084208.75: *3* MultiLine.__init__
+    def __init__(self, screen,
+        values=None,
+        value=None,
+        slow_scroll=False,
+        scroll_exit=False,
+        return_exit=False,
+        select_exit=False,
+        exit_left=False,
+        exit_right=False,
+        widgets_inherit_color=False,
+        always_show_cursor=False,
+        allow_filtering=True,
+        ** keywords
+    ):
+        self.never_cache = False
+        self.exit_left = exit_left
+        self.exit_right = exit_right
         self.allow_filtering = allow_filtering
         self.widgets_inherit_color = widgets_inherit_color
         super(MultiLine, self).__init__(screen, **keywords)
+            # Call the base class.
         if self.height < self.__class__._MINIMUM_HEIGHT:
-            raise widget.NotEnoughSpaceForWidget("Height of %s allocated. Not enough space allowed for %s" % (self.height, str(self)))
+            raise widget.NotEnoughSpaceForWidget(
+                "Height of %s allocated. Not enough space allowed for %s" % (
+                    self.height, str(self)))
         self.make_contained_widgets()
-
-        self.value = value
-        
-        # does pushing return select and then leave the widget?
         self.return_exit = return_exit
-        
-        # does any selection leave the widget?
+            # does pushing return select and then leave the widget?
         self.select_exit = select_exit
-        
-        # Show cursor even when not editing?
+            # does any selection leave the widget?
         self.always_show_cursor = always_show_cursor
-        
-        
-        self.slow_scroll     = slow_scroll
-        self.scroll_exit     = scroll_exit
-        
+            # Show cursor even when not editing?
+        self.slow_scroll = slow_scroll
+        self.scroll_exit = scroll_exit
+        # EKR: Cursor and value ivars.
         self.start_display_at = 0
         self.cursor_line = 0
         self.values = values or []
+        self.value = value
         self._filter = None
-        
-        #These are just to do some optimisation tricks
+        # For optimisation...
         self._last_start_display_at = None
         self._last_cursor_line = None
         self._last_values = copy.copy(values)
         self._last_value = copy.copy(value)
         self._last_filter = None
         self._filtered_values_cache = []
-
-        #override - it looks nicer.
-        if self.scroll_exit: self.slow_scroll=True
-
+        # override - it looks nicer.
+        if self.scroll_exit:
+            self.slow_scroll = True
     #@+node:ekr.20170428084208.76: *3* resize
     def resize(self):
         super(MultiLine, self).resize()
@@ -149,7 +148,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.79: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
-    #@+node:ekr.20170428084208.80: *3* reset_cursor
+    #@+node:ekr.20170428084208.80: *3* MultiLine.reset_cursor
     def reset_cursor(self):
         self.start_display_at = 0
         self.cursor_line      = 0
@@ -157,8 +156,17 @@ class MultiLine(widget.Widget):
     def reset_display_cache(self):
         self._last_values = False
         self._last_value  = False
-    #@+node:ekr.20170428084208.82: *3* update ***
+    #@+node:ekr.20170428084208.82: *3* MultiLine.update
     def update(self, clear=True):
+        trace = False
+        if trace:
+            from . import npysTree as npysTree
+            val = self.values[self.cursor_line]
+            # name = val.__class__.__name__
+            if isinstance(val, npysTree.TreeData):
+                val = val.get_content()
+            g.trace('cursor_line: %s %s' % (self.cursor_line, val))
+                # self.start_display_at,
         if self.hidden and clear:
             self.clear()
             return False
@@ -171,24 +179,27 @@ class MultiLine(widget.Widget):
         #self._remake_filter_cache()
         self._filtered_values_cache = self.get_filtered_indexes()
         if self.editing or self.always_show_cursor:
+            # EKR: Put cursor_line in range.
             if self.cursor_line < 0:
                 self.cursor_line = 0
-            if self.cursor_line > len(self.values)-1:
-                self.cursor_line = len(self.values)-1
+            if self.cursor_line > len(self.values) - 1:
+                self.cursor_line = len(self.values) - 1
             if self.slow_scroll:
-                if self.cursor_line > self.start_display_at+display_length-1:
-                    self.start_display_at = self.cursor_line - (display_length-1) 
+                # Scroll by lines.
+                if self.cursor_line > self.start_display_at + display_length - 1:
+                    self.start_display_at = self.cursor_line - (display_length - 1)
                 if self.cursor_line < self.start_display_at:
                     self.start_display_at = self.cursor_line
             else:
-                if self.cursor_line > self.start_display_at+(display_length-2):
+                # Scroll by pages.
+                if self.cursor_line > self.start_display_at + (display_length - 2):
                     self.start_display_at = self.cursor_line
                 if self.cursor_line < self.start_display_at:
-                    self.start_display_at = self.cursor_line - (display_length-2)
-                    if self.start_display_at < 0: self.start_display_at=0
+                    self.start_display_at = self.cursor_line - (display_length - 2)
+                    if self.start_display_at < 0: self.start_display_at = 0
         # Don't update the screen if nothing has changed.
         # no_change = False
-        try:            
+        try:
             no_change = (
                 self._safe_to_display_cache and
                 self._last_value is self.value and
@@ -204,7 +215,7 @@ class MultiLine(widget.Widget):
         if clear:
             no_change = False
         if not no_change or clear or self.never_cache:
-            if clear is True: 
+            if clear is True:
                 self.clear()
             if self._last_start_display_at != self.start_display_at and clear is None:
                 self.clear()
@@ -213,26 +224,26 @@ class MultiLine(widget.Widget):
             self._last_start_display_at = self.start_display_at
             self._before_print_lines()
             indexer = 0 + self.start_display_at
-            for line in self._my_widgets[:-1]:
+            for line in self._my_widgets[: -1]:
                 self._print_line(line, indexer)
                 line.task = "PRINTLINE"
                 line.update(clear=True)
                 indexer += 1
             # Now do the final line
             line = self._my_widgets[-1]
-            if (len(self.values) <= indexer+1):
+            if (len(self.values) <= indexer + 1):
                 # or (len(self._my_widgets)*self._contained_widget_height)<self.height:
                 self._print_line(line, indexer)
-                line.task="PRINTLINE"
+                line.task = "PRINTLINE"
                 line.update(clear=False)
-            elif len((self._my_widgets)*self._contained_widget_height)<self.height:
+            elif len((self._my_widgets) * self._contained_widget_height) < self.height:
                 self._print_line(line, indexer)
-                line.task="PRINTLINELASTOFSCREEN"
+                line.task = "PRINTLINELASTOFSCREEN"
                 line.update(clear=False)
                 if self.do_colors():
-                    self.parent.curses_pad.addstr(self.rely+self.height-1, self.relx, MORE_LABEL, self.parent.theme_manager.findPair(self, 'CONTROL'))
+                    self.parent.curses_pad.addstr(self.rely + self.height - 1, self.relx, MORE_LABEL, self.parent.theme_manager.findPair(self, 'CONTROL'))
                 else:
-                    self.parent.curses_pad.addstr(self.rely+self.height-1, self.relx, MORE_LABEL)
+                    self.parent.curses_pad.addstr(self.rely + self.height - 1, self.relx, MORE_LABEL)
             else:
                 #line.value = MORE_LABEL
                 line.name = MORE_LABEL
@@ -242,32 +253,33 @@ class MultiLine(widget.Widget):
                 line.clear()
                 if self.do_colors():
                     self.parent.curses_pad.addstr(
-                        self.rely+self.height-1,
+                        self.rely + self.height - 1,
                         self.relx, MORE_LABEL,
                         self.parent.theme_manager.findPair(self, 'CONTROL'),
                     )
                 else:
                     self.parent.curses_pad.addstr(
-                        self.rely+self.height-1,
+                        self.rely + self.height - 1,
                         self.relx,
                         MORE_LABEL,
                     )
-            if self.editing or self.always_show_cursor: 
-                self.set_is_line_cursor(self._my_widgets[(self.cursor_line-self.start_display_at)], True)
-                self._my_widgets[(self.cursor_line-self.start_display_at)].update(clear=True)
+            if self.editing or self.always_show_cursor:
+                self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
+                self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
             else:
                 # There is a bug somewhere that affects the first line.  This cures it.
                 # Without this line, the first line inherits the color of the form when not editing. Not clear why.
                 self._my_widgets[0].update()
+        # EKR: remember the previous values.
         self._last_start_display_at = self.start_display_at
         self._last_cursor_line = self.cursor_line
         self._last_values = copy.copy(self.values)
-        self._last_value  = copy.copy(self.value)
+        self._last_value = copy.copy(self.value)
         # Prevent the program crashing if the user has changed values and
         # the cursor is now on the bottom line.
-        if (self._my_widgets[self.cursor_line-self.start_display_at].task in 
+        if (self._my_widgets[self.cursor_line - self.start_display_at].task in
             (MORE_LABEL, "PRINTLINELASTOFSCREEN")
-        ): 
+        ):
             if self.slow_scroll:
                 self.start_display_at += 1
             else:

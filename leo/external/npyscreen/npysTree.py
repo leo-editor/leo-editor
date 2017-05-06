@@ -9,21 +9,27 @@ class TreeData(object):
     CHILDCLASS = None
     #@+others
     #@+node:ekr.20170428084207.402: *3* __init__
-    def __init__(self, content=None, parent=None, selected=False, selectable=True,
-                    highlight=False, expanded=True, ignore_root=True, sort_function=None):
+    def __init__(self,
+        content=None,
+        parent=None,
+        selected=False,
+        selectable=True,
+        highlight=False,
+        expanded=True,
+        ignore_root=True,
+        sort_function=None,
+    ):
         self.set_parent(parent)
         self.set_content(content)
         self.selectable = selectable
-        self.selected   = selected
-        self.highlight  = highlight
-        self.expanded   = expanded
-        self._children  = []
+        self.selected = selected
+        self.highlight = highlight
+        self.expanded = expanded
+        self._children = []
         self.ignore_root = ignore_root
-        self.sort       = False
+        self.sort = False
         self.sort_function = sort_function
         self.sort_function_wrapper = True
-
-
     #@+node:ekr.20170428084207.415: *3* _get_children_list
     def _get_children_list(self):
         return self._children
@@ -80,7 +86,11 @@ class TreeData(object):
     #@+node:ekr.20170428084207.421: *4* get_tree_as_list
     def get_tree_as_list(self, only_expanded=True, sort=None, key=None):
         _a = []
-        for node in self.walk_tree(only_expanded=only_expanded, ignore_root=self.ignore_root, sort=sort):
+        for node in self.walk_tree(
+            only_expanded=only_expanded,
+            ignore_root=self.ignore_root,
+            sort=sort,
+        ):
             try:
                 _a.append(weakref.proxy(node))
             except Exception:
@@ -133,19 +143,15 @@ class TreeData(object):
             else:
                 ch.set_parent(None)
         self._children = new_children
-
-
     #@+node:ekr.20170428084207.405: *4* set_content
     def set_content(self, content):
         self.content = content
-
     #@+node:ekr.20170428084207.408: *4* set_parent
     def set_parent(self, parent):
         if parent == None:
             self._parent = None
         else:
             self._parent = weakref.proxy(parent)
-
     #@+node:ekr.20170428084207.419: *3* walk_parents
     def walk_parents(self):
         p = self.get_parent()

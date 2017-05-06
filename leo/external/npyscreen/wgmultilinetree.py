@@ -17,7 +17,7 @@ from .npysTree import TreeData
 #@+node:ekr.20170428084208.175: ** class TreeLine (textbox.TextfieldBase)
 class TreeLine(textbox.TextfieldBase):
     #@+others
-    #@+node:ekr.20170428084208.176: *3* __init__
+    #@+node:ekr.20170428084208.176: *3* TreeLine.__init__
     def __init__(self, *args, **keywords):
         self._tree_real_value   = None
         self._tree_ignore_root  = None
@@ -30,8 +30,7 @@ class TreeLine(textbox.TextfieldBase):
         self.safe_depth_display = False
         self.show_v_lines       = True
         super(TreeLine, self).__init__(*args, **keywords)
-
-    #@+node:ekr.20170428084208.177: *3* _get_content_for_display
+    #@+node:ekr.20170428084208.177: *3* TreeLine._get_content_for_display
     # Compatibility
 
     def _get_content_for_display(self, vl):
@@ -39,8 +38,7 @@ class TreeLine(textbox.TextfieldBase):
             return vl.get_content_for_display()
         except AttributeError:
             return vl.getContentForDisplay()
-    #@+node:ekr.20170502145755.1: *3* Experimental
-    #@+node:ekr.20170428084208.178: *4* _print
+    #@+node:ekr.20170428084208.178: *3* TreeLine._print
     def _print(self, left_margin=0):
         self.left_margin = left_margin
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
@@ -48,85 +46,144 @@ class TreeLine(textbox.TextfieldBase):
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         super(TreeLine, self)._print()
-        
-    #@+node:ekr.20170428084208.179: *4* _print_tree
+    #@+node:ekr.20170428084208.179: *3* TreeLine._print_tree
     def _print_tree(self, real_x):
-        if hasattr(self._tree_real_value, 'find_depth') or hasattr(self._tree_real_value, 'findDepth'):
-            control_chars_added = 0
-            this_safe_depth_display = self.safe_depth_display or ((self.width // 2) + 1)
-            if self._tree_depth_next:
-                _tree_depth_next = self._tree_depth_next
-            else:
-                _tree_depth_next = 0
-            dp = self._tree_depth
-            if self._tree_ignore_root:
-                dp -= 1
-            if dp: # > 0:
-                if dp < this_safe_depth_display:                    
-                    for i in range(dp-1):
-                        if (i < _tree_depth_next) and (not self._tree_last_line): # was i+1 < # and not (_tree_depth_next==1):
-                            if self.show_v_lines:
-                                self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_VLINE, curses.A_NORMAL)
-                                if self.height > 1:
-                                    for h in range(self.height-1):
-                                        self.parent.curses_pad.addch(self.rely+h+1, real_x, curses.ACS_VLINE, curses.A_NORMAL)
-                            else:
-                                self.parent.curses_pad.addch(self.rely, real_x, ' ', curses.A_NORMAL)
-                                
+        if (not hasattr(self._tree_real_value, 'find_depth') and
+            not hasattr(self._tree_real_value, 'findDepth')
+        ):
+            margin_needed = 0
+            return margin_needed
+
+        control_chars_added = 0
+        this_safe_depth_display = self.safe_depth_display or ((self.width // 2) + 1)
+        if self._tree_depth_next:
+            _tree_depth_next = self._tree_depth_next
+        else:
+            _tree_depth_next = 0
+        dp = self._tree_depth
+        if self._tree_ignore_root:
+            dp -= 1
+        if dp: # > 0:
+            if dp < this_safe_depth_display:                    
+                for i in range(dp-1):
+                    if (i < _tree_depth_next) and (not self._tree_last_line):
+                            # was i+1 < # and not (_tree_depth_next==1):
+                        if self.show_v_lines:
+                            self.parent.curses_pad.addch(
+                                self.rely,
+                                real_x,
+                                curses.ACS_VLINE,
+                                curses.A_NORMAL)
+                            if self.height > 1:
+                                for h in range(self.height-1):
+                                    self.parent.curses_pad.addch(
+                                        self.rely+h+1,
+                                        real_x,
+                                        curses.ACS_VLINE,
+                                        curses.A_NORMAL)
                         else:
-                            if self.show_v_lines:
-                                self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_BTEE, curses.A_NORMAL)
-                                
-                            else:
-                                self.parent.curses_pad.addch(self.rely, real_x, ' ', curses.A_NORMAL)
-                                
-                        real_x +=1
-                        self.parent.curses_pad.addch(self.rely, real_x, ord(' '), curses.A_NORMAL)
-                        real_x +=1
-                    
-                    
-                    
-                    if self._tree_sibling_next or _tree_depth_next > self._tree_depth:
-                        self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_LTEE, curses.A_NORMAL)
-                        if self.height > 1:
-                            for h in range(self.height-1):
-                                self.parent.curses_pad.addch(self.rely+h+1, real_x, curses.ACS_VLINE, curses.A_NORMAL)
-                    
+                            self.parent.curses_pad.addch(
+                                self.rely,
+                                real_x,
+                                ' ',
+                                curses.A_NORMAL)
+                            
                     else:
-                        self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_LLCORNER, curses.A_NORMAL)
-                    real_x += 1
-                    self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_HLINE, curses.A_NORMAL)
-                    real_x += 1
-                else:
-                    self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_HLINE, curses.A_NORMAL)
-                    real_x += 1
-                    self.parent.curses_pad.addstr(self.rely, real_x, "[ %s ]" % (str(dp)), curses.A_NORMAL)
-                    real_x += len(str(dp)) + 4
-                    self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_RTEE, curses.A_NORMAL)
-                    real_x += 1
-                    
-            if self._tree_has_children:
-                if self._tree_expanded:
-                    self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_TTEE, curses.A_NORMAL)
+                        if self.show_v_lines:
+                            self.parent.curses_pad.addch(
+                                self.rely,
+                                real_x,
+                                curses.ACS_BTEE,
+                                curses.A_NORMAL)
+                        else:
+                            self.parent.curses_pad.addch(
+                                self.rely,
+                                real_x,
+                                ' ',
+                                curses.A_NORMAL)
+                    real_x +=1
+                    self.parent.curses_pad.addch(
+                        self.rely,
+                        real_x,
+                        ord(' '),
+                        curses.A_NORMAL)
+                    real_x +=1
+
+                if self._tree_sibling_next or _tree_depth_next > self._tree_depth:
+                    self.parent.curses_pad.addch(
+                        self.rely,
+                        real_x,
+                        curses.ACS_LTEE,
+                        curses.A_NORMAL)
                     if self.height > 1:
                         for h in range(self.height-1):
-                            self.parent.curses_pad.addch(self.rely+h+1, real_x, curses.ACS_VLINE, curses.A_NORMAL)
-                    
-                else:   
-                    self.parent.curses_pad.addch(self.rely, real_x, curses.ACS_RARROW, curses.A_NORMAL)
-                real_x +=1
-            else:
-                real_x +=1
-            control_chars_added += real_x - self.relx
-            margin_needed = control_chars_added + 1
-        else:
-            margin_needed = 0
+                            self.parent.curses_pad.addch(
+                                self.rely+h+1,
+                                real_x,
+                                curses.ACS_VLINE,
+                                curses.A_NORMAL)
+                else:
+                    self.parent.curses_pad.addch(
+                        self.rely,
+                        real_x,
+                        curses.ACS_LLCORNER,
+                        curses.A_NORMAL)
+                real_x += 1
+                self.parent.curses_pad.addch(
+                    self.rely,
+                    real_x,
+                    curses.ACS_HLINE,
+                    curses.A_NORMAL)
+                real_x += 1
+            else: # dp >= this_safe_depth_display
+                self.parent.curses_pad.addch(
+                    self.rely,
+                    real_x,
+                    curses.ACS_HLINE,
+                    curses.A_NORMAL)
+                real_x += 1
+                self.parent.curses_pad.addstr(
+                    self.rely, real_x,
+                    "[ %s ]" % (str(dp)),
+                    curses.A_NORMAL)
+                real_x += len(str(dp)) + 4
+                self.parent.curses_pad.addch(
+                    self.rely,
+                    real_x,
+                    curses.ACS_RTEE,
+                    curses.A_NORMAL)
+                real_x += 1
+                
+        if self._tree_has_children:
+            if self._tree_expanded:
+                self.parent.curses_pad.addch(
+                    self.rely,
+                    real_x,
+                    curses.ACS_TTEE,
+                    curses.A_NORMAL)
+                if self.height > 1:
+                    for h in range(self.height-1):
+                        self.parent.curses_pad.addch(
+                            self.rely+h+1,
+                            real_x,
+                            curses.ACS_VLINE,
+                            curses.A_NORMAL)
+            else: # not expanded
+                self.parent.curses_pad.addch(
+                    self.rely,
+                    real_x,
+                    curses.ACS_RARROW,
+                    curses.A_NORMAL)
+
+        real_x +=1 # whether or not the tree has children
+        control_chars_added += real_x - self.relx
+        margin_needed = control_chars_added + 1
         return margin_needed
-        
-    #@+node:ekr.20170428084208.180: *4* display_value
+    #@+node:ekr.20170428084208.180: *3* TreeLine.display_value
     def display_value(self, vl):
         try:
-            return self.safe_string(self._get_content_for_display(self._tree_real_value))
+            return self.safe_string(
+                self._get_content_for_display(self._tree_real_value))
         except Exception:
             # Catch the times this is None.
             return self.safe_string(vl)

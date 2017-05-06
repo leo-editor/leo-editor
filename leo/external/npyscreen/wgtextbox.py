@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
 #!/usr/bin/python
-#@+<< wgtextbox imports >>
-#@+node:ekr.20170428084208.319: ** << wgtextbox imports >>
+import leo.core.leoGlobals as g
+assert g
 import curses
 import curses.ascii
 import sys
@@ -10,14 +10,14 @@ import locale
 #import curses.wrapper
 from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
-#@-<< wgtextbox imports >>
+
 # pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.320: ** class TextfieldBase (Widget)
 class TextfieldBase(widget.Widget):
     ENSURE_STRING_VALUE = True
     #@+others
-    #@+node:ekr.20170428084208.321: *3* __init__
+    #@+node:ekr.20170428084208.321: *3* TextfieldBase.__init__
     def __init__(self, screen,
         value='',
         highlight_color='CURSOR',
@@ -38,7 +38,6 @@ class TextfieldBase(widget.Widget):
             self._force_ascii = False
         
         self.cursor_position = False
-        
         self.highlight_color = highlight_color
         self.highlight_whole_widget = highlight_whole_widget
         self.invert_highlight_color = invert_highlight_color
@@ -68,7 +67,7 @@ class TextfieldBase(widget.Widget):
         "Need one line of screen, and any width going"
         return 1,0
 
-    #@+node:ekr.20170428084208.325: *3* update **
+    #@+node:ekr.20170428084208.325: *3* TextfieldBase.update
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ
@@ -78,7 +77,12 @@ class TextfieldBase(widget.Widget):
             #else: pmfuncs.hide_cursor()
         # Not needed here -- gets called too much!
             #pmfuncs.hide_cursor()
-        
+            
+        trace = True
+        if trace:
+            g.trace('TextfieldBase: cursor_position: %5r %s' % (
+                self.cursor_position, self.value))
+
         if clear: self.clear()
         if self.hidden:
             return True
@@ -137,7 +141,7 @@ class TextfieldBase(widget.Widget):
         self.parent.curses_pad.attrset(0)
         if self.editing and cursor:
             self.print_cursor()
-    #@+node:ekr.20170428084208.326: *3* print_cursor
+    #@+node:ekr.20170428084208.326: *3* TextfieldBase.print_cursor
     def print_cursor(self):
         # This needs fixing for Unicode multi-width chars.
 
