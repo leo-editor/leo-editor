@@ -88,7 +88,8 @@ class MultiLineEditable(wgmultiline.MultiLine):
 
 
 
-    #@+node:ekr.20170428084208.166: *3* h_insert_next_line
+    #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
+    #@+node:ekr.20170428084208.166: *4* h_insert_next_line
     def h_insert_next_line(self, ch):
         if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
             self.values.append(self.get_new_value())
@@ -102,21 +103,21 @@ class MultiLineEditable(wgmultiline.MultiLine):
             self.cursor_line += 1
             self.insert_line_value()
 
-    #@+node:ekr.20170428084208.167: *3* h_edit_cursor_line_value
+    #@+node:ekr.20170428084208.167: *4* h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch):
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
             
-    #@+node:ekr.20170428084208.168: *3* h_insert_value
+    #@+node:ekr.20170428084208.168: *4* h_insert_value
     def h_insert_value(self, ch):
         return self.insert_line_value()
 
-    #@+node:ekr.20170428084208.169: *3* h_delete_line_value
+    #@+node:ekr.20170428084208.169: *4* h_delete_line_value
     def h_delete_line_value(self, ch):
         self.delete_line_value()
 
-    #@+node:ekr.20170428084208.170: *3* set_up_handlers
+    #@+node:ekr.20170428084208.170: *4* set_up_handlers
     def set_up_handlers(self):
         '''MultiLineEditable.set_up_handlers.'''
         super(MultiLineEditable, self).set_up_handlers()

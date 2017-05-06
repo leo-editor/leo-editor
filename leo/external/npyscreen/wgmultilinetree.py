@@ -399,7 +399,7 @@ class MLTree(multiline.MultiLine):
     #@-others
 
     values = property(_getApparentValues, _setMyValues, _delMyValues)
-    #@+node:ekr.20170502150015.1: *3* Handlers
+    #@+node:ekr.20170502150015.1: *3* MLTree.Handlers
     #@+node:ekr.20170428084208.206: *4* h_collapse_tree
     def h_collapse_tree(self, ch):
         if self.values[self.cursor_line].expanded and self._has_children(self.values[self.cursor_line]):

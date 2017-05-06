@@ -10,6 +10,7 @@ import logging
 import logging.handlers
 import sys
 # import traceback
+# import weakref
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
@@ -439,13 +440,10 @@ class CursesGui(leoGui.LeoGui):
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
         
-        can_edit_tree = False
-        
-        class EditableTree(npyscreen.MultiLineEditable, npyscreen.MLTree):
-            pass
+        can_edit_tree = True
 
         class BoxTitleTree(npyscreen.BoxTitle):
-            _contained_widget = EditableTree if can_edit_tree else LeoMLTree
+            _contained_widget = LeoMLTree
 
         data = npyscreen.TreeData(ignore_root=True)
         for i in range(4):
@@ -1541,7 +1539,7 @@ class LeoKeyEvent(object):
         return 'LeoKeyEvent'
     #@-others
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
-class LeoMLTree(npyscreen.MLTree):
+class LeoMLTree(npyscreen.MLTree, npyscreen.MultiLineEditable):
         
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
@@ -1549,7 +1547,7 @@ class LeoMLTree(npyscreen.MLTree):
             curses.KEY_LEFT:    self.h_left,
             curses.KEY_RIGHT:   self.h_right,
         })
-        
+
     #@+others
     #@+node:ekr.20170506035413.1: *3* h_left
     def h_left(self, ch):
