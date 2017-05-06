@@ -132,7 +132,6 @@ class TreeData(object):
         c = cld(parent=self, *args, **keywords)
         self._children.append(c)
         return weakref.proxy(c)
-
     #@+node:ekr.20170428084207.417: *4* remove_child
     def remove_child(self, child):
         new_children = []

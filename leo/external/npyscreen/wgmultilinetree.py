@@ -245,46 +245,44 @@ class MLTree(multiline.MultiLine):
     _contained_widgets = TreeLine
 
     #@+others
-    #@+node:ekr.20170502145942.1: *3* Compatibility
-    #@+node:ekr.20170428084208.204: *4* _before_print_lines
+    #@+node:ekr.20170428084208.204: *3* _before_print_lines
+    # Compatibility.
     def _before_print_lines(self):
         pass
-    #@+node:ekr.20170428084208.188: *4* _find_depth
+    #@+node:ekr.20170428084208.188: *3* _find_depth
     def _find_depth(self, vl):
         try:
             return vl.find_depth()
         except AttributeError:
             return vl.findDepth()
 
-    #@+node:ekr.20170428084208.190: *4* _get_content
+    #@+node:ekr.20170428084208.190: *3* _get_content
     def _get_content(self, vl):
         try:
             return vl.get_content()
         except AttributeError:
             return vl.getContent()
 
-    #@+node:ekr.20170428084208.191: *4* _get_ignore_root
+    #@+node:ekr.20170428084208.191: *3* _get_ignore_root
     def _get_ignore_root(self, vl):
         try:
             return vl.ignore_root
         except AttributeError:
             return vl.ignoreRoot
 
-    #@+node:ekr.20170428084208.192: *4* _get_tree_as_list
+    #@+node:ekr.20170428084208.192: *3* _get_tree_as_list
     def _get_tree_as_list(self, vl):
         try:
             return vl.get_tree_as_list()
         except AttributeError:
             return vl.getTreeAsList()
-
-    #@+node:ekr.20170428084208.189: *4* _has_children
+    #@+node:ekr.20170428084208.189: *3* _has_children
     def _has_children(self, vl):
         try:
             return vl.has_children()
         except AttributeError:
             return vl.hasChildren()
-
-    #@+node:ekr.20170428084208.205: *4* _set_line_values
+    #@+node:ekr.20170428084208.205: *3* _set_line_values
     def _set_line_values(self, line, value_indexer):
         line._tree_real_value   = None
         line._tree_depth        = False
@@ -311,7 +309,6 @@ class MLTree(multiline.MultiLine):
                     line._tree_sibling_next = True
                 else:
                     line._tree_sibling_next = False
-
             except Exception:
                 line._sibling_next = False
                 line._tree_last_line = True
@@ -324,46 +321,48 @@ class MLTree(multiline.MultiLine):
             self._set_line_blank(line)
         except TypeError:
             self._set_line_blank(line)
-    #@+node:ekr.20170428084208.193: *4* _walk_tree
+    #@+node:ekr.20170428084208.193: *3* _walk_tree
     def _walk_tree(self, root, only_expanded=True, ignore_root=True, sort=None, sort_function=None):
         try:
-            return root.walk_tree(only_expanded=only_expanded, ignore_root=ignore_root, sort=sort, sort_function=sort_function)
+            return root.walk_tree(
+                only_expanded=only_expanded,
+                ignore_root=ignore_root,
+                sort=sort,
+                sort_function=sort_function)
         except AttributeError:
-            return root.walkTree(onlyExpanded=only_expanded, ignoreRoot=ignore_root, sort=sort, sort_function=sort_function)
-    #@+node:ekr.20170428084208.199: *4* _walkMyValues
+            return root.walkTree(
+                onlyExpanded=only_expanded,
+                ignoreRoot=ignore_root,
+                sort=sort,
+                sort_function=sort_function)
+    #@+node:ekr.20170428084208.199: *3* _walkMyValues
     def _walkMyValues(self):
         return self._walk_tree(self._myFullValues)
-
     #@+node:ekr.20170502150737.1: *3* Entries
     #@+node:ekr.20170428084208.197: *4* clearDisplayCache
     def clearDisplayCache(self):
         self._cached_tree = None
         self._cached_sort = None
         self._cached_tree_as_list = None
-
     #@+node:ekr.20170428084208.195: *4* convertToTree
     def convertToTree(self, tree):
         "Override this function to convert a set of values to a tree."
         return None
-        
     #@+node:ekr.20170428084208.202: *4* display_value
     def display_value(self, vl):
         return vl
-
     #@+node:ekr.20170428084208.201: *4* filter_value
     def filter_value(self, index):
         if self._filter in self._get_content(self.display_value(self.values[index])):
             return True
         else:
             return False
-
     #@+node:ekr.20170428084208.196: *4* resize
     def resize(self):
         super(MLTree, self).resize()
         self.clearDisplayCache()
         self.update(clear=True)
         self.display()
-
     #@+node:ekr.20170502150513.1: *3* values Property
     #@+others
     #@+node:ekr.20170428084208.200: *4* _delMyValues
@@ -372,8 +371,10 @@ class MLTree(multiline.MultiLine):
     #@+node:ekr.20170428084208.198: *4* _getApparentValues
     def _getApparentValues(self):
         try:
-            if self._cached_tree is weakref.proxy(self._myFullValues) and \
-            (self._cached_sort == (self._myFullValues.sort, self._myFullValues.sort_function)):
+            if (
+                self._cached_tree is weakref.proxy(self._myFullValues) and 
+                (self._cached_sort == (self._myFullValues.sort, self._myFullValues.sort_function))
+            ):
                 return self._cached_tree_as_list
         except Exception:
             pass
@@ -421,7 +422,10 @@ class MLTree(multiline.MultiLine):
         if not self.values[self.cursor_line].expanded:
             self.values[self.cursor_line].expanded = True
         else:
-            for v in self._walk_tree(self.values[self.cursor_line], only_expanded=False):
+            for v in self._walk_tree(
+                self.values[self.cursor_line],
+                only_expanded=False
+            ):
                 v.expanded = True
         self._cached_tree = None
         self.display()
@@ -454,10 +458,8 @@ class MLTree(multiline.MultiLine):
             ord('{'): self.h_collapse_all,
             ord('}'): self.h_expand_all,
             ord('h'): self.h_collapse_tree,
-            ord('l'): self.h_expand_tree,                
+            ord('l'): self.h_expand_tree,          
         })
-
-
     #@-others
 #@+node:ekr.20170428084208.210: ** class MLTreeAnnotated
 class MLTreeAnnotated(MLTree):
