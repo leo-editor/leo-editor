@@ -438,19 +438,27 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502083754.1: *4* createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
+        
+        can_edit_tree = False
+        
+        class EditableTree(npyscreen.MultiLineEditable, npyscreen.MLTree):
+            pass
 
         class BoxTitleTree(npyscreen.BoxTitle):
-            _contained_widget = npyscreen.MLTree
+            _contained_widget = EditableTree if can_edit_tree else LeoMLTree
 
         data = npyscreen.TreeData(ignore_root=True)
         for i in range(4):
-            data.new_child(content='child %s' % (i))
-        # g.printList(data.get_children_objects())
+            node = data.new_child(content='node %s' % (i))
+            for j in range(2):
+                child = node.new_child(content='child %s.%s' % (i, j))
+                assert child
+
         w = form.add(
             BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
-            footer="Press i or o to insert text",
+            footer="Press i or o to insert text" if can_edit_tree else '',
             values=data, 
             slow_scroll=False,
         )
@@ -1531,6 +1539,37 @@ class LeoKeyEvent(object):
     #@+node:edward.20170428174322.5: *3* LeoKeyEvent.type
     def type(self):
         return 'LeoKeyEvent'
+    #@-others
+#@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
+class LeoMLTree(npyscreen.MLTree):
+        
+    def set_up_handlers(self):
+        super(LeoMLTree, self).set_up_handlers()
+        self.handlers.update({
+            curses.KEY_LEFT:    self.h_left,
+            curses.KEY_RIGHT:   self.h_right,
+        })
+        
+    #@+others
+    #@+node:ekr.20170506035413.1: *3* h_left
+    def h_left(self, ch):
+        
+        node = self.values[self.cursor_line]
+        if self._has_children(node) and node.expanded:
+            self.h_collapse_tree(ch)
+        else:
+            self.h_cursor_line_up(ch)
+    #@+node:ekr.20170506035419.1: *3* h_right
+    def h_right(self, ch):
+        
+        node = self.values[self.cursor_line]
+        if self._has_children(node):
+            if node.expanded:
+                self.h_cursor_line_down(ch)
+            else:
+                self.h_expand_tree(ch)
+        else:
+            self.h_cursor_line_down(ch)
     #@-others
 #@-others
 #@@language python
