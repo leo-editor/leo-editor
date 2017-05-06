@@ -1453,7 +1453,7 @@ class CursesTopFrame:
         pass # g.trace(args, kwargs)
 #@+node:ekr.20170501024424.1: ** class CursesTree (LeoTree)
 class CursesTree (leoFrame.LeoTree):
-    '''A class that represents curses log pane.'''
+    '''A class that represents curses tree pane.'''
     
     class DummyFrame:
         def __init__(self, c):
