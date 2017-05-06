@@ -1539,17 +1539,61 @@ class LeoKeyEvent(object):
         return 'LeoKeyEvent'
     #@-others
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
-class LeoMLTree(npyscreen.MLTree, npyscreen.MultiLineEditable):
+class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
+    
+    # _contained_widgets = npyscreen.TreeLine
+    
+    # From MultiLineEditable
+    # CHECK_VALUE             = True
+    # ALLOW_CONTINUE_EDITING  = True
+    # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
         
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
         self.handlers.update({
             curses.KEY_LEFT:    self.h_left,
             curses.KEY_RIGHT:   self.h_right,
+            # From MultiLineEditable.
+              ord('i'):               self.h_insert_value,
+            ord('o'):               self.h_insert_next_line,
+            curses.ascii.CR:        self.h_edit_cursor_line_value,
+            curses.ascii.NL:        self.h_edit_cursor_line_value,
+            curses.ascii.SP:        self.h_edit_cursor_line_value,
+            curses.ascii.DEL:       self.h_delete_line_value,
+            curses.ascii.BS:        self.h_delete_line_value,
+            curses.KEY_BACKSPACE:   self.h_delete_line_value,
         })
 
     #@+others
-    #@+node:ekr.20170506035413.1: *3* h_left
+    #@+node:ekr.20170506045346.1: *3* Handlers
+    #@+node:ekr.20170506044733.12: *4* h_delete_line_value
+    def h_delete_line_value(self, ch):
+        self.delete_line_value()
+
+    #@+node:ekr.20170506044733.10: *4* h_edit_cursor_line_value
+    def h_edit_cursor_line_value(self, ch):
+        continue_line = self.edit_cursor_line_value()
+        if continue_line: ### and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+            self._continue_editing()
+            
+    #@+node:ekr.20170506044733.9: *4* h_insert_next_line
+    def h_insert_next_line(self, ch):
+        if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
+            self.values.append(self.get_new_value())
+            self.cursor_line += 1
+            self.display()
+            cont = self.edit_cursor_line_value()
+            if cont: ### and self.ALLOW_CONTINUE_EDITING:
+                self._continue_editing()
+        else:
+            self.cursor_line += 1
+            self.insert_line_value()
+
+    #@+node:ekr.20170506044733.11: *4* h_insert_value
+    def h_insert_value(self, ch):
+        return self.insert_line_value()
+
+    #@+node:ekr.20170506035413.1: *4* h_left
     def h_left(self, ch):
         
         node = self.values[self.cursor_line]
@@ -1557,7 +1601,7 @@ class LeoMLTree(npyscreen.MLTree, npyscreen.MultiLineEditable):
             self.h_collapse_tree(ch)
         else:
             self.h_cursor_line_up(ch)
-    #@+node:ekr.20170506035419.1: *3* h_right
+    #@+node:ekr.20170506035419.1: *4* h_right
     def h_right(self, ch):
         
         node = self.values[self.cursor_line]
@@ -1568,6 +1612,75 @@ class LeoMLTree(npyscreen.MLTree, npyscreen.MultiLineEditable):
                 self.h_expand_tree(ch)
         else:
             self.h_cursor_line_down(ch)
+    #@+node:ekr.20170506044733.2: *3* get_new_value
+    def get_new_value(self):
+        g.trace(self.values)
+        return ''
+        # npyscreen.TreeData(ignore_root=True)
+      
+    #@+node:ekr.20170506044733.3: *3* check_line_value
+    def check_line_value(self, vl):
+        return bool(vl)
+        # if not vl:
+            # return False
+        # else:
+            # return True
+    #@+node:ekr.20170506044733.4: *3* edit_cursor_line_value
+    def edit_cursor_line_value(self):
+        ### if len(self.values) == 0:
+        if not self.values:
+            self.insert_line_value()
+            return False
+        try:
+            active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+        except IndexError:
+            self._my_widgets[0] ### Huh?
+            self.cursor_line = 0
+            self.insert_line_value()
+            return True
+        active_line.highlight = False
+        active_line.edit()
+        try:
+            self.values[self.cursor_line] = active_line.value
+        except IndexError:
+            self.values.append(active_line.value)
+            if not self.cursor_line:
+                self.cursor_line = 0
+            self.cursor_line = len(self.values) - 1
+        self.reset_display_cache()
+        # if self.CHECK_VALUE:
+        # if not self.check_line_value(self.values[self.cursor_line]):
+        # if not self.values[self.cursor_line]
+            # self.delete_line_value()
+            # return False
+        self.display()
+        return True
+    #@+node:ekr.20170506044733.5: *3* insert_line_value
+    def insert_line_value(self):
+        if self.cursor_line is None:
+            self.cursor_line = 0
+        self.values.insert(self.cursor_line, self.get_new_value())
+        self.display()
+        cont = self.edit_cursor_line_value()
+        if cont: ### and self.ALLOW_CONTINUE_EDITING:
+            self._continue_editing()
+    #@+node:ekr.20170506044733.6: *3* delete_line_value
+    def delete_line_value(self):
+        # if len(self.values) > 0:
+        if self.values:
+            del self.values[self.cursor_line]
+            self.display()
+    #@+node:ekr.20170506044733.7: *3* _continue_editing
+    def _continue_editing(self):
+        active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+        continue_editing = True ### self.ALLOW_CONTINUE_EDITING
+        if hasattr(active_line, 'how_exited'):
+            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN and continue_editing:
+                self.values.insert(self.cursor_line+1, self.get_new_value())
+                self.cursor_line += 1
+                self.display()
+                continue_editing = self.edit_cursor_line_value()
+                active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
     #@-others
 #@-others
 #@@language python

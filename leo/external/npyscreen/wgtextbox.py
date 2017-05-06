@@ -78,7 +78,7 @@ class TextfieldBase(widget.Widget):
         # Not needed here -- gets called too much!
             #pmfuncs.hide_cursor()
             
-        trace = True
+        trace = False
         if trace:
             g.trace('TextfieldBase: cursor_position: %5r %s' % (
                 self.cursor_position, self.value))
