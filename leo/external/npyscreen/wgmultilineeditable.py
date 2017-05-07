@@ -5,7 +5,7 @@ from . import wgwidget
 from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
-
+#pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable
 class MultiLineEditable(wgmultiline.MultiLine):
@@ -28,13 +28,13 @@ class MultiLineEditable(wgmultiline.MultiLine):
             
     #@+node:ekr.20170428084208.162: *3* edit_cursor_line_value
     def edit_cursor_line_value(self):
-        if len(self.values) == 0:
+        if not self.values:
             self.insert_line_value()
             return False
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         except IndexError:
-            self._my_widgets[0]
+            self._my_widgets[0] ### Huh?
             self.cursor_line = 0
             self.insert_line_value()
             return True
@@ -69,7 +69,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
 
     #@+node:ekr.20170428084208.164: *3* delete_line_value
     def delete_line_value(self):
-        if len(self.values) > 0:
+        if self.values:
             del self.values[self.cursor_line]
             self.display()
 
@@ -91,6 +91,8 @@ class MultiLineEditable(wgmultiline.MultiLine):
     #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
     #@+node:ekr.20170428084208.166: *4* h_insert_next_line
     def h_insert_next_line(self, ch):
+        
+        # pylint: disable=len-as-condition
         if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
             self.values.append(self.get_new_value())
             self.cursor_line += 1
