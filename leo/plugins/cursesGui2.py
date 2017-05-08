@@ -379,7 +379,6 @@ class CursesGui(leoGui.LeoGui):
             g.trace('commanders in g.app.windowList')
             g.printList([z.c.shortFileName() for z in g.app.windowList])
         # Create the top-level form.
-        # form = npyscreen.Form(name = "Welcome to Leo")
         form = LeoForm(name = "Welcome to Leo")
             # This call clears the screen.
         self.createCursesLog(c, form)
@@ -1604,9 +1603,13 @@ class LeoMLTree(npyscreen.MLTree):
 
     #@+node:ekr.20170506044733.10: *4* h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch):
-        continue_line = self.edit_cursor_line_value()
-        if continue_line: ### and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+        
+        if 1:
             self._continue_editing()
+        else:
+            continue_line = self.edit_cursor_line_value()
+            if continue_line: ### and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+                self._continue_editing()
             
     #@+node:ekr.20170506044733.9: *4* h_insert_next_line
     def h_insert_next_line(self, ch):
@@ -1646,12 +1649,23 @@ class LeoMLTree(npyscreen.MLTree):
                 self.h_expand_tree(ch)
         else:
             self.h_cursor_line_down(ch)
-    #@+node:ekr.20170506044733.7: *3* _continue_editing (dubious changes)
+    #@+node:ekr.20170506044733.7: *3* _continue_editing (REVISE)
     def _continue_editing(self):
+        
+        # EXITED_DOWN  =  1
+        # EXITED_UP    = -1
+        # EXITED_LEFT  = -2
+        # EXITED_RIGHT =  2
+        # EXITED_ESCAPE= 127
+        # EXITED_MOUSE = 130
+        trace = True
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+        if trace: g.trace(getattr(active_line, 'how_exited', None), active_line)
         ### continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):
-            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN: ### and continue_editing:
+            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN: # 1
+                if trace: g.trace(getattr(active_line, 'how_exited'))
+                    ### and continue_editing:
                 self.values.insert(self.cursor_line+1, self.get_new_value())
                 self.cursor_line += 1
                 self.display()
