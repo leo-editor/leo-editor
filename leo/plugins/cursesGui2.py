@@ -123,6 +123,22 @@ def trace(*args, **keys):
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
+#@+node:ekr.20170508085942.1: ** class  LeoTreeLine (TreeLine)
+class LeoTreeLine(npyscreen.TreeLine):
+    
+    def __init__(self, *args, **kwargs):
+
+        super(LeoTreeLine, self).__init__(*args, **kwargs)
+
+        def test(ch):
+            return 32 <= ch <= 127
+
+        self.complex_handlers.append((test, self.do_key),)
+
+    def do_key(self, i):
+        g.trace('LeoTreeLine', i, chr(i))
+        self.value.content += chr(i)
+            # self.value is a LeoTreeData.
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
@@ -1546,27 +1562,13 @@ class LeoKeyEvent(object):
     def type(self):
         return 'LeoKeyEvent'
     #@-others
-#@+node:ekr.20170507184329.1: ** class LeoTreeData (TreeData)
-class LeoTreeData(npyscreen.TreeData):
-    '''A TreeData class that has a len and new_first_child methods.'''
-
-    def __len__(self):
-        return len(self.content)
-        
-    def new_child_at(self, index, *args, **keywords):
-        '''Same as new_child, with insert(index, c) instead of append(c)'''
-        if self.CHILDCLASS:
-            cld = self.CHILDCLASS
-        else:
-            cld = type(self)
-        c = cld(parent=self, *args, **keywords)
-        self._children.insert(index, c)
-        return weakref.proxy(c)
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
 class LeoMLTree(npyscreen.MLTree):
     
     # From MultiLineEditable
-    # _contained_widgets = npyscreen.TreeLine
+    _contained_widgets = LeoTreeLine
+        ### npyscreen.TreeLine
+
     # CHECK_VALUE             = True
     # ALLOW_CONTINUE_EDITING  = True
     # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
@@ -1652,27 +1654,17 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506044733.7: *3* _continue_editing (REVISE)
     def _continue_editing(self):
         
-        # EXITED_DOWN  =  1
-        # EXITED_UP    = -1
-        # EXITED_LEFT  = -2
-        # EXITED_RIGHT =  2
-        # EXITED_ESCAPE= 127
-        # EXITED_MOUSE = 130
         trace = True
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-        if trace: g.trace(getattr(active_line, 'how_exited', None), active_line)
-        ### continue_editing = self.ALLOW_CONTINUE_EDITING
+        assert isinstance(active_line, npyscreen.TreeLine)
+        code = getattr(active_line, 'how_exited', None)
+        if trace: self.dump_code(code)
         if hasattr(active_line, 'how_exited'):
-            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN: # 1
-                if trace: g.trace(getattr(active_line, 'how_exited'))
-                    ### and continue_editing:
-                self.values.insert(self.cursor_line+1, self.get_new_value())
-                self.cursor_line += 1
-                self.display()
-                ###continue_editing = self.edit_cursor_line_value()
-                self.edit_cursor_line_value()
-                active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-                ### if not continue_editing: break
+            self.values.insert(self.cursor_line+1, self.get_new_value())
+            self.cursor_line += 1
+            self.display()
+            self.edit_cursor_line_value()
+            # active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
     #@+node:ekr.20170506044733.6: *3* delete_line_value (REVISE)
     def delete_line_value(self):
 
@@ -1683,21 +1675,22 @@ class LeoMLTree(npyscreen.MLTree):
         if self.values:
             del self.values[self.cursor_line]
             self.display()
-    #@+node:ekr.20170507171518.1: *3* dump_values & dump_widgets (new)
-    def dump_values(self):
-        
-        def info(z):
-            # return '%s.%s.%s: %s' % (
-                # id(z._parent), id(z), z.__class__.__name__, z.get_content())
-            return '%15s: %s' % (z._parent.get_content(), z.get_content())
+    #@+node:ekr.20170507171518.1: *3* dump_code/values/widgets (new)
+    def dump_code(self, code):
+        d = {
+            -2: 'left', -1: 'up', 1: 'down', 2: 'right',
+            127: 'escape', 130: 'mouse',
+        }
+        return d.get(code) or 'unknown how_exited: %r' % code
 
+    def dump_values(self):
+        def info(z):
+            return '%15s: %s' % (z._parent.get_content(), z.get_content())
         g.printList([info(z) for z in self.values])
         
     def dump_widgets(self):
-
         def info(z):
             return '%s.%s' % (id(z), z.__class__.__name__)
-            
         g.printList([info(z) for z in self._my_widgets])
     #@+node:ekr.20170506044733.4: *3* edit_cursor_line_value (no change)
     def edit_cursor_line_value(self):
@@ -1708,9 +1701,9 @@ class LeoMLTree(npyscreen.MLTree):
             self.insert_line_value()
             return False
         try:
-            g.trace('cursor_line: %r, start_display_at: %r = %r' % (
-                self.cursor_line, self.start_display_at,
-                self.cursor_line-self.start_display_at))
+            # g.trace('cursor_line: %r, start_display_at: %r = %r' % (
+                # self.cursor_line, self.start_display_at,
+                # self.cursor_line-self.start_display_at))
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
             g.trace('active_line: %r' % active_line)
         except IndexError:
@@ -1765,8 +1758,11 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506044733.5: *3* insert_line_value (changed)
     def insert_line_value(self):
         
-        g.trace('cursor_line:', repr(self.cursor_line))
-        self.dump_values()
+        trace = True
+        trace_values = False
+        if trace:
+            g.trace('cursor_line:', repr(self.cursor_line))
+            if trace_values: self.dump_values()
         if self.cursor_line is None:
             self.cursor_line = 0
         # Revised
@@ -1777,6 +1773,22 @@ class LeoMLTree(npyscreen.MLTree):
         if cont: ### and self.ALLOW_CONTINUE_EDITING:
             self._continue_editing()
     #@-others
+#@+node:ekr.20170507184329.1: ** class LeoTreeData (TreeData)
+class LeoTreeData(npyscreen.TreeData):
+    '''A TreeData class that has a len and new_first_child methods.'''
+
+    def __len__(self):
+        return len(self.content)
+        
+    def new_child_at(self, index, *args, **keywords):
+        '''Same as new_child, with insert(index, c) instead of append(c)'''
+        if self.CHILDCLASS:
+            cld = self.CHILDCLASS
+        else:
+            cld = type(self)
+        c = cld(parent=self, *args, **keywords)
+        self._children.insert(index, c)
+        return weakref.proxy(c)
 #@-others
 #@@language python
 #@@tabwidth -4
