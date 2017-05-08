@@ -418,7 +418,8 @@ class MultiLine(widget.Widget):
             return None
         else:
             return [self.values[x] for x in self.value]
-    #@+node:ekr.20170428084208.100: *3* handle_mouse_event
+    #@+node:ekr.20170504210158.1: *3* MultiLine.Handlers
+    #@+node:ekr.20170428084208.100: *4* handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # unfinished
         #mouse_id, x, y, z, bstate = mouse_event
@@ -428,7 +429,6 @@ class MultiLine(widget.Widget):
         ##if self.cursor_line > len(self.values):
         ##    self.cursor_line = len(self.values)
         self.display()
-    #@+node:ekr.20170504210158.1: *3* Handlers
     #@+node:ekr.20170428084208.101: *4* set_up_handlers
     def set_up_handlers(self):
         '''MultiLine.set_up_handlers.'''
@@ -508,6 +508,7 @@ class MultiLine(widget.Widget):
 
     #@+node:ekr.20170428084208.106: *4* h_cursor_beginning
     def h_cursor_beginning(self, ch):
+
         self.cursor_line = 0
     #@+node:ekr.20170428084208.107: *4* h_cursor_end
     def h_cursor_end(self, ch):

@@ -125,20 +125,71 @@ def trace(*args, **keys):
     logging.info('trace: %s' % s.rstrip())
 #@+node:ekr.20170508085942.1: ** class  LeoTreeLine (TreeLine)
 class LeoTreeLine(npyscreen.TreeLine):
-    
+    '''A editable TreeLine class.'''
+
     def __init__(self, *args, **kwargs):
 
         super(LeoTreeLine, self).__init__(*args, **kwargs)
+        self.set_handlers()
+
+    #@+others
+    #@+node:ekr.20170508130016.1: *3* LeoTreeLine.handlers
+    #@+node:ekr.20170508130025.1: *4*  LeoTreeLine.set_handlers
+    def set_handlers(self):
 
         def test(ch):
             return 32 <= ch <= 127
 
-        self.complex_handlers.append((test, self.do_key),)
+        self.complex_handlers.append((test, self.h_insert),)
 
-    def do_key(self, i):
-        g.trace('LeoTreeLine', i, chr(i))
-        self.value.content += chr(i)
-            # self.value is a LeoTreeData.
+        self.handlers.update({
+            curses.KEY_HOME:      self.h_cursor_beginning,  # 262
+            curses.KEY_END:       self.h_cursor_end,        # 358.
+            curses.KEY_LEFT:        self.h_cursor_left,
+            curses.KEY_RIGHT:       self.h_cursor_right,
+            # curses.KEY_UP:        self.h_line_up,
+            # curses.KEY_DOWN:      self.h_line_down,
+            # curses.KEY_DC:        self.h_delete_right,
+            # curses.ascii.DEL:     self.h_delete_left,
+            curses.ascii.BS:        self.h_delete_left,
+            curses.KEY_BACKSPACE:   self.h_delete_left,
+        })
+    #@+node:ekr.20170508130946.1: *4* LeoTreeLine.h_cursor_beginning
+    def h_cursor_beginning(self, ch):
+
+        self.cursor_line = 0
+    #@+node:ekr.20170508131043.1: *4* LeoTreeLine.h_cursor_end
+    def h_cursor_end(self, ch):
+        
+        # self.value is a LeoTreeData.
+        self.cursor_line = max(0, len(self.value.content)-1)
+    #@+node:ekr.20170508130328.1: *4* LeoTreeLine.h_cursor_left
+    def h_cursor_left(self, input):
+        
+        self.cursor_position = max(0, self.cursor_position -1)
+    #@+node:ekr.20170508130339.1: *4* LeoTreeLine.h_cursor_right
+    def h_cursor_right(self, input):
+
+        self.cursor_position += 1
+
+    #@+node:ekr.20170508130349.1: *4* LeoTreeLine.h_delete_left
+    def h_delete_left(self, input):
+
+        # self.value is a LeoTreeData.
+        n = self.cursor_position
+        s = self.value.content
+        if 0 <= n <= len(s):
+            self.value.content = s[:n] + s[n+1:]
+            self.cursor_position -= 1
+    #@+node:ekr.20170508125632.1: *4* LeoTreeLine.h_insert
+    def h_insert(self, i):
+
+        # self.value is a LeoTreeData.
+        n = self.cursor_position + 1
+        s = self.value.content
+        self.value.content = s[:n] + chr(i) + s[n:]
+        self.cursor_position += 1
+    #@-others
 #@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
@@ -1567,11 +1618,11 @@ class LeoMLTree(npyscreen.MLTree):
     
     # From MultiLineEditable
     _contained_widgets = LeoTreeLine
-        ### npyscreen.TreeLine
 
-    # CHECK_VALUE             = True
-    # ALLOW_CONTINUE_EDITING  = True
-    # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
+    ###
+        # CHECK_VALUE             = True
+        # ALLOW_CONTINUE_EDITING  = True
+        # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
         
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
