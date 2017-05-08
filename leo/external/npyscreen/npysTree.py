@@ -3,7 +3,7 @@
 import weakref
 import collections
 #@+others
-#@+node:ekr.20170428084207.401: ** class TreeData
+#@+node:ekr.20170428084207.401: ** class TreeData (object)
 class TreeData(object):
     # This is a new version of NPSTreeData that follows PEP8.
     CHILDCLASS = None
@@ -57,7 +57,6 @@ class TreeData(object):
         #    return d
         #else:
         #    return(self._parent.findDepth(d+1))
-
     #@+node:ekr.20170428084207.413: *4* get_children
     def get_children(self):
         for c in self._children:
@@ -65,24 +64,18 @@ class TreeData(object):
                 yield weakref.proxy(c)
             except Exception:
                 yield c
-
     #@+node:ekr.20170428084207.414: *4* get_children_objects
     def get_children_objects(self):
         return self._children[:]
-
     #@+node:ekr.20170428084207.403: *4* get_content
     def get_content(self):
         return self.content
-
     #@+node:ekr.20170428084207.404: *4* get_content_for_display
     def get_content_for_display(self):
         return str(self.content)
-
     #@+node:ekr.20170428084207.409: *4* get_parent
     def get_parent(self):
         return self._parent
-
-
     #@+node:ekr.20170428084207.421: *4* get_tree_as_list
     def get_tree_as_list(self, only_expanded=True, sort=None, key=None):
         _a = []
@@ -98,11 +91,12 @@ class TreeData(object):
         return _a
     #@+node:ekr.20170428084207.412: *4* has_children
     def has_children(self):
-        if len(self._children) > 0:
-            return True
-        else:
-            return False
-
+        
+        return len(self._children) > 0
+        # if len(self._children) > 0:
+            # return True
+        # else:
+            # return False
     #@+node:ekr.20170502144912.1: *3* predicates
     #@+node:ekr.20170428084207.407: *4* is_highlighted
     def is_highlighted(self):

@@ -9,8 +9,7 @@ import leo.core.leoGlobals as g
 import logging
 import logging.handlers
 import sys
-# import traceback
-# import weakref
+import weakref
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
@@ -388,7 +387,7 @@ class CursesGui(leoGui.LeoGui):
         self.createCursesMinibuffer(c, form)
         g.es(form)
         return form
-    #@+node:ekr.20170502084106.1: *4* createCursesBody
+    #@+node:ekr.20170502084106.1: *4* CGui.createCursesBody
     def createCursesBody(self, c, form):
         '''
         Create the curses body widget in the given curses Form.
@@ -405,7 +404,7 @@ class CursesGui(leoGui.LeoGui):
         assert hasattr(c.frame, 'body_widget')
         c.frame.body_widget = w
         c.frame.body.wrapper = CursesTextWrapper(c, 'body', w)
-    #@+node:ekr.20170502083613.1: *4* createCursesLog
+    #@+node:ekr.20170502083613.1: *4* CGui.createCursesLog
     def createCursesLog(self, c, form):
         '''
         Create the curses log widget in the given curses Form.
@@ -426,7 +425,7 @@ class CursesGui(leoGui.LeoGui):
         self.log.w = w
         assert hasattr(c.frame, 'log_widget')
         c.frame.log_widget = w
-    #@+node:ekr.20170502084249.1: *4* createCursesMinibuffer
+    #@+node:ekr.20170502084249.1: *4* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
         
@@ -436,18 +435,19 @@ class CursesGui(leoGui.LeoGui):
         w = form.add(BoxTitleText, name='Mini-buffer', max_height=3)
         assert hasattr(c.frame, 'minibuffer_widget')
         c.frame.minibuffer_widget = w
-    #@+node:ekr.20170502083754.1: *4* createCursesTree
+    #@+node:ekr.20170502083754.1: *4* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
         
         can_edit_tree = True
 
         class BoxTitleTree(npyscreen.BoxTitle):
+            # pylint: disable=used-before-assignment
             _contained_widget = LeoMLTree
 
-        data = npyscreen.TreeData(ignore_root=True)
+        hidden_root_node = LeoTreeData(content='<HIDDEN>', ignore_root=True)
         for i in range(4):
-            node = data.new_child(content='node %s' % (i))
+            node = hidden_root_node.new_child(content='node %s' % (i))
             for j in range(2):
                 child = node.new_child(content='child %s.%s' % (i, j))
                 assert child
@@ -457,11 +457,17 @@ class CursesGui(leoGui.LeoGui):
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
             footer="Press i or o to insert text" if can_edit_tree else '',
-            values=data, 
+            values=hidden_root_node, 
             slow_scroll=False,
         )
+        # Link and check.
+        assert isinstance(w, BoxTitleTree), w
+        leo_tree = w._my_widgets[0]
+        assert isinstance(leo_tree, LeoMLTree), repr(leo_tree)
+        assert getattr(leo_tree, 'hidden_root_node') is None, leo_tree
+        leo_tree.hidden_root_node = hidden_root_node
         assert hasattr(c.frame, 'tree_widget')
-        c.frame.body_widget = w
+        c.frame.tree_widget = leo_tree # Bug fix: 2017/05/07
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -1538,23 +1544,48 @@ class LeoKeyEvent(object):
     def type(self):
         return 'LeoKeyEvent'
     #@-others
+#@+node:ekr.20170507184329.1: ** class LeoTreeData (TreeData)
+class LeoTreeData(npyscreen.TreeData):
+    '''A TreeData class that has a len and new_first_child methods.'''
+
+    def __len__(self):
+        return len(self.content)
+        
+    def new_child_at(self, index, *args, **keywords):
+        '''Same as new_child, with insert(index, c) instead of append(c)'''
+        if self.CHILDCLASS:
+            cld = self.CHILDCLASS
+        else:
+            cld = type(self)
+        c = cld(parent=self, *args, **keywords)
+        self._children.insert(index, c)
+        return weakref.proxy(c)
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
-class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
-    
-    # _contained_widgets = npyscreen.TreeLine
+class LeoMLTree(npyscreen.MLTree):
     
     # From MultiLineEditable
+    # _contained_widgets = npyscreen.TreeLine
     # CHECK_VALUE             = True
     # ALLOW_CONTINUE_EDITING  = True
     # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
         
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
+        assert not hasattr(self, 'hidden_root_node'), repr(self)
+        self.hidden_root_node = None
+        self.set_leo_handlers()
+
+    #@+others
+    #@+node:ekr.20170506045346.1: *3*  Handlers
+    #@+node:ekr.20170507175304.1: *4* set_leo_handlers
+    def set_leo_handlers(self):
+        
+        # pylint: disable=no-member
         self.handlers.update({
             curses.KEY_LEFT:    self.h_left,
             curses.KEY_RIGHT:   self.h_right,
             # From MultiLineEditable.
-              ord('i'):               self.h_insert_value,
+            ord('i'):               self.h_insert_value,
             ord('o'):               self.h_insert_next_line,
             curses.ascii.CR:        self.h_edit_cursor_line_value,
             curses.ascii.NL:        self.h_edit_cursor_line_value,
@@ -1563,10 +1594,7 @@ class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
             curses.ascii.BS:        self.h_delete_line_value,
             curses.KEY_BACKSPACE:   self.h_delete_line_value,
         })
-
-    #@+others
-    #@+node:ekr.20170506045346.1: *3* Handlers
-    #@+node:ekr.20170506044733.12: *4* h_delete_line_value
+    #@+node:ekr.20170506044733.12: *4* h_delete_line_value (from MultiLineEdit)
     def h_delete_line_value(self, ch):
         self.delete_line_value()
 
@@ -1578,6 +1606,8 @@ class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
             
     #@+node:ekr.20170506044733.9: *4* h_insert_next_line
     def h_insert_next_line(self, ch):
+        
+        # pylint: disable=len-as-condition
         if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
             self.values.append(self.get_new_value())
             self.cursor_line += 1
@@ -1612,29 +1642,63 @@ class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
                 self.h_expand_tree(ch)
         else:
             self.h_cursor_line_down(ch)
-    #@+node:ekr.20170506044733.2: *3* get_new_value
-    def get_new_value(self):
-        g.trace(self.values)
-        return ''
-        # npyscreen.TreeData(ignore_root=True)
-      
-    #@+node:ekr.20170506044733.3: *3* check_line_value
-    def check_line_value(self, vl):
-        return bool(vl)
-        # if not vl:
-            # return False
-        # else:
-            # return True
-    #@+node:ekr.20170506044733.4: *3* edit_cursor_line_value
+    #@+node:ekr.20170506044733.7: *3* _continue_editing (dubious changes)
+    def _continue_editing(self):
+        active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+        ### continue_editing = self.ALLOW_CONTINUE_EDITING
+        if hasattr(active_line, 'how_exited'):
+            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN: ### and continue_editing:
+                self.values.insert(self.cursor_line+1, self.get_new_value())
+                self.cursor_line += 1
+                self.display()
+                ###continue_editing = self.edit_cursor_line_value()
+                self.edit_cursor_line_value()
+                active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+                ### if not continue_editing: break
+    #@+node:ekr.20170506044733.6: *3* delete_line_value (REVISE)
+    def delete_line_value(self):
+
+        trace = True
+        if trace:
+            g.trace('cursor_line:', repr(self.cursor_line))
+            self.dump_values
+        if self.values:
+            del self.values[self.cursor_line]
+            self.display()
+    #@+node:ekr.20170507171518.1: *3* dump_values & dump_widgets (new)
+    def dump_values(self):
+        
+        def info(z):
+            # return '%s.%s.%s: %s' % (
+                # id(z._parent), id(z), z.__class__.__name__, z.get_content())
+            return '%15s: %s' % (z._parent.get_content(), z.get_content())
+
+        g.printList([info(z) for z in self.values])
+        
+    def dump_widgets(self):
+
+        def info(z):
+            return '%s.%s' % (id(z), z.__class__.__name__)
+            
+        g.printList([info(z) for z in self._my_widgets])
+    #@+node:ekr.20170506044733.4: *3* edit_cursor_line_value (no change)
     def edit_cursor_line_value(self):
-        ### if len(self.values) == 0:
+
+        trace = True
         if not self.values:
+            if trace: g.trace('no values')
             self.insert_line_value()
             return False
         try:
+            g.trace('cursor_line: %r, start_display_at: %r = %r' % (
+                self.cursor_line, self.start_display_at,
+                self.cursor_line-self.start_display_at))
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
+            g.trace('active_line: %r' % active_line)
         except IndexError:
-            self._my_widgets[0] ### Huh?
+            # pylint: disable=pointless-statement
+            self._my_widgets[0]
+                # Does this have to do with weakrefs?
             self.cursor_line = 0
             self.insert_line_value()
             return True
@@ -1655,32 +1719,45 @@ class LeoMLTree(npyscreen.MLTree): ###, npyscreen.MultiLineEditable):
             # return False
         self.display()
         return True
-    #@+node:ekr.20170506044733.5: *3* insert_line_value
+    #@+node:ekr.20170506044733.2: *3* get_new_value (rewritten)
+    def get_new_value(self):
+        '''
+        Insert a new outline TreeData widget at the current line.
+        As with Leo, insert as the first child of the current line if
+        the current line is expanded. Otherwise insert after the current line.
+        '''
+        trace = True
+        trace_values = False
+        node = self.values[self.cursor_line]
+        if trace and trace_values:
+            g.trace(node)
+            self.dump_values()
+        headline = 'New headline'
+        if node.has_children() and node.expanded:
+            node = node.new_child_at(index=0, content=headline)
+        elif node.get_parent():
+            parent = node.get_parent()
+            node = parent.new_child(content=headline)
+        else:
+            parent = self.hidden_root_node
+            index = parent._children.index(node)
+            node = parent.new_child_at(index=index, content=headline)
+        if trace: g.trace('%3s %s' % (self.cursor_line, headline))
+        return node
+    #@+node:ekr.20170506044733.5: *3* insert_line_value (changed)
     def insert_line_value(self):
+        
+        g.trace('cursor_line:', repr(self.cursor_line))
+        self.dump_values()
         if self.cursor_line is None:
             self.cursor_line = 0
-        self.values.insert(self.cursor_line, self.get_new_value())
+        # Revised
+        self.values.insert(self.cursor_line+1, self.get_new_value())
+        self.cursor_line += 1
         self.display()
         cont = self.edit_cursor_line_value()
         if cont: ### and self.ALLOW_CONTINUE_EDITING:
             self._continue_editing()
-    #@+node:ekr.20170506044733.6: *3* delete_line_value
-    def delete_line_value(self):
-        # if len(self.values) > 0:
-        if self.values:
-            del self.values[self.cursor_line]
-            self.display()
-    #@+node:ekr.20170506044733.7: *3* _continue_editing
-    def _continue_editing(self):
-        active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-        continue_editing = True ### self.ALLOW_CONTINUE_EDITING
-        if hasattr(active_line, 'how_exited'):
-            while active_line.how_exited == npyscreen.wgwidget.EXITED_DOWN and continue_editing:
-                self.values.insert(self.cursor_line+1, self.get_new_value())
-                self.cursor_line += 1
-                self.display()
-                continue_editing = self.edit_cursor_line_value()
-                active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
     #@-others
 #@-others
 #@@language python

@@ -86,7 +86,7 @@ class TextfieldBase(widget.Widget):
         if clear: self.clear()
         if self.hidden:
             return True
-        value_to_use_for_calculations = self.value        
+        value_to_use_for_calculations = self.value   
         if self.ENSURE_STRING_VALUE:
             if value_to_use_for_calculations in (None, False, True):
                 value_to_use_for_calculations = ''
