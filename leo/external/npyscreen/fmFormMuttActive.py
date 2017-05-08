@@ -175,7 +175,7 @@ class TextCommandBoxTraditional(TextCommandBox):
         self.linked_widget = None
         self.always_pass_to_linked_widget = []
 
-    #@+node:ekr.20170428084207.276: *3* handle_input
+    #@+node:ekr.20170428084207.276: *3* ActionControllerSimple.handle_input
     def handle_input(self, inputch):
         try:
             inputchstr = chr(inputch)

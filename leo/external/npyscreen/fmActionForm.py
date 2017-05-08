@@ -25,7 +25,7 @@ class ActionForm(fmForm.Form):
     def find_cancel_button(self):
         self.editw = len(self._widgets__)-2
         
-    #@+node:ekr.20170428084207.126: *3* edit
+    #@+node:ekr.20170428084207.126: *3* ActionForm.edit
     def edit(self):
         # Add ok and cancel buttons. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx

@@ -39,7 +39,7 @@ class MultiSelect(selectone.SelectOne):
     def h_set_filtered_to_selected(self, ch):
         self.value = self._filtered_values_cache
 
-    #@+node:ekr.20170428084208.232: *3* h_select_exit
+    #@+node:ekr.20170428084208.232: *3* MultiSelect.h_select_exit
     def h_select_exit(self, ch):
         if not self.cursor_line in self.value:
             self.value.append(self.cursor_line)

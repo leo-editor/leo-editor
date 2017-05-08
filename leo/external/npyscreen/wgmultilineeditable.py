@@ -5,6 +5,7 @@ from . import wgwidget
 from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
+import leo.core.leoGlobals as g
 #pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable
@@ -73,8 +74,10 @@ class MultiLineEditable(wgmultiline.MultiLine):
             del self.values[self.cursor_line]
             self.display()
 
-    #@+node:ekr.20170428084208.165: *3* _continue_editing
+    #@+node:ekr.20170428084208.165: *3* MultiLineEditable._continue_editing
     def _continue_editing(self):
+        
+        g.trace('MultiLine')
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):

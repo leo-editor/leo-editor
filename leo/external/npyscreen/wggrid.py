@@ -342,7 +342,7 @@ class SimpleGrid(widget.Widget):
         if self.on_select_callback:
             self.on_select_callback()
 
-    #@+node:ekr.20170428084208.34: *3* h_exit
+    #@+node:ekr.20170428084208.34: *3* SimpleGrid.h_exit
     def h_exit(self, ch):
         self.editing = False
         self.how_exited = True

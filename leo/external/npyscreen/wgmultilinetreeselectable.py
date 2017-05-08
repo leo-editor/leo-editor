@@ -102,7 +102,7 @@ class MLTreeMultiSelect(wgmultilinetree.MLTree):
         super(MLTreeMultiSelect, self).__init__(screen, *args, **keywords)
         self.select_cascades = select_cascades
         
-    #@+node:ekr.20170428084208.222: *3* h_select
+    #@+node:ekr.20170428084208.222: *3* MLTreeMultiSelect.h_select
     def h_select(self, ch):
         vl = self.values[self.cursor_line]
         vl_to_set = not vl.selected

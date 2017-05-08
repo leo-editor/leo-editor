@@ -80,14 +80,15 @@ class InputHandler(object):
         
         Return True if input has been completely handled.
         """
-        trace = False
+        trace = True
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace:
-            g.trace('%3s = %6r, parent: %5r, widget: %s' % (
-                i, curses.ascii.unctrl(i),
+            g.trace('self: %12s, parent: %8s, %3s = %r' % (
+                self.__class__.__name__,
                 parent.__class__.__name__,
-                parent_widget.__class__.__name__,
+                # parent_widget.__class__.__name__,
+                i, curses.ascii.unctrl(i),
             ))
         # A special case for F4 so we can run unit tests.
         if i == 268:
@@ -105,8 +106,8 @@ class InputHandler(object):
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
             if test(i): # was is not False.
-                handler(i)
-                return True
+                return handler(i)
+                ### return True
         if parent_widget and hasattr(parent_widget, 'handle_input'):
             if parent_widget.handle_input(i):
                 return True
@@ -171,39 +172,39 @@ class InputHandler(object):
     # Handler Methods here - npc convention - prefix with h_
 
     #@+others
-    #@+node:ekr.20170430114213.1: *4* h_exit_down
+    #@+node:ekr.20170430114213.1: *4* InputHandler.h_exit_down
     def h_exit_down(self, _input):
         """Called when user leaves the widget to the next widget"""
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
-    #@+node:ekr.20170430114213.2: *4* h_exit_right
+    #@+node:ekr.20170430114213.2: *4* InputHandler.h_exit_right
     def h_exit_right(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_RIGHT
-    #@+node:ekr.20170430114213.3: *4* h_exit_up
+    #@+node:ekr.20170430114213.3: *4* InputHandler.h_exit_up
     def h_exit_up(self, _input):
         if not self._test_safe_to_exit():
             return False
         # Called when the user leaves the widget to the previous widget
         self.editing = False
         self.how_exited = EXITED_UP
-    #@+node:ekr.20170430114213.4: *4* h_exit_left
+    #@+node:ekr.20170430114213.4: *4* InputHandler.h_exit_left
     def h_exit_left(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_LEFT
-    #@+node:ekr.20170430114213.5: *4* h_exit_escape
+    #@+node:ekr.20170430114213.5: *4* InputHandler.h_exit_escape
     def h_exit_escape(self, _input):
         if not self._test_safe_to_exit():
             return False
         self.editing = False
         self.how_exited = EXITED_ESCAPE
-    #@+node:ekr.20170430114213.6: *4* h_exit_mouse
+    #@+node:ekr.20170430114213.6: *4* InputHandler.h_exit_mouse
     def h_exit_mouse(self, _input):
         mouse_event = self.parent.safe_get_mouse_event()
         if mouse_event and self.intersted_in_mouse_event(mouse_event):
@@ -306,14 +307,17 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.value_changed_callback = None
         
         self.initialize_event_handling()
-    #@+node:ekr.20170429213619.3: *3* _edit_loop
+    #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
+
         if not self.parent.editing:
             _i_set_parent_editing = True
             self.parent.editing   = True
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
+            # g.trace('Widget', self.__class__.__name__, 'display loop')
+            g.pr('Widget', self.__class__.__name__, '_edit_loop')
             self.display()
             self.get_and_use_key_press()
         if _i_set_parent_editing:
@@ -394,7 +398,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.highlight = 0
         self.update()
         
-    #@+node:ekr.20170429213619.2: *3* _pre_edit
+    #@+node:ekr.20170429213619.2: *3* Widget._pre_edit
     def _pre_edit(self):
         self.highlight = 1
         # old_value = self.value
@@ -479,9 +483,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self._pre_edit()
         self._edit_loop()
         return self._post_edit()
-    #@+node:ekr.20170429213619.8: *3* get_and_use_key_press
+    #@+node:ekr.20170429213619.8: *3* Widget.get_and_use_key_press
     def get_and_use_key_press(self):
         global TEST_SETTINGS
+        trace = True
+
         if (TEST_SETTINGS['TEST_INPUT'] is None) and (TEST_SETTINGS['INPUT_GENERATOR'] is None):
             curses.raw()
             curses.cbreak()
@@ -525,7 +531,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                     return
                 else:
                     raise ExhaustedTestInput
-        
+
+        # if trace: g.trace('Widget', self.__class__.__name__, ch, chr(ch))
+        if trace: g.pr('Widget', self.__class__.__name__, 'get_and_use_key_press', ch, chr(ch))
         self.handle_input(ch)
         if self.check_value_change:
             self.when_check_value_changed()
@@ -784,7 +792,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if self.hidden:
             self.clear()
             return True
-    #@+node:ekr.20170429213619.18: *3* when_check_cursor_moved
+    #@+node:ekr.20170508083519.1: *3* Widget.when_*
+    #@+node:ekr.20170429213619.18: *4* when_check_cursor_moved
     def when_check_cursor_moved(self):
         if hasattr(self, 'cursor_line'):
             cursor = self.cursor_line
@@ -804,7 +813,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.when_cursor_moved()
         if hasattr(self, 'parent_widget'):
             self.parent_widget.when_cursor_moved()
-    #@+node:ekr.20170429213619.15: *3* when_check_value_changed
+    #@+node:ekr.20170429213619.15: *4* when_check_value_changed
     def when_check_value_changed(self):
         "Check whether the widget's value has changed and call when_valued_edited if so."
         try:
@@ -821,15 +830,15 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent_widget.when_value_edited()
             self.parent_widget._internal_when_value_edited()
         return True
-    #@+node:ekr.20170429213619.19: *3* when_cursor_moved
+    #@+node:ekr.20170429213619.19: *4* when_cursor_moved
     def when_cursor_moved(self):
         "Called when the cursor moves"
         pass
-    #@+node:ekr.20170428084208.418: *3* when_resized
+    #@+node:ekr.20170428084208.418: *4* when_resized
     def when_resized(self):
         # this method is called when the widget has been resized.
         pass
-    #@+node:ekr.20170429213619.17: *3* when_value_edited
+    #@+node:ekr.20170429213619.17: *4* when_value_edited
     def when_value_edited(self):
         """Called when the user edits the value of the widget.  Will usually also be called the first time
         that the user edits the widget."""

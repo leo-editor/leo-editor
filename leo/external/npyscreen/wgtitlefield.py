@@ -123,7 +123,7 @@ class TitleText(widget.Widget):
         else: pass
         self.width = self.entry_widget.width + self.text_field_begin_at
 
-    #@+node:ekr.20170428084208.388: *3* edit
+    #@+node:ekr.20170428084208.388: *3* TitleText.edit
     def edit(self):
         self.editing=True
         self.display()

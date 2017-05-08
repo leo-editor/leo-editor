@@ -42,7 +42,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
     def h_set_filtered_to_selected(self, ch):
         self.value = self.get_filtered_values()
 
-    #@+node:ekr.20170428084208.252: *3* h_select_exit
+    #@+node:ekr.20170428084208.252: *3* MultiSelectTree.h_select_exit
     def h_select_exit(self, ch):
         try:
             working_with = weakref.proxy(self.values[self.cursor_line])

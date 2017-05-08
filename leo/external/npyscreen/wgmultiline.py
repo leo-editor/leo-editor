@@ -557,8 +557,10 @@ class MultiLine(widget.Widget):
                 self.start_display_at += 1
             else:
                 self.start_display_at = self.cursor_line
-    #@+node:ekr.20170428084208.112: *4* h_exit
+    #@+node:ekr.20170428084208.112: *4* MultiLine.h_exit
     def h_exit(self, ch):
+        
+        g.trace('MultiLine')
         self.editing = False
         self.how_exited = True
 
@@ -570,20 +572,26 @@ class MultiLine(widget.Widget):
         else:
             # There is an error - trying to select too many things.
             curses.beep()
-    #@+node:ekr.20170428084208.114: *4* h_select
+    #@+node:ekr.20170428084208.114: *4* MultiLine.h_select
     def h_select(self, ch):
+        
+        g.trace('MultiLine')
         self.value = self.cursor_line
         if self.select_exit:
             self.editing = False
             self.how_exited = True
-    #@+node:ekr.20170428084208.115: *4* h_select_exit
+    #@+node:ekr.20170428084208.115: *4* MultiLine.h_select_exit
     def h_select_exit(self, ch):
+        
+        g.trace('MultiLine')
         self.h_select(ch)
         if self.return_exit or self.select_exit:
             self.editing = False
             self.how_exited=True
-    #@+node:ekr.20170428084208.116: *4* edit
+    #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
+        
+        g.trace('MultiLine')
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value
@@ -769,14 +777,14 @@ class Pager(MultiLine):
         super(Pager, self).edit()
         self.value = value
 
-    #@+node:ekr.20170428084208.135: *3* h_scroll_line_up
+    #@+node:ekr.20170428084208.135: *3* Pager.h_scroll_line_up
     def h_scroll_line_up(self, input):
         self.start_display_at -= 1
         if self.scroll_exit and self.start_display_at < 0:
             self.editing = False
             self.how_exited = widget.EXITED_UP
 
-    #@+node:ekr.20170428084208.136: *3* h_scroll_line_down
+    #@+node:ekr.20170428084208.136: *3* Pager.h_scroll_line_down
     def h_scroll_line_down(self, input):
         self.start_display_at += 1
         if self.scroll_exit and self.start_display_at >= len(self.values)-self.start_display_at+1:

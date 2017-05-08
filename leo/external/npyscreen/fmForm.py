@@ -148,7 +148,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             "^L":               self.h_display,
             curses.KEY_RESIZE:  self._resize,
         }
-    #@+node:ekr.20170428084207.185: *3* set_up_exit_condition_handlers
+    #@+node:ekr.20170428084207.185: *3* _FormBase.set_up_exit_condition_handlers
     def set_up_exit_condition_handlers(self):
         # What happens when widgets exit?
         # each widget will set it's how_exited value: this should

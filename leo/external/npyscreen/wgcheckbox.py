@@ -40,7 +40,7 @@ class _ToggleControl(Widget):
     def whenToggled(self):
         pass
 
-    #@+node:ekr.20170428084207.542: *3* h_select_exit
+    #@+node:ekr.20170428084207.542: *3* _ToggleControl.h_select_exit
     def h_select_exit(self, ch):
         if not self.value:
             self.h_toggle(ch)

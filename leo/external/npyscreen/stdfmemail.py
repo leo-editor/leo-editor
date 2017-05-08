@@ -30,7 +30,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         return vl.getContent().get_content_type()
         #return vl.get_content_type()
 
-    #@+node:ekr.20170428084207.440: *3* h_select
+    #@+node:ekr.20170428084207.440: *3* EmailTree.h_select
     def h_select(self, ch):
         if self.values[self.cursor_line].hasChildren():
             self.cursor_line += 1
@@ -82,7 +82,7 @@ class EmailPager(npyscreen.Pager):
             curses.ascii.ESC:   self.h_exit_tree,
         })
 
-    #@+node:ekr.20170428084207.446: *3* h_exit_tree
+    #@+node:ekr.20170428084207.446: *3* EmailPager.h_exit_tree
     def h_exit_tree(self, ch):
         self.editing    = False
         self.how_exited = True

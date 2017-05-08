@@ -160,7 +160,7 @@ class BoxTitle(BoxBasic):
         super(BoxTitle, self).resize()
         self.entry_widget.resize()
 
-    #@+node:ekr.20170428084207.514: *3* edit
+    #@+node:ekr.20170428084207.514: *3* BoxTitle.edit
     def edit(self):
         self.editing=True
         self.display()

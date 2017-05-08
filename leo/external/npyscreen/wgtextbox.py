@@ -221,16 +221,19 @@ class TextfieldBase(widget.Widget):
         string_to_print = self.display_value(self.value)
         if not string_to_print:
             return None
-        string_to_print = string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        string_to_print = string_to_print[
+            self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         
         if sys.version_info[0] >= 3:
-            string_to_print = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+            string_to_print = self.display_value(self.value)[
+                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         else:
             # ensure unicode only here encoding here.
             dv = self.display_value(self.value)
             if isinstance(dv, bytes):
                 dv = dv.decode(self.encoding, 'replace')
-            string_to_print = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+            string_to_print = dv[
+                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         return string_to_print
     #@+node:ekr.20170428084208.332: *3* _print
     def _print(self):
@@ -393,7 +396,7 @@ class Textfield(TextfieldBase):
         self.value = keep_for_a_moment
         
 
-    #@+node:ekr.20170428084208.337: *3* edit
+    #@+node:ekr.20170428084208.337: *3* Textfield.edit
     def edit(self):
         self.editing = 1
         if self.cursor_position is False:
@@ -554,7 +557,7 @@ class FixedText(TextfieldBase):
         # pylint: disable=arguments-differ
         super(FixedText, self).update(clear=clear, cursor=False)
 
-    #@+node:ekr.20170428084208.353: *3* edit
+    #@+node:ekr.20170428084208.353: *3* FixedText.edit
     def edit(self):
         self.editing = 1
         self.highlight = False
