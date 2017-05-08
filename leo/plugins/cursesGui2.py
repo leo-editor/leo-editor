@@ -379,7 +379,8 @@ class CursesGui(leoGui.LeoGui):
             g.trace('commanders in g.app.windowList')
             g.printList([z.c.shortFileName() for z in g.app.windowList])
         # Create the top-level form.
-        form = npyscreen.Form(name = "Welcome to Leo")
+        # form = npyscreen.Form(name = "Welcome to Leo")
+        form = LeoForm(name = "Welcome to Leo")
             # This call clears the screen.
         self.createCursesLog(c, form)
         self.createCursesTree(c, form)
@@ -438,8 +439,6 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502083754.1: *4* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
-        
-        can_edit_tree = True
 
         class BoxTitleTree(npyscreen.BoxTitle):
             # pylint: disable=used-before-assignment
@@ -456,7 +455,7 @@ class CursesGui(leoGui.LeoGui):
             BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
-            footer="Press i or o to insert text" if can_edit_tree else '',
+            footer="Press i or o to insert a node; Press h to edit headline",
             values=hidden_root_node, 
             slow_scroll=False,
         )
@@ -1501,6 +1500,10 @@ class CursesTree (leoFrame.LeoTree):
     def setHeadline(self, p, s):
         pass
     #@-others
+#@+node:ekr.20170507194035.1: ** class LeoForm (Form)
+class LeoForm (npyscreen.Form):
+    
+    OK_BUTTON_TEXT = 'Quit Leo'
 #@+node:edward.20170428174322.1: ** class LeoKeyEvent
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
@@ -1585,14 +1588,15 @@ class LeoMLTree(npyscreen.MLTree):
             curses.KEY_LEFT:    self.h_left,
             curses.KEY_RIGHT:   self.h_right,
             # From MultiLineEditable.
+            ord('h'):               self.h_edit_cursor_line_value,
             ord('i'):               self.h_insert_value,
             ord('o'):               self.h_insert_next_line,
-            curses.ascii.CR:        self.h_edit_cursor_line_value,
-            curses.ascii.NL:        self.h_edit_cursor_line_value,
-            curses.ascii.SP:        self.h_edit_cursor_line_value,
-            curses.ascii.DEL:       self.h_delete_line_value,
-            curses.ascii.BS:        self.h_delete_line_value,
-            curses.KEY_BACKSPACE:   self.h_delete_line_value,
+            # curses.ascii.CR:        self.h_edit_cursor_line_value,
+            # curses.ascii.NL:        self.h_edit_cursor_line_value,
+            # curses.ascii.SP:        self.h_edit_cursor_line_value,
+            # curses.ascii.DEL:       self.h_delete_line_value,
+            # curses.ascii.BS:        self.h_delete_line_value,
+            # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         })
     #@+node:ekr.20170506044733.12: *4* h_delete_line_value (from MultiLineEdit)
     def h_delete_line_value(self, ch):
@@ -1698,7 +1702,7 @@ class LeoMLTree(npyscreen.MLTree):
         except IndexError:
             # pylint: disable=pointless-statement
             self._my_widgets[0]
-                # Does this have to do with weakrefs?
+                # Does this have something to do with weakrefs?
             self.cursor_line = 0
             self.insert_line_value()
             return True
