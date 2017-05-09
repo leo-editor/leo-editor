@@ -376,6 +376,9 @@ class CursesGui(leoGui.LeoGui):
             # Required attribute.
         self.curses_app = None
             # The singleton CursesApp instance.
+        self.curses_form = None
+            # The top-level curses Form instance.
+            # Form.editw is the widget with focus.
         self.log = None
             # The present log. Used by g.es
         self.log_inited = False
@@ -446,7 +449,7 @@ class CursesGui(leoGui.LeoGui):
             g.trace('commanders in g.app.windowList')
             g.printList([z.c.shortFileName() for z in g.app.windowList])
         # Create the top-level form.
-        form = LeoForm(name = "Welcome to Leo")
+        self.curses_form = form = LeoForm(name = "Welcome to Leo")
             # This call clears the screen.
         self.createCursesLog(c, form)
         self.createCursesTree(c, form)
