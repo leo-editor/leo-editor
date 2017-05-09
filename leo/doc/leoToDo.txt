@@ -8,23 +8,8 @@
 @language rest
 @wrap
 
-===== Curses gui to do:
-
-First
-- Working tree.
-- Working minibuffer.
-
-Unit tests:
-- Unit test for do_key. (Capture all keys)
-- Bind Ctrl-1 to run-all-unit tests.
-- Send tests to logger when using curses gui.
-- Run all unit tests
-
-Widgets:
-- Add all must be defined in subclasses methods.
-- Remove all NullObjects.
-* Functional dialogs.
-- List of kludges.
+.. @+node:ekr.20170509031503.1: *4* #480: Host Leo's web site on GitHub
+https://github.com/leo-editor/leo-editor/issues/480
 .. @+node:ekr.20170324083526.1: *4* Improve VR plugin
 @language rest
 @wrap
