@@ -1,4 +1,4 @@
-Leo 5.5 March 23, 2017
+Leo 5.5 March 23, 2017, Revised May 9, 2017.
 
 [Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
