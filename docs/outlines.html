@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Outlines &mdash; Leo 4.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 4.11 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-outlines">
+<h1><a class="toc-backref" href="#id1">Using Outlines</a><a class="headerlink" href="#using-outlines" title="Permalink to this headline">¶</a></h1>
+<p>This chapter tells how to use Leo&#8217;s outlines. Most of the commands can be
+invoked by clicking with the pointer in the outline pane or by using the pointer
+to select the command from the <tt class="docutils literal"><span class="pre">Outline</span></tt> menu. The key bindings mentioned here
+are those of the default EKR bindings.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#using-outlines" id="id1">Using Outlines</a><ul>
+<li><a class="reference internal" href="#navigating-through-the-outline" id="id2">Navigating through the outline</a></li>
+<li><a class="reference internal" href="#expanding-contracting-nodes" id="id3">Expanding &amp; contracting nodes</a></li>
+<li><a class="reference internal" href="#creating-and-destroying-nodes" id="id4">Creating and destroying nodes</a></li>
+<li><a class="reference internal" href="#cutting-pasting-and-deleting-nodes" id="id5">Cutting, pasting and deleting nodes</a></li>
+<li><a class="reference internal" href="#moving-reorganizing-nodes" id="id6">Moving &amp; Reorganizing nodes</a></li>
+<li><a class="reference internal" href="#cloning-nodes" id="id7">Cloning nodes</a></li>
+<li><a class="reference internal" href="#marking-nodes" id="id8">Marking nodes</a></li>
+<li><a class="reference internal" href="#dragging-nodes" id="id9">Dragging nodes</a></li>
+<li><a class="reference internal" href="#editing-body-text" id="id10">Editing body text</a></li>
+<li><a class="reference internal" href="#indenting-body-text-automatically" id="id11">Indenting body text automatically</a></li>
+<li><a class="reference internal" href="#creating-and-destroying-multiple-body-editors" id="id12">Creating and destroying multiple body editors</a></li>
+<li><a class="reference internal" href="#undoing-operations" id="id13">Undoing operations</a></li>
+<li><a class="reference internal" href="#resizing-panes" id="id14">Resizing panes</a></li>
+<li><a class="reference internal" href="#opening-url-s-automatically" id="id15">Opening URL&#8217;s automatically</a></li>
+<li><a class="reference internal" href="#using-chapters" id="id16">Using chapters</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="navigating-through-the-outline">
+<h2><a class="toc-backref" href="#id2">Navigating through the outline</a><a class="headerlink" href="#navigating-through-the-outline" title="Permalink to this headline">¶</a></h2>
+<p>Leo has many commands that select nodes in the outline. These commands can be
+found in the Outline:Go To menu.</p>
+<p>As described in the tutorial, you can move about the outline by clicking on the
+headlines or using Alt+arrow keys.</p>
+</div>
+<div class="section" id="expanding-contracting-nodes">
+<h2><a class="toc-backref" href="#id3">Expanding &amp; contracting nodes</a><a class="headerlink" href="#expanding-contracting-nodes" title="Permalink to this headline">¶</a></h2>
+<p>You can expand or contract a node by clicking in the tree view icon to the left
+of the headline. The icon in the Qt gui matches the native OS&#8217;s tree view icon,
+i.e. for Mac&#8217;s, a triangle pointing right or down; on Windows, a square
+containing a plus or minus. Expanding a node shows its immediate children;
+contracting a node hides all its children. The corresponding commands are
+<tt class="docutils literal"><span class="pre">expand-node</span></tt> and <tt class="docutils literal"><span class="pre">contract-node</span></tt>. For more convenient navigation, there are
+<tt class="docutils literal"><span class="pre">expand-and-go-right</span></tt> and <tt class="docutils literal"><span class="pre">contract-or-go-up</span></tt> which are bound to Alt-Right
+and Alt-Left.</p>
+<p>The <tt class="docutils literal"><span class="pre">expand-all</span></tt> command expands every node in the outline. <tt class="docutils literal"><span class="pre">contract-all</span></tt>
+contracts every node in the outline. Both commands are available in the
+Outline-&gt;Expand/Contract... submenu. <tt class="docutils literal"><span class="pre">contract-all</span></tt> is bound to Alt&#8211; (Alt
+modifying a single hyphen). In all but the smallest outlines, <tt class="docutils literal"><span class="pre">expand-all</span></tt> is
+rarely used, and is does not have a key binding.</p>
+</div>
+<div class="section" id="creating-and-destroying-nodes">
+<h2><a class="toc-backref" href="#id4">Creating and destroying nodes</a><a class="headerlink" href="#creating-and-destroying-nodes" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">insert-node</span></tt> command inserts a new node into the outline; it is bound to
+Control-I and the Insert key. When invoked, (from any pane), it inserts a new
+node below the presently selected node, and at the same level as that node, or
+at the child level if it has a visible child. The <tt class="docutils literal"><span class="pre">delete-node</span></tt> command
+deletes a node and all its children; it is initially unbound. If you want to
+retain the children you must promote all the children before you do the delete.</p>
+</div>
+<div class="section" id="cutting-pasting-and-deleting-nodes">
+<h2><a class="toc-backref" href="#id5">Cutting, pasting and deleting nodes</a><a class="headerlink" href="#cutting-pasting-and-deleting-nodes" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">cut-node</span></tt>, <tt class="docutils literal"><span class="pre">paste-node</span></tt>, <tt class="docutils literal"><span class="pre">copy-node</span></tt> and <tt class="docutils literal"><span class="pre">delete-node</span></tt> commands work on
+nodes rather than text. For example, to delete a node, select the node and
+choose the Cut Outline or Delete Outline command in the menu, use Alt-X to invoke the command in the mini-buffer, or use Control-Shift-X (which cuts the node; delete node is not bound). The <tt class="docutils literal"><span class="pre">cut-node</span></tt> and <tt class="docutils literal"><span class="pre">copy-node</span></tt> commands copy a text representation of the outline to the clipboard.
+This representation is the same as Leo&#8217;s .leo file format with some information
+deleted. You may copy this text representation into a body pane (or into any
+other text editor) using Edit-&gt;Paste in the menus, Ctrl-V, or Alt-X paste-text.</p>
+<p><strong>Warning</strong>: If you want to preserve the &#8220;cloned&#8221; attribute of a node, or want
+to paste the node as a clone of the node you cut or copied, use the
+<tt class="docutils literal"><span class="pre">past-retaining-clones</span></tt> command, which in the Outline menu is called &#8220;Paste
+Node as Clone&#8221;. The <tt class="docutils literal"><span class="pre">paste-node</span></tt> command instead creates a new, distinct
+version of the node you previously cut or copied, though if there were
+descendant nodes which were clones of each other, the new version will have
+parallel, distinct nodes that are also clones of each other (just not of the
+originals). You may paste a node between .leo files, but there can be no clone
+relationship across files.</p>
+<p>There are places to which you are prevented from <tt class="docutils literal"><span class="pre">paste-retaining-clones</span></tt>,
+because it would cause a node to become a parent of itself, and thus cause
+outline traversals like <tt class="docutils literal"><span class="pre">&#64;file</span></tt> expansion to loop until they consumed all
+memory and crashed the program. The Leo outline is thus mathematically a
+<em>directed acyclic graph</em>: clones make it more flexible than a tree, but not a
+generalized graph.</p>
+</div>
+<div class="section" id="moving-reorganizing-nodes">
+<h2><a class="toc-backref" href="#id6">Moving &amp; Reorganizing nodes</a><a class="headerlink" href="#moving-reorganizing-nodes" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">move-outline-up</span></tt>, <tt class="docutils literal"><span class="pre">move-outline-down</span></tt>, <tt class="docutils literal"><span class="pre">move-outline-left</span></tt>, and  <tt class="docutils literal"><span class="pre">move-outline-right</span></tt> commands move the currently
+selected node. In the Outline-&gt;Move... menu, they&#8217;re called Move Up, Move Down, Move Left and Move Right; they&#8217;re bound to Control-U, Control-D, Control-L and Control R.  The <tt class="docutils literal"><span class="pre">promote</span></tt> command makes all the children of a node
+siblings of the node. The <tt class="docutils literal"><span class="pre">demote</span></tt> command makes all following siblings of a
+node children of the node.  These are also found in the Outline-&gt;Move... menu, and are bound to Control-Shift-[ and Control-Shift-] .</p>
+<p>Nodes moved in the above manner retain any clone characteristics.  Moves are limited to retain the directed acyclic graph property.</p>
+</div>
+<div class="section" id="cloning-nodes">
+<h2><a class="toc-backref" href="#id7">Cloning nodes</a><a class="headerlink" href="#cloning-nodes" title="Permalink to this headline">¶</a></h2>
+<p>A cloned node is a copy of a node that changes when the original
+changes. One may also think of it as a single node that is hooked into
+the outline at multiple positions.  Because that single node brings
+along all its descendants, changes are maintained across all the the
+clones of a node, along with changes to its offspring (children,
+grandchildren, etc.), i.e., any changes are simultaneously made to the
+corresponding offspring of all of those clones.  A small red arrow in
+the icon box marks cloned nodes.  You can think of the arrow as
+pointing out that there are other paths to get to this same node.
+There is no real distinction between the &#8220;original&#8221; node and any of
+its clones.  Any headline or body update of a clone headed subtree
+affects all of its clones simultaneously.  A cloned node becomes a
+regular node whenever deletion of its other clones makes it the only
+one left. Clones are useful for making alternate views of a program.
+See <a class="reference external" href="intro.html#clones-views">Clones and views</a> for full details.</p>
+<p>The command <tt class="docutils literal"><span class="pre">clone-node</span></tt>, (Clone Node in the Outline menu, bound to Control-`)
+creates a clone as the immediate sibling of a selected node. You have to place
+it where you want it by either using move commands, or cutting and paste the
+clone.</p>
+</div>
+<div class="section" id="marking-nodes">
+<h2><a class="toc-backref" href="#id8">Marking nodes</a><a class="headerlink" href="#marking-nodes" title="Permalink to this headline">¶</a></h2>
+<p>You can mark nodes in several ways:</p>
+<ul class="simple">
+<li>With the Mark commands: <tt class="docutils literal"><span class="pre">mark</span></tt>, <tt class="docutils literal"><span class="pre">mark-changed-items</span></tt>,
+<tt class="docutils literal"><span class="pre">mark-subheads</span></tt>. These are found in the
+Outline-&gt;Mark... submenu; <tt class="docutils literal"><span class="pre">mark</span></tt> is bound to Control-M .</li>
+<li>With the Find or Change commands. The &#8220;mark changes&#8221; and &#8220;mark finds&#8221; options
+are initially cleared; you can change them with the
+<tt class="docutils literal"><span class="pre">toggle-find-mark-changes-option</span></tt> and <tt class="docutils literal"><span class="pre">toggle-find-mark-finds-option</span></tt>
+commands. Using those commands will put focus in the Find tab of the log pane.
+When the Find tab is visible, Alt in combination with the underlined option
+character will put focus on that option, and then the space bar will toggle
+the option. You can also change the options by clicking on them in the Find
+tab.</li>
+</ul>
+<p>The <tt class="docutils literal"><span class="pre">goto-next-marked</span></tt> command selects the next marked node, if any; it is available in the Outline-&gt;Go to... submenu.</p>
+<p>The <tt class="docutils literal"><span class="pre">mark</span></tt> command unmarks the selected headline if it is already marked.</p>
+</div>
+<div class="section" id="dragging-nodes">
+<h2><a class="toc-backref" href="#id9">Dragging nodes</a><a class="headerlink" href="#dragging-nodes" title="Permalink to this headline">¶</a></h2>
+<p>You may drag a node (including all its descendants) from one place to another in
+an outline. To start a drag, press the main (left) mouse button while the cursor
+is over the icon for a node. The cursor will change to a hand icon. If you
+release the mouse button while the hand cursor is above the icon for another
+node, Leo will move the dragged node after that node. If you release the mouse
+button when the hand cursor is not over an icon, Leo will leave the outline pane
+as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
+to continue scrolling you must keep moving the mouse.</p>
+</div>
+<div class="section" id="editing-body-text">
+<h2><a class="toc-backref" href="#id10">Editing body text</a><a class="headerlink" href="#editing-body-text" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Clicking mouse button 1 positions the insertion cursor just before the character
+underneath the mouse cursor, sets the input focus to this widget, and clears any
+selection in the widget. Dragging with mouse button 1 strokes out a selection
+between the insertion cursor and the character under the mouse.</li>
+<li>Double-clicking mouse button 1 selects the word under the mouse and
+positions the insertion cursor at the end of the word.</li>
+<li>The ends of the selection can be adjusted by dragging with mouse button 1 while
+the Shift key is down; this will adjust the end of the selection that was
+nearest to the mouse cursor when button 1 was pressed.</li>
+<li>If there is no selection, normal printing characters are inserted at the point of the insertion cursor.</li>
+<li>If there is a selection, normal printing characters replace the selection.</li>
+<li>If the mouse is dragged out of the body pane while button 1 is pressed, the
+entry will automatically scroll to make more text visible.</li>
+<li>Left Arrow and Right Arrow move the cursor one character to the left or right
+and clear any selection in the text.</li>
+<li>Shift Left or Shift Right move the cursor and modify the selection.</li>
+<li>Control-Left and Control-Right move the insertion cursor by words,
+and Control-Shift-Left and Control-Shift-Right move the insertion
+cursor by words and also extend the selection.</li>
+<li>Up Arrow and Down Arrow move the insertion cursor one line up or down and
+clear any selection in the text.</li>
+<li>Shift Up and Shift Right move the cursor and extend the selection.</li>
+<li>Control-Up and Control-Down move the insertion cursor by paragraphs.</li>
+<li>Control-Shift-Up and Control-Shift-Down move the insertion cursor by
+paragraphs and extend the selection.</li>
+<li>Next (Page Down) and Prior (Page Up) keys move the
+insertion cursor one screen and clear any text selection.</li>
+<li>Shift Next and Shift Prior move the cursor one screen and extend the selection.</li>
+<li>Line movement is by text lines terminated by hard returns (newlines), not by
+displayed lines; if a text line is long and wraps across more than one display
+line, then the Up and Down movement will skip the extra wrapped display lines.</li>
+<li>Home moves the insertion cursor to the beginning of its line and clears any
+selection in the widget.</li>
+<li>Shift-Home moves the insertion cursor to the beginning of the line and extends the selection.</li>
+<li>End moves the insertion cursor to the end of the line and clears any selection in
+the widget.</li>
+<li>Shift-End moves the cursor to the end of the line and extends the selection.</li>
+<li>Control-Home moves the insertion cursor to the beginning of the text and clears
+any selection in the widget.</li>
+<li>Control-Shift-Home moves the insertion cursor to the beginning of the text and extends the selection.</li>
+<li>Control-End moves the insertion cursor to the end of the text and clears any
+selection.</li>
+<li>Control-Shift-End moves the cursor to the end of the text and extends the selection.</li>
+<li>Select and Control-Space set the selection anchor to the position of the
+insertion cursor. They don&#8217;t affect the current selection.</li>
+<li>Shift-Select and Control-Shift-Space adjust the selection to the current position of the
+insertion cursor, selecting from the anchor to the insertion cursor if there was
+no previous selection.</li>
+<li>F16  (Copy on many Sun workstations) or Control-c copies the
+selection in the widget to the clipboard, if there is a selection.</li>
+<li>F20 (Cut on many Sun workstations) or Control-x copies the
+selection in the widget to the clipboard and deletes the selection.
+These keys have no effect if no text is selected.</li>
+<li>F18 (Paste on many Sun workstations) or Control-v inserts the
+contents of the clipboard at the position of the insertion cursor.</li>
+<li>Delete deletes the text selection, or the character to the right of the cursor
+if there is no text selection.</li>
+<li>Backspace deletes the selection, or the character to the left of the cursor
+if there is no text selection.</li>
+</ul>
+</div>
+<div class="section" id="indenting-body-text-automatically">
+<h2><a class="toc-backref" href="#id11">Indenting body text automatically</a><a class="headerlink" href="#indenting-body-text-automatically" title="Permalink to this headline">¶</a></h2>
+<p>Leo auto indents unless &#64;nocolor is in effect.  Typing a newline
+automatically inserts the same leading whitespace present on the previous line.</p>
+<p>If Python is the present language, Leo inserts an additional tab if the previous
+line ends with a colon.  When the smart_auto_indent setting is True, Leo uses Emacs-style
+auto-indentation instead.  This style of auto-indent aligns newly created lines
+with unmatched ( [ or { brackets in the previous line.</p>
+</div>
+<div class="section" id="creating-and-destroying-multiple-body-editors">
+<h2><a class="toc-backref" href="#id12">Creating and destroying multiple body editors</a><a class="headerlink" href="#creating-and-destroying-multiple-body-editors" title="Permalink to this headline">¶</a></h2>
+<p>Three commands in the Cmds-&gt;Body Editors menu allow one to create, destroy, or focus on separate editors in the body pane.
+- The <tt class="docutils literal"><span class="pre">add-editor</span></tt> (Cmds-&gt;Body Editors-&gt;Add Body Editor) command adds a new editor in the body pane and gives it the body editor focus.
+- The <tt class="docutils literal"><span class="pre">delete-editor</span></tt> (Cmds-&gt;Body Editors-&gt;Delete Body Editor) command deletes the editor with body editor focus.
+- The <tt class="docutils literal"><span class="pre">cycle-editor-focus</span></tt> (Cmds-&gt;Body Editors-&gt;Change Body Editor) command cycles body editor focus between editors in the body text.</p>
+<p>There is a single body editor focus which determines which body editor shows the content of the selected outline node and which allows that node to be edited; other body editors continue to show the node contents they last had when they had the body editor focus.</p>
+</div>
+<div class="section" id="undoing-operations">
+<h2><a class="toc-backref" href="#id13">Undoing operations</a><a class="headerlink" href="#undoing-operations" title="Permalink to this headline">¶</a></h2>
+<p>Leo supports unlimited undo for all typing and all commands. The
+&#8216;undo_granularity&#8217; setting controls the granularity of undo. There are four
+possible values:</p>
+<dl class="docutils">
+<dt>node</dt>
+<dd>Starts a new undo unit when typing moves to a new node.</dd>
+<dt>line (default)</dt>
+<dd>Starts a new undo unit when typing moves to new line.</dd>
+<dt>word</dt>
+<dd>Starts a new undo unit when typing starts a new word.</dd>
+<dt>char (not recommended)</dt>
+<dd>Starts a new undo unit for each character typed.
+This wastes lots of computer memory.</dd>
+</dl>
+<p>Internally, setUndoTypingParams() calls recognizeStartOfTypingWord() to recognize the
+start of words. Plugins can modify recognizeStartOfTypingWord(). It should
+return True if the typing indicated by the params starts a new &#8216;word&#8217; for the
+purposes of undo with &#8216;word&#8217; granularity. setUndoTypingParams() calls this
+method only when the typing could possibly continue a previous word. In other
+words, undo will work safely regardless of the value returned. See the actual
+code for recognizeStartOfTypingWord() for more details.</p>
+</div>
+<div class="section" id="resizing-panes">
+<h2><a class="toc-backref" href="#id14">Resizing panes</a><a class="headerlink" href="#resizing-panes" title="Permalink to this headline">¶</a></h2>
+<p>You can change the relative sizes of the outline and body panes by dragging the
+splitter bar. The <tt class="docutils literal"><span class="pre">equal-sized-panes</span></tt> (Window-&gt;Equal Sized Panes) command resizes the panes so that each
+fills half of the main window.</p>
+</div>
+<div class="section" id="opening-url-s-automatically">
+<h2><a class="toc-backref" href="#id15">Opening URL&#8217;s automatically</a><a class="headerlink" href="#opening-url-s-automatically" title="Permalink to this headline">¶</a></h2>
+<p>Double-clicking the icon box of a node whose headline has the form:</p>
+<div class="highlight-python"><pre>@url &lt;any url&gt;</pre>
+</div>
+<p>executes the URL in your default web browser.</p>
+<p>Leo checks that the URL is valid before doing so. A valid URL is:</p>
+<ul class="simple">
+<li>3 or more lowercase alphas</li>
+<li>followed by one :</li>
+<li>followed by one or more of:</li>
+<li><tt class="docutils literal"><span class="pre">$%&amp;'()*+,-./0-9:=?&#64;A-Z_a-z{}~</span></tt></li>
+<li>followed by one of: <tt class="docutils literal"><span class="pre">$%&amp;'()*+/0-9:=?&#64;A-Z_a-z}~</span></tt> (i.e., comma, hyphen and open curly brace may not be the last character)</li>
+</ul>
+<p>URL&#8217;s should contain no spaces: use %20 to indicate spaces. You may use any
+type of URL that your browser supports: http, mailto, ftp, file, etc.</p>
+</div>
+<div class="section" id="using-chapters">
+<h2><a class="toc-backref" href="#id16">Using chapters</a><a class="headerlink" href="#using-chapters" title="Permalink to this headline">¶</a></h2>
+<p>Chapters are regions of a Leo outline whose root is an <tt class="docutils literal"><span class="pre">&#64;chapter</span></tt> node. They
+are available in an outline if the <tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">usechapters</span></tt> option is True.
+<tt class="docutils literal"><span class="pre">&#64;chapter</span></tt> nodes may appear anywhere in an outline, but the <tt class="docutils literal"><span class="pre">create-chapter</span></tt>
+command (see below) creates <tt class="docutils literal"><span class="pre">&#64;chapter</span></tt> nodes as children of the first
+<tt class="docutils literal"><span class="pre">&#64;chapters</span></tt> (note the <tt class="docutils literal"><span class="pre">s</span></tt>) node in the outline.</p>
+<p>One selects a chapter with the <tt class="docutils literal"><span class="pre">select-chapter</span></tt> command, after which Leo shows
+only the nodes in the selected chapter; in this respect, chapters are like
+hoists. The <tt class="docutils literal"><span class="pre">main</span></tt> chapter represents the entire outline and can not be
+deleted by name. When chapters are in effect, Leo creates an <tt class="docutils literal"><span class="pre">&#64;chapters</span></tt> node
+for the use of <tt class="docutils literal"><span class="pre">create-chapter</span></tt>.</p>
+<p>Associated settings:</p>
+<ul class="simple">
+<li>The <tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">use_chapters</span></tt> setting determines whether chapters are enabled.</li>
+<li>The <tt class="docutils literal"><span class="pre">&#64;bool</span> <span class="pre">use_chapter_tabs</span></tt> setting determines whether the chapters
+pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.</li>
+</ul>
+<p>When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapter commands:</p>
+<ul class="simple">
+<li>The <tt class="docutils literal"><span class="pre">chapter-create</span></tt> command creates an &#64;chapter node and populates it with a single node.</li>
+<li>The <tt class="docutils literal"><span class="pre">chapter-remove</span></tt> command deletes the currently selected chapter.</li>
+<li>The <tt class="docutils literal"><span class="pre">chapter-select</span></tt> command prompts for a chapter name and makes only the nodes of the selected chapter visible.</li>
+<li>The <tt class="docutils literal"><span class="pre">chapter-move-node-to</span></tt>, <tt class="docutils literal"><span class="pre">chapter-clone-node-to</span></tt> and <tt class="docutils literal"><span class="pre">chapter-copy-node-to</span></tt> commands
+prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Edward K. Ream.
+      Last updated on Aug 16, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

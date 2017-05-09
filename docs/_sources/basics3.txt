@@ -1,0 +1,174 @@
+.. rst3: filename: html\basics3.html
+
+#########################################
+Creating Documents with Leo
+#########################################
+
+.. |br| raw:: html
+
+   <br />
+
+.. _`Leo's`: http://leoeditor.com/
+
+This tutorial continues `Leo's`_ tutorial. It covers several intermediate
+topics and should take less than an hour to complete.
+
+.. contents::
+    :depth: 4
+
+Scripting Leo
++++++++++++++
+
+
+
+Leo scripts
+***********
+
+Ctrl-B (execute-script) executes the body pane after expanding @others and
+section references throughout the tree. The symbols 'c', 'g' and 'p'
+are predefined as follows:
+
+- c is the Commander of the outline in which the script is executing.
+- g is the leo.core.leoGlobals module.
+- p is c.p (the same as c.currentPosition())
+
+These three predefined variables give any Leo script full access to
+all methods defined in Leo's source code. Examples::
+
+    c.redraw() # requests redraw of Leo's screen.
+    g.es(s) # prints string s to the log window.
+    g.app # the singleton instance of the leoApp class.
+    g.app.gui # the the singleton instance of the leoGui class.
+    g.app.windowList # the list of presently open frames.
+
+    # Returns list of all open commanders
+    commanders = [frame.c for frame in g.app.windowList]
+
+For any position p, here are p's getters::
+
+    p.b # p's body text.
+    p.h # p's headline.
+    p.u # p's uA, the same as p.unknownAttributes.
+    p.v # the vnode corresponding to p.
+    p2 = p.copy() # p2 is a copy of p.
+
+    # Returning ints:
+    
+        p.childIndex()
+        p.numberOfChildren()
+        p.level()
+
+    # Returning bools:
+    
+        p.hasChildren()
+        p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+        p.isCloned()
+        p.isDirty()
+        p.isExpanded()
+        p.isMarked()
+        p.isVisible()
+        p.isVisited()
+        
+Here are p's most important setters::
+
+    p.b = s  # Sets the body text of p.
+    p.h = s  # Sets the headline text of p.
+    p.u = aDict # Sets p.u to the given dictionary.
+
+Here is the list of Leo's iterators::
+
+    c.all_nodes             # all vnodes in c.
+    c.all_unique_nodes      # all unique vnodes in c.
+    c.all_positions         # all positions in c.
+    c.all_unique_positions  # all unique positions in c.
+
+    p.children              # all children of p.
+    p.following_siblings    # all siblings of p that follow p.
+    p.nodes                 # all vnodes in p's subtree.
+    p.parents               # all parents of p.
+    p.self_and_parents      # p and all parents of p.
+    p.siblings              # all siblings of p, including p.
+    p.subtree               # all positions in p's subtree, excluding p.
+    p.self_and_subtree      # all positions in p's subtree, including p.
+    p.unique_nodes          # all unique vnodes in p's subtree.
+    p.unique_subtree        # all unique positions in p's subtree.
+
+Plugins
+*******
+
+Scripting plugins is exactly like writing Leo scripts,
+except that plugins must compute c, g and p as follows:
+
+**g**::
+
+    import leo.core.leoGlobals as g
+    
+**c**:
+
+In the top-level init function::
+
+    g.registerHandler(event_name,my_event_handler)
+
+Define event_handler as follows::
+
+    def my_event_handler (kind,keywords):
+        c = keywords.get('c'):
+        if c:
+            ...
+   
+**p**::
+
+    p = c.p
+
+Using @first
+++++++++++++
+
+..  .. index::
+    ..  pair: @first; Tutorial
+
+The @first directive forces a lines to appear before the first sentinel of a
+external file. For example::
+
+    @first #! /usr/bin/env python
+    @first # -*- coding: utf-8 -*-
+
+Using @path
++++++++++++
+
+..  .. index::
+    ..  pair: @path; Tutorial
+
+Rather than specifying long paths in @file nodes, you can specify a path in
+an ancestor @path node.
+
+For example, suppose three nodes have the following headlines::
+
+    @path a
+        @path b
+            @file c/d.py
+
+Because of the ancestor @path nodes, the @file node creates the file
+a/b/c/d.py
+
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+symbols known: c, g, p, os and sys.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+
+refers to the file abc.py in (absolute path of) the current directory.
+
+Using @auto nodes
++++++++++++++++++
+
+
+
+Using @button nodes
++++++++++++++++++++
+
+
+
+Using @test nodes
++++++++++++++++++
+
+
+

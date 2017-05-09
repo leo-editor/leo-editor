@@ -1,0 +1,2494 @@
+<HTML>
+
+<!-- Mirrored from webpages.charter.net/edreamleo/out2.htm by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><title>wxStyledTextCtrl</title></head>
+
+<BODY BGCOLOR=#FFFFFF>
+<A NAME="wxstyledtextctrl"></A><CENTER>
+<A HREF="out.htm"><img align=center src="contents.gif" BORDER=0 ALT="Contents" width="64" height="32"></A> <A HREF="out1.htm#classref"><img align=center src="up.gif" BORDER=0 ALT="Up" width="64" height="32"></A> <A HREF="out1.htm#classref"><img align=center src="back.gif" BORDER=0 ALT="Previous" width="64" height="32"></A> <A HREF="out3.htm#wxstyledtextevent"><img align=center src="forward.gif" BORDER=0 ALT="Next" width="64" height="32"></A> </CENTER><HR>
+
+<H2>wxStyledTextCtrl</H2>
+<P>
+<B><FONT COLOR="#FF0000">Derived from</FONT></B><P>
+wxControl<P>
+<B><FONT COLOR="#FF0000">Include files</FONT></B><P>
+&lt;wx/wxStyledTextCtrl.h&gt;
+<P>
+<P>
+<B><FONT COLOR="#FF0000">Function groups</FONT></B><P>
+<A HREF="#topic0">Constructors and destructors</A><BR>
+<A HREF="#topic1">Auto completion</A><BR>
+<A HREF="#topic2">Brace highlighting</A><BR>
+<A HREF="#topic3">Call tips</A><BR>
+<A HREF="#topic4">Caret</A><BR>
+<A HREF="#topic5">Clipboard</A><BR>
+<A HREF="#topic6">Colours</A><BR>
+<A HREF="#topic7">Documents</A><BR>
+<A HREF="#topic8">Folding and hiding</A><BR>
+<A HREF="#topic9">Global settings</A><BR>
+<A HREF="#topic10">Indicators</A><BR>
+<A HREF="#topic11">Key bindings</A><BR>
+<A HREF="#topic12">Lexers</A><BR>
+<A HREF="#topic13">Lines</A><BR>
+<A HREF="#topic14">Line endings</A><BR>
+<A HREF="#topic15">Long lines (edges)</A><BR>
+<A HREF="#topic16">Margins</A><BR>
+<A HREF="#topic17">Markers</A><BR>
+<A HREF="#topic18">Position</A><BR>
+<A HREF="#topic19">Print formatting</A><BR>
+<A HREF="#topic20">Searching</A><BR>
+<A HREF="#topic21">Selection and anchor</A><BR>
+<A HREF="#topic22">Scrolling and moving</A><BR>
+<A HREF="#topic23">Styles</A><BR>
+<A HREF="#topic24">Text</A><BR>
+<A HREF="#topic25">Undo</A><BR>
+<A HREF="#topic26">Whitespace, tabs and indentation</A><BR>
+<A HREF="#topic27">Zooming</A><BR>
+<A HREF="#wxstyledtextctrlctor">wxStyledTextCtrl::wxStyledTextCtrl</A><BR>
+<A HREF="#wxstyledtextctrldtor">wxStyledTextCtrl::~wxStyledTextCtrl</A><BR>
+<A HREF="#wxstyledtextctrladdstyledtext">wxStyledTextCtrl::AddStyledText</A><BR>
+<A HREF="#wxstyledtextctrladdtext">wxStyledTextCtrl::AddText</A><BR>
+<A HREF="#wxstyledtextctrlautocompactive">wxStyledTextCtrl::AutoCompActive</A><BR>
+<A HREF="#wxstyledtextctrlautocompcancel">wxStyledTextCtrl::AutoCompCancel</A><BR>
+<A HREF="#wxstyledtextctrlautocompcomplete">wxStyledTextCtrl::AutoCompComplete</A><BR>
+<A HREF="#wxstyledtextctrlautocompgetseparator">wxStyledTextCtrl::AutoCompGetSeparator</A><BR>
+<A HREF="#wxstyledtextctrlautocompposatstart">wxStyledTextCtrl::AutoCompPosAtStart</A><BR>
+<A HREF="#wxstyledtextctrlautocompselect">wxStyledTextCtrl::AutoCompSelect</A><BR>
+<A HREF="#wxstyledtextctrlautocompsetseparator">wxStyledTextCtrl::AutoCompSetSeparator</A><BR>
+<A HREF="#wxstyledtextctrlautocompshow">wxStyledTextCtrl::AutoCompShow</A><BR>
+<A HREF="#wxstyledtextctrlautocompstopchars">wxStyledTextCtrl::AutoCompStopChars</A><BR>
+<A HREF="#wxstyledtextctrlbeginundoaction">wxStyledTextCtrl::BeginUndoAction</A><BR>
+<A HREF="#wxstyledtextctrlbracebadlight">wxStyledTextCtrl::BraceBadlight</A><BR>
+<A HREF="#wxstyledtextctrlbracehighlight">wxStyledTextCtrl::BraceHighlight</A><BR>
+<A HREF="#wxstyledtextctrlbracematch">wxStyledTextCtrl::BraceMatch</A><BR>
+<A HREF="#wxstyledtextctrlcalltipactive">wxStyledTextCtrl::CallTipActive</A><BR>
+<A HREF="#wxstyledtextctrlcalltipcancel">wxStyledTextCtrl::CallTipCancel</A><BR>
+<A HREF="#wxstyledtextctrlcalltipposatstart">wxStyledTextCtrl::CallTipPosAtStart</A><BR>
+<A HREF="#wxstyledtextctrlcalltipsetbackground">wxStyledTextCtrl::CallTipSetBackground</A><BR>
+<A HREF="#wxstyledtextctrlcalltipsethighlight">wxStyledTextCtrl::CallTipSetHighlight</A><BR>
+<A HREF="#wxstyledtextctrlcalltipshow">wxStyledTextCtrl::CallTipShow</A><BR>
+<A HREF="#wxstyledtextctrlcanpaste">wxStyledTextCtrl::CanPaste</A><BR>
+<A HREF="#wxstyledtextctrlcanredo">wxStyledTextCtrl::CanRedo</A><BR>
+<A HREF="#wxstyledtextctrlcanundo">wxStyledTextCtrl::CanUndo</A><BR>
+<A HREF="#wxstyledtextctrlchangeposition">wxStyledTextCtrl::ChangePosition</A><BR>
+<A HREF="#wxstyledtextctrlclearclipbrd">wxStyledTextCtrl::ClearClipbrd</A><BR>
+<A HREF="#wxstyledtextctrlclearall">wxStyledTextCtrl::ClearAll</A><BR>
+<A HREF="#wxstyledtextctrlcmdkeyassign">wxStyledTextCtrl::CmdKeyAssign</A><BR>
+<A HREF="#wxstyledtextctrlcmdkeyclear">wxStyledTextCtrl::CmdKeyClear</A><BR>
+<A HREF="#wxstyledtextctrlcmdkeyclearall">wxStyledTextCtrl::CmdKeyClearAll</A><BR>
+<A HREF="#wxstyledtextctrlcmdkeyexecute">wxStyledTextCtrl::CmdKeyExecute</A><BR>
+<A HREF="#wxstyledtextctrlconverteol">wxStyledTextCtrl::ConvertEOL</A><BR>
+<A HREF="#wxstyledtextctrlcolourise">wxStyledTextCtrl::Colourise</A><BR>
+<A HREF="#wxstyledtextctrlcopy">wxStyledTextCtrl::Copy</A><BR>
+<A HREF="#wxstyledtextctrlcut">wxStyledTextCtrl::Cut</A><BR>
+<A HREF="#wxstyledtextctrldoclinefromvisible">wxStyledTextCtrl::DocLineFromVisible</A><BR>
+<A HREF="#wxstyledtextctrlemptyundobuffer">wxStyledTextCtrl::EmptyUndoBuffer</A><BR>
+<A HREF="#wxstyledtextctrlendundoaction">wxStyledTextCtrl::EndUndoAction</A><BR>
+<A HREF="#wxstyledtextctrlensurecaretvisible">wxStyledTextCtrl::EnsureCaretVisible</A><BR>
+<A HREF="#wxstyledtextctrlensurevisible">wxStyledTextCtrl::EnsureVisible</A><BR>
+<A HREF="#wxstyledtextctrlfindtext">wxStyledTextCtrl::FindText</A><BR>
+<A HREF="#wxstyledtextctrlformatrange">wxStyledTextCtrl::FormatRange</A><BR>
+<A HREF="#wxstyledtextctrlgetanchor">wxStyledTextCtrl::GetAnchor</A><BR>
+<A HREF="#wxstyledtextctrlgetcaretperiod">wxStyledTextCtrl::GetCaretPeriod</A><BR>
+<A HREF="#wxstyledtextctrlgetcharat">wxStyledTextCtrl::GetCharAt</A><BR>
+<A HREF="#wxstyledtextctrlgetcurrentline">wxStyledTextCtrl::GetCurrentLine</A><BR>
+<A HREF="#wxstyledtextctrlgetcurrentlinetext">wxStyledTextCtrl::GetCurrentLineText</A><BR>
+<A HREF="#wxstyledtextctrlgetcurrentpos">wxStyledTextCtrl::GetCurrentPos</A><BR>
+<A HREF="#wxstyledtextctrlgetdocument">wxStyledTextCtrl::GetDocument</A><BR>
+<A HREF="#wxstyledtextctrlgetedgecolour">wxStyledTextCtrl::GetEdgeColour</A><BR>
+<A HREF="#wxstyledtextctrlgetedgecolumn">wxStyledTextCtrl::GetEdgeColumn</A><BR>
+<A HREF="#wxstyledtextctrlgetedgemode">wxStyledTextCtrl::GetEdgeMode</A><BR>
+<A HREF="#wxstyledtextctrlgetendstyled">wxStyledTextCtrl::GetEndStyled</A><BR>
+<A HREF="#wxstyledtextctrlgeteolmode">wxStyledTextCtrl::GetEOLMode</A><BR>
+<A HREF="#wxstyledtextctrlgetfirstvisibleline">wxStyledTextCtrl::GetFirstVisibleLine</A><BR>
+<A HREF="#wxstyledtextctrlgetfoldexpanded">wxStyledTextCtrl::GetFoldExpanded</A><BR>
+<A HREF="#wxstyledtextctrlgetfoldlevel">wxStyledTextCtrl::GetFoldLevel</A><BR>
+<A HREF="#wxstyledtextctrlgetfoldparent">wxStyledTextCtrl::GetFoldParent</A><BR>
+<A HREF="#wxstyledtextctrlgethideselection">wxStyledTextCtrl::GetHideSelection</A><BR>
+<A HREF="#wxstyledtextctrlgetlastchild">wxStyledTextCtrl::GetLastChild</A><BR>
+<A HREF="#wxstyledtextctrlgetleftmargin">wxStyledTextCtrl::GetLeftMargin</A><BR>
+<A HREF="#wxstyledtextctrlgetlexer">wxStyledTextCtrl::GetLexer</A><BR>
+<A HREF="#wxstyledtextctrlgetline">wxStyledTextCtrl::GetLine</A><BR>
+<A HREF="#wxstyledtextctrlgetlinecount">wxStyledTextCtrl::GetLineCount</A><BR>
+<A HREF="#wxstyledtextctrlgetlinefrompos">wxStyledTextCtrl::GetLineFromPos</A><BR>
+<A HREF="#wxstyledtextctrlgetlineindentation">wxStyledTextCtrl::GetLineIndentation</A><BR>
+<A HREF="#wxstyledtextctrlgetlineindentposition">wxStyledTextCtrl::GetLineIndentationPos</A><BR>
+<A HREF="#wxstyledtextctrlgetlinelength">wxStyledTextCtrl::GetLineLength</A><BR>
+<A HREF="#wxstyledtextctrlgetlinelengthatpos">wxStyledTextCtrl::GetLineLengthAtPos</A><BR>
+<A HREF="#wxstyledtextctrlgetlinesonscreen">wxStyledTextCtrl::GetLinesOnScreen</A><BR>
+<A HREF="#wxstyledtextctrlgetlinestartpos">wxStyledTextCtrl::GetLineStartPos</A><BR>
+<A HREF="#wxstyledtextctrlgetlinestate">wxStyledTextCtrl::GetLineState</A><BR>
+<A HREF="#wxstyledtextctrlgetlinevisible">wxStyledTextCtrl::GetLineVisible</A><BR>
+<A HREF="#wxstyledtextctrlgetmarginmask">wxStyledTextCtrl::GetMarginMask</A><BR>
+<A HREF="#wxstyledtextctrlgetmarginsensitive">wxStyledTextCtrl::GetMarginSensitive</A><BR>
+<A HREF="#wxstyledtextctrlgetmargintype">wxStyledTextCtrl::GetMarginType</A><BR>
+<A HREF="#wxstyledtextctrlgetmarginwidth">wxStyledTextCtrl::GetMarginWidth</A><BR>
+<A HREF="#wxstyledtextctrlgetmodified">wxStyledTextCtrl::GetModified</A><BR>
+<A HREF="#wxstyledtextctrlgetreadonly">wxStyledTextCtrl::GetReadOnly</A><BR>
+<A HREF="#wxstyledtextctrlgetrect">wxStyledTextCtrl::GetRect</A><BR>
+<A HREF="#wxstyledtextctrlgetrightmargin">wxStyledTextCtrl::GetRightMargin</A><BR>
+<A HREF="#wxstyledtextctrlgetselectedtext">wxStyledTextCtrl::GetSelectedText</A><BR>
+<A HREF="#wxstyledtextctrlgetselection">wxStyledTextCtrl::GetSelection</A><BR>
+<A HREF="#wxstyledtextctrlgetselectiontype">wxStyledTextCtrl::GetSelectionType</A><BR>
+<A HREF="#wxstyledtextctrlgetstyleat">wxStyledTextCtrl::GetStyleAt</A><BR>
+<A HREF="#wxstyledtextctrlgetstylebits">wxStyledTextCtrl::GetStyleBits</A><BR>
+<A HREF="#wxstyledtextctrlgetstyledtextrange">wxStyledTextCtrl::GetStyledTextRange</A><BR>
+<A HREF="#wxstyledtextctrlgettext">wxStyledTextCtrl::GetText</A><BR>
+<A HREF="#wxstyledtextctrlgettextlength">wxStyledTextCtrl::GetTextLength</A><BR>
+<A HREF="#wxstyledtextctrlgettextrange">wxStyledTextCtrl::GetTextRange</A><BR>
+<A HREF="#wxstyledtextctrlgetundocollection">wxStyledTextCtrl::GetUndoCollection</A><BR>
+<A HREF="#wxstyledtextctrlgetusehorizontalscrollbar">wxStyledTextCtrl::GetUseHorizontalScrollBar</A><BR>
+<A HREF="#wxstyledtextctrlgetvieweol">wxStyledTextCtrl::GetViewEOL</A><BR>
+<A HREF="#wxstyledtextctrlgetviewwhitespace">wxStyledTextCtrl::GetViewWhiteSpace</A><BR>
+<A HREF="#wxstyledtextctrlgetzoom">wxStyledTextCtrl::GetZoom</A><BR>
+<A HREF="#wxstyledtextctrlgotoline">wxStyledTextCtrl::GotoLine</A><BR>
+<A HREF="#wxstyledtextctrlgotopos">wxStyledTextCtrl::GotoPos</A><BR>
+<A HREF="#wxstyledtextctrlhidelines">wxStyledTextCtrl::HideLines</A><BR>
+<A HREF="#wxstyledtextctrlhideselection">wxStyledTextCtrl::HideSelection</A><BR>
+<A HREF="#wxstyledtextctrlindicatorgetstyle">wxStyledTextCtrl::IndicatorGetStyle</A><BR>
+<A HREF="#wxstyledtextctrlindicatorsetcolour">wxStyledTextCtrl::IndicatorSetColour</A><BR>
+<A HREF="#wxstyledtextctrlindicatorsetstyle">wxStyledTextCtrl::IndicatorSetStyle</A><BR>
+<A HREF="#wxstyledtextctrlinserttext">wxStyledTextCtrl::InsertText</A><BR>
+<A HREF="#wxstyledtextctrlisselectionrectangle">wxStyledTextCtrl::IsSelectionRectangle</A><BR>
+<A HREF="#wxstyledtextctrllinefrompoint">wxStyledTextCtrl::LineFromPoint</A><BR>
+<A HREF="#wxstyledtextctrlmarkeradd">wxStyledTextCtrl::MarkerAdd</A><BR>
+<A HREF="#wxstyledtextctrlmarkerdefine">wxStyledTextCtrl::MarkerDefine</A><BR>
+<A HREF="#wxstyledtextctrlmarkerdelete">wxStyledTextCtrl::MarkerDelete</A><BR>
+<A HREF="#wxstyledtextctrlmarkerdeleteall">wxStyledTextCtrl::MarkerDeleteAll</A><BR>
+<A HREF="#wxstyledtextctrlmarkerdeletehandle">wxStyledTextCtrl::MarkerDeleteHandle</A><BR>
+<A HREF="#wxstyledtextctrlmarkerget">wxStyledTextCtrl::MarkerGet</A><BR>
+<A HREF="#wxstyledtextctrlmarkernext">wxStyledTextCtrl::MarkerGetNextLine</A><BR>
+<A HREF="#wxstyledtextctrlmarkerprevious">wxStyledTextCtrl::MarkerGetPrevLine</A><BR>
+<A HREF="#wxstyledtextctrlmarkerlinefromhandle">wxStyledTextCtrl::MarkerLineFromHandle</A><BR>
+<A HREF="#wxstyledtextctrlmarkersetbackground">wxStyledTextCtrl::MarkerSetBackground</A><BR>
+<A HREF="#wxstyledtextctrlmarkersetforeground">wxStyledTextCtrl::MarkerSetForeground</A><BR>
+<A HREF="#wxstyledtextctrlmarkersettype">wxStyledTextCtrl::MarkerSetType</A><BR>
+<A HREF="#wxstyledtextctrlpagemove">wxStyledTextCtrl::PageMove</A><BR>
+<A HREF="#wxstyledtextctrlpaste">wxStyledTextCtrl::Paste</A><BR>
+<A HREF="#wxstyledtextctrlpointfromposition">wxStyledTextCtrl::PointFromPosition</A><BR>
+<A HREF="#wxstyledtextctrlpositionfrompoint">wxStyledTextCtrl::PositionFromPoint</A><BR>
+<A HREF="#wxstyledtextctrlredo">wxStyledTextCtrl::Redo</A><BR>
+<A HREF="#wxstyledtextctrlreplaceselection">wxStyledTextCtrl::ReplaceSelection</A><BR>
+<A HREF="#wxstyledtextctrlscrollby">wxStyledTextCtrl::ScrollBy</A><BR>
+<A HREF="#wxstyledtextctrlscrolltocolumn">wxStyledTextCtrl::ScrollToColumn</A><BR>
+<A HREF="#wxstyledtextctrlscrolltoline">wxStyledTextCtrl::ScrollToLine</A><BR>
+<A HREF="#wxstyledtextctrlsearchanchor">wxStyledTextCtrl::SearchAnchor</A><BR>
+<A HREF="#wxstyledtextctrlsearchnext">wxStyledTextCtrl::SearchNext</A><BR>
+<A HREF="#wxstyledtextctrlsearchprev">wxStyledTextCtrl::SearchPrev</A><BR>
+<A HREF="#wxstyledtextctrlselectall">wxStyledTextCtrl::SelectAll</A><BR>
+<A HREF="#wxstyledtextctrlsetanchor">wxStyledTextCtrl::SetAnchor</A><BR>
+<A HREF="#wxstyledtextctrlsetbuffereddraw">wxStyledTextCtrl::SetBufferedDraw</A><BR>
+<A HREF="#wxstyledtextctrlsetcaretforeground">wxStyledTextCtrl::SetCaretForeground</A><BR>
+<A HREF="#wxstyledtextctrlsetcaretperiod">wxStyledTextCtrl::SetCaretPeriod</A><BR>
+<A HREF="#wxstyledtextctrlsetcaretpolicy">wxStyledTextCtrl::SetCaretPolicy</A><BR>
+<A HREF="#wxstyledtextctrlsetcurrentposition">wxStyledTextCtrl::SetCurrentPosition</A><BR>
+<A HREF="#wxstyledtextctrlsetdocument">wxStyledTextCtrl::SetDocument</A><BR>
+<A HREF="#wxstyledtextctrlsetedgecolour">wxStyledTextCtrl::SetEdgeColour</A><BR>
+<A HREF="#wxstyledtextctrlsetedgecolumn">wxStyledTextCtrl::SetEdgeColumn</A><BR>
+<A HREF="#wxstyledtextctrlsetedgemode">wxStyledTextCtrl::SetEdgeMode</A><BR>
+<A HREF="#wxstyledtextctrlseteolmode">wxStyledTextCtrl::SetEOLMode</A><BR>
+<A HREF="#wxstyledtextctrlsetfoldexpanded">wxStyledTextCtrl::SetFoldExpanded</A><BR>
+<A HREF="#wxstyledtextctrlsetfoldflags">wxStyledTextCtrl::SetFoldFlags</A><BR>
+<A HREF="#wxstyledtextctrlsetfoldlevel">wxStyledTextCtrl::SetFoldLevel</A><BR>
+<A HREF="#wxstyledtextctrlsetindent">wxStyledTextCtrl::SetIndent</A><BR>
+<A HREF="#wxstyledtextctrlsetkeywords">wxStyledTextCtrl::SetKeyWords</A><BR>
+<A HREF="#wxstyledtextctrlsetlexer">wxStyledTextCtrl::SetLexer</A><BR>
+<A HREF="#wxstyledtextctrlsetlineindentation">wxStyledTextCtrl::SetLineIndentation</A><BR>
+<A HREF="#wxstyledtextctrlsetlinestate">wxStyledTextCtrl::SetLineState</A><BR>
+<A HREF="#wxstyledtextctrlsetmarginmask">wxStyledTextCtrl::SetMarginMask</A><BR>
+<A HREF="#wxstyledtextctrlsetmargins">wxStyledTextCtrl::SetMargins</A><BR>
+<A HREF="#wxstyledtextctrlsetmarginsensitive">wxStyledTextCtrl::SetMarginSensitive</A><BR>
+<A HREF="#wxstyledtextctrlsetmargintype">wxStyledTextCtrl::SetMarginType</A><BR>
+<A HREF="#wxstyledtextctrlsetmarginwidth">wxStyledTextCtrl::SetMarginWidth</A><BR>
+<A HREF="#wxstyledtextctrlsetmodeventmask">wxStyledTextCtrl::SetModEventMask</A><BR>
+<A HREF="#wxstyledtextctrlsetproperty">wxStyledTextCtrl::SetProperty</A><BR>
+<A HREF="#wxstyledtextctrlsetreadonly">wxStyledTextCtrl::SetReadOnly</A><BR>
+<A HREF="#wxstyledtextctrlsetsavepoint">wxStyledTextCtrl::SetSavePoint</A><BR>
+<A HREF="#wxstyledtextctrlsetselection">wxStyledTextCtrl::SetSelection</A><BR>
+<A HREF="#wxstyledtextctrlsetselbackground">wxStyledTextCtrl::SetSelectionBackground</A><BR>
+<A HREF="#wxstyledtextctrlsetselforeground">wxStyledTextCtrl::SetSelectionForeground</A><BR>
+<A HREF="#wxstyledtextctrlsetstylebits">wxStyledTextCtrl::SetStyleBits</A><BR>
+<A HREF="#wxstyledtextctrlsetstylebytes">wxStyledTextCtrl::SetStyleBytes</A><BR>
+<A HREF="#wxstyledtextctrlsetstylefor">wxStyledTextCtrl::SetStyleFor</A><BR>
+<A HREF="#wxstyledtextctrlsettabwidth">wxStyledTextCtrl::SetTabWidth</A><BR>
+<A HREF="#wxstyledtextctrlsettext">wxStyledTextCtrl::SetText</A><BR>
+<A HREF="#wxstyledtextctrlsetundocollection">wxStyledTextCtrl::SetUndoCollection</A><BR>
+<A HREF="#wxstyledtextctrlsetusehorizontalscrollbar">wxStyledTextCtrl::SetUseHorizontalScrollBar</A><BR>
+<A HREF="#wxstyledtextctrlusepopup">wxStyledTextCtrl::SetUsePop</A><BR>
+<A HREF="#wxstyledtextctrlsetusetabs">wxStyledTextCtrl::SetUseTabs</A><BR>
+<A HREF="#wxstyledtextctrlsetvieweol">wxStyledTextCtrl::SetViewEOL</A><BR>
+<A HREF="#wxstyledtextctrlsetviewwhitespace">wxStyledTextCtrl::SetViewWhiteSpace</A><BR>
+<A HREF="#wxstyledtextctrlsetwordchars">wxStyledTextCtrl::SetWordChars</A><BR>
+<A HREF="#wxstyledtextctrlsetzoom">wxStyledTextCtrl::SetZoom</A><BR>
+<A HREF="#wxstyledtextctrlshowlines">wxStyledTextCtrl::ShowLines</A><BR>
+<A HREF="#wxstyledtextctrlstartstyling">wxStyledTextCtrl::StartStyling</A><BR>
+<A HREF="#wxstyledtextctrlstyleclearall">wxStyledTextCtrl::StyleClearAll</A><BR>
+<A HREF="#wxstyledtextctrlstyleresetdefault">wxStyledTextCtrl::StyleResetDefault</A><BR>
+<A HREF="#wxstyledtextctrlstylesetbackground">wxStyledTextCtrl::StyleSetBackground</A><BR>
+<A HREF="#wxstyledtextctrlstylesetbold">wxStyledTextCtrl::StyleSetBold</A><BR>
+<A HREF="#wxstyledtextctrlstyleseteolfilled">wxStyledTextCtrl::StyleSetEOLFilled</A><BR>
+<A HREF="#wxstyledtextctrlstylesetfacename">wxStyledTextCtrl::StyleSetFaceName</A><BR>
+<A HREF="#wxstyledtextctrlstylesetfont">wxStyledTextCtrl::StyleSetFont</A><BR>
+<A HREF="#wxstyledtextctrlstylesetfontattr">wxStyledTextCtrl::StyleSetFontAttr</A><BR>
+<A HREF="#wxstyledtextctrlstylesetforeground">wxStyledTextCtrl::StyleSetForeground</A><BR>
+<A HREF="#wxstyledtextctrlstylesetitalic">wxStyledTextCtrl::StyleSetItalic</A><BR>
+<A HREF="#wxstyledtextctrlstylesetsize">wxStyledTextCtrl::StyleSetSize</A><BR>
+<A HREF="#wxstyledtextctrlstylesetspec">wxStyledTextCtrl::StyleSetSpec</A><BR>
+<A HREF="#wxstyledtextctrlstylesetunderline">wxStyledTextCtrl::StyleSetUnderline</A><BR>
+<A HREF="#wxstyledtextctrltogglefold">wxStyledTextCtrl::ToggleFold</A><BR>
+<A HREF="#wxstyledtextctrlundo">wxStyledTextCtrl::Undo</A><BR>
+<A HREF="#wxstyledtextctrlvisiblefromdocline">wxStyledTextCtrl::VisibleFromDocLine</A><BR>
+<A HREF="#wxstyledtextctrlzoomin">wxStyledTextCtrl::ZoomIn</A><BR>
+<A HREF="#wxstyledtextctrlzoomout">wxStyledTextCtrl::ZoomOut</A><BR>
+<P>
+
+<HR>
+<A NAME="topic0"></A>
+<H3>Constructors and destructors</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlctor">wxStyledTextCtrl</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrldtor">~wxStyledTextCtrl</A>
+<P>
+
+<HR>
+<A NAME="topic1"></A>
+<H3>Auto completion</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlautocompactive">AutoCompActive</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompcancel">AutoCompCancel</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompcomplete">AutoCompComplete</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompgetseparator">AutoCompGetSeparator</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompposatstart">AutoCompPosAtStart</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompselect">AutoCompSelect</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompsetseparator">AutoCompSetSeparator</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompshow">AutoCompShow</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlautocompstopchars">AutoCompStopChars</A>
+<P>
+
+
+<HR>
+<A NAME="topic2"></A>
+<H3>Brace highlighting</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlbracebadlight">BraceBadlight</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlbracehighlight">BraceHighlight</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlbracematch">BraceMatch</A>
+<P>
+
+<HR>
+<A NAME="topic3"></A>
+<H3>Call tips</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlcalltipactive">CallTipActive</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcalltipcancel">CallTipCancel</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcalltipposatstart">CallTipPosAtStart</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcalltipsetbackground">CallTipSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcalltipsethighlight">CallTipSetHighlight</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcalltipshow">CallTipShow</A>
+<P>
+
+<HR>
+<A NAME="topic4"></A>
+<H3>Caret</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlensurecaretvisible">EnsureCaretVisible</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetcaretperiod">GetCaretPeriod</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetcaretforeground">SetCaretForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetcaretperiod">SetCaretPeriod</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetcaretpolicy">SetCaretPolicy</A>
+<P>
+
+<HR>
+<A NAME="topic5"></A>
+<H3>Clipboard</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlcanpaste">CanPaste</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlclearclipbrd">ClearClipbrd</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcopy">Copy</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcut">Cut</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlpaste">Paste</A>
+<P>
+
+<HR>
+<A NAME="topic6"></A>
+<H3>Colours</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlcalltipsetbackground">CallTipSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetedgecolour">GetEdgeColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlindicatorsetcolour">IndicatorSetColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerdefine">MarkerDefine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkersetbackground">MarkerSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkersetforeground">MarkerSetForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetcaretforeground">SetCaretForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetedgecolour">SetEdgeColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetselbackground">SetSelectionBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetselforeground">SetSelectionForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetbackground">StyleSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetforeground">StyleSetForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetspec">StyleSetSpec</A>
+<P>
+
+<HR>
+<A NAME="topic7"></A>
+<H3>Documents</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetdocument">GetDocument</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetdocument">SetDocument</A>
+<P>
+
+<HR>
+<A NAME="topic8"></A>
+<H3>Folding and hiding</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrldoclinefromvisible">DocLineFromVisible</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlensurecaretvisible">EnsureCaretVisible</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlensurevisible">EnsureVisible</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetfoldexpanded">GetFoldExpanded</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetfoldlevel">GetFoldLevel</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetfoldparent">GetFoldParent</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlastchild">GetLastChild</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinevisible">GetLineVisible</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlhidelines">HideLines</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlhideselection">HideSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetfoldexpanded">SetFoldExpanded</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetfoldflags">SetFoldFlags</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetfoldlevel">SetFoldLevel</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlshowlines">ShowLines</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrltogglefold">ToggleFold</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlvisiblefromdocline">VisibleFromDocLine</A>
+<P>
+
+<HR>
+<A NAME="topic9"></A>
+<H3>Global settings</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetmodified">GetModified</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetrect">GetRect</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetusehorizontalscrollbar">GetUseHorizontalScrollBar</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlisselectionrectangle">IsSelectionRectangle</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetbuffereddraw">SetBufferedDraw</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetwordchars">SetWordChars</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetusehorizontalscrollbar">SetUseHorizontalScrollBar</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlusepopup">SetUsePop</A>
+<P>
+
+<HR>
+<A NAME="topic10"></A>
+<H3>Indicators</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlindicatorgetstyle">IndicatorGetStyle</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlindicatorsetcolour">IndicatorSetColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlindicatorsetstyle">IndicatorSetStyle</A>
+<P>
+
+<HR>
+<A NAME="topic11"></A>
+<H3>Key bindings</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlcmdkeyassign">CmdKeyAssign</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcmdkeyclear">CmdKeyClear</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcmdkeyclearall">CmdKeyClearAll</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcmdkeyexecute">CmdKeyExecute</A>
+<P>
+
+<HR>
+<A NAME="topic12"></A>
+<H3>Lexers</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlcolourise">Colourise</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlexer">GetLexer</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetkeywords">SetKeyWords</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetlexer">SetLexer</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetproperty">SetProperty</A>
+<P>
+
+<HR>
+<A NAME="topic13"></A>
+<H3>Lines</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetcurrentline">GetCurrentLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetcurrentlinetext">GetCurrentLineText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinefrompos">GetLineFromPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetfirstvisibleline">GetFirstVisibleLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinecount">GetLineCount</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinelength">GetLineLength</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinelengthatpos">GetLineLengthAtPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinestartpos">GetLineStartPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinesonscreen">GetLinesOnScreen</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinestartpos">GetLineStartPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgotoline">GotoLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrllinefrompoint">LineFromPoint</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlvisiblefromdocline">VisibleFromDocLine</A>
+<P>
+
+<HR>
+<A NAME="topic14"></A>
+<H3>Line endings</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlconverteol">ConvertEOL</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgeteolmode">GetEOLMode</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetvieweol">GetViewEOL</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlseteolmode">SetEOLMode</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetvieweol">SetViewEOL</A>
+<P>
+
+<HR>
+<A NAME="topic15"></A>
+<H3>Long lines (edges)</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetedgecolour">GetEdgeColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetedgecolumn">GetEdgeColumn</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetedgemode">GetEdgeMode</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetedgecolour">SetEdgeColour</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetedgecolumn">SetEdgeColumn</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetedgemode">SetEdgeMode</A>
+<P>
+
+<HR>
+<A NAME="topic16"></A>
+<H3>Margins</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetleftmargin">GetLeftMargin</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetmarginmask">GetMarginMask</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetmarginsensitive">GetMarginSensitive</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetmargintype">GetMarginType</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetmarginwidth">GetMarginWidth</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetrightmargin">GetRightMargin</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetmarginmask">SetMarginMask</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetmargins">SetMargins</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetmarginsensitive">SetMarginSensitive</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetmargintype">SetMarginType</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetmarginwidth">SetMarginWidth</A>
+<P>
+
+<HR>
+<A NAME="topic17"></A>
+<H3>Markers</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlmarkeradd">MarkerAdd</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerdefine">MarkerDefine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerdelete">MarkerDelete</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerdeleteall">MarkerDeleteAll</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerdeletehandle">MarkerDeleteHandle</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerget">MarkerGet</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkernext">MarkerGetNextLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerprevious">MarkerGetPrevLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkerlinefromhandle">MarkerLineFromHandle</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkersetbackground">MarkerSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkersetforeground">MarkerSetForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlmarkersettype">MarkerSetType</A>
+<P>
+
+
+<HR>
+<A NAME="topic18"></A>
+<H3>Position</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlchangeposition">ChangePosition</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetcurrentpos">GetCurrentPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgotopos">GotoPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlpositionfromline">PositionFromLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlpositionfrompoint">PositionFromPoint</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlpointfromposition">PointFromPosition</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetcurrentposition">SetCurrentPosition</A>
+<P>
+
+<HR>
+<A NAME="topic19"></A>
+<H3>Print formatting</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlformatrange">FormatRange</A>
+<P>
+
+<HR>
+<A NAME="topic20"></A>
+<H3>Searching</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlfindtext">FindText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsearchanchor">SearchAnchor</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsearchnext">SearchNext</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsearchprev">SearchPrev</A>
+<P>
+
+<HR>
+<A NAME="topic21"></A>
+<H3>Selection and anchor</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetanchor">GetAnchor</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgethideselection">GetHideSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetselection">GetSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetselectedtext">GetSelectedText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetselectiontype">GetSelectionType</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlhideselection">HideSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlisselectionrectangle">IsSelectionRectangle</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlselectall">SelectAll</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetanchor">SetAnchor</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetselection">SetSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetselbackground">SetSelectionBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetselforeground">SetSelectionForeground</A>
+<P>
+
+
+<HR>
+<A NAME="topic22"></A>
+<H3>Scrolling and moving</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgotoline">GotoLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgotopos">GotoPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlpagemove">PageMove</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlscrollby">ScrollBy</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlscrolltocolumn">ScrollToColumn</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlscrolltoline">ScrollToLine</A>
+<P>
+
+
+<HR>
+<A NAME="topic23"></A>
+<H3>Styles</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetendstyled">GetEndStyled</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlinestate">GetLineState</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetstyleat">GetStyleAt</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetstylebits">GetStyleBits</A>
+<A HREF="out2.htm#wxstyledtextctrlsetstylebits">SetStyleBits</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetstylebits">SetStyleBytes</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetstyling">SetStyling</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetlinestate">SetLineState</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstartstyling">StartStyling</A>
+<A HREF="out2.htm#wxstyledtextctrlstyleclearall">StyleClearAll</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstyleresetdefault">StyleResetDefault</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetbackground">StyleSetBackground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetbold">StyleSetBold</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstyleseteolfilled">StyleSetEOLFilled</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetfacename">StyleSetFaceName</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetfont">StyleSetFont</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetfontattr">StyleSetFontAttr</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetforeground">StyleSetForeground</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetitalic">StyleSetItalic</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetsize">StyleSetSize</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetspec">StyleSetSpec</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlstylesetunderline">StyleSetUnderline</A>
+<P>
+
+<HR>
+<A NAME="topic24"></A>
+<H3>Text</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrladdtext">AddText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrladdstyledtext">AddStyledText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlclearall">ClearAll</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetcharat">GetCharAt</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetline">GetLine</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetreadonly">GetReadOnly</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetstyledtextrange">GetStyledTextRange</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgettext">GetText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgettextlength">GetTextLength</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgettextrange">GetTextRange</A>
+<A HREF="out2.htm#wxstyledtextctrlinserttext">InsertText</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlreplaceselection">ReplaceSelection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetreadonly">SetReadOnly</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsettext">SetText</A>
+<P>
+
+<HR>
+<A NAME="topic25"></A>
+<H3>Undo</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlbeginundoaction">BeginUndoAction</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcanredo">CanRedo</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlcanundo">CanUndo</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlemptyundobuffer">EmptyUndoBuffer</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlendundoaction">EndUndoAction</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetundocollection">GetUndoCollection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlredo">Redo</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetsavepoint">SetSavePoint</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetundocollection">SetUndoCollection</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlundo">Undo</A>
+<P>
+
+<HR>
+<A NAME="topic26"></A>
+<H3>Whitespace, tabs and indentation</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetlineindentation">GetLineIndentation</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetlineindentposition">GetLineIndentationPos</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlgetviewwhitespace">GetViewWhitespace</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetindent">SetIndent</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetlineindentation">SetLineIndentation</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsettabwidth">SetTabWidth</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetusetabs">SetUseTabs</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetviewwhitespace">SetViewWhitespace</A>
+<P>
+
+<HR>
+<A NAME="topic27"></A>
+<H3>Zooming</H3>
+<P>
+<A HREF="out2.htm#wxstyledtextctrlgetzoom">GetZoom</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlsetzoom">SetZoom</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlzoomin">ZoomIn</A><BR>
+
+<A HREF="out2.htm#wxstyledtextctrlzoomout">ZoomOut</A>
+<P>
+<P>
+<B><FONT COLOR="#FF0000">Members</FONT></B><P>
+
+<HR>
+<A NAME="wxstyledtextctrlctor"></A>
+<H3>wxStyledTextCtrl::wxStyledTextCtrl</H3>
+<P>
+<B></B> <B>wxStyledTextCtrl</B>(<B></B><I></I>wxWindow* parent, <B>wxWindowID </B><I>id</I>, <B>const wxPoint&amp; </B><I>pos = wxDefaultPosition</I>, <B>const wxSize&amp; </B><I>size = wxDefaultSize</I>, <B>long </B><I>style = 0</I>, <B>const char* </B><I>name = "styledtext"</I>)<P>
+
+<HR>
+<A NAME="wxstyledtextctrldtor"></A>
+<H3>wxStyledTextCtrl::~wxStyledTextCtrl</H3>
+<P>
+<B></B> <B>~wxStyledTextCtrl</B>()
+<P>
+
+
+<HR>
+<A NAME="wxstyledtextctrladdstyledtext"></A>
+<H3>wxStyledTextCtrl::AddStyledText</H3>
+<P>
+<B>void</B> <B>AddStyledText</B>(<B>const wxString&amp; </B><I>text</I>)<P>
+Adds styled text to the control. <TT>text</TT> is a wxString composed of two-byte "cells":
+a character byte followed by a style byte.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrladdtext"></A>
+<H3>wxStyledTextCtrl::AddText</H3>
+<P>
+<B>void</B> <B>AddText</B>(<B>const wxString&amp; </B><I>text</I>)<P>
+Adds <TT>text</TT> to the document at the current postion.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompactive"></A>
+<H3>wxStyledTextCtrl::AutoCompActive</H3>
+<P>
+<B>bool</B> <B>AutoCompActive</B>()<P>
+Returns <TT>true</TT> if there is an auto-completion list visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompcancel"></A>
+<H3>wxStyledTextCtrl::AutoCompCancel</H3>
+<P>
+<B>void</B> <B>AutoCompCancel</B>()<P>
+Removes the auto-completion list from the screen.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompcomplete"></A>
+<H3>wxStyledTextCtrl::AutoCompComplete</H3>
+<P>
+<B>void</B> <B>AutoCompComplete</B>()<P>
+Removes the auto-completion list and inserts the appropriate seletion when the user selects an item.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompgetseparator"></A>
+<H3>wxStyledTextCtrl::AutoCompGetSeparator</H3>
+<P>
+<B>char</B> <B>AutoCompGetSeparator</B>()<P>
+Returns the sepearator character of the auto-completion list.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompposatstart"></A>
+<H3>wxStyledTextCtrl::AutoCompPosAtStart</H3>
+<P>
+<B>int</B> <B>AutoCompPosAtStart</B>()<P>
+Returns the position of the caret where the auto-completion list was displayed.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompselect"></A>
+<H3>wxStyledTextCtrl::AutoCompSelect</H3>
+<P>
+<B>void</B> <B>AutoCompSelect</B>(<B>const wxString&amp; </B><I>text</I>)<P>
+Selects the item in the auto-completion list that starts with <TT>text</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompsetseparator"></A>
+<H3>wxStyledTextCtrl::AutoCompSetSeparator</H3>
+<P>
+<B>void</B> <B>AutoCompSetSeparator</B>(<B>char </B><I>separator</I>)<P>
+Changes the separator character in the string setting up the auto-completion
+list to <TT>separator</TT>.
+Default is space but can be changed if items contain spaces.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompshow"></A>
+<H3>wxStyledTextCtrl::AutoCompShow</H3>
+<P>
+<B>void</B> <B>AutoCompShow</B>(<B>const wxString&amp; </B><I>listOfWords</I>)<P>
+Displays a auto-completion list containing <TT>listOfWords</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlautocompstopchars"></A>
+<H3>wxStyledTextCtrl::AutoCompStopChars</H3>
+<P>
+<B>void</B> <B>AutoCompStopChars</B>(<B>const wxString&amp; </B><I>stopChars</I>)<P>
+<TT>stopChars</TT> is set of characters that cancel the auto-completion list.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlbeginundoaction"></A>
+<H3>wxStyledTextCtrl::BeginUndoAction</H3>
+<P>
+<B>void</B> <B>BeginUndoAction</B>()<P>
+Starts a sequence of actions that is undone and redone as a unit.
+May be nested.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlbracebadlight"></A>
+<H3>wxStyledTextCtrl::BraceBadlight</H3>
+<P>
+<B>void</B> <B>BraceBadlight</B>(<B>int </B><I>position</I>)<P>
+Highlights the character at <TT>position</TT> to indicate there is no matching brace.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlbracehighlight"></A>
+<H3>wxStyledTextCtrl::BraceHighlight</H3>
+<P>
+<B>void</B> <B>BraceHighlight</B>(<B>int </B><I>pos1</I>, <B>int </B><I>pos2</I>)<P>
+Highlights the text from position <TT>pos1</TT> to position <TT>pos2</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlbracematch"></A>
+<H3>wxStyledTextCtrl::BraceMatch</H3>
+<P>
+<B>int</B> <B>BraceMatch</B>(<B>int </B><I>position</I>, <B>int </B><I>maxReStyle = 0</I>)<P>
+Returns the position of a brace matching the chararacter at <TT>position</TT>,
+or <TT>INVALID_POSITION</TT> if no match. <TT>maxReStyle</TT> is currently unused and should be zero.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipactive"></A>
+<H3>wxStyledTextCtrl::CallTipActive</H3>
+<P>
+<B>bool</B> <B>CallTipActive</B>()<P>
+Returns <TT>true</TT> if there an active call tip.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipcancel"></A>
+<H3>wxStyledTextCtrl::CallTipCancel</H3>
+<P>
+<B>void</B> <B>CallTipCancel</B>()<P>
+Removes the call tip from the screen.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipposatstart"></A>
+<H3>wxStyledTextCtrl::CallTipPosAtStart</H3>
+<P>
+<B>int</B> <B>CallTipPosAtStart</B>()<P>
+Returns the position of the caret when the call tip was displayed.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipsetbackground"></A>
+<H3>wxStyledTextCtrl::CallTipSetBackground</H3>
+<P>
+<B>void</B> <B>CallTipSetBackground</B>(<B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the background colour for the call tip to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipsethighlight"></A>
+<H3>wxStyledTextCtrl::CallTipSetHighlight</H3>
+<P>
+<B>void</B> <B>CallTipSetHighlight</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Highlights a the definition from position <TT>start</TT> to position <TT>end</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcalltipshow"></A>
+<H3>wxStyledTextCtrl::CallTipShow</H3>
+<P>
+<B>void</B> <B>CallTipShow</B>(<B>int </B><I>position</I>, <B>const wxString&amp; </B><I>text</I>)<P>
+Shows a call tip containing <TT>text</TT> near <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcanpaste"></A>
+<H3>wxStyledTextCtrl::CanPaste</H3>
+<P>
+<B>bool</B> <B>CanPaste</B>()<P>
+Returns <TT>true</TT> if there is text to be pasted.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcanredo"></A>
+<H3>wxStyledTextCtrl::CanRedo</H3>
+<P>
+<B>bool</B> <B>CanRedo</B>()<P>
+Returns <TT>true</TT> if there are any redoable actions in the undo history.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcanundo"></A>
+<H3>wxStyledTextCtrl::CanUndo</H3>
+<P>
+<B>bool</B> <B>CanUndo</B>()<P>
+Returns <TT>true</TT> if there are undoable actions in the undo history.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlchangeposition"></A>
+<H3>wxStyledTextCtrl::ChangePosition</H3>
+<P>
+<B>void</B> <B>ChangePosition</B>(<B>int </B><I>delta</I>, <B>bool </B><I>extendSelectionFlag</I>)<P>
+Adds <TT>delta</TT> to the current position.<P>
+??? Correct?  Does this ensure that the new position is visible?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlclearclipbrd"></A>
+<H3>wxStyledTextCtrl::ClearClipbrd</H3>
+<P>
+<B>void</B> <B>ClearClipbrd</B>()<P>
+Clears the selection in the clipboard.  The name of this method avoids a name conflict with a virtual method in wxWindows.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlclearall"></A>
+<H3>wxStyledTextCtrl::ClearAll</H3>
+<P>
+<B>void</B> <B>ClearAll</B>()<P>
+Deletes all text in the control.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcmdkeyassign"></A>
+<H3>wxStyledTextCtrl::CmdKeyAssign</H3>
+<P>
+<B>void</B> <B>CmdKeyAssign</B>(<B>int </B><I>key</I>, <B>int </B><I>modifiers</I>, <B>int </B><I>cmd</I>)<P>
+When key+modifier combination km is pressed perform msg.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcmdkeyclear"></A>
+<H3>wxStyledTextCtrl::CmdKeyClear</H3>
+<P>
+<B>void</B> <B>CmdKeyClear</B>(<B>int </B><I>key</I>, <B>int </B><I>modifiers</I>)<P>
+When key+modifier combination km do nothing.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcmdkeyclearall"></A>
+<H3>wxStyledTextCtrl::CmdKeyClearAll</H3>
+<P>
+<B>void</B> <B>CmdKeyClearAll</B>()<P>
+Clears all key mappings.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcmdkeyexecute"></A>
+<H3>wxStyledTextCtrl::CmdKeyExecute</H3>
+<P>
+<B>void</B> <B>CmdKeyExecute</B>(<B>int </B><I>cmd</I>)<P>
+Performs the operations specified by <TT>cmd</TT>.  <TT>cmd</TT> should be one of the <TT>wxSTC_CMD_*</TT> constants.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlconverteol"></A>
+<H3>wxStyledTextCtrl::ConvertEOL</H3>
+<P>
+<B>void</B> <B>ConvertEOL</B>(<B>wxSTC_EOL </B><I>mode</I>)<P>
+Ends all lines in the document with the line ending specified by <TT>mode</TT>.
+See <A HREF="out2.htm#wxstyledtextctrlseteolmode">SetEOL</A> for the valid values of <TT>mode</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcolourise"></A>
+<H3>wxStyledTextCtrl::Colourise</H3>
+<P>
+<B>void</B> <B>Colourise</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Colourises the text from <TT>start</TT> to <TT>end</TT> using the current lexing language.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcopy"></A>
+<H3>wxStyledTextCtrl::Copy</H3>
+<P>
+<B>void</B> <B>Copy</B>()<P>
+Copies the selection to the clipboard.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlcut"></A>
+<H3>wxStyledTextCtrl::Cut</H3>
+<P>
+<B>void</B> <B>Cut</B>()<P>
+Cuts the selection to the clipboard.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrldoclinefromvisible"></A>
+<H3>wxStyledTextCtrl::DocLineFromVisible</H3>
+<P>
+<B>int</B> <B>DocLineFromVisible</B>(<B>int </B><I>displayLineNumber</I>)<P>
+Returns the line of the document corresponding to the displayed line <TT>displayLineNumber</TT>, taking hidden lines into account.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlemptyundobuffer"></A>
+<H3>wxStyledTextCtrl::EmptyUndoBuffer</H3>
+<P>
+<B>void</B> <B>EmptyUndoBuffer</B>()<P>
+Deletes the undo history.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlendundoaction"></A>
+<H3>wxStyledTextCtrl::EndUndoAction</H3>
+<P>
+<B>void</B> <B>EndUndoAction</B>()<P>
+Ends a sequence of actions that is undone and redone as a unit.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlensurecaretvisible"></A>
+<H3>wxStyledTextCtrl::EnsureCaretVisible</H3>
+<P>
+<B>void</B> <B>EnsureCaretVisible</B>()<P>
+Ensures the caret is visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlensurevisible"></A>
+<H3>wxStyledTextCtrl::EnsureVisible</H3>
+<P>
+<B>void</B> <B>EnsureVisible</B>(<B>int </B><I>lineNumber</I>)<P>
+Ensures that line <TT>lineNumber</TT> is visible by expanding any header line hiding it.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlfindtext"></A>
+<H3>wxStyledTextCtrl::FindText</H3>
+<P>
+<B>int</B> <B>FindText</B>(<B>int </B><I>minPos</I>, <B>int </B><I>maxPos</I>, <B>const wxString&amp; </B><I>text</I>, <B>bool </B><I>caseSensitive</I>, <B>bool </B><I>wholeWord</I>)<P>
+Searches the document from <TT>minPos</TT> to <TT>maxPos</TT> for <TT>text</TT>.  <TT>caseSensitive</TT> and <TT>wholeWord</TT> indicate the kind of search.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlformatrange"></A>
+<H3>wxStyledTextCtrl::FormatRange</H3>
+<P>
+<B>int</B> <B>FormatRange</B>(<B>bool </B><I>doDraw</I>, <B>int </B><I>startPos</I>, <B>int </B><I>endPos</I>, <B>wxDC* </B><I>draw</I>, <B>wxDC* </B><I>target</I>, <B>wxRect </B><I>renderRect</I>, <B>wxRect </B><I>pageRect</I>)<P>
+On Windows, draws the document into a display context such as a printer.<P>
+If <TT>doDraw</TT> is <TT>true</TT> the text is actually drawn.  Otherwise, the text is only measured.
+<TT>draw</TT> is the device context in which drawing takes place. <TT>target</TT> is the device context in which measurements are to be made.  Separate drawing and target contexts are useful for print previewing: the preview is drawn on screen as if it were going to the printer.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetanchor"></A>
+<H3>wxStyledTextCtrl::GetAnchor</H3>
+<P>
+<B>int</B> <B>GetAnchor</B>()<P>
+Returns the position of the character opposite the caret in the selection.  Returns the position of the caret if the selection is empty.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetcaretperiod"></A>
+<H3>wxStyledTextCtrl::GetCaretPeriod</H3>
+<P>
+<B>int</B> <B>GetCaretPeriod</B>()<P>
+Returns the time in milliseconds of one complete on-off cycle of the caret.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetcharat"></A>
+<H3>wxStyledTextCtrl::GetCharAt</H3>
+<P>
+<B>int</B> <B>GetCharAt</B>(<B>int </B><I>position</I>)<P>
+Returns the character byte at <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetcurrentline"></A>
+<H3>wxStyledTextCtrl::GetCurrentLine</H3>
+<P>
+<B>int</B> <B>GetCurrentLine</B>()<P>
+Returns the line number of the line containing the caret.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetcurrentlinetext"></A>
+<H3>wxStyledTextCtrl::GetCurrentLineText</H3>
+<P>
+<B>wxString</B> <B>GetCurrentLineText</B>(<B>int *</B><I>linePos</I>)<P>
+Returns the text of the line containing the caret.  <TT>linePos</TT> is set in the caller if <TT>linePos</TT> is non-<TT>NULL</TT>.<P>
+??? Correct?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetcurrentpos"></A>
+<H3>wxStyledTextCtrl::GetCurrentPos</H3>
+<P>
+<B>int</B> <B>GetCurrentPos</B>()<P>
+Returns the position of the caret.  Note that the corresponding setter is
+<A HREF="out2.htm#wxstyledtextctrlsetcurrentposition">SetCurrentPosition</A>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetdocument"></A>
+<H3>wxStyledTextCtrl::GetDocument</H3>
+<P>
+<B>void*</B> <B>GetDocument</B>()<P>
+Returns a pointer to the document object.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetedgecolour"></A>
+<H3>wxStyledTextCtrl::GetEdgeColour</H3>
+<P>
+<B>wxColour</B> <B>GetEdgeColour</B>()<P>
+Returns the colour indicating the edge.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetedgecolumn"></A>
+<H3>wxStyledTextCtrl::GetEdgeColumn</H3>
+<P>
+<B>int</B> <B>GetEdgeColumn</B>()<P>
+Returns the column number within which text should be kept.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetedgemode"></A>
+<H3>wxStyledTextCtrl::GetEdgeMode</H3>
+<P>
+<B>wxSTC_EDGE</B> <B>GetEdgeMode</B>()<P>
+Returns the edge highlight mode.
+See <A HREF="out2.htm#wxstyledtextctrlsetedgemode">SetEdgeMode</A> for the values returned.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetendstyled"></A>
+<H3>wxStyledTextCtrl::GetEndStyled</H3>
+<P>
+<B>int</B> <B>GetEndStyled</B>()<P>
+Returns the position of the last correctly styled character.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgeteolmode"></A>
+<H3>wxStyledTextCtrl::GetEOLMode</H3>
+<P>
+<B>wxSTC_EOL</B> <B>GetEOLMode</B>()<P>
+Returns the current end-of-line mode.
+See <A HREF="out2.htm#wxstyledtextctrlseteolmode">SetEOLMode</A> for the values returned.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetfirstvisibleline"></A>
+<H3>wxStyledTextCtrl::GetFirstVisibleLine</H3>
+<P>
+<B>int</B> <B>GetFirstVisibleLine</B>()<P>
+Returns the line at the top of the display.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetfoldexpanded"></A>
+<H3>wxStyledTextCtrl::GetFoldExpanded</H3>
+<P>
+<B>bool</B> <B>GetFoldExpanded</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns <TT>true</TT> if line <TT>lineNumber</TT> is an expanded header line.  Returns <TT>false</TT> if the line is not a header line, or if the header is not expanded.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetfoldlevel"></A>
+<H3>wxStyledTextCtrl::GetFoldLevel</H3>
+<P>
+<B>int</B> <B>GetFoldLevel</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the fold level of line <TT>lineNumber</TT>.
+See <A HREF="out2.htm#wxstyledtextctrlsetfoldlevel">SetFoldLevel</A> for a discussion of fold levels.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetfoldparent"></A>
+<H3>wxStyledTextCtrl::GetFoldParent</H3>
+<P>
+<B>int</B> <B>GetFoldParent</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the parent of line <TT>lineNumber</TT>, that is, the header line immediately containing the child line.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgethideselection"></A>
+<H3>wxStyledTextCtrl::GetHideSelection</H3>
+<P>
+<B>bool</B> <B>GetHideSelection</B>()<P>
+Returns <TT>true</TT> if the selection is hidden.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlastchild"></A>
+<H3>wxStyledTextCtrl::GetLastChild</H3>
+<P>
+<B>int</B> <B>GetLastChild</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>level</I>)<P>
+Returns the last child of line <TT>lineNumber</TT>.
+<TT>level</TT> is the fold level to be assigned to the line,
+or -1 if the level should be retrieved.
+<TT>level</TT> is used when performing folding operations in situations where a line may already have changed its fold level before needing to find its children.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetleftmargin"></A>
+<H3>wxStyledTextCtrl::GetLeftMargin</H3>
+<P>
+<B>int</B> <B>GetLeftMargin</B>()<P>
+Returns the size in pixels of the left margin.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlexer"></A>
+<H3>wxStyledTextCtrl::GetLexer</H3>
+<P>
+<B>wxSTC_LEX</B> <B>GetLexer</B>()<P>
+Returns the lexing language of the document.
+See <A HREF="out2.htm#wxstyledtextctrlsetlexer">SetLexer</A> for the values returned from this method.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetline"></A>
+<H3>wxStyledTextCtrl::GetLine</H3>
+<P>
+<B>wxString</B> <B>GetLine</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the contents of line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinecount"></A>
+<H3>wxStyledTextCtrl::GetLineCount</H3>
+<P>
+<B>int</B> <B>GetLineCount</B>()<P>
+Returns the number of lines in the document. There is always at least one.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinefrompos"></A>
+<H3>wxStyledTextCtrl::GetLineFromPos</H3>
+<P>
+<B>int</B> <B>GetLineFromPos</B>(<B>int </B><I>position</I>)<P>
+Returns the line number of the line containing <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlineindentation"></A>
+<H3>wxStyledTextCtrl::GetLineIndentation</H3>
+<P>
+<B>int</B> <B>GetLineIndentation</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the number of columns that line <TT>lineNumber</TT> is indented.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlineindentposition"></A>
+<H3>wxStyledTextCtrl::GetLineIndentationPos</H3>
+<P>
+<B>int</B> <B>GetLineIndentationPos</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the position before the first non-indentation character of line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinelength"></A>
+<H3>wxStyledTextCtrl::GetLineLength</H3>
+<P>
+<B>int</B> <B>GetLineLength</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the number of characters on line <TT>lineNumber</TT>, excluding end-of-line characters.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinelengthatpos"></A>
+<H3>wxStyledTextCtrl::GetLineLengthAtPos</H3>
+<P>
+<B>int</B> <B>GetLineLengthAtPos</B>(<B>int </B><I>position</I>)<P>
+Returns the length of the line containing <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinesonscreen"></A>
+<H3>wxStyledTextCtrl::GetLinesOnScreen</H3>
+<P>
+<B>int</B> <B>GetLinesOnScreen</B>()<P>
+Returns the number of lines that are completely visible in the control. 
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinestartpos"></A>
+<H3>wxStyledTextCtrl::GetLineStartPos</H3>
+<P>
+<B>int</B> <B>GetLineStartPos</B>(<B>int </B><I>lineNumber</I>)<P>
+Get the position of the first visible character of line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinestate"></A>
+<H3>wxStyledTextCtrl::GetLineState</H3>
+<P>
+<B>int</B> <B>GetLineState</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the extra styling information for line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetlinevisible"></A>
+<H3>wxStyledTextCtrl::GetLineVisible</H3>
+<P>
+<B>bool</B> <B>GetLineVisible</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns <TT>true</TT> if line <TT>lineNumber</TT> has not been marked as invisible.
+Folding makes lines invisible, as does <A HREF="out2.htm#wxstyledtextctrlhidelines">HideLines</A>.
+The value returned from this routine is not affected by whether the line may actually be seen on the screen.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetmarginmask"></A>
+<H3>wxStyledTextCtrl::GetMarginMask</H3>
+<P>
+<B>int</B> <B>GetMarginMask</B>(<B>int </B><I>marginNumber</I>)<P>
+Returns the marker mask of a margin <TT>marginNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetmarginsensitive"></A>
+<H3>wxStyledTextCtrl::GetMarginSensitive</H3>
+<P>
+<B>bool</B> <B>GetMarginSensitive</B>(<B>int </B><I>marginNumber</I>)<P>
+Returns <TT>true</TT> if margin <TT>marginNumber</TT> responds to mouse clicks.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetmargintype"></A>
+<H3>wxStyledTextCtrl::GetMarginType</H3>
+<P>
+<B>int</B> <B>GetMarginType</B>(<B>int </B><I>marginNumber</I>)<P>
+Returns the type of a margin <TT>marginNumber</TT>.
+See <A HREF="out2.htm#wxstyledtextctrlsetmargintype">SetMarginType</A> for the values returned by this method.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetmarginwidth"></A>
+<H3>wxStyledTextCtrl::GetMarginWidth</H3>
+<P>
+<B>int</B> <B>GetMarginWidth</B>(<B>int </B><I>marginNumber</I>)<P>
+Returns the width of margin <TT>marginNumber</TT> in pixels.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetmodified"></A>
+<H3>wxStyledTextCtrl::GetModified</H3>
+<P>
+<B>bool</B> <B>GetModified</B>()<P>
+Returns <TT>true</TT> if the document has been modified since it was last saved.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetreadonly"></A>
+<H3>wxStyledTextCtrl::GetReadOnly</H3>
+<P>
+<B>bool</B> <B>GetReadOnly</B>()<P>
+Returns <TT>true</TT> if the document is read-only.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetrect"></A>
+<H3>wxStyledTextCtrl::GetRect</H3>
+<P>
+<B>wxRect</B> <B>GetRect</B>()<P>
+Returns the rectangle containing the control's visible area.<P>
+This method is deprecated.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetrightmargin"></A>
+<H3>wxStyledTextCtrl::GetRightMargin</H3>
+<P>
+<B>int</B> <B>GetRightMargin</B>()<P>
+Returns the size in pixels of the right margin.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetselectedtext"></A>
+<H3>wxStyledTextCtrl::GetSelectedText</H3>
+<P>
+<B>wxString</B> <B>GetSelectedText</B>()<P>
+Returns the selected text.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetselection"></A>
+<H3>wxStyledTextCtrl::GetSelection</H3>
+<P>
+<B>void</B> <B>GetSelection</B>(<B>int* </B><I>from</I>, <B>int* </B><I>to</I>)<P>
+Sets <TT>from</TT> and <TT>to</TT> in the caller to the beginning and ending positions of selection, provided that <TT>from</TT> and <TT>to</TT> are non-<TT>NULL</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetselectiontype"></A>
+<H3>wxStyledTextCtrl::GetSelectionType</H3>
+<P>
+<B>int</B> <B>GetSelectionType</B>()<P>
+The routine is deprecated; it always returns 0.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetstyleat"></A>
+<H3>wxStyledTextCtrl::GetStyleAt</H3>
+<P>
+<B>int</B> <B>GetStyleAt</B>(<B>int </B><I>position</I>)<P>
+Returns the style byte at <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetstylebits"></A>
+<H3>wxStyledTextCtrl::GetStyleBits</H3>
+<P>
+<B>int</B> <B>GetStyleBits</B>()<P>
+Returns the number of bits in style bytes used to hold the lexical state.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetstyledtextrange"></A>
+<H3>wxStyledTextCtrl::GetStyledTextRange</H3>
+<P>
+<B>wxString</B> <B>GetStyledTextRange</B>(<B>int </B><I>startPos</I>, <B>int </B><I>endPos</I>)<P>
+Returns the styled text from <TT>startPos</TT> to <TT>endPos</TT>.<P>
+<B>void</B> <B>GetStyledTextRange</B>(<B>int </B><I>startPos</I>, <B>int </B><I>endPos</I>, <B>char *</B><I>buffer</I>)<P>
+Puts the styled text from <TT>startPos</TT> to <TT>endPos</TT> in <TT>buffer</TT>.<P>
+Styled text is a sequence of two-byte "cells".
+See <A HREF="out2.htm#wxstyledtextctrladdstyledtext">AddStyledText</A>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgettext"></A>
+<H3>wxStyledTextCtrl::GetText</H3>
+<P>
+<B>wxString</B> <B>GetText</B>()<P>
+Returns all the text in the document.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgettextlength"></A>
+<H3>wxStyledTextCtrl::GetTextLength</H3>
+<P>
+<B>int</B> <B>GetTextLength</B>()<P>
+Returns the number of characters in the document.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgettextrange"></A>
+<H3>wxStyledTextCtrl::GetTextRange</H3>
+<P>
+<B>wxString</B> <B>GetTextRange</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Returns the text at positions <TT>start</TT> through <TT>end</TT>.<P>
+<B>void</B> <B>GetTextRange</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>, <B>char *</B><I>buffer</I>)<P>
+Places the text at positions <TT>start</TT> through <TT>end</TT> in <TT>buffer</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetundocollection"></A>
+<H3>wxStyledTextCtrl::GetUndoCollection</H3>
+<P>
+<B>wxSTC_UndoType</B> <B>GetUndoCollection</B>()<P>
+Returns the kind of undo history that is being collected.
+See <A HREF="out2.htm#wxstyledtextctrlsetundocollection">SetUndoCollection</A> for a description of the values returned from this method.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetusehorizontalscrollbar"></A>
+<H3>wxStyledTextCtrl::GetUseHorizontalScrollBar</H3>
+<P>
+<B>bool</B> <B>GetUseHorizontalScrollBar</B>()<P>
+Returns <TT>true</TT> if the horizontal scroll bar is visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetvieweol"></A>
+<H3>wxStyledTextCtrl::GetViewEOL</H3>
+<P>
+<B>bool</B> <B>GetViewEOL</B>()<P>
+Returns <TT>true</TT> if end-of-line characters are visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetviewwhitespace"></A>
+<H3>wxStyledTextCtrl::GetViewWhiteSpace</H3>
+<P>
+<B>bool</B> <B>GetViewWhiteSpace</B>()<P>
+Returns <TT>true</TT> if whitespace characters are visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgetzoom"></A>
+<H3>wxStyledTextCtrl::GetZoom</H3>
+<P>
+<B>int</B> <B>GetZoom</B>()<P>
+Returns the zoom level. See <A HREF="out2.htm#wxstyledtextctrlsetzoom">SetZoom</A> for a description of zoom levels.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgotoline"></A>
+<H3>wxStyledTextCtrl::GotoLine</H3>
+<P>
+<B>void</B> <B>GotoLine</B>(<B>int </B><I>lineNumber</I>)<P>
+Puts the caret at the start of line <TT>lineNumber</TT> and ensures that the caret is visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlgotopos"></A>
+<H3>wxStyledTextCtrl::GotoPos</H3>
+<P>
+<B>void</B> <B>GotoPos</B>(<B>int </B><I>position</I>)<P>
+Sets the caret to <TT>position</TT> and ensures it is visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlhidelines"></A>
+<H3>wxStyledTextCtrl::HideLines</H3>
+<P>
+<B>void</B> <B>HideLines</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Hides all lines from <TT>start</TT> to <TT>end</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlhideselection"></A>
+<H3>wxStyledTextCtrl::HideSelection</H3>
+<P>
+<B>void</B> <B>HideSelection</B>(<B>bool </B><I>hide</I>)<P>
+Shows or hides the selection depending on <TT>hide</TT>.
+When the selection is hidden it looks like all other text.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlindicatorgetstyle"></A>
+<H3>wxStyledTextCtrl::IndicatorGetStyle</H3>
+<P>
+<B>int</B> <B>IndicatorGetStyle</B>(<B>int </B><I>indicator</I>)<P>
+Returns the style of <TT>indicator</TT>.
+See <A HREF="out2.htm#wxstyledtextctrlindicatorsetstyle">IndicatorSetStyle</A> for the values that may be returned from this method.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlindicatorsetcolour"></A>
+<H3>wxStyledTextCtrl::IndicatorSetColour</H3>
+<P>
+<B>void</B> <B>IndicatorSetColour</B>(<B>int </B><I>indicator</I>,
+<B>const wxColour&amp; </B><I>colour</I>)<P>
+Set the foreground colour of <TT>indicator</TT> to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlindicatorsetstyle"></A>
+<H3>wxStyledTextCtrl::IndicatorSetStyle</H3>
+<P>
+<B>void</B> <B>IndicatorSetStyle</B>(<B>int </B><I>indicator</I>, <B>int </B><I>style</I>)<P>
+Set the style of the indicator to <TT>style</TT>.  The valid values for <TT>style</TT> are
+<TT>wxSTC_INDIC_PLAIN</TT>,
+<TT>wxSTC_INDIC_SQUIGGLE</TT> and
+<TT>wxSTC_INDIC_TT</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlinserttext"></A>
+<H3>wxStyledTextCtrl::InsertText</H3>
+<P>
+<B>void</B> <B>InsertText</B>(<B>int </B><I>position</I>, <B>const wxString&amp; </B><I>text</I>)<P>
+Inserts <TT>text</TT> at <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlisselectionrectangle"></A>
+<H3>wxStyledTextCtrl::IsSelectionRectangle</H3>
+<P>
+<B>bool</B> <B>IsSelectionRectangle</B>()<P>
+Returns <TT>true</TT> if the selection is rectangular, or <TT>false</TT> if the selection is a stream.  Stream selections are more common.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrllinefrompoint"></A>
+<H3>wxStyledTextCtrl::LineFromPoint</H3>
+<P>
+<B>int</B> <B>LineFromPoint</B>(<B>wxPoint </B><I>point</I>)<P>
+Returns the line number of the line containing <TT>point</TT>.<P>
+??? Correct?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkeradd"></A>
+<H3>wxStyledTextCtrl::MarkerAdd</H3>
+<P>
+<B>void</B> <B>MarkerAdd</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>markerNumber</I>)<P>
+Adds marker <TT>markerNumber</TT> to line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerdefine"></A>
+<H3>wxStyledTextCtrl::MarkerDefine</H3>
+<P>
+<B>void</B> <B>MarkerDefine</B>(<B>int </B><I>markerNumber</I>,
+<B>int </B><I>markerSymbol</I>, <B>const wxColour&amp; </B><I>foreground</I>,
+<B>const wxColour&amp; </B><I>background</I>)<P>
+Sets the symbol <TT>markerSymbol</TT> used for marker <TT>markerNumber</TT>,
+and optionally the marker's <TT>foreground</TT> and <TT>background</TT> colours.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerdelete"></A>
+<H3>wxStyledTextCtrl::MarkerDelete</H3>
+<P>
+<B>void</B> <B>MarkerDelete</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>markerNumber</I>)<P>
+Deletes marker <TT>markerNumber</TT> from line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerdeleteall"></A>
+<H3>wxStyledTextCtrl::MarkerDeleteAll</H3>
+<P>
+<B>void</B> <B>MarkerDeleteAll</B>(<B>int </B><I>markerNumber</I>)<P>
+Deletes the marker <TT>MarkerNumber</TT> from all lines.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerdeletehandle"></A>
+<H3>wxStyledTextCtrl::MarkerDeleteHandle</H3>
+<P>
+<B>void</B> <B>MarkerDeleteHandle</B>(<B>int </B><I>markerHandle</I>)<P>
+Deletes marker <TT>markerHandle</TT> from all lines.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerget"></A>
+<H3>wxStyledTextCtrl::MarkerGet</H3>
+<P>
+<B>int</B> <B>MarkerGet</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns a bit mask of all the markers set on line <TT>lineNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkernext"></A>
+<H3>wxStyledTextCtrl::MarkerGetNextLine</H3>
+<P>
+<B>int</B> <B>MarkerGetNextLine</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>markerMask</I>)<P>
+Returns the next line after line <TT>lineNumber</TT> that includes a marker in mask <TT>markerMask</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerprevious"></A>
+<H3>wxStyledTextCtrl::MarkerGetPrevLine</H3>
+<P>
+<B>int</B> <B>MarkerGetPrevLine</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>markerMask</I>)<P>
+Returns the previous line before line <TT>lineNumber</TT> that includes a marker in mask <TT>markerMask</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkerlinefromhandle"></A>
+<H3>wxStyledTextCtrl::MarkerLineFromHandle</H3>
+<P>
+<B>int</B> <B>MarkerLineFromHandle</B>(<B>int </B><I>markerHandle</I>)<P>
+Returns the line at which marker <TT>markerHandle</TT> is located.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkersetbackground"></A>
+<H3>wxStyledTextCtrl::MarkerSetBackground</H3>
+<P>
+<B>void</B> <B>MarkerSetBackground</B>(<B>int </B><I>markerNumber</I>,
+<B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the background colour of marker <TT>markerNumber</TT> to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkersetforeground"></A>
+<H3>wxStyledTextCtrl::MarkerSetForeground</H3>
+<P>
+<B>void</B> <B>MarkerSetForeground</B>(<B>int </B><I>markerNumber</I>, <B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the foreground colour of marker <TT>markerNumber</TT> to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlmarkersettype"></A>
+<H3>wxStyledTextCtrl::MarkerSetType</H3>
+<P>
+<B>void</B> <B>MarkerSetType</B>(<B>int </B><I>markerNumber</I>, <B>int </B><I>markerType</I>)<P>
+Sets the type of marker <TT>markerNumber</TT> to <TT>markerType</TT>.<P>
+??? What are the values of markerType?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlpagemove"></A>
+<H3>wxStyledTextCtrl::PageMove</H3>
+<P>
+<B>void</B> <B>PageMove</B>(<B>int </B><I>cmdKey</I>, <B>bool </B><I>extendSelectionFlag</I>)<P>
+??? What does this do?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlpaste"></A>
+<H3>wxStyledTextCtrl::Paste</H3>
+<P>
+<B>void</B> <B>Paste</B>()<P>
+Pastes the contents of the clipboard into the document, replacing the selection.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlpointfromposition"></A>
+<H3>wxStyledTextCtrl::PointFromPosition</H3>
+<P>
+<B>wxPoint</B> <B>PointFromPosition</B>(<B>int </B><I>position</I>)<P>
+Returns the point in the window corresponding to <TT>position</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlpositionfrompoint"></A>
+<H3>wxStyledTextCtrl::PositionFromPoint</H3>
+<P>
+<B>int</B> <B>PositionFromPoint</B>(<B>wxPoint </B><I>point</I>)<P>
+Find the position corresponding to point <TT>point</TT> within the window.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlredo"></A>
+<H3>wxStyledTextCtrl::Redo</H3>
+<P>
+<B>void</B> <B>Redo</B>()<P>
+Redoes the next action on the undo history
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlreplaceselection"></A>
+<H3>wxStyledTextCtrl::ReplaceSelection</H3>
+<P>
+<B>void</B> <B>ReplaceSelection</B>(<B>const wxString&amp; </B><I>text</I>)<P>
+Replaces the selection with <TT>text</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlscrollby"></A>
+<H3>wxStyledTextCtrl::ScrollBy</H3>
+<P>
+<B>void</B> <B>ScrollBy</B>(<B>int </B><I>columns</I>, <B>int </B><I>lines</I>)<P>
+Scrolls the text control by <TT>columns</TT> columns horizontally and <TT>lines</TT> lines vertically.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlscrolltocolumn"></A>
+<H3>wxStyledTextCtrl::ScrollToColumn</H3>
+<P>
+<B>void</B> <B>ScrollToColumn</B>(<B>int </B><I>columnNumber</I>)<P>
+Scrolls enough to make the column <TT>columnNumber</TT> visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlscrolltoline"></A>
+<H3>wxStyledTextCtrl::ScrollToLine</H3>
+<P>
+<B>void</B> <B>ScrollToLine</B>(<B>int </B><I>lineNumber</I>)<P>
+Scrolls enough to make line <TT>lineNumber</TT> visible.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsearchanchor"></A>
+<H3>wxStyledTextCtrl::SearchAnchor</H3>
+<P>
+<B>void</B> <B>SearchAnchor</B>()<P>
+Sets the current caret position to the position of the search anchor.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsearchnext"></A>
+<H3>wxStyledTextCtrl::SearchNext</H3>
+<P>
+<B>int</B> <B>SearchNext</B>(<B>const wxString&amp; </B><I>text</I>, <B>bool </B><I>caseSensitive</I>, <B>bool </B><I>wholeWord</I>)<P>
+Finds <TT>text</TT> starting at the search anchor. <TT>caseSensitive</TT> and <TT>wholeWord</TT> indicate the kind of search.  Returns the position of the start of the found text or -1 if <TT>text</TT> was not found.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsearchprev"></A>
+<H3>wxStyledTextCtrl::SearchPrev</H3>
+<P>
+<B>int</B> <B>SearchPrev</B>(<B>const wxString&amp; </B><I>text</I>, <B>bool </B><I>caseSensitive</I>, <B>bool </B><I>wholeWord</I>)<P>
+Find <TT>text</TT> searching backwards from the search anchor. <TT>caseSensitive</TT> and <TT>wholeWord</TT> indicate the kind of search.  Returns the position of the start of the found text or -1 if <TT>text</TT> was not found.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlselectall"></A>
+<H3>wxStyledTextCtrl::SelectAll</H3>
+<P>
+<B>void</B> <B>SelectAll</B>()<P>
+Selects all the text in the document.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetanchor"></A>
+<H3>wxStyledTextCtrl::SetAnchor</H3>
+<P>
+<B>void</B> <B>SetAnchor</B>(<B>int </B><I>position</I>)<P>
+Sets the selection anchor to <TT>position</TT>.
+The anchor is the end of the selection opposite the caret.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetbuffereddraw"></A>
+<H3>wxStyledTextCtrl::SetBufferedDraw</H3>
+<P>
+<B>void</B> <B>SetBufferedDraw</B>(<B>bool </B><I>buffered</I>)<P>
+If <TT>buffered</TT> is <TT>true</TT> drawing is buffered into a bitmap to avoid flicker.  Otherwise, drawing is done directly to the screen.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetcaretforeground"></A>
+<H3>wxStyledTextCtrl::SetCaretForeground</H3>
+<P>
+<B>void</B> <B>SetCaretForeground</B>(<B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the foreground colour of the caret to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetcaretperiod"></A>
+<H3>wxStyledTextCtrl::SetCaretPeriod</H3>
+<P>
+<B>void</B> <B>SetCaretPeriod</B>(<B>int </B><I>period</I>)<P>
+Sets the caret <TT>period</TT> in milliseconds.  This period is the time for one complete on/off cycle.  A <TT>period</TT> of zero indicates no blinking.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetcaretpolicy"></A>
+<H3>wxStyledTextCtrl::SetCaretPolicy</H3>
+<P>
+<B>void</B> <B>SetCaretPolicy</B>(<B>int </B><I>caretPolicy</I>, <B>int </B><I>slop=0</I>)<P>
+Sets the way the line the caret is on is kept visible.  The valid values of <TT>caretPolicy</TT> are bits which may be combined.  These bits are as follows:<P>
+<TT>CARET_SLOP</TT>.  Shows the caret within <TT>slop</TT> lines of the edge with it's scrolled to view.<P>
+<TT>CARET_CENTER</TT>.  If the <TT>CARET_SLOP</TT> bit is also set the cursor is repositioned whenever it is outside the <TT>slop</TT> border.  Otherwise, the caret is always recentred.<P>
+<TT>CARET_STRICT</TT>.  If the <TT>CARET_XEVEN</TT> bit is also set both left and right margins are given equal weight rather than favouring the left margin.<P>
+??? What does the last paragraph mean?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetcurrentposition"></A>
+<H3>wxStyledTextCtrl::SetCurrentPosition</H3>
+<P>
+<B>void</B> <B>SetCurrentPosition</B>(<B>int </B><I>position</I>)<P>
+Moves the caret to <TT>position</TT>.
+Note that the corresponding getter is <A HREF="out2.htm#wxstyledtextctrlgetcurrentpos">GetCurrentPos</A>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetdocument"></A>
+<H3>wxStyledTextCtrl::SetDocument</H3>
+<P>
+<B>void</B> <B>SetDocument</B>(<B>void* </B><I>document</I>)<P>
+Changes the document object to <TT>document</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetedgecolour"></A>
+<H3>wxStyledTextCtrl::SetEdgeColour</H3>
+<P>
+<B>void</B> <B>SetEdgeColour</B>(<B>const wxColour&amp; </B><I>colour</I>)<P>
+Changes the colour indicating the edge to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetedgecolumn"></A>
+<H3>wxStyledTextCtrl::SetEdgeColumn</H3>
+<P>
+<B>void</B> <B>SetEdgeColumn</B>(<B>int </B><I>columnNumber</I>)<P>
+Sets the column number of the edge to <TT>columnNumber</TT>.
+Text extending past the edge is highlighted.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetedgemode"></A>
+<H3>wxStyledTextCtrl::SetEdgeMode</H3>
+<P>
+<B>void</B> <B>SetEdgeMode</B>(<B>wxSTC_EDGE </B><I>mode</I>)<P>
+<TT>mode</TT> specifies how the edge is displayed as follows:
+<TT>wxSTC_EDGE_LINE</TT> draws the edge as a line.
+<TT>wxSTC_EDGE_BACKGROUND</TT> highlights text extending beyond the edge.
+<TT>wxSTC_EDGE_NONE</TT> hides the edge.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlseteolmode"></A>
+<H3>wxStyledTextCtrl::SetEOLMode</H3>
+<P>
+<B>void</B> <B>SetEOLMode</B>(<B>wxSTC_EOL </B><I>eolMode</I>)<P>
+Set the current end-of-line mode. Valid values for eolMode are:
+<TT>wxSTC_EOL_CRLF</TT> (Windows),
+<TT>wxSTC_EOL_CR</TT> (Macintosh) and
+<TT>wxSTC_EOL_LF</TT> (Linux).
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetfoldexpanded"></A>
+<H3>wxStyledTextCtrl::SetFoldExpanded</H3>
+<P>
+<B>void</B> <B>SetFoldExpanded</B>(<B>int </B><I>lineNumber</I>, <B>bool </B><I>expandFlag</I>)<P>
+Expands or contracts line <TT>lineNumber</TT> depending on <TT>expandFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetfoldflags"></A>
+<H3>wxStyledTextCtrl::SetFoldFlags</H3>
+<P>
+<B>void</B> <B>SetFoldFlags</B>(<B>int </B><I>flags</I>)<P>
+Sets folding debugging flags to <TT>flags</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetfoldlevel"></A>
+<H3>wxStyledTextCtrl::SetFoldLevel</H3>
+<P>
+<B>void</B> <B>SetFoldLevel</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>level</I>)<P>
+Sets the fold level of line <TT>lineNumber</TT> to <TT>level</TT>.
+<TT>level</TT> contains an integer level and several status bits.
+The following constants define the bits of <TT>level</TT>:<P>
+The low 12 bits, defined by <TT>wxSTC_FOLDLEVELNUMBERMASK</TT>, contain the level number.  The expression <TT>(level &amp; wxSTC_FOLDLEVELNUMBERMASK)</TT> may be used to isolate the level number.<P>
+The <TT>wxSTC_FOLDLEVELWHITEFLAG</TT> bit is set if the lexer considers that the line is entirely whitespace.
+The <TT>wxSTC_FOLDLEVELHEADERFLAG</TT> bit is set if the line is a header line.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetindent"></A>
+<H3>wxStyledTextCtrl::SetIndent</H3>
+<P>
+<B>void</B> <B>SetIndent</B>(<B>int </B><I>indentSize</I>)<P>
+<TT>indentSize</TT> specifies the number of spaces used for one level of indentation.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetkeywords"></A>
+<H3>wxStyledTextCtrl::SetKeyWords</H3>
+<P>
+<B>void</B> <B>SetKeyWords</B>(<B>int </B><I>keywordSet</I>, <B>const wxString&amp; </B><I>keyWords</I>)<P>
+Sets up the key words used by the lexer. More than one set of keywords may be specified.  <TT>keywordSet</TT> is an integer identifying the keyword set.  <TT>keyWords</TT> is the list of keywords.<P>
+??? How are keywords separated?  Spaces or tabs?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetlexer"></A>
+<H3>wxStyledTextCtrl::SetLexer</H3>
+<P>
+<B>void</B> <B>SetLexer</B>(<B>wxSTC_LEX </B><I>lexer</I>)<P>
+Sets the lexing language of the document.  The valid values for <TT>lexer</TT> are:
+<TT>wxSTC_LEX_BATCH</TT>,
+<TT>wxSTC_LEX_CPP</TT>,
+<TT>wxSTC_LEX_ERRORLIST</TT>,
+<TT>wxSTC_LEX_HTML</TT>,
+<TT>wxSTC_LEX_LATEX</TT>,
+<TT>wxSTC_LEX_MAKEFILE</TT>,
+<TT>wxSTC_LEX_NULL</TT>,
+<TT>wxSTC_LEX_PERL</TT>,
+<TT>wxSTC_LEX_PROPERTIES</TT>,
+<TT>wxSTC_LEX_PYTHON</TT>,
+<TT>wxSTC_LEX_SQL</TT>,
+<TT>wxSTC_LEX_VB</TT>,
+<TT>wxSTC_LEX_XCODE</TT> and
+<TT>wxSTC_LEX_XML</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetlineindentation"></A>
+<H3>wxStyledTextCtrl::SetLineIndentation</H3>
+<P>
+<B>void</B> <B>SetLineIndentation</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>indent</I>)<P>
+Changes the indentation (in columns) of line <TT>lineNumber</TT> to <TT>indent</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetlinestate"></A>
+<H3>wxStyledTextCtrl::SetLineState</H3>
+<P>
+<B>void</B> <B>SetLineState</B>(<B>int </B><I>lineNumber</I>, <B>int </B><I>state</I>)<P>
+Sets the state of line <TT>lineNumber</TT> to <TT>state</TT>.
+This method is used hold extra styling information.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmarginmask"></A>
+<H3>wxStyledTextCtrl::SetMarginMask</H3>
+<P>
+<B>void</B> <B>SetMarginMask</B>(<B>int </B><I>marginNumber</I>, <B>int </B><I>mask</I>)<P>
+<TT>mask</TT> specifies which markers are displayed in margin <TT>marginNumber</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmargins"></A>
+<H3>wxStyledTextCtrl::SetMargins</H3>
+<P>
+<B>void</B> <B>SetMargins</B>(<B>int </B><I>leftWidth</I>, <B>int </B><I>rightWidth</I>)<P>
+Sets the width in pixels of left and right margins to <TT>leftWidth</TT> and <TT>rightWidth</TT>, respectively.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmarginsensitive"></A>
+<H3>wxStyledTextCtrl::SetMarginSensitive</H3>
+<P>
+<B>void</B> <B>SetMarginSensitive</B>(<B>int </B><I>marginNumber</I>, <B>bool </B><I>sensitiveFlag</I>)<P>
+Makes margin <TT>marginNumber</TT> sensitive or insensitive to mouse clicks, depending on <TT>sensitiveFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmargintype"></A>
+<H3>wxStyledTextCtrl::SetMarginType</H3>
+<P>
+<B>void</B> <B>SetMarginType</B>(<B>int </B><I>marginNumber</I>, <B>int </B><I>marginType</I>)<P>
+Sets the type of margin <TT>marginNumber</TT>. <TT>marginType</TT> may be
+<TT>wxSTC_MARGIN_NUMBER</TT> (numeric) or
+<TT>wxSTC_MARGIN_SYMBOL</TT> (symbolic).
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmarginwidth"></A>
+<H3>wxStyledTextCtrl::SetMarginWidth</H3>
+<P>
+<B>void</B> <B>SetMarginWidth</B>(<B>int </B><I>marginNumber</I>, <B>int </B><I>pixelWidth</I>)<P>
+Sets the width in pixels of margin <TT>marginNumber</TT> to <TT>pixlWidth</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetmodeventmask"></A>
+<H3>wxStyledTextCtrl::SetModEventMask</H3>
+<P>
+<B>void</B> <B>SetModEventMask</B>(<B>int </B><I>mask</I>)<P>
+<TT>mask</TT> specifies to container document which modification events are to be sent.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetproperty"></A>
+<H3>wxStyledTextCtrl::SetProperty</H3>
+<P>
+<B>void</B> <B>SetProperty</B>(<B>const wxString&amp; </B><I>key</I>, <B>const wxString&amp; </B><I>value</I>)<P>
+<TT>value</TT> specifies the value of property <TT>key</TT> to be used by a lexer.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetreadonly"></A>
+<H3>wxStyledTextCtrl::SetReadOnly</H3>
+<P>
+<B>void</B> <B>SetReadOnly</B>(<B>bool </B><I>readOnlyFlag</I>)<P>
+Sets to the control's mode to read-only or read/write depending on <TT>readOnlyFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetsavepoint"></A>
+<H3>wxStyledTextCtrl::SetSavePoint</H3>
+<P>
+<B>void</B> <B>SetSavePoint</B>()<P>
+Remembers the current position in the undo history as the position
+at which the document was saved.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetselection"></A>
+<H3>wxStyledTextCtrl::SetSelection</H3>
+<P>
+<B>void</B> <B>SetSelection</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Selects the text from positions <TT>start</TT> to <TT>end</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetselbackground"></A>
+<H3>wxStyledTextCtrl::SetSelectionBackground</H3>
+<P>
+<B>void</B> <B>SetSelectionBackground</B>(<B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the background colour of the selection to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetselforeground"></A>
+<H3>wxStyledTextCtrl::SetSelectionForeground</H3>
+<P>
+<B>void</B> <B>SetSelectionForeground</B>(<B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the foreground colour of the selection to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetstylebits"></A>
+<H3>wxStyledTextCtrl::SetStyleBits</H3>
+<P>
+<B>void</B> <B>SetStyleBits</B>(<B>int </B><I>bits</I>)<P>
+By default, each styling byte consists of 5 lexical class bits and 3 indicator bits.
+The <TT>bits</TT> parameter specifies how many bits to use for the lexical class bits.
+Use this method when a lexer requires more than 32 lexical states.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetstylebytes"></A>
+<H3>wxStyledTextCtrl::SetStyleBytes</H3>
+<P>
+<B>void</B> <B>SetStyleBytes</B>(<B>int </B><I>length</I>, <B>char* </B><I>styleBytes</I>)<P>
+Sets the styles for a segment of the document to an array of <TT>length</TT> bytes whose address is <TT>styleBytes</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetstylefor"></A>
+<H3>wxStyledTextCtrl::SetStyleFor</H3>
+<P>
+<B>void</B> <B>SetStyleFor</B>(<B>int </B><I>length</I>, <B>int </B><I>style</I>)<P>
+Changes the style to <TT>style</TT> for <TT>length</TT> characters starting at the current styling position.  Moves the current styling position to the character after the newly styled segment.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsettabwidth"></A>
+<H3>wxStyledTextCtrl::SetTabWidth</H3>
+<P>
+<B>void</B> <B>SetTabWidth</B>(<B>int </B><I>tabWidth</I>)<P>
+Changes the visible size of a tab to <TT>tabWidth</TT> times the width of a space character.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsettext"></A>
+<H3>wxStyledTextCtrl::SetText</H3>
+<P>
+<B>void</B> <B>SetText</B>(<B>const wxString&amp; </B><I>text</I>)<P>
+Replaces the contents of the control with <TT>text</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetundocollection"></A>
+<H3>wxStyledTextCtrl::SetUndoCollection</H3>
+<P>
+<B>void</B> <B>SetUndoCollection</B>(<B>wxSTC_UndoType </B><I>type</I>)<P>
+<TT>type</TT> specifies whether actions are added to the undo history or discarded.<P>
+<TT>wxSTC_UndoType</TT> is a bool; <TT>true</TT> means to store undo information.<P>
+?? Correct?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetusehorizontalscrollbar"></A>
+<H3>wxStyledTextCtrl::SetUseHorizontalScrollBar</H3>
+<P>
+<B>void</B> <B>SetUseHorizontalScrollBar</B>(<B>bool </B><I>showFlag</I>)<P>
+Shows or hides the horizontal scroll bar, depending on <TT>showFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlusepopup"></A>
+<H3>wxStyledTextCtrl::SetUsePop</H3>
+<P>
+<B>void</B> <B>SetUsePop</B>(<B>bool </B><I>allowPopUpFlag</I>)<P>
+If <TT>allowPopUpFlag</TT> is true, displays a pop-up menu automatically when the user presses
+the wrong mouse button.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetusetabs"></A>
+<H3>wxStyledTextCtrl::SetUseTabs</H3>
+<P>
+<B>void</B> <B>SetUseTabs</B>(<B>bool </B><I>useTabsFlag</I>)<P>
+If <TT>useTabsFlag</TT> is <TT>true</TT>, makes indentation use a combination of tabs and spaces.
+Otherwise, makes indentation use only spaces.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetvieweol"></A>
+<H3>wxStyledTextCtrl::SetViewEOL</H3>
+<P>
+<B>void</B> <B>SetViewEOL</B>(<B>bool </B><I>visibleFlag</I>)<P>
+Makes end-of-line characters visible or invisible, depending on <TT>visibleFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetviewwhitespace"></A>
+<H3>wxStyledTextCtrl::SetViewWhiteSpace</H3>
+<P>
+<B>void</B> <B>SetViewWhiteSpace</B>(<B>bool </B><I> visibleFlag</I>)<P>
+Makes whitespace characters visible or invisible, depending on <TT>visibleFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetwordchars"></A>
+<H3>wxStyledTextCtrl::SetWordChars</H3>
+<P>
+<B>void</B> <B>SetWordChars</B>(<B>const wxString&amp; </B><I>characters</I>)<P>
+<TT>characters</TT> specifies the set of characters defining a word.  This set is used when moving or selecting words.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlsetzoom"></A>
+<H3>wxStyledTextCtrl::SetZoom</H3>
+<P>
+<B>void</B> <B>SetZoom</B>(<B>int </B><I>level</I>)<P>
+Sets the number of points added to the size of all fonts to <TT>level</TT>.
+Positive values of <TT>level</TT> magnify fonts; negative values of <TT>level</TT> reduce fonts.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlshowlines"></A>
+<H3>wxStyledTextCtrl::ShowLines</H3>
+<P>
+<B>void</B> <B>ShowLines</B>(<B>int </B><I>start</I>, <B>int </B><I>end</I>)<P>
+Makes visible the range of lines from <TT>start</TT> to <TT>end</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstartstyling"></A>
+<H3>wxStyledTextCtrl::StartStyling</H3>
+<P>
+<B>void</B> <B>StartStyling</B>(<B>int </B><I>position</I>, <B>int </B><I>mask</I>)<P>
+Sets the current styling position to <TT>position</TT> and the styling mask to <TT>mask</TT>.
+The styling mask can be used to protect some bits in each styling byte from modification.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstyleclearall"></A>
+<H3>wxStyledTextCtrl::StyleClearAll</H3>
+<P>
+<B>void</B> <B>StyleClearAll</B>()<P>
+Clears all the styles and makes them equivalent to the global default style.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstyleresetdefault"></A>
+<H3>wxStyledTextCtrl::StyleResetDefault</H3>
+<P>
+<B>void</B> <B>StyleResetDefault</B>()<P>
+Resets the default style to its state at startup.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetbackground"></A>
+<H3>wxStyledTextCtrl::StyleSetBackground</H3>
+<P>
+<B>void</B> <B>StyleSetBackground</B>(<B>int </B><I>styleNumber</I>, <B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the background colour of style <TT>styleNumber</TT> to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetbold"></A>
+<H3>wxStyledTextCtrl::StyleSetBold</H3>
+<P>
+<B>void</B> <B>StyleSetBold</B>(<B>int </B><I>styleNumber</I>, <B>bool </B><I>boldFlag</I>)<P>
+Changes style <TT>styleNumber</TT> to bold or non-bold, depending on <TT>boldFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstyleseteolfilled"></A>
+<H3>wxStyledTextCtrl::StyleSetEOLFilled</H3>
+<P>
+<B>void</B> <B>StyleSetEOLFilled</B>(<B>int </B><I>styleNumber</I>, <B>bool </B><I>filledFlag</I>)<P>
+Sets style <TT>styleNumber</TT> to have its end of line filled or not, depending on <TT>filledFlag</TT>.<P>
+??? What does having and end of line filled mean?
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetfacename"></A>
+<H3>wxStyledTextCtrl::StyleSetFaceName</H3>
+<P>
+<B>void</B> <B>StyleSetFaceName</B>(<B>int </B><I>styleNumber</I>, <B>const wxString&amp; </B><I>faceName</I>)<P>
+Sets the font of style <TT>styleNumber</TT> to <TT>faceName</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetfont"></A>
+<H3>wxStyledTextCtrl::StyleSetFont</H3>
+<P>
+<B>void</B> <B>StyleSetFont</B>(<B>int </B><I>styleNumber</I>, <B>wxFont&amp; </B><I>font</I>)<P>
+Sets the size, face, bold, italic, and underline attributes of style <TT>styleNumber</TT>
+from the attributes of <TT>font</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetfontattr"></A>
+<H3>wxStyledTextCtrl::StyleSetFontAttr</H3>
+<P>
+<B>void</B> <B>StyleSetFontAttr</B>(<B>int </B><I>styleNumber</I>, <B>int </B><I>size</I>, <B>const wxString&amp; </B><I>faceName</I>, <B>bool </B><I>bold = FALSE</I>, <B>bool </B><I>italic = FALSE</I>, <B>bool </B><I>underline = FALSE</I>)<P>
+Sets all the attributes of style <TT>styleNumber</TT> to the font given by 
+<TT>size</TT>, <TT>faceName</TT>, <TT>bold</TT>, <TT>italic</TT>, and <TT>underline</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetforeground"></A>
+<H3>wxStyledTextCtrl::StyleSetForeground</H3>
+<P>
+<B>void</B> <B>StyleSetForeground</B>(<B>int </B><I>styleNumber</I>, <B>const wxColour&amp; </B><I>colour</I>)<P>
+Sets the foreground colour of style <TT>styleNumber</TT> to <TT>colour</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetitalic"></A>
+<H3>wxStyledTextCtrl::StyleSetItalic</H3>
+<P>
+<B>void</B> <B>StyleSetItalic</B>(<B>int </B><I>style</I>, <B>bool </B><I>italicFlag</I>)<P>
+Changes style <TT>styleNumber</TT> to italic or non-italic, depending on <TT>italicFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetsize"></A>
+<H3>wxStyledTextCtrl::StyleSetSize</H3>
+<P>
+<B>void</B> <B>StyleSetSize</B>(<B>int </B><I>styleNumber</I>, <B>int </B><I>pointSize</I>)<P>
+Sets the size of characters of style <TT>styleNumber</TT> to <TT>pointSize</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetspec"></A>
+<H3>wxStyledTextCtrl::StyleSetSpec</H3>
+<P>
+<B>void</B> <B>StyleSetSpec</B>(<B>int </B><I>styleNum</I>, <B>const wxString&amp; </B><I>spec</I>)<P>
+Extract style settings from a spec-string which is composed of one or
+more of the following comma separated elements:
+<TT>bold</TT>, <TT>italic</TT>, <TT>underline</TT>, <TT>eol</TT>,
+<TT>fore:#<I>RRGGBB</I></TT>,
+<TT>back:#<I>RRGGBB</I></TT>,
+<TT>face:<I>facename</I></TT> and
+<TT>size:<I>pointsize</I></TT>.<P>
+<TT>bold</TT>, <TT>italic</TT> and <TT>underline</TT> enable boldfaced, italicized and underlined text.
+<TT>eol</TT> enables end-of-line filling.
+<TT>fore:#<I>RRGGBB</I></TT> and <TT>back:#<I>RRGGBB</I></TT>
+set the foreground and background colours.
+<TT>face:<I>facename</I></TT> and <TT>size:<I>pointsize</I></TT>
+set the face name and point size of the font.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlstylesetunderline"></A>
+<H3>wxStyledTextCtrl::StyleSetUnderline</H3>
+<P>
+<B>void</B> <B>StyleSetUnderline</B>(<B>int </B><I>style</I>, <B>bool </B><I>underlineFlag</I>)<P>
+Changes style <TT>styleNumber</TT> to underlined or non-underlined,
+depending on <TT>underlineFlag</TT>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrltogglefold"></A>
+<H3>wxStyledTextCtrl::ToggleFold</H3>
+<P>
+<B>void</B> <B>ToggleFold</B>(<B>int </B><I>lineNumber</I>)<P>
+Toggles line <TT>lineNumber</TT> between the expanded and contracted states.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlundo"></A>
+<H3>wxStyledTextCtrl::Undo</H3>
+<P>
+<B>void</B> <B>Undo</B>()<P>
+Undoes one action in the undo history.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlvisiblefromdocline"></A>
+<H3>wxStyledTextCtrl::VisibleFromDocLine</H3>
+<P>
+<B>int</B> <B>VisibleFromDocLine</B>(<B>int </B><I>lineNumber</I>)<P>
+Returns the display line corresponding to line <TT>lineNumber</TT>, taking hidden lines into account.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlzoomin"></A>
+<H3>wxStyledTextCtrl::ZoomIn</H3>
+<P>
+<B>void</B> <B>ZoomIn</B>()<P>
+Increase the zoom level by ???.  See <A HREF="out2.htm#wxstyledtextctrlsetzoom">SetZoom</A>.
+<P>
+
+<HR>
+<A NAME="wxstyledtextctrlzoomout"></A>
+<H3>wxStyledTextCtrl::ZoomOut</H3>
+<P>
+<B>void</B> <B>ZoomOut</B>()<P>
+Decrease the zoom level by ???.  See <A HREF="out2.htm#wxstyledtextctrlsetzoom">SetZoom</A>.
+<P>
+<P>
+
+
+</BODY>
+<!-- Mirrored from webpages.charter.net/edreamleo/out2.htm by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+</HTML>

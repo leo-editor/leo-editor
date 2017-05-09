@@ -1,0 +1,14 @@
+.. rst3: filename: html/reference.html
+
+#####################
+Leo's Reference Guide
+#####################
+   
+.. toctree::
+   :maxdepth: 1
+
+   directives
+   history
+   theory
+   whitepapers
+

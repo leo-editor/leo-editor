@@ -1,0 +1,10 @@
+==========================
+Leo Basics Step By Step:24
+==========================
+
+
+Expanding the node shows that the copy operation
+copied the node and all its descendants.
+
+.. image:: slide-024.png
+

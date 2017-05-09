@@ -1,0 +1,122 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<!-- Mirrored from webpages.charter.net/edreamleo/slides/scripting-leo/slide-008.html by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building scripts from outlines &mdash; Leo v4.8 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo v4.8 documentation" href="index.html" />
+    <link rel="next" title="g.openWithFileName" href="slide-009.html" />
+    <link rel="prev" title="Using iterators" href="slide-007.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="slide-009.html" title="g.openWithFileName"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="slide-007.html" title="Using iterators"
+             accesskey="P">previous</a> |</li>
+        <li><a href="leo_toc.html">Leo v4.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-scripts-from-outlines">
+<h1>Building scripts from outlines<a class="headerlink" href="#building-scripts-from-outlines" title="Permalink to this headline">¶</a></h1>
+<p>Leo scripts can be composed of more than one node,
+just as external files are organized. The Execute
+Script command <strong>preprocesses</strong> the script before
+executing it, by expanding section references and
+&#64;others directives</p>
+<p>For example, I organize my complex script as follows.
+I create a top-level node containing just:</p>
+<div class="highlight-python"><pre>'''docstring'''
+@others
+controller(c).run()</pre>
+</div>
+<p>A child node will contain the following:</p>
+<div class="highlight-python"><pre>class controller:
+    def __init__(self,c):
+        self.c = c
+    @others</pre>
+</div>
+<p>And the children of the top-level class node will
+contain all the methods of the controller class.
+This organization is simple, flexible and powerful.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="slide-007.html"
+                        title="previous chapter">Using iterators</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="slide-009.html"
+                        title="next chapter">g.openWithFileName</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="slide-009.html" title="g.openWithFileName"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="slide-007.html" title="Using iterators"
+             >previous</a> |</li>
+        <li><a href="leo_toc.html">Leo v4.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Edward K. Ream.
+      Last updated on Nov 21, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+
+<!-- Mirrored from webpages.charter.net/edreamleo/slides/scripting-leo/slide-008.html by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+</html>

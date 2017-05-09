@@ -1,0 +1,718 @@
+﻿1
+00:00:00,000 --> 00:00:03,166
+Hello, this is Edward Ream 令德华亲,这儿是 Edward Ream 令德华
+
+2
+00:00:03,166 --> 00:00:06,066
+speaking from Madison, Wisconsin.在米国威斯康星州,麦迪逊 的家里
+
+3
+00:00:06,066 --> 00:00:10,899
+I wish my friends and colleagues in China all the best.祝福所有中国的朋友们一切安好
+
+4
+00:00:10,900 --> 00:00:12,366
+Mr. Zoom.Quiet 周琦你们的大妈, Zoom.Quiet
+
+5
+00:00:12,366 --> 00:00:16,232
+has already made important contributions to Leo.为Leo 作出了一些贡献
+
+6
+00:00:16,233 --> 00:00:17,066
+具体是什么 你懂的;-)
+
+7
+00:00:17,066 --> 00:00:20,166
+I invite you all to learn about Leo现在请大家学习一点儿 Leo
+
+8
+00:00:20,166 --> 00:00:22,032
+and to make your own contributions.并作点儿力所能及的贡献
+
+9
+00:00:22,033 --> 00:00:23,566
+
+
+10
+00:00:23,566 --> 00:00:28,366
+This screencast is intended primarily for Pythonprogrammers. 当前截屏主要针对Python程序员
+
+11
+00:00:28,366 --> 00:00:29,366
+
+
+12
+00:00:29,366 --> 00:00:34,399
+It briefly introduces Leo's programming and scriptingfeatures. 简要展示了Leo编程相关的特性
+
+13
+00:00:34,400 --> 00:00:35,400
+
+
+14
+00:00:35,400 --> 00:00:41,966
+The outline you see is the Leo file I use to develop Leo itself.当前Leo 文件包含的提纲,正是俺用来进行Leo 自身开发的
+
+15
+00:00:41,966 --> 00:00:45,632
+It contains over one million lines of Python code包含了超过一百万行Py代码(真的徦的?!)
+
+16
+00:00:45,633 --> 00:00:49,299
+and all of Leo's documentation.以及所有 Leo 的文档
+
+17
+00:00:49,300 --> 00:00:54,933
+This tab contains the sources for Leo's core.这个标签包含了所有 Leo 的核心代码
+
+18
+00:00:54,933 --> 00:00:56,166
+
+
+19
+00:00:56,166 --> 00:01:03,366
+This tab contains the sources for all of Leo's official plugins.这个呢,包含了所有 Leo 官方插件的代码
+
+20
+00:01:03,366 --> 00:01:04,399
+
+
+21
+00:01:04,400 --> 00:01:07,933
+This tab contains notes to myself.这个标签,包含了俺自个儿的笔记
+
+22
+00:01:07,933 --> 00:01:10,233
+
+
+23
+00:01:10,233 --> 00:01:16,566
+And this tab contains the sources for all of Leo'sdocumentation. 就个则包含了所有文档的源文本
+
+24
+00:01:16,566 --> 00:01:20,566
+
+
+25
+00:01:20,566 --> 00:01:24,366
+Focusing attention on just the code of interest聚焦当前代码
+
+26
+00:01:24,366 --> 00:01:27,266
+makes programming much easier.进行编程很轻松
+
+27
+00:01:27,266 --> 00:01:31,299
+Leo's clones are "live" copies of nodes.Leo 的"克隆"是对节点的"活"复制
+
+28
+00:01:31,300 --> 00:01:36,066
+Changing a clone changes all the copies.改变任一已克隆节点,能立即同步到所有
+
+29
+00:01:36,066 --> 00:01:39,799
+Here are some of the clones I created recently这儿就是刚刚创建的几个 克隆 节点
+
+30
+00:01:39,800 --> 00:01:42,233
+to improve Leo's find command.Leo 的查找命令很给力
+
+31
+00:01:42,233 --> 00:01:47,999
+
+
+32
+00:01:48,000 --> 00:01:56,566
+
+
+33
+00:01:56,566 --> 00:01:57,432
+
+
+34
+00:01:57,433 --> 00:02:02,299
+
+
+35
+00:02:02,300 --> 00:02:07,433
+Searching for s_ctrl limits the search to just those clones.搜索 s_ctrl 能限定只在克隆的节点中
+
+36
+00:02:07,433 --> 00:02:28,766
+
+
+37
+00:02:28,766 --> 00:02:35,666
+I can also use the clone-find-all command to find all nodescontaining s_ctrl. 当然可以使用 clone-find-all 命令搜查所有包含 s_ctrl 的节点
+
+38
+00:02:35,666 --> 00:03:07,699
+
+
+39
+00:03:07,700 --> 00:03:10,566
+Now let's look at Leo's scripting features.现在演示 Leo 的脚本能力
+
+40
+00:03:10,566 --> 00:03:13,432
+
+
+41
+00:03:13,433 --> 00:03:17,566
+Any Leo node may contain a Python script.所有Leo 节点都能包含 Python 脚本
+
+42
+00:03:17,566 --> 00:03:18,266
+
+
+43
+00:03:18,266 --> 00:03:22,032
+Ctrl-B, Leo's execute-script command,Ctrl-B 是Leo 的脚本运行命令,
+
+44
+00:03:22,033 --> 00:03:27,066
+executes the text of any node or tree as a Python script.能视当前节点的文本为Python 代码来运行
+
+45
+00:03:27,066 --> 00:03:29,432
+No special markup is needed.不用任何特殊标签声明
+
+46
+00:03:29,433 --> 00:03:31,066
+
+
+47
+00:03:31,066 --> 00:03:35,299
+Here is the famous "hello world" script.这是著名的 "hello world" 脚本
+
+48
+00:03:35,300 --> 00:03:36,466
+
+
+49
+00:03:36,466 --> 00:03:39,099
+I'll type Ctrl-B to execute it.按 Ctrl-B 运行之
+
+50
+00:03:39,100 --> 00:03:42,700
+
+
+51
+00:03:42,700 --> 00:03:48,666
+Notice that the script runs without errors even though "g"does not seem to be defined. 注意运行出错了目测是 "g" 未定义
+
+52
+00:03:48,666 --> 00:03:49,999
+
+
+53
+00:03:50,000 --> 00:03:57,966
+That's because execute-script pre-defines three symbols: g, cand p. 因为试图使用 g, c, p 三个未定义符号
+
+54
+00:03:57,966 --> 00:04:01,999
+These variables give access to all outline data这堆变量能访问所有提纲数据
+
+55
+00:04:02,000 --> 00:04:04,900
+and to all of Leo's own source code.以及所有 Leo 自身的源代码
+
+56
+00:04:04,900 --> 00:04:08,800
+
+
+57
+00:04:08,800 --> 00:04:13,000
+You can also build scripts from entire outlines.你同样能构建针对整个提纲的脚本
+
+58
+00:04:13,000 --> 00:04:18,466
+Simple markup 简单标记(section references and @others)节声明和 @所有以下
+
+59
+00:04:18,466 --> 00:04:20,566
+tells Leo how to build the script.告诉Leo 如何进行脚本构建
+
+60
+00:04:20,566 --> 00:04:22,032
+
+
+61
+00:04:22,033 --> 00:04:24,099
+Let's look at an example.让我们看个实例
+
+62
+00:04:24,100 --> 00:04:26,200
+
+
+63
+00:04:26,200 --> 00:04:30,800
+Here is the top-level nodeof a complex script.这个顶级节点包含了完整的脚本
+
+64
+00:04:30,800 --> 00:04:35,533
+
+
+65
+00:04:35,533 --> 00:04:37,799
+It starts with a docstring.以文档字串开始
+
+66
+00:04:37,800 --> 00:04:39,733
+
+
+67
+00:04:39,733 --> 00:04:43,333
+The next line is a section reference.紧接的一行就是 节声明
+
+68
+00:04:43,333 --> 00:04:46,599
+The value of that section reference节声明中的值
+
+69
+00:04:46,600 --> 00:04:50,866
+is the contents of a node having that same name.其实包含了同名节点的所有内容
+
+70
+00:04:50,866 --> 00:04:52,199
+
+
+71
+00:04:52,200 --> 00:04:57,200
+Next, the script has an @others directive.接着, 脚本使用了 @others 指令
+
+72
+00:04:57,200 --> 00:05:02,300
+The value of @others is the contents of all other nodes.@others 则包含了其下所有节点的内容
+
+73
+00:05:02,300 --> 00:05:04,166
+
+
+74
+00:05:04,166 --> 00:05:07,732
+In this case, the value of @others当前, @others 的值
+
+75
+00:05:07,733 --> 00:05:11,066
+is this node and all its descendants.是这一节点以及子孙节点的所有
+
+76
+00:05:11,066 --> 00:05:20,732
+
+
+77
+00:05:20,733 --> 00:05:24,833
+Outlines can build external files as well as scripts.提纲能很好的输出外部脚本文件
+
+78
+00:05:24,833 --> 00:05:25,133
+
+
+79
+00:05:25,133 --> 00:05:32,033
+leoFind.py is a clone of one of the source files in Leo's core.leoFind.py 是Leo 一个核心源代码的的克隆
+
+80
+00:05:32,033 --> 00:05:33,066
+
+
+81
+00:05:33,066 --> 00:05:35,466
+It is organized in much the same way.使用相同模式组织
+
+82
+00:05:35,466 --> 00:05:38,232
+
+
+83
+00:05:38,233 --> 00:05:42,733
+There is a section reference containing a large amount ofdocumentation... 这个节声明包含了大量的文档...
+
+84
+00:05:42,733 --> 00:05:51,066
+
+
+85
+00:05:51,066 --> 00:05:53,399
+followed by an @others directive...追随在 @others 指令中
+
+86
+00:05:53,400 --> 00:05:57,566
+which pulls in the rest of the tree.将从子树中同步出来
+
+87
+00:05:57,566 --> 00:06:06,466
+
+
+88
+00:06:06,466 --> 00:06:11,032
+Notice that more than one nodemay have an @others directive.注意不止一个节点中包含 @others 指令
+
+89
+00:06:11,033 --> 00:06:12,466
+
+
+90
+00:06:12,466 --> 00:06:19,766
+This allows precise control over placementand indentation of source code,这令源代码的组织超越了缩进的限制
+
+91
+00:06:19,766 --> 00:06:23,699
+something that is essential for Python programming.尽管缩进对我蠎行者而言是必不可少的
+
+92
+00:06:23,700 --> 00:06:26,100
+
+
+93
+00:06:26,100 --> 00:06:31,366
+The previous examples show that outline structure is visibleeverywhere. 这个例子将展示提纲结构如何应用在任何场景的
+
+94
+00:06:31,366 --> 00:06:32,632
+
+
+95
+00:06:32,633 --> 00:06:35,466
+Less obviously, but more importantly...这儿有点儿隐密,但重要的是...
+
+96
+00:06:35,466 --> 00:06:40,732
+outlines create user-defined contexts and types.提纲创建了用户定义的内容以及类型
+
+97
+00:06:40,733 --> 00:06:46,933
+Scripts and programs can use those contexts in new andcreative ways. 脚本或代码从而用全新的行为组织
+
+98
+00:06:46,933 --> 00:06:54,199
+By convention, headlines starting with the @ sign denotenew types or contexts. 依例,头一行使用 @符号 指定类型或内
+容
+
+99
+00:06:54,200 --> 00:06:58,933
+Leo defines many types; you can easily define your own.Leo 已定义了很多类型; 你能轻松定义你自个儿的
+
+100
+00:06:58,933 --> 00:07:00,533
+
+
+101
+00:07:00,533 --> 00:07:03,033
+Let's look at some examples.哪,再来看些例子
+
+102
+00:07:03,033 --> 00:07:05,766
+Within an @settings tree...在一个 @settings 树中
+
+103
+00:07:05,766 --> 00:07:12,699
+@int, @string and similar nodes define user settings.@int, @string 什么的都是用户定义
+
+104
+00:07:12,700 --> 00:07:17,300
+These nodes have no effect outside @settings trees.这些节点不会作用于 @setting 树之外
+
+105
+00:07:17,300 --> 00:07:19,566
+
+
+106
+00:07:19,566 --> 00:07:25,466
+Here is a clone of the actual settings in this .leo file.这其实是真实作用的配置文件的 .leo 文件克隆
+
+107
+00:07:25,466 --> 00:07:27,466
+
+
+108
+00:07:27,466 --> 00:07:31,466
+It contains only the overrides I use in this file.仅包含了俺的修订
+
+109
+00:07:31,466 --> 00:07:35,066
+The defaults are set in another .leo file.而默认值则包含在另外一个 .leo 文件
+
+110
+00:07:35,066 --> 00:07:39,699
+
+
+111
+00:07:39,700 --> 00:07:44,100
+@test nodes define unit tests.@test 节点定义集成测试
+
+112
+00:07:44,100 --> 00:07:48,800
+There is no need to subclass unittest.TestCase,不用 unittest.TestCase 子类
+
+113
+00:07:48,800 --> 00:07:54,933
+nor is there any need to put your test codewithin such subclasses. 没有什么需要特殊处理的
+
+114
+00:07:54,933 --> 00:07:55,899
+
+
+115
+00:07:55,900 --> 00:07:59,366
+Here is a complete unit test.这就是一个完备的测试案例
+
+116
+00:07:59,366 --> 00:08:01,199
+Of course, it will fail.当然的它失败了
+
+117
+00:08:01,200 --> 00:08:02,666
+
+
+118
+00:08:02,666 --> 00:08:07,366
+Several Leo commands will execute this unit test.有一系列 Leo 命令可以执行测试
+
+119
+00:08:07,366 --> 00:08:10,999
+We can see those commandsusing typing completion.在提示中可以看到所有命令
+
+120
+00:08:11,000 --> 00:08:15,633
+
+
+121
+00:08:15,633 --> 00:08:17,399
+Here are the possibilities...这是能作的...
+
+122
+00:08:17,400 --> 00:08:19,466
+
+
+123
+00:08:19,466 --> 00:08:22,666
+If we run the unit tests with one of those commands...如果使用那些命令来运行测试
+
+124
+00:08:22,666 --> 00:08:24,766
+we'll get this result in the console.就能在控制台看到结果
+
+125
+00:08:24,766 --> 00:08:25,566
+
+
+126
+00:08:25,566 --> 00:08:27,532
+As expected, the test fails.正如所料,测试失败了
+
+127
+00:08:27,533 --> 00:08:30,133
+
+
+128
+00:08:30,133 --> 00:08:33,666
+Here is another complete unit test.这是另一个完整的测试案例
+
+129
+00:08:33,666 --> 00:08:40,266
+It verifies that Leo pre-defines three symbols during unit testsjust as in scripts. 检验 Leo 预定义的三种符号能以脚本形式使
+用
+
+130
+00:08:40,266 --> 00:08:42,432
+If we run this test, the test passes.如果我们运行测试, 是通过的
+
+131
+00:08:42,433 --> 00:08:47,333
+
+
+132
+00:08:47,333 --> 00:08:53,499
+@button nodes define new Leo commands and also createbuttons in the icon area.@button 节点定义新Leo 命令并在图标栏创建按钮
+
+133
+00:08:53,500 --> 00:08:56,200
+
+
+134
+00:08:56,200 --> 00:08:59,433
+That's how these buttons were defined.那些是定义过的按钮
+
+135
+00:08:59,433 --> 00:09:03,533
+You can apply these new commands to any particulartree. 你能让新命令作用于任意节点上
+
+136
+00:09:03,533 --> 00:09:08,166
+For instance, this button prints the headline of theselected node. 举个栗子这个按钮打印选中的提纲节点
+
+137
+00:09:08,166 --> 00:09:09,399
+
+
+138
+00:09:09,400 --> 00:09:11,066
+So let's select a node...先选中一个节点
+
+139
+00:09:11,066 --> 00:09:13,332
+
+
+140
+00:09:13,333 --> 00:09:18,999
+and now we'll press this button...再点击这个按钮
+
+141
+00:09:19,000 --> 00:09:21,800
+and we see the correct result.就见到了当前结果
+
+142
+00:09:21,800 --> 00:09:24,966
+
+
+143
+00:09:24,966 --> 00:09:28,866
+We can also execute the command from the mini-buffer.我们也能直接在迷你缓冲区中执行命令
+
+144
+00:09:28,866 --> 00:09:39,632
+
+
+145
+00:09:39,633 --> 00:09:42,933
+All part of Leo are aware of outline structure.Leo 所有方面都受益于提纲式结构
+
+146
+00:09:42,933 --> 00:09:48,866
+For example, you define abbreviations in @settings trees asusual. 例如,在 @settings 树中配置缩写
+
+147
+00:09:48,866 --> 00:09:54,566
+I like the end abbreviations with two semicolons so theydon't trigger unexpectedly.我习惯使用两个分号来结束缩写以免意外触发
+
+148
+00:09:54,566 --> 00:09:57,166
+Abbreviations can expand to text...缩写也能扩展到文本...
+
+149
+00:09:57,166 --> 00:10:07,632
+
+
+150
+00:10:07,633 --> 00:10:10,366
+or they can expand to outlines...或是扩展为提纲...
+
+151
+00:10:10,366 --> 00:10:24,866
+
+
+152
+00:10:24,866 --> 00:10:30,366
+Leo uses types to determine how particular nodes arerendered. Leo 使用节点类型来约定渲染形式
+
+153
+00:10:30,366 --> 00:10:31,666
+
+
+154
+00:10:31,666 --> 00:10:38,832
+Alt-0, Leo's vr-toggle command,  shows and hides the view-rendered pane.Alt-0 是Leo 的 vr-toggle 命令,控制渲染窗格是否显示
+
+155
+00:10:38,833 --> 00:10:45,566
+
+
+156
+00:10:45,566 --> 00:10:49,299
+This pane renders the body text of the selected node.此窗格渲染选中的节点内容
+
+157
+00:10:49,300 --> 00:10:53,666
+
+
+158
+00:10:53,666 --> 00:10:55,599
+Let's play some music...让我们播放一些音乐...
+
+159
+00:10:55,600 --> 00:11:09,700
+
+
+160
+00:11:09,700 --> 00:11:15,633
+By default, the view-rendered paneshows reStructuredText.默认的,视图-渲染 窗格显示新结构化文本
+
+161
+00:11:15,633 --> 00:11:20,333
+
+
+162
+00:11:20,333 --> 00:11:25,533
+Depending on types, you can show other kinds of output.嘦定义类型,你可以展示各种输出效果
+
+163
+00:11:25,533 --> 00:11:27,999
+
+
+164
+00:11:28,000 --> 00:11:30,666
+Here is an icon...就是图标...
+
+165
+00:11:30,666 --> 00:11:34,232
+
+
+166
+00:11:34,233 --> 00:11:37,999
+Here is HTML...这是 HTML ...
+
+167
+00:11:38,000 --> 00:11:41,800
+
+
+168
+00:11:41,800 --> 00:11:44,033
+This is the same page rendered differently...相同的页面渲染出不同效果...
+
+169
+00:11:44,033 --> 00:11:47,566
+
+
+170
+00:11:47,566 --> 00:11:53,732
+And here is the rendering of an SVG graphics file...也能渲染 SVG 图形文件...
+
+171
+00:11:53,733 --> 00:11:58,499
+
+
+172
+00:11:58,500 --> 00:12:01,700
+Here is the rendering of the actual sources.对当前源代码的渲染
+
+173
+00:12:01,700 --> 00:12:11,333
+
+
+174
+00:12:11,333 --> 00:12:13,333
+Thanks for watching this video.以上,感谢大家的观看
+
+175
+00:12:13,333 --> 00:12:16,166
+Have a great time at your Python conference.享受你们的 Python大会
+
+176
+00:12:16,166 --> 00:12:17,099
+
+
+177
+00:12:17,100 --> 00:12:19,466
+Please feel free to contact meat any time. 随时能联系俺
+
+178
+00:12:19,466 --> 00:12:22,399
+
+
+179
+00:12:22,400 --> 00:12:23,466
+Bye bye...
+

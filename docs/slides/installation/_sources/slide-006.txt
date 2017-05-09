@@ -1,0 +1,25 @@
+=============
+Free software
+=============
+
+
+.. _`Edward K. Ream`:   http://webpages.charter.net/edreamleo/ekr.html
+.. _`leo-editor`:       http://groups.google.com/group/leo-editor
+.. _`Python Tutorial`:  http://docs.python.org/tutorial/
+
+Leo is a free program distributed under the MIT license. This means that not
+only can you use the program freely including commercially, the full
+installation comes with source code that you can modify as you wish, as long as
+you give credit to the author of the program, `Edward K. Ream`_.
+
+Leo is written in Python--a full featured, powerful programming language that
+is comparatively easy to learn and use. For an excellent introduction to Python
+for non-programmers, see the `Python Tutorial`_. Not only is Leo written in Python, it is
+scriptable via Python, meaning that you can embed Python commands in your
+outlines and execute them.
+
+Leo is under active development and all are welcome to contribute. For more
+information, see the `leo-editor`_ Google Group.
+
+Not only is Leo free software, it is supported software. Post questions and bug
+reports to the `leo-editor`_ Google Group.
