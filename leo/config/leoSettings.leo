@@ -1494,18 +1494,11 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="tbrown.20160130094511.1"><vh>@menu Arrange Panes</vh>
-<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
-<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
-</v>
-<v t="tbrown.20160130100249.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
-<v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
-<v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
-<v t="ekr.20131213135427.22324"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
+<v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
+<v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
+<v t="ekr.20170509103245.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103101.1"><vh>@menu &amp;Expand Or Contract</vh>
 <v t="ekr.20131213135427.22325"><vh>@item *contract-&amp;body-pane</vh></v>
 <v t="ekr.20131213135427.22326"><vh>@item *contract-&amp;log-pane</vh></v>
 <v t="ekr.20131213135427.22327"><vh>@item *contract-&amp;outline-pane</vh></v>
@@ -1520,18 +1513,52 @@
 <v t="ekr.20131213135427.22336"><vh>@item *full&amp;y-expand-log-pane</vh></v>
 <v t="ekr.20131213135427.22337"><vh>@item *fully-e&amp;xpand-outline-pane</vh></v>
 <v t="ekr.20131213135427.22338"><vh>@item *fully-exp&amp;and-pane</vh></v>
-<v t="ekr.20131213135427.22339"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
-<v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
-<v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
-<v t="ekr.20131213135427.22155"><vh>@item -</vh></v>
+</v>
+<v t="ekr.20170509103221.1"><vh>@menu &amp;Focus</vh>
 <v t="ekr.20131213135427.22156"><vh>@@@item &amp;cycle-all-focus</vh></v>
+<v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
+<v t="ekr.20170509104817.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
 <v t="ekr.20141112072219.1"><vh>@item focus-to-&amp;find</vh></v>
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
+</v>
+<v t="tbrown.20160130094511.1"><vh>@menu &amp;Layout</vh>
+<v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
+<v t="ekr.20170509104732.1"><vh>@item -</vh></v>
+<v t="ekr.20170509104949.1"><vh>@menu Free Layout Plugin</vh>
+<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
+</v>
+</v>
+<v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide</vh>
+<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
+<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
+<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
+<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
+<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
+<v t="ekr.20170509104039.7"><vh>@item gui-&amp;toolbar-show</vh></v>
+<v t="ekr.20170509105101.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103811.1"><vh>@item gui-&amp;all-hide</vh></v>
+<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
+<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
+<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
+<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
+<v t="ekr.20170509103944.1"><vh>@item gui-&amp;toolbar-hide</vh></v>
+<v t="ekr.20170509104140.1"><vh>@item -</vh></v>
+<v t="ekr.20170509104140.2"><vh>@item gui-&amp;all-toggle</vh></v>
+<v t="ekr.20170509104140.3"><vh>@item gui-&amp;iconbar-toggle</vh></v>
+<v t="ekr.20170509104140.4"><vh>@item gui-&amp;menu-toggle</vh></v>
+<v t="ekr.20170509104140.5"><vh>@item gui-&amp;minibuffer-toggle</vh></v>
+<v t="ekr.20170509104140.6"><vh>@item gui-&amp;statusbar-toggle</vh></v>
+<v t="ekr.20170509104140.7"><vh>@item gui-&amp;toolbar-toggle</vh></v>
+</v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
 <v t="ekr.20131213135427.22344"><vh>@item about-leo</vh></v>
@@ -2215,6 +2242,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20150403055250.1"></v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20140912072521.19160"></v>
 <v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
@@ -2781,9 +2809,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150403055250.1"></v>
-<v t="ekr.20051007200824"></v>
-<v t="ekr.20060925060533.4"></v>
+<v t="ekr.20131213135427.21826"></v>
+<v t="ekr.20131213135427.22320"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4468,9 +4495,9 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # Highly-recommended plugins:
 
 plugins_menu.py
-# free_layout.py
+free_layout.py
     # Now loaded automatically.
-    # needs to be early
+    # But it's useful to have a free_layout menu in the Plugins menu.
 
 # Recommended plugins:
 
@@ -6836,7 +6863,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22152"></t>
 <t tx="ekr.20131213135427.22153"></t>
 <t tx="ekr.20131213135427.22154"></t>
-<t tx="ekr.20131213135427.22155"></t>
 <t tx="ekr.20131213135427.22156"></t>
 <t tx="ekr.20131213135427.22157"></t>
 <t tx="ekr.20131213135427.22158"></t>
@@ -6949,7 +6975,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22321"></t>
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
-<t tx="ekr.20131213135427.22324"></t>
 <t tx="ekr.20131213135427.22325"></t>
 <t tx="ekr.20131213135427.22326"></t>
 <t tx="ekr.20131213135427.22327"></t>
@@ -6964,7 +6989,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22336"></t>
 <t tx="ekr.20131213135427.22337"></t>
 <t tx="ekr.20131213135427.22338"></t>
-<t tx="ekr.20131213135427.22339"></t>
 <t tx="ekr.20131213135427.22340"></t>
 <t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
@@ -14111,6 +14135,33 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
 <t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
 </t>
+<t tx="ekr.20170509103101.1"></t>
+<t tx="ekr.20170509103221.1"></t>
+<t tx="ekr.20170509103245.1"></t>
+<t tx="ekr.20170509103811.1"></t>
+<t tx="ekr.20170509103823.1"></t>
+<t tx="ekr.20170509103833.1"></t>
+<t tx="ekr.20170509103834.1"></t>
+<t tx="ekr.20170509103931.1"></t>
+<t tx="ekr.20170509103944.1"></t>
+<t tx="ekr.20170509104039.1"></t>
+<t tx="ekr.20170509104039.2"></t>
+<t tx="ekr.20170509104039.3"></t>
+<t tx="ekr.20170509104039.4"></t>
+<t tx="ekr.20170509104039.5"></t>
+<t tx="ekr.20170509104039.6"></t>
+<t tx="ekr.20170509104039.7"></t>
+<t tx="ekr.20170509104140.1"></t>
+<t tx="ekr.20170509104140.2"></t>
+<t tx="ekr.20170509104140.3"></t>
+<t tx="ekr.20170509104140.4"></t>
+<t tx="ekr.20170509104140.5"></t>
+<t tx="ekr.20170509104140.6"></t>
+<t tx="ekr.20170509104140.7"></t>
+<t tx="ekr.20170509104732.1"></t>
+<t tx="ekr.20170509104817.1"></t>
+<t tx="ekr.20170509104949.1"></t>
+<t tx="ekr.20170509105101.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14818,7 +14869,6 @@ removing the &lt;| and |&gt;</t>
 <t tx="tbrown.20160130095933.3">Restore pane layout</t>
 <t tx="tbrown.20160130095933.4">Zoom pane</t>
 <t tx="tbrown.20160130100023.1">Pane layout help</t>
-<t tx="tbrown.20160130100249.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
