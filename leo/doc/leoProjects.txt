@@ -126,6 +126,10 @@ https://github.com/leo-editor/leo-editor/issues/448
 If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
 
 This took only a few lines of code in abbrev.expandAbbrev.
+.. @+node:ekr.20170509091900.1: *4* #484: improve menus
+https://github.com/leo-editor/leo-editor/issues/484
+
+Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
 .. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
@@ -135,7 +139,24 @@ This command is different from goto-next-clone as follows:
 
 - goto-any-clone goes to the next clone, regardless of whether c.p is a clone.
 - goto-any-clone does not wrap. It prints a message when no clones remain.
+.. @+node:ekr.20170430033223.1: *4* Added log listener commands
+@language rest
+@wrap
+
+The log-listen (aka listen-to-log) and kill-log-listen (aka, listen-log-kill) commands implement this logging cookbook recipe:
+https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
+
+The log-listen command creates a logging listener whose output goes to Leo's console. The listener runs in a separate process so that Leo doesn't hang.
+
+Start the listener first, then start another process in another console. All logging output from the second process will be captured and displayed by the listener, provided that the second process includes a call to `rootLogger.addHandler(socketHandler)`.
+
+leo/external/log_broadcast.py contains example code. leo/plugins/cursesGui2.py uses this pattern to broadcast g.trace.
+
+
+
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
+.. @+node:ekr.20170427173032.1: *4* clone-find commands report number of matches in root node
+Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
 .. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
 at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
 All tests pass.
@@ -155,23 +176,6 @@ https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
 The indent-region and unindent-region just move the insert point if there is no text selected.
 .. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
 These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
-.. @+node:ekr.20170427173032.1: *4* clone-find commands report number of matches in root node
-Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
-.. @+node:ekr.20170430033223.1: *4* Added log listener commands
-@language rest
-@wrap
-
-The log-listen (aka listen-to-log) and kill-log-listen (aka, listen-log-kill) commands implement this logging cookbook recipe:
-https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
-
-The log-listen command creates a logging listener whose output goes to Leo's console. The listener runs in a separate process so that Leo doesn't hang.
-
-Start the listener first, then start another process in another console. All logging output from the second process will be captured and displayed by the listener, provided that the second process includes a call to `rootLogger.addHandler(socketHandler)`.
-
-leo/external/log_broadcast.py contains example code. leo/plugins/cursesGui2.py uses this pattern to broadcast g.trace.
-
-
-
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
