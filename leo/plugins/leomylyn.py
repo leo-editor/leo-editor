@@ -48,7 +48,7 @@ class MylynController(object):
         for v in ns:
             self.add_score(v, 1)
 
-    #@+node:ekr.20160519050823.6: *3* set_handlers
+    #@+node:ekr.20160519050823.6: *3* set_handlers (leomylyn.py)
     def set_handlers(self):
 
         g.registerHandler("childrenModified", self.children_hnd)

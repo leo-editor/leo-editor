@@ -168,7 +168,7 @@ class InputHandler(object):
                 _new_list.append(pair)
         self.complex_handlers = _new_list
 
-    #@+node:ekr.20170430114154.1: *3* IH.handlers
+    #@+node:ekr.20170430114154.1: *3* IH.handlers (default for all widgets)
     # Handler Methods here - npc convention - prefix with h_
 
     #@+others
@@ -218,7 +218,7 @@ class InputHandler(object):
             self.how_exited = EXITED_MOUSE
     #@-others
     #@-others
-#@+node:ekr.20170428084208.410: ** class Widget
+#@+node:ekr.20170428084208.410: ** class Widget (InputHandler, _LinePrinter, EventHandler)
 class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     "A base class for widgets. Do not use directly"
     
@@ -844,8 +844,6 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         that the user edits the widget."""
         pass
     #@-others
-
-
 #@+node:ekr.20170428084208.428: ** class DummyWidget
 class DummyWidget(Widget):
     "This widget is invisible and does nothing.  Which is sometimes important."
