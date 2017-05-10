@@ -1639,38 +1639,42 @@ class LeoMiniBuffer(npyscreen.Textfield):
     #@+node:ekr.20170510095136.2: *3* LeoMiniBuffer.h_cursor_beginning
     def h_cursor_beginning(self, ch):
 
-        g.trace('LeoMiniBuffer', repr(ch))
+        #g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = 0
     #@+node:ekr.20170510095136.3: *3* LeoMiniBuffer.h_cursor_end
     def h_cursor_end(self, ch):
         
-        g.trace('LeoMiniBuffer', repr(ch))
+        # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = len(self.value)
     #@+node:ekr.20170510095136.4: *3* LeoMiniBuffer.h_cursor_left
     def h_cursor_left(self, ch):
         
-        g.trace('LeoMiniBuffer', repr(ch))
+        # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = max(0, self.cursor_position -1)
     #@+node:ekr.20170510095136.5: *3* LeoMiniBuffer.h_cursor_right
     def h_cursor_right(self, ch):
 
-        g.trace('LeoMiniBuffer', repr(ch))
+        # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = min(len(self.value), self.cursor_position+1)
 
 
     #@+node:ekr.20170510095136.6: *3* LeoMiniBuffer.h_delete_left
     def h_delete_left(self, ch):
 
-        g.trace('LeoMiniBuffer', repr(ch))
+        # g.trace('LeoMiniBuffer', repr(ch))
         n = self.cursor_position
         s = self.value
-        if 0 <= n <= len(s):
-            self.value = s[:n] + s[n+1:]
+        if n == 0:
+            # Delete the character under the cursor.
+            self.value = s[1:]
+        else:
+            # Delete the character to the left of the cursor
+            self.value = s[:n-1] + s[n:]
             self.cursor_position -= 1
     #@+node:ekr.20170510095136.7: *3* LeoMiniBuffer.h_insert
     def h_insert(self, ch):
 
-        g.trace('LeoMiniBuffer', ch, self.value)
+        # g.trace('LeoMiniBuffer', ch, self.value)
         n = self.cursor_position + 1
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
@@ -1682,9 +1686,8 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Send the contents to k.masterKeyHandler.
         '''
         c = self.leo_c
-        k = c.k
-        g.trace('LeoMiniBuffer', repr(ch), repr(self.value))
-        k.masterCommand(
+        # g.trace('LeoMiniBuffer', repr(ch), repr(self.value))
+        c.k.masterCommand(
             commandName=self.value.strip(),
             event=LeoKeyEvent(c,char='',event='',shortcut='',w=self),
             func=None,
@@ -1693,7 +1696,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
     #@+node:ekr.20170510094104.1: *3* LeoMiniBuffer.set_handlers
     def set_handlers(self):
         
-        g.trace('LeoMiniBuffer', g.callers())
+        # g.trace('LeoMiniBuffer', g.callers())
 
         def test(ch):
             return 32 <= ch <= 127
