@@ -1497,6 +1497,9 @@
 <v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
 <v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
+<v t="ekr.20170509122306.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
 <v t="ekr.20170509103245.1"><vh>@item -</vh></v>
 <v t="ekr.20170509103101.1"><vh>@menu &amp;Expand Or Contract</vh>
 <v t="ekr.20131213135427.22325"><vh>@item *contract-&amp;body-pane</vh></v>
@@ -1525,17 +1528,12 @@
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
-<v t="tbrown.20160130094511.1"><vh>@menu &amp;Layout</vh>
-<v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
-<v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
-<v t="ekr.20170509104732.1"><vh>@item -</vh></v>
-<v t="ekr.20170509104949.1"><vh>@menu Free Layout Plugin</vh>
+<v t="ekr.20170509104949.1"><vh>@menu &amp;Layout</vh>
 <v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
 <v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
-</v>
 </v>
 <v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide</vh>
 <v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
@@ -14158,10 +14156,10 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170509104140.5"></t>
 <t tx="ekr.20170509104140.6"></t>
 <t tx="ekr.20170509104140.7"></t>
-<t tx="ekr.20170509104732.1"></t>
 <t tx="ekr.20170509104817.1"></t>
 <t tx="ekr.20170509104949.1"></t>
 <t tx="ekr.20170509105101.1"></t>
+<t tx="ekr.20170509122306.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14863,7 +14861,6 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130094511.1"></t>
 <t tx="tbrown.20160130095933.1">Pane management menu</t>
 <t tx="tbrown.20160130095933.2">Load pane layout</t>
 <t tx="tbrown.20160130095933.3">Restore pane layout</t>
