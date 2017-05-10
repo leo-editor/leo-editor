@@ -471,8 +471,17 @@ class CursesGui(leoGui.LeoGui):
             values=g.splitLines(c.p.b), 
             slow_scroll=False,
         )
-        assert hasattr(c.frame, 'body_widget')
+        # Link and check.
+        assert isinstance(w, npyscreen.MultiLineEditableBoxed), repr(w)
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        assert isinstance(c.frame.body, leoFrame.LeoBody), repr(c.frame.body)
+            # The generic LeoBody class
+        assert not hasattr(c.frame.tree, 'bodyWidget'), repr(c.frame.tree.bodyWidget)
+            # Used only by the Qt gui.
+        assert c.frame.body_widget is None, repr(c.frame.body_widget)
         c.frame.body_widget = w
+        assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
         c.frame.body.wrapper = CursesTextWrapper(c, 'body', w)
     #@+node:ekr.20170502083613.1: *4* CGui.createCursesLog
     def createCursesLog(self, c, form):
@@ -491,9 +500,13 @@ class CursesGui(leoGui.LeoGui):
         # Clear the wait list and disable it.
         self.wait_list = []
         self.log_inited = True
-        # Add links.
-        self.log.w = w
-        assert hasattr(c.frame, 'log_widget')
+        # Link and check...
+        assert isinstance(w, npyscreen.MultiLineEditableBoxed), repr(w)
+        assert isinstance(self.log, CursesLog), repr(self.log)
+        self.log.widget = w
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        assert c.frame.log_widget is None, repr(c.frame.log_widget)
         c.frame.log_widget = w
     #@+node:ekr.20170502084249.1: *4* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
@@ -504,11 +517,14 @@ class CursesGui(leoGui.LeoGui):
             _contained_widget = LeoMiniBuffer
         
         w = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
-        # Link and check.
+        # Link and check...
+        assert isinstance(w, MiniBufferBox)
         mini_buffer = w._my_widgets[0]
         assert isinstance(mini_buffer, LeoMiniBuffer), repr(mini_buffer)
         mini_buffer.leo_c = c
-        assert hasattr(c.frame, 'minibuffer_widget')
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        assert c.frame.minibuffer_widget is None
         c.frame.minibuffer_widget = mini_buffer
     #@+node:ekr.20170502083754.1: *4* CGui.createCursesTree
     def createCursesTree(self, c, form):
@@ -533,14 +549,23 @@ class CursesGui(leoGui.LeoGui):
             values=hidden_root_node, 
             slow_scroll=False,
         )
-        # Link and check.
+        # Link and check...
         assert isinstance(w, BoxTitleTree), w
         leo_tree = w._my_widgets[0]
         assert isinstance(leo_tree, LeoMLTree), repr(leo_tree)
         leo_tree.leo_c = c
         assert getattr(leo_tree, 'hidden_root_node') is None, leo_tree
         leo_tree.hidden_root_node = hidden_root_node
-        assert hasattr(c.frame, 'tree_widget')
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        assert isinstance(c.frame.tree, leoFrame.LeoTree), repr(c.frame.tree)
+            # The generic LeoTree class
+        assert c.frame.tree.canvas is None, repr(c.frame.canvas)
+            # A standard ivar, used by Leo's core.
+        c.frame.canvas = leo_tree
+        assert not hasattr(c.frame.tree, 'treeWidget'), repr(c.frame.tree.treeWidget)
+            # Used only by the Qt gui.
+        assert c.frame.tree_widget is None, repr(c.frame.tree_widget)
         c.frame.tree_widget = leo_tree # Bug fix: 2017/05/07
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
@@ -922,11 +947,10 @@ class CursesLog (leoFrame.LeoLog):
             # Required by Leo's core.
         self.isNull = False
             # Required by Leo's core.
-        self.w = None
+        self.widget = None
             # The npyscreen log widget. Queue all output until set.
             # Set in CApp.main.
 
-        
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
             # self.eventFilters = [] # Apparently needed to make filters work!
@@ -969,11 +993,11 @@ class CursesLog (leoFrame.LeoLog):
     #@+node:ekr.20170419143731.15: *3* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
-        c, w = self.c, self.w
+        c, w = self.c, self.widget
         if not c or not c.exists:
             # logging.info('CLog.put: no c: %r' % s)
             pass
-        elif self.w:
+        elif w:
             values = w.get_values()
             values.append(s)
             w.set_values(values)
