@@ -1681,16 +1681,15 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Handle the return key in the minibuffer.
         Send the contents to k.masterKeyHandler.
         '''
-        # c = self.leo_c
-        # k = c.k
+        c = self.leo_c
+        k = c.k
         g.trace('LeoMiniBuffer', repr(ch), repr(self.value))
-        # commandName = self.value
-        # k.masterCommand(
-            # commandName=commandName,
-            # event=None,
-            # func=None,
-            # stroke=None,
-        # )
+        k.masterCommand(
+            commandName=self.value.strip(),
+            event=LeoKeyEvent(c,char='',event='',shortcut='',w=self),
+            func=None,
+            stroke=None,
+        )
     #@+node:ekr.20170510094104.1: *3* LeoMiniBuffer.set_handlers
     def set_handlers(self):
         

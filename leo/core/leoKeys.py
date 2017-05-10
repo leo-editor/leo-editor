@@ -3597,7 +3597,7 @@ class KeyHandlerClass(object):
         This returns None, but may set k.funcReturn.
         '''
         c, k = self.c, self
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting and g.app.gui.guiName() == 'curses'
         traceGC = False
         traceStroke = True
         # if trace: g.trace(commandName, func)
