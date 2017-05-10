@@ -218,10 +218,8 @@ class CursesBody (leoFrame.LeoBody):
     
     def __init__(self, c):
         
-        leoFrame.LeoBody.__init__(self,
-            frame = g.NullObject(),
-            parentFrame = None,
-        )
+        # g.trace('CursesBody', c.frame)
+        leoFrame.LeoBody.__init__(self, frame=c.frame, parentFrame=None)
             # Init the base class.
         self.c = c
         self.widget = None
@@ -239,16 +237,17 @@ class CursesFrame (leoFrame.LeoFrame):
         leoFrame.LeoFrame.__init__(self, c, gui=g.app.gui)
             # Init the base class.
         assert c and self.c == c
+        c.frame = self # Bug fix: 2017/05/10.
         self.log = CursesLog(c)
         g.app.gui.log = self.log
         self.title = title
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.0
         # Widgets
+        self.top = CursesTopFrame(c)
         self.body = CursesBody(c)
         self.menu = CursesMenu(c)
         self.miniBufferWidget = None
-        self.top = CursesTopFrame(c)
         assert self.tree is None, self.tree
         self.tree = CursesTree(c)
         # npyscreen widgets.
@@ -938,7 +937,7 @@ class CursesLog (leoFrame.LeoLog):
         '''Ctor for CLog class.'''
         # g.trace('CursesLog')
         leoFrame.LeoLog.__init__(self,
-            frame = g.NullObject(),
+            frame = None,
             parentFrame = None,
         )
             # Init the base class.
@@ -953,21 +952,9 @@ class CursesLog (leoFrame.LeoLog):
 
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
-            # self.eventFilters = [] # Apparently needed to make filters work!
             # self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
-            # self.logWidget = None # Set in finishCreate.
-            # self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
             # self.tabWidget = tw = c.frame.top.leo_ui.tabWidget
                 # # The Qt.QTabWidget that holds all the tabs.
-            # # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
-            # tw.currentChanged.connect(self.onCurrentChanged)
-            # self.wrap = bool(c.config.getBool('log_pane_wraps'))
-            # if 0: # Not needed to make onActivateEvent work.
-                # # Works only for .tabWidget, *not* the individual tabs!
-                # theFilter = qt_events.LeoQtEventFilter(c, w=tw, tag='tabWidget')
-                # tw.installEventFilter(theFilter)
-            # # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
-            # tw.setMovable(True)
     #@+node:ekr.20170419143731.2: *3*  CLog.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.log class.'''
@@ -1555,13 +1542,15 @@ class CursesTopFrame (object):
     '''A representation of c.frame.top.'''
     
     def __init__(self, c):
+        # g.trace('CursesTopFrame', c)
         self.c = c
         
     def select(self, *args, **kwargs):
         pass # g.trace(args, kwargs)
         
     def findChild(self, *args, **kwargs):
-        return g.NullObject()
+        # Called by nested_splitter.py.
+        return g.NullObject() ### Required, for now.
 
     def finishCreateLogPane(self, *args, **kwargs):
         pass # g.trace(args, kwargs)
