@@ -123,7 +123,7 @@ def trace(*args, **keys):
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
-#@+node:ekr.20170508085942.1: ** class  LeoTreeLine (TreeLine)
+#@+node:ekr.20170508085942.1: ** class  LeoTreeLine (npyscreen.TreeLine)
 class LeoTreeLine(npyscreen.TreeLine):
     '''A editable TreeLine class.'''
 
@@ -190,7 +190,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
     #@-others
-#@+node:ekr.20170420054211.1: ** class CursesApp (NPSApp)
+#@+node:ekr.20170420054211.1: ** class CursesApp (npyscreen.NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
     The *anonymous* npyscreen application object, created from
@@ -209,7 +209,7 @@ class CursesApp(npyscreen.NPSApp):
         Create and start Leo's singleton npyscreen window.
         '''
         g.app.gui.run()
-#@+node:ekr.20170501024433.1: ** class CursesBody (LeoBody)
+#@+node:ekr.20170501024433.1: ** class CursesBody (leoFrame.LeoBody)
 class CursesBody (leoFrame.LeoBody):
     '''
     A class that represents curses body pane.
@@ -226,7 +226,7 @@ class CursesBody (leoFrame.LeoBody):
         self.c = c
         self.widget = None
         self.wrapper = None # Set in createCursesBody.
-#@+node:ekr.20170419105852.1: ** class CursesFrame (LeoFrame)
+#@+node:ekr.20170419105852.1: ** class CursesFrame (leoFrame.LeoFrame)
 class CursesFrame (leoFrame.LeoFrame):
     '''The LeoFrame when --gui=curses is in effect.'''
     
@@ -361,7 +361,7 @@ class CursesFrame (leoFrame.LeoFrame):
     def update(self, *args, **keys):
         pass
     #@-others
-#@+node:ekr.20170419094731.1: ** class CursesGui (LeoGui)
+#@+node:ekr.20170419094731.1: ** class CursesGui (leoGui.LeoGui)
 class CursesGui(leoGui.LeoGui):
     '''
     Leo's curses gui wrapper.
@@ -721,8 +721,8 @@ class CursesGui(leoGui.LeoGui):
     def test(self):
         '''A place to put preliminary tests.'''
     #@-others
-#@+node:ekr.20170430114840.1: ** class CursesKeyHandler
-class CursesKeyHandler:
+#@+node:ekr.20170430114840.1: ** class CursesKeyHandler (object)
+class CursesKeyHandler (object):
 
     #@+others
     #@+node:ekr.20170430114930.1: *3* CKey.do_key & helpers
@@ -900,7 +900,7 @@ class CursesKeyHandler:
         if trace: g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
         return char, shortcut
     #@-others
-#@+node:ekr.20170419143731.1: ** class CursesLog (LeoLog)
+#@+node:ekr.20170419143731.1: ** class CursesLog (leoFrame.LeoLog)
 class CursesLog (leoFrame.LeoLog):
     '''
     A class that represents curses log pane.
@@ -1004,7 +1004,7 @@ class CursesLog (leoFrame.LeoLog):
             # # put s to logWaiting and print  a newline
             # g.app.logWaiting.append(('\n', 'black'),)
     #@-others
-#@+node:ekr.20170419111515.1: ** class CursesMenu (LeoMenu)
+#@+node:ekr.20170419111515.1: ** class CursesMenu (leoMenu.LeoMenu)
 class CursesMenu (leoMenu.LeoMenu):
 
     def __init__ (self, c):
@@ -1541,7 +1541,7 @@ class CursesTopFrame (object):
 
     def finishCreateLogPane(self, *args, **kwargs):
         pass # g.trace(args, kwargs)
-#@+node:ekr.20170501024424.1: ** class CursesTree (LeoTree)
+#@+node:ekr.20170501024424.1: ** class CursesTree (leoFrame.LeoTree)
 class CursesTree (leoFrame.LeoTree):
     '''A class that represents curses tree pane.'''
     
@@ -1579,7 +1579,7 @@ class CursesTree (leoFrame.LeoTree):
     def setHeadline(self, p, s):
         pass
     #@-others
-#@+node:ekr.20170507194035.1: ** class LeoForm (Form)
+#@+node:ekr.20170507194035.1: ** class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
     
     OK_BUTTON_TEXT = 'Quit Leo'
@@ -1626,7 +1626,7 @@ class LeoKeyEvent(object):
     def type(self):
         return 'LeoKeyEvent'
     #@-others
-#@+node:ekr.20170510092721.1: ** class LeoMiniBuffer (Textfield)
+#@+node:ekr.20170510092721.1: ** class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
     '''An npyscreen class representing Leo's minibuffer, with binding.''' 
     
@@ -1675,7 +1675,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170510100003.1: *3* LeoMiniBuffer.h_return
+    #@+node:ekr.20170510100003.1: *3* LeoMiniBuffer.h_return (executes command)
     def h_return (self, ch):
         '''
         Handle the return key in the minibuffer.
@@ -1716,7 +1716,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
     #@-others
-#@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
+#@+node:ekr.20170506035146.1: ** class LeoMLTree (npyscreen.MLTree)
 class LeoMLTree(npyscreen.MLTree):
 
     _contained_widgets = LeoTreeLine
@@ -1927,7 +1927,7 @@ class LeoMLTree(npyscreen.MLTree):
         if cont: ### and self.ALLOW_CONTINUE_EDITING:
             self._continue_editing()
     #@-others
-#@+node:ekr.20170507184329.1: ** class LeoTreeData (TreeData)
+#@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
     '''A TreeData class that has a len and new_first_child methods.'''
 
