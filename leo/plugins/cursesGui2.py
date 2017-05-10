@@ -504,6 +504,7 @@ class CursesGui(leoGui.LeoGui):
             _contained_widget = LeoMiniBuffer
         
         w = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
+        # Link and check.
         mini_buffer = w._my_widgets[0]
         assert isinstance(mini_buffer, LeoMiniBuffer), repr(mini_buffer)
         mini_buffer.leo_c = c
@@ -536,6 +537,7 @@ class CursesGui(leoGui.LeoGui):
         assert isinstance(w, BoxTitleTree), w
         leo_tree = w._my_widgets[0]
         assert isinstance(leo_tree, LeoMLTree), repr(leo_tree)
+        leo_tree.leo_c = c
         assert getattr(leo_tree, 'hidden_root_node') is None, leo_tree
         leo_tree.hidden_root_node = hidden_root_node
         assert hasattr(c.frame, 'tree_widget')
@@ -1634,50 +1636,54 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.set_handlers()
 
     #@+others
-    #@+node:ekr.20170510094838.1: *3*  LeMiniBuffer.Handlers
-    #@+node:ekr.20170510095136.2: *4* LeoMiniBuffer.h_cursor_beginning
+    #@+node:ekr.20170510095136.2: *3* LeoMiniBuffer.h_cursor_beginning
     def h_cursor_beginning(self, ch):
 
-        self.cursor_line = 0
-    #@+node:ekr.20170510095136.3: *4* LeoMiniBuffer.h_cursor_end
+        g.trace('LeoMiniBuffer', repr(ch))
+        self.cursor_position = 0
+    #@+node:ekr.20170510095136.3: *3* LeoMiniBuffer.h_cursor_end
     def h_cursor_end(self, ch):
         
-        self.cursor_line = max(0, len(self.value)-1)
-    #@+node:ekr.20170510095136.4: *4* LeoMiniBuffer.h_cursor_left
+        g.trace('LeoMiniBuffer', repr(ch))
+        self.cursor_position = len(self.value)
+    #@+node:ekr.20170510095136.4: *3* LeoMiniBuffer.h_cursor_left
     def h_cursor_left(self, ch):
         
+        g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = max(0, self.cursor_position -1)
-    #@+node:ekr.20170510095136.5: *4* LeoMiniBuffer.h_cursor_right
+    #@+node:ekr.20170510095136.5: *3* LeoMiniBuffer.h_cursor_right
     def h_cursor_right(self, ch):
 
-        self.cursor_position += 1
+        g.trace('LeoMiniBuffer', repr(ch))
+        self.cursor_position = min(len(self.value), self.cursor_position+1)
 
-    #@+node:ekr.20170510095136.6: *4* LeoMiniBuffer.h_delete_left
+
+    #@+node:ekr.20170510095136.6: *3* LeoMiniBuffer.h_delete_left
     def h_delete_left(self, ch):
 
-        # self.value is a LeoTreeData.
+        g.trace('LeoMiniBuffer', repr(ch))
         n = self.cursor_position
         s = self.value
         if 0 <= n <= len(s):
-            self.value.content = s[:n] + s[n+1:]
+            self.value = s[:n] + s[n+1:]
             self.cursor_position -= 1
-    #@+node:ekr.20170510095136.7: *4* LeoMiniBuffer.h_insert
+    #@+node:ekr.20170510095136.7: *3* LeoMiniBuffer.h_insert
     def h_insert(self, ch):
 
-        g.trace('LeoMiniBuffer')
+        g.trace('LeoMiniBuffer', ch, self.value)
         n = self.cursor_position + 1
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170510100003.1: *4* LeoMiniBuffer.h_return
+    #@+node:ekr.20170510100003.1: *3* LeoMiniBuffer.h_return
     def h_return (self, ch):
         '''
         Handle the return key in the minibuffer.
         Send the contents to k.masterKeyHandler.
         '''
-        c = self.leo_c
-        k = c.k
-        g.trace('LeoMiniBuffer', self.value, k)
+        # c = self.leo_c
+        # k = c.k
+        g.trace('LeoMiniBuffer', repr(ch), repr(self.value))
         # commandName = self.value
         # k.masterCommand(
             # commandName=commandName,
@@ -1685,15 +1691,18 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # func=None,
             # stroke=None,
         # )
-    #@+node:ekr.20170510094104.1: *4* LeoMiniBuffer.set_handlers
+    #@+node:ekr.20170510094104.1: *3* LeoMiniBuffer.set_handlers
     def set_handlers(self):
         
         g.trace('LeoMiniBuffer', g.callers())
 
         def test(ch):
             return 32 <= ch <= 127
-
-        self.complex_handlers.append((test, self.h_insert),)
+        
+        # Override all other complex handlers.
+        self.complex_handlers = [
+            (test, self.h_insert),
+        ]
         self.handlers.update({
             # All other keys are passed on.
                 # curses.ascii.TAB:    self.h_exit_down,
@@ -1710,10 +1719,8 @@ class LeoMiniBuffer(npyscreen.Textfield):
     #@-others
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
 class LeoMLTree(npyscreen.MLTree):
-    
-    # From MultiLineEditable
-    _contained_widgets = LeoTreeLine
 
+    _contained_widgets = LeoTreeLine
     ###
         # CHECK_VALUE             = True
         # ALLOW_CONTINUE_EDITING  = True
@@ -1722,6 +1729,7 @@ class LeoMLTree(npyscreen.MLTree):
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
         assert not hasattr(self, 'hidden_root_node'), repr(self)
+        self.leo_c = None # Set later.
         self.hidden_root_node = None
         self.set_handlers()
 

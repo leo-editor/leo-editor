@@ -592,7 +592,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
         
-        g.trace('MultiLine')
+        # g.trace('MultiLine')
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value

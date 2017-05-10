@@ -84,7 +84,7 @@ class InputHandler(object):
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace:
-            g.trace('self: %12s, parent: %8s, %3s = %r' % (
+            g.trace('self: %20s, parent: %8s, %3s = %r' % (
                 self.__class__.__name__,
                 parent.__class__.__name__,
                 # parent_widget.__class__.__name__,
@@ -486,7 +486,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.8: *3* Widget.get_and_use_key_press
     def get_and_use_key_press(self):
         global TEST_SETTINGS
-        trace = True
+        trace = False
 
         if (TEST_SETTINGS['TEST_INPUT'] is None) and (TEST_SETTINGS['INPUT_GENERATOR'] is None):
             curses.raw()
