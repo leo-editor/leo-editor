@@ -498,13 +498,11 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502084249.1: *4* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
-        
-        class BoxTitleText(npyscreen.BoxTitle):
-            _contained_widget = npyscreen.Textfield
-                
-        w = form.add(BoxTitleText, name='Mini-buffer', max_height=3)
+        w = form.add(LeoMiniBuffer, name='Mini-buffer', max_height=3)
         assert hasattr(c.frame, 'minibuffer_widget')
         c.frame.minibuffer_widget = w
+        assert not hasattr(w, 'c'), repr(w.c)
+        w.c = c
     #@+node:ekr.20170502083754.1: *4* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
@@ -663,7 +661,9 @@ class CursesGui(leoGui.LeoGui):
         return self.key_handler.do_key(ch_i)
     #@+node:ekr.20170502101347.1: *3* CGui.get/set_focus (to do)
     def get_focus(self, *args, **keys):
-        return None
+        
+        # Careful during startup.
+        return getattr(g.app.gui.curses_form, 'editw', None)
 
     def set_focus(self, *args, **keys):
         pass
@@ -709,6 +709,9 @@ class CursesGui(leoGui.LeoGui):
         # pylint: disable=no-member
         # endwin *does* exist.
         curses.endwin()
+    #@+node:ekr.20170510074755.1: *3* CGui.test
+    def test(self):
+        '''A place to put preliminary tests.'''
     #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler
 class CursesKeyHandler:
@@ -1615,6 +1618,13 @@ class LeoKeyEvent(object):
     #@+node:edward.20170428174322.5: *3* LeoKeyEvent.type
     def type(self):
         return 'LeoKeyEvent'
+    #@-others
+#@+node:ekr.20170510092721.1: ** class LeoMiniBuffer (BoxTitle)
+class LeoMiniBuffer(npyscreen.BoxTitle):
+    '''An npyscreen class representing Leo's minibuffer, with binding.''' 
+    _contained_widget = npyscreen.Textfield
+
+    #@+others
     #@-others
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (MLTree)
 class LeoMLTree(npyscreen.MLTree):
