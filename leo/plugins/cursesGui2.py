@@ -133,6 +133,37 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.set_handlers()
 
     #@+others
+    #@+node:ekr.20170510210859.1: *3* LeoTreeLine.Edit loop
+    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
+    def edit(self):
+        """Allow the user to edit the widget: ie. start handling keypresses."""
+        
+        g.trace('LeoTreeLine')
+        self.editing = 1
+        ### self._pre_edit()
+        self.highlight = 1
+        self.how_exited = False
+        self._edit_loop()
+        ### return self._post_edit()
+        self.highlight = 0
+        self.update()
+    #@+node:ekr.20170510210945.1: *4* LeoTreeLine._edit_loop
+    def _edit_loop(self):
+
+        if not self.parent.editing:
+            _i_set_parent_editing = True
+            self.parent.editing   = True
+        else:
+            _i_set_parent_editing = False
+        while self.editing and self.parent.editing:
+            g.trace('LeoTreeLine')
+            self.display()
+            self.get_and_use_key_press()
+        if _i_set_parent_editing:
+            self.parent.editing = False
+        if self.editing:
+            self.editing    = False
+            self.how_exited = True
     #@+node:ekr.20170508130016.1: *3* LeoTreeLine.handlers
     #@+node:ekr.20170508130946.1: *4* LeoTreeLine.h_cursor_beginning
     def h_cursor_beginning(self, ch):
@@ -161,6 +192,14 @@ class LeoTreeLine(npyscreen.TreeLine):
         if 0 <= n <= len(s):
             self.value.content = s[:n] + s[n+1:]
             self.cursor_position -= 1
+    #@+node:ekr.20170510212007.1: *4* LeoTreeLine.h_end_editing
+    def h_end_editing(self, ch):
+
+        g.trace('LeoTreeLine', ch)
+        # if not self._test_safe_to_exit():
+            # return False
+        self.editing = False
+        self.how_exited = None # EXITED_ESCAPE = 127
     #@+node:ekr.20170508125632.1: *4* LeoTreeLine.h_insert
     def h_insert(self, i):
 
@@ -171,21 +210,25 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.cursor_position += 1
     #@+node:ekr.20170508130025.1: *4* LeoTreeLine.set_handlers
     def set_handlers(self):
-
-        def test(ch):
-            return 32 <= ch <= 127
-
-        self.complex_handlers.append((test, self.h_insert),)
-
+        
+        # pylint: disable=no-member
+        # Override *all* other complex handlers.
+        if 1:
+            self.complex_handlers = (
+                (curses.ascii.isprint, self.h_insert),
+            )
+        else:
+            self.complex_handlers.append(
+                (curses.ascii.isprint, self.h_insert),
+            )
         self.handlers.update({
-            curses.KEY_HOME:      self.h_cursor_beginning,  # 262
-            curses.KEY_END:       self.h_cursor_end,        # 358.
+            curses.ascii.ESC:       self.h_end_editing,
+            curses.ascii.NL:        self.h_end_editing,
+            curses.ascii.LF:        self.h_end_editing,
+            curses.KEY_HOME:        self.h_cursor_beginning,  # 262
+            curses.KEY_END:         self.h_cursor_end,        # 358.
             curses.KEY_LEFT:        self.h_cursor_left,
             curses.KEY_RIGHT:       self.h_cursor_right,
-            # curses.KEY_UP:        self.h_line_up,
-            # curses.KEY_DOWN:      self.h_line_down,
-            # curses.KEY_DC:        self.h_delete_right,
-            # curses.ascii.DEL:     self.h_delete_left,
             curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
@@ -512,7 +555,8 @@ class CursesGui(leoGui.LeoGui):
         '''Create the curses minibuffer widget in the given curses Form.'''
         
         class MiniBufferBox(npyscreen.BoxTitle):
-            '''An npyscreen class representing Leo's minibuffer, with binding.''' 
+            '''An npyscreen class representing Leo's minibuffer, with binding.'''
+            # pylint: disable=used-before-assignment
             _contained_widget = LeoMiniBuffer
         
         w = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
@@ -544,7 +588,7 @@ class CursesGui(leoGui.LeoGui):
             BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
-            footer="Press i or o to insert a node; Press h to edit headline",
+            footer="d: delete node; i: insert node; h: edit (return to end)",
             values=hidden_root_node, 
             slow_scroll=False,
         )
@@ -1649,29 +1693,30 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.set_handlers()
 
     #@+others
-    #@+node:ekr.20170510095136.2: *3* LeoMiniBuffer.h_cursor_beginning
+    #@+node:ekr.20170510172335.1: *3* LeoMiniBuffer.Handlers
+    #@+node:ekr.20170510095136.2: *4* LeoMiniBuffer.h_cursor_beginning
     def h_cursor_beginning(self, ch):
 
         #g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = 0
-    #@+node:ekr.20170510095136.3: *3* LeoMiniBuffer.h_cursor_end
+    #@+node:ekr.20170510095136.3: *4* LeoMiniBuffer.h_cursor_end
     def h_cursor_end(self, ch):
         
         # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = len(self.value)
-    #@+node:ekr.20170510095136.4: *3* LeoMiniBuffer.h_cursor_left
+    #@+node:ekr.20170510095136.4: *4* LeoMiniBuffer.h_cursor_left
     def h_cursor_left(self, ch):
         
         # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = max(0, self.cursor_position -1)
-    #@+node:ekr.20170510095136.5: *3* LeoMiniBuffer.h_cursor_right
+    #@+node:ekr.20170510095136.5: *4* LeoMiniBuffer.h_cursor_right
     def h_cursor_right(self, ch):
 
         # g.trace('LeoMiniBuffer', repr(ch))
         self.cursor_position = min(len(self.value), self.cursor_position+1)
 
 
-    #@+node:ekr.20170510095136.6: *3* LeoMiniBuffer.h_delete_left
+    #@+node:ekr.20170510095136.6: *4* LeoMiniBuffer.h_delete_left
     def h_delete_left(self, ch):
 
         # g.trace('LeoMiniBuffer', repr(ch))
@@ -1684,7 +1729,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # Delete the character to the left of the cursor
             self.value = s[:n-1] + s[n:]
             self.cursor_position -= 1
-    #@+node:ekr.20170510095136.7: *3* LeoMiniBuffer.h_insert
+    #@+node:ekr.20170510095136.7: *4* LeoMiniBuffer.h_insert
     def h_insert(self, ch):
 
         # g.trace('LeoMiniBuffer', ch, self.value)
@@ -1692,7 +1737,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170510100003.1: *3* LeoMiniBuffer.h_return (executes command)
+    #@+node:ekr.20170510100003.1: *4* LeoMiniBuffer.h_return (executes command)
     def h_return (self, ch):
         '''
         Handle the return key in the minibuffer.
@@ -1706,17 +1751,13 @@ class LeoMiniBuffer(npyscreen.Textfield):
             func=None,
             stroke=None,
         )
-    #@+node:ekr.20170510094104.1: *3* LeoMiniBuffer.set_handlers
+    #@+node:ekr.20170510094104.1: *4* LeoMiniBuffer.set_handlers
     def set_handlers(self):
         
-        # g.trace('LeoMiniBuffer', g.callers())
-
-        def test(ch):
-            return 32 <= ch <= 127
-        
-        # Override all other complex handlers.
+        # pylint: disable=no-member
+        # Override *all* other complex handlers.
         self.complex_handlers = [
-            (test, self.h_insert),
+            (curses.ascii.isprint, self.h_insert),
         ]
         self.handlers.update({
             # All other keys are passed on.
@@ -1749,103 +1790,18 @@ class LeoMLTree(npyscreen.MLTree):
         self.set_handlers()
 
     #@+others
-    #@+node:ekr.20170506045346.1: *3*  LeoMLTree.Handlers
-    #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete_line_value (from MultiLineEdit)
-    def h_delete_line_value(self, ch):
-        self.delete_line_value()
-
-    #@+node:ekr.20170506044733.10: *4* LeoMLTree.h_edit_cursor_line_value
-    def h_edit_cursor_line_value(self, ch):
-        
-        if 1:
-            self._continue_editing()
-        else:
-            continue_line = self.edit_cursor_line_value()
-            if continue_line: ### and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
-                self._continue_editing()
-            
-    #@+node:ekr.20170506044733.9: *4* LeoMLTree.h_insert_next_line
-    def h_insert_next_line(self, ch):
-        
-        # pylint: disable=len-as-condition
-        if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
-            self.values.append(self.get_new_value())
-            self.cursor_line += 1
-            self.display()
-            cont = self.edit_cursor_line_value()
-            if cont: ### and self.ALLOW_CONTINUE_EDITING:
-                self._continue_editing()
-        else:
-            self.cursor_line += 1
-            self.insert_line_value()
-
-    #@+node:ekr.20170506044733.11: *4* LeoMLTree.h_insert_value
-    def h_insert_value(self, ch):
-        return self.insert_line_value()
-
-    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_left
-    def h_left(self, ch):
-        
-        node = self.values[self.cursor_line]
-        if self._has_children(node) and node.expanded:
-            self.h_collapse_tree(ch)
-        else:
-            self.h_cursor_line_up(ch)
-    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_right
-    def h_right(self, ch):
-        
-        node = self.values[self.cursor_line]
-        if self._has_children(node):
-            if node.expanded:
-                self.h_cursor_line_down(ch)
-            else:
-                self.h_expand_tree(ch)
-        else:
-            self.h_cursor_line_down(ch)
-    #@+node:ekr.20170507175304.1: *4* LeoMLTree.set_handlers
-    def set_handlers(self):
-        
-        # pylint: disable=no-member
-        d = {
-            curses.KEY_LEFT:    self.h_left,
-            curses.KEY_RIGHT:   self.h_right,
-            # From MultiLineEditable.
-            ord('h'):               self.h_edit_cursor_line_value,
-            ord('i'):               self.h_insert_value,
-            ord('o'):               self.h_insert_next_line,
-            # curses.ascii.CR:        self.h_edit_cursor_line_value,
-            # curses.ascii.NL:        self.h_edit_cursor_line_value,
-            # curses.ascii.SP:        self.h_edit_cursor_line_value,
-            # curses.ascii.DEL:       self.h_delete_line_value,
-            # curses.ascii.BS:        self.h_delete_line_value,
-            # curses.KEY_BACKSPACE:   self.h_delete_line_value,
-        }
-        self.handlers.update(d)
-    #@+node:ekr.20170506044733.7: *3* _continue_editing (REVISE)
-    def _continue_editing(self):
-        
-        trace = True
-        active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-        assert isinstance(active_line, npyscreen.TreeLine)
-        code = getattr(active_line, 'how_exited', None)
-        if trace: self.dump_code(code)
-        if hasattr(active_line, 'how_exited'):
-            self.values.insert(self.cursor_line+1, self.get_new_value())
-            self.cursor_line += 1
-            self.display()
-            self.edit_cursor_line_value()
-            # active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-    #@+node:ekr.20170506044733.6: *3* delete_line_value (REVISE)
-    def delete_line_value(self):
+    #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
+    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (to do: delete all children)
+    def delete_line(self):
 
         trace = True
         if trace:
             g.trace('cursor_line:', repr(self.cursor_line))
-            self.dump_values
+            self.dump_values()
         if self.values:
             del self.values[self.cursor_line]
             self.display()
-    #@+node:ekr.20170507171518.1: *3* dump_code/values/widgets (new)
+    #@+node:ekr.20170507171518.1: *4* LeoMLTree.dump_code/values/widgets
     def dump_code(self, code):
         d = {
             -2: 'left', -1: 'up', 1: 'down', 2: 'right',
@@ -1862,26 +1818,23 @@ class LeoMLTree(npyscreen.MLTree):
         def info(z):
             return '%s.%s' % (id(z), z.__class__.__name__)
         g.printList([info(z) for z in self._my_widgets])
-    #@+node:ekr.20170506044733.4: *3* edit_cursor_line_value (no change)
-    def edit_cursor_line_value(self):
+    #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline
+    def edit_headline(self):
 
         trace = True
         if not self.values:
             if trace: g.trace('no values')
-            self.insert_line_value()
+            self.insert_line()
             return False
         try:
-            # g.trace('cursor_line: %r, start_display_at: %r = %r' % (
-                # self.cursor_line, self.start_display_at,
-                # self.cursor_line-self.start_display_at))
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-            g.trace('active_line: %r' % active_line)
+            g.trace('LeoMLTree.active_line: %r' % active_line)
         except IndexError:
             # pylint: disable=pointless-statement
             self._my_widgets[0]
                 # Does this have something to do with weakrefs?
             self.cursor_line = 0
-            self.insert_line_value()
+            self.insert_line()
             return True
         active_line.highlight = False
         active_line.edit()
@@ -1893,15 +1846,10 @@ class LeoMLTree(npyscreen.MLTree):
                 self.cursor_line = 0
             self.cursor_line = len(self.values) - 1
         self.reset_display_cache()
-        # if self.CHECK_VALUE:
-        # if not self.check_line_value(self.values[self.cursor_line]):
-        # if not self.values[self.cursor_line]
-            # self.delete_line_value()
-            # return False
         self.display()
         return True
-    #@+node:ekr.20170506044733.2: *3* get_new_value (rewritten)
-    def get_new_value(self):
+    #@+node:ekr.20170506044733.2: *4* LeoMLTree.new_node
+    def new_node(self):
         '''
         Insert a new outline TreeData widget at the current line.
         As with Leo, insert as the first child of the current line if
@@ -1910,9 +1858,10 @@ class LeoMLTree(npyscreen.MLTree):
         trace = True
         trace_values = False
         node = self.values[self.cursor_line]
-        if trace and trace_values:
-            g.trace(node)
-            self.dump_values()
+        if trace:
+            g.trace('LeoMLTree', node, g.callers())
+            if trace_values:
+                self.dump_values()
         headline = 'New headline'
         if node.has_children() and node.expanded:
             node = node.new_child_at(index=0, content=headline)
@@ -1923,10 +1872,10 @@ class LeoMLTree(npyscreen.MLTree):
             parent = self.hidden_root_node
             index = parent._children.index(node)
             node = parent.new_child_at(index=index, content=headline)
-        if trace: g.trace('%3s %s' % (self.cursor_line, headline))
+        if trace: g.trace('LeoMLTree: line: %3s %s' % (self.cursor_line, headline), g.callers())
         return node
-    #@+node:ekr.20170506044733.5: *3* insert_line_value (changed)
-    def insert_line_value(self):
+    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line
+    def insert_line(self):
         
         trace = True
         trace_values = False
@@ -1936,12 +1885,82 @@ class LeoMLTree(npyscreen.MLTree):
         if self.cursor_line is None:
             self.cursor_line = 0
         # Revised
-        self.values.insert(self.cursor_line+1, self.get_new_value())
+        self.values.insert(self.cursor_line+1, self.new_node())
         self.cursor_line += 1
         self.display()
-        cont = self.edit_cursor_line_value()
-        if cont: ### and self.ALLOW_CONTINUE_EDITING:
-            self._continue_editing()
+        self.edit_headline()
+        ### cont = self.edit_headline()
+        ###
+        # if cont: ### and self.ALLOW_CONTINUE_EDITING:
+            # self._continue_editing()
+    #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
+    # These insert or delete entire outline nodes.
+    #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
+    def h_delete(self, ch):
+        g.trace('=====', repr(ch))
+        self.delete_line()
+    #@+node:ekr.20170506044733.10: *4* LeoMLTree.h_edit_headline
+    def h_edit_headline(self, ch):
+        
+        self.edit_headline()
+    #@+node:ekr.20170506044733.9: *4* LeoMLTree.h_insert_after (not used)
+    # def h_insert_after(self, ch):
+        
+        # # pylint: disable=len-as-condition
+        # ### What is this?????
+        # if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
+            # self.values.append(self.new_node())
+            # self.cursor_line += 1
+            # self.display()
+            # ###
+            # # cont = self.edit_cursor_line_value()
+            # # if cont: ### and self.ALLOW_CONTINUE_EDITING:
+                # # self._continue_editing()
+        # else:
+            # self.cursor_line += 1
+            # self.insert_line()
+    #@+node:ekr.20170506044733.11: *4* LeoMLTree.h_insert
+    def h_insert(self, ch):
+
+        return self.insert_line()
+    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left
+    def h_move_left(self, ch):
+        
+        node = self.values[self.cursor_line]
+        if self._has_children(node) and node.expanded:
+            self.h_collapse_tree(ch)
+        else:
+            self.h_cursor_line_up(ch)
+    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right
+    def h_move_right(self, ch):
+        
+        node = self.values[self.cursor_line]
+        if self._has_children(node):
+            if node.expanded:
+                self.h_cursor_line_down(ch)
+            else:
+                self.h_expand_tree(ch)
+        else:
+            self.h_cursor_line_down(ch)
+    #@+node:ekr.20170507175304.1: *4* LeoMLTree.set_handlers
+    def set_handlers(self):
+        
+        # pylint: disable=no-member
+        d = {
+            curses.KEY_LEFT: self.h_move_left,
+            curses.KEY_RIGHT: self.h_move_right,
+            ord('d'): self.h_delete,
+            ord('h'): self.h_edit_headline,
+            ord('i'): self.h_insert,
+            ### ord('o'): self.h_insert_after,
+            # curses.ascii.CR:        self.h_edit_cursor_line_value,
+            # curses.ascii.NL:        self.h_edit_cursor_line_value,
+            # curses.ascii.SP:        self.h_edit_cursor_line_value,
+            # curses.ascii.DEL:       self.h_delete_line_value,
+            # curses.ascii.BS:        self.h_delete_line_value,
+            # curses.KEY_BACKSPACE:   self.h_delete_line_value,
+        }
+        self.handlers.update(d)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
