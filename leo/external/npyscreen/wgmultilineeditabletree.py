@@ -1,18 +1,13 @@
 #!/usr/bin/python
 '''The MLTreeEditable class.'''
 # By Edward K. Ream
+
 # pylint: disable=logging-not-lazy
 
 import curses
 import logging
-import weakref
-
 import npyscreen
-# from . import wgmultiline    as multiline
-# from . import wgtextbox      as textbox
-# from npyscreen.compatibility_code import npysNPSTree as NPSTree
-# from .npysTree import TreeData
-
+import weakref
 def print_list(aList, tag=None, sort=False, indent=''):
     
     if aList:
@@ -271,4 +266,5 @@ class MLTreeLine (npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
+
 
