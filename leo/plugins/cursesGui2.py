@@ -4,7 +4,7 @@
 #@@first
 '''A prototype text gui using the python curses library.'''
 #@+<< cursesGui imports >>
-#@+node:ekr.20170419172102.1: **  << cursesGui imports >>
+#@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import leo.core.leoGlobals as g
 import logging
 import logging.handlers
@@ -30,8 +30,519 @@ if npyscreen:
     assert utilNotify
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
+#@+<< base classes >>
+#@+node:ekr.20170511053555.1: **  << base classes >>
 #@+others
-#@+node:ekr.20170501043944.1: **  top-level
+#@+node:ekr.20170508085942.1: *3* 1. class  LeoTreeLine (npyscreen.TreeLine)
+class LeoTreeLine(npyscreen.TreeLine):
+    '''A editable TreeLine class.'''
+
+    def __init__(self, *args, **kwargs):
+
+        super(LeoTreeLine, self).__init__(*args, **kwargs)
+        self.set_handlers()
+
+    #@+others
+    #@+node:ekr.20170510210859.1: *4* LeoTreeLine.Edit loop
+    #@+node:ekr.20170510210908.1: *5* LeoTreeLine.edit
+    def edit(self):
+        """Allow the user to edit the widget: ie. start handling keypresses."""
+        
+        g.trace('LeoTreeLine')
+        self.editing = 1
+        # self._pre_edit()
+        self.highlight = 1
+        self.how_exited = False
+        self._edit_loop()
+        # return self._post_edit()
+        self.highlight = 0
+        self.update()
+    #@+node:ekr.20170510210945.1: *5* LeoTreeLine._edit_loop
+    def _edit_loop(self):
+
+        if not self.parent.editing:
+            _i_set_parent_editing = True
+            self.parent.editing   = True
+        else:
+            _i_set_parent_editing = False
+        while self.editing and self.parent.editing:
+            g.trace('LeoTreeLine')
+            self.display()
+            self.get_and_use_key_press()
+        if _i_set_parent_editing:
+            self.parent.editing = False
+        if self.editing:
+            self.editing    = False
+            self.how_exited = True
+    #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
+    #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
+    def h_cursor_beginning(self, ch):
+
+        self.cursor_line = 0
+    #@+node:ekr.20170508131043.1: *5* LeoTreeLine.h_cursor_end
+    def h_cursor_end(self, ch):
+        
+        # self.value is a LeoTreeData.
+        self.cursor_line = max(0, len(self.value.content)-1)
+    #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
+    def h_cursor_left(self, input):
+        
+        self.cursor_position = max(0, self.cursor_position -1)
+    #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
+    def h_cursor_right(self, input):
+
+        self.cursor_position += 1
+
+    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
+    def h_delete_left(self, input):
+
+        # self.value is a LeoTreeData.
+        n = self.cursor_position
+        s = self.value.content
+        if 0 <= n <= len(s):
+            self.value.content = s[:n] + s[n+1:]
+            self.cursor_position -= 1
+    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
+    def h_end_editing(self, ch):
+
+        g.trace('LeoTreeLine', ch)
+        # if not self._test_safe_to_exit():
+            # return False
+        self.editing = False
+        self.how_exited = None # EXITED_ESCAPE = 127
+    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert
+    def h_insert(self, i):
+
+        # self.value is a LeoTreeData.
+        n = self.cursor_position + 1
+        s = self.value.content
+        self.value.content = s[:n] + chr(i) + s[n:]
+        self.cursor_position += 1
+    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
+    def set_handlers(self):
+        
+        # pylint: disable=no-member
+        # Override *all* other complex handlers.
+        if 1:
+            self.complex_handlers = (
+                (curses.ascii.isprint, self.h_insert),
+            )
+        else:
+            self.complex_handlers.append(
+                (curses.ascii.isprint, self.h_insert),
+            )
+        self.handlers.update({
+            curses.ascii.ESC:       self.h_end_editing,
+            curses.ascii.NL:        self.h_end_editing,
+            curses.ascii.LF:        self.h_end_editing,
+            curses.KEY_HOME:        self.h_cursor_beginning,  # 262
+            curses.KEY_END:         self.h_cursor_end,        # 358.
+            curses.KEY_LEFT:        self.h_cursor_left,
+            curses.KEY_RIGHT:       self.h_cursor_right,
+            curses.ascii.BS:        self.h_delete_left,
+            curses.KEY_BACKSPACE:   self.h_delete_left,
+        })
+    #@-others
+#@+node:ekr.20170511053143.1: *3* 1. class CursesTextMixin (object)
+class CursesTextMixin(object):
+    '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
+    #@+others
+    #@+node:ekr.20170511053143.2: *4* qtm.ctor & helper
+    def __init__(self, c=None):
+        '''Ctor for CursesTextMixin class'''
+        self.c = c
+        self.changingText = False # A lockout for onTextChanged.
+        self.enabled = True
+        self.supportsHighLevelInterface = True
+            # A flag for k.masterKeyHandler and isTextWrapper.
+        self.tags = {}
+        self.permanent = True # False if selecting the minibuffer will make the widget go away.
+        self.configDict = {} # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict = {} # Keys are tags, values are True
+        # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
+        self.useScintilla = False # This is used!
+        self.virtualInsertPoint = None
+        if c:
+            self.injectIvars(c)
+    #@+node:ekr.20170511053143.3: *5* qtm.injectIvars
+    def injectIvars(self, name='1', parentFrame=None):
+        '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
+        w = self
+        p = self.c.currentPosition()
+        if name == '1':
+            w.leo_p = None # Will be set when the second editor is created.
+        else:
+            w.leo_p = p and p.copy()
+        w.leo_active = True
+        # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+        w.leo_bodyBar = None
+        w.leo_bodyXBar = None
+        w.leo_chapter = None
+        w.leo_frame = None
+        w.leo_name = name
+        w.leo_label = None
+        return w
+    #@+node:ekr.20170511053143.4: *4* qtm.getName
+    def getName(self):
+        return self.name # Essential.
+    #@+node:ekr.20170511053143.5: *4* qtm.Event handlers
+    # These are independent of the kind of Qt widget.
+    #@+node:ekr.20170511053143.6: *5* qtm.onCursorPositionChanged
+    def onCursorPositionChanged(self, event=None):
+        c = self.c
+        name = c.widget_name(self)
+        # Apparently, this does not cause problems
+        # because it generates no events in the body pane.
+        if name.startswith('body'):
+            if hasattr(c.frame, 'statusLine'):
+                c.frame.statusLine.update()
+    #@+node:ekr.20170511053143.7: *5* qtm.onTextChanged
+    def onTextChanged(self):
+        '''
+        Update Leo after the body has been changed.
+
+        self.selecting is guaranteed to be True during
+        the entire selection process.
+        '''
+        # Important: usually w.changingText is True.
+        # This method very seldom does anything.
+        trace = False and not g.unitTesting
+        verbose = False
+        w = self
+        c = self.c; p = c.p
+        tree = c.frame.tree
+        if w.changingText:
+            if trace and verbose: g.trace('already changing')
+            return
+        if tree.tree_select_lockout:
+            if trace and verbose: g.trace('selecting lockout')
+            return
+        if tree.selecting:
+            if trace and verbose: g.trace('selecting')
+            return
+        if tree.redrawing:
+            if trace and verbose: g.trace('redrawing')
+            return
+        if not p:
+            if trace: g.trace('*** no p')
+            return
+        newInsert = w.getInsertPoint()
+        newSel = w.getSelectionRange()
+        newText = w.getAllText() # Converts to unicode.
+        # Get the previous values from the VNode.
+        oldText = p.b
+        if oldText == newText:
+            # This can happen as the result of undo.
+            # g.error('*** unexpected non-change')
+            return
+        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+        # oldIns  = p.v.insertSpot
+        i, j = p.v.selectionStart, p.v.selectionLength
+        oldSel = (i, i + j)
+        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
+        oldYview = None
+        undoType = 'Typing'
+        c.undoer.setUndoTypingParams(p, undoType,
+            oldText=oldText, newText=newText,
+            oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        # Update the VNode.
+        p.v.setBodyString(newText)
+        if True:
+            p.v.insertSpot = newInsert
+            i, j = newSel
+            i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+            if i > j: i, j = j, i
+            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        # No need to redraw the screen.
+        if not self.useScintilla:
+            c.recolor()
+        if g.app.qt_use_tabs:
+            if trace: g.trace(c.frame.top)
+        if not c.changed and c.frame.initComplete:
+            c.setChanged(True)
+        c.frame.body.updateEditors()
+        c.frame.tree.updateIcon(p)
+    #@+node:ekr.20170511053143.8: *4* qtm.Generic high-level interface
+    # These call only wrapper methods.
+    #@+node:ekr.20170511053143.9: *5* qtm.Enable/disable
+    def disable(self):
+        self.enabled = False
+
+    def enable(self, enabled=True):
+        self.enabled = enabled
+    #@+node:ekr.20170511053143.10: *5* qtm.Clipboard
+    def clipboard_append(self, s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+
+    def clipboard_clear(self):
+        g.app.gui.replaceClipboardWith('')
+    #@+node:ekr.20170511053143.11: *5* qtm.setFocus
+    def setFocus(self):
+        '''CursesTextMixin'''
+        
+        ###
+            # trace = (False or g.app.trace_focus) and not g.unitTesting
+            # if trace: print('BaseQTextWrapper.setFocus', self.widget)
+            # # Call the base class
+            # assert isinstance(self.widget, (
+                # QtWidgets.QTextBrowser,
+                # QtWidgets.QLineEdit,
+                # QtWidgets.QTextEdit,
+                # Qsci and Qsci.QsciScintilla,
+            # )), self.widget
+            # QtWidgets.QTextBrowser.setFocus(self.widget)
+    #@+node:ekr.20170511053143.12: *5* qtm.Generic text
+    #@+node:ekr.20170511053143.13: *6* qtm.appendText
+    def appendText(self, s):
+        '''CursesTextMixin'''
+        s2 = self.getAllText()
+        self.setAllText(s2 + s)
+        self.setInsertPoint(len(s2))
+    #@+node:ekr.20170511053143.14: *6* qtm.delete
+    def delete(self, i, j=None):
+        '''CursesTextMixin'''
+        i = self.toPythonIndex(i)
+        if j is None: j = i + 1
+        j = self.toPythonIndex(j)
+        # This allows subclasses to use this base class method.
+        if i > j: i, j = j, i
+        s = self.getAllText()
+        self.setAllText(s[: i] + s[j:])
+        # Bug fix: Significant in external tests.
+        self.setSelectionRange(i, i, insert=i)
+    #@+node:ekr.20170511053143.15: *6* qtm.deleteTextSelection
+    def deleteTextSelection(self):
+        '''CursesTextMixin'''
+        i, j = self.getSelectionRange()
+        self.delete(i, j)
+    #@+node:ekr.20170511053143.16: *6* qtm.get
+    def get(self, i, j=None):
+        '''CursesTextMixin'''
+        # 2012/04/12: fix the following two bugs by using the vanilla code:
+        # https://bugs.launchpad.net/leo-editor/+bug/979142
+        # https://bugs.launchpad.net/leo-editor/+bug/971166
+        s = self.getAllText()
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        return s[i: j]
+    #@+node:ekr.20170511053143.17: *6* qtm.getLastPosition & getLength
+    def getLastPosition(self, s=None):
+        '''CursesTextMixin'''
+        return len(self.getAllText()) if s is None else len(s)
+
+    def getLength(self, s=None):
+        '''CursesTextMixin'''
+        return len(self.getAllText()) if s is None else len(s)
+    #@+node:ekr.20170511053143.18: *6* qtm.getSelectedText
+    def getSelectedText(self):
+        '''CursesTextMixin'''
+        i, j = self.getSelectionRange()
+        if i == j:
+            return ''
+        else:
+            s = self.getAllText()
+            return s[i: j]
+    #@+node:ekr.20170511053143.19: *6* qtm.insert
+    def insert(self, i, s):
+        '''CursesTextMixin'''
+        s2 = self.getAllText()
+        i = self.toPythonIndex(i)
+        self.setAllText(s2[: i] + s + s2[i:])
+        self.setInsertPoint(i + len(s))
+        return i
+    #@+node:ekr.20170511053143.20: *6* qtm.seeInsertPoint
+    def seeInsertPoint(self):
+        '''Ensure the insert point is visible.'''
+        self.see(self.getInsertPoint())
+            # getInsertPoint defined in client classes.
+    #@+node:ekr.20170511053143.21: *6* qtm.selectAllText
+    def selectAllText(self, s=None):
+        '''CursesTextMixin.'''
+        self.setSelectionRange(0, self.getLength(s))
+    #@+node:ekr.20170511053143.22: *6* qtm.toPythonIndex
+    def toPythonIndex(self, index, s=None):
+        '''CursesTextMixin'''
+        if s is None:
+            s = self.getAllText()
+        i = g.toPythonIndex(s, index)
+        # g.trace(index,len(s),i,s[i:i+10])
+        return i
+    #@+node:ekr.20170511053143.23: *6* qtm.toPythonIndexRowCol
+    def toPythonIndexRowCol(self, index):
+        '''CursesTextMixin'''
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return i, row, col
+    #@+node:ekr.20170511053143.24: *5* qtm.rememberSelectionAndScroll
+    def rememberSelectionAndScroll(self):
+        trace = (False or g.trace_scroll) and not g.unitTesting
+        w = self
+        v = self.c.p.v # Always accurate.
+        v.insertSpot = w.getInsertPoint()
+        i, j = w.getSelectionRange()
+        if i > j: i, j = j, i
+        assert(i <= j)
+        v.selectionStart = i
+        v.selectionLength = j - i
+        v.scrollBarSpot = spot = w.getYScrollPosition()
+        if trace:
+            g.trace(spot, v.h)
+            # g.trace(id(v),id(w),i,j,ins,spot,v.h)
+    #@+node:ekr.20170511053143.25: *5* qtm.tag_configure
+    def tag_configure(self, *args, **keys):
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(args, keys)
+        if len(args) == 1:
+            key = args[0]
+            self.tags[key] = keys
+            val = keys.get('foreground')
+            underline = keys.get('underline')
+            if val:
+                # if trace: g.trace(key,val)
+                self.configDict[key] = val
+            if underline:
+                self.configUnderlineDict[key] = True
+        else:
+            g.trace('oops', args, keys)
+
+    tag_config = tag_configure
+    #@-others
+#@+node:ekr.20170511053048.1: *3* 2. class CursesLineEditWrapper(CursesTextMixin)
+class CursesLineEditWrapper(CursesTextMixin):
+    '''
+    A class to wrap CursesLineEdit widgets.
+
+    The CursesHeadlineWrapper class is a subclass that merely
+    redefines the do-nothing check method here.
+    '''
+    #@+others
+    #@+node:ekr.20170511053048.2: *4* qlew.Birth
+    def __init__(self, widget, name, c=None):
+        '''Ctor for QLineEditWrapper class.'''
+        # g.trace('(QLineEditWrapper):widget',name,self.widget)
+        CursesTextMixin.__init__(self, c)
+            # Init the base class.
+        self.widget = widget
+        self.name = name
+        self.baseClassName = 'QLineEditWrapper'
+
+    def __repr__(self):
+        return '<QLineEditWrapper: widget: %s' % (self.widget)
+
+    __str__ = __repr__
+    #@+node:ekr.20170511053048.3: *4* qlew.check
+    def check(self):
+        '''
+        QLineEditWrapper.
+        '''
+        return True
+    #@+node:ekr.20170511053048.4: *4* qlew.Widget-specific overrides
+    #@+node:ekr.20170511053048.5: *5* qlew.getAllText
+    def getAllText(self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            w = self.widget
+            s = w.text()
+            return g.u(s)
+        else:
+            return ''
+    #@+node:ekr.20170511053048.6: *5* qlew.getInsertPoint
+    def getInsertPoint(self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            i = self.widget.cursorPosition()
+            return i
+        else:
+            return 0
+    #@+node:ekr.20170511053048.7: *5* qlew.getSelectionRange
+    def getSelectionRange(self, sort=True):
+        '''QHeadlineWrapper.'''
+        w = self.widget
+        if self.check():
+            if w.hasSelectedText():
+                i = w.selectionStart()
+                s = w.selectedText()
+                s = g.u(s)
+                j = i + len(s)
+            else:
+                i = j = w.cursorPosition()
+            return i, j
+        else:
+            return 0, 0
+    #@+node:ekr.20170511053048.8: *5* qlew.hasSelection
+    def hasSelection(self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            return self.widget.hasSelectedText()
+        else:
+            return False
+    #@+node:ekr.20170511053048.9: *5* qlew.see & seeInsertPoint
+    def see(self, i):
+        '''QHeadlineWrapper.'''
+        pass
+
+    def seeInsertPoint(self):
+        '''QHeadlineWrapper.'''
+        pass
+    #@+node:ekr.20170511053048.10: *5* qlew.setAllText
+    def setAllText(self, s):
+        '''Set all text of a Qt headline widget.'''
+        if self.check():
+            w = self.widget
+            w.setText(s)
+    #@+node:ekr.20170511053048.11: *5* qlew.setFocus
+    def setFocus(self):
+        '''QHeadlineWrapper.'''
+        if self.check():
+            g.app.gui.set_focus(self.c, self.widget)
+    #@+node:ekr.20170511053048.12: *5* qlew.setInsertPoint
+    def setInsertPoint(self, i, s=None):
+        '''QHeadlineWrapper.'''
+        if not self.check(): return
+        w = self.widget
+        if s is None:
+            s = w.text()
+            s = g.u(s)
+        i = self.toPythonIndex(i)
+        i = max(0, min(i, len(s)))
+        w.setCursorPosition(i)
+    #@+node:ekr.20170511053048.13: *5* qlew.setSelectionRange
+    def setSelectionRange(self, i, j, insert=None, s=None):
+        '''QHeadlineWrapper.'''
+        if not self.check(): return
+        w = self.widget
+        if i > j: i, j = j, i
+        if s is None:
+            s = w.text()
+            s = g.u(s)
+        n = len(s)
+        i = self.toPythonIndex(i)
+        j = self.toPythonIndex(j)
+        i = max(0, min(i, n))
+        j = max(0, min(j, n))
+        if insert is None:
+            insert = j
+        else:
+            insert = self.toPythonIndex(insert)
+            insert = max(0, min(insert, n))
+        if i == j:
+            w.setCursorPosition(i)
+        else:
+            length = j - i
+            # Set selection is a QLineEditMethod
+            if insert < j:
+                w.setSelection(j, -length)
+            else:
+                w.setSelection(i, length)
+    # setSelectionRangeHelper = setSelectionRange
+    #@-others
+#@-others
+#@-<< base classes >>
+#@+others
+#@+node:ekr.20170501043944.1: **   top-level
 #@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
 def init():
     '''
@@ -123,116 +634,6 @@ def trace(*args, **keys):
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
-#@+node:ekr.20170508085942.1: ** class  LeoTreeLine (npyscreen.TreeLine)
-class LeoTreeLine(npyscreen.TreeLine):
-    '''A editable TreeLine class.'''
-
-    def __init__(self, *args, **kwargs):
-
-        super(LeoTreeLine, self).__init__(*args, **kwargs)
-        self.set_handlers()
-
-    #@+others
-    #@+node:ekr.20170510210859.1: *3* LeoTreeLine.Edit loop
-    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
-    def edit(self):
-        """Allow the user to edit the widget: ie. start handling keypresses."""
-        
-        g.trace('LeoTreeLine')
-        self.editing = 1
-        # self._pre_edit()
-        self.highlight = 1
-        self.how_exited = False
-        self._edit_loop()
-        # return self._post_edit()
-        self.highlight = 0
-        self.update()
-    #@+node:ekr.20170510210945.1: *4* LeoTreeLine._edit_loop
-    def _edit_loop(self):
-
-        if not self.parent.editing:
-            _i_set_parent_editing = True
-            self.parent.editing   = True
-        else:
-            _i_set_parent_editing = False
-        while self.editing and self.parent.editing:
-            g.trace('LeoTreeLine')
-            self.display()
-            self.get_and_use_key_press()
-        if _i_set_parent_editing:
-            self.parent.editing = False
-        if self.editing:
-            self.editing    = False
-            self.how_exited = True
-    #@+node:ekr.20170508130016.1: *3* LeoTreeLine.handlers
-    #@+node:ekr.20170508130946.1: *4* LeoTreeLine.h_cursor_beginning
-    def h_cursor_beginning(self, ch):
-
-        self.cursor_line = 0
-    #@+node:ekr.20170508131043.1: *4* LeoTreeLine.h_cursor_end
-    def h_cursor_end(self, ch):
-        
-        # self.value is a LeoTreeData.
-        self.cursor_line = max(0, len(self.value.content)-1)
-    #@+node:ekr.20170508130328.1: *4* LeoTreeLine.h_cursor_left
-    def h_cursor_left(self, input):
-        
-        self.cursor_position = max(0, self.cursor_position -1)
-    #@+node:ekr.20170508130339.1: *4* LeoTreeLine.h_cursor_right
-    def h_cursor_right(self, input):
-
-        self.cursor_position += 1
-
-    #@+node:ekr.20170508130349.1: *4* LeoTreeLine.h_delete_left
-    def h_delete_left(self, input):
-
-        # self.value is a LeoTreeData.
-        n = self.cursor_position
-        s = self.value.content
-        if 0 <= n <= len(s):
-            self.value.content = s[:n] + s[n+1:]
-            self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *4* LeoTreeLine.h_end_editing
-    def h_end_editing(self, ch):
-
-        g.trace('LeoTreeLine', ch)
-        # if not self._test_safe_to_exit():
-            # return False
-        self.editing = False
-        self.how_exited = None # EXITED_ESCAPE = 127
-    #@+node:ekr.20170508125632.1: *4* LeoTreeLine.h_insert
-    def h_insert(self, i):
-
-        # self.value is a LeoTreeData.
-        n = self.cursor_position + 1
-        s = self.value.content
-        self.value.content = s[:n] + chr(i) + s[n:]
-        self.cursor_position += 1
-    #@+node:ekr.20170508130025.1: *4* LeoTreeLine.set_handlers
-    def set_handlers(self):
-        
-        # pylint: disable=no-member
-        # Override *all* other complex handlers.
-        if 1:
-            self.complex_handlers = (
-                (curses.ascii.isprint, self.h_insert),
-            )
-        else:
-            self.complex_handlers.append(
-                (curses.ascii.isprint, self.h_insert),
-            )
-        self.handlers.update({
-            curses.ascii.ESC:       self.h_end_editing,
-            curses.ascii.NL:        self.h_end_editing,
-            curses.ascii.LF:        self.h_end_editing,
-            curses.KEY_HOME:        self.h_cursor_beginning,  # 262
-            curses.KEY_END:         self.h_cursor_end,        # 358.
-            curses.KEY_LEFT:        self.h_cursor_left,
-            curses.KEY_RIGHT:       self.h_cursor_right,
-            curses.ascii.BS:        self.h_delete_left,
-            curses.KEY_BACKSPACE:   self.h_delete_left,
-        })
-    #@-others
 #@+node:ekr.20170420054211.1: ** class CursesApp (npyscreen.NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
@@ -788,6 +1189,46 @@ class CursesGui(leoGui.LeoGui):
     def test(self):
         '''A place to put preliminary tests.'''
     #@-others
+#@+node:ekr.20170511053415.1: ** class CursesHeadlineWrapper (CursesLineEditWrapper)
+class CursesHeadlineWrapper(CursesLineEditWrapper):
+    '''
+    A wrapper class for CursesLineEdit widgets in CursesTree's.
+    This class just redefines the check method.
+    '''
+
+    #@+others
+    #@+node:ekr.20170511053415.2: *3* qhw.Birth
+    def __init__(self, c, item, name, widget):
+        '''The ctor for the QHeadlineWrapper class.'''
+        # g.trace('(QHeadlineWrapper)',item,widget)
+        ### assert isinstance(widget, QtWidgets.QLineEdit), widget
+        CursesLineEditWrapper.__init__(self, widget, name, c)
+            # Init the base class.
+        # Set ivars.
+        self.c = c
+        self.item = item
+        self.name = name
+        self.permanent = False # Warn the minibuffer that we can go away.
+        self.widget = widget
+        # Set the signal.
+        ### g.app.gui.setFilter(c, self.widget, self, tag=name)
+
+    def __repr__(self):
+        return 'QHeadlineWrapper: %s' % id(self)
+    #@+node:ekr.20170511053415.3: *3* qhw.check
+    def check(self):
+        '''Return True if the tree item exists and its edit widget exists.'''
+        return False ### Not ready yet.
+        ###
+            # trace = False and not g.unitTesting
+            # tree = self.c.frame.tree
+            # e = tree.treeWidget.itemWidget(self.item, 0)
+            # valid = tree.isValidItem(self.item)
+            # result = valid and e == self.widget
+            # if trace: g.trace('result %s self.widget %s itemWidget %s' % (
+                # result, self.widget, e))
+            # return result
+    #@-others
 #@+node:ekr.20170430114840.1: ** class CursesKeyHandler (object)
 class CursesKeyHandler (object):
 
@@ -1081,7 +1522,7 @@ class CursesTextWrapper(object):
     #@+others
     #@+node:ekr.20170504034655.2: *3* cw.ctor & helper
     def __init__(self, c, name, w):
-        '''Ctor for QTextMixin class'''
+        '''Ctor for CursesTextWrapper class'''
         self.c = c
         self.changingText = False # A lockout for onTextChanged.
         self.enabled = True
