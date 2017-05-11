@@ -140,11 +140,11 @@ class LeoTreeLine(npyscreen.TreeLine):
         
         g.trace('LeoTreeLine')
         self.editing = 1
-        ### self._pre_edit()
+        # self._pre_edit()
         self.highlight = 1
         self.how_exited = False
         self._edit_loop()
-        ### return self._post_edit()
+        # return self._post_edit()
         self.highlight = 0
         self.update()
     #@+node:ekr.20170510210945.1: *4* LeoTreeLine._edit_loop
@@ -298,43 +298,42 @@ class CursesFrame (leoFrame.LeoFrame):
         self.log_widget = None
         self.minibuffer_widget = None
         self.tree_widget = None
-        
-        # ===============
-        # Official ivars...
-        ### self.iconBar = None
-        ### self.iconBarClass = None ### self.QtIconBarClass
-        ### self.initComplete = False # Set by initCompleteHint().
-        ### self.minibufferVisible = True
-        ### self.statusLineClass = None ### self.QtStatusLineClass
-        ###
+        ### ===============
+            # Official ivars...
+            # self.iconBar = None
+            # self.iconBarClass = None # self.QtIconBarClass
+            # self.initComplete = False # Set by initCompleteHint().
+            # self.minibufferVisible = True
+            # self.statusLineClass = None # self.QtStatusLineClass
+            #
             # Config settings.
             # self.trace_status_line = c.config.getBool('trace_status_line')
             # self.use_chapters = c.config.getBool('use_chapters')
             # self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
-        ###
-        ### self.set_ivars()
-        ###
-        # "Official ivars created in createLeoFrame and its allies.
-        ### self.bar1 = None
-        ### self.bar2 = None
-        ### self.f1 = self.f2 = None
-        ### self.findPanel = None # Inited when first opened.
-        ### self.iconBarComponentName = 'iconBar'
-        ### self.iconFrame = None
-        ### self.canvas = None
-        ### self.outerFrame = None
-        ### self.statusFrame = None
-        ### self.statusLineComponentName = 'statusLine'
-        ### self.statusText = None
-        ### self.statusLabel = None
-        ### self.top = None # This will be a class Window object.
-        # Used by event handlers...
-        # self.controlKeyIsDown = False # For control-drags
-        # self.isActive = True
-        # self.redrawCount = 0
-        # self.wantedWidget = None
-        # self.wantedCallbackScheduled = False
-        # self.scrollWay = None
+            #
+            # self.set_ivars()
+            #
+            # "Official ivars created in createLeoFrame and its allies.
+            # self.bar1 = None
+            # self.bar2 = None
+            # self.f1 = self.f2 = None
+            # self.findPanel = None # Inited when first opened.
+            # self.iconBarComponentName = 'iconBar'
+            # self.iconFrame = None
+            # self.canvas = None
+            # self.outerFrame = None
+            # self.statusFrame = None
+            # self.statusLineComponentName = 'statusLine'
+            # self.statusText = None
+            # self.statusLabel = None
+            # self.top = None # This will be a class Window object.
+            # Used by event handlers...
+            # self.controlKeyIsDown = False # For control-drags
+            # self.isActive = True
+            # self.redrawCount = 0
+            # self.wantedWidget = None
+            # self.wantedCallbackScheduled = False
+            # self.scrollWay = None
     #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (Finish)
     def finishCreate(self):
         # g.trace('CursesFrame', self.c.shortFileName())
@@ -993,7 +992,6 @@ class CursesLog (leoFrame.LeoLog):
         self.widget = None
             # The npyscreen log widget. Queue all output until set.
             # Set in CApp.main.
-
         ### Old code:
             # self.contentsDict = {} # Keys are tab names.  Values are widgets.
             # self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
@@ -1316,7 +1314,6 @@ class CursesTextWrapper(object):
             # sb = w.horizontalScrollBar()
             # return sb.sliderPosition()
 
-
     def getYScrollPosition(self):
 
         return 0
@@ -1324,7 +1321,6 @@ class CursesTextWrapper(object):
             # w = self.widget
             # sb = w.verticalScrollBar()
             # return sb.sliderPosition()
-        
     #@+node:ekr.20170504040309.8: *5* cw.hasSelection (To do)
     def hasSelection(self):
         
@@ -1776,12 +1772,9 @@ class LeoMiniBuffer(npyscreen.Textfield):
 #@+node:ekr.20170506035146.1: ** class LeoMLTree (npyscreen.MLTree)
 class LeoMLTree(npyscreen.MLTree):
 
+    # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
-    ###
-        # CHECK_VALUE             = True
-        # ALLOW_CONTINUE_EDITING  = True
-        # CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
-        
+
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
         assert not hasattr(self, 'hidden_root_node'), repr(self)
@@ -1889,10 +1882,6 @@ class LeoMLTree(npyscreen.MLTree):
         self.cursor_line += 1
         self.display()
         self.edit_headline()
-        ### cont = self.edit_headline()
-        ###
-        # if cont: ### and self.ALLOW_CONTINUE_EDITING:
-            # self._continue_editing()
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
@@ -1903,22 +1892,6 @@ class LeoMLTree(npyscreen.MLTree):
     def h_edit_headline(self, ch):
         
         self.edit_headline()
-    #@+node:ekr.20170506044733.9: *4* LeoMLTree.h_insert_after (not used)
-    # def h_insert_after(self, ch):
-        
-        # # pylint: disable=len-as-condition
-        # ### What is this?????
-        # if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
-            # self.values.append(self.new_node())
-            # self.cursor_line += 1
-            # self.display()
-            # ###
-            # # cont = self.edit_cursor_line_value()
-            # # if cont: ### and self.ALLOW_CONTINUE_EDITING:
-                # # self._continue_editing()
-        # else:
-            # self.cursor_line += 1
-            # self.insert_line()
     #@+node:ekr.20170506044733.11: *4* LeoMLTree.h_insert
     def h_insert(self, ch):
 
@@ -1952,7 +1925,6 @@ class LeoMLTree(npyscreen.MLTree):
             ord('d'): self.h_delete,
             ord('h'): self.h_edit_headline,
             ord('i'): self.h_insert,
-            ### ord('o'): self.h_insert_after,
             # curses.ascii.CR:        self.h_edit_cursor_line_value,
             # curses.ascii.NL:        self.h_edit_cursor_line_value,
             # curses.ascii.SP:        self.h_edit_cursor_line_value,

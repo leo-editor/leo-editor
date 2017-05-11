@@ -1852,20 +1852,6 @@ def printList(aList, tag=None, sort=False, indent=''):
         g.pr(']')
     else:
         g.pr(tag + '...[]' if tag else '[]')
-    # if not aList:
-        # if tag: g.pr('%s...[]' % tag)
-        # else: g.pr('[]')
-        # return
-    # if sort:
-        # bList = aList[:] # Sort a copy!
-        # bList.sort()
-    # else:
-        # bList = aList
-    # if tag: g.pr('%s...[' % tag)
-    # else: g.pr('[')
-    # for e in bList:
-        # g.pr('%s%s' % (indent, repr(e).strip()))
-    # g.pr(']')
 
 def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
     if not aList:
