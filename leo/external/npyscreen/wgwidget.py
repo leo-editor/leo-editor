@@ -80,14 +80,23 @@ class InputHandler(object):
         
         Return True if input has been completely handled.
         """
-        trace = False
+        def tell(f):
+            import re
+            pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
+            m = re.match(pattern, repr(f))
+            if m:
+                return '%s.%s' % (m.group(4), m.group(2))
+            else:
+                return repr(f)
+
+        trace = True
+        trace_entry = False
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
-        if trace:
+        if trace and trace_entry:
             g.trace('self: %20s, parent: %8s, %3s = %r' % (
                 self.__class__.__name__,
                 parent.__class__.__name__,
-                # parent_widget.__class__.__name__,
                 i, curses.ascii.unctrl(i),
             ))
         # A special case for F4 so we can run unit tests.
@@ -95,28 +104,37 @@ class InputHandler(object):
             g.app.gui.do_key(i)
             return True
         if i in self.handlers:
-            self.handlers[i](i)
+            f = self.handlers[i]
+            if trace: g.trace('handler', i, tell(f))
+            f(i)
             return True
         try:
             _unctrl_input = curses.ascii.unctrl(i)
         except TypeError:
             _unctrl_input = None
         if _unctrl_input and (_unctrl_input in self.handlers):
-            self.handlers[_unctrl_input](i)
+            ### self.handlers[_unctrl_input](i)
+            f = self.handlers[_unctrl_input]
+            if trace: g.trace('handler',  _unctrl_input, tell(f))
+            f(i)
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
             if test(i): # was is not False.
+                if trace: g.trace('complex', i, tell(handler))
                 return handler(i)
                 ### return True
         if parent_widget and hasattr(parent_widget, 'handle_input'):
+            if trace: g.trace('parent_widget.handle_input', i, parent_widget)
             if parent_widget.handle_input(i):
                 return True
         if parent and hasattr(self.parent, 'handle_input'):
+            if trace: g.trace('parent.handle_input', i, parent_widget)
             if parent.handle_input(i):
                 return True
         # Handle Leo bindings *last*.
         # Important: g.app is a LeoApp instance, *not* a CursesApp.
         if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
+            if trace: g.trace('g.app.gui.do_key', i)
             return g.app.gui.do_key(i)
         return False
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
@@ -316,8 +334,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
-            # g.trace('Widget', self.__class__.__name__, 'display loop')
-            g.pr('Widget', self.__class__.__name__, '_edit_loop')
+            g.pr('Widget._edit_loop:', self.__class__.__name__, g.callers(2))
             self.display()
             self.get_and_use_key_press()
         if _i_set_parent_editing:
@@ -476,9 +493,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             return True
         else:
             return False
-    #@+node:ekr.20170429213619.1: *3* edit
+    #@+node:ekr.20170429213619.1: *3* Widget.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
+        
+        # g.trace('Widget')
         self.editing = 1
         self._pre_edit()
         self._edit_loop()

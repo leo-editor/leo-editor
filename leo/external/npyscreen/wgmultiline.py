@@ -561,7 +561,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.112: *4* MultiLine.h_exit
     def h_exit(self, ch):
         
-        g.trace('MultiLine')
+        # g.trace('MultiLine')
         self.editing = False
         self.how_exited = True
 
@@ -576,7 +576,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.114: *4* MultiLine.h_select
     def h_select(self, ch):
         
-        g.trace('MultiLine')
+        # g.trace('MultiLine')
         self.value = self.cursor_line
         if self.select_exit:
             self.editing = False
@@ -584,7 +584,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.115: *4* MultiLine.h_select_exit
     def h_select_exit(self, ch):
         
-        g.trace('MultiLine')
+        # g.trace('MultiLine')
         self.h_select(ch)
         if self.return_exit or self.select_exit:
             self.editing = False

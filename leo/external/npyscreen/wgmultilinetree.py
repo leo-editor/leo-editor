@@ -416,7 +416,6 @@ class MLTree(multiline.MultiLine):
                     cursor_line -= 1
         self._cached_tree = None
         self.display()
-
     #@+node:ekr.20170428084208.207: *4* h_expand_tree
     def h_expand_tree(self, ch):
         if not self.values[self.cursor_line].expanded:
@@ -429,7 +428,6 @@ class MLTree(multiline.MultiLine):
                 v.expanded = True
         self._cached_tree = None
         self.display()
-
     #@+node:ekr.20170428084208.208: *4* h_collapse_all
     def h_collapse_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=True):
@@ -445,7 +443,6 @@ class MLTree(multiline.MultiLine):
         self._cached_tree = None
         self.cursor_line  = 0
         self.display()
-
     #@+node:ekr.20170428084208.203: *4* set_up_handlers
     def set_up_handlers(self):
         '''TreeLineAnnotated.set_up_handlers.'''

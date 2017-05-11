@@ -6,6 +6,7 @@ from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
 import leo.core.leoGlobals as g
+assert g
 #pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable
@@ -16,18 +17,18 @@ class MultiLineEditable(wgmultiline.MultiLine):
     CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True
     
     #@+others
-    #@+node:ekr.20170428084208.160: *3* get_new_value
+    #@+node:ekr.20170428084208.160: *3* MultiLineEditable.get_new_value
     def get_new_value(self):
         return ''
         
-    #@+node:ekr.20170428084208.161: *3* check_line_value
+    #@+node:ekr.20170428084208.161: *3* MultiLineEditable.check_line_value
     def check_line_value(self, vl):
         if not vl:
             return False
         else:
             return True
             
-    #@+node:ekr.20170428084208.162: *3* edit_cursor_line_value
+    #@+node:ekr.20170428084208.162: *3* MultiLineEditable.edit_cursor_line_value
     def edit_cursor_line_value(self):
         if not self.values:
             self.insert_line_value()
@@ -58,7 +59,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
         self.display()
         return True
 
-    #@+node:ekr.20170428084208.163: *3* insert_line_value
+    #@+node:ekr.20170428084208.163: *3* MultiLineEditable.insert_line_value
     def insert_line_value(self):
         if self.cursor_line is None:
             self.cursor_line = 0
@@ -68,16 +69,15 @@ class MultiLineEditable(wgmultiline.MultiLine):
         if cont and self.ALLOW_CONTINUE_EDITING:
             self._continue_editing()
 
-    #@+node:ekr.20170428084208.164: *3* delete_line_value
+    #@+node:ekr.20170428084208.164: *3* MultiLineEditable.delete_line_value
     def delete_line_value(self):
         if self.values:
             del self.values[self.cursor_line]
             self.display()
-
     #@+node:ekr.20170428084208.165: *3* MultiLineEditable._continue_editing
     def _continue_editing(self):
         
-        g.trace('MultiLine')
+        # g.trace('MultiLine')
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):
@@ -92,7 +92,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
 
 
     #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
-    #@+node:ekr.20170428084208.166: *4* h_insert_next_line
+    #@+node:ekr.20170428084208.166: *4* MultiLineEditable.h_insert_next_line
     def h_insert_next_line(self, ch):
         
         # pylint: disable=len-as-condition
@@ -108,20 +108,19 @@ class MultiLineEditable(wgmultiline.MultiLine):
             self.cursor_line += 1
             self.insert_line_value()
 
-    #@+node:ekr.20170428084208.167: *4* h_edit_cursor_line_value
+    #@+node:ekr.20170428084208.167: *4* MultiLineEditable.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch):
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
             
-    #@+node:ekr.20170428084208.168: *4* h_insert_value
+    #@+node:ekr.20170428084208.168: *4* MultiLineEditable.h_insert_value
     def h_insert_value(self, ch):
         return self.insert_line_value()
 
-    #@+node:ekr.20170428084208.169: *4* h_delete_line_value
+    #@+node:ekr.20170428084208.169: *4* MultiLineEditable.h_delete_line_value
     def h_delete_line_value(self, ch):
         self.delete_line_value()
-
     #@+node:ekr.20170428084208.170: *4* set_up_handlers
     def set_up_handlers(self):
         '''MultiLineEditable.set_up_handlers.'''
