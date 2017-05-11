@@ -1002,6 +1002,7 @@ class CursesGui(leoGui.LeoGui):
             # A LeoMLTree
         assert c.frame.tree.tree_widget is None
         c.frame.tree.tree_widget = leo_tree
+            # Set CursesTree.tree_widget.
     #@+node:ekr.20170419110052.1: *3* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -2377,7 +2378,7 @@ class CursesTree (leoFrame.LeoTree):
         # w = self.tree_widget
         # w.repaint()
         # w.resizeColumnToContents(0) # 2009/12/22
-    #@+node:ekr.20170511104533.1: *3* CTree.Event handlers
+    #@+node:ekr.20170511104533.1: *3* CTree.Event handlers (**LeoMLTree must generate these events)
     #@+node:ekr.20170511104533.10: *4* CTree.busy
     def busy(self):
         '''Return True (actually, a debugging string)
@@ -3028,7 +3029,8 @@ class CursesTree (leoFrame.LeoTree):
         g.trace('=====', g.callers())
     #@+node:ekr.20170511094126.6: *5* CTree.scrollTo (Used?)
     def scrollTo(self, p):
-        pass
+        g.trace('=====', g.callers())
+
 
     #@+node:ekr.20170511094217.12: *5* CTree.update_appearance (not used)
     def update_appearance(self, tag, keywords):
