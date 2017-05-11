@@ -1844,20 +1844,28 @@ def dictToString(d, tag=None, verbose=True, indent=''):
         return '%s...{}' % (tag) if tag else '{}'
 #@+node:ekr.20041126060136: *4* g.printList & listToString
 def printList(aList, tag=None, sort=False, indent=''):
-    if not aList:
-        if tag: g.pr('%s...[]' % tag)
-        else: g.pr('[]')
-        return
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
+    if aList:
+        bList = list(sorted(aList)) if sort else aList
+        g.pr('%s...[' % (tag) if tag else '[')
+        for e in bList:
+            g.pr('%s%s' % (indent, repr(e).strip()))
+        g.pr(']')
     else:
-        bList = aList
-    if tag: g.pr('%s...[' % tag)
-    else: g.pr('[')
-    for e in bList:
-        g.pr('%s%s' % (indent, repr(e).strip()))
-    g.pr(']')
+        g.pr(tag + '...[]' if tag else '[]')
+    # if not aList:
+        # if tag: g.pr('%s...[]' % tag)
+        # else: g.pr('[]')
+        # return
+    # if sort:
+        # bList = aList[:] # Sort a copy!
+        # bList.sort()
+    # else:
+        # bList = aList
+    # if tag: g.pr('%s...[' % tag)
+    # else: g.pr('[')
+    # for e in bList:
+        # g.pr('%s%s' % (indent, repr(e).strip()))
+    # g.pr(']')
 
 def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
     if not aList:
