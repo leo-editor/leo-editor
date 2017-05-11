@@ -48,39 +48,30 @@ class TreeLineEditable(npyscreen.TreeLine):
 
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        
-        # logging.info('LeoTreeLine')
-        self.editing = 1
+        self.editing = True
         # self._pre_edit()
-        self.highlight = 1
+        self.highlight = True
         self.how_exited = False
-        self._edit_loop()
-        # return self._post_edit()
-        self.highlight = 0
-        self.update()
-    def _edit_loop(self):
-
-        if not self.parent.editing:
-            _i_set_parent_editing = True
-            self.parent.editing   = True
-        else:
-            _i_set_parent_editing = False
+        # self._edit_loop()
+        old_parent_editing = self.parent.editing
+        self.parent.editing = True
         while self.editing and self.parent.editing:
-            # logging.info('LeoTreeLine')
             self.display()
             self.get_and_use_key_press()
-        if _i_set_parent_editing:
-            self.parent.editing = False
-        if self.editing:
-            self.editing    = False
-            self.how_exited = True
+                # A base TreeLine method.
+        self.parent.editing = old_parent_editing
+        self.editing = False
+        self.how_exited = True
+        # return self._post_edit()
+        self.highlight = False
+        self.update()
     def h_cursor_beginning(self, ch):
 
-        self.cursor_line = 0
+        self.cursor_position = 0
     def h_cursor_end(self, ch):
         
         # self.value is a TreeDataEditable.
-        self.cursor_line = max(0, len(self.value.content)-1)
+        self.cursor_position = max(0, len(self.value.content)-1)
     def h_cursor_left(self, input):
         
         self.cursor_position = max(0, self.cursor_position -1)
