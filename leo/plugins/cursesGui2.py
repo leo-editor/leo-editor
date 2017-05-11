@@ -147,56 +147,58 @@ class LeoTreeLine(npyscreen.TreeLine):
 class CursesTextMixin(object):
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
     #@+others
-    #@+node:ekr.20170511053143.2: *4* qtm.ctor & helper
+    #@+node:ekr.20170511053143.2: *4* ctm.ctor & helper
     def __init__(self, c=None):
         '''Ctor for CursesTextMixin class'''
         self.c = c
-        self.changingText = False # A lockout for onTextChanged.
+        self.changingText = False
+            # A lockout for onTextChanged.
         self.enabled = True
         self.supportsHighLevelInterface = True
             # A flag for k.masterKeyHandler and isTextWrapper.
         self.tags = {}
-        self.permanent = True # False if selecting the minibuffer will make the widget go away.
-        self.configDict = {} # Keys are tags, values are colors (names or values).
-        self.configUnderlineDict = {} # Keys are tags, values are True
-        # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
-        self.useScintilla = False # This is used!
+        self.configDict = {}
+            # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict = {}
+            # Keys are tags, values are True
         self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
-    #@+node:ekr.20170511053143.3: *5* qtm.injectIvars
+    #@+node:ekr.20170511053143.3: *5* ctm.injectIvars
     def injectIvars(self, name='1', parentFrame=None):
         '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
-        w = self
         p = self.c.currentPosition()
         if name == '1':
-            w.leo_p = None # Will be set when the second editor is created.
+            self.leo_p = None # Will be set when the second editor is created.
         else:
-            w.leo_p = p and p.copy()
-        w.leo_active = True
-        # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-        w.leo_bodyBar = None
-        w.leo_bodyXBar = None
-        w.leo_chapter = None
-        w.leo_frame = None
-        w.leo_name = name
-        w.leo_label = None
-        return w
-    #@+node:ekr.20170511053143.4: *4* qtm.getName
+            self.leo_p = p and p.copy()
+        self.leo_active = True
+        # Inject the scrollbar items into the text widget.
+        self.leo_bodyBar = None
+        self.leo_bodyXBar = None
+        self.leo_chapter = None
+        self.leo_frame = None
+        self.leo_name = name
+        self.leo_label = None
+        return self
+    #@+node:ekr.20170511053143.4: *4* ctm.getName
     def getName(self):
         return self.name # Essential.
-    #@+node:ekr.20170511053143.5: *4* qtm.Event handlers
+    #@+node:ekr.20170511053143.5: *4* ctm.Event handlers (revise or remove)
     # These are independent of the kind of Qt widget.
-    #@+node:ekr.20170511053143.6: *5* qtm.onCursorPositionChanged
+    #@+node:ekr.20170511053143.6: *5* ctm.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-        c = self.c
-        name = c.widget_name(self)
-        # Apparently, this does not cause problems
-        # because it generates no events in the body pane.
-        if name.startswith('body'):
-            if hasattr(c.frame, 'statusLine'):
-                c.frame.statusLine.update()
-    #@+node:ekr.20170511053143.7: *5* qtm.onTextChanged
+        '''CursesTextMixin'''
+        pass
+        ###
+            # c = self.c
+            # name = c.widget_name(self)
+            # # Apparently, this does not cause problems
+            # # because it generates no events in the body pane.
+            # if name.startswith('body'):
+                # if hasattr(c.frame, 'statusLine'):
+                    # c.frame.statusLine.update()
+    #@+node:ekr.20170511053143.7: *5* ctm.onTextChanged
     def onTextChanged(self):
         '''
         Update Leo after the body has been changed.
@@ -204,14 +206,13 @@ class CursesTextMixin(object):
         self.selecting is guaranteed to be True during
         the entire selection process.
         '''
-        # Important: usually w.changingText is True.
+        # Important: usually self.changingText is True.
         # This method very seldom does anything.
         trace = False and not g.unitTesting
         verbose = False
-        w = self
-        c = self.c; p = c.p
+        c, p = self.c, self.c.p
         tree = c.frame.tree
-        if w.changingText:
+        if self.changingText:
             if trace and verbose: g.trace('already changing')
             return
         if tree.tree_select_lockout:
@@ -226,9 +227,9 @@ class CursesTextMixin(object):
         if not p:
             if trace: g.trace('*** no p')
             return
-        newInsert = w.getInsertPoint()
-        newSel = w.getSelectionRange()
-        newText = w.getAllText() # Converts to unicode.
+        newInsert = self.getInsertPoint()
+        newSel = self.getSelectionRange()
+        newText = self.getAllText() # Converts to unicode.
         # Get the previous values from the VNode.
         oldText = p.b
         if oldText == newText:
@@ -254,33 +255,31 @@ class CursesTextMixin(object):
             if i > j: i, j = j, i
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
         # No need to redraw the screen.
-        if not self.useScintilla:
-            c.recolor()
+        c.recolor()
         if g.app.qt_use_tabs:
             if trace: g.trace(c.frame.top)
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
-    #@+node:ekr.20170511053143.8: *4* qtm.Generic high-level interface
+    #@+node:ekr.20170511053143.8: *4* ctm.Generic high-level interface
     # These call only wrapper methods.
-    #@+node:ekr.20170511053143.9: *5* qtm.Enable/disable
+    #@+node:ekr.20170511053143.9: *5* ctm.Enable/disable
     def disable(self):
         self.enabled = False
 
     def enable(self, enabled=True):
         self.enabled = enabled
-    #@+node:ekr.20170511053143.10: *5* qtm.Clipboard
+    #@+node:ekr.20170511053143.10: *5* ctm.Clipboard
     def clipboard_append(self, s):
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
 
     def clipboard_clear(self):
         g.app.gui.replaceClipboardWith('')
-    #@+node:ekr.20170511053143.11: *5* qtm.setFocus
+    #@+node:ekr.20170511053143.11: *5* ctm.setFocus (to do)
     def setFocus(self):
         '''CursesTextMixin'''
-        
         ###
             # trace = (False or g.app.trace_focus) and not g.unitTesting
             # if trace: print('BaseQTextWrapper.setFocus', self.widget)
@@ -292,14 +291,14 @@ class CursesTextMixin(object):
                 # Qsci and Qsci.QsciScintilla,
             # )), self.widget
             # QtWidgets.QTextBrowser.setFocus(self.widget)
-    #@+node:ekr.20170511053143.12: *5* qtm.Generic text
-    #@+node:ekr.20170511053143.13: *6* qtm.appendText
+    #@+node:ekr.20170511053143.12: *5* ctm.Generic text
+    #@+node:ekr.20170511053143.13: *6* ctm.appendText
     def appendText(self, s):
         '''CursesTextMixin'''
         s2 = self.getAllText()
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
-    #@+node:ekr.20170511053143.14: *6* qtm.delete
+    #@+node:ekr.20170511053143.14: *6* ctm.delete
     def delete(self, i, j=None):
         '''CursesTextMixin'''
         i = self.toPythonIndex(i)
@@ -311,12 +310,12 @@ class CursesTextMixin(object):
         self.setAllText(s[: i] + s[j:])
         # Bug fix: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
-    #@+node:ekr.20170511053143.15: *6* qtm.deleteTextSelection
+    #@+node:ekr.20170511053143.15: *6* ctm.deleteTextSelection
     def deleteTextSelection(self):
         '''CursesTextMixin'''
         i, j = self.getSelectionRange()
         self.delete(i, j)
-    #@+node:ekr.20170511053143.16: *6* qtm.get
+    #@+node:ekr.20170511053143.16: *6* ctm.get
     def get(self, i, j=None):
         '''CursesTextMixin'''
         # 2012/04/12: fix the following two bugs by using the vanilla code:
@@ -326,7 +325,7 @@ class CursesTextMixin(object):
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
         return s[i: j]
-    #@+node:ekr.20170511053143.17: *6* qtm.getLastPosition & getLength
+    #@+node:ekr.20170511053143.17: *6* ctm.getLastPosition & getLength
     def getLastPosition(self, s=None):
         '''CursesTextMixin'''
         return len(self.getAllText()) if s is None else len(s)
@@ -334,7 +333,7 @@ class CursesTextMixin(object):
     def getLength(self, s=None):
         '''CursesTextMixin'''
         return len(self.getAllText()) if s is None else len(s)
-    #@+node:ekr.20170511053143.18: *6* qtm.getSelectedText
+    #@+node:ekr.20170511053143.18: *6* ctm.getSelectedText
     def getSelectedText(self):
         '''CursesTextMixin'''
         i, j = self.getSelectionRange()
@@ -343,7 +342,7 @@ class CursesTextMixin(object):
         else:
             s = self.getAllText()
             return s[i: j]
-    #@+node:ekr.20170511053143.19: *6* qtm.insert
+    #@+node:ekr.20170511053143.19: *6* ctm.insert
     def insert(self, i, s):
         '''CursesTextMixin'''
         s2 = self.getAllText()
@@ -351,16 +350,16 @@ class CursesTextMixin(object):
         self.setAllText(s2[: i] + s + s2[i:])
         self.setInsertPoint(i + len(s))
         return i
-    #@+node:ekr.20170511053143.20: *6* qtm.seeInsertPoint
+    #@+node:ekr.20170511053143.20: *6* ctm.seeInsertPoint
     def seeInsertPoint(self):
         '''Ensure the insert point is visible.'''
         self.see(self.getInsertPoint())
             # getInsertPoint defined in client classes.
-    #@+node:ekr.20170511053143.21: *6* qtm.selectAllText
+    #@+node:ekr.20170511053143.21: *6* ctm.selectAllText
     def selectAllText(self, s=None):
         '''CursesTextMixin.'''
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20170511053143.22: *6* qtm.toPythonIndex
+    #@+node:ekr.20170511053143.22: *6* ctm.toPythonIndex
     def toPythonIndex(self, index, s=None):
         '''CursesTextMixin'''
         if s is None:
@@ -368,29 +367,28 @@ class CursesTextMixin(object):
         i = g.toPythonIndex(s, index)
         # g.trace(index,len(s),i,s[i:i+10])
         return i
-    #@+node:ekr.20170511053143.23: *6* qtm.toPythonIndexRowCol
+    #@+node:ekr.20170511053143.23: *6* ctm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
         '''CursesTextMixin'''
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row, col = g.convertPythonIndexToRowCol(s, i)
         return i, row, col
-    #@+node:ekr.20170511053143.24: *5* qtm.rememberSelectionAndScroll
+    #@+node:ekr.20170511053143.24: *5* ctm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self):
         trace = (False or g.trace_scroll) and not g.unitTesting
-        w = self
         v = self.c.p.v # Always accurate.
-        v.insertSpot = w.getInsertPoint()
-        i, j = w.getSelectionRange()
+        v.insertSpot = self.getInsertPoint()
+        i, j = self.getSelectionRange()
         if i > j: i, j = j, i
         assert(i <= j)
         v.selectionStart = i
         v.selectionLength = j - i
-        v.scrollBarSpot = spot = w.getYScrollPosition()
+        v.scrollBarSpot = spot = self.getYScrollPosition()
         if trace:
             g.trace(spot, v.h)
-            # g.trace(id(v),id(w),i,j,ins,spot,v.h)
-    #@+node:ekr.20170511053143.25: *5* qtm.tag_configure
+            # g.trace(id(v),id(self),i,j,ins,spot,v.h)
+    #@+node:ekr.20170511053143.25: *5* ctm.tag_configure
     def tag_configure(self, *args, **keys):
 
         trace = False and not g.unitTesting
@@ -401,7 +399,6 @@ class CursesTextMixin(object):
             val = keys.get('foreground')
             underline = keys.get('underline')
             if val:
-                # if trace: g.trace(key,val)
                 self.configDict[key] = val
             if underline:
                 self.configUnderlineDict[key] = True
@@ -442,7 +439,7 @@ class CursesLineEditWrapper(CursesTextMixin):
     #@+node:ekr.20170511053048.4: *4* qlew.Widget-specific overrides
     #@+node:ekr.20170511053048.5: *5* qlew.getAllText
     def getAllText(self):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if self.check():
             w = self.widget
             s = w.text()
@@ -451,7 +448,7 @@ class CursesLineEditWrapper(CursesTextMixin):
             return ''
     #@+node:ekr.20170511053048.6: *5* qlew.getInsertPoint
     def getInsertPoint(self):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if self.check():
             i = self.widget.cursorPosition()
             return i
@@ -459,7 +456,7 @@ class CursesLineEditWrapper(CursesTextMixin):
             return 0
     #@+node:ekr.20170511053048.7: *5* qlew.getSelectionRange
     def getSelectionRange(self, sort=True):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         w = self.widget
         if self.check():
             if w.hasSelectedText():
@@ -474,18 +471,18 @@ class CursesLineEditWrapper(CursesTextMixin):
             return 0, 0
     #@+node:ekr.20170511053048.8: *5* qlew.hasSelection
     def hasSelection(self):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if self.check():
             return self.widget.hasSelectedText()
         else:
             return False
     #@+node:ekr.20170511053048.9: *5* qlew.see & seeInsertPoint
     def see(self, i):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         pass
 
     def seeInsertPoint(self):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         pass
     #@+node:ekr.20170511053048.10: *5* qlew.setAllText
     def setAllText(self, s):
@@ -495,12 +492,12 @@ class CursesLineEditWrapper(CursesTextMixin):
             w.setText(s)
     #@+node:ekr.20170511053048.11: *5* qlew.setFocus
     def setFocus(self):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if self.check():
             g.app.gui.set_focus(self.c, self.widget)
     #@+node:ekr.20170511053048.12: *5* qlew.setInsertPoint
     def setInsertPoint(self, i, s=None):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if not self.check(): return
         w = self.widget
         if s is None:
@@ -511,7 +508,7 @@ class CursesLineEditWrapper(CursesTextMixin):
         w.setCursorPosition(i)
     #@+node:ekr.20170511053048.13: *5* qlew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
-        '''QHeadlineWrapper.'''
+        '''CursesHeadlineWrapper.'''
         if not self.check(): return
         w = self.widget
         if i > j: i, j = j, i
@@ -1197,25 +1194,23 @@ class CursesHeadlineWrapper(CursesLineEditWrapper):
     '''
 
     #@+others
-    #@+node:ekr.20170511053415.2: *3* qhw.Birth
+    #@+node:ekr.20170511053415.2: *3* chw.Birth
     def __init__(self, c, item, name, widget):
-        '''The ctor for the QHeadlineWrapper class.'''
-        # g.trace('(QHeadlineWrapper)',item,widget)
-        ### assert isinstance(widget, QtWidgets.QLineEdit), widget
+        '''The ctor for the CursesHeadlineWrapper class.'''
+        # g.trace('(CursesHeadlineWrapper)', item, widget)
+        assert isinstance(widget, LeoTreeLine), repr(widget)
         CursesLineEditWrapper.__init__(self, widget, name, c)
             # Init the base class.
         # Set ivars.
         self.c = c
         self.item = item
         self.name = name
-        self.permanent = False # Warn the minibuffer that we can go away.
         self.widget = widget
-        # Set the signal.
         ### g.app.gui.setFilter(c, self.widget, self, tag=name)
 
     def __repr__(self):
-        return 'QHeadlineWrapper: %s' % id(self)
-    #@+node:ekr.20170511053415.3: *3* qhw.check
+        return 'CursesHeadlineWrapper: %s' % id(self)
+    #@+node:ekr.20170511053415.3: *3* chw.check
     def check(self):
         '''Return True if the tree item exists and its edit widget exists.'''
         return False ### Not ready yet.
