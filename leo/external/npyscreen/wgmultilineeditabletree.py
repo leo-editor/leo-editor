@@ -89,7 +89,7 @@ class TreeLineEditable(npyscreen.TreeLine):
             self.cursor_position -= 1
     def h_end_editing(self, ch):
 
-        # logging.info('LeoTreeLine: %s' % ch)
+        # logging.info('TreeLineEditable: %s' % ch)
         self.editing = False
         self.how_exited = None
     def h_insert(self, i):
