@@ -6,6 +6,7 @@
 #@+<< cursesGui imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui imports >>
 import leo.core.leoGlobals as g
+import copy
 import logging
 import logging.handlers
 # import re
@@ -33,6 +34,8 @@ if npyscreen:
     assert utilNotify
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
+native = False # True: use vnodes, not TreeData.
+MORE_LABEL = "- more -" # string to tell user there are more options
 #@+<< base classes >>
 #@+node:ekr.20170511053555.1: **  << base classes >>
 #@+others
@@ -963,13 +966,16 @@ class CursesGui(leoGui.LeoGui):
         class BoxTitleTree(npyscreen.BoxTitle):
             # pylint: disable=used-before-assignment
             _contained_widget = LeoMLTree
-
-        hidden_root_node = LeoTreeData(content='<HIDDEN>', ignore_root=True)
-        for i in range(4):
-            node = hidden_root_node.new_child(content='node %s' % (i))
-            for j in range(2):
-                child = node.new_child(content='child %s.%s' % (i, j))
-                assert child
+            
+        if native:
+            hidden_root_node = None
+        else:
+            hidden_root_node = LeoTreeData(content='<HIDDEN>', ignore_root=True)
+            for i in range(4):
+                node = hidden_root_node.new_child(content='node %s' % (i))
+                for j in range(2):
+                    child = node.new_child(content='child %s.%s' % (i, j))
+                    assert child
 
         w = form.add(
             BoxTitleTree,
@@ -2084,7 +2090,7 @@ class CursesTree (leoFrame.LeoTree):
             # return ''
     #@+node:ekr.20170511094217.1: *3* CTree.Drawing
     #@+node:ekr.20170511094217.3: *4* CTree.redraw & helpers
-    def full_redraw(self, p=None, scroll=True, forceDraw=False):
+    def redraw(self, p=None, scroll=True, forceDraw=False):
         '''
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -2129,9 +2135,9 @@ class CursesTree (leoFrame.LeoTree):
         return p # Return the position, which may have changed.
     # Compatibility
 
-    redraw = full_redraw
-    redraw_now = full_redraw
-    #@+node:ekr.20170511094217.5: *5* CTree.declutter_node
+    full_redraw = redraw
+    redraw_now = redraw
+    #@+node:ekr.20170511094217.5: *5* CTree.declutter_node (not used)
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
 
@@ -2638,6 +2644,7 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511101300.9: *4* CTree.createTreeItem
     def createTreeItem(self, p, parent_item):
         trace = False and not g.unitTesting
+        c = self.c
         ###
             # w = self.tree_widget
             # itemOrTree = parent_item or w
@@ -2646,7 +2653,7 @@ class CursesTree (leoFrame.LeoTree):
         item = g.NullObject() ###
         if trace: g.trace(id(item), p.h, g.callers(4))
         try:
-            g.visit_tree_item(self.c, p, item)
+            g.visit_tree_item(c, p, item)
         except leoPlugins.TryNext:
             pass
         return item
@@ -3559,6 +3566,159 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
+    #@+node:ekr.20170511132617.1: *3* LeoMLTree.update & helpers (From MultiLine)
+    def xxx_update(self, clear=True):
+        
+        # pylint: disable=access-member-before-definition
+            ### Temporary.
+        g.trace('=====')
+        if native: ###
+            return self.leo_c.frame.tree.redraw()
+        w = self.tree_widget
+        assert w
+        if self.hidden and clear:
+            self.clear()
+            return False
+        elif self.hidden:
+            return False
+        if self.values == None:
+            self.values = []
+        # clear = None is a good value for this widget
+        display_length = len(self._my_widgets)
+        #self._remake_filter_cache()
+        self._filtered_values_cache = self.get_filtered_indexes()
+        if self.editing or self.always_show_cursor:
+            # EKR: Put cursor_line and start_display_at in range.
+            self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
+            self.start_display_at = max(0, self.start_display_at)
+            if self.cursor_line > self.start_display_at + display_length - 1:
+                self.start_display_at = self.cursor_line - (display_length - 1)
+                    # EKR: Like see().
+
+            # if self.slow_scroll:
+                # # Scroll by lines.
+                # if self.cursor_line > self.start_display_at + display_length - 1:
+                    # self.start_display_at = self.cursor_line - (display_length - 1)
+                # if self.cursor_line < self.start_display_at:
+                    # self.start_display_at = self.cursor_line
+            # else:
+                # # Scroll by pages.
+                # if self.cursor_line > self.start_display_at + (display_length - 2):
+                    # self.start_display_at = self.cursor_line
+                # if self.cursor_line < self.start_display_at:
+                    # self.start_display_at = self.cursor_line - (display_length - 2)
+                    # if self.start_display_at < 0: self.start_display_at = 0
+        # Don't update the screen if nothing has changed.
+        # no_change = False
+        try:
+            no_change = (
+                self._safe_to_display_cache and
+                self._last_value is self.value and
+                self.values == self._last_values and
+                self.start_display_at == self._last_start_display_at and
+                clear != True and
+                self._last_cursor_line == self.cursor_line and
+                self._last_filter == self._filter and
+                self.editing
+            )
+        except Exception:
+            no_change = False
+        if clear:
+            no_change = False
+        if not no_change or clear or self.never_cache:
+            if clear is True:
+                self.clear()
+            if self._last_start_display_at != self.start_display_at and clear is None:
+                self.clear()
+            else:
+                pass
+            self._last_start_display_at = self.start_display_at
+            self._before_print_lines()
+            indexer = 0 + self.start_display_at
+            for line in self._my_widgets[: -1]:
+                self._print_line(line, indexer)
+                line.task = "PRINTLINE"
+                line.update(clear=True)
+                indexer += 1
+            # Now do the final line
+            line = self._my_widgets[-1]
+            if (len(self.values) <= indexer + 1):
+                # or (len(self._my_widgets)*self._contained_widget_height)<self.height:
+                self._print_line(line, indexer)
+                line.task = "PRINTLINE"
+                line.update(clear=False)
+            elif len((self._my_widgets) * self._contained_widget_height) < self.height:
+                self._print_line(line, indexer)
+                line.task = "PRINTLINELASTOFSCREEN"
+                line.update(clear=False)
+                if self.do_colors():
+                    self.parent.curses_pad.addstr(
+                        self.rely + self.height - 1,
+                        self.relx, MORE_LABEL,
+                        self.parent.theme_manager.findPair(self, 'CONTROL'))
+                else:
+                    self.parent.curses_pad.addstr(
+                        self.rely + self.height - 1,
+                        self.relx,
+                        MORE_LABEL)
+            else:
+                line.name = MORE_LABEL
+                line.task = MORE_LABEL
+                #line.highlight = False
+                #line.show_bold = False
+                line.clear()
+                if self.do_colors():
+                    self.parent.curses_pad.addstr(
+                        self.rely + self.height - 1,
+                        self.relx, MORE_LABEL,
+                        self.parent.theme_manager.findPair(self, 'CONTROL'),
+                    )
+                else:
+                    self.parent.curses_pad.addstr(
+                        self.rely + self.height - 1,
+                        self.relx,
+                        MORE_LABEL,
+                    )
+            if self.editing or self.always_show_cursor:
+                self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
+                self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
+            else:
+                # There is a bug somewhere that affects the first line.  This cures it.
+                # Without this line, the first line inherits the color of the form when not editing. Not clear why.
+                self._my_widgets[0].update()
+        # EKR: remember the previous values.
+        self._last_start_display_at = self.start_display_at
+        self._last_cursor_line = self.cursor_line
+        self._last_values = copy.copy(self.values)
+        self._last_value = copy.copy(self.value)
+        # Prevent the program crashing if the user has changed values and
+        # the cursor is now on the bottom line.
+        if (self._my_widgets[self.cursor_line - self.start_display_at].task in
+            (MORE_LABEL, "PRINTLINELASTOFSCREEN")
+        ):
+            if self.slow_scroll:
+                self.start_display_at += 1
+            else:
+                self.start_display_at = self.cursor_line
+            self.update(clear=clear)
+    #@+node:ekr.20170511132913.1: *4* MultiLine._print_line
+    # def _print_line(self, line, value_indexer):
+        # if self.widgets_inherit_color and self.do_colors():
+            # line.color = self.color
+        # self._set_line_values(line, value_indexer)
+        # self._set_line_highlighting(line, value_indexer)
+    #@+node:ekr.20170511132953.1: *4* MultiLine._set_line_values
+    # def _set_line_values(self, line, value_indexer):
+        # try:
+            # _vl = self.values[value_indexer]
+        # except IndexError:
+            # self._set_line_blank(line)
+            # return False
+        # except TypeError:
+            # self._set_line_blank(line)
+            # return False
+        # line.value = self.display_value(_vl)
+        # line.hidden = False
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
