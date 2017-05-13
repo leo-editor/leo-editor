@@ -3734,7 +3734,7 @@ class LeoMLTree(npyscreen.MLTree):
             line._tree_sibling_next = False
             line._tree_has_children = False
             line._tree_expanded     = False
-            line._tree_last_line    = False
+            line._tree_last_line    = True #
             line._tree_depth_next   = False
             line._tree_ignore_root  = None
             #
