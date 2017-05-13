@@ -3595,29 +3595,40 @@ class LeoMLTree(npyscreen.MLTree):
 
     #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
     def update(self, clear=True):
-        trace = True
+        '''Redraw the tree.'''
         if self.values is None:
             self.values = []
+        if self.editing:
+            self._init_update()
+        if self._must_redraw(clear):
+            self._redraw(clear)
+        # Remember the previous values.
+        self._last_start_display_at = self.start_display_at
+        self._last_cursor_line = self.cursor_line
+        self._last_values = copy.copy(self.values)
+        self._last_value = copy.copy(self.value)
+    #@+node:ekr.20170513122253.1: *4* _init_update
+    def _init_update(self):
+        '''Put self.cursor_line and self.start_display_at in range.'''
         display_length = len(self._my_widgets)
-        self._filtered_values_cache = self.get_filtered_indexes()
-            ### To be removed.
-        if self.editing or self.always_show_cursor:
-            # Put cursor_line in range.
-            self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
-            if self.slow_scroll:
-                # Scroll by lines.
-                if self.cursor_line > self.start_display_at + display_length - 1:
-                    self.start_display_at = self.cursor_line - (display_length - 1)
-                if self.cursor_line < self.start_display_at:
-                    self.start_display_at = self.cursor_line
-            else:
-                # Scroll by pages.
-                if self.cursor_line > self.start_display_at + (display_length - 2):
-                    self.start_display_at = self.cursor_line
-                if self.cursor_line < self.start_display_at:
-                    self.start_display_at = self.cursor_line - (display_length - 2)
-                    if self.start_display_at < 0: self.start_display_at = 0
-        # Set must_redraw if we need to update.
+        self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
+        if self.slow_scroll:
+            # Scroll by lines.
+            if self.cursor_line > self.start_display_at + display_length - 1:
+                self.start_display_at = self.cursor_line - (display_length - 1)
+            if self.cursor_line < self.start_display_at:
+                self.start_display_at = self.cursor_line
+        else:
+            # Scroll by pages.
+            if self.cursor_line > self.start_display_at + (display_length - 2):
+                self.start_display_at = self.cursor_line
+            if self.cursor_line < self.start_display_at:
+                self.start_display_at = self.cursor_line - (display_length - 2)
+                if self.start_display_at < 0: self.start_display_at = 0
+    #@+node:ekr.20170513123010.1: *4* _must_redraw
+    def _must_redraw(self, clear):
+        '''Return a list of reasons why we must redraw.'''
+        trace = True
         table = (
             ('cache', not self._safe_to_display_cache or self.never_cache),
             ('value', self._last_value is not self.value),
@@ -3629,62 +3640,11 @@ class LeoMLTree(npyscreen.MLTree):
             ('editing', not self.editing),
         )
         reasons = (reason for (reason, cond) in table if cond)
-        must_redraw = bool(reasons)
-        if trace:
-            val = self.values[self.cursor_line].content
-            g.trace('line: %2s %-20s %s' % (self.cursor_line, ','.join(reasons), val))
-        if must_redraw:
-            if clear is True:
-                self.clear()
-            if self._last_start_display_at != self.start_display_at and clear is None:
-                self.clear()
-            # else: pass
-            self._last_start_display_at = self.start_display_at
-            self._before_print_lines()
-            i = 0 + self.start_display_at
-            for line in self._my_widgets[: -1]:
-                self._print_line(line, i)
-                line.task = "PRINTLINE"
-                line.update(clear=True)
-                i += 1
-            # Now do the final line
-            line = self._my_widgets[-1]
-            if (len(self.values) <= i + 1):
-                self._print_line(line, i)
-                line.task = "PRINTLINE"
-                line.update(clear=False)
-            elif len((self._my_widgets) * self._contained_widget_height) < self.height:
-                self._print_line(line, i)
-                line.task = "PRINTLINELASTOFSCREEN"
-                line.update(clear=False)
-                self._put_string(self.rely + self.height - 1, self.relx)
-            else:
-                line.clear()
-                self._put_string(self.rely + self.height - 1, self.relx)
-            if self.editing or self.always_show_cursor:
-                self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
-                self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
-            else:
-                # There is a bug somewhere that affects the first line.  This cures it.
-                # Without this line, the first line inherits the color of the form when not editing.
-                # Not clear why.
-                self._my_widgets[0].update()
-        # EKR: remember the previous values.
-        self._last_start_display_at = self.start_display_at
-        self._last_cursor_line = self.cursor_line
-        self._last_values = copy.copy(self.values)
-        self._last_value = copy.copy(self.value)
-        # Prevent the program crashing if the user has changed values and
-        # the cursor is now on the bottom line.
-        ###
-            # if (self._my_widgets[self.cursor_line - self.start_display_at].task in
-                # (MORE_LABEL, "PRINTLINELASTOFSCREEN")
-            # ):
-                # if self.slow_scroll:
-                    # self.start_display_at += 1
-                # else:
-                    # self.start_display_at = self.cursor_line
-                # self.update(clear=clear)
+        if trace: g.trace('line: %2s %-20s %s' % (
+            self.cursor_line,
+            ','.join(reasons),
+            self.values[self.cursor_line].content))
+        return reasons
     #@+node:ekr.20170513032717.1: *4* _print_line
     def _print_line(self, line, i):
         
@@ -3705,6 +3665,38 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, MORE_LABEL, style)
         else:
             self.parent.curses_pad.addstr(y, x, MORE_LABEL)
+    #@+node:ekr.20170513122427.1: *4* _redraw
+    def _redraw(self, clear):
+
+        if clear is True:
+            self.clear()
+        if self._last_start_display_at != self.start_display_at and clear is None:
+            self.clear()
+        self._last_start_display_at = self.start_display_at
+        i = self.start_display_at
+        for line in self._my_widgets[:-1]:
+            self._print_line(line, i)
+            line.task = "PRINTLINE"
+            line.update(clear=True)
+            i += 1
+        # Do the last line
+        line = self._my_widgets[-1]
+        if (len(self.values) <= i + 1):
+            self._print_line(line, i)
+            line.task = "PRINTLINE"
+            line.update(clear=False)
+        elif len((self._my_widgets) * self._contained_widget_height) < self.height:
+            self._print_line(line, i)
+            line.task = "PRINTLINELASTOFSCREEN"
+            line.update(clear=False)
+            self._put_string(self.rely + self.height - 1, self.relx)
+        else:
+            line.clear()
+            self._put_string(self.rely + self.height - 1, self.relx)
+        # Finish.
+        if self.editing:
+            self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
+            self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
