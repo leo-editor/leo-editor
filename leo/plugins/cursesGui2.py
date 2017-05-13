@@ -3564,6 +3564,35 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
+    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down
+    def h_cursor_line_down(self, ch):
+        self.cursor_line += 1
+        if self.cursor_line >= len(self.values):
+            if self.scroll_exit: 
+                self.cursor_line = len(self.values)-1
+                self.h_exit_down(ch)
+                return True
+            else: 
+                self.cursor_line -=1
+                return True
+        ### if self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL:
+        w = self._my_widgets[self.cursor_line-self.start_display_at]
+        task = getattr(w, 'task', None)
+        if task == MORE_LABEL:
+            if self.slow_scroll:
+                self.start_display_at += 1
+            else:
+                self.start_display_at = self.cursor_line
+    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (revise)
+    def h_cursor_line_up(self, ch):
+        self.cursor_line -= 1
+        if self.cursor_line < 0: 
+            if self.scroll_exit:
+                self.cursor_line = 0
+                self.h_exit_up(ch)
+            else: 
+                self.cursor_line = 0
+
     #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
     def update(self, clear=True):
         trace = True
@@ -3677,14 +3706,15 @@ class LeoMLTree(npyscreen.MLTree):
         self._last_value = copy.copy(self.value)
         # Prevent the program crashing if the user has changed values and
         # the cursor is now on the bottom line.
-        if (self._my_widgets[self.cursor_line - self.start_display_at].task in
-            (MORE_LABEL, "PRINTLINELASTOFSCREEN")
-        ):
-            if self.slow_scroll:
-                self.start_display_at += 1
-            else:
-                self.start_display_at = self.cursor_line
-            self.update(clear=clear)
+        ###
+            # if (self._my_widgets[self.cursor_line - self.start_display_at].task in
+                # (MORE_LABEL, "PRINTLINELASTOFSCREEN")
+            # ):
+                # if self.slow_scroll:
+                    # self.start_display_at += 1
+                # else:
+                    # self.start_display_at = self.cursor_line
+                # self.update(clear=clear)
     #@+node:ekr.20170513075808.1: *4* _get_content
     # def _get_content(self, line_value):
         
@@ -3715,9 +3745,13 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
-        val = self.values[i]
+        values = self.values
+        n = len(values)
+        val = values[i] if 0 <= i < n else None
+        if not val:
+            return ###
         assert isinstance(val, LeoTreeData), repr(val)
-        val1 = self.values[i+1] if i < len(self.values) else None
+        val1 = values[i+1] if i+1 < n else None
         val1_depth = val1.find_depth() if val1 else False
         # 
         line.value = val ### self.display_value(val)
@@ -3732,7 +3766,8 @@ class LeoMLTree(npyscreen.MLTree):
         line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
         line.hidden = False ### To be removed.
-        g.trace(i, line.value.content)
+        line.task = None ###
+        # g.trace(i, line.value.content)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
