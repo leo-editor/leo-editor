@@ -53,7 +53,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
         
-        g.trace('==== LeoTreeLine')
+        # g.trace('==== LeoTreeLine')
         self.editing = True
         # self._pre_edit()
         self.highlight = True
@@ -3447,14 +3447,14 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline
     def edit_headline(self):
 
-        trace = True
+        trace = False
         if not self.values:
             if trace: g.trace('no values')
             self.insert_line()
             return False
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-            g.trace('LeoMLTree.active_line: %r' % active_line)
+            if trace: g.trace('LeoMLTree.active_line: %r' % active_line)
         except IndexError:
             # pylint: disable=pointless-statement
             self._my_widgets[0]
@@ -3600,43 +3600,43 @@ class LeoMLTree(npyscreen.MLTree):
                     if self.start_display_at < 0: self.start_display_at = 0
         # Don't update the screen if nothing has changed.
         # no_change = False
-        if trace:
-            reasons = []
-            if not self._safe_to_display_cache: reasons.append('cache')
-            if self._last_value is not self.value: reasons.append('value')
-            if self.values != self._last_values: reasons.append('values')
-            if self.start_display_at != self._last_start_display_at: reasons.append('start')
-            if clear: reasons.append('clear')
-            if self._last_cursor_line != self.cursor_line: reasons.append('cursor')
-            if self._last_filter != self._filter: reasons.append('filter')
-            if not self.editing: reasons.append('editing')
-        try:
-            no_change = (
-                self._safe_to_display_cache and
-                self._last_value is self.value and
-                self.values == self._last_values and
-                self.start_display_at == self._last_start_display_at and
-                clear != True and
-                self._last_cursor_line == self.cursor_line and
-                self._last_filter == self._filter and
-                self.editing
-            )
-        except Exception:
-            no_change = False
-        if clear:
-            no_change = False
+        table = (
+            ('cache', not self._safe_to_display_cache or self.never_cache),
+            ('value', self._last_value is not self.value),
+            ('values', self.values != self._last_values),
+            ('start', self.start_display_at != self._last_start_display_at),
+            ('clear', clear != True),
+            ('cursor', self._last_cursor_line != self.cursor_line),
+            ('filter', self._last_filter != self._filter),
+            ('editing', not self.editing),
+        )
+        reasons = (reason for (reason, cond) in table if cond)
+        changed = bool(reasons)
+        # try:
+            # no_change = (
+                # self._safe_to_display_cache and
+                # self._last_value is self.value and
+                # self.values == self._last_values and
+                # self.start_display_at == self._last_start_display_at and
+                # clear != True and
+                # self._last_cursor_line == self.cursor_line and
+                # self._last_filter == self._filter and
+                # self.editing
+            # )
+        # except Exception:
+            # no_change = False
+        # if clear:
+            # no_change = False
         if trace:
             val = self.values[self.cursor_line]
             val = val.get_content()
-            g.trace('cursor_line: %2s %20s %s' % (
-                self.cursor_line, ','.join(reasons), val))
-        if not no_change or clear or self.never_cache:
+            g.trace('line: %2s %-20s %s' % (self.cursor_line, ','.join(reasons), val))
+        if changed: ### not no_change or clear or self.never_cache:
             if clear is True:
                 self.clear()
             if self._last_start_display_at != self.start_display_at and clear is None:
                 self.clear()
-            else:
-                pass
+            # else: pass
             self._last_start_display_at = self.start_display_at
             self._before_print_lines()
             indexer = 0 + self.start_display_at
