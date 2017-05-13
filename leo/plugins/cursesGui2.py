@@ -3708,7 +3708,7 @@ class LeoMLTree(npyscreen.MLTree):
             # line.value is a weakref to a LeoTreeData.
             # There is only one get_content() method, and it returns self.content.
         self._set_line_highlighting(line, i)
-    #@+node:ekr.20170513085916.1: *4* _set_line_blank
+    #@+node:ekr.20170513085916.1: *4* _set_line_blank (to be removed)
     def _set_line_blank(self, line):
         line.value    = None
         line.show_bold= False
@@ -3716,54 +3716,24 @@ class LeoMLTree(npyscreen.MLTree):
         line.hidden   = True
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
-        
-        line._tree_real_value   = None
-        line._tree_depth        = False
-        line._tree_sibling_next = False
-        line._tree_has_children = False
-        line._tree_expanded     = False
-        line._tree_last_line    = False
-        line._tree_depth_next   = False
-        line._tree_ignore_root  = None
-        try:
-            line.value = self.display_value(self.values[i])
-            line._tree_real_value = self.values[i]
-            line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
-            # try:
-                # line._tree_depth        = self._find_depth(self.values[i])
-                # line._tree_has_children = self._has_children(self.values[i])
-                # line._tree_expanded     = self.values[i].expanded
-            # except Exception:
-                # line._tree_depth        = False
-                # line._tree_has_children = False
-                # line._tree_expanded     = False
-            val = self.values[i]
-            val1 = self.values[i+1] if i < len(self.values) else None
-            line._tree_depth = val.find_depth()
-            line._tree_has_children = len(val._children) > 0
-            line._tree_expanded = val.expanded
-            # try:
-                # if line._tree_depth == self._find_depth(self.values[i+1]):
-                    # line._tree_sibling_next = True
-                # else:
-                    # line._tree_sibling_next = False
-            # except Exception:
-                # line._sibling_next = False
-                # line._tree_last_line = True
-            ### line._tree_sibling_next = line._tree_depth == self._find_depth(val1)
-            val1_depth = val1.find_depth() if val1 else False
-            line._tree_sibling_next = line._tree_depth == val1_depth
-            line._tree_last_line = not bool(line._tree_sibling_next)
-            # try:
-                # line._tree_depth_next = self._find_depth(self.values[i+1])
-            # except Exception:
-                # line._tree_depth_next = False
-            line._tree_depth_next = val1_depth
-            line.hidden = False
-        except IndexError:
-            self._set_line_blank(line)
-        except TypeError:
-            self._set_line_blank(line)
+        '''Set internal values of line using self.values[i] and self.values[i+1]'''
+        val = self.values[i]
+        val1 = self.values[i+1] if i < len(self.values) else None
+        val1_depth = val1.find_depth() if val1 else False
+        # 
+        line.value = val ### self.display_value(val)
+        line._tree_real_value = val
+        line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
+        # 
+        line._tree_depth = val.find_depth()
+        line._tree_has_children = len(val._children) > 0
+        line._tree_expanded = val.expanded
+        # 
+        line._tree_sibling_next = line._tree_depth == val1_depth
+        line._tree_last_line = not bool(line._tree_sibling_next)
+        #
+        line._tree_depth_next = val1_depth
+        line.hidden = False
         g.trace(i, line.value.content)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
