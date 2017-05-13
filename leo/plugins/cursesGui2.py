@@ -901,7 +901,7 @@ class CursesGui(leoGui.LeoGui):
             name='Body Pane',
             footer="Press i or o to insert text", 
             values=g.splitLines(c.p.b), 
-            slow_scroll=False,
+            slow_scroll=True,
         )
         # Link and check.
         assert isinstance(w, npyscreen.MultiLineEditableBoxed), repr(w)
@@ -3603,10 +3603,6 @@ class LeoMLTree(npyscreen.MLTree):
             ### To be removed.
         if self.editing or self.always_show_cursor:
             # Put cursor_line in range.
-            # if self.cursor_line < 0:
-                # self.cursor_line = 0
-            # if self.cursor_line > len(self.values) - 1:
-                # self.cursor_line = len(self.values) - 1
             self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
             if self.slow_scroll:
                 # Scroll by lines.
