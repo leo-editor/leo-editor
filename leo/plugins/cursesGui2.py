@@ -2286,7 +2286,7 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511094217.10: *5* CTree.initData
     def initData(self):
         
-        g.trace('*****')
+        # g.trace('*****')
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
@@ -3001,10 +3001,10 @@ class CursesTree (leoFrame.LeoTree):
         return item
     #@+node:ekr.20170511100548.1: *3* CTree.Unused
     #@+node:ekr.20170511104916.1: *4* Unused drawing code
-    #@+node:ekr.20170511094217.2: *5* CTree.clear (Used?)
+    #@+node:ekr.20170511094217.2: *5* CTree.clear (do-nothing)
     def clear(self):
         '''Clear all widgets in the tree.'''
-        g.trace('=====', g.callers())
+        # g.trace('=====', g.callers())
         # w = self.tree_widget
         # w.clear()
     #@+node:ekr.20170511094217.4: *5* CTree.clear_visual_icons
