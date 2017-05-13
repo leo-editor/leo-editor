@@ -3631,8 +3631,7 @@ class LeoMLTree(npyscreen.MLTree):
         reasons = (reason for (reason, cond) in table if cond)
         must_redraw = bool(reasons)
         if trace:
-            val = self.values[self.cursor_line]
-            val = val.get_content()
+            val = self.values[self.cursor_line].content
             g.trace('line: %2s %-20s %s' % (self.cursor_line, ','.join(reasons), val))
         if must_redraw:
             if clear is True:
@@ -3662,19 +3661,6 @@ class LeoMLTree(npyscreen.MLTree):
             else:
                 line.clear()
                 self._put_string(self.rely + self.height - 1, self.relx)
-                # if self.do_colors():
-                    # self.parent.curses_pad.addstr(
-                        # self.rely + self.height - 1,
-                        # self.relx,
-                        # MORE_LABEL,
-                        # self.parent.theme_manager.findPair(self, 'CONTROL'),
-                    # )
-                # else:
-                    # self.parent.curses_pad.addstr(
-                        # self.rely + self.height - 1,
-                        # self.relx,
-                        # MORE_LABEL,
-                    # )
             if self.editing or self.always_show_cursor:
                 self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
                 self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
