@@ -3642,20 +3642,20 @@ class LeoMLTree(npyscreen.MLTree):
             # else: pass
             self._last_start_display_at = self.start_display_at
             self._before_print_lines()
-            indexer = 0 + self.start_display_at
+            i = 0 + self.start_display_at
             for line in self._my_widgets[: -1]:
-                self._print_line(line, indexer)
+                self._print_line(line, i)
                 line.task = "PRINTLINE"
                 line.update(clear=True)
-                indexer += 1
+                i += 1
             # Now do the final line
             line = self._my_widgets[-1]
-            if (len(self.values) <= indexer + 1):
-                self._print_line(line, indexer)
+            if (len(self.values) <= i + 1):
+                self._print_line(line, i)
                 line.task = "PRINTLINE"
                 line.update(clear=False)
             elif len((self._my_widgets) * self._contained_widget_height) < self.height:
-                self._print_line(line, indexer)
+                self._print_line(line, i)
                 line.task = "PRINTLINELASTOFSCREEN"
                 line.update(clear=False)
                 if self.do_colors():
@@ -3674,7 +3674,8 @@ class LeoMLTree(npyscreen.MLTree):
                 if self.do_colors():
                     self.parent.curses_pad.addstr(
                         self.rely + self.height - 1,
-                        self.relx, MORE_LABEL,
+                        self.relx,
+                        MORE_LABEL,
                         self.parent.theme_manager.findPair(self, 'CONTROL'),
                     )
                 else:
