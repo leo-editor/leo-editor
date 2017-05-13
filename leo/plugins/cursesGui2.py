@@ -3566,20 +3566,12 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
-    #@+node:ekr.20170511132617.1: *3* LeoMLTree.update & helpers (From MultiLine)
-    def xxx_update(self, clear=True):
-        
-        # pylint: disable=access-member-before-definition
-            ### Temporary.
-        g.trace('=====')
-        if native: ###
-            return self.leo_c.frame.tree.redraw()
-        w = self.tree_widget
-        assert w
-        if self.hidden and clear:
-            self.clear()
-            return False
-        elif self.hidden:
+    #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
+    def update(self, clear=True):
+        trace = True
+        if self.hidden:
+            if trace: g.trace('hidden')
+            if clear: self.clear()
             return False
         if self.values == None:
             self.values = []
@@ -3588,26 +3580,24 @@ class LeoMLTree(npyscreen.MLTree):
         #self._remake_filter_cache()
         self._filtered_values_cache = self.get_filtered_indexes()
         if self.editing or self.always_show_cursor:
-            # EKR: Put cursor_line and start_display_at in range.
-            self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
-            self.start_display_at = max(0, self.start_display_at)
-            if self.cursor_line > self.start_display_at + display_length - 1:
-                self.start_display_at = self.cursor_line - (display_length - 1)
-                    # EKR: Like see().
-
-            # if self.slow_scroll:
-                # # Scroll by lines.
-                # if self.cursor_line > self.start_display_at + display_length - 1:
-                    # self.start_display_at = self.cursor_line - (display_length - 1)
-                # if self.cursor_line < self.start_display_at:
-                    # self.start_display_at = self.cursor_line
-            # else:
-                # # Scroll by pages.
-                # if self.cursor_line > self.start_display_at + (display_length - 2):
-                    # self.start_display_at = self.cursor_line
-                # if self.cursor_line < self.start_display_at:
-                    # self.start_display_at = self.cursor_line - (display_length - 2)
-                    # if self.start_display_at < 0: self.start_display_at = 0
+            # EKR: Put cursor_line in range.
+            if self.cursor_line < 0:
+                self.cursor_line = 0
+            if self.cursor_line > len(self.values) - 1:
+                self.cursor_line = len(self.values) - 1
+            if self.slow_scroll:
+                # Scroll by lines.
+                if self.cursor_line > self.start_display_at + display_length - 1:
+                    self.start_display_at = self.cursor_line - (display_length - 1)
+                if self.cursor_line < self.start_display_at:
+                    self.start_display_at = self.cursor_line
+            else:
+                # Scroll by pages.
+                if self.cursor_line > self.start_display_at + (display_length - 2):
+                    self.start_display_at = self.cursor_line
+                if self.cursor_line < self.start_display_at:
+                    self.start_display_at = self.cursor_line - (display_length - 2)
+                    if self.start_display_at < 0: self.start_display_at = 0
         # Don't update the screen if nothing has changed.
         # no_change = False
         try:
@@ -3625,6 +3615,11 @@ class LeoMLTree(npyscreen.MLTree):
             no_change = False
         if clear:
             no_change = False
+        if trace:
+            val = self.values[self.cursor_line]
+            val = val.get_content()
+            g.trace('changed: %5s, cursor_line: %s %s' % (
+                not no_change, self.cursor_line, val))
         if not no_change or clear or self.never_cache:
             if clear is True:
                 self.clear()
@@ -3652,16 +3647,11 @@ class LeoMLTree(npyscreen.MLTree):
                 line.task = "PRINTLINELASTOFSCREEN"
                 line.update(clear=False)
                 if self.do_colors():
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx, MORE_LABEL,
-                        self.parent.theme_manager.findPair(self, 'CONTROL'))
+                    self.parent.curses_pad.addstr(self.rely + self.height - 1, self.relx, MORE_LABEL, self.parent.theme_manager.findPair(self, 'CONTROL'))
                 else:
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx,
-                        MORE_LABEL)
+                    self.parent.curses_pad.addstr(self.rely + self.height - 1, self.relx, MORE_LABEL)
             else:
+                #line.value = MORE_LABEL
                 line.name = MORE_LABEL
                 line.task = MORE_LABEL
                 #line.highlight = False
@@ -3701,24 +3691,17 @@ class LeoMLTree(npyscreen.MLTree):
             else:
                 self.start_display_at = self.cursor_line
             self.update(clear=clear)
-    #@+node:ekr.20170511132913.1: *4* MultiLine._print_line
-    # def _print_line(self, line, value_indexer):
-        # if self.widgets_inherit_color and self.do_colors():
-            # line.color = self.color
-        # self._set_line_values(line, value_indexer)
-        # self._set_line_highlighting(line, value_indexer)
-    #@+node:ekr.20170511132953.1: *4* MultiLine._set_line_values
-    # def _set_line_values(self, line, value_indexer):
-        # try:
-            # _vl = self.values[value_indexer]
-        # except IndexError:
-            # self._set_line_blank(line)
-            # return False
-        # except TypeError:
-            # self._set_line_blank(line)
-            # return False
-        # line.value = self.display_value(_vl)
-        # line.hidden = False
+    #@+node:ekr.20170513032717.1: *4* _print_line
+    def _print_line(self, line, value_indexer):
+        
+        trace = True
+        if self.widgets_inherit_color and self.do_colors():
+            line.color = self.color
+        self._set_line_values(line, value_indexer)
+            # Sets line.value
+        if trace: g.trace(value_indexer, line.value.get_content())
+            # line.value is a weakref to a LeoTreeData.
+        self._set_line_highlighting(line, value_indexer)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):

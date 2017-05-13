@@ -158,15 +158,9 @@ class MultiLine(widget.Widget):
         self._last_value  = False
     #@+node:ekr.20170428084208.82: *3* MultiLine.update
     def update(self, clear=True):
-        trace = False
-        if trace:
-            from . import npysTree as npysTree
-            val = self.values[self.cursor_line]
-            # name = val.__class__.__name__
-            if isinstance(val, npysTree.TreeData):
-                val = val.get_content()
-            g.trace('cursor_line: %s %s' % (self.cursor_line, val))
-                # self.start_display_at,
+        trace = False ### LeoMLTree.update overrides this.
+        if trace and self.hidden:
+            g.trace('hidden')
         if self.hidden and clear:
             self.clear()
             return False
@@ -214,6 +208,15 @@ class MultiLine(widget.Widget):
             no_change = False
         if clear:
             no_change = False
+        if trace:
+            from . import npysTree as npysTree
+            val = self.values[self.cursor_line]
+            # name = val.__class__.__name__ 
+            if isinstance(val, npysTree.TreeData):
+                val = val.get_content()
+            g.trace('changed: %5s, cursor_line: %s %s' % (
+                not no_change, self.cursor_line, val))
+                # self.start_display_at,
         if not no_change or clear or self.never_cache:
             if clear is True:
                 self.clear()
@@ -291,9 +294,14 @@ class MultiLine(widget.Widget):
         pass
     #@+node:ekr.20170428084208.84: *3* _print_line
     def _print_line(self, line, value_indexer):
+        
+        trace = False ### LeoMLTree.update overrides this.
         if self.widgets_inherit_color and self.do_colors():
             line.color = self.color
         self._set_line_values(line, value_indexer)
+        # Sets line.value
+        if trace: g.trace(value_indexer, line.value.get_content())
+            # line.value is a weakref to a LeoTreeData.
         self._set_line_highlighting(line, value_indexer)
     #@+node:ekr.20170504211313.1: *3* setters
     #@+node:ekr.20170428084208.85: *4* _set_line_values
