@@ -3649,8 +3649,6 @@ class LeoMLTree(npyscreen.MLTree):
                         self.relx,
                         MORE_LABEL)
             else:
-                ### line.name = MORE_LABEL
-                ### line.task = MORE_LABEL
                 line.clear()
                 if self.do_colors():
                     self.parent.curses_pad.addstr(
@@ -3718,6 +3716,7 @@ class LeoMLTree(npyscreen.MLTree):
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
         val = self.values[i]
+        assert isinstance(val, LeoTreeData), repr(val)
         val1 = self.values[i+1] if i < len(self.values) else None
         val1_depth = val1.find_depth() if val1 else False
         # 
@@ -3731,9 +3730,8 @@ class LeoMLTree(npyscreen.MLTree):
         # 
         line._tree_sibling_next = line._tree_depth == val1_depth
         line._tree_last_line = not bool(line._tree_sibling_next)
-        #
         line._tree_depth_next = val1_depth
-        line.hidden = False
+        line.hidden = False ### To be removed.
         g.trace(i, line.value.content)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
