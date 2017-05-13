@@ -3600,6 +3600,16 @@ class LeoMLTree(npyscreen.MLTree):
                     if self.start_display_at < 0: self.start_display_at = 0
         # Don't update the screen if nothing has changed.
         # no_change = False
+        if trace:
+            reasons = []
+            if not self._safe_to_display_cache: reasons.append('cache')
+            if self._last_value is not self.value: reasons.append('value')
+            if self.values != self._last_values: reasons.append('values')
+            if self.start_display_at != self._last_start_display_at: reasons.append('start')
+            if clear: reasons.append('clear')
+            if self._last_cursor_line != self.cursor_line: reasons.append('cursor')
+            if self._last_filter != self._filter: reasons.append('filter')
+            if not self.editing: reasons.append('editing')
         try:
             no_change = (
                 self._safe_to_display_cache and
@@ -3618,8 +3628,8 @@ class LeoMLTree(npyscreen.MLTree):
         if trace:
             val = self.values[self.cursor_line]
             val = val.get_content()
-            g.trace('changed: %5s, cursor_line: %s %s' % (
-                not no_change, self.cursor_line, val))
+            g.trace('cursor_line: %2s %20s %s' % (
+                self.cursor_line, ','.join(reasons), val))
         if not no_change or clear or self.never_cache:
             if clear is True:
                 self.clear()
@@ -3694,7 +3704,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513032717.1: *4* _print_line
     def _print_line(self, line, value_indexer):
         
-        trace = True
+        trace = False
         if self.widgets_inherit_color and self.do_colors():
             line.color = self.color
         self._set_line_values(line, value_indexer)
