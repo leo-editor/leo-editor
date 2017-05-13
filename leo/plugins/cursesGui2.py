@@ -3605,6 +3605,7 @@ class LeoMLTree(npyscreen.MLTree):
         # Remember the previous values.
         self._last_start_display_at = self.start_display_at
         self._last_cursor_line = self.cursor_line
+        ### May be needed because of weakrefs...
         self._last_values = copy.copy(self.values)
         self._last_value = copy.copy(self.value)
     #@+node:ekr.20170513122253.1: *4* _init_update
@@ -3645,7 +3646,7 @@ class LeoMLTree(npyscreen.MLTree):
             ','.join(reasons),
             self.values[self.cursor_line].content))
         return reasons
-    #@+node:ekr.20170513032717.1: *4* _print_line
+    #@+node:ekr.20170513032717.1: *4* _print_line & helpers
     def _print_line(self, line, i):
         
         trace = False
@@ -3657,47 +3658,7 @@ class LeoMLTree(npyscreen.MLTree):
             # line.value is a weakref to a LeoTreeData.
             # There is only one get_content() method, and it returns self.content.
         self._set_line_highlighting(line, i)
-    #@+node:ekr.20170513102428.1: *4* _put_string
-    def _put_string(self, y, x):
-        
-        if self.do_colors():
-            style = self.parent.theme_manager.findPair(self, 'CONTROL')
-            self.parent.curses_pad.addstr(y, x, MORE_LABEL, style)
-        else:
-            self.parent.curses_pad.addstr(y, x, MORE_LABEL)
-    #@+node:ekr.20170513122427.1: *4* _redraw
-    def _redraw(self, clear):
-
-        if clear is True:
-            self.clear()
-        if self._last_start_display_at != self.start_display_at and clear is None:
-            self.clear()
-        self._last_start_display_at = self.start_display_at
-        i = self.start_display_at
-        for line in self._my_widgets[:-1]:
-            self._print_line(line, i)
-            line.task = "PRINTLINE"
-            line.update(clear=True)
-            i += 1
-        # Do the last line
-        line = self._my_widgets[-1]
-        if (len(self.values) <= i + 1):
-            self._print_line(line, i)
-            line.task = "PRINTLINE"
-            line.update(clear=False)
-        elif len((self._my_widgets) * self._contained_widget_height) < self.height:
-            self._print_line(line, i)
-            line.task = "PRINTLINELASTOFSCREEN"
-            line.update(clear=False)
-            self._put_string(self.rely + self.height - 1, self.relx)
-        else:
-            line.clear()
-            self._put_string(self.rely + self.height - 1, self.relx)
-        # Finish.
-        if self.editing:
-            self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
-            self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
-    #@+node:ekr.20170513075423.1: *4* _set_line_values
+    #@+node:ekr.20170513075423.1: *5* _set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
         values = self.values
@@ -3732,6 +3693,46 @@ class LeoMLTree(npyscreen.MLTree):
         line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
         # g.trace(i, line.value.content)
+    #@+node:ekr.20170513122427.1: *4* _redraw & helper
+    def _redraw(self, clear):
+        '''Do the actual redraw.'''
+        if clear is True:
+            self.clear()
+        if self._last_start_display_at != self.start_display_at and clear is None:
+            self.clear()
+        self._last_start_display_at = self.start_display_at
+        i = self.start_display_at
+        for line in self._my_widgets[:-1]:
+            self._print_line(line, i)
+            line.task = "PRINTLINE"
+            line.update(clear=True)
+            i += 1
+        # Do the last line
+        line = self._my_widgets[-1]
+        if (len(self.values) <= i + 1):
+            self._print_line(line, i)
+            line.task = "PRINTLINE"
+            line.update(clear=False)
+        elif len((self._my_widgets) * self._contained_widget_height) < self.height:
+            self._print_line(line, i)
+            line.task = "PRINTLINELASTOFSCREEN"
+            line.update(clear=False)
+            self._put_string(self.rely + self.height - 1, self.relx)
+        else:
+            line.clear()
+            self._put_string(self.rely + self.height - 1, self.relx)
+        # Finish.
+        if self.editing:
+            self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
+            self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
+    #@+node:ekr.20170513102428.1: *5* _put_string
+    def _put_string(self, y, x):
+        
+        if self.do_colors():
+            style = self.parent.theme_manager.findPair(self, 'CONTROL')
+            self.parent.curses_pad.addstr(y, x, MORE_LABEL, style)
+        else:
+            self.parent.curses_pad.addstr(y, x, MORE_LABEL)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
