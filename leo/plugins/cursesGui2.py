@@ -3687,6 +3687,15 @@ class LeoMLTree(npyscreen.MLTree):
             else:
                 self.start_display_at = self.cursor_line
             self.update(clear=clear)
+    #@+node:ekr.20170513075808.1: *4* _get_content
+    # def _get_content(self, line_value):
+        
+        # return line_value.content
+        # try:
+            # return vl.get_content()
+        # except AttributeError:
+            # return vl.getContent()
+
     #@+node:ekr.20170513032717.1: *4* _print_line
     def _print_line(self, line, i):
         
@@ -3699,6 +3708,12 @@ class LeoMLTree(npyscreen.MLTree):
             # line.value is a weakref to a LeoTreeData.
             # There is only one get_content() method, and it returns self.content.
         self._set_line_highlighting(line, i)
+    #@+node:ekr.20170513085916.1: *4* _set_line_blank
+    def _set_line_blank(self, line):
+        line.value    = None
+        line.show_bold= False
+        line.name     = None
+        line.hidden   = True
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
         
@@ -3714,41 +3729,42 @@ class LeoMLTree(npyscreen.MLTree):
             line.value = self.display_value(self.values[i])
             line._tree_real_value = self.values[i]
             line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
-            try:
-                line._tree_depth        = self._find_depth(self.values[i])
-                line._tree_has_children = self._has_children(self.values[i])
-                line._tree_expanded     = self.values[i].expanded
-            except Exception:
-                line._tree_depth        = False
-                line._tree_has_children = False
-                line._tree_expanded     = False
-            try:
-                if line._tree_depth == self._find_depth(self.values[i+1]):
-                    line._tree_sibling_next = True
-                else:
-                    line._tree_sibling_next = False
-            except Exception:
-                line._sibling_next = False
-                line._tree_last_line = True
-            try:
-                line._tree_depth_next = self._find_depth(self.values[i+1])
-            except Exception:
-                line._tree_depth_next = False
+            # try:
+                # line._tree_depth        = self._find_depth(self.values[i])
+                # line._tree_has_children = self._has_children(self.values[i])
+                # line._tree_expanded     = self.values[i].expanded
+            # except Exception:
+                # line._tree_depth        = False
+                # line._tree_has_children = False
+                # line._tree_expanded     = False
+            val = self.values[i]
+            val1 = self.values[i+1] if i < len(self.values) else None
+            line._tree_depth = val.find_depth()
+            line._tree_has_children = len(val._children) > 0
+            line._tree_expanded = val.expanded
+            # try:
+                # if line._tree_depth == self._find_depth(self.values[i+1]):
+                    # line._tree_sibling_next = True
+                # else:
+                    # line._tree_sibling_next = False
+            # except Exception:
+                # line._sibling_next = False
+                # line._tree_last_line = True
+            ### line._tree_sibling_next = line._tree_depth == self._find_depth(val1)
+            val1_depth = val1.find_depth() if val1 else False
+            line._tree_sibling_next = line._tree_depth == val1_depth
+            line._tree_last_line = not bool(line._tree_sibling_next)
+            # try:
+                # line._tree_depth_next = self._find_depth(self.values[i+1])
+            # except Exception:
+                # line._tree_depth_next = False
+            line._tree_depth_next = val1_depth
             line.hidden = False
         except IndexError:
             self._set_line_blank(line)
         except TypeError:
             self._set_line_blank(line)
         g.trace(i, line.value.content)
-    #@+node:ekr.20170513075808.1: *4* _get_content
-    # def _get_content(self, line_value):
-        
-        # return line_value.content
-        # try:
-            # return vl.get_content()
-        # except AttributeError:
-            # return vl.getContent()
-
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
