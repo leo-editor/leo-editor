@@ -3603,10 +3603,11 @@ class LeoMLTree(npyscreen.MLTree):
             ### To be removed.
         if self.editing or self.always_show_cursor:
             # Put cursor_line in range.
-            if self.cursor_line < 0:
-                self.cursor_line = 0
-            if self.cursor_line > len(self.values) - 1:
-                self.cursor_line = len(self.values) - 1
+            # if self.cursor_line < 0:
+                # self.cursor_line = 0
+            # if self.cursor_line > len(self.values) - 1:
+                # self.cursor_line = len(self.values) - 1
+            self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
             if self.slow_scroll:
                 # Scroll by lines.
                 if self.cursor_line > self.start_display_at + display_length - 1:
