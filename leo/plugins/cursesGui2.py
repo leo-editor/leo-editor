@@ -3658,32 +3658,23 @@ class LeoMLTree(npyscreen.MLTree):
                 self._print_line(line, i)
                 line.task = "PRINTLINELASTOFSCREEN"
                 line.update(clear=False)
-                if self.do_colors():
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx,
-                        MORE_LABEL,
-                        self.parent.theme_manager.findPair(self, 'CONTROL'))
-                else:
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx,
-                        MORE_LABEL)
+                self._put_string(self.rely + self.height - 1, self.relx)
             else:
                 line.clear()
-                if self.do_colors():
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx,
-                        MORE_LABEL,
-                        self.parent.theme_manager.findPair(self, 'CONTROL'),
-                    )
-                else:
-                    self.parent.curses_pad.addstr(
-                        self.rely + self.height - 1,
-                        self.relx,
-                        MORE_LABEL,
-                    )
+                self._put_string(self.rely + self.height - 1, self.relx)
+                # if self.do_colors():
+                    # self.parent.curses_pad.addstr(
+                        # self.rely + self.height - 1,
+                        # self.relx,
+                        # MORE_LABEL,
+                        # self.parent.theme_manager.findPair(self, 'CONTROL'),
+                    # )
+                # else:
+                    # self.parent.curses_pad.addstr(
+                        # self.rely + self.height - 1,
+                        # self.relx,
+                        # MORE_LABEL,
+                    # )
             if self.editing or self.always_show_cursor:
                 self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
                 self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
@@ -3720,6 +3711,14 @@ class LeoMLTree(npyscreen.MLTree):
             # line.value is a weakref to a LeoTreeData.
             # There is only one get_content() method, and it returns self.content.
         self._set_line_highlighting(line, i)
+    #@+node:ekr.20170513102428.1: *4* _put_string
+    def _put_string(self, y, x):
+        
+        if self.do_colors():
+            style = self.parent.theme_manager.findPair(self, 'CONTROL')
+            self.parent.curses_pad.addstr(y, x, MORE_LABEL, style)
+        else:
+            self.parent.curses_pad.addstr(y, x, MORE_LABEL)
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
