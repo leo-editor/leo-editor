@@ -304,7 +304,7 @@ class MultiLine(widget.Widget):
             # line.value is a weakref to a LeoTreeData.
         self._set_line_highlighting(line, value_indexer)
     #@+node:ekr.20170504211313.1: *3* setters
-    #@+node:ekr.20170428084208.85: *4* _set_line_values
+    #@+node:ekr.20170428084208.85: *4* MultiLine._set_line_values
     def _set_line_values(self, line, value_indexer):
         try:
             _vl = self.values[value_indexer]

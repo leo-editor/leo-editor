@@ -67,7 +67,7 @@ class TreeData(object):
     #@+node:ekr.20170428084207.414: *4* get_children_objects
     def get_children_objects(self):
         return self._children[:]
-    #@+node:ekr.20170428084207.403: *4* get_content
+    #@+node:ekr.20170428084207.403: *4* TreeData.get_content
     def get_content(self):
         return self.content
     #@+node:ekr.20170428084207.404: *4* get_content_for_display
