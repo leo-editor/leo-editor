@@ -3564,7 +3564,7 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
-    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down
+    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down (new)
     def h_cursor_line_down(self, ch):
         self.cursor_line += 1
         if self.cursor_line >= len(self.values):
@@ -3575,15 +3575,15 @@ class LeoMLTree(npyscreen.MLTree):
             else: 
                 self.cursor_line -=1
                 return True
-        ### if self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL:
-        w = self._my_widgets[self.cursor_line-self.start_display_at]
-        task = getattr(w, 'task', None)
-        if task == MORE_LABEL:
-            if self.slow_scroll:
-                self.start_display_at += 1
-            else:
-                self.start_display_at = self.cursor_line
-    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (revise)
+        else:
+            widget = self._my_widgets[self.cursor_line-self.start_display_at]
+            task = getattr(widget, 'task', None)
+            if task == MORE_LABEL:
+                if self.slow_scroll:
+                    self.start_display_at += 1
+                else:
+                    self.start_display_at = self.cursor_line
+    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (new)
     def h_cursor_line_up(self, ch):
         self.cursor_line -= 1
         if self.cursor_line < 0: 
@@ -3596,18 +3596,13 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
     def update(self, clear=True):
         trace = True
-        if self.hidden:
-            if trace: g.trace('hidden')
-            if clear: self.clear()
-            return False
-        if self.values == None:
+        if self.values is None:
             self.values = []
-        # clear = None is a good value for this widget
         display_length = len(self._my_widgets)
-        #self._remake_filter_cache()
         self._filtered_values_cache = self.get_filtered_indexes()
+            ### To be removed.
         if self.editing or self.always_show_cursor:
-            # EKR: Put cursor_line in range.
+            # Put cursor_line in range.
             if self.cursor_line < 0:
                 self.cursor_line = 0
             if self.cursor_line > len(self.values) - 1:
@@ -3625,7 +3620,7 @@ class LeoMLTree(npyscreen.MLTree):
                 if self.cursor_line < self.start_display_at:
                     self.start_display_at = self.cursor_line - (display_length - 2)
                     if self.start_display_at < 0: self.start_display_at = 0
-        # Do we need to update?
+        # Set must_redraw if we need to update.
         table = (
             ('cache', not self._safe_to_display_cache or self.never_cache),
             ('value', self._last_value is not self.value),
@@ -3715,15 +3710,6 @@ class LeoMLTree(npyscreen.MLTree):
                 # else:
                     # self.start_display_at = self.cursor_line
                 # self.update(clear=clear)
-    #@+node:ekr.20170513075808.1: *4* _get_content
-    # def _get_content(self, line_value):
-        
-        # return line_value.content
-        # try:
-            # return vl.get_content()
-        # except AttributeError:
-            # return vl.getContent()
-
     #@+node:ekr.20170513032717.1: *4* _print_line
     def _print_line(self, line, i):
         
@@ -3736,12 +3722,6 @@ class LeoMLTree(npyscreen.MLTree):
             # line.value is a weakref to a LeoTreeData.
             # There is only one get_content() method, and it returns self.content.
         self._set_line_highlighting(line, i)
-    #@+node:ekr.20170513085916.1: *4* _set_line_blank (to be removed)
-    def _set_line_blank(self, line):
-        line.value    = None
-        line.show_bold= False
-        line.name     = None
-        line.hidden   = True
     #@+node:ekr.20170513075423.1: *4* _set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
@@ -3749,12 +3729,23 @@ class LeoMLTree(npyscreen.MLTree):
         n = len(values)
         val = values[i] if 0 <= i < n else None
         if not val:
-            return ###
+            line._tree_real_value   = None
+            line._tree_depth        = False
+            line._tree_sibling_next = False
+            line._tree_has_children = False
+            line._tree_expanded     = False
+            line._tree_last_line    = False
+            line._tree_depth_next   = False
+            line._tree_ignore_root  = None
+            #
+            line.value = None
+            line._tree_real_value = None
+            return
         assert isinstance(val, LeoTreeData), repr(val)
         val1 = values[i+1] if i+1 < n else None
         val1_depth = val1.find_depth() if val1 else False
         # 
-        line.value = val ### self.display_value(val)
+        line.value = val# self.display_value(val)
         line._tree_real_value = val
         line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
         # 
@@ -3765,8 +3756,6 @@ class LeoMLTree(npyscreen.MLTree):
         line._tree_sibling_next = line._tree_depth == val1_depth
         line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
-        line.hidden = False ### To be removed.
-        line.task = None ###
         # g.trace(i, line.value.content)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
