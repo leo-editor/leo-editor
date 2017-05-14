@@ -1135,6 +1135,8 @@ try:
     c.pasteOutline()
     p2 = p1.next()
     # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
+    assert p1
+    assert p2
     assert p1.b == p2.b
 finally:
     if 1:

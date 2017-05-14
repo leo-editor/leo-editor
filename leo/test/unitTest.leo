@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1177,6 +1177,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
+<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1740,7 +1741,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3514,6 +3515,31 @@ if g.app.gui.guiName() == 'curses':
     logging.info(s)
 else:
     g.pr(s)
+</t>
+<t tx="ekr.20100204053330.5367">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+try:
+    p1 = p.insertAsLastChild()
+    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
+    if g.isPython3:
+        assert g.isUnicode(s)
+    else:
+        s = unicode(s,'koi8-r')
+    p1.setBodyString(s)
+    c.selectPosition(p1)
+    c.copyOutline()
+    c.pasteOutline()
+    p2 = p1.next()
+    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
+    assert p1
+    assert p2
+    assert p1.b == p2.b
+finally:
+    if 1:
+         while root.hasChildren():
+              root.firstChild().doDelete(newNode = None)
+    c.redraw_now(p)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
