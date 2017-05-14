@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1182,9 +1182,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170201143435.4"><vh>test-grandchild</vh></v>
 </v>
 </v>
-<v t="ekr.20170514062942.1" a="E"><vh>Found:recolorCount</vh>
 <v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1748,7 +1746,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="8,0">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -11579,6 +11577,7 @@ finally:
 </t>
 <t tx="ekr.20170201143435.1">@language python
 import leo.core.leoColorizer as leoColorizer
+import leo.core.leoFrame as leoFrame
 # import imp
 # imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
@@ -11586,7 +11585,7 @@ widget = c.frame.body.widget
 assert wrapper, p.h
 assert widget, p.h
 if g.app.gui.guiName() == 'curses':
-    x = leoColorizer.NullColorizer(c)
+    x = leoFrame.NullColorizer(c)
 else:
     x = leoColorizer.JEditColorizer(c, widget, wrapper)
 tables = p.firstChild()
@@ -15486,8 +15485,5 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
-<t tx="ekr.20170514062942.1"># flattened, ignore-case, head, body
-
-# found 1 nodes</t>
 </tnodes>
 </leo_file>

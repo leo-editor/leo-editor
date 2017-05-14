@@ -2856,6 +2856,7 @@ More plain text.
 #@+node:ekr.20170201143435.1: *4* @test bc.scanLanguageDirectives
 @language python
 import leo.core.leoColorizer as leoColorizer
+import leo.core.leoFrame as leoFrame
 # import imp
 # imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
@@ -2863,7 +2864,7 @@ widget = c.frame.body.widget
 assert wrapper, p.h
 assert widget, p.h
 if g.app.gui.guiName() == 'curses':
-    x = leoColorizer.NullColorizer(c)
+    x = leoFrame.NullColorizer(c)
 else:
     x = leoColorizer.JEditColorizer(c, widget, wrapper)
 tables = p.firstChild()
