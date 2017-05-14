@@ -70,6 +70,189 @@ class LeoTreeLine(npyscreen.TreeLine):
         # return self._post_edit()
         self.highlight = False
         self.update()
+    #@+node:ekr.20170514103557.1: *4* LeoTree.update (from TreeLine)
+    def update(self, clear=True, cursor=True):
+        """Update the contents of the textbox, without calling the final refresh to the screen"""
+        # pylint: disable=arguments-differ
+        trace = False
+        if trace:
+            g.trace('LeoTree:: cursor_position: %5r %s' % (
+                self.cursor_position, self.value))
+        if clear: self.clear()
+        if self.hidden:
+            return True
+        value_to_use_for_calculations = self.value   
+        if self.ENSURE_STRING_VALUE:
+            if value_to_use_for_calculations in (None, False, True):
+                value_to_use_for_calculations = ''
+                self.value = ''
+        if self.begin_at < 0: self.begin_at = 0
+        if self.left_margin >= self.maximum_string_length:
+            raise ValueError
+        highlight = self.parent.theme_manager.findPair(self, self.highlight_color)
+        if self.editing:
+            if isinstance(self.value, bytes):
+                # use a unicode version of self.value to work out where the cursor is.
+                # not always accurate, but better than the bytes
+                value_to_use_for_calculations = self.display_value(self.value).decode(self.encoding, 'replace')
+            if cursor:
+                if self.cursor_position is False:
+                    self.cursor_position = len(value_to_use_for_calculations)
+                elif self.cursor_position > len(value_to_use_for_calculations):
+                    self.cursor_position = len(value_to_use_for_calculations)
+                elif self.cursor_position < 0:
+                    self.cursor_position = 0
+                if self.cursor_position < self.begin_at:
+                    self.begin_at = self.cursor_position
+                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
+                    self.begin_at += 1
+            else:
+                if self.do_colors():
+                    highlight = self.parent.theme_manager.findPair(self, self.highlight_color)
+                    self.parent.curses_pad.bkgdset(' ', highlight | curses.A_STANDOUT)
+                else:
+                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
+        # Do this twice so that the _print method can ignore it if needed.
+        if self.highlight:
+            if self.do_colors():
+                if self.invert_highlight_color:
+                    attributes=highlight | curses.A_STANDOUT
+                else:
+                    attributes=highlight
+                self.parent.curses_pad.bkgdset(' ', attributes)
+            else:
+                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        if self.show_bold:
+            self.parent.curses_pad.attron(curses.A_BOLD)
+        if self.important and not self.do_colors():
+            self.parent.curses_pad.attron(curses.A_UNDERLINE)
+        self._print()
+        # reset everything to normal
+        self.parent.curses_pad.attroff(curses.A_BOLD)
+        self.parent.curses_pad.attroff(curses.A_UNDERLINE)
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.attrset(0)
+        if self.editing and cursor:
+            self.print_cursor()
+    #@+node:ekr.20170514103905.1: *4* LeoTree._print (from two classes)
+    def _print(self, left_margin=0):
+
+        ### From TreeLine._print
+        self.left_margin = left_margin
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.left_margin += self._print_tree(self.relx)
+        if self.highlight:
+            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        ### super(TreeLine, self)._print()
+        ### From TextFieldBase._print
+        s = self._get_string_to_print()
+        if not s:
+            return None
+        s = s[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        
+        if sys.version_info[0] >= 3:
+            s = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        else:
+            # ensure unicode only here encoding here.
+            dv = self.display_value(self.value)
+            if isinstance(dv, bytes):
+                dv = dv.decode(self.encoding, 'replace')
+            s = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        
+        column = 0
+        place_in_string = 0
+        if self.syntax_highlighting:
+            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length+self.begin_at-self.left_margin)
+            while column <= (self.maximum_string_length - self.left_margin):
+                if not s or place_in_string > len(s)-1:
+                    break
+                width_of_char_to_print = self.find_width_of_char(s[place_in_string])
+                if column - 1 + width_of_char_to_print > self.maximum_string_length:
+                    break 
+                try:
+                    highlight = self._highlightingdata[self.begin_at+place_in_string]
+                except Exception:
+                    highlight = curses.A_NORMAL                
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
+                    self._print_unicode_char(s[place_in_string]), 
+                    highlight
+                )
+                column += self.find_width_of_char(s[place_in_string])
+                place_in_string += 1
+        else:
+            if self.do_colors():
+                if self.show_bold and self.color == 'DEFAULT':
+                    color = self.parent.theme_manager.findPair(self, 'BOLD') | curses.A_BOLD
+                elif self.show_bold:
+                    color = self.parent.theme_manager.findPair(self, self.color) | curses.A_BOLD
+                elif self.important:
+                    color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD
+                else:
+                    color = self.parent.theme_manager.findPair(self)
+            else:
+                if self.important or self.show_bold:
+                    color = curses.A_BOLD
+                else:
+                    color = curses.A_NORMAL
+            while column <= (self.maximum_string_length - self.left_margin):
+                if not s or place_in_string > len(s)-1:
+                    if self.highlight_whole_widget:
+                        self.parent.curses_pad.addstr(
+                            self.rely,
+                            self.relx+column+self.left_margin, 
+                            ' ', 
+                            color,
+                        )
+                        column += width_of_char_to_print
+                        place_in_string += 1
+                        continue
+                    else:
+                        break
+                width = self.find_width_of_char(s[place_in_string])
+                if column - 1 + width > self.maximum_string_length:
+                    break 
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
+                    self._print_unicode_char(s[place_in_string]), 
+                    color,
+                )
+                column += self.find_width_of_char(s[place_in_string])
+                place_in_string += 1
+    #@+node:ekr.20170514104550.1: *4* LeoTree._get_string_to_print (from TextfieldBase) 
+    def _get_string_to_print(self):
+        s = self.display_value(self.value)
+        if not s:
+            return None
+        s = s[
+            self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        
+        if sys.version_info[0] >= 3:
+            s = self.display_value(self.value)[
+                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        else:
+            # ensure unicode only here encoding here.
+            dv = self.display_value(self.value)
+            if isinstance(dv, bytes):
+                dv = dv.decode(self.encoding, 'replace')
+            s = dv[
+                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        return s
+    #@+node:ekr.20170514104743.1: *4* LeoTree.display_value (from TreeLine)
+    def display_value(self, vl):
+        
+        ### return self.safe_string(vl)
+        
+        ### return self._tree_real_value
+        
+        # Works
+        try:
+            return self.safe_string(
+                self._get_content_for_display(self._tree_real_value))
+        except Exception:
+            return self.safe_string(vl)
     #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
     #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
     def h_cursor_beginning(self, ch):

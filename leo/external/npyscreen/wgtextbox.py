@@ -235,7 +235,7 @@ class TextfieldBase(widget.Widget):
             string_to_print = dv[
                 self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         return string_to_print
-    #@+node:ekr.20170428084208.332: *3* _print
+    #@+node:ekr.20170428084208.332: *3* TextfieldBase._print
     def _print(self):
         string_to_print = self._get_string_to_print()
         if not string_to_print:
