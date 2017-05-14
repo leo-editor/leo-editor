@@ -67,7 +67,7 @@ class TextfieldBase(widget.Widget):
         "Need one line of screen, and any width going"
         return 1,0
 
-    #@+node:ekr.20170428084208.325: *3* TextfieldBase.update (LeoTreeLine overrides this)
+    #@+node:ekr.20170428084208.325: *3* TextfieldBase.update (LeoTreeLine USED TO override this)
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ

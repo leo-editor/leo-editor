@@ -191,6 +191,18 @@ class LeoTreeLine(npyscreen.TreeLine):
             # return vl.get_content_for_display()
         # except AttributeError:
             # return vl.getContentForDisplay()
+    #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
+    def display_value(self, vl):
+        
+        return vl.content if vl else ''
+        
+        ###
+            # try:
+                # return self.safe_string(
+                    # self._get_content_for_display(self._tree_real_value))
+            # except Exception:
+                # # Catch the times this is None.
+                # return self.safe_string(vl)
     #@+node:ekr.20170514181758.1: *4* LeoTreeLine.get_content
     def get_content(self):
         
@@ -374,7 +386,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
-    #@+node:ekr.20170514103557.1: *4* LeoTreeLine.update (from TreeLine, Inherits from textFieldBase)
+    #@+node:ekr.20170514103557.1: *4* LeoTreeLine.update (from TreeLine, Inherits from textFieldBase) NOT USED
     def XXXupdate(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ,no-member
@@ -387,14 +399,13 @@ class LeoTreeLine(npyscreen.TreeLine):
             return True
         findPair = self.parent.theme_manager.findPair
         val = self.value.content if self.value else g.u('') 
-            ### We might be able to use MultiLine.update,
-            ### But this code is so much clearer it's probably not worthwhile.
-            
-            # This is the code in MultiLine.update.
-            # val = self.values[self.cursor_line]
-            # if isinstance(val, npysTree.TreeData):
-                # val = val.get_content()
-            
+            ### We **can** use MultiLine.update. (There is no TreeLine.update).
+            ### This is the code in MultiLine.update.
+                # val = self.values[self.cursor_line]
+                # if isinstance(val, npysTree.TreeData):
+                    # val = val.get_content()
+            ### The default get_content just returns self.content,
+            ### So that is good enough!
         val = g.toUnicode(val)
         self.begin_at = max(0, self.begin_at)
         if self.left_margin >= self.maximum_string_length:
