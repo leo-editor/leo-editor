@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1176,28 +1176,6 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
-<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
-<v t="ekr.20170514070916.1"><vh>Found:zz</vh>
-<v t="ekr.20081111150402.11"></v>
-<v t="ekr.20071113201736"></v>
-<v t="ekr.20090615053403.4957"></v>
-<v t="ekr.20071113201833"></v>
-<v t="ekr.20071113201854"></v>
-<v t="ekr.20070306091949"></v>
-<v t="ekr.20071113202045"></v>
-<v t="ekr.20071113202153"></v>
-<v t="ekr.20071113202153.1"></v>
-<v t="ekr.20071113202153.2"></v>
-<v t="ekr.20100131171342.5603"></v>
-<v t="ekr.20140724164600.4590"></v>
-<v t="ekr.20100131171342.5609"></v>
-<v t="ekr.20071113202452"></v>
-<v t="ekr.20071113202510"></v>
-<v t="ekr.20100131171342.5501"></v>
-<v t="ekr.20060131102450"></v>
-<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1582,29 +1560,6 @@ if False and g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20060208072331">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-w.setSelectionRange('end','end',insert='end')
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-event = g.app.gui.create_key_event(c,None,None,w)
-c.frame.pasteText(event)
-# Move around and and make sure it doesn't change.
-try:
-    # g.trace('before select',w,w.getAllText())
-    c.selectPosition(p.threadBack())
-    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
-    c.selectPosition(p)
-    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -1758,7 +1713,7 @@ else:
 <t tx="ekr.20070306091949"># Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoEditCommands tests.')
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="9">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3476,31 +3431,6 @@ g.pr('\nEnd of leoGui tests.')
 <t tx="ekr.20100131171342.5609" annotate="7d71002e"># Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
 </t>
-<t tx="ekr.20100204053330.5367">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-try:
-    p1 = p.insertAsLastChild()
-    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
-    if g.isPython3:
-        assert g.isUnicode(s)
-    else:
-        s = unicode(s,'koi8-r')
-    p1.setBodyString(s)
-    c.selectPosition(p1)
-    c.copyOutline()
-    c.pasteOutline()
-    p2 = p1.next()
-    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
-    assert p1
-    assert p2
-    assert p1.b == p2.b
-finally:
-    if 1:
-         while root.hasChildren():
-              root.firstChild().doDelete(newNode = None)
-    c.redraw_now(p)
-</t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
 &lt;?php
@@ -4711,17 +4641,6 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
-</t>
-<t tx="ekr.20140822063016.4474">if 0:
-    # These won't do any good if a unit test foolishly saves the outline!
-    c.k.simulateCommand('contract-all')
-    c.setChanged(False)
-    
-if g.app.gui.guiName() == 'curses':
-    import curses
-    curses.endwin()
-else:
-    c.k.simulateCommand(':q!')
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140904060337.4476">if g.in_bridge or g.app.isExternalUnitTest:
@@ -15431,8 +15350,5 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
-<t tx="ekr.20170514070916.1"># flattened, ignore-case, head, body
-
-# found 46 nodes</t>
 </tnodes>
 </leo_file>
