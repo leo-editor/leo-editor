@@ -69,7 +69,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         ### From TextFieldBase._print
         ###
         s = self.value and self.value.content
-            ### This is what LeoTree.display_value(self.value) should return
+            ### This is what LeoLineTree.display_value(self.value) should return
             ### We wouldn't have to override this method if LeoTree.over-rode display_value()
             ### But how to do that in this inner call???
         if not s:
@@ -288,48 +288,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
     #@+node:ekr.20170514163452.1: *4*  LeoTreeLine.REF
-    #@+node:ekr.20170514165852.1: *5* TextFieldBase.find_width_of_char (REF)
-    # def find_width_of_char(self, ch):
-        # return 1
-    #@+node:ekr.20170514164051.1: *5* TextfieldBase._get_string_to_print (REF) (See above)
-    # def _get_string_to_print(self):
-        # string_to_print = self.display_value(self.value)
-        # if not string_to_print:
-            # return None
-        # string_to_print = string_to_print[
-            # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        
-        # if sys.version_info[0] >= 3:
-            # string_to_print = self.display_value(self.value)[
-                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        # else:
-            # # ensure unicode only here encoding here.
-            # dv = self.display_value(self.value)
-            # if isinstance(dv, bytes):
-                # dv = dv.decode(self.encoding, 'replace')
-            # string_to_print = dv[
-                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        # return string_to_print
-    #@+node:ekr.20170514163457.1: *5* TreeLine._get_content_for_display (REF)
-    # Compatibility
-
-    # def _get_content_for_display(self, vl):
-        # try:
-            # return vl.get_content_for_display()
-        # except AttributeError:
-            # return vl.getContentForDisplay()
-    #@+node:ekr.20170514161551.1: *5* TreeLine._get_content_for_display (REF)
-    # Compatibility
-
-    # def _get_content_for_display(self, vl):
-        # try:
-            # return vl.get_content_for_display()
-        # except AttributeError:
-            # return vl.getContentForDisplay()
-    #@+node:ekr.20170514161824.1: *5* TreeData.get_content_for_display (REF)
-    # def get_content_for_display(self):
-        # return str(self.content)
-    #@+node:ekr.20170514104743.1: *5* LeoTree.display_value (from TreeLine) (REF)
+    #@+node:ekr.20170514104743.1: *5* LeoTreeLine.display_value (from TreeLine) (REF)
     # def display_value(self, vl):
         
         # return vl.content if vl else ''
@@ -408,6 +367,28 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # raise
             # else:
                 # return "*ERROR DISPLAYING STRING*"
+    #@+node:ekr.20170514164051.1: *5* TextfieldBase._get_string_to_print (REF) (See above)
+    # def _get_string_to_print(self):
+        # string_to_print = self.display_value(self.value)
+        # if not string_to_print:
+            # return None
+        # string_to_print = string_to_print[
+            # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        
+        # if sys.version_info[0] >= 3:
+            # string_to_print = self.display_value(self.value)[
+                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        # else:
+            # # ensure unicode only here encoding here.
+            # dv = self.display_value(self.value)
+            # if isinstance(dv, bytes):
+                # dv = dv.decode(self.encoding, 'replace')
+            # string_to_print = dv[
+                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        # return string_to_print
+    #@+node:ekr.20170514165852.1: *5* TextFieldBase.find_width_of_char (REF)
+    # def find_width_of_char(self, ch):
+        # return 1
     #@+node:ekr.20170514172210.1: *5* TextfieldBase.print_cursor (REF)
     # def print_cursor(self):
         # # This needs fixing for Unicode multi-width chars.
@@ -430,6 +411,25 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # self.cursor_position - self.begin_at + self.relx + self.left_margin,
                 # ch,
                 # curses.A_STANDOUT)
+    #@+node:ekr.20170514161824.1: *5* TreeData.get_content_for_display (REF)
+    # def get_content_for_display(self):
+        # return str(self.content)
+    #@+node:ekr.20170514163457.1: *5* TreeLine._get_content_for_display (REF)
+    # Compatibility
+
+    # def _get_content_for_display(self, vl):
+        # try:
+            # return vl.get_content_for_display()
+        # except AttributeError:
+            # return vl.getContentForDisplay()
+    #@+node:ekr.20170514161551.1: *5* TreeLine._get_content_for_display (REF)
+    # Compatibility
+
+    # def _get_content_for_display(self, vl):
+        # try:
+            # return vl.get_content_for_display()
+        # except AttributeError:
+            # return vl.getContentForDisplay()
     #@-others
 #@+node:ekr.20170511053143.1: *3*  class CursesTextMixin (object)
 class CursesTextMixin(object):
