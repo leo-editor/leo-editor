@@ -11,7 +11,7 @@ class _LinePrinter(object):
        Experimental.
     """
     #@+others
-    #@+node:ekr.20170428084208.439: *3* find_width_of_char
+    #@+node:ekr.20170428084208.439: *3* _LinePrinter.find_width_of_char
     def find_width_of_char(self, ch):
         # will eventually need changing.
         return 1

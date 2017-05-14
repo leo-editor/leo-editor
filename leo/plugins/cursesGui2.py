@@ -74,7 +74,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ
-        trace = True
+        trace = False
         if trace:
             g.trace('LeoTree: cursor_position: %5r %s' % (
                 self.cursor_position, self.value.content if self.value else 'None'))
@@ -158,63 +158,51 @@ class LeoTreeLine(npyscreen.TreeLine):
             # if not s:
                 # return None
         s = self.value and self.value.content
+            ### 
         if not s:
             return None
         s = g.toUnicode(s)
-        ### Never used!
-            ### s = s[self.begin_at : self.maximum_string_length+self.begin_at-self.left_margin]
-        ###
-            # if sys.version_info[0] >= 3:
-                # ### s = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-                # s = self.value.content if self.value else ''
-                # s = s[[self.begin_at : self.maximum_string_length+self.begin_at-self.left_margin]
-            # else:
-                # # ensure unicode only here encoding here.
-                # dv = self.display_value(self.value)
-                # if isinstance(dv, bytes):
-                    # dv = dv.decode(self.encoding, 'replace')
-                # s = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        column = 0
-        place_in_string = 0
+        column, i = 0, 0
         if self.syntax_highlighting:
             self.update_highlighting(
                 start=self.begin_at,
-                end=self.maximum_string_length+self.begin_at-self.left_margin)
+                end=self.maximum_string_length+self.begin_at-self.left_margin,
+            )
             while column <= (self.maximum_string_length - self.left_margin):
-                if not s or place_in_string > len(s)-1:
+                if not s or i > len(s)-1:
                     break
-                width_of_char_to_print = self.find_width_of_char(s[place_in_string])
-                if column - 1 + width_of_char_to_print > self.maximum_string_length:
+                ### This is always 1!
+                ### width_of_char_to_print = self.find_width_of_char(s[i])
+                ###if column - 1 + width_of_char_to_print > self.maximum_string_length:
+                if column > self.maximum_string_length:
                     break 
                 try:
-                    highlight = self._highlightingdata[self.begin_at+place_in_string]
+                    highlight = self._highlightingdata[self.begin_at+i]
                 except Exception:
                     highlight = curses.A_NORMAL                
                 self.parent.curses_pad.addstr(
                     self.rely,
                     self.relx+column+self.left_margin, 
-                    self._print_unicode_char(s[place_in_string]), 
+                    self._print_unicode_char(s[i]), 
                     highlight
                 )
-                column += self.find_width_of_char(s[place_in_string])
-                place_in_string += 1
-        else:
+                column += self.find_width_of_char(s[i])
+                i += 1
+        else: # No syntax highlighting.
             if self.do_colors():
+                findPair = self.parent.theme_manager.findPair
                 if self.show_bold and self.color == 'DEFAULT':
-                    color = self.parent.theme_manager.findPair(self, 'BOLD') | curses.A_BOLD
+                    color = findPair(self, 'BOLD') | curses.A_BOLD
                 elif self.show_bold:
-                    color = self.parent.theme_manager.findPair(self, self.color) | curses.A_BOLD
+                    color = findPair(self, self.color) | curses.A_BOLD
                 elif self.important:
-                    color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD
+                    color = findPair(self, 'IMPORTANT') | curses.A_BOLD
                 else:
-                    color = self.parent.theme_manager.findPair(self)
+                    color = findPair(self)
             else:
-                if self.important or self.show_bold:
-                    color = curses.A_BOLD
-                else:
-                    color = curses.A_NORMAL
-            while column <= (self.maximum_string_length - self.left_margin):
-                if not s or place_in_string > len(s)-1:
+                color =  curses.A_BOLD if self.important or self.show_bold else  curses.A_NORMAL
+            while column <= self.maximum_string_length - self.left_margin:
+                if i > len(s)-1: ### or not s.
                     if self.highlight_whole_widget:
                         self.parent.curses_pad.addstr(
                             self.rely,
@@ -222,22 +210,24 @@ class LeoTreeLine(npyscreen.TreeLine):
                             ' ', 
                             color,
                         )
-                        column += width_of_char_to_print
-                        place_in_string += 1
+                        column += 1 ### width_of_char_to_print
+                        i += 1
                         continue
                     else:
                         break
-                width = self.find_width_of_char(s[place_in_string])
-                if column - 1 + width > self.maximum_string_length:
+                ### width = self.find_width_of_char(s[i])
+                ### width is always 1!
+                ### if column - 1 + width > self.maximum_string_length:
+                if column > self.maximum_string_length:
                     break 
                 self.parent.curses_pad.addstr(
                     self.rely,
                     self.relx+column+self.left_margin, 
-                    self._print_unicode_char(s[place_in_string]), 
+                    self._print_unicode_char(s[i]), 
                     color,
                 )
-                column += self.find_width_of_char(s[place_in_string])
-                place_in_string += 1
+                column += 1 ### self.find_width_of_char(s[i])
+                i += 1
     #@+node:ekr.20170514104550.1: *4* LeoTree._get_string_to_print (from TextfieldBase) 
     def _get_string_to_print(self):
         s = self.display_value(self.value)

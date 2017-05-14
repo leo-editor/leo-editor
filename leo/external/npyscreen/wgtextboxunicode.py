@@ -24,7 +24,7 @@ class TextfieldUnicode(wgtextbox.Textfield):
              counter += 1
         return columns
 
-    #@+node:ekr.20170428084208.358: *3* find_width_of_char
+    #@+node:ekr.20170428084208.358: *3* TextfieldUnicode.find_width_of_char
     def find_width_of_char(self, char):
         return 1
         w = unicodedata.east_asian_width(char)

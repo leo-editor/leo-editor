@@ -203,7 +203,7 @@ class TextfieldBase(widget.Widget):
             except ReferenceError:                
                 return ">*ERROR*ERROR*ERROR*<"
             return self.safe_string(str_value)
-    #@+node:ekr.20170428084208.329: *3* find_width_of_char
+    #@+node:ekr.20170428084208.329: *3* TextFieldBase.find_width_of_char
     def find_width_of_char(self, ch):
         return 1
     #@+node:ekr.20170428084208.330: *3* _print_unicode_char
