@@ -71,6 +71,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         s = self.value and self.value.content
             ### This is what LeoTree.display_value(self.value) should return
             ### We wouldn't have to override this method if LeoTree.over-rode display_value()
+            ### But how to do that in this inner call???
         if not s:
             return None
         s = g.toUnicode(s)
