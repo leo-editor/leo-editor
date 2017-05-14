@@ -627,7 +627,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         #    except Exception:
         #        s += '?'
         #return s
-    #@+node:ekr.20170429213619.20: *3* safe_string
+    #@+node:ekr.20170429213619.20: *3* widget.safe_string
     def safe_string(self, this_string):
         """Check that what you are trying to display contains only
         printable chars.  (Try to catch dodgy input).  Give it a string,

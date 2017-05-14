@@ -70,7 +70,7 @@ class TreeData(object):
     #@+node:ekr.20170428084207.403: *4* TreeData.get_content
     def get_content(self):
         return self.content
-    #@+node:ekr.20170428084207.404: *4* get_content_for_display
+    #@+node:ekr.20170428084207.404: *4* TreeData.get_content_for_display
     def get_content_for_display(self):
         return str(self.content)
     #@+node:ekr.20170428084207.409: *4* get_parent

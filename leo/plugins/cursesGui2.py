@@ -74,32 +74,37 @@ class LeoTreeLine(npyscreen.TreeLine):
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ
-        trace = False
+        trace = True
         if trace:
-            g.trace('LeoTree:: cursor_position: %5r %s' % (
-                self.cursor_position, self.value))
+            g.trace('LeoTree: cursor_position: %5r %s' % (
+                self.cursor_position, self.value.content if self.value else 'None'))
         if clear: self.clear()
         if self.hidden:
             return True
-        value_to_use_for_calculations = self.value   
-        if self.ENSURE_STRING_VALUE:
-            if value_to_use_for_calculations in (None, False, True):
-                value_to_use_for_calculations = ''
-                self.value = ''
-        if self.begin_at < 0: self.begin_at = 0
+        ### val = self.value
+        val = self.value.content if self.value else g.u('') 
+        val = g.toUnicode(val)
+        ###
+            # if self.ENSURE_STRING_VALUE:
+                # if val in (None, False, True):
+                    # val = ''
+                    # self.value = ''
+        ### if self.begin_at < 0: self.begin_at = 0
+        self.begin_at = max(0, self.begin_at)
         if self.left_margin >= self.maximum_string_length:
             raise ValueError
         highlight = self.parent.theme_manager.findPair(self, self.highlight_color)
         if self.editing:
-            if isinstance(self.value, bytes):
-                # use a unicode version of self.value to work out where the cursor is.
-                # not always accurate, but better than the bytes
-                value_to_use_for_calculations = self.display_value(self.value).decode(self.encoding, 'replace')
+            ###
+            # if isinstance(self.value, bytes):
+                # # use a unicode version of self.value to work out where the cursor is.
+                # # not always accurate, but better than the bytes
+                # val = self.display_value(self.value).decode(self.encoding, 'replace')
             if cursor:
                 if self.cursor_position is False:
-                    self.cursor_position = len(value_to_use_for_calculations)
-                elif self.cursor_position > len(value_to_use_for_calculations):
-                    self.cursor_position = len(value_to_use_for_calculations)
+                    self.cursor_position = len(val)
+                elif self.cursor_position > len(val):
+                    self.cursor_position = len(val)
                 elif self.cursor_position < 0:
                     self.cursor_position = 0
                 if self.cursor_position < self.begin_at:
@@ -137,32 +142,44 @@ class LeoTreeLine(npyscreen.TreeLine):
     #@+node:ekr.20170514103905.1: *4* LeoTree._print (from two classes)
     def _print(self, left_margin=0):
 
+        ###
         ### From TreeLine._print
+        ###
         self.left_margin = left_margin
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         ### super(TreeLine, self)._print()
+        ###
         ### From TextFieldBase._print
-        s = self._get_string_to_print()
+        ###
+            # s = self._get_string_to_print()
+            # if not s:
+                # return None
+        s = self.value and self.value.content
         if not s:
             return None
-        s = s[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        
-        if sys.version_info[0] >= 3:
-            s = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        else:
-            # ensure unicode only here encoding here.
-            dv = self.display_value(self.value)
-            if isinstance(dv, bytes):
-                dv = dv.decode(self.encoding, 'replace')
-            s = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        
+        s = g.toUnicode(s)
+        ### Never used!
+            ### s = s[self.begin_at : self.maximum_string_length+self.begin_at-self.left_margin]
+        ###
+            # if sys.version_info[0] >= 3:
+                # ### s = self.display_value(self.value)[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+                # s = self.value.content if self.value else ''
+                # s = s[[self.begin_at : self.maximum_string_length+self.begin_at-self.left_margin]
+            # else:
+                # # ensure unicode only here encoding here.
+                # dv = self.display_value(self.value)
+                # if isinstance(dv, bytes):
+                    # dv = dv.decode(self.encoding, 'replace')
+                # s = dv[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         column = 0
         place_in_string = 0
         if self.syntax_highlighting:
-            self.update_highlighting(start=self.begin_at, end=self.maximum_string_length+self.begin_at-self.left_margin)
+            self.update_highlighting(
+                start=self.begin_at,
+                end=self.maximum_string_length+self.begin_at-self.left_margin)
             while column <= (self.maximum_string_length - self.left_margin):
                 if not s or place_in_string > len(s)-1:
                     break
@@ -234,25 +251,13 @@ class LeoTreeLine(npyscreen.TreeLine):
                 self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         else:
             # ensure unicode only here encoding here.
-            dv = self.display_value(self.value)
+            ### dv = self.display_value(self.value)
+            dv = self.value.content if self.value else ''
             if isinstance(dv, bytes):
                 dv = dv.decode(self.encoding, 'replace')
             s = dv[
                 self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
         return s
-    #@+node:ekr.20170514104743.1: *4* LeoTree.display_value (from TreeLine)
-    def display_value(self, vl):
-        
-        ### return self.safe_string(vl)
-        
-        ### return self._tree_real_value
-        
-        # Works
-        try:
-            return self.safe_string(
-                self._get_content_for_display(self._tree_real_value))
-        except Exception:
-            return self.safe_string(vl)
     #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
     #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
     def h_cursor_beginning(self, ch):

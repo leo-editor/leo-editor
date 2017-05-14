@@ -216,7 +216,7 @@ class TextfieldBase(widget.Widget):
             return ch
         else:
             return ch.encode('utf-8', 'strict')
-    #@+node:ekr.20170428084208.331: *3* _get_string_to_print
+    #@+node:ekr.20170428084208.331: *3* TextfieldBase._get_string_to_print
     def _get_string_to_print(self):
         string_to_print = self.display_value(self.value)
         if not string_to_print:
