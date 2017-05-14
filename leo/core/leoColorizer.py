@@ -28,6 +28,7 @@ class BaseColorizer(object):
         self.enabled = False
         self.full_recolor_count = 0
         self.highlighter = None
+        self.showInvisibles = False
         
     def init(self, p):
         '''May be over-ridden in subclasses.'''
