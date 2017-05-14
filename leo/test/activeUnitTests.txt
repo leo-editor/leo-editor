@@ -2863,7 +2863,7 @@ widget = c.frame.body.widget
 assert wrapper, p.h
 assert widget, p.h
 if g.app.gui.guiName() == 'curses':
-    x = leoColorizer.NullColorizer(c, widget, wrapper)
+    x = leoColorizer.NullColorizer(c)
 else:
     x = leoColorizer.JEditColorizer(c, widget, wrapper)
 tables = p.firstChild()
@@ -10473,24 +10473,27 @@ finally:
         c.redraw(p)
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
 # Should be a comment
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-w = c.frame.body.wrapper
-n = c.frame.body.colorizer.recolorCount
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocus()
-paste = '# Should be a comment'
-g.app.gui.replaceClipboardWith(paste)
-c.outerUpdate()
-event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-c.frame.pasteText(event)
-try:
-    assert c.frame.body.colorizer.recolorCount > n
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw(p)
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    w = c.frame.body.wrapper
+    n = c.frame.body.colorizer.recolorCount
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.bodyWantsFocus()
+    paste = '# Should be a comment'
+    g.app.gui.replaceClipboardWith(paste)
+    c.outerUpdate()
+    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
+    c.frame.pasteText(event)
+    try:
+        assert c.frame.body.colorizer.recolorCount > n
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw(p)
 #@+node:ekr.20051107115231.14: *5* @test return ends editing of headline
 h = '@test return ends editing of headline'
 p = c.testManager.findNodeAnywhere(h)
