@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.40" body_secondary_ratio="0.64">
-	<global_window_position top="220" left="616" height="761" width="1080"/>
+	<global_window_position top="91" left="71" height="761" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -232,9 +232,10 @@
 <v t="ekr.20170101134417.1"><vh>@ignore Slow tests</vh>
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20101220161557.6016" a="E"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" a="E" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170416085619.1,"
+expanded="ekr.20071113194858,ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1716,7 +1717,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4,0,6,7,1">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>

@@ -2860,7 +2860,12 @@ import leo.core.leoColorizer as leoColorizer
 # imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
-x = leoColorizer.JEditColorizer(c, widget, wrapper)
+assert wrapper, p.h
+assert widget, p.h
+if g.app.gui.guiName() == 'curses':
+    x = leoColorizer.NullColorizer(c, widget, wrapper)
+else:
+    x = leoColorizer.JEditColorizer(c, widget, wrapper)
 tables = p.firstChild()
 tables_s = tables.b
 child = p.firstChild().next()
