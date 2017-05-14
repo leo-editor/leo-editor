@@ -138,7 +138,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
                       highlighting,
                       self.maximum_string_length - self.left_margin
                       )
-    #@+node:ekr.20170428084208.376: *3* print_cursor
+    #@+node:ekr.20170428084208.376: *3* TextTokens.print_cursor
     def print_cursor(self):
         # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         try:

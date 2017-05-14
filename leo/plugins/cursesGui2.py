@@ -48,100 +48,15 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.set_handlers()
 
     #@+others
-    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
-    def edit(self):
-        """Allow the user to edit the widget: ie. start handling keypresses."""
+    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print (from TextfieldBase) 
+    def _get_string_to_print(self):
+        s = self.value.content if self.value else None
+        return g.toUnicode(s) if s else None
         
-        # g.trace('==== LeoTreeLine')
-        self.editing = True
-        # self._pre_edit()
-        self.highlight = True
-        self.how_exited = False
-        # self._edit_loop()
-        old_parent_editing = self.parent.editing
-        self.parent.editing = True
-        while self.editing and self.parent.editing:
-            self.display()
-            self.get_and_use_key_press()
-                # A base TreeLine method.
-        self.parent.editing = old_parent_editing
-        self.editing = False
-        self.how_exited = True
-        # return self._post_edit()
-        self.highlight = False
-        self.update()
-    #@+node:ekr.20170514103557.1: *4* LeoTree.update (from TreeLine)
-    def update(self, clear=True, cursor=True):
-        """Update the contents of the textbox, without calling the final refresh to the screen"""
-        # pylint: disable=arguments-differ
-        trace = False
-        if trace:
-            g.trace('LeoTree: cursor_position: %5r %s' % (
-                self.cursor_position, self.value.content if self.value else 'None'))
-        if clear: self.clear()
-        if self.hidden:
-            return True
-        ### val = self.value
-        val = self.value.content if self.value else g.u('') 
-        val = g.toUnicode(val)
-        ###
-            # if self.ENSURE_STRING_VALUE:
-                # if val in (None, False, True):
-                    # val = ''
-                    # self.value = ''
-        ### if self.begin_at < 0: self.begin_at = 0
-        self.begin_at = max(0, self.begin_at)
-        if self.left_margin >= self.maximum_string_length:
-            raise ValueError
-        highlight = self.parent.theme_manager.findPair(self, self.highlight_color)
-        if self.editing:
-            ###
-            # if isinstance(self.value, bytes):
-                # # use a unicode version of self.value to work out where the cursor is.
-                # # not always accurate, but better than the bytes
-                # val = self.display_value(self.value).decode(self.encoding, 'replace')
-            if cursor:
-                if self.cursor_position is False:
-                    self.cursor_position = len(val)
-                elif self.cursor_position > len(val):
-                    self.cursor_position = len(val)
-                elif self.cursor_position < 0:
-                    self.cursor_position = 0
-                if self.cursor_position < self.begin_at:
-                    self.begin_at = self.cursor_position
-                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
-                    self.begin_at += 1
-            else:
-                if self.do_colors():
-                    highlight = self.parent.theme_manager.findPair(self, self.highlight_color)
-                    self.parent.curses_pad.bkgdset(' ', highlight | curses.A_STANDOUT)
-                else:
-                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
-        # Do this twice so that the _print method can ignore it if needed.
-        if self.highlight:
-            if self.do_colors():
-                if self.invert_highlight_color:
-                    attributes=highlight | curses.A_STANDOUT
-                else:
-                    attributes=highlight
-                self.parent.curses_pad.bkgdset(' ', attributes)
-            else:
-                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-        if self.show_bold:
-            self.parent.curses_pad.attron(curses.A_BOLD)
-        if self.important and not self.do_colors():
-            self.parent.curses_pad.attron(curses.A_UNDERLINE)
-        self._print()
-        # reset everything to normal
-        self.parent.curses_pad.attroff(curses.A_BOLD)
-        self.parent.curses_pad.attroff(curses.A_UNDERLINE)
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
-        self.parent.curses_pad.attrset(0)
-        if self.editing and cursor:
-            self.print_cursor()
-    #@+node:ekr.20170514103905.1: *4* LeoTree._print (from two classes)
+    #@+node:ekr.20170514103905.1: *4* LeoTreeLine._print (from TreeLine and TextFieldBase)
     def _print(self, left_margin=0):
-
+        # pylint: no-member
+        #
         ###
         ### From TreeLine._print
         ###
@@ -150,15 +65,12 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.left_margin += self._print_tree(self.relx)
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-        ### super(TreeLine, self)._print()
         ###
         ### From TextFieldBase._print
         ###
-            # s = self._get_string_to_print()
-            # if not s:
-                # return None
         s = self.value and self.value.content
-            ### 
+            ### This is what LeoTree.display_value(self.value) should return
+            ### We wouldn't have to override this method if LeoTree.over-rode display_value()
         if not s:
             return None
         s = g.toUnicode(s)
@@ -171,9 +83,6 @@ class LeoTreeLine(npyscreen.TreeLine):
             while column <= (self.maximum_string_length - self.left_margin):
                 if not s or i > len(s)-1:
                     break
-                ### This is always 1!
-                ### width_of_char_to_print = self.find_width_of_char(s[i])
-                ###if column - 1 + width_of_char_to_print > self.maximum_string_length:
                 if column > self.maximum_string_length:
                     break 
                 try:
@@ -202,7 +111,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             else:
                 color =  curses.A_BOLD if self.important or self.show_bold else  curses.A_NORMAL
             while column <= self.maximum_string_length - self.left_margin:
-                if i > len(s)-1: ### or not s.
+                if i > len(s)-1:
                     if self.highlight_whole_widget:
                         self.parent.curses_pad.addstr(
                             self.rely,
@@ -210,14 +119,11 @@ class LeoTreeLine(npyscreen.TreeLine):
                             ' ', 
                             color,
                         )
-                        column += 1 ### width_of_char_to_print
+                        column += 1
                         i += 1
                         continue
                     else:
                         break
-                ### width = self.find_width_of_char(s[i])
-                ### width is always 1!
-                ### if column - 1 + width > self.maximum_string_length:
                 if column > self.maximum_string_length:
                     break 
                 self.parent.curses_pad.addstr(
@@ -226,28 +132,89 @@ class LeoTreeLine(npyscreen.TreeLine):
                     self._print_unicode_char(s[i]), 
                     color,
                 )
-                column += 1 ### self.find_width_of_char(s[i])
+                column += 1
                 i += 1
-    #@+node:ekr.20170514104550.1: *4* LeoTree._get_string_to_print (from TextfieldBase) 
-    def _get_string_to_print(self):
-        s = self.display_value(self.value)
-        if not s:
-            return None
-        s = s[
-            self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+    #@+node:ekr.20170514103557.1: *4* LeoTreeLine.update (from TreeLine, Inherits from textFieldBase)
+    def update(self, clear=True, cursor=True):
+        """Update the contents of the textbox, without calling the final refresh to the screen"""
+        # pylint: disable=arguments-differ,no-member
+        trace = False
+        if trace:
+            g.trace('LeoTree: cursor_position: %5r %s' % (
+                self.cursor_position, self.value.content if self.value else 'None'))
+        if clear: self.clear()
+        if self.hidden:
+            return True
+        findPair = self.parent.theme_manager.findPair
+        val = self.value.content if self.value else g.u('') 
+            ### We might be able to use MultiLine.update,
+            ### But this code is so much clearer it's probably not worthwhile.
+        val = g.toUnicode(val)
+        self.begin_at = max(0, self.begin_at)
+        if self.left_margin >= self.maximum_string_length:
+            raise ValueError
+        highlight_color = findPair(self, self.highlight_color)
+        if self.editing:
+            if cursor:
+                if self.cursor_position is False:
+                    self.cursor_position = len(val)
+                else:
+                    self.cursor_position = max(0, min(len(val), self.cursor_position))
+                #
+                if self.cursor_position < self.begin_at:
+                    self.begin_at = self.cursor_position
+                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
+                    self.begin_at += 1
+            else:
+                if self.do_colors():
+                    highlight_color = findPair(self, self.highlight_color)
+                    self.parent.curses_pad.bkgdset(' ', highlight_color | curses.A_STANDOUT)
+                else:
+                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
+        # Do this twice so that the _print method can ignore it if needed.
+        if self.highlight:
+            if self.do_colors():
+                attributes = highlight_color
+                if self.invert_highlight_color:
+                    attributes |= curses.A_STANDOUT
+                self.parent.curses_pad.bkgdset(' ', attributes)
+            else:
+                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        if self.show_bold:
+            self.parent.curses_pad.attron(curses.A_BOLD)
+        if self.important and not self.do_colors():
+            self.parent.curses_pad.attron(curses.A_UNDERLINE)
+        self._print()
+        # reset everything to normal
+        self.parent.curses_pad.attroff(curses.A_BOLD)
+        self.parent.curses_pad.attroff(curses.A_UNDERLINE)
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.attrset(0)
+        if self.editing and cursor:
+            self.print_cursor()
+                # Call base-class method.
+    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
+    def edit(self):
+        """Allow the user to edit the widget: ie. start handling keypresses."""
         
-        if sys.version_info[0] >= 3:
-            s = self.display_value(self.value)[
-                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        else:
-            # ensure unicode only here encoding here.
-            ### dv = self.display_value(self.value)
-            dv = self.value.content if self.value else ''
-            if isinstance(dv, bytes):
-                dv = dv.decode(self.encoding, 'replace')
-            s = dv[
-                self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
-        return s
+        # g.trace('==== LeoTreeLine')
+        self.editing = True
+        # self._pre_edit()
+        self.highlight = True
+        self.how_exited = False
+        # self._edit_loop()
+        old_parent_editing = self.parent.editing
+        self.parent.editing = True
+        while self.editing and self.parent.editing:
+            self.display()
+            self.get_and_use_key_press()
+                # A base TreeLine method.
+        self.parent.editing = old_parent_editing
+        self.editing = False
+        self.how_exited = True
+        # return self._post_edit()
+        self.highlight = False
+        self.update()
     #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
     #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
     def h_cursor_beginning(self, ch):
@@ -317,6 +284,149 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
+    #@+node:ekr.20170514163452.1: *4*  LeoTreeLine.REF
+    #@+node:ekr.20170514165852.1: *5* TextFieldBase.find_width_of_char (REF)
+    # def find_width_of_char(self, ch):
+        # return 1
+    #@+node:ekr.20170514164051.1: *5* TextfieldBase._get_string_to_print (REF) (See above)
+    # def _get_string_to_print(self):
+        # string_to_print = self.display_value(self.value)
+        # if not string_to_print:
+            # return None
+        # string_to_print = string_to_print[
+            # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        
+        # if sys.version_info[0] >= 3:
+            # string_to_print = self.display_value(self.value)[
+                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        # else:
+            # # ensure unicode only here encoding here.
+            # dv = self.display_value(self.value)
+            # if isinstance(dv, bytes):
+                # dv = dv.decode(self.encoding, 'replace')
+            # string_to_print = dv[
+                # self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin]
+        # return string_to_print
+    #@+node:ekr.20170514163457.1: *5* TreeLine._get_content_for_display (REF)
+    # Compatibility
+
+    # def _get_content_for_display(self, vl):
+        # try:
+            # return vl.get_content_for_display()
+        # except AttributeError:
+            # return vl.getContentForDisplay()
+    #@+node:ekr.20170514161551.1: *5* TreeLine._get_content_for_display (REF)
+    # Compatibility
+
+    # def _get_content_for_display(self, vl):
+        # try:
+            # return vl.get_content_for_display()
+        # except AttributeError:
+            # return vl.getContentForDisplay()
+    #@+node:ekr.20170514161824.1: *5* TreeData.get_content_for_display (REF)
+    # def get_content_for_display(self):
+        # return str(self.content)
+    #@+node:ekr.20170514104743.1: *5* LeoTree.display_value (from TreeLine) (REF)
+    # def display_value(self, vl):
+        
+        # return vl.content if vl else ''
+        
+        ### Fail
+            ### return self.safe_string(vl)
+            ### return self._tree_real_value
+        
+        ### Works
+            # try:
+                # return self.safe_string(
+                    # self._get_content_for_display(self._tree_real_value))
+            # except Exception:
+                # g.es_exception()
+                # g.trace(vl)
+                # return self.safe_string(vl)
+    #@+node:ekr.20170514162009.1: *6* widget.safe_string (REF)
+    # def safe_string(self, this_string):
+        # """Check that what you are trying to display contains only
+        # printable chars.  (Try to catch dodgy input).  Give it a string,
+        # and it will return a string safe to print - without touching
+        # the original.  In Python 3 this function is not needed
+        
+        # N.B. This will return a unicode string on python 3 and a utf-8 string
+        # on python2
+        # """
+        # try:
+            # if not this_string: 
+                # return ""
+            # #this_string = str(this_string)
+            # # In python 3
+            # #if sys.version_info[0] >= 3:
+            # #    return this_string.replace('\n', ' ')
+            # if self.__class__._SAFE_STRING_STRIPS_NL == True:
+                # rtn_value = this_string.replace('\n', ' ')
+            # else:
+                # rtn_value = this_string
+        
+            # # Does the terminal want ascii?
+            # if self._force_ascii:
+                # if isinstance(rtn_value, bytes):
+                    # # no it isn't.
+                    # try:
+                        # rtn_value = rtn_value.decode(self.encoding, 'replace')
+                    # except TypeError:
+                        # # Python2.6
+                        # rtn_value = rtn_value.decode(self.encoding, 'replace')
+                # else:
+                    # if sys.version_info[0] >= 3:
+                        # # even on python3, in this case, we want a string that
+                        # # contains only ascii chars - but in unicode, so:
+                        # rtn_value = rtn_value.encode('ascii', 'replace').decode()
+                        # return rtn_value     
+                    # else:
+                        # return rtn_value.encode('ascii', 'replace')
+                # return rtn_value
+            # # If not....
+            # if not GlobalOptions.ASCII_ONLY:
+                # # is the string already unicode?
+                # if isinstance(rtn_value, bytes):
+                    # # no it isn't.
+                    # try:
+                        # rtn_value = rtn_value.decode(self.encoding, 'replace')
+                    # except Exception:
+                        # # Python2.6
+                        # rtn_value = rtn_value.decode(self.encoding, 'replace')
+                # if sys.version_info[0] >= 3:
+                    # return rtn_value     
+                # else:
+                    # return rtn_value.encode('utf-8', 'replace')
+            # else:
+                # rtn = self.safe_filter(this_string)
+                # return rtn
+        # except Exception:
+            # if DEBUG:
+                # raise
+            # else:
+                # return "*ERROR DISPLAYING STRING*"
+    #@+node:ekr.20170514172210.1: *5* TextfieldBase.print_cursor (REF)
+    # def print_cursor(self):
+        # # This needs fixing for Unicode multi-width chars.
+        # try:
+            # ch = self._get_string_to_print()[self.cursor_position]
+            # ch = self.safe_string(ch)
+        # except IndexError:
+            # ch = ' '
+        # except TypeError:
+            # ch = ' '
+        # if self.do_colors():
+            # self.parent.curses_pad.addstr(
+                # self.rely,
+                # self.cursor_position - self.begin_at + self.relx + self.left_margin,
+                # ch,
+                # self.parent.theme_manager.findPair(self, 'CURSOR_INVERSE'))
+        # else:
+            # self.parent.curses_pad.addstr(
+                # self.rely,
+                # self.cursor_position - self.begin_at + self.relx + self.left_margin,
+                # ch,
+                # curses.A_STANDOUT)
     #@-others
 #@+node:ekr.20170511053143.1: *3*  class CursesTextMixin (object)
 class CursesTextMixin(object):
@@ -3831,6 +3941,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
     def update(self, clear=True):
         '''Redraw the tree.'''
+        # pylint: disable=access-member-before-definition
         if self.values is None:
             self.values = []
         if self.editing:
@@ -3846,6 +3957,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122253.1: *4* _init_update
     def _init_update(self):
         '''Put self.cursor_line and self.start_display_at in range.'''
+        # pylint: disable=access-member-before-definition
         display_length = len(self._my_widgets)
         self.cursor_line = max(0, min(len(self.values)-1, self.cursor_line))
         if self.slow_scroll:
