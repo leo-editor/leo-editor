@@ -156,7 +156,7 @@ class MultiLine(widget.Widget):
     def reset_display_cache(self):
         self._last_values = False
         self._last_value  = False
-    #@+node:ekr.20170428084208.82: *3* MultiLine.update (LeoTree overrides this)
+    #@+node:ekr.20170428084208.82: *3* MultiLine.update (LeoMLTree overrides this)
     def update(self, clear=True):
         trace = False ### LeoMLTree.update overrides this.
         if trace and self.hidden:
