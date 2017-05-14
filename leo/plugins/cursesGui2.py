@@ -733,7 +733,7 @@ class CursesFrame (leoFrame.LeoFrame):
             # self.wantedWidget = None
             # self.wantedCallbackScheduled = False
             # self.scrollWay = None
-    #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (Finish)
+    #@+node:ekr.20170420163932.1: *4* CFrame.finishCreate (more work may be needed)
     def finishCreate(self):
         # g.trace('CursesFrame', self.c.shortFileName())
         c = self.c
@@ -2880,27 +2880,26 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511105355.4: *4* CTree.edit_widget
     def edit_widget(self, p):
         """Returns the edit widget for position p."""
-        if native: # New code: return a string wrapper.
-            return CursesTextWrapper(c=self.c, name='head', w=None)
-        else:
-            trace = False and not g.unitTesting
-            verbose = False
-            item = self.position2item(p)
-            if item:
-                e = self.getTreeEditorForItem(item)
-                if e:
-                    # Create a wrapper widget for Leo's core.
-                    w = self.getWrapper(e, item)
-                    if trace: g.trace(w, p and p.h)
-                    return w
-                else:
-                    # This is not an error
-                    # But warning: calling this method twice might not work!
-                    if trace and verbose: g.trace('no e for %s' % (p))
-                    return None
-            else:
-                if trace and verbose: self.error('no item for %s' % (p))
-                return None
+        return CursesTextWrapper(c=self.c, name='head', w=None)
+        ### Old code.
+            # trace = False and not g.unitTesting
+            # verbose = False
+            # item = self.position2item(p)
+            # if item:
+                # e = self.getTreeEditorForItem(item)
+                # if e:
+                    # # Create a wrapper widget for Leo's core.
+                    # w = self.getWrapper(e, item)
+                    # if trace: g.trace(w, p and p.h)
+                    # return w
+                # else:
+                    # # This is not an error
+                    # # But warning: calling this method twice might not work!
+                    # if trace and verbose: g.trace('no e for %s' % (p))
+                    # return None
+            # else:
+                # if trace and verbose: self.error('no item for %s' % (p))
+                # return None
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
@@ -3522,6 +3521,9 @@ class LeoMLTree(npyscreen.MLTree):
         self.reset_display_cache()
         self.display()
         return True
+    #@+node:ekr.20170514065422.1: *4* LeoMLTree.intraFileDrop
+    def intraFileDrop(self, fn, p1, p2):
+        pass
     #@+node:ekr.20170506044733.2: *4* LeoMLTree.new_node
     def new_node(self):
         '''

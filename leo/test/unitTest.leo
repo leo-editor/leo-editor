@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1176,13 +1176,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20170201143435.1"><vh>@test bc.scanLanguageDirectives</vh>
-<v t="ekr.20170201143435.2"><vh>&lt;&lt; scanLanguageDirectives test tables &gt;&gt;</vh></v>
-<v t="ekr.20170201143435.3"><vh>test-child</vh>
-<v t="ekr.20170201143435.4"><vh>test-grandchild</vh></v>
-</v>
-</v>
-<v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
+<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1559,35 +1553,35 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20051107115231.24"># Should be a comment
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    w = c.frame.body.wrapper
-    n = c.frame.body.colorizer.recolorCount
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.bodyWantsFocus()
-    paste = '# Should be a comment'
-    g.app.gui.replaceClipboardWith(paste)
-    c.outerUpdate()
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-    c.frame.pasteText(event)
-    try:
-        assert c.frame.body.colorizer.recolorCount &gt; n
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
-</t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
+</t>
+<t tx="ekr.20060208072331">h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+w.setSelectionRange('end','end',insert='end')
+paste = 'ABC'
+g.app.gui.replaceClipboardWith(paste)
+event = g.app.gui.create_key_event(c,None,None,w)
+c.frame.pasteText(event)
+# Move around and and make sure it doesn't change.
+try:
+    # g.trace('before select',w,w.getAllText())
+    c.selectPosition(p.threadBack())
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
+    c.selectPosition(p)
+    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
+finally:
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)
 </t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
@@ -11575,47 +11569,6 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20170201143435.1">@language python
-import leo.core.leoColorizer as leoColorizer
-import leo.core.leoFrame as leoFrame
-# import imp
-# imp.reload(leoColorizer)
-wrapper = c.frame.body.wrapper
-widget = c.frame.body.widget
-assert wrapper, p.h
-assert widget, p.h
-if g.app.gui.guiName() == 'curses':
-    x = leoFrame.NullColorizer(c)
-else:
-    x = leoColorizer.JEditColorizer(c, widget, wrapper)
-tables = p.firstChild()
-tables_s = tables.b
-child = p.firstChild().next()
-assert child.h == 'test-child'
-grand = child.firstChild()
-&lt;&lt; scanLanguageDirectives test tables &gt;&gt;
-try:
-    for i, data in enumerate(language_table):
-        language, child_s, grand_s = data
-        child.b = child_s
-        grand.b = grand_s
-        got = x.scanLanguageDirectives(grand)
-        assert got == language, '%s expected %r, got %r child.b %r' % (
-            i, language, got, child.b)
-finally:
-    tables.b = tables_s
-    
-</t>
-<t tx="ekr.20170201143435.2">language_table = [
-    ('python', '@language rest\n@language python\n', ''),
-    ('rest', '@language rest', ''),
-    ('python', '@language rest\n@language python\n', ''),
-]
-</t>
-<t tx="ekr.20170201143435.3">@language rest
-@language python
-</t>
-<t tx="ekr.20170201143435.4"></t>
 <t tx="ekr.20170302201859.3">&lt;?php
 @others
 @language php
