@@ -933,6 +933,7 @@ class CursesGui(leoGui.LeoGui):
             # Used only by the Qt gui.
         assert c.frame.body_widget is None, repr(c.frame.body_widget)
         c.frame.body_widget = w
+        c.frame.body.widget = w
         assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
         c.frame.body.wrapper = CursesTextWrapper(c, 'body', w)
     #@+node:ekr.20170502083613.1: *4* CGui.createCursesLog
@@ -1154,6 +1155,10 @@ class CursesGui(leoGui.LeoGui):
     def do_key(self, ch_i):
         
         return self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170514060742.1: *3* CGui.fonts
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        # g.trace('CursesGui', g.callers())
+        return None
     #@+node:ekr.20170502101347.1: *3* CGui.get/set_focus (to do)
     def get_focus(self, *args, **keys):
         

@@ -137,6 +137,12 @@ class BaseColorizer(object):
             word = m.group(0)[1:]
             d[word] = word
         return d
+    #@+node:ekr.20170514054524.1: *3* bc.fonts
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        return None
+
+    def setFontFromConfig(self):
+        pass
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
