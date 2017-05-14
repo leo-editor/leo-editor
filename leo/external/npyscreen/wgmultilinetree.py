@@ -321,7 +321,7 @@ class MLTree(multiline.MultiLine):
             self._set_line_blank(line)
         except TypeError:
             self._set_line_blank(line)
-    #@+node:ekr.20170428084208.193: *3* _walk_tree
+    #@+node:ekr.20170428084208.193: *3* MLTree._walk_tree
     def _walk_tree(self, root, only_expanded=True, ignore_root=True, sort=None, sort_function=None):
         try:
             return root.walk_tree(
@@ -335,7 +335,7 @@ class MLTree(multiline.MultiLine):
                 ignoreRoot=ignore_root,
                 sort=sort,
                 sort_function=sort_function)
-    #@+node:ekr.20170428084208.199: *3* _walkMyValues
+    #@+node:ekr.20170428084208.199: *3* MLTree._walkMyValues
     def _walkMyValues(self):
         return self._walk_tree(self._myFullValues)
     #@+node:ekr.20170428084208.197: *3* MLTree.clearDisplayCache
@@ -364,10 +364,10 @@ class MLTree(multiline.MultiLine):
         self.display()
     #@+node:ekr.20170502150513.1: *3* values Property
     #@+others
-    #@+node:ekr.20170428084208.200: *4* _delMyValues
+    #@+node:ekr.20170428084208.200: *4* MLTree._delMyValues
     def _delMyValues(self):
         self._myFullValues = None
-    #@+node:ekr.20170428084208.198: *4* _getApparentValues
+    #@+node:ekr.20170428084208.198: *4* MLTree._getApparentValues
     def _getApparentValues(self):
         try:
             if (
@@ -381,7 +381,7 @@ class MLTree(multiline.MultiLine):
         self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
         self._cached_tree_as_list = self._get_tree_as_list(self._myFullValues)
         return self._cached_tree_as_list
-    #@+node:ekr.20170428084208.194: *4* _setMyValues
+    #@+node:ekr.20170428084208.194: *4* MLTree._setMyValues
     def _setMyValues(self, tree):
         if tree == [] or tree == None:
             self._myFullValues = TreeData() #NPSTree.NPSTreeData()
@@ -399,7 +399,7 @@ class MLTree(multiline.MultiLine):
 
     values = property(_getApparentValues, _setMyValues, _delMyValues)
     #@+node:ekr.20170502150015.1: *3* MLTree.Handlers
-    #@+node:ekr.20170428084208.206: *4* h_collapse_tree
+    #@+node:ekr.20170428084208.206: *4* MLTree.h_collapse_tree
     def h_collapse_tree(self, ch):
         if self.values[self.cursor_line].expanded and self._has_children(self.values[self.cursor_line]):
             self.values[self.cursor_line].expanded = False
@@ -415,7 +415,7 @@ class MLTree(multiline.MultiLine):
                     cursor_line -= 1
         self._cached_tree = None
         self.display()
-    #@+node:ekr.20170428084208.207: *4* h_expand_tree
+    #@+node:ekr.20170428084208.207: *4* MLTree.h_expand_tree
     def h_expand_tree(self, ch):
         if not self.values[self.cursor_line].expanded:
             self.values[self.cursor_line].expanded = True
@@ -427,7 +427,7 @@ class MLTree(multiline.MultiLine):
                 v.expanded = True
         self._cached_tree = None
         self.display()
-    #@+node:ekr.20170428084208.208: *4* h_collapse_all
+    #@+node:ekr.20170428084208.208: *4* MLTree.h_collapse_all
     def h_collapse_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=True):
             v.expanded = False
@@ -435,14 +435,14 @@ class MLTree(multiline.MultiLine):
         self.cursor_line = 0
         self.display()
 
-    #@+node:ekr.20170428084208.209: *4* h_expand_all
+    #@+node:ekr.20170428084208.209: *4* MLTree.h_expand_all
     def h_expand_all(self, ch):
         for v in self._walk_tree(self._myFullValues, only_expanded=False):
             v.expanded    = True
         self._cached_tree = None
         self.cursor_line  = 0
         self.display()
-    #@+node:ekr.20170428084208.203: *4* set_up_handlers
+    #@+node:ekr.20170428084208.203: *4* MLTree.set_up_handlers
     def set_up_handlers(self):
         '''TreeLineAnnotated.set_up_handlers.'''
         super(MLTree, self).set_up_handlers()
