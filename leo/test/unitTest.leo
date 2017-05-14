@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1178,6 +1178,56 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
+<v t="ekr.20170514070916.1"><vh>Found:zz</vh>
+<v t="ekr.20081111150402.11"></v>
+<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
+<v t="ekr.20050105094311"><vh>@test at.replaceTargetFileIfDifferent (different)</vh></v>
+<v t="ekr.20050105095743"><vh>@test at.replaceTargetFileIfDifferent (identical)</vh></v>
+<v t="ekr.20050105093136"><vh>@test at.remove</vh></v>
+<v t="ekr.20050105093524"><vh>@test at.rename</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20050105100227"><vh>@test at.replaceTargetFileIfDifferent (no target file)</vh></v>
+<v t="ekr.20071113201736"></v>
+<v t="ekr.20090615053403.4957"></v>
+<v t="ekr.20071113201833"></v>
+<v t="ekr.20071113201854"></v>
+<v t="ekr.20070306091949"></v>
+<v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
+<v t="ekr.20071113202045"></v>
+<v t="ekr.20071113202153"></v>
+<v t="ekr.20060131102450"></v>
+<v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20071113202153.1"></v>
+<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
+<v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
+<v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
+<v t="ekr.20071113202153.2"></v>
+<v t="ekr.20100131171342.5603"></v>
+<v t="ekr.20140724164600.4590"></v>
+<v t="ekr.20100131171342.5609"></v>
+<v t="ekr.20071113202452"></v>
+<v t="ekr.20090529115704.4552"><vh>@test x.dirName</vh></v>
+<v t="ekr.20071113090055.4"><vh>@test at.scanAllDirectives</vh></v>
+<v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
+</v>
+<v t="ekr.20061101121602.179"><vh>work</vh></v>
+<v t="ekr.20061101121602.180"><vh>before sel=1.4,1.4</vh></v>
+<v t="ekr.20061101121602.181"><vh>after sel=1.4,1.4</vh></v>
+<v t="ekr.20100131180007.5364"><vh>@test x.markerFromFileName</vh></v>
+<v t="ekr.20090529115704.4551"><vh>@test x.pathName</vh></v>
+<v t="ekr.20090529115704.4555"><vh>@@test x.rename</vh></v>
+<v t="ekr.20090529115704.4554"><vh>@test x.shadowDirName</vh></v>
+<v t="ekr.20071113202510"></v>
+<v t="ekr.20100131171342.5501"></v>
+<v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
+<v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
+<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
+<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
+<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
+<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1267,7 +1317,203 @@ if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)
 </t>
+<t tx="ekr.20040917062206">assert(g.cantImport("xyzzy","during unit testing") is None)
+</t>
 <t tx="ekr.20041121151002"></t>
+<t tx="ekr.20050105084757.1">import os
+
+exists = g.os_path_exists
+
+path = g.os_path_join(g.app.testDir,'xyzzy')
+if exists(path):
+    os.remove(path)
+
+assert not exists(path)
+assert not g.utils_remove(path,verbose=False)
+
+f = open(path,'w')
+f.write('test')
+f.close()
+
+assert exists(path)
+assert g.utils_remove(path,verbose=True)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105091547">import os
+
+exists = g.os_path_exists
+path = g.os_path_join(g.app.testDir,'xyzzy')
+path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+
+# Create both paths.
+for p in (path,path2):
+    if exists(p):
+        os.remove(p)
+    assert not exists(p)
+    f = open(p,'w')
+    f.write('test %s' % p)
+    f.close()
+    assert exists(p)
+
+assert g.utils_rename(c,path,path2) #,verbose=True)
+assert exists(path2)
+f = open(path2)
+s = f.read()
+f.close()
+assert s == 'test %s' % path
+os.remove(path2)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105093136">import os
+
+at = c.atFileCommands
+exists = g.os_path_exists
+
+path = g.os_path_join(g.app.testDir,'xyzzy')
+if exists(path):
+    os.remove(path)
+
+assert not exists(path)
+assert not at.remove(path,verbose=False)
+
+f = open(path,'w')
+f.write('test')
+f.close()
+
+assert exists(path)
+assert at.remove(path)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105093524">import os
+at = c.atFileCommands
+exists = g.os_path_exists
+path = g.os_path_join(g.app.testDir,'xyzzy')
+path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+# Create both paths.
+for p in (path,path2):
+    if exists(p):
+        os.remove(p)
+    assert not exists(p)
+    f = open(p,'w')
+    f.write('test %s' % p)
+    f.close()
+    assert exists(p)
+assert at.rename(path,path2,verbose=True)
+assert exists(path2)
+f = open(path2)
+s = f.read()
+f.close()
+assert s == 'test %s' % path
+os.remove(path2)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105094311">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+try:
+    # Create both paths (different contents)
+    table = (at.targetFileName,)
+    at.outputContents = contents = g.toUnicode('test contents')
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        s = 'test %s' % fn
+        f.write(s)
+        f.close()
+        assert exists(fn),fn
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceTargetFileIfDifferent(at.root)
+    assert val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName), 'oops, output file exists'
+    assert exists(at.targetFileName), 'oops, target file does not exist'
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,s
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105095743">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
+# Create both paths (identical contents)
+contents = g.toUnicode('test contents')
+try:
+    table = (at.targetFileName,)
+    at.outputContents = contents
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        f.write(contents)
+        f.close()
+        assert exists(fn)
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    assert not at.replaceTargetFileIfDifferent(at.root)
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName)
+    assert exists(at.targetFileName)
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,contents
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
+<t tx="ekr.20050105100227">import os
+import leo.core.leoAtFile as leoAtFile
+at = c.atFileCommands
+exists = g.os_path_exists
+at.outputFileName = None # g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
+# Remove both files.
+for fn in (at.outputFileName,at.targetFileName):
+    if fn and exists(fn):
+        os.remove(fn)
+try:
+    # Create the output file or contents.
+    at.outputContents = contents = g.toUnicode('test output')
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceTargetFileIfDifferent(at.root)
+    assert not val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName),at.outputFileName
+    assert exists(at.targetFileName),at.targetFileName
+    f = open(at.targetFileName)
+    s = f.read()
+    f.close()
+    assert s == contents,'%s len(%s)' % (fn,len(s))
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
+</t>
 <t tx="ekr.20050120095423.20">class lastTestCase(unittest.TestCase):
 
     '''A test case to print a message at the end of plugin tests.'''
@@ -1555,7 +1801,7 @@ assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -1583,6 +1829,27 @@ finally:
     if 1:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
+</t>
+<t tx="ekr.20061101121602.179">xyzzy line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.180">XYZZY line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.181">xyzzy line
+line 1
+    line a
+        line b
+line c
+last line
 </t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
@@ -1735,13 +2002,13 @@ else:
         sel = (i,i)
     return i,j</t>
 <t tx="ekr.20070306091949">s = '\nEnd of leoEditCommands tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="9">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1784,6 +2051,31 @@ finally:
 
 assert(g.os_path_exists(path))
 </t>
+<t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+</t>
+<t tx="ekr.20071113090055.5"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -1809,64 +2101,73 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113145804.18">fc=c.fileCommands
+fc.deleteFileWithMessage('xyzzy','test')
+
+if 0: # one-time test of es statements.
+    fileName = 'fileName' ; kind = 'kind'
+    g.es("read only",color="red")
+    g.es("exception deleting %s file: %s" % (fileName,kind))
+    g.es("exception deleting backup file:" + fileName)
+</t>
 <t tx="ekr.20071113201736">s = '\nEnd of leoAtFile tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113201833">s = '\nEnd of leoCommands tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113201854">s = '\nEnd of leoConfig tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202045">s = '\nEnd of leoFileCommands tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153">s = '\nEnd of leoFind tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153.1">s = '\nEnd of leoFrame tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202153.2">s = '\nEnd of leoGlobals tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202452">s = '\nEnd of leoNodes tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20071113202510">s = '\nEnd of leoUndo tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -1905,9 +2206,78 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
+<t tx="ekr.20081001094920.4">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    assert p1.textOffset() == 0
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.5">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 0
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.6">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''   %s
+    ''' % (g.angleBrackets(' section '))
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    head = g.angleBrackets(' section ')
+    p2.setHeadString(head)
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 3
+        # Section nodes can appear in with @others nodes,
+        # so they don't get special treatment.
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()
+</t>
+<t tx="ekr.20081001094920.7">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p1 = p.insertAsLastChild()
+    p1.setHeadString('@file zzz')
+    body = '''     %s
+    ''' % (chr(64) + 'others') # ugly hack
+    p1.setBodyString(body)
+    p2 = p1.insertAsLastChild()
+    assert p1.textOffset() == 0
+    assert p2.textOffset() == 5
+    root.firstChild().doDelete(newNode=None)
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now()
+</t>
 <t tx="ekr.20081111150402.11"># Print does not work: it is redirected.
 s = 'all unit tests done'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -1916,6 +2286,104 @@ else:
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print('%s: %s' % (p.h,tree.redrawCount))
+</t>
+<t tx="ekr.20090529115704.4551">x = c.shadowController
+filename = 'xyzzy'
+path = x.pathName(filename)
+expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4552">x = c.shadowController
+filename = 'xyzzy'
+path = x.dirName(filename)
+expected = g.os_path_dirname(g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4553">x = c.shadowController
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+filename = 'xyzzy'
+path = x.shadowPathName(filename)
+expected = g.os_path_abspath(g.os_path_join(
+    g.os_path_dirname(c.fileName()),subdir,prefix+filename))
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4554">x = c.shadowController
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+filename = 'xyzzy'
+path = x.shadowDirName(filename)
+expected = g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)
+</t>
+<t tx="ekr.20090529115704.4555">if 0: # x.rename no longer exists
+    x = c.shadowController
+
+    filename = x.pathName('xyzzy')
+    assert not g.os_path_exists(filename)
+    n = x.errors
+    x.rename('xyzzy','xyzzy2',silent=True)
+    assert x.errors == n+1
+    assert x.last_error.startswith('can not rename')
+    # print(x.last_error)
+</t>
+<t tx="ekr.20090529115704.4556">x = c.shadowController
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+n = x.errors
+x.unlink('xyzzy',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not delete xyzzy'), x.last_error
+
+</t>
+<t tx="ekr.20090529115704.4557">import glob
+import os
+
+x = c.shadowController
+
+@others
+
+shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
+shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
+
+if g.os_path_exists(shadow_fn):
+    g.utils_remove(shadow_fn,verbose=True)
+    assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+
+deleteShadowDir(shadow_dir)
+
+x.makeShadowDirectory(shadow_dir)
+assert os.path.exists(shadow_dir)
+
+deleteShadowDir(shadow_dir)
+</t>
+<t tx="ekr.20090529115704.4558">def deleteShadowDir(shadowDir):
+
+    if g.os_path_exists(shadow_dir):
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                # g.trace(z)
+                os.unlink(z)
+        # g.trace(shadow_dir)
+        os.rmdir(shadow_dir)
+        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
+</t>
+<t tx="ekr.20090529115704.4563">at = c.atFileCommands
+x = c.shadowController
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+try:
+    kind,theFile = at.openForWrite(filename)
+    assert kind == 'check'
+    if theFile: theFile.close()
+finally:
+    if g.os_path_exists(filename):
+        x.unlink(filename)
+        assert not g.os_path_exists(filename)
 </t>
 <t tx="ekr.20090529141856.4682"></t>
 <t tx="ekr.20090529141856.4684">@language python
@@ -3209,7 +3677,7 @@ for ext in g.app.extension_dict.keys():
             print('no language for ext=%s' % (ext))
 </t>
 <t tx="ekr.20090615053403.4957">s = '\nEnd of leoColor tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -3476,7 +3944,7 @@ for tag,aList in table:
     return ok
 </t>
 <t tx="ekr.20100131171342.5501" annotate="7d71002e">s = '\nEnd of plugins unit tests'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -3503,18 +3971,58 @@ else:
     self.skipTest('Can not be run locally')
 </t>
 <t tx="ekr.20100131171342.5603" annotate="7d71002e">s = '\nEnd of leoGui tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
 <t tx="ekr.20100131171342.5609" annotate="7d71002e">s = '\nEnd of leoKeys tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
+</t>
+<t tx="ekr.20100131180007.5364">x = c.shadowController
+
+table = (
+    ('ini',';','',),
+    ('c','//',''),
+    ('h','//',''),
+    ('py','#',''),
+    ('xyzzy','#--unknown-language--',''),
+)
+
+for ext,delim1,delim2 in table:
+    filename = 'x.%s' % ext
+    marker = x.markerFromFileName(filename)
+    result1,result2 = marker.getDelims()
+    assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+        ext,delim1,result1)
+    assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+        ext,delim2,result2)
+</t>
+<t tx="ekr.20100131180007.5434">@language python
+@comment a b c
+    # @comment must follow @language.
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+# @path: anError # @path ends with ':'.
+
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+# assert d.get('_p') == p # Never used, and a bad idea.
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+assert not d.get('path'),d.get('path')
+# assert d.get('path').endswith('xyzzy')
 </t>
 <t tx="ekr.20100204053330.5367">root = p.copy()
 while p.hasChildren():
@@ -4719,7 +5227,7 @@ for fn in glob.glob(pattern):
     assert m
 </t>
 <t tx="ekr.20140724164600.4590">s = '\nEnd of leoImport tests.'
-if g.app.gui.guiName() == 'curses':
+if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
@@ -4755,6 +5263,19 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+</t>
+<t tx="ekr.20140822063016.4474">if 0:
+    # These won't do any good if a unit test foolishly saves the outline!
+    c.k.simulateCommand('contract-all')
+    c.setChanged(False)
+    
+if g.app.gui.guiName() == 'curses':
+    import curses
+    # import logging
+    # logging.info('test')
+    curses.endwin()
+else:
+    c.k.simulateCommand(':q!')
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140904060337.4476">if g.in_bridge or g.app.isExternalUnitTest:
@@ -15464,5 +15985,8 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
+<t tx="ekr.20170514070916.1"># flattened, ignore-case, head, body
+
+# found 46 nodes</t>
 </tnodes>
 </leo_file>
