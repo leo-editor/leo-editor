@@ -2067,12 +2067,8 @@ else:
 
 assert len(p.b) == 175,len(p.b)
 #@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
-s = '\nEnd of leoAtFile tests'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoAtFile tests')
 #@+node:ekr.20101021205258.6011: *4* at.Directives & directories
 #@+node:ekr.20100131180007.5454: *5* @test at.get/setPathUa
 at = c.atFileCommands
@@ -4852,12 +4848,8 @@ c.selectPosition(p) # Sets body text.
 if
 IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
-s = '\nEnd of leoColor tests'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoColor tests')
 #@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
@@ -5453,12 +5445,8 @@ for obj,val in table:
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
 #@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
-s = '\nEnd of leoCommands tests'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('End of leoCommands tests')
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
@@ -5565,12 +5553,8 @@ elif sys.platform== 'darwin':
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
-s = '\nEnd of leoConfig tests'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoConfig tests')
 #@+node:ekr.20100131171342.5592: *3* leoDialogs
 #@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
@@ -10669,6 +10653,7 @@ try:
 finally:
     c.setBodyString(p,'')
 #@+node:ekr.20060131102450: *5* @test zz print end of typing tests
+# Print does not work with the curses gui: it is redirected.
 s = '\nEnd of typing tests'
 if False and g.app.gui.guiName() == 'curses':
     import logging
@@ -10676,12 +10661,8 @@ if False and g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 #@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
-s = '\nEnd of leoEditCommands tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoEditCommands tests.')
 #@+node:ekr.20061001114637: *3* leoFileCommands
 # 3 failures with Alt-5
 #@+node:ekr.20100206165505.5386: *4* @@test fc.handleNodeConflicts
@@ -10972,12 +10953,8 @@ else:
     # old gnxs:
     # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 #@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
-s = '\nEnd of leoFileCommands tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoFileCommands tests.')
 #@+node:ekr.20071113193527: *3* leoFind
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
@@ -11046,12 +11023,8 @@ else:
         c.k.simulateCommand(command)
         c.k.simulateCommand(command)
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
-s = '\nEnd of leoFind tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoFind tests.')
 #@+node:ekr.20071113194424: *3* leoFrame
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
@@ -11229,12 +11202,8 @@ else:
 #@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
-s = '\nEnd of leoFrame tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoFrame tests.')
 #@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
@@ -12023,12 +11992,8 @@ else:
 for ivar in ('c','g','p'):
     assert ivar in dir()
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
-s = '\nEnd of leoGlobals tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
@@ -12127,12 +12092,8 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
      self.skipTest('Requires Qt Gui')
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
-s = '\nEnd of leoGui tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoGui tests.')
 #@+node:ekr.20090529141856.4682: *3* leoImport
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
@@ -20676,12 +20637,8 @@ for s in table:
     assert m, s
     assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
-s = '\nEnd of leoImport tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoImport tests.')
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
@@ -20809,12 +20766,8 @@ for setting, result in table:
     val = c.k.strokeFromSetting(setting)
     assert val==result,'Expected %s, Got %s' % (result,val)
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
-s = '\nEnd of leoKeys tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoKeys tests.')
 #@+node:ekr.20071113194424.1: *3* leoNodes
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
@@ -21622,12 +21575,8 @@ import leo.core.leoNodes as leoNodes
 if leoNodes.use_zodb:
     p.v.__hash__()
 #@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
-s = '\nEnd of leoNodes tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
@@ -27858,12 +27807,8 @@ after
 2.0
 2.16
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
-s = '\nEnd of leoUndo tests.'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of leoUndo tests.')
 #@+node:ekr.20140802074328.4471: *3* leoVim.py
 #@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
 vc = c.vimCommands
@@ -28371,12 +28316,8 @@ if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
-s = '\nEnd of plugins unit tests'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s)
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
@@ -28386,13 +28327,8 @@ if 0:
     print('calls to jedit.setTag: %s' %
         c.frame.body.colorizer.highlighter.colorer.n_setTag)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
-# Print does not work: it is redirected.
-s = 'all unit tests done'
-if False and g.app.gui.guiName() == 'curses':
-    import logging
-    logging.info(s)
-else:
-    g.pr(s,color='blue')
+# Print does not work with the curses gui: it is redirected.
+g.pr('\nall unit tests done', color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
 if 0:
     # These won't do any good if a unit test foolishly saves the outline!
@@ -28401,8 +28337,6 @@ if 0:
     
 if g.app.gui.guiName() == 'curses':
     import curses
-    # import logging
-    # logging.info('test')
     curses.endwin()
 else:
     c.k.simulateCommand(':q!')
