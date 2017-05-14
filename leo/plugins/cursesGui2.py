@@ -55,7 +55,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         
     #@+node:ekr.20170514103905.1: *4* LeoTreeLine._print (from TreeLine and TextFieldBase)
     def _print(self, left_margin=0):
-        # pylint: no-member
+        # pylint: disable=no-member
         #
         ###
         ### From TreeLine._print
@@ -73,9 +73,10 @@ class LeoTreeLine(npyscreen.TreeLine):
             ### We wouldn't have to override this method if LeoTree.over-rode display_value()
             ### But how to do that in this inner call???
         if not s:
-            return None
+            return
         s = g.toUnicode(s)
         column, i = 0, 0
+        assert not self.syntax_highlighting
         if self.syntax_highlighting:
             self.update_highlighting(
                 start=self.begin_at,
@@ -99,7 +100,7 @@ class LeoTreeLine(npyscreen.TreeLine):
                 column += self.find_width_of_char(s[i])
                 i += 1
         else: # No syntax highlighting.
-            if self.do_colors():
+            if self.do_colors(): # do_colors is a Widget member.
                 findPair = self.parent.theme_manager.findPair
                 if self.show_bold and self.color == 'DEFAULT':
                     color = findPair(self, 'BOLD') | curses.A_BOLD
@@ -110,7 +111,8 @@ class LeoTreeLine(npyscreen.TreeLine):
                 else:
                     color = findPair(self)
             else:
-                color =  curses.A_BOLD if self.important or self.show_bold else  curses.A_NORMAL
+                bold = self.important or self.show_bold
+                color = curses.A_BOLD if bold else curses.A_NORMAL
             while column <= self.maximum_string_length - self.left_margin:
                 if i > len(s)-1:
                     if self.highlight_whole_widget:

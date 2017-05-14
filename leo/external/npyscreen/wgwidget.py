@@ -486,7 +486,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             self.update()
             self.parent.refresh()
-    #@+node:ekr.20170428084208.419: *3* do_colors
+    #@+node:ekr.20170428084208.419: *3* Widget.do_colors
     def do_colors(self):
         "Returns True if the widget should try to paint in coloour."
         if curses.has_colors() and not GlobalOptions.DISABLE_ALL_COLORS:
