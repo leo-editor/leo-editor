@@ -35,7 +35,6 @@ if npyscreen:
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
 native = False # True: use vnodes, not TreeData.
-MORE_LABEL = "- more -" # string to tell user there are more options
 #@+<< base classes >>
 #@+node:ekr.20170511053555.1: **  << base classes >>
 #@+others
@@ -3452,6 +3451,8 @@ class LeoMLTree(npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
+    
+    continuation_line = "- more -" # value of contination line.
 
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
@@ -3565,6 +3566,10 @@ class LeoMLTree(npyscreen.MLTree):
         self.cursor_line += 1
         self.display()
         self.edit_headline()
+    #@+node:ekr.20170514101636.1: *4* LeoMLTree.set_is_line_cursor (not used)
+    # def set_is_line_cursor(self, line, value):
+        # # only defined in MultiLine
+        # line.highlight = value
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
@@ -3627,14 +3632,14 @@ class LeoMLTree(npyscreen.MLTree):
             else: 
                 self.cursor_line -=1
                 return True
-        else:
-            widget = self._my_widgets[self.cursor_line-self.start_display_at]
-            task = getattr(widget, 'task', None)
-            if task == MORE_LABEL:
-                if self.slow_scroll:
-                    self.start_display_at += 1
-                else:
-                    self.start_display_at = self.cursor_line
+        # else:
+            # widget = self._my_widgets[self.cursor_line-self.start_display_at]
+            # task = getattr(widget, 'task', None)
+            # if task == self.continuation_line:
+                # if self.slow_scroll:
+                    # self.start_display_at += 1
+                # else:
+                    # self.start_display_at = self.cursor_line
     #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (new)
     def h_cursor_line_up(self, ch):
         self.cursor_line -= 1
@@ -3681,7 +3686,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513123010.1: *4* _must_redraw
     def _must_redraw(self, clear):
         '''Return a list of reasons why we must redraw.'''
-        trace = True
+        trace = False
         table = (
             ('cache', not self._safe_to_display_cache or self.never_cache),
             ('value', self._last_value is not self.value),
@@ -3756,35 +3761,36 @@ class LeoMLTree(npyscreen.MLTree):
         i = self.start_display_at
         for line in self._my_widgets[:-1]:
             self._print_line(line, i)
-            line.task = "PRINTLINE"
             line.update(clear=True)
             i += 1
         # Do the last line
         line = self._my_widgets[-1]
         if (len(self.values) <= i + 1):
             self._print_line(line, i)
-            line.task = "PRINTLINE"
             line.update(clear=False)
         elif len((self._my_widgets) * self._contained_widget_height) < self.height:
             self._print_line(line, i)
-            line.task = "PRINTLINELASTOFSCREEN"
             line.update(clear=False)
-            self._put_string(self.rely + self.height - 1, self.relx)
+            self._put_continuation_line()
         else:
             line.clear()
-            self._put_string(self.rely + self.height - 1, self.relx)
+            self._put_continuation_line()
         # Finish.
         if self.editing:
-            self.set_is_line_cursor(self._my_widgets[(self.cursor_line - self.start_display_at)], True)
-            self._my_widgets[(self.cursor_line - self.start_display_at)].update(clear=True)
-    #@+node:ekr.20170513102428.1: *5* _put_string
-    def _put_string(self, y, x):
-        
+            line = self._my_widgets[(self.cursor_line - self.start_display_at)]
+            line.highlight = True
+            line.update(clear=True)
+    #@+node:ekr.20170513102428.1: *5* _put_continuation_line
+    def _put_continuation_line(self):
+        '''Print the line indicating there are more lines left.'''
+        s = self.continuation_line
+        x = self.relx
+        y = self.rely + self.height - 1
         if self.do_colors():
             style = self.parent.theme_manager.findPair(self, 'CONTROL')
-            self.parent.curses_pad.addstr(y, x, MORE_LABEL, style)
+            self.parent.curses_pad.addstr(y, x, s, style)
         else:
-            self.parent.curses_pad.addstr(y, x, MORE_LABEL)
+            self.parent.curses_pad.addstr(y, x, s)
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 if native:
