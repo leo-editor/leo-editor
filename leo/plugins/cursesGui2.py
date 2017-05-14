@@ -48,245 +48,6 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.set_handlers()
 
     #@+others
-    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print (from TextfieldBase) 
-    def _get_string_to_print(self):
-        s = self.value.content if self.value else None
-        return g.toUnicode(s) if s else None
-        
-    #@+node:ekr.20170514103905.1: *4* LeoTreeLine._print (from TreeLine and TextFieldBase)
-    def _print(self, left_margin=0):
-        # pylint: disable=no-member
-        #
-        ###
-        ### From TreeLine._print
-        ###
-        self.left_margin = left_margin
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
-        self.left_margin += self._print_tree(self.relx)
-        if self.highlight:
-            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-        ###
-        ### From TextFieldBase._print
-        ###
-        s = self.value and self.value.content
-            ### This is what LeoLineTree.display_value(self.value) should return
-            ### We wouldn't have to override this method if LeoTree.over-rode display_value()
-            ### But how to do that in this inner call???
-        if not s:
-            return
-        s = g.toUnicode(s)
-        column, i = 0, 0
-        assert not self.syntax_highlighting
-        if self.syntax_highlighting:
-            self.update_highlighting(
-                start=self.begin_at,
-                end=self.maximum_string_length+self.begin_at-self.left_margin,
-            )
-            while column <= (self.maximum_string_length - self.left_margin):
-                if not s or i > len(s)-1:
-                    break
-                if column > self.maximum_string_length:
-                    break 
-                try:
-                    highlight = self._highlightingdata[self.begin_at+i]
-                except Exception:
-                    highlight = curses.A_NORMAL                
-                self.parent.curses_pad.addstr(
-                    self.rely,
-                    self.relx+column+self.left_margin, 
-                    self._print_unicode_char(s[i]), 
-                    highlight
-                )
-                column += self.find_width_of_char(s[i])
-                i += 1
-        else: # No syntax highlighting.
-            if self.do_colors(): # do_colors is a Widget member.
-                findPair = self.parent.theme_manager.findPair
-                if self.show_bold and self.color == 'DEFAULT':
-                    color = findPair(self, 'BOLD') | curses.A_BOLD
-                elif self.show_bold:
-                    color = findPair(self, self.color) | curses.A_BOLD
-                elif self.important:
-                    color = findPair(self, 'IMPORTANT') | curses.A_BOLD
-                else:
-                    color = findPair(self)
-            else:
-                bold = self.important or self.show_bold
-                color = curses.A_BOLD if bold else curses.A_NORMAL
-            while column <= self.maximum_string_length - self.left_margin:
-                if i > len(s)-1:
-                    if self.highlight_whole_widget:
-                        self.parent.curses_pad.addstr(
-                            self.rely,
-                            self.relx+column+self.left_margin, 
-                            ' ', 
-                            color,
-                        )
-                        column += 1
-                        i += 1
-                        continue
-                    else:
-                        break
-                if column > self.maximum_string_length:
-                    break 
-                self.parent.curses_pad.addstr(
-                    self.rely,
-                    self.relx+column+self.left_margin, 
-                    self._print_unicode_char(s[i]), 
-                    color,
-                )
-                column += 1
-                i += 1
-    #@+node:ekr.20170514103557.1: *4* LeoTreeLine.update (from TreeLine, Inherits from textFieldBase)
-    def update(self, clear=True, cursor=True):
-        """Update the contents of the textbox, without calling the final refresh to the screen"""
-        # pylint: disable=arguments-differ,no-member
-        trace = False
-        if trace:
-            g.trace('LeoTree: cursor_position: %5r %s' % (
-                self.cursor_position, self.value.content if self.value else 'None'))
-        if clear: self.clear()
-        if self.hidden:
-            return True
-        findPair = self.parent.theme_manager.findPair
-        val = self.value.content if self.value else g.u('') 
-            ### We might be able to use MultiLine.update,
-            ### But this code is so much clearer it's probably not worthwhile.
-        val = g.toUnicode(val)
-        self.begin_at = max(0, self.begin_at)
-        if self.left_margin >= self.maximum_string_length:
-            raise ValueError
-        highlight_color = findPair(self, self.highlight_color)
-        if self.editing:
-            if cursor:
-                if self.cursor_position is False:
-                    self.cursor_position = len(val)
-                else:
-                    self.cursor_position = max(0, min(len(val), self.cursor_position))
-                #
-                if self.cursor_position < self.begin_at:
-                    self.begin_at = self.cursor_position
-                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
-                    self.begin_at += 1
-            else:
-                if self.do_colors():
-                    highlight_color = findPair(self, self.highlight_color)
-                    self.parent.curses_pad.bkgdset(' ', highlight_color | curses.A_STANDOUT)
-                else:
-                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
-        # Do this twice so that the _print method can ignore it if needed.
-        if self.highlight:
-            if self.do_colors():
-                attributes = highlight_color
-                if self.invert_highlight_color:
-                    attributes |= curses.A_STANDOUT
-                self.parent.curses_pad.bkgdset(' ', attributes)
-            else:
-                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
-        if self.show_bold:
-            self.parent.curses_pad.attron(curses.A_BOLD)
-        if self.important and not self.do_colors():
-            self.parent.curses_pad.attron(curses.A_UNDERLINE)
-        self._print()
-        # reset everything to normal
-        self.parent.curses_pad.attroff(curses.A_BOLD)
-        self.parent.curses_pad.attroff(curses.A_UNDERLINE)
-        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
-        self.parent.curses_pad.attrset(0)
-        if self.editing and cursor:
-            self.print_cursor()
-                # Call base-class method.
-    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
-    def edit(self):
-        """Allow the user to edit the widget: ie. start handling keypresses."""
-        
-        # g.trace('==== LeoTreeLine')
-        self.editing = True
-        # self._pre_edit()
-        self.highlight = True
-        self.how_exited = False
-        # self._edit_loop()
-        old_parent_editing = self.parent.editing
-        self.parent.editing = True
-        while self.editing and self.parent.editing:
-            self.display()
-            self.get_and_use_key_press()
-                # A base TreeLine method.
-        self.parent.editing = old_parent_editing
-        self.editing = False
-        self.how_exited = True
-        # return self._post_edit()
-        self.highlight = False
-        self.update()
-    #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
-    #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
-    def h_cursor_beginning(self, ch):
-
-        self.cursor_position = 0
-    #@+node:ekr.20170508131043.1: *5* LeoTreeLine.h_cursor_end
-    def h_cursor_end(self, ch):
-        
-        # self.value is a LeoTreeData.
-        self.cursor_position = max(0, len(self.value.content)-1)
-    #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
-    def h_cursor_left(self, input):
-        
-        self.cursor_position = max(0, self.cursor_position -1)
-    #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
-    def h_cursor_right(self, input):
-
-        self.cursor_position += 1
-
-    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
-    def h_delete_left(self, input):
-
-        if native:
-            pass        
-        else:
-            # self.value is a LeoTreeData.
-            n = self.cursor_position
-            s = self.value.content
-            if 0 <= n <= len(s):
-                self.value.content = s[:n] + s[n+1:]
-                self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
-    def h_end_editing(self, ch):
-
-        # g.trace('LeoTreeLine', ch)
-        self.editing = False
-        self.how_exited = None
-    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert
-    def h_insert(self, i):
-
-        if native:
-            pass
-        else:
-            # self.value is a LeoTreeData.
-            n = self.cursor_position + 1
-            s = self.value.content
-            self.value.content = s[:n] + chr(i) + s[n:]
-            self.cursor_position += 1
-    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
-    #@@nobeautify
-
-    def set_handlers(self):
-        
-        # pylint: disable=no-member
-        # Override *all* other complex handlers.
-        self.complex_handlers = (
-            (curses.ascii.isprint, self.h_insert),
-        )
-        self.handlers.update({
-            curses.ascii.ESC:       self.h_end_editing,
-            curses.ascii.NL:        self.h_end_editing,
-            curses.ascii.LF:        self.h_end_editing,
-            curses.KEY_HOME:        self.h_cursor_beginning,  # 262
-            curses.KEY_END:         self.h_cursor_end,        # 358.
-            curses.KEY_LEFT:        self.h_cursor_left,
-            curses.KEY_RIGHT:       self.h_cursor_right,
-            curses.ascii.BS:        self.h_delete_left,
-            curses.KEY_BACKSPACE:   self.h_delete_left,
-        })
     #@+node:ekr.20170514163452.1: *4*  LeoTreeLine.REF
     #@+node:ekr.20170514104743.1: *5* LeoTreeLine.display_value (from TreeLine) (REF)
     # def display_value(self, vl):
@@ -430,6 +191,254 @@ class LeoTreeLine(npyscreen.TreeLine):
             # return vl.get_content_for_display()
         # except AttributeError:
             # return vl.getContentForDisplay()
+    #@+node:ekr.20170514181758.1: *4* LeoTreeLine.get_content
+    def get_content(self):
+        
+        return self.content
+    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print (from TextfieldBase) 
+    def _get_string_to_print(self):
+        s = self.value.content if self.value else None
+        return g.toUnicode(s) if s else None
+        
+    #@+node:ekr.20170514103905.1: *4* LeoTreeLine._print (from TreeLine and TextFieldBase)
+    def _print(self, left_margin=0):
+        # pylint: disable=no-member
+        #
+        ###
+        ### From TreeLine._print
+        ###
+        self.left_margin = left_margin
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.left_margin += self._print_tree(self.relx)
+        if self.highlight:
+            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        ###
+        ### From TextFieldBase._print
+        ###
+        s = self.value and self.value.content
+            ### This is what LeoLineTree.display_value(self.value) should return
+            ### We wouldn't have to override this method if LeoTree.over-rode display_value()
+            ### But how to do that in this inner call???
+        if not s:
+            return
+        s = g.toUnicode(s)
+        column, i = 0, 0
+        assert not self.syntax_highlighting
+        if self.syntax_highlighting:
+            self.update_highlighting(
+                start=self.begin_at,
+                end=self.maximum_string_length+self.begin_at-self.left_margin,
+            )
+            while column <= (self.maximum_string_length - self.left_margin):
+                if not s or i > len(s)-1:
+                    break
+                if column > self.maximum_string_length:
+                    break 
+                try:
+                    highlight = self._highlightingdata[self.begin_at+i]
+                except Exception:
+                    highlight = curses.A_NORMAL                
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
+                    self._print_unicode_char(s[i]), 
+                    highlight
+                )
+                column += self.find_width_of_char(s[i])
+                i += 1
+        else: # No syntax highlighting.
+            if self.do_colors(): # do_colors is a Widget member.
+                findPair = self.parent.theme_manager.findPair
+                if self.show_bold and self.color == 'DEFAULT':
+                    color = findPair(self, 'BOLD') | curses.A_BOLD
+                elif self.show_bold:
+                    color = findPair(self, self.color) | curses.A_BOLD
+                elif self.important:
+                    color = findPair(self, 'IMPORTANT') | curses.A_BOLD
+                else:
+                    color = findPair(self)
+            else:
+                bold = self.important or self.show_bold
+                color = curses.A_BOLD if bold else curses.A_NORMAL
+            while column <= self.maximum_string_length - self.left_margin:
+                if i > len(s)-1:
+                    if self.highlight_whole_widget:
+                        self.parent.curses_pad.addstr(
+                            self.rely,
+                            self.relx+column+self.left_margin, 
+                            ' ', 
+                            color,
+                        )
+                        column += 1
+                        i += 1
+                        continue
+                    else:
+                        break
+                if column > self.maximum_string_length:
+                    break 
+                self.parent.curses_pad.addstr(
+                    self.rely,
+                    self.relx+column+self.left_margin, 
+                    self._print_unicode_char(s[i]), 
+                    color,
+                )
+                column += 1
+                i += 1
+    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
+    def edit(self):
+        """Allow the user to edit the widget: ie. start handling keypresses."""
+        # g.trace('==== LeoTreeLine')
+        self.editing = True
+        # self._pre_edit()
+        self.highlight = True
+        self.how_exited = False
+        # self._edit_loop()
+        old_parent_editing = self.parent.editing
+        self.parent.editing = True
+        while self.editing and self.parent.editing:
+            self.display()
+            self.get_and_use_key_press()
+                # A base TreeLine method.
+        self.parent.editing = old_parent_editing
+        self.editing = False
+        self.how_exited = True
+        # return self._post_edit()
+        self.highlight = False
+        self.update()
+    #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
+    #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
+    def h_cursor_beginning(self, ch):
+
+        self.cursor_position = 0
+    #@+node:ekr.20170508131043.1: *5* LeoTreeLine.h_cursor_end
+    def h_cursor_end(self, ch):
+        
+        # self.value is a LeoTreeData.
+        self.cursor_position = max(0, len(self.value.content)-1)
+    #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
+    def h_cursor_left(self, input):
+        
+        self.cursor_position = max(0, self.cursor_position -1)
+    #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
+    def h_cursor_right(self, input):
+
+        self.cursor_position += 1
+
+    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
+    def h_delete_left(self, input):
+
+        if native:
+            pass        
+        else:
+            # self.value is a LeoTreeData.
+            n = self.cursor_position
+            s = self.value.content
+            if 0 <= n <= len(s):
+                self.value.content = s[:n] + s[n+1:]
+                self.cursor_position -= 1
+    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
+    def h_end_editing(self, ch):
+
+        # g.trace('LeoTreeLine', ch)
+        self.editing = False
+        self.how_exited = None
+    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert
+    def h_insert(self, i):
+
+        if native:
+            pass
+        else:
+            # self.value is a LeoTreeData.
+            n = self.cursor_position + 1
+            s = self.value.content
+            self.value.content = s[:n] + chr(i) + s[n:]
+            self.cursor_position += 1
+    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
+    #@@nobeautify
+
+    def set_handlers(self):
+        
+        # pylint: disable=no-member
+        # Override *all* other complex handlers.
+        self.complex_handlers = (
+            (curses.ascii.isprint, self.h_insert),
+        )
+        self.handlers.update({
+            curses.ascii.ESC:       self.h_end_editing,
+            curses.ascii.NL:        self.h_end_editing,
+            curses.ascii.LF:        self.h_end_editing,
+            curses.KEY_HOME:        self.h_cursor_beginning,  # 262
+            curses.KEY_END:         self.h_cursor_end,        # 358.
+            curses.KEY_LEFT:        self.h_cursor_left,
+            curses.KEY_RIGHT:       self.h_cursor_right,
+            curses.ascii.BS:        self.h_delete_left,
+            curses.KEY_BACKSPACE:   self.h_delete_left,
+        })
+    #@+node:ekr.20170514103557.1: *4* LeoTreeLine.update (from TreeLine, Inherits from textFieldBase)
+    def XXXupdate(self, clear=True, cursor=True):
+        """Update the contents of the textbox, without calling the final refresh to the screen"""
+        # pylint: disable=arguments-differ,no-member
+        trace = False
+        if trace:
+            g.trace('LeoTree: cursor_position: %5r %s' % (
+                self.cursor_position, self.value.content if self.value else 'None'))
+        if clear: self.clear()
+        if self.hidden:
+            return True
+        findPair = self.parent.theme_manager.findPair
+        val = self.value.content if self.value else g.u('') 
+            ### We might be able to use MultiLine.update,
+            ### But this code is so much clearer it's probably not worthwhile.
+            
+            # This is the code in MultiLine.update.
+            # val = self.values[self.cursor_line]
+            # if isinstance(val, npysTree.TreeData):
+                # val = val.get_content()
+            
+        val = g.toUnicode(val)
+        self.begin_at = max(0, self.begin_at)
+        if self.left_margin >= self.maximum_string_length:
+            raise ValueError
+        highlight_color = findPair(self, self.highlight_color)
+        if self.editing:
+            if cursor:
+                if self.cursor_position is False:
+                    self.cursor_position = len(val)
+                else:
+                    self.cursor_position = max(0, min(len(val), self.cursor_position))
+                #
+                if self.cursor_position < self.begin_at:
+                    self.begin_at = self.cursor_position
+                while self.cursor_position > self.begin_at + self.maximum_string_length - self.left_margin: # -1:
+                    self.begin_at += 1
+            else:
+                if self.do_colors():
+                    highlight_color = findPair(self, self.highlight_color)
+                    self.parent.curses_pad.bkgdset(' ', highlight_color | curses.A_STANDOUT)
+                else:
+                    self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
+        # Do this twice so that the _print method can ignore it if needed.
+        if self.highlight:
+            if self.do_colors():
+                attributes = highlight_color
+                if self.invert_highlight_color:
+                    attributes |= curses.A_STANDOUT
+                self.parent.curses_pad.bkgdset(' ', attributes)
+            else:
+                self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        if self.show_bold:
+            self.parent.curses_pad.attron(curses.A_BOLD)
+        if self.important and not self.do_colors():
+            self.parent.curses_pad.attron(curses.A_UNDERLINE)
+        self._print()
+        # reset everything to normal
+        self.parent.curses_pad.attroff(curses.A_BOLD)
+        self.parent.curses_pad.attroff(curses.A_UNDERLINE)
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.parent.curses_pad.attrset(0)
+        if self.editing and cursor:
+            self.print_cursor()
+                # Call base-class method.
     #@-others
 #@+node:ekr.20170511053143.1: *3*  class CursesTextMixin (object)
 class CursesTextMixin(object):
