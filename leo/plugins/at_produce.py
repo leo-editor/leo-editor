@@ -132,7 +132,7 @@ def runList(c,aList):
                 p = subprocess.Popen(
                     command, 
                     # bufsize=bufsize,
-                    # close_fds=True,
+                    # close_fds=True, # Dubious to disable this.
                     stdin=PIPE, stdout=PIPE, stderr=PIPE,
                     shell=True,
                 )
