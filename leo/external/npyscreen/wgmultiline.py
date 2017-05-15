@@ -121,17 +121,26 @@ class MultiLine(widget.Widget):
         self.display()
 
     #@+node:ekr.20170428084208.77: *3* MultiLine.make_contained_widgets
-    def make_contained_widgets(self, ):
+    def make_contained_widgets(self):
+        ### The *only* make_contained_widgets (plural) in npyscreen.
+        trace = True
+        trace_widgets = True
         self._my_widgets = []
-        for h in range(self.height // self.__class__._contained_widget_height):
+        height = self.height // self.__class__._contained_widget_height
+        g.trace(self.__class__.__name__, height, g.callers(2))
+        for h in range(height):
+            ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
             self._my_widgets.append(
-                self._contained_widgets(self.parent, 
+                self._contained_widgets(
+                    self.parent, 
                     rely=(h*self._contained_widget_height)+self.rely, 
                     relx = self.relx, 
                     max_width=self.width, 
                     max_height=self.__class__._contained_widget_height
-                )
-            )
+            ))
+        if trace and trace_widgets:
+            g.printList(self._my_widgets)
+            g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170428084208.78: *3* MultiLine.display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  

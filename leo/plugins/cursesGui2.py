@@ -3712,15 +3712,21 @@ class LeoMLTree(npyscreen.MLTree):
 
     #@+others
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
-    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (to do: delete all children)
+    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (Buggy)
     def delete_line(self):
 
         trace = True
+        ### Bug 1: does not "take"
+        ### Bug 2: does not delete children.
+        val = self.values[self.cursor_line]
         if trace:
-            g.trace('cursor_line:', repr(self.cursor_line))
-            self.dump_values()
+            g.trace('cursor_line:', repr(val))
+                # repr(self.cursor_line))
         if self.values:
             del self.values[self.cursor_line]
+            ### Puts a hole in the screen, but doesn't remove the line!
+                # del self._my_widgets[self.cursor_line]
+            self.dump_values()
             self.display()
     #@+node:ekr.20170507171518.1: *4* LeoMLTree.dump_code/values/widgets
     def dump_code(self, code):
@@ -4002,7 +4008,9 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
     def _redraw(self, clear):
         '''Do the actual redraw.'''
-        g.trace('clear:', repr(clear))
+        trace = False
+        trace_widgets = False
+        if trace: g.trace('clear:', repr(clear))
         # Note: clear is Widget.clear. It does *not* use _myWidgets.
         if clear is True:
             self.clear()
@@ -4010,7 +4018,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.clear()
         self._last_start_display_at = self.start_display_at
         i = self.start_display_at
-        # g.printList(self._my_widgets)
+        if trace and trace_widgets: g.printList(self._my_widgets)
         for line in self._my_widgets[:-1]:
             # Line is a (weakref to) LeoTreeLine object.
             self._print_line(line, i)

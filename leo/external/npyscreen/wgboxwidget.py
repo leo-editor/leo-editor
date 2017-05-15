@@ -128,22 +128,29 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.511: *3* BoxTitle.make_contained_widget
     def make_contained_widget(self, contained_widget_arguments=None):
+        ### The *only* make_contained_widget (singular) in npyscreen.
         self._my_widgets = []
         if contained_widget_arguments:
-            self._my_widgets.append(self._contained_widget(self.parent, 
-                                rely=self.rely+1, relx = self.relx+2, 
-                                max_width=self.width-4, max_height=self.height-2,
-                                **contained_widget_arguments
-                            ))
-            
+            self._my_widgets.append(
+                self._contained_widget(
+                    self.parent, 
+                    rely=self.rely+1,
+                    relx = self.relx+2, 
+                    max_width=self.width-4,
+                    max_height=self.height-2,
+                    **contained_widget_arguments
+            ))
         else:
-            self._my_widgets.append(self._contained_widget(self.parent, 
-                                rely=self.rely+1, relx = self.relx+2, 
-                                max_width=self.width-4, max_height=self.height-2,
-                            ))
+            self._my_widgets.append(
+                self._contained_widget(
+                    self.parent, 
+                    rely=self.rely+1,
+                    relx = self.relx+2, 
+                    max_width=self.width-4,
+                    max_height=self.height-2,
+            ))
         self.entry_widget = weakref.proxy(self._my_widgets[0])
         self.entry_widget.parent_widget = weakref.proxy(self)
-            
     #@+node:ekr.20170428084207.512: *3* update
     def update(self, clear=True):
         if self.hidden and clear:
