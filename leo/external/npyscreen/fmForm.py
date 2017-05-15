@@ -240,7 +240,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         self.display()
         return True
 
-    #@+node:ekr.20170428084207.193: *3* DISPLAY
+    #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
         self.curses_pad.redrawwin()
         self.erase()
@@ -340,7 +340,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             self.show_atx = 0
 
 
-    #@+node:ekr.20170428084207.203: *3* display
+    #@+node:ekr.20170428084207.203: *3* _FormBase.display
     def display(self, clear=False):
         #APPLICATION_THEME_MANAGER.setTheme(self)
         if curses.has_colors() and not npysGlobalOptions.DISABLE_ALL_COLORS:

@@ -2157,7 +2157,7 @@ class NullStatusLineClass(object):
         c.frame.statusLabel = None
         c.frame.statusText = self.textWidget
     #@+others
-    #@+node:ekr.20070302171917: *3* methods
+    #@+node:ekr.20070302171917: *3* NullStatusLineClass.methods
     def disable(self, background=None):
         self.enabled = False
         # self.c.bodyWantsFocus()

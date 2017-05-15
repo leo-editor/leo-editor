@@ -2341,7 +2341,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         #@+node:ekr.20110605121601.18267: *4* addWidget
         def addWidget(self, w):
             self.w.addWidget(w)
-        #@+node:ekr.20110605121601.18268: *4* clear
+        #@+node:ekr.20110605121601.18268: *4* clear (QtIconBarClass)
         def clear(self):
             """Destroy all the widgets in the icon bar"""
             self.w.clear()

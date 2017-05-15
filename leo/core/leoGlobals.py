@@ -265,23 +265,23 @@ class FileLikeObject(object):
             self.list = []
         self.ptr = 0
     # In CStringIO the buffer is read-only if the initial value (fromString) is non-empty.
-    #@+node:ekr.20050404151753.1: *4* clear
+    #@+node:ekr.20050404151753.1: *4* clear (g.FileLikeObject)
     def clear(self):
         self.list = []
-    #@+node:ekr.20050404151753.2: *4* close
+    #@+node:ekr.20050404151753.2: *4* close (g.FileLikeObject)
     def close(self):
         pass
         # The StringIo version free's the memory buffer.
-    #@+node:ekr.20050404151753.3: *4* flush
+    #@+node:ekr.20050404151753.3: *4* flush (g.FileLikeObject)
     def flush(self):
         pass
-    #@+node:ekr.20050404151753.4: *4* get & getvalue & read
+    #@+node:ekr.20050404151753.4: *4* get & getvalue & read (g.FileLikeObject)
     def get(self):
         return ''.join(self.list)
 
     getvalue = get # for compatibility with StringIo
     read = get # for use by sax.
-    #@+node:ekr.20050404151753.5: *4* readline
+    #@+node:ekr.20050404151753.5: *4* readline (g.FileLikeObject)
     def readline(self):
         '''Read the next line using at.list and at.ptr.'''
         if self.ptr < len(self.list):
@@ -290,7 +290,7 @@ class FileLikeObject(object):
             return line
         else:
             return ''
-    #@+node:ekr.20050404151753.6: *4* write
+    #@+node:ekr.20050404151753.6: *4* write (g.FileLikeObject)
     def write(self, s):
         if s:
             if g.isBytes(s):

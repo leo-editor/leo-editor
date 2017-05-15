@@ -3895,7 +3895,7 @@ class LeoMLTree(npyscreen.MLTree):
         ### May be needed because of weakrefs...
         self._last_values = copy.copy(self.values)
         self._last_value = copy.copy(self.value)
-    #@+node:ekr.20170513122253.1: *4* _init_update
+    #@+node:ekr.20170513122253.1: *4* LeoMLTree._init_update
     def _init_update(self):
         '''Put self.cursor_line and self.start_display_at in range.'''
         # pylint: disable=access-member-before-definition
@@ -3914,7 +3914,7 @@ class LeoMLTree(npyscreen.MLTree):
             if self.cursor_line < self.start_display_at:
                 self.start_display_at = self.cursor_line - (display_length - 2)
                 if self.start_display_at < 0: self.start_display_at = 0
-    #@+node:ekr.20170513123010.1: *4* _must_redraw
+    #@+node:ekr.20170513123010.1: *4* LeoMLTree._must_redraw
     def _must_redraw(self, clear):
         '''Return a list of reasons why we must redraw.'''
         trace = False
@@ -3934,7 +3934,7 @@ class LeoMLTree(npyscreen.MLTree):
             ','.join(reasons),
             self.values[self.cursor_line].content))
         return reasons
-    #@+node:ekr.20170513032717.1: *4* _print_line & helpers
+    #@+node:ekr.20170513032717.1: *4* LeoMLTree._print_line & helpers
     def _print_line(self, line, i):
         
         trace = False
@@ -3981,9 +3981,10 @@ class LeoMLTree(npyscreen.MLTree):
         line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
         # g.trace(i, line.value.content)
-    #@+node:ekr.20170513122427.1: *4* _redraw & helper
+    #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
     def _redraw(self, clear):
         '''Do the actual redraw.'''
+        g.trace('clear', repr(clear))
         if clear is True:
             self.clear()
         if self._last_start_display_at != self.start_display_at and clear is None:
@@ -4011,7 +4012,7 @@ class LeoMLTree(npyscreen.MLTree):
             line = self._my_widgets[(self.cursor_line - self.start_display_at)]
             line.highlight = True
             line.update(clear=True)
-    #@+node:ekr.20170513102428.1: *5* _put_continuation_line
+    #@+node:ekr.20170513102428.1: *5* LeoMLTree._put_continuation_line
     def _put_continuation_line(self):
         '''Print the line indicating there are more lines left.'''
         s = self.continuation_line
@@ -4046,10 +4047,11 @@ else:
             self._children.insert(index, c)
             return weakref.proxy(c)
 
-        def get_content(self):
-            # Same as TreeData.get_content, but could be tweaked.
-            g.trace('LeoTreeData', self.content)
-            return self.content
+        ### Apparently never called.
+        # def get_content(self):
+            # # Same as TreeData.get_content, but could be tweaked.
+            # g.trace('LeoTreeData', self.content)
+            # return self.content
 #@-others
 #@@language python
 #@@tabwidth -4

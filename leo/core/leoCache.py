@@ -560,7 +560,7 @@ class PickleShareDB(object):
         pattern - A filename pattern with wildcards, for example '*.py'.
         """
         return fnmatch.fnmatch(basename(s), pattern)
-    #@+node:ekr.20100208223942.5978: *3* clear
+    #@+node:ekr.20100208223942.5978: *3* clear (PickleShareDB)
     def clear(self, verbose=False):
         # Deletes all files in the fcache subdirectory.
         # It would be more thorough to delete everything

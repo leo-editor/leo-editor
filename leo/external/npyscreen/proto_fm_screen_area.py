@@ -1,7 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.422: * @file ../external/npyscreen/proto_fm_screen_area.py
 #!/usr/bin/env python
-
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.423: ** Declarations
 import curses
@@ -47,7 +48,7 @@ class ScreenArea(object):
     object you are looking for."""
 
     #@+others
-    #@+node:ekr.20170428084207.427: *3* __init__
+    #@+node:ekr.20170428084207.427: *3* ScreenArea.__init__
     def __init__(self, lines=0, columns=0, 
             minimum_lines = 24,
             minimum_columns = 80,
@@ -91,7 +92,7 @@ class ScreenArea(object):
 
         self._create_screen()
 
-    #@+node:ekr.20170428084207.428: *3* _create_screen
+    #@+node:ekr.20170428084207.428: *3* ScreenArea._create_screen
     def _create_screen(self):
 
         try:
@@ -118,7 +119,7 @@ class ScreenArea(object):
         #self.max_y, self.max_x = self.lines, self.columns
         self.max_y, self.max_x = self.curses_pad.getmaxyx()
 
-    #@+node:ekr.20170428084207.429: *3* _max_physical
+    #@+node:ekr.20170428084207.429: *3* ScreenArea._max_physical
     def _max_physical(self):
         "How big is the physical screen?"
         # On OS X newwin does not correctly get the size of the screen.
@@ -134,42 +135,51 @@ class ScreenArea(object):
         # return safe values, i.e. slightly smaller.
         return (mxy-1, mxx-1)
 
-    #@+node:ekr.20170428084207.430: *3* useable_space
+    #@+node:ekr.20170428084207.430: *3* ScreenArea.useable_space
     def useable_space(self, rely=0, relx=0):
        mxy, mxx = self.lines, self.columns
        return (mxy-rely, mxx-1-relx) # x - 1 because can't use last line bottom right.
 
-    #@+node:ekr.20170428084207.431: *3* widget_useable_space
+    #@+node:ekr.20170428084207.431: *3* ScreenArea.widget_useable_space
     def widget_useable_space(self, rely=0, relx=0):
         #Slightly misreports space available.
         #mxy, mxx = self.lines, self.columns-1
         mxy, mxx = self.useable_space(rely=rely, relx=relx)
         return (mxy-self.BLANK_LINES_BASE, mxx-self.BLANK_COLUMNS_RIGHT)
 
-    #@+node:ekr.20170428084207.432: *3* refresh
+    #@+node:ekr.20170428084207.432: *3* ScreenArea.refresh
     def refresh(self):
+        # g.trace(g.callers())
         pmfuncs.hide_cursor()
         _my, _mx = self._max_physical()
         self.curses_pad.move(0,0)
-        
         # Since we can have pannels larger than the screen
         # let's allow for scrolling them
         
         # Getting strange errors on OS X, with curses sometimes crashing at this point. 
         # Suspect screen size not updated in time. This try: seems to solve it with no ill effects.
         try:
-            self.curses_pad.refresh(self.show_from_y,self.show_from_x,self.show_aty,self.show_atx,_my,_mx)
+            self.curses_pad.refresh(
+                self.show_from_y,
+                self.show_from_x,
+                self.show_aty,
+                self.show_atx,
+                _my,_mx)
         except curses.error:
             pass
-        if self.show_from_y is 0 and \
-        self.show_from_x is 0 and \
-        (_my >= self.lines) and \
-        (_mx >= self.columns):
-            self.ALL_SHOWN = True
-
-        else:
-            self.ALL_SHOWN = False
-
+        # if self.show_from_y is 0 and \
+        # self.show_from_x is 0 and \
+        # (_my >= self.lines) and \
+        # (_mx >= self.columns):
+            # self.ALL_SHOWN = True
+        # else:
+            # self.ALL_SHOWN = False
+        self.ALL_SHOWN = (
+            self.show_from_y is 0 and
+            self.show_from_x is 0 and
+            _my >= self.lines and
+            _mx >= self.columns
+        )
     #@+node:ekr.20170428084207.433: *3* erase
     def erase(self):
         self.curses_pad.erase()

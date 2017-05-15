@@ -343,7 +343,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if self.editing:
             self.editing    = False
             self.how_exited = True
-    #@+node:ekr.20170429213619.5: *3* _get_ch
+    #@+node:ekr.20170429213619.5: *3* Widget._get_ch
     def _get_ch(self):
         #try:
         #    # Python3.3 and above - returns unicode
@@ -402,15 +402,15 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         
         # This line should not be in the except clause.
         return ch
-    #@+node:ekr.20170429213619.16: *3* _internal_when_value_edited
+    #@+node:ekr.20170429213619.16: *3* Widget._internal_when_value_edited
     def _internal_when_value_edited(self):
         if self.value_changed_callback:
             return self.value_changed_callback(widget=self)
-    #@+node:ekr.20170428084208.414: *3* _move_widget_on_terminal_resize
+    #@+node:ekr.20170428084208.414: *3* Widget._move_widget_on_terminal_resize
     def _move_widget_on_terminal_resize(self):
         if self._requested_rely < 0 or self._requested_relx < 0:
             self.set_relyx(self._requested_rely, self._requested_relx)
-    #@+node:ekr.20170429213619.4: *3* _post_edit
+    #@+node:ekr.20170429213619.4: *3* Widget._post_edit
     def _post_edit(self):
         self.highlight = 0
         self.update()
@@ -420,10 +420,10 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.highlight = 1
         # old_value = self.value
         self.how_exited = False
-    #@+node:ekr.20170428084208.417: *3* _recalculate_size
+    #@+node:ekr.20170428084208.417: *3* Widget._recalculate_size
     def _recalculate_size(self):
         return self.set_size()
-    #@+node:ekr.20170428084208.415: *3* _resize
+    #@+node:ekr.20170428084208.415: *3* Widget._resize
     def _resize(self):
         "Internal Method. This will be the method called when the terminal resizes."
         self._move_widget_on_terminal_resize()
@@ -432,23 +432,23 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else: self.on_last_line = False
         self.resize()
         self.when_resized()
-    #@+node:ekr.20170429213619.12: *3* _safe_to_exit
+    #@+node:ekr.20170429213619.12: *3* Widget._safe_to_exit
     def _safe_to_exit(self):
         return True
-    #@+node:ekr.20170429213619.14: *3* _test_safe_to_exit
+    #@+node:ekr.20170429213619.14: *3* Widget._test_safe_to_exit
     def _test_safe_to_exit(self):
         if self._safe_to_exit() and self.safe_to_exit():
             return True
         else:
             return False
-    #@+node:ekr.20170428084208.421: *3* calculate_area_needed
+    #@+node:ekr.20170428084208.421: *3* Widget.calculate_area_needed
     def calculate_area_needed(self): 
         """Classes should provide a function to
         calculate the screen area they need, returning either y,x, or 0,0 if
         they want all the screen they can.  However, do not use this to say how
         big a given widget is ... use .height and .width instead"""
         return 0,0
-    #@+node:ekr.20170428084208.427: *3* clear
+    #@+node:ekr.20170428084208.427: *3* Widget.clear
     def clear(self, usechar=' '):
         """Blank the screen area used by this widget, ready for redrawing"""
         for y in range(self.height):
@@ -471,13 +471,13 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                     self.relx,
                     usechar * (self.width))
                         # used to be width + 1
-    #@+node:ekr.20170428084208.411: *3* destroy
+    #@+node:ekr.20170428084208.411: *3* Widget.destroy
     def destroy(self):
         """Destroy the widget: methods should provide a mechanism to destroy any references that might
         case a memory leak.  See select. module for an example"""
         pass
         
-    #@+node:ekr.20170428084208.424: *3* display
+    #@+node:ekr.20170428084208.424: *3* Widget.display
     def display(self):
         """Do an update of the object AND refresh the screen"""
         if self.hidden:
@@ -559,14 +559,14 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if self.check_cursor_move:
             self.when_check_cursor_moved()
         self.try_adjust_widgets()
-    #@+node:ekr.20170428084208.426: *3* get_editable
+    #@+node:ekr.20170428084208.426: *3* Widget.get_editable
     def get_editable(self):
         return(self._is_editable)
-    #@+node:ekr.20170429213619.10: *3* handle_mouse_event
+    #@+node:ekr.20170429213619.10: *3* Widget.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # mouse_id, x, y, z, bstate = mouse_event
         pass
-    #@+node:ekr.20170429213619.11: *3* interpret_mouse_event
+    #@+node:ekr.20170429213619.11: *3* Widget.interpret_mouse_event
     def interpret_mouse_event(self, mouse_event):
         mouse_id, x, y, z, bstate = mouse_event
         x += self.parent.show_from_x
@@ -578,7 +578,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #def when_parent_changes_value(self):
         # Can be called by forms when they chage their value.
         #pass
-    #@+node:ekr.20170429213619.9: *3* intersted_in_mouse_event
+    #@+node:ekr.20170429213619.9: *3* Widget.intersted_in_mouse_event
     def intersted_in_mouse_event(self, mouse_event):
         if not self.editable and not self.interested_in_mouse_even_when_not_editable:
             return False
@@ -589,11 +589,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             if self.rely  <= y <= self.rely + self.height-1 + self.parent.show_aty:
                 return True
         return False
-    #@+node:ekr.20170428084208.416: *3* resize
+    #@+node:ekr.20170428084208.416: *3* Widget.resize
     def resize(self):
         "Widgets should override this to control what should happen when they are resized."
         pass
-    #@+node:ekr.20170429213619.21: *3* safe_filter
+    #@+node:ekr.20170429213619.21: *3* Widget.safe_filter
     def safe_filter(self, this_string):
         try:
             this_string = this_string.decode(self.encoding, 'replace')
@@ -689,14 +689,14 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 raise
             else:
                 return "*ERROR DISPLAYING STRING*"
-    #@+node:ekr.20170429213619.13: *3* safe_to_exit
+    #@+node:ekr.20170429213619.13: *3* Widget.safe_to_exit
     def safe_to_exit(self):
         return True
-    #@+node:ekr.20170428084208.425: *3* set_editable
+    #@+node:ekr.20170428084208.425: *3* Widget.set_editable
     def set_editable(self, value):
         if value: self._is_editable = True
         else: self._is_editable = False
-    #@+node:ekr.20170428084208.413: *3* set_relyx
+    #@+node:ekr.20170428084208.413: *3* Widget.set_relyx
     def set_relyx(self, y, x):
         """
         Set the position of the widget on the Form.  If y or x is a negative value,
@@ -726,7 +726,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             #    self.relx -= self.parent.BLANK_COLUMNS_RIGHT
             if self.relx < 0:
                 self.relx = 0
-    #@+node:ekr.20170428084208.422: *3* set_size
+    #@+node:ekr.20170428084208.422: *3* Widget.set_size
     def set_size(self):
         """Set the size of the object, reconciling the user's request with the space available"""
         my, mx = self.space_available()
@@ -778,7 +778,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         if self.height == RAISEERROR or self.width == RAISEERROR:
             # Not enough space for widget
             raise NotEnoughSpaceForWidget("Not enough space: max y and x = %s , %s. Height and Width = %s , %s " % (my, mx, self.height, self.width) ) # unsafe. Need to add error here.
-    #@+node:ekr.20170428084208.420: *3* space_available
+    #@+node:ekr.20170428084208.420: *3* Widget.space_available
     def space_available(self):
         """The space available left on the screen, returned as rows, columns"""
         if self.use_max_space:
@@ -786,7 +786,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             y, x = self.parent.widget_useable_space(self.rely, self.relx)
         return y,x
-    #@+node:ekr.20170429213619.6: *3* try_adjust_widgets
+    #@+node:ekr.20170429213619.6: *3* Widget.try_adjust_widgets
     def try_adjust_widgets(self):
         if hasattr(self.parent, "adjust_widgets"):
             self.parent.adjust_widgets()
@@ -795,7 +795,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self.parent.parentApp._internal_adjust_widgets()
             if hasattr(self.parent.parentApp, "adjust_widgets"):
                 self.parent.parentApp.adjust_widgets()
-    #@+node:ekr.20170429213619.7: *3* try_while_waiting
+    #@+node:ekr.20170429213619.7: *3* Widget.try_while_waiting
     def try_while_waiting(self):
         if hasattr(self.parent, "while_waiting"):
             self.parent.while_waiting()
@@ -812,7 +812,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.clear()
             return True
     #@+node:ekr.20170508083519.1: *3* Widget.when_*
-    #@+node:ekr.20170429213619.18: *4* when_check_cursor_moved
+    #@+node:ekr.20170429213619.18: *4* Widget.when_check_cursor_moved
     def when_check_cursor_moved(self):
         if hasattr(self, 'cursor_line'):
             cursor = self.cursor_line
@@ -832,7 +832,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.when_cursor_moved()
         if hasattr(self, 'parent_widget'):
             self.parent_widget.when_cursor_moved()
-    #@+node:ekr.20170429213619.15: *4* when_check_value_changed
+    #@+node:ekr.20170429213619.15: *4* Widget.when_check_value_changed
     def when_check_value_changed(self):
         "Check whether the widget's value has changed and call when_valued_edited if so."
         try:
@@ -849,15 +849,15 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent_widget.when_value_edited()
             self.parent_widget._internal_when_value_edited()
         return True
-    #@+node:ekr.20170429213619.19: *4* when_cursor_moved
+    #@+node:ekr.20170429213619.19: *4* Widget.when_cursor_moved
     def when_cursor_moved(self):
         "Called when the cursor moves"
         pass
-    #@+node:ekr.20170428084208.418: *4* when_resized
+    #@+node:ekr.20170428084208.418: *4* Widget.when_resized
     def when_resized(self):
         # this method is called when the widget has been resized.
         pass
-    #@+node:ekr.20170429213619.17: *4* when_value_edited
+    #@+node:ekr.20170429213619.17: *4* Widget.when_value_edited
     def when_value_edited(self):
         """Called when the user edits the value of the widget.  Will usually also be called the first time
         that the user edits the widget."""
@@ -867,29 +867,29 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
 class DummyWidget(Widget):
     "This widget is invisible and does nothing.  Which is sometimes important."
     #@+others
-    #@+node:ekr.20170428084208.429: *3* __init__
+    #@+node:ekr.20170428084208.429: *3* DummyWidget.__init__
     def __init__(self, screen, *args, **keywords):
         super(DummyWidget, self).__init__(screen, *args, **keywords)
         self.height = 0
         self.widget = 0
         self.parent = screen
-    #@+node:ekr.20170428084208.430: *3* display
+    #@+node:ekr.20170428084208.430: *3* DummyWidget.display
     def display(self):
         pass
-    #@+node:ekr.20170428084208.431: *3* update
+    #@+node:ekr.20170428084208.431: *3* DummyWidget.update
     def update(self, clear=False):
         pass
-    #@+node:ekr.20170428084208.432: *3* set_editable
+    #@+node:ekr.20170428084208.432: *3* DummyWidget.set_editable
     def set_editable(self, value):
         if value: self._is_editable = True
         else: self._is_editable = False
-    #@+node:ekr.20170428084208.433: *3* get_editable
+    #@+node:ekr.20170428084208.433: *3* DummyWidget.get_editable
     def get_editable(self):
         return(self._is_editable)
-    #@+node:ekr.20170428084208.434: *3* clear
+    #@+node:ekr.20170428084208.434: *3* DummyWidget.clear
     def clear(self, usechar=' '):
         pass
-    #@+node:ekr.20170428084208.435: *3* calculate_area_needed
+    #@+node:ekr.20170428084208.435: *3* DummyWidget.calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
 
