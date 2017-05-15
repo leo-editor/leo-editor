@@ -459,18 +459,28 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             #           self.parent.curses_pad.addch(self.rely+y, self.relx + x, usechar)
             #       except Exception: pass
             #Use this instead
+            pad = self.parent.curses_pad
+            s = usechar * (self.width)
             if self.do_colors():
-                self.parent.curses_pad.addstr(
-                    self.rely+y,
-                    self.relx, usechar * (self.width),
-                    self.parent.theme_manager.findPair(self, self.parent.color))
-                        # used to be width + 1
+                color = self.parent.theme_manager.findPair(self, self.parent.color)
+                for y in range(self.height):
+                    pad.addstr(self.rely+y, self.relx, s, color)
             else:
-                self.parent.curses_pad.addstr(
-                    self.rely+y,
-                    self.relx,
-                    usechar * (self.width))
-                        # used to be width + 1
+                for y in range(self.height):
+                    pad.addstr(self.rely+y, self.relx, s)
+            # Old code
+            # if self.do_colors():
+                # self.parent.curses_pad.addstr(
+                    # self.rely+y,
+                    # self.relx, usechar * (self.width),
+                    # self.parent.theme_manager.findPair(self, self.parent.color))
+                        # # used to be width + 1
+            # else:
+                # self.parent.curses_pad.addstr(
+                    # self.rely+y,
+                    # self.relx,
+                    # usechar * (self.width))
+                        # # used to be width + 1
     #@+node:ekr.20170428084208.411: *3* Widget.destroy
     def destroy(self):
         """Destroy the widget: methods should provide a mechanism to destroy any references that might

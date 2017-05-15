@@ -4003,7 +4003,7 @@ class LeoMLTree(npyscreen.MLTree):
     def _redraw(self, clear):
         '''Do the actual redraw.'''
         g.trace('clear:', repr(clear))
-        # Note: clear is Widget.clear, and it does not use _myWidgets.
+        # Note: clear is Widget.clear. It does *not* use _myWidgets.
         if clear is True:
             self.clear()
         elif clear is None and self._last_start_display_at != self.start_display_at:
