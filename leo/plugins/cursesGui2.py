@@ -4054,8 +4054,18 @@ else:
 
     class LeoTreeData(npyscreen.TreeData):
         '''A TreeData class that has a len and new_first_child methods.'''
-        
-        # EKR: The TreeData sets
+        # EKR: TreeData.__init__ sets the following ivars for keyword args.
+            # self._parent # None or weakref.proxy(parent)
+            # self.content.
+            # self.selectable = selectable
+            # self.selected = selected
+            # self.highlight = highlight
+            # self.expanded = expanded
+            # self._children = []
+            # self.ignore_root = ignore_root
+            # self.sort = False
+            # self.sort_function = sort_function
+            # self.sort_function_wrapper = True
     
         def __len__(self):
             return len(self.content)
