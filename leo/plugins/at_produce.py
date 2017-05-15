@@ -116,7 +116,7 @@ def getList(c,all):
 def runList(c,aList):
     '''
     Run all commands in aList (in a separate thread).
-    Do not do change Leo's outline in this thread!
+    Do not change Leo's outline in this thread!
     '''
     f = open('produce.log', 'w+')
     PIPE = subprocess.PIPE
@@ -132,7 +132,7 @@ def runList(c,aList):
                 p = subprocess.Popen(
                     command, 
                     # bufsize=bufsize,
-                    close_fds=True,
+                    # close_fds=True,
                     stdin=PIPE, stdout=PIPE, stderr=PIPE,
                     shell=True,
                 )
