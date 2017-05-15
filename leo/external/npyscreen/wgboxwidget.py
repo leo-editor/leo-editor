@@ -126,7 +126,7 @@ class BoxTitle(BoxBasic):
             self.entry_widget.scroll_exit = keywords['slow_scroll']
         
 
-    #@+node:ekr.20170428084207.511: *3* make_contained_widget
+    #@+node:ekr.20170428084207.511: *3* BoxTitle.make_contained_widget
     def make_contained_widget(self, contained_widget_arguments=None):
         self._my_widgets = []
         if contained_widget_arguments:

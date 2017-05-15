@@ -45,7 +45,25 @@ class LeoTreeLine(npyscreen.TreeLine):
     def __init__(self, *args, **kwargs):
 
         super(LeoTreeLine, self).__init__(*args, **kwargs)
+        # Done in TreeLine.init:
+            # self._tree_real_value   = None
+                # A weakproxy to LeoTreeData.
+            # self._tree_ignore_root  = None
+            # self._tree_depth        = False
+            # self._tree_sibling_next = False
+            # self._tree_has_children = False
+            # self._tree_expanded     = True
+            # self._tree_last_line    = False
+            # self._tree_depth_next   = False
+            # self.safe_depth_display = False
+            # self.show_v_lines       = True
         self.set_handlers()
+        
+    def __repr__(self):
+        val = self._tree_real_value
+        return val.content if val else '<LeoTreeLine: None>'
+        
+    __str__ = __repr__
 
     #@+others
     #@+node:ekr.20170514163452.1: *4*  LeoTreeLine.REF
@@ -3754,8 +3772,8 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170514065422.1: *4* LeoMLTree.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         pass
-    #@+node:ekr.20170506044733.2: *4* LeoMLTree.new_node
-    def new_node(self):
+    #@+node:ekr.20170506044733.2: *4* LeoMLTree.new_mltree_node
+    def new_mltree_node(self):
         '''
         Insert a new outline TreeData widget at the current line.
         As with Leo, insert as the first child of the current line if
@@ -3791,7 +3809,7 @@ class LeoMLTree(npyscreen.MLTree):
         if self.cursor_line is None:
             self.cursor_line = 0
         # Revised
-        self.values.insert(self.cursor_line+1, self.new_node())
+        self.values.insert(self.cursor_line+1, self.new_mltree_node())
         self.cursor_line += 1
         self.display()
         self.edit_headline()
@@ -3984,14 +4002,17 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
     def _redraw(self, clear):
         '''Do the actual redraw.'''
-        g.trace('clear', repr(clear))
+        g.trace('clear:', repr(clear))
+        # Note: clear is Widget.clear, and it does not use _myWidgets.
         if clear is True:
             self.clear()
-        if self._last_start_display_at != self.start_display_at and clear is None:
+        elif clear is None and self._last_start_display_at != self.start_display_at:
             self.clear()
         self._last_start_display_at = self.start_display_at
         i = self.start_display_at
+        # g.printList(self._my_widgets)
         for line in self._my_widgets[:-1]:
+            # Line is a (weakref to) LeoTreeLine object.
             self._print_line(line, i)
             line.update(clear=True)
             i += 1
@@ -4033,6 +4054,8 @@ else:
 
     class LeoTreeData(npyscreen.TreeData):
         '''A TreeData class that has a len and new_first_child methods.'''
+        
+        # EKR: The TreeData sets
     
         def __len__(self):
             return len(self.content)

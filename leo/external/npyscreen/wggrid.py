@@ -68,7 +68,7 @@ class SimpleGrid(widget.Widget):
     def resize(self):
         self.make_contained_widgets()
 
-    #@+node:ekr.20170428084208.7: *3* make_contained_widgets
+    #@+node:ekr.20170428084208.7: *3* SimpleGrid.make_contained_widgets
     def make_contained_widgets(self):
         if self.column_width_requested:
             # don't need a margin for the final column
