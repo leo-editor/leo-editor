@@ -138,12 +138,12 @@ def runList(c,aList):
                 )
                 fi, fo, fe = p.stdin, p.stdout, p.stderr
                 while 1:
-                    txt = fo.read()
-                    f.write( txt )
+                    txt = g.toUnicode(fo.read())
+                    f.write(txt)
                     if txt == '': break
                 while 1:
-                    txt = fe.read()
-                    f.write( txt )
+                    txt = g.toUnicode(fe.read())
+                    f.write(txt)
                     if txt == '': break
                 fi.close()
                 fo.close()
