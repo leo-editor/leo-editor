@@ -61,7 +61,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         
     def __repr__(self):
         val = self._tree_real_value
-        return val.content if val else '<LeoTreeLine: None>'
+        return '<LeoTreeLine: %s>' % (val.content if val else 'None')
         
     __str__ = __repr__
 
