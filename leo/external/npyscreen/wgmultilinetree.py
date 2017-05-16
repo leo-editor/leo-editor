@@ -11,6 +11,8 @@ from . import wgtextbox      as textbox
 from npyscreen.compatibility_code import npysNPSTree as NPSTree
 from .npysTree import TreeData
 
+import leo.core.leoGlobals as g
+assert g
 
 #@-<< wgmultilinetree imports >>
 #@+others
@@ -362,7 +364,7 @@ class MLTree(multiline.MultiLine):
         self.clearDisplayCache()
         self.update(clear=True)
         self.display()
-    #@+node:ekr.20170502150513.1: *3* values Property
+    #@+node:ekr.20170502150513.1: *3* MLTree.values Property
     #@+others
     #@+node:ekr.20170428084208.200: *4* MLTree._delMyValues
     def _delMyValues(self):
@@ -387,6 +389,7 @@ class MLTree(multiline.MultiLine):
             self._myFullValues = TreeData() #NPSTree.NPSTreeData()
         elif not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
             tree = self.convertToTree(tree)
+            # g.trace(tree)
             self._myFullValues = tree
             if not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
                 raise TypeError(

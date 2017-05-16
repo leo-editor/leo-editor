@@ -3690,61 +3690,48 @@ class LeoMLTree(npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
-    
     continuation_line = "- more -" # value of contination line.
-
-    def set_up_handlers(self):
-        super(LeoMLTree, self).set_up_handlers()
-        assert not hasattr(self, 'hidden_root_node'), repr(self)
-        self.leo_c = None # Set later.
-        self.currentItem = None
-            # Used by CursesTree class.
-        self.hidden_root_node = None
-        self.set_handlers()
+    
+    # def __init__ (self, *args, **kwargs):
+        
+        # super(LeoMLTree, self).__init__(*args, **kwargs
+        # self.values = []
 
     #@+others
-    #@+node:ekr.20170516084845.1: *3* LeoMLTree.MultiLine.make_contained_widgets
-
-    def XXX_make_contained_widgets(self):
-        ### Override MultiLine.make_contained_widgets
-        trace = False
-        trace_widgets = True
-        self._my_widgets = []
-        height = self.height // self.__class__._contained_widget_height
-        if trace: g.trace(self.__class__.__name__, height) #, g.callers(2))
-            # Called from BoxTitle.make_contained_widget.
-        for h in range(height):
-            ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
-            self._my_widgets.append(
-                self._contained_widgets(
-                    self.parent, 
-                    rely=(h*self._contained_widget_height)+self.rely, 
-                    relx = self.relx, 
-                    max_width=self.width, 
-                    max_height=self.__class__._contained_widget_height
-            ))
-        if trace and trace_widgets:
-            g.printList(self._my_widgets)
-            g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
     #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (Buggy)
     def delete_line(self):
 
-        trace = True
-        trace_values = False
-        ### Bug 1: [Fixed] does not "take"
-        ### Bug 2: does not delete children.
-        val = self.values[self.cursor_line]
+        trace = False
+        trace_values = True
+        node = self.values[self.cursor_line]
         if trace:
-            g.trace('before', val.content) # repr(val.content))
+            g.trace('before', node.content)
             if trace_values: self.dump_values()
-        if len(self.values) == 1:
-            g.trace('Can not delete the last node')
+        # if len(self.values) == 1:
+        parent = node.get_parent()
+        grand_parent = parent and parent._parent
+        # g.trace('parent', parent)
+        # g.trace('grand parent', grand_parent)
+        # g.trace('parent._children', parent._children)
+        if not grand_parent and len(parent._children) == 1:
+            g.trace('Can not delete the last top-level node')
             return
-        if 1: ### To do: remove all descendants.
-            del self.values[self.cursor_line]
-        else:
-            del self.values[self.cursor_line]
+        # Remove node and all its descendants.
+        i = self.cursor_line
+        nodes = [(i,node)]
+        j = i + 1
+        while j < len(self.values):
+            node2 = self.values[j]
+            if node.is_ancestor_of(node2):
+                nodes.append((j,node2),)
+                j += 1
+            else:
+                break
+        for j, node2 in reversed(nodes):
+            del self.values[j]
+        # Update the parent.
+        parent._children = [z for z in parent._children if z != node]
         # Clearing these caches suffice to do a proper redraw
         self._last_values = None
         self._last_value = None
@@ -3854,6 +3841,35 @@ class LeoMLTree(npyscreen.MLTree):
         # line.highlight = value
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
+    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down (new)
+    def h_cursor_line_down(self, ch):
+        self.cursor_line += 1
+        if self.cursor_line >= len(self.values):
+            if self.scroll_exit: 
+                self.cursor_line = len(self.values)-1
+                self.h_exit_down(ch)
+                return True
+            else: 
+                self.cursor_line -=1
+                return True
+        # else:
+            # widget = self._my_widgets[self.cursor_line-self.start_display_at]
+            # task = getattr(widget, 'task', None)
+            # if task == self.continuation_line:
+                # if self.slow_scroll:
+                    # self.start_display_at += 1
+                # else:
+                    # self.start_display_at = self.cursor_line
+    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (new)
+    def h_cursor_line_up(self, ch):
+        self.cursor_line -= 1
+        if self.cursor_line < 0: 
+            if self.scroll_exit:
+                self.cursor_line = 0
+                self.h_exit_up(ch)
+            else: 
+                self.cursor_line = 0
+
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
     def h_delete(self, ch):
 
@@ -3903,96 +3919,15 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
         }
         self.handlers.update(d)
-    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down (new)
-    def h_cursor_line_down(self, ch):
-        self.cursor_line += 1
-        if self.cursor_line >= len(self.values):
-            if self.scroll_exit: 
-                self.cursor_line = len(self.values)-1
-                self.h_exit_down(ch)
-                return True
-            else: 
-                self.cursor_line -=1
-                return True
-        # else:
-            # widget = self._my_widgets[self.cursor_line-self.start_display_at]
-            # task = getattr(widget, 'task', None)
-            # if task == self.continuation_line:
-                # if self.slow_scroll:
-                    # self.start_display_at += 1
-                # else:
-                    # self.start_display_at = self.cursor_line
-    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (new)
-    def h_cursor_line_up(self, ch):
-        self.cursor_line -= 1
-        if self.cursor_line < 0: 
-            if self.scroll_exit:
-                self.cursor_line = 0
-                self.h_exit_up(ch)
-            else: 
-                self.cursor_line = 0
-
-    #@+node:ekr.20170516055435.1: *3* Overrides of MLTree.Handlers
-    #@+node:ekr.20170516055435.2: *4* MLTree.h_collapse_tree
-    def h_collapse_tree(self, ch):
-
-        if self.values[self.cursor_line].expanded and self._has_children(self.values[self.cursor_line]):
-            self.values[self.cursor_line].expanded = False
-        else:
-            look_for_depth = self._find_depth(self.values[self.cursor_line]) - 1
-            cursor_line = self.cursor_line - 1
-            while cursor_line >= 0:
-                if look_for_depth == self._find_depth(self.values[cursor_line]):
-                    self.cursor_line = cursor_line
-                    self.values[cursor_line].expanded = False
-                    break
-                else:
-                    cursor_line -= 1
-        self._cached_tree = None
-        self.display()
-    #@+node:ekr.20170516055435.3: *4* MLTree.h_expand_tree
-    def h_expand_tree(self, ch):
-        g.trace('self', self)
-        g.printList([z.content for z in self.values])
-        if not self.values[self.cursor_line].expanded:
-            self.values[self.cursor_line].expanded = True
-        else:
-            for v in self._walk_tree(
-                self.values[self.cursor_line],
-                only_expanded=False
-            ):
-                v.expanded = True
-        self._cached_tree = None
-        self.display()
-    #@+node:ekr.20170516055435.4: *4* MLTree.h_collapse_all
-    def h_collapse_all(self, ch):
-        for v in self._walk_tree(self._myFullValues, only_expanded=True):
-            v.expanded = False
-        self._cached_tree = None
-        self.cursor_line = 0
-        self.display()
-
-    #@+node:ekr.20170516055435.5: *4* MLTree.h_expand_all
-    def h_expand_all(self, ch):
-        for v in self._walk_tree(self._myFullValues, only_expanded=False):
-            v.expanded    = True
-        self._cached_tree = None
-        self.cursor_line  = 0
-        self.display()
-    #@+node:ekr.20170516055435.6: *4* MLTree.set_up_handlers (REF)
-    # def set_up_handlers(self):
-        # '''TreeLineAnnotated.set_up_handlers.'''
-        # super(MLTree, self).set_up_handlers()
-        # self.handlers.update({
-            # ord('<'): self.h_collapse_tree,
-            # ord('>'): self.h_expand_tree,
-            # ord('['): self.h_collapse_tree,
-            # ord(']'): self.h_expand_tree,
-            # ord('{'): self.h_collapse_all,
-            # ord('}'): self.h_expand_all,
-            # ord('h'): self.h_collapse_tree,
-            # ord('l'): self.h_expand_tree,          
-        # })
+    #@+node:ekr.20170516100256.1: *4* LeoMLTree.set_up_handlers
+    def set_up_handlers(self):
+        super(LeoMLTree, self).set_up_handlers()
+        assert not hasattr(self, 'hidden_root_node'), repr(self)
+        self.leo_c = None # Set later.
+        self.currentItem = None
+            # Used by CursesTree class.
+        self.hidden_root_node = None
+        self.set_handlers()
     #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
     def update(self, clear=True):
         '''Redraw the tree.'''
@@ -4142,6 +4077,90 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s, style)
         else:
             self.parent.curses_pad.addstr(y, x, s)
+    #@+node:ekr.20170516084845.1: *3* LeoMLTree.XXX_MultiLine.make_contained_widgets
+
+    def XXX_make_contained_widgets(self):
+        ### Override MultiLine.make_contained_widgets
+        trace = False
+        trace_widgets = True
+        self._my_widgets = []
+        height = self.height // self.__class__._contained_widget_height
+        if trace: g.trace(self.__class__.__name__, height) #, g.callers(2))
+            # Called from BoxTitle.make_contained_widget.
+        for h in range(height):
+            ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
+            self._my_widgets.append(
+                self._contained_widgets(
+                    self.parent, 
+                    rely=(h*self._contained_widget_height)+self.rely, 
+                    relx = self.relx, 
+                    max_width=self.width, 
+                    max_height=self.__class__._contained_widget_height
+            ))
+        if trace and trace_widgets:
+            g.printList(self._my_widgets)
+            g.printList(['value: %r' % (z.value) for z in self._my_widgets])
+    #@+node:ekr.20170516055435.1: *3* Overrides of MLTree.Handlers
+    #@+node:ekr.20170516055435.2: *4* MLTree.h_collapse_tree
+    def h_collapse_tree(self, ch):
+
+        if self.values[self.cursor_line].expanded and self._has_children(self.values[self.cursor_line]):
+            self.values[self.cursor_line].expanded = False
+        else:
+            look_for_depth = self._find_depth(self.values[self.cursor_line]) - 1
+            cursor_line = self.cursor_line - 1
+            while cursor_line >= 0:
+                if look_for_depth == self._find_depth(self.values[cursor_line]):
+                    self.cursor_line = cursor_line
+                    self.values[cursor_line].expanded = False
+                    break
+                else:
+                    cursor_line -= 1
+        self._cached_tree = None
+        self.display()
+    #@+node:ekr.20170516055435.3: *4* MLTree.h_expand_tree
+    def h_expand_tree(self, ch):
+        g.trace('self', self)
+        g.printList([z.content for z in self.values])
+        if not self.values[self.cursor_line].expanded:
+            self.values[self.cursor_line].expanded = True
+        else:
+            for v in self._walk_tree(
+                self.values[self.cursor_line],
+                only_expanded=False
+            ):
+                v.expanded = True
+        self._cached_tree = None
+        self.display()
+    #@+node:ekr.20170516055435.4: *4* MLTree.h_collapse_all
+    def h_collapse_all(self, ch):
+        for v in self._walk_tree(self._myFullValues, only_expanded=True):
+            v.expanded = False
+        self._cached_tree = None
+        self.cursor_line = 0
+        self.display()
+
+    #@+node:ekr.20170516055435.5: *4* MLTree.h_expand_all
+    def h_expand_all(self, ch):
+        for v in self._walk_tree(self._myFullValues, only_expanded=False):
+            v.expanded    = True
+        self._cached_tree = None
+        self.cursor_line  = 0
+        self.display()
+    #@+node:ekr.20170516055435.6: *4* MLTree.set_up_handlers (REF)
+    # def set_up_handlers(self):
+        # '''TreeLineAnnotated.set_up_handlers.'''
+        # super(MLTree, self).set_up_handlers()
+        # self.handlers.update({
+            # ord('<'): self.h_collapse_tree,
+            # ord('>'): self.h_expand_tree,
+            # ord('['): self.h_collapse_tree,
+            # ord(']'): self.h_expand_tree,
+            # ord('{'): self.h_collapse_all,
+            # ord('}'): self.h_expand_all,
+            # ord('h'): self.h_collapse_tree,
+            # ord('l'): self.h_expand_tree,          
+        # })
     #@-others
 #@+node:ekr.20170507184329.1: ** class LeoTreeData (npyscreen.TreeData)
 if native:
@@ -4159,6 +4178,17 @@ else:
             # # Same as TreeData.get_content, but could be tweaked.
             # g.trace('LeoTreeData', self.content)
             # return self.content
+        #@+node:ekr.20170516093009.1: *3* LeoTreeData.is_ancestor_of
+        def is_ancestor_of(self, node):
+            
+            assert isinstance(node, LeoTreeData), repr(node)
+            parent = node._parent
+            while parent:
+                if parent == self:
+                    return True
+                else:
+                    parent = parent._parent
+            return False
         #@+node:ekr.20170516085742.1: *3* LeoTreeData.new_child_at
         def new_child_at(self, index, *args, **keywords):
             '''Same as new_child, with insert(index, c) instead of append(c)'''
