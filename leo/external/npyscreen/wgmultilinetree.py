@@ -274,6 +274,7 @@ class MLTree(multiline.MultiLine):
 
     #@+node:ekr.20170428084208.192: *3* MLTree._get_tree_as_list
     def _get_tree_as_list(self, vl):
+        g.trace('MLTree:', vl)
         try:
             return vl.get_tree_as_list()
         except AttributeError:

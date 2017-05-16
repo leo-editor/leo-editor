@@ -2,6 +2,8 @@
 #@+node:ekr.20170428084207.399: * @file ../external/npyscreen/npysTree.py
 import weakref
 import collections
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.401: ** class TreeData (object)
 class TreeData(object):
@@ -91,6 +93,7 @@ class TreeData(object):
                 _a.append(weakref.proxy(node))
             except Exception:
                 _a.append(node)
+        g.trace('=====', _a)
         return _a
     #@+node:ekr.20170428084207.412: *4* TreeData.has_children
     def has_children(self):
