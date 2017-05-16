@@ -3699,7 +3699,7 @@ class LeoMLTree(npyscreen.MLTree):
 
     #@+others
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
-    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (Buggy)
+    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line
     def delete_line(self):
 
         trace = False
