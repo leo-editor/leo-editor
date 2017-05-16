@@ -3705,7 +3705,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+others
     #@+node:ekr.20170516084845.1: *3* LeoMLTree.MultiLine.make_contained_widgets
 
-    def make_contained_widgets(self):
+    def XXX_make_contained_widgets(self):
         ### Override MultiLine.make_contained_widgets
         trace = False
         trace_widgets = True
@@ -3737,22 +3737,17 @@ class LeoMLTree(npyscreen.MLTree):
         val = self.values[self.cursor_line]
         if trace:
             g.trace('before', val.content) # repr(val.content))
-            if trace_values:
-                self.dump_values()
-        # This is the code in MultiLineEditable.delete_line_value:
-            # if self.values:
-                # del self.values[self.cursor_line]
-                # self.display()
-
-        ### Crashes for top-level nodes.
-        parent = val.get_parent()
-        if parent:
-            parent.remove_child(val)
-            # Bug fix.
-        del self.values[self.cursor_line]
+            if trace_values: self.dump_values()
+        if len(self.values) == 1:
+            g.trace('Can not delete the last node')
+            return
+        if 1: ### To do: remove all descendants.
+            del self.values[self.cursor_line]
+        else:
+            del self.values[self.cursor_line]
+        # Clearing these caches suffice to do a proper redraw
         self._last_values = None
         self._last_value = None
-            # Bug fix.
         if trace and trace_values:
             g.trace('after')
             self.dump_values()
@@ -4180,7 +4175,8 @@ else:
         #@+node:ekr.20170516085427.2: *4* TreeData.get_children
         def get_children(self):
             
-            return self._children[:]
+            for child in self._children:
+                yield child
             # for child in self._children:
                 # try:
                     # yield weakref.proxy(child)
@@ -4202,7 +4198,8 @@ else:
             return [z for z in self.walk_tree(
                         only_expanded=only_expanded,
                         ignore_root=self.ignore_root,
-                        sort=sort)]
+                        sort=sort,
+                    )]
         #@+node:ekr.20170516085427.4: *4* TreeData.new_child
         def new_child(self, *args, **keywords):
             if self.CHILDCLASS:
@@ -4224,6 +4221,7 @@ else:
                     # child.set_parent(None)
             # self._children = new_children
             self._children = [z for z in self._children if z != child]
+                # May be useful when child is cloned.
         #@+node:ekr.20170516085427.6: *4* TreeData.set_parent
         def set_parent(self, parent):
             
