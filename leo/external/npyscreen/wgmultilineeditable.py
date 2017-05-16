@@ -9,7 +9,7 @@ import leo.core.leoGlobals as g
 assert g
 #pylint: disable=no-member
 #@+others
-#@+node:ekr.20170428084208.159: ** class MultiLineEditable
+#@+node:ekr.20170428084208.159: ** class MultiLineEditable (MultiLine)
 class MultiLineEditable(wgmultiline.MultiLine):
     _contained_widgets      = textbox.Textfield 
     CHECK_VALUE             = True
@@ -77,7 +77,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
     #@+node:ekr.20170428084208.165: *3* MultiLineEditable._continue_editing
     def _continue_editing(self):
         
-        # g.trace('MultiLine')
+        # g.trace('MultiLineEditable')
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):
@@ -87,9 +87,6 @@ class MultiLineEditable(wgmultiline.MultiLine):
                 self.display()
                 continue_editing = self.edit_cursor_line_value()
                 active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-
-
-
 
     #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
     #@+node:ekr.20170428084208.166: *4* MultiLineEditable.h_insert_next_line

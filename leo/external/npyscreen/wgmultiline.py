@@ -729,7 +729,6 @@ class Pager(MultiLine):
     #@+node:ekr.20170428084208.130: *3* Pager.resize
     def resize(self):
         super(Pager, self).resize()
-        #self.values = [str(self.width), str(self._my_widgets[0].width),]
         if self.autowrap:
             self.setValuesWrap(list(self.values))
         if self.center:
