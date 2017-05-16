@@ -35,7 +35,7 @@ class MiniButton(checkbox._ToggleControl):
     def calculate_area_needed(self):
         return 1, self.label_width+2
 
-    #@+node:ekr.20170428084207.529: *3* update
+    #@+node:ekr.20170428084207.529: *3* MiniButton.update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:

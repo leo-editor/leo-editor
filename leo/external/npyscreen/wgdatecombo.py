@@ -22,7 +22,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
         self.allow_todays_date  = allowTodaysDate
         self.allow_clear        = allowClear
 
-    #@+node:ekr.20170428084207.579: *3* update
+    #@+node:ekr.20170428084207.579: *3* DateCombo.update
     def update(self, **keywords):
         keywords.update({'cursor': False})
         super(DateCombo, self).update(**keywords)

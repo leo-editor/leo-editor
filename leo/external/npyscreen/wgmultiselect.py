@@ -13,7 +13,7 @@ class MultiSelect(selectone.SelectOne):
     _contained_widgets = checkbox.Checkbox
 
     #@+others
-    #@+node:ekr.20170428084208.228: *3* set_up_handlers
+    #@+node:ekr.20170428084208.228: *3* MultiSelect.set_up_handlers
     def set_up_handlers(self):
         '''MultiSelect.set_up_handlers.'''
         super(MultiSelect, self).set_up_handlers()
@@ -24,18 +24,18 @@ class MultiSelect(selectone.SelectOne):
             "^U":               self.h_select_none,
         })
 
-    #@+node:ekr.20170428084208.229: *3* h_select_none
+    #@+node:ekr.20170428084208.229: *3* MultiSelect.h_select_none
     def h_select_none(self, input):
         self.value = []
 
-    #@+node:ekr.20170428084208.230: *3* h_select_toggle
+    #@+node:ekr.20170428084208.230: *3* MultiSelect.h_select_toggle
     def h_select_toggle(self, input):
         if self.cursor_line in self.value:
             self.value.remove(self.cursor_line)
         else:
             self.value.append(self.cursor_line)
 
-    #@+node:ekr.20170428084208.231: *3* h_set_filtered_to_selected
+    #@+node:ekr.20170428084208.231: *3* MultiSelect.h_set_filtered_to_selected
     def h_set_filtered_to_selected(self, ch):
         self.value = self._filtered_values_cache
 
@@ -47,7 +47,7 @@ class MultiSelect(selectone.SelectOne):
             self.editing = False
             self.how_exited=True
             
-    #@+node:ekr.20170428084208.233: *3* get_selected_objects
+    #@+node:ekr.20170428084208.233: *3* MultiSelect.get_selected_objects
     def get_selected_objects(self):
         if self.value == [] or self.value == None:
             return None
@@ -59,17 +59,17 @@ class MultiSelect(selectone.SelectOne):
 class MultiSelectAction(MultiSelect):
     always_act_on_many = False
     #@+others
-    #@+node:ekr.20170428084208.235: *3* actionHighlighted
+    #@+node:ekr.20170428084208.235: *3* MultiSelectAction.actionHighlighted
     def actionHighlighted(self, act_on_this, key_press):
         "Override this Method"
         pass
 
-    #@+node:ekr.20170428084208.236: *3* actionSelected
+    #@+node:ekr.20170428084208.236: *3* MultiSelectAction.actionSelected
     def actionSelected(self, act_on_these, keypress):
         "Override this Method"
         pass
 
-    #@+node:ekr.20170428084208.237: *3* set_up_handlers
+    #@+node:ekr.20170428084208.237: *3* MultiSelectAction.set_up_handlers
     def set_up_handlers(self):
         '''MultiSelectAction.set_up_handlers.'''
         super(MultiSelectAction, self).set_up_handlers()
@@ -81,14 +81,14 @@ class MultiSelectAction(MultiSelect):
             curses.ascii.SP:    self.h_act_on_highlighted,
         })
 
-    #@+node:ekr.20170428084208.238: *3* h_act_on_highlighted
+    #@+node:ekr.20170428084208.238: *3* MultiSelectAction.h_act_on_highlighted
     def h_act_on_highlighted(self, ch):
         if self.always_act_on_many:
             return self.h_act_on_selected(ch)
         else:
             return self.actionHighlighted(self.values[self.cursor_line], ch)
 
-    #@+node:ekr.20170428084208.239: *3* h_act_on_selected
+    #@+node:ekr.20170428084208.239: *3* MultiSelectAction.h_act_on_selected
     def h_act_on_selected(self, ch):
         if self.vale:
             return self.actionSelected(self.get_selected_objects(), ch)

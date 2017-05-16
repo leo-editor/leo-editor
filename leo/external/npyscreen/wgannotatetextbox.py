@@ -55,7 +55,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
         _annotation, _color = self.getAnnotationAndColor()
         self.parent.curses_pad.addnstr(displayy, displayx, _annotation, self.ANNOTATE_WIDTH)
 
-    #@+node:ekr.20170428084207.489: *3* update
+    #@+node:ekr.20170428084207.489: *3* AnnotateTextboxBase.update
     def update(self, clear=True):
         if clear: 
             self.clear()

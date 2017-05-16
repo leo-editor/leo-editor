@@ -13,7 +13,7 @@ class TitleText(widget.Widget):
     _entry_type = textbox.Textfield
 
     #@+others
-    #@+node:ekr.20170428084208.384: *3* __init__
+    #@+node:ekr.20170428084208.384: *3* TitleText.__init__
     def __init__(self, screen, 
         begin_entry_at = 16, 
         field_width = None,
@@ -79,7 +79,7 @@ class TitleText(widget.Widget):
         
         
 
-    #@+node:ekr.20170428084208.385: *3* resize
+    #@+node:ekr.20170428084208.385: *3* TitleText.resize
     def resize(self):
         super(TitleText, self).resize()
         self.label_widget.relx = self.relx
@@ -90,7 +90,7 @@ class TitleText(widget.Widget):
         self.entry_widget._resize()
         self.recalculate_size()
         
-    #@+node:ekr.20170428084208.386: *3* make_contained_widgets
+    #@+node:ekr.20170428084208.386: *3* TitleText.make_contained_widgets
     def make_contained_widgets(self):
         self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=len(self.name)+1, value=self.name, color=self.labelColor)
         if self.label_widget.on_last_line and self.use_two_lines:
@@ -116,7 +116,7 @@ class TitleText(widget.Widget):
         self.recalculate_size()
         
 
-    #@+node:ekr.20170428084208.387: *3* recalculate_size
+    #@+node:ekr.20170428084208.387: *3* TitleText.recalculate_size
     def recalculate_size(self):
         self.height = self.entry_widget.height
         if self.use_two_lines: self.height += 1
@@ -133,7 +133,7 @@ class TitleText(widget.Widget):
         self.editing=False
         self.display()
 
-    #@+node:ekr.20170428084208.389: *3* update
+    #@+node:ekr.20170428084208.389: *3* TitleText.update
     def update(self, clear = True):
         if clear: self.clear()
         if self.hidden: return False
@@ -146,12 +146,12 @@ class TitleText(widget.Widget):
         self.label_widget.update()
         self.entry_widget.update()
 
-    #@+node:ekr.20170428084208.390: *3* handle_mouse_event
+    #@+node:ekr.20170428084208.390: *3* TitleText.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         if self.entry_widget.intersted_in_mouse_event(mouse_event):
             self.entry_widget.handle_mouse_event(mouse_event)
 
-    #@+node:ekr.20170428084208.391: *3* get_value
+    #@+node:ekr.20170428084208.391: *3* TitleText.get_value
     def get_value(self):
         if hasattr(self, 'entry_widget'):
             return self.entry_widget.value
@@ -159,19 +159,19 @@ class TitleText(widget.Widget):
             return self.__tmp_value
         else:
             return None
-    #@+node:ekr.20170428084208.392: *3* set_value
+    #@+node:ekr.20170428084208.392: *3* TitleText.set_value
     def set_value(self, value):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.value = value
         else:
             # probably trying to set the value before the textarea is initialised
             self.__tmp_value = value
-    #@+node:ekr.20170428084208.393: *3* del_value
+    #@+node:ekr.20170428084208.393: *3* TitleText.del_value
     def del_value(self):
         del self.entry_widget.value
     value = property(get_value, set_value, del_value)
 
-    #@+node:ekr.20170428084208.394: *3* editable
+    #@+node:ekr.20170428084208.394: *3* TitleText.editable
     @property
     def editable(self):
         try:
@@ -179,7 +179,7 @@ class TitleText(widget.Widget):
         except AttributeError:
             return self._editable
         
-    #@+node:ekr.20170428084208.395: *3* editable
+    #@+node:ekr.20170428084208.395: *3* TitleText.editable
     @editable.setter
     def editable(self, value):
         self._editable = value
@@ -188,7 +188,7 @@ class TitleText(widget.Widget):
         except AttributeError:
             self._editable = value
 
-    #@+node:ekr.20170428084208.396: *3* add_handlers
+    #@+node:ekr.20170428084208.396: *3* TitleText.add_handlers
     def add_handlers(self, handler_dictionary):
         """
         Pass handlers to entry_widget

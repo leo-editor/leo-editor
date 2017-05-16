@@ -172,17 +172,17 @@ class MonthBox(DateEntryBase):
     DAY_FIELD_WIDTH = 4
     
     #@+others
-    #@+node:ekr.20170428084208.64: *3* __init__
+    #@+node:ekr.20170428084208.64: *3* MonthBox.__init__
     def __init__(self, screen, **keywords):
         super(MonthBox, self).__init__(screen, **keywords)
         
-    #@+node:ekr.20170428084208.65: *3* calculate_area_needed
+    #@+node:ekr.20170428084208.65: *3* MonthBox.calculate_area_needed
     def calculate_area_needed(self):
         # Rember that although months only have 4-5 weeks, they can span 6 weeks.
         # Currently allowing 2 lines for headers, so 8 lines total
         return 10, self.__class__.DAY_FIELD_WIDTH * 7
 
-    #@+node:ekr.20170428084208.66: *3* update
+    #@+node:ekr.20170428084208.66: *3* MonthBox.update
     def update(self, clear=True):
         calendar.setfirstweekday(self.firstWeekDay)
         if clear: self.clear()
@@ -280,7 +280,7 @@ class MonthBox(DateEntryBase):
                 self.parent.curses_pad.addstr(self.rely+9, self.relx, key_help)
 
         
-    #@+node:ekr.20170428084208.67: *3* set_up_handlers
+    #@+node:ekr.20170428084208.67: *3* MonthBox.set_up_handlers
     def set_up_handlers(self):
         '''MonthBox.set_up_handlers.'''
         super(MonthBox, self).set_up_handlers()

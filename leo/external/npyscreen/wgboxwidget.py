@@ -18,7 +18,7 @@ class BoxBasic(Widget):
         else:
             self.color = 'LABEL'
 
-    #@+node:ekr.20170428084207.507: *3* update
+    #@+node:ekr.20170428084207.507: *3* BoxBasic.update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:
@@ -107,7 +107,7 @@ class BoxBasic(Widget):
 class BoxTitle(BoxBasic):
     _contained_widget = MultiLine
     #@+others
-    #@+node:ekr.20170428084207.510: *3* __init__
+    #@+node:ekr.20170428084207.510: *3* BoxTitle.__init__
     def __init__(self, screen, contained_widget_arguments=None, *args, **keywords):
         super(BoxTitle, self).__init__(screen, *args, **keywords)
         if contained_widget_arguments:
@@ -151,7 +151,7 @@ class BoxTitle(BoxBasic):
             ))
         self.entry_widget = weakref.proxy(self._my_widgets[0])
         self.entry_widget.parent_widget = weakref.proxy(self)
-    #@+node:ekr.20170428084207.512: *3* update
+    #@+node:ekr.20170428084207.512: *3* BoxTitle.update
     def update(self, clear=True):
         if self.hidden and clear:
             self.clear()
@@ -162,7 +162,7 @@ class BoxTitle(BoxBasic):
         for w in self._my_widgets:
             w.update(clear=clear)
             
-    #@+node:ekr.20170428084207.513: *3* resize
+    #@+node:ekr.20170428084207.513: *3* BoxTitle.resize
     def resize(self):
         super(BoxTitle, self).resize()
         self.entry_widget.resize()
@@ -179,7 +179,7 @@ class BoxTitle(BoxBasic):
 
 
         
-    #@+node:ekr.20170428084207.515: *3* get_value
+    #@+node:ekr.20170428084207.515: *3* BoxTitle.get_value
     def get_value(self):
         if hasattr(self, 'entry_widget'):
             return self.entry_widget.value
@@ -187,19 +187,19 @@ class BoxTitle(BoxBasic):
             return self.__tmp_value
         else:
             return None
-    #@+node:ekr.20170428084207.516: *3* set_value
+    #@+node:ekr.20170428084207.516: *3* BoxTitle.set_value
     def set_value(self, value):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.value = value
         else:
             # probably trying to set the value before the textarea is initialised
             self.__tmp_value = value
-    #@+node:ekr.20170428084207.517: *3* del_value
+    #@+node:ekr.20170428084207.517: *3* BoxTitle.del_value
     def del_value(self):
         del self.entry_widget.value
     value = property(get_value, set_value, del_value)
 
-    #@+node:ekr.20170428084207.518: *3* get_values
+    #@+node:ekr.20170428084207.518: *3* BoxTitle.get_values
     def get_values(self):
         if hasattr(self, 'entry_widget'): 
             return self.entry_widget.values
@@ -207,32 +207,32 @@ class BoxTitle(BoxBasic):
             return self.__tmp_values
         else:
             return None
-    #@+node:ekr.20170428084207.519: *3* set_values
+    #@+node:ekr.20170428084207.519: *3* BoxTitle.set_values
     def set_values(self, value):
         if hasattr(self, 'entry_widget'): 
             self.entry_widget.values = value
         elif hasattr(self, '__tmp_value'):
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = value
-    #@+node:ekr.20170428084207.520: *3* del_values
+    #@+node:ekr.20170428084207.520: *3* BoxTitle.del_values
     def del_values(self):
         del self.entry_widget.value
     values = property(get_values, set_values, del_values)
 
-    #@+node:ekr.20170428084207.521: *3* get_editable
+    #@+node:ekr.20170428084207.521: *3* BoxTitle.get_editable
     def get_editable(self):
         if hasattr(self, 'entry_widget'): 
             return self.entry_widget.editable
         else:
             return None
-    #@+node:ekr.20170428084207.522: *3* set_editable
+    #@+node:ekr.20170428084207.522: *3* BoxTitle.set_editable
     def set_editable(self, value):
         if hasattr(self, 'entry_widget'): 
             self.entry_widget.editable = value
         elif hasattr(self, '__tmp_value'):
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = value
-    #@+node:ekr.20170428084207.523: *3* del_editable
+    #@+node:ekr.20170428084207.523: *3* BoxTitle.del_editable
     def del_editable(self):
         del self.entry_widget.editable
     editable = property(get_editable, set_editable, del_editable)

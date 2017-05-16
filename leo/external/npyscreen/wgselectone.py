@@ -10,7 +10,7 @@ class SelectOne(multiline.MultiLine):
     _contained_widgets = checkbox.RoundCheckBox
     
     #@+others
-    #@+node:ekr.20170428084208.293: *3* update
+    #@+node:ekr.20170428084208.293: *3* SelectOne.update
     def update(self, clear=True):
         if self.hidden:
             self.clear()
@@ -24,11 +24,11 @@ class SelectOne(multiline.MultiLine):
                 
         super(SelectOne, self).update(clear=clear)
 
-    #@+node:ekr.20170428084208.294: *3* h_select
+    #@+node:ekr.20170428084208.294: *3* SelectOne.h_select
     def h_select(self, ch):
         self.value = [self.cursor_line,]
 
-    #@+node:ekr.20170428084208.295: *3* _print_line
+    #@+node:ekr.20170428084208.295: *3* SelectOne._print_line
     def _print_line(self, line, value_indexer):
         try:
             display_this = self.display_value(self.values[value_indexer])

@@ -13,7 +13,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
     _contained_widgets = checkbox.Checkbox
 
     #@+others
-    #@+node:ekr.20170428084208.248: *3* set_up_handlers
+    #@+node:ekr.20170428084208.248: *3* MultiSelectTree.set_up_handlers
     def set_up_handlers(self):
         '''MultiSelectTree.set_up_handlers.'''
         super(MultiSelectTree, self).set_up_handlers()
@@ -23,11 +23,11 @@ class MultiSelectTree(multilinetree.SelectOneTree):
             ord("X"):    self.h_select,
             "^U":        self.h_select_none,
         })
-    #@+node:ekr.20170428084208.249: *3* h_select_none
+    #@+node:ekr.20170428084208.249: *3* MultiSelectTree.h_select_none
     def h_select_none(self, input):
         self.value = []
 
-    #@+node:ekr.20170428084208.250: *3* h_select_toggle
+    #@+node:ekr.20170428084208.250: *3* MultiSelectTree.h_select_toggle
     def h_select_toggle(self, input):
         try:
             working_with = weakref.proxy(self.values[self.cursor_line])
@@ -38,7 +38,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
         else:
             self.value.append(working_with)
             
-    #@+node:ekr.20170428084208.251: *3* h_set_filtered_to_selected
+    #@+node:ekr.20170428084208.251: *3* MultiSelectTree.h_set_filtered_to_selected
     def h_set_filtered_to_selected(self, ch):
         self.value = self.get_filtered_values()
 

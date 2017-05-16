@@ -15,7 +15,7 @@ from . import wgtitlefield  as titlefield
 class ComboBox(textbox.Textfield):
     ENSURE_STRING_VALUE = False
     #@+others
-    #@+node:ekr.20170428084207.564: *3* __init__
+    #@+node:ekr.20170428084207.564: *3* ComboBox.__init__
     def __init__(self, screen, value = None, values=None,**keywords):
         self.values = values or []
         self.value = value or None
@@ -23,18 +23,18 @@ class ComboBox(textbox.Textfield):
             self.value = 0
         super(ComboBox, self).__init__(screen, **keywords)
         
-    #@+node:ekr.20170428084207.565: *3* display_value
+    #@+node:ekr.20170428084207.565: *3* ComboBox.display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
         Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
-    #@+node:ekr.20170428084207.566: *3* update
+    #@+node:ekr.20170428084207.566: *3* ComboBox.update
     def update(self, **keywords):
         keywords.update({'cursor': False})
         super(ComboBox, self).update(**keywords)
 
-    #@+node:ekr.20170428084207.567: *3* _print
+    #@+node:ekr.20170428084207.567: *3* ComboBox._print
     def _print(self):
         if self.value == None or self.value is '':
             printme = '-unset-'
@@ -49,12 +49,12 @@ class ComboBox(textbox.Textfield):
             self.parent.curses_pad.addnstr(self.rely, self.relx, printme, self.width)
 
 
-    #@+node:ekr.20170428084207.568: *3* edit
+    #@+node:ekr.20170428084207.568: *3* ComboBox.edit
     def edit(self):
         #We'll just use the widget one
         super(textbox.Textfield, self).edit()
 
-    #@+node:ekr.20170428084207.569: *3* set_up_handlers
+    #@+node:ekr.20170428084207.569: *3* ComboBox.set_up_handlers
     def set_up_handlers(self):
         '''ComboBox.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
@@ -70,7 +70,7 @@ class ComboBox(textbox.Textfield):
             ord('l'):         self.h_exit_right,                      
         })
 
-    #@+node:ekr.20170428084207.570: *3* h_change_value
+    #@+node:ekr.20170428084207.570: *3* ComboBox.h_change_value
     def h_change_value(self, input):
         "Pop up a window in which to select the values for the field"
         F = Popup.Popup(name = self.name)

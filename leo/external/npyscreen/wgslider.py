@@ -11,7 +11,7 @@ from . import wgtitlefield as titlefield
 class Slider(widget.Widget):
     DEFAULT_BLOCK_COLOR = None
     #@+others
-    #@+node:ekr.20170428084208.300: *3* __init__
+    #@+node:ekr.20170428084208.300: *3* Slider.__init__
     def __init__(self, screen, value=0, 
                 out_of=100, step=1, lowest=0,
                 label=True, 
@@ -31,11 +31,11 @@ class Slider(widget.Widget):
             self.maximum_string_length = self.width
         self.label = label
 
-    #@+node:ekr.20170428084208.301: *3* calculate_area_needed
+    #@+node:ekr.20170428084208.301: *3* Slider.calculate_area_needed
     def calculate_area_needed(self):
         return 1,0
 
-    #@+node:ekr.20170428084208.302: *3* translate_value
+    #@+node:ekr.20170428084208.302: *3* Slider.translate_value
     def translate_value(self):
         """What do different values mean?  If you subclass this object, and override this 
         method, you can change how the labels are displayed.  This method should return a
@@ -48,7 +48,7 @@ class Slider(widget.Widget):
         stri = stri.rjust(l)
         return stri
 
-    #@+node:ekr.20170428084208.303: *3* update
+    #@+node:ekr.20170428084208.303: *3* Slider.update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:
@@ -110,7 +110,7 @@ class Slider(widget.Widget):
         self.parent.curses_pad.attroff(curses.A_BOLD)
         self.parent.curses_pad.bkgdset(curses.A_NORMAL)
 
-    #@+node:ekr.20170428084208.304: *3* set_value
+    #@+node:ekr.20170428084208.304: *3* Slider.set_value
     def set_value(self, val):
         #"We can only represent ints or floats, and must be less than what we are out of..."
         if val is None: val = 0
@@ -122,12 +122,12 @@ class Slider(widget.Widget):
 
         if self.__value > self.out_of: raise ValueError
 
-    #@+node:ekr.20170428084208.305: *3* get_value
+    #@+node:ekr.20170428084208.305: *3* Slider.get_value
     def get_value(self):
         return float(self.__value)
     value = property(get_value, set_value)
 
-    #@+node:ekr.20170428084208.306: *3* set_up_handlers
+    #@+node:ekr.20170428084208.306: *3* Slider.set_up_handlers
     def set_up_handlers(self):
         '''Slider.set_up_handlers.'''
         super(widget.Widget, self).set_up_handlers()
@@ -142,11 +142,11 @@ class Slider(widget.Widget):
             ord('k'): self.h_exit_up,
         })
 
-    #@+node:ekr.20170428084208.307: *3* h_increase
+    #@+node:ekr.20170428084208.307: *3* Slider.h_increase
     def h_increase(self, ch):
         if (self.value + self.step <= self.out_of): self.value += self.step
 
-    #@+node:ekr.20170428084208.308: *3* h_decrease
+    #@+node:ekr.20170428084208.308: *3* Slider.h_decrease
     def h_decrease(self, ch):
         if (self.value - self.step >= self.lowest): self.value -= self.step
 

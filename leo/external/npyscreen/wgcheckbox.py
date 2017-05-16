@@ -65,7 +65,7 @@ class CheckboxBare(_ToggleControl):
     def calculate_area_needed(self):
         return 1, 4
 
-    #@+node:ekr.20170428084207.546: *3* update
+    #@+node:ekr.20170428084207.546: *3* CheckboxBare.update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:
@@ -129,7 +129,7 @@ class Checkbox(_ToggleControl):
                       width=self.width-5, value=self.name)
         
 
-    #@+node:ekr.20170428084207.550: *3* update
+    #@+node:ekr.20170428084207.550: *3* CheckBox.update
     def update(self, clear=True):
         if clear: self.clear()
         if self.hidden:

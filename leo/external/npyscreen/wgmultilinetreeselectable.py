@@ -116,7 +116,6 @@ class MLTreeMultiSelect(wgmultilinetree.MLTree):
             self.editing = False
             self.how_exited = True
         self.display()
-        
     #@+node:ekr.20170428084208.223: *3* get_selected_objects
     def get_selected_objects(self, return_node=True):
         for v in self._walk_tree(self._myFullValues, only_expanded=False, ignore_root=False):

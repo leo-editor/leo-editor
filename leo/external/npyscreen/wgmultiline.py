@@ -123,11 +123,12 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.77: *3* MultiLine.make_contained_widgets
     def make_contained_widgets(self):
         ### The *only* make_contained_widgets (plural) in npyscreen.
-        trace = True
+        trace = False
         trace_widgets = True
         self._my_widgets = []
         height = self.height // self.__class__._contained_widget_height
-        g.trace(self.__class__.__name__, height, g.callers(2))
+        if trace: g.trace(self.__class__.__name__, height) #, g.callers(2))
+            # Called from BoxTitle.make_contained_widget.
         for h in range(height):
             ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
             self._my_widgets.append(
@@ -628,17 +629,17 @@ class MultiLine(widget.Widget):
 class MultiLineAction(MultiLine):
     RAISE_ERROR_IF_EMPTY_ACTION = False
     #@+others
-    #@+node:ekr.20170428084208.118: *3* __init__
+    #@+node:ekr.20170428084208.118: *3* MultiLineAction.__init__
     def __init__(self, *args, **keywords):
         self.allow_multi_action = False  
         super(MultiLineAction, self).__init__(*args, **keywords)  
 
-    #@+node:ekr.20170428084208.119: *3* actionHighlighted
+    #@+node:ekr.20170428084208.119: *3* MultiLineAction.actionHighlighted
     def actionHighlighted(self, act_on_this, key_press):
         "Override this Method"
         pass
 
-    #@+node:ekr.20170428084208.120: *3* h_act_on_highlighted
+    #@+node:ekr.20170428084208.120: *3* MultiLineAction.h_act_on_highlighted
     def h_act_on_highlighted(self, ch):
         try:
             return self.actionHighlighted(self.values[self.cursor_line], ch)
@@ -648,7 +649,7 @@ class MultiLineAction(MultiLine):
             else:
                 pass
             
-    #@+node:ekr.20170428084208.121: *3* set_up_handlers
+    #@+node:ekr.20170428084208.121: *3* MultiLineAction.set_up_handlers
     def set_up_handlers(self):
         '''MultiLineAction.set_up_handlers.'''
         super(MultiLineAction, self).set_up_handlers()
@@ -665,14 +666,14 @@ class MultiLineAction(MultiLine):
 class MultiLineActionWithShortcuts(MultiLineAction):
     shortcut_attribute_name = 'shortcut'
     #@+others
-    #@+node:ekr.20170428084208.123: *3* set_up_handlers
+    #@+node:ekr.20170428084208.123: *3* MultiLineActionWithShortcuts.set_up_handlers
     def set_up_handlers(self):
         '''MultiLineActionWithShortcuts.set_up_handlers.'''
         super(MultiLineActionWithShortcuts, self).set_up_handlers()
         self.add_complex_handlers( ((self.h_find_shortcut_action, self.h_execute_shortcut_action),) )
         
         
-    #@+node:ekr.20170428084208.124: *3* h_find_shortcut_action
+    #@+node:ekr.20170428084208.124: *3* MultiLineActionWithShortcuts.h_find_shortcut_action
     def h_find_shortcut_action(self, _input):
         _input_decoded = curses.ascii.unctrl(_input)
         for r in range(len(self.values)):
@@ -683,7 +684,7 @@ class MultiLineActionWithShortcuts(MultiLineAction):
                     return r
         return False
 
-    #@+node:ekr.20170428084208.125: *3* h_execute_shortcut_action
+    #@+node:ekr.20170428084208.125: *3* MultiLineActionWithShortcuts.h_execute_shortcut_action
     def h_execute_shortcut_action(self, _input):
         l = self.h_find_shortcut_action(_input)
         if l is False:
@@ -699,19 +700,19 @@ class MultiLineActionWithShortcuts(MultiLineAction):
 #@+node:ekr.20170428084208.126: ** class Pager
 class Pager(MultiLine):
     #@+others
-    #@+node:ekr.20170428084208.127: *3* __init__
+    #@+node:ekr.20170428084208.127: *3* Pager.__init__
     def __init__(self, screen, autowrap=False,  center=False, **keywords):
         super(Pager, self).__init__(screen, **keywords)
         self.autowrap = autowrap
         self.center = center
         self._values_cache_for_wrapping = []
         
-    #@+node:ekr.20170428084208.128: *3* reset_display_cache
+    #@+node:ekr.20170428084208.128: *3* Pager.reset_display_cache
     def reset_display_cache(self):
         super(Pager, self).reset_display_cache()
         self._values_cache_for_wrapping = False
 
-    #@+node:ekr.20170428084208.129: *3* _wrap_message_lines
+    #@+node:ekr.20170428084208.129: *3* Pager._wrap_message_lines
     def _wrap_message_lines(self, message_lines, line_length):
         lines = []
         for line in message_lines:
@@ -725,7 +726,7 @@ class Pager(MultiLine):
                     lines.append('')
         return lines
 
-    #@+node:ekr.20170428084208.130: *3* resize
+    #@+node:ekr.20170428084208.130: *3* Pager.resize
     def resize(self):
         super(Pager, self).resize()
         #self.values = [str(self.width), str(self._my_widgets[0].width),]
@@ -734,7 +735,7 @@ class Pager(MultiLine):
         if self.center:
             self.centerValues()
 
-    #@+node:ekr.20170428084208.131: *3* setValuesWrap
+    #@+node:ekr.20170428084208.131: *3* Pager.setValuesWrap
     def setValuesWrap(self, lines):
         if self.autowrap and (lines == self._values_cache_for_wrapping):
             return False
@@ -745,11 +746,11 @@ class Pager(MultiLine):
         self.values = self._wrap_message_lines(lines, self.width-1)
         self._values_cache_for_wrapping = self.values
 
-    #@+node:ekr.20170428084208.132: *3* centerValues
+    #@+node:ekr.20170428084208.132: *3* Pager.centerValues
     def centerValues(self):
         self.values  = [ l.strip().center(self.width-1) for l in self.values ]
 
-    #@+node:ekr.20170428084208.133: *3* update
+    #@+node:ekr.20170428084208.133: *3* Pager.update
     def update(self, clear=True):
         #we look this up a lot. Let's have it here.
         if self.autowrap:
@@ -789,7 +790,7 @@ class Pager(MultiLine):
             
             
             
-    #@+node:ekr.20170428084208.134: *3* edit
+    #@+node:ekr.20170428084208.134: *3* Pager.edit
     def edit(self):
         # Make sure a value never gets set.
         value = self.value
@@ -810,27 +811,27 @@ class Pager(MultiLine):
             self.editing = False
             self.how_exited = widget.EXITED_DOWN
 
-    #@+node:ekr.20170428084208.137: *3* h_scroll_page_down
+    #@+node:ekr.20170428084208.137: *3* Pager.h_scroll_page_down
     def h_scroll_page_down(self, input):
         self.start_display_at += len(self._my_widgets)
 
-    #@+node:ekr.20170428084208.138: *3* h_scroll_page_up
+    #@+node:ekr.20170428084208.138: *3* Pager.h_scroll_page_up
     def h_scroll_page_up(self, input):
         self.start_display_at -= len(self._my_widgets)
 
-    #@+node:ekr.20170428084208.139: *3* h_show_beginning
+    #@+node:ekr.20170428084208.139: *3* Pager.h_show_beginning
     def h_show_beginning(self, input):
         self.start_display_at = 0   
 
-    #@+node:ekr.20170428084208.140: *3* h_show_end
+    #@+node:ekr.20170428084208.140: *3* Pager.h_show_end
     def h_show_end(self, input):
         self.start_display_at = len(self.values) - len(self._my_widgets)
 
-    #@+node:ekr.20170428084208.141: *3* h_select_exit
+    #@+node:ekr.20170428084208.141: *3* Pager.h_select_exit
     def h_select_exit(self, _input):
         self.exit(self, _input)
 
-    #@+node:ekr.20170428084208.142: *3* set_up_handlers
+    #@+node:ekr.20170428084208.142: *3* Pager.set_up_handlers
     def set_up_handlers(self):
         '''Pager.set_up_handlers.'''
         super(Pager, self).set_up_handlers()
@@ -898,18 +899,18 @@ class BufferPager(Pager):
     DEFAULT_MAXLEN = None
     
     #@+others
-    #@+node:ekr.20170428084208.150: *3* __init__
+    #@+node:ekr.20170428084208.150: *3* BufferPager.__init__
     def __init__(self, screen, maxlen=False, *args, **keywords):
         super(BufferPager, self).__init__(screen, *args, **keywords)
         if maxlen is False:
             maxlen = self.DEFAULT_MAXLEN
         self.values = collections.deque(maxlen=maxlen)
 
-    #@+node:ekr.20170428084208.151: *3* clearBuffer
+    #@+node:ekr.20170428084208.151: *3* BufferPager.clearBuffer
     def clearBuffer(self):
         self.values.clear()
 
-    #@+node:ekr.20170428084208.152: *3* setValuesWrap
+    #@+node:ekr.20170428084208.152: *3* BufferPager.setValuesWrap
     def setValuesWrap(self, lines):
         if self.autowrap and (lines == self._values_cache_for_wrapping):
             return False
@@ -922,7 +923,7 @@ class BufferPager(Pager):
         self.buffer(self._wrap_message_lines(lines, self.width-1))
         self._values_cache_for_wrapping = copy.deepcopy(self.values) 
 
-    #@+node:ekr.20170428084208.153: *3* buffer
+    #@+node:ekr.20170428084208.153: *3* BufferPager.buffer
     def buffer(self, lines, scroll_end=True, scroll_if_editing=False):
         "Add data to be displayed in the buffer."
         self.values.extend(lines)

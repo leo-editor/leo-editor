@@ -167,13 +167,6 @@ class ScreenArea(object):
                 _my,_mx)
         except curses.error:
             pass
-        # if self.show_from_y is 0 and \
-        # self.show_from_x is 0 and \
-        # (_my >= self.lines) and \
-        # (_mx >= self.columns):
-            # self.ALL_SHOWN = True
-        # else:
-            # self.ALL_SHOWN = False
         self.ALL_SHOWN = (
             self.show_from_y is 0 and
             self.show_from_x is 0 and

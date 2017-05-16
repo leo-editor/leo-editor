@@ -70,6 +70,8 @@ class TextfieldBase(widget.Widget):
         return 1,0
 
     #@+node:ekr.20170428084208.325: *3* TextfieldBase.update (LeoTreeLine USED TO override this)
+    update_count = 0
+
     def update(self, clear=True, cursor=True):
         """Update the contents of the textbox, without calling the final refresh to the screen"""
         # pylint: disable=arguments-differ
@@ -81,10 +83,10 @@ class TextfieldBase(widget.Widget):
             #pmfuncs.hide_cursor()
             
         trace = False
+        self.update_count += 1
         if trace:
-            g.trace('TextfieldBase: cursor_position: %5r %s' % (
-                self.cursor_position, self.value))
-
+            g.trace('%3s %s TextfieldBase: cursor: %5r %s' % (
+                self.update_count, id(self), self.cursor_position, self.value))
         if clear: self.clear()
         if self.hidden:
             return True
@@ -534,7 +536,7 @@ class Textfield(TextfieldBase):
 #@+node:ekr.20170428084208.348: ** class FixedText (TextfieldBase)
 class FixedText(TextfieldBase):
     #@+others
-    #@+node:ekr.20170428084208.349: *3* set_up_handlers
+    #@+node:ekr.20170428084208.349: *3* FixedText.set_up_handlers
     def set_up_handlers(self):
         '''FixedText.set_up_handlers.'''
         super(FixedText, self).set_up_handlers()
@@ -546,17 +548,17 @@ class FixedText(TextfieldBase):
         })
 
 
-    #@+node:ekr.20170428084208.350: *3* h_cursor_left
+    #@+node:ekr.20170428084208.350: *3* FixedText.h_cursor_left
     def h_cursor_left(self, input):
         if self.begin_at > 0:
             self.begin_at -= 1
 
-    #@+node:ekr.20170428084208.351: *3* h_cursor_right
+    #@+node:ekr.20170428084208.351: *3* FixedText.h_cursor_right
     def h_cursor_right(self, input):
         if len(self.value) - self.begin_at > self.maximum_string_length:
             self.begin_at += 1
 
-    #@+node:ekr.20170428084208.352: *3* update
+    #@+node:ekr.20170428084208.352: *3* FixedText.update
     def update(self, clear=True,):
         # pylint: disable=arguments-differ
         super(FixedText, self).update(clear=clear, cursor=False)

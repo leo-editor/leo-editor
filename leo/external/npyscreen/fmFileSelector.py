@@ -96,7 +96,7 @@ class FileGrid(wggrid.SimpleGrid):
     default_column_number = 3
     
     #@+others
-    #@+node:ekr.20170428084207.161: *3* set_up_handlers
+    #@+node:ekr.20170428084207.161: *3* FileGrid.set_up_handlers
     def set_up_handlers(self):
         '''FileGrid.set_up_handlers.'''
         super(FileGrid, self).set_up_handlers()
@@ -106,7 +106,7 @@ class FileGrid(wggrid.SimpleGrid):
             curses.ascii.SP:    self.h_select_file,
         })
 
-    #@+node:ekr.20170428084207.162: *3* change_dir
+    #@+node:ekr.20170428084207.162: *3* FileGrid.change_dir
     def change_dir(self, select_file):
         try:
             os.listdir(select_file)
@@ -123,7 +123,7 @@ class FileGrid(wggrid.SimpleGrid):
         
 
 
-    #@+node:ekr.20170428084207.163: *3* h_select_file
+    #@+node:ekr.20170428084207.163: *3* FileGrid.h_select_file
     def h_select_file(self, *args, **keywrods):
         try:
              select_file = os.path.join(self.parent.value, self.values[self.edit_cell[0]][self.edit_cell[1]])
@@ -138,7 +138,7 @@ class FileGrid(wggrid.SimpleGrid):
             self.parent.wCommand.value = select_file
             self.h_exit_down(None)
 
-    #@+node:ekr.20170428084207.164: *3* display_value
+    #@+node:ekr.20170428084207.164: *3* FileGrid.display_value
     def display_value(self, vl):
         p = os.path.split(vl)
         if p[1]:

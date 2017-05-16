@@ -818,6 +818,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def update(self, clear=True):
         """How should object display itself on the screen. Define here, but do not actually refresh the curses
         display, since this should be done as little as possible.  This base widget puts nothing on screen."""
+        g.trace('Widget', g.callers())
         if self.hidden:
             self.clear()
             return True
