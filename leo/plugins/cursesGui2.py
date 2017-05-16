@@ -3711,9 +3711,6 @@ class LeoMLTree(npyscreen.MLTree):
         # if len(self.values) == 1:
         parent = node.get_parent()
         grand_parent = parent and parent._parent
-        # g.trace('parent', parent)
-        # g.trace('grand parent', grand_parent)
-        # g.trace('parent._children', parent._children)
         if not grand_parent and len(parent._children) == 1:
             g.trace('Can not delete the last top-level node')
             return
@@ -4077,6 +4074,53 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s, style)
         else:
             self.parent.curses_pad.addstr(y, x, s)
+    #@+node:ekr.20170516101203.1: *3* LeoMLTree.values Property (Experimental)
+    if 0:
+        #@+others
+        #@+node:ekr.20170516101203.2: *4* MLTree._delValues
+        def _delValues(self):
+            self._myValues = None
+        #@+node:ekr.20170516101203.3: *4* MLTree._getValues
+        def _getValues(self):
+            # try:
+                # if (
+                    # self._cached_tree is weakref.proxy(self._myFullValues) and 
+                    # (self._cached_sort == (self._myFullValues.sort, self._myFullValues.sort_function))
+                # ):
+                    # return self._cached_tree_as_list
+            # except Exception:
+                # pass
+            ###
+                # self._cached_tree = weakref.proxy(self._myFullValues)
+                # self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
+                # self._cached_tree_as_list = self._get_tree_as_list(self._myFullValues)
+            self._cached_tree = None
+            self._cached_sort = None
+            self._cached_tree_as_list = self.get_tree_as_list(self._myFullValues)
+            return self._cached_tree_as_list
+        #@+node:ekr.20170516101203.4: *4* MLTree._setValues
+        def _setValues(self, tree):
+            # if tree == [] or tree == None:
+                # self._myFullValues = TreeData() #NPSTree.NPSTreeData()
+            # elif not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
+                # tree = self.convertToTree(tree)
+                # g.trace(tree)
+                # self._myFullValues = tree
+                # if not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
+                    # raise TypeError(
+                        # "MultiLineTree widget can only contain a TreeData or NPSTreeData object"
+                        # " in its values attribute"
+                    # )
+            # else:
+                # self._myFullValues = tree
+            if isinstance(tree, LeoTreeData):
+                self._myFullValues = tree
+            elif tree:
+                self._myFullValues = self.convertToTree(tree)
+            else:
+                self._myFullValues = LeoTreeData()
+        #@-others
+        values = property(_getValues, _setValues, _delValues)
     #@+node:ekr.20170516084845.1: *3* LeoMLTree.XXX_MultiLine.make_contained_widgets
 
     def XXX_make_contained_widgets(self):
