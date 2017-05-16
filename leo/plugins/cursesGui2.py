@@ -141,14 +141,6 @@ class LeoTreeLine(npyscreen.TreeLine):
         
         # vl is a weakref proxy to a LeoTreeData.
         return vl.content if vl else ''
-        
-        ###
-            # try:
-                # return self.safe_string(
-                    # self._get_content_for_display(self._tree_real_value))
-            # except Exception:
-                # # Catch the times this is None.
-                # return self.safe_string(vl)
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
@@ -3716,18 +3708,35 @@ class LeoMLTree(npyscreen.MLTree):
     def delete_line(self):
 
         trace = True
+        trace_values = False
         ### Bug 1: does not "take"
         ### Bug 2: does not delete children.
         val = self.values[self.cursor_line]
         if trace:
-            g.trace('cursor_line:', repr(val))
-                # repr(self.cursor_line))
-        if self.values:
-            del self.values[self.cursor_line]
+            g.trace('before', repr(val.content))
+            if trace_values:
+                self.dump_values()
+        del self.values[self.cursor_line]
             ### Puts a hole in the screen, but doesn't remove the line!
                 # del self._my_widgets[self.cursor_line]
+        if trace and trace_values:
+            g.trace('after')
             self.dump_values()
-            self.display()
+            
+        # These doen't work
+        # self._cached_tree = None
+            ### Prevents update.
+            ### self.clear()
+        # g.trace(self.parent, self.update)
+        # g.trace(self.display)
+        self.display()
+            # This is widget.display:
+                # (when not self.hidden)
+                #self.update()
+                    # LeoMLTree.update or MultiLine.update
+                # self.parent.refresh()
+                    # LeoForm.refresh
+
     #@+node:ekr.20170507171518.1: *4* LeoMLTree.dump_code/values/widgets
     def dump_code(self, code):
         d = {
@@ -3786,12 +3795,8 @@ class LeoMLTree(npyscreen.MLTree):
         the current line is expanded. Otherwise insert after the current line.
         '''
         trace = True
-        trace_values = False
+        trace_values = True
         node = self.values[self.cursor_line]
-        if trace:
-            g.trace('LeoMLTree', node, g.callers())
-            if trace_values:
-                self.dump_values()
         headline = 'New headline'
         if node.has_children() and node.expanded:
             node = node.new_child_at(index=0, content=headline)
@@ -3802,15 +3807,17 @@ class LeoMLTree(npyscreen.MLTree):
             parent = self.hidden_root_node
             index = parent._children.index(node)
             node = parent.new_child_at(index=index, content=headline)
-        if trace: g.trace('LeoMLTree: line: %3s %s' % (self.cursor_line, headline), g.callers())
+        if trace:
+            g.trace('LeoMLTree: line: %s %s' % (self.cursor_line, headline))
+            if trace_values: self.dump_values()
         return node
     #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line
     def insert_line(self):
         
-        trace = True
+        trace = False
         trace_values = False
         if trace:
-            g.trace('cursor_line:', repr(self.cursor_line))
+            g.trace('line: %r', self.cursor_line)
             if trace_values: self.dump_values()
         if self.cursor_line is None:
             self.cursor_line = 0
@@ -3827,7 +3834,7 @@ class LeoMLTree(npyscreen.MLTree):
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
     def h_delete(self, ch):
-        g.trace('=====', repr(ch))
+
         self.delete_line()
     #@+node:ekr.20170506044733.10: *4* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
