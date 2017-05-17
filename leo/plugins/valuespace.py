@@ -9,10 +9,72 @@ Commands
 
 .. note::
 
-    The last three commands, starting with `vs-eval`_, are a light weight
-    option for python calculations within Leo bodies.
+    The first four commands are a light weight option for python calculations
+    within Leo bodies.  The remainder are a more complex system for tree wide
+    computations.
 
-This plugin supports the following seven commands:
+This plugin supports the following commands:
+
+vs-eval
+-------
+
+Execute the selected text, if any.  Select next line of text.
+
+Tries hard to capture the result of from the last expression in the
+selected text::
+
+    import datetime
+    today = datetime.date.today()
+
+will capture the value of ``today`` even though the last line is a
+statement, not an expression.
+
+Stores results in ``c.vs['_last']`` for insertion
+into body by ``vs-last`` or ``vs-last-pretty``.
+
+Removes common indentation (``textwrap.dedent()``) before executing,
+allowing execution of indented code.
+
+``g``, ``c``, and ``p`` are available to executing code, assignments
+are made in the ``c.vs`` namespace and persist for the life of ``c``.
+
+vs-eval-block
+-------------
+
+In the body, "# >>>" marks the end of a code block, and "# <<<" marks
+the end of an output block.  E.g.::
+
+    a = 2
+    # >>>
+    4
+    # <<<
+    b = 2.0*a
+    # >>>
+    4.0
+    # <<<
+
+``vs-eval-block`` evaluates the current code block, either the code block
+the cursor's in, or the code block preceding the output block the cursor's
+in.  Subsequent output blocks are marked "# >>> *" to show they may need
+re-evaluation.
+
+Note: you don't really need to type the "# >>>" and "# <<<" markers
+because ``vs-eval-block`` will add them as needed.  So just type the
+first code block and run ``vs-eval-block``.
+
+vs-last
+-------
+
+Insert the last result from ``vs-eval``.  Inserted as a string,
+so ``"1\n2\n3\n4"`` will cover four lines and insert no quotes,
+for ``repr()`` style insertion use ``vs-last-pretty``.
+
+vs-last-pretty
+--------------
+
+Insert the last result from ``vs-eval``.  Formatted by
+``pprint.pformat()``,  so ``"1\n2\n3\n4"`` will appear as
+'``"1\n2\n3\n4"``', see all ``vs-last``.
 
 vs-create-tree
 --------------
@@ -84,7 +146,7 @@ Pass 1 executes all the python statements between the *@x {* and the *@x }*
     @x }
 
 Pass 1 assigns the block of text to <var>. The type of value is SList,
-a special sublass of standard 'list' that makes operating with string
+a special subclass of standard 'list' that makes operating with string
 lists convenient. Notably, you can do <var>.n to get the content as plain
 string.
 
@@ -99,7 +161,7 @@ This assumes that <var> is a list, and appends the content as SList to this
 list. You will typically do '@x var = []' earlier in the document to make this
 construct work.
 
-<var> in all contructs above can be arbitrary expression that can be on left hand
+<var> in all constructs above can be arbitrary expression that can be on left hand
 side of assignment. E.g. you can use foo.bar, foo['bar'], foo().bar etc.
 
 Pass 2
@@ -114,43 +176,6 @@ Pass 2 evaluates *<expression>* and places the result in the body pane.
 
 **TODO**: discuss SList expressions.
 
-vs-eval
--------
-
-Execute the selected text, if any.  Select next line of text.
-
-Tries hard to capture the result of from the last expression in the
-selected text::
-
-    import datetime
-    today = datetime.date.today()
-
-will captue the value of ``today`` even though the last line is a
-statement, not an expression.
-
-Stores results in ``c.vs['_last']`` for insertion
-into body by ``vs-last`` or ``vs-last-pretty``.
-
-Removes common indentation (``textwrap.dedent()``) before executing,
-allowing execution of indented code.
-
-``g``, ``c``, and ``p`` are available to executing code, assignments
-are made in the ``c.vs`` namespace and persist for the life of ``c``.
-
-vs-last
--------
-
-Insert the last result from ``vs-eval``.  Inserted as a string,
-so ``"1\n2\n3\n4"`` will cover four lines and insert no quotes,
-for ``repr()`` style insertion use ``vs-last-pretty``.
-
-vs-last-pretty
---------------
-
-Insert the last result from ``vs-eval``.  Formatted by
-``pprint.pformat()``,  so ``"1\n2\n3\n4"`` will appear as
-'``"1\n2\n3\n4"``', see all ``vs-last``.
-
 Evaluating expressions
 ======================
 
@@ -163,7 +188,7 @@ different namespaces, while keeping namespaces generally separate.
 
 # SList docs: http://ipython.scipy.org/moin/Cookbook/StringListProcessing
 #@-<< docstring >>
-# By Ville M. Vainio.
+# By Ville M. Vainio and Terry N. Brown.
 
 #@+<< imports >>
 #@+node:ville.20110403115003.10351: ** << imports >>
@@ -225,6 +250,41 @@ def onCreate (tag,key):
         vc = controllers.get(h)
         if not vc:
             controllers [h] = vc = ValueSpaceController(c)
+#@+node:tbrown.20170516194332.1: *3* get_blocks
+def get_blocks(c):
+    """get_blocks - iterate code blocks
+
+    :return: (current, source, output)
+    :rtype: (bool, str, str)
+    """
+
+    pos = c.frame.body.wrapper.getInsertPoint()
+    chrs = 0
+    lines = c.p.b.split('\n')
+    block = {'source': [], 'output': []}
+    reading = 'source'
+    seeking_current = True
+
+    # if the last non-blank line isn't the end of a possibly empty
+    # output block, make it one
+    if [i for i in lines if i.strip()][-1] != "# <<<":
+        lines.append("# <<<")
+
+    while lines:
+        line = lines.pop(0)
+        chrs += len(line)+1
+        if line.startswith("# >>>"):
+            reading = 'output'
+            continue
+        if line.startswith("# <<<"):
+            current = seeking_current and (chrs >= pos+1)
+            if current:
+                seeking_current = False
+            yield current, '\n'.join(block['source']), '\n'.join(block['output'])
+            block = {'source': [], 'output': []}
+            reading = 'source'
+            continue
+        block[reading].append(line)
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20130127115643.3695: *3* get_vs
 def get_vs(c):
@@ -371,6 +431,33 @@ def eval_text(c, txt):
         g.es(txt)
 
     return ans
+
+#@+node:tbrown.20170516202419.1: *3* vs-eval-block
+@g.command("vs-eval-block")
+def vs_eval_block(event):
+    c = event['c']
+    pos = 0
+    lines = []
+    current_seen = False
+    for current, source, output in get_blocks(c):
+        lines.append(source)
+        lines.append("# >>>" + (" *" if current_seen else ""))
+        if current:
+            old_log = c.frame.log.logCtrl.getAllText()
+            eval_text(c, source)
+            new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
+            lines.append(new_log.strip())
+            # lines.append(str(get_vs(c).d.get('_last')))
+            pos = len('\n'.join(lines))+7
+            current_seen = True
+        else:
+            lines.append(output)
+        lines.append("# <<<")
+
+    c.p.b = '\n'.join(lines) + '\n'
+    c.frame.body.wrapper.setInsertPoint(pos)
+    c.redraw()
+    c.bodyWantsFocusNow()
 
 #@+node:tbrown.20130227164110.21223: *3* vs-last
 @g.command("vs-last")
