@@ -6167,6 +6167,53 @@ def os_path_splitext(path):
     return head, tail
 #@+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname):
+    #@+others
+    #@+node:bob.20170516112250.1: *4* stderr2log()
+    def stderr2log(g, ree, fname):
+        """ Display stderr output in the Leo-Editor log pane
+
+        Arguments:
+            g:  Leo-Editor globals
+            ree:  Read file descriptor for stderr
+            fname:  file pathname
+
+        Returns:
+            None
+        """
+
+        while True:
+            emsg = ree.read().decode('utf-8')
+            if emsg:
+                g.es_print_error('xdg-open {fn} caused output to stderr:\n{em}'.format(fn=fname, em=emsg))
+            else:
+                break
+    #@+node:bob.20170516112304.1: *4* itPoll()
+    def itPoll(fname, ree, subPopen, g, ito):
+        """ Poll for subprocess done
+
+        Arguments:
+            fname:  File name
+            ree:  stderr read file descriptor
+            subPopen:  URL open subprocess object
+            g: Leo-Editor globals
+            ito: Idle time object for itPoll()
+
+        Returns:
+            None
+        """
+
+        stderr2log(g, ree, fname)
+        rc = subPopen.poll()
+        if not rc is None:
+            ito.stop()
+            ito.destroy_self()
+            if rc != 0:
+                g.es_print('xdg-open {fn} failed with exit code {ec}'.format(fn=fname, ec=rc))
+            stderr2log(g, ree, fname)
+            ree.close()
+
+    #@-others
+
     if fname.find('"') > -1:
         quoted_fname = "'%s'" % fname
     else:
@@ -6186,14 +6233,20 @@ def os_startfile(fname):
         except ImportError:
             os.system('open %s' % (quoted_fname))
     else:
-        # os.system('xdg-open "%s"' % (fname))
+        # Linux
+        wre = tempfile.NamedTemporaryFile(buffering=0)
+        ree = io.open(wre.name, 'rb', buffering=0)
         try:
-            val = subprocess.call('xdg-open %s' % (quoted_fname), shell=True)
-            if val < 0:
-                g.es_print('xdg-open %s failed' % (fname))
+            subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)
         except Exception:
-            g.es_print('error opening %s' % fname)
+            g.es_print('error opening {0}'.format(fname))
             g.es_exception()
+        else:
+            itoPoll = g.IdleTime((lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
+            itoPoll.start()
+            # Let the Leo-Editor process run
+            # so that Leo-Editor is usable while the file is open.
+    
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
     # Fix bug 735938: file association crash
