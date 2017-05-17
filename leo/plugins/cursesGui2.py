@@ -921,19 +921,16 @@ else:
                     # except Exception:
                         # yield child
         #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
-        def get_tree_as_list(self): # , only_expanded=True, sort=None, key=None):
+        def get_tree_as_list(self): # only_expanded=True, sort=None, key=None):
             '''
-            This is called only from values getter in LeoMLTree.
+            Called only from LeoMLTree.values._getValues.
             
             Return the result of converting this node and its *visible* descendants
             to a list of LeoTreeData nodes.
             '''
-            trace = True
+            trace = False
             assert g.callers(1) == '_getValues', g.callers()
-            # assert sort is None and key is None, (repr(sort), repr(key))
-            # assert only_expanded, g.callers()
             aList = [z for z in self.walk_tree(only_expanded=True)]
-                        # ignore_root=self.ignore_root, sort=sort,
             if trace: g.trace('LeoTreeData', len(aList))
             return aList
         #@+node:ekr.20170516085427.4: *5* LeoTreeData.new_child
@@ -4270,35 +4267,39 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s, style)
         else:
             self.parent.curses_pad.addstr(y, x, s)
-    #@+node:ekr.20170516101203.1: *3* LeoMLTree.values Property (works)
+    #@+node:ekr.20170516101203.1: *3* LeoMLTree.values Property
     if 1:
         # This property converts the (possibly cached) result of converting
         # the root node (_myFullValues) and its *visible* decendants to a list.
         # To invalidate the cache, set __cached_tree = None
         #@+others
-        #@+node:ekr.20170516101203.2: *4* LeoMLTree._delValues
-        def _delValues(self):
-            self._myValues = None
+        #@+node:ekr.20170516101203.2: *4* LeoMLTree._delValues (not used)
+        # def _delValues(self):
+            
+            # g.trace('=====', g.callers())
+            # self._myValues = None
         #@+node:ekr.20170516101203.3: *4* LeoMLTree._getValues
         def _getValues(self):
             '''
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
+
             Setting _cached_tree to None invalidates the cache.
             '''
             if getattr(self, '_cached_tree', None):
                 return self._cached_tree_as_list
-            ### No need to cache sorting function.
-                # self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
-                # self._cached_sort = None
-            self._cached_tree = self._myFullValues
-            self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
-            return self._cached_tree_as_list
+            else:
+                # No need to cache any sorting function.
+                    # self._cached_sort = (self._myFullValues.sort, self._myFullValues.sort_function)
+                    # self._cached_sort = None
+                self._cached_tree = self._myFullValues
+                self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
+                return self._cached_tree_as_list
         #@+node:ekr.20170516101203.4: *4* LeoMLTree._setValues
         def _setValues(self, tree):
 
             self._myFullValues = tree or LeoTreeData()
         #@-others
-        values = property(_getValues, _setValues, _delValues)
+        values = property(_getValues, _setValues) # , _delValues)
 
     if 0:
         # This works, except that it has active blank lines at the end of the page.
@@ -4335,8 +4336,10 @@ class LeoMLTree(npyscreen.MLTree):
 
         node = self.values[self.cursor_line]
         if node.expanded and self._has_children(node):
+            # Collapse the node.
             node.expanded = False
-        else:
+        elif 1: # Optional.
+            # Collapse all the children.
             depth = self._find_depth(node) - 1
             cursor_line = self.cursor_line - 1
             while cursor_line >= 0:
@@ -4347,6 +4350,7 @@ class LeoMLTree(npyscreen.MLTree):
                 else:
                     cursor_line -= 1
         self._cached_tree = None
+            # Invalidate the display cache.
         self.display()
     #@+node:ekr.20170516055435.3: *4* LeoMLTree.h_expand_tree
     def h_expand_tree(self, ch):
@@ -4359,11 +4363,12 @@ class LeoMLTree(npyscreen.MLTree):
         # First, expand the root.
         if not node.expanded:
             node.expanded = True
-        elif 0:
+        elif 1: # Optional.
             # Next, expand all children.
             for z in self._walk_tree(node, only_expanded=False):
                 z.expanded = True
         self._cached_tree = None
+            # Invalidate the cache.
         self.display()
     #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch):

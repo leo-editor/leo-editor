@@ -93,7 +93,8 @@ class TreeData(object):
                 _a.append(weakref.proxy(node))
             except Exception:
                 _a.append(node)
-        g.trace('=====', _a)
+        # g.trace('=====', _a)
+            # Over-ridden in LeoTreeData.
         return _a
     #@+node:ekr.20170428084207.412: *4* TreeData.has_children
     def has_children(self):
