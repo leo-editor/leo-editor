@@ -4480,9 +4480,10 @@ class LeoMLTree(npyscreen.MLTree):
             # ord('h'): self.h_collapse_tree,
             # ord('l'): self.h_expand_tree,          
         # })
-    #@+node:ekr.20170513032502.1: *3* LeoMLTree.update (From MultiLine) & helpers
+    #@+node:ekr.20170513032502.1: *3* LeoMLTree.update & helpers
     def update(self, clear=True):
         '''Redraw the tree.'''
+        # This is a major refactoring of MultiLine.update.
         # pylint: disable=access-member-before-definition
         if self.values is None:
             self.values = []
