@@ -34,7 +34,9 @@ if npyscreen:
     assert utilNotify
 #@-<< cursesGui imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
-native = True # True: use LeoValues object to return TreeData.
+native = True
+    # True: use native Leo data structures, replacing the
+    # the values property by a singleton LeoValues object.
 #@+<< forward reference classes >>
 #@+node:ekr.20170511053555.1: **  << forward reference classes >>
 #@+others
