@@ -1019,7 +1019,7 @@ class LeoTreeData(npyscreen.TreeData):
                 while p:
                     yield LeoTreeData(p.copy())
                     p.moveToThreadNext()
-    else:
+    elif 0: 
         
         ### TreeData.walk_tree
         def walk_tree(self, only_expanded=True, ignore_root=True, sort=None, sort_function=None):
