@@ -4106,30 +4106,36 @@ class LeoMLTree(npyscreen.MLTree):
         trace = False
         trace_values = True
         node = self.values[self.cursor_line]
+        assert isinstance(node, LeoTreeData), repr(node)
         if trace:
             g.trace('before', node.content)
             if trace_values: self.dump_values()
-        # if len(self.values) == 1:
-        parent = node.get_parent()
-        grand_parent = parent and parent._parent
-        if not grand_parent and len(parent._children) == 1:
-            g.trace('Can not delete the last top-level node')
-            return
-        # Remove node and all its descendants.
-        i = self.cursor_line
-        nodes = [(i,node)]
-        j = i + 1
-        while j < len(self.values):
-            node2 = self.values[j]
-            if node.is_ancestor_of(node2):
-                nodes.append((j,node2),)
-                j += 1
-            else:
-                break
-        for j, node2 in reversed(nodes):
-            del self.values[j]
-        # Update the parent.
-        parent._children = [z for z in parent._children if z != node]
+        if native:
+            p = node.content
+            assert p and isinstance(p, leoNodes.Position), repr(p)
+            p.doDelete()
+            self.values.clear_cache()
+        else:
+            parent = node.get_parent()
+            grand_parent = parent and parent._parent
+            if not grand_parent and len(parent._children) == 1:
+                g.trace('Can not delete the last top-level node')
+                return
+            # Remove node and all its descendants.
+            i = self.cursor_line
+            nodes = [(i,node)]
+            j = i + 1
+            while j < len(self.values):
+                node2 = self.values[j]
+                if node.is_ancestor_of(node2):
+                    nodes.append((j,node2),)
+                    j += 1
+                else:
+                    break
+            for j, node2 in reversed(nodes):
+                del self.values[j]
+            # Update the parent.
+            parent._children = [z for z in parent._children if z != node]
         # Clearing these caches suffice to do a proper redraw
         self._last_values = None
         self._last_value = None
@@ -4143,7 +4149,6 @@ class LeoMLTree(npyscreen.MLTree):
                     # LeoMLTree.update or MultiLine.update
                 # self.parent.refresh()
                     # LeoForm.refresh
-
     #@+node:ekr.20170507171518.1: *4* LeoMLTree.dump_code/values/widgets
     def dump_code(self, code):
         d = {
@@ -4574,22 +4579,16 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
     def _redraw(self, clear):
         '''Do the actual redraw.'''
-        trace = False
-        trace_widgets = False
-        if trace: g.trace('clear: %r widgets: %s' % (clear, len(self._my_widgets)))
-        # Note: clear is Widget.clear. It does *not* use _myWidgets.
-        if clear is True:
+        # self.clear is Widget.clear. It does *not* use _myWidgets.
+        if (clear is True or
+            clear is None and self._last_start_display_at != self.start_display_at
+        ):
             self.clear()
-        elif clear is None and self._last_start_display_at != self.start_display_at:
-            self.clear()
-        self._last_start_display_at = self.start_display_at
+        self._last_start_display_at = start = self.start_display_at
         i = self.start_display_at
-        if trace and trace_widgets:
-            g.printList(self._my_widgets)
-            # if native:
-                # g.printList([repr(z._tree_real_value) for z in self._my_widgets])
         for line in self._my_widgets[:-1]:
-            # Line is a (weakref to) LeoTreeLine object.
+            assert isinstance(line, LeoTreeLine), repr(line)
+            # Line is a LeoTreeLine object.
             self._print_line(line, i)
             line.update(clear=True)
             i += 1
@@ -4603,11 +4602,13 @@ class LeoMLTree(npyscreen.MLTree):
             line.update(clear=False)
             self._put_continuation_line()
         else:
-            line.clear()
+            line.clear() # This is Widget.clear.
             self._put_continuation_line()
-        # Finish.
+        # Assert that print_line leaves start_display_at unchanged.
+        assert start == self.start_display_at, (start, self.start_display_at)
+        # Finish
         if self.editing:
-            line = self._my_widgets[(self.cursor_line - self.start_display_at)]
+            line = self._my_widgets[(self.cursor_line - start)]
             line.highlight = True
             line.update(clear=True)
     #@+node:ekr.20170513102428.1: *5* LeoMLTree._put_continuation_line
