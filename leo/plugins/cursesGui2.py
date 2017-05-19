@@ -898,7 +898,7 @@ class LeoTreeData(npyscreen.TreeData):
         return False
     #@+node:ekr.20170516085427.1: *4* LeoTreeData.overrides
     # Don't use weakrefs!
-    #@+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth (Test)
+    #@+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth (ok)
     def find_depth(self, d=0):
         if native:
             p = self.content
@@ -4268,7 +4268,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.cursor_line = 0
         self.display()
 
-    #@+node:ekr.20170516055435.2: *4* LeoMLTree.h_collapse_tree (done)
+    #@+node:ekr.20170516055435.2: *4* LeoMLTree.h_collapse_tree
     def h_collapse_tree(self, ch):
 
         node = self.values[self.cursor_line]
@@ -4295,34 +4295,44 @@ class LeoMLTree(npyscreen.MLTree):
         self._cached_tree = None
             # Invalidate the display cache.
         self.display()
-    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down (revise)
+    #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down
     def h_cursor_line_down(self, ch):
-        self.cursor_line += 1
-        if self.cursor_line >= len(self.values):
-            if self.scroll_exit: 
-                self.cursor_line = len(self.values)-1
-                self.h_exit_down(ch)
-                return True
-            else: 
-                self.cursor_line -=1
-                return True
-        # else:
-            # widget = self._my_widgets[self.cursor_line-self.start_display_at]
-            # task = getattr(widget, 'task', None)
-            # if task == self.continuation_line:
-                # if self.slow_scroll:
-                    # self.start_display_at += 1
+        assert not self.scroll_exit
+        self.cursor_line = min(len(self.values)-1, self.cursor_line+1)
+
+        ### Old code
+            # self.cursor_line += 1
+            # if self.cursor_line >= len(self.values):
+                # if self.scroll_exit:
+                    # self.cursor_line = len(self.values)-1
+                    # self.h_exit_down(ch)
+                    # return True
                 # else:
-                    # self.start_display_at = self.cursor_line
-    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up (revise)
+                    # self.cursor_line -= 1
+                    # return True
+                    
+        ### Very old code
+            # else:
+                # widget = self._my_widgets[self.cursor_line-self.start_display_at]
+                # task = getattr(widget, 'task', None)
+                # if task == self.continuation_line:
+                    # if self.slow_scroll:
+                        # self.start_display_at += 1
+                    # else:
+                        # self.start_display_at = self.cursor_line
+    #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up
     def h_cursor_line_up(self, ch):
-        self.cursor_line -= 1
-        if self.cursor_line < 0: 
-            if self.scroll_exit:
-                self.cursor_line = 0
-                self.h_exit_up(ch)
-            else: 
-                self.cursor_line = 0
+        
+        assert not self.scroll_exit
+        self.cursor_line = max(0, self.cursor_line-1)
+
+        # self.cursor_line -= 1
+        # if self.cursor_line < 0: 
+            # if self.scroll_exit:
+                # self.cursor_line = 0
+                # self.h_exit_up(ch)
+            # else: 
+                # self.cursor_line = 0
 
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
     def h_delete(self, ch):
@@ -4346,7 +4356,7 @@ class LeoMLTree(npyscreen.MLTree):
         self._cached_tree = None
         self.cursor_line  = 0
         self.display()
-    #@+node:ekr.20170516055435.3: *4* LeoMLTree.h_expand_tree (done)
+    #@+node:ekr.20170516055435.3: *4* LeoMLTree.h_expand_tree
     def h_expand_tree(self, ch):
        
         node = self.values[self.cursor_line]
@@ -4370,12 +4380,12 @@ class LeoMLTree(npyscreen.MLTree):
     def h_insert(self, ch):
 
         return self.insert_line()
-    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left (buggy)
+    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left
     def h_move_left(self, ch):
         
         node = self.values[self.cursor_line]
         if not node:
-            g.trace('no node', self.cursor_line)
+            g.trace('no node', self.cursor_line, repr(node))
             return
         if native:
             p = node.content
@@ -4390,7 +4400,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.h_collapse_tree(ch)
             else:
                 self.h_cursor_line_up(ch)
-    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right (buggy?)
+    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right
     def h_move_right(self, ch):
         
         node = self.values[self.cursor_line]
@@ -4398,14 +4408,16 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('no node')
             return
         if native:
+            c = self.leo_c
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
+            g.trace(p.h)
             if p.hasChildren():
                 if p.isExpanded():
                     self.h_cursor_line_down(ch)
                 else:
                     self.h_expand_tree(ch)
-            else:
+            elif p.hasVisNext(c):
                 self.h_cursor_line_down(ch)
         else:
             if self._has_children(node):
@@ -4576,7 +4588,7 @@ class LeoMLTree(npyscreen.MLTree):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
         trace = False
         trace_ok = True
-        trace_empty = False
+        trace_empty = True
         values = self.values
         n = len(values)
         val = values[i] if 0 <= i < n else None
@@ -4592,7 +4604,7 @@ class LeoMLTree(npyscreen.MLTree):
             #
             line.value = None
             line._tree_real_value = None
-            if trace and trace_empty: g.trace(i, n, '<empty>')
+            if trace and trace_empty: g.trace(i, n, '<empty>', repr(val))
             return
         assert isinstance(val, LeoTreeData), repr(val)
         val1 = values[i+1] if i+1 < n else None
@@ -4733,6 +4745,7 @@ class LeoValues(npyscreen.TreeData):
                 return data
             else:
                 p.moveToVisNext(c)
+                i += 1
         if trace: g.trace(' fail2', n, repr(data))
         return None
     #@+node:ekr.20170518060014.1: *3* values.__len__
@@ -4746,6 +4759,7 @@ class LeoValues(npyscreen.TreeData):
         while p:
             n += 1
             p.moveToVisNext(c)
+        # g.trace(n)
         return n
     #@+node:ekr.20170519041459.1: *3* values.clear_cache
     def clear_cache(self):
