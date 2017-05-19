@@ -4100,7 +4100,7 @@ class LeoMLTree(npyscreen.MLTree):
            
     #@+others
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
-    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line
+    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (buggy?)
     def delete_line(self):
 
         trace = False
@@ -4113,8 +4113,12 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
-            p.doDelete()
-            self.values.clear_cache()
+            if p.hasParent() or p.hasNext() or p.hasBack():
+                p.doDelete()
+                self.values.clear_cache()
+            else:
+                g.trace('Can not delete the last top-level node')
+                return
         else:
             parent = node.get_parent()
             grand_parent = parent and parent._parent
@@ -4225,7 +4229,7 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('LeoMLTree: line: %s %s' % (self.cursor_line, headline))
             if trace_values: self.dump_values()
         return node
-    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line (done)
+    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line (buggy?)
     def insert_line(self):
         
         trace = False
@@ -4253,10 +4257,6 @@ class LeoMLTree(npyscreen.MLTree):
             self.cursor_line += 1
         self.display()
         self.edit_headline()
-    #@+node:ekr.20170514101636.1: *4* LeoMLTree.set_is_line_cursor (not used)
-    # def set_is_line_cursor(self, line, value):
-        # # only defined in MultiLine
-        # line.highlight = value
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all (done)
@@ -4378,12 +4378,12 @@ class LeoMLTree(npyscreen.MLTree):
     def h_insert(self, ch):
 
         return self.insert_line()
-    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left (done)
+    #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left (buggy)
     def h_move_left(self, ch):
         
         node = self.values[self.cursor_line]
         if not node:
-            g.trace('no node')
+            g.trace('no node', self.cursor_line)
             return
         if native:
             p = node.content
@@ -4398,7 +4398,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.h_collapse_tree(ch)
             else:
                 self.h_cursor_line_up(ch)
-    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right (done)
+    #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right (buggy?)
     def h_move_right(self, ch):
         
         node = self.values[self.cursor_line]
