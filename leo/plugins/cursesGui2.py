@@ -4253,7 +4253,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.edit_headline()
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
-    #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all (done)
+    #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch):
         
         if native:
@@ -4342,7 +4342,7 @@ class LeoMLTree(npyscreen.MLTree):
     def h_edit_headline(self, ch):
         
         self.edit_headline()
-    #@+node:ekr.20170516055435.5: *4* LeoMLTree.h_expand_all (done)
+    #@+node:ekr.20170516055435.5: *4* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):
         
         if native:
