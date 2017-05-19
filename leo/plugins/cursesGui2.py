@@ -1014,25 +1014,27 @@ class LeoTreeData(npyscreen.TreeData):
         ):
             trace = True
             p = self.content.copy()
-            if trace: g.trace('===== LeoTreeData: only_expanded:', only_expanded, p.h)
+                # Never change the stored position!
+                # LeoTreeData(p) makes a copy of p.
+            if trace: g.trace('LeoTreeData: only_expanded:', only_expanded, p.h)
             if not ignore_root:
-                yield self
+                yield self # The hidden root. Probably not needed.
             if only_expanded:
                 while p:
                     if p.has_children() and p.isExpanded():
                         p.moveToFirstChild()
-                        yield LeoTreeData(p.copy())
+                        yield LeoTreeData(p)
                     elif p.next():
                         p.moveToNext()
-                        yield LeoTreeData(p.copy())
+                        yield LeoTreeData(p)
                     elif p.parent():
                         p.moveToParent()
-                        yield LeoTreeData(p.copy())
+                        yield LeoTreeData(p)
                     else:
                         return # raise StopIteration
             else:
                 while p:
-                    yield LeoTreeData(p.copy())
+                    yield LeoTreeData(p)
                     p.moveToThreadNext()
     elif 0: 
         
@@ -4718,10 +4720,12 @@ class LeoValues(npyscreen.TreeData):
         p = self.position_cache.get(max(0,n-1))
         if p:
             p = p.copy()
+                # Never change the cached position!
+                # LeoTreeData(p) makes a copy of p.
             p = p.moveToVisNext(c)
             if p:
-                self.position_cache[n] = p.copy()
-                self.data_cache[n] = data = LeoTreeData(p.copy())
+                self.position_cache[n] = p
+                self.data_cache[n] = data = LeoTreeData(p)
                 if trace: g.trace(' after', n, repr(data))
                 return data
             else:
@@ -4731,8 +4735,8 @@ class LeoValues(npyscreen.TreeData):
         i, p = 0, c.rootPosition()
         while p:
             if i == n:
-                self.position_cache[n] = p.copy()
-                self.data_cache[n] = data = LeoTreeData(p.copy())
+                self.position_cache[n] = p
+                self.data_cache[n] = data = LeoTreeData(p)
                 if trace: g.trace(' found', n, repr(data))
                 return data
             else:
