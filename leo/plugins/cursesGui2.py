@@ -138,22 +138,31 @@ class LeoTreeLine(npyscreen.TreeLine):
 
         self.cursor_position += 1
 
-    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
+    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left (done)
     def h_delete_left(self, input):
 
         # self.value is a LeoTreeData.
         n = self.cursor_position
-        s = self.value.content
-        if 0 <= n <= len(s):
-            self.value.content = s[:n] + s[n+1:]
-            self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing (revise)
+        if native:
+            p = self.value.content
+            assert p and isinstance(p, leoNodes.Position), repr(p)
+            s = p.h
+            if 0 <= n <= len(s):
+                p.h = s[:n] + s[n+1:]
+        else:
+            s = self.value.content
+            if 0 <= n <= len(s):
+                self.value.content = s[:n] + s[n+1:]
+        self.cursor_position -= 1
+    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing (test)
     def h_end_editing(self, ch):
 
         # g.trace('LeoTreeLine', ch)
+        c = self.leo_c
+        c.endEditing()
         self.editing = False
         self.how_exited = None
-    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert
+    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert (done)
     def h_insert(self, i):
 
         # self.value is a LeoTreeData.
@@ -211,15 +220,17 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # self.parent_widget.when_value_edited()
                 # self.parent_widget._internal_when_value_edited()
             # return True
-    #@+node:ekr.20170519024639.1: *4* LeoTreeLine.set_leo_headline
-    if native:
+    #@+node:ekr.20170519024639.1: *4* LeoTreeLine.set_leo_headline (not used)
+    # if native:
         
-        def set_leo_headline(self, data):
+        # def set_leo_headline(self, data):
             
-            assert isinstance(self.value, LeoTreeData)
-            assert isinstance(data, LeoTreeData)
-            g.trace('self.value.content', self.value.content)
-            g.trace('      data.content', data.content)
+            # assert isinstance(self.value, LeoTreeData)
+            # assert isinstance(data, LeoTreeData)
+            # p = data.content
+            # assert p and isinstance(p, leoNodes.Position), repr(p)
+            # # g.trace('self.value.content', self.value.content)
+            # # g.trace('      data.content', data.content)
 
     #@+node:ekr.20170514103905.1: *4* LeoTreeLine.XXX_print (from TreeLine and TextFieldBase)
     def XXX_print(self, left_margin=0):
@@ -4148,10 +4159,7 @@ class LeoMLTree(npyscreen.MLTree):
     def edit_headline(self):
 
         trace = False
-        if not self.values:
-            if trace: g.trace('no values')
-            self.insert_line()
-            return False
+        assert self.values, g.callers()
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
             assert isinstance(active_line, LeoTreeLine)
@@ -4166,7 +4174,8 @@ class LeoMLTree(npyscreen.MLTree):
         active_line.highlight = False
         active_line.edit()
         if native:
-            active_line.set_leo_headline(active_line.value)
+            ### active_line.set_leo_headline(active_line.value)
+            self.values.clear_cache()
         else:
             try:
                 self.values[self.cursor_line] = active_line.value
@@ -4205,30 +4214,32 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('LeoMLTree: line: %s %s' % (self.cursor_line, headline))
             if trace_values: self.dump_values()
         return node
-    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line
+    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line (done)
     def insert_line(self):
         
         trace = False
-        # trace_values = False
-        if self.cursor_line is None:
-            self.cursor_line = 0
-        n = self.cursor_line
+        n = 0 if self.cursor_line is None else self.cursor_line
         if trace: g.trace('line: %r', n)
             # if trace_values: self.dump_values()
         if native:
-            data = self.values[n]
-                # data is a LeoTreeData
-            p = data.content
-            g.trace('LeoMLTree', p.h)
-            if p.hasChildren() and p.isExpanded():
-                p2 = p.insertAsFirstChild()
+            data = self.values[n] # data is a LeoTreeData
+            if 0:
+                c = self.leo_c
+                c.insertHeadline()
+                    # Calls LeoQtTree ?????
             else:
-                p2 = p.insertAfter()
-            p2.h = 'INSERTED NODE'
-            self.leo_c.redraw() ### Experimental
+                p = data.content
+                assert p and isinstance(p, leoNodes.Position)
+                if p.hasChildren() and p.isExpanded():
+                    p2 = p.insertAsFirstChild()
+                else:
+                    p2 = p.insertAfter()
+                self.cursor_line += 1
+                p2.h = 'New Headline'
+            self.values.clear_cache()
         else:
             self.values.insert(n+1, self.new_mltree_node())
-        self.cursor_line += 1
+            self.cursor_line += 1
         self.display()
         self.edit_headline()
     #@+node:ekr.20170514101636.1: *4* LeoMLTree.set_is_line_cursor (not used)
@@ -4516,7 +4527,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513075423.1: *5* LeoMLTree_set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
-        trace = True
+        trace = False
         trace_ok = True
         trace_empty = False
         values = self.values
