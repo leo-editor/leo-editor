@@ -45,9 +45,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     def __init__(self, *args, **kwargs):
         
         # g.trace('LeoTreeLine', *args, **kwargs)
-
         super(LeoTreeLine, self).__init__(*args, **kwargs)
-
         # Done in TreeLine.init:
             # self._tree_real_value   = None
                 # A weakproxy to LeoTreeData.
@@ -4166,7 +4164,7 @@ class LeoMLTree(npyscreen.MLTree):
         def info(z):
             return '%s.%s' % (id(z), z.__class__.__name__)
         g.printList([info(z) for z in self._my_widgets])
-    #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline
+    #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline (done)
     def edit_headline(self):
 
         trace = False
