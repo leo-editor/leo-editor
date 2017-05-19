@@ -147,7 +147,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         if 0 <= n <= len(s):
             self.value.content = s[:n] + s[n+1:]
             self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
+    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing (revise)
     def h_end_editing(self, ch):
 
         # g.trace('LeoTreeLine', ch)
@@ -158,8 +158,13 @@ class LeoTreeLine(npyscreen.TreeLine):
 
         # self.value is a LeoTreeData.
         n = self.cursor_position + 1
-        s = self.value.content
-        self.value.content = s[:n] + chr(i) + s[n:]
+        if native:
+            p = self.value.content
+            s = p.h
+            p.h = s[:n] + chr(i) + s[n:]
+        else:
+            s = self.value.content
+            self.value.content = s[:n] + chr(i) + s[n:]
         self.cursor_position += 1
     #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
     #@@nobeautify
@@ -4547,7 +4552,8 @@ class LeoMLTree(npyscreen.MLTree):
         line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
         if trace and trace_ok:
-            s = line.value.content.h if native else line.value.content
+            content = line.value.content
+            s = content.h if native else content
             g.trace(i, n, s)
     #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
     def _redraw(self, clear):
