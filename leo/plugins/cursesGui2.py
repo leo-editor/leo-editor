@@ -898,7 +898,7 @@ class LeoTreeData(npyscreen.TreeData):
         return False
     #@+node:ekr.20170516085427.1: *4* LeoTreeData.overrides
     # Don't use weakrefs!
-    #@+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth (ok)
+    #@+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth
     def find_depth(self, d=0):
         if native:
             p = self.content
@@ -4094,7 +4094,7 @@ class LeoMLTree(npyscreen.MLTree):
            
     #@+others
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
-    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line (buggy?)
+    #@+node:ekr.20170506044733.6: *4* LeoMLTree.delete_line
     def delete_line(self):
 
         trace = False
@@ -4223,7 +4223,7 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('LeoMLTree: line: %s %s' % (self.cursor_line, headline))
             if trace_values: self.dump_values()
         return node
-    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line (buggy?)
+    #@+node:ekr.20170506044733.5: *4* LeoMLTree.insert_line
     def insert_line(self):
         
         trace = False
@@ -4593,34 +4593,38 @@ class LeoMLTree(npyscreen.MLTree):
         n = len(values)
         val = values[i] if 0 <= i < n else None
         if not val:
-            line._tree_real_value   = None
             line._tree_depth        = False
-            line._tree_sibling_next = False
-            line._tree_has_children = False
-            line._tree_expanded     = False
-            line._tree_last_line    = True #
             line._tree_depth_next   = False
+            line._tree_expanded     = False
+            line._tree_has_children = False
             line._tree_ignore_root  = None
-            #
+            line._tree_last_line    = True #
+            line._tree_real_value   = None
+            line._tree_sibling_next = False
             line.value = None
-            line._tree_real_value = None
             if trace and trace_empty: g.trace(i, n, '<empty>', repr(val))
             return
         assert isinstance(val, LeoTreeData), repr(val)
+        # Aliases
         val1 = values[i+1] if i+1 < n else None
         val1_depth = val1.find_depth() if val1 else False
-        # 
-        line.value = val # self.display_value(val)
-        line._tree_real_value = val
-        line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
-        # 
+        # Common settings.
         line._tree_depth = val.find_depth()
-        line._tree_has_children = len(val._children) > 0
-        line._tree_expanded = val.expanded
-        # 
-        line._tree_sibling_next = line._tree_depth == val1_depth
-        line._tree_last_line = not bool(line._tree_sibling_next)
         line._tree_depth_next = val1_depth
+        line._tree_ignore_root = self._get_ignore_root(self._myFullValues)
+        line._tree_sibling_next = line._tree_depth == val1_depth
+        line._tree_real_value = val
+        line.value = val
+        if native:
+            p = val.content
+            assert p and isinstance(p, leoNodes.Position), repr(p)
+            line._tree_expanded = p.isExpanded()
+            line._tree_has_children = p.hasChildren()
+            line._tree_last_line = not p.hasNext()
+        else:
+            line._tree_expanded = val.expanded
+            line._tree_has_children = len(val._children) > 0
+            line._tree_last_line = not bool(line._tree_sibling_next)
         if trace and trace_ok:
             content = line.value.content
             s = content.h if native else content
