@@ -81,8 +81,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             if self.value:
                 assert isinstance(self.value, LeoTreeData)
                 p = self.value.content
-                assert isinstance(p, leoNodes.Position)
-                assert p, g.callers()
+                assert p and isinstance(p, leoNodes.Position), repr(p)
                 return p.h
             else:
                 return ''
@@ -96,8 +95,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         # vl is a weakref proxy to a LeoTreeData.
         if native:
             p = vl.content
-            assert isinstance(p, leoNodes.Position)
-            assert p, g.callers()
+            assert p and isinstance(p, leoNodes.Position), repr(p)
             return p.h
             # return vl.content.h if vl else ''
         else:
@@ -800,8 +798,7 @@ class LeoTreeData(npyscreen.TreeData):
     def __len__(self):
         if native:
             p = self.content
-            assert isinstance(p, leoNodes.Position)
-            assert p, g.callers()
+            assert p and isinstance(p, leoNodes.Position), repr(p)
             content = p.h
         else:
             content = self.content
@@ -810,8 +807,7 @@ class LeoTreeData(npyscreen.TreeData):
     def __repr__ (self):
         if native:
             p = self.content
-            assert isinstance(p, leoNodes.Position)
-            assert p, g.callers()
+            assert p and isinstance(p, leoNodes.Position), repr(p)
             return '<LeoTreeData: %s, %s>' % (id(p), p.h)
         else:
             return '<LeoTreeData: %r>' % self.content
@@ -992,8 +988,7 @@ class LeoTreeData(npyscreen.TreeData):
                 self.content = content
             else:
                 p = content
-                assert isinstance(p, leoNodes.Position), repr(content)
-                assert p, g.callers()
+                assert p and isinstance(p, leoNodes.Position), repr(p)
                 self.content = content.copy()
         else:
             self.content = content
@@ -1129,8 +1124,7 @@ class LeoTreeData(npyscreen.TreeData):
             g.trace('===== LeoTreeData', g.callers())
             if native:
                 p = self.content
-                assert isinstance(p, leoNodes.Position)
-                assert p, g.callers()
+                assert p and isinstance(p, leoNodes.Position), repr(p)
                 return p.h
             else:
                 return str(self.content)
@@ -4280,8 +4274,7 @@ class LeoMLTree(npyscreen.MLTree):
         node = self.values[self.cursor_line]
         if native:
             p = node.content
-            assert isinstance(p, leoNodes.Position)
-            assert p
+            assert p and isinstance(p, leoNodes.Position), repr(p)
             p.v.contract()
             self.values.clear_cache()
         else:
@@ -4359,8 +4352,7 @@ class LeoMLTree(npyscreen.MLTree):
         node = self.values[self.cursor_line]
         if native:
             p = node.content
-            assert isinstance(p, leoNodes.Position)
-            assert p
+            assert p and isinstance(p, leoNodes.Position), repr(p)
             p.v.expand()
             self.values.clear_cache()
         else:
