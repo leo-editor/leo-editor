@@ -64,7 +64,13 @@ class LeoTreeLine(npyscreen.TreeLine):
         
     def __repr__(self):
         val = self._tree_real_value
-        return '<LeoTreeLine: %s>' % (val.content if val else 'None')
+        if native:
+            p = val and val.content
+            if p is not None:
+                assert p and isinstance(p, leoNodes.Position), repr(p)
+            return '<LeoTreeLine: %s>' % (p.h if p else 'None')
+        else:
+            return '<LeoTreeLine: %s>' % (val.content if val else 'None')
         
     __str__ = __repr__
 
@@ -4467,8 +4473,7 @@ class LeoMLTree(npyscreen.MLTree):
         # Remember the previous values.
         self._last_start_display_at = self.start_display_at
         self._last_cursor_line = self.cursor_line
-        ### May be needed because of weakrefs...
-        if False: ### native: ###
+        if native:
             pass
         else:
             self._last_values = copy.copy(self.values)
@@ -4571,7 +4576,7 @@ class LeoMLTree(npyscreen.MLTree):
         '''Do the actual redraw.'''
         trace = False
         trace_widgets = False
-        if trace: g.trace('clear:', repr(clear))
+        if trace: g.trace('clear: %r widgets: %s' % (clear, len(self._my_widgets)))
         # Note: clear is Widget.clear. It does *not* use _myWidgets.
         if clear is True:
             self.clear()
@@ -4579,7 +4584,10 @@ class LeoMLTree(npyscreen.MLTree):
             self.clear()
         self._last_start_display_at = self.start_display_at
         i = self.start_display_at
-        if trace and trace_widgets: g.printList(self._my_widgets)
+        if trace and trace_widgets:
+            g.printList(self._my_widgets)
+            # if native:
+                # g.printList([repr(z._tree_real_value) for z in self._my_widgets])
         for line in self._my_widgets[:-1]:
             # Line is a (weakref to) LeoTreeLine object.
             self._print_line(line, i)
