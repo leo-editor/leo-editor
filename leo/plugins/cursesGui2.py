@@ -4392,6 +4392,18 @@ class LeoMLTree(npyscreen.MLTree):
             assert p and isinstance(p, leoNodes.Position), repr(p)
             if p.hasChildren() and p.isExpanded():
                 self.h_collapse_tree(ch)
+            elif p.hasParent():
+                parent = p.parent()
+                parent.v.contract()
+                # Set the cursor to the parent's index.
+                i = self.cursor_line - 1
+                while i >= 0:
+                    node2 = self.values[i]
+                    p2 = node2.content
+                    if p2 == parent:
+                        break
+                    i -= 1
+                self.cursor_line = max(0, i)
             else:
                 self.h_cursor_line_up(ch)
             self.values.clear_cache()
@@ -4411,7 +4423,6 @@ class LeoMLTree(npyscreen.MLTree):
             c = self.leo_c
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
-            g.trace(p.h)
             if p.hasChildren():
                 if p.isExpanded():
                     self.h_cursor_line_down(ch)
@@ -4583,7 +4594,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s, style)
         else:
             self.parent.curses_pad.addstr(y, x, s)
-    #@+node:ekr.20170513075423.1: *5* LeoMLTree_set_line_values
+    #@+node:ekr.20170513075423.1: *5* LeoMLTree._set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
         trace = False
