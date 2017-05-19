@@ -4688,7 +4688,7 @@ class LeoValues(npyscreen.TreeData):
     '''
     
     def __init__(self, c, tree):
-        
+        '''Ctor for LeoValues class.'''
         super(LeoValues, self).__init__()
             # Init the base class.
         self.c = c
@@ -4756,10 +4756,6 @@ class LeoValues(npyscreen.TreeData):
         
         self.data_cache = {}
         self.position_cache = {}
-    #@+node:ekr.20170517143906.1: *3* values.get_values (not used yet)
-    # def get_values(self):
-        # g.trace(g.callers())
-        # return []
     #@-others
 #@-others
 #@@language python
