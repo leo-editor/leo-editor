@@ -4520,7 +4520,41 @@ class LeoMLTree(npyscreen.MLTree):
             ','.join(reasons),
             self.values[self.cursor_line].content))
         return reasons
-    #@+node:ekr.20170513032717.1: *4* LeoMLTree._print_line & helper
+    #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helpers
+    def _redraw(self, clear):
+        '''Do the actual redraw.'''
+        # self.clear is Widget.clear. It does *not* use _myWidgets.
+        if (clear is True or
+            clear is None and self._last_start_display_at != self.start_display_at
+        ):
+            self.clear()
+        self._last_start_display_at = start = self.start_display_at
+        i = self.start_display_at
+        for line in self._my_widgets[:-1]:
+            assert isinstance(line, LeoTreeLine), repr(line)
+            self._print_line(line, i)
+            line.update(clear=True)
+            i += 1
+        # Do the last line
+        line = self._my_widgets[-1]
+        if (len(self.values) <= i + 1):
+            self._print_line(line, i)
+            line.update(clear=False)
+        elif len((self._my_widgets) * self._contained_widget_height) < self.height:
+            self._print_line(line, i)
+            line.update(clear=False)
+            self._put_continuation_line()
+        else:
+            line.clear() # This is Widget.clear.
+            self._put_continuation_line()
+        # Assert that print_line leaves start_display_at unchanged.
+        assert start == self.start_display_at, (start, self.start_display_at)
+        # Finish
+        if self.editing:
+            line = self._my_widgets[(self.cursor_line - start)]
+            line.highlight = True
+            line.update(clear=True)
+    #@+node:ekr.20170513032717.1: *5* LeoMLTree._print_line
     def _print_line(self, line, i):
 
         ###
@@ -4532,6 +4566,17 @@ class LeoMLTree(npyscreen.MLTree):
         if line.value is not None:
             assert isinstance(line.value, LeoTreeData), repr(line.value)
         self._set_line_highlighting(line, i)
+    #@+node:ekr.20170513102428.1: *5* LeoMLTree._put_continuation_line
+    def _put_continuation_line(self):
+        '''Print the line indicating there are more lines left.'''
+        s = self.continuation_line
+        x = self.relx
+        y = self.rely + self.height - 1
+        if self.do_colors():
+            style = self.parent.theme_manager.findPair(self, 'CONTROL')
+            self.parent.curses_pad.addstr(y, x, s, style)
+        else:
+            self.parent.curses_pad.addstr(y, x, s)
     #@+node:ekr.20170513075423.1: *5* LeoMLTree_set_line_values
     def _set_line_values(self, line, i):
         '''Set internal values of line using self.values[i] and self.values[i+1]'''
@@ -4574,52 +4619,6 @@ class LeoMLTree(npyscreen.MLTree):
             content = line.value.content
             s = content.h if native else content
             g.trace(i, n, s)
-    #@+node:ekr.20170513122427.1: *4* LeoMLTree._redraw & helper
-    def _redraw(self, clear):
-        '''Do the actual redraw.'''
-        # self.clear is Widget.clear. It does *not* use _myWidgets.
-        if (clear is True or
-            clear is None and self._last_start_display_at != self.start_display_at
-        ):
-            self.clear()
-        self._last_start_display_at = start = self.start_display_at
-        i = self.start_display_at
-        for line in self._my_widgets[:-1]:
-            assert isinstance(line, LeoTreeLine), repr(line)
-            # Line is a LeoTreeLine object.
-            self._print_line(line, i)
-            line.update(clear=True)
-            i += 1
-        # Do the last line
-        line = self._my_widgets[-1]
-        if (len(self.values) <= i + 1):
-            self._print_line(line, i)
-            line.update(clear=False)
-        elif len((self._my_widgets) * self._contained_widget_height) < self.height:
-            self._print_line(line, i)
-            line.update(clear=False)
-            self._put_continuation_line()
-        else:
-            line.clear() # This is Widget.clear.
-            self._put_continuation_line()
-        # Assert that print_line leaves start_display_at unchanged.
-        assert start == self.start_display_at, (start, self.start_display_at)
-        # Finish
-        if self.editing:
-            line = self._my_widgets[(self.cursor_line - start)]
-            line.highlight = True
-            line.update(clear=True)
-    #@+node:ekr.20170513102428.1: *5* LeoMLTree._put_continuation_line
-    def _put_continuation_line(self):
-        '''Print the line indicating there are more lines left.'''
-        s = self.continuation_line
-        x = self.relx
-        y = self.rely + self.height - 1
-        if self.do_colors():
-            style = self.parent.theme_manager.findPair(self, 'CONTROL')
-            self.parent.curses_pad.addstr(y, x, s, style)
-        else:
-            self.parent.curses_pad.addstr(y, x, s)
     #@+node:ekr.20170516101203.1: *3* LeoMLTree.values Property (original only)
     if native:
         _myFullValues = LeoTreeData()
