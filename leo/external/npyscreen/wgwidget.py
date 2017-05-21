@@ -100,6 +100,7 @@ class InputHandler(object):
                 i, curses.ascii.unctrl(i),
             ))
         # A special case for F4 so we can run unit tests.
+        # myLeoSettings.leo binds F4.
         if i == 268:
             g.app.gui.do_key(i)
             return True

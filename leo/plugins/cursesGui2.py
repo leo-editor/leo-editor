@@ -2298,7 +2298,7 @@ class CursesTextWrapper(leoFrame.StringTextWrapper):
     #@+node:ekr.20170504034655.8: *3* cw.High-level interface
     if 0: ### Just use the StringTextWrapper methods
         #@+others
-        #@+node:ekr.20170504035808.1: *4* curses-specific (To do)
+        #@+node:ekr.20170504035808.1: *4* cw.curses-specific (To do)
         #@+node:ekr.20170504040309.2: *5* cw.delete (uses getAllText)
         def delete(self, i, j=None):
             
@@ -2602,7 +2602,7 @@ class CursesTextWrapper(leoFrame.StringTextWrapper):
                     # w = self.widget
                     # sb = w.verticalScrollBar()
                     # sb.setSliderPosition(pos)
-        #@+node:ekr.20170504035742.1: *4* generic (no changes)
+        #@+node:ekr.20170504035742.1: *4* cw.generic (no changes)
         # These call only wrapper methods.
         #@+node:ekr.20170504034655.13: *5* cw.appendText
         def appendText(self, s):
