@@ -5580,7 +5580,7 @@ for gui in guis:
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* leoEditCommands (63 failures)
+#@+node:ekr.20071113192611: *3* @ignore leoEditCommands (12 failures)
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)
@@ -20809,7 +20809,7 @@ for setting, result in table:
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* @ignore leoNodes  (5 failures, 3 errors)
+#@+node:ekr.20071113194424.1: *3* leoNodes  (5 failures, 3 errors)
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent
