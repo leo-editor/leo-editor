@@ -10335,8 +10335,9 @@ c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')n = c.frame.tree.redrawCount
+    self.skipTest('Not for curses gui')
 else:
+    n = c.frame.tree.redrawCount
     c.insertHeadline()
     c.outerUpdate() # Not actually needed, but should not matter.
     try:
