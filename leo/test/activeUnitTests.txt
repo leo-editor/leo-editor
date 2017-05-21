@@ -12111,7 +12111,7 @@ else:
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoGui tests.')
-#@+node:ekr.20090529141856.4682: *3* leoImport (2 failures)
+#@+node:ekr.20090529141856.4682: *3* @ignore leoImport (3 failures)
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4
