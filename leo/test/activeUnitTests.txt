@@ -5580,7 +5580,7 @@ for gui in guis:
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* @ignore leoEditCommands (64 failures)
+#@+node:ekr.20071113192611: *3* @ignore leoEditCommands (63 failures)
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)
