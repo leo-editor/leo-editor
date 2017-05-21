@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20100131171342.5471,ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -4389,42 +4389,45 @@ finally:
 @others
 # end.
 </t>
-<t tx="ekr.20111221062755.3909">child = p.firstChild()
-assert child
-assert child.h == 'child',child.h
-c.selectPosition(child)
-
-table = (
-    'import-file',
-    'open-outline',
-    'read-at-auto-nodes',
-    'read-at-file-nodes',
-    'read-at-shadow-nodes',
-   # 'read-file-into-node',
-   # 'read-outline-only',
-   'save-file',
-   'save-file-as',
-   'save-file-to',
-    'write-at-auto-nodes',
-    'write-at-file-nodes',
-    'write-at-shadow-nodes',
-    'write-dirty-at-auto-nodes',
-    'write-dirty-at-file-nodes',
-    'write-dirty-at-shadow-nodes',
-    #'write-file-from-node',
-    'write-missing-at-file-nodes',
-    #'write-outline-only',
-)
-
-tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
-
-d = g.app.unitTestDict
-for commandName in table:
-    for tag,n in tags:
-        d[tag] = 0
-    c.k.simulateCommand(commandName)
-    for tag,n in tags:
-        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+<t tx="ekr.20111221062755.3909">if g.app.gui.guiName() == 'curses':
+    self.skipTest('curses gui')
+else:
+    child = p.firstChild()
+    assert child
+    assert child.h == 'child',child.h
+    c.selectPosition(child) 
+    table = (
+        'import-file',
+        'open-outline',
+        'read-at-auto-nodes',
+        'read-at-file-nodes',
+        'read-at-shadow-nodes',
+       # 'read-file-into-node',
+       # 'read-outline-only',
+       'save-file',
+       'save-file-as',
+       'save-file-to',
+        'write-at-auto-nodes',
+        'write-at-file-nodes',
+        'write-at-shadow-nodes',
+        'write-dirty-at-auto-nodes',
+        'write-dirty-at-file-nodes',
+        'write-dirty-at-shadow-nodes',
+        #'write-file-from-node',
+        'write-missing-at-file-nodes',
+        #'write-outline-only',
+    )
+    tags = (
+        ('init_error_dialogs',2),
+        ('raise_error_dialogs',1),
+    )
+    d = g.app.unitTestDict
+    for commandName in table:
+        for tag,n in tags:
+            d[tag] = 0
+        c.k.simulateCommand(commandName)
+        for tag,n in tags:
+            assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
 </t>
 <t tx="ekr.20111221062755.3910"></t>
 <t tx="ekr.20120227143454.3932">k = c.k
