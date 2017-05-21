@@ -168,8 +168,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20061101121602.166,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20070131175538,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -657,8 +657,8 @@ marks="ekr.20061101121602.166,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5592"><vh>leoDialogs</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>@ignore leoEditCommands (63 failures)</vh>
-<v t="ekr.20070131175538"><vh> Commands A-B</vh>
+<v t="ekr.20071113192611"><vh>leoEditCommands (63 failures)</vh>
+<v t="ekr.20070131175538" a="M"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
@@ -831,7 +831,7 @@ marks="ekr.20061101121602.166,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
 <v t="ekr.20150414144103.1"><vh>@test dabbrev-completion</vh></v>
 <v t="ekr.20150414144038.1"><vh>@test dabbrev-expand</vh></v>
-<v t="ekr.20061101121602.166" a="M"><vh>@test delete-char</vh>
+<v t="ekr.20061101121602.166"><vh>@test delete-char</vh>
 <v t="ekr.20061101121602.167"><vh>work</vh></v>
 <v t="ekr.20061101121602.168"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20061101121602.169"><vh>after sel=1.5,1.5</vh></v>
@@ -3376,7 +3376,7 @@ marks="ekr.20061101121602.166,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111006105711.3544"></v>
 <v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
 </v>
-<v t="ekr.20061101121602.166" a="M"></v>
+<v t="ekr.20070131175538" a="M"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
