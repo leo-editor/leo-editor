@@ -3657,6 +3657,7 @@ class LeoMLTree(npyscreen.MLTree):
             assert p and isinstance(p, leoNodes.Position), repr(p)
             if p.hasChildren() and p.isExpanded():
                 self.h_collapse_tree(ch)
+                self.values.clear_cache()
             elif p.hasParent():
                 parent = p.parent()
                 parent.v.contract()
@@ -3664,14 +3665,18 @@ class LeoMLTree(npyscreen.MLTree):
                 i = self.cursor_line - 1
                 while i >= 0:
                     node2 = self.values[i]
+                    if node2 is None:
+                        g.trace('oops: no node2', i)
+                        break
                     p2 = node2.content
                     if p2 == parent:
                         break
                     i -= 1
                 self.cursor_line = max(0, i)
+                self.values.clear_cache()
             else:
-                self.h_cursor_line_up(ch)
-            self.values.clear_cache()
+                ### self.h_cursor_line_up(ch)
+                pass # This is what Leo does.
         else:
             if self._has_children(node) and node.expanded:
                 self.h_collapse_tree(ch)
@@ -3685,7 +3690,6 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('no node')
             return
         if native:
-            c = self.leo_c
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
             if p.hasChildren():
@@ -3693,8 +3697,10 @@ class LeoMLTree(npyscreen.MLTree):
                     self.h_cursor_line_down(ch)
                 else:
                     self.h_expand_tree(ch)
-            elif p.hasVisNext(c):
-                self.h_cursor_line_down(ch)
+            ### elif p.hasVisNext(c):
+                # self.h_cursor_line_down(ch)
+            else:
+                pass # This is what Leo does.
         else:
             if self._has_children(node):
                 if node.expanded:
