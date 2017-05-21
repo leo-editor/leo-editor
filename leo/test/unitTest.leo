@@ -9,74 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935"><vh>Startup</vh></v>
-<v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
-<v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
-<v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
+<v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
-<v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
-<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
-<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
-<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
-<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
-<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
-<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
-<v t="ekr.20170415084531.1"><vh>@data import_html_tags</vh></v>
-<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20050328101834"><vh>@page http plugin</vh>
-<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
-<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
-<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
-<v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
-<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
-<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
-<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
-</v>
-<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
-<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
-<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
-</v>
-<v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
-<v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
-<v t="ekr.20131111155830.4251"><vh>@data vim-command-tails</vh></v>
-<v t="ekr.20131111155830.4252"><vh>@data vim-commands</vh></v>
-<v t="ekr.20131111155830.4253"><vh>@data vim-motions</vh></v>
-<v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
-</v>
-</v>
-<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
-<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
-<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
-<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
-<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
-<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
-<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
-</v>
-<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
-<v t="ekr.20070217072822"><vh>getSel</vh></v>
-<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
-<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
-</v>
-</v>
-<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
-<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
-<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
-<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
-<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
-<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
-</v>
-</v>
-<v t="ekr.20070417092935"></v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -233,7 +168,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20140712142620.4458,ekr.20100131171342.5610,ekr.20091219122958.5066,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -4004,7 +3939,6 @@ last line
 </t>
 <t tx="ekr.20041021065903.2">unnamed node line 1
 </t>
-<t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050105084757.1">import os
 
 exists = g.os_path_exists
@@ -4551,10 +4485,6 @@ else:
     result = ''.join(result)
     return result
 </t>
-<t tx="ekr.20050328101834"></t>
-<t tx="ekr.20050328101834.1"></t>
-<t tx="ekr.20050328101834.2"></t>
-<t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050417201845"></t>
 <t tx="ekr.20050417201845.1">before
     &lt;&lt; section &gt;&gt;
@@ -5072,7 +5002,6 @@ class eggs:
     @others
 </t>
 <t tx="ekr.20051012104957"></t>
-<t tx="ekr.20051013162226"></t>
 <t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
 </t>
 <t tx="ekr.20051107115231.14">h = '@test return ends editing of headline'
@@ -7841,22 +7770,6 @@ line 3
 line 2
 
 </t>
-<t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
-
-dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
-s   = g.os_path_join(dir,g.u('chinese\u8116test.leo'),encoding='utf-8')
-    
-if not g.os_path_exists(dir):
-    import os
-    os.mkdir(dir)
-    g.pr('created chinese folder')
-    
-if not g.os_path_exists(s):
-    f = file(s,'w')
-    f.close()
-    g.pr('created chinese file')
-    
-</t>
 <t tx="ekr.20070131162935">c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20070131162935.1">first line
@@ -7915,132 +7828,6 @@ is the second sentence.
 <t tx="ekr.20070131175538"></t>
 <t tx="ekr.20070131175538.1"></t>
 <t tx="ekr.20070131175646"></t>
-<t tx="ekr.20070217065840">@nocolor-node
-
-@
-To make unit tests, do the following:
-    
-- Use the make-test script (Alt-5) to create a suboutline for a unit test.
-- Put text in the before node, selected desired text, then do the do-before script (Alt-6).
-- Execute the command, then do the do-after script (Alt-7).
-</t>
-<t tx="ekr.20070217065840.1">try:
-    p1 = p.insertAfter()
-    c.setHeadString(p1,'@test ')
-    body = 'c.testManager.runEditCommandTest(c,p)'
-    c.setBodyString(p1,body)
-    for s in ('work','before','after'):
-        p2 = p1.insertAsLastChild()
-        c.setHeadString(p2,s)
-    p1.expand()
-finally:
-    c.redraw()
-    c.editPosition(p1)</t>
-<t tx="ekr.20070217065840.2">@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. The work node should have body text. If all is as expected,
-copy the body text the work node to the before node, and represent the selection
-range of the work in the headline of the before node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top and work.b:
-
-    c.setBodyString(before,work.b)
-    c.setBodyString(after,'')
-    putSelectionInHeadline(c,before,'before',sel)
-    c.redraw()
-else:
-    g.es_print('do-before: not in a proper @test tree')</t>
-<t tx="ekr.20070217065840.3">def getSel(c):
-    
-    w = c.frame.body.bodyCtrl
-    i,j= w.getSelectionRange()
-    if i == j:
-        i = j = w.getInsertPoint()
-        sel = (i,i)
-    return i,j</t>
-<t tx="ekr.20070217065840.4">def findNodes(p):
-    
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-    
-    for p in p.self_and_parents_iter():
-        if p.h.startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild() 
-    before = work and work.next()     
-    after  = before and before.next()
-    if (
-        work   and work.h.startswith('work') and
-        before and before.h.startswith('before') and
-        after  and after.h.startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None</t>
-<t tx="ekr.20070217065840.5">def putSelectionInHeadline (c,p,prefix,sel):
-    
-    # g.trace(p.h,repr(sel))
-
-    w = c.frame.body.bodyCtrl
-    i,j = sel
-    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
-    s = '%s sel=%s,%s' % (prefix,i,j)
-    c.setHeadString(p,s)
-</t>
-<t tx="ekr.20070217065840.6">@
-p should be in tree whose root is a @test node containing 'work', 'before' and
-'after' children. If all is as expected, copy the work node to the after node,
-and represent the selection range of the work node in the headline of the after node.
-@c
-
-@others
-
-sel = getSel(c)
-top,work,before,after = findNodes(p)
-if top:
-    c.setBodyString(after,work.b)
-    putSelectionInHeadline(c,after,'after',sel)
-    c.redraw()
-else:
-    g.es_print('do-after: not in @test tree')</t>
-<t tx="ekr.20070217065840.8">def findNodes(p):
-    
-    '''Find the top, work, before and after nodes.
-    p should be in tree whose root is a @test node containing
-    'work', 'before' and 'after' children.'''
-    
-    for p in p.self_and_parents_iter():
-        if p.h.startswith('@test '):
-            break
-    top    = p and p.copy()
-    work   = top and top.firstChild()
-    before = work and work.next()
-    after  = before and before.next()
-    if (
-        work   and work.h.startswith('work') and
-        before and before.h.startswith('before') and
-        after  and after.h.startswith('after')
-    ):
-        return top,work,before,after
-    else:
-        return None,None,None,None</t>
-<t tx="ekr.20070217065840.9">def putSelectionInHeadline (c,p,prefix,sel):
-    
-    # g.trace(p.h,repr(sel))
-    
-    w = c.frame.body.bodyCtrl
-    i,j = sel
-    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
-    s = '%s sel=%s,%s' % (prefix,i,j)
-    c.setHeadString(p,s)
-</t>
 <t tx="ekr.20070217071121.1">c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20070217071121.10">before
@@ -8202,14 +7989,6 @@ after
 </t>
 <t tx="ekr.20070217071121.9">c.testManager.runEditCommandTest(p)
 </t>
-<t tx="ekr.20070217072822">def getSel(c):
-    
-    w = c.frame.body.bodyCtrl
-    i,j= w.getSelectionRange()
-    if i == j:
-        i = j = w.getInsertPoint()
-        sel = (i,i)
-    return i,j</t>
 <t tx="ekr.20070305095401">p = c.p.copy()
 c.selectPosition(p.threadBack())
 p1 = c.p
@@ -8249,10 +8028,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935">@nosearch</t>
-<t tx="ekr.20070503064257"></t>
-<t tx="ekr.20070528100318"># Required to make a typing test work.
-</t>
+<t tx="ekr.20070417092935" str_leo_pos="0">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
@@ -8660,31 +8436,6 @@ assert d.get('pagewidth') == 120
 <t tx="ekr.20071113105654.1">c.hoist()
 c.dehoist()
 </t>
-<t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
-assert g.os_path_exists(fn),fn
-c1 = c
-c2 = g.openWithFileName(fn,old_c=None,enableLog=False)
-assert c2
-c.frame.bringToFront()
-g.app.setLog(c.frame.log)
-
-d1 = {} ; d2 = {}
-for c,d in ( (c1,d1),(c2,d2)):
-    for p in c.all_unique_positions():
-        if p.h.startswith('@test'):
-            d[p.h]=p.h
-
-if 0: # not important
-    g.pr()
-    g.pr('----- Only in unitTest.leo')
-    for h in sorted(d1.keys()):
-        if not d2.get(h):
-            print(h)
-
-print('\n----- Only in leoPy.leo')
-for h in sorted(d2.keys()):
-    if not d1.get(h):
-        print(h)</t>
 <t tx="ekr.20071113143844.5">assert c.atFileCommands.isSignificantTree(p)
 
 </t>
@@ -9040,10 +8791,6 @@ g.pr('\nEnd of leoUndo tests.')
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
 assert(len(gnx) &gt; 1)
-</t>
-<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
-
-Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080408094623.1"># start
 # targetWord
@@ -13978,39 +13725,6 @@ if not g.app.isExternalUnitTest:
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20091206090247.5060"># Use these with caution.</t>
-<t tx="ekr.20091206090247.5061">count = 0
-for p in c.all_unique_positions():
-    count += 1
-    # Empty tnodeLists are not errors because they never get written to the .leo file.
-    v = p.v
-    if hasattr(v,"tnodeList") and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
-        g.es("deleting tnodeList for " + `v`,color="blue")
-        delattr(v,"tnodeList")
-        c.setChanged(True)
-
-s = "%d nodes" % count
-print(s) ; g.es(s)</t>
-<t tx="ekr.20091206090247.5062"># About the only time you should run this script is when:
-# - changing the format of timestamps in nodeIndices.setTimestamp or
-# - when making a retroactive change to leoID.txt.
-
-if 0: # This is usually a very bad idea.
-
-    for p in c.all_positions():
-        p.v.fileIndex = None
-
-    g.es("all timestamps cleared")</t>
-<t tx="ekr.20091206090247.5063">doDelete = False
-put = g.es_print
-for p in c.all_positions():
-    if p.v.u:
-        put("found v.u:",p.h,
-            g.listToString(p.v.u.keys()))
-        if doDelete:
-            p.v.u = None
-put('done') 
-c.redraw()</t>
 <t tx="ekr.20091219121039.5065">x = c.rstCommands
 result = x.handleMissingStyleSheetArgs(p,s=None)
 assert result == {},'expected {}, got %s' % result
@@ -14029,14 +13743,6 @@ for s in (
 </t>
 <t tx="ekr.20091219122958.5066"># Warning: these depend on the .css files in leo\test\unittest.
 </t>
-<t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
-for p in c.all_unique_positions():
-    nodes += 1
-    lines += len(g.splitLines(p.b))
-
-pages = ((nodes * 10) + lines) / 50
-s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
-print(s); g.es(s)</t>
 <t tx="ekr.20100107110353.5105"></t>
 <t tx="ekr.20100107110353.5106">@others
 </t>
@@ -14107,19 +13813,6 @@ table = (
 line 2(xxx).
 line 3.
 </t>
-<t tx="ekr.20100123172713.5114"></t>
-<t tx="ekr.20100123172713.5116">count = 0
-for p in c.all_unique_positions():
-    count += 1
-    # Empty tnodeLists are not errors because they never get written to the .leo file.
-    v = p.v
-    if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
-        g.es("deleting tnodeList for " + `v`,color="blue")
-        delattr(v,"tnodeList")
-        c.setChanged(True)
-
-s = "%d nodes" % count
-print s ; g.es(s)</t>
 <t tx="ekr.20100131171342.5473"></t>
 <t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
 
@@ -18973,16 +18666,6 @@ for fn,expected in table:
     result2 = pc.regularizeName(result)
     assert result2==result
 </t>
-<t tx="ekr.20101009105124.6195">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-
-False:
-    (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.
-</t>
 <t tx="ekr.20101020123501.6005">p = c.p.firstChild()
 c.selectPosition(p) # Sets body text.
 # val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -19697,11 +19380,6 @@ except Exception:
     pass
 
 </t>
-<t tx="ekr.20110521073115.3494"></t>
-<t tx="ekr.20110521073115.3495">builtins, including cython builtins
-</t>
-<t tx="ekr.20110521073115.3496">cython keywords
-</t>
 <t tx="ekr.20110524091618.3488">at = c.atFileCommands
 
 # A mininimal test.
@@ -20068,16 +19746,6 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-</t>
-<t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
-
-html
-body
-head
-div
-table
-nodeA
-nodeB
 </t>
 <t tx="ekr.20111029112647.4099"></t>
 <t tx="ekr.20111029112647.4101">s = '''\
@@ -20979,17 +20647,6 @@ else:
     finally:
         sys.stdout = sys.__stdout__
 </t>
-<t tx="ekr.20111112092813.4154">g.cls()</t>
-<t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
-# These are now EKR's preferred settings everywhere:
-# there should be little need to run unit tests externally.
-
-run-selected-unit-tests-locally     = Alt-4
-run-marked-unit-tests-locally       = Alt-5
-run-all-unit-tests-locally          = Alt-6
-
-# Important: Alt-9 is used by a unit test
-</t>
 <t tx="ekr.20111112103320.3849">s = '''\
 &lt;body&gt;
 
@@ -21355,25 +21012,6 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
     self.skipTest('Requires Qt Gui')
 </t>
-<t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
-
-# **Important**: to change these defaults, put
-# an @enabled-plugins node in myLeoSettings.leo.
-
-# Highly-recommended plugins:
-plugins_menu.py
-free_layout.py # needs to be early
-viewrendered.py
-
-# Recommended plugins:
-### contextmenu.py
-# leo_to_html.py
-mod_scripting.py
-# nav_qt.py
-# quicksearch.py
-# stickynotes.py
-# todo.py
-</t>
 <t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
 import sys
@@ -21427,9 +21065,6 @@ else:
         for fn in table:
             assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
 </t>
-<t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
-<t tx="ekr.20111124094121.3942"></t>
-<t tx="ekr.20111124094121.3943"></t>
 <t tx="ekr.20111125182408.3947">def setup():
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -22895,276 +22530,6 @@ c.testManager.runEditCommandTest(p)
 <t tx="ekr.20131103084038.4333">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
         Line 41.
 </t>
-<t tx="ekr.20131111155830.4249"></t>
-<t tx="ekr.20131111155830.4250"># Not yet...
-
-    &lt;BS&gt;        delete the character in front of the cursor
-N   &lt;Del&gt;       delete N characters under and after the cursor
-    &lt;Del&gt;       delete the character under the cursor
-    &lt;Del&gt;       while entering a count: delete last character
-    &lt;Down&gt;      recall newer command-line that starts with current command
-    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
-    &lt;Left&gt;      (motion) cursor left
-    &lt;Right&gt;     (motion) cursor right
-    &lt;S-Down&gt;    recall newer command-line from history
-    &lt;S-Left&gt;    (motion) cursor one word left
-    &lt;S-Right&gt;   (motion) cursor one word right
-    &lt;S-Up&gt;      recall older command-line from history
-    &lt;Up&gt;        recall older command-line that starts with current command
-
-N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
-N   CTRL-A                  add N to the number at or after the cursor
-N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  (motion?) cursor to beginning of command-line
-    CTRL-BREAK              MS-DOS: during searches: interrupt the search
-    CTRL-C                  during searches: interrupt the search
-N   CTRL-D                  window N lines Downwards (default: 1/2 window)
-N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  (motion?) cursor to end of command-line
-N   CTRL-F                  (motion) window N pages Forwards (downwards)
-    CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  (motion) go to Nth newer position in jump list
-    CTRL-K {char1} {char2}  enter digraph
-    CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  (motion) go to Nth older position in jump list
-N   CTRL-R                  redo last N undone changes
-    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
-N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
-N   CTRL-U                  window N lines Upwards (default: 1/2 window)
-    CTRL-U                  remove all characters
-    CTRL-V                  highlight blockwise or stop highlighting
-    CTRL-V                  start highlighting blockwise   }  highlighted text
-    CTRL-V {char}           insert {char} literally
-    CTRL-V {number}         enter decimal value of character (up to three digits)
-    CTRL-W                  delete the word in front of the cursor
-    CTRL-W +                Increase current window height
-    CTRL-W -                Decrease current window height
-    CTRL-W =                Make all windows equal height
-    CTRL-W CTRL-W           Move cursor to window below (wrap)
-    CTRL-W CTRL-^           Split window and edit alternate file
-    CTRL-W R                Rotate windows upwards
-    CTRL-W W                Move cursor to window above (wrap)
-    CTRL-W ]                Split window and jump to tag under cursor
-    CTRL-W _                Set current window height (default: very high)
-    CTRL-W b                Move cursor to bottom window
-    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
-    CTRL-W f                Split window and edit file name under the cursor
-    CTRL-W j                Move cursor to window below
-    CTRL-W k                Move cursor to window above
-    CTRL-W n  or :new       Create new empty window
-    CTRL-W o  or :on[ly]    Make current window only one on the screen
-    CTRL-W p                Move cursor to previous active window
-    CTRL-W q  or :q[uit]    Quit editing and close window
-    CTRL-W r                Rotate windows downwards
-    CTRL-W s                Split window into two parts
-    CTRL-W t                Move cursor to top window
-    CTRL-W x                Exchange current window with next one
-N   CTRL-X                  subtract N from the number at or after the cursor
-N   CTRL-Y                  window N lines upwards (default: 1)
-    CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
-<t tx="ekr.20131111155830.4251">char F
-char T
-char f
-char r
-char t
-letter m
-letter q
-motion &lt;
-motion &gt;
-motion c
-motion d
-motion gU
-motion gq
-motion gu
-motion g~
-motion y
-pattern /
-pattern ?
-register @
-</t>
-<t tx="ekr.20131111155830.4252"># http://tnerual.eriogerg.free.fr/vimqrc.html
-vim_0 0
-vim_tilda ~
-vim_plus +
-vim_underscore _
-vim_minus -
-vim_comma ,
-vim_dot .
-vim_semicolon ;
-vim_lparen (
-vim_rparen )
-vim_lcurly {
-vim_rcurly }
-vim_vertical |
-vim_backtick `
-vim_dollar $
-vim_caret ^
-vim_percent %
-vim_langle &lt;
-vim_langle &lt;&lt;
-vim_rangle &gt;
-vim_rangle &gt;&gt;
-vim_pound #
-vim_star *
-vim_slash /\\n
-vim_slash /
-vim_question ?\\n
-vim_question ?
-vim_at @
-vim_at @@
-vim_dquote "
-vim_lsquare [#
-vim_lsquare [(
-vim_lsquare [*
-vim_lsquare [[
-vim_lsquare []
-vim_lsquare [p
-vim_lsquare [{
-vim_rsquare ]#
-vim_rsquare ])
-vim_rsquare ]*
-vim_rsquare ][
-vim_rsquare ]]
-vim_rsquare ]p
-vim_rsquare ]}
-vim_A A
-vim_B B
-vim_C C
-vim_D D
-vim_E E
-vim_F F
-vim_G G
-vim_H H
-vim_I I
-vim_J J
-vim_K K
-vim_M M
-vim_L L
-vim_N N
-vim_O O
-vim_P P
-vim_R R
-vim_S S
-vim_T T
-vim_U U
-vim_V V
-vim_W W
-vim_X X
-vim_Y Y
-vim_Z ZQ
-vim_Z ZZ
-vim_a a
-vim_b b
-vim_c c
-vim_d dd
-vim_d d
-vim_g g~
-vim_g g^
-vim_g g#
-vim_g g$
-vim_g g*
-vim_g g0
-vim_g gD
-vim_g gE
-vim_g gI
-vim_g gU
-vim_g ga
-vim_g gd
-vim_g ge
-vim_g gf
-vim_g gg
-vim_g gj
-vim_g gk
-vim_g gq
-vim_g gs
-vim_g gu
-vim_g gv
-vim_h h
-vim_i i
-vim_j j
-vim_k k
-vim_l l
-vim_n n
-vim_m m
-vim_o o
-vim_p p
-vim_q q
-vim_r r
-vim_s s
-vim_t t
-vim_u u
-vim_v v
-vim_w w
-vim_x x
-vim_y y
-vim_y yy
-vim_z z-
-vim_z z.
-vim_z z&lt;CR&gt;
-vim_z zb
-vim_z zh
-vim_z zl
-vim_z zt
-vim_z zz
-</t>
-<t tx="ekr.20131111155830.4253"># CR
-# Ctrl-End
-# Ctrl-Home
-# Ctrl-Left
-# Ctrl-M
-# Ctrl-N
-# Ctrl-P
-# Ctrl-Right
-# End
-# Home
-# Shift-Left
-# Shift-Right
-
-( 	
-)
-{
-}
-[[
-[]
-][
-]]
-$
-^	
-+
-,
--
-;
-_
-0
-B
-E
-F
-G
-T
-W
-b
-e
-f
-g$
-g^
-g0
-gE
-# gEnd
-# gHome	
-ge
-gg
-h
-j
-k
-t
-w
-</t>
-<t tx="ekr.20131111155830.4254">char F
-char T
-char f
-char t
-</t>
 <t tx="ekr.20131220083358.3982">u = c.undoer
 p1 = g.findNodeInTree(c,p,'a')
 p2 = g.findNodeInTree(c,p,'b')
@@ -23230,7 +22595,6 @@ if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
 </t>
-<t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140218042220.4347">s = '''\
 
 var c3 = (function () {
@@ -23616,7 +22980,6 @@ finally:
     pass # root.doDelete()
 
 </t>
-<t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140723134017.4464"># This causes problems!
 import glob
 import importlib
@@ -23714,7 +23077,6 @@ for a,b,in table:
     assert result == i2,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
 </t>
-<t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140904060337.4476">if g.in_bridge or g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName().startswith('qt'):
@@ -24257,8 +23619,6 @@ node 2 line 2
 </t>
 <t tx="ekr.20150216070628.99">@others
 </t>
-<t tx="ekr.20150216110251.11"># Do not delete this node.
-# It is used by unit tests.</t>
 <t tx="ekr.20150216111306.25">import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
@@ -24275,7 +23635,6 @@ aList2 = list(c.safe_all_positions())
 n1,n2 = len(aList1),len(aList2)
 assert n1 == n2,(n1,n2)
 </t>
-<t tx="ekr.20150321155210.11"></t>
 <t tx="ekr.20150328120706.1">table = (
     ('A25&amp;()','A'),         # Non-alpha characters.
     ('B\tc','B c'),         # Tabs.
@@ -24353,9 +23712,6 @@ finally:
     &lt;|code|&gt;
 </t>
 <t tx="ekr.20150521123343.1"></t>
-<t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
-
-# This *must* be False in unitTest.leo!</t>
 <t tx="ekr.20150610064911.1"># This tests only recent bugs.
 p1 = p.firstChild()
 s = p1.b
@@ -25190,9 +24546,6 @@ for base, result, s in table:
 # This is valid Python, but it looks like a section reference.
 a = b &lt;&lt; c &gt;&gt; d
 
-</t>
-<t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
-False: (Legacy):      The @auto write code ignores section references.
 </t>
 <t tx="ekr.20161103015908.1"></t>
 <t tx="ekr.20161103015940.1">s = '''\
@@ -27940,24 +27293,6 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20161123080832.1">'''
-Create a table of expected headlines in a unit test.
-
-Usage: select the desired subnode of an @test node.
-'''
-g.cls()
-# Proper escapes are tricky.
-if p.parent() and p.parent().h.startswith('@test'):
-    table = [
-        '(%s, "%s"),' % (
-            p.level()-c.p.level(),
-            p.h.replace('\\', '\\\\').replace('"', '\\"'),
-        )
-            for p in p.subtree()
-    ]
-    print("table = (\n    %s\n)" % '\n    '.join(table))
-else:
-    print('select a child of an @test node node')</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -28280,7 +27615,6 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
-<t tx="ekr.20161129030232.1"></t>
 <t tx="ekr.20161129104243.1">if 0:
     # The preamble...
     # g.cls()
@@ -35432,16 +34766,6 @@ bar
 EOT;
 }
 ?&gt;
-</t>
-<t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
-
-html
-body
-head
-div
-table
-nodeA
-nodeB
 </t>
 <t tx="ekr.20170416060817.1">s = '''\
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
