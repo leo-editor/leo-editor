@@ -1274,7 +1274,7 @@ else:
             ratio,f.ratio,name)
         assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
             ratio2,f.secondary_ratio,name)
-#@+node:ekr.20100131171342.5506: *3* leoApp (passed)
+#@+node:ekr.20100131171342.5506: *3* leoApp
 #@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
 @
 language_delims_dict 
@@ -1352,7 +1352,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20160318094003.1: *3* leoAst (passed)
+#@+node:ekr.20160318094003.1: *3* leoAst
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
 if not g.isPython3:
     self.skipTest('python 3 test')
@@ -1391,7 +1391,7 @@ msf.unit_test(raise_on_fail=True)
 import leo.external.py2cs as py2cs
 py2cs.unit_test(raise_on_fail=True)
 
-#@+node:ekr.20050112095306.1: *3* leoAtFile (passed)
+#@+node:ekr.20050112095306.1: *3* leoAtFile
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)
 #@+node:ekr.20041021065903: *5* #@asis
@@ -2385,7 +2385,7 @@ table = (
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
-#@+node:ekr.20150521123343.1: *3* leoBeautify (passed)
+#@+node:ekr.20150521123343.1: *3* leoBeautify
 #@+node:ekr.20111104171708.3843: *4* @test leoBeautify.CPrettyPrinter
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
@@ -2672,7 +2672,7 @@ def spam():
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20100131171342.5508: *3* leoBridge (passed)
+#@+node:ekr.20100131171342.5508: *3* leoBridge
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
 
@@ -2693,7 +2693,7 @@ if g.app.isExternalUnitTest:
     assert c.rootPosition()
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20110608135658.3377: *3* leoChapters (passed)
+#@+node:ekr.20110608135658.3377: *3* leoChapters
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
@@ -2836,7 +2836,7 @@ elif cc and not g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 
-#@+node:ekr.20090615053403.4876: *3* leoColorizer (to do)
+#@+node:ekr.20090615053403.4876: *3* leoColorizer
 #@+node:ekr.20090615053403.4877: *4* @test @comment after @language plain
 p = c.p.firstChild()
 c.selectPosition(p) # Sets body text.
@@ -5452,7 +5452,7 @@ for obj,val in table:
 #@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('End of leoCommands tests')
-#@+node:ekr.20071113194216: *3* leoConfig (passed)
+#@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
 # This tests is valid only if not g.new_config.
@@ -10668,7 +10668,7 @@ else:
 #@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoEditCommands tests.')
-#@+node:ekr.20061001114637: *3* leoFileCommands (passed)
+#@+node:ekr.20061001114637: *3* leoFileCommands
 # 3 failures with Alt-5
 #@+node:ekr.20100206165505.5386: *4* @@test fc.handleNodeConflicts
 # More suitable as a hand test:
@@ -10960,7 +10960,7 @@ else:
 #@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFileCommands tests.')
-#@+node:ekr.20071113193527: *3* leoFind (passed)
+#@+node:ekr.20071113193527: *3* leoFind
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
 import leo.core.leoEditCommands as leoEditCommands
@@ -11030,7 +11030,7 @@ else:
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFind tests.')
-#@+node:ekr.20071113194424: *3* leoFrame (passed)
+#@+node:ekr.20071113194424: *3* leoFrame
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
 import time
@@ -11213,7 +11213,7 @@ c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFrame tests.')
-#@+node:ekr.20071113194033.3: *3* leoGlobals (passed)
+#@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
 if 1: # The following must be indented.
@@ -12009,7 +12009,7 @@ for ivar in ('c','g','p'):
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
-#@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui (passed)
+#@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
@@ -20669,7 +20669,7 @@ for s in table:
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoImport tests.')
-#@+node:ekr.20100131171342.5604: *3* leoKeys (passed)
+#@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
 # It's not worth doing.
@@ -22188,7 +22188,7 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()
-#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone) (passed)
+#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone)
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -22530,7 +22530,7 @@ else:
     assert pd.has_at_persistence_node()
     persistence.deleteAllChildren()
     assert persistence
-#@+node:ekr.20100131171342.5610: *3* leoPlugins (passed)
+#@+node:ekr.20100131171342.5610: *3* leoPlugins
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController
 
@@ -22557,7 +22557,7 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
-#@+node:ekr.20091219122958.5066: *3* leoRst (passed)
+#@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
 # Applies to options doc parts as well.
@@ -26390,7 +26390,7 @@ hr { /* EKR */
 </div>
 </body>
 </html>
-#@+node:ekr.20090529115704.4396: *3* leoShadow (passed)
+#@+node:ekr.20090529115704.4396: *3* leoShadow
 #@+node:ekr.20090529115704.4560: *4* @@test (minitest) x.show_error
 x = c.shadowController
 
@@ -27530,7 +27530,7 @@ x.unlink('xyzzy',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not delete xyzzy'), x.last_error
 
-#@+node:ekr.20100131171342.5612: *3* leoTest (passed)
+#@+node:ekr.20100131171342.5612: *3* leoTest
 #@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
 if c.shortFileName() == 'dynamicUnitTest.leo':
     
@@ -27565,7 +27565,7 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo (passed)
+#@+node:ekr.20071113193729: *3* leoUndo
 @
 
 9 failures with Alt-5.
@@ -27847,7 +27847,7 @@ after
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoUndo tests.')
-#@+node:ekr.20140802074328.4471: *3* leoVim.py (passed)
+#@+node:ekr.20140802074328.4471: *3* leoVim.py
 #@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
 vc = c.vimCommands
 s = '''
@@ -27899,7 +27899,7 @@ for a,b,in table:
     result = vc.to_eol(s,i1)
     assert result == i2,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20050120095423: *3* Plugins (passed)
+#@+node:ekr.20050120095423: *3* Plugins
 # Do this last.
 #@+node:ekr.20110610082755.3362: *4*  qt gui
 #@+node:ekr.20100131171342.5503: *5* @test c.vnode2position

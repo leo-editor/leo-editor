@@ -168,9 +168,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20090615053403.4876,"
-expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -299,17 +298,17 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
-<v t="ekr.20100131171342.5506"><vh>leoApp (passed)</vh>
+<v t="ekr.20100131171342.5506"><vh>leoApp</vh>
 <v t="ekr.20100131171342.5507"><vh>@test consistency of leoApp tables</vh></v>
 <v t="ekr.20100131180007.5417"><vh>@test lm.openLeoOrZipFile</vh></v>
 <v t="ekr.20100211110729.5389"><vh>@test rfm.writeRecentFilesFileHelper</vh></v>
 <v t="ekr.20130503061820.4186"><vh>@test consistency of leoApp tables</vh></v>
 </v>
-<v t="ekr.20160318094003.1"><vh>leoAst (passed)</vh>
+<v t="ekr.20160318094003.1"><vh>leoAst</vh>
 <v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </v>
-<v t="ekr.20050112095306.1"><vh>leoAtFile (passed)</vh>
+<v t="ekr.20050112095306.1"><vh>leoAtFile</vh>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
 <v t="ekr.20041021065903"><vh>#@asis</vh>
 <v t="ekr.20041021065903.1"><vh>&lt;&lt; section &gt;&gt;</vh></v>
@@ -413,7 +412,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090704085350.5010"><vh>@@test @file: shape of tree</vh></v>
 </v>
 </v>
-<v t="ekr.20150521123343.1"><vh>leoBeautify (passed)</vh>
+<v t="ekr.20150521123343.1"><vh>leoBeautify</vh>
 <v t="ekr.20111104171708.3843"><vh>@test leoBeautify.CPrettyPrinter</vh>
 <v t="ekr.20111104171708.3844"><vh>c tokenize test</vh></v>
 </v>
@@ -422,10 +421,10 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20150610065241.1"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20100131171342.5508"><vh>leoBridge (passed)</vh>
+<v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
 <v t="ekr.20100131171342.5509"></v>
 </v>
-<v t="ekr.20110608135658.3377"><vh>leoChapters (passed)</vh>
+<v t="ekr.20110608135658.3377"><vh>leoChapters</vh>
 <v t="ekr.20110608162543.3363"><vh>@test chapter-create/remove &amp; undo</vh></v>
 <v t="ekr.20110608162543.3365"><vh>@test chapter-rename &amp; undo</vh></v>
 <v t="ekr.20110608181936.3368"><vh>@test chapter-move/clone/copy-node-to</vh>
@@ -435,7 +434,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
-<v t="ekr.20090615053403.4876" a="M"><vh>leoColorizer (to do)</vh>
+<v t="ekr.20090615053403.4876"><vh>leoColorizer</vh>
 <v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
 <v t="ekr.20090615053403.4878"><vh>plain code</vh></v>
 </v>
@@ -643,7 +642,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
 <v t="ekr.20071113201833"></v>
 </v>
-<v t="ekr.20071113194216"><vh>leoConfig (passed)</vh>
+<v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20120201125738.3958"><vh>@@@test g.app.config.getShortcuts works when no local shortcuts</vh></v>
 <v t="ekr.20060325071703.2"><vh>@@@test ifgui</vh></v>
 <v t="ekr.20111115071700.3870"><vh>@test c.config.printSettings</vh></v>
@@ -655,7 +654,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854"></v>
 </v>
-<v t="ekr.20100131171342.5592"><vh>@ignore leoDialogs (to do)</vh>
+<v t="ekr.20100131171342.5592" a="M"><vh>@ignore leoDialogs (to do)</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>@ignore leoEditCommands (to do)</vh>
@@ -1446,7 +1445,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20070306091949"></v>
 </v>
-<v t="ekr.20061001114637"><vh>leoFileCommands (passed)</vh>
+<v t="ekr.20061001114637"><vh>leoFileCommands</vh>
 <v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
 <v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
@@ -1483,7 +1482,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
 <v t="ekr.20071113202045"></v>
 </v>
-<v t="ekr.20071113193527"><vh>leoFind (passed)</vh>
+<v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20051107115231.29"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
 <v t="ekr.20060130151716.3"><vh>@test minibuffer find commands</vh></v>
 <v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
@@ -1491,7 +1490,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
 <v t="ekr.20071113202153"></v>
 </v>
-<v t="ekr.20071113194424"><vh>leoFrame (passed)</vh>
+<v t="ekr.20071113194424"><vh>leoFrame</vh>
 <v t="ekr.20060912091510.1"><vh>@@test add-editor &amp; delete-editor</vh></v>
 <v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
 <v t="ekr.20061106201509.6"><vh>@test c.frame.body.getInsertLines</vh></v>
@@ -1508,7 +1507,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131180007.5359"><vh>@test c.frame.tree.OnIconDoubleClick</vh></v>
 <v t="ekr.20071113202153.1"></v>
 </v>
-<v t="ekr.20071113194033.3"><vh>leoGlobals (passed)</vh>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
 <v t="ekr.20110510054817.3476"><vh>@test g.alert</vh></v>
 <v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
@@ -1598,7 +1597,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2"></v>
 </v>
-<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui (passed)</vh>
+<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui</vh>
 <v t="ekr.20111120124051.3992"></v>
 <v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
 <v t="ekr.20111003145300.3467"><vh>a</vh></v>
@@ -2424,7 +2423,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140724164600.4590"></v>
 </v>
-<v t="ekr.20100131171342.5604"><vh>leoKeys (passed)</vh>
+<v t="ekr.20100131171342.5604"><vh>leoKeys</vh>
 <v t="ekr.20100131171342.5606"><vh>@@test k.autoCompleterClass.calltip</vh></v>
 <v t="ekr.20110509104953.3474"><vh>@test k.get_leo_completions</vh></v>
 <v t="ekr.20111121224307.3934"></v>
@@ -2585,7 +2584,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone) (passed)</vh>
+<v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone)</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
 <v t="ekr.20140712142620.4583"><vh>@@@test pd.pack &amp; pd.unpack</vh>
 <v t="ekr.20140712142620.4587"><vh>clone</vh></v>
@@ -2660,11 +2659,11 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins (passed)</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 <v t="ekr.20100909082308.5990"><vh>@test regularizeName</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst (passed)</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
 <v t="ekr.20100813100841.5825"><vh>@@@test show_doc_parts_in_rst_mode</vh></v>
 <v t="ekr.20100813100841.5847"><vh>@ignore</vh>
 <v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
@@ -2776,7 +2775,7 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow (passed)</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
 <v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
@@ -3245,12 +3244,12 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest (passed)</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
 <v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
 <v t="ekr.20111105221757.3833"><vh>@test TM.findAllUnitTestNodes</vh></v>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
-<v t="ekr.20071113193729"><vh>leoUndo (passed)</vh>
+<v t="ekr.20071113193729"><vh>leoUndo</vh>
 <v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
 <v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
@@ -3322,12 +3321,12 @@ expanded="ekr.20090615053403.4876,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20071113202510"></v>
 </v>
-<v t="ekr.20140802074328.4471"><vh>leoVim.py (passed)</vh>
+<v t="ekr.20140802074328.4471"><vh>leoVim.py</vh>
 <v t="ekr.20140802074328.4472"><vh>@test vc.on_same_line</vh></v>
 <v t="ekr.20140802074328.4473"><vh>@test vc.to_bol</vh></v>
 <v t="ekr.20140802074328.4474"><vh>@test vc.to_eol</vh></v>
 </v>
-<v t="ekr.20050120095423"><vh>Plugins (passed)</vh>
+<v t="ekr.20050120095423"><vh>Plugins</vh>
 <v t="ekr.20110610082755.3362"><vh> qt gui</vh>
 <v t="ekr.20100131171342.5503"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20100131171342.5504"><vh>@test position2Item</vh></v>
@@ -8032,7 +8031,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7,7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7,10">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
