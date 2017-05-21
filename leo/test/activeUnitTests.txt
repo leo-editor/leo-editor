@@ -403,7 +403,7 @@ if g.isPython3 and sys.platform.startswith('linux'):
     # The crash causes several other unit tests to fail.
     self.skipTest('Not for Linux.')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses')
+    self.skipTest('Not for curses gui')
 else:
     c1 = c
     fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
@@ -540,7 +540,7 @@ for name in commandNames:
                     repr(stroke),repr(name),d2name)
 #@+node:ekr.20111221062755.3909: *3* @test all top-level read/write commands give proper read/write error dialogs
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('curses gui')
+    self.skipTest('Not for curses gui')
 else:
     child = p.firstChild()
     assert child
@@ -1248,7 +1248,7 @@ import leo.core.leoFrame as leoFrame
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -5514,7 +5514,7 @@ nodes in myLeoSettings.leo.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     strict = True # Set to False if you are not EKR.
     table = ['leoSettings.leo','unitTest.leo']
@@ -6621,7 +6621,7 @@ if g.app.isExternalUnitTest:
 elif sys.platform.startswith('linux'):
     self.skipTest('Linux')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Curses gui')
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -6641,7 +6641,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Curses gui')
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -10278,26 +10278,29 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051109091333: *5* @test deleting the last body character text redraws the screen (and icon)
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.setBodyString(p,'a')
-c.redraw_now() # To make node visible and to set the icon.
-try:
-    c.bodyWantsFocus()
-    n = c.frame.tree.redrawCount
-    w = c.frame.body.wrapper
-    w.setInsertPoint('end')
-    g.app.gui.event_generate(c,'\b','BackSpace',w)
-    n2 = c.frame.tree.redrawCount
-    if not g.app.isExternalUnitTest:
-        # This test is meaningless with a nullGui.
-        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.setBodyString(p,'a')
+    c.redraw_now() # To make node visible and to set the icon.
+    try:
+        c.bodyWantsFocus()
+        n = c.frame.tree.redrawCount
+        w = c.frame.body.wrapper
+        w.setInsertPoint('end')
+        g.app.gui.event_generate(c,'\b','BackSpace',w)
+        n2 = c.frame.tree.redrawCount
+        if not g.app.isExternalUnitTest:
+            # This test is meaningless with a nullGui.
+            assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()
 #@+node:ekr.20051107115231.15: *5* @test editLabel selects entire headline
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -10331,17 +10334,19 @@ assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
-n = c.frame.tree.redrawCount
-c.insertHeadline()
-c.outerUpdate() # Not actually needed, but should not matter.
-try:
-    n2 = c.frame.tree.redrawCount
-    if g.app.isExternalUnitTest:
-        self.skipTest('Can not be run externally')
-    else:
-        assert n2 == n + 1,'redraws: %d' % (n2 - n)
-finally:
-    c.undoer.undo()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')n = c.frame.tree.redrawCount
+else:
+    c.insertHeadline()
+    c.outerUpdate() # Not actually needed, but should not matter.
+    try:
+        n2 = c.frame.tree.redrawCount
+        if g.app.isExternalUnitTest:
+            self.skipTest('Can not be run externally')
+        else:
+            assert n2 == n + 1,'redraws: %d' % (n2 - n)
+    finally:
+        c.undoer.undo()
 #@+node:ekr.20051107115231.18: *5* @test paste and undo in headline - at end
 import sys
 if sys.platform.startswith('linux'):
@@ -10477,7 +10482,7 @@ finally:
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
 # Should be a comment
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
@@ -10605,11 +10610,12 @@ else:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
 #@+node:ekr.20060208072358: *5* @test typing in empty body text redraws the screen (and icon)
-# This test is too flaky for Tk.
 import sys
 if False and sys.platform.startswith('linux'):
     # Fails for strange reasons.
     self.skipTest('linux')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
@@ -11159,7 +11165,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11212,7 +11218,7 @@ finally:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
@@ -11378,7 +11384,7 @@ for i in range(3):
 #@+node:ekr.20111110073834.3843: *4* @test g.es_print
 '''Make sure that g.trace doesn't add an extra newline.'''
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     import sys
     
@@ -11601,7 +11607,7 @@ except Exception:
 #@+node:ekr.20111110073528.3843: *4* @test g.pr
 '''Make sure that g.trace doesn't add an extra newline.'''
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     import sys
 
@@ -11944,7 +11950,7 @@ else:
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     import sys
 
@@ -12080,7 +12086,7 @@ import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()

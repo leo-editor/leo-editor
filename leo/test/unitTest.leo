@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.57">
-	<global_window_position top="187" left="405" height="786" width="1161"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.74">
+	<global_window_position top="169" left="238" height="786" width="1161"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -293,8 +293,8 @@
 </v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-expanded="ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20071113192611,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20170521062918.1"><vh>Curses gui failures (32 failures, 4 errors)</vh>
 <v t="ekr.20071113193624"><vh>leoCommands (1 failure)</vh>
@@ -364,7 +364,7 @@ expanded="ekr.20040712101754.37,ekr.20040712101754.38,"><vh>@file activeUnitTest
 <v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
 <v t="ekr.20071113201833"></v>
 </v>
-<v t="ekr.20071113192611"><vh>leoEditCommands (12 failures)</vh>
+<v t="ekr.20071113192611" a="M"><vh>leoEditCommands (12 failures)</vh>
 <v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
@@ -3431,7 +3431,7 @@ else:
 </t>
 <t tx="ekr.20051107115231.24"># Should be a comment
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('not valid for curses gui')
+    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
@@ -3481,26 +3481,29 @@ else:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
 </t>
-<t tx="ekr.20051109091333">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.setBodyString(p,'a')
-c.redraw_now() # To make node visible and to set the icon.
-try:
-    c.bodyWantsFocus()
-    n = c.frame.tree.redrawCount
-    w = c.frame.body.wrapper
-    w.setInsertPoint('end')
-    g.app.gui.event_generate(c,'\b','BackSpace',w)
-    n2 = c.frame.tree.redrawCount
-    if not g.app.isExternalUnitTest:
-        # This test is meaningless with a nullGui.
-        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()
+<t tx="ekr.20051109091333">if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.setBodyString(p,'a')
+    c.redraw_now() # To make node visible and to set the icon.
+    try:
+        c.bodyWantsFocus()
+        n = c.frame.tree.redrawCount
+        w = c.frame.body.wrapper
+        w.setInsertPoint('end')
+        g.app.gui.event_generate(c,'\b','BackSpace',w)
+        n2 = c.frame.tree.redrawCount
+        if not g.app.isExternalUnitTest:
+            # This test is meaningless with a nullGui.
+            assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()
 </t>
 <t tx="ekr.20051109091731">h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
@@ -3541,17 +3544,19 @@ try:
 finally:
     c.setBodyString(p,'')
 </t>
-<t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
-c.insertHeadline()
-c.outerUpdate() # Not actually needed, but should not matter.
-try:
-    n2 = c.frame.tree.redrawCount
-    if g.app.isExternalUnitTest:
-        self.skipTest('Can not be run externally')
-    else:
-        assert n2 == n + 1,'redraws: %d' % (n2 - n)
-finally:
-    c.undoer.undo()
+<t tx="ekr.20051125155134">if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')n = c.frame.tree.redrawCount
+else:
+    c.insertHeadline()
+    c.outerUpdate() # Not actually needed, but should not matter.
+    try:
+        n2 = c.frame.tree.redrawCount
+        if g.app.isExternalUnitTest:
+            self.skipTest('Can not be run externally')
+        else:
+            assert n2 == n + 1,'redraws: %d' % (n2 - n)
+    finally:
+        c.undoer.undo()
 </t>
 <t tx="ekr.20051125170139">h = 'Test headline abc'
 p = c.testManager.findNodeAnywhere(h)
@@ -3630,11 +3635,12 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 </t>
-<t tx="ekr.20060208072358"># This test is too flaky for Tk.
-import sys
+<t tx="ekr.20060208072358">import sys
 if False and sys.platform.startswith('linux'):
     # Fails for strange reasons.
     self.skipTest('linux')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
@@ -5970,7 +5976,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7,1">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
@@ -10784,7 +10790,7 @@ if g.app.isExternalUnitTest:
 elif sys.platform.startswith('linux'):
     self.skipTest('Linux')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Curses gui')
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -10831,7 +10837,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Curses gui')
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
