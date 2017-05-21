@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.40" body_secondary_ratio="0.64">
-	<global_window_position top="132" left="477" height="892" width="1080"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="140" left="247" height="815" width="1205"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,8 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20061001114637,ekr.20071113193527,ekr.20071113194424,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -2325,7 +2324,7 @@ marks="ekr.20061001114637,ekr.20071113193527,ekr.20071113194424,"><vh>@file acti
 </v>
 <v t="ekr.20070306091949"></v>
 </v>
-<v t="ekr.20061001114637" a="M"><vh>leoFileCommands</vh>
+<v t="ekr.20061001114637"><vh>leoFileCommands (passed)</vh>
 <v t="ekr.20100206165505.5386"><vh>@@test fc.handleNodeConflicts</vh></v>
 <v t="ekr.20100131180007.5451"><vh>@test fc.cleanSaxInputString</vh></v>
 <v t="ekr.20071113145804.18"><vh>@test fc.deleteFileWithMessage</vh></v>
@@ -2362,7 +2361,7 @@ marks="ekr.20061001114637,ekr.20071113193527,ekr.20071113194424,"><vh>@file acti
 <v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
 <v t="ekr.20071113202045"></v>
 </v>
-<v t="ekr.20071113193527" a="M"><vh>leoFind</vh>
+<v t="ekr.20071113193527"><vh>leoFind (passed)</vh>
 <v t="ekr.20051107115231.29"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
 <v t="ekr.20060130151716.3"><vh>@test minibuffer find commands</vh></v>
 <v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
@@ -2370,7 +2369,7 @@ marks="ekr.20061001114637,ekr.20071113193527,ekr.20071113194424,"><vh>@file acti
 <v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
 <v t="ekr.20071113202153"></v>
 </v>
-<v t="ekr.20071113194424" a="M"><vh>leoFrame</vh>
+<v t="ekr.20071113194424"><vh>leoFrame (passed)</vh>
 <v t="ekr.20060912091510.1"><vh>@@test add-editor &amp; delete-editor</vh></v>
 <v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
 <v t="ekr.20061106201509.6"><vh>@test c.frame.body.getInsertLines</vh></v>
@@ -8237,7 +8236,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7,9">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7,14">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -20793,6 +20792,8 @@ finally:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -20805,6 +20806,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'

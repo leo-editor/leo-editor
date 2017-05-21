@@ -10666,7 +10666,7 @@ else:
 #@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoEditCommands tests.')
-#@+node:ekr.20061001114637: *3* leoFileCommands
+#@+node:ekr.20061001114637: *3* leoFileCommands (passed)
 # 3 failures with Alt-5
 #@+node:ekr.20100206165505.5386: *4* @@test fc.handleNodeConflicts
 # More suitable as a hand test:
@@ -10958,7 +10958,7 @@ else:
 #@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFileCommands tests.')
-#@+node:ekr.20071113193527: *3* leoFind
+#@+node:ekr.20071113193527: *3* leoFind (passed)
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
 import leo.core.leoEditCommands as leoEditCommands
@@ -11028,7 +11028,7 @@ else:
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFind tests.')
-#@+node:ekr.20071113194424: *3* leoFrame
+#@+node:ekr.20071113194424: *3* leoFrame (passed)
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
 import time
@@ -11145,6 +11145,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11196,6 +11198,8 @@ finally:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
