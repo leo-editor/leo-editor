@@ -168,7 +168,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20081111084046.2,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -8040,7 +8040,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="10,12">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="10">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
@@ -19616,6 +19616,9 @@ else:
 <t tx="ekr.20111003145300.3467"></t>
 <t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -19704,8 +19707,9 @@ else:
 </t>
 <t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-if g.app.gui.guiName() == 'curses':
-    assert False, 'Not ready yet: interferes with other tests'
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))

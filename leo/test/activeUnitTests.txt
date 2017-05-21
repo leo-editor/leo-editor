@@ -6569,8 +6569,9 @@ last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-if g.app.gui.guiName() == 'curses':
-    assert False, 'Not ready yet: interferes with other tests'
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -6732,6 +6733,9 @@ last line
 #@+node:ekr.20111006064419.3491: *5* @test delete-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
