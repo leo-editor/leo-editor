@@ -233,8 +233,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
-marks="ekr.20100131171342.5471,ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+marks="ekr.20100205223124.5377,ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1176,29 +1176,21 @@ marks="ekr.20100131171342.5471,ekr.20170416085619.1,"><vh>@file activeUnitTests.
 </v>
 </v>
 </v>
-<v t="ekr.20100131171342.5471" a="M"><vh>General</vh>
-<v t="ekr.20100131171342.5486"><vh>@@test that all @test nodes in derived files start with if g.unitTesting</vh>
-<v t="ekr.20100131171342.5487"></v>
+<v t="ekr.20100205223124.5377" a="M"><vh>Syntax checking</vh>
+<v t="ekr.20040712101813"><vh>@@test c.checkAllPythonCode</vh></v>
+<v t="ekr.20100205231441.5386"><vh>@test at.checkPythonSyntax</vh></v>
+<v t="ekr.20100205233116.5387"><vh>@test at.tabNannyNode</vh></v>
+<v t="ekr.20100205235740.5391"><vh>@test c.checkPythonCode</vh></v>
+<v t="ekr.20100205223124.5378"><vh>@test c.checkPythonNode</vh>
+<v t="ekr.20100205223124.5379"><vh>syntax-error</vh></v>
 </v>
-<v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
-<v t="ekr.20110613143220.3314"></v>
-<v t="ekr.20111221062755.3909"><vh>@test all top-level read/write commands give proper read/write error dialogs</vh>
-<v t="ekr.20111221062755.3910"><vh>child</vh></v>
-</v>
-<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
-<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20160419061017.1"><vh>@test event classes</vh></v>
-<v t="ekr.20140904060337.4476"></v>
-<v t="ekr.20100131171342.5472"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20111118125141.3879"><vh>@@@test bodyCtrl property</vh></v>
-<v t="ekr.20120227152633.3934"><vh>@test c.config.initIvar sets *commander* ivars</vh></v>
-<v t="ekr.20120227143454.3932"><vh>@test k.settings ivars match settings</vh></v>
-<v t="ekr.20100131171342.5479"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20100131171342.5480"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20100131171342.5481"><vh>@test official g.app directories</vh></v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-</v>
+<v t="ekr.20100205234837.5390"><vh>@test c.tabNannyNode</vh></v>
+<v t="ekr.20100206002004.5397"><vh>@test g.es_exception</vh></v>
+<v t="ekr.20071113145804.20"><vh>@@test g.es_exception (heroic)</vh></v>
+<v t="ekr.20100206001203.5395"><vh>@test g.getLastTracebackFileAndLineNumber</vh></v>
+<v t="ekr.20100205230621.5383"><vh>@test leoTest.checkFileSyntax</vh></v>
+<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
+<v t="ekr.20110612071416.3311"><vh>@test syntax of setup.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1288,6 +1280,10 @@ if 0: # subtree of root node:
 if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)
+</t>
+<t tx="ekr.20040712101813">result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
+
+assert result=="ok", "checkPythonCode returns: %s" % result
 </t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050120095423.20">class lastTestCase(unittest.TestCase):
@@ -1805,6 +1801,27 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113145804.20">if c.config.redirect_execute_script_output_to_log_pane:
+    pass # Test doesn't work when redirection is on.
+else:
+    try:
+        import sys
+        # Catch the output of g.es_exception.
+        # We catch the AssertionError, so nothing gets written to stderr.
+        sys.stdout = fo = g.fileLikeObject()
+        try: # Create an exception to catch.
+            assert False, 'Assert False in test_g_es_exception'
+        except AssertionError:
+            g.es_exception(color='suppress')
+            result = fo.get()
+            s1 = 'Traceback (most recent call last):'
+            s2 = 'AssertionError: Assert False in test_g_es_exception'
+            assert result.find(s1) &gt; -1, 'No traceback line: %s' % repr(result)
+            assert result.find(s2) &gt; -1, 'No AssertionError line: %s' % repr(result)
+    finally:
+        # Not needed unless we execute this script as selected text.
+        sys.stdout = sys.__stdout__
+</t>
 <t tx="ekr.20071113201736"># Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoAtFile tests')
 </t>
@@ -3250,8 +3267,6 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
-<t tx="ekr.20100131171342.5471"></t>
-<t tx="ekr.20100131171342.5472"></t>
 <t tx="ekr.20100131171342.5473"></t>
 <t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
 
@@ -3405,183 +3420,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5479">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-ivars = (
-    # Subcommanders...
-    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
-    # Positions...
-    '_currentPosition', # '_topPosition',
-    # '_rootPosition'
-    # Data structures...
-    'hoistStack',
-        # 'recentFiles',
-    # Args...
-    'output_doc_flag','page_width','tab_width',
-    # 'tangle_directory',
-    'tangle_errors','tangle_batch_flag','target_language',
-    'untangle_batch_flag','use_header_flag',
-    # Others...
-    'mFileName',
-)
-
-for ivar in ivars:
-    assert hasattr(c,ivar), 'missing commander ivar: %s' % ivar
-    val = getattr(c,ivar)
-    assert val is not None,'null commander ivar: %s'% ivar
-</t>
-<t tx="ekr.20100131171342.5480">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-if g.app.gui.guiName() == 'tkinter':
-    ivars = (
-        'bar1','bar2',
-        'body',
-        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.wrapper.
-        'canvas',
-        'f1','f2',
-        'iconBar','iconFrame',
-        'log','outerFrame',
-        'statusLine','statusFrame','statusLabel','statusText',
-        'title','top','tree',
-        #'treeBar', # leo_treeBar is now injected into frame.canvas.
-    )
-else: ivars = ()
-for ivar in ivars:
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-    val = getattr(f,ivar)
-    assert val is not None,'null frame ivar: %s'% ivar
-
-# These do not have to be initied.
-for ivar in ('findPanel',):
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-</t>
-<t tx="ekr.20100131171342.5481">ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
-    val = getattr(g.app,ivar)
-    assert val is not None, 'null g.app directory: %s'% ivar
-    assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
-
-assert hasattr(g.app,'homeDir') # May well be None.
-</t>
-<t tx="ekr.20100131171342.5482">
-ivars = (
-    # Global managers.
-    'config','externalFilesController',
-    'loadManager','pluginsController','recentFilesManager',
-    # Official ivars.
-    'gui',
-    'initing','killed','quitting',
-    'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices',
-    'unitTesting','unitTestDict',
-    'windowList',
-    # Less-official and might be removed...
-    'batchMode',
-    'debugSwitch','disableSave',
-    'hookError','hookFunction',
-    'numberOfUntitledWindows',
-    'realMenuNameDict',
-    'searchDict','scriptDict',
-    'use_psyco',
-)
-
-if g.app.isExternalUnitTest:
-    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
-else:
-    mayBeNone = ('hookFunction','openWithInstance')
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
-</t>
-<t tx="ekr.20100131171342.5483">import os
-import sys
-trace = False
-python_interp = sys.executable
-test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","..")
-
-leo_file   = g.os_path_join(src_path,"launchLeo.py")
-batch_file = g.os_path_join(test_path,"batchTest.py")
-test_file  = g.os_path_join(test_path,"createdFile.txt")
-
-# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
-if 1:
-    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
-else:
-    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
-
-@others
-
-if trace:
-    print('@test batch mode: loadDir: %s' % g.app.loadDir)
-removeFile(test_file)
-os.system(command)
-assert(g.os_path_exists(test_file))
-</t>
-<t tx="ekr.20100131171342.5484">def removeFile(path):
-
-    trace = False
-    if os.path.exists(test_file):
-        if trace:
-            print("@test batch mode: removeFile: deleting",test_file)
-        os.remove(test_file)
-    else:
-        if trace:
-            print("@test batch mode: removeFile: not found:",test_file)
-</t>
-<t tx="ekr.20100131171342.5485">import inspect
-
-d = c.commandsDict
-keys = sorted(d.keys())
-table = ('bookmark', 'screen-capture', 'stickynote')
-for key in keys:
-    continue_flag = False
-    for prefix in table:
-        if key.startswith(prefix):
-            continue_flag = True
-            break # These plugins have their own signatures.
-    if continue_flag:
-        continue
-    f = d.get(key)
-    # Test true __call__ methods if they exist.
-    name = getattr(f,'__name__',None) or repr(f)
-    if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
-        f = getattr(f,'__call__')
-    args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    arg0 = len(args) &gt; 0 and args[0]
-    arg1 = len(args) &gt; 1 and args[1]
-    expected = ('event',)
-    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
-    assert arg0 in expected or arg1 in expected, message
-</t>
-<t tx="ekr.20100131171342.5486"># print('-' * 30)
-
-@others
-
-# This can't be run externally,
-# And it is no longer an effective test.
-
-p = c.rootPosition()
-ok = True
-while p and ok:
-    if p.isAnyAtFileNode():
-        h = p.h
-        if h.endswith('.py'):
-            ok = checkFile(p)
-        p.moveToNodeAfterTree()
-    else:
-        p.moveToThreadNext()
-assert ok
-</t>
 <t tx="ekr.20100131171342.5487">def checkFile(p):
 
     # print('checking',p.h)
@@ -3633,6 +3471,160 @@ g.pr('\nEnd of leoGui tests.')
 </t>
 <t tx="ekr.20100131171342.5609" annotate="7d71002e"># Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
+</t>
+<t tx="ekr.20100205223124.5377"></t>
+<t tx="ekr.20100205223124.5378">table = (
+    ('syntax-error','error'),
+)
+
+for h,expected in table:
+    p2 = g.findNodeInTree(c,p,h)
+    assert p2,'node not found: %s' % h
+    result = c.checkPythonCode(event=None,
+        unittest=True,ignoreAtIgnore=True,
+        suppressErrors=True,checkOnSave=False)
+    assert result==expected, 'expected %s got %s' % (
+        expected,result)
+</t>
+<t tx="ekr.20100205223124.5379">def abc
+    pass
+</t>
+<t tx="ekr.20100205230621.5383">s = '''
+# syntax error
+def spam:
+    pass
+'''
+
+try:
+    c.testManager.checkFileSyntax('&lt;fileName&gt;',s,suppress=True)
+    assert False
+except SyntaxError:
+    pass
+</t>
+<t tx="ekr.20100205231441.5386">at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+assert at.checkPythonSyntax(p,s),'fail 1'
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+'''
+
+assert not at.checkPythonSyntax(p,s2,supress=True),'fail2'
+
+if not g.unitTesting: # A hand test of at.syntaxError
+    at.checkPythonSyntax(p,s2)
+</t>
+<t tx="ekr.20100205233116.5387">@tabwidth -4
+
+at = c.atFileCommands
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+at.tabNannyNode (p,body=s,suppress=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    at.tabNannyNode(p,body=s2,suppress=True)
+except IndentationError:
+    pass
+</t>
+<t tx="ekr.20100205234837.5390">@tabwidth -4
+
+s = '''
+# no error
+def spam():
+    pass
+'''
+
+c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+
+s2 = '''
+# syntax error
+def spam:
+    pass
+  a = 2
+'''
+
+try:
+    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+except IndentationError:
+    pass
+</t>
+<t tx="ekr.20100205235740.5391">c.checkPythonCode(event=None,
+    unittest=True,ignoreAtIgnore=False,
+    suppressErrors=True,checkOnSave=False)
+</t>
+<t tx="ekr.20100205235740.5392">import glob
+trace = False
+failed,n = [],0
+skip_tuples3 = (
+    ('extensions','asciidoc.py'),
+)
+skip_tuples2 = (
+    ('test', 'python3_test.py'),
+)
+join = g.os_path_finalize_join
+skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
+skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+for theDir in ('core','external','extensions','plugins','scripts','test'):
+    if trace: print(theDir)
+    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+    assert g.os_path_exists(path),path
+    aList = glob.glob(g.os_path_join(path,'*.py'))
+    for z in aList:
+        if z in skip_list:
+            pass # print('%s: skipped: %s' % (p.h,z))
+        else:
+            n += 1
+            fn = g.shortFileName(z)
+            # if trace: print('%8s %s' % (theDir,fn))
+            s,e = g.readFileIntoString(z)
+            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+                failed.append(z)
+if trace: print('tested %s files' % n)
+assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+</t>
+<t tx="ekr.20100206001203.5395">try:
+    assert False
+except AssertionError:
+    fn,n = g.getLastTracebackFileAndLineNumber()
+    
+if g.app.isExternalUnitTest:
+    writeScriptFile = True
+else:
+    writeScriptFile = c.config.getBool('write_script_file')
+
+if writeScriptFile:
+    assert fn != '&lt;string&gt;',repr(fn)
+else:
+    assert fn == '&lt;string&gt;',repr(fn)
+
+assert n == 4,repr(n)
+</t>
+<t tx="ekr.20100206002004.5397"># This is just a hand test.
+if not g.unitTesting:
+    try:
+        assert False
+    except AssertionError:
+        g.es_exception(full=True,c=None,color='red')
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -3786,6 +3778,13 @@ False:
 <t tx="ekr.20110610122533.3407">@others
 @language python
 @tabwidth -4
+</t>
+<t tx="ekr.20110612071416.3311">fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
+
+# Only run this test if setup.py exists: it may not in the actual distribution.
+if g.os_path_exists(fn):
+    s,e = g.readFileIntoString(fn)
+    c.testManager.checkFileSyntax(fn,s,reraise=True,suppress=False)
 </t>
 <t tx="ekr.20110613143220.3314">@ We want to ensure that when masterMenuHandler does::
     
@@ -4153,22 +4152,6 @@ finally:
         c.redraw()
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111118125141.3879"># Test that changing c.frame.body.bodyCtrl also changes c.frame.body.wrapper.
-if 0:
-    # A very dangerous test.
-    # A failure here will destroy all following tests!
-    # Furthermore, it is not needed.  bodyCtrl exists nowhere in Leo.
-    body = c.frame.body
-    old_w = body.wrapper
-    try:
-        assert old_w is not None
-        body.bodyCtrl = None
-        assert body.wrapper is None
-    finally:
-        body.wrapper = old_w
-    assert hasattr(c.frame.body,'bodyCtrl')
-    assert hasattr(c.frame.log,'logCtrl')
-</t>
 <t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
 import sys
@@ -4388,88 +4371,6 @@ finally:
 @tabwidth -4
 @others
 # end.
-</t>
-<t tx="ekr.20111221062755.3909">if g.app.gui.guiName() == 'curses':
-    self.skipTest('curses gui')
-else:
-    child = p.firstChild()
-    assert child
-    assert child.h == 'child',child.h
-    c.selectPosition(child) 
-    table = (
-        'import-file',
-        'open-outline',
-        'read-at-auto-nodes',
-        'read-at-file-nodes',
-        'read-at-shadow-nodes',
-       # 'read-file-into-node',
-       # 'read-outline-only',
-       'save-file',
-       'save-file-as',
-       'save-file-to',
-        'write-at-auto-nodes',
-        'write-at-file-nodes',
-        'write-at-shadow-nodes',
-        'write-dirty-at-auto-nodes',
-        'write-dirty-at-file-nodes',
-        'write-dirty-at-shadow-nodes',
-        #'write-file-from-node',
-        'write-missing-at-file-nodes',
-        #'write-outline-only',
-    )
-    tags = (
-        ('init_error_dialogs',2),
-        ('raise_error_dialogs',1),
-    )
-    d = g.app.unitTestDict
-    for commandName in table:
-        for tag,n in tags:
-            d[tag] = 0
-        c.k.simulateCommand(commandName)
-        for tag,n in tags:
-            assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
-</t>
-<t tx="ekr.20111221062755.3910"></t>
-<t tx="ekr.20120227143454.3932">k = c.k
-getBool  = c.config.getBool
-getColor = c.config.getColor
-
-bg = getColor('body_text_background_color') or 'white'
-fg = getColor('body_text_foreground_color') or 'black'
-
-table = (
-    ('command_mode_bg_color',           getColor('command_mode_bg_color') or bg),
-    ('command_mode_fg_color',           getColor('command_mode_fg_color') or fg),
-    ('enable_alt_ctrl_bindings',        getBool('enable_alt_ctrl_bindings')),
-    ('enable_autocompleter',            getBool('enable_autocompleter_initially')),
-    ('enable_calltips',                 getBool('enable_calltips_initially')),
-    ('ignore_caps_lock',                getBool('ignore_caps_lock')),
-    ('ignore_unbound_non_ascii_keys',   getBool('ignore_unbound_non_ascii_keys')),
-    ('insert_mode_bg_color',            getColor('insert_mode_bg_color') or bg),
-    ('insert_mode_fg_color',            getColor('insert_mode_fg_color') or fg),
-    ('minibuffer_background_color',     getColor('minibuffer_background_color') or 'lightblue'),
-    ('minibuffer_error_color',          getColor('minibuffer_error_color') or 'red'),
-    ('minibuffer_warning_color',        getColor('minibuffer_warning_color') or 'lightgrey'),
-    ('overwrite_mode_bg_color',         getColor('overwrite_mode_bg_color') or bg),
-    ('overwrite_mode_fg_color',         getColor('overwrite_mode_fg_color') or fg),
-    ('swap_mac_keys',                   getBool('swap_mac_keys')),
-    ('unselected_body_bg_color',        getColor('unselected_body_bg_color') or bg),
-    ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
-    ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),
-)
-
-for ivar,setting in table:
-    assert hasattr(k,ivar),ivar
-    val = getattr(k,ivar)
-    assert val == setting,'%s k.%s setting: %s' % (
-        ivar,ivar,val)
-</t>
-<t tx="ekr.20120227152633.3934">for ivar,setting_type,default in g.app.config.ivarsData:
-    assert hasattr(c,ivar),ivar
-    assert hasattr(c.config,ivar),ivar
-    val = getattr(c.config,ivar)
-    val2 = c.config.get(ivar,setting_type)
-    assert val == val2,"%s %s" % (val,val2)
 </t>
 <t tx="ekr.20120306173116.3933">@first # -*- coding: utf-8 -*-
 
@@ -5675,24 +5576,6 @@ The next section is empty. It must not be deleted.
 Section 3, line 1
 
 '''
-</t>
-<t tx="ekr.20160419061017.1">import leo.core.leoGui as leoGui # LeoKeyEvent
-import leo.core.leoVim as leoVim # VimEvent.
-import leo.plugins.qt_frame as qt_frame # EventWrapper
-event = func = next_w = parent = None
-char = shortcut = stroke = w = x = y = None
-x_root = y_root = None
-# The EventWrapper class is buried too deep to test easily.
-# I'll try harder if it ever become a problem ;-)
-    # dw = qt_frame.DynamicWindow(c, parent)
-    # event_wrapper = dw.EventWrapper(c, w, next_w, func)
-key_event = leoGui.LeoKeyEvent(
-    c, char, event, shortcut,
-    w, x, y, x_root, y_root)
-vim_event = leoVim.VimEvent(c, char, stroke, w)
-# assert hasattr(event_wrapper, 'c')
-assert hasattr(key_event, 'c')
-assert hasattr(vim_event, 'c')
 </t>
 <t tx="ekr.20161002020559.1"># This fixes a major bug in *all* generators returning positions.
 trace = False
