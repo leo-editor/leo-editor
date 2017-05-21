@@ -22335,7 +22335,7 @@ for unl,expected in table:
 if g.app.isExternalUnitTest:
     # There will not be a proper cloned node in the copy of these tests.
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName == 'curses':
+elif g.app.gui.guiName() == 'curses':
     self.skipTest('Not for curses gui')
 else:
     pd = c.persistenceController
