@@ -8381,6 +8381,9 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
