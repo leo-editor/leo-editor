@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.60">
-	<global_window_position top="94" left="349" height="890" width="1099"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="156" left="279" height="786" width="1161"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -168,7 +168,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -654,7 +654,7 @@ marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854"></v>
 </v>
-<v t="ekr.20100131171342.5592" a="M"><vh>@ignore leoDialogs (to do)</vh>
+<v t="ekr.20100131171342.5592" a="M"><vh>leoDialogs (to do)</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>@ignore leoEditCommands (to do)</vh>
@@ -3368,6 +3368,20 @@ marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111102164107.3975"></v>
 <v t="ekr.20111112103320.3849"></v>
 <v t="ekr.20111026105935.3966"></v>
+</v>
+<v t="ekr.20170520211602.3"><vh>Recovered Nodes</vh>
+<v t="ekr.20170520211602.4"><vh>Recovered node "@thin ../test/unittest/at-path-test1.py" from @file activeUnitTests.txt</vh>
+<v t="ekr.20170520211602.5"><vh>old:@thin ../test/unittest/at-path-test1.py</vh></v>
+<v t="ekr.20170520211602.6"><vh>new:@thin ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20170520211602.7"><vh>Recovered node "@thin at-path-test3.py" from @file activeUnitTests.txt</vh>
+<v t="ekr.20170520211602.8"><vh>old:@thin at-path-test3.py</vh></v>
+<v t="ekr.20170520211602.9"><vh>new:@thin at-path-test3.py</vh></v>
+</v>
+<v t="ekr.20170520211602.10"><vh>Recovered node "@thin at-path-test2.py" from @file activeUnitTests.txt</vh>
+<v t="ekr.20170520211602.11"><vh>old:@thin at-path-test2.py</vh></v>
+<v t="ekr.20170520211602.12"><vh>new:@thin at-path-test2.py</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -34991,6 +35005,34 @@ EOT;
 <t tx="ekr.20170520193223.8"></t>
 <t tx="ekr.20170520193223.9"></t>
 <t tx="ekr.20170520204621.1"></t>
+<t tx="ekr.20170520211602.10">(uncached) ekr.20120228145505.4841
+Diff...
+- @language python
+- # unittest/at-path-test2.py
+</t>
+<t tx="ekr.20170520211602.11"></t>
+<t tx="ekr.20170520211602.12">@language python
+# unittest/at-path-test2.py
+</t>
+<t tx="ekr.20170520211602.3"></t>
+<t tx="ekr.20170520211602.4">(uncached) ekr.20120228145505.4834
+Diff...
+- @language python
+- # unittest/at-path-test1.py 
+</t>
+<t tx="ekr.20170520211602.5"></t>
+<t tx="ekr.20170520211602.6">@language python
+# unittest/at-path-test1.py 
+</t>
+<t tx="ekr.20170520211602.7">(uncached) ekr.20120228145505.4838
+Diff...
+- @language python
+- # unittest/at-path-test3.py 
+</t>
+<t tx="ekr.20170520211602.8"></t>
+<t tx="ekr.20170520211602.9">@language python
+# unittest/at-path-test3.py 
+</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)

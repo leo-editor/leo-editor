@@ -5560,7 +5560,7 @@ assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoConfig tests')
-#@+node:ekr.20100131171342.5592: *3* @ignore leoDialogs (to do)
+#@+node:ekr.20100131171342.5592: *3* leoDialogs (to do)
 #@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
