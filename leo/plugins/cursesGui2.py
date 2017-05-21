@@ -3430,7 +3430,7 @@ class LeoMLTree(npyscreen.MLTree):
         def info(z):
             return '%s.%s' % (id(z), z.__class__.__name__)
         g.printList([info(z) for z in self._my_widgets])
-    #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline (done)
+    #@+node:ekr.20170506044733.4: *4* LeoMLTree.edit_headline
     def edit_headline(self):
 
         trace = False
@@ -3755,9 +3755,6 @@ class LeoMLTree(npyscreen.MLTree):
     def update(self, clear=True):
         '''Redraw the tree.'''
         # This is a major refactoring of MultiLine.update.
-        # pylint: disable=access-member-before-definition
-        if self.values is None:
-            self.values = []
         if self.editing:
             self._init_update()
         if self._must_redraw(clear):
@@ -3906,7 +3903,7 @@ class LeoMLTree(npyscreen.MLTree):
             line._tree_last_line = not p.hasNext()
         else:
             line._tree_expanded = val.expanded
-            line._tree_has_children = len(val._children) > 0
+            line._tree_has_children = bool(val._children)
             line._tree_last_line = not bool(line._tree_sibling_next)
         if trace and trace_ok:
             content = line.value.content
@@ -3915,7 +3912,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170516101203.1: *3* LeoMLTree.values
     if native:
         _myFullValues = LeoTreeData()
-        values = []
+        values = None
     else:
         # This property converts the (possibly cached) result of converting
         # the root node (_myFullValues) and its *visible* decendants to a list.
