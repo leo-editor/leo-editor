@@ -4855,7 +4855,7 @@ IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoColor tests')
-#@+node:ekr.20071113193624: *3* leoCommands (to do)
+#@+node:ekr.20071113193624: *3* @ignore leoCommands (1 failure)
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
@@ -20796,7 +20796,7 @@ for setting, result in table:
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* @ignore leoNodes  (several failures)
+#@+node:ekr.20071113194424.1: *3* leoNodes  (several failures)
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent

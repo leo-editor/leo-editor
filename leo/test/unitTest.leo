@@ -168,8 +168,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20071113193624,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+marks="ekr.20071113194424.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -575,7 +575,7 @@ marks="ekr.20071113193624,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090615053403.4957"></v>
 </v>
-<v t="ekr.20071113193624" a="M"><vh>leoCommands (to do)</vh>
+<v t="ekr.20071113193624"><vh>@ignore leoCommands (1 failure)</vh>
 <v t="ekr.20090104053806.1"><vh>@@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20100203103015.5356"><vh>@@@test c.openTempFileInExternalEditor</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@@@test efc.create_temp_file</vh></v>
@@ -2433,7 +2433,7 @@ marks="ekr.20071113193624,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>@ignore leoNodes  (several failures)</vh>
+<v t="ekr.20071113194424.1" a="M"><vh>leoNodes  (several failures)</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents_iter and v.parents</vh></v>
@@ -3364,10 +3364,11 @@ marks="ekr.20071113193624,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20170520204621.1"><vh>Curses gui failures</vh>
-<v t="ekr.20071113193624" a="M"></v>
+<v t="ekr.20071113193624"></v>
 <v t="ekr.20071113192611"></v>
 <v t="ekr.20090529141856.4682"></v>
-<v t="ekr.20071113194424.1"></v>
+<v t="ekr.20071113194424.1" a="M"></v>
+<v t="ekr.20111212142649.3971"></v>
 <v t="ekr.20111112103320.3849"></v>
 <v t="ekr.20111102164107.3975"></v>
 <v t="ekr.20111026105935.3966"></v>
@@ -8035,7 +8036,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="8,1">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
