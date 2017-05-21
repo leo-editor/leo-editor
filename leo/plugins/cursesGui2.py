@@ -3564,27 +3564,6 @@ class LeoMLTree(npyscreen.MLTree):
     def h_cursor_line_down(self, ch):
         assert not self.scroll_exit
         self.cursor_line = min(len(self.values)-1, self.cursor_line+1)
-
-        ### Old code
-            # self.cursor_line += 1
-            # if self.cursor_line >= len(self.values):
-                # if self.scroll_exit:
-                    # self.cursor_line = len(self.values)-1
-                    # self.h_exit_down(ch)
-                    # return True
-                # else:
-                    # self.cursor_line -= 1
-                    # return True
-                    
-        ### Very old code
-            # else:
-                # widget = self._my_widgets[self.cursor_line-self.start_display_at]
-                # task = getattr(widget, 'task', None)
-                # if task == self.continuation_line:
-                    # if self.slow_scroll:
-                        # self.start_display_at += 1
-                    # else:
-                        # self.start_display_at = self.cursor_line
     #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up
     def h_cursor_line_up(self, ch):
         
@@ -3623,12 +3602,12 @@ class LeoMLTree(npyscreen.MLTree):
         self.display()
     #@+node:ekr.20170516055435.3: *4* LeoMLTree.h_expand_tree
     def h_expand_tree(self, ch):
-       
+
         node = self.values[self.cursor_line]
         if native:
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
-            p.v.expand()
+            p.expand() # Don't use p.v.expand()
             self.values.clear_cache()
         else:
             # First, expand the node.
@@ -3660,7 +3639,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.values.clear_cache()
             elif p.hasParent():
                 parent = p.parent()
-                parent.v.contract()
+                parent.contract() # Don't use parent.v.contract.
                 # Set the cursor to the parent's index.
                 i = self.cursor_line - 1
                 while i >= 0:
@@ -3675,7 +3654,6 @@ class LeoMLTree(npyscreen.MLTree):
                 self.cursor_line = max(0, i)
                 self.values.clear_cache()
             else:
-                ### self.h_cursor_line_up(ch)
                 pass # This is what Leo does.
         else:
             if self._has_children(node) and node.expanded:
@@ -3684,7 +3662,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.h_cursor_line_up(ch)
     #@+node:ekr.20170506035419.1: *4* LeoMLTree.h_move_right
     def h_move_right(self, ch):
-        
+
         node = self.values[self.cursor_line]
         if not node:
             g.trace('no node')
@@ -3697,8 +3675,6 @@ class LeoMLTree(npyscreen.MLTree):
                     self.h_cursor_line_down(ch)
                 else:
                     self.h_expand_tree(ch)
-            ### elif p.hasVisNext(c):
-                # self.h_cursor_line_down(ch)
             else:
                 pass # This is what Leo does.
         else:
